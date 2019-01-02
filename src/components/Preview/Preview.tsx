@@ -4,7 +4,7 @@ import './Preview.css'
 
 const editorWindow = window as EditorWindow
 
-export class Preview extends React.PureComponent {
+export default class Preview extends React.PureComponent {
   private ref = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
@@ -26,6 +26,6 @@ export class Preview extends React.PureComponent {
   }
 
   render() {
-    return <div id="preview-viewport" className="Preview" ref={this.ref} data-test-id="preview" />
+    return <div id="preview-viewport" className="Preview" ref={this.ref} />
   }
 }
