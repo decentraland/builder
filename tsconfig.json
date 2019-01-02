@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,9 +18,8 @@
       {
         "name": "tslint-language-service"
       }
-    ]
+    ],
+    "baseUrl": "src"
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src", "react-app=env.d.ts"]
 }
