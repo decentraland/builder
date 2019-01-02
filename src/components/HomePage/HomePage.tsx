@@ -1,7 +1,7 @@
 import * as React from 'react'
 import './HomePage.css'
 
-export class HomePage extends React.Component {
+export default class HomePage extends React.Component {
   render() {
     return (
       <div className="App">

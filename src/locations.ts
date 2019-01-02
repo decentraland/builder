@@ -1,3 +1,4 @@
 export const locations = {
-  root: () => "/"
-};
+  root: () => '/',
+  editor: () => '/editor'
+}
