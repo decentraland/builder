@@ -1,0 +1,9 @@
+{
+  "extends": ["dcl-tslint-config-standard", "tslint-plugin-prettier"],
+  "rules": {
+    "no-commented-out-code": false
+  },
+  "linterOptions": {
+    "exclude": ["./**/*.js"]
+  }
+}
