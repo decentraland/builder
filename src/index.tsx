@@ -6,6 +6,8 @@ import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationPr
 
 import { store, history } from './store'
 import { Routes } from './Routes'
+
+import './themes'
 import './index.css'
 
 ReactDOM.render(

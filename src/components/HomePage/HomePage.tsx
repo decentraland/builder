@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Button } from 'decentraland-ui'
 import './HomePage.css'
 
 export default class HomePage extends React.Component {
@@ -9,9 +10,11 @@ export default class HomePage extends React.Component {
           <p>
             Edit <code>src/App.tsx</code> and save to reload.
           </p>
-          <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
+          <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
             Learn React
           </a>
+          <br />
+          <Button primary>Button</Button>
         </header>
       </div>
     )

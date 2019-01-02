@@ -1,0 +1,7 @@
+/* Overrides some decentraland-ui styles */
+:root {
+  --primary: #ff2d55;
+  --background: #16141a;
+
+  --purplish-grey: #676370;
+}
