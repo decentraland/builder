@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "connected-react-router": "^6.1.0",
+    "decentraland-dapps": "^3.10.0",
+    "decentraland-ui": "^1.15.3",
     "decentraland-ecs": "^1.0.1-20181220152036.commit-d560183",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",

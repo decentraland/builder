@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 // TODO: enable this when creating the home page
 // import { HomePage } from './components/HomePage'
 import { locations } from './locations'
-import { EditorPage } from './components/EditorPage/EditorPage'
+import EditorPage from './components/EditorPage'
 
 export class Routes extends React.Component {
   renderRoutes() {

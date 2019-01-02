@@ -1,19 +1,10 @@
 import * as React from 'react'
+import { EditorWindow } from './Preview.types'
 import './Preview.css'
-
-type EditorWindow = typeof window & {
-  isDCLInitialized: boolean
-  initDCL: () => void
-  editor: {
-    initEngine: () => void
-    resize: () => void
-    getDCLCanvas: () => Promise<HTMLCanvasElement>
-  }
-}
 
 const editorWindow = window as EditorWindow
 
-class Preview extends React.PureComponent {
+export class Preview extends React.PureComponent {
   private ref = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
@@ -38,5 +29,3 @@ class Preview extends React.PureComponent {
     return <div id="preview-viewport" className="Preview" ref={this.ref} data-test-id="preview" />
   }
 }
-
-export default Preview
