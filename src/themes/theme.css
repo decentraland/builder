@@ -1,7 +1,44 @@
-/* Overrides some decentraland-ui styles */
 :root {
+  /* Colors */
   --primary: #ff2d55;
-  --background: #16141a;
-
+  --background: #27252e;
   --purplish-grey: #676370;
+  --dark: #16141a;
+
+  /**
+  * Component variables
+  */
+
+  /* TopBar */
+  --topbar-height: 48px;
+
+  /* SideBar */
+  --sidebar-width: 360px;
+}
+
+.ui.header.medium {
+  font-size: 17px;
+}
+
+/* Reset grid */
+
+.ui.grid {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.ui.grid + .grid {
+  margin-top: 0px;
+}
+
+.ui.grid > .row {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.ui.grid > .column {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }

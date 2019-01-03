@@ -1,0 +1,7 @@
+.ui.grid.horizontal-layout {
+  height: calc(100vh - var(--topbar-height));
+}
+
+.EditorPage {
+  height: 100%;
+}

@@ -1,6 +1,7 @@
 {
   "extends": ["dcl-tslint-config-standard", "tslint-plugin-prettier"],
   "rules": {
+    "quotemark": false,
     "no-commented-out-code": false
   },
   "linterOptions": {
