@@ -1,0 +1,4 @@
+.ui.grid.TopBar {
+  height: var(--topbar-height);
+  background: var(--dark);
+}
