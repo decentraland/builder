@@ -5,7 +5,7 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import EditorPage from 'components/EditorPage'
 import { locations } from 'routing/locations'
 
-export class Routes extends React.Component {
+export class Routes extends React.PureComponent {
   renderRoutes() {
     return (
       <Switch>

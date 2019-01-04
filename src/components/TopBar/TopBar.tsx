@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Header, Grid } from 'decentraland-ui'
 import './TopBar.css'
 
-export default class TopBar extends React.Component {
+export default class TopBar extends React.PureComponent {
   render() {
     return (
       <Grid className="TopBar">

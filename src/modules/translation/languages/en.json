@@ -2,7 +2,7 @@
   "languages": {
     "en": "English"
   },
-  "global": {
-    "loading": "Loading"
+  "sidebar": {
+    "title": "Item drawer"
   }
 }
