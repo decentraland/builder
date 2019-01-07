@@ -10,7 +10,7 @@ const COLUMN_COUNT = 3
 
 export default class ItemDrawer extends React.PureComponent<Props, State> {
   state = {
-    isList: true
+    isList: false
   }
 
   renderGrid() {
