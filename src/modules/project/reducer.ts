@@ -20,7 +20,7 @@ export type ProjectReducerAction = CreateProjectAction
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
     case CREATE_PROJECT: {
-      const project = action.payload.project
+      const { project } = action.payload
       return {
         loading: loadingReducer(state.loading, action),
         error: null,
