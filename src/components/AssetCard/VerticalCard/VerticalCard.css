@@ -1,0 +1,33 @@
+.VerticalCard {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  flex-direction: column;
+  background: rgba(var(--purplish-grey-raw), 0.2);
+  padding: 20px 21px 16px 21px;
+  cursor: pointer;
+}
+
+.VerticalCard:hover {
+  background: rgba(var(--purplish-grey-raw), 0.4);
+}
+
+.VerticalCard .thumbnail {
+  width: 63px;
+  height: 62px;
+  margin-bottom: 20px;
+}
+
+.VerticalCard .ui.header.title {
+  margin-top: 0px;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--sidebar-heading);
+}

@@ -1,11 +1,17 @@
 import * as React from 'react'
-import { Grid } from 'decentraland-ui'
+import { Icon } from 'decentraland-ui'
 import { Props, State } from './Drawer.types'
 import './Drawer.css'
 
 export default class Drawer extends React.PureComponent<Props, State> {
   state = {
-    isOpen: false
+    isOpen: true
+  }
+
+  handleClick = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
   }
 
   render() {
@@ -13,11 +19,15 @@ export default class Drawer extends React.PureComponent<Props, State> {
     const { isOpen } = this.state
 
     return (
-      <Grid className="Drawer">
-        <Grid.Column>{label}</Grid.Column>
-        <Grid.Column>></Grid.Column>
-        {isOpen ? children : null}
-      </Grid>
+      <div className="Drawer">
+        <div className="heading" onClick={this.handleClick}>
+          <span className="label">{label}</span>
+          <div>
+            <Icon name={isOpen ? 'angle up' : 'angle down'} />
+          </div>
+        </div>
+        <div className="body">{isOpen ? children : null}</div>
+      </div>
     )
   }
 }

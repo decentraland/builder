@@ -1,0 +1,24 @@
+.ItemDrawer .title {
+  color: var(--sidebar-heading);
+}
+
+.ItemDrawer .ui.grid.asset-grid .column {
+  padding: 4px;
+}
+
+.ItemDrawer .ui.grid.asset-grid.item-grid .column {
+  width: 109px;
+}
+
+.ItemDrawer .ui.grid.asset-grid.item-list .column {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.ItemDrawer .ui.grid.asset-grid.item-grid .row .column:first-child {
+  padding-left: 0px;
+}
+
+.ItemDrawer .ui.grid.asset-grid.item-grid .row .column:nth-child(3) {
+  padding-right: 0px;
+}
