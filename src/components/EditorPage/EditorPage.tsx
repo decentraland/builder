@@ -19,4 +19,5 @@ export default class EditorPage extends React.PureComponent<Props> {
         </Grid>
       </div>
     )
+  }
 }
