@@ -3,9 +3,10 @@ import { Grid } from 'decentraland-ui'
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
+import { Props } from './EditorPage.types'
 import './EditorPage.css'
 
-export default class EditorPage extends React.PureComponent {
+export default class EditorPage extends React.PureComponent<Props> {
   render() {
     return (
       <div className="EditorPage">
@@ -18,5 +19,4 @@ export default class EditorPage extends React.PureComponent {
         </Grid>
       </div>
     )
-  }
 }

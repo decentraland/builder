@@ -1,4 +1,4 @@
 export const locations = {
   root: () => '/',
-  editor: () => '/editor'
+  editor: () => '/editor/:projectId'
 }
