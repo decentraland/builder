@@ -1,0 +1,23 @@
+.Drawer {
+  width: 100%;
+  user-select: none;
+}
+
+.Drawer .heading {
+  width: 100%;
+  height: 32px;
+  color: var(--purplish-grey);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.Drawer .label {
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.Drawer .body {
+  width: 100%;
+}

@@ -1,0 +1,23 @@
+.HorizontalCard {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.HorizontalCard:hover {
+  background: rgba(var(--purplish-grey-raw), 0.4);
+}
+
+.HorizontalCard .thumbnail {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.HorizontalCard div.title {
+  margin-top: 0px;
+  color: var(--sidebar-heading);
+}
