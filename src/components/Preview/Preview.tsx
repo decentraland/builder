@@ -8,7 +8,7 @@ export default class Preview extends React.PureComponent {
   private ref = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
-    if (!editorWindow.isDCLInitialized) {
+    if (!editorWindow.isDCLInitialized && editorWindow.initDCL) {
       editorWindow.initDCL()
     }
 
