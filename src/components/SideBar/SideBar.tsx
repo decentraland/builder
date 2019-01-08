@@ -19,7 +19,7 @@ export default class SideBar extends React.PureComponent {
               variations: []
             },
             {
-              id: '1',
+              id: '2',
               name: 'Other test',
               thumbnail: 'https://market.decentraland.org/static/media/logo.b7751b3e.svg',
               url: 'http://example.com',
@@ -28,7 +28,7 @@ export default class SideBar extends React.PureComponent {
               variations: []
             },
             {
-              id: '1',
+              id: '3',
               name: 'Something',
               thumbnail: 'https://market.decentraland.org/static/media/logo.b7751b3e.svg',
               url: 'http://example.com',
@@ -37,7 +37,7 @@ export default class SideBar extends React.PureComponent {
               variations: []
             },
             {
-              id: '1',
+              id: '4',
               name: 'Worky Worky',
               thumbnail: 'https://market.decentraland.org/static/media/logo.b7751b3e.svg',
               url: 'http://example.com',

@@ -1,3 +1,3 @@
-import EditorPage from './EditorPage'
+import EditorPage from './EditorPage.container'
 
 export default EditorPage

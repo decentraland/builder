@@ -7,6 +7,10 @@ import { Props } from './EditorPage.types'
 import './EditorPage.css'
 
 export default class EditorPage extends React.PureComponent<Props> {
+  componentWillMount() {
+    this.props.onLoadAssetPacks()
+  }
+
   render() {
     return (
       <div className="EditorPage">

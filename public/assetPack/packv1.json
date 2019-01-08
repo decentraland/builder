@@ -1,0 +1,53 @@
+{
+  "ok": true,
+  "data": {
+    "version": 1,
+    "title": "Legacy builder",
+    "assets": [
+      {
+        "id": 1,
+        "name": "Test",
+        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
+        "url": "http://example.com",
+        "tags": [
+          "test"
+        ],
+        "category": "test",
+        "variations": []
+      },
+      {
+        "id": 2,
+        "name": "Other test",
+        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
+        "url": "http://example.com",
+        "tags": [
+          "test"
+        ],
+        "category": "test",
+        "variations": []
+      },
+      {
+        "id": 3,
+        "name": "Something",
+        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
+        "url": "http://example.com",
+        "tags": [
+          "test"
+        ],
+        "category": "test",
+        "variations": []
+      },
+      {
+        "id": 4,
+        "name": "Worky Worky",
+        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
+        "url": "http://example.com",
+        "tags": [
+          "test"
+        ],
+        "category": "test",
+        "variations": []
+      }
+    ]
+  }
+}

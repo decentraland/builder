@@ -27,4 +27,12 @@ const store = createStore(rootReducer, enhancer)
 sagasMiddleware.run(rootSaga)
 loadStorageMiddleware(store)
 
+export function getState() {
+  return store.getState()
+}
+
+if (env.isDevelopment()) {
+  ;(window as any).getState = store.getState
+}
+
 export { store, history }

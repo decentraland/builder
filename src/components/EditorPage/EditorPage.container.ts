@@ -1,0 +1,19 @@
+import { connect } from 'react-redux'
+import * as queryString from 'query-string'
+
+import { RootState, RootDispatch } from 'modules/common/types'
+import { getData as getProjects } from 'modules/project/selectors'
+import { loadAssetPacksRequest, LoadAssetPacksRequestAction } from 'modules/assetPack/actions'
+import { MapDispatchProps } from './EditorPage.types'
+import EditorPage from './EditorPage'
+
+const mapState = () => ({})
+
+const mapDispatch = (dispatch: RootDispatch<LoadAssetPacksRequestAction>): MapDispatchProps => ({
+  onLoadAssetPacks: () => dispatch(loadAssetPacksRequest())
+})
+
+export default connect(
+  mapState,
+  mapDispatch
+)(EditorPage)

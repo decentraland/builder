@@ -1,4 +1,4 @@
-import { AssetDescriptor } from 'modules/assetpack/types'
+import { AssetDescriptor } from 'modules/assetPack/types'
 
 export type Props = {
   isHorizontal?: boolean

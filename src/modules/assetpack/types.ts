@@ -1,3 +1,9 @@
+export type AssetPack = {
+  version: number
+  title: string
+  assets: AssetDescriptor[]
+}
+
 export type AssetResource = {
   name: string
   url: string
