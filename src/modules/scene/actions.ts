@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
-import { SceneDefinition } from './types'
+import { SceneDefinition, EntityDefinition, AnyComponent } from './types'
 import { AssetResource } from 'modules/assetpack/types'
 
 // Create scene
@@ -19,11 +19,18 @@ export const addAsset = (asset: AssetResource, position: Vector3) => action(ADD_
 
 export type AddAssetAction = ReturnType<typeof addAsset>
 
-// Add entities/components
+// Add component
 
-export const ADD_REFERENCES = 'Add references'
+export const ADD_COMPONENT = 'Add component'
 
-export const addReferences = (sceneId: string, entities: string[], components: string[]) =>
-  action(ADD_REFERENCES, { sceneId, entities, components })
+export const addComponent = (sceneId: string, component: AnyComponent) => action(ADD_COMPONENT, { sceneId, component })
 
-export type AddReferencesAction = ReturnType<typeof addReferences>
+export type AddComponentAction = ReturnType<typeof addComponent>
+
+// Add entity
+
+export const ADD_ENTITY = 'Add entity'
+
+export const addEntity = (sceneId: string, entity: EntityDefinition) => action(ADD_ENTITY, { sceneId, entity })
+
+export type AddEntityAction = ReturnType<typeof addEntity>

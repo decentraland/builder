@@ -1,6 +1,4 @@
-import { ComponentDefinition, AnyComponent, ComponentType } from 'modules/component/types'
-import { ComponentState } from 'react'
-import { EntityState } from 'modules/entity/reducer'
+import { ComponentDefinition, ComponentType, AnyComponent, EntityDefinition } from './types'
 
 export function getVarName(): string {
   return (
@@ -14,7 +12,7 @@ export function getVarName(): string {
 /**
  * Generates a script where all GLTFShapes are instanced only once and can be refenced by their `src`
  */
-export function writeGLTFComponents(components: ComponentState['data']): string {
+export function writeGLTFComponents(components: Record<string, ComponentDefinition<ComponentType.GLTFShape>>): string {
   const gltfLookup: string[] = []
   let out = 'const gltfLookup = {\n'
 
@@ -37,7 +35,7 @@ export function writeGLTFComponents(components: ComponentState['data']): string 
 /**
  * Generates a script where all entities are instanced and reference their respective previously instanced components
  */
-export function writeEntities(entities: EntityState['data'], components: ComponentState['data']): string {
+export function writeEntities(entities: Record<string, EntityDefinition>, components: Record<string, AnyComponent>): string {
   let out = ''
 
   for (let key in entities) {

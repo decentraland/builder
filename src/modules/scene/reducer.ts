@@ -1,8 +1,8 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { SceneDefinition } from './types'
-import { CreateSceneAction, CREATE_SCENE, ADD_REFERENCES, AddReferencesAction } from './actions'
+import { CreateSceneAction, CREATE_SCENE, AddEntityAction, AddComponentAction, ADD_ENTITY, ADD_COMPONENT } from './actions'
 
-export type SceneReducerAction = CreateSceneAction | AddReferencesAction
+export type SceneReducerAction = CreateSceneAction | AddEntityAction | AddComponentAction
 
 export type SceneState = {
   data: Record<string, SceneDefinition>
@@ -14,8 +14,8 @@ const INITIAL_STATE: SceneState = {
   data: {
     'test-scene': {
       id: 'test-scene',
-      entities: [],
-      components: [],
+      entities: {},
+      components: {},
       metrics: {
         entities: 0,
         bodies: 0,
@@ -45,8 +45,8 @@ export const sceneReducer = (state: SceneState = INITIAL_STATE, action: SceneRed
       }
     }
 
-    case ADD_REFERENCES: {
-      const { sceneId, entities, components } = action.payload
+    case ADD_ENTITY: {
+      const { sceneId, entity } = action.payload
 
       return {
         ...state,
@@ -54,8 +54,22 @@ export const sceneReducer = (state: SceneState = INITIAL_STATE, action: SceneRed
           ...state.data,
           [sceneId]: {
             ...state.data[sceneId],
-            entities: [...entities],
-            components: [...components]
+            entities: { ...state.data[sceneId].entities, [entity.id]: { ...entity } }
+          }
+        }
+      }
+    }
+
+    case ADD_COMPONENT: {
+      const { sceneId, component } = action.payload
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [sceneId]: {
+            ...state.data[sceneId],
+            components: { ...state.data[sceneId].components, [component.id]: { ...component } }
           }
         }
       }

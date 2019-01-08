@@ -1,20 +1,16 @@
 import * as uuid from 'uuid'
 import { takeLatest, put, all, select } from 'redux-saga/effects'
-import { ADD_ASSET, AddAssetAction, addReferences } from 'modules/scene/actions'
-import { getGLTFId } from 'modules/component/selectors'
-import { addComponent } from 'modules/component/actions'
-import { ComponentType } from 'modules/component/types'
-import { addEntity } from 'modules/entity/actions'
-import { getProjectId } from 'modules/location/selectors';
+import { ADD_ASSET, AddAssetAction, addComponent, addEntity } from 'modules/scene/actions'
+import { getGLTFId, getCurrentScene } from './selectors'
+import { ComponentType } from './types'
 
-function* watchSpawnItem() {
-  yield takeLatest(ADD_ASSET, handleSpawnItem)
+function* watchAddAsset() {
+  yield takeLatest(ADD_ASSET, handleAddItem)
 }
 
-function* handleSpawnItem(action: AddAssetAction) {
+function* handleAddItem(action: AddAssetAction) {
   const { asset, position } = action.payload
-  const projectId = getProjectId()
-  const project = 
+  const scene = yield select(getCurrentScene)
 
   let gltfId = yield select(getGLTFId(asset.url))
   let transformId = uuid.v4()
@@ -23,7 +19,7 @@ function* handleSpawnItem(action: AddAssetAction) {
     const id = uuid.v4()
 
     yield put(
-      addComponent({
+      addComponent(scene.id, {
         id,
         type: ComponentType.GLTFShape,
         data: {
@@ -36,7 +32,7 @@ function* handleSpawnItem(action: AddAssetAction) {
   }
 
   yield put(
-    addComponent({
+    addComponent(scene.id, {
       id: transformId,
       type: ComponentType.Transform,
       data: {
@@ -47,13 +43,13 @@ function* handleSpawnItem(action: AddAssetAction) {
   )
 
   yield put(
-    addEntity({
+    addEntity(scene.id, {
       id: uuid.v4(),
       components: [gltfId, transformId]
     })
   )
 }
 
-export default function* sceneSaga() {
-  yield all([watchSpawnItem()])
+export function* sceneSaga() {
+  yield all([watchAddAsset()])
 }

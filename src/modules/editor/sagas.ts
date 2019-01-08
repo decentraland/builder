@@ -1,17 +1,7 @@
 import { all, takeLatest, select } from 'redux-saga/effects'
-import { ADD_ENTITY } from 'modules/entity/actions'
-import { getData as getEntities } from 'modules/entity/selectors'
-import { getData as getComponents } from 'modules/component/selectors'
-import { getData as getScenes } from 'modules/scene/selectors'
-import { getData as getProjects } from 'modules/project/selectors'
+import { getCurrentScene } from 'modules/scene/selectors'
 import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
-import { getProjectId } from 'modules/location/selectors'
-import { Project } from 'modules/project/types'
-import { SceneState } from 'modules/scene/reducer'
-import { SceneDefinition } from 'modules/scene/types'
-import { EntityState } from 'modules/entity/reducer'
-import { ComponentState } from 'modules/component/reducer'
-import { createSelector } from 'reselect'
+import { ADD_ENTITY } from 'modules/scene/actions'
 const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
 
 function* watchTreeUpdate() {
@@ -19,25 +9,11 @@ function* watchTreeUpdate() {
 }
 
 function* handleUpdate() {
-  const projects = yield select(getProjects)
-  const projectId = getProjectId()
-  const project: Project | null = projectId ? projects[projectId] : null
+  const scene = yield select(getCurrentScene)
 
-  if (project) {
-    const scenes: SceneState['data'] = yield select(getScenes)
-    const scene: SceneDefinition = scenes[project.sceneId]
-    // TODO: we probably need to handle missing scenes in the future
-    const allEntities: EntityState['data'] = yield select(getEntities)
-    const allComponents: ComponentState['data'] = yield select(getComponents)
-
-    const entities = scene.entities.reduce((acc, entityId) => {
-      return { ...acc, [entityId]: allEntities[entityId] }
-    }, {})
-
-    const components = scene.entities.reduce((acc, componentId) => {
-      return { ...acc, [componentId]: allComponents[componentId] }
-    }, {})
-
+  if (scene) {
+    const entities = scene.entities
+    const components = scene.components
     const ownScript = writeGLTFComponents(components) + writeEntities(entities, components)
     const script = ecs + ownScript
     const mappings = {
@@ -83,6 +59,6 @@ function* handleUpdate() {
   }
 }
 
-export default function* editorSaga() {
+export function* editorSaga() {
   yield all([watchTreeUpdate()])
 }

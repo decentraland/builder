@@ -8,8 +8,6 @@ import { storageReducer as storage, storageReducerWrapper } from 'decentraland-d
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
-import { componentReducer as component } from 'modules/component/reducer'
-import { entityReducer as entity } from 'modules/entity/reducer'
 import { RootState } from './types'
 
 export function createRootReducer(history: History) {
@@ -21,8 +19,6 @@ export function createRootReducer(history: History) {
       wallet,
       project,
       scene,
-      component,
-      entity,
       router: connectRouter(history)
     })
   )
