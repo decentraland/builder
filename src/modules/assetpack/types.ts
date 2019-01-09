@@ -1,4 +1,5 @@
 export type AssetPack = {
+  id: string
   version: number
   title: string
   assets: AssetDescriptor[]
