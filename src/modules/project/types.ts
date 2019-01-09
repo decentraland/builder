@@ -9,5 +9,5 @@ export interface Project {
   description: string
   ownerEmail: string
   parcels: { x: number; y: number }[]
-  scene_id: string
+  sceneId: string
 }

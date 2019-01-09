@@ -5,6 +5,9 @@ import { TranslationState } from 'decentraland-dapps/dist/modules/translation/re
 import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { ProjectState } from 'modules/project/reducer'
+import { SceneState } from 'modules/scene/reducer'
+
+export type Vector3 = { x: number; y: number; z: number }
 
 export type RootState = {
   location: LocationState
@@ -12,6 +15,7 @@ export type RootState = {
   storage: StorageState
   wallet: WalletState
   project: ProjectState
+  scene: SceneState
   router: RouterState
 }
 

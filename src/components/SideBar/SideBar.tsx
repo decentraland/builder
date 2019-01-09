@@ -1,7 +1,4 @@
 import * as React from 'react'
-import { Header, Grid } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import Drawer from 'components/Drawer'
 import './SideBar.css'
 
 import ItemDrawer from './ItemDrawer'
