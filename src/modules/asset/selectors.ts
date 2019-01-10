@@ -1,6 +1,5 @@
 import { RootState } from 'modules/common/types'
 import { AssetState } from 'modules/asset/reducer'
-import { Asset } from './types'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
 

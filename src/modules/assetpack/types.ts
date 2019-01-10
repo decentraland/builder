@@ -1,7 +1,7 @@
 import { Asset, BaseAsset } from 'modules/asset/types'
 
 export type AssetPack = BaseAssetPack & {
-  assets: string[]
+  assets: string[] // asset ids
 }
 
 export type RemoteAssetPack = BaseAssetPack & {

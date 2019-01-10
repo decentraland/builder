@@ -5,6 +5,7 @@ import { TranslationState } from 'decentraland-dapps/dist/modules/translation/re
 import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { AssetState } from 'modules/asset/reducer'
+import { CategoryState } from 'modules/category/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { SceneState } from 'modules/scene/reducer'
 
@@ -16,6 +17,7 @@ export type RootState = {
   storage: StorageState
   wallet: WalletState
   asset: AssetState
+  category: CategoryState
   project: ProjectState
   scene: SceneState
   router: RouterState

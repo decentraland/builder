@@ -15,9 +15,9 @@ const INITIAL_STATE: AssetState = {
   error: null
 }
 
-export type AssetPackReducerAction = LoadAssetPacksSuccessAction
+export type AssetReducerAction = LoadAssetPacksSuccessAction
 
-export const assetReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetState => {
+export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction): AssetState => {
   switch (action.type) {
     case LOAD_ASSET_PACKS_SUCCESS: {
       const { assetPacks } = action.payload

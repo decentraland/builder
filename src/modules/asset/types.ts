@@ -5,7 +5,7 @@ export type Asset = BaseAsset & {
 
 export type BaseAsset = AssetResource & {
   tags: string[]
-  category: string
+  category: string // name of the category
   variations: AssetResource[]
 }
 
