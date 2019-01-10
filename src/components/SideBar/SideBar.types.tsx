@@ -1,8 +1,9 @@
-import { AssetState } from 'modules/asset/reducer'
+import { FullCategory } from 'modules/category/types'
 
 export type Props = {
-  assets?: AssetState['data']
+  categories?: FullCategory[]
+  isLoading?: boolean
 }
 
-export type MapStateProps = Pick<Props, 'assets'>
+export type MapStateProps = Pick<Props, 'categories' | 'isLoading'>
 export type MapDispatchProps = {}

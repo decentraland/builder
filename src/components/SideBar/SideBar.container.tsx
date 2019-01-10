@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { getData as getAssets } from 'modules/asset/selectors'
+import { getCategories, isLoading } from 'modules/category/selectors'
 import { MapStateProps } from './SideBar.types'
 import SideBar from './SideBar'
 
 const mapState = (state: RootState): MapStateProps => ({
-  assets: getAssets(state)
+  categories: getCategories(state),
+  isLoading: isLoading(state)
 })
 
 const mapDispatch = () => ({})

@@ -6,38 +6,38 @@
     "assets": [
       {
         "id": "1",
-        "name": "Test",
+        "name": "Millenial Falcon",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["test"],
-        "category": "test",
+        "tags": ["ship"],
+        "category": "Space",
         "variations": []
       },
       {
         "id": "2",
-        "name": "Other test",
+        "name": "USS Drake",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["test"],
-        "category": "test",
+        "tags": ["ship"],
+        "category": "Space",
         "variations": []
       },
       {
         "id": "3",
-        "name": "Something",
+        "name": "Tree",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["test"],
-        "category": "test",
+        "tags": ["grass"],
+        "category": "Forest",
         "variations": []
       },
       {
         "id": "4",
-        "name": "Worky Worky",
+        "name": "Building",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["test"],
-        "category": "test",
+        "tags": ["urban"],
+        "category": "City",
         "variations": []
       }
     ]

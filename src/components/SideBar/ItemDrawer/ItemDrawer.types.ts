@@ -1,8 +1,9 @@
-import { Asset } from 'modules/asset/types'
+import { FullCategory } from 'modules/category/types'
 
 export type Props = {
   isHorizontal?: boolean
-  assets: Asset[]
+  columnCount?: number
+  categories: FullCategory[]
 }
 
 export type State = {
