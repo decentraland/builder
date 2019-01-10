@@ -32,6 +32,7 @@ export function getState() {
 }
 
 if (env.isDevelopment()) {
+  // tslint:disable-next-line:semicolon
   ;(window as any).getState = store.getState
 }
 
