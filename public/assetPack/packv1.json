@@ -9,9 +9,7 @@
         "name": "Test",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": [
-          "test"
-        ],
+        "tags": ["test"],
         "category": "test",
         "variations": []
       },
@@ -20,9 +18,7 @@
         "name": "Other test",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": [
-          "test"
-        ],
+        "tags": ["test"],
         "category": "test",
         "variations": []
       },
@@ -31,9 +27,7 @@
         "name": "Something",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": [
-          "test"
-        ],
+        "tags": ["test"],
         "category": "test",
         "variations": []
       },
@@ -42,9 +36,7 @@
         "name": "Worky Worky",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": [
-          "test"
-        ],
+        "tags": ["test"],
         "category": "test",
         "variations": []
       }

@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 
-import { RootState, RootDispatch } from 'modules/common/types'
-import { getData as getProjects } from 'modules/project/selectors'
+import { RootDispatch } from 'modules/common/types'
 import { loadAssetPacksRequest, LoadAssetPacksRequestAction } from 'modules/assetPack/actions'
 import { MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
