@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import * as queryString from 'query-string'
 
 import { RootState, RootDispatch } from 'modules/common/types'
 import { getData as getProjects } from 'modules/project/selectors'

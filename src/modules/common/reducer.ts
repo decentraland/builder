@@ -6,6 +6,7 @@ import { locationReducer as location } from 'decentraland-dapps/dist/modules/loc
 import { translationReducer as translation } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { storageReducer as storage, storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
+import { assetReducer as asset } from 'modules/asset/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { RootState } from './types'
@@ -17,6 +18,7 @@ export function createRootReducer(history: History) {
       location,
       translation,
       wallet,
+      asset,
       project,
       scene,
       router: connectRouter(history)

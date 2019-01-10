@@ -8,7 +8,7 @@ import {
   loadAssetPacksFailure,
   LoadAssetPacksRequestAction
 } from 'modules/assetPack/actions'
-import { AssetPack } from 'modules/assetPack/types'
+import { RemoteAssetPack, FullAssetPack } from 'modules/assetPack/types'
 import { api } from 'lib/api'
 
 export function* assetPackSaga() {
@@ -18,19 +18,27 @@ export function* assetPackSaga() {
 function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
   try {
     // TODO: This should fetch a list of asset packs in the future, this is just a mock for now
-    const assetPack: AssetPack = yield call(() => api.fetchAssetPack('packv1.json'))
-    const assetPacks = [assetPack]
+    const remoteAssetPack: RemoteAssetPack = yield call(() => api.fetchAssetPack('packv1.json'))
+    const responseAssetPacks = [remoteAssetPack]
 
-    // Add unique ids if they're not present
-    for (const assetPack of assetPacks) {
-      if (!assetPack.id) {
-        assetPack.id = uuidv4()
+    const assetPacks: FullAssetPack[] = []
+
+    // Add unique ids
+    for (const remoteAssetPack of responseAssetPacks) {
+      const assetPackId = uuidv4()
+
+      const assetPack: FullAssetPack = {
+        ...remoteAssetPack,
+        id: uuidv4(),
+
+        assets: remoteAssetPack.assets.map(asset => ({
+          ...asset,
+          assetPackId,
+          id: uuidv4()
+        }))
       }
-      for (const asset of assetPack.assets) {
-        if (!asset.id) {
-          asset.id = uuidv4()
-        }
-      }
+
+      assetPacks.push(assetPack)
     }
 
     yield put(loadAssetPacksSuccess(assetPacks))

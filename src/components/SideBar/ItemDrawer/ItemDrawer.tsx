@@ -18,6 +18,8 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     const { isList } = this.state
     let el = []
 
+    console.log(assets)
+
     for (let i = 0; i < assets.length; i += COLUMN_COUNT) {
       let row = []
 
