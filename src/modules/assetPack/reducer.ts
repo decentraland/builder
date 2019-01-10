@@ -24,7 +24,7 @@ const INITIAL_STATE: AssetPackState = {
 
 export type AssetPackReducerAction = LoadAssetPacksRequestAction | LoadAssetPacksSuccessAction | LoadAssetPacksFailureAction
 
-export const projectReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetPackState => {
+export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetPackState => {
   switch (action.type) {
     case LOAD_ASSET_PACKS_REQUEST: {
       return {

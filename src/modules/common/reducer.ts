@@ -6,6 +6,7 @@ import { locationReducer as location } from 'decentraland-dapps/dist/modules/loc
 import { translationReducer as translation } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { storageReducer as storage, storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
+import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
 import { categoryReducer as category } from 'modules/category/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
@@ -19,6 +20,7 @@ export function createRootReducer(history: History) {
       location,
       translation,
       wallet,
+      assetPack,
       asset,
       category,
       project,
