@@ -1,8 +1,10 @@
-import { Asset } from 'modules/asset/types'
+import { GridProps } from 'decentraland-ui'
+import { FullCategory } from 'modules/category/types'
 
 export type Props = {
   isHorizontal?: boolean
-  assets: Asset[]
+  columnCount?: GridProps['columns']
+  categories: FullCategory[]
 }
 
 export type State = {
