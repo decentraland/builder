@@ -1,9 +1,12 @@
-import { Reducer, Store } from 'redux'
+import { Reducer, AnyAction, Store } from 'redux'
 import { RouterState } from 'connected-react-router'
 import { LocationState } from 'decentraland-dapps/dist/modules/location/reducer'
 import { TranslationState } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
+import { AssetPackState } from 'modules/assetPack/reducer'
+import { AssetState } from 'modules/asset/reducer'
+import { CategoryState } from 'modules/category/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { SceneState } from 'modules/scene/reducer'
 
@@ -14,6 +17,9 @@ export type RootState = {
   translation: TranslationState
   storage: StorageState
   wallet: WalletState
+  assetPack: AssetPackState
+  asset: AssetState
+  category: CategoryState
   project: ProjectState
   scene: SceneState
   router: RouterState
@@ -21,3 +27,7 @@ export type RootState = {
 
 export type RootStore = Store<RootState>
 export type RootReducer = Reducer<RootState>
+
+export interface RootDispatch<A = AnyAction> {
+  (action: A): A
+}

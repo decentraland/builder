@@ -26,13 +26,13 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         if (!item) break
 
         row.push(
-          <Grid.Column>
+          <Grid.Column key={item.id}>
             <AssetCard asset={item} isHorizontal={isList} />
           </Grid.Column>
         )
       }
 
-      el.push(<Grid.Row>{row}</Grid.Row>)
+      el.push(<Grid.Row key={i}>{row}</Grid.Row>)
     }
 
     return el

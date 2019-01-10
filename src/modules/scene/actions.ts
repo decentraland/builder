@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
 import { SceneDefinition, EntityDefinition, AnyComponent } from './types'
-import { AssetResource } from 'modules/assetpack/types'
+import { AssetResource } from 'modules/asset/types'
 
 // Create scene
 

@@ -11,7 +11,6 @@ export default class Preview extends React.PureComponent {
     if (!editorWindow.isDCLInitialized && editorWindow.initDCL) {
       editorWindow.initDCL()
     }
-
     editorWindow.editor.getDCLCanvas().then(canvas => {
       this.moveCanvas(canvas)
     })

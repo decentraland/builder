@@ -27,4 +27,13 @@ const store = createStore(rootReducer, enhancer)
 sagasMiddleware.run(rootSaga)
 loadStorageMiddleware(store)
 
+export function getState() {
+  return store.getState()
+}
+
+if (env.isDevelopment()) {
+  // tslint:disable-next-line:semicolon
+  ;(window as any).getState = store.getState
+}
+
 export { store, history }
