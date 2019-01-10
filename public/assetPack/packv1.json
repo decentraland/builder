@@ -9,8 +9,8 @@
         "name": "Millenial Falcon",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["ship"],
-        "category": "Space",
+        "tags": ["space", "ship"],
+        "category": "space",
         "variations": []
       },
       {
@@ -18,8 +18,8 @@
         "name": "USS Drake",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["ship"],
-        "category": "Space",
+        "tags": ["space", "ship"],
+        "category": "space",
         "variations": []
       },
       {
@@ -27,8 +27,8 @@
         "name": "Tree",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["grass"],
-        "category": "Forest",
+        "tags": ["forest", "grass"],
+        "category": "forest",
         "variations": []
       },
       {
@@ -36,8 +36,8 @@
         "name": "Building",
         "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
         "url": "http://example.com",
-        "tags": ["urban"],
-        "category": "City",
+        "tags": ["city", "urban"],
+        "category": "city",
         "variations": []
       }
     ]
