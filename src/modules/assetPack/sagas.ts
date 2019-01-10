@@ -23,7 +23,7 @@ function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
 
     const assetPacks: FullAssetPack[] = []
 
-    // Add unique ids
+    // Generate unique uuids for internal use
     for (const remoteAssetPack of responseAssetPacks) {
       const assetPackId = uuidv4()
 
