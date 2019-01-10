@@ -17,7 +17,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   renderGrid(assets: Asset[]) {
     const { isList } = this.state
-    const { columnCount = DEFAULT_COLUMN_COUNT } = this.props
+    const columnCount = this.getColumnCount()
     let el = []
 
     for (let i = 0; i < assets.length; i += columnCount) {
@@ -40,9 +40,14 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return el
   }
 
+  getColumnCount(): number {
+    const columnCount = this.props.columnCount || DEFAULT_COLUMN_COUNT
+    return Number(columnCount)
+  }
+
   render() {
     const { isList } = this.state
-    const { categories } = this.props
+    const { categories, columnCount } = this.props
 
     return (
       <div className="ItemDrawer">
@@ -51,7 +56,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         </Header>
         {categories.map((category, index) => (
           <Drawer key={index} label={category.name}>
-            <Grid columns={1} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
+            <Grid columns={columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
               {this.renderGrid(category.assets)}
             </Grid>
           </Drawer>
