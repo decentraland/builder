@@ -11,8 +11,8 @@ export type ProjectState = {
 
 const INITIAL_STATE: ProjectState = {
   data: {
-    test: {
-      id: 'first-scene',
+    projectname: {
+      id: 'projectname',
       description: 'A test project that should be removed on production',
       ownerEmail: '',
       parcels: [],
