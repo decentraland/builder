@@ -1,6 +1,6 @@
 import { all } from 'redux-saga/effects'
 import { env } from 'decentraland-commons'
-import { eth, contracts } from 'decentraland-eth'
+import { eth } from 'decentraland-eth'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 
 import { MANAToken } from 'modules/common/contracts'

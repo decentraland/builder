@@ -77,7 +77,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "postinstall": "node scripts/postinstall.js",
-    "lint": "tslint -e '*.json' -c tslint.json 'src/**/*.ts{,x}'"
+    "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'"
   },
   "eslintConfig": {
     "extends": "react-app"
