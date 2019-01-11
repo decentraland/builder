@@ -2,7 +2,8 @@
   "extends": ["dcl-tslint-config-standard", "tslint-plugin-prettier"],
   "rules": {
     "quotemark": false,
-    "no-commented-out-code": false
+    "no-commented-out-code": false,
+    "no-unnecessary-type-assertion": false
   },
   "linterOptions": {
     "exclude": ["./**/*.js"]

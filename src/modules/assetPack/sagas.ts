@@ -2,7 +2,9 @@ import { call, put, takeLatest } from 'redux-saga/effects'
 import uuidv4 from 'uuid/v4'
 import {
   LOAD_ASSET_PACKS_REQUEST,
+  // @ts-ignore
   LOAD_ASSET_PACKS_SUCCESS,
+  // @ts-ignore
   LOAD_ASSET_PACKS_FAILURE,
   loadAssetPacksSuccess,
   loadAssetPacksFailure,
