@@ -2,6 +2,7 @@ import { all, takeLatest, select } from 'redux-saga/effects'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
 import { ADD_ENTITY } from 'modules/scene/actions'
+import { getAssetMappings } from 'modules/asset/selectors'
 const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
 
 function* watchTreeUpdate() {
@@ -11,6 +12,7 @@ function* watchTreeUpdate() {
 function* handleUpdate() {
   // TODO: Type this Scene
   const scene = yield select(getCurrentScene)
+  const assetMappings = yield select(getAssetMappings)
 
   if (scene) {
     const entities = scene.entities
@@ -18,8 +20,8 @@ function* handleUpdate() {
     const ownScript = writeGLTFComponents(components) + writeEntities(entities, components)
     const script = ecs + ownScript
     const mappings = {
-      'game.js': `data:application/javascript;base64,${btoa(script)}`
-      // TODO: add asset mappings here
+      'game.js': `data:application/javascript;base64,${btoa(script)}`,
+      ...assetMappings
     }
 
     const msg = {
@@ -53,6 +55,8 @@ function* handleUpdate() {
         }
       }
     }
+
+    console.log(msg)
 
     // @ts-ignore: Client api
     window['editor']['handleServerMessage'](msg)

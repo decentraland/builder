@@ -29,6 +29,7 @@ function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
         ...remoteAssetPack,
         assets: remoteAssetPack.assets.map(asset => ({
           ...asset,
+          url: `${remoteAssetPack.id}/${asset.url}`,
           assetPackId: remoteAssetPack.id,
           id: uuidv4()
         }))
