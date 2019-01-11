@@ -16,4 +16,5 @@ export type FullAssetPack = BaseAssetPack & {
 type BaseAssetPack = {
   version: number
   title: string
+  contents: Record<string, string>
 }

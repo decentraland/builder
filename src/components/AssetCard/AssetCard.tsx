@@ -1,12 +1,21 @@
 import * as React from 'react'
+import { Asset } from 'modules/asset/types'
 import { Props } from './AssetCard.types'
 import VerticalCard from './VerticalCard'
 import HorizontalCard from './HorizontalCard'
 
 export default class AssetCard extends React.PureComponent<Props> {
-  render() {
-    const { isHorizontal, asset } = this.props
+  static defaultProps = {
+    onClick: (asset: Asset) => {}
+  }
 
-    return isHorizontal ? <HorizontalCard asset={asset} /> : <VerticalCard asset={asset} />
+  handleOnClick = () => {
+    const { asset, onClick } = this.props
+    onClick(asset)
+  }
+
+  render() {
+    const { isHorizontal, asset, onClick } = this.props
+    return <div onClick={this.handleOnClick}>{isHorizontal ? <HorizontalCard asset={asset} /> : <VerticalCard asset={asset} />}</div>
   }
 }
