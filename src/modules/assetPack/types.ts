@@ -9,11 +9,12 @@ export type RemoteAssetPack = BaseAssetPack & {
 }
 
 export type FullAssetPack = BaseAssetPack & {
-  id: string
   assets: Asset[]
 }
 
 type BaseAssetPack = {
+  id: string
   version: number
   title: string
+  contents: Record<string, string>
 }

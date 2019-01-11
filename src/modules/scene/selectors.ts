@@ -21,7 +21,7 @@ export const getCurrentScene = createSelector<RootState, Project, SceneState['da
 export const getGLTFId = (src: string) => (state: RootState) => {
   const componentData = getCurrentScene(state).components
 
-  for (let key in Object.keys(componentData)) {
+  for (let key in componentData) {
     const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
     if (comp.type === ComponentType.GLTFShape && comp.data.src === src) return key
     return null

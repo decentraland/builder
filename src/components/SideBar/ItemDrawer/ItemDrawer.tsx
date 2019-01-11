@@ -11,8 +11,19 @@ import './ItemDrawer.css'
 const DEFAULT_COLUMN_COUNT = 3
 
 export default class ItemDrawer extends React.PureComponent<Props, State> {
+  static defaultProps = {
+    columnCount: DEFAULT_COLUMN_COUNT,
+    onClick: () => {
+      /* noop */
+    }
+  }
+
   state = {
     isList: false
+  }
+
+  handleOnClick = (asset: Asset) => {
+    this.props.onClick(asset)
   }
 
   renderGrid(assets: Asset[]) {
@@ -29,7 +40,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
         row.push(
           <Grid.Column key={item.id}>
-            <AssetCard asset={item} isHorizontal={isList} />
+            <AssetCard asset={item} isHorizontal={isList} onClick={this.handleOnClick} />
           </Grid.Column>
         )
       }
@@ -41,8 +52,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   getColumnCount(): number {
-    const columnCount = this.props.columnCount || DEFAULT_COLUMN_COUNT
-    return Number(columnCount)
+    return Number(this.props.columnCount)
   }
 
   render() {

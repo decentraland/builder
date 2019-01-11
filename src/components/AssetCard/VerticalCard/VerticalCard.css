@@ -3,16 +3,15 @@
   width: 100%;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
   border-radius: 8px;
   flex-direction: column;
-  background: rgba(var(--purplish-grey-raw), 0.2);
-  padding: 20px 21px 16px 21px;
+  background: rgba(var(--purplish-grey-raw), 0.48);
+  padding: 16px 10px;
   cursor: pointer;
 }
 
 .VerticalCard:hover {
-  background: rgba(var(--purplish-grey-raw), 0.4);
+  background: rgba(var(--purplish-grey-raw), 0.64);
 }
 
 .VerticalCard .thumbnail {
@@ -25,6 +24,7 @@
   margin-top: 0px;
   text-overflow: ellipsis;
   font-size: 13px;
+  font-weight: 100;
   width: 100%;
   text-align: center;
   overflow: hidden;
