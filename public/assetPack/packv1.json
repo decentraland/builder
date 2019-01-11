@@ -1,44 +1,105 @@
 {
   "ok": true,
   "data": {
+    "id": "AssetPackv1",
     "version": 1,
     "title": "Legacy builder",
     "assets": [
       {
-        "id": "1",
-        "name": "Millenial Falcon",
-        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
-        "url": "http://example.com",
-        "tags": ["space", "ship"],
-        "category": "space",
-        "variations": []
-      },
-      {
-        "id": "2",
-        "name": "USS Drake",
-        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
-        "url": "http://example.com",
-        "tags": ["space", "ship"],
-        "category": "space",
-        "variations": []
-      },
-      {
-        "id": "3",
+        "id": "tree",
         "name": "Tree",
-        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
-        "url": "http://example.com",
-        "tags": ["forest", "grass"],
-        "category": "forest",
-        "variations": []
+        "thumbnail": "https://content.decentraland.today/contents/Qme7Wdkprsi9U9nYHNJhVC89fdPjs9eaxemkb6oQwRCzo3",
+        "url": "Tree/Tree_StarterPack.gltf",
+        "tags": [
+          "nature"
+        ],
+        "category": "nature",
+        "variations": [],
+        "contents": {
+          "Tree/BaseColor.png": "Qmd8vo4UKX5STvUHRzbEkRfxBopjVtAiqmoZE6AtxWCPzG",
+          "Tree/Tree_StarterPack.bin": "QmXUe1d2zunwcRDcAWuEzP3ZYEnJ48x9U5DYiEZJqmDXRk",
+          "Tree/Tree_StarterPack.gltf": "QmdmNp5MuRxkNAAsyFd7z3nFGYcPaeZQRjFDm4AphE7K4V"
+        }
       },
       {
-        "id": "4",
-        "name": "Building",
-        "thumbnail": "https://market.decentraland.org/static/media/logo.b7751b3e.svg",
-        "url": "http://example.com",
-        "tags": ["city", "urban"],
+        "name": "CampFire",
+        "thumbnail": "https://content.decentraland.today/contents/QmUA8bZeMm61y78Q7VmoEZLMGzTi5CxhAVi1QfXkVHDdHX",
+        "url": "CampFire/CampFire.gltf",
+        "tags": [
+          "nature"
+        ],
+        "category": "nature",
+        "variations": [],
+        "contents": {
+          "CampFire/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "CampFire/CampFire.bin": "Qma8FvUyTMAQNXq2poetTZuukpQdLmuv2V56GDbboNvdsX",
+          "CampFire/CampFire.gltf": "QmUEMvudyD6kkEAXBwh5KYqy6kz33uLSGMskdkx5zuzMTn"
+        }
+      },
+      {
+        "id": "bench",
+        "name": "Bench",
+        "thumbnail": "https://content.decentraland.today/contents/QmTw1jNYxkvy9WsPzfLTDqUq1E3Rq2toH3khnAX68Nz4ku",
+        "url": "Tree/Bench.gltf",
+        "tags": [
+          "furniture"
+        ],
+        "category": "furniture",
+        "variations": [],
+        "contents": {
+          "Bench/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "Bench/Bench.bin": "QmZANtQJbmW5333d2Jf1niAN8KpX6QeTrHJnkjC6WMXRoT",
+          "Bench/Bench.gltf": "QmUi18Zi4PsCmjHHTcpmPqqxWtvAnM5MedvHU7Set41j4i"
+        }
+      },
+      {
+        "id": "deck",
+        "name": "Deck",
+        "thumbnail": "https://content.decentraland.today/contents/QmSUz9she2uzYr4mSgCyPfeiviLyXq814r1BbA6ufxe2Dy",
+        "url": "DeckChair/DeckChair.gltf",
+        "tags": [
+          "furniture"
+        ],
+        "category": "furniture",
+        "variations": [],
+        "contents": {
+          "DeckChair/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "DeckChair/DeckChair.bin": "QmQwNBEyCgDktr6H16aNV3cDP3WrMDYjWjrSnBsyZXHuvu",
+          "DeckChair/DeckChair.gltf": "QmRWe6bBGYRHHAZh29eQs89YwKWBCsfW11eEW5Krt3r7EY"
+        }
+      },
+      {
+        "id": "square-lightpole",
+        "name": "Square LightPole",
+        "thumbnail": "https://content.decentraland.today/contents/Qmc1M9LHX9VTfXsAuY923vxfQdot2HJ9qHZs6HYBHVdD4k",
+        "url": "Square_LightPole/Square_LightPole.gltf",
+        "tags": [
+          "city",
+          "square"
+        ],
         "category": "city",
-        "variations": []
+        "variations": [],
+        "contents": {
+          "Square_LightPole/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "Square_LightPole/Square_LightPole.bin": "QmeFzGMiiZPRQe1NsjaYGcM6WMaoyj1JzKy8sJtncrGGwk",
+          "Square_LightPole/Square_LightPole.gltf": "QmUqTYpEgjhHj9aZVUpmWjNo558Q6MiNzK7ddFAovPxUii"
+        }
+      },
+      {
+        "id": "woodbridge",
+        "name": "WoodBridge",
+        "thumbnail": "https://content.decentraland.today/contents/QmQ4E4ZbLL85qURtsFe5LL5L2oSyin3Rec91HpNFwAreRx",
+        "url": "WoodBridge/WoodBridge.gltf",
+        "tags": [
+          "city"
+        ],
+        "category": "city",
+        "variations": [],
+        "contents": {
+          "WoodBridge/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "WoodBridge/WoodBridge.bin": "QmS6AKpDMDegbL51cBQVDH6hdtLhM3sxpaP3biefBt13MQ",
+          "WoodBridge/WoodBridge.gltf": "QmWme3hzpdieRp9kD5RqM9LbBXanHXKhgA2FGeevTpC8yt"
+        }
       }
     ]
   }
