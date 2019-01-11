@@ -9,6 +9,7 @@ function* watchTreeUpdate() {
 }
 
 function* handleUpdate() {
+  // TODO: Type this Scene
   const scene = yield select(getCurrentScene)
 
   if (scene) {
@@ -18,6 +19,7 @@ function* handleUpdate() {
     const script = ecs + ownScript
     const mappings = {
       'game.js': `data:application/javascript;base64,${btoa(script)}`
+      // TODO: add asset mappings here
     }
 
     const msg = {
