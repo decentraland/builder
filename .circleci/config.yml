@@ -2,14 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8-browsers
+      # specify the version you desire here
+      - image: circleci/node:7.10
 
     working_directory: ~/repo
 
     steps:
-      - type: shell
-        name: Install System Dependencies
-
       - checkout
 
       # Download and cache dependencies
@@ -19,7 +17,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: npm install
+      - run: npm i
 
       - save_cache:
           paths:
@@ -27,12 +25,3 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: npm run lint
-
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
