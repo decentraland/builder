@@ -56,8 +56,6 @@ function* handleUpdate() {
       }
     }
 
-    console.log(msg)
-
     // @ts-ignore: Client api
     window['editor']['handleServerMessage'](msg)
   } else {
