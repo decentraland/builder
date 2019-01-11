@@ -6,7 +6,9 @@ import HorizontalCard from './HorizontalCard'
 
 export default class AssetCard extends React.PureComponent<Props> {
   static defaultProps = {
-    onClick: (asset: Asset) => {}
+    onClick: (asset: Asset) => {
+      /* noop */
+    }
   }
 
   handleOnClick = () => {
@@ -15,7 +17,7 @@ export default class AssetCard extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isHorizontal, asset, onClick } = this.props
+    const { isHorizontal, asset } = this.props
     return <div onClick={this.handleOnClick}>{isHorizontal ? <HorizontalCard asset={asset} /> : <VerticalCard asset={asset} />}</div>
   }
 }

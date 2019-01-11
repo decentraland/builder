@@ -13,7 +13,9 @@ const DEFAULT_COLUMN_COUNT = 3
 export default class ItemDrawer extends React.PureComponent<Props, State> {
   static defaultProps = {
     columnCount: DEFAULT_COLUMN_COUNT,
-    onClick: (asset: Asset) => {}
+    onClick: () => {
+      /* noop */
+    }
   }
 
   state = {
