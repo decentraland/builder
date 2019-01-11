@@ -19,21 +19,17 @@ function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
   try {
     // TODO: This should fetch a list of asset packs in the future, this is just a mock for now
     const remoteAssetPack: RemoteAssetPack = yield call(() => api.fetchAssetPack('packv1.json'))
-    const responseAssetPacks = [remoteAssetPack]
+    const remoteAssetPacks = [remoteAssetPack]
 
     const assetPacks: FullAssetPack[] = []
 
     // Generate unique uuids for internal use
-    for (const remoteAssetPack of responseAssetPacks) {
-      const assetPackId = uuidv4()
-
+    for (const remoteAssetPack of remoteAssetPacks) {
       const assetPack: FullAssetPack = {
         ...remoteAssetPack,
-        id: uuidv4(),
-
         assets: remoteAssetPack.assets.map(asset => ({
           ...asset,
-          assetPackId,
+          assetPackId: remoteAssetPack.id,
           id: uuidv4()
         }))
       }
