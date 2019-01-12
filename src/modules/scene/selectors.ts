@@ -3,7 +3,7 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { ComponentDefinition, ComponentType, SceneDefinition } from './types'
+import { ComponentDefinition, ComponentType, SceneDefinition, AnyComponent } from './types'
 
 export const getState: (state: RootState) => SceneState = state => state.scene
 
@@ -18,6 +18,11 @@ export const getCurrentScene = createSelector<RootState, Project, SceneState['da
   }
 )
 
+export const getComponents = createSelector<RootState, SceneDefinition, Record<string, AnyComponent>>(
+  getCurrentScene,
+  scene => scene.components
+)
+
 export const getGLTFId = (src: string) => (state: RootState) => {
   const componentData = getCurrentScene(state).components
 
@@ -27,3 +32,18 @@ export const getGLTFId = (src: string) => (state: RootState) => {
     return null
   }
 }
+
+export const getGLTFComponents = createSelector<RootState, Record<string, AnyComponent>, ComponentDefinition<ComponentType.GLTFShape>[]>(
+  getComponents,
+  components => {
+    const out: ComponentDefinition<ComponentType.GLTFShape>[] = []
+
+    for (let component of Object.values(components)) {
+      if (component.type === ComponentType.GLTFShape) {
+        out.push(component as ComponentDefinition<ComponentType.GLTFShape>)
+      }
+    }
+
+    return out
+  }
+)

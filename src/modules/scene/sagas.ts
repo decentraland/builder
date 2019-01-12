@@ -5,10 +5,10 @@ import { getGLTFId, getCurrentScene } from './selectors'
 import { ComponentType } from './types'
 
 function* watchAddAsset() {
-  yield takeLatest(ADD_ASSET, handleAddItem)
+  yield takeLatest(ADD_ASSET, handleAddAsset)
 }
 
-function* handleAddItem(action: AddAssetAction) {
+function* handleAddAsset(action: AddAssetAction) {
   const { asset, position } = action.payload
   const scene = yield select(getCurrentScene)
 
