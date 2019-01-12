@@ -66,7 +66,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         </Header>
         {categories.map((category, index) => (
           <Drawer key={index} label={category.name}>
-            <Grid columns={columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
+            <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
               {this.renderGrid(category.assets)}
             </Grid>
           </Drawer>
