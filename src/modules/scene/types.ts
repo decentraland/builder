@@ -1,10 +1,10 @@
+import { Vector3 } from 'modules/common/types'
+
 export type EntityDefinition = {
   id: string
   components: string[] // array of IDs pointing to components
   // TODO: handle children?
 }
-
-import { Vector3 } from 'modules/common/types'
 
 export enum ComponentType {
   GLTFShape = 'GLTFShape',
