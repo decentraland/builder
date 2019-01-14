@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { AssetState } from 'modules/asset/reducer'
 import { ComponentDefinition, ComponentType } from 'modules/scene/types'
-import { getGLTFComponents } from 'modules/scene/selectors'
+import { getComponentByType } from 'modules/scene/selectors'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
 
@@ -18,7 +18,7 @@ export const getAssetMappings = createSelector<
   AssetState['data'],
   Record<string, string>
 >(
-  getGLTFComponents,
+  getComponentByType<ComponentType.GLTFShape>(ComponentType.GLTFShape),
   getData,
   (components, assets) => {
     let mappings: Record<string, string> = {}
