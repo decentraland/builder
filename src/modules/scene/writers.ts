@@ -3,13 +3,13 @@ import { ComponentDefinition, ComponentType, AnyComponent, EntityDefinition } fr
 /**
  * Generates a script where all GLTFShapes are instanced only once and can be refenced by their `src`
  */
-export function writeGLTFComponents(components: Record<string, ComponentDefinition<ComponentType.GLTFShape>>): string {
+export function writeGLTFComponents(components: Record<string, AnyComponent>): string {
   const gltfLookup: string[] = []
   let out = 'var gltfLookup = {\n'
 
   for (let key in components) {
-    const component = components[key]
-    if (component.type === ComponentType.GLTFShape) {
+    if (components[key].type === ComponentType.GLTFShape) {
+      const component = components[key] as ComponentDefinition<ComponentType.GLTFShape>
       const { src } = component.data
       if (!gltfLookup.includes(src)) {
         gltfLookup.push(src)
