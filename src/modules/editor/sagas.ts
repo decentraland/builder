@@ -1,12 +1,34 @@
-import { takeLatest, select } from 'redux-saga/effects'
+import { takeLatest, select, put } from 'redux-saga/effects'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
 import { ADD_ENTITY } from 'modules/scene/actions'
 import { getAssetMappings } from 'modules/asset/selectors'
+import { BIND_EDITOR_KEYBOARD_SHORTCUTS, UNBIND_KEYBOARD_SHORTCUTS } from './actions'
+import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/action'
+import { KeyboardShortcut } from 'modules/keyboard/types'
 const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
 
 export function* editorSaga() {
+  yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
+  yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(ADD_ENTITY, handleUpdate)
+}
+
+function* handleBindEditorKeyboardShortcuts() {
+  const shortcuts = getKeyboardShortcuts()
+  yield put(bindKeyboardShortcuts(shortcuts))
+}
+
+function* handleUnbindEditorKeyboardShortcuts() {
+  const shortcuts = getKeyboardShortcuts()
+  yield put(unbindKeyboardShortcuts(shortcuts))
+}
+
+function getKeyboardShortcuts(): KeyboardShortcut[] {
+  return [
+    { combination: ['cmd+z', 'ctrl+z'], callback: () => false },
+    { combination: ['cmd+shift+z', 'ctrl+shift+z'], callback: () => false }
+  ]
 }
 
 function* handleUpdate() {

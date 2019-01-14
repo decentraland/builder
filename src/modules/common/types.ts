@@ -1,4 +1,4 @@
-import { Reducer, AnyAction, Store } from 'redux'
+import { Reducer, Store } from 'redux'
 import { RouterState } from 'connected-react-router'
 import { LocationState } from 'decentraland-dapps/dist/modules/location/reducer'
 import { TranslationState } from 'decentraland-dapps/dist/modules/translation/reducer'
@@ -27,7 +27,3 @@ export type RootState = {
 
 export type RootStore = Store<RootState>
 export type RootReducer = Reducer<RootState>
-
-export interface RootDispatch<A = AnyAction> {
-  (action: A): A
-}
