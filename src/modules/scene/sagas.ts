@@ -1,10 +1,10 @@
 import * as uuid from 'uuid'
-import { takeLatest, put, all, select } from 'redux-saga/effects'
+import { takeLatest, put, select } from 'redux-saga/effects'
 import { ADD_ASSET, AddAssetAction, addComponent, addEntity } from 'modules/scene/actions'
 import { getGLTFId, getCurrentScene } from './selectors'
 import { ComponentType } from './types'
 
-function* watchAddAsset() {
+export function* sceneSaga() {
   yield takeLatest(ADD_ASSET, handleAddAsset)
 }
 
@@ -48,8 +48,4 @@ function* handleAddAsset(action: AddAssetAction) {
       components: [gltfId, transformId]
     })
   )
-}
-
-export function* sceneSaga() {
-  yield all([watchAddAsset()])
 }

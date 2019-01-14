@@ -1,11 +1,11 @@
-import { all, takeLatest, select } from 'redux-saga/effects'
+import { takeLatest, select } from 'redux-saga/effects'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
 import { ADD_ENTITY } from 'modules/scene/actions'
 import { getAssetMappings } from 'modules/asset/selectors'
 const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
 
-function* watchTreeUpdate() {
+export function* editorSaga() {
   yield takeLatest(ADD_ENTITY, handleUpdate)
 }
 
@@ -61,8 +61,4 @@ function* handleUpdate() {
   } else {
     // TODO: dispatch a proper 404 error message
   }
-}
-
-export function* editorSaga() {
-  yield all([watchTreeUpdate()])
 }
