@@ -10,11 +10,6 @@ export function* keyboardSaga() {
 function handleBindKeyboardShortcuts(action: BindKeybardShortcuts) {
   for (const shortcut of action.payload.shortcuts) {
     const { combination, callback, action } = shortcut
-    console.log('bind', {
-      combination,
-      callback,
-      action
-    })
     Mousetrap.bind(combination, callback, action)
   }
 }

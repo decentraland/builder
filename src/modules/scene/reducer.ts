@@ -1,14 +1,17 @@
+import undoable, { StateWithHistory } from 'redux-undo'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SceneDefinition } from './types'
 import { CreateSceneAction, CREATE_SCENE, AddEntityAction, AddComponentAction, ADD_ENTITY, ADD_COMPONENT } from './actions'
-
-export type SceneReducerAction = CreateSceneAction | AddEntityAction | AddComponentAction
 
 export type SceneState = {
   data: Record<string, SceneDefinition>
   loading: LoadingState
   error: string | null
 }
+export type UndoableSceneState = StateWithHistory<SceneState>
+
+export type SceneReducerAction = CreateSceneAction | AddEntityAction | AddComponentAction
 
 const INITIAL_STATE: SceneState = {
   data: {
@@ -30,7 +33,7 @@ const INITIAL_STATE: SceneState = {
   error: null
 }
 
-export const sceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReducerAction): SceneState => {
+const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReducerAction): SceneState => {
   switch (action.type) {
     case CREATE_SCENE: {
       const { scene } = action.payload
@@ -79,3 +82,11 @@ export const sceneReducer = (state: SceneState = INITIAL_STATE, action: SceneRed
       return state
   }
 }
+
+// This is typed `as any` because undoable uses AnyAction from redux which doesn't account for the payload we use
+// so types don't match
+export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
+  limit: 10,
+  undoType: EDITOR_UNDO,
+  redoType: EDITOR_REDO
+})

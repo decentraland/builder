@@ -10,7 +10,7 @@ import { AssetState } from 'modules/asset/reducer'
 import { UndoableEditorState } from 'modules/editor/reducer'
 import { CategoryState } from 'modules/category/reducer'
 import { ProjectState } from 'modules/project/reducer'
-import { SceneState } from 'modules/scene/reducer'
+import { UndoableSceneState } from 'modules/scene/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -24,7 +24,7 @@ export type RootState = {
   editor: UndoableEditorState
   category: CategoryState
   project: ProjectState
-  scene: SceneState
+  scene: UndoableSceneState
   router: RouterState
 }
 
