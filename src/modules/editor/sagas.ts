@@ -9,6 +9,8 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import {
   updateEditor,
   UpdateEditorAction,
+  editorUndo,
+  editorRedo,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
   UNBIND_KEYBOARD_SHORTCUTS,
   START_EDITOR,
@@ -22,6 +24,7 @@ import { SceneDefinition } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene } from 'modules/editor/types'
 import { EditorState } from 'modules/editor/reducer'
+import { store } from 'modules/common/store'
 import { getEditorScene } from './utils'
 const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
 
@@ -45,10 +48,17 @@ function* handleUnbindEditorKeyboardShortcuts() {
   yield put(unbindKeyboardShortcuts(shortcuts))
 }
 
+// This function dispatches actions to the store, but uses `store.dispatch` to scape generators
 function getKeyboardShortcuts(): KeyboardShortcut[] {
   return [
-    { combination: ['cmd+z', 'ctrl+z'], callback: () => false },
-    { combination: ['cmd+shift+z', 'ctrl+shift+z'], callback: () => false }
+    {
+      combination: ['command+z', 'ctrl+z'],
+      callback: () => store.dispatch(editorUndo())
+    },
+    {
+      combination: ['command+shift+z', 'ctrl+shift+z'],
+      callback: () => store.dispatch(editorRedo())
+    }
   ]
 }
 

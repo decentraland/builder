@@ -1,5 +1,5 @@
 export type KeyboardShortcut = BaseKeyboardShortcut & {
-  callback: (event: ExtendedKeyboardEvent, combination: string) => boolean | void
+  callback: (event: ExtendedKeyboardEvent, combination: string) => any
 }
 
 export type BaseKeyboardShortcut = {

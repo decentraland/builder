@@ -1,7 +1,6 @@
 import { createStore, compose, applyMiddleware } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
-import { ActionCreators } from 'redux-undo'
 
 import createHistory from 'history/createBrowserHistory'
 import { env } from 'decentraland-commons'
@@ -36,10 +35,6 @@ export function getState() {
 if (env.isDevelopment()) {
   // tslint:disable-next-line:semicolon
   ;(window as any).getState = store.getState
-  ;(window as any).undo = () => store.dispatch({ type: 'Editor undo' })
-  ;(window as any).redo = () => store.dispatch({ type: 'Editor redo' })
-  ;(window as any).undo2 = () => store.dispatch({ type: ActionCreators.undo() })
-  ;(window as any).redo2 = () => store.dispatch({ type: ActionCreators.redo() })
 }
 
 export { store, history }
