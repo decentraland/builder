@@ -1,21 +1,14 @@
 import { connect } from 'react-redux'
 
-import { loadAssetPacksRequest, LoadAssetPacksRequestAction } from 'modules/assetPack/actions'
-import {
-  bindEditorKeyboardShortcuts,
-  unbindEditorKeyboardShortcuts,
-  BindEditorKeybardShortcuts,
-  UnbindEditorKeybardShortcuts
-} from 'modules/editor/actions'
-import { MapDispatchProps } from './EditorPage.types'
+import { loadAssetPacksRequest } from 'modules/assetPack/actions'
+import { bindEditorKeyboardShortcuts, unbindEditorKeyboardShortcuts, startEditor } from 'modules/editor/actions'
+import { MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
-import { Dispatch } from 'redux'
 
 const mapState = () => ({})
 
-const mapDispatch = (
-  dispatch: Dispatch<LoadAssetPacksRequestAction | BindEditorKeybardShortcuts | UnbindEditorKeybardShortcuts>
-): MapDispatchProps => ({
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onStartEditor: () => dispatch(startEditor()),
   onLoadAssetPacks: () => dispatch(loadAssetPacksRequest()),
   onBindKeyboardShortcuts: () => dispatch(bindEditorKeyboardShortcuts()),
   onUnbindKeyboardShortcuts: () => dispatch(unbindEditorKeyboardShortcuts())

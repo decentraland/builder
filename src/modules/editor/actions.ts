@@ -7,7 +7,7 @@ export const BIND_EDITOR_KEYBOARD_SHORTCUTS = 'Bind editor keyboard shortcuts'
 
 export const bindEditorKeyboardShortcuts = () => action(BIND_EDITOR_KEYBOARD_SHORTCUTS, {})
 
-export type BindEditorKeybardShortcuts = ReturnType<typeof bindEditorKeyboardShortcuts>
+export type BindEditorKeybardShortcutsAction = ReturnType<typeof bindEditorKeyboardShortcuts>
 
 // Unbind keyboard shortcuts
 
@@ -15,12 +15,31 @@ export const UNBIND_KEYBOARD_SHORTCUTS = 'Unbind editor keyboard shortcuts'
 
 export const unbindEditorKeyboardShortcuts = () => action(UNBIND_KEYBOARD_SHORTCUTS, {})
 
-export type UnbindEditorKeybardShortcuts = ReturnType<typeof unbindEditorKeyboardShortcuts>
+export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorKeyboardShortcuts>
+
+// Start editor
+
+export const START_EDITOR = 'Start editor'
+
+export const startEditor = () => action(START_EDITOR, {})
+
+export type StartEditorAction = ReturnType<typeof startEditor>
 
 // Update editor
 
 export const UPDATE_EDITOR = 'Update editor'
 
-export const updateEditor = (scene: EditorScene) => action(UPDATE_EDITOR, { scene })
+export const updateEditor = (sceneId: string, scene: EditorScene) => action(UPDATE_EDITOR, { sceneId, scene })
 
 export type UpdateEditorAction = ReturnType<typeof updateEditor>
+
+// Undo/Redo
+
+export const EDITOR_UNDO = 'Editor undo'
+export const EDITOR_REDO = 'Editor redo'
+
+export const editorUndo = () => action(EDITOR_UNDO, {})
+export const editorRedo = () => action(EDITOR_REDO, {})
+
+export type EditorUndoAction = ReturnType<typeof editorUndo>
+export type EditorRedoAction = ReturnType<typeof editorRedo>

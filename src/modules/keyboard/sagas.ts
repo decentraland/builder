@@ -1,6 +1,6 @@
 import { takeLatest } from 'redux-saga/effects'
 import Mousetrap from 'mousetrap'
-import { BIND_KEYBOARD_SHORTCUTS, BindKeybardShortcuts, UNBIND_KEYBOARD_SHORTCUTS, UnbindKeybardShortcuts } from './action'
+import { BIND_KEYBOARD_SHORTCUTS, BindKeybardShortcuts, UNBIND_KEYBOARD_SHORTCUTS, UnbindKeybardShortcuts } from 'modules/keyboard/actions'
 
 export function* keyboardSaga() {
   yield takeLatest(BIND_KEYBOARD_SHORTCUTS, handleBindKeyboardShortcuts)

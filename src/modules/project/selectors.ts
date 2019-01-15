@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/selectors'
-import { Project } from './types'
+import { Project } from 'modules/project/types'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
 

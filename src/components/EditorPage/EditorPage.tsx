@@ -8,6 +8,7 @@ import './EditorPage.css'
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
+    this.props.onStartEditor()
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
   }
