@@ -1,11 +1,3 @@
-.Icon {
-  background-image: url('');
-  background-position: 0 0;
-}
-
-.Icon.list {
-  background-position: 0 0;
-}
-.Icon.list.active {
-  background-position: 0 0; /* red */
+.Icon:before {
+  content: '';
 }

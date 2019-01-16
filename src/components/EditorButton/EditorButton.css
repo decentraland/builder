@@ -7,6 +7,9 @@
   color: #fff;
   display: inline-block;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .EditorButton:hover {
   background: var(--purplish-grey);
@@ -14,10 +17,4 @@
 
 .EditorButton.active {
   background: rgba(var(--purplish-grey-raw), 0.32);
-}
-
-.EditorButton .centered-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

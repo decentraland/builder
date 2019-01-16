@@ -27,6 +27,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     this.props.onClick(asset)
   }
 
+  handleOnDrawerTypeClick = () => {
+    this.setState({
+      isList: !this.state.isList
+    })
+  }
+
   renderGrid(assets: Asset[]) {
     const { isList } = this.state
     const columnCount = this.getColumnCount()
@@ -65,8 +71,8 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         <Header size="medium" className="title">
           {t('itemDrawer.title')}{' '}
           <div className="item-drawer-type-buttons">
-            <EditorButton name="grid" />
-            <EditorButton name="list" />
+            <EditorButton name="grid" isActive={!isList} onClick={isList ? this.handleOnDrawerTypeClick : undefined} />
+            <EditorButton name="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />
           </div>
         </Header>
 

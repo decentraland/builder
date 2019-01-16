@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import { Props } from './Icon.types'
 import './Icon.css'
+import './sprite.css'
 
 export default class Icon extends React.PureComponent<Props> {
   static defaultProps = {
@@ -10,6 +11,7 @@ export default class Icon extends React.PureComponent<Props> {
 
   render() {
     const { name, isActive } = this.props
-    return <div className={`Icon ${name} ${isActive ? 'active' : ''}`}>{name}</div>
+    const iconName = isActive ? `${name}-active` : name
+    return <div className={`Icon ${iconName}`} />
   }
 }

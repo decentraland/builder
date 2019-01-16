@@ -79,7 +79,7 @@
     "test": "node scripts/test.js",
     "postinstall": "node scripts/postinstall.js",
     "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
-    "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix .%s --css-render-css -p 10 src/icons/*.svg"
+    "bundle:svg": "npx svg-sprite -D src/components/EditorButton/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg"
   },
   "eslintConfig": {
     "extends": "react-app"
