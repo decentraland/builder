@@ -82,8 +82,6 @@ function* handleApplyEditorState() {
     const assetMappings: AssetMappings = yield select(getAssetMappings)
     const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
 
-    console.log(Object.keys(assetMappings).map(k => k.split('/').pop()))
-
     yield handleUpdateEditor(updateEditor(scene.id, newScene))
   }
 }
