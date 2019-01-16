@@ -1,7 +1,7 @@
 .ActionButton {
   width: 40px;
   height: 24px;
-  font-size: 1em;
+  font-size: 0.5em;
   border-radius: 4px;
   background: rgba(var(--purplish-grey-raw), 0.64);
   color: #fff;
@@ -14,4 +14,10 @@
 
 .ActionButton.active {
   background: rgba(var(--purplish-grey-raw), 0.32);
+}
+
+.ActionButton .centered-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

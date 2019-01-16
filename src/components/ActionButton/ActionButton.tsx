@@ -15,7 +15,9 @@ export default class ActionButton extends React.PureComponent<Props> {
     const { name, isActive, onClick } = this.props
     return (
       <div className={`ActionButton ${isActive ? 'active' : ''}`} onClick={onClick}>
-        <Icon name={name} isActive={isActive} />
+        <div className="centered-container">
+          <Icon name={name} isActive={isActive} />
+        </div>
       </div>
     )
   }
