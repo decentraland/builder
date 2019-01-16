@@ -1,0 +1,22 @@
+import * as React from 'react'
+
+import Icon from './Icon'
+import { Props } from './ActionButton.types'
+import './ActionButton.css'
+
+export default class ActionButton extends React.PureComponent<Props> {
+  static defaultProps = {
+    isActive: false,
+    onClick: (_: React.MouseEvent<HTMLElement>) => {
+      /* noop */
+    }
+  }
+  render() {
+    const { name, isActive, onClick } = this.props
+    return (
+      <div className={`ActionButton ${isActive ? 'active' : ''}`} onClick={onClick}>
+        <Icon name={name} isActive={isActive} />
+      </div>
+    )
+  }
+}

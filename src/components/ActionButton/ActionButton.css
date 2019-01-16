@@ -1,0 +1,17 @@
+.ActionButton {
+  width: 40px;
+  height: 24px;
+  font-size: 1em;
+  border-radius: 4px;
+  background: rgba(var(--purplish-grey-raw), 0.64);
+  color: #fff;
+  display: inline-block;
+  cursor: pointer;
+}
+.ActionButton:hover {
+  background: var(--purplish-grey);
+}
+
+.ActionButton.active {
+  background: rgba(var(--purplish-grey-raw), 0.32);
+}

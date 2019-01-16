@@ -7,6 +7,7 @@ import AssetCard from 'components/AssetCard'
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
+import ActionButton from 'components/ActionButton'
 
 const DEFAULT_COLUMN_COUNT = 3
 
@@ -62,8 +63,13 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return (
       <div className="ItemDrawer">
         <Header size="medium" className="title">
-          {t('itemDrawer.title')}
+          {t('itemDrawer.title')}{' '}
+          <div className="item-drawer-type-buttons">
+            <ActionButton name="grid" />
+            <ActionButton name="list" />
+          </div>
         </Header>
+
         {categories.map((category, index) => (
           <Drawer key={index} label={category.name}>
             <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>

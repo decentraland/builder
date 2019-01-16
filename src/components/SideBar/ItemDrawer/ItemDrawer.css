@@ -22,3 +22,13 @@
 .ItemDrawer .ui.grid.asset-grid.item-grid .row .column:nth-child(3) {
   padding-right: 0px;
 }
+
+.ItemDrawer .item-drawer-type-buttons .ActionButton:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ItemDrawer .item-drawer-type-buttons .ActionButton:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
