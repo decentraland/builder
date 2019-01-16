@@ -1,6 +1,18 @@
 import { EditorScene } from 'modules/editor/types'
+import { SceneDefinition } from 'modules/scene/types'
+import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
+import { AssetMappings } from 'modules/asset/types'
+const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
 
-export function getEditorScene(title: string, mappings: Record<string, string> = {}): EditorScene {
+export function getEditorScene(title: string, scene: SceneDefinition, assetMappings: AssetMappings): EditorScene {
+  const { components, entities } = scene
+  const ownScript = writeGLTFComponents(components) + writeEntities(entities, components)
+  const script = ecs + ownScript
+  const mappings = {
+    'game.js': `data:application/javascript;base64,${btoa(script)}`,
+    ...assetMappings
+  }
+
   return {
     display: {
       title

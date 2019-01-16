@@ -7,7 +7,6 @@ import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
-import { UndoableEditorState } from 'modules/editor/reducer'
 import { CategoryState } from 'modules/category/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
@@ -21,7 +20,6 @@ export type RootState = {
   wallet: WalletState
   assetPack: AssetPackState
   asset: AssetState
-  editor: UndoableEditorState
   category: CategoryState
   project: ProjectState
   scene: UndoableSceneState

@@ -2,9 +2,7 @@ import { takeLatest, select, put } from 'redux-saga/effects'
 
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getData } from 'modules/editor/selectors'
-import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
-import { ADD_ENTITY } from 'modules/scene/actions'
+import { PROVISION_SCENE } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import {
   updateEditor,
@@ -22,16 +20,15 @@ import { getCurrentProject } from 'modules/project/selectors'
 import { KeyboardShortcut } from 'modules/keyboard/types'
 import { SceneDefinition } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene } from 'modules/editor/types'
-import { EditorState } from 'modules/editor/reducer'
+import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
 import { store } from 'modules/common/store'
 import { getEditorScene } from './utils'
-const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
+import { AssetMappings } from 'modules/asset/types'
 
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
   yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
-  yield takeLatest(ADD_ENTITY, handleAddEntity)
+  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
   yield takeLatest(START_EDITOR, handleApplyEditorState)
   yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
   yield takeLatest(EDITOR_REDO, handleApplyEditorState)
@@ -62,23 +59,13 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
   ]
 }
 
-function* handleAddEntity() {
+function* handleProvisionScene() {
   const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
-    const assetMappings = yield select(getAssetMappings)
     const project: Project = yield select(getCurrentProject)
-
-    const entities = scene.entities
-    const components = scene.components
-    const ownScript = writeGLTFComponents(components) + writeEntities(entities, components)
-    const script = ecs + ownScript
-    const mappings = {
-      'game.js': `data:application/javascript;base64,${btoa(script)}`,
-      ...assetMappings
-    }
-
-    const newScene: EditorScene = getEditorScene(project.title, mappings)
+    const assetMappings: AssetMappings = yield select(getAssetMappings)
+    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
 
     yield put(updateEditor(scene.id, newScene))
   } else {
@@ -91,26 +78,32 @@ function* handleApplyEditorState() {
   const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
-    const editorScenes: EditorState['data'] = yield select(getData)
-    const editorScene = editorScenes[scene.id]
-    yield handleUpdateEditor(updateEditor(scene.id, editorScene))
+    const project: Project = yield select(getCurrentProject)
+    const assetMappings: AssetMappings = yield select(getAssetMappings)
+    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
+
+    console.log(Object.keys(assetMappings).map(k => k.split('/').pop()))
+
+    yield handleUpdateEditor(updateEditor(scene.id, newScene))
   }
 }
 
 function* handleUpdateEditor(action: UpdateEditorAction) {
-  let scene: EditorScene
+  let payloadScene: EditorPayloadScene
 
   if (action.payload.scene) {
-    scene = action.payload.scene
+    payloadScene = action.payload.scene
   } else {
+    const scene: SceneDefinition = yield select(getCurrentScene)
     const project: Project = yield select(getCurrentProject)
-    scene = getEditorScene(project.title)
+    const assetMappings: AssetMappings = {}
+    payloadScene = getEditorScene(project.title, scene, assetMappings)
   }
 
   const msg = {
     type: 'update',
     payload: {
-      scene
+      scene: payloadScene
     }
   }
 

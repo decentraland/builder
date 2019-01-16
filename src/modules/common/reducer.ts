@@ -9,7 +9,6 @@ import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/
 import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
-import { editorReducer as editor } from 'modules/editor/reducer'
 import { categoryReducer as category } from 'modules/category/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
@@ -26,7 +25,6 @@ export function createRootReducer(history: History) {
       category,
       project,
       scene,
-      editor,
       router: connectRouter(history)
     })
   )
