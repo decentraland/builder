@@ -7,7 +7,7 @@ import AssetCard from 'components/AssetCard'
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
-import ActionButton from 'components/ActionButton'
+import EditorButton from 'components/EditorButton'
 
 const DEFAULT_COLUMN_COUNT = 3
 
@@ -65,8 +65,8 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         <Header size="medium" className="title">
           {t('itemDrawer.title')}{' '}
           <div className="item-drawer-type-buttons">
-            <ActionButton name="grid" />
-            <ActionButton name="list" />
+            <EditorButton name="grid" />
+            <EditorButton name="list" />
           </div>
         </Header>
 

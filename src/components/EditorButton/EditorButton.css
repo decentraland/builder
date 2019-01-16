@@ -1,4 +1,4 @@
-.ActionButton {
+.EditorButton {
   width: 40px;
   height: 24px;
   font-size: 0.5em;
@@ -8,15 +8,15 @@
   display: inline-block;
   cursor: pointer;
 }
-.ActionButton:hover {
+.EditorButton:hover {
   background: var(--purplish-grey);
 }
 
-.ActionButton.active {
+.EditorButton.active {
   background: rgba(var(--purplish-grey-raw), 0.32);
 }
 
-.ActionButton .centered-container {
+.EditorButton .centered-container {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -23,12 +23,12 @@
   padding-right: 0px;
 }
 
-.ItemDrawer .item-drawer-type-buttons .ActionButton:first-child {
+.ItemDrawer .item-drawer-type-buttons .EditorButton:first-child {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-.ItemDrawer .item-drawer-type-buttons .ActionButton:last-child {
+.ItemDrawer .item-drawer-type-buttons .EditorButton:last-child {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
