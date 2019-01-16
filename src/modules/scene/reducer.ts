@@ -1,8 +1,8 @@
 import undoable, { StateWithHistory } from 'redux-undo'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
-import { SceneDefinition } from './types'
-import { CreateSceneAction, CREATE_SCENE, ProvisionSceneAction, PROVISION_SCENE } from './actions'
+import { SceneDefinition } from 'modules/scene/types'
+import { CreateSceneAction, CREATE_SCENE, ProvisionSceneAction, PROVISION_SCENE } from 'modules/scene/actions'
 
 export type SceneState = {
   data: Record<string, SceneDefinition>
@@ -50,6 +50,8 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
 
     case PROVISION_SCENE: {
       const { sceneId, components, entities } = action.payload
+      const currentComponents = { ...state.data[sceneId].components }
+      const currentEntities = { ...state.data[sceneId].entities }
 
       return {
         ...state,
@@ -57,10 +59,8 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
           ...state.data,
           [sceneId]: {
             ...state.data[sceneId],
-            components: components.reduce((acc, components) => ({ ...acc, [components.id]: { ...components } }), {
-              ...state.data[sceneId].components
-            }),
-            entities: entities.reduce((acc, entity) => ({ ...acc, [entity.id]: { ...entity } }), { ...state.data[sceneId].entities })
+            components: components.reduce((acc, components) => ({ ...acc, [components.id]: { ...components } }), currentComponents),
+            entities: entities.reduce((acc, entity) => ({ ...acc, [entity.id]: { ...entity } }), currentEntities)
           }
         }
       }
