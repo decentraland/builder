@@ -5,7 +5,7 @@ import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { ComponentDefinition, ComponentType, SceneDefinition, AnyComponent } from './types'
 
-export const getState: (state: RootState) => SceneState = state => state.scene
+export const getState: (state: RootState) => SceneState = state => state.scene.present
 
 export const getData: (state: RootState) => SceneState['data'] = state => getState(state).data
 

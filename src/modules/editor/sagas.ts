@@ -1,68 +1,110 @@
-import { all, takeLatest, select } from 'redux-saga/effects'
-import { getCurrentScene } from 'modules/scene/selectors'
-import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
-import { ADD_ENTITY } from 'modules/scene/actions'
-import { getAssetMappings } from 'modules/asset/selectors'
-const ecs = require('raw-loader!decentraland-ecs/dist/src/index')
+import { takeLatest, select, put } from 'redux-saga/effects'
 
-function* watchTreeUpdate() {
-  yield takeLatest(ADD_ENTITY, handleUpdate)
+import { getCurrentScene } from 'modules/scene/selectors'
+import { getAssetMappings } from 'modules/asset/selectors'
+import { PROVISION_SCENE } from 'modules/scene/actions'
+import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
+import {
+  updateEditor,
+  UpdateEditorAction,
+  editorUndo,
+  editorRedo,
+  BIND_EDITOR_KEYBOARD_SHORTCUTS,
+  UNBIND_KEYBOARD_SHORTCUTS,
+  START_EDITOR,
+  EDITOR_UNDO,
+  EDITOR_REDO,
+  UPDATE_EDITOR
+} from 'modules/editor/actions'
+import { getCurrentProject } from 'modules/project/selectors'
+import { KeyboardShortcut } from 'modules/keyboard/types'
+import { SceneDefinition } from 'modules/scene/types'
+import { Project } from 'modules/project/types'
+import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
+import { store } from 'modules/common/store'
+import { getEditorScene } from './utils'
+import { AssetMappings } from 'modules/asset/types'
+
+export function* editorSaga() {
+  yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
+  yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
+  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
+  yield takeLatest(START_EDITOR, handleApplyEditorState)
+  yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
+  yield takeLatest(EDITOR_REDO, handleApplyEditorState)
+  yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
 }
 
-function* handleUpdate() {
-  // TODO: Type this Scene
-  const scene = yield select(getCurrentScene)
-  const assetMappings = yield select(getAssetMappings)
+function* handleBindEditorKeyboardShortcuts() {
+  const shortcuts = getKeyboardShortcuts()
+  yield put(bindKeyboardShortcuts(shortcuts))
+}
+
+function* handleUnbindEditorKeyboardShortcuts() {
+  const shortcuts = getKeyboardShortcuts()
+  yield put(unbindKeyboardShortcuts(shortcuts))
+}
+
+// This function dispatches actions to the store, but uses `store.dispatch` to scape generators
+function getKeyboardShortcuts(): KeyboardShortcut[] {
+  return [
+    {
+      combination: ['command+z', 'ctrl+z'],
+      callback: () => store.dispatch(editorUndo())
+    },
+    {
+      combination: ['command+shift+z', 'ctrl+shift+z'],
+      callback: () => store.dispatch(editorRedo())
+    }
+  ]
+}
+
+function* handleProvisionScene() {
+  const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
-    const entities = scene.entities
-    const components = scene.components
-    const ownScript = writeGLTFComponents(components) + writeEntities(entities, components)
-    const script = ecs + ownScript
-    const mappings = {
-      'game.js': `data:application/javascript;base64,${btoa(script)}`,
-      ...assetMappings
-    }
+    const project: Project = yield select(getCurrentProject)
+    const assetMappings: AssetMappings = yield select(getAssetMappings)
+    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
 
-    const msg = {
-      type: 'update',
-      payload: {
-        scene: {
-          display: {
-            title: 'Project' // TODO use project name
-          },
-          owner: 'Decentraland',
-          contact: {
-            name: 'Decentraland',
-            email: 'support@decentraland.org'
-          },
-          scene: {
-            parcels: ['0,0'],
-            base: '0,0'
-          },
-          communications: {
-            type: 'webrtc',
-            signalling: 'https://rendezvous.decentraland.org'
-          },
-          policy: {
-            fly: true,
-            voiceEnabled: true,
-            blacklist: [],
-            teleportPosition: '0,0,0'
-          },
-          main: 'game.js',
-          _mappings: mappings
-        }
-      }
-    }
-
-    // @ts-ignore: Client api
-    window['editor']['handleServerMessage'](msg)
+    yield put(updateEditor(scene.id, newScene))
   } else {
     // TODO: dispatch a proper 404 error message
+    console.warn('Invalid scene')
   }
 }
 
-export function* editorSaga() {
-  yield all([watchTreeUpdate()])
+function* handleApplyEditorState() {
+  const scene: SceneDefinition = yield select(getCurrentScene)
+
+  if (scene) {
+    const project: Project = yield select(getCurrentProject)
+    const assetMappings: AssetMappings = yield select(getAssetMappings)
+    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
+
+    yield handleUpdateEditor(updateEditor(scene.id, newScene))
+  }
+}
+
+function* handleUpdateEditor(action: UpdateEditorAction) {
+  let payloadScene: EditorPayloadScene
+
+  if (action.payload.scene) {
+    payloadScene = action.payload.scene
+  } else {
+    const scene: SceneDefinition = yield select(getCurrentScene)
+    const project: Project = yield select(getCurrentProject)
+    const assetMappings: AssetMappings = {}
+    payloadScene = getEditorScene(project.title, scene, assetMappings)
+  }
+
+  const msg = {
+    type: 'update',
+    payload: {
+      scene: payloadScene
+    }
+  }
+
+  // @ts-ignore: Client api
+  window['editor']['handleServerMessage'](msg)
 }

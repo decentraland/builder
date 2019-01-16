@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 
-import { RootState, RootDispatch, Vector3 } from 'modules/common/types'
+import { RootState, Vector3 } from 'modules/common/types'
 import { getCategories, isLoading } from 'modules/category/selectors'
-import { addAsset, AddAssetAction } from 'modules/scene/actions'
+import { addAsset } from 'modules/scene/actions'
 import { AssetResource } from 'modules/asset/types'
-import { MapStateProps, MapDispatchProps } from './SideBar.types'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './SideBar.types'
 import SideBar from './SideBar'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -12,7 +12,7 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoading: isLoading(state)
 })
 
-const mapDispatch = (dispatch: RootDispatch<AddAssetAction>): MapDispatchProps => ({
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onAddAsset: (asset: AssetResource, position: Vector3) => dispatch(addAsset(asset, position))
 })
 

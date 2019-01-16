@@ -1,6 +1,7 @@
 import { createStore, compose, applyMiddleware } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
+
 import createHistory from 'history/createBrowserHistory'
 import { env } from 'decentraland-commons'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'

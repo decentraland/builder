@@ -19,18 +19,11 @@ export const addAsset = (asset: AssetResource, position: Vector3) => action(ADD_
 
 export type AddAssetAction = ReturnType<typeof addAsset>
 
-// Add component
+// Provision a scene: add components and entities
 
-export const ADD_COMPONENT = 'Add component'
+export const PROVISION_SCENE = 'Provision scene'
 
-export const addComponent = (sceneId: string, component: AnyComponent) => action(ADD_COMPONENT, { sceneId, component })
+export const provisionScene = (sceneId: string, components: AnyComponent[], entities: EntityDefinition[]) =>
+  action(PROVISION_SCENE, { sceneId, components, entities })
 
-export type AddComponentAction = ReturnType<typeof addComponent>
-
-// Add entity
-
-export const ADD_ENTITY = 'Add entity'
-
-export const addEntity = (sceneId: string, entity: EntityDefinition) => action(ADD_ENTITY, { sceneId, entity })
-
-export type AddEntityAction = ReturnType<typeof addEntity>
+export type ProvisionSceneAction = ReturnType<typeof provisionScene>

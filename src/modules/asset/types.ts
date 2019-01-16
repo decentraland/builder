@@ -15,3 +15,5 @@ export type AssetResource = {
   url: string
   thumbnail: string
 }
+
+export type AssetMappings = Record<string, string>
