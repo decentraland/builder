@@ -22,3 +22,21 @@
 .ItemDrawer .ui.grid.asset-grid.item-grid .row .column:nth-child(3) {
   padding-right: 0px;
 }
+
+.ItemDrawer .item-drawer-type-buttons .EditorButton:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ItemDrawer .item-drawer-type-buttons .EditorButton:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.ItemDrawer .item-drawer-type-buttons {
+  float: right;
+}
+
+.ItemDrawer .item-drawer-type-buttons .EditorButton {
+  float: left;
+}

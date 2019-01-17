@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
+
 import { Asset } from 'modules/asset/types'
 import ItemDrawer from './ItemDrawer'
 import { Props } from './SideBar.types'

@@ -7,6 +7,7 @@ import AssetCard from 'components/AssetCard'
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
+import EditorButton from 'components/EditorButton'
 
 const DEFAULT_COLUMN_COUNT = 3
 
@@ -24,6 +25,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   handleOnClick = (asset: Asset) => {
     this.props.onClick(asset)
+  }
+
+  handleOnDrawerTypeClick = () => {
+    this.setState({
+      isList: !this.state.isList
+    })
   }
 
   renderGrid(assets: Asset[]) {
@@ -62,8 +69,13 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return (
       <div className="ItemDrawer">
         <Header size="medium" className="title">
-          {t('itemDrawer.title')}
+          {t('itemDrawer.title')}{' '}
+          <div className="item-drawer-type-buttons">
+            <EditorButton name="grid" isActive={!isList} onClick={isList ? this.handleOnDrawerTypeClick : undefined} />
+            <EditorButton name="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />
+          </div>
         </Header>
+
         {categories.map((category, index) => (
           <Drawer key={index} label={category.name}>
             <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
