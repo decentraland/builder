@@ -1,4 +1,4 @@
-import { takeLatest, select, put } from 'redux-saga/effects'
+import { takeLatest, select, put, call } from 'redux-saga/effects'
 
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -26,6 +26,7 @@ import { getEditorScene } from './utils'
 import { AssetMappings } from 'modules/asset/types'
 
 export function* editorSaga() {
+  yield subscribeToMetrics()
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
   yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(PROVISION_SCENE, handleProvisionScene)
@@ -106,5 +107,11 @@ function* handleUpdateEditor(action: UpdateEditorAction) {
   }
 
   // @ts-ignore: Client api
-  window['editor']['handleServerMessage'](msg)
+  yield call(() => window['editor']['handleMessage'](msg))
+}
+
+function* subscribeToMetrics() {
+  console.log('subscription enabled')
+  // @ts-ignore: Client api
+  yield call(() => window['editor']['onMetricsChange'](m => console.log(m)))
 }
