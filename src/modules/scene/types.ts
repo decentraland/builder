@@ -30,16 +30,20 @@ export type ComponentDefinition<T extends ComponentType> = {
   data: ComponentData[T]
 }
 
+export type SceneMetrics = {
+  triangles: number
+  materials: number
+  geometries: number
+  bodies: number
+  entities: number
+  textures: number
+  height: number
+}
+
 export type SceneDefinition = {
   id: string
-  metrics: {
-    triangles: number
-    materials: number
-    bodies: number
-    entities: number
-    textures: number
-    height: number
-  }
+  metrics: SceneMetrics
+  limits: SceneMetrics
   entities: Record<string, EntityDefinition>
   components: Record<string, AnyComponent>
 }

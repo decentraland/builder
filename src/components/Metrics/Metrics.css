@@ -1,0 +1,104 @@
+.Metrics {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: var(--prewiew-z-index);
+}
+
+.Metrics .button {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.Metrics .button .square {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #393540; /*rgba(var(--purplish-grey-raw), 0.4);*/
+  border: 1.4px solid #676370;
+  border-radius: 3px;
+}
+
+.Metrics .button.error .square {
+  background: #a21f42;
+  border-color: var(--neon-red);
+}
+
+.Metrics .button .tl {
+  top: 0px;
+  left: 0px;
+}
+
+.Metrics .button .tr {
+  top: 0px;
+  right: 0px;
+}
+
+.Metrics .button .bl {
+  bottom: 0px;
+  left: 0px;
+}
+
+.Metrics .button .br {
+  bottom: 0px;
+  right: 0px;
+}
+
+.Metrics .metric {
+  display: flex;
+}
+
+.Metrics .metric .label {
+  margin-right: 8px;
+  text-transform: capitalize;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.Metrics .metric .value {
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.Metrics .bubble {
+  position: absolute;
+  background-color: var(--dark);
+  padding: 12px;
+  border-radius: 6px;
+  bottom: 36px;
+  color: white;
+  width: 260px;
+  left: -5px;
+}
+
+.Metrics .metric.error .label,
+.Metrics .metric.error .value {
+  color: var(--neon-red);
+}
+
+.Metrics .bubble:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  border-top: 8px solid black;
+  border-top-color: inherit;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  color: var(--dark);
+}
+
+.Metrics .exceeded-metric {
+  position: absolute;
+  left: 32px;
+  top: 3px;
+  width: 200px;
+  text-transform: uppercase;
+  color: var(--neon-red);
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+}

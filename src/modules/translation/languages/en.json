@@ -12,5 +12,8 @@
   },
   "itemdrawer": {
     "title": "Item drawer"
+  },
+  "metrics": {
+    "too_many": "Too many {metric}!"
   }
 }

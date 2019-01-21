@@ -7,6 +7,9 @@
 
   --dark: #16141a;
 
+  /* z-indexes */
+  --prewiew-z-index: 1000;
+
   /**
   * Component variables
   */

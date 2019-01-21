@@ -2,7 +2,15 @@ import undoable, { StateWithHistory } from 'redux-undo'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SceneDefinition } from 'modules/scene/types'
-import { CreateSceneAction, CREATE_SCENE, ProvisionSceneAction, PROVISION_SCENE } from 'modules/scene/actions'
+import {
+  CreateSceneAction,
+  CREATE_SCENE,
+  ProvisionSceneAction,
+  PROVISION_SCENE,
+  UpdateMetricsAction,
+  UPDATE_METRICS
+} from 'modules/scene/actions'
+import { EMPTY_SCENE_METRICS } from './constants'
 
 export type SceneState = {
   data: Record<string, SceneDefinition>
@@ -11,7 +19,7 @@ export type SceneState = {
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction
+export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction
 
 const INITIAL_STATE: SceneState = {
   data: {
@@ -19,14 +27,8 @@ const INITIAL_STATE: SceneState = {
       id: 'test-scene',
       entities: {},
       components: {},
-      metrics: {
-        entities: 0,
-        bodies: 0,
-        materials: 0,
-        height: 0,
-        textures: 0,
-        triangles: 0
-      }
+      metrics: EMPTY_SCENE_METRICS,
+      limits: EMPTY_SCENE_METRICS
     }
   },
   loading: [],
@@ -61,6 +63,27 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
             ...state.data[sceneId],
             components: components.reduce((acc, components) => ({ ...acc, [components.id]: { ...components } }), currentComponents),
             entities: entities.reduce((acc, entity) => ({ ...acc, [entity.id]: { ...entity } }), currentEntities)
+          }
+        }
+      }
+    }
+
+    case UPDATE_METRICS: {
+      const { sceneId, metrics, limits } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [sceneId]: {
+            ...state.data[sceneId],
+            metrics: {
+              ...state.data[sceneId].metrics,
+              ...metrics
+            },
+            limits: {
+              ...state.data[sceneId].limits,
+              ...limits
+            }
           }
         }
       }
