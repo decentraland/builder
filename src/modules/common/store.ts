@@ -8,6 +8,7 @@ import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage
 
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
+import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
 
 const history = createHistory()
 const rootReducer = createRootReducer(history)
@@ -20,7 +21,13 @@ const sagasMiddleware = createSagasMiddleware()
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY')
 })
-const middleware = applyMiddleware(historyMiddleware, storageMiddleware, sagasMiddleware)
+const middlewares = [historyMiddleware, storageMiddleware, sagasMiddleware]
+
+if (env.isDevelopment()) {
+  middlewares.push(scenarioMiddleware)
+}
+
+const middleware = applyMiddleware(...middlewares)
 
 const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer)
@@ -35,6 +42,16 @@ export function getState() {
 if (env.isDevelopment()) {
   // tslint:disable-next-line:semicolon
   ;(window as any).getState = store.getState
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const scenarioName = urlParams.get('scenario')
+
+  if (scenarioName) {
+    const scenarios = require('../../scenarios').default
+    if (scenarios[scenarioName]) {
+      scenarios[scenarioName].run(store, eventEmitter)
+    }
+  }
 }
 
 export { store, history }

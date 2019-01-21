@@ -76,13 +76,15 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           </div>
         </Header>
 
-        {categories.map((category, index) => (
-          <Drawer key={index} label={category.name}>
-            <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
-              {this.renderGrid(category.assets)}
-            </Grid>
-          </Drawer>
-        ))}
+        <div className="overflow-container">
+          {categories.map((category, index) => (
+            <Drawer key={index} label={category.name}>
+              <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
+                {this.renderGrid(category.assets)}
+              </Grid>
+            </Drawer>
+          ))}
+        </div>
       </div>
     )
   }
