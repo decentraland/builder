@@ -112,6 +112,10 @@ function* handleUpdateEditor(action: UpdateEditorAction) {
 
 function* subscribeToMetrics() {
   console.log('subscription enabled')
-  // @ts-ignore: Client api
-  yield call(() => window['editor']['onMetricsChange'](m => console.log(m)))
+  yield call(() =>
+    // @ts-ignore: Client api
+    window['editor'].on('metrics', m => {
+      console.log(m)
+    })
+  )
 }
