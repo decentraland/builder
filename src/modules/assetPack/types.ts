@@ -16,5 +16,4 @@ type BaseAssetPack = {
   id: string
   version: number
   title: string
-  contents: Record<string, string>
 }
