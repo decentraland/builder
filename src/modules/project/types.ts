@@ -1,8 +1,15 @@
-export interface Project {
+export type Project = BaseProject & {
+  ownerEmail: string
+  sceneId: string
+  parcels: { x: number; y: number }[]
+}
+
+export type Template = BaseProject & {}
+
+export type BaseProject = {
   id: string
   title: string
   description: string
-  ownerEmail: string
-  parcels: { x: number; y: number }[]
-  sceneId: string
+  thumbnail: string
+  parcels?: { x: number; y: number }[]
 }

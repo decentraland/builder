@@ -1,0 +1,30 @@
+.ProjectCard {
+  width: 248px;
+  height: 184px;
+  border-radius: 12px;
+  background-color: rgba(var(--purplish-grey-raw), 0.16);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ProjectCard .project-data {
+  width: 100%;
+  padding: 0 10px;
+  margin-top: 70px;
+  text-align: center;
+}
+
+.ProjectCard .title {
+  margin-bottom: 8px;
+}
+
+.ProjectCard .description {
+  font-size: 15px;
+  opacity: 0.75;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

@@ -19,10 +19,6 @@
   --sidebar-heading: rgba(255, 255, 255, 0.9);
 }
 
-.ui.header.medium {
-  font-size: 17px;
-}
-
 /* Reset grid */
 
 .ui.grid {

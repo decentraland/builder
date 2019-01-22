@@ -2,3 +2,7 @@
   height: var(--topbar-height);
   background: var(--dark);
 }
+
+.TopBar .ui.header.medium {
+  font-size: 17px;
+}

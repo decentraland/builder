@@ -13,11 +13,12 @@ const INITIAL_STATE: ProjectState = {
   data: {
     test: {
       id: 'test',
+      title: 'Test',
       description: 'A test project that should be removed on production',
+      thumbnail: '',
       ownerEmail: '',
       parcels: [],
-      sceneId: 'test-scene',
-      title: 'Test'
+      sceneId: 'test-scene'
     }
   },
   loading: [],
