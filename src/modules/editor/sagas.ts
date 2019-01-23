@@ -4,6 +4,13 @@ import { getCurrentScene } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { PROVISION_SCENE } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
+import { getCurrentProject } from 'modules/project/selectors'
+import { KeyboardShortcut } from 'modules/keyboard/types'
+import { SceneDefinition } from 'modules/scene/types'
+import { Project } from 'modules/project/types'
+import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
+import { store } from 'modules/common/store'
+import { AssetMappings } from 'modules/asset/types'
 import {
   updateEditor,
   UpdateEditorAction,
@@ -16,14 +23,7 @@ import {
   EDITOR_REDO,
   UPDATE_EDITOR
 } from 'modules/editor/actions'
-import { getCurrentProject } from 'modules/project/selectors'
-import { KeyboardShortcut } from 'modules/keyboard/types'
-import { SceneDefinition } from 'modules/scene/types'
-import { Project } from 'modules/project/types'
-import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
-import { store } from 'modules/common/store'
 import { getEditorScene } from './utils'
-import { AssetMappings } from 'modules/asset/types'
 
 export function* editorSaga() {
   yield subscribeToMetrics()
@@ -105,6 +105,8 @@ function* handleUpdateEditor(action: UpdateEditorAction) {
       scene: payloadScene
     }
   }
+
+  console.log(msg)
 
   // @ts-ignore: Client api
   yield call(() => window['editor']['handleMessage'](msg))

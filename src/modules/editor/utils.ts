@@ -2,7 +2,7 @@ import { EditorScene } from 'modules/editor/types'
 import { SceneDefinition } from 'modules/scene/types'
 import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
 import { AssetMappings } from 'modules/asset/types'
-const ecs = require('raw-loader!./ecs.txt')
+const ecs = require('raw-loader!./ecs')
 
 export function getEditorScene(title: string, scene: SceneDefinition, assetMappings: AssetMappings): EditorScene {
   const { components, entities } = scene

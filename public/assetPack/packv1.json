@@ -14,9 +14,9 @@
         "category": "nature",
         "variations": [],
         "contents": {
-          "Tree/BaseColor.png": "https://content.decentraland.today/contents/Qmd8vo4UKX5STvUHRzbEkRfxBopjVtAiqmoZE6AtxWCPzG",
-          "Tree/Tree_StarterPack.bin": "https://content.decentraland.today/contents/QmXUe1d2zunwcRDcAWuEzP3ZYEnJ48x9U5DYiEZJqmDXRk",
-          "Tree/Tree_StarterPack.gltf": "https://content.decentraland.today/contents/QmdmNp5MuRxkNAAsyFd7z3nFGYcPaeZQRjFDm4AphE7K4V"
+          "Tree/BaseColor.png": "Qmd8vo4UKX5STvUHRzbEkRfxBopjVtAiqmoZE6AtxWCPzG",
+          "Tree/Tree_StarterPack.bin": "QmXUe1d2zunwcRDcAWuEzP3ZYEnJ48x9U5DYiEZJqmDXRk",
+          "Tree/Tree_StarterPack.gltf": "QmdmNp5MuRxkNAAsyFd7z3nFGYcPaeZQRjFDm4AphE7K4V"
         }
       },
       {
@@ -27,9 +27,9 @@
         "category": "nature",
         "variations": [],
         "contents": {
-          "CampFire/BaseColor.png": "https://content.decentraland.today/contents/QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
-          "CampFire/CampFire.bin": "https://content.decentraland.today/contents/Qma8FvUyTMAQNXq2poetTZuukpQdLmuv2V56GDbboNvdsX",
-          "CampFire/CampFire.gltf": "https://content.decentraland.today/contents/QmUEMvudyD6kkEAXBwh5KYqy6kz33uLSGMskdkx5zuzMTn"
+          "CampFire/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "CampFire/CampFire.bin": "Qma8FvUyTMAQNXq2poetTZuukpQdLmuv2V56GDbboNvdsX",
+          "CampFire/CampFire.gltf": "QmUEMvudyD6kkEAXBwh5KYqy6kz33uLSGMskdkx5zuzMTn"
         }
       },
       {
@@ -41,9 +41,9 @@
         "category": "furniture",
         "variations": [],
         "contents": {
-          "Bench/BaseColor.png": "https://content.decentraland.today/contents/QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
-          "Bench/Bench.bin": "https://content.decentraland.today/contents/QmZANtQJbmW5333d2Jf1niAN8KpX6QeTrHJnkjC6WMXRoT",
-          "Bench/Bench.gltf": "https://content.decentraland.today/contents/QmUi18Zi4PsCmjHHTcpmPqqxWtvAnM5MedvHU7Set41j4i"
+          "Bench/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "Bench/Bench.bin": "QmZANtQJbmW5333d2Jf1niAN8KpX6QeTrHJnkjC6WMXRoT",
+          "Bench/Bench.gltf": "QmUi18Zi4PsCmjHHTcpmPqqxWtvAnM5MedvHU7Set41j4i"
         }
       },
       {
@@ -55,9 +55,9 @@
         "category": "furniture",
         "variations": [],
         "contents": {
-          "DeckChair/BaseColor.png": "https://content.decentraland.today/contents/QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
-          "DeckChair/DeckChair.bin": "https://content.decentraland.today/contents/QmQwNBEyCgDktr6H16aNV3cDP3WrMDYjWjrSnBsyZXHuvu",
-          "DeckChair/DeckChair.gltf": "https://content.decentraland.today/contents/QmRWe6bBGYRHHAZh29eQs89YwKWBCsfW11eEW5Krt3r7EY"
+          "DeckChair/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "DeckChair/DeckChair.bin": "QmQwNBEyCgDktr6H16aNV3cDP3WrMDYjWjrSnBsyZXHuvu",
+          "DeckChair/DeckChair.gltf": "QmRWe6bBGYRHHAZh29eQs89YwKWBCsfW11eEW5Krt3r7EY"
         }
       },
       {
@@ -69,9 +69,9 @@
         "category": "city",
         "variations": [],
         "contents": {
-          "Square_LightPole/BaseColor.png": "https://content.decentraland.today/contents/QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
-          "Square_LightPole/Square_LightPole.bin": "https://content.decentraland.today/contents/QmeFzGMiiZPRQe1NsjaYGcM6WMaoyj1JzKy8sJtncrGGwk",
-          "Square_LightPole/Square_LightPole.gltf": "https://content.decentraland.today/contents/QmUqTYpEgjhHj9aZVUpmWjNo558Q6MiNzK7ddFAovPxUii"
+          "Square_LightPole/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "Square_LightPole/Square_LightPole.bin": "QmeFzGMiiZPRQe1NsjaYGcM6WMaoyj1JzKy8sJtncrGGwk",
+          "Square_LightPole/Square_LightPole.gltf": "QmUqTYpEgjhHj9aZVUpmWjNo558Q6MiNzK7ddFAovPxUii"
         }
       },
       {
@@ -83,9 +83,9 @@
         "category": "city",
         "variations": [],
         "contents": {
-          "WoodBridge/BaseColor.png": "https://content.decentraland.today/contents/QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
-          "WoodBridge/WoodBridge.bin": "https://content.decentraland.today/contents/QmS6AKpDMDegbL51cBQVDH6hdtLhM3sxpaP3biefBt13MQ",
-          "WoodBridge/WoodBridge.gltf": "https://content.decentraland.today/contents/QmWme3hzpdieRp9kD5RqM9LbBXanHXKhgA2FGeevTpC8yt"
+          "WoodBridge/BaseColor.png": "QmfX7B8gnixwSM6XmBw8bx5X3s6gmaGbzVGA1disy49Vih",
+          "WoodBridge/WoodBridge.bin": "QmS6AKpDMDegbL51cBQVDH6hdtLhM3sxpaP3biefBt13MQ",
+          "WoodBridge/WoodBridge.gltf": "QmWme3hzpdieRp9kD5RqM9LbBXanHXKhgA2FGeevTpC8yt"
         }
       }
     ]

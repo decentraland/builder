@@ -4,6 +4,8 @@ import './Preview.css'
 
 const editorWindow = window as EditorWindow
 
+const CONTENT_SERVER = 'https://content.decentraland.today/contents/'
+
 export default class Preview extends React.PureComponent {
   private ref = React.createRef<HTMLDivElement>()
 
@@ -22,7 +24,7 @@ export default class Preview extends React.PureComponent {
   moveCanvas = (canvas: HTMLCanvasElement) => {
     if (this.ref.current && canvas) {
       this.ref.current.appendChild(canvas)
-      editorWindow.editor.initEngine()
+      editorWindow.editor.initEngine(CONTENT_SERVER)
       editorWindow.editor.resize()
     }
   }
