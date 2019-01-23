@@ -80,7 +80,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "build:ci": "npm run lint && node scripts/build.js",
+    "build:ci": "node scripts/postinstall.js && npm run lint && node scripts/build.js",
     "test": "node scripts/test.js",
     "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
     "bundle:svg": "npx svg-sprite -D src/components/EditorButton/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg"
@@ -88,6 +88,9 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "eslintIgnore": [
+    "src/modules/editor/ecs.js"
+  ],
   "browserslist": [
     ">0.2%",
     "not dead",

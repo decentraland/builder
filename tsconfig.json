@@ -22,5 +22,6 @@
     ],
     "baseUrl": "src"
   },
-  "include": ["src", "react-app=env.d.ts"]
+  "include": ["src", "react-app=env.d.ts"],
+  "exclude": ["src/modules/editor/ecs.js"]
 }
