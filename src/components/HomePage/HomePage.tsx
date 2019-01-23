@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Header } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import App from 'decentraland-dapps/dist/containers/App'
 
 import ProjectCard from 'components/ProjectCard'
@@ -18,7 +19,6 @@ export default class HomePage extends React.PureComponent<Props> {
   }
 
   handleProjectClick = (project: Project) => {
-    console.log('HELLO', project)
     this.props.onProjectClick(project.id)
   }
 
@@ -33,12 +33,12 @@ export default class HomePage extends React.PureComponent<Props> {
     return (
       <div className="HomePage">
         <App activePage="builder" locales={Object.keys(languages)}>
-          <Header size="large">Build something cool!</Header>
-          <p className="subtitle">Import a file or start from scratch with our templates or your own LAND!</p>
+          <Header size="large">{t('homepage.title')}</Header>
+          <p className="subtitle">{t('homepage.subtitle')}</p>
 
           {projects.length > 0 ? (
             <div className="project-cards">
-              <div className="subtitle">PROJECTS</div>
+              <div className="subtitle">{t('global.projects').toUpperCase()}</div>
               <div className="CardList">
                 {projects.map((project, index) => (
                   <ProjectCard key={index} project={project} onClick={this.handleProjectClick} />
@@ -48,7 +48,7 @@ export default class HomePage extends React.PureComponent<Props> {
           ) : null}
 
           <div className="project-cards">
-            <div className="subtitle">TEMPLATES</div>
+            <div className="subtitle">{t('global.templates').toUpperCase()}</div>
             <div className="CardList">
               {templates.map((template, index) => (
                 <TemplateCard key={index} template={template} onClick={this.handleTemplateClick} />
