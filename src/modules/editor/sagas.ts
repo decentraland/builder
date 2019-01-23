@@ -106,8 +106,6 @@ function* handleUpdateEditor(action: UpdateEditorAction) {
     }
   }
 
-  console.log(msg)
-
   // @ts-ignore: Client api
   yield call(() => window['editor']['handleMessage'](msg))
 }
