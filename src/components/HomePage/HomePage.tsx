@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
-import getTemplates from 'modules/template/utils'
+import { getTemplates } from 'modules/template/utils'
 import { Project } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 
