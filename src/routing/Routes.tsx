@@ -8,7 +8,7 @@ import EditorPage from 'components/EditorPage'
 import * as languages from 'modules/translation/languages'
 import { locations } from 'routing/locations'
 
-export class Routes extends React.PureComponent {
+export class Routes extends React.Component {
   wrapInApp(Component: React.ComponentType<any>) {
     return (...props: any[]) => (
       <App activePage="builder" locales={Object.keys(languages)}>
