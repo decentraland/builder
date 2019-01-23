@@ -1,6 +1,7 @@
 import { createStore, compose, applyMiddleware } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
+import { createLogger } from 'redux-logger'
 
 import createHistory from 'history/createBrowserHistory'
 import { env } from 'decentraland-commons'
@@ -10,18 +11,23 @@ import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
 
-const history = createHistory()
-const rootReducer = createRootReducer(history)
-
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
+const history = createHistory()
+const rootReducer = createRootReducer(history)
+
 const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware()
+const loggerMiddleware = createLogger({
+  predicate: () => env.isDevelopment(),
+  collapsed: () => true
+})
+
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY')
 })
-const middlewares = [historyMiddleware, storageMiddleware, sagasMiddleware]
+const middlewares = [historyMiddleware, storageMiddleware, sagasMiddleware, loggerMiddleware]
 
 if (env.isDevelopment()) {
   middlewares.push(scenarioMiddleware)
