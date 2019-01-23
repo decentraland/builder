@@ -1,6 +1,6 @@
-import { BaseProject } from 'modules/project/types'
+import { Project } from 'modules/project/types'
 
 export type Props = {
-  project: BaseProject
-  onClick: (project: BaseProject) => any
+  project: Project
+  onClick: (project: Project) => any
 }

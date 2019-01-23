@@ -1,4 +1,4 @@
-.HomePage {
+.HomePage .dcl.page {
   font-size: 17px;
 }
 
@@ -14,16 +14,28 @@
   font-size: 13px;
 }
 
-.HomePage .ProjectCard {
-  margin-right: 24px;
-  float: left;
+.HomePage .CardList {
+  overflow: hidden;
 }
-.HomePage .ProjectCard:last-child {
+
+.HomePage .Card {
+  width: 248px;
+  height: 184px;
+  border-radius: 12px;
+  margin-right: 24px;
+  background-color: rgba(var(--purplish-grey-raw), 0.16);
+  float: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.HomePage .Card:last-child {
   margin-right: 0;
 }
 
 @media screen and (max-width: 1200px) {
-  .HomePage .ProjectCard {
+  .HomePage .Card {
     margin-bottom: 24px;
   }
 }

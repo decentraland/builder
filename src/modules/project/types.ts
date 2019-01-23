@@ -1,15 +1,10 @@
-export type Project = BaseProject & {
-  ownerEmail: string
-  sceneId: string
-  parcels: { x: number; y: number }[]
-}
-
-export type Template = BaseProject & {}
-
-export type BaseProject = {
+export type Project = {
   id: string
   title: string
   description: string
   thumbnail: string
-  parcels?: { x: number; y: number }[]
+  sceneId: string
+  parcelLayout: { rows: number; cols: number }
+  parcels?: { x: number; y: number }[] // Blockchain parcels
+  ownerEmail?: string
 }

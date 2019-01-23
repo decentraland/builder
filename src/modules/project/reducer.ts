@@ -17,6 +17,7 @@ const INITIAL_STATE: ProjectState = {
       description: 'A test project that should be removed on production',
       thumbnail: '',
       ownerEmail: '',
+      parcelLayout: { rows: 1, cols: 1 },
       parcels: [],
       sceneId: 'test-scene'
     }
