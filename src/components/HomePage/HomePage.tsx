@@ -23,11 +23,11 @@ export default class HomePage extends React.PureComponent<Props> {
   }
 
   handleTemplateClick = (template: Template) => {
-    console.log('Template', template)
+    this.props.onCreateProject(template)
   }
 
   render() {
-    const { projects } = this.props
+    const projects = Object.values(this.props.projects)
     const templates = getTemplates()
 
     return (
@@ -36,14 +36,16 @@ export default class HomePage extends React.PureComponent<Props> {
           <Header size="large">Build something cool!</Header>
           <p className="subtitle">Import a file or start from scratch with our templates or your own LAND!</p>
 
-          <div className="project-cards">
-            <div className="subtitle">PROJECTS</div>
-            <div className="CardList">
-              {Object.values(projects).map((project, index) => (
-                <ProjectCard key={index} project={project} onClick={this.handleProjectClick} />
-              ))}
+          {projects.length > 0 ? (
+            <div className="project-cards">
+              <div className="subtitle">PROJECTS</div>
+              <div className="CardList">
+                {projects.map((project, index) => (
+                  <ProjectCard key={index} project={project} onClick={this.handleProjectClick} />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <div className="project-cards">
             <div className="subtitle">TEMPLATES</div>

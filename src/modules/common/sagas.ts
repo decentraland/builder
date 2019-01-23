@@ -5,9 +5,10 @@ import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
+import { projectSaga } from 'modules/project/sagas'
 import { editorSaga } from 'modules/editor/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 
 export function* rootSaga() {
-  yield all([locationSaga(), translationSaga(), walletSaga(), assetPackSaga(), sceneSaga(), editorSaga(), keyboardSaga()])
+  yield all([locationSaga(), translationSaga(), walletSaga(), assetPackSaga(), sceneSaga(), projectSaga(), editorSaga(), keyboardSaga()])
 }

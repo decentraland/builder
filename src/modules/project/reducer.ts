@@ -32,6 +32,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
   switch (action.type) {
     case CREATE_PROJECT: {
       const { project } = action.payload
+
       return {
         loading: loadingReducer(state.loading, action),
         error: null,
