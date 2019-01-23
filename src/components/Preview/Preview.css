@@ -7,3 +7,7 @@
   display: block;
   outline: none;
 }
+
+.Preview > .ui.loader {
+  left: 40%;
+}
