@@ -1,9 +1,9 @@
 .HomePage {
   font-size: 17px;
+  margin-bottom: var(--homepage-card-margin);
 }
 
 .HomePage .subtitle {
-  margin-bottom: 15px;
   color: var(--purplish-grey);
 }
 
@@ -19,10 +19,11 @@
 }
 
 .HomePage .Card {
-  width: 248px;
-  height: 184px;
+  width: var(--homepage-card-width);
+  height: var(--homepage-card-height);
   border-radius: 12px;
-  margin-right: 24px;
+  margin-top: var(--homepage-card-margin);
+  margin-right: var(--homepage-card-margin);
   background-color: rgba(var(--purplish-grey-raw), 0.16);
   float: left;
   cursor: pointer;
@@ -32,10 +33,4 @@
 }
 .HomePage .Card:last-child {
   margin-right: 0;
-}
-
-@media screen and (max-width: 1200px) {
-  .HomePage .Card {
-    margin-bottom: 24px;
-  }
 }

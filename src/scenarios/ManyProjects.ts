@@ -5,14 +5,18 @@ import { getTemplates } from 'modules/template/utils'
 import { createProjectFromTemplate } from 'modules/project/actions'
 
 /**
- * An scenario that loads an Asset Pack that contains 500 assets.
- * Meant to stress-test the UI with a realistic number of assets.
+ * An scenario that loads 25 projects
+ * Meant to stress-test the HomePage UI with a somewhat bloated number of projects
  */
 
 export function run(store: Store<RootState>, _: EventEmitter) {
-  const templates = getTemplates().slice(0, -1)
+  const templates = getTemplates().filter(template => !!template.parcelLayout) // Remove custom built projects
+  const projectCount = 25
+  const times = Math.round(projectCount / templates.length)
 
-  for (const template of templates) {
-    store.dispatch(createProjectFromTemplate(template))
+  for (let index = 0; index < times; index++) {
+    for (const template of templates) {
+      store.dispatch(createProjectFromTemplate(template))
+    }
   }
 }

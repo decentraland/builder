@@ -11,6 +11,11 @@
   * Component variables
   */
 
+  /* HomePage */
+  --homepage-card-width: 246px;
+  --homepage-card-height: 182px;
+  --homepage-card-margin: 20px;
+
   /* TopBar */
   --topbar-height: 48px;
 

@@ -16,7 +16,15 @@ export default class ProjectCard extends React.PureComponent<Props> {
 
   render() {
     const { template } = this.props
-    const { rows, cols } = template.parcelLayout
+    // Use 2x4 as the default size for the grid we render in the card
+    // even if the undefined parcelLayout means `Custom build`
+    let rows = 2
+    let cols = 4
+
+    if (template.parcelLayout) {
+      rows = template.parcelLayout.rows
+      cols = template.parcelLayout.cols
+    }
 
     return (
       <div className="TemplateCard Card" onClick={this.handleOnClick}>
