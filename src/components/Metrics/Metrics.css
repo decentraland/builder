@@ -12,40 +12,6 @@
   cursor: pointer;
 }
 
-.Metrics .button .square {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: #393540; /*We need to review the transparencies, so we'll leave the "absolute" color as a walkaround for now*/
-  border: 1.4px solid #676370;
-  border-radius: 3px;
-}
-
-.Metrics .button.error .square {
-  background: #a21f42;
-  border-color: var(--neon-red);
-}
-
-.Metrics .button .tl {
-  top: 0px;
-  left: 0px;
-}
-
-.Metrics .button .tr {
-  top: 0px;
-  right: 0px;
-}
-
-.Metrics .button .bl {
-  bottom: 0px;
-  left: 0px;
-}
-
-.Metrics .button .br {
-  bottom: 0px;
-  right: 0px;
-}
-
 .Metrics .metric {
   display: flex;
 }
@@ -61,6 +27,9 @@
   font-weight: bold;
   font-size: 15px;
   line-height: 24px;
+}
+.Metrics .metric .value-limit {
+  color: var(--purplish-grey);
 }
 
 .Metrics .bubble {

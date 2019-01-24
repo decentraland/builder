@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import SquaresGrid from 'components/SquareGrid'
 import { Props } from './TemplateCard.types'
 import './TemplateCard.css'
 
@@ -29,15 +30,7 @@ export default class ProjectCard extends React.PureComponent<Props> {
     return (
       <div className="TemplateCard Card" onClick={this.handleOnClick}>
         <div className="project-data">
-          <div className={`squares-grid grid-${rows}-${cols}`}>
-            {new Array(cols).fill(0).map((_, index) => (
-              <div key={index} className="square-col">
-                {new Array(rows).fill(0).map((_, index) => (
-                  <div key={index} className="square-row square" />
-                ))}
-              </div>
-            ))}
-          </div>
+          <SquaresGrid cols={cols} rows={rows} />
 
           <div className="title">{template.title}</div>
           <div className="description">{template.description}</div>

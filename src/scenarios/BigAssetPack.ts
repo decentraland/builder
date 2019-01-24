@@ -1,8 +1,8 @@
 import { Store } from 'redux'
+import { EventEmitter } from 'events'
 import { RootState } from 'modules/common/types'
 import { loadAssetPacksSuccess, LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { makeFakeAssetPack } from './helpers/assetPacks'
-import { EventEmitter } from 'events'
 
 /**
  * An scenario that loads an Asset Pack that contains 500 assets.
@@ -10,11 +10,9 @@ import { EventEmitter } from 'events'
  */
 
 export function run(store: Store<RootState>, evt: EventEmitter) {
-  let flag = true
-  evt.on(LOAD_ASSET_PACKS_SUCCESS, (action: LoadAssetPacksSuccessAction) => {
-    if (flag) {
-      flag = false
-      store.dispatch(loadAssetPacksSuccess([makeFakeAssetPack(500)]))
-    }
-  })
+  const listener = (_: LoadAssetPacksSuccessAction) => {
+    store.dispatch(loadAssetPacksSuccess([makeFakeAssetPack(500)]))
+    evt.off(LOAD_ASSET_PACKS_SUCCESS, listener)
+  }
+  evt.on(LOAD_ASSET_PACKS_SUCCESS, listener)
 }

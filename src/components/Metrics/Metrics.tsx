@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import SquaresGrid from 'components/SquareGrid'
 import { SceneMetrics } from 'modules/scene/types'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
@@ -51,7 +52,10 @@ export default class Metrics extends React.PureComponent<Props, State> {
     return (
       <div className={classes} key={metric}>
         <div className="label">{t(`metrics.${metric}`)}:</div>
-        <div className="value">{this.props.metrics[metric].toLocaleString()}</div>
+        <div className="value">
+          {this.props.metrics[metric].toLocaleString()}
+          <span className="value-limit">/{this.props.limits[metric].toLocaleString()}</span>{' '}
+        </div>
       </div>
     )
   }
@@ -69,10 +73,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
     return (
       <div className="Metrics" onClick={this.handleClick}>
         <div className={buttonClasses} onClick={this.handleToggle}>
-          <div className="square tl" />
-          <div className="square tr" />
-          <div className="square bl" />
-          <div className="square br" />
+          <SquaresGrid cols={2} rows={2} size="tiny" />
         </div>
         {toggle ? <div className="bubble">{this.renderMetrics()}</div> : null}
         {exceededMetric ? (

@@ -19,7 +19,6 @@
     "geometries": "geometries",
     "bodies": "bodies",
     "entities": "entities",
-    "textures": "textures",
     "height": "height",
     "too_many": "Too many {metric}!"
   }
