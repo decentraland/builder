@@ -14,18 +14,21 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
   const { template } = action.payload
   const { onSuccess } = action.meta
 
+  const defaultMetrics = {
+    triangles: 0,
+    materials: 0,
+    geometries: 0,
+    bodies: 0,
+    entities: 0,
+    textures: 0,
+    height: 0
+  }
   const scene: SceneDefinition = {
     id: uuidv4(),
     entities: {},
     components: {},
-    metrics: {
-      entities: 0,
-      bodies: 0,
-      materials: 0,
-      height: 0,
-      textures: 0,
-      triangles: 0
-    }
+    metrics: defaultMetrics,
+    limits: defaultMetrics
   }
 
   const project: Project = {
