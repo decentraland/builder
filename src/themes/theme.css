@@ -11,16 +11,17 @@
   * Component variables
   */
 
+  /* HomePage */
+  --homepage-card-width: 246px;
+  --homepage-card-height: 182px;
+  --homepage-card-margin: 20px;
+
   /* TopBar */
   --topbar-height: 48px;
 
   /* SideBar */
   --sidebar-width: 370px;
   --sidebar-heading: rgba(255, 255, 255, 0.9);
-}
-
-.ui.header.medium {
-  font-size: 17px;
 }
 
 /* Reset grid */

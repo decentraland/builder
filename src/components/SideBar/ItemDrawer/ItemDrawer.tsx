@@ -69,7 +69,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return (
       <div className="ItemDrawer">
         <Header size="medium" className="title">
-          {t('itemDrawer.title')}{' '}
+          {t('itemdrawer.title')}{' '}
           <div className="item-drawer-type-buttons">
             <EditorButton name="grid" isActive={!isList} onClick={isList ? this.handleOnDrawerTypeClick : undefined} />
             <EditorButton name="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />

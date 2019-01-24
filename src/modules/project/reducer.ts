@@ -13,11 +13,13 @@ const INITIAL_STATE: ProjectState = {
   data: {
     test: {
       id: 'test',
+      title: 'Test',
       description: 'A test project that should be removed on production',
+      thumbnail: '',
       ownerEmail: '',
+      parcelLayout: { rows: 1, cols: 1 },
       parcels: [],
-      sceneId: 'test-scene',
-      title: 'Test'
+      sceneId: 'test-scene'
     }
   },
   loading: [],
@@ -30,6 +32,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
   switch (action.type) {
     case CREATE_PROJECT: {
       const { project } = action.payload
+
       return {
         loading: loadingReducer(state.loading, action),
         error: null,

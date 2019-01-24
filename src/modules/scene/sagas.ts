@@ -1,4 +1,4 @@
-import * as uuid from 'uuid'
+import uuidv4 from 'uuid/v4'
 import { takeLatest, put, select } from 'redux-saga/effects'
 import { ADD_ASSET, AddAssetAction, provisionScene } from 'modules/scene/actions'
 import { getGLTFId, getCurrentScene } from 'modules/scene/selectors'
@@ -13,11 +13,11 @@ function* handleAddAsset(action: AddAssetAction) {
   const scene = yield select(getCurrentScene)
 
   let gltfId = yield select(getGLTFId(asset.url))
-  let transformId = uuid.v4()
+  let transformId = uuidv4()
   const components: AnyComponent[] = []
 
   if (!gltfId) {
-    const id = uuid.v4()
+    const id = uuidv4()
     components.push({
       id,
       type: ComponentType.GLTFShape,
@@ -38,7 +38,7 @@ function* handleAddAsset(action: AddAssetAction) {
     }
   })
 
-  const entities: EntityDefinition[] = [{ id: uuid.v4(), components: [gltfId, transformId] }]
+  const entities: EntityDefinition[] = [{ id: uuidv4(), components: [gltfId, transformId] }]
 
   yield put(provisionScene(scene.id, components, entities))
 }

@@ -2,12 +2,12 @@ import { Dispatch } from 'redux'
 
 import { loadAssetPacksRequest, LoadAssetPacksRequestAction } from 'modules/assetPack/actions'
 import {
+  startEditor,
   bindEditorKeyboardShortcuts,
   unbindEditorKeyboardShortcuts,
-  startEditor,
+  StartEditorAction,
   BindEditorKeybardShortcutsAction,
-  UnbindEditorKeybardShortcutsAction,
-  StartEditorAction
+  UnbindEditorKeybardShortcutsAction
 } from 'modules/editor/actions'
 
 export type Props = {
@@ -20,5 +20,5 @@ export type Props = {
 export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onStartEditor' | 'onLoadAssetPacks' | 'onBindKeyboardShortcuts' | 'onUnbindKeyboardShortcuts'>
 export type MapDispatch = Dispatch<
-  LoadAssetPacksRequestAction | StartEditorAction | BindEditorKeybardShortcutsAction | UnbindEditorKeybardShortcutsAction
+  StartEditorAction | LoadAssetPacksRequestAction | BindEditorKeybardShortcutsAction | UnbindEditorKeybardShortcutsAction
 >

@@ -1,8 +1,10 @@
-export interface Project {
+export type Project = {
   id: string
   title: string
   description: string
-  ownerEmail: string
-  parcels: { x: number; y: number }[]
+  thumbnail: string
   sceneId: string
+  parcelLayout: { rows: number; cols: number }
+  parcels?: { x: number; y: number }[] // Blockchain parcels
+  ownerEmail?: string
 }

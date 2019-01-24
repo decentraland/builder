@@ -1,8 +1,16 @@
 {
+  "global": {
+    "projects": "projects",
+    "templates": "templates"
+  },
   "languages": {
     "en": "English"
   },
-  "itemDrawer": {
+  "homepage": {
+    "title": "Build something cool!",
+    "subtitle": "Import a file or start from scratch with our templates or your own LAND!"
+  },
+  "itemdrawer": {
     "title": "Item drawer"
   }
 }

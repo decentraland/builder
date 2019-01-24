@@ -5,5 +5,5 @@ import 'decentraland-ui/lib/styles.css'
 import 'decentraland-ui/lib/dark-theme.css'
 import './theme.css'
 
-// We can override Component styles themes here like this:
+// Override third party Component styles here:
 // import './components/Button.css'

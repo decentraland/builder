@@ -4,6 +4,7 @@
 
 .ItemDrawer .title {
   color: var(--sidebar-heading);
+  font-size: 17px;
 }
 
 .ItemDrawer .ui.grid.asset-grid .column {
