@@ -16,22 +16,24 @@ export default class Preview extends React.Component {
 
   componentDidMount() {
     // We're adding this to the end of the stack to allow the browser to paint the rest of the DOM first
-    setTimeout(() => {
-      if (!editorWindow.isDCLInitialized && editorWindow.initDCL) {
-        editorWindow.initDCL()
-      }
-      editorWindow.editor
-        .getDCLCanvas()
-        .then(canvas => {
-          this.moveCanvas(canvas)
-        })
-        .catch(e => console.error('Failed to load Preview', e))
-    }, 0)
+    setTimeout(() => this.startEditor(), 0)
   }
 
   shouldComponentUpdate() {
     // We don't want to lose the reference to the canvas
     return false
+  }
+
+  async startEditor() {
+    if (!editorWindow.isDCLInitialized && editorWindow.initDCL) {
+      editorWindow.initDCL()
+    }
+    try {
+      const canvas = await editorWindow.editor.getDCLCanvas()
+      this.moveCanvas(canvas)
+    } catch (error) {
+      console.error('Failed to load Preview', error)
+    }
   }
 
   moveCanvas = (canvas: HTMLCanvasElement) => {

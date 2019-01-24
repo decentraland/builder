@@ -10,9 +10,7 @@ import { makeFakeAssetPack } from './helpers/assetPacks'
  */
 
 export function run(store: Store<RootState>, evt: EventEmitter) {
-  const listener = (_: LoadAssetPacksSuccessAction) => {
+  evt.once(LOAD_ASSET_PACKS_SUCCESS, (_: LoadAssetPacksSuccessAction) => {
     store.dispatch(loadAssetPacksSuccess([makeFakeAssetPack(500)]))
-    evt.off(LOAD_ASSET_PACKS_SUCCESS, listener)
-  }
-  evt.on(LOAD_ASSET_PACKS_SUCCESS, listener)
+  })
 }
