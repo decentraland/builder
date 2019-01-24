@@ -50,7 +50,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
     return (
       <div className={classes} key={metric}>
-        <div className="label">{metric}:</div>
+        <div className="label">{t(`metrics.${metric}`)}:</div>
         <div className="value">{this.props.metrics[metric].toLocaleString()}</div>
       </div>
     )
