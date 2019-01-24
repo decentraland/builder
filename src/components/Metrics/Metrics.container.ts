@@ -1,17 +1,19 @@
 import { connect } from 'react-redux'
+
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
+import { getCurrentScene } from 'modules/scene/selectors'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './Metrics.types'
 import Metrics from './Metrics'
-import { getCurrentScene } from 'modules/scene/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   const currentProject = getCurrentProject(state)
   const currentScene = getCurrentScene(state)
   if (currentProject && currentScene) {
+    const { rows, cols } = currentProject.parcelLayout
     return {
-      parcels: currentProject.parcels.length,
+      parcels: rows * cols,
       metrics: currentScene.metrics,
       limits: currentScene.limits
     }

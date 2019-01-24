@@ -25,7 +25,7 @@ export const startEditor = () => action(START_EDITOR, {})
 
 export type StartEditorAction = ReturnType<typeof startEditor>
 
-// Start editor
+// Close editor
 
 export const CLOSE_EDITOR = 'Close editor'
 

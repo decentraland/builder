@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
+
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
+import Metrics from 'components/Metrics'
 import { Props } from './EditorPage.types'
 import './EditorPage.css'
-import Metrics from 'components/Metrics'
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {

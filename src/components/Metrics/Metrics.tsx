@@ -1,10 +1,9 @@
 import * as React from 'react'
-
-import { Props, State } from './Metrics.types'
-
-import './Metrics.css'
-import { SceneMetrics } from 'modules/scene/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
+import { SceneMetrics } from 'modules/scene/types'
+import { Props, State } from './Metrics.types'
+import './Metrics.css'
 
 export default class Metrics extends React.PureComponent<Props, State> {
   constructor(props: Props) {
