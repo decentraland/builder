@@ -6,7 +6,14 @@ import './SquaresGrid.css'
 
 export default class SquaresGrid extends React.PureComponent<Props> {
   static defaultProps = {
-    size: ''
+    size: '',
+    onClick: () => {
+      /* noop */
+    }
+  }
+
+  handleOnClick = () => {
+    this.props.onClick()
   }
 
   times(count: number, callback: (index: number) => any) {
@@ -16,7 +23,7 @@ export default class SquaresGrid extends React.PureComponent<Props> {
   render() {
     const { rows, cols, size } = this.props
     return (
-      <div className={`SquaresGrid squares-grid-${rows}-${cols} ${size}`}>
+      <div className={`SquaresGrid squares-grid-${rows}-${cols} ${size}`} onClick={this.handleOnClick}>
         {rows === 1 && cols === 1 ? (
           <Square size={size || 'medium'} />
         ) : (

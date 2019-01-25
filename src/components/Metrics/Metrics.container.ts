@@ -13,12 +13,16 @@ const mapState = (state: RootState): MapStateProps => {
   if (currentProject && currentScene) {
     const { rows, cols } = currentProject.parcelLayout
     return {
+      rows,
+      cols,
       parcels: rows * cols,
       metrics: currentScene.metrics,
       limits: currentScene.limits
     }
   }
   return {
+    rows: 0,
+    cols: 0,
     parcels: 0,
     metrics: EMPTY_SCENE_METRICS,
     limits: EMPTY_SCENE_METRICS

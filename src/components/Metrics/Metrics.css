@@ -2,31 +2,32 @@
   position: absolute;
   bottom: 20px;
   left: 20px;
+  font-size: 11px;
   z-index: var(--prewiew-z-index);
+  display: flex;
+  align-items: center;
 }
 
-.Metrics .button {
-  position: relative;
-  width: 25px;
-  height: 25px;
+.Metrics .SquaresGrid {
   cursor: pointer;
+}
+
+.Metrics.metric-exceeded .Square {
+  background-color: rgba(var(--error-raw), 0.4);
+  border-color: var(--error);
 }
 
 .Metrics .metric {
   display: flex;
+  margin-bottom: 12px;
 }
 
 .Metrics .metric .label {
   margin-right: 8px;
-  text-transform: capitalize;
-  font-size: 15px;
-  line-height: 24px;
+  text-transform: uppercase;
 }
 
-.Metrics .metric .value {
-  font-size: 15px;
-  line-height: 24px;
-}
+.Metrics .bubble .dimensions,
 .Metrics .metric .value-limit {
   color: var(--purplish-grey);
 }
@@ -42,9 +43,13 @@
   left: -5px;
 }
 
-.Metrics .metric.error .label,
-.Metrics .metric.error .value {
-  color: var(--neon-red);
+.Metrics .bubble .bubble-title {
+  font-size: 15px;
+}
+
+.Metrics .metric.exceeded .label,
+.Metrics .metric.exceeded .value {
+  color: var(--error);
 }
 
 .Metrics .bubble:after {
@@ -59,13 +64,21 @@
   color: var(--dark);
 }
 
-.Metrics .exceeded-metric {
-  position: absolute;
-  left: 32px;
-  top: 3px;
-  width: 200px;
+.Metrics .bubble .divider {
+  height: 1px;
+  width: 80%;
+  margin: 10px auto;
+  border-top: 1px solid var(--purplish-grey);
+  opacity: 0.2;
+}
+
+.Metrics .value-too-high {
+  margin-left: 16px;
   text-transform: uppercase;
-  color: var(--neon-red);
-  font-size: 12px;
   cursor: pointer;
+}
+
+.Metrics .value-too-high .Icon {
+  margin-right: 4px;
+  vertical-align: sub;
 }

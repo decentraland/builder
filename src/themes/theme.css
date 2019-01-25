@@ -5,6 +5,9 @@
   --purplish-grey: #676370;
   --purplish-grey-raw: 103, 99, 112;
 
+  --error: var(--neon-red);
+  --error-raw: 255, 0, 68;
+
   --dark: #16141a;
 
   /* z-indexes */

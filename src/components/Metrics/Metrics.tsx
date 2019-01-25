@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import SquaresGrid from 'components/SquareGrid'
+import SquaresGrid from 'components/SquaresGrid'
+import Icon from 'components/Icon'
 import { SceneMetrics } from 'modules/scene/types'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
+import { getDimensions } from 'lib/layout'
 
 export default class Metrics extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -46,7 +48,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
     const { metrics, limits } = this.props
     let classes = 'metric'
     if (metrics[metric] > limits[metric]) {
-      classes += ' error'
+      classes += ' exceeded'
     }
 
     return (
@@ -61,25 +63,33 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { metrics, limits } = this.props
+    const { rows, cols, metrics, limits } = this.props
     const { toggle } = this.state
     const exceededMetric = Object.keys(this.props.metrics).find(
       key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics]
     )
-    let buttonClasses = 'button'
-    if (exceededMetric) {
-      buttonClasses += ' error'
-    }
+
     return (
-      <div className="Metrics" onClick={this.handleClick}>
-        <div className={buttonClasses} onClick={this.handleToggle}>
-          <SquaresGrid cols={2} rows={2} size="tiny" />
-        </div>
-        {toggle ? <div className="bubble">{this.renderMetrics()}</div> : null}
-        {exceededMetric ? (
-          <div className="exceeded-metric" onClick={this.handleToggle}>
-            {t('metrics.too_many', { metric: exceededMetric })}
+      <div className={`Metrics ${exceededMetric ? 'metric-exceeded' : ''}`} onClick={this.handleClick}>
+        <SquaresGrid cols={2} rows={2} size="tiny" onClick={this.handleToggle} />
+        {toggle ? (
+          <div className="bubble">
+            <div className="bubble-title">
+              <span>
+                {rows}x{cols} LAND
+              </span>
+              &nbsp;
+              <span className="dimensions">{getDimensions(rows, cols)}</span>
+            </div>
+            <div className="divider" />
+            {this.renderMetrics()}
           </div>
+        ) : null}
+        {exceededMetric ? (
+          <span className="value-too-high" onClick={this.handleToggle}>
+            <Icon name="info" />
+            {t('metrics.too_many', { metric: exceededMetric })}
+          </span>
         ) : null}
       </div>
     )

@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import Icon from './Icon'
+import Icon from 'components/Icon'
 import { Props } from './EditorButton.types'
 import './EditorButton.css'
 
