@@ -5,6 +5,7 @@ import { CREATE_PROJECT_FROM_TEMPLATE, CreateProjectFromTemplateAction, createPr
 import { Project } from 'modules/project/types'
 import { SceneDefinition } from 'modules/scene/types'
 import { createScene } from 'modules/scene/actions'
+import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -18,14 +19,8 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     id: uuidv4(),
     entities: {},
     components: {},
-    metrics: {
-      entities: 0,
-      bodies: 0,
-      materials: 0,
-      height: 0,
-      textures: 0,
-      triangles: 0
-    }
+    metrics: EMPTY_SCENE_METRICS,
+    limits: EMPTY_SCENE_METRICS
   }
 
   const project: Project = {

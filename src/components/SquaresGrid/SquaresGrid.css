@@ -1,0 +1,22 @@
+.SquaresGrid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SquaresGrid.tiny .Square,
+.SquaresGrid.small .Square {
+  margin-bottom: 1px;
+  margin-right: 1px;
+}
+
+.SquaresGrid .Square,
+.SquaresGrid.medium .Square {
+  margin-bottom: 2px;
+  margin-right: 2px;
+}
+
+.SquaresGrid.big .Square {
+  margin-bottom: 4px;
+  margin-right: 4px;
+}

@@ -1,0 +1,84 @@
+.Metrics {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 11px;
+  z-index: var(--prewiew-z-index);
+  display: flex;
+  align-items: center;
+}
+
+.Metrics .SquaresGrid {
+  cursor: pointer;
+}
+
+.Metrics.metric-exceeded .Square {
+  background-color: rgba(var(--error-raw), 0.4);
+  border-color: var(--error);
+}
+
+.Metrics .metric {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.Metrics .metric .label {
+  margin-right: 8px;
+  text-transform: uppercase;
+}
+
+.Metrics .bubble .dimensions,
+.Metrics .metric .value-limit {
+  color: var(--purplish-grey);
+}
+
+.Metrics .bubble {
+  position: absolute;
+  background-color: var(--dark);
+  padding: 12px;
+  border-radius: 6px;
+  bottom: 36px;
+  color: white;
+  width: 260px;
+  left: -5px;
+}
+
+.Metrics .bubble .bubble-title {
+  font-size: 15px;
+}
+
+.Metrics .metric.exceeded .label,
+.Metrics .metric.exceeded .value {
+  color: var(--error);
+}
+
+.Metrics .bubble:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  border-top: 8px solid black;
+  border-top-color: inherit;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  color: var(--dark);
+}
+
+.Metrics .bubble .divider {
+  height: 1px;
+  width: 80%;
+  margin: 10px auto;
+  border-top: 1px solid var(--purplish-grey);
+  opacity: 0.2;
+}
+
+.Metrics .value-too-high {
+  margin-left: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.Metrics .value-too-high .Icon {
+  margin-right: 4px;
+  vertical-align: sub;
+}

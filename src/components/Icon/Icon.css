@@ -1,0 +1,6 @@
+.Icon {
+  display: inline-block;
+}
+.Icon:before {
+  content: '';
+}

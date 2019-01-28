@@ -18,3 +18,7 @@
 .EditorButton.active {
   background: rgba(var(--purplish-grey-raw), 0.32);
 }
+
+.EditorButton .Icon {
+  display: block;
+}

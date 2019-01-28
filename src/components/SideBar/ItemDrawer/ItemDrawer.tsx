@@ -5,9 +5,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
 import { Asset } from 'modules/asset/types'
+import EditorButton from 'components/EditorButton'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
-import EditorButton from 'components/EditorButton'
 
 const DEFAULT_COLUMN_COUNT = 3
 

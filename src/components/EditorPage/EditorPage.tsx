@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
+
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
+import Metrics from 'components/Metrics'
 import { Props } from './EditorPage.types'
 import './EditorPage.css'
 
@@ -15,6 +17,7 @@ export default class EditorPage extends React.PureComponent<Props> {
 
   componentWillUnmount() {
     this.props.onUnbindKeyboardShortcuts()
+    this.props.onCloseEditor()
   }
 
   render() {
@@ -25,6 +28,7 @@ export default class EditorPage extends React.PureComponent<Props> {
           <Grid.Row>
             <ViewPort view="preview" />
             <SideBar />
+            <Metrics />
           </Grid.Row>
         </Grid>
       </div>
