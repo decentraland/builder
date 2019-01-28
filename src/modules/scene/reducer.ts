@@ -10,7 +10,6 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS
 } from 'modules/scene/actions'
-import { EMPTY_SCENE_METRICS } from './constants'
 
 export type SceneState = {
   data: Record<string, SceneDefinition>
@@ -22,15 +21,7 @@ export type UndoableSceneState = StateWithHistory<SceneState>
 export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction
 
 const INITIAL_STATE: SceneState = {
-  data: {
-    'test-scene': {
-      id: 'test-scene',
-      entities: {},
-      components: {},
-      metrics: EMPTY_SCENE_METRICS,
-      limits: EMPTY_SCENE_METRICS
-    }
-  },
+  data: {},
   loading: [],
   error: null
 }

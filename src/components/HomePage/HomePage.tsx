@@ -33,16 +33,21 @@ export default class HomePage extends React.PureComponent<Props> {
         <Header size="large">{t('homepage.title')}</Header>
         <p className="subtitle">{t('homepage.subtitle')}</p>
 
-        {projects.length > 0 ? (
-          <div className="project-cards">
-            <div className="subtitle">{t('global.projects').toUpperCase()}</div>
+        <div className="project-cards">
+          <div className="subtitle">{t('global.projects').toUpperCase()}</div>
+          {projects.length > 0 ? (
             <div className="CardList">
               {projects.map((project, index) => (
                 <ProjectCard key={index} project={project} onClick={this.handleProjectClick} />
               ))}
             </div>
-          </div>
-        ) : null}
+          ) : (
+            <div className="empty-projects">
+              <div>{t('homepage.empty_projects_title')}</div>
+              <small>{t('homepage.empty_projects_cta')}</small>
+            </div>
+          )}
+        </div>
 
         <div className="project-cards">
           <div className="subtitle">{t('global.templates').toUpperCase()}</div>
