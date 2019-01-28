@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
 import { AssetResource } from 'modules/asset/types'
-import { SceneDefinition, EntityDefinition, AnyComponent, SceneMetrics } from './types'
+import { SceneDefinition, EntityDefinition, AnyComponent, SceneMetrics, ComponentType, ComponentData } from './types'
 
 // Create scene
 
@@ -36,3 +36,12 @@ export const updateMetrics = (sceneId: string, metrics: SceneMetrics, limits: Sc
   action(UPDATE_METRICS, { sceneId, metrics, limits })
 
 export type UpdateMetricsAction = ReturnType<typeof updateMetrics>
+
+// Update component
+
+export const UPDATE_TRANSFORM = 'Update transform'
+
+export const updateComponent = (sceneId: string, componentId: string, data: ComponentData[ComponentType.Transform]) =>
+  action(UPDATE_TRANSFORM, { sceneId, componentId, data })
+
+export type UpdateComponentAction = ReturnType<typeof updateComponent>

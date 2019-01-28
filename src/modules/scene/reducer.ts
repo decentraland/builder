@@ -8,7 +8,9 @@ import {
   ProvisionSceneAction,
   PROVISION_SCENE,
   UpdateMetricsAction,
-  UPDATE_METRICS
+  UPDATE_METRICS,
+  UPDATE_TRANSFORM,
+  UpdateComponentAction
 } from 'modules/scene/actions'
 
 export type SceneState = {
@@ -18,7 +20,7 @@ export type SceneState = {
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction
+export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction | UpdateComponentAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -74,6 +76,32 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
             limits: {
               ...state.data[sceneId].limits,
               ...limits
+            }
+          }
+        }
+      }
+    }
+
+    case UPDATE_TRANSFORM: {
+      const { sceneId, componentId, data } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [sceneId]: {
+            ...state.data[sceneId],
+            components: {
+              ...state.data[sceneId].components,
+              [componentId]: {
+                ...state.data[sceneId].components[componentId],
+                data: {
+                  ...data,
+                  position: {
+                    ...data.position,
+                    y: data.position.y < 0 ? 0 : data.position.y
+                  }
+                }
+              }
             }
           }
         }

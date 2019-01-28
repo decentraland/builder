@@ -18,7 +18,11 @@ export function writeGLTFComponents(components: Record<string, AnyComponent>): s
     }
   }
 
-  out += '};\n'
+  out += `};
+    for(var i in gltfLookup){
+      gltfLookup[i].isPickable = true;
+    }
+  `
 
   return out
 }
@@ -27,12 +31,22 @@ export function writeGLTFComponents(components: Record<string, AnyComponent>): s
  * Generates a script where all entities are instanced and reference their respective previously instanced components
  */
 export function writeEntities(entities: Record<string, EntityDefinition>, components: Record<string, AnyComponent>): string {
-  let out = 'var entities = [];\nvar currentEntity = null;\n'
+  let out = `
+    var entities = [];
+    var currentEntity = null;
+    var gizmoEvent = new OnDragEnded((e) => log('drag ended received in ECS', e));
+    gizmoEvent.data.uuid = 'dragEndedEvent-editor';
+  `
 
   for (let key in entities) {
     const entity = entities[key]
 
-    out += `currentEntity = entities[entities.push(new Entity()) - 1];\n`
+    out += `
+      currentEntity = new Entity();
+      entities.push(currentEntity);
+      currentEntity.uuid = ${JSON.stringify(entity.id)};
+      currentEntity.set(gizmoEvent);
+    `
 
     for (let j = 0; j < entity.components.length; j++) {
       const component = components[entity.components[j]]
@@ -44,7 +58,7 @@ export function writeEntities(entities: Record<string, EntityDefinition>, compon
         const { position, rotation } = transform.data
         out += `currentEntity.set(new Transform({
           position: new Vector3(${position.x}, ${position.y}, ${position.z}),
-          rotation: Quaternion.Euler(${rotation.x}, ${rotation.y}, ${rotation.z})
+          rotation: new Quaternion(${rotation.x}, ${rotation.y}, ${rotation.z}, ${rotation.w})
         }));\n`
       }
     }

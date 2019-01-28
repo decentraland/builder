@@ -20,6 +20,30 @@
         }
       },
       {
+        "id": "bush",
+        "name": "Bush",
+        "thumbnail": "https://content.decentraland.today/contents/QmYwJnsm4A9WqySfNFegfuzHmEoeCapjb3X4bgurtM3WHG",
+        "url": "Bush_01/Bush_01.glb",
+        "tags": ["nature"],
+        "category": "nature",
+        "variations": [],
+        "contents": {
+          "Bush_01/Bush_01.glb": "QmaKbCD18AHE2aCiwVg1c5LKMx2nPMHwuiJfZT8gDux6i2"
+        }
+      },
+      {
+        "id": "bush",
+        "name": "Mana",
+        "thumbnail": "https://content.decentraland.today/contents/QmSZfYr21VDJ1oURrWiWZepzSJeu8to38QQsCumhXwDi7U",
+        "url": "CoinMana_01/CoinMana_01.glb",
+        "tags": ["misc"],
+        "category": "misc",
+        "variations": [],
+        "contents": {
+          "CoinMana_01/CoinMana_01.glb": "QmU3aHiw7gHLn5QcV6tdwCSkkeUjYq7As8WbGWebFQmnM9"
+        }
+      },
+      {
         "name": "Camp fire",
         "thumbnail": "https://content.decentraland.today/contents/QmUA8bZeMm61y78Q7VmoEZLMGzTi5CxhAVi1QfXkVHDdHX",
         "url": "CampFire/CampFire.gltf",
