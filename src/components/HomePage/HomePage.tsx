@@ -43,8 +43,8 @@ export default class HomePage extends React.PureComponent<Props> {
             </div>
           ) : (
             <div className="empty-projects">
-              <div>Here's where your projects will live</div>
-              <small>Select a template below to start building awesome stuff!</small>
+              <div>{t('homepage.empty_projects_title')}</div>
+              <small>{t('homepage.empty_projects_cta')}</small>
             </div>
           )}
         </div>
