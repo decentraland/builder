@@ -1,5 +1,6 @@
 export type Props = {
   name:
+    | 'alert'
     | 'arrow-down'
     | 'arrow-up'
     | 'delete'
