@@ -14,6 +14,18 @@
   font-size: 13px;
 }
 
+.HomePage .empty-projects {
+  padding: 47px 0;
+  margin-top: var(--homepage-card-margin);
+  border: 1px solid rgba(var(--purplish-grey-raw), 0.48);
+  border-radius: 5px;
+  color: var(--purplish-grey);
+  text-align: center;
+}
+.HomePage .empty-projects > div {
+  margin-bottom: 10px;
+}
+
 .HomePage .CardList {
   overflow: hidden;
 }

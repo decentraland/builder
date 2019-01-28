@@ -8,7 +8,9 @@
   },
   "homepage": {
     "title": "Build something cool!",
-    "subtitle": "Import a file or start from scratch with our templates or your own LAND!"
+    "subtitle": "Import a file or start from scratch with our templates or your own LAND!",
+    "empty_projects_title": "Here's where your projects will live",
+    "empty_projects_cta": "Select a template below to start building awesome stuff!"
   },
   "itemdrawer": {
     "title": "Item drawer"
