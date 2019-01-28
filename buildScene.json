@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Compile test scenes (gamekit)",
+    "kind": "Webpack",
+    "file": "./sceneSrc/game.ts",
+    "target": "web"
+  }
+]

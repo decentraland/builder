@@ -13,7 +13,8 @@ import {
   UPDATE_EDITOR,
   CLOSE_EDITOR
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics } from 'modules/scene/actions'
+
+import { PROVISION_SCENE, updateMetrics, CREATE_SCENE, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -38,6 +39,8 @@ export function* editorSaga() {
   yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
   yield takeLatest(START_EDITOR, handleStartEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
+  yield takeLatest(ADD_ASSET, handleEditorAction)
+  yield takeLatest(CREATE_SCENE, handleEditorAction)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -128,4 +131,12 @@ function* handleStartEditor() {
 
 function* handleCloseEditor() {
   yield call(() => (window as EditorWindow).editor.off('metrics', handleMetricsChange))
+}
+
+/**
+ * This function sends the update actions to the editor.
+ */
+function* handleEditorAction(action: any) {
+  // @ts-ignore: Client api
+  yield call(() => window['editor']['sendSceneAction'](action))
 }
