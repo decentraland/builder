@@ -10,6 +10,8 @@ import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
+import { CREATE_SCENE } from 'modules/scene/actions'
+import { CREATE_PROJECT } from 'modules/project/actions'
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -25,7 +27,9 @@ const loggerMiddleware = createLogger({
 })
 
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
-  storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY')
+  storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
+  paths: ['project', 'scene'],
+  actions: [CREATE_PROJECT, CREATE_SCENE]
 })
 const middlewares = [historyMiddleware, storageMiddleware, sagasMiddleware, loggerMiddleware]
 
