@@ -141,7 +141,7 @@ function* handleCloseEditor() {
 /**
  * This function sends the update actions to the editor.
  */
-function* handleEditorAction(action: any) {
+function* handleEditorAction(action: UpdateEditorAction) {
   // @ts-ignore: Client api
-  yield call(() => window['editor']['sendSceneAction'](action))
+  yield call(() => window['editor']['sendExternalAction'](action))
 }
