@@ -1,4 +1,4 @@
-import { Vector3 } from 'modules/common/types'
+import { Vector3, Quaternion } from 'modules/common/types'
 
 export type EntityDefinition = {
   id: string
@@ -18,7 +18,7 @@ export type ComponentData = {
 
   [ComponentType.Transform]: {
     position: Vector3
-    rotation: Vector3
+    rotation: Quaternion
   }
 }
 

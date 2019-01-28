@@ -3,7 +3,7 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { ComponentDefinition, ComponentType, SceneDefinition, AnyComponent } from './types'
+import { ComponentDefinition, ComponentType, SceneDefinition, AnyComponent, EntityDefinition } from './types'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
@@ -22,6 +22,30 @@ export const getComponents = createSelector<RootState, SceneDefinition, Record<s
   getCurrentScene,
   scene => scene.components
 )
+
+export const getEntities = createSelector<RootState, SceneDefinition, Record<string, EntityDefinition>>(
+  getCurrentScene,
+  scene => scene.entities
+)
+
+export const getEntityComponents = (entityId: string) =>
+  createSelector<RootState, Record<string, EntityDefinition>, Record<string, AnyComponent>, Record<string, AnyComponent>>(
+    getEntities,
+    getComponents,
+    (entities, components) => {
+      let out: Record<string, AnyComponent> = {}
+
+      if (entityId && entities) {
+        const componentReferences = entities[entityId].components
+
+        for (let componentId of componentReferences) {
+          out[componentId] = components[componentId]
+        }
+      }
+
+      return out
+    }
+  )
 
 export const getComponentByType = <T extends ComponentType>(type: T) => (state: RootState) => {
   const components = getCurrentScene(state).components
