@@ -34,7 +34,7 @@ function* handleAddAsset(action: AddAssetAction) {
     type: ComponentType.Transform,
     data: {
       position,
-      rotation: { x: 0, y: 0, z: 0 }
+      rotation: { x: 0, y: 0, z: 0, w: 1 }
     }
   })
 

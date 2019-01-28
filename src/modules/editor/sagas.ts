@@ -14,18 +14,18 @@ import {
   UpdateEditorAction
 } from 'modules/editor/actions'
 
-import { PROVISION_SCENE, updateMetrics, CREATE_SCENE, ADD_ASSET } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, CREATE_SCENE, ADD_ASSET, updateComponent, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
-import { getCurrentScene } from 'modules/scene/selectors'
+import { getCurrentScene, getEntityComponents } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { KeyboardShortcut } from 'modules/keyboard/types'
-import { SceneDefinition, SceneMetrics } from 'modules/scene/types'
+import { SceneDefinition, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
 import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
-import { RootState } from 'modules/common/types'
+import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene } from './utils'
 
@@ -42,6 +42,7 @@ export function* editorSaga() {
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(ADD_ASSET, handleEditorAction)
   yield takeLatest(CREATE_SCENE, handleEditorAction)
+  yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -114,8 +115,22 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
   }
 }
 
+function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+  const scene = getCurrentScene(store.getState() as RootState)
+  const components = getEntityComponents(args.entityId)(store.getState() as RootState)
+  const transform = Object.values(components).find(component => component.type === ComponentType.Transform)
+
+  if (transform) {
+    store.dispatch(updateComponent(scene.id, transform.id, { position: args.transform.position, rotation: args.transform.rotation }))
+  } else {
+    console.warn(`Unable to find Transform component for ${args.entityId}`)
+  }
+}
+
 function* handleStartEditor() {
   yield call(() => (window as EditorWindow).editor.on('metrics', handleMetricsChange))
+  // The client will report the deltas when the transform of an entity has changed (gizmo movement)
+  yield call(() => (window as EditorWindow).editor.on('transform', handlePositionGizmoUpdate))
 }
 
 function* handleCloseEditor() {
