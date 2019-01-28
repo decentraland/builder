@@ -1,15 +1,10 @@
 import * as React from 'react'
-import { env } from 'decentraland-commons'
 import { Loader } from 'decentraland-ui'
 
 import { EditorWindow } from './Preview.types'
 import './Preview.css'
 
 const editorWindow = window as EditorWindow
-
-const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
-  throw new Error('Missing REACT_APP_CONTENT_SERVER env variable')
-})
 
 export default class Preview extends React.Component {
   private canvas = React.createRef<HTMLDivElement>()
@@ -39,7 +34,7 @@ export default class Preview extends React.Component {
   moveCanvas = (canvas: HTMLCanvasElement) => {
     if (this.canvas.current && canvas) {
       this.canvas.current.appendChild(canvas)
-      editorWindow.editor.initEngine(CONTENT_SERVER as string)
+      editorWindow.editor.initEngine()
       editorWindow.editor.resize()
     }
   }

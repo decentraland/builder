@@ -1,1 +1,0 @@
-/Users/menduz/code/client/packages/decentraland-ecs/dist/src/index.js

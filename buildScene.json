@@ -1,8 +1,8 @@
 [
   {
-    "name": "Compile test scenes (gamekit)",
+    "name": "Compile ecs scene",
     "kind": "Webpack",
-    "file": "./sceneSrc/game.ts",
+    "file": "./src/ecsScene/scene.ts",
     "target": "web"
   }
 ]

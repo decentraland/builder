@@ -1,4 +1,5 @@
 export type EditorScene = {
+  baseUrl: string
   display: {
     title: string
   }

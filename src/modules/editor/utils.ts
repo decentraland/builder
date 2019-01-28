@@ -1,19 +1,18 @@
 import { EditorScene } from 'modules/editor/types'
-import { SceneDefinition } from 'modules/scene/types'
-import { writeGLTFComponents, writeEntities } from 'modules/scene/writers'
-import { AssetMappings } from 'modules/asset/types'
-const ecs = require('raw-loader!./ecs')
+import { env } from 'decentraland-commons'
+const script = require('raw-loader!../../ecsScene/scene.js')
 
-export function getEditorScene(title: string, scene: SceneDefinition, assetMappings: AssetMappings): EditorScene {
-  const { components, entities } = scene
-  const ownScript = writeGLTFComponents(components) + writeEntities(entities, components)
-  const script = ecs + ownScript
+const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
+  throw new Error('Missing REACT_APP_CONTENT_SERVER env variable')
+})
+
+export function getNewScene(title: string): EditorScene {
   const mappings = {
-    'game.js': `data:application/javascript;base64,${btoa(script)}`,
-    ...assetMappings
+    'game.js': `data:application/javascript;base64,${btoa(script)}`
   }
 
   return {
+    baseUrl: CONTENT_SERVER as string,
     display: {
       title
     },

@@ -90,7 +90,7 @@
     "extends": "react-app"
   },
   "eslintIgnore": [
-    "src/modules/editor/ecs.js"
+    "src/ecsScene/scene.js"
   ],
   "browserslist": [
     ">0.2%",

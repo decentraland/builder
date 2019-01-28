@@ -2,7 +2,6 @@ import { takeLatest, select, put, call } from 'redux-saga/effects'
 
 import {
   updateEditor,
-  UpdateEditorAction,
   editorUndo,
   editorRedo,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
@@ -11,7 +10,8 @@ import {
   EDITOR_UNDO,
   EDITOR_REDO,
   UPDATE_EDITOR,
-  CLOSE_EDITOR
+  CLOSE_EDITOR,
+  UpdateEditorAction
 } from 'modules/editor/actions'
 
 import { PROVISION_SCENE, updateMetrics, CREATE_SCENE, ADD_ASSET } from 'modules/scene/actions'
@@ -19,7 +19,6 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getEditorScene } from 'modules/editor/utils'
 import { KeyboardShortcut } from 'modules/keyboard/types'
 import { SceneDefinition, SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
@@ -28,6 +27,7 @@ import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
+import { getNewScene } from './utils'
 
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
@@ -36,7 +36,8 @@ export function* editorSaga() {
   yield takeLatest(START_EDITOR, handleApplyEditorState)
   yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
   yield takeLatest(EDITOR_REDO, handleApplyEditorState)
-  yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
+  yield takeLatest(UPDATE_EDITOR, handleEditorAction)
+  yield takeLatest(START_EDITOR, handleNewScene)
   yield takeLatest(START_EDITOR, handleStartEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(ADD_ASSET, handleEditorAction)
@@ -67,15 +68,28 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
   ]
 }
 
+function* handleNewScene() {
+  const project: Project = yield select(getCurrentProject)
+  const newScene: EditorPayloadScene = getNewScene(project.title)
+
+  const msg = {
+    type: 'update',
+    payload: {
+      scene: newScene
+    }
+  }
+
+  // @ts-ignore: Client api
+  yield call(() => window['editor']['handleMessage'](msg))
+}
+
 function* handleProvisionScene() {
   const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
-    const project: Project = yield select(getCurrentProject)
     const assetMappings: AssetMappings = yield select(getAssetMappings)
-    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
 
-    yield put(updateEditor(scene.id, newScene))
+    yield put(updateEditor(scene.id, scene, assetMappings))
   } else {
     // TODO: dispatch a proper 404 error message
     console.warn('Invalid scene')
@@ -86,35 +100,10 @@ function* handleApplyEditorState() {
   const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
-    const project: Project = yield select(getCurrentProject)
     const assetMappings: AssetMappings = yield select(getAssetMappings)
-    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
 
-    yield handleUpdateEditor(updateEditor(scene.id, newScene))
+    yield handleEditorAction(updateEditor(scene.id, scene, assetMappings))
   }
-}
-
-function* handleUpdateEditor(action: UpdateEditorAction) {
-  let payloadScene: EditorPayloadScene
-
-  if (action.payload.scene) {
-    payloadScene = action.payload.scene
-  } else {
-    const scene: SceneDefinition = yield select(getCurrentScene)
-    const project: Project = yield select(getCurrentProject)
-    const assetMappings: AssetMappings = {}
-    payloadScene = getEditorScene(project.title, scene, assetMappings)
-  }
-
-  const msg = {
-    type: 'update',
-    payload: {
-      scene: payloadScene
-    }
-  }
-
-  // @ts-ignore: Client api
-  yield call(() => window['editor']['handleMessage'](msg))
 }
 
 function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
@@ -136,7 +125,7 @@ function* handleCloseEditor() {
 /**
  * This function sends the update actions to the editor.
  */
-function* handleEditorAction(action: any) {
+function* handleEditorAction(action: UpdateEditorAction) {
   // @ts-ignore: Client api
-  yield call(() => window['editor']['sendSceneAction'](action))
+  yield call(() => window['editor']['sendExternalAction'](action))
 }

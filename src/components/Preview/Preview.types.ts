@@ -1,5 +1,5 @@
 export type Editor = {
-  initEngine: (baseUrl: string) => void
+  initEngine: () => void
   resize: () => void
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   enableGizmo: (entityId: string) => void
