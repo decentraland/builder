@@ -1,4 +1,4 @@
-import { log, engine, GLTFShape, Transform, Entity } from 'decentraland-ecs'
+import { log, engine, GLTFShape, Transform, Entity, OnDragEnded } from 'decentraland-ecs'
 
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 
@@ -37,6 +37,7 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
           switch (type) {
             case 'GLTFShape':
               editorComponents[id] = new GLTFShape(data.src)
+              editorComponents[id].isPickable = true
               break
             case 'Transform':
               editorComponents[id] = new Transform()
@@ -52,6 +53,9 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         if (!entity) {
           entity = new Entity()
           ;(entity as any).uuid = id
+          let gizmoEvent = new OnDragEnded((e: any) => log('drag ended received in ECS', e))
+          gizmoEvent.data.uuid = 'dragEndedEvent-editor'
+          entity.set(gizmoEvent)
           engine.addEntity(entity)
         }
 
