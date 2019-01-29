@@ -1,5 +1,4 @@
-import { log, engine, GLTFShape, Transform, Entity } from 'decentraland-ecs'
-import { Gizmos, OnDragEnded } from './Gizmos'
+import { log, engine, GLTFShape, Transform, Entity, Gizmos, OnDragEnded } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 
 const editorComponents: Record<string, any> = {}
