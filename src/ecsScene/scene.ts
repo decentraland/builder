@@ -1,18 +1,18 @@
-import { log, engine, GLTFShape, Transform, Entity, OnDragEnded } from 'decentraland-ecs'
-
+import { log, engine, GLTFShape, Transform, Entity } from 'decentraland-ecs'
+import { Gizmos, OnDragEnded } from './Gizmos'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 
-declare var dcl: DecentralandInterface
-
-dcl.subscribe('externalAction')
-
-dcl.onEvent(e => {
-  if (e.type === 'externalAction') {
-    handleExternalAction(e.data as any)
-  }
-})
-
 const editorComponents: Record<string, any> = {}
+const gizmo = new Gizmos()
+{
+  gizmo.position = true
+  gizmo.rotation = false
+  gizmo.scale = false
+  gizmo.updateEntity = false
+}
+
+let gizmoEvent = new OnDragEnded((e: any) => log('drag ended received in ECS', e))
+gizmoEvent.data.uuid = 'dragEndedEvent-editor'
 
 function getComponentById(id: string) {
   if (id in editorComponents) {
@@ -28,12 +28,11 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         scene: { components, entities }
       } = message.payload
 
-      log({ components, entities })
-
       // create new components
       for (let id in components) {
+        const { type, data } = components[id]
+
         if (!getComponentById(id)) {
-          const { type, data } = components[id]
           switch (type) {
             case 'GLTFShape':
               editorComponents[id] = new GLTFShape(data.src)
@@ -42,6 +41,15 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
             case 'Transform':
               editorComponents[id] = new Transform()
               break
+          }
+        }
+
+        const component = editorComponents[id]
+
+        if (component) {
+          if (type === 'Transform') {
+            const transform = component as Transform
+            data.position && transform.position.copyFrom(data.position)
           }
         }
       }
@@ -53,9 +61,8 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         if (!entity) {
           entity = new Entity()
           ;(entity as any).uuid = id
-          let gizmoEvent = new OnDragEnded((e: any) => log('drag ended received in ECS', e))
-          gizmoEvent.data.uuid = 'dragEndedEvent-editor'
           entity.set(gizmoEvent)
+          entity.set(gizmo)
           engine.addEntity(entity)
         }
 
@@ -67,4 +74,16 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         }
       }
   }
+}
+
+declare var dcl: DecentralandInterface
+
+{
+  dcl.subscribe('externalAction')
+
+  dcl.onEvent(e => {
+    if ((e.type as any) === 'externalAction') {
+      handleExternalAction(e.data as any)
+    }
+  })
 }
