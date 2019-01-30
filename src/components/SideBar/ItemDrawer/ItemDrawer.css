@@ -47,6 +47,6 @@
 }
 
 .ItemDrawer .overflow-container {
-  height: 100%;
+  height: calc(100% - 54px);
   overflow-y: overlay;
 }

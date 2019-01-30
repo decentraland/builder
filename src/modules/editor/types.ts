@@ -1,3 +1,5 @@
+export type EditorMode = 'move' | 'rotate' | 'select'
+
 export type EditorScene = {
   display: {
     title: string
