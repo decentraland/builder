@@ -23,7 +23,6 @@
     "css-loader": "1.0.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^3.11.0",
-    "decentraland-ecs": "^1.0.1-20181220152036.commit-d560183",
     "decentraland-eth": "^8.6.0",
     "decentraland-ui": "^1.17.0",
     "dotenv": "6.0.0",
@@ -79,18 +78,20 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "build:ci": "npm run lint && node scripts/build.js",
+    "start": "npm run build:scene && concurrently -n \"scene,builder\" \"decentraland-compiler buildScene.json --watch\" \"node scripts/start.js\"",
+    "build:scene": "decentraland-compiler buildScene.json",
+    "build": "npm run build:scene && node scripts/build.js",
+    "build:ci": "npm run lint && npm run build:scene && node scripts/build.js",
     "test": "node scripts/test.js",
     "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
+    "postinstall": "node ./scripts/postinstall.js",
     "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "eslintIgnore": [
-    "src/modules/editor/ecs.js"
+    "src/ecsScene/scene.js"
   ],
   "browserslist": [
     ">0.2%",
@@ -110,7 +111,10 @@
     "@types/react-dom": "16.0.11",
     "@types/react-redux": "^6.0.11",
     "@types/react-router-dom": "^4.3.1",
+    "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
+    "decentraland-ecs": "5.0.1-20190129203733.commit-4f35844",
+    "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"
   },

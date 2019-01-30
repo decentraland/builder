@@ -1,5 +1,7 @@
 import { action } from 'typesafe-actions'
-import { EditorScene, EditorMode } from './types'
+import { SceneDefinition } from 'modules/scene/types'
+import { AssetMappings } from 'modules/asset/types'
+import { EditorMode } from './types'
 
 // Bind keyboard shortcuts
 
@@ -17,14 +19,6 @@ export const unbindEditorKeyboardShortcuts = () => action(UNBIND_KEYBOARD_SHORTC
 
 export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorKeyboardShortcuts>
 
-// Start editor
-
-export const START_EDITOR = 'Start editor'
-
-export const startEditor = () => action(START_EDITOR, {})
-
-export type StartEditorAction = ReturnType<typeof startEditor>
-
 // Close editor
 
 export const CLOSE_EDITOR = 'Close editor'
@@ -37,7 +31,8 @@ export type CloseEditorAction = ReturnType<typeof closeEditor>
 
 export const UPDATE_EDITOR = 'Update editor'
 
-export const updateEditor = (sceneId: string, scene: EditorScene) => action(UPDATE_EDITOR, { sceneId, scene })
+export const updateEditor = (sceneId: string, scene: SceneDefinition, mappings: AssetMappings) =>
+  action(UPDATE_EDITOR, { sceneId, scene, mappings })
 
 export type UpdateEditorAction = ReturnType<typeof updateEditor>
 

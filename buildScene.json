@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Compile ecs scene",
+    "kind": "Webpack",
+    "file": "./src/ecsScene/scene.ts",
+    "target": "web"
+  }
+]

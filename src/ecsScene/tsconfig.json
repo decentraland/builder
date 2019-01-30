@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../",
+    "experimentalDecorators": true,
+    "outDir": "."
+  },
+  "includes": "*.ts",
+  "exclude": []
+}

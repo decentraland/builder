@@ -1,17 +1,17 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 
 import {
   updateEditor,
-  UpdateEditorAction,
   editorUndo,
   editorRedo,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
   UNBIND_KEYBOARD_SHORTCUTS,
-  START_EDITOR,
   EDITOR_UNDO,
   EDITOR_REDO,
   UPDATE_EDITOR,
   CLOSE_EDITOR,
+  UpdateEditorAction,
   SET_MODE,
   SetModeAction,
   TogglePreviewAction,
@@ -19,12 +19,11 @@ import {
   TOGGLE_SIDEBAR,
   ToggleSidebarAction
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponents } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getEditorScene } from 'modules/editor/utils'
 import { KeyboardShortcut } from 'modules/keyboard/types'
 import { SceneDefinition, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
@@ -32,19 +31,23 @@ import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
 import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
+import { LOAD_ASSET_PACKS_SUCCESS } from 'modules/assetPack/actions'
 import { EditorWindow } from 'components/Preview/Preview.types'
+import { getNewScene } from './utils'
+
+const editorWindow = window as EditorWindow
 
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
   yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
-  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
-  yield takeLatest(START_EDITOR, handleApplyEditorState)
+  yield takeLatest(PROVISION_SCENE, handleApplyEditorState)
   yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
   yield takeLatest(EDITOR_REDO, handleApplyEditorState)
-  yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
-  yield takeLatest(START_EDITOR, handleStartEditor)
-  yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
+  yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
+  yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
+  yield takeLatest(ADD_ASSET, handleApplyEditorState)
+  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleStartEditor)
   yield takeLatest(SET_MODE, handleSetMode)
   yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
@@ -74,54 +77,29 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
   ]
 }
 
-function* handleProvisionScene() {
-  const scene: SceneDefinition = yield select(getCurrentScene)
+function* handleNewScene() {
+  const project: Project = yield select(getCurrentProject)
+  const newScene: EditorPayloadScene = getNewScene(project.title)
 
-  if (scene) {
-    const project: Project = yield select(getCurrentProject)
-    const assetMappings: AssetMappings = yield select(getAssetMappings)
-    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
-
-    yield put(updateEditor(scene.id, newScene))
-  } else {
-    // TODO: dispatch a proper 404 error message
-    console.warn('Invalid scene')
+  const msg = {
+    type: 'update',
+    payload: {
+      scene: newScene
+    }
   }
+
+  // @ts-ignore: Client api
+  yield call(() => editorWindow.editor.handleMessage(msg))
 }
 
 function* handleApplyEditorState() {
   const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
-    const project: Project = yield select(getCurrentProject)
     const assetMappings: AssetMappings = yield select(getAssetMappings)
-    const newScene: EditorPayloadScene = getEditorScene(project.title, scene, assetMappings)
 
-    yield handleUpdateEditor(updateEditor(scene.id, newScene))
+    yield handleUpdateEditor(updateEditor(scene.id, scene, assetMappings))
   }
-}
-
-function* handleUpdateEditor(action: UpdateEditorAction) {
-  let payloadScene: EditorPayloadScene
-
-  if (action.payload.scene) {
-    payloadScene = action.payload.scene
-  } else {
-    const scene: SceneDefinition = yield select(getCurrentScene)
-    const project: Project = yield select(getCurrentProject)
-    const assetMappings: AssetMappings = {}
-    payloadScene = getEditorScene(project.title, scene, assetMappings)
-  }
-
-  const msg = {
-    type: 'update',
-    payload: {
-      scene: payloadScene
-    }
-  }
-
-  // @ts-ignore: Client api
-  yield call(() => window['editor']['handleMessage'](msg))
 }
 
 function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
@@ -145,13 +123,32 @@ function handlePositionGizmoUpdate(args: { entityId: string; transform: { positi
 }
 
 function* handleStartEditor() {
-  yield call(() => (window as EditorWindow).editor.on('metrics', handleMetricsChange))
+  // Creates a new scene in the dcl client's side
+  yield handleNewScene()
+
+  // TODO: find a better way to wait for the editor to be ready
+  yield delay(3000)
+
+  // Spawns the assets
+  yield handleApplyEditorState()
+
+  // Handles subscriptions to metrics
+  yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
+
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => (window as EditorWindow).editor.on('transform', handlePositionGizmoUpdate))
+  yield call(() => editorWindow.editor.on('transform', handlePositionGizmoUpdate))
 }
 
 function* handleCloseEditor() {
-  yield call(() => (window as EditorWindow).editor.off('metrics', handleMetricsChange))
+  yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
+}
+
+/**
+ * This function sends the update actions to the editor.
+ */
+function* handleUpdateEditor(action: UpdateEditorAction) {
+  // @ts-ignore: Client api
+  yield call(() => editorWindow.editor.sendExternalAction(action))
 }
 
 function* handleSetMode(action: SetModeAction) {
