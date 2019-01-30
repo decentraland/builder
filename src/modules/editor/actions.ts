@@ -83,3 +83,11 @@ export const SELECT_ENTITY = 'Select entity'
 export const selectEntity = (entityId: string) => action(SELECT_ENTITY, { entityId })
 
 export type SelectEntityAction = ReturnType<typeof selectEntity>
+
+// Unselect Entity
+
+export const UNSELECT_ENTITY = 'Unselect entity'
+
+export const unselectEntity = () => action(UNSELECT_ENTITY, {})
+
+export type UnselectEntityAction = ReturnType<typeof unselectEntity>

@@ -6,7 +6,9 @@ import {
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
   SelectEntityAction,
-  SELECT_ENTITY
+  SELECT_ENTITY,
+  UnselectEntityAction,
+  UNSELECT_ENTITY
 } from './actions'
 import { EditorMode } from './types'
 
@@ -24,7 +26,7 @@ const INITIAL_STATE: EditorState = {
   selectedEntityId: null
 }
 
-export type EditorReducerAction = SetModeAction | TogglePreviewAction | ToggleSidebarAction | SelectEntityAction
+export type EditorReducerAction = SetModeAction | TogglePreviewAction | ToggleSidebarAction | SelectEntityAction | UnselectEntityAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -53,6 +55,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         selectedEntityId: action.payload.entityId
+      }
+    }
+    case UNSELECT_ENTITY: {
+      return {
+        ...state,
+        selectedEntityId: null
       }
     }
     default:
