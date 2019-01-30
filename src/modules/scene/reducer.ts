@@ -10,8 +10,7 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS,
   UPDATE_TRANSFORM,
-  UpdateComponentAction,
-  ADD_ASSET
+  UpdateComponentAction
 } from 'modules/scene/actions'
 
 export type SceneState = {
@@ -116,10 +115,19 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
 
 // This is typed `as any` because undoable uses AnyAction from redux which doesn't account for the payload we use
 // so types don't match
-export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
+const undoableReducer = undoable<SceneState>(baseSceneReducer as any, {
   limit: 48,
   undoType: EDITOR_UNDO,
   redoType: EDITOR_REDO,
   clearHistoryType: CLOSE_EDITOR,
-  filter: includeAction([UPDATE_TRANSFORM, PROVISION_SCENE])
+  filter: includeAction([CREATE_SCENE, PROVISION_SCENE, UPDATE_TRANSFORM])
 })
+
+export const sceneReducer = (state: any, action: any) => {
+  const newState = undoableReducer(state, action)
+  // This prevents going back to a broken state after creating a new scene
+  if (action.type === CREATE_SCENE) {
+    newState.past.pop()
+  }
+  return newState
+}
