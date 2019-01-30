@@ -1,6 +1,6 @@
 import { log, engine, GLTFShape, Transform, Entity, Gizmos, OnDragEnded } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
-import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from '../modules/scene/types'
+import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 declare var dcl: DecentralandInterface
 
 const editorComponents: Record<string, any> = {}

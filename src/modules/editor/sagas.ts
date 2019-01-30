@@ -29,6 +29,8 @@ import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene } from './utils'
 
+const editorWindow = window as EditorWindow
+
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
   yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
@@ -78,7 +80,7 @@ function* handleNewScene() {
   }
 
   // @ts-ignore: Client api
-  yield call(() => window['editor']['handleMessage'](msg))
+  yield call(() => editorWindow.editor.handleMessage(msg))
 }
 
 function* handleApplyEditorState() {
@@ -122,14 +124,14 @@ function* handleStartEditor() {
   yield handleApplyEditorState()
 
   // Handles subscriptions to metrics
-  yield call(() => (window as EditorWindow).editor.on('metrics', handleMetricsChange))
+  yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => (window as EditorWindow).editor.on('transform', handlePositionGizmoUpdate))
+  yield call(() => editorWindow.editor.on('transform', handlePositionGizmoUpdate))
 }
 
 function* handleCloseEditor() {
-  yield call(() => (window as EditorWindow).editor.off('metrics', handleMetricsChange))
+  yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
 }
 
 /**
@@ -137,5 +139,5 @@ function* handleCloseEditor() {
  */
 function* handleUpdateEditor(action: UpdateEditorAction) {
   // @ts-ignore: Client api
-  yield call(() => window['editor']['sendExternalAction'](action))
+  yield call(() => editorWindow.editor.sendExternalAction(action))
 }
