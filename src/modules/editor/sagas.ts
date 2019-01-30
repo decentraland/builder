@@ -7,7 +7,6 @@ import {
   editorRedo,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
   UNBIND_KEYBOARD_SHORTCUTS,
-  START_EDITOR,
   EDITOR_UNDO,
   EDITOR_REDO,
   UPDATE_EDITOR,
@@ -26,6 +25,7 @@ import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
 import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
+import { LOAD_ASSET_PACKS_SUCCESS } from 'modules/assetPack/actions'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene } from './utils'
 
@@ -38,10 +38,10 @@ export function* editorSaga() {
   yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
   yield takeLatest(EDITOR_REDO, handleApplyEditorState)
   yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
-  yield takeLatest(START_EDITOR, handleStartEditor)
   yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(ADD_ASSET, handleApplyEditorState)
+  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleStartEditor)
 }
 
 function* handleBindEditorKeyboardShortcuts() {

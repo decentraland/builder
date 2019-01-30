@@ -4,16 +4,13 @@ import {
   LOAD_ASSET_PACKS_REQUEST,
   loadAssetPacksSuccess,
   loadAssetPacksFailure,
-  LoadAssetPacksRequestAction,
-  LOAD_ASSET_PACKS_SUCCESS
+  LoadAssetPacksRequestAction
 } from 'modules/assetPack/actions'
 import { RemoteAssetPack, FullAssetPack } from 'modules/assetPack/types'
 import { api } from 'lib/api'
-import { startEditor } from 'modules/editor/actions'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
-  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacksSuccess)
 }
 
 function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
@@ -43,9 +40,4 @@ function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))
   }
-}
-
-function* handleLoadAssetPacksSuccess() {
-  // TODO: this call should only be done the first time when the editor starts
-  yield put(startEditor())
 }

@@ -18,14 +18,6 @@ export const unbindEditorKeyboardShortcuts = () => action(UNBIND_KEYBOARD_SHORTC
 
 export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorKeyboardShortcuts>
 
-// Start editor
-
-export const START_EDITOR = 'Start editor'
-
-export const startEditor = () => action(START_EDITOR, {})
-
-export type StartEditorAction = ReturnType<typeof startEditor>
-
 // Close editor
 
 export const CLOSE_EDITOR = 'Close editor'
