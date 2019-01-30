@@ -35,7 +35,7 @@ export const getEntityComponents = (entityId: string) =>
     (entities, components) => {
       let out: Record<string, AnyComponent> = {}
 
-      if (entityId && entities) {
+      if (entityId && entities && entityId in entities) {
         const componentReferences = entities[entityId].components
 
         for (let componentId of componentReferences) {

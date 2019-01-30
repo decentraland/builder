@@ -1,6 +1,6 @@
-import undoable, { StateWithHistory } from 'redux-undo'
+import undoable, { StateWithHistory, includeAction } from 'redux-undo'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
+import { EDITOR_UNDO, EDITOR_REDO, CLOSE_EDITOR } from 'modules/editor/actions'
 import { SceneDefinition } from 'modules/scene/types'
 import {
   CreateSceneAction,
@@ -10,7 +10,8 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS,
   UPDATE_TRANSFORM,
-  UpdateComponentAction
+  UpdateComponentAction,
+  ADD_ASSET
 } from 'modules/scene/actions'
 
 export type SceneState = {
@@ -118,5 +119,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
 export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
   limit: 48,
   undoType: EDITOR_UNDO,
-  redoType: EDITOR_REDO
+  redoType: EDITOR_REDO,
+  clearHistoryType: CLOSE_EDITOR,
+  filter: includeAction([UPDATE_TRANSFORM, PROVISION_SCENE])
 })
