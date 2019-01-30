@@ -1,7 +1,5 @@
 :root {
   /* Colors */
-  --primary: #ff2d55;
-  --background: #27252e;
   --purplish-grey: #676370;
   --purplish-grey-raw: 103, 99, 112;
 
@@ -9,9 +7,6 @@
   --error-raw: 255, 0, 68;
 
   --dark: #16141a;
-
-  /* z-indexes */
-  --prewiew-z-index: 1000;
 
   /**
   * Component variables
@@ -28,6 +23,15 @@
   /* SideBar */
   --sidebar-width: 370px;
   --sidebar-heading: rgba(255, 255, 255, 0.9);
+
+  /* Preview */
+  --preview-background: #38333f;
+  --prewiew-z-index: 1000;
+}
+
+/* Erase separation line from navbar */
+.dcl.navbar {
+  border-bottom-color: transparent;
 }
 
 /* Reset grid */
