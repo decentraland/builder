@@ -1,3 +1,5 @@
+import { Dispatch } from 'redux'
+
 import { Project } from 'modules/project/types'
 import { EditorMode } from 'modules/editor/types'
 import {
@@ -10,7 +12,6 @@ import {
   editorUndo,
   EditorUndoAction
 } from 'modules/editor/actions'
-import { Dispatch } from 'redux'
 
 export type Props = {
   currentProject?: Project
