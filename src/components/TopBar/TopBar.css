@@ -3,6 +3,33 @@
   background: var(--dark);
 }
 
+.ui.grid.TopBar > .column:not(.row) {
+  padding: 12px;
+}
+
 .TopBar .ui.header.medium {
   font-size: 17px;
+}
+
+.TopBar .middle-column .row {
+  display: flex;
+  justify-content: center;
+}
+
+.TopBar .editor-actions {
+  display: flex;
+}
+
+.TopBar .editor-modes {
+  display: flex;
+  margin-right: 32px;
+}
+
+.TopBar .toggle-options {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.TopBar .EditorButton + .EditorButton {
+  margin-left: 8px;
 }

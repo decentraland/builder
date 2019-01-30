@@ -11,7 +11,13 @@ import {
   EDITOR_UNDO,
   EDITOR_REDO,
   UPDATE_EDITOR,
-  CLOSE_EDITOR
+  CLOSE_EDITOR,
+  SET_MODE,
+  SetModeAction,
+  TogglePreviewAction,
+  TOGGLE_PREVIEW,
+  TOGGLE_SIDEBAR,
+  ToggleSidebarAction
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -39,6 +45,9 @@ export function* editorSaga() {
   yield takeLatest(START_EDITOR, handleStartEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
+  yield takeLatest(SET_MODE, handleSetMode)
+  yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
+  yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -143,4 +152,40 @@ function* handleStartEditor() {
 
 function* handleCloseEditor() {
   yield call(() => (window as EditorWindow).editor.off('metrics', handleMetricsChange))
+}
+
+function* handleSetMode(action: SetModeAction) {
+  switch (action.payload.mode) {
+    case 'move': {
+      // TODO: set move mode
+      break
+    }
+    case 'rotate': {
+      // TODO: set rotate mode
+      break
+    }
+    case 'select': {
+      // TODO: set scale mode
+      break
+    }
+  }
+  // TODO: remove this after doing the TODOs above
+  yield 1
+}
+
+function resizeEditor() {
+  const { editor } = window as EditorWindow
+  window.requestAnimationFrame(() => editor.resize())
+}
+
+function* handleTooglePreview(action: TogglePreviewAction) {
+  yield call(() => {
+    const { editor } = window as EditorWindow
+    editor.setPlayMode(action.payload.enabled)
+    resizeEditor()
+  })
+}
+
+function* handleToggleSidebar(action: ToggleSidebarAction) {
+  yield call(() => resizeEditor())
 }

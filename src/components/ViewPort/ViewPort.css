@@ -1,0 +1,14 @@
+.close-preview {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  width: 40px;
+  height: 40px;
+  background: #0004;
+  z-index: var(--prewiew-z-index);
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

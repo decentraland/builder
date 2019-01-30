@@ -5,6 +5,7 @@ export type Editor = {
   enableGizmo: (entityId: string) => void
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
+  setPlayMode: (enabled: boolean) => void
 }
 
 export type EditorWindow = typeof window & {

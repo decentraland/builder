@@ -13,6 +13,8 @@ import {
 } from 'modules/editor/actions'
 
 export type Props = {
+  isSidebarOpen: boolean
+  isPreviewing: boolean
   onStartEditor: typeof startEditor
   onLoadAssetPacks: typeof loadAssetPacksRequest
   onBindKeyboardShortcuts: typeof bindEditorKeyboardShortcuts
@@ -20,7 +22,7 @@ export type Props = {
   onCloseEditor: typeof closeEditor
 }
 
-export type MapStateProps = {}
+export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing'>
 export type MapDispatchProps = Pick<
   Props,
   'onStartEditor' | 'onLoadAssetPacks' | 'onBindKeyboardShortcuts' | 'onUnbindKeyboardShortcuts' | 'onCloseEditor'
