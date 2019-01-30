@@ -1,4 +1,5 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 
 import {
   updateEditor,
@@ -13,7 +14,7 @@ import {
   CLOSE_EDITOR,
   UpdateEditorAction
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM, CREATE_SCENE, ADD_ASSET } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponents } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -31,19 +32,14 @@ import { getNewScene } from './utils'
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
   yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
-  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
-  yield takeLatest(START_EDITOR, handleApplyEditorState)
+  yield takeLatest(PROVISION_SCENE, handleApplyEditorState)
   yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
   yield takeLatest(EDITOR_REDO, handleApplyEditorState)
-  yield takeLatest(UPDATE_EDITOR, handleEditorAction)
-  yield takeLatest(START_EDITOR, handleNewScene)
-  yield takeLatest(START_EDITOR, handleStartEditor)
-  yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(ADD_ASSET, handleEditorAction)
-  yield takeLatest(CREATE_SCENE, handleEditorAction)
   yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
-  yield takeLatest(ADD_ASSET, handleEditorAction)
-  yield takeLatest(CREATE_SCENE, handleEditorAction)
+  yield takeLatest(START_EDITOR, handleStartEditor)
+  yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
+  yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
+  yield takeLatest(ADD_ASSET, handleApplyEditorState)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -85,26 +81,13 @@ function* handleNewScene() {
   yield call(() => window['editor']['handleMessage'](msg))
 }
 
-function* handleProvisionScene() {
-  const scene: SceneDefinition = yield select(getCurrentScene)
-
-  if (scene) {
-    const assetMappings: AssetMappings = yield select(getAssetMappings)
-
-    yield put(updateEditor(scene.id, scene, assetMappings))
-  } else {
-    // TODO: dispatch a proper 404 error message
-    console.warn('Invalid scene')
-  }
-}
-
 function* handleApplyEditorState() {
   const scene: SceneDefinition = yield select(getCurrentScene)
 
   if (scene) {
     const assetMappings: AssetMappings = yield select(getAssetMappings)
 
-    yield handleEditorAction(updateEditor(scene.id, scene, assetMappings))
+    yield handleUpdateEditor(updateEditor(scene.id, scene, assetMappings))
   }
 }
 
@@ -129,7 +112,18 @@ function handlePositionGizmoUpdate(args: { entityId: string; transform: { positi
 }
 
 function* handleStartEditor() {
+  // Creates a new scene in the dcl client's side
+  yield handleNewScene()
+
+  // TODO: find a better way to wait for the editor to be ready
+  yield delay(3000)
+
+  // Spawns the assets
+  yield handleApplyEditorState()
+
+  // Handles subscriptions to metrics
   yield call(() => (window as EditorWindow).editor.on('metrics', handleMetricsChange))
+
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => (window as EditorWindow).editor.on('transform', handlePositionGizmoUpdate))
 }
@@ -141,7 +135,7 @@ function* handleCloseEditor() {
 /**
  * This function sends the update actions to the editor.
  */
-function* handleEditorAction(action: UpdateEditorAction) {
+function* handleUpdateEditor(action: UpdateEditorAction) {
   // @ts-ignore: Client api
   yield call(() => window['editor']['sendExternalAction'](action))
 }

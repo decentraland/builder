@@ -84,7 +84,8 @@
     "build:ci": "npm run lint && npm run build:scene && node scripts/build.js",
     "test": "node scripts/test.js",
     "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
-    "bundle:svg": "npx svg-sprite -D src/components/llllIcon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg"
+    "postinstall": "node ./scripts/postinstall.js",
+    "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -112,7 +113,7 @@
     "@types/react-router-dom": "^4.3.1",
     "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
-    "decentraland-ecs": "^5.0.1-20190129201838.commit-999e7fc",
+    "decentraland-ecs": "5.0.1-20190129203733.commit-4f35844",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"
