@@ -12,18 +12,22 @@ export default class TopBar extends React.PureComponent<Props> {
     const { onSetMode } = this.props
     onSetMode('move')
   }
+
   handleRotateMode = () => {
     const { onSetMode } = this.props
     onSetMode('rotate')
   }
+
   togglePreview = () => {
     const { onTogglePreview, isPreviewing } = this.props
     onTogglePreview(!isPreviewing)
   }
+
   toggleSidebar = () => {
     const { onToggleSidebar, isSidebarOpen } = this.props
     onToggleSidebar(!isSidebarOpen)
   }
+
   render() {
     const { currentProject, mode, isPreviewing, isSidebarOpen, hasHistory, selectedEntityId, onUndo } = this.props
     return (
