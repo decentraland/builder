@@ -3,6 +3,7 @@ export type Props = {
     | 'alert'
     | 'arrow-down'
     | 'arrow-up'
+    | 'close'
     | 'delete'
     | 'delete-active'
     | 'delete-icon'
@@ -23,6 +24,7 @@ export type Props = {
     | 'shortcuts'
     | 'sidebar'
     | 'sidebar-active'
+    | 'undo'
     | 'zoom-in'
     | 'zoom-out'
   isActive?: boolean

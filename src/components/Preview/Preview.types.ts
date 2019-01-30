@@ -9,6 +9,7 @@ export type Editor = {
   off: (event: string, listener: (...args: any[]) => void) => void
   handleMessage: (msg: { type: 'update'; payload: any }) => void
   sendExternalAction: (action: UpdateEditorAction) => void
+  setPlayMode: (enabled: boolean) => void
 }
 
 export type EditorWindow = typeof window & {

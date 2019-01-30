@@ -11,12 +11,17 @@
   align-items: center;
   justify-content: center;
 }
-.EditorButton:hover {
+.EditorButton:not(.disabled):hover {
   background: var(--purplish-grey);
 }
 
 .EditorButton.active {
   background: rgba(var(--purplish-grey-raw), 0.32);
+}
+
+.EditorButton.disabled {
+  cursor: default;
+  opacity: 0.5;
 }
 
 .EditorButton .Icon {

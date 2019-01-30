@@ -69,3 +69,5 @@ export const getGLTFId = (src: string) => (state: RootState) => {
     return null
   }
 }
+
+export const hasHistory = (state: RootState) => state.scene.past.length > 0

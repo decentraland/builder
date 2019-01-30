@@ -1,11 +1,17 @@
 import { connect } from 'react-redux'
 
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
+import { RootState } from 'modules/common/types'
 import { bindEditorKeyboardShortcuts, unbindEditorKeyboardShortcuts, closeEditor } from 'modules/editor/actions'
-import { MapDispatch, MapDispatchProps } from './EditorPage.types'
-import EditorPage from './EditorPage'
+import { isSidebarOpen, isPreviewing } from 'modules/editor/selectors'
 
-const mapState = () => ({})
+import EditorPage from './EditorPage'
+import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
+
+const mapState = (state: RootState): MapStateProps => ({
+  isPreviewing: isPreviewing(state),
+  isSidebarOpen: isSidebarOpen(state)
+})
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLoadAssetPacks: () => dispatch(loadAssetPacksRequest()),
