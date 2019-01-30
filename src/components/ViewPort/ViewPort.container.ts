@@ -11,7 +11,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onTogglePreview: () => dispatch(togglePreview(false))
+  onClosePreview: () => dispatch(togglePreview(false))
 })
 
 export default connect(

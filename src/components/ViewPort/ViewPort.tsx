@@ -7,8 +7,8 @@ import { Props } from './ViewPort.types'
 
 export default class ViewPort extends React.PureComponent<Props> {
   handleClose = () => {
-    const { onTogglePreview } = this.props
-    onTogglePreview(false)
+    const { onClosePreview } = this.props
+    onClosePreview()
   }
 
   render() {
