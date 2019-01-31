@@ -13,6 +13,7 @@
 .ShortcutsModal .shortcut-list .subtitle {
   color: var(--purplish-grey);
   font-size: 13px;
+  text-transform: uppercase;
 }
 
 .ShortcutsModal .shortcut-list {

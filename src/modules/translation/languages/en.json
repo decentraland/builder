@@ -24,5 +24,20 @@
     "textures": "textures",
     "height": "height",
     "too_many": "Too many {metric}!"
+  },
+  "shortcuts_modal": {
+    "title": "Shortcuts",
+    "basic_controls": {
+      "title": "Basic Controls",
+      "undo": "Undo",
+      "redo": "Redo",
+      "duplicate": "Duplicate object",
+      "delete": "Delete object"
+    },
+    "edit_controls": {
+      "title": "Edit controls",
+      "move": "Move object",
+      "rotate": "Rotate object"
+    }
   }
 }
