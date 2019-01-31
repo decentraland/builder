@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Modal } from 'decentraland-ui'
 
-import Key from './Key'
+import Chip from 'components/Chip'
 import CloseModalIcon from '../CloseModalIcon'
 import { Props } from '../Modals.types'
 
@@ -34,37 +34,36 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
               <div className="shortcut">
                 <div className="name">Undo</div>
                 <div className="keybinding">
-                  <Key text="⌘" />
+                  <Chip text="⌘" />
                   <span className="plus">+</span>
-                  <Key text="z" />
+                  <Chip text="z" />
                 </div>
               </div>
 
               <div className="shortcut">
                 <div className="name">Redo</div>
                 <div className="keybinding">
-                  <Key text="⌘" />
+                  <Chip text="⌘" />
                   <span className="plus">+</span>
-                  <Key text="Shift" />
+                  <Chip text="Shift" />
                   <span className="plus">+</span>
-                  <Key text="z" />
+                  <Chip text="z" />
                 </div>
               </div>
 
               <div className="shortcut">
                 <div className="name">Duplicate</div>
                 <div className="keybinding">
-                  <Key text="⌘" />
+                  <Chip text="⌘" />
                   <span className="plus">+</span>
-                  <Key text="d" />
+                  <Chip text="d" />
                 </div>
               </div>
 
               <div className="shortcut">
                 <div className="name">Delete object</div>
                 <div className="keybinding">
-                  {' '}
-                  <Key text="Delete" />
+                  <Chip text="Delete" />
                 </div>
               </div>
             </div>
@@ -75,14 +74,14 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
               <div className="shortcut">
                 <div className="name">Move</div>
                 <div className="keybinding">
-                  <Key text="m" />
+                  <Chip text="m" />
                 </div>
               </div>
 
               <div className="shortcut">
                 <div className="name">Rotate</div>
                 <div className="keybinding">
-                  <Key text="r" />
+                  <Chip text="r" />
                 </div>
               </div>
             </div>

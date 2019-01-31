@@ -4,4 +4,7 @@ export type Props = {
   text?: string
   icon?: IconProps['name']
   type: 'square' | 'rectangle'
+  isActive: boolean
+  isDisabled: boolean
+  onClick?: (event: React.MouseEvent<HTMLElement>) => any
 }
