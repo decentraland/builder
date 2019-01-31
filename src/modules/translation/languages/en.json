@@ -23,7 +23,7 @@
     "entities": "entities",
     "textures": "textures",
     "height": "height",
-    "too_many": "Too many {metric}!"
+    "too_many": "Too many {metric}"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",

@@ -14,7 +14,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onProjectClick: (projectId: string) => dispatch(navigateTo(locations.editor(projectId))),
   onCreateProject: (template: Template) =>
     dispatch(
       createProjectFromTemplate(template, {

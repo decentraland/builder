@@ -1,6 +1,6 @@
-import undoable, { StateWithHistory } from 'redux-undo'
+import undoable, { StateWithHistory, includeAction } from 'redux-undo'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
+import { EDITOR_UNDO, EDITOR_REDO, CLOSE_EDITOR } from 'modules/editor/actions'
 import { SceneDefinition } from 'modules/scene/types'
 import {
   CreateSceneAction,
@@ -115,8 +115,19 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
 
 // This is typed `as any` because undoable uses AnyAction from redux which doesn't account for the payload we use
 // so types don't match
-export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
+const undoableReducer = undoable<SceneState>(baseSceneReducer as any, {
   limit: 48,
   undoType: EDITOR_UNDO,
-  redoType: EDITOR_REDO
+  redoType: EDITOR_REDO,
+  clearHistoryType: CLOSE_EDITOR,
+  filter: includeAction([CREATE_SCENE, PROVISION_SCENE, UPDATE_TRANSFORM])
 })
+
+export const sceneReducer = (state: any, action: any) => {
+  const newState = undoableReducer(state, action)
+  // This prevents going back to a broken state after creating a new scene
+  if (action.type === CREATE_SCENE) {
+    newState.past.pop()
+  }
+  return newState
+}

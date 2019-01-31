@@ -44,7 +44,8 @@
 }
 
 .Metrics .metric.exceeded .label,
-.Metrics .metric.exceeded .value {
+.Metrics .metric.exceeded .value,
+.Metrics .metric.exceeded .value-limit {
   color: var(--error);
 }
 

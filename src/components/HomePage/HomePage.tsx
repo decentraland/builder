@@ -5,7 +5,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
-import { Project } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 
 import { Props } from './HomePage.types'
@@ -14,10 +13,6 @@ import './HomePage.css'
 export default class HomePage extends React.PureComponent<Props> {
   static defaultProps = {
     projects: {}
-  }
-
-  handleProjectClick = (project: Project) => {
-    this.props.onProjectClick(project.id)
   }
 
   handleTemplateClick = (template: Template) => {
@@ -38,7 +33,7 @@ export default class HomePage extends React.PureComponent<Props> {
           {projects.length > 0 ? (
             <div className="CardList">
               {projects.map((project, index) => (
-                <ProjectCard key={index} project={project} onClick={this.handleProjectClick} />
+                <ProjectCard key={index} project={project} />
               ))}
             </div>
           ) : (

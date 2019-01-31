@@ -56,7 +56,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
         <div className="label">{t(`metrics.${metric}`)}:</div>
         <div className="value">
           {this.props.metrics[metric].toLocaleString()}
-          <span className="value-limit">/{this.props.limits[metric].toLocaleString()}</span>{' '}
+          <span className="value-limit">&nbsp;/&nbsp;{this.props.limits[metric].toLocaleString()}</span>{' '}
         </div>
       </div>
     )

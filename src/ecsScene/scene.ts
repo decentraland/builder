@@ -30,13 +30,13 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
 
       createComponents(components)
       createEntities(entities)
-      // TODO: remove unused components
-      // TODO: remove unused entities
+      removeUnusedComponents(components)
+      removeUnusedEntities(entities)
       break
   }
 }
 
-function createComponents(components: AnyComponent[]) {
+function createComponents(components: Record<string, AnyComponent>) {
   for (let id in components) {
     const { type, data } = components[id]
 
@@ -64,7 +64,7 @@ function createComponents(components: AnyComponent[]) {
   }
 }
 
-function createEntities(entities: EntityDefinition[]) {
+function createEntities(entities: Record<string, EntityDefinition>) {
   for (let id in entities) {
     let entity: Entity = engine.entities[id]
 
@@ -81,6 +81,37 @@ function createEntities(entities: EntityDefinition[]) {
       if (component) {
         entity.set(component)
       }
+    }
+  }
+}
+
+function removeUnusedComponents(components: Record<string, AnyComponent>) {
+  for (const componentId in editorComponents) {
+    const inScene = componentId in components
+    if (!inScene) {
+      const originalComponent = editorComponents[componentId]
+
+      if (componentId in engine.disposableComponents) {
+        engine.disposeComponent(originalComponent)
+      }
+
+      // TODO: Remove component from all entities that have added it (we need the engine to provide a way of doing this)
+      /* pseudo code:
+      for each entity in engine.entities:
+        if entity.has(component)
+          entity.remove(component)
+      */
+
+      delete editorComponents[componentId]
+    }
+  }
+}
+
+function removeUnusedEntities(entities: Record<string, EntityDefinition>) {
+  for (const entityId in engine.entities) {
+    const inScene = entityId in entities
+    if (!inScene) {
+      engine.removeEntity(engine.entities[entityId])
     }
   }
 }
