@@ -4,11 +4,12 @@
   align-items: center;
   padding: 8px 12px;
   border-radius: 4px;
+  background: rgba(var(--purplish-grey-raw), 0.48);
   cursor: pointer;
 }
 
 .HorizontalCard:hover {
-  background: rgba(var(--purplish-grey-raw), 0.4);
+  background: rgba(var(--purplish-grey-raw), 0.72);
 }
 
 .HorizontalCard .thumbnail {
