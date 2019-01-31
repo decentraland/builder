@@ -1,0 +1,31 @@
+.Key,
+.Key.square {
+  min-width: 10px;
+  min-height: 26px;
+  padding: 3px 11px;
+}
+
+.Key.rectangle {
+  min-width: 40px;
+  min-height: 24px;
+}
+
+.Key {
+  font-size: 0.5em;
+  border-radius: 4px;
+  background: rgba(var(--purplish-grey-raw), 0.64);
+  color: #fff;
+  display: inline-block;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Key .Icon {
+  display: block;
+}
+
+.Key .text {
+  font-size: 17px;
+}

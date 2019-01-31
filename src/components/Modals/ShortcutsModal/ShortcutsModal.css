@@ -1,0 +1,41 @@
+.ShortcutsModal {
+  position: relative;
+}
+
+.ShortcutsModal.ui.modal > .content {
+  font-size: 17px;
+}
+
+.ShortcutsModal .title {
+  font-size: 28px;
+}
+
+.ShortcutsModal .shortcut-list .subtitle {
+  color: var(--purplish-grey);
+  font-size: 13px;
+}
+
+.ShortcutsModal .shortcut-list {
+  margin-top: 45px;
+}
+
+.ShortcutsModal .shortcut {
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.ShortcutsModal .shortcut .name {
+  float: left;
+  font-weight: 500;
+}
+
+.ShortcutsModal .shortcut .keybinding {
+  float: right;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+}
+
+.ShortcutsModal .shortcut .keybinding .plus {
+  margin: 0 6px;
+}

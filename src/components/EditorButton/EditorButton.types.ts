@@ -6,6 +6,3 @@ export type Props = {
   isDisabled?: boolean
   onClick?: (event: React.MouseEvent<HTMLElement>) => any
 }
-
-export type MapStateProps = Pick<Props, 'name'>
-export type MapDispatchProps = Pick<Props, 'onClick'>
