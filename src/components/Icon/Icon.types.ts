@@ -28,6 +28,7 @@ export type Props = {
     | 'zoom-in'
     | 'zoom-out'
   isActive?: boolean
+  onClick: (event: React.MouseEvent<HTMLElement>) => any
 }
 
 export type MapStateProps = Pick<Props, 'name'>

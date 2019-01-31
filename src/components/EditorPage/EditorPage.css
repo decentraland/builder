@@ -1,11 +1,35 @@
-.ui.grid.horizontal-layout {
-  height: calc(100vh - var(--topbar-height));
-}
-
-.ui.grid.fullscreen {
-  height: 100%;
-}
-
 .EditorPage {
   height: 100%;
+}
+
+.toolbar {
+  width: calc(100% - var(--sidebar-width));
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.toolbar > div {
+  position: absolute;
+  bottom: 14px;
+  z-index: var(--prewiew-z-index);
+  display: flex;
+  align-items: center;
+}
+
+.toolbar > .Metrics {
+  left: 20px;
+}
+
+.toolbar .Tools {
+  right: 20px;
+}
+
+.toolbar .Tools > .Icon {
+  margin-right: 16px;
+}
+
+.toolbar .Tools .Icon.shortcuts {
+  margin-left: 24px;
+  margin-right: 0;
 }

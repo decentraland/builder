@@ -4,9 +4,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SquaresGrid from 'components/SquaresGrid'
 import Icon from 'components/Icon'
 import { SceneMetrics } from 'modules/scene/types'
+import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
-import { getDimensions } from 'lib/layout'
 
 export default class Metrics extends React.PureComponent<Props, State> {
   constructor(props: Props) {

@@ -9,10 +9,12 @@ import {
   BindEditorKeybardShortcutsAction,
   UnbindEditorKeybardShortcutsAction
 } from 'modules/editor/actions'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export type Props = {
   isSidebarOpen: boolean
   isPreviewing: boolean
+  onOpenModal: typeof openModal
   onLoadAssetPacks: typeof loadAssetPacksRequest
   onBindKeyboardShortcuts: typeof bindEditorKeyboardShortcuts
   onUnbindKeyboardShortcuts: typeof unbindEditorKeyboardShortcuts
@@ -20,7 +22,10 @@ export type Props = {
 }
 
 export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing'>
-export type MapDispatchProps = Pick<Props, 'onLoadAssetPacks' | 'onBindKeyboardShortcuts' | 'onUnbindKeyboardShortcuts' | 'onCloseEditor'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onOpenModal' | 'onLoadAssetPacks' | 'onBindKeyboardShortcuts' | 'onUnbindKeyboardShortcuts' | 'onCloseEditor'
+>
 export type MapDispatch = Dispatch<
-  LoadAssetPacksRequestAction | BindEditorKeybardShortcutsAction | UnbindEditorKeybardShortcutsAction | CloseEditorAction
+  OpenModalAction | LoadAssetPacksRequestAction | BindEditorKeybardShortcutsAction | UnbindEditorKeybardShortcutsAction | CloseEditorAction
 >

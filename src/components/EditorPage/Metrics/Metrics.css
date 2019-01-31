@@ -1,9 +1,5 @@
 .Metrics {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
   font-size: 11px;
-  z-index: var(--prewiew-z-index);
   display: flex;
   align-items: center;
 }
