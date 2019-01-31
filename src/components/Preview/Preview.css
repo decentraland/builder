@@ -2,6 +2,7 @@
   flex: 1;
   height: 100%;
   background-color: var(--preview-background);
+  position: relative;
 }
 
 .Preview > canvas {
@@ -9,6 +10,6 @@
   outline: none;
 }
 
-.Preview > .ui.loader {
-  left: 40%;
+.Preview > .ui.loader:before {
+  border: none;
 }
