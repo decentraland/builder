@@ -23,6 +23,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+a {
+  font-weight: normal;
+}
+
 .text {
   color: var(--text);
 }
