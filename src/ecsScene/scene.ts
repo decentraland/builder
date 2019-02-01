@@ -1,4 +1,4 @@
-import { log, engine, GLTFShape, Transform, Entity, Gizmos, OnDragEnded } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 declare var dcl: DecentralandInterface
@@ -7,12 +7,14 @@ const editorComponents: Record<string, any> = {}
 
 const gizmo = new Gizmos()
 gizmo.position = true
-gizmo.rotation = false
+gizmo.rotation = true
 gizmo.scale = false
 gizmo.updateEntity = false
 
-let gizmoEvent = new OnDragEnded((e: any) => log('drag ended received in ECS', e))
-gizmoEvent.data.uuid = 'dragEndedEvent-editor'
+let gizmoEvent = new OnGizmoEvent((e: any) => {
+  /* */
+})
+gizmoEvent.data.uuid = 'gizmoEvent-editor'
 
 function getComponentById(id: string) {
   if (id in editorComponents) {
@@ -58,7 +60,10 @@ function createComponents(components: Record<string, AnyComponent>) {
       if (type === 'Transform') {
         const transform = component as Transform
         const transformData = data as ComponentData[ComponentType.Transform]
-        transformData.position && transform.position.copyFrom(transformData.position)
+        transform.position.copyFrom(transformData.position)
+        transform.rotation.set(transformData.rotation.x, transformData.rotation.y, transformData.rotation.z, transformData.rotation.w)
+        transform.data['nonce'] = Math.random()
+        transform.dirty = true
       }
     }
   }

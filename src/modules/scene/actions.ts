@@ -41,7 +41,7 @@ export type UpdateMetricsAction = ReturnType<typeof updateMetrics>
 
 export const UPDATE_TRANSFORM = 'Update transform'
 
-export const updateComponent = (sceneId: string, componentId: string, data: ComponentData[ComponentType.Transform]) =>
+export const updateTransform = (sceneId: string, componentId: string, data: ComponentData[ComponentType.Transform]) =>
   action(UPDATE_TRANSFORM, { sceneId, componentId, data })
 
-export type UpdateComponentAction = ReturnType<typeof updateComponent>
+export type UpdateComponentAction = ReturnType<typeof updateTransform>

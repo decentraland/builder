@@ -3,7 +3,14 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
 import { RootState } from 'modules/common/types'
-import { bindEditorKeyboardShortcuts, unbindEditorKeyboardShortcuts, closeEditor } from 'modules/editor/actions'
+import {
+  bindEditorKeyboardShortcuts,
+  unbindEditorKeyboardShortcuts,
+  closeEditor,
+  zoomIn,
+  zoomOut,
+  resetCamera
+} from 'modules/editor/actions'
 import { isSidebarOpen, isPreviewing } from 'modules/editor/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
@@ -18,7 +25,10 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLoadAssetPacks: () => dispatch(loadAssetPacksRequest()),
   onBindKeyboardShortcuts: () => dispatch(bindEditorKeyboardShortcuts()),
   onUnbindKeyboardShortcuts: () => dispatch(unbindEditorKeyboardShortcuts()),
-  onCloseEditor: () => dispatch(closeEditor())
+  onCloseEditor: () => dispatch(closeEditor()),
+  onZoomIn: () => dispatch(zoomIn()),
+  onZoomOut: () => dispatch(zoomOut()),
+  onResetCamera: () => dispatch(resetCamera())
 })
 
 export default connect(

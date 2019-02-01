@@ -17,6 +17,9 @@ export default class Tools extends React.PureComponent<Props> {
   render() {
     return (
       <div className="Tools">
+        <Icon name="center-camera" onClick={this.getClickHandler('reset-camera')} />
+        <Icon name="zoom-in" onClick={this.getClickHandler('zoom-in')} />
+        <Icon name="zoom-out" onClick={this.getClickHandler('zoom-out')} />
         <Icon name="shortcuts" onClick={this.getClickHandler('shortcuts')} />
       </div>
     )

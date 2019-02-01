@@ -86,3 +86,25 @@ export const UNSELECT_ENTITY = 'Unselect entity'
 export const unselectEntity = () => action(UNSELECT_ENTITY, {})
 
 export type UnselectEntityAction = ReturnType<typeof unselectEntity>
+
+// Zoom in/out
+
+export const ZOOM_IN = 'Zoom in'
+
+export const zoomIn = () => action(ZOOM_IN, {})
+
+export type ZoomInAction = ReturnType<typeof zoomIn>
+
+export const ZOOM_OUT = 'Zoom out'
+
+export const zoomOut = () => action(ZOOM_OUT, {})
+
+export type ZoomOutAction = ReturnType<typeof zoomOut>
+
+// Reset camera
+
+export const RESET_CAMERA = 'Reset camera'
+
+export const resetCamera = () => action(RESET_CAMERA, {})
+
+export type ResetCameraAction = ReturnType<typeof resetCamera>

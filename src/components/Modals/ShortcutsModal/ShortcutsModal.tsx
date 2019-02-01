@@ -72,6 +72,31 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
                   <Chip text="Delete" />
                 </div>
               </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.basic_controls.zoom_in')}</div>
+                <div className="keybinding">
+                  <Chip text="Shift" />
+                  <span className="plus">+</span>
+                  <Chip text="+" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.basic_controls.zoom_out')}</div>
+                <div className="keybinding">
+                  <Chip text="Shift" />
+                  <span className="plus">+</span>
+                  <Chip text="-" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.basic_controls.reset_camera')}</div>
+                <div className="keybinding">
+                  <Chip text="Space" />
+                </div>
+              </div>
             </div>
 
             <div className="shortcut-list">

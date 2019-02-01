@@ -95,11 +95,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
               [componentId]: {
                 ...state.data[sceneId].components[componentId],
                 data: {
-                  ...data,
-                  position: {
-                    ...data.position,
-                    y: data.position.y < 0 ? 0 : data.position.y
-                  }
+                  ...data
                 }
               }
             }

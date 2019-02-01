@@ -27,6 +27,7 @@ export type Props = {
     | 'undo'
     | 'zoom-in'
     | 'zoom-out'
+    | 'center-camera'
   isActive?: boolean
   onClick: (event: React.MouseEvent<HTMLElement>) => any
 }

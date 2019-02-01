@@ -26,6 +26,15 @@ export default class EditorPage extends React.PureComponent<Props> {
       case 'shortcuts':
         this.props.onOpenModal('ShortcutsModal')
         break
+      case 'zoom-out':
+        this.props.onZoomOut()
+        break
+      case 'zoom-in':
+        this.props.onZoomIn()
+        break
+      case 'reset-camera':
+        this.props.onResetCamera()
+        break
       default:
         break
     }
