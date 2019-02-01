@@ -1,0 +1,8 @@
+.ui.modal {
+  border-radius: 16px;
+}
+
+.ui.modal > .content {
+  background: var(--dark-two);
+  border-radius: 16px;
+}

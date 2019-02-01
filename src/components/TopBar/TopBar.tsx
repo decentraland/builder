@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Grid, Icon } from 'decentraland-ui'
+import { Header, Grid, Icon, Button } from 'decentraland-ui'
 
 import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
@@ -42,7 +42,6 @@ export default class TopBar extends React.PureComponent<Props> {
         </Grid.Column>
         <Grid.Column width="eight" className="middle-column">
           <Grid.Row>
-            <div className="editor-actions">
               <span className="editor-modes">
                 <Chip icon="move" isActive={mode === 'move'} onClick={this.handleMoveMode} />
                 <Chip icon="rotate" isActive={mode === 'rotate'} onClick={this.handleRotateMode} />
@@ -50,15 +49,19 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="undo" isDisabled={!hasHistory} onClick={onUndo} />
               <Chip icon="duplicate" isDisabled={!selectedEntityId} />
               <Chip icon="delete" isDisabled={!selectedEntityId} />
-            </div>
           </Grid.Row>
         </Grid.Column>
         <Grid.Column width="four" className="right-column">
           <Grid.Row>
-            <div className="toggle-options">
               <Chip icon="preview" isActive={isPreviewing} onClick={this.togglePreview} />
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.toggleSidebar} />
-            </div>
+
+              <Button className="add-to-contest" size="mini">
+                ADD TO CONTEST
+              </Button>
+              <Button primary size="mini">
+                PUBLISH
+              </Button>
           </Grid.Row>
         </Grid.Column>
       </Grid>

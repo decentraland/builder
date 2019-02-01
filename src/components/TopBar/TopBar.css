@@ -11,23 +11,30 @@
   font-size: 17px;
 }
 
-.TopBar .middle-column .row {
+.TopBar .row {
   display: flex;
+}
+
+.TopBar .middle-column .row {
   justify-content: center;
 }
 
-.TopBar .editor-actions {
-  display: flex;
+.TopBar .right-column .row {
+  justify-content: flex-end;
 }
 
-.TopBar .editor-modes {
+.TopBar .middle-column .editor-modes {
   display: flex;
   margin-right: 32px;
 }
 
-.TopBar .toggle-options {
-  display: flex;
-  justify-content: flex-end;
+.TopBar .right-column .add-to-contest {
+  background: var(--contest-primary);
+  margin-left: 32px;
+}
+
+.TopBar .right-column .ui.button.mini {
+  font-size: 11px;
 }
 
 .TopBar .Chip + .Chip {
