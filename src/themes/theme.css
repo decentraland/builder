@@ -8,6 +8,8 @@
 
   --dark: #16141a;
 
+  --dark-two: #242129;
+
   /**
   * Component variables
   */
@@ -55,4 +57,21 @@
 .ui.grid > .column {
   padding-top: 0px;
   padding-bottom: 0px;
+}
+
+.ui.grid.horizontal-layout {
+  height: calc(100vh - var(--topbar-height));
+}
+
+.ui.grid.fullscreen {
+  height: 100%;
+}
+
+.ui.modal {
+  border-radius: 16px;
+}
+
+.ui.modal > .content {
+  background: var(--dark-two);
+  border-radius: 16px;
 }

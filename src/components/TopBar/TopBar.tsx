@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { Header, Grid, Icon } from 'decentraland-ui'
 
 import { locations } from 'routing/locations'
+import Chip from 'components/Chip'
 import { Props } from './TopBar.types'
 import './TopBar.css'
-import EditorButton from 'components/EditorButton'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
@@ -44,20 +44,20 @@ export default class TopBar extends React.PureComponent<Props> {
           <Grid.Row>
             <div className="editor-actions">
               <span className="editor-modes">
-                <EditorButton name="move" isActive={mode === 'move'} onClick={this.handleMoveMode} />
-                <EditorButton name="rotate" isActive={mode === 'rotate'} onClick={this.handleRotateMode} />
+                <Chip icon="move" isActive={mode === 'move'} onClick={this.handleMoveMode} />
+                <Chip icon="rotate" isActive={mode === 'rotate'} onClick={this.handleRotateMode} />
               </span>
-              <EditorButton name="undo" isDisabled={!hasHistory} onClick={onUndo} />
-              <EditorButton name="duplicate" isDisabled={!selectedEntityId} />
-              <EditorButton name="delete" isDisabled={!selectedEntityId} />
+              <Chip icon="undo" isDisabled={!hasHistory} onClick={onUndo} />
+              <Chip icon="duplicate" isDisabled={!selectedEntityId} />
+              <Chip icon="delete" isDisabled={!selectedEntityId} />
             </div>
           </Grid.Row>
         </Grid.Column>
         <Grid.Column width="four" className="right-column">
           <Grid.Row>
             <div className="toggle-options">
-              <EditorButton name="preview" isActive={isPreviewing} onClick={this.togglePreview} />
-              <EditorButton name="sidebar" isActive={isSidebarOpen} onClick={this.toggleSidebar} />
+              <Chip icon="preview" isActive={isPreviewing} onClick={this.togglePreview} />
+              <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.toggleSidebar} />
             </div>
           </Grid.Row>
         </Grid.Column>

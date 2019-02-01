@@ -30,6 +30,6 @@
   justify-content: flex-end;
 }
 
-.TopBar .EditorButton + .EditorButton {
+.TopBar .Chip + .Chip {
   margin-left: 8px;
 }

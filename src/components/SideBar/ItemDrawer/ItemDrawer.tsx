@@ -4,8 +4,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
+import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
-import EditorButton from 'components/EditorButton'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
@@ -71,8 +71,8 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         <Header size="medium" className="title">
           {t('itemdrawer.title')}{' '}
           <div className="item-drawer-type-buttons">
-            <EditorButton name="grid" isActive={!isList} onClick={isList ? this.handleOnDrawerTypeClick : undefined} />
-            <EditorButton name="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />
+            <Chip icon="grid" isActive={!isList} onClick={isList ? this.handleOnDrawerTypeClick : undefined} />
+            <Chip icon="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />
           </div>
         </Header>
 

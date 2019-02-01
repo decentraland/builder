@@ -1,5 +1,6 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import {
   updateEditor,
@@ -73,6 +74,10 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
     {
       combination: ['command+shift+z', 'ctrl+shift+z'],
       callback: () => store.dispatch(editorRedo())
+    },
+    {
+      combination: ['?'],
+      callback: () => store.dispatch(openModal('ShortcutsModal'))
     }
   ]
 }

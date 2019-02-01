@@ -1,0 +1,17 @@
+.CloseModalIcon {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui.modal > :first-child:not(.icon).CloseModalIcon {
+  /* Override semantic's crazy class which adds a border radius */
+  border-radius: 100%;
+}

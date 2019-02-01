@@ -6,12 +6,15 @@ import './sprite.css'
 
 export default class Icon extends React.PureComponent<Props> {
   static defaultProps = {
-    isActive: false
+    isActive: false,
+    onClick: (_: React.MouseEvent<HTMLElement>) => {
+      /* noop */
+    }
   }
 
   render() {
-    const { name, isActive } = this.props
+    const { name, isActive, onClick } = this.props
     const iconName = isActive ? `${name}-active` : name
-    return <div className={`Icon ${iconName}`} />
+    return <div className={`Icon ${iconName} ${onClick ? 'clickeable' : ''}`} onClick={onClick} />
   }
 }
