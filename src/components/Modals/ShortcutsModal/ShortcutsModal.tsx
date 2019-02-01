@@ -16,7 +16,7 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
 
   getMainShortcutKey() {
     if (navigator.platform === 'MacIntel') return '⌘'
-    return 'CTRL'
+    return 'Ctrl'
   }
 
   render() {
