@@ -28,6 +28,7 @@
   "shortcuts_modal": {
     "title": "Shortcuts",
     "basic_controls": {
+      "shortcut_reference": "Shortcut reference",
       "title": "Basic Controls",
       "undo": "Undo",
       "redo": "Redo",

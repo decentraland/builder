@@ -38,6 +38,13 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
 
             <div className="shortcuts">
               <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.basic_controls.shortcut_reference')}</div>
+                <div className="keybinding">
+                  <Chip text="?" />
+                </div>
+              </div>
+
+              <div className="shortcut">
                 <div className="name">{t('shortcuts_modal.basic_controls.undo')}</div>
                 <div className="keybinding">
                   <Chip text={this.getMainShortcutKey()} />
