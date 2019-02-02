@@ -50,3 +50,26 @@
   height: calc(100% - 54px);
   overflow-y: overlay;
 }
+
+.ItemDrawer .search-container {
+  position: relative;
+}
+
+.ItemDrawer input.search {
+  outline: none;
+  background: rgba(var(--purplish-grey-raw), 0.48);
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  width: 100%;
+  color: var(--text);
+  margin-bottom: 12px;
+  padding-left: 32px;
+}
+
+.ItemDrawer .search.icon {
+  color: var(--purplish-grey);
+  position: absolute;
+  left: 8px;
+  top: 8px;
+}

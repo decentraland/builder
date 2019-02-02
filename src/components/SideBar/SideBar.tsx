@@ -14,7 +14,8 @@ export default class SideBar extends React.PureComponent<Props> {
   }
 
   renderItemDrawer() {
-    return <ItemDrawer categories={Object.values(this.props.categories!)} onClick={this.handleOnClick} />
+    const { categories, onSearch } = this.props
+    return <ItemDrawer categories={Object.values(categories!)} onClick={this.handleOnClick} onSearch={onSearch} />
   }
 
   render() {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Header, Grid } from 'decentraland-ui'
+import { Header, Grid, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Drawer from 'components/Drawer'
@@ -8,6 +8,7 @@ import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
+import { debounce } from 'lib/debounce'
 
 const DEFAULT_COLUMN_COUNT = 3
 
@@ -62,6 +63,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return Number(this.props.columnCount)
   }
 
+  handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.handleSearchDebounced(event.target.value)
+  }
+
+  handleSearchDebounced = debounce(this.props.onSearch, 200)
+
   render() {
     const { isList } = this.state
     const { categories, columnCount } = this.props
@@ -75,6 +82,11 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
             <Chip icon="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />
           </div>
         </Header>
+
+        <div className="search-container">
+          <Icon name="search" />
+          <input className="search" placeholder="Search..." onChange={this.handleSearch} />
+        </div>
 
         <div className="overflow-container">
           {categories.map((category, index) => (
