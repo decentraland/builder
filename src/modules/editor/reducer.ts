@@ -50,7 +50,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         mode
       }
     }
-
     case TOGGLE_PREVIEW: {
       const { enabled } = action.payload
       return {
@@ -58,7 +57,6 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         preview: enabled
       }
     }
-
     case TOGGLE_SIDEBAR: {
       const { enabled } = action.payload
       return {
@@ -66,34 +64,29 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         sidebar: enabled
       }
     }
-
     case SELECT_ENTITY: {
       return {
         ...state,
         selectedEntityId: action.payload.entityId
       }
     }
-
     case UNSELECT_ENTITY: {
       return {
         ...state,
         selectedEntityId: null
       }
     }
-
     case EDITOR_READY: {
       return {
         ...state,
         isReady: true
       }
     }
-
     case CLOSE_EDITOR: {
       return {
         ...INITIAL_STATE
       }
     }
-
     default:
       return state
   }
