@@ -46,6 +46,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
         closeIcon={<CloseModalIcon onClick={this.handleClose} />}
       >
         <Modal.Header>
+          <div className="header-image" />
           <Header size="huge" className="hero">
             Participate in our contest
           </Header>

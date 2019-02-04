@@ -29,7 +29,10 @@
 }
 
 .TopBar .right-column .add-to-contest {
-  background: var(--contest-primary);
+  background-color: var(--contest-primary);
+  background-image: url('../../images/market-tiles.png');
+  background-size: 200%;
+  background-position: 100%;
   margin-left: 32px;
 }
 
