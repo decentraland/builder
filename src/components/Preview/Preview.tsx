@@ -10,7 +10,7 @@ export default class Preview extends React.Component<Props, State> {
   canvas = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
-    this.startEditor()
+    this.startEditor().catch(error => console.error('Failed to start editor', error)
   }
 
   async startEditor() {
