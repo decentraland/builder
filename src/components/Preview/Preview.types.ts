@@ -1,3 +1,4 @@
+import { Vector3 } from 'modules/common/types'
 import { UpdateEditorAction } from 'modules/editor/actions'
 
 export type Editor = {
@@ -10,6 +11,10 @@ export type Editor = {
   handleMessage: (msg: { type: 'update'; payload: any }) => void
   sendExternalAction: (action: UpdateEditorAction) => void
   setPlayMode: (enabled: boolean) => void
+  setCameraZoomDelta: (delta: number) => void
+  setCameraRotation: (alpha: number) => void
+  resetCameraZoom: () => void
+  setCameraPosition: (position: Vector3) => void
 }
 
 export type EditorWindow = typeof window & {

@@ -28,11 +28,15 @@
   "shortcuts_modal": {
     "title": "Shortcuts",
     "basic_controls": {
+      "shortcut_reference": "Shortcut reference",
       "title": "Basic Controls",
       "undo": "Undo",
       "redo": "Redo",
       "duplicate": "Duplicate object",
-      "delete": "Delete object"
+      "delete": "Delete object",
+      "reset_camera": "Reset camera",
+      "zoom_in": "Zoom in",
+      "zoom_out": "Zoom out"
     },
     "edit_controls": {
       "title": "Edit controls",

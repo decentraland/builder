@@ -19,9 +19,15 @@ import {
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
   ToggleSidebarAction,
+  ZOOM_IN,
+  ZOOM_OUT,
+  RESET_CAMERA,
+  resetCamera,
+  zoomIn,
+  zoomOut,
   setMode
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponents } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -53,6 +59,9 @@ export function* editorSaga() {
   yield takeLatest(SET_MODE, handleSetMode)
   yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
+  yield takeLatest(ZOOM_IN, handleZoomIn)
+  yield takeLatest(ZOOM_OUT, handleZoomOut)
+  yield takeLatest(RESET_CAMERA, handleResetCamera)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -87,6 +96,18 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
     {
       combination: ['?'],
       callback: () => store.dispatch(openModal('ShortcutsModal'))
+    },
+    {
+      combination: ['space'],
+      callback: () => store.dispatch(resetCamera())
+    },
+    {
+      combination: ['shift+='],
+      callback: () => store.dispatch(zoomIn())
+    },
+    {
+      combination: ['shift+-'],
+      callback: () => store.dispatch(zoomOut())
     }
   ]
 }
@@ -129,8 +150,13 @@ function handlePositionGizmoUpdate(args: { entityId: string; transform: { positi
   const components = getEntityComponents(args.entityId)(store.getState() as RootState)
   const transform = Object.values(components).find(component => component.type === ComponentType.Transform)
 
+  const sanitizedPosition = {
+    ...args.transform.position,
+    y: args.transform.position.y < 0 ? 0 : args.transform.position.y
+  }
+
   if (transform) {
-    store.dispatch(updateComponent(scene.id, transform.id, { position: args.transform.position, rotation: args.transform.rotation }))
+    store.dispatch(updateTransform(scene.id, transform.id, { position: sanitizedPosition, rotation: args.transform.rotation }))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
@@ -199,4 +225,18 @@ function* handleTooglePreview(action: TogglePreviewAction) {
 
 function* handleToggleSidebar(action: ToggleSidebarAction) {
   yield call(() => resizeEditor())
+}
+
+function handleZoomIn() {
+  editorWindow.editor.setCameraZoomDelta(-5)
+}
+
+function handleZoomOut() {
+  editorWindow.editor.setCameraZoomDelta(5)
+}
+
+function handleResetCamera() {
+  editorWindow.editor.resetCameraZoom()
+  editorWindow.editor.setCameraPosition({ x: 5, y: 0, z: 5 })
+  editorWindow.editor.setCameraRotation(-Math.PI / 4)
 }
