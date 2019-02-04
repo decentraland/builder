@@ -1,5 +1,4 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import {
@@ -25,7 +24,9 @@ import {
   resetCamera,
   zoomIn,
   zoomOut,
-  setMode
+  setMode,
+  OPEN_EDITOR,
+  editorReady
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -39,7 +40,6 @@ import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
 import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
-import { LOAD_ASSET_PACKS_SUCCESS } from 'modules/assetPack/actions'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene } from './utils'
 
@@ -53,9 +53,9 @@ export function* editorSaga() {
   yield takeLatest(EDITOR_REDO, handleApplyEditorState)
   yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
   yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
+  yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(ADD_ASSET, handleApplyEditorState)
-  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleStartEditor)
   yield takeLatest(SET_MODE, handleSetMode)
   yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
@@ -162,21 +162,25 @@ function handlePositionGizmoUpdate(args: { entityId: string; transform: { positi
   }
 }
 
-function* handleStartEditor() {
-  // Creates a new scene in the dcl client's side
-  yield handleNewScene()
-
-  // TODO: find a better way to wait for the editor to be ready
-  yield delay(3000)
-
-  // Spawns the assets
-  yield handleApplyEditorState()
-
+function* handleOpenEditor() {
   // Handles subscriptions to metrics
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('transform', handlePositionGizmoUpdate))
+
+  // The client will report when the internal api is ready
+  yield call(() => editorWindow.editor.on('ready', handleEditorReadyChange))
+
+  // Creates a new scene in the dcl client's side
+  yield handleNewScene()
+
+  // Spawns the assets
+  yield handleApplyEditorState()
+}
+
+function handleEditorReadyChange() {
+  store.dispatch(editorReady())
 }
 
 function* handleCloseEditor() {

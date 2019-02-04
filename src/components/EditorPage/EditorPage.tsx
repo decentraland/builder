@@ -6,9 +6,10 @@ import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
 import Tools from './Tools'
 import Metrics from './Metrics'
+
 import { Props } from './EditorPage.types'
-import './EditorPage.css'
 import { ToolName } from './Tools/Tools.types'
+import './EditorPage.css'
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {

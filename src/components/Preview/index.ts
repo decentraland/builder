@@ -1,3 +1,3 @@
-import Preview from './Preview'
+import Preview from './Preview.container'
 
 export default Preview
