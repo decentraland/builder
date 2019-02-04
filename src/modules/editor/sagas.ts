@@ -227,7 +227,7 @@ function* handleTooglePreview(action: TogglePreviewAction) {
   })
 }
 
-function* handleToggleSidebar(action: ToggleSidebarAction) {
+function* handleToggleSidebar(_: ToggleSidebarAction) {
   yield call(() => resizeEditor())
 }
 

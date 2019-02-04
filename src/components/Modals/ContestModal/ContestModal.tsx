@@ -1,22 +1,32 @@
 import * as React from 'react'
-import { Form, Modal, Header, Radio, Button } from 'decentraland-ui'
+import { Form, Modal, Header, Radio, Input, Button } from 'decentraland-ui'
 // import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import CloseModalIcon from '../CloseModalIcon'
-import { Props } from '../Modals.types'
+import { Props, State } from './ContestModal.types'
 
 import './ContestModal.css'
 
-export default class ContestModal extends React.PureComponent<Props> {
-  state = { hasAcceptedTerms: false }
+export default class ContestModal extends React.PureComponent<Props, State> {
+  state = { hasAcceptedTerms: false, email: '' }
 
   handleClose = () => {
     const { modal, onClose } = this.props
     onClose(modal.name)
   }
 
+  handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
+    this.setState({
+      email: event.currentTarget.value
+    })
+  }
+
   handleSubmit = () => {
-    console.log('Submit form')
+    const { email } = this.state
+    if (email.trim()) {
+      this.props.onRegisterEmail(email)
+      this.handleClose()
+    }
   }
 
   handleToggleTerms = () => {
@@ -25,7 +35,7 @@ export default class ContestModal extends React.PureComponent<Props> {
 
   render() {
     const { modal } = this.props
-    const { hasAcceptedTerms } = this.state
+    const { hasAcceptedTerms, email } = this.state
 
     return (
       <Modal
@@ -51,8 +61,14 @@ export default class ContestModal extends React.PureComponent<Props> {
               <Radio className="modal-row" defaultChecked={false} checked={hasAcceptedTerms} label={`I accept the Terms & Conditions`} />
             </div>
             <div className="modal-row email-container">
-              <input type="email" placeholder="mail@domain.com" />
-              <Button primary size="medium">
+              <Input
+                type="email"
+                placeholder="mail@domain.com"
+                value={email}
+                onChange={this.handleEmailChange}
+                disabled={!hasAcceptedTerms}
+              />
+              <Button primary size="medium" disabled={!hasAcceptedTerms}>
                 SEND
               </Button>
             </div>

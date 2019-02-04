@@ -20,15 +20,18 @@
   font-weight: 400;
 }
 
-.ContestModal .ui.form .email-container input[type='email'] {
+.ContestModal .ui.form .email-container .ui.input {
   width: 69%;
-  margin-right: 12px;
+}
+.ContestModal .ui.form .email-container .ui.input input {
   padding-top: 0.9em;
   padding-bottom: 0.9em;
 }
 
 .ContestModal .ui.form .ui.button.primary {
   padding: 0.8em 3.8em;
+  margin-left: 15px;
+  margin-right: 0;
 }
 
 .ContestModal .modal-row {

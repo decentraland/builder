@@ -1,5 +1,6 @@
 import uuidv4 from 'uuid/v4'
 import { call, put, takeLatest } from 'redux-saga/effects'
+
 import {
   LOAD_ASSET_PACKS_REQUEST,
   loadAssetPacksSuccess,
@@ -13,7 +14,7 @@ export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
 }
 
-function* handleLoadAssetPacks(action: LoadAssetPacksRequestAction) {
+function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
     // TODO: This should fetch a list of asset packs in the future, this is just a mock for now
     const remoteAssetPack: RemoteAssetPack = yield call(() => api.fetchAssetPack('packv1.json'))
