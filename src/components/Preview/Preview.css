@@ -10,7 +10,7 @@
   outline: none;
 }
 
-.Preview > .ui.loader:before {
+.Preview .ui.loader:before {
   border: none;
 }
 
