@@ -9,8 +9,7 @@ import {
   PROVISION_SCENE,
   UpdateMetricsAction,
   UPDATE_METRICS,
-  UPDATE_TRANSFORM,
-  UpdateComponentAction
+  UpdateTransfromAction
 } from 'modules/scene/actions'
 
 export type SceneState = {
@@ -20,7 +19,7 @@ export type SceneState = {
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction | UpdateComponentAction
+export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -45,8 +44,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
 
     case PROVISION_SCENE: {
       const { sceneId, components, entities } = action.payload
-      const currentComponents = { ...state.data[sceneId].components }
-      const currentEntities = { ...state.data[sceneId].entities }
 
       return {
         ...state,
@@ -54,8 +51,8 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
           ...state.data,
           [sceneId]: {
             ...state.data[sceneId],
-            components: components.reduce((acc, components) => ({ ...acc, [components.id]: { ...components } }), currentComponents),
-            entities: entities.reduce((acc, entity) => ({ ...acc, [entity.id]: { ...entity } }), currentEntities)
+            components,
+            entities
           }
         }
       }
@@ -82,28 +79,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       }
     }
 
-    case UPDATE_TRANSFORM: {
-      const { sceneId, componentId, data } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [sceneId]: {
-            ...state.data[sceneId],
-            components: {
-              ...state.data[sceneId].components,
-              [componentId]: {
-                ...state.data[sceneId].components[componentId],
-                data: {
-                  ...data
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
     default:
       return state
   }
@@ -116,7 +91,7 @@ const undoableReducer = undoable<SceneState>(baseSceneReducer as any, {
   undoType: EDITOR_UNDO,
   redoType: EDITOR_REDO,
   clearHistoryType: CLOSE_EDITOR,
-  filter: includeAction([CREATE_SCENE, PROVISION_SCENE, UPDATE_TRANSFORM])
+  filter: includeAction([CREATE_SCENE, PROVISION_SCENE])
 })
 
 export const sceneReducer = (state: any, action: any) => {

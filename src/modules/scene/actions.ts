@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
 import { AssetResource } from 'modules/asset/types'
-import { SceneDefinition, EntityDefinition, AnyComponent, SceneMetrics, ComponentType, ComponentData } from './types'
+import { SceneDefinition, SceneMetrics, ComponentType, ComponentData } from './types'
 
 // Create scene
 
@@ -13,17 +13,17 @@ export type CreateSceneAction = ReturnType<typeof createScene>
 
 // Spawn items
 
-export const ADD_ASSET = 'Add asset'
+export const ADD_ITEM = 'Add item'
 
-export const addAsset = (asset: AssetResource, position: Vector3) => action(ADD_ASSET, { asset, position })
+export const addItem = (asset: AssetResource, position: Vector3) => action(ADD_ITEM, { asset, position })
 
-export type AddAssetAction = ReturnType<typeof addAsset>
+export type AddItemAction = ReturnType<typeof addItem>
 
-// Provision a scene: add components and entities
+// Provision a scene
 
 export const PROVISION_SCENE = 'Provision scene'
 
-export const provisionScene = (sceneId: string, components: AnyComponent[], entities: EntityDefinition[]) =>
+export const provisionScene = (sceneId: string, components: SceneDefinition['components'], entities: SceneDefinition['entities']) =>
   action(PROVISION_SCENE, { sceneId, components, entities })
 
 export type ProvisionSceneAction = ReturnType<typeof provisionScene>
@@ -44,4 +44,28 @@ export const UPDATE_TRANSFORM = 'Update transform'
 export const updateTransform = (sceneId: string, componentId: string, data: ComponentData[ComponentType.Transform]) =>
   action(UPDATE_TRANSFORM, { sceneId, componentId, data })
 
-export type UpdateComponentAction = ReturnType<typeof updateTransform>
+export type UpdateTransfromAction = ReturnType<typeof updateTransform>
+
+// Reset object
+
+export const RESET_ITEM = 'Reset item'
+
+export const resetItem = () => action(RESET_ITEM, {})
+
+export type ResetItemAction = ReturnType<typeof resetItem>
+
+// Duplicate object
+
+export const DUPLICATE_ITEM = 'Duplicate item'
+
+export const duplicateItem = () => action(DUPLICATE_ITEM, {})
+
+export type DuplicateItemAction = ReturnType<typeof duplicateItem>
+
+// Delete object
+
+export const DELETE_ITEM = 'Delete item'
+
+export const deleteItem = () => action(DELETE_ITEM, {})
+
+export type DeleteItemAction = ReturnType<typeof deleteItem>

@@ -31,6 +31,7 @@ export default class Preview extends React.Component<Props, State> {
   }
 
   render() {
+    const { isLoading } = this.props
     return (
       <div className="Preview" id="preview-viewport" ref={this.canvas}>
         {isLoading && (

@@ -7,12 +7,8 @@ import {
   editorRedo,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
   UNBIND_KEYBOARD_SHORTCUTS,
-  EDITOR_UNDO,
-  EDITOR_REDO,
-  UPDATE_EDITOR,
   CLOSE_EDITOR,
-  UpdateEditorAction,
-  SET_MODE,
+  SET_GIZMO,
   SetModeAction,
   TogglePreviewAction,
   TOGGLE_PREVIEW,
@@ -24,39 +20,42 @@ import {
   resetCamera,
   zoomIn,
   zoomOut,
-  setMode,
   OPEN_EDITOR,
-  setEditorReady
+  setEditorReady,
+  setGizmo,
+  selectEntity,
+  togglePreview,
+  toggleSidebar,
+  EDITOR_REDO,
+  EDITOR_UNDO
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateTransform, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
-import { getCurrentScene, getEntityComponents } from 'modules/scene/selectors'
+import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { KeyboardShortcut } from 'modules/keyboard/types'
 import { SceneDefinition, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
+import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
 import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene } from './utils'
+import { getGizmo, getSelectedEntityId, isPreviewing, isSidebarOpen } from './selectors'
 
 const editorWindow = window as EditorWindow
 
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
   yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
-  yield takeLatest(PROVISION_SCENE, handleApplyEditorState)
-  yield takeLatest(EDITOR_UNDO, handleApplyEditorState)
-  yield takeLatest(EDITOR_REDO, handleApplyEditorState)
-  yield takeLatest(UPDATE_TRANSFORM, handleApplyEditorState)
-  yield takeLatest(UPDATE_EDITOR, handleUpdateEditor)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(ADD_ASSET, handleApplyEditorState)
-  yield takeLatest(SET_MODE, handleSetMode)
+  yield takeLatest(PROVISION_SCENE, handleRenderScene)
+  yield takeLatest(EDITOR_REDO, handleRenderScene)
+  yield takeLatest(EDITOR_UNDO, handleRenderScene)
+  yield takeLatest(SET_GIZMO, handleSetGizmo)
   yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
   yield takeLatest(ZOOM_IN, handleZoomIn)
@@ -78,12 +77,32 @@ function* handleUnbindEditorKeyboardShortcuts() {
 function getKeyboardShortcuts(): KeyboardShortcut[] {
   return [
     {
-      combination: ['m'],
-      callback: () => store.dispatch(setMode('move'))
+      combination: ['w'],
+      callback: () => store.dispatch(setGizmo(Gizmo.MOVE))
     },
     {
-      combination: ['r'],
-      callback: () => store.dispatch(setMode('rotate'))
+      combination: ['e'],
+      callback: () => store.dispatch(setGizmo(Gizmo.ROTATE))
+    },
+    {
+      combination: ['command+s'],
+      callback: () => store.dispatch(resetItem())
+    },
+    {
+      combination: ['command+d'],
+      callback: () => store.dispatch(duplicateItem())
+    },
+    {
+      combination: ['o'],
+      callback: () => store.dispatch(togglePreview(!isPreviewing(store.getState() as RootState)))
+    },
+    {
+      combination: ['p'],
+      callback: () => store.dispatch(toggleSidebar(!isSidebarOpen(store.getState() as RootState)))
+    },
+    {
+      combination: ['del', 'backspace'],
+      callback: () => store.dispatch(deleteItem())
     },
     {
       combination: ['command+z', 'ctrl+z'],
@@ -127,13 +146,11 @@ function* handleNewScene() {
   yield call(() => editorWindow.editor.handleMessage(msg))
 }
 
-function* handleApplyEditorState() {
+function* handleRenderScene() {
   const scene: SceneDefinition = yield select(getCurrentScene)
-
   if (scene) {
     const assetMappings: AssetMappings = yield select(getAssetMappings)
-
-    yield handleUpdateEditor(updateEditor(scene.id, scene, assetMappings))
+    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, assetMappings)))
   }
 }
 
@@ -147,8 +164,10 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
 
 function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
   const scene = getCurrentScene(store.getState() as RootState)
-  const components = getEntityComponents(args.entityId)(store.getState() as RootState)
-  const transform = Object.values(components).find(component => component.type === ComponentType.Transform)
+  if (!scene) return
+
+  const transform = getEntityComponentByType(args.entityId, ComponentType.Transform)(store.getState() as RootState)
+  if (!transform) return
 
   const sanitizedPosition = {
     ...args.transform.position,
@@ -162,6 +181,23 @@ function handlePositionGizmoUpdate(args: { entityId: string; transform: { positi
   }
 }
 
+function handleGizmoSelected(args: { gizmoType: Gizmo; entityId: string }) {
+  const { gizmoType, entityId } = args
+  const state = store.getState() as RootState
+  const currentGizmo = getGizmo(state)
+  if (currentGizmo !== gizmoType) {
+    store.dispatch(setGizmo(gizmoType))
+  }
+  const selectedEntityId = getSelectedEntityId(state)
+  if (selectedEntityId !== entityId) {
+    store.dispatch(selectEntity(entityId))
+  }
+}
+
+function handleEditorReadyChange() {
+  store.dispatch(setEditorReady())
+}
+
 function* handleOpenEditor() {
   // Handles subscriptions to metrics
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
@@ -172,46 +208,22 @@ function* handleOpenEditor() {
   // The client will report when the internal api is ready
   yield call(() => editorWindow.editor.on('ready', handleEditorReadyChange))
 
+  // The client will report the deltas when the transform of an entity has changed (gizmo movement)
+  yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
+
   // Creates a new scene in the dcl client's side
   yield handleNewScene()
 
   // Spawns the assets
-  yield handleApplyEditorState()
-}
-
-function handleEditorReadyChange() {
-  store.dispatch(setEditorReady())
+  yield handleRenderScene()
 }
 
 function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
 }
 
-/**
- * This function sends the update actions to the editor.
- */
-function* handleUpdateEditor(action: UpdateEditorAction) {
-  // @ts-ignore: Client api
-  yield call(() => editorWindow.editor.sendExternalAction(action))
-}
-
-function* handleSetMode(action: SetModeAction) {
-  switch (action.payload.mode) {
-    case 'move': {
-      // TODO: set move mode
-      break
-    }
-    case 'rotate': {
-      // TODO: set rotate mode
-      break
-    }
-    case 'select': {
-      // TODO: set scale mode
-      break
-    }
-  }
-  // TODO: remove this after doing the TODOs above
-  yield 1
+function* handleSetGizmo(action: SetModeAction) {
+  yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
 }
 
 function resizeEditor() {
