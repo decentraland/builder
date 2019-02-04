@@ -1,12 +1,13 @@
 import { EditorScene } from 'modules/editor/types'
 import { env } from 'decentraland-commons'
+import { Project } from 'modules/project/types'
 const script = require('raw-loader!../../ecsScene/scene.js')
 
 const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
   throw new Error('Missing REACT_APP_CONTENT_SERVER env variable')
 })
 
-export function getNewScene(title: string): EditorScene {
+export function getNewScene(project: Project): EditorScene {
   const mappings = {
     'game.js': `data:application/javascript;base64,${btoa(script)}`
   }
@@ -14,7 +15,7 @@ export function getNewScene(title: string): EditorScene {
   return {
     baseUrl: CONTENT_SERVER as string,
     display: {
-      title
+      title: project.title
     },
     owner: 'Decentraland',
     contact: {
@@ -23,8 +24,8 @@ export function getNewScene(title: string): EditorScene {
     },
     scene: {
       // TODO: This should be received as param
-      parcels: ['0,0'],
-      base: '0,0'
+      parcels: project.parcels ? project.parcels.map(({ x, y }) => `${x},${y}`) : ['0,0'],
+      base: project.parcels ? `${project.parcels[0].x}, ${project.parcels[0].y}` : '0,0'
     },
     communications: {
       type: 'webrtc',

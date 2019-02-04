@@ -14,7 +14,7 @@ export default class Preview extends React.Component<Props, State> {
   }
 
   async startEditor() {
-    await editorWindow.editor.initEngine()
+    await editorWindow.editor.initEngine(this.props.layout.rows, this.props.layout.cols)
 
     try {
       const canvas = await editorWindow.editor.getDCLCanvas()
@@ -30,9 +30,11 @@ export default class Preview extends React.Component<Props, State> {
   }
 
   render() {
+    const { isLoading } = this.props
+
     return (
       <div className="Preview" id="preview-viewport" ref={this.canvas}>
-        {true && (
+        {isLoading && (
           <div className="overlay">
             <Loader active size="massive" />
           </div>
