@@ -20,9 +20,6 @@ export default class Preview extends React.Component<Props, State> {
       const canvas = await editorWindow.editor.getDCLCanvas()
 
       if (this.canvas.current && canvas) {
-        this.setState({
-          isLoading: false
-        })
         this.canvas.current!.appendChild(canvas)
         editorWindow.editor.resize()
         this.props.onOpenEditor()

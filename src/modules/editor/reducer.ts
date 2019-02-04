@@ -9,7 +9,7 @@ import {
   SELECT_ENTITY,
   UnselectEntityAction,
   UNSELECT_ENTITY,
-  EDITOR_READY,
+  SET_EDITOR_READY,
   CLOSE_EDITOR,
   EditorReadyAction,
   CloseEditorAction
@@ -76,7 +76,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         selectedEntityId: null
       }
     }
-    case EDITOR_READY: {
+    case SET_EDITOR_READY: {
       return {
         ...state,
         isReady: true

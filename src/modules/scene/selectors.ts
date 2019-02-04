@@ -66,8 +66,9 @@ export const getGLTFId = (src: string) => (state: RootState) => {
   for (let key in componentData) {
     const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
     if (comp.type === ComponentType.GLTFShape && comp.data.src === src) return key
-    return null
   }
+
+  return null
 }
 
 export const hasHistory = (state: RootState) => state.scene.past.length > 0
