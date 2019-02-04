@@ -18,7 +18,8 @@ import {
   TogglePreviewAction,
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
-  ToggleSidebarAction
+  ToggleSidebarAction,
+  setMode
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateComponent, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -67,6 +68,14 @@ function* handleUnbindEditorKeyboardShortcuts() {
 // This function dispatches actions to the store, but uses `store.dispatch` to scape generators
 function getKeyboardShortcuts(): KeyboardShortcut[] {
   return [
+    {
+      combination: ['m'],
+      callback: () => store.dispatch(setMode('move'))
+    },
+    {
+      combination: ['r'],
+      callback: () => store.dispatch(setMode('rotate'))
+    },
     {
       combination: ['command+z', 'ctrl+z'],
       callback: () => store.dispatch(editorUndo())
