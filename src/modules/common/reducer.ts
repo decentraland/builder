@@ -11,7 +11,7 @@ import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { editorReducer as editor } from 'modules/editor/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
-import { categoryReducer as category } from 'modules/category/reducer'
+import { uiReducer as ui } from 'modules/ui/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 
@@ -26,7 +26,7 @@ export function createRootReducer(history: History) {
       modal,
       assetPack,
       asset,
-      category,
+      ui,
       project,
       scene,
       router: connectRouter(history)

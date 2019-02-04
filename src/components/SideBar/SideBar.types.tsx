@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux'
 
-import { FullCategory } from 'modules/category/types'
+import { Category } from 'modules/ui/sidebar/types'
 import { addAsset, AddAssetAction } from 'modules/scene/actions'
 
 export type Props = {
-  categories?: FullCategory[]
+  categories?: Category[]
   isLoading?: boolean
   onAddAsset: typeof addAsset
 }

@@ -1,6 +1,6 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { FullAssetPack } from 'modules/assetPack/types'
+import { AssetPack } from 'modules/assetPack/types'
 import {
   LoadAssetPacksRequestAction,
   LoadAssetPacksSuccessAction,
@@ -11,7 +11,7 @@ import {
 } from 'modules/assetPack/actions'
 
 export type AssetPackState = {
-  data: ModelById<FullAssetPack>
+  data: ModelById<AssetPack>
   loading: LoadingState
   error: string | null
 }

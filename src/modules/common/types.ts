@@ -8,7 +8,7 @@ import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
-import { CategoryState } from 'modules/category/reducer'
+import { UIState } from 'modules/ui/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
@@ -25,7 +25,7 @@ export type RootState = {
   modal: ModalState
   assetPack: AssetPackState
   asset: AssetState
-  category: CategoryState
+  ui: UIState
   project: ProjectState
   scene: UndoableSceneState
   router: RouterState
