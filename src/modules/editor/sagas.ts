@@ -26,7 +26,7 @@ import {
   zoomOut,
   setMode,
   OPEN_EDITOR,
-  editorReady
+  setEditorReady
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, UPDATE_TRANSFORM, ADD_ASSET } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -180,7 +180,7 @@ function* handleOpenEditor() {
 }
 
 function handleEditorReadyChange() {
-  store.dispatch(editorReady())
+  store.dispatch(setEditorReady())
 }
 
 function* handleCloseEditor() {

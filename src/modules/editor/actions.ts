@@ -117,10 +117,10 @@ export const resetCamera = () => action(RESET_CAMERA, {})
 
 export type ResetCameraAction = ReturnType<typeof resetCamera>
 
-// Editor ready
+// Set editor ready
 
-export const SET_EDITOR_READY = 'Editor ready'
+export const SET_EDITOR_READY = 'Set editor ready'
 
-export const editorReady = () => action(SET_EDITOR_READY, {})
+export const setEditorReady = () => action(SET_EDITOR_READY, {})
 
-export type EditorReadyAction = ReturnType<typeof editorReady>
+export type SetEditorReadyAction = ReturnType<typeof setEditorReady>

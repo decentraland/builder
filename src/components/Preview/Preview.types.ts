@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Vector3 } from 'modules/common/types'
-import { UpdateEditorAction, EditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
+import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
 
 export type Editor = {
   initEngine: () => Promise<void>
@@ -33,4 +33,4 @@ export type State = {}
 
 export type MapStateProps = Pick<Props, 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onOpenEditor'>
-export type MapDispatch = Dispatch<EditorReadyAction | OpenEditorAction>
+export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction>

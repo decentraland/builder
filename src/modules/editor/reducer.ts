@@ -11,7 +11,7 @@ import {
   UNSELECT_ENTITY,
   SET_EDITOR_READY,
   CLOSE_EDITOR,
-  EditorReadyAction,
+  SetEditorReadyAction,
   CloseEditorAction
 } from './actions'
 import { EditorMode } from './types'
@@ -38,7 +38,7 @@ export type EditorReducerAction =
   | ToggleSidebarAction
   | SelectEntityAction
   | UnselectEntityAction
-  | EditorReadyAction
+  | SetEditorReadyAction
   | CloseEditorAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
