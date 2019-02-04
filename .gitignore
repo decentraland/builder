@@ -26,3 +26,4 @@ yarn-error.log*
 .vscode
 
 src/ecsScene/scene.js
+/public/editor.js

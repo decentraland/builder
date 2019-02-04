@@ -1,1 +1,0 @@
-/Users/dani/Code/client/static/dist/editor.js
