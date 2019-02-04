@@ -21,6 +21,14 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 
 // Close editor
 
+export const OPEN_EDITOR = 'Open editor'
+
+export const openEditor = () => action(OPEN_EDITOR, {})
+
+export type OpenEditorAction = ReturnType<typeof openEditor>
+
+// Close editor
+
 export const CLOSE_EDITOR = 'Close editor'
 
 export const closeEditor = () => action(CLOSE_EDITOR, {})
@@ -108,3 +116,11 @@ export const RESET_CAMERA = 'Reset camera'
 export const resetCamera = () => action(RESET_CAMERA, {})
 
 export type ResetCameraAction = ReturnType<typeof resetCamera>
+
+// Set editor ready
+
+export const SET_EDITOR_READY = 'Set editor ready'
+
+export const setEditorReady = () => action(SET_EDITOR_READY, {})
+
+export type SetEditorReadyAction = ReturnType<typeof setEditorReady>

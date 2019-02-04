@@ -1,8 +1,9 @@
+import { Dispatch } from 'redux'
 import { Vector3 } from 'modules/common/types'
-import { UpdateEditorAction } from 'modules/editor/actions'
+import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
 
 export type Editor = {
-  initEngine: () => void
+  initEngine: () => Promise<void>
   resize: () => void
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   enableGizmo: (entityId: string) => void
@@ -22,3 +23,14 @@ export type EditorWindow = typeof window & {
   initDCL: () => void
   editor: Editor
 }
+
+export type Props = {
+  isLoading: boolean
+  onOpenEditor: typeof openEditor
+}
+
+export type State = {}
+
+export type MapStateProps = Pick<Props, 'isLoading'>
+export type MapDispatchProps = Pick<Props, 'onOpenEditor'>
+export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction>

@@ -8,7 +8,11 @@ import {
   SelectEntityAction,
   SELECT_ENTITY,
   UnselectEntityAction,
-  UNSELECT_ENTITY
+  UNSELECT_ENTITY,
+  SET_EDITOR_READY,
+  CLOSE_EDITOR,
+  SetEditorReadyAction,
+  CloseEditorAction
 } from './actions'
 import { EditorMode } from './types'
 
@@ -17,16 +21,25 @@ export type EditorState = {
   preview: boolean
   sidebar: boolean
   selectedEntityId: string | null
+  isReady: boolean
 }
 
 const INITIAL_STATE: EditorState = {
   mode: 'move',
   preview: false,
   sidebar: true,
-  selectedEntityId: null
+  selectedEntityId: null,
+  isReady: false
 }
 
-export type EditorReducerAction = SetModeAction | TogglePreviewAction | ToggleSidebarAction | SelectEntityAction | UnselectEntityAction
+export type EditorReducerAction =
+  | SetModeAction
+  | TogglePreviewAction
+  | ToggleSidebarAction
+  | SelectEntityAction
+  | UnselectEntityAction
+  | SetEditorReadyAction
+  | CloseEditorAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -61,6 +74,17 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         selectedEntityId: null
+      }
+    }
+    case SET_EDITOR_READY: {
+      return {
+        ...state,
+        isReady: true
+      }
+    }
+    case CLOSE_EDITOR: {
+      return {
+        ...INITIAL_STATE
       }
     }
     default:
