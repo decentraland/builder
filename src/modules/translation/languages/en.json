@@ -15,6 +15,10 @@
   "itemdrawer": {
     "title": "Item drawer"
   },
+  "topbar": {
+    "add_to_contest": "Add to contest",
+    "publish": "Publish"
+  },
   "metrics": {
     "triangles": "triangles",
     "materials": "materials",

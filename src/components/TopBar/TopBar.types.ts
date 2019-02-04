@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { Project } from 'modules/project/types'
 import { EditorMode } from 'modules/editor/types'
@@ -24,8 +25,9 @@ export type Props = {
   onTogglePreview: typeof togglePreview
   onToggleSidebar: typeof toggleSidebar
   onUndo: typeof editorUndo
+  onOpenModal: typeof openModal
 }
 
 export type MapStateProps = Pick<Props, 'currentProject' | 'mode' | 'isPreviewing' | 'isSidebarOpen' | 'selectedEntityId' | 'hasHistory'>
-export type MapDispatchProps = Pick<Props, 'onSetMode' | 'onTogglePreview' | 'onToggleSidebar' | 'onUndo'>
-export type MapDispatch = Dispatch<SetModeAction | TogglePreviewAction | ToggleSidebarAction | EditorUndoAction>
+export type MapDispatchProps = Pick<Props, 'onSetMode' | 'onTogglePreview' | 'onToggleSidebar' | 'onUndo' | 'onOpenModal'>
+export type MapDispatch = Dispatch<SetModeAction | TogglePreviewAction | ToggleSidebarAction | EditorUndoAction | OpenModalAction>

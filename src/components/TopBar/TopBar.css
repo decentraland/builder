@@ -35,6 +35,8 @@
 
 .TopBar .right-column .ui.button.mini {
   font-size: 11px;
+  padding: 0.3em 2em;
+  text-transform: uppercase;
 }
 
 .TopBar .Chip + .Chip {

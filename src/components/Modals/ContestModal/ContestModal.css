@@ -1,0 +1,36 @@
+.ContestModal.ui.small.modal {
+  position: relative;
+  max-width: 560px;
+}
+
+.ContestModal.ui.modal > .content {
+  font-size: 17px;
+}
+
+.ContestModal.ui.modal > .header {
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ContestModal .ui.header.hero {
+  text-align: center;
+  width: 50%;
+  font-weight: 400;
+}
+
+.ContestModal .ui.form .email-container input[type='email'] {
+  width: 69%;
+  margin-right: 12px;
+  padding-top: 0.9em;
+  padding-bottom: 0.9em;
+}
+
+.ContestModal .ui.form .ui.button.primary {
+  padding: 0.8em 3.8em;
+}
+
+.ContestModal .modal-row {
+  margin-bottom: 32px;
+}
