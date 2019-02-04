@@ -1,7 +1,8 @@
 {
   "global": {
     "projects": "projects",
-    "templates": "templates"
+    "templates": "templates",
+    "terms_and_conditions": "Terms & Conditions"
   },
   "languages": {
     "en": "English"
@@ -28,6 +29,13 @@
     "textures": "textures",
     "height": "height",
     "too_many": "Too many {metric}"
+  },
+  "contest_modal": {
+    "title": "Participate in our contest",
+    "start": "Subscribe for a chance to LAND",
+    "know_more": "To know more click here and read our blog post.",
+    "i_accept_the": "I accept the ",
+    "send": "Send"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",

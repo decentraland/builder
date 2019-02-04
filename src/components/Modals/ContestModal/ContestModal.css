@@ -40,6 +40,9 @@
   padding-top: 0.9em;
   padding-bottom: 0.9em;
 }
+.ContestModal .ui.checkbox input.hidden + label {
+  margin-right: 0;
+}
 
 .ContestModal .ui.form .ui.button.primary {
   padding: 0.8em 3.8em;
@@ -49,4 +52,8 @@
 
 .ContestModal .modal-row {
   margin-bottom: 32px;
+}
+
+.ContestModal .modal-row .explanation {
+  font-weight: 300;
 }

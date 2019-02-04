@@ -7,7 +7,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  hasAcceptedTerms: boolean
+  hasAccepted: boolean
   email: string
 }
 

@@ -29,11 +29,21 @@
 }
 
 .TopBar .right-column .add-to-contest {
+  transition: none;
+  margin-left: 32px;
+}
+
+.TopBar .right-column .add-to-contest,
+.TopBar .right-column .add-to-contest:hover {
   background-color: var(--contest-primary);
   background-image: url('../../images/market-tiles.png');
   background-size: 200%;
   background-position: 100%;
-  margin-left: 32px;
+}
+
+.TopBar .right-column .add-to-contest:hover {
+  background-color: var(--purplish-grey);
+  opacity: 0.9;
 }
 
 .TopBar .right-column .ui.button.mini {

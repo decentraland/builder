@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Form, Modal, Header, Radio, Input, Button } from 'decentraland-ui'
-// import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import CloseModalIcon from '../CloseModalIcon'
 import { Props, State } from './ContestModal.types'
@@ -8,7 +8,7 @@ import { Props, State } from './ContestModal.types'
 import './ContestModal.css'
 
 export default class ContestModal extends React.PureComponent<Props, State> {
-  state = { hasAcceptedTerms: false, email: '' }
+  state = { hasAccepted: false, email: '' }
 
   handleClose = () => {
     const { modal, onClose } = this.props
@@ -29,13 +29,13 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     }
   }
 
-  handleToggleTerms = () => {
-    this.setState({ hasAcceptedTerms: !this.state.hasAcceptedTerms })
+  handleToggleTermsAndConditions = () => {
+    this.setState({ hasAccepted: !this.state.hasAccepted })
   }
 
   render() {
     const { modal } = this.props
-    const { hasAcceptedTerms, email } = this.state
+    const { hasAccepted, email } = this.state
 
     return (
       <Modal
@@ -48,29 +48,29 @@ export default class ContestModal extends React.PureComponent<Props, State> {
         <Modal.Header>
           <div className="header-image" />
           <Header size="huge" className="hero">
-            Participate in our contest
+            {t('contest_modal.title')}
           </Header>
         </Modal.Header>
         <Modal.Content>
           <div className="modal-row">
-            Get in our contest and win LAND and a date with Fede!
-            <br />
-            To know more click here and read our blog post.
+            <p className="explanation">
+              {t('contest_modal.start')}
+              <br />
+              {t('contest_modal.know_more')}
+            </p>
           </div>
           <Form onSubmit={this.handleSubmit}>
-            <div onClick={this.handleToggleTerms}>
-              <Radio className="modal-row" defaultChecked={false} checked={hasAcceptedTerms} label={`I accept the Terms & Conditions`} />
+            <div onClick={this.handleToggleTermsAndConditions}>
+              <Radio className="modal-row" defaultChecked={false} checked={hasAccepted} label={t('contest_modal.i_accept_the')} />
+              &nbsp;
+              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
+                {t('global.terms_and_conditions')}
+              </a>
             </div>
             <div className="modal-row email-container">
-              <Input
-                type="email"
-                placeholder="mail@domain.com"
-                value={email}
-                onChange={this.handleEmailChange}
-                disabled={!hasAcceptedTerms}
-              />
-              <Button primary size="medium" disabled={!hasAcceptedTerms}>
-                SEND
+              <Input type="email" placeholder="mail@domain.com" value={email} onChange={this.handleEmailChange} disabled={!hasAccepted} />
+              <Button primary size="medium" disabled={!hasAccepted}>
+                {t('contest_modal.send').toUpperCase()}
               </Button>
             </div>
           </Form>
