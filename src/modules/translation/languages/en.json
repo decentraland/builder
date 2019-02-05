@@ -15,7 +15,8 @@
   },
   "itemdrawer": {
     "title": "Item drawer",
-    "search": "Search..."
+    "search": "Search...",
+    "no_results": "No results..."
   },
   "topbar": {
     "add_to_contest": "Add to contest",

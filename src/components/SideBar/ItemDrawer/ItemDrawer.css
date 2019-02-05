@@ -12,7 +12,7 @@
 }
 
 .ItemDrawer .ui.grid.asset-grid.item-grid .column {
-  width: 109px;
+  width: 112px;
 }
 
 .ItemDrawer .ui.grid.asset-grid.item-list .column {
@@ -78,4 +78,11 @@
   position: absolute;
   left: 8px;
   top: 8px;
+}
+
+.ItemDrawer .no-results {
+  width: 100%;
+  text-align: center;
+  padding: 16px;
+  color: var(--purplish-grey);
 }

@@ -26,7 +26,8 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   isCtrlDown = false
 
   state = {
-    isList: false
+    isList: false,
+    isSearching: false
   }
 
   handleSearchDebounced = debounce(this.props.onSearch, 200)
@@ -100,7 +101,16 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.length > 0 && !this.state.isSearching) {
+      this.setState({ isSearching: true })
+    } else if (event.target.value.length === 0 && this.state.isSearching) {
+      this.setState({ isSearching: false })
+    }
     this.handleSearchDebounced(event.target.value)
+  }
+
+  renderNoResults = () => {
+    return <div className="no-results">{t('itemdrawer.no_results')}</div>
   }
 
   render() {
@@ -123,13 +133,19 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         </div>
 
         <div className="overflow-container">
-          {categories.map((category, index) => (
-            <Drawer key={index} label={category.name}>
-              <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
-                {this.renderGrid(category.assets)}
-              </Grid>
-            </Drawer>
-          ))}
+          {this.state.isSearching && categories.length === 0
+            ? this.renderNoResults()
+            : categories.map((category, index) => (
+                <Drawer key={index} label={category.name}>
+                  <Grid
+                    columns={isList ? 1 : columnCount}
+                    padded="horizontally"
+                    className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}
+                  >
+                    {this.renderGrid(category.assets)}
+                  </Grid>
+                </Drawer>
+              ))}
         </div>
       </div>
     )

@@ -13,4 +13,5 @@ export type Props = {
 
 export type State = {
   isList: boolean
+  isSearching: boolean
 }
