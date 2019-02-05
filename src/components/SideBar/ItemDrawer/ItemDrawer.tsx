@@ -26,6 +26,8 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     isList: false
   }
 
+  handleSearchDebounced = debounce(this.props.onSearch, 200)
+
   componentWillMount() {
     document.body.addEventListener('keydown', this.handleKeyDown)
     document.body.addEventListener('keyup', this.handleKeyUp)
@@ -38,11 +40,11 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   handleKeyDown = (e: KeyboardEvent) => {
     // ctrl or command
-    if (e.keyCode == 17 || e.keyCode == 91) {
+    if (e.keyCode === 17 || e.keyCode === 91) {
       this.isCtrlDown = true
     }
     // z key
-    if (this.isCtrlDown && e.keyCode == 90) {
+    if (this.isCtrlDown && e.keyCode === 90) {
       e.preventDefault() // prevent ctrl+z on the editor from changing the value of the search input
       return false
     }
@@ -50,7 +52,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   handleKeyUp = (e: KeyboardEvent) => {
     // ctrl or command
-    if (e.keyCode == 17 || e.keyCode == 91) {
+    if (e.keyCode === 17 || e.keyCode === 91) {
       this.isCtrlDown = false
     }
   }
@@ -97,8 +99,6 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.handleSearchDebounced(event.target.value)
   }
-
-  handleSearchDebounced = debounce(this.props.onSearch, 200)
 
   render() {
     const { isList } = this.state
