@@ -9,7 +9,7 @@ import {
   UNBIND_KEYBOARD_SHORTCUTS,
   CLOSE_EDITOR,
   SET_GIZMO,
-  SetModeAction,
+  SetGizmoAction,
   TogglePreviewAction,
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
@@ -222,7 +222,7 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
 }
 
-function* handleSetGizmo(action: SetModeAction) {
+function* handleSetGizmo(action: SetGizmoAction) {
   yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
 }
 

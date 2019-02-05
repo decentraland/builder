@@ -7,7 +7,7 @@ import {
   setGizmo,
   togglePreview,
   toggleSidebar,
-  SetModeAction,
+  SetGizmoAction,
   TogglePreviewAction,
   ToggleSidebarAction,
   EditorUndoAction
@@ -35,7 +35,7 @@ export type MapDispatchProps = Pick<
   'onSetGizmo' | 'onTogglePreview' | 'onToggleSidebar' | 'onReset' | 'onDuplicate' | 'onDelete' | 'onOpenModal'
 >
 export type MapDispatch = Dispatch<
-  | SetModeAction
+  | SetGizmoAction
   | TogglePreviewAction
   | ToggleSidebarAction
   | EditorUndoAction

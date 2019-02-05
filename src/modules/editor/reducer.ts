@@ -1,5 +1,5 @@
 import {
-  SetModeAction,
+  SetGizmoAction,
   TogglePreviewAction,
   ToggleSidebarAction,
   SET_GIZMO,
@@ -33,7 +33,7 @@ const INITIAL_STATE: EditorState = {
 }
 
 export type EditorReducerAction =
-  | SetModeAction
+  | SetGizmoAction
   | TogglePreviewAction
   | ToggleSidebarAction
   | SelectEntityAction
