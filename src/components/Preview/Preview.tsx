@@ -3,6 +3,7 @@ import { Loader } from 'decentraland-ui'
 
 import { EditorWindow, Props, State } from './Preview.types'
 import './Preview.css'
+import { isLoading } from 'modules/project/selectors'
 
 const editorWindow = window as EditorWindow
 
@@ -32,7 +33,7 @@ export default class Preview extends React.Component<Props, State> {
   render() {
     return (
       <div className="Preview" id="preview-viewport" ref={this.canvas}>
-        {true && (
+        {isLoading && (
           <div className="overlay">
             <Loader active size="massive" />
           </div>
