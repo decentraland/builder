@@ -46,7 +46,7 @@ export const updateTransform = (sceneId: string, componentId: string, data: Comp
 
 export type UpdateTransfromAction = ReturnType<typeof updateTransform>
 
-// Reset object
+// Reset item
 
 export const RESET_ITEM = 'Reset item'
 
@@ -54,7 +54,7 @@ export const resetItem = () => action(RESET_ITEM, {})
 
 export type ResetItemAction = ReturnType<typeof resetItem>
 
-// Duplicate object
+// Duplicate item
 
 export const DUPLICATE_ITEM = 'Duplicate item'
 
@@ -62,7 +62,7 @@ export const duplicateItem = () => action(DUPLICATE_ITEM, {})
 
 export type DuplicateItemAction = ReturnType<typeof duplicateItem>
 
-// Delete object
+// Delete item
 
 export const DELETE_ITEM = 'Delete item'
 

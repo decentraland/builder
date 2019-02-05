@@ -53,8 +53,8 @@
     },
     "edit_controls": {
       "title": "Edit controls",
-      "move": "Move object",
-      "rotate": "Rotate object"
+      "move": "Move item",
+      "rotate": "Rotate item"
     }
   }
 }
