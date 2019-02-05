@@ -85,11 +85,11 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
       callback: () => store.dispatch(setGizmo(Gizmo.ROTATE))
     },
     {
-      combination: ['command+s'],
+      combination: ['s'],
       callback: () => store.dispatch(resetItem())
     },
     {
-      combination: ['command+d'],
+      combination: ['d'],
       callback: () => store.dispatch(duplicateItem())
     },
     {
