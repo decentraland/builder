@@ -5,7 +5,7 @@ import { ToolName, Props } from './Tools.types'
 
 export default class Tools extends React.PureComponent<Props> {
   static defaultProps = {
-    onClick: (toolName: ToolName) => {
+    onClick: (_: ToolName) => {
       /* noop */
     }
   }

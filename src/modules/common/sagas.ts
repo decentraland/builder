@@ -1,5 +1,6 @@
 import { all } from 'redux-saga/effects'
 import { locationSaga } from 'decentraland-dapps/dist/modules/location/sagas'
+import { analyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
 
 import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
@@ -10,5 +11,15 @@ import { editorSaga } from 'modules/editor/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 
 export function* rootSaga() {
-  yield all([locationSaga(), translationSaga(), walletSaga(), assetPackSaga(), sceneSaga(), projectSaga(), editorSaga(), keyboardSaga()])
+  yield all([
+    locationSaga(),
+    analyticsSaga(),
+    translationSaga(),
+    walletSaga(),
+    assetPackSaga(),
+    sceneSaga(),
+    projectSaga(),
+    editorSaga(),
+    keyboardSaga()
+  ])
 }
