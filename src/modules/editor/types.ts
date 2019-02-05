@@ -1,9 +1,4 @@
-export enum Gizmo {
-  MOVE = 'MOVE',
-  ROTATE = 'ROTATE',
-  SCALE = 'SCALE',
-  NONE = 'NONE'
-}
+export { Gizmo } from 'decentraland-ecs'
 
 export type EditorScene = {
   baseUrl: string

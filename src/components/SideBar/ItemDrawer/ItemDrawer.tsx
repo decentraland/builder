@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Header, Grid } from 'decentraland-ui'
+import { Header, Grid, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Drawer from 'components/Drawer'
@@ -8,8 +8,12 @@ import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
+import { debounce } from 'lib/debounce'
 
 const DEFAULT_COLUMN_COUNT = 3
+const CTRL_KEY_CODE = 17
+const COMMAND_KEY_CODE = 91
+const Z_KEY_CODE = 90
 
 export default class ItemDrawer extends React.PureComponent<Props, State> {
   static defaultProps = {
@@ -19,8 +23,42 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
+  isCtrlDown = false
+
   state = {
-    isList: false
+    isList: false,
+    isSearching: false
+  }
+
+  handleSearchDebounced = debounce(this.props.onSearch, 200)
+
+  componentWillMount() {
+    document.body.addEventListener('keydown', this.handleKeyDown)
+    document.body.addEventListener('keyup', this.handleKeyUp)
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.handleKeyDown)
+    document.body.removeEventListener('keyup', this.handleKeyUp)
+  }
+
+  handleKeyDown = (e: KeyboardEvent) => {
+    // ctrl or command
+    if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {
+      this.isCtrlDown = true
+    }
+    // z key
+    if (this.isCtrlDown && e.keyCode === Z_KEY_CODE) {
+      e.preventDefault() // prevent ctrl+z on the editor from changing the value of the search input
+      return false
+    }
+  }
+
+  handleKeyUp = (e: KeyboardEvent) => {
+    // ctrl or command
+    if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {
+      this.isCtrlDown = false
+    }
   }
 
   handleOnClick = (asset: Asset) => {
@@ -62,6 +100,19 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return Number(this.props.columnCount)
   }
 
+  handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.length > 0 && !this.state.isSearching) {
+      this.setState({ isSearching: true })
+    } else if (event.target.value.length === 0 && this.state.isSearching) {
+      this.setState({ isSearching: false })
+    }
+    this.handleSearchDebounced(event.target.value)
+  }
+
+  renderNoResults = () => {
+    return <div className="no-results">{t('itemdrawer.no_results')}</div>
+  }
+
   render() {
     const { isList } = this.state
     const { categories, columnCount } = this.props
@@ -76,14 +127,25 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           </div>
         </Header>
 
+        <div className="search-container">
+          <Icon name="search" />
+          <input className="search" placeholder={t('itemdrawer.search')} onChange={this.handleSearch} />
+        </div>
+
         <div className="overflow-container">
-          {categories.map((category, index) => (
-            <Drawer key={index} label={category.name}>
-              <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
-                {this.renderGrid(category.assets)}
-              </Grid>
-            </Drawer>
-          ))}
+          {this.state.isSearching && categories.length === 0
+            ? this.renderNoResults()
+            : categories.map((category, index) => (
+                <Drawer key={index} label={category.name}>
+                  <Grid
+                    columns={isList ? 1 : columnCount}
+                    padded="horizontally"
+                    className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}
+                  >
+                    {this.renderGrid(category.assets)}
+                  </Grid>
+                </Drawer>
+              ))}
         </div>
       </div>
     )

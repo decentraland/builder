@@ -3,10 +3,14 @@
 }
 
 .toolbar {
-  width: calc(100% - var(--sidebar-width));
+  width: 100%;
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+.toolbar.open {
+  width: calc(100% - var(--sidebar-width));
 }
 
 .toolbar > div {
@@ -32,4 +36,8 @@
 .toolbar .Tools .Icon.shortcuts {
   margin-left: 24px;
   margin-right: 0;
+}
+
+body.lock-scroll {
+  overflow: hidden;
 }

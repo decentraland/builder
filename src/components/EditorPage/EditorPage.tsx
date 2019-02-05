@@ -15,11 +15,14 @@ export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
+    document.body.classList.add('lock-scroll')
+    document.body.scrollTop = 0
   }
 
   componentWillUnmount() {
     this.props.onUnbindKeyboardShortcuts()
     this.props.onCloseEditor()
+    document.body.classList.remove('lock-scroll')
   }
 
   handleToolClick = (toolName: ToolName) => {
@@ -43,14 +46,15 @@ export default class EditorPage extends React.PureComponent<Props> {
 
   render() {
     const { isPreviewing, isSidebarOpen } = this.props
-    const className = isPreviewing ? 'fullscreen' : 'horizontal-layout'
+    const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
+    const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     return (
       <div className="EditorPage">
         {isPreviewing ? null : <TopBar />}
-        <Grid className={className}>
+        <Grid className={gridClasses}>
           <Grid.Row>
             <ViewPort />
-            <div className="toolbar">
+            <div className={toolbarClasses}>
               {isPreviewing ? null : (
                 <>
                   <Metrics />

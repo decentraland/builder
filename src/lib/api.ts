@@ -5,7 +5,7 @@ const URL = env.get('REACT_APP_API_URL', '')
 
 export class API extends BaseAPI {
   fetchAssetPack(id: string) {
-    return this.request('get', `/assetPack/${id}`, {})
+    return this.request('get', `https://builder-pack.now.sh/${id}`, {})
   }
 }
 

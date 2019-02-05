@@ -1,10 +1,7 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import {
   updateEditor,
-  editorUndo,
-  editorRedo,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
   UNBIND_KEYBOARD_SHORTCUTS,
   CLOSE_EDITOR,
@@ -17,32 +14,18 @@ import {
   ZOOM_IN,
   ZOOM_OUT,
   RESET_CAMERA,
-  resetCamera,
-  zoomIn,
-  zoomOut,
   OPEN_EDITOR,
   setEditorReady,
   setGizmo,
   selectEntity,
-  togglePreview,
-  toggleSidebar,
   EDITOR_REDO,
   EDITOR_UNDO
 } from 'modules/editor/actions'
-import {
-  PROVISION_SCENE,
-  updateMetrics,
-  updateTransform,
-  resetItem,
-  duplicateItem,
-  deleteItem,
-  DUPLICATE_ITEM
-} from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
-import { KeyboardShortcut } from 'modules/keyboard/types'
 import { SceneDefinition, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -50,8 +33,8 @@ import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { getNewScene } from './utils'
-import { getGizmo, getSelectedEntityId, isPreviewing, isSidebarOpen } from './selectors'
+import { getNewScene, getKeyboardShortcuts } from './utils'
+import { getGizmo, getSelectedEntityId } from './selectors'
 
 const editorWindow = window as EditorWindow
 
@@ -80,64 +63,6 @@ function* handleBindEditorKeyboardShortcuts() {
 function* handleUnbindEditorKeyboardShortcuts() {
   const shortcuts = getKeyboardShortcuts()
   yield put(unbindKeyboardShortcuts(shortcuts))
-}
-
-// This function dispatches actions to the store, but uses `store.dispatch` to scape generators
-function getKeyboardShortcuts(): KeyboardShortcut[] {
-  return [
-    {
-      combination: ['w'],
-      callback: () => store.dispatch(setGizmo(Gizmo.MOVE))
-    },
-    {
-      combination: ['e'],
-      callback: () => store.dispatch(setGizmo(Gizmo.ROTATE))
-    },
-    {
-      combination: ['s'],
-      callback: () => store.dispatch(resetItem())
-    },
-    {
-      combination: ['d'],
-      callback: () => store.dispatch(duplicateItem())
-    },
-    {
-      combination: ['o'],
-      callback: () => store.dispatch(togglePreview(!isPreviewing(store.getState() as RootState)))
-    },
-    {
-      combination: ['p'],
-      callback: () => store.dispatch(toggleSidebar(!isSidebarOpen(store.getState() as RootState)))
-    },
-    {
-      combination: ['del', 'backspace'],
-      callback: () => store.dispatch(deleteItem())
-    },
-    {
-      combination: ['command+z', 'ctrl+z'],
-      callback: () => store.dispatch(editorUndo())
-    },
-    {
-      combination: ['command+shift+z', 'ctrl+shift+z'],
-      callback: () => store.dispatch(editorRedo())
-    },
-    {
-      combination: ['?'],
-      callback: () => store.dispatch(openModal('ShortcutsModal'))
-    },
-    {
-      combination: ['space'],
-      callback: () => store.dispatch(resetCamera())
-    },
-    {
-      combination: ['shift+='],
-      callback: () => store.dispatch(zoomIn())
-    },
-    {
-      combination: ['shift+-'],
-      callback: () => store.dispatch(zoomOut())
-    }
-  ]
 }
 
 function* handleNewScene() {
