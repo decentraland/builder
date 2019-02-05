@@ -29,7 +29,15 @@ import {
   EDITOR_REDO,
   EDITOR_UNDO
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateTransform, resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
+import {
+  PROVISION_SCENE,
+  updateMetrics,
+  updateTransform,
+  resetItem,
+  duplicateItem,
+  deleteItem,
+  DUPLICATE_ITEM
+} from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -61,6 +69,7 @@ export function* editorSaga() {
   yield takeLatest(ZOOM_IN, handleZoomIn)
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
+  yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -216,6 +225,10 @@ function* handleOpenEditor() {
 
   // Spawns the assets
   yield handleRenderScene()
+}
+
+function* handleDuplicateItem() {
+  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
 }
 
 function* handleCloseEditor() {
