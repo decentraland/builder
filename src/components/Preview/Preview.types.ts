@@ -1,10 +1,11 @@
 import { Dispatch } from 'redux'
 import { Vector3 } from 'modules/common/types'
 import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
+import { Project } from 'modules/project/types'
 import { Gizmo } from 'modules/editor/types'
 
 export type Editor = {
-  initEngine: () => Promise<void>
+  initEngine: (x: number, y: number) => Promise<void>
   resize: () => void
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   enableGizmo: (entityId: string) => void
@@ -29,10 +30,11 @@ export type EditorWindow = typeof window & {
 export type Props = {
   isLoading: boolean
   onOpenEditor: typeof openEditor
+  layout: Project['parcelLayout']
 }
 
 export type State = {}
 
-export type MapStateProps = Pick<Props, 'isLoading'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'layout'>
 export type MapDispatchProps = Pick<Props, 'onOpenEditor'>
 export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction>

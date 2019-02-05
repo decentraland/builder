@@ -142,7 +142,7 @@ function getKeyboardShortcuts(): KeyboardShortcut[] {
 
 function* handleNewScene() {
   const project: Project = yield select(getCurrentProject)
-  const newScene: EditorPayloadScene = getNewScene(project.title)
+  const newScene: EditorPayloadScene = getNewScene(project)
 
   const msg = {
     type: 'update',
