@@ -2,6 +2,10 @@
   height: 100%;
 }
 
+.EditorPage .wrapper {
+  height: 100%;
+}
+
 .toolbar {
   width: 100%;
   position: absolute;
@@ -36,8 +40,4 @@
 .toolbar .Tools .Icon.shortcuts {
   margin-left: 24px;
   margin-right: 0;
-}
-
-body.lock-scroll {
-  overflow: hidden;
 }

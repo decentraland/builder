@@ -52,7 +52,7 @@ export default class EditorPage extends React.PureComponent<Props> {
       <div className="EditorPage">
         {isPreviewing ? null : <TopBar />}
         <Grid className={gridClasses}>
-          <Grid.Row>
+          <Grid.Row className="wrapper">
             <ViewPort />
             <div className={toolbarClasses}>
               {isPreviewing ? null : (
