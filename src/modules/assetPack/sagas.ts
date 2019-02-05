@@ -17,7 +17,7 @@ export function* assetPackSaga() {
 function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
     // TODO: This should fetch a list of asset packs in the future, this is just a mock for now
-    const remoteAssetPack: RemoteAssetPack = yield call(() => api.fetchAssetPack('packv1.json'))
+    const remoteAssetPack: RemoteAssetPack = yield call(() => api.fetchAssetPack('default-pack.json'))
     const remoteAssetPacks = [remoteAssetPack]
 
     const assetPacks: FullAssetPack[] = []
