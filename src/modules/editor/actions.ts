@@ -61,7 +61,7 @@ export const SET_GIZMO = 'Set gizmo'
 
 export const setGizmo = (gizmo: Gizmo) => action(SET_GIZMO, { gizmo })
 
-export type SetModeAction = ReturnType<typeof setGizmo>
+export type SetGizmoAction = ReturnType<typeof setGizmo>
 
 // Toggle Play
 

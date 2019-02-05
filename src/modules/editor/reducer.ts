@@ -44,10 +44,10 @@ export type EditorReducerAction =
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
     case SET_GIZMO: {
-      const { gizmo: mode } = action.payload
+      const { gizmo } = action.payload
       return {
         ...state,
-        gizmo: mode
+        gizmo
       }
     }
     case TOGGLE_PREVIEW: {
