@@ -11,6 +11,9 @@ import './ItemDrawer.css'
 import { debounce } from 'lib/debounce'
 
 const DEFAULT_COLUMN_COUNT = 3
+const CTRL_KEY_CODE = 17
+const COMMAND_KEY_CODE = 91
+const Z_KEY_CODE = 90
 
 export default class ItemDrawer extends React.PureComponent<Props, State> {
   static defaultProps = {
@@ -40,11 +43,11 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   handleKeyDown = (e: KeyboardEvent) => {
     // ctrl or command
-    if (e.keyCode === 17 || e.keyCode === 91) {
+    if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {
       this.isCtrlDown = true
     }
     // z key
-    if (this.isCtrlDown && e.keyCode === 90) {
+    if (this.isCtrlDown && e.keyCode === Z_KEY_CODE) {
       e.preventDefault() // prevent ctrl+z on the editor from changing the value of the search input
       return false
     }
@@ -52,7 +55,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   handleKeyUp = (e: KeyboardEvent) => {
     // ctrl or command
-    if (e.keyCode === 17 || e.keyCode === 91) {
+    if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {
       this.isCtrlDown = false
     }
   }
@@ -116,7 +119,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
         <div className="search-container">
           <Icon name="search" />
-          <input className="search" placeholder="Search..." onChange={this.handleSearch} />
+          <input className="search" placeholder={t('itemdrawer.search')} onChange={this.handleSearch} />
         </div>
 
         <div className="overflow-container">
