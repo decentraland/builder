@@ -9,7 +9,6 @@ const gizmo = new Gizmos()
 gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = false
-gizmo.updateEntity = false
 
 let gizmoEvent = new OnGizmoEvent((e: any) => {
   /* */
