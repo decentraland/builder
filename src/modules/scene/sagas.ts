@@ -156,14 +156,18 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const idsToDelete = Object.values(entityComponents)
     .filter(component => !!component)
     .map(component => component.id)
+
   const newComponents = { ...scene.components }
-
-  for (const componentId of idsToDelete) {
-    delete newComponents[componentId]
-  }
-
   const newEntities = { ...scene.entities }
   delete newEntities[selectedEntityId]
+
+  for (const componentId of idsToDelete) {
+    // check if commponentId is not used by other entities
+    if (Object.values(newEntities).some(entity => entity.components.some(id => componentId === id))) {
+      continue
+    }
+    delete newComponents[componentId]
+  }
 
   yield put(unselectEntity())
   yield put(provisionScene(scene.id, newComponents, newEntities))
