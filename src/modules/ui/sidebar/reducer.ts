@@ -1,4 +1,5 @@
 import { SelectAssetPackAction, SearchAssetsAction, SELECT_ASSET_PACK, SEARCH_ASSETS } from './actions'
+import { TOGGLE_SIDEBAR, ToggleSidebarAction } from 'modules/editor/actions'
 
 export type SidebarState = {
   selectedAssetPackId: string | null
@@ -10,7 +11,7 @@ const INITIAL_STATE: SidebarState = {
   search: ''
 }
 
-export type SidebarReducerAction = SelectAssetPackAction | SearchAssetsAction
+export type SidebarReducerAction = SelectAssetPackAction | SearchAssetsAction | ToggleSidebarAction
 
 export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerAction): SidebarState => {
   switch (action.type) {
@@ -25,6 +26,15 @@ export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerActi
         ...state,
         search: action.payload.search.toLowerCase().trim()
       }
+    }
+    case TOGGLE_SIDEBAR: {
+      if (action.payload.enabled) {
+        return {
+          ...state,
+          search: ''
+        }
+      }
+      return state
     }
 
     default:
