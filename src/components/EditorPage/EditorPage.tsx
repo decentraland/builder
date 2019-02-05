@@ -46,14 +46,15 @@ export default class EditorPage extends React.PureComponent<Props> {
 
   render() {
     const { isPreviewing, isSidebarOpen } = this.props
-    const className = isPreviewing ? 'fullscreen' : 'horizontal-layout'
+    const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
+    const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     return (
       <div className="EditorPage">
         {isPreviewing ? null : <TopBar />}
-        <Grid className={className}>
+        <Grid className={gridClasses}>
           <Grid.Row>
             <ViewPort />
-            <div className="toolbar">
+            <div className={toolbarClasses}>
               {isPreviewing ? null : (
                 <>
                   <Metrics />

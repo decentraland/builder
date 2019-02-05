@@ -47,12 +47,18 @@
 }
 
 .ItemDrawer .overflow-container {
-  height: calc(100% - 54px);
+  height: calc(100% - 96px);
   overflow-y: overlay;
 }
 
 .ItemDrawer .search-container {
   position: relative;
+}
+
+.ItemDrawer .ui.medium.header.title,
+.ItemDrawer .search-container,
+.ItemDrawer .overflow-container {
+  padding-right: 16px;
 }
 
 .ItemDrawer input.search {
