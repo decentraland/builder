@@ -9,6 +9,7 @@
 
 .ItemDrawer .ui.grid.asset-grid .column {
   padding: 4px;
+  padding-bottom: 10px;
 }
 
 .ItemDrawer .ui.grid.asset-grid.item-grid .column {
@@ -18,6 +19,10 @@
 .ItemDrawer .ui.grid.asset-grid.item-list .column {
   padding-left: 0px;
   padding-right: 0px;
+}
+
+.ItemDrawer .ui.grid > .row {
+  justify-content: space-between;
 }
 
 .ItemDrawer .ui.grid.asset-grid.item-grid .row .column:first-child {
