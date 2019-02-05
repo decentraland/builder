@@ -6,7 +6,7 @@ import HorizontalCard from './HorizontalCard'
 
 export default class AssetCard extends React.PureComponent<Props> {
   static defaultProps = {
-    onClick: (asset: Asset) => {
+    onClick: (_: Asset) => {
       /* noop */
     }
   }

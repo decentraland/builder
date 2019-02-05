@@ -5,7 +5,7 @@
   width: 40px;
   height: 40px;
   background: #0004;
-  z-index: var(--prewiew-z-index);
+  z-index: var(--preview-z-index);
   border-radius: 100%;
   cursor: pointer;
   display: flex;

@@ -10,6 +10,8 @@
 
   --dark-two: #242129;
 
+  --contest-primary: #691fa9;
+
   /**
   * Component variables
   */
@@ -28,50 +30,10 @@
 
   /* Preview */
   --preview-background: #38333f;
-  --prewiew-z-index: 1000;
+  --preview-z-index: 2000;
 }
 
 /* Erase separation line from navbar */
 .dcl.navbar {
   border-bottom-color: transparent;
-}
-
-/* Reset grid */
-
-.ui.grid {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-}
-
-.ui.grid + .grid {
-  margin-top: 0px;
-}
-
-.ui.grid > .row {
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
-.ui.grid > .column {
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
-.ui.grid.horizontal-layout {
-  height: calc(100vh - var(--topbar-height));
-}
-
-.ui.grid.fullscreen {
-  height: 100%;
-}
-
-.ui.modal {
-  border-radius: 16px;
-}
-
-.ui.modal > .content {
-  background: var(--dark-two);
-  border-radius: 16px;
 }

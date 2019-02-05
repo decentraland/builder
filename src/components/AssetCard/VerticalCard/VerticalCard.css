@@ -8,6 +8,7 @@
   background: rgba(var(--purplish-grey-raw), 0.48);
   padding: 16px 10px;
   cursor: pointer;
+  height: 105px;
 }
 
 .VerticalCard:hover {
@@ -17,17 +18,4 @@
 .VerticalCard .thumbnail {
   width: 63px;
   height: 62px;
-  margin-bottom: 20px;
-}
-
-.VerticalCard .ui.header.title {
-  margin-top: 0px;
-  text-overflow: ellipsis;
-  font-size: 13px;
-  font-weight: 100;
-  width: 100%;
-  text-align: center;
-  overflow: hidden;
-  white-space: nowrap;
-  color: var(--sidebar-heading);
 }

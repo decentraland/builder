@@ -47,6 +47,23 @@ export const getEntityComponents = (entityId: string) =>
     }
   )
 
+export const getEntityComponentByType = <T extends ComponentType>(entityId: string, type: T) =>
+  createSelector<RootState, SceneDefinition['entities'], SceneDefinition['components'], ComponentDefinition<T> | null>(
+    getEntities,
+    getComponents,
+    (entities, components) => {
+      if (entityId && entities && entityId in entities) {
+        const componentReferences = entities[entityId].components
+        for (const componentId of componentReferences) {
+          if (components && componentId in components && components[componentId].type === type) {
+            return components[componentId] as ComponentDefinition<T>
+          }
+        }
+      }
+      return null
+    }
+  )
+
 export const getComponentByType = <T extends ComponentType>(type: T) => (state: RootState) => {
   const components = getCurrentScene(state).components
   const out: ComponentDefinition<T>[] = []

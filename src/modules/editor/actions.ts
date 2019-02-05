@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { SceneDefinition } from 'modules/scene/types'
 import { AssetMappings } from 'modules/asset/types'
-import { EditorMode } from './types'
+import { Gizmo } from './types'
 
 // Bind keyboard shortcuts
 
@@ -55,13 +55,13 @@ export const editorRedo = () => action(EDITOR_REDO, {})
 export type EditorUndoAction = ReturnType<typeof editorUndo>
 export type EditorRedoAction = ReturnType<typeof editorRedo>
 
-// Set Mode
+// Set Gizmo
 
-export const SET_MODE = 'Set mode'
+export const SET_GIZMO = 'Set gizmo'
 
-export const setMode = (mode: EditorMode) => action(SET_MODE, { mode })
+export const setGizmo = (gizmo: Gizmo) => action(SET_GIZMO, { gizmo })
 
-export type SetModeAction = ReturnType<typeof setMode>
+export type SetGizmoAction = ReturnType<typeof setGizmo>
 
 // Toggle Play
 

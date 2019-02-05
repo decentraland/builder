@@ -67,9 +67,14 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
               <div className="shortcut">
                 <div className="name">{t('shortcuts_modal.basic_controls.duplicate')}</div>
                 <div className="keybinding">
-                  <Chip text={this.getMainShortcutKey()} />
-                  <span className="plus">+</span>
                   <Chip text="d" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.basic_controls.reset')}</div>
+                <div className="keybinding">
+                  <Chip text="s" />
                 </div>
               </div>
 
@@ -112,14 +117,14 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
               <div className="shortcut">
                 <div className="name">{t('shortcuts_modal.edit_controls.move')}</div>
                 <div className="keybinding">
-                  <Chip text="m" />
+                  <Chip text="w" />
                 </div>
               </div>
 
               <div className="shortcut">
                 <div className="name">{t('shortcuts_modal.edit_controls.rotate')}</div>
                 <div className="keybinding">
-                  <Chip text="r" />
+                  <Chip text="e" />
                 </div>
               </div>
             </div>

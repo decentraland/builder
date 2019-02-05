@@ -1,4 +1,9 @@
-export type EditorMode = 'move' | 'rotate' | 'select'
+export enum Gizmo {
+  MOVE = 'MOVE',
+  ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
+  NONE = 'NONE'
+}
 
 export type EditorScene = {
   baseUrl: string

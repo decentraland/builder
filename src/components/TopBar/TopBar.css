@@ -11,23 +11,52 @@
   font-size: 17px;
 }
 
-.TopBar .middle-column .row {
+.TopBar .row {
   display: flex;
+}
+
+.TopBar .middle-column .row {
   justify-content: center;
 }
 
-.TopBar .editor-actions {
+.TopBar .right-column .row {
+  justify-content: flex-end;
+}
+
+.TopBar .middle-column .editor-actions {
   display: flex;
 }
 
-.TopBar .editor-modes {
+.TopBar .middle-column .editor-modes {
   display: flex;
   margin-right: 32px;
 }
 
-.TopBar .toggle-options {
-  display: flex;
-  justify-content: flex-end;
+.TopBar .right-column .add-to-contest {
+  transition: none;
+  margin-left: 32px;
+}
+
+.TopBar .right-column .add-to-contest.ui.button.mini {
+  padding-left: 1.2em;
+  padding-right: 1.2em;
+}
+
+.TopBar .right-column .add-to-contest,
+.TopBar .right-column .add-to-contest:hover {
+  background-image: url('../../images/contest-button.png');
+  background-size: 100%;
+}
+
+.TopBar .right-column .add-to-contest:hover {
+  background-color: var(--purplish-grey);
+  opacity: 0.9;
+}
+
+.TopBar .right-column .ui.button.mini {
+  font-size: 11px;
+  padding: 0.3em 2em;
+  text-transform: uppercase;
 }
 
 .TopBar .Chip + .Chip {

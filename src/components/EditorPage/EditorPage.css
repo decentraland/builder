@@ -12,7 +12,7 @@
 .toolbar > div {
   position: absolute;
   bottom: 14px;
-  z-index: var(--prewiew-z-index);
+  z-index: var(--preview-z-index);
   display: flex;
   align-items: center;
 }
