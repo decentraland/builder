@@ -10,7 +10,7 @@ import './SideBar.css'
 export default class SideBar extends React.PureComponent<Props> {
   handleOnClick = (asset: Asset) => {
     // TODO: Using getPosition here is for demostration purposes, we'll always add assets on the same position once we have a camera
-    this.props.onAddAsset(asset, getRandomPosition())
+    this.props.onAddItem(asset, getRandomPosition())
   }
 
   renderItemDrawer() {

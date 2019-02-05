@@ -7,16 +7,17 @@ import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
 import { Props } from './TopBar.types'
 import './TopBar.css'
+import { Gizmo } from 'modules/editor/types'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
-    const { onSetMode } = this.props
-    onSetMode('move')
+    const { onSetGizmo } = this.props
+    onSetGizmo(Gizmo.MOVE)
   }
 
   handleRotateMode = () => {
-    const { onSetMode } = this.props
-    onSetMode('rotate')
+    const { onSetGizmo } = this.props
+    onSetGizmo(Gizmo.ROTATE)
   }
 
   handleTogglePreview = () => {
@@ -34,7 +35,7 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   render() {
-    const { currentProject, mode, isPreviewing, isSidebarOpen, hasHistory, selectedEntityId, onUndo } = this.props
+    const { currentProject, gizmo, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
@@ -47,13 +48,15 @@ export default class TopBar extends React.PureComponent<Props> {
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={7} className="middle-column">
           <Grid.Row>
-            <span className="editor-modes">
-              <Chip icon="move" isActive={mode === 'move'} onClick={this.handleMoveMode} />
-              <Chip icon="rotate" isActive={mode === 'rotate'} onClick={this.handleRotateMode} />
-            </span>
-            <Chip icon="undo" isDisabled={!hasHistory} onClick={onUndo} />
-            <Chip icon="duplicate" isDisabled={!selectedEntityId} />
-            <Chip icon="delete" isDisabled={!selectedEntityId} />
+            <div className="editor-actions">
+              <span className="editor-modes">
+                <Chip icon="move" isActive={gizmo === Gizmo.MOVE} onClick={this.handleMoveMode} />
+                <Chip icon="rotate" isActive={gizmo === Gizmo.ROTATE} onClick={this.handleRotateMode} />
+              </span>
+              <Chip icon="undo" isDisabled={!selectedEntityId} onClick={onReset} />
+              <Chip icon="duplicate" isDisabled={!selectedEntityId} onClick={onDuplicate} />
+              <Chip icon="delete" isDisabled={!selectedEntityId} onClick={onDelete} />
+            </div>
           </Grid.Row>
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={5} className="right-column">

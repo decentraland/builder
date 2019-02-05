@@ -44,16 +44,17 @@
       "title": "Basic Controls",
       "undo": "Undo",
       "redo": "Redo",
-      "duplicate": "Duplicate object",
-      "delete": "Delete object",
+      "reset": "Reset item",
+      "duplicate": "Duplicate item",
+      "delete": "Delete item",
       "reset_camera": "Reset camera",
       "zoom_in": "Zoom in",
       "zoom_out": "Zoom out"
     },
     "edit_controls": {
       "title": "Edit controls",
-      "move": "Move object",
-      "rotate": "Rotate object"
+      "move": "Move item",
+      "rotate": "Rotate item"
     }
   }
 }

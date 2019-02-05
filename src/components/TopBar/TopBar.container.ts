@@ -3,26 +3,27 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getEditorMode, isPreviewing, isSidebarOpen, getSelectedEntityId } from 'modules/editor/selectors'
-import { setMode, togglePreview, toggleSidebar, editorUndo } from 'modules/editor/actions'
-import { hasHistory } from 'modules/scene/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
+import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId } from 'modules/editor/selectors'
+import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
+import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import TopBar from './TopBar'
 
 const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),
-  mode: getEditorMode(state),
+  gizmo: getGizmo(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
-  hasHistory: hasHistory(state),
   selectedEntityId: getSelectedEntityId(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetMode: mode => dispatch(setMode(mode)),
+  onSetGizmo: gizmo => dispatch(setGizmo(gizmo)),
   onTogglePreview: enabled => dispatch(togglePreview(enabled)),
   onToggleSidebar: enabled => dispatch(toggleSidebar(enabled)),
-  onUndo: () => dispatch(editorUndo()),
+  onReset: () => dispatch(resetItem()),
+  onDuplicate: () => dispatch(duplicateItem()),
+  onDelete: () => dispatch(deleteItem()),
   onOpenModal: (name: string) => dispatch(openModal(name))
 })
 

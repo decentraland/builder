@@ -1,8 +1,8 @@
 import {
-  SetModeAction,
+  SetGizmoAction,
   TogglePreviewAction,
   ToggleSidebarAction,
-  SET_MODE,
+  SET_GIZMO,
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
   SelectEntityAction,
@@ -14,10 +14,10 @@ import {
   SetEditorReadyAction,
   CloseEditorAction
 } from './actions'
-import { EditorMode } from './types'
+import { Gizmo } from './types'
 
 export type EditorState = {
-  mode: EditorMode
+  gizmo: Gizmo
   preview: boolean
   sidebar: boolean
   selectedEntityId: string | null
@@ -25,7 +25,7 @@ export type EditorState = {
 }
 
 const INITIAL_STATE: EditorState = {
-  mode: 'move',
+  gizmo: Gizmo.MOVE,
   preview: false,
   sidebar: true,
   selectedEntityId: null,
@@ -33,7 +33,7 @@ const INITIAL_STATE: EditorState = {
 }
 
 export type EditorReducerAction =
-  | SetModeAction
+  | SetGizmoAction
   | TogglePreviewAction
   | ToggleSidebarAction
   | SelectEntityAction
@@ -43,11 +43,11 @@ export type EditorReducerAction =
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
-    case SET_MODE: {
-      const { mode } = action.payload
+    case SET_GIZMO: {
+      const { gizmo } = action.payload
       return {
         ...state,
-        mode
+        gizmo
       }
     }
     case TOGGLE_PREVIEW: {

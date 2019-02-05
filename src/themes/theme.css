@@ -30,7 +30,7 @@
 
   /* Preview */
   --preview-background: #38333f;
-  --prewiew-z-index: 1000;
+  --preview-z-index: 2000;
 }
 
 /* Erase separation line from navbar */

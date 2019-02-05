@@ -23,6 +23,10 @@
   justify-content: flex-end;
 }
 
+.TopBar .middle-column .editor-actions {
+  display: flex;
+}
+
 .TopBar .middle-column .editor-modes {
   display: flex;
   margin-right: 32px;

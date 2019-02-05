@@ -2,7 +2,7 @@ import { Store } from 'redux'
 import { EventEmitter } from 'events'
 import { RootState } from 'modules/common/types'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
-import { addAsset } from 'modules/scene/actions'
+import { addItem } from 'modules/scene/actions'
 import { Asset } from 'modules/asset/types'
 import { getRandomPosition } from 'modules/scene/utils'
 
@@ -24,14 +24,14 @@ export function run(store: Store<RootState>, evt: EventEmitter) {
 
       for (let index = 0; index < assetAmount - 2; index++) {
         const asset = getRandomAsset(assets)
-        store.dispatch(addAsset(asset, getRandomPosition()))
+        store.dispatch(addItem(asset, getRandomPosition()))
       }
 
       // Add an asset too high
-      store.dispatch(addAsset(assets[0], getRandomPosition({ y: 50 })))
+      store.dispatch(addItem(assets[0], getRandomPosition({ y: 50 })))
 
       // Add an asset outside the scene bounds
-      store.dispatch(addAsset(assets[0], getRandomPosition({ x: 20, z: 10 })))
+      store.dispatch(addItem(assets[0], getRandomPosition({ x: 20, z: 10 })))
     })
   })
 }

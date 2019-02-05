@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
 import { Vector3 } from 'modules/common/types'
 import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
+import { Gizmo } from 'modules/editor/types'
 
 export type Editor = {
   initEngine: () => Promise<void>
@@ -16,6 +17,7 @@ export type Editor = {
   setCameraRotation: (alpha: number) => void
   resetCameraZoom: () => void
   setCameraPosition: (position: Vector3) => void
+  selectGizmo: (gizmo: Gizmo) => void
 }
 
 export type EditorWindow = typeof window & {

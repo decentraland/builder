@@ -3,7 +3,6 @@ import { Loader } from 'decentraland-ui'
 
 import { EditorWindow, Props, State } from './Preview.types'
 import './Preview.css'
-import { isLoading } from 'modules/project/selectors'
 
 const editorWindow = window as EditorWindow
 
@@ -31,6 +30,7 @@ export default class Preview extends React.Component<Props, State> {
   }
 
   render() {
+    const { isLoading } = this.props
     return (
       <div className="Preview" id="preview-viewport" ref={this.canvas}>
         {isLoading && (
