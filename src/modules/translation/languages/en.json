@@ -14,7 +14,8 @@
     "empty_projects_cta": "Select a template below to start building awesome stuff!"
   },
   "itemdrawer": {
-    "title": "Item drawer"
+    "title": "Item drawer",
+    "search": "Search..."
   },
   "topbar": {
     "add_to_contest": "Add to contest",
