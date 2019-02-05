@@ -3,7 +3,6 @@ import { Loader } from 'decentraland-ui'
 
 import { EditorWindow, Props, State } from './Preview.types'
 import './Preview.css'
-import { isLoading } from 'modules/project/selectors'
 
 const editorWindow = window as EditorWindow
 
