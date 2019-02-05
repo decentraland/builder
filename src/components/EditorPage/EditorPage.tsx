@@ -15,14 +15,11 @@ export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
-    document.body.classList.add('lock-scroll')
-    document.body.scrollTop = 0
   }
 
   componentWillUnmount() {
     this.props.onUnbindKeyboardShortcuts()
     this.props.onCloseEditor()
-    document.body.classList.remove('lock-scroll')
   }
 
   handleToolClick = (toolName: ToolName) => {
