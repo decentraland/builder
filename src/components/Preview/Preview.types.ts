@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Vector3 } from 'modules/common/types'
-import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
+import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor, TogglePreviewAction } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
 import { Gizmo } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
@@ -13,7 +13,7 @@ export type Editor = {
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
   handleMessage: (msg: { type: 'update'; payload: any }) => void
-  sendExternalAction: (action: UpdateEditorAction) => void
+  sendExternalAction: (action: UpdateEditorAction | TogglePreviewAction) => void
   setPlayMode: (enabled: boolean) => void
   setCameraZoomDelta: (delta: number) => void
   setCameraRotation: (alpha: number, beta: number) => void

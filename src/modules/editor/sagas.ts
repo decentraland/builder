@@ -187,6 +187,8 @@ function* handleTooglePreview(action: TogglePreviewAction) {
   yield call(() => {
     const { editor } = window as EditorWindow
     editor.setPlayMode(action.payload.enabled)
+    editor.selectGizmo(Gizmo.NONE)
+    editor.sendExternalAction(action)
     resizeEditor()
   })
 }
