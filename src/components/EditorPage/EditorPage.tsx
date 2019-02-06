@@ -15,11 +15,23 @@ export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
+    document.body.classList.add('lock-scroll')
+    document.body.scrollTop = 0
+    document.body.addEventListener('mousewheel', this.handleMouseWheel)
   }
 
   componentWillUnmount() {
     this.props.onUnbindKeyboardShortcuts()
     this.props.onCloseEditor()
+    document.body.classList.remove('lock-scroll')
+    document.body.removeEventListener('mousewheel', this.handleMouseWheel)
+  }
+
+  handleMouseWheel = (e: Event) => {
+    if ((e as MouseWheelEvent)['ctrlKey']) {
+      e.preventDefault()
+      e.stopImmediatePropagation()
+    }
   }
 
   handleToolClick = (toolName: ToolName) => {
