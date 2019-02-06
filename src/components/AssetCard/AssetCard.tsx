@@ -25,14 +25,10 @@ class AssetCard extends React.PureComponent<Props & CollectedProps> {
   }
 
   render() {
-    const { isHorizontal, asset, connectDragSource, isDragging, isOverTarget } = this.props
+    const { isHorizontal, asset, connectDragSource, isDragging } = this.props
     return connectDragSource(
       <div onClick={this.handleOnClick}>
-        {isHorizontal ? (
-          <HorizontalCard asset={asset} isDragging={isDragging} isOverTarget={isOverTarget} />
-        ) : (
-          <VerticalCard asset={asset} isDragging={isDragging} isOverTarget={isOverTarget} />
-        )}
+        {isHorizontal ? <HorizontalCard asset={asset} isDragging={isDragging} /> : <VerticalCard asset={asset} isDragging={isDragging} />}
       </div>
     )
   }
