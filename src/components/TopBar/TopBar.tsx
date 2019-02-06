@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom'
 import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
+import { locations } from 'routing/locations'
 import { Props } from './TopBar.types'
-import './TopBar.css'
 import { Gizmo } from 'modules/editor/types'
+import './TopBar.css'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
@@ -34,6 +34,10 @@ export default class TopBar extends React.PureComponent<Props> {
     this.props.onOpenModal('ContestModal')
   }
 
+  handleTitleClick = () => {
+    this.props.onOpenModal('ProjectDetailsModal')
+  }
+
   render() {
     const { currentProject, gizmo, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
     return (
@@ -43,7 +47,11 @@ export default class TopBar extends React.PureComponent<Props> {
             <Link className="text" to={locations.root()}>
               <Icon name="chevron left" />
             </Link>
-            {currentProject ? currentProject.title : null}
+            {currentProject ? (
+              <span className="project-title" onClick={this.handleTitleClick}>
+                {currentProject.title}
+              </span>
+            ) : null}
           </Header>
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={7} className="middle-column">

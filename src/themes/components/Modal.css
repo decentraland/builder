@@ -6,15 +6,18 @@
   background: var(--dark-two);
   border-radius: 16px;
 }
+
 .ui.modal > .header ~ .content {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-.ui.modal .header {
+.ui.modal .header,
+.ui.modal > :first-child:not(.icon) {
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
 }
+
 .ui.modal .header:last-child {
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;

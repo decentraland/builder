@@ -58,5 +58,8 @@
       "move": "Move item",
       "rotate": "Rotate item"
     }
+  },
+  "project_details_modal": {
+    "title": "Project details"
   }
 }

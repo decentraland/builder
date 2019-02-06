@@ -1,0 +1,32 @@
+div.ui.modal.ProjectDetailsModal {
+  width: 560px;
+}
+
+.ProjectDetailsModal .ui.button.secondary {
+  background: rgba(var(--purplish-grey-raw), 0.2);
+}
+
+.ProjectDetailsModal .ui.button.secondary:hover {
+  background: rgba(var(--purplish-grey-raw), 0.3);
+}
+
+.ProjectDetailsModal.ui.modal > .content {
+  font-size: 17px;
+  padding: 1.8em;
+}
+
+.ProjectDetailsModal .title {
+  font-size: 28px;
+}
+
+.ProjectDetailsModal .details {
+  margin-top: 40px;
+}
+
+.ProjectDetailsModal .button-container {
+  display: flex;
+}
+
+.ProjectDetailsModal .button-container > * {
+  flex: 1;
+}
