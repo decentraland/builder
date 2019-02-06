@@ -17,6 +17,8 @@ import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponen
 import { ComponentType, SceneDefinition, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
+import { getProjectBounds } from 'modules/project/selectors'
+import { getRandomPositionWithinBounds } from './utils'
 
 export function* sceneSaga() {
   yield takeLatest(ADD_ITEM, handleAddItem)
@@ -48,11 +50,15 @@ function* handleAddItem(action: AddItemAction) {
     }
   }
 
+  const bounds = yield select(getProjectBounds)
+  const defaultPosition = getRandomPositionWithinBounds(bounds)
+  defaultPosition.y = 0
+
   newComponents[transformId] = {
     id: transformId,
     type: ComponentType.Transform,
     data: {
-      position,
+      position: position || defaultPosition,
       rotation: { x: 0, y: 0, z: 0, w: 1 }
     }
   }

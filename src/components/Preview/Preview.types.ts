@@ -3,6 +3,7 @@ import { Vector3 } from 'modules/common/types'
 import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
 import { Gizmo } from 'modules/editor/types'
+import { dropItem, DropItemAction } from 'modules/scene/actions'
 
 export type Editor = {
   initEngine: (x: number, y: number) => Promise<void>
@@ -15,10 +16,12 @@ export type Editor = {
   sendExternalAction: (action: UpdateEditorAction) => void
   setPlayMode: (enabled: boolean) => void
   setCameraZoomDelta: (delta: number) => void
-  setCameraRotation: (alpha: number) => void
+  setCameraRotation: (alpha: number, beta: number) => void
   resetCameraZoom: () => void
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
+  getMouseWorldPosition: (x: number, y: number) => Vector3
+  takeScreenshot: () => Promise<string>
 }
 
 export type EditorWindow = typeof window & {
@@ -30,11 +33,12 @@ export type EditorWindow = typeof window & {
 export type Props = {
   isLoading: boolean
   onOpenEditor: typeof openEditor
+  onDropItem: typeof dropItem
   layout: Project['parcelLayout']
 }
 
 export type State = {}
 
 export type MapStateProps = Pick<Props, 'isLoading' | 'layout'>
-export type MapDispatchProps = Pick<Props, 'onOpenEditor'>
-export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction>
+export type MapDispatchProps = Pick<Props, 'onOpenEditor' | 'onDropItem'>
+export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction | DropItemAction>
