@@ -8,8 +8,13 @@ export default class HorizontalCard extends React.PureComponent<Props> {
     const { asset, isDragging } = this.props
     const { thumbnail, name } = asset
 
+    let classes = 'AssetCard horizontal'
+    if (isDragging) {
+      classes += ' is-dragging'
+    }
+
     return (
-      <div className="HorizontalCard" style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <div className={classes}>
         <img className="thumbnail" src={thumbnail} alt={`${name} thumbnail`} />
         <Header size="small" className="title">
           {name}

@@ -8,6 +8,8 @@ import VerticalCard from './VerticalCard'
 import HorizontalCard from './HorizontalCard'
 import { ASSET_TYPE, collect, assetSource, CollectedProps } from './AssetCard.dnd'
 
+import './AssetCard.css'
+
 class AssetCard extends React.PureComponent<Props & CollectedProps> {
   static defaultProps = {
     onClick: (_: Asset) => {

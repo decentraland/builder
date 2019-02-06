@@ -7,8 +7,13 @@ export default class VerticalCard extends React.PureComponent<Props> {
     const { asset, isDragging } = this.props
     const { thumbnail, name } = asset
 
+    let classes = 'AssetCard vertical'
+    if (isDragging) {
+      classes += ' is-dragging'
+    }
+
     return (
-      <div className="VerticalCard" style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <div className={classes}>
         <img className="thumbnail" src={thumbnail} alt={`${name} thumbnail`} />
       </div>
     )

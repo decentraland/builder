@@ -1,4 +1,5 @@
 import { DragSourceSpec, DragSourceCollector, ConnectDragSource, ConnectDragPreview } from 'react-dnd'
+
 import { Asset } from 'modules/asset/types'
 import { Props } from './AssetCard.types'
 
