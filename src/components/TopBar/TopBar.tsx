@@ -35,7 +35,7 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   handleTitleClick = () => {
-    this.props.onOpenModal('ProjectDetailsModal')
+    this.props.onOpenModal('EditProjectModal')
   }
 
   render() {

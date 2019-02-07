@@ -62,3 +62,8 @@
 .TopBar .Chip + .Chip {
   margin-left: 8px;
 }
+
+.TopBar .project-title {
+  user-select: none;
+  cursor: pointer;
+}
