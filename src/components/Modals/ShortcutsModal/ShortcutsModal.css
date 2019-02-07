@@ -40,3 +40,7 @@
 .ShortcutsModal .shortcut .keybinding .plus {
   margin: 0 6px;
 }
+
+.ShortcutsModal .Chip + .Chip {
+  margin-left: 16px;
+}

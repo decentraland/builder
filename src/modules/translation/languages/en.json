@@ -43,23 +43,24 @@
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
-    "basic_controls": {
-      "shortcut_reference": "Shortcut reference",
-      "title": "Basic Controls",
-      "undo": "Undo",
-      "redo": "Redo",
-      "reset": "Reset item",
-      "duplicate": "Duplicate item",
-      "delete": "Delete item",
-      "reset_camera": "Reset camera",
-      "zoom_in": "Zoom in",
-      "zoom_out": "Zoom out"
-    },
-    "edit_controls": {
-      "title": "Edit controls",
-      "move": "Move item",
-      "rotate": "Rotate item"
-    }
+    "item_shortcuts": "Item",
+    "move": "Move item",
+    "rotate": "Rotate item",
+    "reset": "Reset item",
+    "duplicate": "Duplicate item",
+    "delete": "Delete item",
+    "editor_shortcuts": "Editor",
+    "move_camera": "Move camera",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out",
+    "reset_camera": "Reset camera",
+    "toggle_colliders": "Toggle colliders",
+    "toggle_sidebar": "Toggle sidebar",
+    "play_mode": "Play mode",
+    "undo": "Undo",
+    "redo": "Redo",
+    "other_shortcuts": "Other",
+    "shortcut_reference": "Shortcut reference"
   },
   "edit_project_modal": {
     "title": "Project details",
