@@ -129,17 +129,21 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   if (!gltfShape || !transform) return
 
+  const {
+    data: { position, rotation }
+  } = transform
+
   const transformId = uuidv4()
   newComponents[transformId] = {
     id: transformId,
     type: ComponentType.Transform,
     data: {
       position: {
-        x: transform.data.position.x + 1,
-        y: transform.data.position.y,
-        z: transform.data.position.z + 1
+        x: position.x + 1,
+        y: position.y,
+        z: position.z + 1
       },
-      rotation: { x: 0, y: 0, z: 0, w: 1 }
+      rotation: { ...rotation }
     }
   }
 
