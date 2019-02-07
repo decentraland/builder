@@ -17,7 +17,8 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   handleSubmit = () => {
-    this.props.onSave(this.props.currentProject.id, { title: this.state.title, description: this.state.description })
+    const { title, description } = this.state
+    this.props.onSave(this.props.currentProject.id, { title, description })
     this.handleOnClose()
   }
 
