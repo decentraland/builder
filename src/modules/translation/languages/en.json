@@ -2,7 +2,9 @@
   "global": {
     "projects": "projects",
     "templates": "templates",
-    "terms_and_conditions": "Terms & Conditions"
+    "terms_and_conditions": "Terms & Conditions",
+    "save": "save",
+    "cancel": "cancel"
   },
   "languages": {
     "en": "English"
@@ -57,6 +59,21 @@
       "title": "Edit controls",
       "move": "Move item",
       "rotate": "Rotate item"
+    }
+  },
+  "edit_project_modal": {
+    "title": "Project details",
+    "title_field_label": "Title",
+    "title_field_placeholder": "Project title",
+    "description_field_label": "Description",
+    "description_field_placeholder": "No description",
+    "validation": {
+      "title": {
+        "length": "Title length must be between {min} and {max} characters."
+      },
+      "description": {
+        "length": "Description length must be between {min} and {max} characters."
+      }
     }
   }
 }

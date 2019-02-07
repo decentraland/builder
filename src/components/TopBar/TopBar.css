@@ -62,3 +62,22 @@
 .TopBar .Chip + .Chip {
   margin-left: 8px;
 }
+
+.TopBar .project-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.TopBar .project-title {
+  user-select: none;
+  cursor: pointer;
+}
+
+.TopBar .edit-project-icon {
+  margin-left: 12px;
+}
+.TopBar .edit-project-icon:not(:hover) {
+  margin-left: 12px;
+  filter: saturate(0.1);
+  opacity: 0.32;
+}

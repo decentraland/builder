@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom'
 import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
+import OwnIcon from 'components/Icon'
+import { locations } from 'routing/locations'
 import { Props } from './TopBar.types'
-import './TopBar.css'
 import { Gizmo } from 'modules/editor/types'
+import './TopBar.css'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
@@ -34,16 +35,25 @@ export default class TopBar extends React.PureComponent<Props> {
     this.props.onOpenModal('ContestModal')
   }
 
+  handleTitleClick = () => {
+    this.props.onOpenModal('EditProjectModal')
+  }
+
   render() {
     const { currentProject, gizmo, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
-          <Header size="medium">
+          <Header size="medium" className="project-title-container">
             <Link className="text" to={locations.root()}>
               <Icon name="chevron left" />
             </Link>
-            {currentProject ? currentProject.title : null}
+            {currentProject ? (
+              <>
+                <span className="project-title">{currentProject.title}</span>
+                <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+              </>
+            ) : null}
           </Header>
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={7} className="middle-column">
