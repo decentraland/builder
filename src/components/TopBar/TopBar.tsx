@@ -52,8 +52,8 @@ export default class TopBar extends React.PureComponent<Props> {
               <>
                 <span className="project-title" onClick={this.handleTitleClick}>
                   {currentProject.title}
+                  <OwnIcon name="edit" className="edit-project-icon" />
                 </span>
-                <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
               </>
             ) : null}
           </Header>
