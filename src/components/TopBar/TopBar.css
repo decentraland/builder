@@ -70,7 +70,6 @@
 
 .TopBar .project-title {
   user-select: none;
-  cursor: pointer;
 }
 
 .TopBar .edit-project-icon {

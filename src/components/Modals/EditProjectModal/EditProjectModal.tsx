@@ -12,6 +12,13 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     description: this.props.currentProject.description
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (!this.props.modal.open && nextProps.modal.open) {
+      const { title, description } = nextProps.currentProject
+      this.setState({ title, description })
+    }
+  }
+
   handleOnClose = () => {
     const { modal, onClose } = this.props
     onClose(modal.name)
