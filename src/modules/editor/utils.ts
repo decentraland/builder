@@ -106,3 +106,34 @@ export function getKeyboardShortcuts(): KeyboardShortcut[] {
     }
   ]
 }
+
+// Screenshots
+
+export function imageToDataUri(img: HTMLImageElement, width: number, height: number) {
+  // create an off-screen canvas
+  const canvas: HTMLCanvasElement = document.createElement('canvas')
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d')
+
+  if (!ctx) return null
+
+  // set its dimension to target size
+  canvas.width = width
+  canvas.height = height
+
+  // draw source image into the off-screen canvas:
+  ctx.drawImage(img, 0, 0, width, height)
+
+  // encode image to data-uri with base64 version of compressed image
+  return canvas.toDataURL()
+}
+
+export function resizeScreenshot(screenshot: string, width: number, height: number) {
+  return new Promise<string | null>(resolve => {
+    const img = new Image()
+    img.onload = function resizeImage() {
+      const newDataUri = imageToDataUri(img, width, height)
+      resolve(newDataUri)
+    }
+    img.src = screenshot
+  })
+}

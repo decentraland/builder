@@ -1,3 +1,8 @@
+.HomePage .Card.ProjectCard.has-thumbnail {
+  background-size: cover;
+  background-position: center;
+}
+
 .ProjectCard .project-data {
   width: 100%;
   padding: 0 10px;

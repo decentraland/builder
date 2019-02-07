@@ -17,7 +17,6 @@ export default class ProjectCard extends React.PureComponent<Props> {
   render() {
     const { project, onClick } = this.props
 
-    // <img src={project.thumbnail} alt={project.title} width={248} height={184} />
     const Component = (
       <>
         <div className="project-data">
@@ -29,12 +28,18 @@ export default class ProjectCard extends React.PureComponent<Props> {
       </>
     )
 
+    const style = project.thumbnail ? { backgroundImage: `url(${project.thumbnail})` } : undefined
+    let classes = 'ProjectCard Card'
+    if (project.thumbnail) {
+      classes += ' has-thumbnail'
+    }
+
     return onClick ? (
-      <div className="ProjectCard Card" onClick={this.handleOnClick}>
+      <div className={classes} onClick={this.handleOnClick} style={style}>
         {Component}
       </div>
     ) : (
-      <Link to={locations.editor(project.id)} className="ProjectCard Card">
+      <Link to={locations.editor(project.id)} className={classes} style={style}>
         {Component}
       </Link>
     )

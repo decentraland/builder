@@ -124,3 +124,11 @@ export const SET_EDITOR_READY = 'Set editor ready'
 export const setEditorReady = () => action(SET_EDITOR_READY, {})
 
 export type SetEditorReadyAction = ReturnType<typeof setEditorReady>
+
+// Screenshot
+
+export const SCREENSHOT = 'Screenshot'
+
+export const screenshot = () => action(SCREENSHOT, {})
+
+export type ScreenshotAction = ReturnType<typeof screenshot>
