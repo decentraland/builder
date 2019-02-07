@@ -1,4 +1,4 @@
-.HorizontalCard {
+.AssetCard.horizontal {
   display: flex;
   width: 100%;
   align-items: center;
@@ -8,17 +8,17 @@
   cursor: pointer;
 }
 
-.HorizontalCard:hover {
+.AssetCard.horizontal:hover {
   background: rgba(var(--purplish-grey-raw), 0.72);
 }
 
-.HorizontalCard .thumbnail {
+.AssetCard.horizontal .thumbnail {
   width: 32px;
   height: 32px;
   margin-right: 10px;
 }
 
-.HorizontalCard div.title {
+.AssetCard.horizontal div.title {
   margin-top: 0px;
   color: var(--sidebar-heading);
 }

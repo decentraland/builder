@@ -1,14 +1,24 @@
 import * as React from 'react'
+import { DragSource } from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
+
 import { Asset } from 'modules/asset/types'
 import { Props } from './AssetCard.types'
 import VerticalCard from './VerticalCard'
 import HorizontalCard from './HorizontalCard'
+import { ASSET_TYPE, collect, assetSource, CollectedProps } from './AssetCard.dnd'
 
-export default class AssetCard extends React.PureComponent<Props> {
+import './AssetCard.css'
+
+class AssetCard extends React.PureComponent<Props & CollectedProps> {
   static defaultProps = {
     onClick: (_: Asset) => {
       /* noop */
     }
+  }
+
+  componentWillMount() {
+    this.props.connectDragPreview(getEmptyImage())
   }
 
   handleOnClick = () => {
@@ -17,7 +27,13 @@ export default class AssetCard extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isHorizontal, asset } = this.props
-    return <div onClick={this.handleOnClick}>{isHorizontal ? <HorizontalCard asset={asset} /> : <VerticalCard asset={asset} />}</div>
+    const { isHorizontal, asset, connectDragSource, isDragging } = this.props
+    return connectDragSource(
+      <div onClick={this.handleOnClick}>
+        {isHorizontal ? <HorizontalCard asset={asset} isDragging={isDragging} /> : <VerticalCard asset={asset} isDragging={isDragging} />}
+      </div>
+    )
   }
 }
+
+export default DragSource(ASSET_TYPE, assetSource, collect)(AssetCard)

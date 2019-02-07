@@ -1,12 +1,16 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
+import { DropTarget } from 'react-dnd'
 
+import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
+import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
+
 import './Preview.css'
 
 const editorWindow = window as EditorWindow
 
-export default class Preview extends React.Component<Props, State> {
+class Preview extends React.Component<Props & CollectedProps, State> {
   canvas = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
@@ -30,16 +34,20 @@ export default class Preview extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, connectDropTarget } = this.props
 
-    return (
-      <div className="Preview" id="preview-viewport" ref={this.canvas}>
-        {isLoading && (
-          <div className="overlay">
-            <Loader active size="massive" />
-          </div>
-        )}
+    return connectDropTarget(
+      <div className="Preview-wrapper">
+        <div className="Preview" id="preview-viewport" ref={this.canvas}>
+          {isLoading && (
+            <div className="overlay">
+              <Loader active size="massive" />
+            </div>
+          )}
+        </div>
       </div>
     )
   }
 }
+
+export default DropTarget(ASSET_TYPE, previewTarget, collect)(Preview)

@@ -99,12 +99,12 @@ function removeUnusedComponents(components: Record<string, AnyComponent>) {
         engine.disposeComponent(originalComponent)
       }
 
-      // TODO: Remove component from all entities that have added it (we need the engine to provide a way of doing this)
-      /* pseudo code:
-      for each entity in engine.entities:
-        if entity.has(component)
-          entity.remove(component)
-      */
+      for (const entityId in engine.entities) {
+        const entity = engine.entities[entityId]
+        if (entity.has(originalComponent)) {
+          entity.remove(originalComponent)
+        }
+      }
 
       delete editorComponents[componentId]
     }

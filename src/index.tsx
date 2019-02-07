@@ -2,6 +2,9 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
+import { DragDropContextProvider } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+
 import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
 import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
@@ -16,15 +19,17 @@ import './index.css'
 
 ReactDOM.render(
   <Provider store={store}>
-    <WalletProvider>
-      <TranslationProvider locales={Object.keys(languages)}>
-        <ModalProvider components={modals}>
-          <ConnectedRouter history={history}>
-            <Routes />
-          </ConnectedRouter>
-        </ModalProvider>
-      </TranslationProvider>
-    </WalletProvider>
+    <DragDropContextProvider backend={HTML5Backend}>
+      <WalletProvider>
+        <TranslationProvider locales={Object.keys(languages)}>
+          <ModalProvider components={modals}>
+            <ConnectedRouter history={history}>
+              <Routes />
+            </ConnectedRouter>
+          </ModalProvider>
+        </TranslationProvider>
+      </WalletProvider>
+    </DragDropContextProvider>
   </Provider>,
   document.getElementById('root')
 )

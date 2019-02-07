@@ -48,6 +48,7 @@
 
 .ItemDrawer .overflow-container {
   height: calc(100% - 96px);
+  overflow-y: auto; /* Firefox and others that may not support overlay */
   overflow-y: overlay;
 }
 
