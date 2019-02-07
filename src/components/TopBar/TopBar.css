@@ -71,11 +71,19 @@
 .TopBar .project-title {
   user-select: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .TopBar .edit-project-icon {
   margin-left: 12px;
 }
+
+.TopBar .project-title:hover .edit-project-icon {
+  opacity: 1;
+  filter: none;
+}
+
 .TopBar .edit-project-icon:not(:hover) {
   margin-left: 12px;
   filter: saturate(0.1);
