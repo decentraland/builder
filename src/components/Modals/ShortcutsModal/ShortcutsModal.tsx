@@ -127,6 +127,13 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
                   <Chip text="e" />
                 </div>
               </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.edit_controls.toggle_colliders')}</div>
+                <div className="keybinding">
+                  <Chip text="c" />
+                </div>
+              </div>
             </div>
           </div>
         </Modal.Content>

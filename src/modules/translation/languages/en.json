@@ -58,7 +58,8 @@
     "edit_controls": {
       "title": "Edit controls",
       "move": "Move item",
-      "rotate": "Rotate item"
+      "rotate": "Rotate item",
+      "toggle_colliders": "Toggle colliders"
     }
   },
   "edit_project_modal": {
