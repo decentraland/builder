@@ -22,3 +22,7 @@
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
+
+.ui.modal .ui.form .field .ui.input input {
+  border-bottom-color: rgba(var(--purplish-grey-raw), 0.2);
+}

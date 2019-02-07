@@ -28,7 +28,10 @@ export type Props = {
     | 'zoom-in'
     | 'zoom-out'
     | 'center-camera'
+    | 'edit'
+    | 'edit-active'
   isActive?: boolean
+  className?: string
   onClick: (event: React.MouseEvent<HTMLElement>) => any
 }
 

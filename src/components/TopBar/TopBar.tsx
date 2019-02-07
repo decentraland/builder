@@ -4,6 +4,7 @@ import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
+import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
 import { Props } from './TopBar.types'
 import { Gizmo } from 'modules/editor/types'
@@ -43,14 +44,15 @@ export default class TopBar extends React.PureComponent<Props> {
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
-          <Header size="medium">
+          <Header size="medium" className="project-title-container">
             <Link className="text" to={locations.root()}>
               <Icon name="chevron left" />
             </Link>
             {currentProject ? (
-              <span className="project-title" onClick={this.handleTitleClick}>
-                {currentProject.title}
-              </span>
+              <>
+                <span className="project-title">{currentProject.title}</span>
+                <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+              </>
             ) : null}
           </Header>
         </Grid.Column>
