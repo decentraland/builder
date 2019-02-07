@@ -34,16 +34,9 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
           <div className="title">{t('shortcuts_modal.title')}</div>
 
           <div className="shortcut-list">
-            <div className="subtitle">{t('shortcuts_modal.basic_controls')}</div>
+            <div className="subtitle">{t('shortcuts_modal.editor_shortcuts')}</div>
 
             <div className="shortcuts">
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.shortcut_reference')}</div>
-                <div className="keybinding">
-                  <Chip text="?" />
-                </div>
-              </div>
-
               <div className="shortcut">
                 <div className="name">{t('shortcuts_modal.move_camera')}</div>
                 <div className="keybinding">
@@ -78,10 +71,51 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
                   <Chip text="Space" />
                 </div>
               </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.toggle_colliders')}</div>
+                <div className="keybinding">
+                  <Chip text="c" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.toggle_sidebar')}</div>
+                <div className="keybinding">
+                  <Chip text="p" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.play_mode')}</div>
+                <div className="keybinding">
+                  <Chip text="o" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.undo')}</div>
+                <div className="keybinding">
+                  <Chip text={this.getMainShortcutKey()} />
+                  <span className="plus">+</span>
+                  <Chip text="z" />
+                </div>
+              </div>
+
+              <div className="shortcut">
+                <div className="name">{t('shortcuts_modal.redo')}</div>
+                <div className="keybinding">
+                  <Chip text={this.getMainShortcutKey()} />
+                  <span className="plus">+</span>
+                  <Chip text="Shift" />
+                  <span className="plus">+</span>
+                  <Chip text="z" />
+                </div>
+              </div>
             </div>
 
             <div className="shortcut-list">
-              <div className="subtitle">{t('shortcuts_modal.edit_controls')}</div>
+              <div className="subtitle">{t('shortcuts_modal.item_shortcuts')}</div>
 
               <div className="shortcut">
                 <div className="name">{t('shortcuts_modal.move')}</div>
@@ -94,13 +128,6 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
                 <div className="name">{t('shortcuts_modal.rotate')}</div>
                 <div className="keybinding">
                   <Chip text="e" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.toggle_colliders')}</div>
-                <div className="keybinding">
-                  <Chip text="c" />
                 </div>
               </div>
 
@@ -124,25 +151,15 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
                   <Chip text="Delete" />
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.undo')}</div>
-                <div className="keybinding">
-                  <Chip text={this.getMainShortcutKey()} />
-                  <span className="plus">+</span>
-                  <Chip text="z" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.redo')}</div>
-                <div className="keybinding">
-                  <Chip text={this.getMainShortcutKey()} />
-                  <span className="plus">+</span>
-                  <Chip text="Shift" />
-                  <span className="plus">+</span>
-                  <Chip text="z" />
-                </div>
+          <div className="shortcut-list">
+            <div className="subtitle">{t('shortcuts_modal.other_shortcuts')}</div>
+            <div className="shortcut">
+              <div className="name">{t('shortcuts_modal.shortcut_reference')}</div>
+              <div className="keybinding">
+                <Chip text="?" />
               </div>
             </div>
           </div>
