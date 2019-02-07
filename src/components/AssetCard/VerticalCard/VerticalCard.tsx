@@ -4,10 +4,16 @@ import './VerticalCard.css'
 
 export default class VerticalCard extends React.PureComponent<Props> {
   render() {
-    const { thumbnail, name } = this.props.asset
+    const { asset, isDragging } = this.props
+    const { thumbnail, name } = asset
+
+    let classes = 'AssetCard vertical'
+    if (isDragging) {
+      classes += ' is-dragging'
+    }
 
     return (
-      <div className="VerticalCard">
+      <div className={classes}>
         <img className="thumbnail" src={thumbnail} alt={`${name} thumbnail`} />
       </div>
     )

@@ -21,11 +21,11 @@ import {
   EDITOR_REDO,
   EDITOR_UNDO
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject } from 'modules/project/selectors'
+import { getCurrentProject, getProjectBounds } from 'modules/project/selectors'
 import { SceneDefinition, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -35,6 +35,7 @@ import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene, getKeyboardShortcuts } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
+import { isWithinBounds } from 'modules/scene/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -53,6 +54,7 @@ export function* editorSaga() {
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
+  yield takeLatest(DROP_ITEM, handleDropItem)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -192,5 +194,14 @@ function handleZoomOut() {
 function handleResetCamera() {
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x: 5, y: 0, z: 5 })
-  editorWindow.editor.setCameraRotation(-Math.PI / 4)
+  editorWindow.editor.setCameraRotation(-Math.PI / 4, Math.PI / 3)
+}
+
+function* handleDropItem(action: DropItemAction) {
+  const { asset, x, y } = action.payload
+  const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
+  const bounds = yield select(getProjectBounds)
+  if (isWithinBounds(position, bounds)) {
+    yield put(addItem(asset, position))
+  }
 }

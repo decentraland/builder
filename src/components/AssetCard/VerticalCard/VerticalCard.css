@@ -1,4 +1,4 @@
-.VerticalCard {
+.AssetCard.vertical {
   display: flex;
   width: 100%;
   align-items: center;
@@ -11,11 +11,11 @@
   height: 105px;
 }
 
-.VerticalCard:hover {
+.AssetCard.vertical:hover {
   background: rgba(var(--purplish-grey-raw), 0.64);
 }
 
-.VerticalCard .thumbnail {
+.AssetCard.vertical .thumbnail {
   width: 63px;
   height: 62px;
 }

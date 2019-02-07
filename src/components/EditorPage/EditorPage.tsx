@@ -10,6 +10,7 @@ import Metrics from './Metrics'
 import { Props } from './EditorPage.types'
 import { ToolName } from './Tools/Tools.types'
 import './EditorPage.css'
+import ItemDragLayer from './ItemDragLayer'
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
@@ -68,6 +69,7 @@ export default class EditorPage extends React.PureComponent<Props> {
                 <>
                   <Metrics />
                   <Tools onClick={this.handleToolClick} />
+                  <ItemDragLayer />
                 </>
               )}
             </div>

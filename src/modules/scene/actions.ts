@@ -11,14 +11,6 @@ export const createScene = (scene: SceneDefinition) => action(CREATE_SCENE, { sc
 
 export type CreateSceneAction = ReturnType<typeof createScene>
 
-// Spawn items
-
-export const ADD_ITEM = 'Add item'
-
-export const addItem = (asset: AssetResource, position: Vector3) => action(ADD_ITEM, { asset, position })
-
-export type AddItemAction = ReturnType<typeof addItem>
-
 // Provision a scene
 
 export const PROVISION_SCENE = 'Provision scene'
@@ -45,6 +37,22 @@ export const updateTransform = (sceneId: string, componentId: string, data: Comp
   action(UPDATE_TRANSFORM, { sceneId, componentId, data })
 
 export type UpdateTransfromAction = ReturnType<typeof updateTransform>
+
+// Spawn item
+
+export const ADD_ITEM = 'Add item'
+
+export const addItem = (asset: AssetResource, position?: Vector3) => action(ADD_ITEM, { asset, position })
+
+export type AddItemAction = ReturnType<typeof addItem>
+
+// Spawn item on the mouse position (used for drag and drop)
+
+export const DROP_ITEM = 'Drop item'
+
+export const dropItem = (asset: AssetResource, x: number, y: number) => action(DROP_ITEM, { asset, x, y })
+
+export type DropItemAction = ReturnType<typeof dropItem>
 
 // Reset item
 
