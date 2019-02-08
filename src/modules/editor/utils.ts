@@ -135,22 +135,15 @@ export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight
     const img = new Image()
     img.onload = function resizeImage() {
       let { width, height } = img
-      console.log('original size', width, height)
       let ratio = 0
       if (width > maxWidth) {
-        console.log('image too wide')
         ratio = maxWidth / width
-        console.log('aspect ratio', ratio)
         width = maxWidth
         height *= ratio
-        console.log('new size', width, height)
       } else if (height > maxHeight) {
-        console.log('image too tall')
         ratio = maxHeight / height
-        console.log('aspect ratio', ratio)
         width *= ratio
         height = maxHeight
-        console.log('new size', width, height)
       }
       const newDataUri = imageToDataUri(img, width, height)
       resolve(newDataUri)
