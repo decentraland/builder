@@ -21,9 +21,9 @@ import {
   selectEntity,
   EDITOR_REDO,
   EDITOR_UNDO,
-  SCREENSHOT,
-  ScreenshotAction,
-  screenshot
+  TAKE_SCREENSHOT,
+  TakeScreenshotAction,
+  takeScreenshot
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -61,7 +61,7 @@ export function* editorSaga() {
   yield takeLatest(RESET_CAMERA, handleResetCamera)
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DROP_ITEM, handleDropItem)
-  yield takeLatest(SCREENSHOT, handleScreenshot)
+  yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -95,7 +95,7 @@ function* handleRenderScene() {
     const assetMappings: AssetMappings = yield select(getAssetMappings)
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, assetMappings)))
     yield delay(500)
-    yield put(screenshot())
+    yield put(takeScreenshot())
   }
 }
 
@@ -219,11 +219,11 @@ function* handleDropItem(action: DropItemAction) {
   }
 }
 
-function* handleScreenshot(_: ScreenshotAction) {
+function* handleScreenshot(_: TakeScreenshotAction) {
   try {
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (screenshot) {
-      const thumbnail = yield call(() => resizeScreenshot(screenshot, 246, 182))
+      const thumbnail = yield call(() => resizeScreenshot(screenshot, 250, 220))
       if (thumbnail) {
         const currentProject: Project | null = yield select(getCurrentProject)
         if (currentProject) {

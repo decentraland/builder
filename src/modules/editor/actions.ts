@@ -127,8 +127,8 @@ export type SetEditorReadyAction = ReturnType<typeof setEditorReady>
 
 // Screenshot
 
-export const SCREENSHOT = 'Screenshot'
+export const TAKE_SCREENSHOT = 'Take screenshot'
 
-export const screenshot = () => action(SCREENSHOT, {})
+export const takeScreenshot = () => action(TAKE_SCREENSHOT, {})
 
-export type ScreenshotAction = ReturnType<typeof screenshot>
+export type TakeScreenshotAction = ReturnType<typeof takeScreenshot>
