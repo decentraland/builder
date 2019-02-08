@@ -4,8 +4,9 @@
     "templates": "templates",
     "terms_and_conditions": "Terms & Conditions",
     "save": "Save",
-    "cancel": "Cancel",
-    "submit": "Submit"
+    "submit": "Submit",
+    "continue": "Continue",
+    "cancel": "Cancel"
   },
   "languages": {
     "en": "English"
@@ -27,7 +28,7 @@
   },
   "topbar": {
     "add_to_contest": "Add to contest",
-    "update_contest_entry": "Update entry",
+    "update_contest_entry": "Update y",
     "publish": "Publish"
   },
   "metrics": {
@@ -44,8 +45,7 @@
     "title": "Participate in our contest",
     "start": "Subscribe for a chance to LAND",
     "know_more": "To know more click here and read our blog post.",
-    "i_accept_the": "I accept the ",
-    "send": "Send"
+    "i_accept_the": "I accept the "
   },
   "submit_project_modal": {
     "title": "Submit project",

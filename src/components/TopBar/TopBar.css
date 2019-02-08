@@ -43,6 +43,8 @@
 }
 
 .TopBar .right-column .add-to-contest,
+.TopBar .right-column .add-to-contest:active,
+.TopBar .right-column .add-to-contest:focus,
 .TopBar .right-column .add-to-contest:hover {
   background-image: url('../../images/contest-button.png');
   background-size: 100%;

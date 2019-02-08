@@ -6,7 +6,15 @@ import { Props, State } from './SubmitProjectModal.types'
 import './SubmitProjectModal.css'
 
 export default class SubmitProjectModal extends React.PureComponent<Props, State> {
-  state = { title: '', description: '' }
+  constructor(props: Props) {
+    super(props)
+
+    const { currentProject } = props
+    this.state = {
+      title: currentProject.title,
+      description: currentProject.description
+    }
+  }
 
   handleClose = () => {
     const { modal, onClose } = this.props

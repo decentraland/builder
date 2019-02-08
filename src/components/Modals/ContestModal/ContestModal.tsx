@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Modal, Header, Radio, Input, Button } from 'decentraland-ui'
+import { Form, Modal, Header, Radio, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import CloseModalIcon from '../CloseModalIcon'
@@ -8,34 +8,34 @@ import { Props, State } from './ContestModal.types'
 import './ContestModal.css'
 
 export default class ContestModal extends React.PureComponent<Props, State> {
-  state = { hasAccepted: false, email: '' }
+  state = { hasAcceptedTerms: false }
 
   handleClose = () => {
     this.props.onClose('ContestModal')
   }
 
-  handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.setState({
-      email: event.currentTarget.value
-    })
-  }
-
   handleSubmit = () => {
-    const { currentProject } = this.props
-    const { email } = this.state
-    if (email.trim()) {
-      this.props.onRegisterEmail(email, currentProject.id)
+    const { onAcceptTerms, onOpenModal } = this.props
+    const { hasAcceptedTerms } = this.state
+    if (hasAcceptedTerms) {
+      onAcceptTerms()
       this.handleClose()
+      onOpenModal('SubmitProjectModal')
     }
   }
 
-  handleToggleTermsAndConditions = () => {
-    this.setState({ hasAccepted: !this.state.hasAccepted })
+  handleToggleTermsAndConditions = (event: any) => {
+    console.log('HERE', event)
+    this.setState({ hasAcceptedTerms: !this.state.hasAcceptedTerms })
+  }
+
+  handleLinkClick = () => {
+    console.log('Hi')
   }
 
   render() {
     const { modal } = this.props
-    const { hasAccepted, email } = this.state
+    const { hasAcceptedTerms } = this.state
 
     return (
       <Modal
@@ -60,19 +60,18 @@ export default class ContestModal extends React.PureComponent<Props, State> {
             </p>
           </div>
           <Form onSubmit={this.handleSubmit}>
-            <div onClick={this.handleToggleTermsAndConditions}>
-              <Radio className="modal-row" defaultChecked={false} checked={hasAccepted} label={t('contest_modal.i_accept_the')} />
+            <div className="modal-row">
+              <span onClick={this.handleToggleTermsAndConditions}>
+                <Radio defaultChecked={false} checked={hasAcceptedTerms} label={t('contest_modal.i_accept_the')} />
+              </span>
               &nbsp;
-              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
+              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank" onClick={this.handleLinkClick}>
                 {t('global.terms_and_conditions')}
               </a>
             </div>
-            <div className="modal-row email-container">
-              <Input type="email" placeholder="mail@domain.com" value={email} onChange={this.handleEmailChange} disabled={!hasAccepted} />
-              <Button primary size="medium" disabled={!hasAccepted}>
-                {t('contest_modal.send').toUpperCase()}
-              </Button>
-            </div>
+            <Button primary size="medium" disabled={!hasAcceptedTerms}>
+              {t('global.continue').toUpperCase()}
+            </Button>
           </Form>
         </Modal.Content>
       </Modal>
