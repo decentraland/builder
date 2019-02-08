@@ -36,6 +36,7 @@ import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene, getKeyboardShortcuts } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 import { isWithinBounds } from 'modules/scene/utils'
+import { PARCEL_SIZE } from 'modules/project/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -193,8 +194,8 @@ function handleZoomOut() {
 
 function* handleResetCamera() {
   const project: Project = yield select(getCurrentProject)
-  const x = (project.parcelLayout.rows * 10) / 2
-  const z = (project.parcelLayout.cols * 10) / 2
+  const x = (project.parcelLayout.rows * PARCEL_SIZE) / 2
+  const z = (project.parcelLayout.cols * PARCEL_SIZE) / 2
 
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })
