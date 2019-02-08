@@ -133,7 +133,7 @@ export function imageToDataUri(img: HTMLImageElement, width: number, height: num
 export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight: number) {
   return new Promise<string | null>(resolve => {
     const img = new Image()
-    img.onload = function resizeImage() {
+    img.onload = () => {
       let { width, height } = img
       let ratio = 0
       if (width > maxWidth) {
