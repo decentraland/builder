@@ -15,7 +15,8 @@
     "empty_projects_title": "Here's where your projects will live",
     "empty_projects_cta": "Select a template below to start building awesome stuff!",
     "project_actions": {
-      "delete_project": "Delete project"
+      "delete_project": "Delete project",
+      "duplicate_project": "Duplicate project"
     }
   },
   "itemdrawer": {

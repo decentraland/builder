@@ -22,6 +22,11 @@ export default class ProjectCard extends React.PureComponent<Props> {
     onDeleteProject(project.id)
   }
 
+  handleDuplicateProject = () => {
+    const { project, onDuplicateProject } = this.props
+    onDuplicateProject(project.id)
+  }
+
   render() {
     const { project, onClick } = this.props
 
@@ -29,6 +34,7 @@ export default class ProjectCard extends React.PureComponent<Props> {
       <>
         <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
           <Dropdown.Menu>
+            <Dropdown.Item text={t('homepage.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
             <Dropdown.Item text={t('homepage.project_actions.delete_project')} onClick={this.handleDeleteProject} />
           </Dropdown.Menu>
         </Dropdown>
