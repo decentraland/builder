@@ -1,9 +1,9 @@
 .Drawer {
   /* 
   These 32px make up for the 16px of padding on both sides. 
-  If we used padding, then the the width of the Drawer 
+  If we used padding, then the width of the Drawer 
   would be (100% - 16px - 16px - scrollbarWidth). We could compensate
-  the scrollbbarWidth by having less padding-right, but the scrollbarWidth
+  the scrollbarWidth by having less padding-right, but the scrollbarWidth
   changes among browsers and OS's and also it's 0 when the content is not 
   scrollable. By using the rule below we make sure that the width of the
   Drawer is constant, and the extra space to the right can me taken by
