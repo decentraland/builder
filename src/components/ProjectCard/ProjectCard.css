@@ -1,6 +1,6 @@
 .HomePage .Card.ProjectCard.has-thumbnail {
   position: relative;
-  background-size: 120% 120%;
+  background-size: cover;
   background-position: center;
   overflow: hidden;
 }

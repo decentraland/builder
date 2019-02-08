@@ -14,6 +14,9 @@ const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
   throw new Error('Missing REACT_APP_CONTENT_SERVER env variable')
 })
 
+export const THUMBNAIL_WIDTH = 246
+export const THUMBNAIL_HEIGHT = 182
+
 export function getNewScene(project: Project): EditorScene {
   const mappings = {
     'game.js': `data:application/javascript;base64,${btoa(script)}`
@@ -127,10 +130,28 @@ export function imageToDataUri(img: HTMLImageElement, width: number, height: num
   return canvas.toDataURL()
 }
 
-export function resizeScreenshot(screenshot: string, width: number, height: number) {
+export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight: number) {
   return new Promise<string | null>(resolve => {
     const img = new Image()
     img.onload = function resizeImage() {
+      let { width, height } = img
+      console.log('original size', width, height)
+      let ratio = 0
+      if (width > maxWidth) {
+        console.log('image too wide')
+        ratio = maxWidth / width
+        console.log('aspect ratio', ratio)
+        width = maxWidth
+        height *= ratio
+        console.log('new size', width, height)
+      } else if (height > maxHeight) {
+        console.log('image too tall')
+        ratio = maxHeight / height
+        console.log('aspect ratio', ratio)
+        width *= ratio
+        height = maxHeight
+        console.log('new size', width, height)
+      }
       const newDataUri = imageToDataUri(img, width, height)
       resolve(newDataUri)
     }

@@ -37,7 +37,7 @@ import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { getNewScene, getKeyboardShortcuts, resizeScreenshot } from './utils'
+import { getNewScene, getKeyboardShortcuts, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 import { isWithinBounds } from 'modules/scene/utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
@@ -161,6 +161,9 @@ function* handleOpenEditor() {
 
   // Spawns the assets
   yield handleRenderScene()
+
+  // Reset gizmo
+  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
 }
 
 function* handleDuplicateItem() {
@@ -223,7 +226,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   try {
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (screenshot) {
-      const thumbnail = yield call(() => resizeScreenshot(screenshot, 250, 220))
+      const thumbnail = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
       if (thumbnail) {
         const currentProject: Project | null = yield select(getCurrentProject)
         if (currentProject) {
