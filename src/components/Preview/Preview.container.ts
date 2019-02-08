@@ -11,7 +11,7 @@ import Preview from './Preview'
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoading: isReady(state),
-  layout: getProjectLayout(state)
+  layout: getProjectLayout(state)!
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

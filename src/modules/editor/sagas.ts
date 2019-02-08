@@ -225,7 +225,7 @@ function* handleScreenshot(_: ScreenshotAction) {
     if (screenshot) {
       const thumbnail = yield call(() => resizeScreenshot(screenshot, 246, 182))
       if (thumbnail) {
-        const currentProject = yield select(getCurrentProject)
+        const currentProject: Project | null = yield select(getCurrentProject)
         if (currentProject) {
           yield put(editProject(currentProject.id, { thumbnail }))
         }

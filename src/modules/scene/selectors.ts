@@ -9,7 +9,7 @@ export const getState: (state: RootState) => SceneState = state => state.scene.p
 
 export const getData: (state: RootState) => SceneState['data'] = state => getState(state).data
 
-export const getCurrentScene = createSelector<RootState, Project, SceneState['data'], SceneDefinition | null>(
+export const getCurrentScene = createSelector<RootState, Project | null, SceneState['data'], SceneDefinition | null>(
   getCurrentProject,
   getData,
   (project, scenes) => {
