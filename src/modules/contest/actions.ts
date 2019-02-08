@@ -4,6 +4,6 @@ import { action } from 'typesafe-actions'
 
 export const REGISTER_EMAIL = 'Register email'
 
-export const registerEmail = (email: string) => action(REGISTER_EMAIL, { email })
+export const registerEmail = (email: string, projectId: string) => action(REGISTER_EMAIL, { email, projectId })
 
 export type RegisterEmailAction = ReturnType<typeof registerEmail>

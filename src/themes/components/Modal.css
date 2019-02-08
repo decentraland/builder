@@ -1,10 +1,16 @@
 .ui.modal {
-  border-radius: 16px;
+  border-radius: var(--modal-border-radius);
 }
 
-.ui.modal > .content {
+.ui.modal > .content,
+.ui.modal > .actions {
   background: var(--dark-two);
-  border-radius: 16px;
+}
+
+.ui.modal > :last-child.content,
+.ui.modal > .actions {
+  border-bottom-left-radius: var(--modal-border-radius);
+  border-bottom-right-radius: var(--modal-border-radius);
 }
 
 .ui.modal > .header ~ .content {
@@ -14,13 +20,13 @@
 
 .ui.modal .header,
 .ui.modal > :first-child:not(.icon) {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  border-top-left-radius: var(--modal-border-radius);
+  border-top-right-radius: var(--modal-border-radius);
 }
 
 .ui.modal .header:last-child {
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: var(--modal-border-radius);
+  border-bottom-right-radius: var(--modal-border-radius);
 }
 
 .ui.modal .ui.form .field .ui.input input {

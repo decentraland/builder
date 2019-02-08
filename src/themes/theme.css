@@ -31,6 +31,9 @@
   /* Preview */
   --preview-background: #38333f;
   --preview-z-index: 2000;
+
+  /* Modal */
+  --modal-border-radius: 16px;
 }
 
 /* Erase separation line from navbar */

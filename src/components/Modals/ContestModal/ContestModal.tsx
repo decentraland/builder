@@ -21,9 +21,10 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = () => {
+    const { currentProject } = this.props
     const { email } = this.state
     if (email.trim()) {
-      this.props.onRegisterEmail(email)
+      this.props.onRegisterEmail(email, currentProject.id)
       this.handleClose()
     }
   }

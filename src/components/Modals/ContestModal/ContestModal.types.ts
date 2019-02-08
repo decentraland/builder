@@ -1,8 +1,10 @@
 import { Dispatch } from 'redux'
+import { Project } from 'modules/project/types'
 import { registerEmail, RegisterEmailAction } from 'modules/contest/actions'
 import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
 
 export type Props = ModalProps & {
+  currentProject: Project
   onRegisterEmail: typeof registerEmail
 }
 

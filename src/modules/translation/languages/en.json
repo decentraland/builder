@@ -3,8 +3,9 @@
     "projects": "projects",
     "templates": "templates",
     "terms_and_conditions": "Terms & Conditions",
-    "save": "save",
-    "cancel": "cancel"
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit"
   },
   "languages": {
     "en": "English"
@@ -26,6 +27,7 @@
   },
   "topbar": {
     "add_to_contest": "Add to contest",
+    "update_contest_entry": "Update entry",
     "publish": "Publish"
   },
   "metrics": {
@@ -44,6 +46,10 @@
     "know_more": "To know more click here and read our blog post.",
     "i_accept_the": "I accept the ",
     "send": "Send"
+  },
+  "submit_project_modal": {
+    "title": "Submit project",
+    "subtitle": "Almost done! review the your projects information and submit it!"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
