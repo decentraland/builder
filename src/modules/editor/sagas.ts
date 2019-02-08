@@ -191,9 +191,13 @@ function handleZoomOut() {
   editorWindow.editor.setCameraZoomDelta(5)
 }
 
-function handleResetCamera() {
+function* handleResetCamera() {
+  const project: Project = yield select(getCurrentProject)
+  const x = (project.parcelLayout.rows * 10) / 2
+  const z = (project.parcelLayout.cols * 10) / 2
+
   editorWindow.editor.resetCameraZoom()
-  editorWindow.editor.setCameraPosition({ x: 5, y: 0, z: 5 })
+  editorWindow.editor.setCameraPosition({ x, y: 0, z })
   editorWindow.editor.setCameraRotation(-Math.PI / 4, Math.PI / 3)
 }
 
