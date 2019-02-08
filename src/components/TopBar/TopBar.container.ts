@@ -10,7 +10,7 @@ import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import TopBar from './TopBar'
 
 const mapState = (state: RootState): MapStateProps => ({
-  currentProject: getCurrentProject(state),
+  currentProject: getCurrentProject(state)!,
   gizmo: getGizmo(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),

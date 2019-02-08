@@ -9,7 +9,7 @@ import { editProject } from 'modules/project/actions'
 import EditProjectModal from './EditProjectModal'
 
 const mapState = (state: RootState): MapStateProps => ({
-  currentProject: getCurrentProject(state)
+  currentProject: getCurrentProject(state)!
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

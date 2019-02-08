@@ -9,23 +9,24 @@ export const getState: (state: RootState) => SceneState = state => state.scene.p
 
 export const getData: (state: RootState) => SceneState['data'] = state => getState(state).data
 
-export const getCurrentScene = createSelector<RootState, Project, SceneState['data'], SceneDefinition>(
+export const getCurrentScene = createSelector<RootState, Project | null, SceneState['data'], SceneDefinition | null>(
   getCurrentProject,
   getData,
   (project, scenes) => {
+    if (!project) return null
     const sceneId = project.sceneId
     return scenes[sceneId]
   }
 )
 
-export const getComponents = createSelector<RootState, SceneDefinition, SceneDefinition['components']>(
+export const getComponents = createSelector<RootState, SceneDefinition | null, SceneDefinition['components']>(
   getCurrentScene,
-  scene => scene.components
+  scene => (scene ? scene.components : {})
 )
 
-export const getEntities = createSelector<RootState, SceneDefinition, SceneDefinition['entities']>(
+export const getEntities = createSelector<RootState, SceneDefinition | null, SceneDefinition['entities']>(
   getCurrentScene,
-  scene => scene.entities
+  scene => (scene ? scene.entities : {})
 )
 
 export const getEntityComponents = (entityId: string) =>
@@ -65,7 +66,10 @@ export const getEntityComponentByType = <T extends ComponentType>(entityId: stri
   )
 
 export const getComponentByType = <T extends ComponentType>(type: T) => (state: RootState) => {
-  const components = getCurrentScene(state).components
+  const scene = getCurrentScene(state)
+  if (!scene) return []
+
+  const components = scene.components
   const out: ComponentDefinition<T>[] = []
 
   for (let component of Object.values(components)) {
@@ -78,7 +82,10 @@ export const getComponentByType = <T extends ComponentType>(type: T) => (state: 
 }
 
 export const getGLTFId = (src: string) => (state: RootState) => {
-  const componentData = getCurrentScene(state).components
+  const scene = getCurrentScene(state)
+  if (!scene) return null
+
+  const componentData = scene.components
 
   for (let key in componentData) {
     const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
