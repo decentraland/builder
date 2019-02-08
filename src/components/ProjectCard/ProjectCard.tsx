@@ -28,18 +28,23 @@ export default class ProjectCard extends React.PureComponent<Props> {
       </>
     )
 
-    const style = project.thumbnail ? { backgroundImage: `url(${project.thumbnail})` } : undefined
+    let style
     let classes = 'ProjectCard Card'
+    let overlay = null
     if (project.thumbnail) {
+      style = { backgroundImage: `url(${project.thumbnail})` }
       classes += ' has-thumbnail'
+      overlay = <div className="overlay" />
     }
 
     return onClick ? (
       <div className={classes} onClick={this.handleOnClick} style={style}>
+        {overlay}
         {Component}
       </div>
     ) : (
       <Link to={locations.editor(project.id)} className={classes} style={style}>
+        {overlay}
         {Component}
       </Link>
     )

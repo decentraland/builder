@@ -1,6 +1,8 @@
 .HomePage .Card.ProjectCard.has-thumbnail {
-  background-size: cover;
+  position: relative;
+  background-size: 120% 120%;
   background-position: center;
+  overflow: hidden;
 }
 
 .ProjectCard .project-data {
@@ -9,6 +11,7 @@
   margin-top: 70px;
   text-align: center;
   color: var(--text);
+  z-index: 1;
 }
 
 .ProjectCard .title {
@@ -22,4 +25,14 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
+}
+
+.ProjectCard .overlay {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background: black;
+  opacity: 0.24;
 }
