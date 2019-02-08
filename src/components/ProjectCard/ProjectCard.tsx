@@ -1,6 +1,9 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
+import { Dropdown } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import { locations } from 'routing/locations'
 import { Props } from './ProjectCard.types'
 import { getProjectDimensions } from 'modules/project/utils'
@@ -14,11 +17,21 @@ export default class ProjectCard extends React.PureComponent<Props> {
     }
   }
 
+  handleDeleteProject = () => {
+    const { project, onDeleteProject } = this.props
+    onDeleteProject(project.id)
+  }
+
   render() {
     const { project, onClick } = this.props
 
     const Component = (
       <>
+        <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
+          <Dropdown.Menu>
+            <Dropdown.Item text={t('homepage.project_actions.delete_project')} onClick={this.handleDeleteProject} />
+          </Dropdown.Menu>
+        </Dropdown>
         <div className="project-data">
           <div className="title">{project.title}</div>
           <div className="description" title={project.description}>
