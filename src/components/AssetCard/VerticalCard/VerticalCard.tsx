@@ -13,8 +13,8 @@ export default class VerticalCard extends React.PureComponent<Props> {
     }
 
     return (
-      <div className={classes}>
-        <img className="thumbnail" src={thumbnail} alt={`${name} thumbnail`} />
+      <div className={classes} title={name}>
+        <img className="thumbnail" src={thumbnail} />
       </div>
     )
   }

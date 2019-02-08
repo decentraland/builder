@@ -7,7 +7,7 @@
   flex-direction: column;
   background: rgba(var(--purplish-grey-raw), 0.48);
   padding: 16px 10px;
-  cursor: pointer;
+  cursor: grab;
   height: 105px;
 }
 
