@@ -164,8 +164,9 @@ function* handleOpenEditor() {
   // Spawns the assets
   yield handleRenderScene()
 
-  // Reset gizmo
-  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+  // Select gizmo
+  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
+  yield call(() => editorWindow.editor.selectGizmo(gizmo))
 }
 
 function* handleDuplicateItem() {
@@ -186,14 +187,18 @@ function resizeEditor() {
 }
 
 function* handleTooglePreview(action: TogglePreviewAction) {
+  const { enabled } = action.payload
+  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
+
   yield call(() => {
     const { editor } = window as EditorWindow
-    editor.setPlayMode(action.payload.enabled)
-    editor.selectGizmo(Gizmo.NONE)
+    editor.setPlayMode(enabled)
     editor.sendExternalAction(action)
+    editor.selectGizmo(enabled ? Gizmo.NONE : gizmo)
     resizeEditor()
   })
-  yield put(action.payload.enabled ? unbindEditorKeyboardShortcuts() : bindEditorKeyboardShortcuts())
+
+  yield put(enabled ? unbindEditorKeyboardShortcuts() : bindEditorKeyboardShortcuts())
 }
 
 function* handleToggleSidebar(_: ToggleSidebarAction) {
