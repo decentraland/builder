@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Modal, Header, Field, Button } from 'decentraland-ui'
+import { Form, Modal, Field, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectFields from 'components/ProjectFields'
@@ -67,7 +67,7 @@ export default class SubmitProjectModal extends React.PureComponent<Props, State
     return (
       <Modal open={modal.open} className="SubmitProjectModal" size="small" onClose={this.handleClose}>
         <Modal.Content>
-          <Header size="huge">{t('submit_project_modal.title')}</Header>
+          <div className="title">{t('submit_project_modal.title')}</div>
           <div className="subtitle">{t('submit_project_modal.subtitle')}</div>
 
           <Form onSubmit={this.handleSubmit}>

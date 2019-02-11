@@ -1,15 +1,18 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-
-import { Dropdown } from 'decentraland-ui'
+import { Icon, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { Props } from './ProjectCard.types'
+import { Props, DefaultProps } from './ProjectCard.types'
 import { getProjectDimensions } from 'modules/project/utils'
 import './ProjectCard.css'
 
 export default class ProjectCard extends React.PureComponent<Props> {
+  static defaultProps: DefaultProps = {
+    hasSubmittedProject: false
+  }
+
   handleOnClick = () => {
     const { onClick } = this.props
     if (onClick) {
@@ -28,10 +31,26 @@ export default class ProjectCard extends React.PureComponent<Props> {
   }
 
   render() {
-    const { project, onClick } = this.props
+    const { project, hasSubmittedProject, onClick } = this.props
 
-    const Component = (
+    let style = {}
+    let classes = 'ProjectCard Card'
+    let Overlay = null
+
+    if (project.thumbnail) {
+      style = { backgroundImage: `url(${project.thumbnail})` }
+      classes += ' has-thumbnail'
+      Overlay = <div className="overlay" />
+    }
+
+    const children = (
       <>
+        {Overlay}
+        {hasSubmittedProject ? (
+          <span className="contest-badge" data-balloon-pos="down" data-balloon={t('project_card.added_to_contest')}>
+            <Icon name="star" />
+          </span>
+        ) : null}
         <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
           <Dropdown.Menu>
             <Dropdown.Item text={t('homepage.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
@@ -47,24 +66,13 @@ export default class ProjectCard extends React.PureComponent<Props> {
       </>
     )
 
-    let style
-    let classes = 'ProjectCard Card'
-    let overlay = null
-    if (project.thumbnail) {
-      style = { backgroundImage: `url(${project.thumbnail})` }
-      classes += ' has-thumbnail'
-      overlay = <div className="overlay" />
-    }
-
     return onClick ? (
       <div className={classes} onClick={this.handleOnClick} style={style}>
-        {overlay}
-        {Component}
+        {children}
       </div>
     ) : (
       <Link to={locations.editor(project.id)} className={classes} style={style}>
-        {overlay}
-        {Component}
+        {children}
       </Link>
     )
   }

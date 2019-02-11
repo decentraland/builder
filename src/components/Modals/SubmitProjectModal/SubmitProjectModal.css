@@ -1,4 +1,5 @@
-.SubmitProjectModal .content > .ui.header {
+.SubmitProjectModal .title {
+  font-size: var(--modal-title-font-size);
   margin-bottom: 20px;
 }
 

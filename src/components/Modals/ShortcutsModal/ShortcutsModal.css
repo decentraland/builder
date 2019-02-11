@@ -7,7 +7,7 @@
 }
 
 .ShortcutsModal .title {
-  font-size: 28px;
+  font-size: var(--modal-title-font-size);
 }
 
 .ShortcutsModal .shortcut-list .subtitle {

@@ -25,6 +25,9 @@
       "duplicate_project": "Duplicate project"
     }
   },
+  "project_card": {
+    "added_to_contest": "Added to contest"
+  },
   "itemdrawer": {
     "title": "Item drawer",
     "search": "Search by name or category",
