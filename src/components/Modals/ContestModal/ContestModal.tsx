@@ -20,7 +20,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     if (hasAcceptedTerms) {
       onAcceptTerms()
       this.handleClose()
-      onOpenModal('SubmitProjectModal')
+      onOpenModal('AddToContestModal')
     }
   }
 

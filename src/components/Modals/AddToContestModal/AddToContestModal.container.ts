@@ -8,8 +8,8 @@ import { getData as getContest } from 'modules/contest/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { editProject } from 'modules/project/actions'
 import { submitProjectRequest } from 'modules/contest/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './SubmitProjectModal.types'
-import SubmitProjectModal from './SubmitProjectModal'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './AddToContestModal.types'
+import AddToContestModal from './AddToContestModal'
 
 const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),
@@ -25,4 +25,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
 export default connect(
   mapState,
   mapDispatch
-)(SubmitProjectModal)
+)(AddToContestModal)

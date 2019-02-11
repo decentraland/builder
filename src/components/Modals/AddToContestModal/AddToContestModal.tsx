@@ -3,10 +3,10 @@ import { Form, Modal, Field, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectFields from 'components/ProjectFields'
-import { Props, State } from './SubmitProjectModal.types'
-import './SubmitProjectModal.css'
+import { Props, State } from './AddToContestModal.types'
+import './AddToContestModal.css'
 
-export default class SubmitProjectModal extends React.PureComponent<Props, State> {
+export default class AddToContestModal extends React.PureComponent<Props, State> {
   state = {
     project: {
       title: this.props.currentProject!.title,
@@ -65,7 +65,7 @@ export default class SubmitProjectModal extends React.PureComponent<Props, State
     const { email, ethAddress } = contest
 
     return (
-      <Modal open={modal.open} className="SubmitProjectModal" size="small" onClose={this.handleClose}>
+      <Modal open={modal.open} className="AddToContestModal" size="small" onClose={this.handleClose}>
         <Modal.Content>
           <div className="title">{t('submit_project_modal.title')}</div>
           <div className="subtitle">{t('submit_project_modal.subtitle')}</div>

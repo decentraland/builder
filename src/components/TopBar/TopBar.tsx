@@ -35,7 +35,7 @@ export default class TopBar extends React.PureComponent<Props> {
     const { hasAcceptedTerms, onOpenModal } = this.props
     if (hasAcceptedTerms) {
       // Also serves as an update entry
-      onOpenModal('SubmitProjectModal')
+      onOpenModal('AddToContestModal')
     } else {
       onOpenModal('ContestModal')
     }

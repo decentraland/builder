@@ -1,18 +1,18 @@
-.SubmitProjectModal .title {
+.AddToContestModal .title {
   font-size: var(--modal-title-font-size);
   margin-bottom: 20px;
 }
 
-.SubmitProjectModal .subtitle {
+.AddToContestModal .subtitle {
   font-size: 17px;
 }
 
-.SubmitProjectModal .category {
+.AddToContestModal .category {
   margin-bottom: 20px;
   text-transform: capitalize;
 }
 
-.SubmitProjectModal .details,
-.SubmitProjectModal .buttons-container {
+.AddToContestModal .details,
+.AddToContestModal .buttons-container {
   margin-top: 30px;
 }
