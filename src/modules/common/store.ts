@@ -12,7 +12,7 @@ import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
 import { CREATE_SCENE, PROVISION_SCENE } from 'modules/scene/actions'
 import { CREATE_PROJECT, EDIT_PROJECT, DELETE_PROJECT } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
-import { ACCEPT_TERMS } from 'modules/contest/actions'
+import { ACCEPT_TERMS, SUBMIT_PROJECT_SUCCESS } from 'modules/contest/actions'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 
@@ -31,7 +31,17 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
   paths: ['project', ['scene', 'present'], 'contest', 'user'] as any,
-  actions: [CREATE_PROJECT, CREATE_SCENE, PROVISION_SCENE, EDITOR_UNDO, EDITOR_REDO, EDIT_PROJECT, DELETE_PROJECT, ACCEPT_TERMS]
+  actions: [
+    CREATE_PROJECT,
+    CREATE_SCENE,
+    PROVISION_SCENE,
+    EDITOR_UNDO,
+    EDITOR_REDO,
+    EDIT_PROJECT,
+    DELETE_PROJECT,
+    ACCEPT_TERMS,
+    SUBMIT_PROJECT_SUCCESS
+  ]
 })
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))
 
