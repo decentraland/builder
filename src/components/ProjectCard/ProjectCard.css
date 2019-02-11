@@ -1,7 +1,10 @@
 .HomePage .Card.ProjectCard.has-thumbnail {
-  position: relative;
   background-size: cover;
   background-position: center;
+}
+
+.ProjectCard {
+  position: relative;
 }
 
 .ProjectCard .project-data {
