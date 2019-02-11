@@ -1,13 +1,14 @@
-import { EditorScene, Gizmo } from 'modules/editor/types'
 import { env } from 'decentraland-commons'
-import { Project } from 'modules/project/types'
-import { KeyboardShortcut } from 'modules/keyboard/types'
-import { setGizmo, togglePreview, toggleSidebar, editorUndo, editorRedo, resetCamera, zoomIn, zoomOut } from './actions'
-import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
-import { isPreviewing, isSidebarOpen } from './selectors'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
+
 import { store } from 'modules/common/store'
 import { RootState } from 'modules/common/types'
+import { EditorScene, Gizmo } from 'modules/editor/types'
+import { Project } from 'modules/project/types'
+import { KeyboardShortcut } from 'modules/keyboard/types'
+import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
+import { openModal } from 'modules/modal/actions'
+import { setGizmo, togglePreview, toggleSidebar, editorUndo, editorRedo, resetCamera, zoomIn, zoomOut } from './actions'
+import { isPreviewing, isSidebarOpen } from './selectors'
 const script = require('raw-loader!../../ecsScene/scene.js')
 
 const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {

@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { Project } from 'modules/project/types'
 import { Gizmo } from 'modules/editor/types'
@@ -13,6 +12,7 @@ import {
   EditorUndoAction
 } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem, ResetItemAction, DuplicateItemAction, DeleteItemAction } from 'modules/scene/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
   currentProject?: Project
