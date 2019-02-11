@@ -1,10 +1,10 @@
 import * as React from 'react'
 
 import Icon from 'components/Icon'
-import { ToolName, Props } from './Tools.types'
+import { ToolName, Props, DefaultProps } from './Tools.types'
 
 export default class Tools extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     onClick: (_: ToolName) => {
       /* noop */
     }

@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import Icon from 'components/Icon'
-import { Props } from './Chip.types'
+import { Props, DefaultProps } from './Chip.types'
 import './Chip.css'
 
 export default class Chip extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     text: '',
     icon: '',
     type: 'square',

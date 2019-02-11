@@ -6,9 +6,9 @@ import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
 import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
-import { Props, State } from './ItemDrawer.types'
-import './ItemDrawer.css'
 import { debounce } from 'lib/debounce'
+import { Props, State, DefaultProps } from './ItemDrawer.types'
+import './ItemDrawer.css'
 
 const DEFAULT_COLUMN_COUNT = 3
 const CTRL_KEY_CODE = 17
@@ -16,9 +16,9 @@ const COMMAND_KEY_CODE = 91
 const Z_KEY_CODE = 90
 
 export default class ItemDrawer extends React.PureComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     columnCount: DEFAULT_COLUMN_COUNT,
-    onClick: () => {
+    onClick: (_: Asset) => {
       /* noop */
     }
   }

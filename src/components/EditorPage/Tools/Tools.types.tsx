@@ -1,5 +1,7 @@
 export type ToolName = 'zoom-out' | 'zoom-in' | 'shortcuts' | 'reset-camera'
 
-export type Props = {
+export type DefaultProps = {
   onClick: (toolName: ToolName) => any
 }
+
+export type Props = DefaultProps & {}

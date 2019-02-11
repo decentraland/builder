@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import SquaresGrid from 'components/SquaresGrid'
-import { Props } from './TemplateCard.types'
+import { Props, DefaultProps } from './TemplateCard.types'
 import './TemplateCard.css'
 
-export default class ProjectCard extends React.PureComponent<Props> {
-  static defaultProps = {
+export default class TemplateCard extends React.PureComponent<Props> {
+  static defaultProps: DefaultProps = {
     onClick: (_: any) => {
       /*noop */
     }
