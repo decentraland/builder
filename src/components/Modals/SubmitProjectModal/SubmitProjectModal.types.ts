@@ -11,7 +11,7 @@ import {
 } from '../Modals.types'
 
 export type Props = ModalProps & {
-  currentProject: Project
+  currentProject: Project | null
   contest: Contest
   onSaveProject: typeof editProject
   onSubmitProject: typeof submitProjectRequest

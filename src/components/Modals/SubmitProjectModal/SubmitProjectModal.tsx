@@ -9,8 +9,8 @@ import './SubmitProjectModal.css'
 export default class SubmitProjectModal extends React.PureComponent<Props, State> {
   state = {
     project: {
-      title: this.props.currentProject.title,
-      description: this.props.currentProject.description
+      title: this.props.currentProject!.title,
+      description: this.props.currentProject!.description
     },
 
     contest: {
@@ -27,9 +27,10 @@ export default class SubmitProjectModal extends React.PureComponent<Props, State
   handleSubmit = () => {
     const { currentProject, onSaveProject, onSubmitProject } = this.props
     const { project, contest } = this.state
+    const projectId = currentProject!.id
 
-    onSaveProject(currentProject.id, project)
-    onSubmitProject(currentProject.id, contest)
+    onSaveProject(projectId, project)
+    onSubmitProject(projectId, contest)
 
     this.handleClose()
   }
