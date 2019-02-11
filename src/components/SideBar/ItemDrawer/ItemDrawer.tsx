@@ -2,13 +2,13 @@ import * as React from 'react'
 import { Header, Grid, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { debounce } from 'lib/debounce'
 import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
 import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
-import { debounce } from 'lib/debounce'
 
 const DEFAULT_COLUMN_COUNT = 3
 const CTRL_KEY_CODE = 17

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Grid } from 'decentraland-ui'
 
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './GroundPicker.types'
@@ -14,11 +13,11 @@ export default class GroundPicker extends React.PureComponent<Props, State> {
     grounds: []
   }
 
-  handleClick = (id: string) => {
+  handleClick = (id: string | null) => {
     this.props.onClick(id)
   }
 
-  renderGrid(grounds: Asset[]) {
+  renderGrid(grounds: Array<Asset | null>) {
     const columnCount = this.getColumnCount()
     const { selectedGround } = this.props
     let el = []
@@ -27,22 +26,35 @@ export default class GroundPicker extends React.PureComponent<Props, State> {
       let row = []
 
       for (let j = i; j < i + columnCount; j++) {
+        if (i === 0 && j === 0) {
+          row.push(
+            <div key={`ground-${i}-${j}`} className="column">
+              <GroundCard name="No ground" isActive={selectedGround === null} onClick={() => this.handleClick(null)} />
+            </div>
+          )
+          continue
+        }
+
         const asset = grounds[j]
         if (!asset) break
 
         row.push(
-          <Grid.Column key={`ground-${i}-${j}`}>
+          <div key={`ground-${i}-${j}`} className="column">
             <GroundCard
               name={asset.name}
               thumbnail={asset.thumbnail}
-              isActive={selectedGround === asset.name}
+              isActive={selectedGround === asset.id}
               onClick={() => this.handleClick(asset.id)}
             />
-          </Grid.Column>
+          </div>
         )
       }
 
-      el.push(<Grid.Row key={i}>{row}</Grid.Row>)
+      el.push(
+        <div key={i} className="row">
+          {row}
+        </div>
+      )
     }
 
     return el
@@ -53,13 +65,11 @@ export default class GroundPicker extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { columnCount, grounds } = this.props
+    const { grounds } = this.props
 
     return (
       <div className="GroundPicker">
-        <Grid columns={columnCount} padded="horizontally" className={`ground-grid`}>
-          {this.renderGrid(Object.values(grounds))}
-        </Grid>
+        <div className={`ground-grid`}>{this.renderGrid([null, ...Object.values(grounds)])}</div>
       </div>
     )
   }

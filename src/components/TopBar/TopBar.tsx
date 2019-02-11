@@ -9,6 +9,7 @@ import { locations } from 'routing/locations'
 import { Props } from './TopBar.types'
 import { Gizmo } from 'modules/editor/types'
 import './TopBar.css'
+import GroundCard from 'components/Modals/EditProjectModal/GroundPicker/GroundCard/GroundCard'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
@@ -40,7 +41,7 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   render() {
-    const { currentProject, gizmo, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
+    const { currentProject, gizmo, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate, groundAsset } = this.props
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
@@ -51,6 +52,7 @@ export default class TopBar extends React.PureComponent<Props> {
             {currentProject ? (
               <>
                 <span className="project-title" onClick={this.handleTitleClick}>
+                  {groundAsset && <GroundCard name={groundAsset.name} thumbnail={groundAsset.thumbnail} small className="ground" />}
                   {currentProject.title}
                   <OwnIcon name="edit" className="edit-project-icon" />
                 </span>

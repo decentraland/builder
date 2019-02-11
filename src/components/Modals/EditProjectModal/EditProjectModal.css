@@ -30,3 +30,9 @@ div.ui.modal.ProjectDetailsModal {
 .ProjectDetailsModal .button-container > * {
   flex: 1;
 }
+
+.ProjectDetailsModal .ui.sub.header.custom-label {
+  margin-top: 0px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}

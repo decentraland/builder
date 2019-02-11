@@ -13,6 +13,7 @@ import {
   EditorUndoAction
 } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem, ResetItemAction, DuplicateItemAction, DeleteItemAction } from 'modules/scene/actions'
+import { Asset } from 'modules/asset/types'
 
 export type Props = {
   currentProject?: Project
@@ -20,6 +21,7 @@ export type Props = {
   isPreviewing: boolean
   isSidebarOpen: boolean
   selectedEntityId: string | null
+  groundAsset: Asset | null
   onSetGizmo: typeof setGizmo
   onTogglePreview: typeof togglePreview
   onToggleSidebar: typeof toggleSidebar
@@ -29,7 +31,7 @@ export type Props = {
   onOpenModal: typeof openModal
 }
 
-export type MapStateProps = Pick<Props, 'currentProject' | 'gizmo' | 'isPreviewing' | 'isSidebarOpen' | 'selectedEntityId'>
+export type MapStateProps = Pick<Props, 'currentProject' | 'gizmo' | 'isPreviewing' | 'isSidebarOpen' | 'selectedEntityId' | 'groundAsset'>
 export type MapDispatchProps = Pick<
   Props,
   'onSetGizmo' | 'onTogglePreview' | 'onToggleSidebar' | 'onReset' | 'onDuplicate' | 'onDelete' | 'onOpenModal'

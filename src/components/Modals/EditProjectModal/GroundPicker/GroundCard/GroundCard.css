@@ -1,6 +1,19 @@
 .GroundCard {
-  cursor: pointer;
   overflow: hidden;
+}
+
+.GroundCard.clickable {
+  cursor: pointer;
+}
+
+.GroundCard.clickable:hover {
+  opacity: 0.9;
+}
+
+.GroundCard.small,
+.GroundCard.small .overlay {
+  width: 24px;
+  height: 24px;
 }
 
 .GroundCard,
@@ -20,10 +33,11 @@
   height: 100%;
 }
 
-.GroundCard:hover {
-  opacity: 0.9;
-}
-
 .GroundCard.active {
   border: 4px solid white;
+}
+
+.GroundCard.empty,
+.GroundCard.active.empty {
+  background: url('../../../../../images/no-ground.png') no-repeat;
 }

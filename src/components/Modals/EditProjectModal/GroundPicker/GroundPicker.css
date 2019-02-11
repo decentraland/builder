@@ -8,3 +8,11 @@
 .GroundPicker .ground-grid {
   width: 100%;
 }
+
+.GroundPicker .row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}

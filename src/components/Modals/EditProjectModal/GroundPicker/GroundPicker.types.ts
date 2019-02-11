@@ -6,7 +6,7 @@ export type Props = {
   columnCount: GridProps['columns']
   selectedGround: string | null
   grounds: ModelById<Asset>
-  onClick: (id: string) => void
+  onClick: (id: string | null) => void
 }
 
 export type State = {}

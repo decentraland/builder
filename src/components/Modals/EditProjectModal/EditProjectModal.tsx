@@ -1,21 +1,29 @@
 import * as React from 'react'
-import { Modal, Field, Button, Form } from 'decentraland-ui'
+import { Modal, Field, Button, Form, Header } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { MIN_TITLE_LENGTH, MAX_TITLE_LENGTH, MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH } from 'modules/project/utils'
+import GroundPicker from './GroundPicker/GroundPicker'
 import { Props, State } from './EditProjectModal.types'
 import './EditProjectModal.css'
 
 export default class EditProjectModal extends React.PureComponent<Props, State> {
   state = {
-    title: this.props.currentProject.title,
-    description: this.props.currentProject.description
+    title: this.props.currentProject ? this.props.currentProject.title : '',
+    description: this.props.currentProject ? this.props.currentProject.description : '',
+    selectedGround: this.props.currentScene && this.props.currentScene.ground ? this.props.currentScene.ground.assetId : null
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (!this.props.modal.open && nextProps.modal.open) {
+    if (!this.props.modal.open && nextProps.modal.open && nextProps.currentProject && nextProps.currentScene) {
       const { title, description } = nextProps.currentProject
-      this.setState({ title, description })
+      let ground = null
+
+      if (nextProps.currentScene.ground) {
+        ground = nextProps.currentScene.ground.assetId || null
+      }
+
+      this.setState({ title, description, selectedGround: ground })
     }
   }
 
@@ -25,8 +33,13 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   handleSubmit = () => {
-    const { title, description } = this.state
-    this.props.onSave(this.props.currentProject!.id, { title, description })
+    const { title, description, selectedGround } = this.state
+    const { currentProject, grounds } = this.props
+    const ground = selectedGround ? grounds[selectedGround] : null
+    if (currentProject) {
+      this.props.onSave(currentProject.id, { title, description })
+      this.props.onSetGround(currentProject, ground)
+    }
     this.handleOnClose()
   }
 
@@ -42,9 +55,15 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     })
   }
 
+  handlePickGround = (id: string | null) => {
+    this.setState({
+      selectedGround: id
+    })
+  }
+
   render() {
-    const { modal } = this.props
-    const { title, description } = this.state
+    const { modal, grounds } = this.props
+    const { title, description, selectedGround } = this.state
 
     return (
       <Modal open={modal.open} className="ProjectDetailsModal" size="small" onClose={this.handleOnClose}>
@@ -75,6 +94,12 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
                   max: MAX_DESCRIPTION_LENGTH
                 })}
               />
+
+              <Header sub className="custom-label">
+                {t('edit_project_modal.ground_label')}
+              </Header>
+
+              <GroundPicker grounds={grounds} selectedGround={selectedGround} onClick={this.handlePickGround} />
             </div>
 
             <div className="button-container">

@@ -2,5 +2,7 @@ export type Props = {
   name: string
   thumbnail: string
   isActive: boolean
-  onClick: (name: string) => void
+  small: boolean
+  className?: string
+  onClick?: (name: string) => void
 }

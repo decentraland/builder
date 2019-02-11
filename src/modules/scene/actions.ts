@@ -1,22 +1,14 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
-import { AssetResource } from 'modules/asset/types'
-import { SceneDefinition, SceneMetrics, ComponentType, ComponentData } from './types'
-
-// Create scene
-
-export const CREATE_SCENE = 'Create scene'
-
-export const createScene = (scene: SceneDefinition) => action(CREATE_SCENE, { scene })
-
-export type CreateSceneAction = ReturnType<typeof createScene>
+import { AssetResource, Asset } from 'modules/asset/types'
+import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
+import { Project } from 'modules/project/types'
 
 // Provision a scene
 
 export const PROVISION_SCENE = 'Provision scene'
 
-export const provisionScene = (sceneId: string, components: SceneDefinition['components'], entities: SceneDefinition['entities']) =>
-  action(PROVISION_SCENE, { sceneId, components, entities })
+export const provisionScene = (newScene: Scene) => action(PROVISION_SCENE, { newScene })
 
 export type ProvisionSceneAction = ReturnType<typeof provisionScene>
 
@@ -77,3 +69,11 @@ export const DELETE_ITEM = 'Delete item'
 export const deleteItem = () => action(DELETE_ITEM, {})
 
 export type DeleteItemAction = ReturnType<typeof deleteItem>
+
+// Set ground
+
+export const SET_GROUND = 'Set ground'
+
+export const setGround = (project: Project, asset: Asset | null) => action(SET_GROUND, { project, asset })
+
+export type SetGroundAction = ReturnType<typeof setGround>

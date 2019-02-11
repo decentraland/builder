@@ -1,25 +1,26 @@
 import undoable, { StateWithHistory, includeAction } from 'redux-undo'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { EDITOR_UNDO, EDITOR_REDO, CLOSE_EDITOR } from 'modules/editor/actions'
-import { SceneDefinition } from 'modules/scene/types'
+
+import { EDITOR_UNDO, EDITOR_REDO, OPEN_EDITOR } from 'modules/editor/actions'
+import { Scene } from 'modules/scene/types'
 import {
-  CreateSceneAction,
-  CREATE_SCENE,
   ProvisionSceneAction,
   PROVISION_SCENE,
   UpdateMetricsAction,
   UPDATE_METRICS,
-  UpdateTransfromAction
+  UpdateTransfromAction,
+  SetGroundAction
 } from 'modules/scene/actions'
 
 export type SceneState = {
-  data: Record<string, SceneDefinition>
+  data: ModelById<Scene>
   loading: LoadingState
   error: string | null
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = CreateSceneAction | ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction
+export type SceneReducerAction = ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction | SetGroundAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -29,31 +30,15 @@ const INITIAL_STATE: SceneState = {
 
 const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReducerAction): SceneState => {
   switch (action.type) {
-    case CREATE_SCENE: {
-      const { scene } = action.payload
+    case PROVISION_SCENE: {
+      const { newScene } = action.payload
 
       return {
         loading: loadingReducer(state.loading, action),
         error: null,
         data: {
           ...state.data,
-          [scene.id]: { ...scene }
-        }
-      }
-    }
-
-    case PROVISION_SCENE: {
-      const { sceneId, components, entities } = action.payload
-
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [sceneId]: {
-            ...state.data[sceneId],
-            components,
-            entities
-          }
+          [newScene.id]: { ...newScene }
         }
       }
     }
@@ -86,19 +71,10 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
 
 // This is typed `as any` because undoable uses AnyAction from redux which doesn't account for the payload we use
 // so types don't match
-const undoableReducer = undoable<SceneState>(baseSceneReducer as any, {
+export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
   limit: 48,
   undoType: EDITOR_UNDO,
   redoType: EDITOR_REDO,
-  clearHistoryType: CLOSE_EDITOR,
-  filter: includeAction([CREATE_SCENE, PROVISION_SCENE])
+  clearHistoryType: OPEN_EDITOR,
+  filter: includeAction(PROVISION_SCENE)
 })
-
-export const sceneReducer = (state: any, action: any) => {
-  const newState = undoableReducer(state, action)
-  // This prevents going back to a broken state after creating a new scene
-  if (action.type === CREATE_SCENE) {
-    newState.past.pop()
-  }
-  return newState
-}

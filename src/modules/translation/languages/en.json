@@ -67,6 +67,8 @@
     "title_field_label": "Title",
     "title_field_placeholder": "Project title",
     "description_field_label": "Description",
+    "ground_label": "Ground",
+
     "description_field_placeholder": "No description",
     "validation": {
       "title": {
