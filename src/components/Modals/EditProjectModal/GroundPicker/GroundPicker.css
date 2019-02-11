@@ -1,0 +1,10 @@
+.GroundPicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 31px;
+}
+
+.GroundPicker .ground-grid {
+  width: 100%;
+}
