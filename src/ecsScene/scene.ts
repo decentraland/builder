@@ -10,7 +10,7 @@ gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = false
 
-let gizmoEvent = new OnGizmoEvent((e: any) => {
+let gizmoEvent = new OnGizmoEvent((_: any) => {
   /* */
 })
 gizmoEvent.data.uuid = 'gizmoEvent-editor'

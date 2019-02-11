@@ -47,11 +47,14 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {
       this.isCtrlDown = true
     }
+
     // z key
     if (this.isCtrlDown && e.keyCode === Z_KEY_CODE) {
       e.preventDefault() // prevent ctrl+z on the editor from changing the value of the search input
       return false
     }
+
+    return true
   }
 
   handleKeyUp = (e: KeyboardEvent) => {
