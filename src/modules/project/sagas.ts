@@ -55,11 +55,11 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 }
 
 function* handleDuplicateProject(action: DuplicateProjectAction) {
-  const projects: Record<string, Project> = yield select(getProjects)
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const originalProject = projects[action.payload.id]
   if (!originalProject) return
 
-  const scenes: Record<string, SceneDefinition> = yield select(getScenes)
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
   const originalScene = scenes[originalProject.sceneId]
   if (!originalScene) return
 
