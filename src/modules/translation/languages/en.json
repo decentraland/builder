@@ -1,8 +1,12 @@
 {
   "global": {
     "projects": "projects",
+    "project": "project",
     "templates": "templates",
     "terms_and_conditions": "Terms & Conditions",
+    "blog_post": "blog post",
+    "email": "email",
+    "eth_address": "ETH address",
     "save": "Save",
     "submit": "Submit",
     "continue": "Continue",
@@ -28,7 +32,7 @@
   },
   "topbar": {
     "add_to_contest": "Add to contest",
-    "update_contest_entry": "Update y",
+    "update_contest_entry": "Update your entry",
     "publish": "Publish"
   },
   "metrics": {
@@ -43,13 +47,14 @@
   },
   "contest_modal": {
     "title": "Participate in our contest",
-    "start": "Subscribe for a chance to LAND",
-    "know_more": "To know more click here and read our blog post.",
+    "start": "Subscribe for a chance to win LAND",
+    "know_more": "To know more read our {blog_post_link}",
     "i_accept_the": "I accept the "
   },
   "submit_project_modal": {
-    "title": "Submit project",
-    "subtitle": "Almost done! review the your projects information and submit it!"
+    "title": "Add project to contest",
+    "subtitle": "Almost done. Review your information and before submitting it.",
+    "contact_information": "Contact information"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
@@ -73,12 +78,16 @@
     "shortcut_reference": "Shortcut reference"
   },
   "edit_project_modal": {
-    "title": "Project details",
+    "title": "Project details"
+  },
+  "project_fields": {
     "title_field_label": "Title",
     "title_field_placeholder": "Project title",
     "description_field_label": "Description",
-    "description_field_placeholder": "No description",
-    "validation": {
+    "description_field_placeholder": "No description"
+  },
+  "validation": {
+    "project": {
       "title": {
         "length": "Title length must be between {min} and {max} characters."
       },

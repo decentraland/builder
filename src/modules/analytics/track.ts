@@ -1,4 +1,11 @@
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { REGISTER_EMAIL, RegisterEmailAction } from 'modules/contest/actions'
+import { SUBMIT_PROJECT_SUCCESS, SubmitProjectSuccessAction } from 'modules/contest/actions'
 
-add(REGISTER_EMAIL, 'Contest email', action => (action as RegisterEmailAction).payload.email)
+add(SUBMIT_PROJECT_SUCCESS, 'Contest data', action => {
+  const payload = (action as SubmitProjectSuccessAction).payload
+  return {
+    projectId: payload.projectId,
+    email: payload.contest.email,
+    ethAddress: payload.contest.ethAddress
+  }
+})

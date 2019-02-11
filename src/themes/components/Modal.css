@@ -32,3 +32,13 @@
 .ui.modal .ui.form .field .ui.input input {
   border-bottom-color: rgba(var(--purplish-grey-raw), 0.2);
 }
+
+/* Custom classes */
+
+.ui.modal .buttons-container {
+  display: flex;
+}
+
+.ui.modal .buttons-container > .ui.button {
+  flex: 1;
+}

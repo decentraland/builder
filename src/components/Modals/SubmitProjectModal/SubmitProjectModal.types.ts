@@ -1,5 +1,8 @@
 import { Dispatch } from 'redux'
 import { Project } from 'modules/project/types'
+import { Contest } from 'modules/contest/types'
+import { submitProjectRequest, SubmitProjectRequestAction } from 'modules/contest/actions'
+import { editProject, EditProjectAction } from 'modules/project/actions'
 import {
   Props as ModalProps,
   MapStateProps as ModalMapStateProps,
@@ -9,13 +12,22 @@ import {
 
 export type Props = ModalProps & {
   currentProject: Project
+  contest: Contest
+  onSaveProject: typeof editProject
+  onSubmitProject: typeof submitProjectRequest
 }
 
 export type State = {
-  title: string
-  description: string
+  project: {
+    title: string
+    description: string
+  }
+  contest: {
+    email: string
+    ethAddress?: string
+  }
 }
 
-export type MapStateProps = ModalMapStateProps & Pick<Props, 'currentProject'>
-export type MapDispatchProps = ModalMapDispatchProps & {}
-export type MapDispatch = ModalMapDispatch & Dispatch<any>
+export type MapStateProps = ModalMapStateProps & Pick<Props, 'currentProject' | 'contest'>
+export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onSaveProject' | 'onSubmitProject'>
+export type MapDispatch = ModalMapDispatch & Dispatch<EditProjectAction | SubmitProjectRequestAction>

@@ -22,11 +22,3 @@ div.ui.modal.ProjectDetailsModal {
 .ProjectDetailsModal .details {
   margin-top: 40px;
 }
-
-.ProjectDetailsModal .button-container {
-  display: flex;
-}
-
-.ProjectDetailsModal .button-container > * {
-  flex: 1;
-}

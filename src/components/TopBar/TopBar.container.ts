@@ -4,7 +4,7 @@ import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
-import { hasAcceptedTerms } from 'modules/contest/selectors'
+import { hasSubmittedCurrentProject, hasAcceptedTerms } from 'modules/contest/selectors'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
@@ -13,6 +13,7 @@ import TopBar from './TopBar'
 const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),
   hasAcceptedTerms: hasAcceptedTerms(state),
+  hasSubmittedCurrentProject: hasSubmittedCurrentProject(state),
   gizmo: getGizmo(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),

@@ -48,7 +48,7 @@ export default class TopBar extends React.PureComponent<Props> {
   render() {
     const {
       currentProject,
-      hasAcceptedTerms,
+      hasSubmittedCurrentProject,
       gizmo,
       isPreviewing,
       isSidebarOpen,
@@ -93,7 +93,7 @@ export default class TopBar extends React.PureComponent<Props> {
             <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
 
             <Button className="add-to-contest" size="mini" onClick={this.handleAddToContestClick}>
-              {hasAcceptedTerms ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
+              {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
             </Button>
           </Grid.Row>
         </Grid.Column>

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Form, Modal, Header, Radio, Button } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import CloseModalIcon from '../CloseModalIcon'
 import { Props, State } from './ContestModal.types'
@@ -25,12 +25,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   }
 
   handleToggleTermsAndConditions = (event: any) => {
-    console.log('HERE', event)
     this.setState({ hasAcceptedTerms: !this.state.hasAcceptedTerms })
-  }
-
-  handleLinkClick = () => {
-    console.log('Hi')
   }
 
   render() {
@@ -56,7 +51,16 @@ export default class ContestModal extends React.PureComponent<Props, State> {
             <p className="explanation">
               {t('contest_modal.start')}
               <br />
-              {t('contest_modal.know_more')}
+              <T
+                id="contest_modal.know_more"
+                values={{
+                  blog_post_link: (
+                    <a href="https://blog.decentraland.org" rel="noopener noreferrer" target="_blank">
+                      {t('global.blog_post')}
+                    </a>
+                  )
+                }}
+              />
             </p>
           </div>
           <Form onSubmit={this.handleSubmit}>
@@ -65,13 +69,15 @@ export default class ContestModal extends React.PureComponent<Props, State> {
                 <Radio defaultChecked={false} checked={hasAcceptedTerms} label={t('contest_modal.i_accept_the')} />
               </span>
               &nbsp;
-              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank" onClick={this.handleLinkClick}>
+              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
                 {t('global.terms_and_conditions')}
               </a>
             </div>
-            <Button primary size="medium" disabled={!hasAcceptedTerms}>
-              {t('global.continue').toUpperCase()}
-            </Button>
+            <div className="buttons-container">
+              <Button primary size="medium" disabled={!hasAcceptedTerms}>
+                {t('global.continue').toUpperCase()}
+              </Button>
+            </div>
           </Form>
         </Modal.Content>
       </Modal>

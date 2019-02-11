@@ -1,5 +1,5 @@
-import { SelectAssetPackAction, SearchAssetsAction, SELECT_ASSET_PACK, SEARCH_ASSETS } from './actions'
 import { TOGGLE_SIDEBAR, ToggleSidebarAction, OPEN_EDITOR, OpenEditorAction } from 'modules/editor/actions'
+import { SelectAssetPackAction, SearchAssetsAction, SELECT_ASSET_PACK, SEARCH_ASSETS } from './actions'
 
 export type SidebarState = {
   selectedAssetPackId: string | null

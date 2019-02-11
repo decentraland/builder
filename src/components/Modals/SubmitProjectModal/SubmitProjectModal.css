@@ -1,0 +1,17 @@
+.SubmitProjectModal .content > .ui.header {
+  margin-bottom: 20px;
+}
+
+.SubmitProjectModal .subtitle {
+  font-size: 17px;
+}
+
+.SubmitProjectModal .category {
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
+.SubmitProjectModal .details,
+.SubmitProjectModal .buttons-container {
+  margin-top: 30px;
+}
