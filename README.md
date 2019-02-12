@@ -1,3 +1,5 @@
+![](https://ui.decentraland.org/decentraland_128x128.png)
+
 # Decentraland Builder
 
 ### Front-end
