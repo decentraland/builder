@@ -1,7 +1,14 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
-import { CreateProjectAction, CREATE_PROJECT, EDIT_PROJECT, EditProjectAction } from 'modules/project/actions'
+import {
+  CreateProjectAction,
+  CREATE_PROJECT,
+  EDIT_PROJECT,
+  EditProjectAction,
+  DeleteProjectAction,
+  DELETE_PROJECT
+} from 'modules/project/actions'
 
 export type ProjectState = {
   data: ModelById<Project>
@@ -15,7 +22,7 @@ const INITIAL_STATE: ProjectState = {
   error: null
 }
 
-export type ProjectReducerAction = CreateProjectAction | EditProjectAction
+export type ProjectReducerAction = CreateProjectAction | EditProjectAction | DeleteProjectAction
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
@@ -44,6 +51,17 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
           }
         }
       }
+    }
+
+    case DELETE_PROJECT: {
+      const newState = {
+        ...state,
+        data: {
+          ...state.data
+        }
+      }
+      delete newState.data[action.payload.id]
+      return newState
     }
     default:
       return state
