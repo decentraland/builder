@@ -3,7 +3,7 @@ import { DragSource } from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
 
 import { Asset } from 'modules/asset/types'
-import { Props } from './AssetCard.types'
+import { Props, DefaultProps } from './AssetCard.types'
 import VerticalCard from './VerticalCard'
 import HorizontalCard from './HorizontalCard'
 import { ASSET_TYPE, collect, assetSource, CollectedProps } from './AssetCard.dnd'
@@ -11,7 +11,7 @@ import { ASSET_TYPE, collect, assetSource, CollectedProps } from './AssetCard.dn
 import './AssetCard.css'
 
 class AssetCard extends React.PureComponent<Props & CollectedProps> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     onClick: (_: Asset) => {
       /* noop */
     }

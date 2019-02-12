@@ -1,8 +1,11 @@
 import { Asset } from 'modules/asset/types'
 
-export type Props = {
+export type DefaultProps = {
+  onClick: (asset: Asset) => any
+}
+
+export type Props = DefaultProps & {
   isHorizontal?: boolean
   isDragging?: boolean
   asset: Asset
-  onClick: (asset: Asset) => any
 }
