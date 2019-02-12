@@ -10,8 +10,7 @@ import './ShortcutsModal.css'
 
 export default class ShortcutsModal extends React.PureComponent<Props> {
   handleOnClose = () => {
-    const { modal, onClose } = this.props
-    onClose(modal.name)
+    this.props.onClose('ShortcutsModal')
   }
 
   getMainShortcutKey() {

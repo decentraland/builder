@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
 import { RootState } from 'modules/common/types'
@@ -12,6 +11,7 @@ import {
   resetCamera
 } from 'modules/editor/actions'
 import { isSidebarOpen, isPreviewing } from 'modules/editor/selectors'
+import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
 
@@ -21,7 +21,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onOpenModal: (name: string) => dispatch(openModal(name)),
+  onOpenModal: name => dispatch(openModal(name)),
   onLoadAssetPacks: () => dispatch(loadAssetPacksRequest()),
   onBindKeyboardShortcuts: () => dispatch(bindEditorKeyboardShortcuts()),
   onUnbindKeyboardShortcuts: () => dispatch(unbindEditorKeyboardShortcuts()),

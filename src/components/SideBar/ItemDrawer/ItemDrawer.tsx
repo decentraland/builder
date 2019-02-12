@@ -7,7 +7,7 @@ import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
 import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
-import { Props, State } from './ItemDrawer.types'
+import { Props, State, DefaultProps } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
 const DEFAULT_COLUMN_COUNT = 3
@@ -16,9 +16,9 @@ const COMMAND_KEY_CODE = 91
 const Z_KEY_CODE = 90
 
 export default class ItemDrawer extends React.PureComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     columnCount: DEFAULT_COLUMN_COUNT,
-    onClick: () => {
+    onClick: (_: Asset) => {
       /* noop */
     }
   }
@@ -47,11 +47,14 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {
       this.isCtrlDown = true
     }
+
     // z key
     if (this.isCtrlDown && e.keyCode === Z_KEY_CODE) {
       e.preventDefault() // prevent ctrl+z on the editor from changing the value of the search input
       return false
     }
+
+    return true
   }
 
   handleKeyUp = (e: KeyboardEvent) => {

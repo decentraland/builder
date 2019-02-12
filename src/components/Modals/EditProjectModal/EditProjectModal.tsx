@@ -28,8 +28,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   handleOnClose = () => {
-    const { modal, onClose } = this.props
-    onClose(modal.name)
+    this.props.onClose('EditProjectModal')
   }
 
   handleSubmit = () => {

@@ -1,12 +1,12 @@
 import * as React from 'react'
 
 import Icon from 'components/Icon'
-import { Props } from './CloseModalIcon.types'
+import { Props, DefaultProps } from './CloseModalIcon.types'
 
 import './CloseModalIcon.css'
 
 export default class CloseModalIcon extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     onClick: (_: React.MouseEvent<HTMLElement>) => {
       /* noop */
     }

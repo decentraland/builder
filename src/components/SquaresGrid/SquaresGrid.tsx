@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import Square from './Square'
-import { Props } from './SquaresGrid.types'
+import { Props, DefaultProps } from './SquaresGrid.types'
 import './SquaresGrid.css'
 
 export default class SquaresGrid extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     size: '',
     onClick: () => {
       /* noop */

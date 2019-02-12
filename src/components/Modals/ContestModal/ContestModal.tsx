@@ -11,8 +11,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   state = { hasAccepted: false, email: '' }
 
   handleClose = () => {
-    const { modal, onClose } = this.props
-    onClose(modal.name)
+    this.props.onClose('ContestModal')
   }
 
   handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {

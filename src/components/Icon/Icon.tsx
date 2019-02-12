@@ -1,11 +1,11 @@
 import * as React from 'react'
 
-import { Props } from './Icon.types'
+import { Props, DefaultProps } from './Icon.types'
 import './Icon.css'
 import './sprite.css'
 
 export default class Icon extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     isActive: false,
     className: '',
     onClick: (_: React.MouseEvent<HTMLElement>) => {

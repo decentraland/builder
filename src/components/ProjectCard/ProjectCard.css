@@ -1,8 +1,10 @@
 .HomePage .Card.ProjectCard.has-thumbnail {
-  position: relative;
   background-size: cover;
   background-position: center;
-  overflow: hidden;
+}
+
+.ProjectCard {
+  position: relative;
 }
 
 .ProjectCard .project-data {
@@ -35,4 +37,16 @@
   bottom: 0px;
   background: black;
   opacity: 0.24;
+}
+
+.ProjectCard .ui.dropdown {
+  position: absolute;
+  top: 5px;
+  right: 18px;
+}
+
+.ProjectCard .ui.dropdown > .dropdown.icon:before {
+  content: '...';
+  font-size: 24px;
+  color: var(--text);
 }

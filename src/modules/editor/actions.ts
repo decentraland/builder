@@ -13,9 +13,9 @@ export type BindEditorKeybardShortcutsAction = ReturnType<typeof bindEditorKeybo
 
 // Unbind keyboard shortcuts
 
-export const UNBIND_KEYBOARD_SHORTCUTS = 'Unbind editor keyboard shortcuts'
+export const UNBIND_EDITOR_KEYBOARD_SHORTCUTS = 'Unbind editor keyboard shortcuts'
 
-export const unbindEditorKeyboardShortcuts = () => action(UNBIND_KEYBOARD_SHORTCUTS, {})
+export const unbindEditorKeyboardShortcuts = () => action(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, {})
 
 export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorKeyboardShortcuts>
 

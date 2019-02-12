@@ -30,3 +30,19 @@ export const EDIT_PROJECT = 'Edit project'
 export const editProject = (id: string, project: Partial<Project>, ground?: Asset | null) => action(EDIT_PROJECT, { id, project, ground })
 
 export type EditProjectAction = ReturnType<typeof editProject>
+
+// Delete project
+
+export const DELETE_PROJECT = 'Delete project'
+
+export const deleteProject = (id: string) => action(DELETE_PROJECT, { id })
+
+export type DeleteProjectAction = ReturnType<typeof deleteProject>
+
+// Duplicate project
+
+export const DUPLICATE_PROJECT = 'Duplicate project'
+
+export const duplicateProject = (id: string) => action(DUPLICATE_PROJECT, { id })
+
+export type DuplicateProjectAction = ReturnType<typeof duplicateProject>

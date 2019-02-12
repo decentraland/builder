@@ -10,8 +10,9 @@ const gizmo = new Gizmos()
 gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = false
+gizmo.cycle = false
 
-let gizmoEvent = new OnGizmoEvent((e: any) => {
+let gizmoEvent = new OnGizmoEvent((_: any) => {
   /* */
 })
 gizmoEvent.data.uuid = 'gizmoEvent-editor'
@@ -25,7 +26,7 @@ function getComponentById(id: string) {
 
 function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
   switch (message.type) {
-    case 'Update editor':
+    case 'Update editor': {
       const {
         scene: { components, entities }
       } = message.payload
@@ -36,6 +37,17 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
       removeUnusedEntities(entities)
 
       break
+    }
+    case 'Toggle preview': {
+      for (const entityId in engine.entities) {
+        const entity = engine.entities[entityId]
+        if (message.payload.enabled) {
+          entity.remove(Gizmos)
+        } else {
+          entity.set(gizmo)
+        }
+      }
+    }
   }
 }
 

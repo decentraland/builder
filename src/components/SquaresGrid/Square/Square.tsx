@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import { Props } from './Square.types'
+import { Props, DefaultProps } from './Square.types'
 import './Square.css'
 
 export default class Square extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     className: '',
     size: 'medium'
   }
