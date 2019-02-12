@@ -35,20 +35,7 @@
   user-select: none;
 }
 
-.ContestModal .ui.form .email-container .ui.input {
-  width: 69%;
-}
-.ContestModal .ui.form .email-container .ui.input input {
-  padding-top: 0.9em;
-  padding-bottom: 0.9em;
-}
 .ContestModal .ui.checkbox input.hidden + label {
-  margin-right: 0;
-}
-
-.ContestModal .ui.form .ui.button.primary {
-  padding: 0.8em 3.8em;
-  margin-left: 15px;
   margin-right: 0;
 }
 

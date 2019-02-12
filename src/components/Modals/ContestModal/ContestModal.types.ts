@@ -1,16 +1,18 @@
 import { Dispatch } from 'redux'
-import { registerEmail, RegisterEmailAction } from 'modules/contest/actions'
+
+import { acceptTerms, AcceptTermsAction } from 'modules/contest/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
 
 export type Props = ModalProps & {
-  onRegisterEmail: typeof registerEmail
+  onAcceptTerms: typeof acceptTerms
+  onOpenModal: typeof openModal
 }
 
 export type State = {
-  hasAccepted: boolean
-  email: string
+  hasAcceptedTerms: boolean
 }
 
 export type MapStateProps = {}
-export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onRegisterEmail'>
-export type MapDispatch = ModalMapDispatch & Dispatch<RegisterEmailAction>
+export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onAcceptTerms' | 'onOpenModal'>
+export type MapDispatch = ModalMapDispatch & Dispatch<AcceptTermsAction | OpenModalAction>

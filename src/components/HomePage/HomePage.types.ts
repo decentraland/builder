@@ -4,8 +4,11 @@ import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actio
 import { ProjectState } from 'modules/project/reducer'
 import { createProjectFromTemplate, CreateProjectFromTemplateAction } from 'modules/project/actions'
 
-export type Props = {
+export type DefaultProps = {
   projects: ProjectState['data']
+}
+
+export type Props = DefaultProps & {
   onCreateProject: typeof createProjectFromTemplate
 }
 

@@ -1,7 +1,6 @@
 import undoable, { StateWithHistory, includeAction } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-
 import { EDITOR_UNDO, EDITOR_REDO, OPEN_EDITOR } from 'modules/editor/actions'
 import { Scene } from 'modules/scene/types'
 import {
