@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId } from 'modules/editor/selectors'
+import { openModal } from 'modules/modal/actions'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -24,7 +24,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onReset: () => dispatch(resetItem()),
   onDuplicate: () => dispatch(duplicateItem()),
   onDelete: () => dispatch(deleteItem()),
-  onOpenModal: (name: string) => dispatch(openModal(name))
+  onOpenModal: name => dispatch(openModal(name))
 })
 
 export default connect(
