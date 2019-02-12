@@ -20,8 +20,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
   }
 
   handleClose = () => {
-    const { modal, onClose } = this.props
-    onClose(modal.name)
+    this.props.onClose('AddToContestModal')
   }
 
   handleSubmit = () => {

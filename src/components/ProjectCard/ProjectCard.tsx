@@ -4,20 +4,20 @@ import { Icon, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { Props, DefaultProps } from './ProjectCard.types'
 import { getProjectDimensions } from 'modules/project/utils'
+import { Project } from 'modules/project/types'
+import { Props, DefaultProps } from './ProjectCard.types'
 import './ProjectCard.css'
 
 export default class ProjectCard extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
-    hasSubmittedProject: false
+    hasSubmittedProject: false,
+    onClick: (_: Project) => ({})
   }
 
   handleOnClick = () => {
-    const { onClick } = this.props
-    if (onClick) {
-      onClick(this.props.project)
-    }
+    const { onClick, project } = this.props
+    onClick(project)
   }
 
   handleDeleteProject = () => {

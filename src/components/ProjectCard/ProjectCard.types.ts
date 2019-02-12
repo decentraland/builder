@@ -4,11 +4,11 @@ import { deleteProject, DeleteProjectAction, duplicateProject, DuplicateProjectA
 
 export type DefaultProps = {
   hasSubmittedProject: boolean
+  onClick: (project: Project) => any
 }
 
 export type Props = DefaultProps & {
   project: Project
-  onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
   onDuplicateProject: typeof duplicateProject
 }

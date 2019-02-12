@@ -24,7 +24,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     }
   }
 
-  handleToggleTermsAndConditions = (event: any) => {
+  handleToggleTermsAndConditions = (_: any) => {
     this.setState({ hasAcceptedTerms: !this.state.hasAcceptedTerms })
   }
 

@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux'
-import { openModal, OpenModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
+
 import { acceptTerms, AcceptTermsAction } from 'modules/contest/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
 
 export type Props = ModalProps & {

@@ -14,7 +14,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSave: (id: string, project: Partial<Project>) => dispatch(editProject(id, project)),
-  onClose: (name: string) => dispatch(closeModal(name))
+  onClose: name => dispatch(closeModal(name))
 })
 
 export default connect(
