@@ -3,24 +3,16 @@ import { Form, Modal, Field, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectFields from 'components/ProjectFields'
+import { preventDefault } from 'lib/preventDefault'
 import { Props, State } from './AddToContestModal.types'
 import './AddToContestModal.css'
 
 export default class AddToContestModal extends React.PureComponent<Props, State> {
-  state = {
-    project: {
-      title: this.props.currentProject!.title,
-      description: this.props.currentProject!.description
-    },
+  state = this.getBaseState()
 
-    contest: {
-      email: this.props.contest.email,
-      ethAddress: this.props.contest.ethAddress
-    }
-  }
-
-  handleClose = () => {
-    this.props.onClose('AddToContestModal')
+  handleOnCancel = () => {
+    this.closeModal()
+    this.setState(this.getBaseState())
   }
 
   handleSubmit = () => {
@@ -31,7 +23,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     onSaveProject(projectId, project)
     onSubmitProject(projectId, contest)
 
-    this.handleClose()
+    this.closeModal()
   }
 
   handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -57,6 +49,17 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     this.setState({ contest: { ...contest, ethAddress } })
   }
 
+  getBaseState(): State {
+    return {
+      project: { ...this.props.currentProject! },
+      contest: { ...this.props.contest }
+    }
+  }
+
+  closeModal() {
+    this.props.onClose('AddToContestModal')
+  }
+
   render() {
     const { modal } = this.props
     const { project, contest } = this.state
@@ -64,7 +67,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     const { email, ethAddress } = contest
 
     return (
-      <Modal open={modal.open} className="AddToContestModal" size="small" onClose={this.handleClose}>
+      <Modal open={modal.open} className="AddToContestModal" size="small" onClose={this.handleOnCancel}>
         <Modal.Content>
           <div className="title">{t('submit_project_modal.title')}</div>
           <div className="subtitle">{t('submit_project_modal.subtitle')}</div>
@@ -92,7 +95,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
 
             <div className="buttons-container">
               <Button primary>{t('global.submit')}</Button>
-              <Button secondary onClick={this.handleClose}>
+              <Button secondary onClick={preventDefault(this.handleOnCancel)}>
                 {t('global.cancel')}
               </Button>
             </div>

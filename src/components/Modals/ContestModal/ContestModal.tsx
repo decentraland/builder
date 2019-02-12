@@ -10,7 +10,7 @@ import './ContestModal.css'
 export default class ContestModal extends React.PureComponent<Props, State> {
   state = { hasAcceptedTerms: false }
 
-  handleClose = () => {
+  handleOnClose = () => {
     this.props.onClose('ContestModal')
   }
 
@@ -19,7 +19,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     const { hasAcceptedTerms } = this.state
     if (hasAcceptedTerms) {
       onAcceptTerms()
-      this.handleClose()
+      this.handleOnClose()
       onOpenModal('AddToContestModal')
     }
   }
@@ -37,8 +37,8 @@ export default class ContestModal extends React.PureComponent<Props, State> {
         open={modal.open}
         className="ContestModal"
         size="small"
-        onClose={this.handleClose}
-        closeIcon={<CloseModalIcon onClick={this.handleClose} />}
+        onClose={this.handleOnClose}
+        closeIcon={<CloseModalIcon onClick={this.handleOnClose} />}
       >
         <Modal.Header>
           <div className="header-image" />

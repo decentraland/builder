@@ -18,14 +18,8 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  project: {
-    title: string
-    description: string
-  }
-  contest: {
-    email: string
-    ethAddress?: string
-  }
+  project: Project
+  contest: Contest
 }
 
 export type MapStateProps = ModalMapStateProps & Pick<Props, 'currentProject' | 'contest'>
