@@ -1,0 +1,18 @@
+.AddToContestModal .title {
+  font-size: var(--modal-title-font-size);
+  margin-bottom: 20px;
+}
+
+.AddToContestModal .subtitle {
+  font-size: 17px;
+}
+
+.AddToContestModal .category {
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
+.AddToContestModal .details,
+.AddToContestModal .buttons-container {
+  margin-top: 30px;
+}

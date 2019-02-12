@@ -6,12 +6,12 @@ import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
 import { Template } from 'modules/template/types'
+import { Props, DefaultProps } from './HomePage.types'
 
-import { Props } from './HomePage.types'
 import './HomePage.css'
 
 export default class HomePage extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     projects: {}
   }
 

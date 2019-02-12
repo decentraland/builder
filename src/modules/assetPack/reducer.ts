@@ -53,7 +53,11 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
       }
     }
     case LOAD_ASSET_PACKS_FAILURE: {
-      return { ...state, loading: loadingReducer(state.loading, action), error: action.payload.error }
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error
+      }
     }
     default:
       return state

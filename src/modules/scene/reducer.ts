@@ -1,5 +1,7 @@
 import undoable, { StateWithHistory, includeAction } from 'redux-undo'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
+
 import { EDITOR_UNDO, EDITOR_REDO, CLOSE_EDITOR } from 'modules/editor/actions'
 import { SceneDefinition } from 'modules/scene/types'
 import {
@@ -13,7 +15,7 @@ import {
 } from 'modules/scene/actions'
 
 export type SceneState = {
-  data: Record<string, SceneDefinition>
+  data: ModelById<SceneDefinition>
   loading: LoadingState
   error: string | null
 }

@@ -16,17 +16,9 @@ div.ui.modal.ProjectDetailsModal {
 }
 
 .ProjectDetailsModal .title {
-  font-size: 28px;
+  font-size: var(--modal-title-font-size);
 }
 
 .ProjectDetailsModal .details {
   margin-top: 40px;
-}
-
-.ProjectDetailsModal .button-container {
-  display: flex;
-}
-
-.ProjectDetailsModal .button-container > * {
-  flex: 1;
 }

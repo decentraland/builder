@@ -6,8 +6,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
-import { Props } from './TopBar.types'
 import { Gizmo } from 'modules/editor/types'
+import { Props } from './TopBar.types'
 import './TopBar.css'
 
 export default class TopBar extends React.PureComponent<Props> {
@@ -32,7 +32,13 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   handleAddToContestClick = () => {
-    this.props.onOpenModal('ContestModal')
+    const { hasAcceptedTerms, onOpenModal } = this.props
+    if (hasAcceptedTerms) {
+      // Also serves as an update entry
+      onOpenModal('AddToContestModal')
+    } else {
+      onOpenModal('ContestModal')
+    }
   }
 
   handleTitleClick = () => {
@@ -40,7 +46,17 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   render() {
-    const { currentProject, gizmo, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
+    const {
+      currentProject,
+      hasSubmittedCurrentProject,
+      gizmo,
+      isPreviewing,
+      isSidebarOpen,
+      selectedEntityId,
+      onReset,
+      onDelete,
+      onDuplicate
+    } = this.props
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
@@ -77,7 +93,7 @@ export default class TopBar extends React.PureComponent<Props> {
             <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
 
             <Button className="add-to-contest" size="mini" onClick={this.handleAddToContestClick}>
-              {t('topbar.add_to_contest')}
+              {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
             </Button>
           </Grid.Row>
         </Grid.Column>
