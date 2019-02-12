@@ -4,7 +4,7 @@ import { takeLatest, select, put, call } from 'redux-saga/effects'
 import {
   updateEditor,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
-  UNBIND_KEYBOARD_SHORTCUTS,
+  UNBIND_EDITOR_KEYBOARD_SHORTCUTS,
   CLOSE_EDITOR,
   SET_GIZMO,
   SetGizmoAction,
@@ -23,7 +23,9 @@ import {
   EDITOR_UNDO,
   TAKE_SCREENSHOT,
   TakeScreenshotAction,
-  takeScreenshot
+  takeScreenshot,
+  unbindEditorKeyboardShortcuts,
+  bindEditorKeyboardShortcuts
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -47,7 +49,7 @@ const editorWindow = window as EditorWindow
 
 export function* editorSaga() {
   yield takeLatest(BIND_EDITOR_KEYBOARD_SHORTCUTS, handleBindEditorKeyboardShortcuts)
-  yield takeLatest(UNBIND_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
+  yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
   yield takeLatest(PROVISION_SCENE, handleRenderScene)
@@ -162,8 +164,9 @@ function* handleOpenEditor() {
   // Spawns the assets
   yield handleRenderScene()
 
-  // Reset gizmo
-  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+  // Select gizmo
+  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
+  yield call(() => editorWindow.editor.selectGizmo(gizmo))
 }
 
 function* handleDuplicateItem() {
@@ -184,11 +187,18 @@ function resizeEditor() {
 }
 
 function* handleTooglePreview(action: TogglePreviewAction) {
+  const { enabled } = action.payload
+  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
+
   yield call(() => {
     const { editor } = window as EditorWindow
-    editor.setPlayMode(action.payload.enabled)
+    editor.setPlayMode(enabled)
+    editor.sendExternalAction(action)
+    editor.selectGizmo(enabled ? Gizmo.NONE : gizmo)
     resizeEditor()
   })
+
+  yield put(enabled ? unbindEditorKeyboardShortcuts() : bindEditorKeyboardShortcuts())
 }
 
 function* handleToggleSidebar(_: ToggleSidebarAction) {
