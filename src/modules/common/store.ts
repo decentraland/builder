@@ -30,7 +30,7 @@ const loggerMiddleware = createLogger({
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
-  paths: ['project', ['scene', 'present'], 'contest', 'user'] as any,
+  paths: ['project', ['scene', 'present'], 'contest', 'user'],
   actions: [
     CREATE_PROJECT,
     CREATE_SCENE,
