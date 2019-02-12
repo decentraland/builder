@@ -68,4 +68,5 @@
   left: 5px;
   position: relative;
   font-size: 12px;
+  color: var(--text);
 }
