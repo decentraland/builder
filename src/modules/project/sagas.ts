@@ -13,8 +13,8 @@ import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
+import { createScene } from 'modules/scene/actions'
 import { getBlockchainParcelsFromLayout } from './utils'
-import { provisionScene } from 'modules/scene/actions'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -47,7 +47,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     sceneId: scene.id
   }
 
-  yield put(provisionScene(scene))
+  yield put(createScene(scene))
   yield put(createProject(project))
 
   if (onSuccess) {
@@ -67,6 +67,6 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
   const newScene = { ...originalScene, id: uuidv4() }
   const newProject = { ...originalProject, sceneId: newScene.id, id: uuidv4() }
 
-  yield put(provisionScene(newScene))
+  yield put(createScene(newScene))
   yield put(createProject(newProject))
 }

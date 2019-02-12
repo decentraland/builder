@@ -9,7 +9,9 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS,
   UpdateTransfromAction,
-  SetGroundAction
+  SetGroundAction,
+  CREATE_SCENE,
+  CreateSceneAction
 } from 'modules/scene/actions'
 
 export type SceneState = {
@@ -19,7 +21,7 @@ export type SceneState = {
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction | SetGroundAction
+export type SceneReducerAction = ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction | SetGroundAction | CreateSceneAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -29,6 +31,7 @@ const INITIAL_STATE: SceneState = {
 
 const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReducerAction): SceneState => {
   switch (action.type) {
+    case CREATE_SCENE:
     case PROVISION_SCENE: {
       const { newScene } = action.payload
 

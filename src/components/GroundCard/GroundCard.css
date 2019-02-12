@@ -39,5 +39,5 @@
 
 .GroundCard.empty,
 .GroundCard.active.empty {
-  background: url('../../../../../images/no-ground.png') no-repeat;
+  background: url('../../images/no-ground.png') no-repeat;
 }

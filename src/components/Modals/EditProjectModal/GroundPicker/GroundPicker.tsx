@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Asset } from 'modules/asset/types'
 import { Props, State } from './GroundPicker.types'
-import GroundCard from './GroundCard/GroundCard'
+import GroundCard from 'components/GroundCard'
 import './GroundPicker.css'
 
 const DEFAULT_COLUMN_COUNT = 5

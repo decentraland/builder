@@ -4,6 +4,14 @@ import { AssetResource, Asset } from 'modules/asset/types'
 import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
 import { Project } from 'modules/project/types'
 
+// Create a scene (doesn't trigger ECS re-render)
+
+export const CREATE_SCENE = 'Provision scene'
+
+export const createScene = (newScene: Scene) => action(CREATE_SCENE, { newScene })
+
+export type CreateSceneAction = ReturnType<typeof createScene>
+
 // Provision a scene
 
 export const PROVISION_SCENE = 'Provision scene'

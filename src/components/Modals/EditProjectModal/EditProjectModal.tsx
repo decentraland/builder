@@ -80,13 +80,12 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
 
               <GroundPicker grounds={grounds} selectedGround={selectedGround} onClick={this.handlePickGround} />
             </div>
-            <div className="buttons-container">
-              <div className="button-container">
-                <Button primary>{t('global.save')}</Button>
-                <Button secondary onClick={this.handleOnClose}>
-                  {t('global.cancel')}
-                </Button>
-              </div>
+
+            <div className="button-container">
+              <Button primary>{t('global.save')}</Button>
+              <Button secondary onClick={this.handleOnClose}>
+                {t('global.cancel')}
+              </Button>
             </div>
           </Form>
         </Modal.Content>

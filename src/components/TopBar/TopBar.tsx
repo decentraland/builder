@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import GroundCard from 'components/GroundCard'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
 import { Props } from './TopBar.types'
 import './TopBar.css'
-import GroundCard from 'components/Modals/EditProjectModal/GroundPicker/GroundCard/GroundCard'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {

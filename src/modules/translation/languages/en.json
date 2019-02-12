@@ -81,14 +81,14 @@
     "shortcut_reference": "Shortcut reference"
   },
   "edit_project_modal": {
-    "title": "Project details"
+    "title": "Project details",
+    "ground_label": "Ground"
   },
   "project_fields": {
     "title_field_label": "Title",
     "title_field_placeholder": "Project title",
     "description_field_label": "Description",
-    "description_field_placeholder": "No description",
-    "ground_label": "Ground"
+    "description_field_placeholder": "No description"
   },
   "validation": {
     "project": {
