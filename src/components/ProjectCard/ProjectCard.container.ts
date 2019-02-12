@@ -5,7 +5,7 @@ import { deleteProject, duplicateProject } from 'modules/project/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
 
-const mapState = (state: RootState): MapStateProps => ({})
+const mapState = (_: RootState): MapStateProps => ({})
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onDeleteProject: id => dispatch(deleteProject(id)),
