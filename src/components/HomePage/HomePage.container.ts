@@ -8,6 +8,7 @@ import { getData as getProjects } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
+import { openModal } from 'modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   projects: getProjects(state)
@@ -21,7 +22,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
           dispatch(navigateTo(locations.editor(project.id)))
         }
       })
-    )
+    ),
+  onOpenModal: name => dispatch(openModal(name))
 })
 
 export default connect(
