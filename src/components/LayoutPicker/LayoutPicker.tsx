@@ -68,13 +68,25 @@ export default class LayoutPicker extends React.PureComponent<Props> {
           ) : null}
           <div className="inputs">
             <div className="input">
-              <label>{t('custom_layout.width')}</label>
-              <input type="number" defaultValue={cols.toString()} onChange={this.handleChangeCols} ref={this.disableScroll} />
+              <label htmlFor="cols-input">{t('custom_layout.width')}</label>
+              <input
+                id="cols-input"
+                type="number"
+                defaultValue={cols.toString()}
+                onChange={this.handleChangeCols}
+                ref={this.disableScroll}
+              />
             </div>
             <i className="times" />
             <div className="input">
-              <label>{t('custom_layout.height')}</label>
-              <input type="number" defaultValue={rows.toString()} onChange={this.handleChangeRows} ref={this.disableScroll} />
+              <label htmlFor="rows-input">{t('custom_layout.height')}</label>
+              <input
+                id="rows-input"
+                type="number"
+                defaultValue={rows.toString()}
+                onChange={this.handleChangeRows}
+                ref={this.disableScroll}
+              />
             </div>
           </div>
         </div>

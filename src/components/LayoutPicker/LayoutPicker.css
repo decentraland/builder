@@ -25,6 +25,7 @@
   line-height: 24px;
   text-transform: capitalize;
   margin-bottom: 2px;
+  user-select: none;
 }
 
 .LayoutPicker .inputs input {
