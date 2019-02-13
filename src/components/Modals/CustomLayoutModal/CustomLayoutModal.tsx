@@ -22,7 +22,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
       cols: cols || this.state.cols,
       rows: rows || this.state.rows,
       maxError: cols * rows > MAX_AREA,
-      minError: !rows || !cols
+      minError: rows < 1 || cols < 1
     })
   }
 
