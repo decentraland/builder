@@ -9,11 +9,11 @@ import {
   DuplicateProjectAction
 } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
+import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
-import { SceneDefinition } from 'modules/scene/types'
-import { createScene } from 'modules/scene/actions'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
+import { createScene } from 'modules/scene/actions'
 import { getBlockchainParcelsFromLayout } from './utils'
 
 export function* projectSaga() {
@@ -25,12 +25,13 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
   const { template } = action.payload
   const { onSuccess } = action.meta
 
-  const scene: SceneDefinition = {
+  const scene: Scene = {
     id: uuidv4(),
     entities: {},
     components: {},
     metrics: EMPTY_SCENE_METRICS,
-    limits: EMPTY_SCENE_METRICS
+    limits: EMPTY_SCENE_METRICS,
+    ground: null
   }
 
   // TODO: This default is here until we have a layout editor for custom built projects

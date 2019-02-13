@@ -81,7 +81,8 @@
     "shortcut_reference": "Shortcut reference"
   },
   "edit_project_modal": {
-    "title": "Project details"
+    "title": "Project details",
+    "ground_label": "Ground"
   },
   "project_fields": {
     "title_field_label": "Title",

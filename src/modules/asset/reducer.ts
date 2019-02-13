@@ -35,6 +35,7 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
           assets[asset.id] = { ...asset }
         }
       }
+
       return {
         loading: loadingReducer(state.loading, action),
         error: null,

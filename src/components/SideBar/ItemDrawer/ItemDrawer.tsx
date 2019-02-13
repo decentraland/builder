@@ -2,11 +2,11 @@ import * as React from 'react'
 import { Header, Grid, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { debounce } from 'lib/debounce'
 import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
 import Chip from 'components/Chip'
 import { Asset } from 'modules/asset/types'
-import { debounce } from 'lib/debounce'
 import { Props, State, DefaultProps } from './ItemDrawer.types'
 import './ItemDrawer.css'
 

@@ -1,6 +1,7 @@
 import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
+
 declare var dcl: DecentralandInterface
 
 const editorComponents: Record<string, any> = {}
@@ -34,6 +35,7 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
       createEntities(entities)
       removeUnusedComponents(components)
       removeUnusedEntities(entities)
+
       break
     }
     case 'Toggle preview': {
@@ -82,17 +84,21 @@ function createComponents(components: Record<string, AnyComponent>) {
 
 function createEntities(entities: Record<string, EntityDefinition>) {
   for (let id in entities) {
+    const builderEntity = entities[id]
     let entity: Entity = engine.entities[id]
 
     if (!entity) {
       entity = new Entity()
       ;(entity as any).uuid = id
-      entity.set(gizmoEvent)
-      entity.set(gizmo)
+      if (!builderEntity.disableGizmos) {
+        entity.set(gizmoEvent)
+        entity.set(gizmo)
+      }
+
       engine.addEntity(entity)
     }
 
-    for (let componentId of entities[id].components) {
+    for (let componentId of builderEntity.components) {
       const component = getComponentById(componentId)
       if (component) {
         entity.set(component)

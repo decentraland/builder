@@ -1,0 +1,43 @@
+.GroundCard {
+  overflow: hidden;
+}
+
+.GroundCard.clickable {
+  cursor: pointer;
+}
+
+.GroundCard.clickable:hover {
+  opacity: 0.9;
+}
+
+.GroundCard.small,
+.GroundCard.small .overlay {
+  width: 24px;
+  height: 24px;
+}
+
+.GroundCard,
+.GroundCard .overlay {
+  border-radius: 100%;
+  width: 64px;
+  height: 64px;
+}
+
+.GroundCard .overlay {
+  position: absolute;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+}
+
+.GroundCard img {
+  width: 100%;
+  height: 100%;
+}
+
+.GroundCard.active {
+  border: 4px solid white;
+}
+
+.GroundCard.empty,
+.GroundCard.active.empty {
+  background: url('../../images/no-ground.png') no-repeat;
+}

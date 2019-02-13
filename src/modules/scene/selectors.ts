@@ -3,13 +3,13 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { ComponentDefinition, ComponentType, SceneDefinition, AnyComponent } from './types'
+import { ComponentDefinition, ComponentType, Scene, AnyComponent } from './types'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
 export const getData: (state: RootState) => SceneState['data'] = state => getState(state).data
 
-export const getCurrentScene = createSelector<RootState, Project | null, SceneState['data'], SceneDefinition | null>(
+export const getCurrentScene = createSelector<RootState, Project | null, SceneState['data'], Scene | null>(
   getCurrentProject,
   getData,
   (project, scenes) => {
@@ -19,18 +19,18 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   }
 )
 
-export const getComponents = createSelector<RootState, SceneDefinition | null, SceneDefinition['components']>(
+export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(
   getCurrentScene,
   scene => (scene ? scene.components : {})
 )
 
-export const getEntities = createSelector<RootState, SceneDefinition | null, SceneDefinition['entities']>(
+export const getEntities = createSelector<RootState, Scene | null, Scene['entities']>(
   getCurrentScene,
   scene => (scene ? scene.entities : {})
 )
 
 export const getEntityComponents = (entityId: string) =>
-  createSelector<RootState, SceneDefinition['entities'], SceneDefinition['components'], Record<string, AnyComponent>>(
+  createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent>>(
     getEntities,
     getComponents,
     (entities, components) => {
@@ -49,7 +49,7 @@ export const getEntityComponents = (entityId: string) =>
   )
 
 export const getEntityComponentByType = <T extends ComponentType>(entityId: string, type: T) =>
-  createSelector<RootState, SceneDefinition['entities'], SceneDefinition['components'], ComponentDefinition<T> | null>(
+  createSelector<RootState, Scene['entities'], Scene['components'], ComponentDefinition<T> | null>(
     getEntities,
     getComponents,
     (entities, components) => {
