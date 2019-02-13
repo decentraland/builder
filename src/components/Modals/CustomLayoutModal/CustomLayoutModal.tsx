@@ -5,7 +5,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_AREA, fromLayout } from 'modules/template/utils'
 import LayoutPicker from 'components/LayoutPicker'
 import { Props, State } from './CustomLayoutModal.types'
-import CloseModalIcon from '../CloseModalIcon'
 
 import './CustomLayoutModal.css'
 
@@ -42,13 +41,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     }
 
     return (
-      <Modal
-        open={modal.open}
-        className="CustomLayoutModal"
-        size="small"
-        onClose={this.handleClose}
-        closeIcon={<CloseModalIcon onClick={this.handleClose} />}
-      >
+      <Modal open={modal.open} className="CustomLayoutModal" size="small" onClose={this.handleClose}>
         <Modal.Header>{t('custom_layout.title')}</Modal.Header>
         <Modal.Description>
           <p>{t('custom_layout_modal.subtitle_one')}</p>

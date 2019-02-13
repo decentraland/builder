@@ -4,11 +4,11 @@ import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { Template } from 'modules/template/types'
+import { openModal } from 'modules/modal/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
-import { openModal } from 'modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   projects: getProjects(state)
