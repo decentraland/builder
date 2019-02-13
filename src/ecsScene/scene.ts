@@ -113,8 +113,10 @@ function removeUnusedComponents(components: Record<string, AnyComponent>) {
     if (!inScene) {
       const originalComponent = editorComponents[componentId]
 
-      if (componentId in engine.disposableComponents) {
+      try {
         engine.disposeComponent(originalComponent)
+      } catch (e) {
+        // stub, non-disposable components fall here
       }
 
       for (const entityId in engine.entities) {
