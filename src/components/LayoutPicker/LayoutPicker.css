@@ -62,6 +62,15 @@
   padding-bottom: 32px;
 }
 
+.LayoutPickerError {
+  background: var(--background);
+  margin-top: 20px;
+  padding: 20px 32px;
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--error);
+}
+
 /* disable input ticker */
 
 .LayoutPicker input[type='number']::-webkit-outer-spin-button,
@@ -74,11 +83,6 @@ input[type='number']::-webkit-inner-spin-button {
   -moz-appearance: textfield;
 }
 
-.LayoutPickerError {
-  background: var(--background);
-  margin-top: 20px;
-  padding: 20px 32px;
-  border-radius: var(--radius);
-  text-align: center;
-  color: var(--error);
+.LayoutPicker input::-ms-clear {
+  display: none;
 }
