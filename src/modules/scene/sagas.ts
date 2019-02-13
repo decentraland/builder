@@ -220,8 +220,20 @@ function* handleSetGround(action: SetGroundAction) {
       gltfId = foundId
     }
 
-    if (!scene.ground) {
-      // We need to create the ground
+    if (scene.ground) {
+      // Update the existing ground
+      for (let id in entities) {
+        const ent = entities[id]
+        const index = ent.components.indexOf(scene.ground.componentId)
+        if (index > -1) {
+          // Remove the old ground and attach the new one
+          const { [scene.ground.componentId]: _, ...newComponents } = components
+          components = newComponents
+          ent.components = Object.assign([], ent.components, { [index]: gltfId })
+        }
+      }
+    } else {
+      // Create the ground
       for (let j = 0; j < parcelLayout.cols; j++) {
         for (let i = 0; i < parcelLayout.rows; i++) {
           const entityId = uuidv4()
@@ -239,17 +251,6 @@ function* handleSetGround(action: SetGroundAction) {
           entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
         }
       }
-    } else {
-      // We can reuse the existing ground
-      for (let id in entities) {
-        const ent = entities[id]
-        const index = ent.components.indexOf(scene.ground.componentId)
-        if (index > -1) {
-          // Remove the old ground and attach the new one
-          ent.components = Object.assign([], ent.components, { [index]: gltfId })
-        }
-      }
-      // TODO remove component itself
     }
   } else if (scene.ground) {
     // We need to clear the ground

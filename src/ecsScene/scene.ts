@@ -94,6 +94,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
         entity.set(gizmoEvent)
         entity.set(gizmo)
       }
+
       engine.addEntity(entity)
     }
 
@@ -113,16 +114,12 @@ function removeUnusedComponents(components: Record<string, AnyComponent>) {
       const originalComponent = editorComponents[componentId]
 
       if (componentId in engine.disposableComponents) {
-        console.log('disposing component', originalComponent)
-
         engine.disposeComponent(originalComponent)
       }
 
       for (const entityId in engine.entities) {
         const entity = engine.entities[entityId]
         if (entity.has(originalComponent)) {
-          console.log('removing component', originalComponent)
-
           entity.remove(originalComponent)
         }
       }
@@ -136,7 +133,6 @@ function removeUnusedEntities(entities: Record<string, EntityDefinition>) {
   for (const entityId in engine.entities) {
     const inScene = entityId in entities
     if (!inScene) {
-      console.log('removing unused entity', entityId)
       engine.removeEntity(engine.entities[entityId])
     }
   }
