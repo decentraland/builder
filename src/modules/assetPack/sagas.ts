@@ -1,4 +1,3 @@
-import uuidv4 from 'uuid/v4'
 import { call, put, takeLatest } from 'redux-saga/effects'
 
 import {
@@ -30,7 +29,7 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
           ...asset,
           url: `${remoteAssetPack.id}/${asset.url}`,
           assetPackId: remoteAssetPack.id,
-          id: uuidv4()
+          id: asset.id
         }))
       }
 

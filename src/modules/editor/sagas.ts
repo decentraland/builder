@@ -32,7 +32,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject, getProjectBounds } from 'modules/project/selectors'
-import { SceneDefinition, SceneMetrics, ComponentType } from 'modules/scene/types'
+import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
 import { store } from 'modules/common/store'
@@ -92,7 +92,8 @@ function* handleNewScene() {
 }
 
 function* handleRenderScene() {
-  const scene: SceneDefinition = yield select(getCurrentScene)
+  const scene: Scene = yield select(getCurrentScene)
+
   if (scene) {
     const assetMappings: AssetMappings = yield select(getAssetMappings)
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, assetMappings)))

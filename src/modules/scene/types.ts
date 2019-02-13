@@ -3,6 +3,8 @@ import { Vector3, Quaternion } from 'modules/common/types'
 export type EntityDefinition = {
   id: string
   components: string[] // array of IDs pointing to components
+  disableGizmos?: boolean
+
   // TODO: handle children?
 }
 
@@ -40,10 +42,15 @@ export type SceneMetrics = {
   height: number
 }
 
-export type SceneDefinition = {
+export type Scene = {
   id: string
   metrics: SceneMetrics
   limits: SceneMetrics
   entities: Record<string, EntityDefinition>
   components: Record<string, AnyComponent>
+  ground: {
+    // id references
+    assetId: string
+    componentId: string
+  } | null
 }

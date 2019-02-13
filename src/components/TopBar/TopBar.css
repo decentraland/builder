@@ -70,6 +70,10 @@
   align-items: center;
 }
 
+.TopBar .ground {
+  margin-right: 10px;
+}
+
 .TopBar .project-title {
   user-select: none;
   cursor: pointer;

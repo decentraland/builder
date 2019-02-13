@@ -1,9 +1,11 @@
+export const GROUND_TAG = 'ground'
+
 export type Asset = BaseAsset & {
-  id: string
   assetPackId: string
 }
 
 export type BaseAsset = AssetResource & {
+  id: string
   tags: string[]
   category: string // name of the category
   variations: AssetResource[]

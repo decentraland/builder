@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { AssetState } from 'modules/asset/reducer'
-import { ComponentDefinition, ComponentType } from 'modules/scene/types'
-import { getComponentByType } from 'modules/scene/selectors'
-import { AssetMappings } from 'modules/asset/types'
+import { ComponentDefinition, ComponentType, Scene } from 'modules/scene/types'
+import { getComponentByType, getCurrentScene } from 'modules/scene/selectors'
+import { AssetMappings, Asset, GROUND_TAG } from 'modules/asset/types'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
 
@@ -34,5 +35,36 @@ export const getAssetMappings = createSelector<
     }
 
     return mappings
+  }
+)
+
+export const getGroundAssets = createSelector<RootState, AssetState['data'], ModelById<Asset>>(
+  getData,
+  assets => {
+    let out: ModelById<Asset> = {}
+
+    for (let asset of Object.values(assets)) {
+      if (asset.category === GROUND_TAG) {
+        out[asset.id] = asset
+      }
+    }
+
+    return out
+  }
+)
+
+export const getGroundAsset = createSelector<RootState, AssetState['data'], Scene | null, Asset | null>(
+  getData,
+  getCurrentScene,
+  (assets, scene) => {
+    if (!scene || !scene.ground) return null
+
+    const groundId = scene.ground.assetId
+
+    for (let id in assets) {
+      if (id === groundId) return assets[id]
+    }
+
+    return null
   }
 )
