@@ -33,12 +33,12 @@ export default class LayoutPicker extends React.PureComponent<Props> {
 
   getSize = () => {
     const { rows, cols } = this.props
-    const area = rows * cols
-    if (area <= 4) {
+    const size = Math.max(rows, cols)
+    if (size <= 4) {
       return 'big'
-    } else if (area <= 8) {
+    } else if (size <= 6) {
       return 'medium'
-    } else if (area <= 16) {
+    } else if (size <= 12) {
       return 'small'
     } else {
       return 'tiny'
