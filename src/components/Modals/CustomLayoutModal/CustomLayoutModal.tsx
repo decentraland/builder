@@ -51,8 +51,8 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
       >
         <Modal.Header>{t('custom_layout.title')}</Modal.Header>
         <Modal.Description>
-          <p>{t('custom_layout.subtitle_one')}</p>
-          <p>{t('custom_layout.subtitle_two')}</p>
+          <p>{t('custom_layout_modal.subtitle_one')}</p>
+          <p>{t('custom_layout_modal.subtitle_two')}</p>
         </Modal.Description>
         <Modal.Content>
           <LayoutPicker cols={cols} rows={rows} showGrid onChange={this.handleChange} errorMessage={errorMessage} />

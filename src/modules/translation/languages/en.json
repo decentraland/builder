@@ -101,10 +101,12 @@
       }
     }
   },
+  "custom_layout_modal": {
+    "subtitle_one": "You can create custom layouts for your scene.",
+    "subtitle_two": "Enter values in the boxes below for the desired size."
+  },
   "custom_layout": {
     "title": "Custom",
-    "subtitle_one": "You can create custom layouts for your scene.",
-    "subtitle_two": "Enter values in the boxes below for the desired size.",
     "max_area_error": "Your scene can't have more than {area} parcels",
     "up_to": "Up to {max} parcels",
     "width": "width",
