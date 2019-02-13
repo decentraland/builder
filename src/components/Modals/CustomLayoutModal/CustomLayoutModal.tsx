@@ -12,12 +12,18 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   state = {
     cols: 4,
     rows: 2,
-    error: false
+    maxError: false,
+    minError: false
   }
 
   handleChange = (layout: { cols: number; rows: number }) => {
     const { cols, rows } = layout
-    this.setState({ cols, rows, error: cols * rows > MAX_AREA })
+    this.setState({
+      cols: cols || this.state.cols,
+      rows: rows || this.state.rows,
+      maxError: cols * rows > MAX_AREA,
+      minError: !rows || !cols
+    })
   }
 
   handleClose = () => {
@@ -33,10 +39,10 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
 
   render() {
     const { modal } = this.props
-    const { cols, rows, error } = this.state
+    const { cols, rows, maxError, minError } = this.state
 
     let errorMessage
-    if (error) {
+    if (maxError) {
       errorMessage = t('custom_layout.max_area_error', { area: MAX_AREA })
     }
 
@@ -50,7 +56,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
         <Modal.Content>
           <LayoutPicker cols={cols} rows={rows} showGrid onChange={this.handleChange} errorMessage={errorMessage} />
           <div className="buttons">
-            <Button primary disabled={error} onClick={this.handleCreate}>
+            <Button primary disabled={maxError || minError} onClick={this.handleCreate}>
               {t('global.create')}
             </Button>
             <Button secondary onClick={this.handleClose}>

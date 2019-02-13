@@ -10,21 +10,18 @@ import './LayoutPicker.css'
 export default class LayoutPicker extends React.PureComponent<Props> {
   getValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
-    if (isNaN(value) || value < 1) return null
-    return Math.abs(value)
+    return Math.floor(Math.abs(value || 0))
   }
 
   handleChangeCols = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { rows, onChange } = this.props
     const cols = this.getValue(e)
-    if (!cols) return
     onChange({ rows, cols })
   }
 
   handleChangeRows = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { cols, onChange } = this.props
     const rows = this.getValue(e)
-    if (!rows) return
     onChange({ cols, rows })
   }
 

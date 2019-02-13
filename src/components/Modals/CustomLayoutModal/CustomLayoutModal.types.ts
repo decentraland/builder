@@ -11,7 +11,8 @@ export type Props = ModalProps & {
 export type State = {
   rows: number
   cols: number
-  error: boolean
+  maxError: boolean
+  minError: boolean
 }
 
 export type MapStateProps = {}
