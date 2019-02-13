@@ -19,8 +19,8 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   handleChange = (layout: { cols: number; rows: number }) => {
     const { cols, rows } = layout
     this.setState({
-      cols: cols || this.state.cols,
-      rows: rows || this.state.rows,
+      cols: cols >= 1 ? cols : this.state.cols,
+      rows: rows >= 1 ? rows : this.state.rows,
       maxError: cols * rows > MAX_AREA,
       minError: rows < 1 || cols < 1
     })

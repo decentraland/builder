@@ -10,7 +10,7 @@ import './LayoutPicker.css'
 export default class LayoutPicker extends React.PureComponent<Props> {
   getValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value)
-    return Math.floor(Math.abs(value || 0))
+    return Math.floor(value || 0)
   }
 
   handleChangeCols = (e: React.ChangeEvent<HTMLInputElement>) => {
