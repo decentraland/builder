@@ -12,7 +12,7 @@ jobs:
             - frontend-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: (frontend) Install packages
-          command: npm install
+          command: npm ci
       - save_cache:
           paths:
             - node_modules
