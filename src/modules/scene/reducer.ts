@@ -40,7 +40,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
         error: null,
         data: {
           ...state.data,
-          [newScene.id]: { ...newScene }
+          [newScene.id]: { ...newScene, components: { ...newScene.components }, entities: { ...newScene.entities } }
         }
       }
     }
@@ -78,5 +78,5 @@ export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
   undoType: EDITOR_UNDO,
   redoType: EDITOR_REDO,
   clearHistoryType: OPEN_EDITOR,
-  filter: includeAction(PROVISION_SCENE)
+  filter: includeAction([CREATE_SCENE, PROVISION_SCENE])
 })

@@ -1,4 +1,5 @@
 import uuidv4 from 'uuid/v4'
+import { utils } from 'decentraland-commons'
 import { takeLatest, put, select } from 'redux-saga/effects'
 import {
   ADD_ITEM,
@@ -227,9 +228,8 @@ function* handleSetGround(action: SetGroundAction) {
         const index = ent.components.indexOf(scene.ground.componentId)
         if (index > -1) {
           // Remove the old ground and attach the new one
-          const { [scene.ground.componentId]: _, ...newComponents } = components
-          components = newComponents
-          ent.components = Object.assign([], ent.components, { [index]: gltfId })
+          components = utils.omit(components, [scene.ground.componentId])
+          ent.components = Object.assign([], ent.components, { [index]: gltfId }) // replaces cloned array[index]'s value
         }
       }
     } else {
