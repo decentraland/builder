@@ -9,7 +9,6 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS,
   UpdateTransfromAction,
-  SetGroundAction,
   CREATE_SCENE,
   CreateSceneAction
 } from 'modules/scene/actions'
@@ -21,7 +20,7 @@ export type SceneState = {
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction | SetGroundAction | CreateSceneAction
+export type SceneReducerAction = ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction | CreateSceneAction
 
 const INITIAL_STATE: SceneState = {
   data: {},

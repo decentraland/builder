@@ -21,7 +21,7 @@ import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
 import { getProjectBounds } from 'modules/project/selectors'
-import { getRandomPositionWithinBounds } from './utils'
+import { getRandomPositionWithinBounds, cloneEntities } from './utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 
 export function* sceneSaga() {
@@ -199,7 +199,7 @@ function* handleSetGround(action: SetGroundAction) {
   if (!scene || !parcelLayout) return
 
   let components = { ...scene.components }
-  let entities = { ...scene.entities }
+  let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
 
   // Skip if there are no updates

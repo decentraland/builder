@@ -1,4 +1,5 @@
 import { Vector3 } from 'modules/common/types'
+import { Scene } from './types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -19,4 +20,15 @@ export function getRandomPositionWithinBounds(bounds: Vector3) {
 
 export function isWithinBounds(position: Vector3, bounds: Vector3) {
   return position.x <= bounds.x && position.y <= bounds.y && position.z <= bounds.z && position.x >= 0 && position.y >= 0 && position.z >= 0
+}
+
+// Note: if we start making extensive use of scene cloning we may replace this by a proper deep clone
+export function cloneEntities(scene: Scene) {
+  return Object.keys(scene.entities).reduce<Scene['entities']>(
+    (entities, entityId) => ({
+      ...entities,
+      [entityId]: { ...scene.entities[entityId], components: [...scene.entities[entityId].components] }
+    }),
+    {}
+  )
 }
