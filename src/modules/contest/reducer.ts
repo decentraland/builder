@@ -1,6 +1,6 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { CLOSE_MODAL, CloseModalAction } from 'decentraland-dapps/dist/modules/modal/actions'
 
-import { CLOSE_MODAL, CloseModalAction } from 'modules/modal/actions'
 import { OPEN_EDITOR, OpenEditorAction } from 'modules/editor/actions'
 import {
   SUBMIT_PROJECT_REQUEST,
