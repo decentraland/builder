@@ -1,0 +1,8 @@
+.CustomLayoutModal .buttons {
+  display: flex;
+  margin-top: 32px;
+}
+
+.CustomLayoutModal .buttons .ui.button {
+  flex: 1 0 auto;
+}

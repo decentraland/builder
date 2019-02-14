@@ -76,7 +76,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
           <div className="bubble">
             <div className="bubble-title">
               <span>
-                {rows}x{cols} LAND
+                {cols}x{rows} LAND
               </span>
               &nbsp;
               <span className="dimensions">{getDimensions(rows, cols)}</span>

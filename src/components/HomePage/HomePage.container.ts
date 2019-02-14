@@ -4,6 +4,7 @@ import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { Template } from 'modules/template/types'
+import { openModal } from 'modules/modal/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
@@ -21,7 +22,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
           dispatch(navigateTo(locations.editor(project.id)))
         }
       })
-    )
+    ),
+  onOpenModal: name => dispatch(openModal(name))
 })
 
 export default connect(
