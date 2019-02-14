@@ -25,7 +25,8 @@ import {
   TakeScreenshotAction,
   takeScreenshot,
   unbindEditorKeyboardShortcuts,
-  bindEditorKeyboardShortcuts
+  bindEditorKeyboardShortcuts,
+  SET_EDITOR_READY
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -64,6 +65,7 @@ export function* editorSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
+  yield takeLatest(SET_EDITOR_READY, handleResetCamera)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
