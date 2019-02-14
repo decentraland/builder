@@ -1,6 +1,10 @@
-import { put, takeLatest } from 'redux-saga/effects'
+import { put, takeLatest, call, select } from 'redux-saga/effects'
 
 import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSuccess, submitProjectFailure } from './actions'
+import { getData as getProjects } from 'modules/project/selectors'
+import { getData as getScenes } from 'modules/scene/selectors'
+import { getState as getStorage } from 'decentraland-dapps/dist/modules/storage/selectors'
+import { api } from 'lib/api'
 
 export function* contestSaga() {
   yield takeLatest(SUBMIT_PROJECT_REQUEST, handleSubmitProjectRequest)
@@ -9,8 +13,20 @@ export function* contestSaga() {
 function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
   try {
     const { projectId, contest } = action.payload
+    const storage: ReturnType<typeof getStorage> = yield select(getStorage)
+    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
 
-    // TODO: Send data to bucket
+    const project = projects[projectId]
+
+    const entry = {
+      version: storage.version,
+      scene: scenes[project.sceneId],
+      project,
+      contest
+    }
+
+    yield call(() => api.submitToContest(JSON.stringify(entry)))
 
     yield put(submitProjectSuccess(projectId, contest))
   } catch (error) {

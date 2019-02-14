@@ -13,6 +13,8 @@ import {
 export type Props = ModalProps & {
   currentProject: Project | null
   contest: Contest
+  isLoading: boolean
+  error: string | null
   onSaveProject: typeof editProject
   onSubmitProject: typeof submitProjectRequest
 }
@@ -22,6 +24,6 @@ export type State = {
   contest: Contest
 }
 
-export type MapStateProps = ModalMapStateProps & Pick<Props, 'currentProject' | 'contest'>
+export type MapStateProps = ModalMapStateProps & Pick<Props, 'currentProject' | 'contest' | 'isLoading' | 'error'>
 export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onSaveProject' | 'onSubmitProject'>
 export type MapDispatch = ModalMapDispatch & Dispatch<EditProjectAction | SubmitProjectRequestAction>

@@ -1,4 +1,7 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+
+import { CLOSE_MODAL, CloseModalAction } from 'modules/modal/actions'
+import { OPEN_EDITOR, OpenEditorAction } from 'modules/editor/actions'
 import {
   SUBMIT_PROJECT_REQUEST,
   ACCEPT_TERMS,
@@ -28,10 +31,23 @@ const INITIAL_STATE: ContestState = {
   error: null
 }
 
-export type ContestReducerAction = SubmitProjectRequestAction | SubmitProjectSuccessAction | SubmitProjectFailureAction | AcceptTermsAction
+export type ContestReducerAction =
+  | OpenEditorAction
+  | CloseModalAction
+  | SubmitProjectRequestAction
+  | SubmitProjectSuccessAction
+  | SubmitProjectFailureAction
+  | AcceptTermsAction
 
 export const contestReducer = (state: ContestState = INITIAL_STATE, action: ContestReducerAction): ContestState => {
   switch (action.type) {
+    case OPEN_EDITOR: {
+      return { ...state, loading: [], error: null }
+    }
+    case CLOSE_MODAL: {
+      const { name } = action.payload
+      return name === 'AddToContestModal' ? { ...state, error: null } : state
+    }
     case ACCEPT_TERMS: {
       return {
         ...state,
@@ -44,6 +60,7 @@ export const contestReducer = (state: ContestState = INITIAL_STATE, action: Cont
     case SUBMIT_PROJECT_REQUEST: {
       return {
         ...state,
+        error: null,
         loading: loadingReducer(state.loading, action)
       }
     }
@@ -51,6 +68,8 @@ export const contestReducer = (state: ContestState = INITIAL_STATE, action: Cont
       const { projectId, contest } = action.payload
       return {
         ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null,
         data: {
           ...state.data,
           ...contest,
