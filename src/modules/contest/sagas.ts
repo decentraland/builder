@@ -1,9 +1,9 @@
 import { put, takeLatest, call, select } from 'redux-saga/effects'
+import { getState as getStorage } from 'decentraland-dapps/dist/modules/storage/selectors'
 
-import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSuccess, submitProjectFailure } from './actions'
+import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSuccess, submitProjectFailure } from 'modules/contest/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
-import { getState as getStorage } from 'decentraland-dapps/dist/modules/storage/selectors'
 import { api } from 'lib/api'
 
 export function* contestSaga() {
