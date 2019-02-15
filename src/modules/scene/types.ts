@@ -39,7 +39,6 @@ export type SceneMetrics = {
   bodies: number
   entities: number
   textures: number
-  height: number
 }
 
 export type Scene = {

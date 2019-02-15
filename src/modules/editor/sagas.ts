@@ -25,7 +25,8 @@ import {
   TakeScreenshotAction,
   takeScreenshot,
   unbindEditorKeyboardShortcuts,
-  bindEditorKeyboardShortcuts
+  bindEditorKeyboardShortcuts,
+  SET_EDITOR_READY
 } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
@@ -53,9 +54,9 @@ export function* editorSaga() {
   yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(PROVISION_SCENE, handleRenderScene)
-  yield takeLatest(EDITOR_REDO, handleRenderScene)
-  yield takeLatest(EDITOR_UNDO, handleRenderScene)
+  yield takeLatest(PROVISION_SCENE, handleSceneChange)
+  yield takeLatest(EDITOR_REDO, handleSceneChange)
+  yield takeLatest(EDITOR_UNDO, handleSceneChange)
   yield takeLatest(SET_GIZMO, handleSetGizmo)
   yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
@@ -65,6 +66,7 @@ export function* editorSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
+  yield takeLatest(SET_EDITOR_READY, handleResetCamera)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -92,14 +94,17 @@ function* handleNewScene() {
   yield call(() => editorWindow.editor.handleMessage(msg))
 }
 
-function* handleRenderScene() {
-  const scene: Scene = yield select(getCurrentScene)
+function* handleSceneChange() {
+  yield renderScene()
+  yield delay(500)
+  yield put(takeScreenshot())
+}
 
+function* renderScene() {
+  const scene: Scene = yield select(getCurrentScene)
   if (scene) {
     const assetMappings: AssetMappings = yield select(getAssetMappings)
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, assetMappings)))
-    yield delay(500)
-    yield put(takeScreenshot())
   }
 }
 
@@ -164,7 +169,7 @@ function* handleOpenEditor() {
   yield handleNewScene()
 
   // Spawns the assets
-  yield handleRenderScene()
+  yield renderScene()
 
   // Select gizmo
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)

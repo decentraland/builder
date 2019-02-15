@@ -10,7 +10,8 @@
     "save": "Save",
     "submit": "Submit",
     "continue": "Continue",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create": "Create"
   },
   "languages": {
     "en": "English"
@@ -101,5 +102,16 @@
         "length": "Description length must be between {min} and {max} characters."
       }
     }
+  },
+  "custom_layout_modal": {
+    "subtitle_one": "You can create custom layouts for your scene.",
+    "subtitle_two": "Enter values in the boxes below for the desired size."
+  },
+  "custom_layout": {
+    "title": "Custom",
+    "max_area_error": "Your scene can't have more than {area} parcels",
+    "up_to": "Up to {max} parcels",
+    "width": "width",
+    "height": "height"
   }
 }

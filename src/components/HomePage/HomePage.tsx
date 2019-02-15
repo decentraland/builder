@@ -16,7 +16,11 @@ export default class HomePage extends React.PureComponent<Props> {
   }
 
   handleTemplateClick = (template: Template) => {
-    this.props.onCreateProject(template)
+    if (template.custom) {
+      this.props.onOpenModal('CustomLayoutModal')
+    } else {
+      this.props.onCreateProject(template)
+    }
   }
 
   render() {

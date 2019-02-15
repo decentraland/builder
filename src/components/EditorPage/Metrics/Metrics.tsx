@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
@@ -9,12 +10,12 @@ import { Props, State } from './Metrics.types'
 import './Metrics.css'
 
 export default class Metrics extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      toggle: false
-    }
+  state = {
+    toggle: false
   }
+
+  analytics = getAnalytics()
+  metricExceeded: keyof SceneMetrics | null = null
 
   componentWillMount() {
     document.addEventListener('click', this.handleClose)
@@ -24,7 +25,28 @@ export default class Metrics extends React.PureComponent<Props, State> {
     document.removeEventListener('click', this.handleClose)
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    let isMetricExceeded = false
+    for (let key in nextProps.metrics) {
+      const metric = key as keyof SceneMetrics
+      if (nextProps.metrics[metric] > nextProps.limits[metric]) {
+        if (!this.metricExceeded || this.metricExceeded !== metric) {
+          this.metricExceeded = metric
+          this.analytics.track('Metrics exceeded', { metric })
+        }
+        isMetricExceeded = true
+      }
+    }
+    if (!isMetricExceeded) {
+      this.metricExceeded = null
+    }
+  }
+
   handleToggle = () => {
+    if (!this.state.toggle) {
+      this.analytics.track('Show metrics')
+    }
+
     this.setState({
       toggle: !this.state.toggle
     })
@@ -76,7 +98,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
           <div className="bubble">
             <div className="bubble-title">
               <span>
-                {rows}x{cols} LAND
+                {cols}x{rows} LAND
               </span>
               &nbsp;
               <span className="dimensions">{getDimensions(rows, cols)}</span>

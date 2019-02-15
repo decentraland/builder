@@ -1,0 +1,89 @@
+.LayoutPicker {
+  border-radius: var(--radius);
+  background-color: var(--background);
+  padding: 32px;
+}
+
+.LayoutPicker .SquaresGrid {
+  margin-bottom: 32px;
+}
+
+.LayoutPicker .inputs {
+  display: flex;
+  justify-content: center;
+}
+
+.LayoutPicker .input {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.LayoutPicker .inputs label {
+  color: var(--purplish-grey);
+  font-size: 15px;
+  line-height: 24px;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+  user-select: none;
+}
+
+.LayoutPicker .inputs input {
+  width: 128px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--purplish-grey);
+  color: var(--text);
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  letter-spacing: 0.3px;
+  padding-bottom: 9px;
+  outline: none;
+}
+
+.LayoutPicker .inputs .times {
+  font-style: normal;
+  padding-top: 26px;
+}
+
+.LayoutPicker .inputs .times:before {
+  content: 'X';
+  font-size: 17px;
+  line-height: 26px;
+  font-style: none;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.LayoutPicker .layout-error {
+  color: var(--error);
+  font-size: 48px;
+  text-align: center;
+  padding-bottom: 32px;
+}
+
+.LayoutPickerError {
+  background: var(--background);
+  margin-top: 20px;
+  padding: 20px 32px;
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--error);
+}
+
+/* disable input ticker */
+
+.LayoutPicker input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.LayoutPicker input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.LayoutPicker input::-ms-clear {
+  display: none;
+}

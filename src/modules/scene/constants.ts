@@ -6,6 +6,5 @@ export const EMPTY_SCENE_METRICS: SceneMetrics = {
   geometries: 0,
   bodies: 0,
   entities: 0,
-  textures: 0,
-  height: 0
+  textures: 0
 }
