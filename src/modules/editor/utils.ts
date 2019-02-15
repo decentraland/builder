@@ -1,14 +1,7 @@
 import { env } from 'decentraland-commons'
 
-import { store } from 'modules/common/store'
-import { RootState } from 'modules/common/types'
-import { EditorScene, Gizmo } from 'modules/editor/types'
+import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
-import { KeyboardShortcut } from 'modules/keyboard/types'
-import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
-import { openModal } from 'modules/modal/actions'
-import { setGizmo, togglePreview, toggleSidebar, editorUndo, editorRedo, resetCamera, zoomIn, zoomOut } from './actions'
-import { isPreviewing, isSidebarOpen } from './selectors'
 const script = require('raw-loader!../../ecsScene/scene.js')
 
 const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
@@ -51,64 +44,6 @@ export function getNewScene(project: Project): EditorScene {
     main: 'game.js',
     _mappings: mappings
   }
-}
-
-// This function dispatches actions to the store, but uses `store.dispatch` to scape generators
-export function getKeyboardShortcuts(): KeyboardShortcut[] {
-  return [
-    {
-      combination: ['w'],
-      callback: () => store.dispatch(setGizmo(Gizmo.MOVE))
-    },
-    {
-      combination: ['e'],
-      callback: () => store.dispatch(setGizmo(Gizmo.ROTATE))
-    },
-    {
-      combination: ['s'],
-      callback: () => store.dispatch(resetItem())
-    },
-    {
-      combination: ['d'],
-      callback: () => store.dispatch(duplicateItem())
-    },
-    {
-      combination: ['o'],
-      callback: () => store.dispatch(togglePreview(!isPreviewing(store.getState() as RootState)))
-    },
-    {
-      combination: ['p'],
-      callback: () => store.dispatch(toggleSidebar(!isSidebarOpen(store.getState() as RootState)))
-    },
-    {
-      combination: ['del', 'backspace'],
-      callback: () => store.dispatch(deleteItem())
-    },
-    {
-      combination: ['command+z', 'ctrl+z'],
-      callback: () => store.dispatch(editorUndo())
-    },
-    {
-      combination: ['command+shift+z', 'ctrl+shift+z'],
-      callback: () => store.dispatch(editorRedo())
-    },
-    {
-      combination: ['?'],
-      callback: () => store.dispatch(openModal('ShortcutsModal'))
-    },
-    {
-      combination: ['space'],
-      callback: () => store.dispatch(resetCamera())
-    },
-    {
-      combination: ['shift+='],
-      callback: () => store.dispatch(zoomIn())
-    },
-    {
-      combination: ['shift+-'],
-      callback: () => store.dispatch(zoomOut())
-    }
-  ]
 }
 
 // Screenshots

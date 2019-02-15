@@ -4,22 +4,131 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
 import CloseModalIcon from '../CloseModalIcon'
-import { Props } from '../Modals.types'
-
+import { Shortcut, ShortcutDefinition, ShortcutCombination, SimpleShortcut, ShortcutAlternative } from 'modules/keyboard/types'
+import { Props } from './ShortcutModal.types'
 import './ShortcutsModal.css'
+import { mapLabel } from 'modules/keyboard/utils'
+
+const ShortcutCategories: Record<string, Shortcut[]> = {
+  editor: [
+    Shortcut.ZOOM_IN,
+    Shortcut.ZOOM_OUT,
+    Shortcut.RESET_CAMERA,
+    Shortcut.TOGGLE_SIDEBAR,
+    Shortcut.PREVIEW,
+    Shortcut.UNDO,
+    Shortcut.REDO
+  ],
+  item: [Shortcut.MOVE, Shortcut.ROTATE, Shortcut.DUPLICATE_ITEM, Shortcut.RESET_ITEM, Shortcut.DELETE_ITEM],
+  other: [Shortcut.SHORTCUTS]
+}
+
+const getCategoryTitles = (): Record<string, string> => ({
+  editor: t('shortcuts_modal.editor_shortcuts'),
+  item: t('shortcuts_modal.item_shortcuts'),
+  other: t('shortcuts_modal.other_shortcuts')
+})
 
 export default class ShortcutsModal extends React.PureComponent<Props> {
   handleOnClose = () => {
     this.props.onClose('ShortcutsModal')
   }
 
-  getMainShortcutKey() {
-    if (navigator.platform === 'MacIntel') return '⌘'
-    return 'Ctrl'
+  renderCombination = (shortcut: ShortcutCombination) => {
+    let out: JSX.Element[] = []
+
+    for (let i = 0; i < shortcut.value.length; i++) {
+      out.push(<Chip text={mapLabel(shortcut.value[i])} />)
+
+      if (i !== shortcut.value.length - 1) {
+        out.push(<span className="plus">+</span>)
+      }
+    }
+
+    return out
+  }
+
+  renderSimple = (shortcut: SimpleShortcut) => {
+    return <Chip text={mapLabel(shortcut.value)} />
+  }
+
+  renderAlternative = (shortcut: ShortcutAlternative) => {
+    const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
+    let out: JSX.Element[] = []
+
+    for (let i = 0; i < alternatives.length; i++) {
+      const item = alternatives[i]
+      if (item.type === 'combination') {
+        out = [...out, ...this.renderCombination(item)]
+      } else {
+        out.push(this.renderSimple(item))
+      }
+
+      if (i === 0) {
+        out.push(<span className="plus">or</span>)
+      }
+    }
+
+    return out
+  }
+
+  renderShortcutSequence = (shortcutDefinition: ShortcutDefinition) => {
+    if (shortcutDefinition.type === 'combination') {
+      return this.renderCombination(shortcutDefinition)
+    }
+
+    if (shortcutDefinition.type === 'alternative') {
+      return this.renderAlternative(shortcutDefinition)
+    }
+
+    return this.renderSimple(shortcutDefinition as SimpleShortcut)
+  }
+
+  renderShortcuts = () => {
+    const { shortcuts } = this.props
+    const categories = getCategoryTitles()
+
+    return Object.keys(ShortcutCategories).map(category => {
+      const categoryShortcuts = ShortcutCategories[category]
+      return (
+        <div className="shortcut-list">
+          <div className="subtitle">{categories[category]}</div>
+          <div className="shortcuts">
+            {categoryShortcuts.map(shortcut => {
+              const shortcutDefinition = shortcuts[shortcut]
+              const a = this.renderShortcutSequence(shortcutDefinition)
+
+              return (
+                <div className="shortcut">
+                  <div className="name">{shortcutDefinition.title}</div>
+                  <div className="keybinding">{a}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )
+    })
+  }
+
+  renderCategory = (category: keyof typeof ShortcutCategories) => {
+    const { shortcuts } = this.props
+
+    return ShortcutCategories[category].map(shortcut => {
+      const shortcutDefinition = shortcuts[shortcut]
+
+      return (
+        <div className="shortcut">
+          <div className="name">{shortcutDefinition.title}</div>
+          <div className="keybinding">{this.renderShortcutSequence(shortcutDefinition)}</div>
+        </div>
+      )
+    })
   }
 
   render() {
     const { modal } = this.props
+    const categories = getCategoryTitles()
 
     return (
       <Modal
@@ -33,134 +142,35 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
           <div className="title">{t('shortcuts_modal.title')}</div>
 
           <div className="shortcut-list">
-            <div className="subtitle">{t('shortcuts_modal.editor_shortcuts')}</div>
-
+            <div className="subtitle">{categories['editor']}</div>
             <div className="shortcuts">
               <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.move_camera')}</div>
+                <div className="name">{t('shortcuts.move_camera')}</div>
                 <div className="keybinding">
-                  <Chip text="▲" />
-                  <Chip text="▼" />
-                  <Chip text="◄" />
-                  <Chip text="►" />
+                  <Chip icon="arrow-key-up" />
+                  <Chip icon="arrow-key-down" />
+                  <Chip icon="arrow-key-left" />
+                  <Chip icon="arrow-key-down" />
                 </div>
               </div>
-
               <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.zoom_in')}</div>
-                <div className="keybinding">
-                  <Chip text="Shift" />
-                  <span className="plus">+</span>
-                  <Chip text="+" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.zoom_out')}</div>
-                <div className="keybinding">
-                  <Chip text="Shift" />
-                  <span className="plus">+</span>
-                  <Chip text="-" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.reset_camera')}</div>
-                <div className="keybinding">
-                  <Chip text="Space" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.toggle_colliders')}</div>
+                <div className="name">{t('shortcuts.toggle_colliders')}</div>
                 <div className="keybinding">
                   <Chip text="c" />
                 </div>
               </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.toggle_sidebar')}</div>
-                <div className="keybinding">
-                  <Chip text="p" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.play_mode')}</div>
-                <div className="keybinding">
-                  <Chip text="o" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.undo')}</div>
-                <div className="keybinding">
-                  <Chip text={this.getMainShortcutKey()} />
-                  <span className="plus">+</span>
-                  <Chip text="z" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.redo')}</div>
-                <div className="keybinding">
-                  <Chip text={this.getMainShortcutKey()} />
-                  <span className="plus">+</span>
-                  <Chip text="Shift" />
-                  <span className="plus">+</span>
-                  <Chip text="z" />
-                </div>
-              </div>
-            </div>
-
-            <div className="shortcut-list">
-              <div className="subtitle">{t('shortcuts_modal.item_shortcuts')}</div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.move')}</div>
-                <div className="keybinding">
-                  <Chip text="w" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.rotate')}</div>
-                <div className="keybinding">
-                  <Chip text="e" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.duplicate')}</div>
-                <div className="keybinding">
-                  <Chip text="d" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.reset')}</div>
-                <div className="keybinding">
-                  <Chip text="s" />
-                </div>
-              </div>
-
-              <div className="shortcut">
-                <div className="name">{t('shortcuts_modal.delete')}</div>
-                <div className="keybinding">
-                  <Chip text="Delete" />
-                </div>
-              </div>
+              {this.renderCategory('editor')}
             </div>
           </div>
 
           <div className="shortcut-list">
-            <div className="subtitle">{t('shortcuts_modal.other_shortcuts')}</div>
-            <div className="shortcut">
-              <div className="name">{t('shortcuts_modal.shortcut_reference')}</div>
-              <div className="keybinding">
-                <Chip text="?" />
-              </div>
-            </div>
+            <div className="subtitle">{categories['item']}</div>
+            <div className="shortcuts">{this.renderCategory('item')}</div>
+          </div>
+
+          <div className="shortcut-list">
+            <div className="subtitle">{categories['other']}</div>
+            <div className="shortcuts">{this.renderCategory('other')}</div>
           </div>
         </Modal.Content>
       </Modal>

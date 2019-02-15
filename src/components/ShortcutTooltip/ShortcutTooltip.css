@@ -1,0 +1,29 @@
+.ShortcutTooltip,
+.ShortcutTooltip .sequence {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ShortcutTooltip .label {
+  margin-right: 10px;
+}
+
+.ShortcutTooltip .sequence .plus {
+  margin: 0px 5px;
+}
+
+.ShortcutTooltip .Chip {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ShortcutTooltip .Chip .text {
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.ShortcutTooltip .Chip .centered-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

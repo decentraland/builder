@@ -27,6 +27,7 @@ import {
   unbindEditorKeyboardShortcuts,
   bindEditorKeyboardShortcuts
 } from 'modules/editor/actions'
+import { store } from 'modules/common/store'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
@@ -35,15 +36,15 @@ import { getCurrentProject, getProjectBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
-import { store } from 'modules/common/store'
 import { AssetMappings } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { getNewScene, getKeyboardShortcuts, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 import { isWithinBounds } from 'modules/scene/utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { editProject } from 'modules/project/actions'
+import { getEditorShortcuts } from 'modules/keyboard/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -67,12 +68,12 @@ export function* editorSaga() {
 }
 
 function* handleBindEditorKeyboardShortcuts() {
-  const shortcuts = getKeyboardShortcuts()
+  const shortcuts = getEditorShortcuts(store)
   yield put(bindKeyboardShortcuts(shortcuts))
 }
 
 function* handleUnbindEditorKeyboardShortcuts() {
-  const shortcuts = getKeyboardShortcuts()
+  const shortcuts = getEditorShortcuts(store)
   yield put(unbindKeyboardShortcuts(shortcuts))
 }
 

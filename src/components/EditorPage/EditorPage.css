@@ -33,8 +33,12 @@
   right: 20px;
 }
 
-.toolbar .Tools > .Icon {
+.toolbar .Tools .tool {
   margin-right: 16px;
+}
+
+.toolbar .Tools .tool:last-child {
+  margin-right: 0px;
 }
 
 .toolbar .Tools .Icon.shortcuts {

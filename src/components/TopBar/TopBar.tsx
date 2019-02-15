@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import ShortcutTooltip from 'components/ShortcutTooltip'
 import GroundCard from 'components/GroundCard'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
+import { Shortcut } from 'modules/keyboard/types'
 import { Props } from './TopBar.types'
 import './TopBar.css'
 
@@ -81,19 +83,33 @@ export default class TopBar extends React.PureComponent<Props> {
           <Grid.Row>
             <div className="editor-actions">
               <span className="editor-modes">
-                <Chip icon="move" isActive={gizmo === Gizmo.MOVE} onClick={this.handleMoveMode} />
-                <Chip icon="rotate" isActive={gizmo === Gizmo.ROTATE} onClick={this.handleRotateMode} />
+                <ShortcutTooltip shortcut={Shortcut.MOVE} position="bottom center" className="tool">
+                  <Chip icon="move" isActive={gizmo === Gizmo.MOVE} onClick={this.handleMoveMode} />
+                </ShortcutTooltip>
+                <ShortcutTooltip shortcut={Shortcut.ROTATE} position="bottom center" className="tool">
+                  <Chip icon="rotate" isActive={gizmo === Gizmo.ROTATE} onClick={this.handleRotateMode} />
+                </ShortcutTooltip>
               </span>
-              <Chip icon="undo" isDisabled={!selectedEntityId} onClick={onReset} />
-              <Chip icon="duplicate" isDisabled={!selectedEntityId} onClick={onDuplicate} />
-              <Chip icon="delete" isDisabled={!selectedEntityId} onClick={onDelete} />
+              <ShortcutTooltip shortcut={Shortcut.RESET_ITEM} position="bottom center" className="tool">
+                <Chip icon="undo" isDisabled={!selectedEntityId} onClick={onReset} />
+              </ShortcutTooltip>
+              <ShortcutTooltip shortcut={Shortcut.DUPLICATE_ITEM} position="bottom center" className="tool">
+                <Chip icon="duplicate" isDisabled={!selectedEntityId} onClick={onDuplicate} />
+              </ShortcutTooltip>
+              <ShortcutTooltip shortcut={Shortcut.DELETE_ITEM} position="bottom center" className="tool">
+                <Chip icon="delete" isDisabled={!selectedEntityId} onClick={onDelete} />
+              </ShortcutTooltip>
             </div>
           </Grid.Row>
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={5} className="right-column">
           <Grid.Row>
-            <Chip icon="preview" isActive={isPreviewing} onClick={this.handleTogglePreview} />
-            <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
+            <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool">
+              <Chip icon="preview" isActive={isPreviewing} onClick={this.handleTogglePreview} />
+            </ShortcutTooltip>
+            <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool">
+              <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
+            </ShortcutTooltip>
 
             <Button className="add-to-contest" size="mini" onClick={this.handleAddToContestClick}>
               {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
