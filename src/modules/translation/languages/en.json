@@ -72,7 +72,7 @@
     "reset_camera": "Reset camera",
     "toggle_colliders": "Toggle colliders",
     "toggle_sidebar": "Toggle sidebar",
-    "play_mode": "Preview",
+    "preview": "Preview",
     "undo": "Undo",
     "redo": "Redo",
     "shortcut_reference": "Shortcut reference"

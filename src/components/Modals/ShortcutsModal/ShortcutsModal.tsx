@@ -5,9 +5,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Chip from 'components/Chip'
 import CloseModalIcon from '../CloseModalIcon'
 import { Shortcut, ShortcutDefinition, ShortcutCombination, SimpleShortcut, ShortcutAlternative } from 'modules/keyboard/types'
+import { mapLabel } from 'modules/keyboard/utils'
 import { Props } from './ShortcutModal.types'
 import './ShortcutsModal.css'
-import { mapLabel } from 'modules/keyboard/utils'
 
 const ShortcutCategories: Record<string, Shortcut[]> = {
   editor: [
@@ -29,59 +29,68 @@ const getCategoryTitles = (): Record<string, string> => ({
   other: t('shortcuts_modal.other_shortcuts')
 })
 
-export default class ShortcutsModal extends React.PureComponent<Props> {
-  handleOnClose = () => {
-    this.props.onClose('ShortcutsModal')
-  }
+export const renderCombination = (shortcut: ShortcutCombination) => {
+  let out: JSX.Element[] = []
 
-  renderCombination = (shortcut: ShortcutCombination) => {
-    let out: JSX.Element[] = []
+  for (let i = 0; i < shortcut.value.length; i++) {
+    out.push(<Chip text={mapLabel(shortcut.value[i])} />)
 
-    for (let i = 0; i < shortcut.value.length; i++) {
-      out.push(<Chip text={mapLabel(shortcut.value[i])} />)
-
-      if (i !== shortcut.value.length - 1) {
-        out.push(<span className="plus">+</span>)
-      }
+    if (i !== shortcut.value.length - 1) {
+      out.push(<span className="plus">+</span>)
     }
-
-    return out
   }
 
-  renderSimple = (shortcut: SimpleShortcut) => {
-    return <Chip text={mapLabel(shortcut.value)} />
-  }
+  return out
+}
 
-  renderAlternative = (shortcut: ShortcutAlternative) => {
-    const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
-    let out: JSX.Element[] = []
+export const renderSimple = (shortcut: SimpleShortcut) => {
+  return <Chip text={mapLabel(shortcut.value)} />
+}
 
+export const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: boolean = false) => {
+  const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
+  let out: JSX.Element[] = []
+
+  if (onlyFirst) {
+    const item = alternatives[0]
+    if (item.type === 'combination') {
+      out = [...out, ...renderCombination(item)]
+    } else {
+      out.push(renderSimple(item))
+    }
+  } else {
     for (let i = 0; i < alternatives.length; i++) {
       const item = alternatives[i]
       if (item.type === 'combination') {
-        out = [...out, ...this.renderCombination(item)]
+        out = [...out, ...renderCombination(item)]
       } else {
-        out.push(this.renderSimple(item))
+        out.push(renderSimple(item))
       }
 
       if (i === 0) {
         out.push(<span className="plus">or</span>)
       }
     }
+  }
 
-    return out
+  return out
+}
+
+export default class ShortcutsModal extends React.PureComponent<Props> {
+  handleOnClose = () => {
+    this.props.onClose('ShortcutsModal')
   }
 
   renderShortcutSequence = (shortcutDefinition: ShortcutDefinition) => {
     if (shortcutDefinition.type === 'combination') {
-      return this.renderCombination(shortcutDefinition)
+      return renderCombination(shortcutDefinition)
     }
 
     if (shortcutDefinition.type === 'alternative') {
-      return this.renderAlternative(shortcutDefinition)
+      return renderAlternative(shortcutDefinition)
     }
 
-    return this.renderSimple(shortcutDefinition as SimpleShortcut)
+    return renderSimple(shortcutDefinition as SimpleShortcut)
   }
 
   renderShortcuts = () => {

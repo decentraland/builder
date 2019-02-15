@@ -23,7 +23,7 @@ export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.ROTATE]: { type: 'simple', value: 'e', title: t('shortcuts.rotate') },
   [Shortcut.RESET_ITEM]: { type: 'simple', value: 's', title: t('shortcuts.reset') },
   [Shortcut.DUPLICATE_ITEM]: { type: 'simple', value: 'd', title: t('shortcuts.duplicate') },
-  [Shortcut.PREVIEW]: { type: 'simple', value: 'o', title: t('shortcuts.play_mode') },
+  [Shortcut.PREVIEW]: { type: 'simple', value: 'o', title: t('shortcuts.preview') },
   [Shortcut.TOGGLE_SIDEBAR]: { type: 'simple', value: 'p', title: t('shortcuts.toggle_sidebar') },
   [Shortcut.DELETE_ITEM]: {
     type: 'alternative',
