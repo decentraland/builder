@@ -32,5 +32,5 @@
 }
 
 .AddToContestModal .error {
-  color: var(--danger);
+  color: var(--error);
 }
