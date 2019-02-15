@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
@@ -7,7 +8,6 @@ import { SceneMetrics } from 'modules/scene/types'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 export default class Metrics extends React.PureComponent<Props, State> {
   state = {
