@@ -27,7 +27,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     let isMetricExceeded = false
-    for (var key in nextProps.metrics) {
+    for (let key in nextProps.metrics) {
       const metric = key as keyof SceneMetrics
       if (nextProps.metrics[metric] > nextProps.limits[metric]) {
         if (!this.metricExceeded || this.metricExceeded !== metric) {
