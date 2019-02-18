@@ -1,10 +1,15 @@
-import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 
 declare var dcl: DecentralandInterface
 
+@Component('staticEntity')
+// @ts-ignore
+export class StaticEntity {}
+
 const editorComponents: Record<string, any> = {}
+const staticEntity = new StaticEntity()
 
 const gizmo = new Gizmos()
 gizmo.position = true
@@ -44,7 +49,10 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         if (message.payload.enabled) {
           entity.remove(Gizmos)
         } else {
-          entity.set(gizmo)
+          const staticEntities = engine.getComponentGroup(StaticEntity)
+          if (!staticEntities.hasEntity(entity.uuid)) {
+            entity.set(gizmo)
+          }
         }
       }
     }
@@ -93,6 +101,8 @@ function createEntities(entities: Record<string, EntityDefinition>) {
       if (!builderEntity.disableGizmos) {
         entity.set(gizmoEvent)
         entity.set(gizmo)
+      } else {
+        entity.set(staticEntity)
       }
 
       engine.addEntity(entity)
