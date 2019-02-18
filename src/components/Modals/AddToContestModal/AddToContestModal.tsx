@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Modal, Field, Button } from 'decentraland-ui'
+import { Form, Modal, Field, Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectFields from 'components/ProjectFields'
@@ -10,9 +10,20 @@ import './AddToContestModal.css'
 export default class AddToContestModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
 
+  isSubmitting = false
+  isSuccess = false
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { isLoading, error } = nextProps
+
+    if (this.isSubmitting && !isLoading && !error) {
+      this.isSubmitting = false
+      this.isSuccess = true
+    }
+  }
+
   handleOnCancel = () => {
     this.closeModal()
-    this.setState(this.getBaseState())
   }
 
   handleSubmit = () => {
@@ -20,10 +31,10 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     const { project, contest } = this.state
     const projectId = currentProject!.id
 
+    this.isSubmitting = true
+
     onSaveProject(projectId, project)
     onSubmitProject(projectId, contest)
-
-    this.closeModal()
   }
 
   handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -58,10 +69,13 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
 
   closeModal() {
     this.props.onClose('AddToContestModal')
+    this.setState(this.getBaseState())
+    this.isSubmitting = false
+    this.isSuccess = false
   }
 
   render() {
-    const { modal } = this.props
+    const { modal, isLoading, error } = this.props
     const { project, contest } = this.state
     const { title, description } = project
     const { email, ethAddress } = contest
@@ -69,8 +83,8 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     return (
       <Modal open={modal.open} className="AddToContestModal" size="small" onClose={this.handleOnCancel}>
         <Modal.Content>
-          <div className="title">{t('submit_project_modal.title')}</div>
-          <div className="subtitle">{t('submit_project_modal.subtitle')}</div>
+          <div className="title">{t('add_to_contest.title')}</div>
+          <div className="subtitle">{t('add_to_contest.subtitle')}</div>
 
           <Form onSubmit={this.handleSubmit}>
             <div className="details">
@@ -80,7 +94,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
             </div>
 
             <div className="details">
-              <div className="category">{t('submit_project_modal.contact_information')}</div>
+              <div className="category">{t('add_to_contest.contact_information')}</div>
               <Field
                 type="email"
                 label={t('global.email')}
@@ -93,12 +107,24 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
               <Field label={t('global.eth_address')} placeholder="0x" value={ethAddress} onChange={this.handleEthAddressChange} />
             </div>
 
-            <div className="buttons-container">
-              <Button primary>{t('global.submit')}</Button>
-              <Button secondary onClick={preventDefault(this.handleOnCancel)}>
-                {t('global.cancel')}
-              </Button>
-            </div>
+            {error ? (
+              <div className="error">
+                {t('add_to_contest.error_occurred')} "{error}"
+              </div>
+            ) : null}
+
+            {isLoading ? (
+              <div className="loading-container">
+                <Loader size="large" />
+              </div>
+            ) : (
+              <div className="buttons-container">
+                {this.isSuccess ? <Button primary icon="check" disabled={true} /> : <Button primary>{t('global.submit')}</Button>}
+                <Button secondary onClick={preventDefault(this.handleOnCancel)}>
+                  {t('global.cancel')}
+                </Button>
+              </div>
+            )}
           </Form>
         </Modal.Content>
       </Modal>

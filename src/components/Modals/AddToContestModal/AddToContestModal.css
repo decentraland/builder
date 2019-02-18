@@ -13,6 +13,24 @@
 }
 
 .AddToContestModal .details,
-.AddToContestModal .buttons-container {
+.AddToContestModal .buttons-container,
+.AddToContestModal .loading-container {
   margin-top: 30px;
+}
+
+.AddToContestModal .loading-container {
+  margin-top: 25px;
+}
+
+.AddToContestModal .loading-container,
+.AddToContestModal .loading-container .ui.loader {
+  position: relative;
+}
+
+.AddToContestModal .loading-container .ui.loader {
+  top: 24px;
+}
+
+.AddToContestModal .error {
+  color: var(--error);
 }

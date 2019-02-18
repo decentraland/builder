@@ -17,7 +17,7 @@ export const getError: (state: RootState) => ProjectState['error'] = state => ge
 export const getCurrentProject = createSelector<RootState, string | undefined, ProjectState['data'], Project | null>(
   getProjectId,
   getData,
-  (projectId, projects) => (projectId && projectId in projects ? projects[projectId] : null)
+  (projectId, projects) => projects[projectId!] || null
 )
 
 export const getProjectLayout = createSelector<RootState, Project | null, Project['parcelLayout'] | null>(

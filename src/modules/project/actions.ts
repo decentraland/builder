@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+
 import { Project } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'

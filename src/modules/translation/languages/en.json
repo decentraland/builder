@@ -55,10 +55,11 @@
     "know_more": "To know more read our {blog_post_link}",
     "i_accept_the": "I accept the "
   },
-  "submit_project_modal": {
+  "add_to_contest": {
     "title": "Add project to contest",
     "subtitle": "Almost done. Review your information and before submitting it.",
-    "contact_information": "Contact information"
+    "contact_information": "Contact information",
+    "error_occurred": "An error occurred trying to submit your project:"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
