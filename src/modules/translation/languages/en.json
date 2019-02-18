@@ -61,26 +61,28 @@
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your project:"
   },
-  "shortcuts_modal": {
-    "title": "Shortcuts",
-    "item_shortcuts": "Item",
+  "shortcuts": {
     "move": "Move item",
     "rotate": "Rotate item",
     "reset": "Reset item",
     "duplicate": "Duplicate item",
     "delete": "Delete item",
-    "editor_shortcuts": "Editor",
     "move_camera": "Move camera",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "reset_camera": "Reset camera",
     "toggle_colliders": "Toggle colliders",
     "toggle_sidebar": "Toggle sidebar",
-    "play_mode": "Play mode",
+    "preview": "Preview",
     "undo": "Undo",
     "redo": "Redo",
-    "other_shortcuts": "Other",
     "shortcut_reference": "Shortcut reference"
+  },
+  "shortcuts_modal": {
+    "title": "Shortcuts",
+    "item_shortcuts": "Item",
+    "editor_shortcuts": "Editor",
+    "other_shortcuts": "Other"
   },
   "edit_project_modal": {
     "title": "Project details",

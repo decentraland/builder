@@ -61,7 +61,7 @@
   text-transform: uppercase;
 }
 
-.TopBar .Chip + .Chip {
+.TopBar .tool + .tool {
   margin-left: 8px;
 }
 

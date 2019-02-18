@@ -29,6 +29,10 @@ export type IconName =
   | 'center-camera'
   | 'edit'
   | 'edit-active'
+  | 'arrow-key-up'
+  | 'arrow-key-down'
+  | 'arrow-key-left'
+  | 'arrow-key-right'
 
 export type DefaultProps = {
   isActive: boolean

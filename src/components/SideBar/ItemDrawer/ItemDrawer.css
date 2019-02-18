@@ -5,6 +5,7 @@
 .ItemDrawer .title {
   color: var(--sidebar-heading);
   font-size: 17px;
+  user-select: none;
 }
 
 .ItemDrawer .ui.grid.asset-grid .column {

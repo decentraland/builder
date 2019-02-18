@@ -2,10 +2,13 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { closeModal } from 'modules/modal/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from '../Modals.types'
+import { getQwertyLayout } from 'modules/keyboard/utils'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './ShortcutModal.types'
 import ShortcutsModal from './ShortcutsModal'
 
-const mapState = (_: RootState): MapStateProps => ({})
+const mapState = (_: RootState): MapStateProps => ({
+  shortcuts: getQwertyLayout()
+})
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onClose: name => dispatch(closeModal(name))
