@@ -1,5 +1,6 @@
 import { put, takeLatest, call, select } from 'redux-saga/effects'
 import { getState as getStorage } from 'decentraland-dapps/dist/modules/storage/selectors'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSuccess, submitProjectFailure } from 'modules/contest/actions'
 import { getData as getProjects } from 'modules/project/selectors'
@@ -24,6 +25,13 @@ function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
       scene: scenes[project.sceneId],
       project,
       contest
+    }
+
+    const analytics = getAnalytics()
+    if (contest.ethAddress) {
+      analytics.identify(contest.ethAddress, { email: contest.email })
+    } else {
+      analytics.identify({ email: contest.email })
     }
 
     yield call(() => api.submitToContest(JSON.stringify(entry)))
