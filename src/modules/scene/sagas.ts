@@ -24,8 +24,6 @@ import { getProjectBounds } from 'modules/project/selectors'
 import { getRandomPositionWithinBounds, cloneEntities } from './utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 
-export const PARCEL_PLACEMENT_OFFSET = PARCEL_SIZE + PARCEL_SIZE / 2
-
 export function* sceneSaga() {
   yield takeLatest(ADD_ITEM, handleAddItem)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
@@ -245,7 +243,7 @@ function* handleSetGround(action: SetGroundAction) {
             id: transformId,
             type: ComponentType.Transform,
             data: {
-              position: { x: i * PARCEL_PLACEMENT_OFFSET, y: 0, z: j * PARCEL_PLACEMENT_OFFSET },
+              position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
               rotation: { x: 0, y: 0, z: 0, w: 1 }
             }
           }

@@ -33,10 +33,14 @@ export const renderCombination = (shortcut: ShortcutCombination) => {
   let out: JSX.Element[] = []
 
   for (let i = 0; i < shortcut.value.length; i++) {
-    out.push(<Chip text={mapLabel(shortcut.value[i])} />)
+    out.push(<Chip text={mapLabel(shortcut.value[i])} key={shortcut.value[i]} />)
 
     if (i !== shortcut.value.length - 1) {
-      out.push(<span className="plus">+</span>)
+      out.push(
+        <span className="plus" key={shortcut.value[i]}>
+          +
+        </span>
+      )
     }
   }
 
@@ -44,7 +48,7 @@ export const renderCombination = (shortcut: ShortcutCombination) => {
 }
 
 export const renderSimple = (shortcut: SimpleShortcut) => {
-  return <Chip text={mapLabel(shortcut.value)} />
+  return <Chip text={mapLabel(shortcut.value)} key={shortcut.value} />
 }
 
 export const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: boolean = false) => {
@@ -68,7 +72,11 @@ export const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: bool
       }
 
       if (i === 0) {
-        out.push(<span className="plus">or</span>)
+        out.push(
+          <span className="plus" key={'or'}>
+            or
+          </span>
+        )
       }
     }
   }
