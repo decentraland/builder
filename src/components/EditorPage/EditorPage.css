@@ -45,7 +45,3 @@
   margin-left: 24px;
   margin-right: 0;
 }
-
-body.lock-scroll {
-  overflow: hidden;
-}

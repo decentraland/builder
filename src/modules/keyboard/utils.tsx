@@ -2,7 +2,7 @@ import { Store } from 'redux'
 import { setGizmo, togglePreview, toggleSidebar, editorUndo, editorRedo, resetCamera, zoomIn, zoomOut } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen } from 'modules/editor/selectors'
-import { openModal } from 'modules/modal/actions'
+import { toggleModal } from 'modules/modal/actions'
 import { Gizmo } from 'modules/editor/types'
 import { ShortcutDefinition, Shortcut, ShortcutLayout } from './types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -113,7 +113,7 @@ export function getEditorShortcuts(store: Store) {
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.SHORTCUTS]),
-      callback: () => store.dispatch(openModal('ShortcutsModal'))
+      callback: () => store.dispatch(toggleModal('ShortcutsModal'))
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.RESET_CAMERA]),

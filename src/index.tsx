@@ -14,6 +14,7 @@ import * as modals from 'components/Modals'
 import * as languages from 'modules/translation/languages'
 import { Routes } from 'routing/Routes'
 
+import './modules/analytics/track'
 import './themes'
 import './index.css'
 
