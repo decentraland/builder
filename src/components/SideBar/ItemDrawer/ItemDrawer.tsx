@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Header, Grid, Icon } from 'decentraland-ui'
+import { Header, Grid, Icon, Input } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { debounce } from 'lib/debounce'
@@ -28,16 +28,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   state = {
     isList: false,
-    isSearching: false
+    search: ''
   }
 
   handleSearchDebounced = debounce((value: string) => {
     if (this.drawerContainer) {
-      this.drawerContainer.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      })
+      this.drawerContainer.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
     }
     this.props.onSearch(value)
   }, 200)
@@ -110,12 +106,13 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value.length > 0 && !this.state.isSearching) {
-      this.setState({ isSearching: true })
-    } else if (event.target.value.length === 0 && this.state.isSearching) {
-      this.setState({ isSearching: false })
-    }
+    this.setState({ search: event.target.value })
     this.handleSearchDebounced(event.target.value)
+  }
+
+  handleOnCleanSearchClick = () => {
+    this.setState({ search: '' })
+    this.handleSearchDebounced('')
   }
 
   setDrawerContainer = (ref: HTMLElement | null) => {
@@ -133,7 +130,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isList } = this.state
+    const { isList, search } = this.state
     const { categories, columnCount } = this.props
 
     return (
@@ -148,11 +145,17 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
         <div className="search-container">
           <Icon name="search" />
-          <input className="search" placeholder={t('itemdrawer.search')} onChange={this.handleSearch} />
+          <Input
+            className="search-input"
+            placeholder={t('itemdrawer.search')}
+            icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleOnCleanSearchClick } : null}
+            value={search}
+            onChange={this.handleSearch}
+          />
         </div>
 
         <div ref={this.setDrawerContainer} className="overflow-container">
-          {this.state.isSearching && categories.length === 0
+          {search.length > 0 && categories.length === 0
             ? this.renderNoResults()
             : categories.map((category, index) => (
                 <Drawer key={index} label={category.name}>

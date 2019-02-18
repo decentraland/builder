@@ -60,7 +60,13 @@
   padding-right: 16px;
 }
 
-.ItemDrawer input.search {
+.ItemDrawer .ui.search-input {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.ItemDrawer .ui.search-input input,
+.ItemDrawer .ui.search-input input:focus {
   outline: none;
   background: rgba(var(--purplish-grey-raw), 0.48);
   border: none;
@@ -68,8 +74,12 @@
   padding: 8px;
   width: 100%;
   color: var(--text);
-  margin-bottom: 12px;
   padding-left: 32px;
+}
+
+.ItemDrawer .ui.icon.input > i.icon.close {
+  cursor: pointer;
+  pointer-events: inherit;
 }
 
 .ItemDrawer .search.icon {
