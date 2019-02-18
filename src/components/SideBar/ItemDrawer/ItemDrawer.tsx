@@ -24,13 +24,23 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   isCtrlDown = false
+  drawerContainer: HTMLElement | null = null
 
   state = {
     isList: false,
     isSearching: false
   }
 
-  handleSearchDebounced = debounce(this.props.onSearch, 200)
+  handleSearchDebounced = debounce((value: string) => {
+    if (this.drawerContainer) {
+      this.drawerContainer.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
+    }
+    this.props.onSearch(value)
+  }, 200)
 
   componentWillMount() {
     document.body.addEventListener('keydown', this.handleKeyDown)
@@ -99,10 +109,6 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return el
   }
 
-  getColumnCount(): number {
-    return Number(this.props.columnCount)
-  }
-
   handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 0 && !this.state.isSearching) {
       this.setState({ isSearching: true })
@@ -110,6 +116,16 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
       this.setState({ isSearching: false })
     }
     this.handleSearchDebounced(event.target.value)
+  }
+
+  setDrawerContainer = (ref: HTMLElement | null) => {
+    if (!this.drawerContainer) {
+      this.drawerContainer = ref
+    }
+  }
+
+  getColumnCount(): number {
+    return Number(this.props.columnCount)
   }
 
   renderNoResults = () => {
@@ -135,7 +151,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           <input className="search" placeholder={t('itemdrawer.search')} onChange={this.handleSearch} />
         </div>
 
-        <div className="overflow-container">
+        <div ref={this.setDrawerContainer} className="overflow-container">
           {this.state.isSearching && categories.length === 0
             ? this.renderNoResults()
             : categories.map((category, index) => (
