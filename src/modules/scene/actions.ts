@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
-import { AssetResource, Asset } from 'modules/asset/types'
+import { Asset } from 'modules/asset/types'
 import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
 import { Project } from 'modules/project/types'
 
@@ -42,7 +42,7 @@ export type UpdateTransfromAction = ReturnType<typeof updateTransform>
 
 export const ADD_ITEM = 'Add item'
 
-export const addItem = (asset: AssetResource, position?: Vector3) => action(ADD_ITEM, { asset, position })
+export const addItem = (asset: Asset, position?: Vector3) => action(ADD_ITEM, { asset, position })
 
 export type AddItemAction = ReturnType<typeof addItem>
 
@@ -50,7 +50,7 @@ export type AddItemAction = ReturnType<typeof addItem>
 
 export const DROP_ITEM = 'Drop item'
 
-export const dropItem = (asset: AssetResource, x: number, y: number) => action(DROP_ITEM, { asset, x, y })
+export const dropItem = (asset: Asset, x: number, y: number) => action(DROP_ITEM, { asset, x, y })
 
 export type DropItemAction = ReturnType<typeof dropItem>
 
