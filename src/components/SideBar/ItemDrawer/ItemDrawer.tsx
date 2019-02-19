@@ -32,9 +32,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   handleSearchDebounced = debounce((value: string) => {
-    if (this.drawerContainer) {
-      this.drawerContainer.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-    }
+    this.scrollItemsToTop()
     this.props.onSearch(value)
   }, 200)
 
@@ -113,6 +111,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   handleOnCleanSearchClick = () => {
     this.setState({ search: '' })
     this.handleSearchDebounced('')
+  }
+
+  scrollItemsToTop() {
+    if (this.drawerContainer) {
+      this.drawerContainer.scrollTo(0, 0)
+    }
   }
 
   setDrawerContainer = (ref: HTMLElement | null) => {
