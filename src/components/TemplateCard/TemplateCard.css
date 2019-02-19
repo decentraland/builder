@@ -6,6 +6,7 @@
 
 .TemplateCard .title {
   margin-bottom: 8px;
+  user-select: none;
 }
 
 .TemplateCard .description {
@@ -14,6 +15,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  user-select: none;
 }
 
 .TemplateCard .SquaresGrid {

@@ -86,3 +86,18 @@
   padding: 16px;
   color: var(--purplish-grey);
 }
+
+.ItemDrawer img:after {
+  display: block;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(var(--purplish-grey-raw), 0.28);
+  border-radius: 100%;
+  content: '';
+}

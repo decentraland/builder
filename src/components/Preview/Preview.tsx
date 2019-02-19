@@ -9,25 +9,39 @@ import { EditorWindow, Props, State } from './Preview.types'
 import './Preview.css'
 
 const editorWindow = window as EditorWindow
+let canvas: HTMLCanvasElement | null = null
 
 class Preview extends React.Component<Props & CollectedProps, State> {
-  canvas = React.createRef<HTMLDivElement>()
+  canvasContainer = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
-    this.startEditor().catch(error => console.error('Failed to start editor', error))
+    if (!editorWindow.isDCLInitialized) {
+      this.startEditor().catch(error => console.error('Failed to start editor', error))
+    } else {
+      this.moveCanvas()
+      this.props.onOpenEditor()
+    }
+  }
+
+  componentWillUnmount() {
+    if (canvas) {
+      document.getElementsByTagName('body')[0].appendChild(canvas)
+    }
+  }
+
+  moveCanvas = () => {
+    if (this.canvasContainer.current && canvas) {
+      this.canvasContainer.current.appendChild(canvas)
+      editorWindow.editor.resize()
+    }
   }
 
   async startEditor() {
     await editorWindow.editor.initEngine(this.props.layout.rows, this.props.layout.cols)
-
     try {
-      const canvas = await editorWindow.editor.getDCLCanvas()
-
-      if (this.canvas.current && canvas) {
-        this.canvas.current!.appendChild(canvas)
-        editorWindow.editor.resize()
-        this.props.onOpenEditor()
-      }
+      canvas = await editorWindow.editor.getDCLCanvas()
+      this.moveCanvas()
+      this.props.onOpenEditor()
     } catch (error) {
       console.error('Failed to load Preview', error)
     }
@@ -38,7 +52,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
     return connectDropTarget(
       <div className="Preview-wrapper">
-        <div className="Preview" id="preview-viewport" ref={this.canvas}>
+        <div className="Preview" id="preview-viewport" ref={this.canvasContainer}>
           {isLoading && (
             <div className="overlay">
               <Loader active size="massive" />

@@ -31,6 +31,10 @@ body.lock-scroll {
   overflow: hidden;
 }
 
+body canvas {
+  display: none;
+}
+
 .text {
   color: var(--text);
 }

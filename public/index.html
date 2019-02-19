@@ -5,23 +5,45 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="theme-color" content="#000000" />
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+    <style>
+      .loading-overlay {
+        overflow: hidden;
+        background: #19141a;
+      }
+
+      .loading-overlay:after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 100px;
+        margin: -50px -50px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-image: url(https://market.decentraland.org/static/media/logo.a2f3cefb.svg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        animation: loadingAnimation 3s infinite;
+      }
+
+      @keyframes loadingAnimation {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+
     <title>Builder | Decentraland</title>
   </head>
-  <body>
+  <body class="loading-overlay">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
