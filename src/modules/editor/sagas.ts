@@ -26,7 +26,8 @@ import {
   takeScreenshot,
   unbindEditorKeyboardShortcuts,
   bindEditorKeyboardShortcuts,
-  SET_EDITOR_READY
+  SET_EDITOR_READY,
+  resetCamera
 } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
@@ -204,8 +205,12 @@ function* handleTooglePreview(action: TogglePreviewAction) {
     editor.selectGizmo(enabled ? Gizmo.NONE : gizmo)
     resizeEditor()
   })
-
-  yield put(enabled ? unbindEditorKeyboardShortcuts() : bindEditorKeyboardShortcuts())
+  if (enabled) {
+    yield put(unbindEditorKeyboardShortcuts())
+  } else {
+    yield put(bindEditorKeyboardShortcuts())
+    yield put(resetCamera())
+  }
 }
 
 function* handleToggleSidebar(_: ToggleSidebarAction) {
