@@ -85,10 +85,6 @@ export const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: bool
 }
 
 export default class ShortcutsModal extends React.PureComponent<Props> {
-  handleOnClose = () => {
-    this.props.onClose('ShortcutsModal')
-  }
-
   renderShortcutSequence = (shortcutDefinition: ShortcutDefinition) => {
     if (shortcutDefinition.type === 'combination') {
       return renderCombination(shortcutDefinition)
@@ -144,17 +140,11 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { modal } = this.props
+    const { name, onClose } = this.props
     const categories = getCategoryTitles()
 
     return (
-      <Modal
-        open={modal.open}
-        className="ShortcutsModal"
-        size="small"
-        onClose={this.handleOnClose}
-        closeIcon={<CloseModalIcon onClick={this.handleOnClose} />}
-      >
+      <Modal name={name} closeIcon={<CloseModalIcon onClick={onClose} />}>
         <Modal.Content>
           <div className="title">{t('shortcuts_modal.title')}</div>
 
