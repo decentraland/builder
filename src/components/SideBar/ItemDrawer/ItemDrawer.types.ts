@@ -16,5 +16,5 @@ export type Props = DefaultProps & {
 
 export type State = {
   isList: boolean
-  isSearching: boolean
+  search: string
 }
