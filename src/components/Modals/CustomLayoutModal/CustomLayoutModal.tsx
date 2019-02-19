@@ -43,13 +43,6 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
       errorMessage = t('custom_layout.max_area_error', { area: MAX_AREA })
     }
 
-    console.log({
-      Modal,
-      'Modal.Header': Modal.Header,
-      'Modal.Description': Modal.Description,
-      'Modal.Content': Modal.Content
-    })
-
     return (
       <Modal name={name}>
         <Modal.Header>{t('custom_layout.title')}</Modal.Header>
