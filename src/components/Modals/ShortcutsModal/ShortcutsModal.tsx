@@ -37,7 +37,7 @@ export const renderCombination = (shortcut: ShortcutCombination) => {
 
     if (i !== shortcut.value.length - 1) {
       out.push(
-        <span className="plus" key={shortcut.value[i]}>
+        <span className="plus" key={i}>
           +
         </span>
       )
@@ -73,7 +73,7 @@ export const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: bool
 
       if (i === 0) {
         out.push(
-          <span className="plus" key={'or'}>
+          <span className="plus" key="or">
             or
           </span>
         )
@@ -113,12 +113,12 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
           <div className="shortcuts">
             {categoryShortcuts.map(shortcut => {
               const shortcutDefinition = shortcuts[shortcut]
-              const a = this.renderShortcutSequence(shortcutDefinition)
+              const sequence = this.renderShortcutSequence(shortcutDefinition)
 
               return (
                 <div className="shortcut">
                   <div className="name">{shortcutDefinition.title}</div>
-                  <div className="keybinding">{a}</div>
+                  <div className="keybinding">{sequence}</div>
                 </div>
               )
             })}
@@ -135,7 +135,7 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
       const shortcutDefinition = shortcuts[shortcut]
 
       return (
-        <div className="shortcut">
+        <div className="shortcut" key={shortcut}>
           <div className="name">{shortcutDefinition.title}</div>
           <div className="keybinding">{this.renderShortcutSequence(shortcutDefinition)}</div>
         </div>
