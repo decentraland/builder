@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 
 import { acceptTerms, AcceptTermsAction } from 'modules/contest/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
-import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
 
 export type Props = ModalProps & {
   onAcceptTerms: typeof acceptTerms
@@ -14,5 +14,5 @@ export type State = {
 }
 
 export type MapStateProps = {}
-export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onAcceptTerms' | 'onOpenModal'>
-export type MapDispatch = ModalMapDispatch & Dispatch<AcceptTermsAction | OpenModalAction>
+export type MapDispatchProps = Pick<Props, 'onAcceptTerms' | 'onOpenModal'>
+export type MapDispatch = Dispatch<AcceptTermsAction | OpenModalAction>

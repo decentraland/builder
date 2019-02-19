@@ -1,3 +1,3 @@
-import ShortcutsModal from './ShortcutsModal.container'
+import ShortcutsModal from './ShortcutsModal'
 
 export default ShortcutsModal

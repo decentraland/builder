@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Form, Modal, Field, Button, Loader } from 'decentraland-ui'
+import { Form, Field, Button, Loader } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectFields from 'components/ProjectFields'
@@ -22,8 +23,10 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     }
   }
 
-  handleOnCancel = () => {
-    this.closeModal()
+  componentWillUnmount() {
+    this.setState(this.getBaseState())
+    this.isSubmitting = false
+    this.isSuccess = false
   }
 
   handleSubmit = () => {
@@ -67,21 +70,14 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     }
   }
 
-  closeModal() {
-    this.props.onClose('AddToContestModal')
-    this.setState(this.getBaseState())
-    this.isSubmitting = false
-    this.isSuccess = false
-  }
-
   render() {
-    const { modal, isLoading, error } = this.props
+    const { name, isLoading, error, onClose } = this.props
     const { project, contest } = this.state
     const { title, description } = project
     const { email, ethAddress } = contest
 
     return (
-      <Modal open={modal.open} className="AddToContestModal" size="small" onClose={this.handleOnCancel}>
+      <Modal name={name}>
         <Modal.Content>
           <div className="title">{t('add_to_contest.title')}</div>
           <div className="subtitle">{t('add_to_contest.subtitle')}</div>
@@ -120,7 +116,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
             ) : (
               <div className="buttons-container">
                 {this.isSuccess ? <Button primary icon="check" disabled={true} /> : <Button primary>{t('global.submit')}</Button>}
-                <Button secondary onClick={preventDefault(this.handleOnCancel)}>
+                <Button secondary onClick={preventDefault(onClose)}>
                   {t('global.cancel')}
                 </Button>
               </div>

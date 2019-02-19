@@ -1,4 +1,4 @@
-import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ShortcutLayout } from 'modules/keyboard/types'
 
 export type Props = ModalProps & {
@@ -8,5 +8,4 @@ export type Props = ModalProps & {
 export type State = {}
 
 export type MapStateProps = Pick<Props, 'shortcuts'>
-export type MapDispatchProps = ModalMapDispatchProps
-export type MapDispatch = ModalMapDispatch
+export type MapDispatchProps = {}
