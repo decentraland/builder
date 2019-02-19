@@ -1,5 +1,5 @@
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { SUBMIT_PROJECT_SUCCESS, SubmitProjectSuccessAction } from 'modules/contest/actions'
+import { SUBMIT_PROJECT_SUCCESS, SubmitProjectSuccessAction, SUBMIT_PROJECT_FAILURE } from 'modules/contest/actions'
 import {
   ADD_ITEM,
   DROP_ITEM,
@@ -43,7 +43,7 @@ function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
 }
 
 // contest actions
-add(SUBMIT_PROJECT_SUCCESS, 'Contest data', action => {
+add(SUBMIT_PROJECT_SUCCESS, 'Submit project', action => {
   const payload = (action as SubmitProjectSuccessAction).payload
   return {
     projectId: payload.projectId,
@@ -51,6 +51,7 @@ add(SUBMIT_PROJECT_SUCCESS, 'Contest data', action => {
     ethAddress: payload.contest.ethAddress
   }
 })
+add(SUBMIT_PROJECT_FAILURE, 'Submit project failure')
 
 // item actions
 addPayload(ADD_ITEM, trimAsset)
