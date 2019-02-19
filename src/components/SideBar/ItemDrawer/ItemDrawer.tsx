@@ -108,7 +108,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     this.handleSearchDebounced(event.target.value)
   }
 
-  handleCleanSearchClick = () => {
+  handleCleanSearch = () => {
     this.setState({ search: '' })
     this.handleSearchDebounced('')
   }
@@ -152,7 +152,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           <Input
             className="search-input"
             placeholder={t('itemdrawer.search')}
-            icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearchClick } : null}
+            icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
             value={search}
             onChange={this.handleSearch}
           />
