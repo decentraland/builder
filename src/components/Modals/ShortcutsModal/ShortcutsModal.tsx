@@ -29,7 +29,7 @@ const getCategoryTitles = (): Record<string, string> => ({
   other: t('shortcuts_modal.other_shortcuts')
 })
 
-export const renderCombination = (shortcut: ShortcutCombination) => {
+const renderCombination = (shortcut: ShortcutCombination) => {
   let out: JSX.Element[] = []
 
   for (let i = 0; i < shortcut.value.length; i++) {
@@ -47,11 +47,11 @@ export const renderCombination = (shortcut: ShortcutCombination) => {
   return out
 }
 
-export const renderSimple = (shortcut: SimpleShortcut) => {
+const renderSimple = (shortcut: SimpleShortcut) => {
   return <Chip text={mapLabel(shortcut.value)} key={shortcut.value} />
 }
 
-export const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: boolean = false) => {
+const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: boolean = false) => {
   const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
   let out: JSX.Element[] = []
 

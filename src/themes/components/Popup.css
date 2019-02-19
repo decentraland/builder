@@ -1,0 +1,17 @@
+.ui.popup,
+.ui.inverted.popup {
+  background-color: var(--purplish-grey);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  height: 32px;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.38;
+  padding: 7px 12px;
+}
+
+.ui.inverted.bottom.popup:before,
+.ui.inverted.top.popup:before {
+  display: none;
+}

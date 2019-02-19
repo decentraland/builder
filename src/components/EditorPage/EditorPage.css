@@ -39,9 +39,5 @@
 
 .toolbar .Tools .tool:last-child {
   margin-right: 0px;
-}
-
-.toolbar .Tools .Icon.shortcuts {
   margin-left: 24px;
-  margin-right: 0;
 }

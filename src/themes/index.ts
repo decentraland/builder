@@ -10,6 +10,7 @@ import './components/Dimmer.css'
 import './components/Grid.css'
 import './components/Modal.css'
 import './components/Input.css'
+import './components/Popup.css'
 
 // Custom theme
 import './theme.css'

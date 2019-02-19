@@ -83,20 +83,20 @@ export default class TopBar extends React.PureComponent<Props> {
           <Grid.Row>
             <div className="editor-actions">
               <span className="editor-modes">
-                <ShortcutTooltip shortcut={Shortcut.MOVE} position="bottom center" className="tool">
+                <ShortcutTooltip shortcut={Shortcut.MOVE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip icon="move" isActive={gizmo === Gizmo.MOVE} onClick={this.handleMoveMode} />
                 </ShortcutTooltip>
-                <ShortcutTooltip shortcut={Shortcut.ROTATE} position="bottom center" className="tool">
+                <ShortcutTooltip shortcut={Shortcut.ROTATE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip icon="rotate" isActive={gizmo === Gizmo.ROTATE} onClick={this.handleRotateMode} />
                 </ShortcutTooltip>
               </span>
-              <ShortcutTooltip shortcut={Shortcut.RESET_ITEM} position="bottom center" className="tool">
+              <ShortcutTooltip shortcut={Shortcut.RESET_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">
                 <Chip icon="undo" isDisabled={!selectedEntityId} onClick={onReset} />
               </ShortcutTooltip>
-              <ShortcutTooltip shortcut={Shortcut.DUPLICATE_ITEM} position="bottom center" className="tool">
+              <ShortcutTooltip shortcut={Shortcut.DUPLICATE_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">
                 <Chip icon="duplicate" isDisabled={!selectedEntityId} onClick={onDuplicate} />
               </ShortcutTooltip>
-              <ShortcutTooltip shortcut={Shortcut.DELETE_ITEM} position="bottom center" className="tool">
+              <ShortcutTooltip shortcut={Shortcut.DELETE_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">
                 <Chip icon="delete" isDisabled={!selectedEntityId} onClick={onDelete} />
               </ShortcutTooltip>
             </div>
@@ -104,10 +104,10 @@ export default class TopBar extends React.PureComponent<Props> {
         </Grid.Column>
         <Grid.Column mobile={6} tablet={6} computer={5} className="right-column">
           <Grid.Row>
-            <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool">
+            <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="preview" isActive={isPreviewing} onClick={this.handleTogglePreview} />
             </ShortcutTooltip>
-            <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool">
+            <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
 

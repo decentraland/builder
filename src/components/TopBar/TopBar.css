@@ -95,3 +95,7 @@
   filter: saturate(0.1);
   opacity: 0.32;
 }
+
+.ui.popup.bottom.top-bar-popup {
+  margin-top: 20px;
+}
