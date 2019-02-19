@@ -115,7 +115,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   scrollItemsToTop() {
     if (this.drawerContainer) {
-      this.drawerContainer.scrollTo(0, 0)
+      this.drawerContainer.scrollTop = 0
     }
   }
 
