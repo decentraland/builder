@@ -26,17 +26,19 @@
         background-repeat: no-repeat;
         background-size: cover;
         animation: loadingAnimation 3s infinite;
+        animation-delay: 2s;
+        opacity: 0;
       }
 
       @keyframes loadingAnimation {
         0% {
-          opacity: 1;
-        }
-        50% {
           opacity: 0;
         }
-        100% {
+        50% {
           opacity: 1;
+        }
+        100% {
+          opacity: 0;
         }
       }
     </style>
