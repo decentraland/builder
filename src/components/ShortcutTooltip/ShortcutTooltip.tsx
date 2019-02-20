@@ -35,7 +35,7 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
     }
 
     if (shortcutDefinition.type === 'alternative') {
-      return renderer.renderAlternative(shortcutDefinition).join(' ')
+      return renderer.renderAlternative(shortcutDefinition, true).join(' ')
     }
 
     return renderer.renderSimple(shortcutDefinition)

@@ -147,15 +147,30 @@ export abstract class ShortcutRenderer {
     return out
   }
 
-  renderAlternative = (shortcut: ShortcutAlternative) => {
+  renderAlternative = (shortcut: ShortcutAlternative, onlyFirst?: boolean) => {
     const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
     let out: (JSX.Element | string)[] = []
 
-    const item = alternatives[0]
-    if (item.type === 'combination') {
-      out = this.renderCombination(item)
+    if (onlyFirst) {
+      const item = alternatives[0]
+      if (item.type === 'combination') {
+        out = [...out, ...this.renderCombination(item)]
+      } else {
+        out.push(this.renderSimple(item))
+      }
     } else {
-      out.push(this.renderSimple(item))
+      for (let i = 0; i < alternatives.length; i++) {
+        const item = alternatives[i]
+        if (item.type === 'combination') {
+          out = [...out, ...this.renderCombination(item)]
+        } else {
+          out.push(this.renderSimple(item))
+        }
+
+        if (i === 0) {
+          out.push(this.renderOr())
+        }
+      }
     }
 
     return out
