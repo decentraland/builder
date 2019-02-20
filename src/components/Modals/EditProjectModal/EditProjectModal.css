@@ -15,14 +15,6 @@
   margin-top: 40px;
 }
 
-.EditProjectModal .button-container {
-  display: flex;
-}
-
-.EditProjectModal .button-container > * {
-  flex: 1;
-}
-
 .EditProjectModal .ui.sub.header.custom-label {
   margin-top: 0px;
   margin-bottom: 16px;
