@@ -4,8 +4,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
 import CloseModalIcon from '../CloseModalIcon'
-import { Shortcut, ShortcutDefinition, ShortcutCombination, SimpleShortcut, ShortcutAlternative } from 'modules/keyboard/types'
-import { mapLabel } from 'modules/keyboard/utils'
+import { Shortcut, ShortcutDefinition, SimpleShortcut } from 'modules/keyboard/types'
+import { mapLabel, ShortcutRenderer } from 'modules/keyboard/utils'
 import { Props } from './ShortcutModal.types'
 import './ShortcutsModal.css'
 
@@ -29,72 +29,39 @@ const getCategoryTitles = (): Record<string, string> => ({
   other: t('shortcuts_modal.other_shortcuts')
 })
 
-const renderCombination = (shortcut: ShortcutCombination) => {
-  let out: JSX.Element[] = []
-
-  for (let i = 0; i < shortcut.value.length; i++) {
-    out.push(<Chip text={mapLabel(shortcut.value[i])} key={shortcut.value[i]} />)
-
-    if (i !== shortcut.value.length - 1) {
-      out.push(
-        <span className="plus" key={i}>
-          +
-        </span>
-      )
-    }
+class ShortcutChipRenderer extends ShortcutRenderer {
+  renderSimple(shortcut: SimpleShortcut) {
+    return <Chip text={mapLabel(shortcut.value)} key={shortcut.value} />
   }
-
-  return out
-}
-
-const renderSimple = (shortcut: SimpleShortcut) => {
-  return <Chip text={mapLabel(shortcut.value)} key={shortcut.value} />
-}
-
-const renderAlternative = (shortcut: ShortcutAlternative, onlyFirst: boolean = false) => {
-  const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
-  let out: JSX.Element[] = []
-
-  if (onlyFirst) {
-    const item = alternatives[0]
-    if (item.type === 'combination') {
-      out = [...out, ...renderCombination(item)]
-    } else {
-      out.push(renderSimple(item))
-    }
-  } else {
-    for (let i = 0; i < alternatives.length; i++) {
-      const item = alternatives[i]
-      if (item.type === 'combination') {
-        out = [...out, ...renderCombination(item)]
-      } else {
-        out.push(renderSimple(item))
-      }
-
-      if (i === 0) {
-        out.push(
-          <span className="plus" key="or">
-            or
-          </span>
-        )
-      }
-    }
+  renderPlus(key: number) {
+    return (
+      <span className="plus" key={key}>
+        +
+      </span>
+    )
   }
-
-  return out
+  renderOr() {
+    return (
+      <span className="plus" key="or">
+        {t('global.or')}
+      </span>
+    )
+  }
 }
+
+const renderer = new ShortcutChipRenderer()
 
 export default class ShortcutsModal extends React.PureComponent<Props> {
   renderShortcutSequence = (shortcutDefinition: ShortcutDefinition) => {
     if (shortcutDefinition.type === 'combination') {
-      return renderCombination(shortcutDefinition)
+      return renderer.renderCombination(shortcutDefinition)
     }
 
     if (shortcutDefinition.type === 'alternative') {
-      return renderAlternative(shortcutDefinition)
+      return renderer.renderAlternative(shortcutDefinition)
     }
 
-    return renderSimple(shortcutDefinition as SimpleShortcut)
+    return renderer.renderSimple(shortcutDefinition as SimpleShortcut)
   }
 
   renderShortcuts = () => {

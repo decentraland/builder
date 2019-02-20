@@ -1,11 +1,12 @@
 import { Store } from 'redux'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import { setGizmo, togglePreview, toggleSidebar, editorUndo, editorRedo, resetCamera, zoomIn, zoomOut } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen } from 'modules/editor/selectors'
 import { toggleModal } from 'modules/modal/actions'
 import { Gizmo } from 'modules/editor/types'
-import { ShortcutDefinition, Shortcut, ShortcutLayout } from './types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { ShortcutDefinition, Shortcut, ShortcutLayout, ShortcutCombination, SimpleShortcut, ShortcutAlternative } from './types'
 
 const COMMAND_KEY = 'command'
 const CONTROL_KEY = 'ctrl'
@@ -128,4 +129,39 @@ export function getEditorShortcuts(store: Store) {
       callback: () => store.dispatch(zoomOut())
     }
   ]
+}
+
+export abstract class ShortcutRenderer {
+  renderCombination(shortcut: ShortcutCombination) {
+    let out: (JSX.Element | string)[] = []
+
+    for (let i = 0; i < shortcut.value.length; i++) {
+      const simple: SimpleShortcut = { type: 'simple', value: shortcut.value[i], title: shortcut.title }
+      out.push(this.renderSimple(simple))
+
+      if (i !== shortcut.value.length - 1) {
+        out.push(this.renderPlus(i))
+      }
+    }
+
+    return out
+  }
+
+  renderAlternative = (shortcut: ShortcutAlternative) => {
+    const alternatives = shortcut.value as Array<SimpleShortcut | ShortcutCombination>
+    let out: (JSX.Element | string)[] = []
+
+    const item = alternatives[0]
+    if (item.type === 'combination') {
+      out = this.renderCombination(item)
+    } else {
+      out.push(this.renderSimple(item))
+    }
+
+    return out
+  }
+
+  abstract renderSimple(shortcut: SimpleShortcut): JSX.Element | string
+  abstract renderPlus(key: number): JSX.Element | string
+  abstract renderOr(): JSX.Element | string
 }
