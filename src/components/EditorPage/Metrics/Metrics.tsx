@@ -15,7 +15,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   analytics = getAnalytics()
-  metricExceeded: keyof SceneMetrics | null = null
+  metricsExceeded: (keyof SceneMetrics)[] = []
 
   componentWillMount() {
     document.addEventListener('click', this.handleClose)
@@ -26,19 +26,16 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    let isMetricExceeded = false
     for (let key in nextProps.metrics) {
       const metric = key as keyof SceneMetrics
       if (nextProps.metrics[metric] > nextProps.limits[metric]) {
-        if (!this.metricExceeded || this.metricExceeded !== metric) {
-          this.metricExceeded = metric
+        if (!this.metricsExceeded.includes(metric)) {
+          this.metricsExceeded.push(metric)
           this.analytics.track('Metrics exceeded', { metric })
         }
-        isMetricExceeded = true
+      } else {
+        this.metricsExceeded = this.metricsExceeded.filter(exceeded => exceeded !== metric)
       }
-    }
-    if (!isMetricExceeded) {
-      this.metricExceeded = null
     }
   }
 
