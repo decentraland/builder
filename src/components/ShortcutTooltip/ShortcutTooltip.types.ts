@@ -6,6 +6,7 @@ export type Props = {
   shortcutDefinition: ShortcutDefinition
   position: PopupProps['position']
   className: string
+  popupClassName: string
 }
 
 export type OwnProps = Pick<Props, 'shortcut' | 'position'>
