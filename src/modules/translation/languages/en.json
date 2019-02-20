@@ -134,13 +134,16 @@
     "subtitle_one": "You can create custom layouts for your scene.",
     "subtitle_two": "Enter values in the boxes below for the desired size."
   },
-  "custom_layout": {
-    "title": "Custom",
-    "max_area_error": "Your scene can't have more than {area} parcels",
-    "up_to": "Up to {max} parcels"
-  },
   "layout_picker": {
     "rows": "rows",
     "columns": "columns"
+  },
+  "custom_layout": {
+    "title": "Custom",
+    "up_to": "Up to {max} parcels"
+  },
+  "project_layout_picker": {
+    "max_area_error": "Your scene can't have more than {area} parcels",
+    "min_area_error": "Your scene can't it's too small"
   }
 }

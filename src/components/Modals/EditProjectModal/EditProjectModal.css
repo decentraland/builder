@@ -15,8 +15,20 @@
   margin-top: 40px;
 }
 
-.EditProjectModal .ui.sub.header.custom-label {
-  margin-top: 0px;
+.EditProjectModal .picker {
+  margin-bottom: 31px;
+}
+
+.EditProjectModal .ui.sub.header.picker-label {
+  margin-top: 0;
   margin-bottom: 16px;
   text-transform: uppercase;
+}
+
+.EditProjectModal .LayoutPicker {
+  padding: 15px;
+}
+
+.EditProjectModal .LayoutPicker .input {
+  width: 40%;
 }

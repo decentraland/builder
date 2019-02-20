@@ -1,16 +1,22 @@
 import * as React from 'react'
-import { Button, Form } from 'decentraland-ui'
+import { Header, Button, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { ProjectLayout } from 'modules/project/types'
 import ProjectFields from 'components/ProjectFields'
+import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 import { Props, State } from './EditProjectModal.types'
 import './EditProjectModal.css'
 
 export default class EditProjectModal extends React.PureComponent<Props, State> {
   state = {
-    title: this.props.currentProject ? this.props.currentProject.title : '',
-    description: this.props.currentProject ? this.props.currentProject.description : ''
+    title: this.props.currentProject.title,
+    description: this.props.currentProject.description,
+
+    cols: this.props.currentProject.parcelLayout.cols,
+    rows: this.props.currentProject.parcelLayout.rows,
+    hasError: false
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -30,6 +36,10 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     onClose()
   }
 
+  handleLayoutChange = (projectLayout: ProjectLayout) => {
+    this.setState({ ...projectLayout })
+  }
+
   handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
     this.setState({ title: event.currentTarget.value })
   }
@@ -41,6 +51,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   render() {
     const { name, onClose } = this.props
     const { title, description } = this.state
+    const { cols, rows, hasError } = this.state
 
     return (
       <Modal name={name}>
@@ -50,10 +61,19 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
             <div className="details">
               <ProjectFields.Title value={title} onChange={this.handleTitleChange} required />
               <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
+
+              <div className="picker">
+                <Header sub className="picker-label">
+                  {t('edit_project_modal.custom_layout_label')}
+                </Header>
+                <ProjectLayoutPicker cols={cols} rows={rows} onChange={this.handleLayoutChange} />
+              </div>
             </div>
 
             <div className="buttons-container">
-              <Button primary>{t('global.save')}</Button>
+              <Button primary disabled={hasError}>
+                {t('global.save')}
+              </Button>
               <Button secondary onClick={onClose}>
                 {t('global.cancel')}
               </Button>

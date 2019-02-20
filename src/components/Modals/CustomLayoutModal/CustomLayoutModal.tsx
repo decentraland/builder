@@ -3,8 +3,9 @@ import { Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { MAX_AREA, fromLayout } from 'modules/template/utils'
-import LayoutPicker from 'components/LayoutPicker'
+import { fromLayout } from 'modules/template/utils'
+import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
+import { ProjectLayout } from 'modules/project/types'
 import { Props, State } from './CustomLayoutModal.types'
 
 import './CustomLayoutModal.css'
@@ -13,18 +14,11 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   state = {
     cols: 4,
     rows: 2,
-    maxError: false,
-    minError: false
+    hasError: false
   }
 
-  handleChange = (layout: { cols: number; rows: number }) => {
-    const { cols, rows } = layout
-    this.setState({
-      cols: cols >= 1 ? cols : this.state.cols,
-      rows: rows >= 1 ? rows : this.state.rows,
-      maxError: cols * rows > MAX_AREA,
-      minError: rows < 1 || cols < 1
-    })
+  handleLayoutChange = (projectLayout: ProjectLayout) => {
+    this.setState({ ...projectLayout })
   }
 
   handleCreate = () => {
@@ -36,12 +30,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
 
   render() {
     const { name, onClose } = this.props
-    const { cols, rows, maxError, minError } = this.state
-
-    let errorMessage
-    if (maxError) {
-      errorMessage = t('custom_layout.max_area_error', { area: MAX_AREA })
-    }
+    const { cols, rows, hasError } = this.state
 
     return (
       <Modal name={name}>
@@ -51,9 +40,10 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
           <p>{t('custom_layout_modal.subtitle_two')}</p>
         </Modal.Description>
         <Modal.Content>
-          <LayoutPicker cols={cols} rows={rows} showGrid onChange={this.handleChange} errorMessage={errorMessage} />
+          <ProjectLayoutPicker cols={cols} rows={rows} onChange={this.handleLayoutChange} showGrid />
+
           <div className="buttons">
-            <Button primary disabled={maxError || minError} onClick={this.handleCreate}>
+            <Button primary disabled={hasError} onClick={this.handleCreate}>
               {t('global.create')}
             </Button>
             <Button secondary onClick={onClose}>

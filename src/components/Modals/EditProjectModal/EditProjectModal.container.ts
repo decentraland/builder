@@ -10,9 +10,10 @@ import { editProject } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './EditProjectModal.types'
 import EditProjectModal from './EditProjectModal'
 
+// Both the current project and scenes are always present when this modal is rendered
 const mapState = (state: RootState): MapStateProps => ({
-  currentProject: getCurrentProject(state),
-  currentScene: getCurrentScene(state)
+  currentProject: getCurrentProject(state)!,
+  currentScene: getCurrentScene(state)!
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

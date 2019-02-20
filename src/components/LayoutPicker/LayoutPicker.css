@@ -17,6 +17,7 @@
   display: flex;
   flex-flow: column;
   align-items: center;
+  border-bottom: 2px solid rgba(var(--purplish-grey-raw), 0.16);
 }
 
 .LayoutPicker .inputs label {
@@ -28,11 +29,13 @@
   user-select: none;
 }
 
-.LayoutPicker .inputs input {
+.LayoutPicker .inputs input,
+.ui.form .LayoutPicker .inputs input,
+.ui.form .LayoutPicker .inputs input:focus {
   width: 128px;
   background: transparent;
+  border-radius: 0;
   border: none;
-  border-bottom: 2px solid var(--purplish-grey);
   color: var(--text);
   font-size: 20px;
   line-height: 28px;
