@@ -50,7 +50,7 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
           entity.remove(Gizmos)
         } else {
           const staticEntities = engine.getComponentGroup(StaticEntity)
-          if (!staticEntities.hasEntity(entity.uuid)) {
+          if (!staticEntities.hasEntity(entity)) {
             entity.set(gizmo)
           }
         }

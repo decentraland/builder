@@ -4,3 +4,29 @@
   padding: 17px 0px 0px 16px;
   height: 100%;
 }
+
+.SideBar.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SideBar.loading .spinner {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(var(--purplish-grey-raw), 0.78);
+  border-radius: 100%;
+  animation: sk-scaleout 1s infinite ease-in-out;
+}
+
+@keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0;
+  }
+}

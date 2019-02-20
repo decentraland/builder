@@ -9,6 +9,10 @@ import * as languages from 'modules/translation/languages'
 import { locations } from 'routing/locations'
 
 export class Routes extends React.Component {
+  componentDidMount() {
+    document.body.classList.remove('loading-overlay')
+  }
+
   wrapInApp(Component: React.ComponentType<any>) {
     return (...props: any[]) => (
       <App activePage="builder" locales={Object.keys(languages)}>

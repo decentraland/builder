@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Loader } from 'decentraland-ui'
 
 import { Asset } from 'modules/asset/types'
 import ItemDrawer from './ItemDrawer'
@@ -17,8 +16,11 @@ export default class SideBar extends React.PureComponent<Props> {
   }
 
   render() {
-    const { categories, isLoading } = this.props
-
-    return <div className="SideBar">{categories || !isLoading ? this.renderItemDrawer() : <Loader size="massive" />}</div>
+    const { isLoading, categories } = this.props
+    return (
+      <div className={'SideBar ' + (isLoading ? 'loading' : '')}>
+        {!categories || isLoading ? <div className="spinner" /> : this.renderItemDrawer()}
+      </div>
+    )
   }
 }

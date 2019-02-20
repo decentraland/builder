@@ -14,7 +14,7 @@ export default class VerticalCard extends React.PureComponent<Props> {
 
     return (
       <div className={classes} title={name}>
-        <img className="thumbnail" src={thumbnail} />
+        <img className="thumbnail" src={thumbnail} alt="" />
       </div>
     )
   }
