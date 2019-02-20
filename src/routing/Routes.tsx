@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import App from 'decentraland-dapps/dist/containers/App'
+import { env } from 'decentraland-commons'
 import SignInPage from 'decentraland-dapps/dist/containers/SignInPage'
+import Intercom from 'decentraland-dapps/dist/components/Intercom'
 
 import HomePage from 'components/HomePage'
 import EditorPage from 'components/EditorPage'
-import * as languages from 'modules/translation/languages'
+import App from 'components/App'
 import { locations } from 'routing/locations'
 
 export class Routes extends React.Component {
@@ -15,7 +16,7 @@ export class Routes extends React.Component {
 
   wrapInApp(Component: React.ComponentType<any>) {
     return (...props: any[]) => (
-      <App activePage="builder" locales={Object.keys(languages)}>
+      <App>
         <Component {...props} />
       </App>
     )
@@ -33,7 +34,17 @@ export class Routes extends React.Component {
     )
   }
 
+  renderIntercom() {
+    const APP_ID = env.get('REACT_APP_INTERCOM_APP_ID', '')
+    return <Intercom appId={APP_ID} settings={{ alignment: 'right' }} />
+  }
+
   render() {
-    return this.renderRoutes()
+    return (
+      <>
+        {this.renderRoutes()}
+        {this.renderIntercom()}
+      </>
+    )
   }
 }
