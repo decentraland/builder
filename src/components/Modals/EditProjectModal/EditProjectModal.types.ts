@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
-import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+
 import { editProject, EditProjectAction } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
@@ -22,5 +23,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'currentProject' | 'currentScene' | 'grounds'>
-export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onSave' | 'onSetGround'>
-export type MapDispatch = ModalMapDispatch & Dispatch<EditProjectAction> & Dispatch<SetGroundAction>
+export type MapDispatchProps = Pick<Props, 'onSave' | 'onSetGround'>
+export type MapDispatch = Dispatch<EditProjectAction> & Dispatch<SetGroundAction>

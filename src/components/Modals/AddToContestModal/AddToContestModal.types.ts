@@ -1,14 +1,10 @@
 import { Dispatch } from 'redux'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+
 import { Project } from 'modules/project/types'
 import { Contest } from 'modules/contest/types'
 import { submitProjectRequest, SubmitProjectRequestAction } from 'modules/contest/actions'
 import { editProject, EditProjectAction } from 'modules/project/actions'
-import {
-  Props as ModalProps,
-  MapStateProps as ModalMapStateProps,
-  MapDispatchProps as ModalMapDispatchProps,
-  MapDispatch as ModalMapDispatch
-} from '../Modals.types'
 
 export type Props = ModalProps & {
   currentProject: Project | null
@@ -24,6 +20,6 @@ export type State = {
   contest: Contest
 }
 
-export type MapStateProps = ModalMapStateProps & Pick<Props, 'currentProject' | 'contest' | 'isLoading' | 'error'>
-export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onSaveProject' | 'onSubmitProject'>
-export type MapDispatch = ModalMapDispatch & Dispatch<EditProjectAction | SubmitProjectRequestAction>
+export type MapStateProps = Pick<Props, 'currentProject' | 'contest' | 'isLoading' | 'error'>
+export type MapDispatchProps = Pick<Props, 'onSaveProject' | 'onSubmitProject'>
+export type MapDispatch = Dispatch<EditProjectAction | SubmitProjectRequestAction>

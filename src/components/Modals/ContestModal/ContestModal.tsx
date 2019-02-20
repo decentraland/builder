@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Form, Modal, Header, Radio, Button } from 'decentraland-ui'
+import { Form, Header, Radio, Button } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import CloseModalIcon from '../CloseModalIcon'
@@ -10,16 +11,12 @@ import './ContestModal.css'
 export default class ContestModal extends React.PureComponent<Props, State> {
   state = { hasAcceptedTerms: false }
 
-  handleOnClose = () => {
-    this.props.onClose('ContestModal')
-  }
-
   handleSubmit = () => {
-    const { onAcceptTerms, onOpenModal } = this.props
+    const { onAcceptTerms, onOpenModal, onClose } = this.props
     const { hasAcceptedTerms } = this.state
     if (hasAcceptedTerms) {
       onAcceptTerms()
-      this.handleOnClose()
+      onClose()
       onOpenModal('AddToContestModal')
     }
   }
@@ -29,17 +26,11 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { modal } = this.props
+    const { name, onClose } = this.props
     const { hasAcceptedTerms } = this.state
 
     return (
-      <Modal
-        open={modal.open}
-        className="ContestModal"
-        size="small"
-        onClose={this.handleOnClose}
-        closeIcon={<CloseModalIcon onClick={this.handleOnClose} />}
-      >
+      <Modal name={name} closeIcon={<CloseModalIcon onClick={onClose} />}>
         <Modal.Header>
           <div className="header-image" />
           <Header size="huge" className="hero">

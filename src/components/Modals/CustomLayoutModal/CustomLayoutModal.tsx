@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Modal, Button } from 'decentraland-ui'
+import { Button } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { MAX_AREA, fromLayout } from 'modules/template/utils'
@@ -26,19 +27,15 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     })
   }
 
-  handleClose = () => {
-    this.props.onClose('CustomLayoutModal')
-  }
-
   handleCreate = () => {
     const { cols, rows } = this.state
     const { onCreateProject, onClose } = this.props
     onCreateProject(fromLayout({ cols, rows }))
-    onClose('CustomLayoutModal')
+    onClose()
   }
 
   render() {
-    const { modal } = this.props
+    const { name, onClose } = this.props
     const { cols, rows, maxError, minError } = this.state
 
     let errorMessage
@@ -47,7 +44,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
     }
 
     return (
-      <Modal open={modal.open} className="CustomLayoutModal" size="small" onClose={this.handleClose}>
+      <Modal name={name}>
         <Modal.Header>{t('custom_layout.title')}</Modal.Header>
         <Modal.Description>
           <p>{t('custom_layout_modal.subtitle_one')}</p>
@@ -59,7 +56,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
             <Button primary disabled={maxError || minError} onClick={this.handleCreate}>
               {t('global.create')}
             </Button>
-            <Button secondary onClick={this.handleClose}>
+            <Button secondary onClick={onClose}>
               {t('global.cancel')}
             </Button>
           </div>

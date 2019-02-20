@@ -1,6 +1,6 @@
 import * as React from 'react'
-
-import { Modal, Button, Form, Header } from 'decentraland-ui'
+import { Button, Form, Header } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import GroundPicker from './GroundPicker/GroundPicker'
@@ -16,7 +16,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (!this.props.modal.open && nextProps.modal.open && nextProps.currentProject && nextProps.currentScene) {
+    if (nextProps.currentProject && nextProps.currentScene) {
       const { title, description } = nextProps.currentProject
       let ground = null
 
@@ -28,45 +28,35 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     }
   }
 
-  handleOnClose = () => {
-    this.props.onClose('EditProjectModal')
-  }
-
   handleSubmit = () => {
     const { title, description, selectedGround } = this.state
-    const { currentProject, grounds } = this.props
+    const { currentProject, grounds, onSave, onSetGround, onClose } = this.props
     const ground = selectedGround ? grounds[selectedGround] : null
     if (currentProject) {
-      this.props.onSave(currentProject.id, { title, description })
-      this.props.onSetGround(currentProject, ground)
+      onSave(currentProject.id, { title, description })
+      onSetGround(currentProject, ground)
     }
-    this.handleOnClose()
+    onClose()
   }
 
   handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.setState({
-      title: event.currentTarget.value
-    })
+    this.setState({ title: event.currentTarget.value })
   }
 
   handleDescriptionChange = (event: React.FormEvent<HTMLInputElement>) => {
-    this.setState({
-      description: event.currentTarget.value
-    })
+    this.setState({ description: event.currentTarget.value })
   }
 
   handlePickGround = (id: string | null) => {
-    this.setState({
-      selectedGround: id
-    })
+    this.setState({ selectedGround: id })
   }
 
   render() {
-    const { modal, grounds } = this.props
+    const { grounds, name, onClose } = this.props
     const { title, description, selectedGround } = this.state
 
     return (
-      <Modal open={modal.open} className="ProjectDetailsModal" size="small" onClose={this.handleOnClose}>
+      <Modal name={name}>
         <Modal.Content>
           <div className="title">{t('edit_project_modal.title')}</div>
           <Form onSubmit={this.handleSubmit}>
@@ -83,7 +73,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
 
             <div className="button-container">
               <Button primary>{t('global.save')}</Button>
-              <Button secondary onClick={this.handleOnClose}>
+              <Button secondary onClick={onClose}>
                 {t('global.cancel')}
               </Button>
             </div>

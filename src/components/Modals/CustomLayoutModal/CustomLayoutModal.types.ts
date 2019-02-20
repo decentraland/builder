@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
 
-import { Props as ModalProps, MapDispatchProps as ModalMapDispatchProps, MapDispatch as ModalMapDispatch } from '../Modals.types'
 import { createProjectFromTemplate, CreateProjectFromTemplateAction } from 'modules/project/actions'
 
 export type Props = ModalProps & {
@@ -16,5 +16,5 @@ export type State = {
 }
 
 export type MapStateProps = {}
-export type MapDispatchProps = ModalMapDispatchProps & Pick<Props, 'onCreateProject'>
-export type MapDispatch = ModalMapDispatch & Dispatch<CreateProjectFromTemplateAction | NavigateToAction>
+export type MapDispatchProps = Pick<Props, 'onCreateProject'>
+export type MapDispatch = Dispatch<CreateProjectFromTemplateAction | NavigateToAction>

@@ -1,29 +1,29 @@
-div.ui.modal.ProjectDetailsModal {
+.ui.small.modal.EditProjectModal {
   width: 560px;
 }
 
-.ProjectDetailsModal.ui.modal > .content {
+.EditProjectModal.ui.modal > .content {
   font-size: 17px;
   padding: 1.8em;
 }
 
-.ProjectDetailsModal .title {
+.EditProjectModal .title {
   font-size: var(--modal-title-font-size);
 }
 
-.ProjectDetailsModal .details {
+.EditProjectModal .details {
   margin-top: 40px;
 }
 
-.ProjectDetailsModal .button-container {
+.EditProjectModal .button-container {
   display: flex;
 }
 
-.ProjectDetailsModal .button-container > * {
+.EditProjectModal .button-container > * {
   flex: 1;
 }
 
-.ProjectDetailsModal .ui.sub.header.custom-label {
+.EditProjectModal .ui.sub.header.custom-label {
   margin-top: 0px;
   margin-bottom: 16px;
   text-transform: uppercase;

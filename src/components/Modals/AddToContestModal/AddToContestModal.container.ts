@@ -7,7 +7,6 @@ import { getData as getContest, isLoading, getError } from 'modules/contest/sele
 import { getCurrentProject } from 'modules/project/selectors'
 import { editProject } from 'modules/project/actions'
 import { submitProjectRequest } from 'modules/contest/actions'
-import { closeModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './AddToContestModal.types'
 import AddToContestModal from './AddToContestModal'
 
@@ -20,8 +19,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSaveProject: (id: string, project: Partial<Project>) => dispatch(editProject(id, project)),
-  onSubmitProject: (projectId: string, contest: UserContest) => dispatch(submitProjectRequest(projectId, contest)),
-  onClose: name => dispatch(closeModal(name))
+  onSubmitProject: (projectId: string, contest: UserContest) => dispatch(submitProjectRequest(projectId, contest))
 })
 
 export default connect(
