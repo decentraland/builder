@@ -267,7 +267,9 @@ function* handleSelectEntity(action: SelectEntityAction) {
     try {
       // this could throw if the entity does not exist, due to some race condition or the scene is not synced
       editorWindow.editor.selectEntity(action.payload.entityId)
-    } catch (e) {}
+    } catch (e) {
+      // noop
+    }
   })
 }
 
