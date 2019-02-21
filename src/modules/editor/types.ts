@@ -25,8 +25,8 @@ export type EditorScene = {
     teleportPosition: string
   }
   tracking: {
-      origin: "builder"
-    }
+    origin: "builder"
+  }
   main: string
   _mappings: Record<string, string>
 }
