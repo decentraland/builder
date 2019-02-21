@@ -8,7 +8,7 @@ import {
   DUPLICATE_PROJECT,
   DuplicateProjectAction
 } from 'modules/project/actions'
-import { Project } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
@@ -33,7 +33,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     ground: null
   }
 
-  const parcelLayout = template.parcelLayout!
+  const parcelLayout: Layout = template.parcelLayout!
 
   const project: Project = {
     id: uuidv4(),
