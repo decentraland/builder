@@ -132,3 +132,11 @@ export const TAKE_SCREENSHOT = 'Take screenshot'
 export const takeScreenshot = () => action(TAKE_SCREENSHOT, {})
 
 export type TakeScreenshotAction = ReturnType<typeof takeScreenshot>
+
+// Toggle snap to grid
+
+export const TOGGLE_SNAP_TO_GRID = 'Toggle snap to grid'
+
+export const toggleSnapToGrid = (enabled: boolean) => action(TOGGLE_SNAP_TO_GRID, { enabled })
+
+export type ToggleSnapToGridAction = ReturnType<typeof toggleSnapToGrid>

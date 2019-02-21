@@ -77,7 +77,9 @@
     "preview": "Preview",
     "undo": "Undo",
     "redo": "Redo",
-    "shortcut_reference": "Shortcut reference"
+    "shortcut_reference": "Shortcut reference",
+    "snap_to_grid": "Snap to grid",
+    "hold": "Hodl"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",

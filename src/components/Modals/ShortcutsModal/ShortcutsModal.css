@@ -44,3 +44,7 @@
 .ShortcutsModal .Chip + .Chip {
   margin-left: 16px;
 }
+
+.ShortcutsModal .hold {
+  margin-right: 8px;
+}

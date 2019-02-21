@@ -1,12 +1,30 @@
 import { Store } from 'redux'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { setGizmo, togglePreview, toggleSidebar, editorUndo, editorRedo, resetCamera, zoomIn, zoomOut } from 'modules/editor/actions'
+import {
+  setGizmo,
+  togglePreview,
+  toggleSidebar,
+  editorUndo,
+  editorRedo,
+  resetCamera,
+  zoomIn,
+  zoomOut,
+  toggleSnapToGrid
+} from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen } from 'modules/editor/selectors'
 import { toggleModal } from 'modules/modal/actions'
 import { Gizmo } from 'modules/editor/types'
-import { ShortcutDefinition, Shortcut, ShortcutLayout, ShortcutCombination, SimpleShortcut, ShortcutAlternative } from './types'
+import {
+  ShortcutDefinition,
+  Shortcut,
+  ShortcutLayout,
+  ShortcutCombination,
+  SimpleShortcut,
+  ShortcutAlternative,
+  KeyboardShortcut
+} from './types'
 
 const COMMAND_KEY = 'command'
 const CONTROL_KEY = 'ctrl'
@@ -44,6 +62,12 @@ export const getQwertyLayout = (): ShortcutLayout => ({
     type: 'alternative',
     value: [{ type: 'simple', value: '-', title: null }, { type: 'simple', value: '_', title: null }],
     title: t('shortcuts.zoom_out')
+  },
+  [Shortcut.TOGGLE_SNAP_TO_GRID]: {
+    type: 'simple',
+    value: 'shift',
+    title: t('shortcuts.snap_to_grid'),
+    hold: true
   }
 })
 
@@ -73,7 +97,7 @@ export function getLibraryComplatibleShortcut(shortcut: ShortcutDefinition): str
   return [shortcut.value]
 }
 
-export function getEditorShortcuts(store: Store) {
+export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
   const qwertyLayout = getQwertyLayout()
   return [
     {
@@ -127,6 +151,16 @@ export function getEditorShortcuts(store: Store) {
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.ZOOM_OUT]),
       callback: () => store.dispatch(zoomOut())
+    },
+    {
+      combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
+      callback: () => store.dispatch(toggleSnapToGrid(true)),
+      action: 'keydown'
+    },
+    {
+      combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
+      callback: () => store.dispatch(toggleSnapToGrid(false)),
+      action: 'keyup'
     }
   ]
 }
@@ -137,7 +171,7 @@ export abstract class ShortcutRenderer {
 
     for (let i = 0; i < shortcut.value.length; i++) {
       const simple: SimpleShortcut = { type: 'simple', value: shortcut.value[i], title: shortcut.title }
-      out.push(this.renderSimple(simple))
+      out.push(this.renderShortcut(simple))
 
       if (i !== shortcut.value.length - 1) {
         out.push(this.renderPlus(i))
@@ -156,7 +190,7 @@ export abstract class ShortcutRenderer {
       if (item.type === 'combination') {
         out = [...out, ...this.renderCombination(item)]
       } else {
-        out.push(this.renderSimple(item))
+        out.push(this.renderShortcut(item))
       }
     } else {
       for (let i = 0; i < alternatives.length; i++) {
@@ -164,7 +198,7 @@ export abstract class ShortcutRenderer {
         if (item.type === 'combination') {
           out = [...out, ...this.renderCombination(item)]
         } else {
-          out.push(this.renderSimple(item))
+          out.push(this.renderShortcut(item))
         }
 
         if (i === 0) {
@@ -176,7 +210,19 @@ export abstract class ShortcutRenderer {
     return out
   }
 
-  abstract renderSimple(shortcut: SimpleShortcut): JSX.Element | string
+  renderSimple(shortcut: SimpleShortcut) {
+    let out = []
+
+    if (shortcut.hold) {
+      out.push(this.renderHold())
+    }
+    out.push(this.renderShortcut(shortcut))
+
+    return out
+  }
+
+  abstract renderShortcut(shortcut: SimpleShortcut): JSX.Element | string
   abstract renderPlus(key: number): JSX.Element | string
   abstract renderOr(): JSX.Element | string
+  abstract renderHold(): JSX.Element | string
 }

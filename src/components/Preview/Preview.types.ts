@@ -20,8 +20,11 @@ export type Editor = {
   resetCameraZoom: () => void
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
-  getMouseWorldPosition: (x: number, y: number) => Vector3
+  selectEntity: (entityId: string) => void
+  getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
+  getCameraTarget: () => Promise<Vector3>
   takeScreenshot: () => Promise<string>
+  setGridResolution: (position: number, rotation: number, scale: number) => void
 }
 
 export type EditorWindow = typeof window & {

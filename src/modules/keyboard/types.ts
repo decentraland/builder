@@ -20,7 +20,8 @@ export enum Shortcut {
   SHORTCUTS = 'SHORTCUTS',
   RESET_CAMERA = 'RESET_CAMERA',
   ZOOM_IN = 'ZOOM_IN',
-  ZOOM_OUT = 'ZOOM_OUT'
+  ZOOM_OUT = 'ZOOM_OUT',
+  TOGGLE_SNAP_TO_GRID = 'TOGGLE_SNAP_TO_GRID'
 }
 
 export type LabeledShortcut = { title: string | null }
@@ -29,6 +30,6 @@ export type ShortcutAlternative = {
   value: [SimpleShortcut, SimpleShortcut] | [ShortcutCombination, ShortcutCombination]
 } & LabeledShortcut
 export type ShortcutCombination = { type: 'combination'; value: string[] } & LabeledShortcut
-export type SimpleShortcut = { type: 'simple'; value: string } & LabeledShortcut
+export type SimpleShortcut = { type: 'simple'; value: string; hold?: boolean } & LabeledShortcut
 export type ShortcutLayout = Record<Shortcut, ShortcutDefinition>
 export type ShortcutDefinition = SimpleShortcut | ShortcutAlternative | ShortcutCombination

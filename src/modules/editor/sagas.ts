@@ -27,10 +27,14 @@ import {
   unbindEditorKeyboardShortcuts,
   bindEditorKeyboardShortcuts,
   SET_EDITOR_READY,
-  resetCamera
+  resetCamera,
+  SELECT_ENTITY,
+  SelectEntityAction,
+  TOGGLE_SNAP_TO_GRID,
+  ToggleSnapToGridAction
 } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
-import { PROVISION_SCENE, updateMetrics, updateTransform, DUPLICATE_ITEM, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -64,10 +68,11 @@ export function* editorSaga() {
   yield takeLatest(ZOOM_IN, handleZoomIn)
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
-  yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
   yield takeLatest(SET_EDITOR_READY, handleResetCamera)
+  yield takeLatest(SELECT_ENTITY, handleSelectEntity)
+  yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -177,10 +182,6 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.selectGizmo(gizmo))
 }
 
-function* handleDuplicateItem() {
-  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
-}
-
 function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
 }
@@ -259,4 +260,23 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   } catch (e) {
     // skip screenshot
   }
+}
+
+function* handleSelectEntity(action: SelectEntityAction) {
+  yield call(() => {
+    try {
+      // this could throw if the entity does not exist, due to some race condition or the scene is not synced
+      editorWindow.editor.selectEntity(action.payload.entityId)
+    } catch (e) {}
+  })
+}
+
+function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
+  yield call(() => {
+    if (action.payload.enabled) {
+      editorWindow.editor.setGridResolution(0.5, 0.5, Math.PI / 4)
+    } else {
+      editorWindow.editor.setGridResolution(0, 0, 0)
+    }
+  })
 }

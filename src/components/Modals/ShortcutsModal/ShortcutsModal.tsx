@@ -11,6 +11,7 @@ import './ShortcutsModal.css'
 
 const ShortcutCategories: Record<string, Shortcut[]> = {
   editor: [
+    Shortcut.TOGGLE_SNAP_TO_GRID,
     Shortcut.ZOOM_IN,
     Shortcut.ZOOM_OUT,
     Shortcut.RESET_CAMERA,
@@ -30,7 +31,7 @@ const getCategoryTitles = (): Record<string, string> => ({
 })
 
 class ShortcutChipRenderer extends ShortcutRenderer {
-  renderSimple(shortcut: SimpleShortcut) {
+  renderShortcut(shortcut: SimpleShortcut) {
     return <Chip text={mapLabel(shortcut.value)} key={shortcut.value} />
   }
   renderPlus(key: number) {
@@ -44,6 +45,13 @@ class ShortcutChipRenderer extends ShortcutRenderer {
     return (
       <span className="plus" key="or">
         {t('global.or')}
+      </span>
+    )
+  }
+  renderHold() {
+    return (
+      <span className="hold" key="hold">
+        {t('shortcuts.hold')}
       </span>
     )
   }

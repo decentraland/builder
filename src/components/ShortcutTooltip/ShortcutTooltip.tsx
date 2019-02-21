@@ -9,7 +9,7 @@ import { Props } from './ShortcutTooltip.types'
 import './ShortcutTooltip.css'
 
 class ShortcutTextRenderer extends ShortcutRenderer {
-  renderSimple(shortcut: SimpleShortcut) {
+  renderShortcut(shortcut: SimpleShortcut) {
     const label = mapLabel(shortcut.value)
     return label.length === 1 ? label.toUpperCase() : label
   }
@@ -18,6 +18,9 @@ class ShortcutTextRenderer extends ShortcutRenderer {
   }
   renderOr() {
     return t('global.or')
+  }
+  renderHold() {
+    return t('shortcuts.hold') + ' '
   }
 }
 
@@ -38,7 +41,7 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
       return renderer.renderAlternative(shortcutDefinition, true).join(' ')
     }
 
-    return renderer.renderSimple(shortcutDefinition)
+    return renderer.renderShortcut(shortcutDefinition)
   }
 
   render() {
