@@ -41,6 +41,9 @@ export function getNewScene(project: Project): EditorScene {
       blacklist: [],
       teleportPosition: '0,0,0'
     },
+    "tracking": {
+      "origin": "builder"
+    },
     main: 'game.js',
     _mappings: mappings
   }
