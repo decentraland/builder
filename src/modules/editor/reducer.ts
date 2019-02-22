@@ -12,7 +12,9 @@ import {
   SET_EDITOR_READY,
   CLOSE_EDITOR,
   SetEditorReadyAction,
-  CloseEditorAction
+  CloseEditorAction,
+  ToggleSnapToGridAction,
+  TOGGLE_SNAP_TO_GRID
 } from './actions'
 import { Gizmo } from './types'
 
@@ -20,6 +22,7 @@ export type EditorState = {
   gizmo: Gizmo
   preview: boolean
   sidebar: boolean
+  snapToGrid: boolean
   selectedEntityId: string | null
   isReady: boolean
 }
@@ -28,6 +31,7 @@ const INITIAL_STATE: EditorState = {
   gizmo: Gizmo.MOVE,
   preview: false,
   sidebar: true,
+  snapToGrid: false,
   selectedEntityId: null,
   isReady: false
 }
@@ -40,6 +44,7 @@ export type EditorReducerAction =
   | UnselectEntityAction
   | SetEditorReadyAction
   | CloseEditorAction
+  | ToggleSnapToGridAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -85,6 +90,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case CLOSE_EDITOR: {
       return {
         ...INITIAL_STATE
+      }
+    }
+    case TOGGLE_SNAP_TO_GRID: {
+      return {
+        ...state,
+        snapToGrid: action.payload.enabled
       }
     }
     default:

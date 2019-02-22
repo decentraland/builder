@@ -32,3 +32,11 @@ export function cloneEntities(scene: Scene) {
     {}
   )
 }
+
+export function snapToGrid(position: Vector3, grid: number = 0.5): Vector3 {
+  return {
+    x: position.x - (position.x % grid),
+    y: position.y - (position.y % grid),
+    z: position.z - (position.z % grid)
+  }
+}

@@ -1,6 +1,7 @@
 import uuidv4 from 'uuid/v4'
 import { utils } from 'decentraland-commons'
-import { takeLatest, put, select } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+import { takeLatest, put, select, call } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -20,9 +21,11 @@ import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponen
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
-import { getProjectBounds } from 'modules/project/selectors'
-import { getRandomPositionWithinBounds, cloneEntities } from './utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
+import { EditorWindow } from 'components/Preview/Preview.types'
+import { cloneEntities, snapToGrid } from './utils'
+
+const editorWindow = window as EditorWindow
 
 export function* sceneSaga() {
   yield takeLatest(ADD_ITEM, handleAddItem)
@@ -55,15 +58,11 @@ function* handleAddItem(action: AddItemAction) {
     }
   }
 
-  const bounds = yield select(getProjectBounds)
-  const defaultPosition = getRandomPositionWithinBounds(bounds)
-  defaultPosition.y = 0
-
   newComponents[transformId] = {
     id: transformId,
     type: ComponentType.Transform,
     data: {
-      position: position || defaultPosition,
+      position: snapToGrid(position || (yield call(editorWindow.editor.getCameraTarget))),
       rotation: { x: 0, y: 0, z: 0, w: 1 }
     }
   }
@@ -73,6 +72,8 @@ function* handleAddItem(action: AddItemAction) {
   newEntities[entityId] = { id: entityId, components: [gltfId, transformId] }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield delay(200) // gotta wait for the webworker to process the updateEditor action
+  yield put(selectEntity(entityId))
 }
 
 function* handleUpdateTransfrom(action: UpdateTransfromAction) {
@@ -108,6 +109,7 @@ function* handleResetItem(_: ResetItemAction) {
       ...transform,
       data: {
         ...transform.data,
+        position: snapToGrid(transform.data.position),
         rotation: { x: 0, y: 0, z: 0, w: 1 }
       }
     }
@@ -144,9 +146,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     type: ComponentType.Transform,
     data: {
       position: {
-        x: position.x + 1,
+        x: position.x,
         y: position.y,
-        z: position.z + 1
+        z: position.z
       },
       rotation: { ...rotation }
     }
@@ -156,8 +158,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const entityId = uuidv4()
   newEntities[entityId] = { id: entityId, components: [gltfShape.id, transformId] }
 
-  yield put(selectEntity(entityId))
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield delay(200) // gotta wait for the webworker to process the updateEditor action
+  yield put(selectEntity(entityId))
 }
 
 function* handleDeleteItem(_: DeleteItemAction) {
