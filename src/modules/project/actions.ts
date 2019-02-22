@@ -36,7 +36,7 @@ export type EditProjectAction = ReturnType<typeof editProject>
 
 export const DELETE_PROJECT = 'Delete project'
 
-export const deleteProject = (id: string) => action(DELETE_PROJECT, { id })
+export const deleteProject = (project: Project) => action(DELETE_PROJECT, { project })
 
 export type DeleteProjectAction = ReturnType<typeof deleteProject>
 
@@ -44,6 +44,6 @@ export type DeleteProjectAction = ReturnType<typeof deleteProject>
 
 export const DUPLICATE_PROJECT = 'Duplicate project'
 
-export const duplicateProject = (id: string) => action(DUPLICATE_PROJECT, { id })
+export const duplicateProject = (project: Project) => action(DUPLICATE_PROJECT, { project })
 
 export type DuplicateProjectAction = ReturnType<typeof duplicateProject>

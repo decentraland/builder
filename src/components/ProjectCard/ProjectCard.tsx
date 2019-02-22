@@ -22,12 +22,12 @@ export default class ProjectCard extends React.PureComponent<Props> {
 
   handleDeleteProject = () => {
     const { project, onDeleteProject } = this.props
-    onDeleteProject(project.id)
+    onDeleteProject(project)
   }
 
   handleDuplicateProject = () => {
     const { project, onDuplicateProject } = this.props
-    onDuplicateProject(project.id)
+    onDuplicateProject(project)
   }
 
   render() {

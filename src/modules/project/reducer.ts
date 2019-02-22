@@ -54,13 +54,14 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     }
 
     case DELETE_PROJECT: {
+      const { project } = action.payload
       const newState = {
         ...state,
         data: {
           ...state.data
         }
       }
-      delete newState.data[action.payload.id]
+      delete newState.data[project.id]
       return newState
     }
     default:
