@@ -12,11 +12,11 @@ export default class MobilePage extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    document.body.classList.add('mobile')
+    document.body.classList.add('mobile-body')
   }
 
   componentWillUnmount() {
-    document.body.classList.remove('mobile')
+    document.body.classList.remove('mobile-body')
   }
 
   handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {

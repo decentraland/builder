@@ -55,7 +55,7 @@
 }
 
 /* This is attached to the body */
-.mobile {
+.mobile-body {
   background-image: url('../../images/mobile-bg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -87,12 +87,12 @@
     margin: 0px;
   }
 
-  .mobile {
+  .mobile-body {
     background-position-y: -160px;
     background-size: 400%;
   }
 
-  .mobile .ui.header.large {
+  .mobile-body .ui.header.large {
     font-size: 32px;
     text-align: center;
     margin-bottom: 12px;
