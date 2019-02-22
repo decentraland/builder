@@ -88,6 +88,8 @@ function* handleUnbindEditorKeyboardShortcuts() {
 
 function* handleNewScene() {
   const project: Project = yield select(getCurrentProject)
+  if (!project) return
+
   const newScene: EditorPayloadScene = getNewScene(project)
 
   const msg = {
@@ -232,6 +234,8 @@ function handleZoomOut() {
 
 function* handleResetCamera() {
   const project: Project = yield select(getCurrentProject)
+  if (!project) return
+
   const x = (project.parcelLayout.rows * PARCEL_SIZE) / 2
   const z = (project.parcelLayout.cols * PARCEL_SIZE) / 2
 

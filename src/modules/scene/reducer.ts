@@ -12,6 +12,7 @@ import {
   CREATE_SCENE,
   CreateSceneAction
 } from 'modules/scene/actions'
+import { DeleteProjectAction, DELETE_PROJECT } from 'modules/project/actions'
 
 export type SceneState = {
   data: ModelById<Scene>
@@ -20,7 +21,12 @@ export type SceneState = {
 }
 export type UndoableSceneState = StateWithHistory<SceneState>
 
-export type SceneReducerAction = ProvisionSceneAction | UpdateMetricsAction | UpdateTransfromAction | CreateSceneAction
+export type SceneReducerAction =
+  | ProvisionSceneAction
+  | UpdateMetricsAction
+  | UpdateTransfromAction
+  | CreateSceneAction
+  | DeleteProjectAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -63,6 +69,18 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
           }
         }
       }
+    }
+
+    case DELETE_PROJECT: {
+      const { project } = action.payload
+      const newState = {
+        ...state,
+        data: {
+          ...state.data
+        }
+      }
+      delete newState.data[project.sceneId]
+      return newState
     }
 
     default:
