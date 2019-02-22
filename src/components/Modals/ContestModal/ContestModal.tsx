@@ -66,7 +66,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
             </div>
             <div className="buttons-container">
               <Button primary size="medium" disabled={!hasAcceptedTerms}>
-                {t('global.continue').toUpperCase()}
+                {t('global.continue')}
               </Button>
             </div>
           </Form>

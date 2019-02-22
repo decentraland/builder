@@ -2,11 +2,10 @@ import * as React from 'react'
 import { Header, Field, Button, Form } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { isMobile } from 'decentraland-dapps/dist/lib/utils'
 
 import { Props, State } from './MobilePage.types'
-
 import './MobilePage.css'
-import { isMobile } from 'decentraland-dapps/dist/lib/utils'
 
 export default class MobilePage extends React.PureComponent<Props, State> {
   state = {
@@ -51,7 +50,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
           <div className="form-container">
             <Field type="email" icon="asterisk" placeholder="mail@domain.com" value={email} onChange={this.handleEmailChange} required />
             <Button primary size="medium">
-              {t('global.send').toUpperCase()}
+              {t('global.send')}
             </Button>
           </div>
         </Form>
