@@ -10,6 +10,7 @@
     "save": "Save",
     "submit": "Submit",
     "continue": "Continue",
+    "send": "Send",
     "cancel": "Cancel",
     "create": "Create",
     "or": "or"
@@ -26,6 +27,11 @@
       "delete_project": "Delete project",
       "duplicate_project": "Duplicate project"
     }
+  },
+  "mobilepage": {
+    "title": "Build something cool!",
+    "subtitle": "Pimp up your LAND.",
+    "message": "Our Builder does not work on mobile, give us your email and we will keep you posted!"
   },
   "project_card": {
     "added_to_contest": "Added to contest"
