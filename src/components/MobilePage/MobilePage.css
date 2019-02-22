@@ -1,0 +1,100 @@
+.MobilePage {
+  font-size: 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.MobilePage .subtitle {
+  color: var(--purplish-grey);
+}
+
+.MobilePage .ui.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10%;
+}
+
+.MobilePage .ui.form .message {
+  font-weight: 100;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.MobilePage .form-container {
+  display: flex;
+  height: 48px;
+  width: 90%;
+  justify-content: center;
+}
+
+.MobilePage .form-container button {
+  margin: 0px 0px 0px 16px;
+  height: 44px;
+  font-weight: lighter;
+}
+
+.MobilePage .form-container .field {
+  min-width: 100px;
+  overflow: hidden;
+  height: 44px;
+}
+
+.MobilePage .form-container .field .ui.input > input {
+  background: white;
+  color: #5c5c6e;
+  font-size: 15px;
+  border-radius: 6px;
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  height: 44px;
+}
+
+/* This is attached to the body */
+.mobile-body {
+  background-image: url('../../images/mobile-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: fixed;
+  background-color: #1c1510;
+  max-height: auto;
+}
+
+@media (max-width: 488px) {
+  .MobilePage .form-container {
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100px;
+  }
+
+  .MobilePage .ui.form {
+    display: flex;
+    justify-content: center;
+    margin-top: 20%;
+  }
+
+  .MobilePage .form-container button {
+    margin: 0px;
+  }
+
+  .MobilePage .form-container .dcl.field {
+    height: 44px;
+    margin: 0px;
+  }
+
+  .mobile-body {
+    background-position-y: -160px;
+    background-size: 400%;
+  }
+
+  .mobile-body .ui.header.large {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+}
