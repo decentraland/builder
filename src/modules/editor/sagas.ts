@@ -31,7 +31,8 @@ import {
   SELECT_ENTITY,
   SelectEntityAction,
   TOGGLE_SNAP_TO_GRID,
-  ToggleSnapToGridAction
+  ToggleSnapToGridAction,
+  toggleSnapToGrid
 } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
@@ -176,6 +177,9 @@ function* handleOpenEditor() {
 
   // Spawns the assets
   yield renderScene()
+
+  // Enable snap to grid
+  yield put(toggleSnapToGrid(true))
 
   // Select gizmo
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)

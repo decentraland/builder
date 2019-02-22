@@ -66,7 +66,7 @@ export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.TOGGLE_SNAP_TO_GRID]: {
     type: 'simple',
     value: 'shift',
-    title: t('shortcuts.snap_to_grid'),
+    title: t('shortcuts.precision'),
     hold: true
   }
 })
@@ -154,12 +154,12 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
-      callback: () => store.dispatch(toggleSnapToGrid(true)),
+      callback: () => store.dispatch(toggleSnapToGrid(false)),
       action: 'keydown'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
-      callback: () => store.dispatch(toggleSnapToGrid(false)),
+      callback: () => store.dispatch(toggleSnapToGrid(true)),
       action: 'keyup'
     }
   ]
