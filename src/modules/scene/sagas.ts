@@ -23,7 +23,7 @@ import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { cloneEntities } from './utils'
+import { cloneEntities, snapToGrid } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -62,7 +62,7 @@ function* handleAddItem(action: AddItemAction) {
     id: transformId,
     type: ComponentType.Transform,
     data: {
-      position: position || (yield call(editorWindow.editor.getCameraTarget)),
+      position: snapToGrid(position || (yield call(editorWindow.editor.getCameraTarget))),
       rotation: { x: 0, y: 0, z: 0, w: 1 }
     }
   }
@@ -109,6 +109,7 @@ function* handleResetItem(_: ResetItemAction) {
       ...transform,
       data: {
         ...transform.data,
+        position: snapToGrid(transform.data.position),
         rotation: { x: 0, y: 0, z: 0, w: 1 }
       }
     }

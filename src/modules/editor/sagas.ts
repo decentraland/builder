@@ -276,7 +276,7 @@ function* handleSelectEntity(action: SelectEntityAction) {
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   yield call(() => {
     if (action.payload.enabled) {
-      editorWindow.editor.setGridResolution(0.5, 0.5, Math.PI / 4)
+      editorWindow.editor.setGridResolution(0.5, 0, Math.PI / 4)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
     }
