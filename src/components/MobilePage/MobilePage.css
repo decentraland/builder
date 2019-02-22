@@ -57,10 +57,11 @@
 /* This is attached to the body */
 .mobile {
   background-image: url('../../images/mobile-bg.jpg');
+  background-repeat: no-repeat;
   background-size: cover;
   background-position: 50%;
   background-attachment: fixed;
-  background-color: #2e211a;
+  background-color: #1c1510;
   max-height: auto;
 }
 

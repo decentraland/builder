@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Header, Field, Button, Form } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { isMobile } from 'decentraland-dapps/dist/lib/utils'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
@@ -13,9 +12,6 @@ export default class MobilePage extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    if (!isMobile()) {
-      window.location.href = '/'
-    }
     document.body.classList.add('mobile')
   }
 
