@@ -15,7 +15,7 @@ export default class HorizontalCard extends React.PureComponent<Props> {
 
     return (
       <div className={classes}>
-        <img className="thumbnail" src={thumbnail} alt={`${name} thumbnail`} />
+        <img className="thumbnail" src={thumbnail} alt="" />
         <Header size="small" className="title">
           {name}
         </Header>

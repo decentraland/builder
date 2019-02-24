@@ -5,8 +5,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { debounce } from 'lib/debounce'
 import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
+import CategoryCard from 'components/CategoryCard'
 import Chip from 'components/Chip'
-import { Asset } from 'modules/asset/types'
+import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
+import { SidebarView } from 'modules/ui/sidebar/types'
 import { Props, State, DefaultProps } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
@@ -28,7 +30,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   state = {
     isList: false,
-    search: ''
+    search: this.props.search
   }
 
   handleSearchDebounced = debounce((value: string) => {
@@ -68,18 +70,28 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  handleOnClick = (asset: Asset) => {
-    this.props.onClick(asset)
+  handleClick = (asset: Asset) => {
+    if (asset.category === GROUND_CATEGORY) {
+      const { project, onSetGround } = this.props
+      if (project) {
+        onSetGround(project, asset)
+      }
+    } else {
+      const { onAddItem } = this.props
+      onAddItem(asset)
+    }
   }
 
-  handleOnDrawerTypeClick = () => {
-    this.setState({
-      isList: !this.state.isList
-    })
+  handleSetGridView = () => {
+    this.props.onSetSidebarView(SidebarView.GRID)
+  }
+
+  handleSetListView = () => {
+    this.props.onSetSidebarView(SidebarView.LIST)
   }
 
   renderGrid(assets: Asset[]) {
-    const { isList } = this.state
+    const { view } = this.props
     const columnCount = this.getColumnCount()
     let el = []
 
@@ -92,7 +104,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
         row.push(
           <Grid.Column key={item.id}>
-            <AssetCard asset={item} isHorizontal={isList} onClick={this.handleOnClick} />
+            <AssetCard asset={item} isHorizontal={view === SidebarView.LIST} onClick={this.handleClick} />
           </Grid.Column>
         )
       }
@@ -133,25 +145,47 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return <div className="no-results">{t('itemdrawer.no_results')}</div>
   }
 
+  renderCategories() {
+    const { categories, onSelectCategory } = this.props
+    return categories.map(category => <CategoryCard key={category.name} category={category} onClick={onSelectCategory} />)
+  }
+
+  handleGoBack = () => {
+    const { onSelectCategory } = this.props
+    onSelectCategory(null)
+  }
+
   render() {
-    const { isList, search } = this.state
-    const { categories, columnCount } = this.props
+    const { search } = this.state
+    const { categories, selectedCategory, columnCount, view } = this.props
+    const isList = view === SidebarView.LIST
 
     return (
       <div className="ItemDrawer">
         <Header size="medium" className="title">
-          {t('itemdrawer.title')}{' '}
-          <div className="item-drawer-type-buttons">
-            <Chip icon="grid" isActive={!isList} onClick={isList ? this.handleOnDrawerTypeClick : undefined} />
-            <Chip icon="list" isActive={isList} onClick={isList ? undefined : this.handleOnDrawerTypeClick} />
-          </div>
+          {selectedCategory === null ? (
+            t('itemdrawer.title')
+          ) : (
+            <span className="selected-category" onClick={this.handleGoBack}>
+              <Icon name="chevron left" />
+              {selectedCategory}
+            </span>
+          )}{' '}
+          {!selectedCategory ? (
+            <div className="item-drawer-type-buttons">
+              <Chip icon="grid" isActive={!isList} onClick={this.handleSetGridView} />
+              <Chip icon="list" isActive={isList} onClick={this.handleSetListView} />
+            </div>
+          ) : null}
         </Header>
 
         <div className="search-container">
           <Icon name="search" />
           <Input
             className="search-input"
-            placeholder={t('itemdrawer.search')}
+            placeholder={
+              selectedCategory === null ? t('itemdrawer.search') : t('itemdrawer.search_category', { category: selectedCategory })
+            }
             icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
             value={search}
             onChange={this.handleSearch}
@@ -161,8 +195,10 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         <div ref={this.setDrawerContainer} className="overflow-container">
           {search.length > 0 && categories.length === 0
             ? this.renderNoResults()
-            : categories.map((category, index) => (
-                <Drawer key={index} label={category.name}>
+            : !isList && !selectedCategory && search.length === 0
+            ? this.renderCategories()
+            : categories.map(category => (
+                <Drawer key={category.name} label={category.name} hasLabel={selectedCategory === null}>
                   <Grid
                     columns={isList ? 1 : columnCount}
                     padded="horizontally"

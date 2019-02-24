@@ -38,8 +38,10 @@
   },
   "itemdrawer": {
     "title": "Item drawer",
-    "search": "Search by name or category",
-    "no_results": "No results"
+    "search": "Search items",
+    "search_category": "Search {category}",
+    "no_results": "No results",
+    "no_ground": "No Ground"
   },
   "topbar": {
     "add_to_contest": "Add to contest",
@@ -94,8 +96,7 @@
     "other_shortcuts": "Other"
   },
   "edit_project_modal": {
-    "title": "Project details",
-    "ground_label": "Ground"
+    "title": "Project details"
   },
   "project_fields": {
     "title_field_label": "Title",

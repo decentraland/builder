@@ -17,7 +17,7 @@
 .HomePage .empty-projects {
   padding: 47px 0;
   margin-top: var(--homepage-card-margin);
-  border: 1px solid rgba(var(--purplish-grey-raw), 0.48);
+  border: 1px solid rgba(var(--purplish-grey-raw), 0.4);
   border-radius: 5px;
   color: var(--purplish-grey);
   text-align: center;

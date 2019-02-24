@@ -1,4 +1,4 @@
-export const GROUND_TAG = 'ground'
+export const GROUND_CATEGORY = 'ground'
 
 export type Asset = BaseAsset & {
   assetPackId: string
@@ -10,6 +10,7 @@ export type BaseAsset = AssetResource & {
   category: string // name of the category
   variations: AssetResource[]
   contents: Record<string, string>
+  main?: boolean
 }
 
 export type AssetResource = {

@@ -1,3 +1,7 @@
+.AssetCard {
+  cursor: grab;
+}
+
 .AssetCard.is-dragging {
   opacity: 0.5;
 }

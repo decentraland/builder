@@ -21,7 +21,7 @@ class AssetCard extends React.PureComponent<Props & CollectedProps> {
     this.props.connectDragPreview(getEmptyImage())
   }
 
-  handleOnClick = () => {
+  handleClick = () => {
     const { asset, onClick } = this.props
     onClick(asset)
   }
@@ -29,7 +29,7 @@ class AssetCard extends React.PureComponent<Props & CollectedProps> {
   render() {
     const { isHorizontal, asset, connectDragSource, isDragging } = this.props
     return connectDragSource(
-      <div onClick={this.handleOnClick}>
+      <div onClick={this.handleClick}>
         {isHorizontal ? <HorizontalCard asset={asset} isDragging={isDragging} /> : <VerticalCard asset={asset} isDragging={isDragging} />}
       </div>
     )
