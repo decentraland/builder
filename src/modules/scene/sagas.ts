@@ -207,21 +207,16 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { project, asset } = action.payload
+  const { sceneId, layout, asset } = action.payload
 
   const sceneData = yield select(getSceneData)
-  const scene: Scene | undefined = sceneData[project.sceneId]
+  const scene: Scene | undefined = sceneData[sceneId]
 
-  const { parcelLayout } = project
-
-  if (!scene || !parcelLayout) return
+  if (!scene) return
 
   let components = { ...scene.components }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
-
-  // Skip if there are no updates
-  if (asset && scene.ground && scene.ground.assetId === asset.id) return
 
   if (asset) {
     // Create the Shape component if necessary
@@ -239,35 +234,48 @@ function* handleSetGround(action: SetGroundAction) {
       gltfId = foundId
     }
 
+    // if (scene.ground) {
+    //   // Update the existing ground
+    //   for (let id in entities) {
+    //     const ent = entities[id]
+    //     const index = ent.components.indexOf(scene.ground.componentId)
+    //     if (index > -1) {
+    //       // Remove the old ground and attach the new one
+    //       components = utils.omit(components, [scene.ground.componentId])
+    //       ent.components = Object.assign([], ent.components, { [index]: gltfId }) // replaces cloned array[index]'s value
+    //     }
+    //   }
+    // }
+
+    // TODO: If layout changed
+    // Create the ground
+
     if (scene.ground) {
-      // Update the existing ground
       for (let id in entities) {
         const ent = entities[id]
         const index = ent.components.indexOf(scene.ground.componentId)
         if (index > -1) {
-          // Remove the old ground and attach the new one
-          components = utils.omit(components, [scene.ground.componentId])
-          ent.components = Object.assign([], ent.components, { [index]: gltfId }) // replaces cloned array[index]'s value
+          components = utils.omit(components, ent.components)
+          ent.components = []
         }
       }
-    } else {
-      // Create the ground
-      for (let j = 0; j < parcelLayout.cols; j++) {
-        for (let i = 0; i < parcelLayout.rows; i++) {
-          const entityId = uuidv4()
-          const transformId = uuidv4()
+    }
 
-          components[transformId] = {
-            id: transformId,
-            type: ComponentType.Transform,
-            data: {
-              position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-              rotation: { x: 0, y: 0, z: 0, w: 1 }
-            }
+    for (let j = 0; j < layout.cols; j++) {
+      for (let i = 0; i < layout.rows; i++) {
+        const entityId = uuidv4()
+        const transformId = uuidv4()
+
+        components[transformId] = {
+          id: transformId,
+          type: ComponentType.Transform,
+          data: {
+            position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
+            rotation: { x: 0, y: 0, z: 0, w: 1 }
           }
-
-          entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
         }
+
+        entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
       }
     }
   } else if (scene.ground) {

@@ -1,4 +1,4 @@
-import { Project } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { getDimensions } from 'lib/layout'
 
 export const MIN_TITLE_LENGTH = 3 // Size in chars
@@ -20,4 +20,8 @@ export function getBlockchainParcelsFromLayout(layout: Project['parcelLayout']) 
     }
   }
   return out
+}
+
+export function isEqualLayout(left: Layout, right: Layout) {
+  return left.cols === right.cols && left.rows === right.cols
 }

@@ -3,7 +3,8 @@ import { Header, Button, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { ProjectLayout } from 'modules/project/types'
+import { ProjectLayout, Project, Layout } from 'modules/project/types'
+import { getBlockchainParcelsFromLayout } from 'modules/project/utils'
 import ProjectFields from 'components/ProjectFields'
 import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 import { Props, State } from './EditProjectModal.types'
@@ -28,10 +29,20 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   handleSubmit = () => {
-    const { title, description } = this.state
+    const { title, description, cols, rows } = this.state
     const { currentProject, onSave, onClose } = this.props
+
     if (currentProject) {
-      onSave(currentProject.id, { title, description })
+      const layout: Layout = { cols, rows }
+
+      const newProject: Partial<Project> = {
+        title,
+        description,
+        parcelLayout: layout,
+        parcels: getBlockchainParcelsFromLayout(layout)
+      }
+
+      onSave(currentProject.id, newProject)
     }
     onClose()
   }

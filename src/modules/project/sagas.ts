@@ -1,23 +1,31 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select } from 'redux-saga/effects'
+import { takeLatest, put, select, take } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
   CreateProjectFromTemplateAction,
   createProject,
   DUPLICATE_PROJECT,
-  DuplicateProjectAction
+  DuplicateProjectAction,
+  EDIT_PROJECT_REQUEST,
+  EditProjectRequestAction,
+  editProjectSuccess,
+  editProjectFailure
 } from 'modules/project/actions'
+import { RootState } from 'modules/common/types'
 import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
-import { getData as getScenes } from 'modules/scene/selectors'
+import { getProject } from 'modules/project/selectors'
+import { getData as getScenes, getScene } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene } from 'modules/scene/actions'
-import { getBlockchainParcelsFromLayout } from './utils'
+import { createScene, setGround, provisionScene } from 'modules/scene/actions'
+import { newEditorScene, SET_EDITOR_READY } from 'modules/editor/actions'
+import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
+  yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -66,4 +74,34 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
   yield put(createScene(newScene))
   yield put(createProject(newProject))
+}
+
+function* handleEditProject(action: EditProjectRequestAction) {
+  const { id, project, ground } = action.payload
+
+  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
+  if (!currentProject) return
+
+  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  if (!scene) return
+
+  try {
+    if (project.parcelLayout && !isEqualLayout(project.parcelLayout, currentProject.parcelLayout)) {
+      yield put(newEditorScene(id))
+
+      yield take(SET_EDITOR_READY)
+
+      if (!ground) {
+        yield put(provisionScene(scene))
+      }
+    }
+
+    if (ground) {
+      const layout = project.parcelLayout || currentProject.parcelLayout
+      yield put(setGround(currentProject.sceneId, layout, ground))
+    }
+    yield put(editProjectSuccess(id, project))
+  } catch (error) {
+    yield put(editProjectFailure(error))
+  }
 }

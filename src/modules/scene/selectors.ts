@@ -12,12 +12,10 @@ export const getData: (state: RootState) => SceneState['data'] = state => getSta
 export const getCurrentScene = createSelector<RootState, Project | null, SceneState['data'], Scene | null>(
   getCurrentProject,
   getData,
-  (project, scenes) => {
-    if (!project) return null
-    const sceneId = project.sceneId
-    return scenes[sceneId]
-  }
+  (project, scenes) => (project ? scenes[project.sceneId] : null)
 )
+
+export const getScene = (state: RootState, sceneId: string): Scene | null => getData(state)[sceneId] || null
 
 export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(
   getCurrentScene,

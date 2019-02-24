@@ -20,6 +20,8 @@ export const getCurrentProject = createSelector<RootState, string | undefined, P
   (projectId, projects) => projects[projectId!] || null
 )
 
+export const getProject = (state: RootState, projectId: string): Project | null => getData(state)[projectId] || null
+
 export const getProjectLayout = createSelector<RootState, Project | null, Project['parcelLayout'] | null>(
   getCurrentProject,
   project => (project ? project.parcelLayout : null)

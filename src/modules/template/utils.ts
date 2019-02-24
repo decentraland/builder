@@ -1,5 +1,7 @@
-import { Template } from 'modules/template/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
+import { Template } from 'modules/template/types'
+import { Layout } from 'modules/project/types'
 import { getDimensions } from 'lib/layout'
 
 export const MAX_AREA = 32
@@ -18,7 +20,7 @@ export function getTemplates(): Template[] {
   ]
 }
 
-export function fromLayout(layout: { cols: number; rows: number }): Template {
+export function fromLayout(layout: Layout): Template {
   const { cols, rows } = layout
   return {
     title: t('custom_layout.title'),

@@ -140,3 +140,11 @@ export const TOGGLE_SNAP_TO_GRID = 'Toggle snap to grid'
 export const toggleSnapToGrid = (enabled: boolean) => action(TOGGLE_SNAP_TO_GRID, { enabled })
 
 export type ToggleSnapToGridAction = ReturnType<typeof toggleSnapToGrid>
+
+// Create update the editor scene from a project
+
+export const NEW_EDITOR_SCENE = 'New editor scene'
+
+export const newEditorScene = (projectId: string) => action(NEW_EDITOR_SCENE, { projectId })
+
+export type NewEditorSceneAction = ReturnType<typeof newEditorScene>

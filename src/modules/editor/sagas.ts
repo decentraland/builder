@@ -32,14 +32,16 @@ import {
   SelectEntityAction,
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
-  toggleSnapToGrid
+  toggleSnapToGrid,
+  NEW_EDITOR_SCENE,
+  NewEditorSceneAction
 } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject } from 'modules/project/selectors'
+import { getCurrentProject, getProject } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -49,7 +51,7 @@ import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
-import { editProject } from 'modules/project/actions'
+import { editProjectThumbnail } from 'modules/project/actions'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 
 const editorWindow = window as EditorWindow
@@ -59,6 +61,7 @@ export function* editorSaga() {
   yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
+  yield takeLatest(NEW_EDITOR_SCENE, handleNewEditorScene)
   yield takeLatest(PROVISION_SCENE, handleSceneChange)
   yield takeLatest(EDITOR_REDO, handleSceneChange)
   yield takeLatest(EDITOR_UNDO, handleSceneChange)
@@ -85,10 +88,15 @@ function* handleUnbindEditorKeyboardShortcuts() {
   yield put(unbindKeyboardShortcuts(shortcuts))
 }
 
-function* handleNewScene() {
-  const project: Project = yield select(getCurrentProject)
-  if (!project) return
+function* handleNewEditorScene(action: NewEditorSceneAction) {
+  const { projectId } = action.payload
+  const project: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
+  if (project) {
+    yield createNewScene(project)
+  }
+}
 
+function* createNewScene(project: Project) {
   const newScene: EditorPayloadScene = getNewScene(project)
 
   const msg = {
@@ -178,7 +186,8 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
 
   // Creates a new scene in the dcl client's side
-  yield handleNewScene()
+  const project: Project = yield select(getCurrentProject)
+  yield createNewScene(project)
 
   // Spawns the assets
   yield renderScene()
@@ -252,7 +261,9 @@ function* handleDropItem(action: DropItemAction) {
   if (asset.category === GROUND_CATEGORY) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
-    yield put(setGround(project, asset))
+    // TODO: Rollback
+    // yield put(setGround(project, asset))
+    yield put(setGround('', { rows: 1, cols: 1 }, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
     yield put(addItem(asset, position))
@@ -262,15 +273,15 @@ function* handleDropItem(action: DropItemAction) {
 function* handleScreenshot(_: TakeScreenshotAction) {
   try {
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
-    if (screenshot) {
-      const thumbnail = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
-      if (thumbnail) {
-        const currentProject: Project | null = yield select(getCurrentProject)
-        if (currentProject) {
-          yield put(editProject(currentProject.id, { thumbnail }))
-        }
-      }
-    }
+    if (!screenshot) return
+
+    const thumbnail = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
+    if (!thumbnail) return
+
+    const currentProject: Project | null = yield select(getCurrentProject)
+    if (!currentProject) return
+
+    yield put(editProjectThumbnail(currentProject.id, thumbnail))
   } catch (e) {
     // skip screenshot
   }

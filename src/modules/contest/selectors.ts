@@ -1,6 +1,6 @@
 import { RootState } from 'modules/common/types'
-import { ContestState } from './reducer'
 import { getCurrentProject } from 'modules/project/selectors'
+import { ContestState } from './reducer'
 
 export const getState: (state: RootState) => ContestState = state => state.contest
 
