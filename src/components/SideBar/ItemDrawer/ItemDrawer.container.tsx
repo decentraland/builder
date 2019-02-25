@@ -5,9 +5,9 @@ import { getSideBarCategories, getSidebarView, getSelectedCategory, getSearch } 
 import { addItem, setGround } from 'modules/scene/actions'
 import { isLoading } from 'modules/assetPack/selectors'
 import { searchAssets, setSidebarView, selectCategory } from 'modules/ui/sidebar/actions'
+import { getCurrentProject } from 'modules/project/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
-import { getCurrentProject } from 'modules/project/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   categories: getSideBarCategories(state),
