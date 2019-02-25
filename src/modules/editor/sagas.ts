@@ -48,11 +48,11 @@ import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
 import { AssetMappings, GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
-import { getGizmo, getSelectedEntityId } from './selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
+import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getGizmo, getSelectedEntityId } from './selectors'
 
 const editorWindow = window as EditorWindow
 
