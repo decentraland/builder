@@ -10,6 +10,6 @@ export type Project = {
   createdAt: number
 }
 
-export type Layout = { cols: number; rows: number }
+export type Layout = { rows: number; cols: number }
 
 export type ProjectLayout = Layout & { hasError: boolean }
