@@ -8,9 +8,9 @@ export const MAX_AREA = 32
 
 export function getTemplates(): Template[] {
   return [
-    { title: '1x1', description: getDimensions(1, 1), thumbnail: 'thumb-1x1', parcelLayout: { rows: 1, cols: 1 } },
-    { title: '2x2', description: getDimensions(2, 2), thumbnail: 'thumb-2x2', parcelLayout: { rows: 2, cols: 2 } },
-    { title: '3x2', description: getDimensions(2, 3), thumbnail: 'thumb-3x2', parcelLayout: { rows: 2, cols: 3 } },
+    { title: '1x1', description: getDimensions(1, 1), thumbnail: 'thumb-1x1', layout: { rows: 1, cols: 1 } },
+    { title: '2x2', description: getDimensions(2, 2), thumbnail: 'thumb-2x2', layout: { rows: 2, cols: 2 } },
+    { title: '3x2', description: getDimensions(2, 3), thumbnail: 'thumb-3x2', layout: { rows: 2, cols: 3 } },
     {
       title: t('custom_layout.title'),
       description: t('custom_layout.up_to', { max: MAX_AREA }),
@@ -26,7 +26,7 @@ export function fromLayout(layout: Layout): Template {
     title: t('custom_layout.title'),
     description: getDimensions(rows, cols),
     thumbnail: `thumb-${cols}x${rows}`,
-    parcelLayout: { cols, rows },
+    layout: { cols, rows },
     custom: true
   }
 }

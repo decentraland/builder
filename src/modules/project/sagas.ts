@@ -42,14 +42,14 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     ground: null
   }
 
-  const parcelLayout: Layout = template.parcelLayout!
+  const layout: Layout = template.layout!
 
   const project: Project = {
     id: uuidv4(),
     title: 'New project',
     description: '',
     thumbnail: '',
-    parcelLayout,
+    layout,
     parcels: getBlockchainParcelsFromLayout(parcelLayout),
     sceneId: scene.id,
     createdAt: Date.now()
@@ -87,7 +87,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
   const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
   if (!scene) return
 
-  const hasNewLayout = project.parcelLayout && !isEqualLayout(project.parcelLayout, currentProject.parcelLayout)
+  const hasNewLayout = project.layout && !isEqualLayout(project.layout, currentProject.layout)
   try {
     if (hasNewLayout) {
       yield put(setEditorReady(false))
@@ -101,7 +101,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
     }
 
     if (ground) {
-      const layout = project.parcelLayout || currentProject.parcelLayout
+      const layout = project.layout || currentProject.layout
       yield put(setGround(id, layout, ground))
     }
 

@@ -1,7 +1,9 @@
+import { Layout } from 'modules/project/types'
+
 export type Template = {
   title: string
   description: string
   thumbnail: string
-  parcelLayout?: { rows: number; cols: number }
+  layout?: Layout
   custom?: boolean
 }

@@ -4,7 +4,7 @@ export type Project = {
   description: string
   thumbnail: string
   sceneId: string
-  parcelLayout: Layout
+  layout: Layout
   parcels?: { x: number; y: number }[] // Blockchain parcels
   ownerEmail?: string
   createdAt: number

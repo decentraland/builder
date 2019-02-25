@@ -15,8 +15,8 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     title: this.props.currentProject.title,
     description: this.props.currentProject.description,
 
-    cols: this.props.currentProject.parcelLayout.cols,
-    rows: this.props.currentProject.parcelLayout.rows,
+    cols: this.props.currentProject.layout.cols,
+    rows: this.props.currentProject.layout.rows,
     hasError: false
   }
 
@@ -38,7 +38,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
       const newProject: Partial<Project> = {
         title,
         description,
-        parcelLayout: layout,
+        layout: layout,
         parcels: getBlockchainParcelsFromLayout(layout)
       }
 

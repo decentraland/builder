@@ -236,16 +236,7 @@ function* handleSetGround(action: SetGroundAction) {
       gltfId = foundId
     }
 
-    if (scene.ground && !isEqualLayout(currentProject.parcelLayout, layout)) {
-      console.log('CLEAR GROUNDO')
-      // for (let id in entities) {
-      //   const ent = entities[id]
-      //   const index = ent.components.indexOf(scene.ground!.componentId)
-
-      //   if (index > -1) {
-      //     delete entities[id]
-      //   }
-      // }
+    if (scene.ground && !isEqualLayout(currentProject.layout, layout)) {
       entities = clearGround(scene.ground.componentId, entities)
     }
 

@@ -18,13 +18,13 @@ export default class TemplateCard extends React.PureComponent<Props> {
   render() {
     const { template } = this.props
     // Use 2x4 as the default size for the grid we render in the card
-    // even if the undefined parcelLayout means `Custom build`
+    // even if the undefined layout means `Custom build`
     let rows = 2
     let cols = 4
 
-    if (template.parcelLayout) {
-      rows = template.parcelLayout.rows
-      cols = template.parcelLayout.cols
+    if (template.layout) {
+      rows = template.layout.rows
+      cols = template.layout.cols
     }
 
     return (

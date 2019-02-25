@@ -248,8 +248,8 @@ function* handleResetCamera() {
   const project: Project = yield select(getCurrentProject)
   if (!project) return
 
-  const x = (project.parcelLayout.rows * PARCEL_SIZE) / 2
-  const z = (project.parcelLayout.cols * PARCEL_SIZE) / 2
+  const x = (project.layout.rows * PARCEL_SIZE) / 2
+  const z = (project.layout.cols * PARCEL_SIZE) / 2
 
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })

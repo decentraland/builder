@@ -25,7 +25,7 @@ const rootReducer = createRootReducer(history)
 const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware()
 const loggerMiddleware = createLogger({
-  predicate: (_, action) => action.type === 'Set editor ready' && env.isDevelopment(),
+  predicate: () => env.isDevelopment(),
   collapsed: () => true
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({

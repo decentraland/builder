@@ -62,7 +62,7 @@ addPayload(DUPLICATE_ITEM)
 addPayload(DELETE_ITEM)
 
 // editor actions
-add(CREATE_PROJECT, CREATE_PROJECT, action => (action as CreateProjectAction).payload.project.parcelLayout)
+add(CREATE_PROJECT, CREATE_PROJECT, action => (action as CreateProjectAction).payload.project.layout)
 addPayload(EDITOR_UNDO)
 addPayload(EDITOR_REDO)
 addPayload(TOGGLE_PREVIEW)
