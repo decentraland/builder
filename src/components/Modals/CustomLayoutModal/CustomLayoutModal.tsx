@@ -3,8 +3,8 @@ import { Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { fromLayout } from 'modules/template/utils'
 import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
+import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
 import { Props, State } from './CustomLayoutModal.types'
 
@@ -12,8 +12,8 @@ import './CustomLayoutModal.css'
 
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state = {
-    cols: 4,
     rows: 2,
+    cols: 4,
     hasError: false
   }
 
@@ -22,15 +22,15 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   }
 
   handleCreate = () => {
-    const { cols, rows } = this.state
+    const { rows, cols } = this.state
     const { onCreateProject, onClose } = this.props
-    onCreateProject(fromLayout({ cols, rows }))
+    onCreateProject(fromLayout({ rows, cols }))
     onClose()
   }
 
   render() {
     const { name, onClose } = this.props
-    const { cols, rows, hasError } = this.state
+    const { rows, cols, hasError } = this.state
 
     return (
       <Modal name={name}>
@@ -40,7 +40,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
           <p>{t('custom_layout_modal.subtitle_two')}</p>
         </Modal.Description>
         <Modal.Content>
-          <ProjectLayoutPicker cols={cols} rows={rows} onChange={this.handleLayoutChange} showGrid />
+          <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} showGrid />
 
           <div className="buttons">
             <Button primary disabled={hasError} onClick={this.handleCreate}>

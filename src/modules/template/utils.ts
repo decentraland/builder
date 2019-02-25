@@ -10,7 +10,7 @@ export function getTemplates(): Template[] {
   return [
     { title: '1x1', description: getDimensions(1, 1), thumbnail: 'thumb-1x1', layout: { rows: 1, cols: 1 } },
     { title: '2x2', description: getDimensions(2, 2), thumbnail: 'thumb-2x2', layout: { rows: 2, cols: 2 } },
-    { title: '3x2', description: getDimensions(2, 3), thumbnail: 'thumb-3x2', layout: { rows: 2, cols: 3 } },
+    { title: '3x2', description: getDimensions(2, 3), thumbnail: 'thumb-2x3', layout: { rows: 2, cols: 3 } },
     {
       title: t('custom_layout.title'),
       description: t('custom_layout.up_to', { max: MAX_AREA }),
@@ -21,12 +21,12 @@ export function getTemplates(): Template[] {
 }
 
 export function fromLayout(layout: Layout): Template {
-  const { cols, rows } = layout
+  const { rows, cols } = layout
   return {
     title: t('custom_layout.title'),
     description: getDimensions(rows, cols),
-    thumbnail: `thumb-${cols}x${rows}`,
-    layout: { cols, rows },
+    thumbnail: `thumb-${rows}x${cols}`,
+    layout: { rows, cols },
     custom: true
   }
 }

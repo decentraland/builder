@@ -90,12 +90,12 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
     return (
       <div className={`Metrics ${exceededMetric ? 'metric-exceeded' : ''}`} onClick={this.handleClick}>
-        <SquaresGrid cols={2} rows={2} size="tiny" onClick={this.handleToggle} />
+        <SquaresGrid rows={2} cols={2} size="tiny" onClick={this.handleToggle} />
         {toggle ? (
           <div className="bubble">
             <div className="bubble-title">
               <span>
-                {cols}x{rows} LAND
+                {rows}x{cols} LAND
               </span>
               &nbsp;
               <span className="dimensions">{getDimensions(rows, cols)}</span>

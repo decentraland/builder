@@ -22,7 +22,7 @@ export default class LayoutPicker extends React.PureComponent<Props> {
   handleChangeRows = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { cols, onChange } = this.props
     const rows = this.getValue(e)
-    onChange({ cols, rows })
+    onChange({ rows, cols })
   }
 
   disableScroll = (ref: HTMLInputElement | null) => {

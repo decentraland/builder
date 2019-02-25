@@ -15,8 +15,8 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     title: this.props.currentProject.title,
     description: this.props.currentProject.description,
 
-    cols: this.props.currentProject.layout.cols,
     rows: this.props.currentProject.layout.rows,
+    cols: this.props.currentProject.layout.cols,
     hasError: false
   }
 
@@ -34,7 +34,6 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
 
     if (currentProject) {
       const layout: Layout = { cols, rows }
-
       const newProject: Partial<Project> = {
         title,
         description,
@@ -62,7 +61,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   render() {
     const { name, onClose } = this.props
     const { title, description } = this.state
-    const { cols, rows, hasError } = this.state
+    const { rows, cols, hasError } = this.state
 
     return (
       <Modal name={name}>
@@ -77,7 +76,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
                 <Header sub className="picker-label">
                   {t('edit_project_modal.custom_layout_label')}
                 </Header>
-                <ProjectLayoutPicker cols={cols} rows={rows} onChange={this.handleLayoutChange} />
+                <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} />
               </div>
             </div>
 
