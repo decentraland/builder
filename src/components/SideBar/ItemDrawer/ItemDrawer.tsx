@@ -109,7 +109,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         )
       }
 
-      el.push(<Grid.Row key={i}>{row}</Grid.Row>)
+      el.push(<Grid.Row key={assets[i].id}>{row}</Grid.Row>)
     }
 
     return el
@@ -147,7 +147,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   renderCategories() {
     const { categories, onSelectCategory } = this.props
-    return categories.map(category => <CategoryCard key={category.name} category={category} onClick={onSelectCategory} />)
+    return categories.map(category => <CategoryCard key={`category-${category.name}`} category={category} onClick={onSelectCategory} />)
   }
 
   handleGoBack = () => {
@@ -156,8 +156,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { search } = this.state
-    const { categories, selectedCategory, columnCount, view } = this.props
+    const { search, categories, selectedCategory, columnCount, view } = this.props
     const isList = view === SidebarView.LIST
 
     return (
@@ -187,7 +186,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
               selectedCategory === null ? t('itemdrawer.search') : t('itemdrawer.search_category', { category: selectedCategory })
             }
             icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
-            value={search}
+            value={this.state.search}
             onChange={this.handleSearch}
           />
         </div>
@@ -198,7 +197,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
             : !isList && !selectedCategory && search.length === 0
             ? this.renderCategories()
             : categories.map(category => (
-                <Drawer key={category.name} label={category.name} hasLabel={selectedCategory === null}>
+                <Drawer key={`drawer-${category.name}`} label={category.name} hasLabel={selectedCategory === null && categories.length > 1}>
                   <Grid
                     columns={isList ? 1 : columnCount}
                     padded="horizontally"
