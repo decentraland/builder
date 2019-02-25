@@ -82,6 +82,6 @@ export type DeleteItemAction = ReturnType<typeof deleteItem>
 
 export const SET_GROUND = 'Set ground'
 
-export const setGround = (sceneId: string, layout: Layout, asset: Asset | null) => action(SET_GROUND, { sceneId, layout, asset })
+export const setGround = (projectId: string, layout: Layout, asset: Asset | null) => action(SET_GROUND, { projectId, layout, asset })
 
 export type SetGroundAction = ReturnType<typeof setGround>

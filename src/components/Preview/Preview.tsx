@@ -54,7 +54,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
     return connectDropTarget(
       <div className="Preview-wrapper">
-        <div className="Preview" id="preview-viewport" ref={this.canvasContainer}>
+        <div className={`Preview ${isLoading ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer}>
           {isLoading && (
             <div className="overlay">
               <Loader active size="massive" />

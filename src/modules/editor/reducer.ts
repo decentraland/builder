@@ -56,14 +56,14 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       }
     }
     case TOGGLE_PREVIEW: {
-      const { enabled } = action.payload
+      const { isEnabled: enabled } = action.payload
       return {
         ...state,
         preview: enabled
       }
     }
     case TOGGLE_SIDEBAR: {
-      const { enabled } = action.payload
+      const { isEnabled: enabled } = action.payload
       return {
         ...state,
         sidebar: enabled
@@ -82,9 +82,10 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       }
     }
     case SET_EDITOR_READY: {
+      const { isReady } = action.payload
       return {
         ...state,
-        isReady: true
+        isReady
       }
     }
     case CLOSE_EDITOR: {

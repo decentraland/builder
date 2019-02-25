@@ -17,9 +17,10 @@ import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene } from 'modules/scene/selectors'
+import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene, setGround, provisionScene } from 'modules/scene/actions'
-import { newEditorScene, SET_EDITOR_READY } from 'modules/editor/actions'
+import { createScene, setGround } from 'modules/scene/actions'
+import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 
 export function* projectSaga() {
@@ -77,7 +78,8 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 }
 
 function* handleEditProject(action: EditProjectRequestAction) {
-  const { id, project, ground } = action.payload
+  const { id, project } = action.payload
+  let ground = action.payload.ground
 
   const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
   if (!currentProject) return
@@ -85,22 +87,29 @@ function* handleEditProject(action: EditProjectRequestAction) {
   const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
   if (!scene) return
 
+  const hasNewLayout = project.parcelLayout && !isEqualLayout(project.parcelLayout, currentProject.parcelLayout)
   try {
-    if (project.parcelLayout && !isEqualLayout(project.parcelLayout, currentProject.parcelLayout)) {
-      yield put(newEditorScene(id))
+    if (hasNewLayout) {
+      yield put(setEditorReady(false))
+      yield put(newEditorScene(id, project))
 
       yield take(SET_EDITOR_READY)
 
       if (!ground) {
-        yield put(provisionScene(scene))
+        ground = yield select(getGroundAsset)
       }
     }
 
     if (ground) {
       const layout = project.parcelLayout || currentProject.parcelLayout
-      yield put(setGround(currentProject.sceneId, layout, ground))
+      yield put(setGround(id, layout, ground))
     }
+
     yield put(editProjectSuccess(id, project))
+
+    if (hasNewLayout) {
+      yield put(resetCamera())
+    }
   } catch (error) {
     yield put(editProjectFailure(error))
   }

@@ -14,20 +14,20 @@ export const isLoading: (state: RootState) => boolean = state => getState(state)
 
 export const getError: (state: RootState) => ProjectState['error'] = state => getState(state).error
 
+export const getProject = (state: RootState, projectId: string): Project | null => getData(state)[projectId] || null
+
 export const getCurrentProject = createSelector<RootState, string | undefined, ProjectState['data'], Project | null>(
   getProjectId,
   getData,
   (projectId, projects) => projects[projectId!] || null
 )
 
-export const getProject = (state: RootState, projectId: string): Project | null => getData(state)[projectId] || null
-
-export const getProjectLayout = createSelector<RootState, Project | null, Project['parcelLayout'] | null>(
+export const getCurrentLayout = createSelector<RootState, Project | null, Project['parcelLayout'] | null>(
   getCurrentProject,
   project => (project ? project.parcelLayout : null)
 )
 
-export const getProjectBounds = createSelector<RootState, Project | null, Vector3 | null>(
+export const getCurrentBounds = createSelector<RootState, Project | null, Vector3 | null>(
   getCurrentProject,
   project => {
     if (!project) return null

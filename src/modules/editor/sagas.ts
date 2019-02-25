@@ -89,10 +89,10 @@ function* handleUnbindEditorKeyboardShortcuts() {
 }
 
 function* handleNewEditorScene(action: NewEditorSceneAction) {
-  const { projectId } = action.payload
-  const project: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
-  if (project) {
-    yield createNewScene(project)
+  const { id, project } = action.payload
+  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
+  if (currentProject) {
+    yield createNewScene({ ...currentProject, ...project })
   }
 }
 
@@ -169,7 +169,7 @@ function handleGizmoSelected(args: { gizmoType: Gizmo; entityId: string }) {
 }
 
 function handleEditorReadyChange() {
-  store.dispatch(setEditorReady())
+  store.dispatch(setEditorReady(true))
 }
 
 function* handleOpenEditor() {
@@ -214,7 +214,7 @@ function resizeEditor() {
 }
 
 function* handleTooglePreview(action: TogglePreviewAction) {
-  const { enabled } = action.payload
+  const { isEnabled: enabled } = action.payload
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
 
   yield call(() => {

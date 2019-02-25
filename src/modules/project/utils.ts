@@ -23,5 +23,5 @@ export function getBlockchainParcelsFromLayout(layout: Project['parcelLayout']) 
 }
 
 export function isEqualLayout(left: Layout, right: Layout) {
-  return left.cols === right.cols && left.rows === right.cols
+  return left.cols === right.cols && left.rows === right.rows
 }

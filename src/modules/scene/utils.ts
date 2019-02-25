@@ -33,6 +33,21 @@ export function cloneEntities(scene: Scene) {
   )
 }
 
+export function clearGround(groundId: string, entities: Scene['entities']): Scene['entities'] {
+  const newEntities: Scene['entities'] = {}
+
+  for (let id in entities) {
+    const entity = entities[id]
+    const index = entity.components.indexOf(groundId)
+
+    if (index === -1) {
+      newEntities[id] = entity
+    }
+  }
+
+  return newEntities
+}
+
 export function snapToGrid(position: Vector3, grid: number = 0.5): Vector3 {
   return {
     x: Math.round(position.x / grid) * grid,
