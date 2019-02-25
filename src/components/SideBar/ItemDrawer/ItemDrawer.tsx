@@ -48,6 +48,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     document.body.removeEventListener('keyup', this.handleKeyUp)
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.search.length > 0 && nextProps.search.length === 0 && this.state.search.length > 0) {
+      this.setState({ search: '' })
+    }
+  }
+
   handleKeyDown = (e: KeyboardEvent) => {
     // ctrl or command
     if (e.keyCode === CTRL_KEY_CODE || e.keyCode === COMMAND_KEY_CODE) {

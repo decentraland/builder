@@ -73,6 +73,7 @@ export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerActi
     case SELECT_CATEGORY: {
       return {
         ...state,
+        search: '',
         selectedCategory: action.payload.category
       }
     }
