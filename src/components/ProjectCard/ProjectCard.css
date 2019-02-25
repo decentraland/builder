@@ -37,7 +37,20 @@
 .ProjectCard .ui.dropdown {
   position: absolute;
   top: 5px;
-  right: 18px;
+  right: 1px;
+  width: 50px;
+  height: 39px;
+  display: none;
+}
+
+.ProjectCard:hover .ui.dropdown {
+  display: block;
+}
+
+.ProjectCard .ui.dropdown > .left.menu {
+  right: 16px !important;
+  top: 24px;
+  padding: 4px 0px;
 }
 
 .ProjectCard .ui.dropdown > .dropdown.icon:before {
