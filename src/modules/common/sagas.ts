@@ -6,6 +6,7 @@ import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
 import { contestSaga } from 'modules/contest/sagas'
+import { modalSaga } from 'modules/modal/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
 import { projectSaga } from 'modules/project/sagas'
 import { editorSaga } from 'modules/editor/sagas'
@@ -19,6 +20,7 @@ export function* rootSaga() {
     walletSaga(),
     assetPackSaga(),
     contestSaga(),
+    modalSaga(),
     sceneSaga(),
     projectSaga(),
     editorSaga(),
