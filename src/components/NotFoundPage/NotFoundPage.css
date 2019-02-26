@@ -1,0 +1,39 @@
+.NotFoundPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.NotFoundPage .overlay {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  z-index: -1;
+  background: url('https://developers.decentraland.org//images/decentraland-hero.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: fixed;
+  opacity: 0.1;
+}
+
+.NotFoundPage .title {
+  font-size: 100px;
+  user-select: none;
+}
+
+.NotFoundPage .subtitle {
+  color: var(--purplish-grey);
+}
+
+.NotFoundPage button.back {
+  margin-top: 16px;
+}

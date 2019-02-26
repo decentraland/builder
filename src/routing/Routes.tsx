@@ -5,19 +5,36 @@ import { env } from 'decentraland-commons'
 import SignInPage from 'decentraland-dapps/dist/containers/SignInPage'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
 
+import { locations } from 'routing/locations'
+
 import HomePage from 'components/HomePage'
 import MobilePage from 'components/MobilePage'
 import EditorPage from 'components/EditorPage'
+import NotFoundPage from 'components/NotFoundPage'
 import App from 'components/App'
-import { locations } from 'routing/locations'
 
-export class Routes extends React.Component {
+import { Props, State } from './Routes.types'
+import ErrorPage from 'components/ErrorPage'
+
+export class Routes extends React.Component<Props, State> {
+  state = {
+    hasError: false,
+    stackTrace: ''
+  }
+
+  componentDidCatch(err: Error) {
+    this.setState({
+      hasError: true,
+      stackTrace: err.stack || 'No details avaibale'
+    })
+  }
+
   componentDidMount() {
     document.body.classList.remove('loading-overlay')
   }
 
   wrapInApp(Component: React.ComponentType<any>) {
-    return (...props: any[]) => (
+    return (props: any) => (
       <App>
         <Component {...props} />
       </App>
@@ -25,6 +42,13 @@ export class Routes extends React.Component {
   }
 
   renderRoutes() {
+    const { hasError, stackTrace } = this.state
+
+    if (env.isDevelopment() && hasError) {
+      const WrappedErrorPage = this.wrapInApp(ErrorPage)
+      return <WrappedErrorPage stackTrace={stackTrace} />
+    }
+
     return (
       <>
         <Responsive maxWidth={1024}>
@@ -36,6 +60,7 @@ export class Routes extends React.Component {
         <Responsive minWidth={1024}>
           <Switch>
             <Route exact path={locations.root()} component={this.wrapInApp(HomePage)} />
+            <Route exact path={locations.notFound()} component={this.wrapInApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
             <Route exact path={locations.signIn()} component={this.wrapInApp(SignInPage)} />
             <Redirect to={locations.root()} />

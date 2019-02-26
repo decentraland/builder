@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
+import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 
+import { getCurrentProject } from 'modules/project/selectors'
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
 import { RootState } from 'modules/common/types'
 import {
@@ -17,7 +19,8 @@ import EditorPage from './EditorPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
-  isSidebarOpen: isSidebarOpen(state)
+  isSidebarOpen: isSidebarOpen(state),
+  project: getCurrentProject(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
@@ -28,7 +31,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCloseEditor: () => dispatch(closeEditor()),
   onZoomIn: () => dispatch(zoomIn()),
   onZoomOut: () => dispatch(zoomOut()),
-  onResetCamera: () => dispatch(resetCamera())
+  onResetCamera: () => dispatch(resetCamera()),
+  onNavigate: (path: string) => dispatch(navigateTo(path))
 })
 
 export default connect(
