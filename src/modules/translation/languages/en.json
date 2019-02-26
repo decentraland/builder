@@ -41,7 +41,7 @@
     "search": "Search items",
     "search_category": "Search {category}",
     "no_results": "No results",
-    "no_ground": "No Ground"
+    "empty_ground": "No Ground"
   },
   "topbar": {
     "add_to_contest": "Add to contest",

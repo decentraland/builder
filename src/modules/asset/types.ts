@@ -10,7 +10,6 @@ export type BaseAsset = AssetResource & {
   category: string // name of the category
   variations: AssetResource[]
   contents: Record<string, string>
-  main?: boolean
 }
 
 export type AssetResource = {

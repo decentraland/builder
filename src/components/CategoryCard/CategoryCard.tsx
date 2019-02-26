@@ -13,9 +13,7 @@ export default class CategoryCard extends React.PureComponent<Props> {
 
     if (!category || category.assets.length === 0) return null
 
-    const { name } = category
-    const asset = category.assets.find(asset => !!asset.main) || category.assets[0]
-    const { thumbnail } = asset
+    const { name, thumbnail } = category
 
     return (
       <div className="CategoryCard" onClick={this.handleClick}>

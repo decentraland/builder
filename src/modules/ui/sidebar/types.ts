@@ -7,5 +7,6 @@ export enum SidebarView {
 
 export type Category = {
   name: string
+  thumbnail: string
   assets: Asset[]
 }

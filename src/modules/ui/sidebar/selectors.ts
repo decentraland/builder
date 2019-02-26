@@ -6,8 +6,8 @@ import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
-import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
-import { NO_GROUND_ASSET_PACK_ID, addNoGroundAsset, addNoGroundAssetPack } from './utils'
+import { Asset } from 'modules/asset/types'
+import { EMPTY_GROUND_ASSET_PACK_ID, addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -53,14 +53,16 @@ export const getSideBarCategories = createSelector<
   getAssetPacks,
   getAssets,
   (selectedAssetPackId, search, category, view, assetPacks, assets) => {
-    assets = addNoGroundAsset(assets)
-    assetPacks = addNoGroundAssetPack(assetPacks)
+    assets = addEmptyGroundAsset(assets)
+    assetPacks = addEmptyGroundAssetPack(assetPacks)
 
     const categories: { [categoryName: string]: Category } = {}
 
     // filter by selected asset pack, if none is selected use all asset packs
     const filteredAssetPacks = Object.keys(assetPacks)
-      .filter(assetPackId => selectedAssetPackId == null || selectedAssetPackId === assetPackId || assetPackId === NO_GROUND_ASSET_PACK_ID)
+      .filter(
+        assetPackId => selectedAssetPackId == null || selectedAssetPackId === assetPackId || assetPackId === EMPTY_GROUND_ASSET_PACK_ID
+      )
       .map(assetPackId => assetPacks[assetPackId])
 
     const filteredAssetIds = Object.keys(assets)
@@ -78,7 +80,8 @@ export const getSideBarCategories = createSelector<
           if (!categoryExists) {
             categories[asset.category] = {
               name: asset.category,
-              assets: []
+              assets: [],
+              thumbnail: ''
             }
           }
           // add asset to category
@@ -88,10 +91,21 @@ export const getSideBarCategories = createSelector<
     }
 
     // convert map to array
-    return (
-      Object.values(categories)
-        // send grounds to the top
-        .sort((a, b) => (a.name === GROUND_CATEGORY ? -1 : b.name === GROUND_CATEGORY ? 1 : a.name > b.name ? 1 : -1))
-    )
+    const categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
+      ...categories[name],
+      thumbnail
+    }))
+
+    // add categories that are not present in SIDEBAR_CATEGORIES (fallback)
+    Object.values(categories).forEach(category => {
+      if (!categoryArray.some(cat => cat.name === category.name)) {
+        categoryArray.push({
+          ...category,
+          thumbnail: category.assets[0].thumbnail
+        })
+      }
+    })
+
+    return categoryArray
   }
 )
