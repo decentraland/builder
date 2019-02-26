@@ -1,0 +1,4 @@
+.ui.checkbox .box:hover::before,
+.ui.checkbox label:hover::before {
+  border-color: rgba(125, 132, 153, 0.4);
+}
