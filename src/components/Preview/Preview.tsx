@@ -40,6 +40,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     await editorWindow.editor.initEngine(this.props.layout.rows, this.props.layout.cols)
     try {
       canvas = await editorWindow.editor.getDCLCanvas()
+      canvas.classList.add('dcl-canvas')
+
       this.moveCanvas()
       this.props.onOpenEditor()
     } catch (error) {
