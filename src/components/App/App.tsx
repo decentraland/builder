@@ -8,7 +8,7 @@ export default class App extends React.PureComponent<Props> {
   render() {
     const { children } = this.props
     return (
-      <DappApp activePage="builder" locales={Object.keys(languages)}>
+      <DappApp activePage="builder" locales={Object.keys(languages)} onSignIn={undefined}>
         {children}
       </DappApp>
     )
