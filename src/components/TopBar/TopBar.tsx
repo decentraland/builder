@@ -14,13 +14,13 @@ import './TopBar.css'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
-    const { onSetGizmo } = this.props
-    onSetGizmo(Gizmo.MOVE)
+    const { gizmo, onSetGizmo } = this.props
+    onSetGizmo(gizmo === Gizmo.MOVE ? Gizmo.NONE : Gizmo.MOVE)
   }
 
   handleRotateMode = () => {
-    const { onSetGizmo } = this.props
-    onSetGizmo(Gizmo.ROTATE)
+    const { gizmo, onSetGizmo } = this.props
+    onSetGizmo(gizmo === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE)
   }
 
   handleTogglePreview = () => {
