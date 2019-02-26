@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 
 import { getCurrentProject } from 'modules/project/selectors'
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
@@ -31,8 +30,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCloseEditor: () => dispatch(closeEditor()),
   onZoomIn: () => dispatch(zoomIn()),
   onZoomOut: () => dispatch(zoomOut()),
-  onResetCamera: () => dispatch(resetCamera()),
-  onNavigate: (path: string) => dispatch(navigateTo(path))
+  onResetCamera: () => dispatch(resetCamera())
 })
 
 export default connect(

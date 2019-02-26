@@ -17,7 +17,6 @@ import {
 } from 'modules/editor/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Project } from 'modules/project/types'
-import { navigateTo, NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
 
 export type Props = {
   project: Project | null
@@ -31,7 +30,6 @@ export type Props = {
   onZoomIn: typeof zoomIn
   onZoomOut: typeof zoomOut
   onResetCamera: typeof resetCamera
-  onNavigate: typeof navigateTo
 }
 
 export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'project'>
@@ -45,7 +43,6 @@ export type MapDispatchProps = Pick<
   | 'onZoomOut'
   | 'onZoomIn'
   | 'onResetCamera'
-  | 'onNavigate'
 >
 export type MapDispatch = Dispatch<
   | OpenModalAction
@@ -56,5 +53,4 @@ export type MapDispatch = Dispatch<
   | ZoomInAction
   | ZoomOutAction
   | ResetCameraAction
-  | NavigateToAction
 >
