@@ -126,15 +126,19 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
 }
 
 function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
-  const scene = getCurrentScene(store.getState() as RootState)
+  const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
+  if (!project) return
+
+  const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
   if (!scene) return
 
   const transform = getEntityComponentByType(args.entityId, ComponentType.Transform)(store.getState() as RootState)
   if (!transform) return
 
   const sanitizedPosition = {
-    ...args.transform.position,
-    y: args.transform.position.y < 0 ? 0 : args.transform.position.y
+    x: Math.max(Math.min(args.transform.position.x, project.parcelLayout.rows * PARCEL_SIZE), 0),
+    y: Math.max(args.transform.position.y, 0),
+    z: Math.max(Math.min(args.transform.position.z, project.parcelLayout.cols * PARCEL_SIZE), 0)
   }
 
   if (transform) {
