@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import { GROUND_CATEGORY } from 'modules/asset/types'
 
 import { Props } from './VerticalCard.types'
