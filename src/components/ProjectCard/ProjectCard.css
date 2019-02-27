@@ -37,25 +37,27 @@
 .ProjectCard .ui.dropdown {
   position: absolute;
   top: 5px;
-  right: 1px;
-  width: 50px;
-  height: 39px;
+  right: 10px;
   display: none;
 }
 
 .ProjectCard:hover .ui.dropdown {
-  display: block;
+  display: inline-block;
+}
+.ProjectCard .ui.dropdown .icon:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
 }
 
-.ProjectCard .ui.dropdown > .left.menu {
-  right: 16px !important;
-  top: 24px;
-  padding: 4px 0px;
+.ProjectCard .ui.dropdown > .dropdown.icon {
+  padding: 0 3px;
+  line-height: 2px;
+  font-size: 24px;
+  height: 0.7em;
 }
 
 .ProjectCard .ui.dropdown > .dropdown.icon:before {
-  content: '...';
-  font-size: 24px;
+  content: '…';
   color: var(--text);
 }
 
