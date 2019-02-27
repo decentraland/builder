@@ -1,11 +1,4 @@
-import {
-  ToggleSidebarAction,
-  OPEN_EDITOR,
-  OpenEditorAction,
-  TOGGLE_SIDEBAR,
-  TogglePreviewAction,
-  TOGGLE_PREVIEW
-} from 'modules/editor/actions'
+import { OPEN_EDITOR, OpenEditorAction } from 'modules/editor/actions'
 import {
   SelectAssetPackAction,
   SearchAssetsAction,
@@ -35,11 +28,9 @@ const INITIAL_STATE: SidebarState = {
 export type SidebarReducerAction =
   | SelectAssetPackAction
   | SearchAssetsAction
-  | ToggleSidebarAction
   | OpenEditorAction
   | SetSidebarViewAction
   | SelectCategoryAction
-  | TogglePreviewAction
 
 export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerAction): SidebarState => {
   switch (action.type) {
@@ -53,14 +44,6 @@ export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerActi
       return {
         ...state,
         search: action.payload.search.toLowerCase().trim()
-      }
-    }
-    case TOGGLE_PREVIEW:
-    case TOGGLE_SIDEBAR: {
-      return {
-        ...state,
-        search: '',
-        selectedCategory: null
       }
     }
     case SET_SIDEBAR_VIEW: {
