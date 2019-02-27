@@ -35,6 +35,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   handleDeleteProject = () => {
     const { project, onDeleteProject } = this.props
     onDeleteProject(project)
+    this.setState({ isDeleting: false })
   }
 
   handleDuplicateProject = () => {
