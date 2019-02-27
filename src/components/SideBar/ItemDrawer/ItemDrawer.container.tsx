@@ -23,8 +23,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSearch: search => dispatch(searchAssets(search)),
   onSetSidebarView: view => dispatch(setSidebarView(view)),
   onSelectCategory: category => dispatch(selectCategory(category)),
-
-  onSetGround: (project, ground) => dispatch(setGround(project, ground))
+  onSetGround: (projectId, layout, ground) => dispatch(setGround(projectId, layout, ground))
 })
 
 export default connect(

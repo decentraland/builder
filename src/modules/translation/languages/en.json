@@ -112,7 +112,8 @@
     "other_shortcuts": "Other"
   },
   "edit_project_modal": {
-    "title": "Project details"
+    "title": "Project details",
+    "custom_layout_label": "Layout"
   },
   "project_fields": {
     "title_field_label": "Title",

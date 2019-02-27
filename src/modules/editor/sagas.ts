@@ -262,7 +262,7 @@ function* handleDropItem(action: DropItemAction) {
   if (asset.category === GROUND_CATEGORY) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
-    yield put(setGround(project, asset))
+    yield put(setGround(project.id, project.layout, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
     const bounds = yield select(getCurrentBounds)

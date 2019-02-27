@@ -208,18 +208,24 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { project, asset } = action.payload
+  const { projectId, layout, asset } = action.payload
 
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, project.sceneId))
+  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
+  if (!currentProject) return
+
+  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
   if (!scene) return
 
-  // Skip if there are no updates
-  if (asset && scene.ground && scene.ground.assetId === asset.id) return
-
-  const { layout } = project
-  const components = { ...scene.components }
+  const hasLayoutChanged = layout && !isEqualLayout(currentProject.layout, layout)
+  const currentLayout = layout || currentProject.layout
+  let components = { ...scene.components }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
+
+  // Skip if there are no updates
+  if (asset && scene.ground && scene.ground.assetId === asset.id && !hasLayoutChanged) {
+    return
+  }
 
   if (asset) {
     // Create the Shape component if necessary
@@ -241,8 +247,8 @@ function* handleSetGround(action: SetGroundAction) {
       entities = clearGround(scene.ground.componentId, entities)
     }
 
-    for (let j = 0; j < layout.cols; j++) {
-      for (let i = 0; i < layout.rows; i++) {
+    for (let j = 0; j < currentLayout.cols; j++) {
+      for (let i = 0; i < currentLayout.rows; i++) {
         const entityId = uuidv4()
         const transformId = uuidv4()
 
