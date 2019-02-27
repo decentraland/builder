@@ -28,9 +28,7 @@ export class Routes extends React.Component {
     return (
       <>
         <Responsive maxWidth={1024}>
-          <Switch>
-            <Route component={this.wrapInApp(MobilePage)} />
-          </Switch>
+          <Route component={this.wrapInApp(MobilePage)} />
         </Responsive>
         <Responsive minWidth={1024}>
           <Switch>
