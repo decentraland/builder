@@ -50,7 +50,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     description: '',
     thumbnail: '',
     layout,
-    parcels: getBlockchainParcelsFromLayout(parcelLayout),
+    parcels: getBlockchainParcelsFromLayout(layout),
     sceneId: scene.id,
     createdAt: Date.now()
   }
