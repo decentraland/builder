@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { Responsive } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
-import SignInPage from 'decentraland-dapps/dist/containers/SignInPage'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
 
 import { locations } from 'routing/locations'
@@ -52,17 +51,13 @@ export class Routes extends React.Component<Props, State> {
     return (
       <>
         <Responsive maxWidth={1024}>
-          <Switch>
-            <Route exact path={locations.root()} component={this.wrapInApp(MobilePage)} />
-            <Redirect to={locations.root()} />
-          </Switch>
+          <Route component={this.wrapInApp(MobilePage)} />
         </Responsive>
         <Responsive minWidth={1024}>
           <Switch>
             <Route exact path={locations.root()} component={this.wrapInApp(HomePage)} />
             <Route exact path={locations.notFound()} component={this.wrapInApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
-            <Route exact path={locations.signIn()} component={this.wrapInApp(SignInPage)} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

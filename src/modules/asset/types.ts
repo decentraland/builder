@@ -1,4 +1,4 @@
-export const GROUND_TAG = 'ground'
+export const GROUND_CATEGORY = 'ground'
 
 export type Asset = BaseAsset & {
   assetPackId: string

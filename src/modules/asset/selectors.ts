@@ -3,7 +3,7 @@ import { RootState } from 'modules/common/types'
 import { AssetState } from 'modules/asset/reducer'
 import { ComponentDefinition, ComponentType, Scene } from 'modules/scene/types'
 import { getComponentByType, getCurrentScene } from 'modules/scene/selectors'
-import { AssetMappings, Asset, GROUND_TAG } from 'modules/asset/types'
+import { AssetMappings, Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
@@ -44,7 +44,7 @@ export const getGroundAssets = createSelector<RootState, AssetState['data'], Mod
     let out: ModelById<Asset> = {}
 
     for (let asset of Object.values(assets)) {
-      if (asset.category === GROUND_TAG) {
+      if (asset.category === GROUND_CATEGORY) {
         out[asset.id] = asset
       }
     }

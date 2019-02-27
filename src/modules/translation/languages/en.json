@@ -51,8 +51,10 @@
   },
   "itemdrawer": {
     "title": "Item drawer",
-    "search": "Search by name or category",
-    "no_results": "No results"
+    "search": "Search items",
+    "search_category": "Search {category}",
+    "no_results": "No results",
+    "empty_ground": "No Ground"
   },
   "topbar": {
     "add_to_contest": "Add to contest",
@@ -107,8 +109,7 @@
     "other_shortcuts": "Other"
   },
   "edit_project_modal": {
-    "title": "Project details",
-    "ground_label": "Ground"
+    "title": "Project details"
   },
   "project_fields": {
     "title_field_label": "Title",
@@ -133,8 +134,10 @@
   "custom_layout": {
     "title": "Custom",
     "max_area_error": "Your scene can't have more than {area} parcels",
-    "up_to": "Up to {max} parcels",
-    "width": "width",
-    "height": "height"
+    "up_to": "Up to {max} parcels"
+  },
+  "layout_picker": {
+    "rows": "rows",
+    "columns": "columns"
   }
 }

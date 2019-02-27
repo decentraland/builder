@@ -31,7 +31,7 @@ body.lock-scroll {
   overflow: hidden;
 }
 
-body canvas {
+body canvas.dcl-canvas {
   display: none;
 }
 

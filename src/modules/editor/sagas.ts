@@ -35,7 +35,7 @@ import {
   toggleSnapToGrid
 } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
-import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem } from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
@@ -43,7 +43,7 @@ import { getCurrentProject, getProjectBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
-import { AssetMappings } from 'modules/asset/types'
+import { AssetMappings, GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
@@ -246,10 +246,16 @@ function* handleResetCamera() {
 
 function* handleDropItem(action: DropItemAction) {
   const { asset, x, y } = action.payload
-  const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
-  const bounds = yield select(getProjectBounds)
-  if (isWithinBounds(position, bounds)) {
-    yield put(addItem(asset, position))
+  if (asset.category === GROUND_CATEGORY) {
+    const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
+    if (!project) return
+    yield put(setGround(project, asset))
+  } else {
+    const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
+    const bounds = yield select(getProjectBounds)
+    if (isWithinBounds(position, bounds)) {
+      yield put(addItem(asset, position))
+    }
   }
 }
 

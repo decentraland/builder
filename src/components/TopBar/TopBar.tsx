@@ -4,7 +4,6 @@ import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ShortcutTooltip from 'components/ShortcutTooltip'
-import GroundCard from 'components/GroundCard'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
@@ -58,7 +57,6 @@ export default class TopBar extends React.PureComponent<Props> {
       onReset,
       onDelete,
       onDuplicate,
-      groundAsset,
       hasSubmittedCurrentProject
     } = this.props
     return (
@@ -71,7 +69,6 @@ export default class TopBar extends React.PureComponent<Props> {
             {currentProject ? (
               <>
                 <span className="project-title" onClick={this.handleTitleClick}>
-                  {groundAsset && <GroundCard name={groundAsset.name} thumbnail={groundAsset.thumbnail} small className="ground" />}
                   {currentProject.title}
                   <OwnIcon name="edit" className="edit-project-icon" />
                 </span>
