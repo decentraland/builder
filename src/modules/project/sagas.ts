@@ -19,7 +19,7 @@ import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene, setGround } from 'modules/scene/actions'
+import { createScene } from 'modules/scene/actions'
 import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 
@@ -98,11 +98,6 @@ function* handleEditProject(action: EditProjectRequestAction) {
       if (!ground) {
         ground = yield select(getGroundAsset)
       }
-    }
-
-    if (ground) {
-      const layout = project.layout || currentProject.layout
-      yield put(setGround(id, layout, ground))
     }
 
     yield put(editProjectSuccess(id, project))

@@ -23,8 +23,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSearch: search => dispatch(searchAssets(search)),
   onSetSidebarView: view => dispatch(setSidebarView(view)),
   onSelectCategory: category => dispatch(selectCategory(category)),
-  // onSetGround: (project, ground) => dispatch(setGround(project, ground)) // TODO: Rollback
-  onSetGround: (_, __, ground) => dispatch(setGround('', { rows: 1, cols: 1 }, ground))
+
+  onSetGround: (project, ground) => dispatch(setGround(project, ground))
 })
 
 export default connect(

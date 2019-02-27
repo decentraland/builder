@@ -36,9 +36,9 @@ import {
   NEW_EDITOR_SCENE,
   NewEditorSceneAction
 } from 'modules/editor/actions'
-import { store } from 'modules/common/store'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
+import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject, getProject } from 'modules/project/selectors'
@@ -48,9 +48,10 @@ import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
 import { AssetMappings, GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
+import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
-import { editProjectThumbnail } from 'modules/project/actions'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
+import { isWithinBounds } from 'modules/scene/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 
@@ -261,12 +262,13 @@ function* handleDropItem(action: DropItemAction) {
   if (asset.category === GROUND_CATEGORY) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
-    // TODO: Rollback
-    // yield put(setGround(project, asset))
-    yield put(setGround('', { rows: 1, cols: 1 }, asset))
+    yield put(setGround(project, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
-    yield put(addItem(asset, position))
+    const bounds = yield select(getCurrentBounds)
+    if (isWithinBounds(position, bounds)) {
+      yield put(addItem(asset, position))
+    }
   }
 }
 

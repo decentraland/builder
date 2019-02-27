@@ -24,8 +24,8 @@ import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
-import { getRandomPositionWithinBounds, snapToGrid, snapToBounds, cloneEntities, clearGround } from './utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
+import { getRandomPositionWithinBounds, snapToGrid, snapToBounds, cloneEntities, clearGround } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -208,15 +208,16 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { projectId, layout, asset } = action.payload
+  const { project, asset } = action.payload
 
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
-  if (!currentProject) return
-
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, project.sceneId))
   if (!scene) return
 
-  let components = { ...scene.components }
+  // Skip if there are no updates
+  if (asset && scene.ground && scene.ground.assetId === asset.id) return
+
+  const { layout } = project
+  const components = { ...scene.components }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
 
@@ -236,7 +237,7 @@ function* handleSetGround(action: SetGroundAction) {
       gltfId = foundId
     }
 
-    if (scene.ground && !isEqualLayout(currentProject.layout, layout)) {
+    if (scene.ground) {
       entities = clearGround(scene.ground.componentId, entities)
     }
 
