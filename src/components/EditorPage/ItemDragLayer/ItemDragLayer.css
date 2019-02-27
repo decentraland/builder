@@ -15,4 +15,24 @@
   position: absolute;
   top: -32px;
   left: -32px;
+  border-radius: 8px;
+}
+
+.ItemDragLayer .thumbnail.empty {
+  background: rgba(var(--purplish-grey-raw), 0.4);
+}
+
+.ItemDragLayer .thumbnail.empty:after {
+  display: block;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(var(--purplish-grey-raw), 0.28);
+  border-radius: 100%;
+  content: '';
 }

@@ -1,3 +1,3 @@
-import ItemDrawer from './ItemDrawer'
+import ItemDrawer from './ItemDrawer.container'
 
 export default ItemDrawer

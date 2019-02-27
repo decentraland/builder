@@ -22,7 +22,7 @@ import {
   RESET_CAMERA,
   TOGGLE_SNAP_TO_GRID
 } from 'modules/editor/actions'
-import { SEARCH_ASSETS } from 'modules/ui/sidebar/actions'
+import { SEARCH_ASSETS, SET_SIDEBAR_VIEW, SELECT_CATEGORY } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
 import { CREATE_PROJECT, CreateProjectAction } from 'modules/project/actions'
 
@@ -67,6 +67,8 @@ addPayload(EDITOR_UNDO)
 addPayload(EDITOR_REDO)
 addPayload(TOGGLE_PREVIEW)
 addPayload(TOGGLE_SIDEBAR)
+addPayload(SET_SIDEBAR_VIEW)
+addPayload(SELECT_CATEGORY)
 addPayload(SEARCH_ASSETS)
 addPayload(OPEN_MODAL)
 addPayload(SET_GIZMO)

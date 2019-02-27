@@ -4,8 +4,7 @@
   align-items: center;
   padding: 8px 12px;
   border-radius: 4px;
-  background: rgba(var(--purplish-grey-raw), 0.48);
-  cursor: grab;
+  background: rgba(var(--purplish-grey-raw), 0.4);
 }
 
 .AssetCard.horizontal:hover {
@@ -16,6 +15,13 @@
   width: 32px;
   height: 32px;
   margin-right: 10px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.AssetCard.horizontal .thumbnail:after {
+  width: 20px;
+  height: 20px;
 }
 
 .AssetCard.horizontal div.title {

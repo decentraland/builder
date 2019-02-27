@@ -1,4 +1,7 @@
 import * as React from 'react'
+
+import { GROUND_CATEGORY } from 'modules/asset/types'
+
 import { Props } from './VerticalCard.types'
 import './VerticalCard.css'
 
@@ -10,6 +13,9 @@ export default class VerticalCard extends React.PureComponent<Props> {
     let classes = 'AssetCard vertical'
     if (isDragging) {
       classes += ' is-dragging'
+    }
+    if (asset.category === GROUND_CATEGORY) {
+      classes += ' ground'
     }
 
     return (

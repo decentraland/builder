@@ -27,7 +27,11 @@ class ItemDragLayer extends React.PureComponent<CollectedProps> {
 
     return (
       <div className="ItemDragLayer">
-        <img className="thumbnail" src={thumbnail} style={getItemStyles(this.props)} />
+        {thumbnail ? (
+          <img className="thumbnail" src={thumbnail} style={getItemStyles(this.props)} />
+        ) : (
+          <div className="thumbnail empty" style={getItemStyles(this.props)} />
+        )}
       </div>
     )
   }

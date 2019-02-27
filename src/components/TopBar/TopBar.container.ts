@@ -9,7 +9,6 @@ import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
-import { getGroundAsset } from 'modules/asset/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),
@@ -18,8 +17,7 @@ const mapState = (state: RootState): MapStateProps => ({
   gizmo: getGizmo(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
-  selectedEntityId: getSelectedEntityId(state),
-  groundAsset: getGroundAsset(state)
+  selectedEntityId: getSelectedEntityId(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

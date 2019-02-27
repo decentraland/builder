@@ -15,17 +15,19 @@ export default class Drawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, children } = this.props
+    const { label, children, hasLabel } = this.props
     const { isOpen } = this.state
 
     return (
       <div className="Drawer">
-        <div className="heading" onClick={this.handleClick}>
-          <span className="label">{label}</span>
-          <div>
-            <Icon name={isOpen ? 'angle up' : 'angle down'} />
+        {hasLabel ? (
+          <div className="heading" onClick={this.handleClick}>
+            <span className="label">{label}</span>
+            <div>
+              <Icon name={isOpen ? 'angle up' : 'angle down'} />
+            </div>
           </div>
-        </div>
+        ) : null}
         <div className="body">{isOpen ? children : null}</div>
       </div>
     )

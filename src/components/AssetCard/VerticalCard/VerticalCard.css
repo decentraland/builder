@@ -5,10 +5,14 @@
   justify-content: center;
   border-radius: 8px;
   flex-direction: column;
-  background: rgba(var(--purplish-grey-raw), 0.48);
+  background: rgba(var(--purplish-grey-raw), 0.4);
   padding: 16px 10px;
-  cursor: grab;
   height: 105px;
+}
+
+.AssetCard.vertical.ground {
+  padding: 0px;
+  overflow: hidden;
 }
 
 .AssetCard.vertical:hover {
@@ -18,4 +22,9 @@
 .AssetCard.vertical .thumbnail {
   width: 63px;
   height: 62px;
+}
+
+.AssetCard.vertical.ground .thumbnail {
+  width: 100%;
+  height: 100%;
 }
