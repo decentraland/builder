@@ -13,7 +13,7 @@ import {
   toggleSnapToGrid
 } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
-import { isPreviewing, isSidebarOpen } from 'modules/editor/selectors'
+import { isPreviewing, isSidebarOpen, getGizmo } from 'modules/editor/selectors'
 import { toggleModal } from 'modules/modal/actions'
 import { Gizmo } from 'modules/editor/types'
 import {
@@ -102,11 +102,11 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
   return [
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.MOVE]),
-      callback: () => store.dispatch(setGizmo(Gizmo.MOVE))
+      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.MOVE ? Gizmo.NONE : Gizmo.MOVE))
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.ROTATE]),
-      callback: () => store.dispatch(setGizmo(Gizmo.ROTATE))
+      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE))
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.RESET_ITEM]),

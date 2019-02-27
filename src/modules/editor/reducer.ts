@@ -28,7 +28,7 @@ export type EditorState = {
 }
 
 const INITIAL_STATE: EditorState = {
-  gizmo: Gizmo.MOVE,
+  gizmo: Gizmo.NONE,
   preview: false,
   sidebar: true,
   snapToGrid: false,

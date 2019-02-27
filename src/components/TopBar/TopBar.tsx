@@ -14,13 +14,13 @@ import './TopBar.css'
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
-    const { onSetGizmo } = this.props
-    onSetGizmo(Gizmo.MOVE)
+    const { gizmo, onSetGizmo } = this.props
+    onSetGizmo(gizmo === Gizmo.MOVE ? Gizmo.NONE : Gizmo.MOVE)
   }
 
   handleRotateMode = () => {
-    const { onSetGizmo } = this.props
-    onSetGizmo(Gizmo.ROTATE)
+    const { gizmo, onSetGizmo } = this.props
+    onSetGizmo(gizmo === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE)
   }
 
   handleTogglePreview = () => {
@@ -81,10 +81,20 @@ export default class TopBar extends React.PureComponent<Props> {
             <div className="editor-actions">
               <span className="editor-modes">
                 <ShortcutTooltip shortcut={Shortcut.MOVE} position="bottom center" className="tool" popupClassName="top-bar-popup">
-                  <Chip icon="move" isActive={gizmo === Gizmo.MOVE} onClick={this.handleMoveMode} />
+                  <Chip
+                    icon="move"
+                    isActive={gizmo === Gizmo.MOVE && !!selectedEntityId}
+                    isDisabled={!selectedEntityId}
+                    onClick={this.handleMoveMode}
+                  />
                 </ShortcutTooltip>
                 <ShortcutTooltip shortcut={Shortcut.ROTATE} position="bottom center" className="tool" popupClassName="top-bar-popup">
-                  <Chip icon="rotate" isActive={gizmo === Gizmo.ROTATE} onClick={this.handleRotateMode} />
+                  <Chip
+                    icon="rotate"
+                    isActive={gizmo === Gizmo.ROTATE && !!selectedEntityId}
+                    isDisabled={!selectedEntityId}
+                    onClick={this.handleRotateMode}
+                  />
                 </ShortcutTooltip>
               </span>
               <ShortcutTooltip shortcut={Shortcut.RESET_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">

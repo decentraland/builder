@@ -39,7 +39,7 @@ import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAct
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject, getProjectBounds } from 'modules/project/selectors'
+import { getCurrentProject } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -48,7 +48,6 @@ import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
-import { isWithinBounds } from 'modules/scene/utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { editProject } from 'modules/project/actions'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
@@ -126,15 +125,19 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
 }
 
 function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
-  const scene = getCurrentScene(store.getState() as RootState)
+  const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
+  if (!project) return
+
+  const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
   if (!scene) return
 
   const transform = getEntityComponentByType(args.entityId, ComponentType.Transform)(store.getState() as RootState)
   if (!transform) return
 
   const sanitizedPosition = {
-    ...args.transform.position,
-    y: args.transform.position.y < 0 ? 0 : args.transform.position.y
+    x: Math.max(Math.min(args.transform.position.x, project.parcelLayout.rows * PARCEL_SIZE), 0),
+    y: Math.max(args.transform.position.y, 0),
+    z: Math.max(Math.min(args.transform.position.z, project.parcelLayout.cols * PARCEL_SIZE), 0)
   }
 
   if (transform) {
@@ -252,10 +255,7 @@ function* handleDropItem(action: DropItemAction) {
     yield put(setGround(project, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
-    const bounds = yield select(getProjectBounds)
-    if (isWithinBounds(position, bounds)) {
-      yield put(addItem(asset, position))
-    }
+    yield put(addItem(asset, position))
   }
 }
 

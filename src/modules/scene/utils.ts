@@ -35,8 +35,16 @@ export function cloneEntities(scene: Scene) {
 
 export function snapToGrid(position: Vector3, grid: number = 0.5): Vector3 {
   return {
-    x: position.x - (position.x % grid),
-    y: position.y - (position.y % grid),
-    z: position.z - (position.z % grid)
+    x: Math.round(position.x / grid) * grid,
+    y: Math.round(position.y / grid) * grid,
+    z: Math.round(position.z / grid) * grid
+  }
+}
+
+export function snapToBounds(position: Vector3, bounds: Vector3): Vector3 {
+  return {
+    x: Math.max(Math.min(position.x, bounds.x), 0),
+    y: Math.max(Math.min(position.y, bounds.y), 0),
+    z: Math.max(Math.min(position.z, bounds.z), 0)
   }
 }
