@@ -1,16 +1,20 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Dropdown } from 'decentraland-ui'
+import { Icon, Dropdown, Confirm } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 import { getProjectDimensions } from 'modules/project/utils'
-import { Props, DefaultProps } from './ProjectCard.types'
+import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
 
-export default class ProjectCard extends React.PureComponent<Props> {
+export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
     hasSubmittedProject: false
+  }
+
+  state = {
+    isDeleting: false
   }
 
   handleOnClick = () => {
@@ -18,6 +22,14 @@ export default class ProjectCard extends React.PureComponent<Props> {
     if (onClick) {
       onClick(project)
     }
+  }
+
+  handleConfirmDeleteProject = () => {
+    this.setState({ isDeleting: true })
+  }
+
+  handleCancelDeleteProject = () => {
+    this.setState({ isDeleting: false })
   }
 
   handleDeleteProject = () => {
@@ -32,6 +44,7 @@ export default class ProjectCard extends React.PureComponent<Props> {
 
   render() {
     const { project, hasSubmittedProject, onClick } = this.props
+    const { isDeleting } = this.state
 
     let style = {}
     let classes = 'ProjectCard Card'
@@ -54,7 +67,7 @@ export default class ProjectCard extends React.PureComponent<Props> {
         <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
           <Dropdown.Menu>
             <Dropdown.Item text={t('homepage.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
-            <Dropdown.Item text={t('homepage.project_actions.delete_project')} onClick={this.handleDeleteProject} />
+            <Dropdown.Item text={t('homepage.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">
@@ -66,14 +79,27 @@ export default class ProjectCard extends React.PureComponent<Props> {
       </>
     )
 
-    return onClick ? (
-      <div className={classes} onClick={this.handleOnClick} style={style}>
-        {children}
-      </div>
-    ) : (
-      <Link to={locations.editor(project.id)} className={classes} style={style}>
-        {children}
-      </Link>
+    return (
+      <>
+        {onClick ? (
+          <div className={classes} onClick={this.handleOnClick} style={style}>
+            {children}
+          </div>
+        ) : (
+          <Link to={locations.editor(project.id)} className={classes} style={style}>
+            {children}
+          </Link>
+        )}
+        <Confirm
+          open={isDeleting}
+          className="confirm"
+          size="tiny"
+          header={`Delete "${project.title}"`}
+          content={`Are you sure you want to delete your project "${project.title}"? This operation is not reversible`}
+          onCancel={this.handleCancelDeleteProject}
+          onConfirm={this.handleDeleteProject}
+        />
+      </>
     )
   }
 }

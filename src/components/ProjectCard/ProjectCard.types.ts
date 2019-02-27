@@ -13,6 +13,10 @@ export type Props = DefaultProps & {
   onDuplicateProject: typeof duplicateProject
 }
 
+export type State = {
+  isDeleting: boolean
+}
+
 export type MapStateProps = Pick<Props, 'hasSubmittedProject'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject'>
 export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction>

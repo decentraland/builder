@@ -46,7 +46,7 @@
 }
 .ProjectCard .ui.dropdown .icon:hover {
   background-color: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .ProjectCard .ui.dropdown > .dropdown.icon {
