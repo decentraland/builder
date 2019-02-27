@@ -23,7 +23,8 @@ import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { cloneEntities, snapToGrid } from './utils'
+import { getProjectBounds } from 'modules/project/selectors'
+import { cloneEntities, snapToGrid, snapToBounds } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -40,7 +41,8 @@ function* handleAddItem(action: AddItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const { asset, position } = action.payload
+  let { position } = action.payload
+  const { asset } = action.payload
 
   let gltfId = yield select(getGLTFId(asset.url))
   const transformId = uuidv4()
@@ -58,11 +60,22 @@ function* handleAddItem(action: AddItemAction) {
     }
   }
 
+  if (!position) {
+    position = yield call(editorWindow.editor.getCameraTarget)
+  }
+
+  const bounds: ReturnType<typeof getProjectBounds> = yield select(getProjectBounds)
+  if (bounds) {
+    position = snapToBounds(position!, bounds)
+  }
+
+  position = snapToGrid(position!)
+
   newComponents[transformId] = {
     id: transformId,
     type: ComponentType.Transform,
     data: {
-      position: snapToGrid(position || (yield call(editorWindow.editor.getCameraTarget))),
+      position,
       rotation: { x: 0, y: 0, z: 0, w: 1 }
     }
   }
@@ -82,13 +95,15 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
 
   const { componentId, data } = action.payload
 
-  const newComponents: Scene['components'] = { ...scene.components }
-  newComponents[componentId] = {
-    ...newComponents[componentId],
-    data
-  }
+  if (componentId in scene.components) {
+    const newComponents: Scene['components'] = { ...scene.components }
+    newComponents[componentId] = {
+      ...newComponents[componentId],
+      data
+    }
 
-  yield put(provisionScene({ ...scene, components: newComponents }))
+    yield put(provisionScene({ ...scene, components: newComponents }))
+  }
 }
 
 function* handleResetItem(_: ResetItemAction) {
