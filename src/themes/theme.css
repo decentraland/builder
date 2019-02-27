@@ -12,6 +12,10 @@
 
   --contest-primary: #691fa9;
 
+  /* Decentraland UI */
+  --card-background: var(--purplish-grey);
+  --hover: #5b5760;
+
   /**
   * Component variables
   */

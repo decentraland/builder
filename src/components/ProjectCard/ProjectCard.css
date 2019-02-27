@@ -37,12 +37,27 @@
 .ProjectCard .ui.dropdown {
   position: absolute;
   top: 5px;
-  right: 18px;
+  right: 10px;
+  display: none;
+}
+
+.ProjectCard:hover .ui.dropdown {
+  display: inline-block;
+}
+.ProjectCard .ui.dropdown .icon:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.ProjectCard .ui.dropdown > .dropdown.icon {
+  padding: 0 3px;
+  line-height: 2px;
+  font-size: 24px;
+  height: 0.7em;
 }
 
 .ProjectCard .ui.dropdown > .dropdown.icon:before {
-  content: '...';
-  font-size: 24px;
+  content: '…';
   color: var(--text);
 }
 

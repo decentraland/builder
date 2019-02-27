@@ -8,8 +8,8 @@ const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
   throw new Error('Missing REACT_APP_CONTENT_SERVER env variable')
 })
 
-export const THUMBNAIL_WIDTH = 246
-export const THUMBNAIL_HEIGHT = 182
+export const THUMBNAIL_WIDTH = 492
+export const THUMBNAIL_HEIGHT = 364
 
 export function getNewScene(project: Project): EditorScene {
   const mappings = {
@@ -42,7 +42,7 @@ export function getNewScene(project: Project): EditorScene {
       teleportPosition: '0,0,0'
     },
     tracking: {
-      "origin": "builder"
+      origin: 'builder'
     },
     main: 'game.js',
     _mappings: mappings
