@@ -87,8 +87,8 @@
     "error_occurred": "An error occurred trying to submit your project:"
   },
   "shortcuts": {
-    "move": "Toggle position",
-    "rotate": "Toggle rotation",
+    "move": "Toggle arrows",
+    "rotate": "Toggle orbits",
     "reset": "Reset item",
     "duplicate": "Duplicate item",
     "delete": "Delete item",
