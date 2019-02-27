@@ -11,6 +11,7 @@
     "submit": "Submit",
     "continue": "Continue",
     "send": "Send",
+    "confirm": "Confirm",
     "cancel": "Cancel",
     "create": "Create",
     "or": "or"
@@ -34,7 +35,9 @@
     "message": "Our Builder does not work on mobile, give us your email and we will keep you posted!"
   },
   "project_card": {
-    "added_to_contest": "Added to contest"
+    "added_to_contest": "Added to contest",
+    "confirm_delete_header": "Delete \"{title}\"",
+    "confirm_delete_content": "Are you sure you want to delete your project \"{title}\"? This operation is not reversible"
   },
   "itemdrawer": {
     "title": "Item drawer",

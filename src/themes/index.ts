@@ -9,7 +9,6 @@ import './components/Navbar.css'
 import './components/Dimmer.css'
 import './components/Grid.css'
 import './components/Modal.css'
-import './components/Confirm.css'
 import './components/Input.css'
 import './components/Popup.css'
 
