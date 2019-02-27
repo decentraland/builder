@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
+import App from 'decentraland-dapps/dist/containers/App'
 
+import NotFoundPage from 'components/NotFoundPage'
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
@@ -9,13 +11,15 @@ import Metrics from './Metrics'
 
 import { Props } from './EditorPage.types'
 import { ToolName } from './Tools/Tools.types'
-import './EditorPage.css'
 import ItemDragLayer from './ItemDragLayer'
+
+import './EditorPage.css'
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
+
     document.body.classList.add('lock-scroll')
     document.body.scrollTop = 0
     document.body.addEventListener('mousewheel', this.handleMouseWheel)
@@ -58,6 +62,15 @@ export default class EditorPage extends React.PureComponent<Props> {
     const { isPreviewing, isSidebarOpen } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
+
+    if (!this.props.project) {
+      return (
+        <App>
+          <NotFoundPage />
+        </App>
+      )
+    }
+
     return (
       <div className="EditorPage">
         {isPreviewing ? null : <TopBar />}

@@ -16,8 +16,10 @@ import {
   ResetCameraAction
 } from 'modules/editor/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { Project } from 'modules/project/types'
 
 export type Props = {
+  project: Project | null
   isSidebarOpen: boolean
   isPreviewing: boolean
   onOpenModal: typeof openModal
@@ -30,7 +32,7 @@ export type Props = {
   onResetCamera: typeof resetCamera
 }
 
-export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing'>
+export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'project'>
 export type MapDispatchProps = Pick<
   Props,
   | 'onOpenModal'

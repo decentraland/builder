@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 
+import { getCurrentProject } from 'modules/project/selectors'
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
 import { RootState } from 'modules/common/types'
 import {
@@ -17,7 +18,8 @@ import EditorPage from './EditorPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
-  isSidebarOpen: isSidebarOpen(state)
+  isSidebarOpen: isSidebarOpen(state),
+  project: getCurrentProject(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

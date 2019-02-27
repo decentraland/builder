@@ -31,8 +31,21 @@
   },
   "mobilepage": {
     "title": "Build something cool!",
-    "subtitle": "Pimp up your LAND.",
-    "message": "Our Builder does not work on mobile, give us your email and we will keep you posted!"
+    "subtitle": "Pimp up your LAND",
+    "message": "The Builder does not work on mobile, get notified when it does:",
+    "success": "Thanks, we will keep you posted!"
+  },
+  "notfoundpage": {
+    "title": "404",
+    "subtitle": "Sorry, we couldn't find the project you were looking for",
+    "back": "Back to Projects"
+  },
+  "errorpage": {
+    "title": "Oops!",
+    "subtitle": "There was an error, this is all we know:",
+    "support": "Contact support",
+    "or": "or try",
+    "reload": "reloading the page"
   },
   "project_card": {
     "added_to_contest": "Added to contest",

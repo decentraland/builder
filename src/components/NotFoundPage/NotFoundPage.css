@@ -1,0 +1,33 @@
+.NotFoundPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.NotFoundPage .title {
+  font-size: 100px;
+  user-select: none;
+}
+
+.NotFoundPage .subtitle {
+  color: var(--purplish-grey);
+}
+
+.NotFoundPage button.back {
+  margin-top: 16px;
+}
+
+/* This is attached to the body */
+.notfound-body {
+  background-image: url('../../images/dev-hero.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: fixed;
+}

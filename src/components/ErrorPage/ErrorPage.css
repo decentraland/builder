@@ -1,0 +1,54 @@
+.ErrorPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.ErrorPage .title {
+  font-size: 64px;
+  user-select: none;
+}
+
+.ErrorPage .subtitle {
+  color: var(--purplish-grey);
+}
+
+.ErrorPage textarea.trace {
+  color: var(--purplish-grey);
+  outline: none;
+  border: 0px;
+  border-radius: 6px;
+  background: var(--dark);
+  margin: 24px 0px;
+  padding: 16px;
+  resize: none;
+  box-shadow: #00000088 0px 3px 9px;
+}
+
+.ErrorPage textarea.trace::selection {
+  background: #898695;
+  color: #000;
+}
+
+.ErrorPage .suggestion {
+  margin-top: 16px;
+}
+
+.ErrorPage button.back {
+  margin-top: 16px;
+}
+
+/* This is attached to the body */
+.error-body {
+  background-image: url('../../images/dev-hero.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: fixed;
+}
