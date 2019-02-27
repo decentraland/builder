@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import { Props } from './ErrorPage.types'
@@ -11,6 +12,16 @@ const APP_ID = env.get('REACT_APP_INTERCOM_APP_ID', '')
 const widget = new IntercomWidget(APP_ID)
 
 export default class ErrorPage extends React.PureComponent<Props> {
+  componentDidMount() {
+    const analytics = getAnalytics()
+    document.body.classList.add('error-body')
+    analytics.track('Error page', {})
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('error-body')
+  }
+
   handleOnClick = () => {
     const { stackTrace } = this.props
     const lines = stackTrace.split('\n')
@@ -26,7 +37,6 @@ export default class ErrorPage extends React.PureComponent<Props> {
     const { stackTrace } = this.props
     return (
       <div className="ErrorPage">
-        <div className="overlay" />
         <h1 className="title">{t('errorpage.title')}</h1>
         <p className="subtitle">{t('errorpage.subtitle')}</p>
 

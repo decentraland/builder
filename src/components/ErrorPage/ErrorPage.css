@@ -10,21 +10,6 @@
   bottom: 0px;
 }
 
-.ErrorPage .overlay {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  left: 0px;
-  bottom: 0px;
-  z-index: -1;
-  background: url('https://developers.decentraland.org//images/decentraland-hero.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 50%;
-  background-attachment: fixed;
-  opacity: 0.1;
-}
-
 .ErrorPage .title {
   font-size: 64px;
   user-select: none;
@@ -57,4 +42,13 @@
 
 .ErrorPage button.back {
   margin-top: 16px;
+}
+
+/* This is attached to the body */
+.error-body {
+  background-image: url('../../images/dev-hero.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: fixed;
 }

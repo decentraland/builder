@@ -26,7 +26,6 @@ export default class HomePage extends React.PureComponent<Props> {
   render() {
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
-
     return (
       <div className="HomePage">
         <Header size="large">{t('homepage.title')}</Header>
