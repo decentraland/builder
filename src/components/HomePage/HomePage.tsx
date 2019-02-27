@@ -36,9 +36,11 @@ export default class HomePage extends React.PureComponent<Props> {
           <div className="subtitle">{t('global.projects').toUpperCase()}</div>
           {projects.length > 0 ? (
             <div className="CardList">
-              {projects.map((project, index) => (
-                <ProjectCard key={index} project={project} />
-              ))}
+              {projects
+                .sort(project => -project.createdAt)
+                .map((project, index) => (
+                  <ProjectCard key={index} project={project} />
+                ))}
             </div>
           ) : (
             <div className="empty-projects">

@@ -42,7 +42,8 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     thumbnail: '',
     parcelLayout,
     parcels: getBlockchainParcelsFromLayout(parcelLayout),
-    sceneId: scene.id
+    sceneId: scene.id,
+    createdAt: Date.now()
   }
 
   yield put(createScene(scene))
@@ -61,7 +62,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
   if (!scene) return
 
   const newScene = { ...scene, id: uuidv4() }
-  const newProject = { ...project, sceneId: newScene.id, id: uuidv4() }
+  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: Date.now() }
 
   yield put(createScene(newScene))
   yield put(createProject(newProject))
