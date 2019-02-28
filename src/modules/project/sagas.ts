@@ -16,7 +16,7 @@ import { RootState } from 'modules/common/types'
 import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene } from 'modules/scene/selectors'
+import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
@@ -95,8 +95,9 @@ function* handleEditProject(action: EditProjectRequestAction) {
 
       yield take(SET_EDITOR_READY)
 
-      if (!ground) {
-        ground = yield select(getGroundAsset)
+      if (!ground && scene.ground) {
+        const groundId = scene.ground.assetId
+        ground = yield select((state: RootState) => getGroundAsset(state, groundId))
       }
 
       yield put(provisionScene(scene))
@@ -109,8 +110,15 @@ function* handleEditProject(action: EditProjectRequestAction) {
     yield put(editProjectSuccess(id, project))
 
     if (hasNewLayout) {
-      yield put(resetCamera())
-      yield put(takeScreenshot())
+      // The user could've navigated away, we need to compensate for this
+      const currentScene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
+
+      if (!currentScene) {
+        yield put(setEditorReady(false))
+      } else if (currentScene.id === currentProject.sceneId) {
+        yield put(resetCamera())
+        yield put(takeScreenshot())
+      }
     }
   } catch (error) {
     yield put(editProjectFailure(error))
