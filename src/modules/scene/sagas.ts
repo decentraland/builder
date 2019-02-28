@@ -21,7 +21,7 @@ import { RootState } from 'modules/common/types'
 import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponents, getScene } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, unselectEntity } from 'modules/editor/actions'
+import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -203,7 +203,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
     delete newComponents[componentId]
   }
 
-  yield put(unselectEntity())
+  yield put(deselectEntity())
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
 }
 

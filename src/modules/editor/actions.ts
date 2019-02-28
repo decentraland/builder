@@ -88,13 +88,13 @@ export const selectEntity = (entityId: string) => action(SELECT_ENTITY, { entity
 
 export type SelectEntityAction = ReturnType<typeof selectEntity>
 
-// Unselect Entity
+// Deselect Entity
 
-export const UNSELECT_ENTITY = 'Unselect entity'
+export const DESELECT_ENTITY = 'Deselect entity'
 
-export const unselectEntity = () => action(UNSELECT_ENTITY, {})
+export const deselectEntity = () => action(DESELECT_ENTITY, {})
 
-export type UnselectEntityAction = ReturnType<typeof unselectEntity>
+export type DeselectEntityAction = ReturnType<typeof deselectEntity>
 
 // Zoom in/out
 

@@ -7,8 +7,8 @@ import {
   TOGGLE_SIDEBAR,
   SelectEntityAction,
   SELECT_ENTITY,
-  UnselectEntityAction,
-  UNSELECT_ENTITY,
+  DeselectEntityAction,
+  DESELECT_ENTITY,
   SET_EDITOR_READY,
   CLOSE_EDITOR,
   SetEditorReadyAction,
@@ -41,7 +41,7 @@ export type EditorReducerAction =
   | TogglePreviewAction
   | ToggleSidebarAction
   | SelectEntityAction
-  | UnselectEntityAction
+  | DeselectEntityAction
   | SetEditorReadyAction
   | CloseEditorAction
   | ToggleSnapToGridAction
@@ -75,7 +75,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         selectedEntityId: action.payload.entityId
       }
     }
-    case UNSELECT_ENTITY: {
+    case DESELECT_ENTITY: {
       return {
         ...state,
         selectedEntityId: null
