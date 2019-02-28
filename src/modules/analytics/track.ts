@@ -5,7 +5,6 @@ import {
   DROP_ITEM,
   RESET_ITEM,
   DUPLICATE_ITEM,
-  DELETE_ITEM,
   SET_GROUND,
   AddItemAction,
   DropItemAction,

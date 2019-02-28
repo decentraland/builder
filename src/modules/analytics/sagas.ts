@@ -74,7 +74,8 @@ function* handleSubmitProject(action: SubmitProjectSuccessAction) {
     projectId: project.id,
     email,
     ethAddress,
-    numEntities: Object.keys(scene.entities).length
+    numEntities: Object.keys(scene.entities).length,
+    layout: project.layout
   })
 }
 
