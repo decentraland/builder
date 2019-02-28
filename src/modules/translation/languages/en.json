@@ -145,6 +145,6 @@
   },
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
-    "min_area_error": "Your scene it's too small"
+    "min_area_error": "Your scene is too small"
   }
 }
