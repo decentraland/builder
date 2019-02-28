@@ -9,5 +9,4 @@ export type Props = Omit<LayoutProps, 'onChange'> & {
 
 export type State = {
   hasMaxError: boolean
-  hasMinError: boolean
 }

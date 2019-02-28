@@ -8,36 +8,35 @@ import { Props, State } from './ProjectLayoutPicker.types'
 
 export default class ProjectLayoutPicker extends React.PureComponent<Props, State> {
   state = {
-    hasMaxError: false,
-    hasMinError: false
+    hasMaxError: false
   }
 
-  handleChange = (layout: Layout) => {
+  handleChange = (layout: Partial<Layout>) => {
     const { rows, cols } = layout
 
-    const hasMaxError = rows * cols > MAX_AREA
-    const hasMinError = rows < 1 || cols < 1 || !Number(rows) || !Number(cols)
+    const hasEmptyFields = !rows || !cols
+    let hasMaxError = false
+    let hasMinError = false
+
+    if (!hasEmptyFields) {
+      hasMaxError = rows! * cols! > MAX_AREA
+      hasMinError = rows! < 1 || cols! < 1
+    }
 
     const newLayout: ProjectLayout = {
-      rows: rows >= 1 ? rows : this.props.rows,
-      cols: cols >= 1 ? cols : this.props.cols,
-      hasError: hasMaxError || hasMinError
+      rows: rows || 0,
+      cols: cols || 0,
+      hasError: hasMaxError || hasMinError || hasEmptyFields
     }
-    this.setState({ hasMaxError, hasMinError })
+    this.setState({ hasMaxError })
     this.props.onChange(newLayout)
   }
 
   render() {
     const { rows, cols, ...pickerProps } = this.props
-    const { hasMaxError, hasMinError } = this.state
+    const { hasMaxError } = this.state
 
-    let errorMessage
-    if (hasMaxError) {
-      errorMessage = t('project_layout_picker.max_area_error', { area: MAX_AREA })
-    }
-    if (hasMinError) {
-      errorMessage = t('project_layout_picker.min_area_error')
-    }
+    const errorMessage = hasMaxError ? t('project_layout_picker.max_area_error', { area: MAX_AREA }) : ''
     return <LayoutPicker rows={rows} cols={cols} errorMessage={errorMessage} {...pickerProps} onChange={this.handleChange} />
   }
 }
