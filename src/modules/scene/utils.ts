@@ -11,13 +11,6 @@ export function getRandomPosition(position: Partial<Vector3> = {}) {
   return { x, y: 0, z, ...position }
 }
 
-export function getRandomPositionWithinBounds(bounds: Vector3) {
-  const x = Math.random() * bounds.x
-  const y = Math.random() * bounds.y
-  const z = Math.random() * bounds.z
-  return { x, y, z }
-}
-
 export function isWithinBounds(position: Vector3, bounds: Vector3) {
   return position.x <= bounds.x && position.y <= bounds.y && position.z <= bounds.z && position.x >= 0 && position.y >= 0 && position.z >= 0
 }
@@ -31,6 +24,21 @@ export function cloneEntities(scene: Scene) {
     }),
     {}
   )
+}
+
+export function filterEntitiesWithComponent(componentId: string, entities: Scene['entities']): Scene['entities'] {
+  const newEntities: Scene['entities'] = {}
+
+  for (let id in entities) {
+    const entity = entities[id]
+    const index = entity.components.indexOf(componentId)
+
+    if (index === -1) {
+      newEntities[id] = entity
+    }
+  }
+
+  return newEntities
 }
 
 export function snapToGrid(position: Vector3, grid: number = 0.5): Vector3 {

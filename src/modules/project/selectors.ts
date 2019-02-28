@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/selectors'
-import { Project } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
@@ -14,22 +14,28 @@ export const isLoading: (state: RootState) => boolean = state => getState(state)
 
 export const getError: (state: RootState) => ProjectState['error'] = state => getState(state).error
 
+export const getProject = (state: RootState, projectId: string): Project | null => getData(state)[projectId] || null
+
 export const getCurrentProject = createSelector<RootState, string | undefined, ProjectState['data'], Project | null>(
   getProjectId,
   getData,
   (projectId, projects) => projects[projectId!] || null
 )
 
-export const getProjectLayout = createSelector<RootState, Project | null, Project['parcelLayout'] | null>(
+export const getCurrentLayout = createSelector<RootState, Project | null, Layout | null>(
   getCurrentProject,
-  project => (project ? project.parcelLayout : null)
+  project => (project ? project.layout : null)
 )
 
-export const getProjectBounds = createSelector<RootState, Project | null, Vector3 | null>(
+export const getCurrentBounds = createSelector<RootState, Project | null, Vector3 | null>(
   getCurrentProject,
   project => {
     if (!project) return null
-    const { cols, rows } = project.parcelLayout
-    return { x: rows * PARCEL_SIZE, y: Math.log2(cols * rows + 1) * 20, z: cols * PARCEL_SIZE }
+    const { rows, cols } = project.layout
+    return {
+      x: rows * PARCEL_SIZE,
+      y: Math.log2(rows * cols + 1) * 20,
+      z: cols * PARCEL_SIZE
+    }
   }
 )

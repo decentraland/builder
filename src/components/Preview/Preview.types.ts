@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { Vector3 } from 'modules/common/types'
 import { UpdateEditorAction, SetEditorReadyAction, OpenEditorAction, openEditor, TogglePreviewAction } from 'modules/editor/actions'
-import { Project } from 'modules/project/types'
+import { Layout } from 'modules/project/types'
 import { Gizmo } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 
@@ -37,7 +37,7 @@ export type Props = {
   isLoading: boolean
   onOpenEditor: typeof openEditor
   onDropItem: typeof dropItem
-  layout: Project['parcelLayout']
+  layout: Layout
 }
 
 export type State = {}

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Icon } from 'decentraland-ui'
-
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import SquaresGrid from 'components/SquaresGrid'
 import { Props } from './LayoutPicker.types'
 
@@ -9,8 +9,8 @@ import './LayoutPicker.css'
 
 export default class LayoutPicker extends React.PureComponent<Props> {
   getValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value)
-    return Math.floor(value || 0)
+    const value = e.target.value.trim()
+    return value ? Math.floor(Number(value) || 0) : undefined
   }
 
   handleChangeCols = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +22,7 @@ export default class LayoutPicker extends React.PureComponent<Props> {
   handleChangeRows = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { cols, onChange } = this.props
     const rows = this.getValue(e)
-    onChange({ cols, rows })
+    onChange({ rows, cols })
   }
 
   disableScroll = (ref: HTMLInputElement | null) => {

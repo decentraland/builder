@@ -11,7 +11,7 @@ const mapState = (state: RootState): MapStateProps => {
   const currentProject = getCurrentProject(state)
   const currentScene = getCurrentScene(state)
   if (currentProject && currentScene) {
-    const { rows, cols } = currentProject.parcelLayout
+    const { rows, cols } = currentProject.layout
     return {
       rows,
       cols,

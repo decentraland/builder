@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions'
 
 import { Scene } from 'modules/scene/types'
 import { AssetMappings } from 'modules/asset/types'
+import { Project } from 'modules/project/types'
 import { Gizmo } from './types'
 
 // Bind keyboard shortcuts
@@ -67,7 +68,7 @@ export type SetGizmoAction = ReturnType<typeof setGizmo>
 
 export const TOGGLE_PREVIEW = 'Toggle preview'
 
-export const togglePreview = (enabled: boolean) => action(TOGGLE_PREVIEW, { enabled })
+export const togglePreview = (isEnabled: boolean) => action(TOGGLE_PREVIEW, { isEnabled })
 
 export type TogglePreviewAction = ReturnType<typeof togglePreview>
 
@@ -75,7 +76,7 @@ export type TogglePreviewAction = ReturnType<typeof togglePreview>
 
 export const TOGGLE_SIDEBAR = 'Toggle sidebar'
 
-export const toggleSidebar = (enabled: boolean) => action(TOGGLE_SIDEBAR, { enabled })
+export const toggleSidebar = (isEnabled: boolean) => action(TOGGLE_SIDEBAR, { isEnabled })
 
 export type ToggleSidebarAction = ReturnType<typeof toggleSidebar>
 
@@ -121,7 +122,7 @@ export type ResetCameraAction = ReturnType<typeof resetCamera>
 
 export const SET_EDITOR_READY = 'Set editor ready'
 
-export const setEditorReady = () => action(SET_EDITOR_READY, {})
+export const setEditorReady = (isReady: boolean) => action(SET_EDITOR_READY, { isReady })
 
 export type SetEditorReadyAction = ReturnType<typeof setEditorReady>
 
@@ -140,3 +141,11 @@ export const TOGGLE_SNAP_TO_GRID = 'Toggle snap to grid'
 export const toggleSnapToGrid = (enabled: boolean) => action(TOGGLE_SNAP_TO_GRID, { enabled })
 
 export type ToggleSnapToGridAction = ReturnType<typeof toggleSnapToGrid>
+
+// Create update the editor scene from a project
+
+export const NEW_EDITOR_SCENE = 'New editor scene'
+
+export const newEditorScene = (id: string, project: Partial<Project>) => action(NEW_EDITOR_SCENE, { id, project })
+
+export type NewEditorSceneAction = ReturnType<typeof newEditorScene>

@@ -1,7 +1,7 @@
 import uuidv4 from 'uuid/v4'
-import { utils } from 'decentraland-commons'
 import { delay } from 'redux-saga'
 import { takeLatest, put, select, call } from 'redux-saga/effects'
+
 import {
   ADD_ITEM,
   AddItemAction,
@@ -17,14 +17,15 @@ import {
   SET_GROUND,
   SetGroundAction
 } from 'modules/scene/actions'
-import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponents, getData as getSceneData } from 'modules/scene/selectors'
+import { RootState } from 'modules/common/types'
+import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponents, getScene } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, unselectEntity } from 'modules/editor/actions'
-import { PARCEL_SIZE } from 'modules/project/utils'
+import { getCurrentBounds, getProject } from 'modules/project/selectors'
+import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { getProjectBounds } from 'modules/project/selectors'
-import { cloneEntities, snapToGrid, snapToBounds } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -64,7 +65,7 @@ function* handleAddItem(action: AddItemAction) {
     position = yield call(editorWindow.editor.getCameraTarget)
   }
 
-  const bounds: ReturnType<typeof getProjectBounds> = yield select(getProjectBounds)
+  const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
   if (bounds) {
     position = snapToBounds(position!, bounds)
   }
@@ -207,21 +208,24 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { project, asset } = action.payload
+  const { projectId, layout, asset } = action.payload
 
-  const sceneData = yield select(getSceneData)
-  const scene: Scene | undefined = sceneData[project.sceneId]
+  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
+  if (!currentProject) return
 
-  const { parcelLayout } = project
+  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  if (!scene) return
 
-  if (!scene || !parcelLayout) return
-
+  const hasLayoutChanged = layout && !isEqualLayout(currentProject.layout, layout)
+  const currentLayout = layout || currentProject.layout
   let components = { ...scene.components }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
 
   // Skip if there are no updates
-  if (asset && scene.ground && scene.ground.assetId === asset.id) return
+  if (asset && scene.ground && scene.ground.assetId === asset.id && !hasLayoutChanged) {
+    return
+  }
 
   if (asset) {
     // Create the Shape component if necessary
@@ -240,47 +244,28 @@ function* handleSetGround(action: SetGroundAction) {
     }
 
     if (scene.ground) {
-      // Update the existing ground
-      for (let id in entities) {
-        const ent = entities[id]
-        const index = ent.components.indexOf(scene.ground.componentId)
-        if (index > -1) {
-          // Remove the old ground and attach the new one
-          components = utils.omit(components, [scene.ground.componentId])
-          ent.components = Object.assign([], ent.components, { [index]: gltfId }) // replaces cloned array[index]'s value
-        }
-      }
-    } else {
-      // Create the ground
-      for (let j = 0; j < parcelLayout.cols; j++) {
-        for (let i = 0; i < parcelLayout.rows; i++) {
-          const entityId = uuidv4()
-          const transformId = uuidv4()
+      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
+    }
 
-          components[transformId] = {
-            id: transformId,
-            type: ComponentType.Transform,
-            data: {
-              position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-              rotation: { x: 0, y: 0, z: 0, w: 1 }
-            }
+    for (let j = 0; j < currentLayout.cols; j++) {
+      for (let i = 0; i < currentLayout.rows; i++) {
+        const entityId = uuidv4()
+        const transformId = uuidv4()
+
+        components[transformId] = {
+          id: transformId,
+          type: ComponentType.Transform,
+          data: {
+            position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
+            rotation: { x: 0, y: 0, z: 0, w: 1 }
           }
-
-          entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
         }
+
+        entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
       }
     }
   } else if (scene.ground) {
-    // We need to clear the ground
-    for (let id in entities) {
-      const ent = entities[id]
-      const index = ent.components.indexOf(scene.ground.componentId)
-
-      if (index > -1) {
-        // Remove entities which conform the floor
-        delete entities[id]
-      }
-    }
+    entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
   }
 
   const ground = asset ? { assetId: asset.id, componentId: gltfId } : null

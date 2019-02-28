@@ -15,6 +15,9 @@
   display: block;
   outline: none;
 }
+.Preview.loading > canvas {
+  position: absolute !important;
+}
 
 .Preview .ui.loader:before {
   border: none;

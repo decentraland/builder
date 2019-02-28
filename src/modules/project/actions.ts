@@ -26,11 +26,26 @@ export type CreateProjectAction = ReturnType<typeof createProject>
 
 // Edit project
 
-export const EDIT_PROJECT = 'Edit project'
+export const EDIT_PROJECT_REQUEST = '[Request] Edit project'
+export const EDIT_PROJECT_SUCCESS = '[Success] Edit project'
+export const EDIT_PROJECT_FAILURE = '[Failure] Edit project'
 
-export const editProject = (id: string, project: Partial<Project>, ground?: Asset | null) => action(EDIT_PROJECT, { id, project, ground })
+export const editProjectRequest = (id: string, project: Partial<Project>, ground?: Asset) =>
+  action(EDIT_PROJECT_REQUEST, { id, project, ground })
+export const editProjectSuccess = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_SUCCESS, { id, project })
+export const editProjectFailure = (error: string) => action(EDIT_PROJECT_FAILURE, { error })
 
-export type EditProjectAction = ReturnType<typeof editProject>
+export type EditProjectRequestAction = ReturnType<typeof editProjectRequest>
+export type EditProjectSuccessAction = ReturnType<typeof editProjectSuccess>
+export type EditProjectFailureAction = ReturnType<typeof editProjectFailure>
+
+// Edit project thumbnail
+
+export const EDIT_PROJECT_THUMBNAIL = 'Edit project thumbnail'
+
+export const editProjectThumbnail = (id: string, thumbnail: string) => action(EDIT_PROJECT_THUMBNAIL, { id, thumbnail })
+
+export type EditProjectThumbnailAction = ReturnType<typeof editProjectThumbnail>
 
 // Delete project
 

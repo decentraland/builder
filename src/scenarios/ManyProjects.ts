@@ -10,7 +10,7 @@ import { createProjectFromTemplate } from 'modules/project/actions'
  */
 
 export function run(store: Store<RootState>, _: EventEmitter) {
-  const templates = getTemplates().filter(template => !!template.parcelLayout) // Remove custom built projects
+  const templates = getTemplates().filter(template => !!template.layout) // Remove custom built projects
   const projectCount = 25
   const times = Math.round(projectCount / templates.length)
 
