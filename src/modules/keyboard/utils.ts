@@ -102,55 +102,68 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
   return [
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.MOVE]),
-      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.MOVE ? Gizmo.NONE : Gizmo.MOVE))
+      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.MOVE ? Gizmo.NONE : Gizmo.MOVE)),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.ROTATE]),
-      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE))
+      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE)),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.RESET_ITEM]),
-      callback: () => store.dispatch(resetItem())
+      callback: () => store.dispatch(resetItem()),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.DUPLICATE_ITEM]),
-      callback: () => store.dispatch(duplicateItem())
+      callback: () => store.dispatch(duplicateItem()),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.PREVIEW]),
-      callback: () => store.dispatch(togglePreview(!isPreviewing(store.getState())))
+      callback: () => store.dispatch(togglePreview(!isPreviewing(store.getState()))),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SIDEBAR]),
-      callback: () => store.dispatch(toggleSidebar(!isSidebarOpen(store.getState())))
+      callback: () => store.dispatch(toggleSidebar(!isSidebarOpen(store.getState()))),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.DELETE_ITEM]),
-      callback: () => store.dispatch(deleteItem())
+      callback: () => store.dispatch(deleteItem()),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.UNDO]),
-      callback: () => store.dispatch(editorUndo())
+      callback: () => store.dispatch(editorUndo()),
+      action: 'keydown'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.REDO]),
-      callback: () => store.dispatch(editorRedo())
+      callback: () => store.dispatch(editorRedo()),
+      action: 'keydown'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.SHORTCUTS]),
-      callback: () => store.dispatch(toggleModal('ShortcutsModal'))
+      callback: () => store.dispatch(toggleModal('ShortcutsModal')),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.RESET_CAMERA]),
-      callback: () => store.dispatch(resetCamera())
+      callback: () => store.dispatch(resetCamera()),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.ZOOM_IN]),
-      callback: () => store.dispatch(zoomIn())
+      callback: () => store.dispatch(zoomIn()),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.ZOOM_OUT]),
-      callback: () => store.dispatch(zoomOut())
+      callback: () => store.dispatch(zoomOut()),
+      action: 'keyup'
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
@@ -159,7 +172,8 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
-      callback: () => store.dispatch(toggleSnapToGrid(true))
+      callback: () => store.dispatch(toggleSnapToGrid(true)),
+      action: 'keyup'
     }
   ]
 }

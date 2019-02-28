@@ -4,7 +4,7 @@ export type KeyboardShortcut = BaseKeyboardShortcut & {
 
 export type BaseKeyboardShortcut = {
   combination: string | string[]
-  action?: 'keydown' | 'keyup'
+  action?: 'keydown' | 'keyup' | 'keypress'
 }
 
 export enum Shortcut {
