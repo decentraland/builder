@@ -159,8 +159,7 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
-      callback: () => store.dispatch(toggleSnapToGrid(true)),
-      action: 'keyup'
+      callback: () => store.dispatch(toggleSnapToGrid(true))
     }
   ]
 }
