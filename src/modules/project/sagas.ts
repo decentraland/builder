@@ -20,7 +20,7 @@ import { getData as getScenes, getScene } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround } from 'modules/scene/actions'
-import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera } from 'modules/editor/actions'
+import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 
 export function* projectSaga() {
@@ -108,6 +108,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
 
     if (hasNewLayout) {
       yield put(resetCamera())
+      yield put(takeScreenshot())
     }
   } catch (error) {
     yield put(editProjectFailure(error))
