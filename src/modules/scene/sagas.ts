@@ -63,6 +63,7 @@ function* handleAddItem(action: AddItemAction) {
 
   if (!position) {
     position = yield call(editorWindow.editor.getCameraTarget)
+    position!.y = 0
   }
 
   const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
