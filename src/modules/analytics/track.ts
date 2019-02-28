@@ -19,8 +19,7 @@ import {
   SET_GIZMO,
   ZOOM_IN,
   ZOOM_OUT,
-  RESET_CAMERA,
-  TOGGLE_SNAP_TO_GRID
+  RESET_CAMERA
 } from 'modules/editor/actions'
 import { SEARCH_ASSETS, SET_SIDEBAR_VIEW, SELECT_CATEGORY } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
@@ -73,7 +72,6 @@ addPayload(SEARCH_ASSETS)
 addPayload(OPEN_MODAL)
 addPayload(SET_GIZMO)
 addPayload(SET_GROUND, trimAsset)
-addPayload(TOGGLE_SNAP_TO_GRID)
 
 // camera actions
 addPayload(ZOOM_IN)
