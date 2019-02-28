@@ -59,7 +59,7 @@ function* handleRemoveItem(_: DeleteItemAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
 
-  getAnalytics().track('Remove item', { projectId: project.id })
+  getAnalytics().track('Delete item', { projectId: project.id })
 }
 
 function* handleSubmitProject(action: SubmitProjectSuccessAction) {

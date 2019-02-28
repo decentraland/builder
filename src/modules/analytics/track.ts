@@ -58,7 +58,6 @@ addPayload(ADD_ITEM, trimAsset)
 addPayload(DROP_ITEM, trimAsset)
 addPayload(RESET_ITEM)
 addPayload(DUPLICATE_ITEM)
-addPayload(DELETE_ITEM)
 
 // editor actions
 add(CREATE_PROJECT, CREATE_PROJECT, action => (action as CreateProjectAction).payload.project.layout)
