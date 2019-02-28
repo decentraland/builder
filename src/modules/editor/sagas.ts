@@ -41,7 +41,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject, getProject } from 'modules/project/selectors'
+import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -144,9 +144,9 @@ function handlePositionGizmoUpdate(args: { entityId: string; transform: { positi
   if (!transform) return
 
   const sanitizedPosition = {
-    x: Math.max(Math.min(args.transform.position.x, project.parcelLayout.rows * PARCEL_SIZE), 0),
+    x: Math.max(Math.min(args.transform.position.x, project.layout.rows * PARCEL_SIZE), 0),
     y: Math.max(args.transform.position.y, 0),
-    z: Math.max(Math.min(args.transform.position.z, project.parcelLayout.cols * PARCEL_SIZE), 0)
+    z: Math.max(Math.min(args.transform.position.z, project.layout.cols * PARCEL_SIZE), 0)
   }
 
   if (transform) {

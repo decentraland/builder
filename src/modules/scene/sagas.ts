@@ -25,7 +25,7 @@ import { selectEntity, unselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { getRandomPositionWithinBounds, snapToGrid, snapToBounds, cloneEntities, clearGround } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -244,7 +244,7 @@ function* handleSetGround(action: SetGroundAction) {
     }
 
     if (scene.ground) {
-      entities = clearGround(scene.ground.componentId, entities)
+      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
     }
 
     for (let j = 0; j < currentLayout.cols; j++) {
@@ -265,7 +265,7 @@ function* handleSetGround(action: SetGroundAction) {
       }
     }
   } else if (scene.ground) {
-    entities = clearGround(scene.ground.componentId, entities)
+    entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
   }
 
   const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
