@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
@@ -17,19 +17,15 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   slides = [
     {
       thumbnail: 'slide0',
-      text: t('tutorial_modal.slide0')
+      text: <T id="tutorial_modal.slide0" values={{ br: <br /> }} />
     },
     {
       thumbnail: 'slide1',
-      text: t('tutorial_modal.slide1')
+      text: <T id="tutorial_modal.slide1" values={{ br: <br /> }} />
     },
     {
       thumbnail: 'slide2',
-      text: t('tutorial_modal.slide2')
-    },
-    {
-      thumbnail: 'slide3',
-      text: t('tutorial_modal.slide3')
+      text: <T id="tutorial_modal.slide2" values={{ br: <br /> }} />
     }
   ]
 

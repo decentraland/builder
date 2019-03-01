@@ -59,11 +59,14 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  user-select: none;
 }
 
 .TutorialModal .slide .description {
   font-size: 16px;
   margin-bottom: 24px;
+  width: 80%;
+  text-align: center;
 }
 
 .TutorialModal .slide0 {
@@ -76,8 +79,4 @@
 
 .TutorialModal .slide2 {
   background-image: url('../../../images/tutorial-slide-2.gif');
-}
-
-.TutorialModal .slide3 {
-  background-image: url('../../../images/tutorial-slide-3.gif');
 }
