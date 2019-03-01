@@ -17,6 +17,7 @@ export type CollectedProps = {
 
 export const assetSource: DragSourceSpec<Props, DragObject> = {
   beginDrag(props) {
+    props.onBeginDrag(props.asset)
     return {
       asset: props.asset
     }

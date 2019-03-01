@@ -47,11 +47,11 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
       for (const entityId in engine.entities) {
         const entity = engine.entities[entityId]
         if (message.payload.enabled) {
-          entity.remove(Gizmos)
+          entity.removeComponent(Gizmos)
         } else {
           const staticEntities = engine.getComponentGroup(StaticEntity)
           if (!staticEntities.hasEntity(entity)) {
-            entity.set(gizmo)
+            entity.addComponentOrReplace(gizmo)
           }
         }
       }
@@ -99,10 +99,10 @@ function createEntities(entities: Record<string, EntityDefinition>) {
       entity = new Entity()
       ;(entity as any).uuid = id
       if (!builderEntity.disableGizmos) {
-        entity.set(gizmoEvent)
-        entity.set(gizmo)
+        entity.addComponentOrReplace(gizmoEvent)
+        entity.addComponentOrReplace(gizmo)
       } else {
-        entity.set(staticEntity)
+        entity.addComponentOrReplace(staticEntity)
       }
 
       engine.addEntity(entity)
@@ -111,7 +111,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
     for (let componentId of builderEntity.components) {
       const component = getComponentById(componentId)
       if (component) {
-        entity.set(component)
+        entity.addComponentOrReplace(component)
       }
     }
   }
@@ -131,8 +131,8 @@ function removeUnusedComponents(components: Record<string, AnyComponent>) {
 
       for (const entityId in engine.entities) {
         const entity = engine.entities[entityId]
-        if (entity.has(originalComponent)) {
-          entity.remove(originalComponent)
+        if (entity.hasComponent(originalComponent)) {
+          entity.removeComponent(originalComponent)
         }
       }
 

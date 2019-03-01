@@ -8,6 +8,7 @@ import { searchAssets, setSidebarView, selectCategory } from 'modules/ui/sidebar
 import { getCurrentProject } from 'modules/project/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
+import { prefetchAsset } from 'modules/editor/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   categories: getSideBarCategories(state),
@@ -23,7 +24,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSearch: search => dispatch(searchAssets(search)),
   onSetSidebarView: view => dispatch(setSidebarView(view)),
   onSelectCategory: category => dispatch(selectCategory(category)),
-  onSetGround: (projectId, layout, ground) => dispatch(setGround(projectId, layout, ground))
+  onSetGround: (projectId, layout, ground) => dispatch(setGround(projectId, layout, ground)),
+  onPrefetchAsset: asset => dispatch(prefetchAsset(asset))
 })
 
 export default connect(

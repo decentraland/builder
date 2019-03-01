@@ -34,7 +34,9 @@ import {
   ToggleSnapToGridAction,
   toggleSnapToGrid,
   NEW_EDITOR_SCENE,
-  NewEditorSceneAction
+  NewEditorSceneAction,
+  PREFETCH_ASSET,
+  PrefetchAssetAction
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -52,7 +54,7 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { isWithinBounds } from 'modules/scene/utils'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 
 const editorWindow = window as EditorWindow
@@ -77,6 +79,7 @@ export function* editorSaga() {
   yield takeLatest(SET_EDITOR_READY, handleResetCamera)
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
+  yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -306,6 +309,18 @@ function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
       editorWindow.editor.setGridResolution(0.5, 0, Math.PI / 16)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
+    }
+  })
+}
+
+function* handlePrefetchAsset(action: PrefetchAssetAction) {
+  yield call(() => {
+    const contentEntries = Object.entries(action.payload.asset.contents)
+
+    for (let [file, hash] of contentEntries) {
+      if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
+        editorWindow.editor.preloadFile(CONTENT_SERVER + hash)
+      }
     }
   })
 }

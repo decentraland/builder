@@ -14,6 +14,9 @@ class AssetCard extends React.PureComponent<Props & CollectedProps> {
   static defaultProps: DefaultProps = {
     onClick: (_: Asset) => {
       /* noop */
+    },
+    onBeginDrag: (_: Asset) => {
+      /* noop */
     }
   }
 

@@ -22,6 +22,7 @@ export type Editor = {
   selectGizmo: (gizmo: Gizmo) => void
   selectEntity: (entityId: string) => void
   getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
+  preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>
   takeScreenshot: () => Promise<string>
   setGridResolution: (position: number, rotation: number, scale: number) => void

@@ -88,6 +88,13 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
+  handleBeginDrag = (asset: Asset) => {
+    if (asset.category !== GROUND_CATEGORY) {
+      const { onPrefetchAsset } = this.props
+      onPrefetchAsset(asset)
+    }
+  }
+
   handleSetGridView = () => {
     this.props.onSetSidebarView(SidebarView.GRID)
   }
@@ -110,7 +117,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
         row.push(
           <Grid.Column key={item.id}>
-            <AssetCard asset={item} isHorizontal={view === SidebarView.LIST} onClick={this.handleClick} />
+            <AssetCard
+              asset={item}
+              isHorizontal={view === SidebarView.LIST}
+              onClick={this.handleClick}
+              onBeginDrag={this.handleBeginDrag}
+            />
           </Grid.Column>
         )
       }
