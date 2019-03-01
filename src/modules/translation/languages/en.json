@@ -14,7 +14,10 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "create": "Create",
-    "or": "or"
+    "or": "or",
+    "next": "next",
+    "back": "back",
+    "done": "done"
   },
   "languages": {
     "en": "English"
@@ -146,5 +149,13 @@
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
     "min_area_error": "Your scene is too small"
+  },
+  "tutorial_modal": {
+    "title": "Get started with the Builder",
+    "subtitle": "The Builder is super easy to use, here are some tips before you begin",
+    "slide0": "Drag items around with your mouse",
+    "slide1": "Use the arrows to move along individual axis",
+    "slide2": "Drag items from the Item Drawer into your scene to place them",
+    "slide3": "Click anywhere in the viewport to drag the camera around"
   }
 }
