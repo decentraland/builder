@@ -50,10 +50,10 @@ export class Routes extends React.Component<Props, State> {
 
     return (
       <>
-        <Responsive maxWidth={1024}>
+        <Responsive maxWidth={1024} as={React.Fragment}>
           <Route component={this.wrapInApp(MobilePage)} />
         </Responsive>
-        <Responsive minWidth={1024}>
+        <Responsive minWidth={1024} as={React.Fragment}>
           <Switch>
             <Route exact path={locations.root()} component={this.wrapInApp(HomePage)} />
             <Route exact path={locations.notFound()} component={this.wrapInApp(NotFoundPage)} />
