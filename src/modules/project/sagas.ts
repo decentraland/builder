@@ -22,6 +22,7 @@ import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
 import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
+import { ActionCreators } from 'redux-undo'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -116,6 +117,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
       if (!currentScene) {
         yield put(setEditorReady(false))
       } else if (currentScene.id === currentProject.sceneId) {
+        yield put(ActionCreators.clearHistory())
         yield put(resetCamera())
         yield put(takeScreenshot())
       }
