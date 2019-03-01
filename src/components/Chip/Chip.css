@@ -29,12 +29,13 @@
   background: rgba(var(--purplish-grey-raw), 0.32);
 }
 
-.Chip.disabled {
-  opacity: 0.5;
-}
-
 .Chip.clickeable {
   cursor: pointer;
+}
+
+.Chip.disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .Chip .Icon {

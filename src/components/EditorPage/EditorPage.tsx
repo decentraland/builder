@@ -77,15 +77,15 @@ export default class EditorPage extends React.PureComponent<Props> {
         <Grid className={gridClasses}>
           <Grid.Row className="wrapper">
             <ViewPort />
-            <div className={toolbarClasses}>
-              {isPreviewing ? null : (
+            {isPreviewing ? null : (
+              <div className={toolbarClasses}>
                 <>
                   <Metrics />
                   <Tools onClick={this.handleToolClick} />
                   <ItemDragLayer />
                 </>
-              )}
-            </div>
+              </div>
+            )}
             {isPreviewing || !isSidebarOpen ? null : <SideBar />}
           </Grid.Row>
         </Grid>

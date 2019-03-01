@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId } from 'modules/editor/selectors'
+import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId, isReady } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { hasSubmittedCurrentProject, hasAcceptedTerms } from 'modules/contest/selectors'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
@@ -11,13 +11,14 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 
 const mapState = (state: RootState): MapStateProps => ({
-  currentProject: getCurrentProject(state),
-  hasAcceptedTerms: hasAcceptedTerms(state),
-  hasSubmittedCurrentProject: hasSubmittedCurrentProject(state),
   gizmo: getGizmo(state),
+  currentProject: getCurrentProject(state),
+  selectedEntityId: getSelectedEntityId(state),
+  isLoading: isReady(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
-  selectedEntityId: getSelectedEntityId(state)
+  hasAcceptedTerms: hasAcceptedTerms(state),
+  hasSubmittedCurrentProject: hasSubmittedCurrentProject(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
