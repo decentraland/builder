@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 
 import { Scene } from 'modules/scene/types'
-import { AssetMappings } from 'modules/asset/types'
+import { AssetMappings, Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
 import { Gizmo } from './types'
 
@@ -149,3 +149,11 @@ export const NEW_EDITOR_SCENE = 'New editor scene'
 export const newEditorScene = (id: string, project: Partial<Project>) => action(NEW_EDITOR_SCENE, { id, project })
 
 export type NewEditorSceneAction = ReturnType<typeof newEditorScene>
+
+// Close editor
+
+export const PREFETCH_ASSET = 'Prefetch Asset'
+
+export const prefetchAsset = (asset: Asset) => action(PREFETCH_ASSET, { asset })
+
+export type PrefetchAssetAction = ReturnType<typeof prefetchAsset>

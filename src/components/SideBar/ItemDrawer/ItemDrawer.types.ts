@@ -12,6 +12,7 @@ import {
   selectCategory
 } from 'modules/ui/sidebar/actions'
 import { Project } from 'modules/project/types'
+import { prefetchAsset, PrefetchAssetAction } from 'modules/editor/actions'
 
 export type DefaultProps = {
   columnCount: GridProps['columns']
@@ -30,11 +31,17 @@ export type Props = DefaultProps & {
   onSetSidebarView: typeof setSidebarView
   onSelectCategory: typeof selectCategory
   onSetGround: typeof setGround
+  onPrefetchAsset: typeof prefetchAsset
 }
 
 export type MapStateProps = Pick<Props, 'categories' | 'selectedCategory' | 'search' | 'view' | 'isLoading' | 'project'>
-export type MapDispatchProps = Pick<Props, 'onAddItem' | 'onSearch' | 'onSetSidebarView' | 'onSelectCategory' | 'onSetGround'>
-export type MapDispatch = Dispatch<AddItemAction | SearchAssetsAction | SetSidebarViewAction | SelectCategoryAction | SetGroundAction>
+export type MapDispatchProps = Pick<
+  Props,
+  'onAddItem' | 'onSearch' | 'onSetSidebarView' | 'onSelectCategory' | 'onSetGround' | 'onPrefetchAsset'
+>
+export type MapDispatch = Dispatch<
+  AddItemAction | SearchAssetsAction | SetSidebarViewAction | SelectCategoryAction | SetGroundAction | PrefetchAssetAction
+>
 
 export type State = {
   search: string
