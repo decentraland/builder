@@ -42,23 +42,23 @@ export const SIDEBAR_CATEGORIES: { name: string; thumbnail: string }[] = [
     thumbnail: 'https://content.decentraland.today/contents/QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6'
   },
   {
-    name: 'decoration',
-    thumbnail: 'https://content.decentraland.today/contents/Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN'
-  },
-  {
-    name: 'structures',
-    thumbnail: 'https://content.decentraland.today/contents/Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA'
+    name: 'tiles',
+    thumbnail: 'https://content.decentraland.today/contents/QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH'
   },
   {
     name: 'nature',
     thumbnail: 'https://content.decentraland.today/contents/QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg'
   },
   {
-    name: 'year of the pig',
-    thumbnail: 'https://content.decentraland.today/contents/QmeHgdLkKaRLpFKPECUxQTEb3NEHbcKkgCcjhBq693d62n'
+    name: 'structures',
+    thumbnail: 'https://content.decentraland.today/contents/Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA'
   },
   {
-    name: 'floors',
-    thumbnail: 'https://content.decentraland.today/contents/QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH'
+    name: 'decorations',
+    thumbnail: 'https://content.decentraland.today/contents/Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN'
+  },
+  {
+    name: 'year of the pig',
+    thumbnail: 'https://content.decentraland.today/contents/QmeHgdLkKaRLpFKPECUxQTEb3NEHbcKkgCcjhBq693d62n'
   }
 ]
