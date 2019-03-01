@@ -194,7 +194,7 @@ function* handleOpenEditor() {
   yield renderScene()
 
   // Enable snap to grid
-  yield put(toggleSnapToGrid(true))
+  yield handleToggleSnapToGrid(toggleSnapToGrid(true))
 
   // Select gizmo
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)

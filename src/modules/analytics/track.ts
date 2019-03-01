@@ -5,7 +5,6 @@ import {
   DROP_ITEM,
   RESET_ITEM,
   DUPLICATE_ITEM,
-  DELETE_ITEM,
   SET_GROUND,
   AddItemAction,
   DropItemAction,
@@ -19,8 +18,7 @@ import {
   SET_GIZMO,
   ZOOM_IN,
   ZOOM_OUT,
-  RESET_CAMERA,
-  TOGGLE_SNAP_TO_GRID
+  RESET_CAMERA
 } from 'modules/editor/actions'
 import { SEARCH_ASSETS, SET_SIDEBAR_VIEW, SELECT_CATEGORY } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
@@ -59,7 +57,6 @@ addPayload(ADD_ITEM, trimAsset)
 addPayload(DROP_ITEM, trimAsset)
 addPayload(RESET_ITEM)
 addPayload(DUPLICATE_ITEM)
-addPayload(DELETE_ITEM)
 
 // editor actions
 add(CREATE_PROJECT, CREATE_PROJECT, action => (action as CreateProjectAction).payload.project.layout)
@@ -73,7 +70,6 @@ addPayload(SEARCH_ASSETS)
 addPayload(OPEN_MODAL)
 addPayload(SET_GIZMO)
 addPayload(SET_GROUND, trimAsset)
-addPayload(TOGGLE_SNAP_TO_GRID)
 
 // camera actions
 addPayload(ZOOM_IN)

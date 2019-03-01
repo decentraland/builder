@@ -31,7 +31,7 @@ const INITIAL_STATE: EditorState = {
   gizmo: Gizmo.NONE,
   preview: false,
   sidebar: true,
-  snapToGrid: false,
+  snapToGrid: true,
   selectedEntityId: null,
   isReady: false
 }

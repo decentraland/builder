@@ -11,9 +11,11 @@ import { sceneSaga } from 'modules/scene/sagas'
 import { projectSaga } from 'modules/project/sagas'
 import { editorSaga } from 'modules/editor/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
+import { segmentSaga } from 'modules/analytics/sagas'
 
 export function* rootSaga() {
   yield all([
+    segmentSaga(),
     locationSaga(),
     analyticsSaga(),
     translationSaga(),
