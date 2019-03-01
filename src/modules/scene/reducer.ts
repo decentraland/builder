@@ -1,4 +1,4 @@
-import undoable, { StateWithHistory, includeAction } from 'redux-undo'
+import undoable, { StateWithHistory, includeAction, ActionTypes } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { EDITOR_UNDO, EDITOR_REDO, OPEN_EDITOR } from 'modules/editor/actions'
@@ -94,6 +94,6 @@ export const sceneReducer = undoable<SceneState>(baseSceneReducer as any, {
   limit: 48,
   undoType: EDITOR_UNDO,
   redoType: EDITOR_REDO,
-  clearHistoryType: OPEN_EDITOR,
+  clearHistoryType: [OPEN_EDITOR, ActionTypes.CLEAR_HISTORY] as any, // clearHistoryType comes with the wrong typing, tracked here https://github.com/omnidan/redux-undo/issues/222
   filter: includeAction([CREATE_SCENE, PROVISION_SCENE])
 })
