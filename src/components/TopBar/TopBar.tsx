@@ -51,6 +51,7 @@ export default class TopBar extends React.PureComponent<Props> {
     const {
       currentProject,
       gizmo,
+      isLoading,
       isPreviewing,
       isSidebarOpen,
       selectedEntityId,
@@ -59,6 +60,7 @@ export default class TopBar extends React.PureComponent<Props> {
       onDuplicate,
       hasSubmittedCurrentProject
     } = this.props
+
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
@@ -112,7 +114,7 @@ export default class TopBar extends React.PureComponent<Props> {
         <Grid.Column mobile={6} tablet={6} computer={5} className="right-column">
           <Grid.Row>
             <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool" popupClassName="top-bar-popup">
-              <Chip icon="preview" isActive={isPreviewing} onClick={this.handleTogglePreview} />
+              <Chip icon="preview" isActive={isPreviewing} isDisabled={isLoading} onClick={this.handleTogglePreview} />
             </ShortcutTooltip>
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />

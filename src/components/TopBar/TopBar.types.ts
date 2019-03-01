@@ -15,13 +15,14 @@ import { resetItem, duplicateItem, deleteItem, ResetItemAction, DuplicateItemAct
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
-  currentProject: Project | null
-  hasAcceptedTerms: boolean
-  hasSubmittedCurrentProject: boolean
   gizmo: Gizmo
+  currentProject: Project | null
+  selectedEntityId: string | null
+  isLoading: boolean
   isPreviewing: boolean
   isSidebarOpen: boolean
-  selectedEntityId: string | null
+  hasAcceptedTerms: boolean
+  hasSubmittedCurrentProject: boolean
   onSetGizmo: typeof setGizmo
   onTogglePreview: typeof togglePreview
   onToggleSidebar: typeof toggleSidebar
@@ -33,7 +34,14 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'currentProject' | 'gizmo' | 'isPreviewing' | 'isSidebarOpen' | 'selectedEntityId' | 'hasAcceptedTerms' | 'hasSubmittedCurrentProject'
+  | 'currentProject'
+  | 'gizmo'
+  | 'isLoading'
+  | 'isPreviewing'
+  | 'isSidebarOpen'
+  | 'selectedEntityId'
+  | 'hasAcceptedTerms'
+  | 'hasSubmittedCurrentProject'
 >
 
 export type MapDispatchProps = Pick<
