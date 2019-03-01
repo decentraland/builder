@@ -19,47 +19,35 @@ import { getScene } from 'modules/scene/selectors'
 
 export function* segmentSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
-  yield takeLatest(ADD_ITEM, handleAddItem)
-  yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
-  yield takeLatest(SET_GROUND, handleSetGround)
+  yield takeLatest(ADD_ITEM, handleNewItem)
+  yield takeLatest(DUPLICATE_ITEM, handleNewItem)
+  yield takeLatest(SET_GROUND, handleNewItem)
   yield takeLatest(DELETE_ITEM, handleRemoveItem)
   yield takeLatest(SUBMIT_PROJECT_SUCCESS, handleSubmitProject)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
 }
 
+const track = (event: string, params: any) => getAnalytics().track(event, params)
+
 function* handleOpenEditor(_: OpenEditorAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
 
-  getAnalytics().track('Open project', { projectId: project.id })
+  track('Open project', { projectId: project.id })
 }
 
-function* handleAddItem(_: AddItemAction) {
+function* handleNewItem(_: AddItemAction | DuplicateItemAction | SetGroundAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
 
-  getAnalytics().track('New item', { projectId: project.id })
-}
-
-function* handleDuplicateItem(_: DuplicateItemAction) {
-  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
-  if (!project) return
-
-  getAnalytics().track('New item', { projectId: project.id })
-}
-
-function* handleSetGround(_: SetGroundAction) {
-  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
-  if (!project) return
-
-  getAnalytics().track('New item', { projectId: project.id })
+  track('New item', { projectId: project.id })
 }
 
 function* handleRemoveItem(_: DeleteItemAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
 
-  getAnalytics().track('Delete item', { projectId: project.id })
+  track('Delete item', { projectId: project.id })
 }
 
 function* handleSubmitProject(action: SubmitProjectSuccessAction) {
@@ -70,11 +58,11 @@ function* handleSubmitProject(action: SubmitProjectSuccessAction) {
   if (!scene) return
 
   const { email, ethAddress } = action.payload.contest
-  getAnalytics().track('Submit project', {
+  track('Submit project', {
     projectId: project.id,
     email,
     ethAddress,
-    numEntities: Object.keys(scene.entities).length,
+    entitiesAmount: Object.keys(scene.entities).length,
     layout: project.layout
   })
 }
@@ -84,6 +72,6 @@ function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
 
-    getAnalytics().track('Enable precision', { projectId: project.id })
+    track('Enable precision', { projectId: project.id })
   }
 }
