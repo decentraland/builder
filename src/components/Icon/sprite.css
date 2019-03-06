@@ -1,204 +1,209 @@
 .Icon.alert {
-	background: url("icons.svg") 78.94736842105263% 58.666666666666664% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 78.94736842105263% 58.666666666666664% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.arrow-down {
-	background: url("icons.svg") 60% 38.55421686746988% no-repeat;
-	width: 10px;
-	height: 6px;
+  background: url('icons.svg') 60% 38.55421686746988% no-repeat;
+  width: 10px;
+  height: 6px;
 }
 
 .Icon.arrow-key-down {
-	background: url("icons.svg") 60.526315789473685% 56% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 60.526315789473685% 56% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.arrow-key-left {
-	background: url("icons.svg") 39.473684210526315% 77.33333333333333% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 39.473684210526315% 77.33333333333333% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.arrow-key-right {
-	background: url("icons.svg") 57.89473684210526% 77.33333333333333% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 57.89473684210526% 77.33333333333333% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.arrow-key-up {
-	background: url("icons.svg") 76.3157894736842% 77.33333333333333% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 76.3157894736842% 77.33333333333333% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.arrow-up {
-	background: url("icons.svg") 0 87.95180722891567% no-repeat;
-	width: 10px;
-	height: 6px;
+  background: url('icons.svg') 0 87.95180722891567% no-repeat;
+  width: 10px;
+  height: 6px;
 }
 
 .Icon.close {
-	background: url("icons.svg") 100% 0 no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 100% 0 no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.delete {
-	background: url("icons.svg") 76.92307692307692% 18.91891891891892% no-repeat;
-	width: 12px;
-	height: 15px;
+  background: url('icons.svg') 76.92307692307692% 18.91891891891892% no-repeat;
+  width: 12px;
+  height: 15px;
 }
 
 .Icon.delete-active {
-	background: url("icons.svg") 76.92307692307692% 39.189189189189186% no-repeat;
-	width: 12px;
-	height: 15px;
+  background: url('icons.svg') 76.92307692307692% 39.189189189189186% no-repeat;
+  width: 12px;
+  height: 15px;
 }
 
 .Icon.delete-icon {
-	background: url("icons.svg") 41.02564102564103% 21.62162162162162% no-repeat;
-	width: 12px;
-	height: 15px;
+  background: url('icons.svg') 41.02564102564103% 21.62162162162162% no-repeat;
+  width: 12px;
+  height: 15px;
 }
 
 .Icon.duplicate {
-	background: url("icons.svg") 0 0 no-repeat;
-	width: 14px;
-	height: 16px;
+  background: url('icons.svg') 0 0 no-repeat;
+  width: 14px;
+  height: 16px;
 }
 
 .Icon.duplicate-active {
-	background: url("icons.svg") 18.42105263157895% 0 no-repeat;
-	width: 14px;
-	height: 16px;
+  background: url('icons.svg') 18.42105263157895% 0 no-repeat;
+  width: 14px;
+  height: 16px;
 }
 
 .Icon.edit {
-	background: url("icons.svg") 37.83783783783784% 0 no-repeat;
-	width: 16px;
-	height: 16px;
+  background: url('icons.svg') 37.83783783783784% 0 no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .Icon.erase {
-	background: url("icons.svg") 0 21.91780821917808% no-repeat;
-	width: 16px;
-	height: 16px;
+  background: url('icons.svg') 0 21.91780821917808% no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.Icon.erase {
+  background: url('icons.svg') 0 0 no-repeat;
+  width: 24px;
+  height: 24px;
 }
 
 .Icon.grid {
-	background: url("icons.svg") 0 100% no-repeat;
-	width: 10px;
-	height: 10px;
+  background: url('icons.svg') 0 100% no-repeat;
+  width: 10px;
+  height: 10px;
 }
 
 .Icon.grid-active {
-	background: url("icons.svg") 12.5% 100% no-repeat;
-	width: 10px;
-	height: 10px;
+  background: url('icons.svg') 12.5% 100% no-repeat;
+  width: 10px;
+  height: 10px;
 }
 
 .Icon.info {
-	background: url("icons.svg") 21.62162162162162% 21.91780821917808% no-repeat;
-	width: 16px;
-	height: 16px;
+  background: url('icons.svg') 21.62162162162162% 21.91780821917808% no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .Icon.list {
-	background: url("icons.svg") 100% 17.5% no-repeat;
-	width: 14px;
-	height: 9px;
+  background: url('icons.svg') 100% 17.5% no-repeat;
+  width: 14px;
+  height: 9px;
 }
 
 .Icon.list-active {
-	background: url("icons.svg") 100% 28.75% no-repeat;
-	width: 14px;
-	height: 9px;
+  background: url('icons.svg') 100% 28.75% no-repeat;
+  width: 14px;
+  height: 9px;
 }
 
 .Icon.list-icon {
-	background: url("icons.svg") 100% 40% no-repeat;
-	width: 14px;
-	height: 9px;
+  background: url('icons.svg') 100% 40% no-repeat;
+  width: 14px;
+  height: 9px;
 }
 
 .Icon.move {
-	background: url("icons.svg") 59.45945945945946% 0 no-repeat;
-	width: 16px;
-	height: 16px;
+  background: url('icons.svg') 59.45945945945946% 0 no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .Icon.move-active {
-	background: url("icons.svg") 59.45945945945946% 21.91780821917808% no-repeat;
-	width: 16px;
-	height: 16px;
+  background: url('icons.svg') 59.45945945945946% 21.91780821917808% no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .Icon.preview {
-	background: url("icons.svg") 0 40.50632911392405% no-repeat;
-	width: 16px;
-	height: 10px;
+  background: url('icons.svg') 0 40.50632911392405% no-repeat;
+  width: 16px;
+  height: 10px;
 }
 
 .Icon.preview-active {
-	background: url("icons.svg") 21.62162162162162% 40.50632911392405% no-repeat;
-	width: 16px;
-	height: 10px;
+  background: url('icons.svg') 21.62162162162162% 40.50632911392405% no-repeat;
+  width: 16px;
+  height: 10px;
 }
 
 .Icon.reset-camera {
-	background: url("icons.svg") 0 57.534246575342465% no-repeat;
-	width: 16px;
-	height: 16px;
+  background: url('icons.svg') 0 57.534246575342465% no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .Icon.rotate {
-	background: url("icons.svg") 21.333333333333332% 57.534246575342465% no-repeat;
-	width: 15px;
-	height: 16px;
+  background: url('icons.svg') 21.333333333333332% 57.534246575342465% no-repeat;
+  width: 15px;
+  height: 16px;
 }
 
 .Icon.rotate-active {
-	background: url("icons.svg") 41.333333333333336% 57.534246575342465% no-repeat;
-	width: 15px;
-	height: 16px;
+  background: url('icons.svg') 41.333333333333336% 57.534246575342465% no-repeat;
+  width: 15px;
+  height: 16px;
 }
 
 .Icon.shortcuts {
-	background: url("icons.svg") 43.24324324324324% 40.50632911392405% no-repeat;
-	width: 16px;
-	height: 10px;
+  background: url('icons.svg') 43.24324324324324% 40.50632911392405% no-repeat;
+  width: 16px;
+  height: 10px;
 }
 
 .Icon.sidebar {
-	background: url("icons.svg") 100% 54.666666666666664% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 100% 54.666666666666664% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.sidebar-active {
-	background: url("icons.svg") 100% 73.33333333333333% no-repeat;
-	width: 14px;
-	height: 14px;
+  background: url('icons.svg') 100% 73.33333333333333% no-repeat;
+  width: 14px;
+  height: 14px;
 }
 
 .Icon.undo {
-	background: url("icons.svg") 81.08108108108108% 0 no-repeat;
-	width: 16px;
-	height: 14px;
+  background: url('icons.svg') 81.08108108108108% 0 no-repeat;
+  width: 16px;
+  height: 14px;
 }
 
 .Icon.zoom-in {
-	background: url("icons.svg") 0 78.37837837837837% no-repeat;
-	width: 15px;
-	height: 15px;
+  background: url('icons.svg') 0 78.37837837837837% no-repeat;
+  width: 15px;
+  height: 15px;
 }
 
 .Icon.zoom-out {
-	background: url("icons.svg") 20% 78.37837837837837% no-repeat;
-	width: 15px;
-	height: 15px;
+  background: url('icons.svg') 20% 78.37837837837837% no-repeat;
+  width: 15px;
+  height: 15px;
 }
-

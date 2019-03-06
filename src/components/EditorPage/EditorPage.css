@@ -11,6 +11,8 @@
   position: absolute;
   bottom: 0;
   left: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .toolbar.open {

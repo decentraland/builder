@@ -17,7 +17,8 @@
     "or": "or",
     "next": "next",
     "back": "back",
-    "done": "done"
+    "done": "done",
+    "dismiss": "Dismiss"
   },
   "languages": {
     "en": "English"
@@ -165,5 +166,8 @@
     "slide1": "To orient the camera, click and drag on the viewport. Use the arrow keys to move around.",
     "slide2": "Click and drag an item to move it.",
     "slide3": "If you need more precise control, click the Move icon on the toolbar and use the arrows to manipulate the item."
+  },
+  "toasts": {
+    "localstorage": "Projects save automatically to your browser's local storage."
   }
 }
