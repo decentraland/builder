@@ -1,0 +1,87 @@
+.ui.small.modal.TutorialModal {
+  width: 640px;
+}
+
+.TutorialModal .step {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background: white;
+  opacity: 0.16;
+  cursor: pointer;
+}
+
+.TutorialModal .title {
+  font-size: var(--modal-title-font-size);
+}
+
+.TutorialModal .subtitle {
+  font-size: 17px;
+  font-weight: 300;
+  margin-top: 16px;
+}
+
+.TutorialModal .step.active {
+  opacity: 1;
+}
+
+.TutorialModal .actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.TutorialModal .actions > .ui.button {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  width: 95px;
+}
+
+.TutorialModal .actions .spacer {
+  width: 95px;
+}
+
+.TutorialModal .steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.TutorialModal .steps .step:not(:first-child) {
+  margin-left: 10px;
+}
+
+.TutorialModal .slide {
+  width: 576px;
+  height: 320px;
+  border-radius: 8px;
+  background: var(--purplish-grey);
+  margin: 24px 0px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  user-select: none;
+}
+
+.TutorialModal .slide .description {
+  width: 100%;
+  font-size: 16px;
+  text-align: center;
+  padding: 20px 16px;
+  background: linear-gradient(#00000000, var(--dark-two));
+}
+
+.TutorialModal .slide0 {
+  background-image: url('../../../images/tutorial-slide-0.gif');
+}
+
+.TutorialModal .slide1 {
+  background-image: url('../../../images/tutorial-slide-1.gif');
+}
+
+.TutorialModal .slide2 {
+  background-image: url('../../../images/tutorial-slide-2.gif');
+}
+
+.TutorialModal .slide3 {
+  background-image: url('../../../images/tutorial-slide-3.gif');
+}

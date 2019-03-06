@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
 import App from 'decentraland-dapps/dist/containers/App'
+import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import NotFoundPage from 'components/NotFoundPage'
 import TopBar from 'components/TopBar'
@@ -15,10 +16,16 @@ import ItemDragLayer from './ItemDragLayer'
 
 import './EditorPage.css'
 
+const localStorage = getLocalStorage()
+
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
+
+    if (this.props.project && !localStorage.getItem('builder-tutorial')) {
+      this.props.onOpenModal('TutorialModal')
+    }
 
     document.body.classList.add('lock-scroll')
     document.body.scrollTop = 0
