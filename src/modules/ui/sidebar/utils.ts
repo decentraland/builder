@@ -15,7 +15,7 @@ export function addEmptyGroundAsset(assets: DataByKey<Asset>) {
       assetPackId: EMPTY_GROUND_ASSET_PACK_ID,
       name: t('itemdrawer.empty_ground'),
       category: GROUND_CATEGORY,
-      thumbnail: '',
+      thumbnail: `${process.env.PUBLIC_URL}/images/empty-ground.png`,
       url: '',
       tags: [GROUND_CATEGORY],
       variations: [],
