@@ -153,8 +153,9 @@
   "tutorial_modal": {
     "title": "Get started with the Builder",
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
-    "slide0": "To move an object, click and drag the object.{br}If you need more precise control, click the Move icon on the toolbar and use the gizmos to manipulate the object.",
-    "slide1": "To add objects to your scene, browse the categories on the right, or try searching for keywords like “rock” or “tree”.{br}Click the item you want, or drag-and-drop the it into your scene.",
-    "slide2": "To orient the camera, click and drag on the view. Use the arrow keys to move the camera.{br}To preview your scene in first person, click the Eye in the upper right of the toolbar."
+    "slide0": "Browse the categories on the right and drag-and-drop the item you want into your scene.",
+    "slide1": "To orient the camera, click and drag on the viewport. Use the arrow keys to move around.",
+    "slide2": "Click and drag an item to move it.",
+    "slide3": "If you need more precise control, click the Move icon on the toolbar and use the arrows to manipulate the item."
   }
 }

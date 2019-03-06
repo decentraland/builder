@@ -26,6 +26,10 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     {
       thumbnail: 'slide2',
       text: <T id="tutorial_modal.slide2" values={{ br: <br /> }} />
+    },
+    {
+      thumbnail: 'slide3',
+      text: <T id="tutorial_modal.slide3" values={{ br: <br /> }} />
     }
   ]
 
@@ -34,7 +38,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     let out: JSX.Element[] = []
 
     for (let i = 0; i < this.slides.length; i++) {
-      out.push(<div className={'step ' + (i === step ? 'active' : '')} onClick={() => this.goToSlide(i)} />)
+      out.push(<div key={`step-${i}`} className={'step ' + (i === step ? 'active' : '')} onClick={() => this.goToSlide(i)} />)
     }
 
     return out
@@ -45,7 +49,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     const slide = this.slides[step]
 
     return (
-      <div className={'slide ' + slide.thumbnail}>
+      <div key={`slide-${step}`} className={'slide ' + slide.thumbnail}>
         <span className="description">{slide.text}</span>
       </div>
     )
