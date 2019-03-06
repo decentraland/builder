@@ -48,7 +48,8 @@ export class Routes extends React.Component<Props, State> {
       const WrappedErrorPage = this.wrapInApp(ErrorPage)
       return <WrappedErrorPage stackTrace={stackTrace} />
     } else if (window.navigator.userAgent.includes('Edge')) {
-      return <UnsupportedBrowserPage />
+      const WrappedUnsupportedBrowserPage = this.wrapInApp(UnsupportedBrowserPage)
+      return <WrappedUnsupportedBrowserPage />
     }
 
     return (
