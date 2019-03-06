@@ -3,6 +3,7 @@ export type IconName =
   | 'arrow-down'
   | 'arrow-up'
   | 'close'
+  | 'erase'
   | 'delete'
   | 'delete-active'
   | 'delete-icon'

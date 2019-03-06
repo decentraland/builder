@@ -1,0 +1,7 @@
+.ClosePopup {
+  display: flex;
+}
+
+.ClosePopup .Icon {
+  margin-left: 10px;
+}

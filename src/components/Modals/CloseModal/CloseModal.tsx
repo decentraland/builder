@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import Icon from 'components/Icon'
-import { Props, DefaultProps } from './CloseModalIcon.types'
+import { Props, DefaultProps } from './CloseModal.types'
 
-import './CloseModalIcon.css'
+import './CloseModal.css'
 
-export default class CloseModalIcon extends React.PureComponent<Props> {
+export default class CloseModal extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
     onClick: (_: React.MouseEvent<HTMLElement>) => {
       /* noop */
@@ -16,7 +16,7 @@ export default class CloseModalIcon extends React.PureComponent<Props> {
     const { onClick } = this.props
 
     return (
-      <div className="CloseModalIcon" onClick={onClick}>
+      <div className="CloseModal" onClick={onClick}>
         <Icon name="close" />
       </div>
     )

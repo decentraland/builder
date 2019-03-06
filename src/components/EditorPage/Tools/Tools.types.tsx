@@ -5,3 +5,7 @@ export type DefaultProps = {
 }
 
 export type Props = DefaultProps & {}
+
+export type State = {
+  isShortcutHelpOpen: boolean
+}

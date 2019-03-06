@@ -1,4 +1,4 @@
-.CloseModalIcon {
+.CloseModal {
   position: absolute;
   right: 24px;
   top: 24px;
@@ -12,7 +12,7 @@
   z-index: 99;
 }
 
-.ui.modal > :first-child:not(.icon).CloseModalIcon {
+.ui.modal > :first-child:not(.icon).CloseModal {
   /* Override semantic's crazy class which adds a border radius */
   border-radius: 100%;
 }

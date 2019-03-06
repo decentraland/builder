@@ -113,6 +113,9 @@
     "precision": "Precision",
     "hold": "Hodl"
   },
+  "close_popup": {
+    "shortcuts_help": "Pssst! see shortcuts here!"
+  },
   "shortcuts_modal": {
     "title": "Shortcuts",
     "item_shortcuts": "Item",
