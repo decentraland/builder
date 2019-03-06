@@ -1,0 +1,36 @@
+.UnsupportedBrowserPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.UnsupportedBrowserPage .title {
+  font-size: 100px;
+  user-select: none;
+  margin-bottom: 20px;
+}
+
+.UnsupportedBrowserPage .subtitle {
+  color: var(--purplish-grey);
+  font-size: 18px;
+  text-align: center;
+}
+
+.UnsupportedBrowserPage button.back {
+  margin-top: 16px;
+}
+
+/* This is attached to the body */
+.unsupported-browser-body {
+  background-image: url('../../images/dev-hero.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: fixed;
+}

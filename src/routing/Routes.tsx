@@ -10,10 +10,11 @@ import HomePage from 'components/HomePage'
 import MobilePage from 'components/MobilePage'
 import EditorPage from 'components/EditorPage'
 import NotFoundPage from 'components/NotFoundPage'
+import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
+import ErrorPage from 'components/ErrorPage'
 import App from 'components/App'
 
 import { Props, State } from './Routes.types'
-import ErrorPage from 'components/ErrorPage'
 
 export class Routes extends React.Component<Props, State> {
   state = {
@@ -46,6 +47,8 @@ export class Routes extends React.Component<Props, State> {
     if (env.isDevelopment() && hasError) {
       const WrappedErrorPage = this.wrapInApp(ErrorPage)
       return <WrappedErrorPage stackTrace={stackTrace} />
+    } else if (window.navigator.userAgent.includes('Edge')) {
+      return <UnsupportedBrowserPage />
     }
 
     return (

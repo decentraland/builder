@@ -25,10 +25,10 @@ export default class NotFoundPage extends React.PureComponent<Props> {
   render() {
     return (
       <div className="NotFoundPage">
-        <h1 className="title">{t('notfoundpage.title')}</h1>
-        <p className="subtitle">{t('notfoundpage.subtitle')}</p>
+        <h1 className="title">{t('not_found_page.title')}</h1>
+        <p className="subtitle">{t('not_found_page.subtitle')}</p>
         <Button className="back" onClick={this.handleOnClick} primary>
-          {t('notfoundpage.back')}
+          {t('not_found_page.back')}
         </Button>
       </div>
     )

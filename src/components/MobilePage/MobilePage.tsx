@@ -47,10 +47,10 @@ export default class MobilePage extends React.PureComponent<Props, State> {
 
     return (
       <div className="MobilePage">
-        <Header size="large">{t('mobilepage.title')}</Header>
-        <p className="subtitle">{t('mobilepage.subtitle')}</p>
+        <Header size="large">{t('mobile_page.title')}</Header>
+        <p className="subtitle">{t('mobile_page.subtitle')}</p>
         <Form onSubmit={this.handleSubmit}>
-          <p className="message">{t('mobilepage.message')}</p>
+          <p className="message">{t('mobile_page.message')}</p>
 
           {!hasMobileEmail ? (
             <div className="form-container">
@@ -68,7 +68,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
               </Button>
             </div>
           ) : (
-            <div className="success">{t('mobilepage.success')}</div>
+            <div className="success">{t('mobile_page.success')}</div>
           )}
         </Form>
         <span className="suggestion">

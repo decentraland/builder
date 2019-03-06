@@ -37,16 +37,16 @@ export default class ErrorPage extends React.PureComponent<Props> {
     const { stackTrace } = this.props
     return (
       <div className="ErrorPage">
-        <h1 className="title">{t('errorpage.title')}</h1>
-        <p className="subtitle">{t('errorpage.subtitle')}</p>
+        <h1 className="title">{t('error_page.title')}</h1>
+        <p className="subtitle">{t('error_page.subtitle')}</p>
 
         <textarea className="trace" cols={70} rows={10} value={stackTrace} onClick={this.handleSelectText} readOnly />
 
         <Button className="back" onClick={this.handleOnClick} primary>
-          {t('errorpage.support')}
+          {t('error_page.support')}
         </Button>
         <span className="suggestion">
-          {t('errorpage.or')} <a href=".">{t('errorpage.reload')}</a>
+          {t('error_page.or')} <a href=".">{t('error_page.reload')}</a>
         </span>
       </div>
     )

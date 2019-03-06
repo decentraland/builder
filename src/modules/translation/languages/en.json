@@ -22,7 +22,7 @@
   "languages": {
     "en": "English"
   },
-  "homepage": {
+  "home_page": {
     "title": "Build something cool!",
     "subtitle": "Import a file or start from scratch with our templates or your own LAND!",
     "empty_projects_title": "Here's where your projects will live",
@@ -32,23 +32,28 @@
       "duplicate_project": "Duplicate project"
     }
   },
-  "mobilepage": {
+  "mobile_page": {
     "title": "Build something cool!",
     "subtitle": "Pimp up your LAND",
     "message": "The Builder does not work on mobile, get notified when it does:",
     "success": "Thanks, we will keep you posted!"
   },
-  "notfoundpage": {
+  "not_found_page": {
     "title": "404",
     "subtitle": "Sorry, we couldn't find the project you were looking for",
     "back": "Back to Projects"
   },
-  "errorpage": {
+  "error_page": {
     "title": "Oops!",
     "subtitle": "There was an error, this is all we know:",
     "support": "Contact support",
     "or": "or try",
     "reload": "reloading the page"
+  },
+  "unsupported_browser_page": {
+    "title": "Oops!",
+    "subtitle": "The Builder does not work on your browser.{br}Please visit this page using {chrome} or {firefox}",
+    "back": "Back to Projects"
   },
   "project_card": {
     "added_to_contest": "Added to contest",
