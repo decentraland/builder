@@ -23,7 +23,7 @@ export default class EditorPage extends React.PureComponent<Props> {
     this.props.onLoadAssetPacks()
     this.props.onBindKeyboardShortcuts()
 
-    if (!localStorage.getItem('builder-tutorial')) {
+    if (this.props.project && !localStorage.getItem('builder-tutorial')) {
       this.props.onOpenModal('TutorialModal')
     }
 
