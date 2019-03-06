@@ -271,5 +271,12 @@ function* handleSetGround(action: SetGroundAction) {
 
   const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
 
+  // remove unused components
+  for (const component of Object.values(components)) {
+    if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
+      delete components[component.id]
+    }
+  }
+
   yield put(provisionScene({ ...scene, components, entities, ground }))
 }
