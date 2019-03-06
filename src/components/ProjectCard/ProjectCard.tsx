@@ -68,8 +68,8 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         ) : null}
         <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
           <Dropdown.Menu>
-            <Dropdown.Item text={t('home_pageproject_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
-            <Dropdown.Item text={t('home_pageproject_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
+            <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
+            <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">

@@ -28,8 +28,8 @@ export default class HomePage extends React.PureComponent<Props> {
     const templates = getTemplates()
     return (
       <div className="HomePage">
-        <Header size="large">{t('home_pagetitle')}</Header>
-        <p className="subtitle">{t('home_pagesubtitle')}</p>
+        <Header size="large">{t('home_page.title')}</Header>
+        <p className="subtitle">{t('home_page.subtitle')}</p>
 
         <div className="project-cards">
           <div className="subtitle">{t('global.projects').toUpperCase()}</div>
@@ -43,8 +43,8 @@ export default class HomePage extends React.PureComponent<Props> {
             </div>
           ) : (
             <div className="empty-projects">
-              <div>{t('home_pageempty_projects_title')}</div>
-              <small>{t('home_pageempty_projects_cta')}</small>
+              <div>{t('home_page.empty_projects_title')}</div>
+              <small>{t('home_page.empty_projects_cta')}</small>
             </div>
           )}
         </div>
