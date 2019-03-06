@@ -11,7 +11,9 @@ import {
   DeleteItemAction,
   DELETE_ITEM,
   SET_GROUND,
-  SetGroundAction
+  SetGroundAction,
+  UPDATE_TRANSFORM,
+  UpdateTransfromAction
 } from 'modules/scene/actions'
 import { SUBMIT_PROJECT_SUCCESS, SubmitProjectSuccessAction } from 'modules/contest/actions'
 import { RootState } from 'modules/common/types'
@@ -25,6 +27,7 @@ export function* segmentSaga() {
   yield takeLatest(DELETE_ITEM, handleRemoveItem)
   yield takeLatest(SUBMIT_PROJECT_SUCCESS, handleSubmitProject)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
+  yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -74,4 +77,11 @@ function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
 
     track('Enable precision', { projectId: project.id })
   }
+}
+
+function* handleUpdateTransfrom(_: UpdateTransfromAction) {
+  const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
+  if (!project) return
+
+  track('Update item', { projectId: project.id })
 }
