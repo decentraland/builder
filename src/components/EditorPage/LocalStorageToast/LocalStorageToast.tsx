@@ -12,16 +12,16 @@ const localStorage = getLocalStorage()
 
 export default class LocalStorageToast extends React.PureComponent<Props, State> {
   state = {
-    visible: !localStorage.getItem(LOCALSTORAGE_TOAST_KEY)
+    isVisible: !localStorage.getItem(LOCALSTORAGE_TOAST_KEY)
   }
 
   handleClick = () => {
-    this.setState({ visible: false })
+    this.setState({ isVisible: false })
     localStorage.setItem(LOCALSTORAGE_TOAST_KEY, '1')
   }
 
   render() {
-    if (!this.state.visible) {
+    if (!this.state.isVisible) {
       return null
     }
     return (
