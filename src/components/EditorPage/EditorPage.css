@@ -46,3 +46,7 @@
   bottom: 3px;
   position: relative;
 }
+
+.toolbar:not(.open) .Tools .tool .shortcuts {
+  right: 8px;
+}
