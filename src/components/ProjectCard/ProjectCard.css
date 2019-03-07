@@ -68,8 +68,9 @@
 }
 
 .ProjectCard .contest-badge {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #fff;
   border-radius: 100%;
   top: 8px;
   left: 8px;

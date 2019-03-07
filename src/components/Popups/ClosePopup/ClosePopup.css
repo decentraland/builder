@@ -1,5 +1,6 @@
 .ClosePopup {
   display: flex;
+  user-select: none;
 }
 
 .ClosePopup .Icon {
