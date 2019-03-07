@@ -21,7 +21,7 @@ export default class Tools extends React.PureComponent<Props, State> {
   }
 
   state = {
-    isShortcutPopupOpen: !localStorage.getItem(LOCALSTORAGE_SHORTCUT_POPUP_KEY)
+    isShortcutPopupOpen: this.isShortcutPopupDismissed()
   }
 
   updatePopupPositionDebounced = debounce(() => this.updatePopupPosition(), 200)
@@ -47,7 +47,7 @@ export default class Tools extends React.PureComponent<Props, State> {
 
   handleResize = () => {
     if (this.state.isShortcutPopupOpen) {
-      this.setState({ isShortcutPopupOpen: false })
+      this.closeShortcutPopup()
     }
     this.updatePopupPositionDebounced()
   }
@@ -60,16 +60,22 @@ export default class Tools extends React.PureComponent<Props, State> {
   updatePopupPosition() {
     // We need to force a Popup re-render to give semantic a chance to re-compute the styles
     // Sadly the implementation doesn't allow for a way to do this cleanly
-    this.setState({ isShortcutPopupOpen: false })
-    setTimeout(() => this.setState({ isShortcutPopupOpen: true }))
+    this.closeShortcutPopup()
+    setTimeout(this.openShortcutPopup)
   }
 
   openShortcutPopup = () => {
-    this.setState({ isShortcutPopupOpen: true })
+    if (this.isShortcutPopupDismissed()) {
+      this.setState({ isShortcutPopupOpen: true })
+    }
   }
 
   closeShortcutPopup = () => {
     this.setState({ isShortcutPopupOpen: false })
+  }
+
+  isShortcutPopupDismissed() {
+    return !localStorage.getItem(LOCALSTORAGE_SHORTCUT_POPUP_KEY)
   }
 
   renderShortcutIcon() {
@@ -109,7 +115,7 @@ export default class Tools extends React.PureComponent<Props, State> {
         {this.renderIcon('zoom-out', Shortcut.ZOOM_OUT)}
 
         <Popup
-          open={isShortcutPopupOpen}
+          open={isShortcutPopupOpen && this.isShortcutPopupDismissed()}
           content={<ClosePopup onClick={this.handleCloseShortcutPopup} />}
           position={isSidebarOpen ? 'top center' : 'top left'}
           trigger={this.renderShortcutIcon()}
