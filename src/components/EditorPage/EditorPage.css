@@ -41,3 +41,12 @@
   margin-right: 0px;
   margin-left: 24px;
 }
+
+.toolbar .Tools .tool .shortcuts {
+  bottom: 3px;
+  position: relative;
+}
+
+.toolbar:not(.open) .Tools .tool .shortcuts {
+  right: 8px;
+}
