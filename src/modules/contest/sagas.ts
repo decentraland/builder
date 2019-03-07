@@ -1,10 +1,13 @@
 import { put, takeLatest, call, select } from 'redux-saga/effects'
 import { getState as getStorage } from 'decentraland-dapps/dist/modules/storage/selectors'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { Omit } from 'decentraland-dapps/dist/lib/types'
+import { utils } from 'decentraland-commons'
 
 import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSuccess, submitProjectFailure } from 'modules/contest/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
+import { Project } from 'modules/project/types'
 import { api } from 'lib/api'
 
 export function* contestSaga() {
@@ -18,7 +21,7 @@ function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
     const projects: ReturnType<typeof getProjects> = yield select(getProjects)
     const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
 
-    const project = projects[projectId]
+    const project: Omit<Project, 'thumbnail'> = utils.omit(projects[projectId], ['thumbnail'])
 
     const entry = {
       version: storage.version,
