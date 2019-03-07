@@ -23,7 +23,6 @@ jobs:
           environment:
             NODE_PATH: src/
             REACT_APP_VERSION: 0.1
-            REACT_APP_SEGMENT_API_KEY: H21EgRI4eYwICDZf5uW6ek2BiykIR6wA
       - save_cache:
           paths:
             - build
