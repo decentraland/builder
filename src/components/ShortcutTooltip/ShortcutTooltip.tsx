@@ -32,6 +32,9 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
     popupClassName: '',
     onOpen: (_: React.MouseEvent<HTMLElement>) => {
       /* noop */
+    },
+    onClose: (_: React.MouseEvent<HTMLElement>) => {
+      /* noop */
     }
   }
 
@@ -48,7 +51,7 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
   }
 
   render() {
-    const { shortcutDefinition, children, position, className, popupClassName, onOpen } = this.props
+    const { shortcutDefinition, children, position, className, popupClassName, onOpen, onClose } = this.props
     const content = (
       <span className="ShortcutTooltip">
         <span className="label">{shortcutDefinition.title}</span>
@@ -61,6 +64,7 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
         content={content}
         position={position}
         onOpen={onOpen}
+        onClose={onClose}
         trigger={<span className={className}>{children}</span>}
         on="hover"
         inverted

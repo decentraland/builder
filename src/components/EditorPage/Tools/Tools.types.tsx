@@ -4,8 +4,10 @@ export type DefaultProps = {
   onClick: (toolName: ToolName) => any
 }
 
-export type Props = DefaultProps & {}
+export type Props = DefaultProps & {
+  isSidebarOpen: boolean
+}
 
 export type State = {
-  isShortcutHelpOpen: boolean
+  isShortcutPopupOpen: boolean
 }

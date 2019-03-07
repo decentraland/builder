@@ -22,6 +22,7 @@ export type Props = {
   project: Project | null
   isSidebarOpen: boolean
   isPreviewing: boolean
+  isLoading: boolean
   onOpenModal: typeof openModal
   onLoadAssetPacks: typeof loadAssetPacksRequest
   onBindKeyboardShortcuts: typeof bindEditorKeyboardShortcuts
@@ -32,7 +33,7 @@ export type Props = {
   onResetCamera: typeof resetCamera
 }
 
-export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'project'>
+export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'isLoading' | 'project'>
 export type MapDispatchProps = Pick<
   Props,
   | 'onOpenModal'

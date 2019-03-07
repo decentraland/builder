@@ -4,12 +4,13 @@ import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import Icon from 'components/Icon'
 import ShortcutTooltip from 'components/ShortcutTooltip'
-import { Props as ShortcutTooltipProps } from 'components/ShortcutTooltip/ShortcutTooltip.types'
 import { IconName } from 'components/Icon/Icon.types'
+import { debounce } from 'lib/debounce'
 import { Shortcut } from 'modules/keyboard/types'
 import { ToolName, Props, DefaultProps, State } from './Tools.types'
 import { ClosePopup } from 'components/Popups'
 
+export const LOCALSTORAGE_SHORTCUT_POPUP_KEY = 'builder-shortcut-popup'
 const localStorage = getLocalStorage()
 
 export default class Tools extends React.PureComponent<Props, State> {
@@ -20,40 +21,86 @@ export default class Tools extends React.PureComponent<Props, State> {
   }
 
   state = {
-    isShortcutHelpOpen: !localStorage.getItem('help-shortcut-seen')
+    isShortcutPopupOpen: !localStorage.getItem(LOCALSTORAGE_SHORTCUT_POPUP_KEY)
   }
 
+  updatePopupPositionDebounced = debounce(() => this.updatePopupPosition(), 200)
+
   componentWillMount() {
-    window.addEventListener('resize', this.closeShortcutHelp)
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.state.isShortcutPopupOpen && this.props.isSidebarOpen !== nextProps.isSidebarOpen) {
+      this.updatePopupPosition()
+    }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.closeShortcutHelp)
+    window.removeEventListener('resize', this.handleResize)
+  }
+
+  handleCloseShortcutPopup = () => {
+    this.closeShortcutPopup()
+    localStorage.setItem(LOCALSTORAGE_SHORTCUT_POPUP_KEY, '1')
+  }
+
+  handleResize = () => {
+    if (this.state.isShortcutPopupOpen) {
+      this.setState({ isShortcutPopupOpen: false })
+    }
+    this.updatePopupPositionDebounced()
+  }
+
+  handleShorcutIconClick() {
+    this.handleCloseShortcutPopup()
+    this.props.onClick('shortcuts')
+  }
+
+  updatePopupPosition() {
+    // We need to force a Popup re-render to give semantic a chance to re-compute the styles
+    // Sadly the implementation doesn't allow for a way to do this cleanly
+    this.setState({ isShortcutPopupOpen: false })
+    setTimeout(() => this.setState({ isShortcutPopupOpen: true }))
+  }
+
+  openShortcutPopup = () => {
+    this.setState({ isShortcutPopupOpen: true })
+  }
+
+  closeShortcutPopup = () => {
+    this.setState({ isShortcutPopupOpen: false })
+  }
+
+  renderShortcutIcon() {
+    return (
+      <ShortcutTooltip
+        shortcut={Shortcut.SHORTCUTS}
+        position="top center"
+        className="tool"
+        onOpen={this.closeShortcutPopup}
+        onClose={this.openShortcutPopup}
+      >
+        <Icon name="shortcuts" onClick={this.handleShorcutIconClick} />
+      </ShortcutTooltip>
+    )
+  }
+
+  renderIcon(iconName: ToolName, shortcut: Shortcut) {
+    return (
+      <ShortcutTooltip shortcut={shortcut} position="top center" className="tool">
+        <Icon name={iconName as IconName} onClick={this.getClickHandler(iconName)} />
+      </ShortcutTooltip>
+    )
   }
 
   getClickHandler(toolName: ToolName) {
     return () => this.props.onClick(toolName)
   }
 
-  handleCloseShortcutHelp = () => {
-    this.closeShortcutHelp()
-    localStorage.setItem('help-shortcut-seen', '1')
-  }
-
-  closeShortcutHelp = () => {
-    this.setState({ isShortcutHelpOpen: false })
-  }
-
-  renderIcon(iconName: ToolName, shortcut: Shortcut, onOpen?: ShortcutTooltipProps['onOpen']) {
-    return (
-      <ShortcutTooltip shortcut={shortcut} position="top center" className="tool" onOpen={onOpen}>
-        <Icon name={iconName as IconName} onClick={this.getClickHandler(iconName)} />
-      </ShortcutTooltip>
-    )
-  }
-
   render() {
-    const { isShortcutHelpOpen } = this.state
+    const { isSidebarOpen } = this.props
+    const { isShortcutPopupOpen } = this.state
 
     return (
       <div className="Tools">
@@ -62,10 +109,10 @@ export default class Tools extends React.PureComponent<Props, State> {
         {this.renderIcon('zoom-out', Shortcut.ZOOM_OUT)}
 
         <Popup
-          open={isShortcutHelpOpen}
-          content={<ClosePopup onClick={this.closeShortcutHelp} />}
-          position="top center"
-          trigger={this.renderIcon('shortcuts', Shortcut.SHORTCUTS, this.closeShortcutHelp)}
+          open={isShortcutPopupOpen}
+          content={<ClosePopup onClick={this.closeShortcutPopup} />}
+          position={isSidebarOpen ? 'top center' : 'top left'}
+          trigger={this.renderShortcutIcon()}
           on="hover"
           inverted
         />

@@ -5,6 +5,7 @@ export type DefaultProps = {
   className: string
   popupClassName: string
   onOpen: (event: React.MouseEvent<HTMLElement>) => any
+  onClose: (event: React.MouseEvent<HTMLElement>) => any
 }
 
 export type Props = DefaultProps & {
