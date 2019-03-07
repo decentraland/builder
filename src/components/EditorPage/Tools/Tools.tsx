@@ -4,11 +4,11 @@ import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import Icon from 'components/Icon'
 import ShortcutTooltip from 'components/ShortcutTooltip'
+import { ClosePopup } from 'components/Popups'
 import { IconName } from 'components/Icon/Icon.types'
 import { debounce } from 'lib/debounce'
 import { Shortcut } from 'modules/keyboard/types'
 import { ToolName, Props, DefaultProps, State } from './Tools.types'
-import { ClosePopup } from 'components/Popups'
 
 export const LOCALSTORAGE_SHORTCUT_POPUP_KEY = 'builder-shortcut-popup'
 const localStorage = getLocalStorage()
