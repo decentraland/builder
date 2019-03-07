@@ -52,7 +52,7 @@ export default class Tools extends React.PureComponent<Props, State> {
     this.updatePopupPositionDebounced()
   }
 
-  handleShorcutIconClick() {
+  handleShorcutIconClick = () => {
     this.handleCloseShortcutPopup()
     this.props.onClick('shortcuts')
   }
@@ -110,7 +110,7 @@ export default class Tools extends React.PureComponent<Props, State> {
 
         <Popup
           open={isShortcutPopupOpen}
-          content={<ClosePopup onClick={this.closeShortcutPopup} />}
+          content={<ClosePopup onClick={this.handleCloseShortcutPopup} />}
           position={isSidebarOpen ? 'top center' : 'top left'}
           trigger={this.renderShortcutIcon()}
           on="hover"
