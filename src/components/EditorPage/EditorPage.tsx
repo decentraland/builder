@@ -21,12 +21,12 @@ const localStorage = getLocalStorage()
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
-    const { project, onLoadAssetPacks, onBindKeyboardShortcuts, onOpenModal } = this.props
+    const { currentProject, onLoadAssetPacks, onBindKeyboardShortcuts, onOpenModal } = this.props
 
     onLoadAssetPacks()
     onBindKeyboardShortcuts()
 
-    if (project && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
+    if (currentProject && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
       onOpenModal('TutorialModal')
     }
 
@@ -71,11 +71,11 @@ export default class EditorPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { project, isPreviewing, isSidebarOpen, isLoading } = this.props
+    const { currentProject, isPreviewing, isSidebarOpen, isLoading } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
 
-    if (!project) {
+    if (!currentProject) {
       return (
         <App>
           <NotFoundPage />

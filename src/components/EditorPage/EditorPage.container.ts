@@ -20,7 +20,7 @@ const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
   isLoading: isReady(state),
-  project: getCurrentProject(state)
+  currentProject: getCurrentProject(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
