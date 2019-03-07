@@ -9,10 +9,10 @@ import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
 import Tools from './Tools'
 import Metrics from './Metrics'
-
+import LocalStorageToast from './LocalStorageToast'
+import ItemDragLayer from './ItemDragLayer'
 import { Props } from './EditorPage.types'
 import { ToolName } from './Tools/Tools.types'
-import ItemDragLayer from './ItemDragLayer'
 
 import './EditorPage.css'
 
@@ -95,6 +95,7 @@ export default class EditorPage extends React.PureComponent<Props> {
                   <Metrics />
                   <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
                   <ItemDragLayer />
+                  <LocalStorageToast />
                 </>
               </div>
             )}

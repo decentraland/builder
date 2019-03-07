@@ -9,6 +9,7 @@ export type IconName =
   | 'delete-icon'
   | 'duplicate'
   | 'duplicate-active'
+  | 'erase'
   | 'grid'
   | 'grid-active'
   | 'info'
