@@ -21,10 +21,9 @@ const localStorage = getLocalStorage()
 
 export default class EditorPage extends React.PureComponent<Props> {
   componentWillMount() {
-    const { currentProject, onLoadAssetPacks, onBindKeyboardShortcuts, onOpenModal } = this.props
+    const { currentProject, onLoadAssetPacks, onOpenModal } = this.props
 
     onLoadAssetPacks()
-    onBindKeyboardShortcuts()
 
     if (currentProject && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
       onOpenModal('TutorialModal')
@@ -36,10 +35,7 @@ export default class EditorPage extends React.PureComponent<Props> {
   }
 
   componentWillUnmount() {
-    const { onUnbindKeyboardShortcuts, onCloseEditor } = this.props
-
-    onUnbindKeyboardShortcuts()
-    onCloseEditor()
+    this.props.onCloseEditor()
     document.body.classList.remove('lock-scroll')
     document.body.removeEventListener('mousewheel', this.handleMouseWheel)
   }
