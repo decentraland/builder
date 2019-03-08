@@ -5,6 +5,7 @@
 }
 
 .Metrics .SquaresGrid {
+  margin-left: 5px;
   cursor: pointer;
 }
 

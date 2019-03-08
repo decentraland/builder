@@ -114,8 +114,9 @@
     "precision": "Precision",
     "hold": "Hodl"
   },
-  "close_popup": {
-    "shortcuts_help": "Pssst! see shortcuts here!"
+  "popups": {
+    "shortcuts_help": "Pssst! see shortcuts here",
+    "metrics_help": "Pssst! see metrics here"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
