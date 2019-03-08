@@ -1,5 +1,5 @@
 import { Vector3 } from 'modules/common/types'
-import { Scene } from './types'
+import { Scene, SceneMetrics } from './types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -39,6 +39,21 @@ export function filterEntitiesWithComponent(componentId: string, entities: Scene
   }
 
   return newEntities
+}
+
+export function getExceededMetrics(metrics: SceneMetrics, limits: SceneMetrics) {
+  const metricsExceeded: (keyof SceneMetrics)[] = []
+
+  for (const key in metrics) {
+    const metric = key as keyof SceneMetrics
+    if (metrics[metric] > limits[metric]) {
+      if (!metricsExceeded.includes(metric)) {
+        metricsExceeded.push(metric)
+      }
+    }
+  }
+
+  return metricsExceeded
 }
 
 export function snapToGrid(position: Vector3, grid: number = 0.5): Vector3 {

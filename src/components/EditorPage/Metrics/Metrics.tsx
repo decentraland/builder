@@ -11,6 +11,7 @@ import { SceneMetrics } from 'modules/scene/types'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
+import { getExceededMetrics } from 'modules/scene/utils'
 
 export const LOCALSTORAGE_METRICS_POPUP_KEY = 'builder-metrics-popup'
 const localStorage = getLocalStorage()
@@ -33,16 +34,11 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    for (let key in nextProps.metrics) {
-      const metric = key as keyof SceneMetrics
-      if (nextProps.metrics[metric] > nextProps.limits[metric]) {
-        if (!this.metricsExceeded.includes(metric)) {
-          this.metricsExceeded.push(metric)
-          this.analytics.track('Metrics exceeded', { metric })
-        }
-      } else {
-        this.metricsExceeded = this.metricsExceeded.filter(exceeded => exceeded !== metric)
-      }
+    const { metrics, limits } = nextProps
+    this.metricsExceeded = getExceededMetrics(metrics, limits)
+
+    for (const metric of this.metricsExceeded) {
+      this.analytics.track('Metrics exceeded', { metric })
     }
   }
 
@@ -84,8 +80,8 @@ export default class Metrics extends React.PureComponent<Props, State> {
       <div className={classes} key={metric}>
         <div className="label">{t(`metrics.${metric}`)}:</div>
         <div className="value">
-          {this.props.metrics[metric].toLocaleString()}
-          <span className="value-limit">&nbsp;/&nbsp;{this.props.limits[metric].toLocaleString()}</span>{' '}
+          {metrics[metric].toLocaleString()}
+          <span className="value-limit">&nbsp;/&nbsp;{limits[metric].toLocaleString()}</span>{' '}
         </div>
       </div>
     )
@@ -94,9 +90,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
   render() {
     const { rows, cols, metrics, limits } = this.props
     const { isBubbleVisible, isMetricsPopupOpen } = this.state
-    const exceededMetric = Object.keys(this.props.metrics).find(
-      key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics]
-    )
+    const exceededMetric = Object.keys(metrics).find(key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics])
 
     return (
       <div className={`Metrics ${exceededMetric ? 'metric-exceeded' : ''}`} onClick={this.handleClick}>
