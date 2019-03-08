@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Header, Grid, Icon, Button, Popup } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import ShortcutTooltip from 'components/ShortcutTooltip'
@@ -137,26 +137,28 @@ export default class TopBar extends React.PureComponent<Props> {
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
-
-            <Popup
-              disabled={isSceneLoading || exceededMetric === ''}
-              content={t('metrics.too_many', { metric: exceededMetric })}
-              position="bottom center"
-              trigger={
-                <span>
-                  <Button
-                    className="add-to-contest"
-                    size="mini"
-                    onClick={this.handleAddToContestClick}
-                    disabled={isSceneLoading || exceededMetric !== ''}
-                  >
-                    {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
-                  </Button>
-                </span>
-              }
-              on="hover"
-              inverted
-            />
+            <span className="contest-button-wrapper">
+              <Popup
+                className="contest-disabled"
+                disabled={isSceneLoading || exceededMetric === ''}
+                content={<T id="topbar.add_to_contest_disabled_limits" values={{ metric: exceededMetric, br: <br /> }} />}
+                position="bottom center"
+                trigger={
+                  <span>
+                    <Button
+                      className="add-to-contest"
+                      size="mini"
+                      onClick={this.handleAddToContestClick}
+                      disabled={isSceneLoading || exceededMetric !== ''}
+                    >
+                      {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
+                    </Button>
+                  </span>
+                }
+                on="hover"
+                inverted
+              />
+            </span>
           </Grid.Row>
         </Grid.Column>
       </Grid>
