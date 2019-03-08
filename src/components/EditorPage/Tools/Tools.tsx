@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Popup } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Icon from 'components/Icon'
 import ShortcutTooltip from 'components/ShortcutTooltip'
@@ -105,7 +106,6 @@ export default class Tools extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isSidebarOpen } = this.props
     const { isShortcutPopupOpen } = this.state
 
     return (
@@ -116,8 +116,8 @@ export default class Tools extends React.PureComponent<Props, State> {
 
         <Popup
           open={isShortcutPopupOpen && this.isShortcutPopupDismissed()}
-          content={<ClosePopup onClick={this.handleCloseShortcutPopup} />}
-          position={isSidebarOpen ? 'top center' : 'top left'}
+          content={<ClosePopup text={t('popups.shortcuts_help')} onClick={this.handleCloseShortcutPopup} />}
+          position="top right"
           trigger={this.renderShortcutIcon()}
           on="hover"
           inverted

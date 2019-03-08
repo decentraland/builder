@@ -11,8 +11,8 @@ import Tools from './Tools'
 import Metrics from './Metrics'
 import LocalStorageToast from './LocalStorageToast'
 import ItemDragLayer from './ItemDragLayer'
-import { Props } from './EditorPage.types'
 import { ToolName } from './Tools/Tools.types'
+import { Props } from './EditorPage.types'
 
 import './EditorPage.css'
 
