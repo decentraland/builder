@@ -25,8 +25,8 @@
   },
   "home_page": {
     "title": "Build something cool!",
-    "subtitle": "Import a file or start from scratch with our templates or your own LAND!",
-    "empty_projects_title": "Here's where your projects will live",
+    "subtitle": "Welcome to Decentraland's drag-and-drop scene editor. Select one of the project templates below to get started.",
+    "empty_projects_title": "Your projects will live here",
     "empty_projects_cta": "Select a template below to start building awesome stuff!",
     "project_actions": {
       "delete_project": "Delete project",
@@ -34,9 +34,8 @@
     }
   },
   "mobile_page": {
-    "title": "Build something cool!",
-    "subtitle": "Pimp up your LAND",
-    "message": "The Builder does not work on mobile, get notified when it does:",
+    "title": "Oops!",
+    "message": "The Builder doesn’t work on mobile devices yet. We’ll let you when it does:",
     "success": "Thanks, we will keep you posted!"
   },
   "not_found_page": {
@@ -69,8 +68,8 @@
     "empty_ground": "No Ground"
   },
   "topbar": {
-    "add_to_contest": "Add to contest",
-    "update_contest_entry": "Update your entry",
+    "add_to_contest": "Submit to contest",
+    "update_contest_entry": "Update submission",
     "publish": "Publish"
   },
   "metrics": {
@@ -91,8 +90,8 @@
     "i_accept_the": "I accept the "
   },
   "add_to_contest": {
-    "title": "Add project to contest",
-    "subtitle": "Almost done. Review your information and before submitting it.",
+    "title": "Submit your scene",
+    "subtitle": "You're almost done. Please review your project and contact info before submitting your scene.",
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your project:"
   },
@@ -106,18 +105,18 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "reset_camera": "Reset camera",
-    "toggle_colliders": "Toggle colliders",
+    "toggle_colliders": "Show colliders",
     "toggle_sidebar": "Toggle sidebar",
     "preview": "Preview",
     "undo": "Undo",
     "redo": "Redo",
     "shortcut_reference": "Shortcut reference",
-    "precision": "Precision",
+    "precision": "Ignore snap-to-grid",
     "hold": "Hodl"
   },
   "popups": {
-    "shortcuts_help": "Pssst! see shortcuts here",
-    "metrics_help": "Pssst! see metrics here"
+    "shortcuts_help": "Pssst! See shortcuts here",
+    "metrics_help": "Pssst! See metrics here"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",

@@ -48,7 +48,6 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     return (
       <div className="MobilePage">
         <Header size="large">{t('mobile_page.title')}</Header>
-        <p className="subtitle">{t('mobile_page.subtitle')}</p>
         <Form onSubmit={this.handleSubmit}>
           <p className="message">{t('mobile_page.message')}</p>
 
@@ -71,9 +70,6 @@ export default class MobilePage extends React.PureComponent<Props, State> {
             <div className="success">{t('mobile_page.success')}</div>
           )}
         </Form>
-        <span className="suggestion">
-          Participate in our contest for a chance to <a href="http://contest.decentraland.org">earn MANA and LAND</a>
-        </span>
       </div>
     )
   }
