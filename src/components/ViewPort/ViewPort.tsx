@@ -11,7 +11,7 @@ const widget = IntercomWidget.getInstance()
 export default class ViewPort extends React.PureComponent<Props> {
   handleClose = () => {
     const { onClosePreview } = this.props
-    console.log('restore intercom', widget)
+   
     widget.render()
     onClosePreview()
   }
