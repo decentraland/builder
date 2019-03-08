@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Header, Grid, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
@@ -11,6 +12,8 @@ import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
 import { Props } from './TopBar.types'
 import './TopBar.css'
+
+const widget = IntercomWidget.getInstance()
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {
@@ -25,6 +28,7 @@ export default class TopBar extends React.PureComponent<Props> {
 
   handleTogglePreview = () => {
     const { onTogglePreview, isPreviewing } = this.props
+    widget.unmount()
     onTogglePreview(!isPreviewing)
   }
 

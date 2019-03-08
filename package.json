@@ -22,7 +22,7 @@
     "connected-react-router": "^6.1.0",
     "css-loader": "1.0.0",
     "decentraland-commons": "^5.1.0",
-    "decentraland-dapps": "^3.14.3",
+    "decentraland-dapps": "^3.14.4",
     "decentraland-eth": "^8.8.0",
     "decentraland-ui": "^1.19.0",
     "dotenv": "6.0.0",
