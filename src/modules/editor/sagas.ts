@@ -200,8 +200,7 @@ function* handleOpenEditor() {
   yield handleToggleSnapToGrid(toggleSnapToGrid(true))
 
   // Select gizmo
-  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
-  yield call(() => editorWindow.editor.selectGizmo(gizmo))
+  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
 }
 
 function* handleCloseEditor() {
