@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Dropdown } from 'decentraland-ui'
+import { Icon, Dropdown, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Confirm from 'components/Confirm'
@@ -62,14 +62,22 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
       <>
         {Overlay}
         {hasSubmittedProject ? (
-          <span className="contest-badge" data-balloon-pos="down" data-balloon={t('project_card.added_to_contest')}>
-            <Icon name="star" />
-          </span>
+          <Popup
+            content={t('project_card.added_to_contest')}
+            position="top center"
+            trigger={
+              <span className="contest-badge">
+                <Icon name="star" />
+              </span>
+            }
+            on="hover"
+            inverted
+          />
         ) : null}
         <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
           <Dropdown.Menu>
-            <Dropdown.Item text={t('homepage.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
-            <Dropdown.Item text={t('homepage.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
+            <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
+            <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">

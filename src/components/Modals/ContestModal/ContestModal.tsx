@@ -3,7 +3,7 @@ import { Form, Header, Radio, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import CloseModalIcon from '../CloseModalIcon'
+import CloseModal from '../CloseModal'
 import { Props, State } from './ContestModal.types'
 
 import './ContestModal.css'
@@ -30,7 +30,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     const { hasAcceptedTerms } = this.state
 
     return (
-      <Modal name={name} closeIcon={<CloseModalIcon onClick={onClose} />}>
+      <Modal name={name} closeIcon={<CloseModal onClick={onClose} />}>
         <Modal.Header>
           <div className="header-image" />
           <Header size="huge" className="hero">

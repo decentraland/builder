@@ -11,7 +11,7 @@ import {
   zoomOut,
   resetCamera
 } from 'modules/editor/actions'
-import { isSidebarOpen, isPreviewing } from 'modules/editor/selectors'
+import { isSidebarOpen, isPreviewing, isReady } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
@@ -19,7 +19,8 @@ import EditorPage from './EditorPage'
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
-  project: getCurrentProject(state)
+  isLoading: isReady(state),
+  currentProject: getCurrentProject(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

@@ -65,7 +65,7 @@
 
 .ui.modal .header,
 .ui.modal > :first-child:not(.icon),
-.ui.modal > :first-child.CloseModalIcon + .content {
+.ui.modal > :first-child.CloseModal + .content {
   border-top-left-radius: var(--modal-border-radius);
   border-top-right-radius: var(--modal-border-radius);
 }

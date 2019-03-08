@@ -25,7 +25,7 @@ export type Props = DefaultProps & {
   view: SidebarView
   search: string
   isLoading?: boolean
-  project: Project | null
+  currentProject: Project | null
   onAddItem: typeof addItem
   onSearch: typeof searchAssets
   onSetSidebarView: typeof setSidebarView
@@ -34,7 +34,7 @@ export type Props = DefaultProps & {
   onPrefetchAsset: typeof prefetchAsset
 }
 
-export type MapStateProps = Pick<Props, 'categories' | 'selectedCategory' | 'search' | 'view' | 'isLoading' | 'project'>
+export type MapStateProps = Pick<Props, 'categories' | 'selectedCategory' | 'search' | 'view' | 'isLoading' | 'currentProject'>
 export type MapDispatchProps = Pick<
   Props,
   'onAddItem' | 'onSearch' | 'onSetSidebarView' | 'onSelectCategory' | 'onSetGround' | 'onPrefetchAsset'

@@ -46,8 +46,8 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
     case 'Toggle preview': {
       for (const entityId in engine.entities) {
         const entity = engine.entities[entityId]
-        if (message.payload.enabled) {
-          entity.removeComponent(Gizmos)
+        if (message.payload.isEnabled) {
+          entity.removeComponent(gizmo)
         } else {
           const staticEntities = engine.getComponentGroup(StaticEntity)
           if (!staticEntities.hasEntity(entity)) {

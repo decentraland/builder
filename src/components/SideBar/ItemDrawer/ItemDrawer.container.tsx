@@ -6,9 +6,9 @@ import { addItem, setGround } from 'modules/scene/actions'
 import { isLoading } from 'modules/assetPack/selectors'
 import { searchAssets, setSidebarView, selectCategory } from 'modules/ui/sidebar/actions'
 import { getCurrentProject } from 'modules/project/selectors'
+import { prefetchAsset } from 'modules/editor/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
-import { prefetchAsset } from 'modules/editor/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   categories: getSideBarCategories(state),
@@ -16,7 +16,7 @@ const mapState = (state: RootState): MapStateProps => ({
   view: getSidebarView(state),
   search: getSearch(state),
   isLoading: isLoading(state),
-  project: getCurrentProject(state)
+  currentProject: getCurrentProject(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

@@ -3,7 +3,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
-import CloseModalIcon from '../CloseModalIcon'
+import CloseModal from '../CloseModal'
 import { Shortcut, ShortcutDefinition, SimpleShortcut } from 'modules/keyboard/types'
 import { mapLabel, ShortcutRenderer } from 'modules/keyboard/utils'
 import { Props } from './ShortcutModal.types'
@@ -119,7 +119,7 @@ export default class ShortcutsModal extends React.PureComponent<Props> {
     const categories = getCategoryTitles()
 
     return (
-      <Modal name={name} closeIcon={<CloseModalIcon onClick={onClose} />}>
+      <Modal name={name} closeIcon={<CloseModal onClick={onClose} />}>
         <Modal.Content>
           <div className="title">{t('shortcuts_modal.title')}</div>
 

@@ -5,7 +5,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { SimpleShortcut, ShortcutDefinition } from 'modules/keyboard/types'
 import { mapLabel, ShortcutRenderer } from 'modules/keyboard/utils'
 
-import { Props } from './ShortcutTooltip.types'
+import { Props, DefaultProps } from './ShortcutTooltip.types'
 import './ShortcutTooltip.css'
 
 class ShortcutTextRenderer extends ShortcutRenderer {
@@ -27,9 +27,15 @@ class ShortcutTextRenderer extends ShortcutRenderer {
 const renderer = new ShortcutTextRenderer()
 
 export default class ShortcutTooltip extends React.PureComponent<Props> {
-  static defaultProps = {
+  static defaultProps: DefaultProps = {
     className: '',
-    popupClassName: ''
+    popupClassName: '',
+    onOpen: (_: React.MouseEvent<HTMLElement>) => {
+      /* noop */
+    },
+    onClose: (_: React.MouseEvent<HTMLElement>) => {
+      /* noop */
+    }
   }
 
   renderShortcutSequence = (shortcutDefinition: ShortcutDefinition) => {
@@ -45,7 +51,7 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
   }
 
   render() {
-    const { shortcutDefinition, children, position, className, popupClassName } = this.props
+    const { shortcutDefinition, children, position, className, popupClassName, onOpen, onClose } = this.props
     const content = (
       <span className="ShortcutTooltip">
         <span className="label">{shortcutDefinition.title}</span>
@@ -54,12 +60,14 @@ export default class ShortcutTooltip extends React.PureComponent<Props> {
     )
     return (
       <Popup
+        className={popupClassName}
         content={content}
         position={position}
+        onOpen={onOpen}
+        onClose={onClose}
         trigger={<span className={className}>{children}</span>}
         on="hover"
         inverted
-        className={popupClassName}
       />
     )
   }

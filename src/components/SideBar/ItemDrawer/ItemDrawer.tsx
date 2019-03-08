@@ -78,9 +78,9 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
   handleClick = (asset: Asset) => {
     if (asset.category === GROUND_CATEGORY) {
-      const { project, onSetGround } = this.props
-      if (project) {
-        onSetGround(project.id, project.layout, asset)
+      const { currentProject, onSetGround } = this.props
+      if (currentProject) {
+        onSetGround(currentProject.id, currentProject.layout, asset)
       }
     } else {
       const { onAddItem } = this.props

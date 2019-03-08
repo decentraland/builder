@@ -1,5 +1,5 @@
+import { env } from 'decentraland-commons'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AssetPack } from 'modules/assetPack/types'
@@ -15,7 +15,7 @@ export function addEmptyGroundAsset(assets: DataByKey<Asset>) {
       assetPackId: EMPTY_GROUND_ASSET_PACK_ID,
       name: t('itemdrawer.empty_ground'),
       category: GROUND_CATEGORY,
-      thumbnail: '',
+      thumbnail: `${env.get('PUBLIC_URL')}/images/empty-ground.png`,
       url: '',
       tags: [GROUND_CATEGORY],
       variations: [],
