@@ -3,8 +3,6 @@ import { Dispatch } from 'redux'
 import { loadAssetPacksRequest, LoadAssetPacksRequestAction } from 'modules/assetPack/actions'
 import {
   closeEditor,
-  bindEditorKeyboardShortcuts,
-  unbindEditorKeyboardShortcuts,
   CloseEditorAction,
   BindEditorKeybardShortcutsAction,
   UnbindEditorKeybardShortcutsAction,
@@ -25,8 +23,6 @@ export type Props = {
   isLoading: boolean
   onOpenModal: typeof openModal
   onLoadAssetPacks: typeof loadAssetPacksRequest
-  onBindKeyboardShortcuts: typeof bindEditorKeyboardShortcuts
-  onUnbindKeyboardShortcuts: typeof unbindEditorKeyboardShortcuts
   onCloseEditor: typeof closeEditor
   onZoomIn: typeof zoomIn
   onZoomOut: typeof zoomOut
@@ -36,14 +32,7 @@ export type Props = {
 export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'isLoading' | 'currentProject'>
 export type MapDispatchProps = Pick<
   Props,
-  | 'onOpenModal'
-  | 'onLoadAssetPacks'
-  | 'onBindKeyboardShortcuts'
-  | 'onUnbindKeyboardShortcuts'
-  | 'onCloseEditor'
-  | 'onZoomOut'
-  | 'onZoomIn'
-  | 'onResetCamera'
+  'onOpenModal' | 'onLoadAssetPacks' | 'onCloseEditor' | 'onZoomOut' | 'onZoomIn' | 'onResetCamera'
 >
 export type MapDispatch = Dispatch<
   | OpenModalAction

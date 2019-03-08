@@ -3,14 +3,7 @@ import { connect } from 'react-redux'
 import { getCurrentProject } from 'modules/project/selectors'
 import { loadAssetPacksRequest } from 'modules/assetPack/actions'
 import { RootState } from 'modules/common/types'
-import {
-  bindEditorKeyboardShortcuts,
-  unbindEditorKeyboardShortcuts,
-  closeEditor,
-  zoomIn,
-  zoomOut,
-  resetCamera
-} from 'modules/editor/actions'
+import { closeEditor, zoomIn, zoomOut, resetCamera } from 'modules/editor/actions'
 import { isSidebarOpen, isPreviewing, isReady } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
@@ -26,8 +19,6 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: name => dispatch(openModal(name)),
   onLoadAssetPacks: () => dispatch(loadAssetPacksRequest()),
-  onBindKeyboardShortcuts: () => dispatch(bindEditorKeyboardShortcuts()),
-  onUnbindKeyboardShortcuts: () => dispatch(unbindEditorKeyboardShortcuts()),
   onCloseEditor: () => dispatch(closeEditor()),
   onZoomIn: () => dispatch(zoomIn()),
   onZoomOut: () => dispatch(zoomOut()),
