@@ -1,15 +1,13 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { env } from 'decentraland-commons'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import { Props } from './ErrorPage.types'
 import './ErrorPage.css'
 
-const APP_ID = env.get('REACT_APP_INTERCOM_APP_ID', '')
-const widget = new IntercomWidget(APP_ID)
+const widget = IntercomWidget.getInstance()
 
 export default class ErrorPage extends React.PureComponent<Props> {
   componentDidMount() {
