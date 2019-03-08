@@ -141,7 +141,7 @@ export default class TopBar extends React.PureComponent<Props> {
             <Popup
               disabled={isSceneLoading || exceededMetric === ''}
               content={t('metrics.too_many', { metric: exceededMetric })}
-              position="bottom left"
+              position="bottom center"
               trigger={
                 <span>
                   <Button
