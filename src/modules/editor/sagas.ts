@@ -136,7 +136,7 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
   }
 }
 
-function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+function handleTransformChange(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
   const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
   if (!project) return
 
@@ -181,7 +181,7 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => editorWindow.editor.on('transform', handlePositionGizmoUpdate))
+  yield call(() => editorWindow.editor.on('transform', handleTransformChange))
 
   // The client will report when the internal api is ready
   yield call(() => editorWindow.editor.on('ready', handleEditorReadyChange))
@@ -205,6 +205,9 @@ function* handleOpenEditor() {
 
 function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
+  yield call(() => editorWindow.editor.off('transform', handleTransformChange))
+  yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
+  yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
   yield put(unbindEditorKeyboardShortcuts())
 }
 
