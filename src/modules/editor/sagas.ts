@@ -43,7 +43,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
+import { getCurrentProject, getProject } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -53,7 +53,6 @@ import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { isWithinBounds } from 'modules/scene/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 
@@ -278,10 +277,7 @@ function* handleDropItem(action: DropItemAction) {
     yield put(setGround(project.id, project.layout, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
-    const bounds = yield select(getCurrentBounds)
-    if (isWithinBounds(position, bounds)) {
-      yield put(addItem(asset, position))
-    }
+    yield put(addItem(asset, position))
   }
 }
 
