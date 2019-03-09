@@ -32,10 +32,10 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     return (
       <Modal name={name} closeIcon={<CloseModal onClick={onClose} />}>
         <Modal.Header>
-          <div className="header-image" />
           <Header size="huge" className="hero">
             {t('contest_modal.title')}
           </Header>
+          <p className="subtitle">{t('contest_modal.subtitle')}</p>
         </Modal.Header>
         <Modal.Content>
           <div className="modal-row">

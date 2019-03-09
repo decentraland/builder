@@ -1,4 +1,5 @@
 export type DefaultProps = {
+  text: string
   onClick?: (event: React.MouseEvent<HTMLElement>) => any
 }
 

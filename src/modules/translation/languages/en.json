@@ -84,7 +84,8 @@
     "too_many": "Too many {metric}"
   },
   "contest_modal": {
-    "title": "Participate in our contest",
+    "title": "Calling all Builders!",
+    "subtitle": "Submit your most creative scenes, and earn a share of the purse: 900K+ MANA and 50 LAND (over 50K USD!)",
     "start": "Subscribe for a chance to win LAND",
     "know_more": "To know more read our {blog_post_link}",
     "i_accept_the": "I accept the "
@@ -114,8 +115,9 @@
     "precision": "Precision",
     "hold": "Hodl"
   },
-  "close_popup": {
-    "shortcuts_help": "Pssst! see shortcuts here!"
+  "popups": {
+    "shortcuts_help": "Pssst! see shortcuts here",
+    "metrics_help": "Pssst! see metrics here"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",

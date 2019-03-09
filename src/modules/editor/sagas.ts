@@ -27,7 +27,6 @@ import {
   unbindEditorKeyboardShortcuts,
   bindEditorKeyboardShortcuts,
   SET_EDITOR_READY,
-  resetCamera,
   SELECT_ENTITY,
   SelectEntityAction,
   TOGGLE_SNAP_TO_GRID,
@@ -36,7 +35,8 @@ import {
   NEW_EDITOR_SCENE,
   NewEditorSceneAction,
   PREFETCH_ASSET,
-  PrefetchAssetAction
+  PrefetchAssetAction,
+  SetEditorReadyAction
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -69,14 +69,14 @@ export function* editorSaga() {
   yield takeLatest(EDITOR_REDO, handleSceneChange)
   yield takeLatest(EDITOR_UNDO, handleSceneChange)
   yield takeLatest(SET_GIZMO, handleSetGizmo)
-  yield takeLatest(TOGGLE_PREVIEW, handleTooglePreview)
+  yield takeLatest(TOGGLE_PREVIEW, handleTogglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
   yield takeLatest(ZOOM_IN, handleZoomIn)
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
-  yield takeLatest(SET_EDITOR_READY, handleResetCamera)
+  yield takeLatest(SET_EDITOR_READY, handleSetEditorReady)
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
@@ -136,7 +136,7 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
   }
 }
 
-function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+function handleTransformChange(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
   const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
   if (!project) return
 
@@ -181,7 +181,7 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => editorWindow.editor.on('transform', handlePositionGizmoUpdate))
+  yield call(() => editorWindow.editor.on('transform', handleTransformChange))
 
   // The client will report when the internal api is ready
   yield call(() => editorWindow.editor.on('ready', handleEditorReadyChange))
@@ -200,12 +200,15 @@ function* handleOpenEditor() {
   yield handleToggleSnapToGrid(toggleSnapToGrid(true))
 
   // Select gizmo
-  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
-  yield call(() => editorWindow.editor.selectGizmo(gizmo))
+  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
 }
 
 function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
+  yield call(() => editorWindow.editor.off('transform', handleTransformChange))
+  yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
+  yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
+  yield put(unbindEditorKeyboardShortcuts())
 }
 
 function* handleSetGizmo(action: SetGizmoAction) {
@@ -213,27 +216,23 @@ function* handleSetGizmo(action: SetGizmoAction) {
 }
 
 function resizeEditor() {
-  const { editor } = window as EditorWindow
+  const { editor } = editorWindow
   window.requestAnimationFrame(() => editor.resize())
 }
 
-function* handleTooglePreview(action: TogglePreviewAction) {
-  const { isEnabled: enabled } = action.payload
+function* handleTogglePreview(action: TogglePreviewAction) {
+  const { isEnabled } = action.payload
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
 
   yield call(() => {
-    const { editor } = window as EditorWindow
-    editor.setPlayMode(enabled)
+    const { editor } = editorWindow
+    editor.setPlayMode(isEnabled)
     editor.sendExternalAction(action)
-    editor.selectGizmo(enabled ? Gizmo.NONE : gizmo)
+    editor.selectGizmo(isEnabled ? Gizmo.NONE : gizmo)
     resizeEditor()
   })
-  if (enabled) {
-    yield put(unbindEditorKeyboardShortcuts())
-  } else {
-    yield put(bindEditorKeyboardShortcuts())
-    yield put(resetCamera())
-  }
+
+  yield changeEditorState(!isEnabled)
 }
 
 function* handleToggleSidebar(_: ToggleSidebarAction) {
@@ -246,6 +245,19 @@ function handleZoomIn() {
 
 function handleZoomOut() {
   editorWindow.editor.setCameraZoomDelta(5)
+}
+
+function* handleSetEditorReady(action: SetEditorReadyAction) {
+  yield changeEditorState(action.payload.isReady)
+}
+
+function* changeEditorState(isReady: boolean) {
+  if (isReady) {
+    yield put(bindEditorKeyboardShortcuts())
+    yield handleResetCamera()
+  } else {
+    yield put(unbindEditorKeyboardShortcuts())
+  }
 }
 
 function* handleResetCamera() {

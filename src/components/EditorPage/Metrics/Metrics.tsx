@@ -1,17 +1,24 @@
 import * as React from 'react'
+import { Popup } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
 import Icon from 'components/Icon'
+import { ClosePopup } from 'components/Popups'
 import { SceneMetrics } from 'modules/scene/types'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
 
+export const LOCALSTORAGE_METRICS_POPUP_KEY = 'builder-metrics-popup'
+const localStorage = getLocalStorage()
+
 export default class Metrics extends React.PureComponent<Props, State> {
   state = {
-    toggle: false
+    isBubbleVisible: false,
+    isMetricsPopupOpen: !localStorage.getItem(LOCALSTORAGE_METRICS_POPUP_KEY)
   }
 
   analytics = getAnalytics()
@@ -40,23 +47,26 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   handleToggle = () => {
-    if (!this.state.toggle) {
+    const isBubbleVisible = !this.state.isBubbleVisible
+
+    if (isBubbleVisible) {
       this.analytics.track('Show metrics')
     }
-
-    this.setState({
-      toggle: !this.state.toggle
-    })
+    this.setState({ isBubbleVisible })
   }
 
   handleClose = () => {
-    this.setState({
-      toggle: false
-    })
+    this.setState({ isBubbleVisible: false })
   }
 
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
     event.nativeEvent.stopImmediatePropagation()
+    this.handleCloseMetricsPopup()
+  }
+
+  handleCloseMetricsPopup = () => {
+    this.setState({ isMetricsPopupOpen: false })
+    localStorage.setItem(LOCALSTORAGE_METRICS_POPUP_KEY, '1')
   }
 
   renderMetrics() {
@@ -83,15 +93,26 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
   render() {
     const { rows, cols, metrics, limits } = this.props
-    const { toggle } = this.state
+    const { isBubbleVisible, isMetricsPopupOpen } = this.state
     const exceededMetric = Object.keys(this.props.metrics).find(
       key => metrics[key as keyof SceneMetrics] > limits[key as keyof SceneMetrics]
     )
 
     return (
       <div className={`Metrics ${exceededMetric ? 'metric-exceeded' : ''}`} onClick={this.handleClick}>
-        <SquaresGrid rows={2} cols={2} size="tiny" onClick={this.handleToggle} />
-        {toggle ? (
+        <Popup
+          open={isMetricsPopupOpen}
+          content={<ClosePopup text={t('popups.metrics_help')} onClick={this.handleCloseMetricsPopup} />}
+          position="top left"
+          trigger={
+            <span>
+              <SquaresGrid rows={2} cols={2} size="tiny" onClick={this.handleToggle} />
+            </span>
+          }
+          inverted
+        />
+
+        {isBubbleVisible ? (
           <div className="bubble">
             <div className="bubble-title">
               <span>
