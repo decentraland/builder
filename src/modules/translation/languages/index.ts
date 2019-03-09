@@ -1,3 +1,3 @@
 const en = require('./en.json')
-
-export { en }
+const zh = require('./zh.json')
+export { en, zh }

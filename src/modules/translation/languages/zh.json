@@ -1,0 +1,176 @@
+{
+  "global": {
+    "projects": "项目",
+    "project": "项目",
+    "templates": "模板",
+    "terms_and_conditions": "使用条款",
+    "blog_post": "博客",
+    "email": "email",
+    "eth_address": "ETH 地址",
+    "save": "保存",
+    "submit": "提交",
+    "continue": "继续",
+    "send": "发送",
+    "confirm": "确认",
+    "cancel": "取消",
+    "create": "创建",
+    "or": "或",
+    "next": "下一个",
+    "back": "返回",
+    "done": "完成",
+    "dismiss": "解散"
+  },
+  "languages": {
+    "en": "英文",
+    "zh": "中文"
+  },
+  "home_page": {
+    "title": "设计一个独特的世界!",
+    "subtitle": "导入文件，或者从选择模板，或根据您的土地布局开始设计!",
+    "empty_projects_title": "这是您的项目所在",
+    "empty_projects_cta": "在下面选择一个模板开始构建!",
+    "project_actions": {
+      "delete_project": "删除项目",
+      "duplicate_project": "复制项目"
+    }
+  },
+  "mobile_page": {
+    "title": "设计一个独特的世界!!",
+    "subtitle": "装扮你的土地",
+    "message": "The Builder 不能在手机上运行，当可以时通知你:",
+    "success": "谢谢，我们会与您联系!"
+  },
+  "not_found_page": {
+    "title": "404",
+    "subtitle": "对不起，我们找不到您要找的项目",
+    "back": "返回项目"
+  },
+  "error_page": {
+    "title": "哎哟！",
+    "subtitle": "发生了一个错误，以下是错误信息:",
+    "support": "联系支持服务",
+    "or": "或者重试",
+    "reload": "重新加载页面"
+  },
+  "unsupported_browser_page": {
+    "title": "哎哟!",
+    "subtitle": "The Builder 不能在您的浏览器中运行.{br}请使用 {chrome} 或者 {firefox} 浏览器！",
+    "back": "返回项目"
+  },
+  "project_card": {
+    "added_to_contest": "提交到大赛",
+    "confirm_delete_header": "删除 \"{title}\"",
+    "confirm_delete_content": "确认删除 \"{title}\"? 此操作不能回退"
+  },
+  "itemdrawer": {
+    "title": "抽屉",
+    "search": "搜索",
+    "search_category": "在 {category} 中查找",
+    "no_results": "没找到",
+    "empty_ground": "末设置地面"
+  },
+  "topbar": {
+    "add_to_contest": "提交到大赛",
+    "update_contest_entry": "更新您的信息",
+    "publish": "发表"
+  },
+  "metrics": {
+    "triangles": "三角形",
+    "materials": "材质",
+    "geometries": "几何体",
+    "bodies": "物体",
+    "entities": "实体",
+    "textures": "纹理",
+    "height": "高度",
+    "too_many": "{metric} 过多"
+  },
+  "contest_modal": {
+    "title": "设计人员大召集!",
+    "subtitle": "提交你最具创意的场景，赢取总奖金高达:90 万+ MANA 和 50 块土地 (超过 5 万美元!)的奖品",
+    "start": "订阅就可以得到一个赢取土地的机会",
+    "know_more": "要了解更多，请阅读我们的 {blog_post_link}",
+    "i_accept_the": "我接受 "
+  },
+  "add_to_contest": {
+    "title": "提交到大赛",
+    "subtitle": "几乎完成了。审查你的信息，然后提交",
+    "contact_information": "联系信息",
+    "error_occurred": "提交项目时出错了:"
+  },
+  "shortcuts": {
+    "move": "坐标轴",
+    "rotate": "旋转轴",
+    "reset": "重置",
+    "duplicate": "复制",
+    "delete": "删除",
+    "move_camera": "移动摄相机",
+    "zoom_in": "放大",
+    "zoom_out": "缩小",
+    "reset_camera": "重置摄相机",
+    "toggle_colliders": "碰撞器",
+    "toggle_sidebar": "侧边栏",
+    "preview": "预览",
+    "undo": "撤消",
+    "redo": "重做",
+    "shortcut_reference": "快捷方式",
+    "precision": "精确度",
+    "hold": "按住"
+  },
+  "popups": {
+    "shortcuts_help": "在此查看快捷键",
+    "metrics_help": "查看场景指标"
+  },
+  "shortcuts_modal": {
+    "title": "快捷键",
+    "item_shortcuts": "物品",
+    "editor_shortcuts": "编辑器",
+    "other_shortcuts": "其它"
+  },
+  "edit_project_modal": {
+    "title": "项目详细信息",
+    "custom_layout_label": "布局"
+  },
+  "project_fields": {
+    "title_field_label": "名称",
+    "title_field_placeholder": "项目名称",
+    "description_field_label": "说明",
+    "description_field_placeholder": "没有说明"
+  },
+  "validation": {
+    "project": {
+      "title": {
+        "length": "名称长度必须是 {min} 到 {max} 个字符."
+      },
+      "description": {
+        "length": "描述长度必须是 {min} 到 {max} 个字符."
+      }
+    }
+  },
+  "custom_layout_modal": {
+    "subtitle_one": "您可以自定义场景布局.",
+    "subtitle_two": "在下面的输入框中输入所需的大小值."
+  },
+  "layout_picker": {
+    "rows": "行",
+    "columns": "列"
+  },
+  "custom_layout": {
+    "title": "自定义",
+    "up_to": "最大 {max} 块地块"
+  },
+  "project_layout_picker": {
+    "max_area_error": "您的场景不得超过 {area} 块地块",
+    "min_area_error": "您的场景太小了"
+  },
+  "tutorial_modal": {
+    "title": "开始使用 the Builder",
+    "subtitle": "The Builder 超级容易使用，在您开始之前，这里有一些提示或技巧",
+    "slide0": "浏览右侧的类别，并将您想要的模型拖放到场景中.",
+    "slide1": "要移动相机，单击窗口并拖动。使用箭头键移动。",
+    "slide2": "使用单击并拖动模型来移动。",
+    "slide3": "如果需要更精确的控制，单击工具栏上的移动图标，并使用箭头来操作模型。"
+  },
+  "toasts": {
+    "localstorage": "项目会自动保存到浏览器的本地存储中。"
+  }
+}

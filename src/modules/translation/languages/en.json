@@ -21,7 +21,8 @@
     "dismiss": "Dismiss"
   },
   "languages": {
-    "en": "English"
+    "en": "English",
+    "zh": "Chinese"
   },
   "home_page": {
     "title": "Build something cool!",
