@@ -8,10 +8,10 @@ import SquaresGrid from 'components/SquaresGrid'
 import Icon from 'components/Icon'
 import { ClosePopup } from 'components/Popups'
 import { SceneMetrics } from 'modules/scene/types'
+import { getExceededMetrics } from 'modules/scene/utils'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
-import { getExceededMetrics } from 'modules/scene/utils'
 
 export const LOCALSTORAGE_METRICS_POPUP_KEY = 'builder-metrics-popup'
 const localStorage = getLocalStorage()
