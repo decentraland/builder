@@ -32,11 +32,6 @@
   margin-right: 32px;
 }
 
-.TopBar .right-column .add-to-contest {
-  transition: none;
-  cursor: not-allowed;
-}
-
 .TopBar .right-column .add-to-contest.ui.button.mini {
   padding-left: 1.2em;
   padding-right: 1.2em;

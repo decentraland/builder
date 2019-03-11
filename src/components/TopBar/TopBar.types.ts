@@ -24,6 +24,7 @@ export type Props = {
   isLoading: boolean
   isPreviewing: boolean
   isSidebarOpen: boolean
+  areEntitiesOutOfBoundaries: boolean
   hasAcceptedTerms: boolean
   hasSubmittedCurrentProject: boolean
   onSetGizmo: typeof setGizmo
@@ -47,6 +48,7 @@ export type MapStateProps = Pick<
   | 'selectedEntityId'
   | 'hasAcceptedTerms'
   | 'hasSubmittedCurrentProject'
+  | 'areEntitiesOutOfBoundaries'
 >
 
 export type MapDispatchProps = Pick<
