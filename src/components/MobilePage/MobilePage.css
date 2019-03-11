@@ -11,10 +11,6 @@
   justify-content: center;
 }
 
-.MobilePage .subtitle {
-  color: var(--purplish-grey);
-}
-
 .MobilePage .ui.form {
   display: flex;
   flex-direction: column;
@@ -65,12 +61,6 @@
   background: rgba(255, 255, 255, 0.15);
   padding: 10px 0px;
   border-radius: 6px;
-  text-align: center;
-}
-
-.MobilePage .suggestion {
-  font-size: 14px;
-  margin: 24px 24px 0px 24px;
   text-align: center;
 }
 
