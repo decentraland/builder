@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Grid, Icon, Button } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Header, Grid, Icon, Button, Popup } from 'decentraland-ui'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import ShortcutTooltip from 'components/ShortcutTooltip'
@@ -10,6 +10,7 @@ import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
+import { getExceededMetrics } from 'modules/scene/utils'
 import { Props } from './TopBar.types'
 import './TopBar.css'
 
@@ -51,10 +52,21 @@ export default class TopBar extends React.PureComponent<Props> {
     this.props.onOpenModal('EditProjectModal')
   }
 
+  getExceededMetric() {
+    const { metrics, limits } = this.props
+    const exceededMetrics = getExceededMetrics(metrics, limits)
+    return exceededMetrics.length > 0 ? exceededMetrics[0] : ''
+  }
+
+  isSceneLoading() {
+    const { metrics, isLoading } = this.props
+    return isLoading || (metrics.entities > 0 && metrics.triangles === 0)
+  }
+
   render() {
     const {
-      currentProject,
       gizmo,
+      currentProject,
       isLoading,
       isPreviewing,
       isSidebarOpen,
@@ -64,6 +76,8 @@ export default class TopBar extends React.PureComponent<Props> {
       onDuplicate,
       hasSubmittedCurrentProject
     } = this.props
+    const exceededMetric = this.getExceededMetric()
+    const isSceneLoading = this.isSceneLoading()
 
     return (
       <Grid className="TopBar">
@@ -123,10 +137,28 @@ export default class TopBar extends React.PureComponent<Props> {
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
-
-            <Button className="add-to-contest" size="mini" onClick={this.handleAddToContestClick}>
-              {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
-            </Button>
+            <span className="contest-button-wrapper">
+              <Popup
+                className="contest-disabled"
+                disabled={isSceneLoading || exceededMetric === ''}
+                content={<T id="topbar.add_to_contest_disabled_limits" values={{ metric: exceededMetric, br: <br /> }} />}
+                position="bottom center"
+                trigger={
+                  <span>
+                    <Button
+                      className="add-to-contest"
+                      size="mini"
+                      onClick={this.handleAddToContestClick}
+                      disabled={isSceneLoading || exceededMetric !== ''}
+                    >
+                      {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
+                    </Button>
+                  </span>
+                }
+                on="hover"
+                inverted
+              />
+            </span>
           </Grid.Row>
         </Grid.Column>
       </Grid>

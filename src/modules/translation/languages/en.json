@@ -70,6 +70,7 @@
   },
   "topbar": {
     "add_to_contest": "Add to contest",
+    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
     "update_contest_entry": "Update your entry",
     "publish": "Publish"
   },
