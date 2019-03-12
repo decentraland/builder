@@ -3,7 +3,8 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { ComponentDefinition, ComponentType, Scene, AnyComponent } from './types'
+import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics } from './types'
+import { EMPTY_SCENE_METRICS } from './constants'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
@@ -13,6 +14,16 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   getCurrentProject,
   getData,
   (project, scenes) => (project ? scenes[project.sceneId] : null)
+)
+
+export const getCurrentMetrics = createSelector<RootState, Scene | null, SceneMetrics>(
+  getCurrentScene,
+  scene => (scene ? scene.metrics : EMPTY_SCENE_METRICS)
+)
+
+export const getCurrentLimits = createSelector<RootState, Scene | null, SceneMetrics>(
+  getCurrentScene,
+  scene => (scene ? scene.limits : EMPTY_SCENE_METRICS)
 )
 
 export const getScene = (state: RootState, sceneId: string): Scene | null => getData(state)[sceneId] || null

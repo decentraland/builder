@@ -71,6 +71,7 @@
   },
   "topbar": {
     "add_to_contest": "Add to contest",
+    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
     "update_contest_entry": "Update your entry",
     "publish": "Publish"
   },
@@ -94,6 +95,8 @@
   "add_to_contest": {
     "title": "Add project to contest",
     "subtitle": "Almost done. Review your information and before submitting it.",
+    "success_title": "Awesome!",
+    "success_subtitle": "Your project looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your project:"
   },

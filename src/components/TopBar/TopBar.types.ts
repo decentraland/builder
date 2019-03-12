@@ -13,10 +13,13 @@ import {
 } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem, ResetItemAction, DuplicateItemAction, DeleteItemAction } from 'modules/scene/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { SceneMetrics } from 'modules/scene/types'
 
 export type Props = {
   gizmo: Gizmo
   currentProject: Project | null
+  metrics: SceneMetrics
+  limits: SceneMetrics
   selectedEntityId: string | null
   isLoading: boolean
   isPreviewing: boolean
@@ -34,8 +37,10 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  | 'currentProject'
   | 'gizmo'
+  | 'currentProject'
+  | 'metrics'
+  | 'limits'
   | 'isLoading'
   | 'isPreviewing'
   | 'isSidebarOpen'
