@@ -165,7 +165,8 @@
   "tutorial_modal": {
     "title": "Get started with the Builder",
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
-    "email_inquiry": "Get notified of the latest updates:",
+    "email_thanks": "Thanks! We'll stay in touch!",
+    "email_disclaimer": "By clicking on SIGN ME UP you are subscribing to news about our contest",
     "slide0": {
       "title": "Moving objects",
       "description": "To move an object, click and drag the object."

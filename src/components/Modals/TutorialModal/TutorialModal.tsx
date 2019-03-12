@@ -83,9 +83,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
             disabled={isLoading || !!existingEmail}
             action={t('global.sign_up')}
             onAction={this.handleSubmitEmail}
-            message={
-              existingEmail ? "Thanks! We'll stay in touch!" : 'By clicking on SIGN ME UP you are subscribing to news about our contest'
-            }
+            message={existingEmail ? t('email_thanks') : t('email_disclaimer')}
           />
         </div>
       </div>
