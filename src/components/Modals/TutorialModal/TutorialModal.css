@@ -2,6 +2,12 @@
   width: 640px;
 }
 
+.ui.small.modal.TutorialModal .content {
+  height: 542px;
+  display: flex;
+  flex-direction: column;
+}
+
 .TutorialModal .step {
   width: 10px;
   height: 10px;
@@ -19,6 +25,7 @@
   font-size: 17px;
   font-weight: 300;
   margin-top: 16px;
+  line-height: 26px;
 }
 
 .TutorialModal .step.active {
@@ -62,14 +69,6 @@
   user-select: none;
 }
 
-.TutorialModal .slide .description {
-  width: 100%;
-  font-size: 16px;
-  text-align: center;
-  padding: 20px 16px;
-  background: linear-gradient(#00000000, var(--dark-two));
-}
-
 .TutorialModal .slide0 {
   background-image: url('../../../images/tutorial-slide-0.gif');
 }
@@ -84,4 +83,9 @@
 
 .TutorialModal .slide3 {
   background-image: url('../../../images/tutorial-slide-3.gif');
+}
+
+.TutorialModal .form {
+  flex: 1;
+  margin-top: 40px;
 }

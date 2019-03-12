@@ -64,9 +64,10 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
   }
 
   getBaseState(): State {
+    const { contest, currentProject, userEmail } = this.props
     return {
-      project: { ...this.props.currentProject! },
-      contest: { ...this.props.contest }
+      project: { ...currentProject! },
+      contest: { ...contest, email: contest.email || userEmail || '' }
     }
   }
 

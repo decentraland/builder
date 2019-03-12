@@ -18,7 +18,8 @@
     "next": "next",
     "back": "back",
     "done": "done",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "sign_up": "Sign me up"
   },
   "languages": {
     "en": "English"
@@ -164,10 +165,27 @@
   "tutorial_modal": {
     "title": "Get started with the Builder",
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
-    "slide0": "Browse the categories on the right and drag-and-drop the item you want into your scene.",
-    "slide1": "To orient the camera, click and drag on the viewport. Use the arrow keys to move around.",
-    "slide2": "Click and drag an item to move it.",
-    "slide3": "If you need more precise control, click the Move icon on the toolbar and use the arrows to manipulate the item."
+    "email_inquiry": "Get notified of the latest updates:",
+    "slide0": {
+      "title": "Moving objects",
+      "description": "To move an object, click and drag the object."
+    },
+    "slide1": {
+      "title": "Adding objects",
+      "description": "Add objects to your scene from the sidebar on the right."
+    },
+    "slide2": {
+      "title": "Arrows and orbits",
+      "description": "Rotate objects by clicking on the Rotate tool and dragging the orbits."
+    },
+    "slide3": {
+      "title": "Controlling the camera",
+      "description": "Drag with the left button to rotate the camera. Use the right button to pan."
+    },
+    "slide4": {
+      "title": "Participate in the contest",
+      "description": "Submit your scene to the contest using the \"Submit to contest\" button for a change to win LAND and MANA. Get notified of future updates:"
+    }
   },
   "toasts": {
     "localstorage": "Projects save automatically to your browser's local storage."
