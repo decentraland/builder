@@ -38,3 +38,15 @@ body canvas.dcl-canvas {
 .text {
   color: var(--text);
 }
+
+/* 
+ISSUE 329: https://github.com/decentraland/builder/issues/329
+
+Hides intercom's "Hey do you need help?" thingy that shows up when you enter the editor
+and every time after exiting preview mode.
+
+*/
+
+[name='intercom-launcher-discovery-frame'] {
+  display: none !important;
+}
