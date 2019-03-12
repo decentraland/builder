@@ -35,7 +35,17 @@ export default class ContestModal extends React.PureComponent<Props, State> {
           <Header size="huge" className="hero">
             {t('contest_modal.title')}
           </Header>
-          <p className="subtitle">{t('contest_modal.subtitle')}</p>
+          <p className="subtitle">
+            {
+              <T
+                id="contest_modal.subtitle"
+                values={{
+                  mana: <span className="highlight">{t('contest.mana')}</span>,
+                  land: <span className="highlight">{t('contest.land')}</span>
+                }}
+              />
+            }
+          </p>
         </Modal.Header>
         <Modal.Content>
           <div className="modal-row">

@@ -3,7 +3,6 @@
 }
 
 .ui.small.modal.TutorialModal .content {
-  height: 542px;
   display: flex;
   flex-direction: column;
 }
@@ -87,5 +86,25 @@
 
 .TutorialModal .form {
   flex: 1;
-  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+.TutorialModal .form .banner {
+  height: 250px;
+  background: url('../../../images/contest.png') no-repeat;
+  background-size: 105%;
+  border-radius: 12px;
+  overflow: hidden;
+  background-position-y: -90px;
+  font-size: 30px;
+  font-weight: 400;
+  text-align: center;
+  padding: 50px;
+  user-select: none;
+  margin: 40px 0px;
+}
+
+.TutorialModal .form .banner .highlight {
+  font-weight: 600;
+  color: #ff80ff;
 }

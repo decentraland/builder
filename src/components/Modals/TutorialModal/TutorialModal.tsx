@@ -73,6 +73,15 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
     return (
       <div className="form">
+        <div className="banner">
+          <T
+            id="tutorial_modal.contest"
+            values={{
+              mana: <span className="highlight">{t('contest.mana')}</span>,
+              land: <span className="highlight">{t('contest.land')}</span>
+            }}
+          />
+        </div>
         <div className="form-container">
           <Field
             type="email"
@@ -83,7 +92,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
             disabled={isLoading || !!existingEmail}
             action={t('global.sign_up')}
             onAction={this.handleSubmitEmail}
-            message={existingEmail ? t('email_thanks') : t('email_disclaimer')}
+            message={existingEmail ? t('tutorial_modal.email_thanks') : t('tutorial_modal.email_disclaimer')}
           />
         </div>
       </div>

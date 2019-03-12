@@ -87,7 +87,7 @@
   },
   "contest_modal": {
     "title": "Calling all Builders!",
-    "subtitle": "Submit your most creative scenes, and earn a share of the purse: 900K+ MANA and 50 LAND (over 50K USD!)",
+    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50K USD!)",
     "start": "Subscribe for a chance to win LAND",
     "know_more": "To know more read our {blog_post_link}",
     "i_accept_the": "I accept the "
@@ -170,6 +170,7 @@
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
     "email_thanks": "Thanks! We'll stay in touch!",
     "email_disclaimer": "By clicking on SIGN ME UP you are subscribing to news about our contest",
+    "contest": "Enter for a chance to win a share of {mana} and {land}.",
     "slide0": {
       "title": "Moving objects",
       "description": "To move an object, click and drag the object."
@@ -193,5 +194,9 @@
   },
   "toasts": {
     "localstorage": "Projects save automatically to your browser's local storage."
+  },
+  "contest": {
+    "mana": "900K MANA",
+    "land": "50 LAND"
   }
 }

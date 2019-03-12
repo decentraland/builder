@@ -16,7 +16,13 @@
   flex-flow: column;
   overflow: hidden;
   text-align: center;
-  background-color: var(--contest-primary);
+  background: url('../../../images/contest.png') no-repeat;
+  background-size: 105%;
+}
+
+.ContestModal.ui.modal > .header .highlight {
+  font-weight: 600;
+  color: #ff80ff;
 }
 
 .ContestModal .ui.header.hero {
