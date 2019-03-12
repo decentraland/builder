@@ -1,6 +1,6 @@
 import { env } from 'decentraland-commons'
 
-export function reportEmail(email: string) {
+export function reportEmail(email: string, interest: string) {
   return fetch(env.get('REACT_APP_MAIL_SERVER', ''), {
     method: 'POST',
     headers: {
@@ -9,7 +9,7 @@ export function reportEmail(email: string) {
     },
     body: JSON.stringify({
       email,
-      interest: 'builder-app-tutorial'
+      interest
     })
   })
 }

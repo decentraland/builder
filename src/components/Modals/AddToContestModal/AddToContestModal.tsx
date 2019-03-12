@@ -7,6 +7,7 @@ import ProjectFields from 'components/ProjectFields'
 import { preventDefault } from 'lib/preventDefault'
 import { Props, State } from './AddToContestModal.types'
 import './AddToContestModal.css'
+import { reportEmail } from 'modules/analytics/helpers'
 
 export default class AddToContestModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
@@ -29,12 +30,14 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     this.isSuccess = false
   }
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     const { currentProject, onSaveProject, onSubmitProject } = this.props
     const { project, contest } = this.state
     const projectId = currentProject!.id
 
     this.isSubmitting = true
+
+    await reportEmail(contest.email, 'builder-app-submit')
 
     onSaveProject(projectId, project)
     onSubmitProject(projectId, contest)

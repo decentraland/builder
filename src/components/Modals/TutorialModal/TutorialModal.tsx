@@ -58,7 +58,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
       localStorage.setItem('tutorial-email', email)
     })
 
-    await reportEmail(email)
+    await reportEmail(email, 'builder-app-tutorial')
     this.setState({ isLoading: false })
   }
 

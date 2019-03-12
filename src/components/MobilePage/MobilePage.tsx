@@ -36,7 +36,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
 
     analytics.identify({ email }, async () => {
-      await reportEmail(email)
+      await reportEmail(email, 'builder-app-mobile')
       localStorage.setItem('mobile-email', email)
       this.setState({ isLoading: false })
     })
