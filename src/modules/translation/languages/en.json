@@ -117,8 +117,8 @@
     "hold": "Hodl"
   },
   "popups": {
-    "shortcuts_help": "Pssst! see shortcuts here",
-    "metrics_help": "Pssst! see metrics here"
+    "shortcuts_help": "See shortcuts here!",
+    "metrics_help": "See metrics here!"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
@@ -171,6 +171,6 @@
     "slide3": "If you need more precise control, click the Move icon on the toolbar and use the arrows to manipulate the item."
   },
   "toasts": {
-    "localstorage": "Projects save automatically to your browser's local storage."
+    "localstorage": "Projects automatically save to local storage"
   }
 }

@@ -125,6 +125,7 @@ export default class Tools extends React.PureComponent<Props, State> {
           className="shortcut-popup"
           content={<ClosePopup text={t('popups.shortcuts_help')} onClick={this.handleCloseShortcutPopup} />}
           position="top right"
+          verticalOffset={3}
           trigger={this.renderShortcutIcon()}
           on="hover"
           inverted
