@@ -3,7 +3,7 @@ import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 
 const API_URL = env.get('REACT_APP_API_URL', '')
 const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
-const CONTEST_URL = env.get('REACT_APP_CONTEST_URL', '')
+const CONTEST_URL = env.get('REACT_APP_CONTEST_SERVER', '')
 
 export class API extends BaseAPI {
   submitToContest(entry: any) {

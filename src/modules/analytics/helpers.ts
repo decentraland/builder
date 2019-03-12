@@ -1,7 +1,7 @@
 import { env } from 'decentraland-commons'
 
 export function reportEmail(email: string) {
-  return fetch(env.get('https://decentraland.org/subscribe', ''), {
+  return fetch(env.get('REACT_APP_MAIL_SERVER', ''), {
     method: 'POST',
     headers: {
       Accept: 'application/json',
