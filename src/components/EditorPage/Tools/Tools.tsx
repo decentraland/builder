@@ -83,8 +83,8 @@ export default class Tools extends React.PureComponent<Props, State> {
     return (
       <ShortcutTooltip
         shortcut={Shortcut.SHORTCUTS}
-        position="top center"
         className="tool"
+        position="top center"
         onOpen={this.closeShortcutPopup}
         onClose={this.openShortcutPopup}
       >
@@ -95,7 +95,13 @@ export default class Tools extends React.PureComponent<Props, State> {
 
   renderIcon(iconName: ToolName, shortcut: Shortcut) {
     return (
-      <ShortcutTooltip shortcut={shortcut} position="top center" className="tool">
+      <ShortcutTooltip
+        shortcut={shortcut}
+        className="tool"
+        position="top center"
+        onOpen={this.closeShortcutPopup}
+        onClose={this.openShortcutPopup}
+      >
         <Icon name={iconName as IconName} onClick={this.getClickHandler(iconName)} />
       </ShortcutTooltip>
     )
@@ -116,6 +122,7 @@ export default class Tools extends React.PureComponent<Props, State> {
 
         <Popup
           open={isShortcutPopupOpen && this.isShortcutPopupDismissed()}
+          className="shortcut-popup"
           content={<ClosePopup text={t('popups.shortcuts_help')} onClick={this.handleCloseShortcutPopup} />}
           position="top right"
           trigger={this.renderShortcutIcon()}
