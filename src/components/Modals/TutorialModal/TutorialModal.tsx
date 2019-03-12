@@ -120,7 +120,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     if (index === this.slides.length) {
       localStorage.setItem('builder-tutorial', '1')
       if (this.state.email) {
-        this.handleSubmitEmail()
+        this.handleSubmitEmail().catch(() => console.error('Unable to submit email, something went wrong!'))
       }
       this.props.onClose()
       return
