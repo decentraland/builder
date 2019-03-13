@@ -4,12 +4,14 @@ import { Button, Field } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
 import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
 const localStorage = getLocalStorage()
+export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
 
 export default class TutorialModal extends React.PureComponent<Props, State> {
   state = {
@@ -55,7 +57,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
 
     analytics.identify({ email }, () => {
-      localStorage.setItem('tutorial-email', email)
+      localStorage.setItem(LOCALSTORAGE_TUTORIAL_EMAIL_KEY, email)
     })
 
     api.reportEmail(email, EMAIL_INTEREST.CONTEST).catch(() => console.error('Unable to submit email, something went wrong!'))
@@ -126,7 +128,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
   goToSlide = (index: number) => {
     if (index === this.slides.length) {
-      localStorage.setItem('builder-tutorial', '1')
+      localStorage.setItem(LOCALSTORAGE_TUTORIAL_KEY, '1')
       if (this.state.email) {
         this.handleSubmitEmail().catch(() => console.error('Unable to submit email, something went wrong!'))
       }
