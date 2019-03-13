@@ -106,5 +106,5 @@
 
 .TutorialModal .form .banner .highlight {
   font-weight: 600;
-  color: #ff80ff;
+  color: var(--contest-pink);
 }

@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { UserContest } from 'modules/contest/types'
 import { Project } from 'modules/project/types'
-import { getData as getContest, isLoading, getError } from 'modules/contest/selectors'
+import { getEmail } from 'modules/user/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { editProjectRequest } from 'modules/project/actions'
 import { submitProjectRequest } from 'modules/contest/actions'
+import { getData as getContest, isLoading, getError } from 'modules/contest/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './AddToContestModal.types'
 import AddToContestModal from './AddToContestModal'
-import { getEmail } from 'modules/user/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),

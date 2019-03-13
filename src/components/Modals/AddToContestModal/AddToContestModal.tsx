@@ -2,12 +2,12 @@ import * as React from 'react'
 import { Form, Field, Button, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { api, EMAIL_INTEREST } from 'lib/api'
 
 import ProjectFields from 'components/ProjectFields'
 import { preventDefault } from 'lib/preventDefault'
 import { Props, State } from './AddToContestModal.types'
 import './AddToContestModal.css'
-import { reportEmail } from 'modules/analytics/helpers'
 
 export default class AddToContestModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
@@ -37,7 +37,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
 
     this.isSubmitting = true
 
-    await reportEmail(contest.email, 'builder-app-submit')
+    api.reportEmail(contest.email, EMAIL_INTEREST.CONTEST).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     onSaveProject(projectId, project)
     onSubmitProject(projectId, contest)

@@ -4,10 +4,10 @@ import { Button, Field } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
-import { reportEmail } from 'modules/analytics/helpers'
 
 const localStorage = getLocalStorage()
 
@@ -58,7 +58,8 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
       localStorage.setItem('tutorial-email', email)
     })
 
-    await reportEmail(email, 'builder-app-tutorial')
+    api.reportEmail(email, EMAIL_INTEREST.CONTEST).catch(() => console.error('Unable to submit email, something went wrong!'))
+
     this.setState({ isLoading: false })
   }
 

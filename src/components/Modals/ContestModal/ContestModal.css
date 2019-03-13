@@ -22,7 +22,7 @@
 
 .ContestModal.ui.modal > .header .highlight {
   font-weight: 600;
-  color: #ff80ff;
+  color: var(--contest-pink);
 }
 
 .ContestModal .ui.header.hero {
