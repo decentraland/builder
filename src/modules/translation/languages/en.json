@@ -19,7 +19,7 @@
     "back": "back",
     "done": "done",
     "dismiss": "Dismiss",
-    "sign_up": "Sign me up"
+    "sign_up": "Sign up"
   },
   "languages": {
     "en": "English"
@@ -53,11 +53,11 @@
   },
   "unsupported_browser_page": {
     "title": "Oops!",
-    "subtitle": "The Builder does not work on your browser.{br}Please visit this page using {chrome} or {firefox}",
+    "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
     "back": "Back to Projects"
   },
   "project_card": {
-    "added_to_contest": "Added to contest",
+    "added_to_contest": "Submitted to contest",
     "confirm_delete_header": "Delete \"{title}\"",
     "confirm_delete_content": "Are you sure you want to delete your project \"{title}\"? This operation is not reversible"
   },
@@ -89,7 +89,7 @@
     "title": "Calling all Builders!",
     "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50K USD!)",
     "start": "Subscribe for a chance to win LAND",
-    "know_more": "To know more read our {blog_post_link}",
+    "know_more": "To learn more, read our {blog_post_link}",
     "i_accept_the": "I accept the "
   },
   "add_to_contest": {
@@ -169,7 +169,7 @@
     "title": "Get started with the Builder",
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
     "email_thanks": "Thanks! We'll stay in touch!",
-    "email_disclaimer": "By clicking on SIGN ME UP you are subscribing to news about our contest",
+    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
     "contest": "Enter for a chance to win a share of {mana} and {land}.",
     "slide0": {
       "title": "Welcome to the Builder!",
@@ -193,7 +193,8 @@
     },
     "slide5": {
       "title": "Participate in the contest",
-      "description": "Submit your scene to the contest using the \"Submit to contest\" button for a chance to win LAND and MANA. Get notified of future updates:"
+      "description": "When your scene is finished, click \"Submit to contest\" to submit it to the Creator Contest.",
+      "email_cta": "Sign up for Builder and contest updates:"
     }
   },
   "toasts": {
