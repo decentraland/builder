@@ -11,6 +11,7 @@ import { api, EMAIL_INTEREST } from 'lib/api'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
+const PUBLIC_URL = env.get('PUBLIC_URL')
 const localStorage = getLocalStorage()
 export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
 
@@ -106,7 +107,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
         <div className="subtitle">{slide.description}</div>
         {step !== this.slides.length - 1 ? (
           <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
-            <video src={`${env.get('PUBLIC_URL')}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
+            <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
           </div>
         ) : (
           this.renderForm()
