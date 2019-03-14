@@ -14,7 +14,9 @@ import {
   SetEditorReadyAction,
   CloseEditorAction,
   ToggleSnapToGridAction,
-  TOGGLE_SNAP_TO_GRID
+  TOGGLE_SNAP_TO_GRID,
+  SetEntitiesOutOfBoundariesAction,
+  SET_ENTITIES_OUT_OF_BOUNDARIES
 } from './actions'
 import { Gizmo } from './types'
 
@@ -24,6 +26,7 @@ export type EditorState = {
   sidebar: boolean
   snapToGrid: boolean
   selectedEntityId: string | null
+  entitiesOutOfBoundaries: string[]
   isReady: boolean
 }
 
@@ -33,6 +36,7 @@ const INITIAL_STATE: EditorState = {
   sidebar: true,
   snapToGrid: true,
   selectedEntityId: null,
+  entitiesOutOfBoundaries: [],
   isReady: false
 }
 
@@ -45,6 +49,7 @@ export type EditorReducerAction =
   | SetEditorReadyAction
   | CloseEditorAction
   | ToggleSnapToGridAction
+  | SetEntitiesOutOfBoundariesAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -97,6 +102,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         snapToGrid: action.payload.enabled
+      }
+    }
+    case SET_ENTITIES_OUT_OF_BOUNDARIES: {
+      return {
+        ...state,
+        entitiesOutOfBoundaries: action.payload.entities
       }
     }
     default:

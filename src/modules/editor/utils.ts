@@ -4,8 +4,8 @@ import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 const script = require('raw-loader!../../ecsScene/scene.js')
 
-export const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER', () => {
-  throw new Error('Missing REACT_APP_CONTENT_SERVER env variable')
+export const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER_URL', () => {
+  throw new Error('Missing REACT_APP_CONTENT_SERVER_URL env variable')
 })
 
 export const THUMBNAIL_WIDTH = 492

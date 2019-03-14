@@ -32,11 +32,6 @@
   margin-right: 32px;
 }
 
-.TopBar .right-column .add-to-contest {
-  transition: none;
-  margin-left: 32px;
-}
-
 .TopBar .right-column .add-to-contest.ui.button.mini {
   padding-left: 1.2em;
   padding-right: 1.2em;
@@ -96,6 +91,25 @@
   opacity: 0.32;
 }
 
+.TopBar .contest-button-wrapper {
+  margin-left: 32px;
+}
+
 .ui.popup.bottom.top-bar-popup {
   margin-top: 20px;
+}
+
+.ui.popup.inverted.contest-disabled {
+  height: 48px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 20px;
+}
+
+.ui.popup.inverted.contest-disabled:first-line {
+  color: white;
+}
+
+.ui.visible.popup.inverted.contest-disabled:before {
+  right: 60px; /* The arrow needs to be in the middle of the button - kinda */
 }

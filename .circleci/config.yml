@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10.15.1
     working_directory: /tmp/app
     steps:
       - checkout
@@ -30,7 +30,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10.15.1
     working_directory: /tmp/app
     steps:
       - restore_cache:

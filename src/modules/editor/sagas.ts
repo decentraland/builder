@@ -36,14 +36,15 @@ import {
   NewEditorSceneAction,
   PREFETCH_ASSET,
   PrefetchAssetAction,
-  SetEditorReadyAction
+  SetEditorReadyAction,
+  setEntitiesOutOfBoundaries
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
+import { getCurrentProject, getProject } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -53,7 +54,6 @@ import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { isWithinBounds } from 'modules/scene/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 
@@ -136,7 +136,7 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
   }
 }
 
-function handlePositionGizmoUpdate(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+function handleTransformChange(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
   const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
   if (!project) return
 
@@ -181,13 +181,15 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
-  yield call(() => editorWindow.editor.on('transform', handlePositionGizmoUpdate))
+  yield call(() => editorWindow.editor.on('transform', handleTransformChange))
 
   // The client will report when the internal api is ready
   yield call(() => editorWindow.editor.on('ready', handleEditorReadyChange))
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
+
+  yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
   const project: Project = yield select(getCurrentProject)
@@ -200,12 +202,15 @@ function* handleOpenEditor() {
   yield handleToggleSnapToGrid(toggleSnapToGrid(true))
 
   // Select gizmo
-  const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
-  yield call(() => editorWindow.editor.selectGizmo(gizmo))
+  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
 }
 
 function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('metrics', handleMetricsChange))
+  yield call(() => editorWindow.editor.off('transform', handleTransformChange))
+  yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
+  yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
+  yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
   yield put(unbindEditorKeyboardShortcuts())
 }
 
@@ -278,10 +283,7 @@ function* handleDropItem(action: DropItemAction) {
     yield put(setGround(project.id, project.layout, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
-    const bounds = yield select(getCurrentBounds)
-    if (isWithinBounds(position, bounds)) {
-      yield put(addItem(asset, position))
-    }
+    yield put(addItem(asset, position))
   }
 }
 
@@ -333,4 +335,9 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
       }
     }
   })
+}
+
+function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
+  const { entities } = args
+  store.dispatch(setEntitiesOutOfBoundaries(entities))
 }
