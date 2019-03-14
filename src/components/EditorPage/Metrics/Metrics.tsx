@@ -100,6 +100,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
           open={isMetricsPopupOpen}
           content={<ClosePopup text={t('popups.metrics_help')} onClick={this.handleCloseMetricsPopup} />}
           position="top left"
+          verticalOffset={-1}
           trigger={
             <span>
               <SquaresGrid rows={2} cols={2} size="tiny" onClick={this.handleToggle} />

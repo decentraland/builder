@@ -120,8 +120,8 @@
     "hold": "Hold"
   },
   "popups": {
-    "shortcuts_help": "Pssst! see shortcuts here",
-    "metrics_help": "Pssst! see metrics here"
+    "shortcuts_help": "See shortcuts here!",
+    "metrics_help": "See metrics here!"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
@@ -197,7 +197,7 @@
     }
   },
   "toasts": {
-    "localstorage": "Projects save automatically to your browser's local storage."
+    "localstorage": "Projects automatically save to local storage"
   },
   "contest": {
     "mana": "900K MANA",
