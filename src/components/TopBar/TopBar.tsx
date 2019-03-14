@@ -74,7 +74,8 @@ export default class TopBar extends React.PureComponent<Props> {
       onReset,
       onDelete,
       onDuplicate,
-      hasSubmittedCurrentProject
+      hasSubmittedCurrentProject,
+      areEntitiesOutOfBoundaries
     } = this.props
     const exceededMetric = this.getExceededMetric()
     const isSceneLoading = this.isSceneLoading()
@@ -140,8 +141,14 @@ export default class TopBar extends React.PureComponent<Props> {
             <span className="contest-button-wrapper">
               <Popup
                 className="contest-disabled"
-                disabled={isSceneLoading || exceededMetric === ''}
-                content={<T id="topbar.add_to_contest_disabled_limits" values={{ metric: exceededMetric, br: <br /> }} />}
+                disabled={isSceneLoading || (exceededMetric === '' && !areEntitiesOutOfBoundaries)}
+                content={
+                  areEntitiesOutOfBoundaries ? (
+                    <T id="topbar.add_to_contest_disabled_bounds" values={{ br: <br /> }} />
+                  ) : (
+                    <T id="topbar.add_to_contest_disabled_limits" values={{ metric: exceededMetric, br: <br /> }} />
+                  )
+                }
                 position="bottom center"
                 trigger={
                   <span>
@@ -149,7 +156,7 @@ export default class TopBar extends React.PureComponent<Props> {
                       className="add-to-contest"
                       size="mini"
                       onClick={this.handleAddToContestClick}
-                      disabled={isSceneLoading || exceededMetric !== ''}
+                      disabled={isSceneLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries}
                     >
                       {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
                     </Button>

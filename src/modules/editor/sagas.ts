@@ -36,7 +36,8 @@ import {
   NewEditorSceneAction,
   PREFETCH_ASSET,
   PrefetchAssetAction,
-  SetEditorReadyAction
+  SetEditorReadyAction,
+  setEntitiesOutOfBoundaries
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
@@ -188,6 +189,8 @@ function* handleOpenEditor() {
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
 
+  yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
+
   // Creates a new scene in the dcl client's side
   const project: Project = yield select(getCurrentProject)
   yield createNewScene(project)
@@ -207,6 +210,7 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('transform', handleTransformChange))
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
+  yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
   yield put(unbindEditorKeyboardShortcuts())
 }
 
@@ -331,4 +335,9 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
       }
     }
   })
+}
+
+function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
+  const { entities } = args
+  store.dispatch(setEntitiesOutOfBoundaries(entities))
 }
