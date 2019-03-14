@@ -88,12 +88,12 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
         <div className="form-container">
           <Field
             type="email"
-            label="E-mail"
+            label={t('global.email')}
             placeholder="you@your-email.com"
             value={existingEmail || email}
             onChange={this.handleEmailChange}
             disabled={isLoading || !!existingEmail}
-            action={t('global.sign_up')}
+            action={!existingEmail ? t('global.sign_up') : null}
             onAction={this.handleSubmitEmail}
             message={existingEmail ? t('tutorial_modal.email_thanks') : t('tutorial_modal.email_disclaimer')}
           />

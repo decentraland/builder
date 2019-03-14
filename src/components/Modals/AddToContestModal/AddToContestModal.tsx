@@ -48,6 +48,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     const title = event.currentTarget.value
     this.setState({ project: { ...project, title } })
   }
+
   handleDescriptionChange = (event: React.FormEvent<HTMLInputElement>) => {
     const { project } = this.state
     const description = event.currentTarget.value
