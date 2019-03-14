@@ -3,6 +3,7 @@ import { Header, Field, Button, Form } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
@@ -35,7 +36,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
 
     analytics.identify({ email }, () => {
-      // TODO: hit an special api for mailchimp
+      api.reportEmail(email, EMAIL_INTEREST.MOBILE).catch(() => console.error('Unable to submit email, something went wrong!'))
       localStorage.setItem('mobile-email', email)
       this.setState({ isLoading: false })
     })

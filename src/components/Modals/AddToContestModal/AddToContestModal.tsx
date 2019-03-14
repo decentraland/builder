@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Form, Field, Button, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { api, EMAIL_INTEREST } from 'lib/api'
 
 import ProjectFields from 'components/ProjectFields'
 import { preventDefault } from 'lib/preventDefault'
@@ -29,12 +30,14 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     this.isSuccess = false
   }
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     const { currentProject, onSaveProject, onSubmitProject } = this.props
     const { project, contest } = this.state
     const projectId = currentProject!.id
 
     this.isSubmitting = true
+
+    api.reportEmail(contest.email, EMAIL_INTEREST.CONTEST).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     onSaveProject(projectId, project)
     onSubmitProject(projectId, contest)
@@ -45,6 +48,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     const title = event.currentTarget.value
     this.setState({ project: { ...project, title } })
   }
+
   handleDescriptionChange = (event: React.FormEvent<HTMLInputElement>) => {
     const { project } = this.state
     const description = event.currentTarget.value
@@ -64,9 +68,10 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
   }
 
   getBaseState(): State {
+    const { contest, currentProject, userEmail } = this.props
     return {
-      project: { ...this.props.currentProject! },
-      contest: { ...this.props.contest }
+      project: { ...currentProject! },
+      contest: { ...contest, email: contest.email || userEmail || '' }
     }
   }
 
