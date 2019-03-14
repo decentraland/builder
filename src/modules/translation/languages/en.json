@@ -198,7 +198,7 @@
     }
   },
   "toasts": {
-    "localstorage": "Projects automatically save to local storage"
+    "localstorage": "Projects automatically save to your browser's storage"
   },
   "contest": {
     "mana": "900K MANA",
