@@ -115,7 +115,7 @@
     "@types/react-router-dom": "^4.3.1",
     "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
-    "decentraland-ecs": "^5.0.1-20190311204404.commit-9db15bd",
+    "decentraland-ecs": "^5.0.1-20190313195735.commit-ab979e6",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"
