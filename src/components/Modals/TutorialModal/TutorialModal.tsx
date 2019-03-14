@@ -20,33 +20,11 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     email: ''
   }
 
-  slides = [
-    {
-      thumbnail: 'slide0',
-      title: t('tutorial_modal.slide0.title'),
-      description: <T id="tutorial_modal.slide0.description" values={{ br: <br /> }} />
-    },
-    {
-      thumbnail: 'slide1',
-      title: t('tutorial_modal.slide1.title'),
-      description: <T id="tutorial_modal.slide1.description" values={{ br: <br /> }} />
-    },
-    {
-      thumbnail: 'slide2',
-      title: t('tutorial_modal.slide2.title'),
-      description: <T id="tutorial_modal.slide2.description" values={{ br: <br /> }} />
-    },
-    {
-      thumbnail: 'slide3',
-      title: t('tutorial_modal.slide3.title'),
-      description: <T id="tutorial_modal.slide3.description" values={{ br: <br /> }} />
-    },
-    {
-      thumbnail: 'nada',
-      title: t('tutorial_modal.slide4.title'),
-      description: <T id="tutorial_modal.slide4.description" values={{ br: <br /> }} />
-    }
-  ]
+  slides = new Array(6).fill(0).map((_, index) => ({
+    thumbnail: `slide${index}`, // the last thumbnail won't exist
+    title: t(`tutorial_modal.slide${index}.title`),
+    description: <T id={`tutorial_modal.slide${index}.description`} values={{ br: <br /> }} />
+  }))
 
   handleSubmitEmail = async () => {
     const { email } = this.state
@@ -129,7 +107,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   goToSlide = (index: number) => {
     if (index === this.slides.length) {
       localStorage.setItem(LOCALSTORAGE_TUTORIAL_KEY, '1')
-      if (this.state.email) {
+      if (this.state.email && !this.props.email) {
         this.handleSubmitEmail().catch(() => console.error('Unable to submit email, something went wrong!'))
       }
       this.props.onClose()

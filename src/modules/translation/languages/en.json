@@ -172,22 +172,26 @@
     "email_disclaimer": "By clicking on SIGN ME UP you are subscribing to news about our contest",
     "contest": "Enter for a chance to win a share of {mana} and {land}.",
     "slide0": {
+      "title": "Welcome to the Builder!",
+      "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around."
+    },
+    "slide1": {
       "title": "Moving objects",
       "description": "To move an object, click and drag the object."
     },
-    "slide1": {
+    "slide2": {
       "title": "Adding objects",
       "description": "Add objects to your scene from the sidebar on the right."
     },
-    "slide2": {
+    "slide3": {
       "title": "Arrows and orbits",
       "description": "Rotate objects by clicking on the Rotate tool and dragging the orbits."
     },
-    "slide3": {
+    "slide4": {
       "title": "Controlling the camera",
       "description": "Drag with the left button to rotate the camera. Use the right button to pan."
     },
-    "slide4": {
+    "slide5": {
       "title": "Participate in the contest",
       "description": "Submit your scene to the contest using the \"Submit to contest\" button for a chance to win LAND and MANA. Get notified of future updates:"
     }

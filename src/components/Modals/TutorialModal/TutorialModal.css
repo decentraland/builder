@@ -68,10 +68,6 @@
   user-select: none;
 }
 
-.TutorialModal .slide0 {
-  background-image: url('../../../images/tutorial-slide-0.gif');
-}
-
 .TutorialModal .slide1 {
   background-image: url('../../../images/tutorial-slide-1.gif');
 }
@@ -82,6 +78,10 @@
 
 .TutorialModal .slide3 {
   background-image: url('../../../images/tutorial-slide-3.gif');
+}
+
+.TutorialModal .slide4 {
+  background-image: url('../../../images/tutorial-slide-4.gif');
 }
 
 .TutorialModal .form {
