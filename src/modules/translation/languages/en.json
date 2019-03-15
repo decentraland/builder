@@ -19,15 +19,15 @@
     "back": "back",
     "done": "done",
     "dismiss": "Dismiss",
-    "sign_up": "Sign me up"
+    "sign_up": "Sign up"
   },
   "languages": {
     "en": "English"
   },
   "home_page": {
     "title": "Build something cool!",
-    "subtitle": "Import a file or start from scratch with our templates or your own LAND!",
-    "empty_projects_title": "Here's where your projects will live",
+    "subtitle": "Welcome to Decentraland's drag-and-drop scene editor. Select one of the project templates below to get started.",
+    "empty_projects_title": "Your projects will live here",
     "empty_projects_cta": "Select a template below to start building awesome stuff!",
     "project_actions": {
       "delete_project": "Delete project",
@@ -35,9 +35,8 @@
     }
   },
   "mobile_page": {
-    "title": "Build something cool!",
-    "subtitle": "Pimp up your LAND",
-    "message": "The Builder does not work on mobile, get notified when it does:",
+    "title": "Oops!",
+    "message": "The Builder doesn’t work on mobile devices yet. We’ll let you when it does:",
     "success": "Thanks, we will keep you posted!"
   },
   "not_found_page": {
@@ -54,11 +53,11 @@
   },
   "unsupported_browser_page": {
     "title": "Oops!",
-    "subtitle": "The Builder does not work on your browser.{br}Please visit this page using {chrome} or {firefox}",
+    "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
     "back": "Back to Projects"
   },
   "project_card": {
-    "added_to_contest": "Added to contest",
+    "added_to_contest": "Submitted to contest",
     "confirm_delete_header": "Delete \"{title}\"",
     "confirm_delete_content": "Are you sure you want to delete your project \"{title}\"? This operation is not reversible"
   },
@@ -70,10 +69,10 @@
     "empty_ground": "No Ground"
   },
   "topbar": {
-    "add_to_contest": "Add to contest",
+    "add_to_contest": "Submit to contest",
+    "update_contest_entry": "Update submission",
     "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
     "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
-    "update_contest_entry": "Update your entry",
     "publish": "Publish"
   },
   "metrics": {
@@ -90,12 +89,12 @@
     "title": "Calling all Builders!",
     "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50K USD!)",
     "start": "Subscribe for a chance to win LAND",
-    "know_more": "To know more read our {blog_post_link}",
+    "know_more": "To learn more, read our {blog_post_link}",
     "i_accept_the": "I accept the "
   },
   "add_to_contest": {
-    "title": "Add project to contest",
-    "subtitle": "Almost done. Review your information and before submitting it.",
+    "title": "Submit your scene",
+    "subtitle": "You're almost done. Please review your project and contact info before submitting your scene.",
     "success_title": "Awesome!",
     "success_subtitle": "Your project looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
@@ -111,13 +110,13 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "reset_camera": "Reset camera",
-    "toggle_colliders": "Toggle colliders",
+    "toggle_colliders": "Show colliders",
     "toggle_sidebar": "Toggle sidebar",
     "preview": "Preview",
     "undo": "Undo",
     "redo": "Redo",
     "shortcut_reference": "Shortcut reference",
-    "precision": "Precision",
+    "precision": "Ignore snap-to-grid",
     "hold": "Hold"
   },
   "popups": {
@@ -170,7 +169,7 @@
     "title": "Get started with the Builder",
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
     "email_thanks": "Thanks! We'll stay in touch!",
-    "email_disclaimer": "By clicking on SIGN ME UP you are subscribing to news about our contest",
+    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
     "contest": "Enter for a chance to win a share of {mana} and {land}.",
     "slide0": {
       "title": "Welcome to the Builder!",
@@ -194,11 +193,12 @@
     },
     "slide5": {
       "title": "Participate in the contest",
-      "description": "Submit your scene to the contest using the \"Submit to contest\" button for a chance to win LAND and MANA. Get notified of future updates:"
+      "description": "When your scene is finished, click \"Submit to contest\" to submit it to the Creator Contest.",
+      "email_cta": "Sign up for Builder and contest updates:"
     }
   },
   "toasts": {
-    "localstorage": "Projects automatically save to local storage"
+    "localstorage": "Projects automatically save to your browser's storage"
   },
   "contest": {
     "mana": "900K MANA",
