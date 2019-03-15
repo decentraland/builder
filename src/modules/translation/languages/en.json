@@ -200,7 +200,13 @@
   "contest": {
     "mana": "900K MANA",
     "land": "50 LAND",
+    "usd": "50K USD",
     "submit_text": "Submit to contest",
-    "update_text": "Update submission"
+    "update_text": "Update submission",
+    "banner": {
+      "title": "Calling all the Builders!",
+      "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
+      "cta": "Watch Video"
+    }
   }
 }

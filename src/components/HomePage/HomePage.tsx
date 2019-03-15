@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Header } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Header, Button } from 'decentraland-ui'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
@@ -23,6 +23,34 @@ export default class HomePage extends React.PureComponent<Props> {
     }
   }
 
+  handleWatchVideo = () => {
+    this.props.onOpenModal('VideoModal')
+  }
+
+  renderBanner() {
+    return (
+      <div className="banner">
+        <Header size="large" className="banner-title">
+          {t('contest.banner.title')}
+        </Header>
+        <div className="banner-text">
+          <T
+            id="contest.banner.text"
+            values={{
+              mana: <span className="highlight">{t('contest.mana')}</span>,
+              land: <span className="highlight">{t('contest.land')}</span>,
+              usd: <span className="highlight">{t('contest.usd')}</span>,
+              br: <br />
+            }}
+          />
+        </div>
+        <Button className="banner-cta" onClick={this.handleWatchVideo}>
+          {t('contest.banner.cta')}
+        </Button>
+      </div>
+    )
+  }
+
   render() {
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
@@ -30,7 +58,7 @@ export default class HomePage extends React.PureComponent<Props> {
       <div className="HomePage">
         <Header size="large">{t('home_page.title')}</Header>
         <p className="subtitle">{t('home_page.subtitle')}</p>
-
+        {this.renderBanner()}
         <div className="project-cards">
           <div className="subtitle">{t('global.projects').toUpperCase()}</div>
           {projects.length > 0 ? (

@@ -1,6 +1,6 @@
 .HomePage {
   font-size: 17px;
-  margin-bottom: var(--homepage-card-margin);
+  margin-bottom: 96px;
 }
 
 .HomePage .subtitle {
@@ -17,8 +17,8 @@
 .HomePage .empty-projects {
   padding: 47px 0;
   margin-top: var(--homepage-card-margin);
-  border: 1px solid rgba(var(--purplish-grey-raw), 0.4);
-  border-radius: 5px;
+  background-color: rgba(var(--purplish-grey-raw), 0.16);
+  border-radius: 12px;
   color: var(--purplish-grey);
   text-align: center;
 }
@@ -45,4 +45,44 @@
 }
 .HomePage .Card:last-child {
   margin-right: 0;
+}
+
+/* Banner */
+
+.HomePage .banner {
+  position: relative;
+  border: 1px solid rgba(var(--purplish-grey-raw), 0.4);
+  border-radius: 12px;
+  padding: 32px;
+  padding-top: 24px;
+  margin-top: 48px;
+}
+
+.HomePage .banner .highlight {
+  font-weight: 600;
+  color: var(--contest-pink);
+}
+
+.HomePage .banner .ui.header.banner-title {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.HomePage .banner .banner-text {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 400;
+}
+
+.HomePage .banner .banner-cta {
+  position: absolute;
+  right: 56px;
+  top: calc(50% - 22px);
+  background-color: #a524b3;
+}
+
+.HomePage .banner .banner-cta:hover,
+.HomePage .banner .banner-cta:active,
+.HomePage .banner .banner-cta:focus {
+  background-color: #c640cd;
 }

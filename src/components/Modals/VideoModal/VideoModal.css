@@ -1,0 +1,9 @@
+.VideoModal iframe {
+  width: 100%;
+  height: 377px;
+}
+
+.VideoModal.ui.modal > .content {
+  padding: 24px;
+  padding-top: 0px;
+}
