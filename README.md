@@ -64,7 +64,7 @@ Every asset you're able to place on your scene (from the builder sidebar) belong
 
 To populate the builder sidebar the front-end needs to fetch these asset packs from a remote server. This remote server is represented by the `REACT_APP_ASSETS_URL` environment variable. For example an asset pack might look like this:
 
-```json
+```javascript
 {
   "id": "a6fa9602-3e47-4dff-9a84-e8e017add15b",
   "version": 1,
