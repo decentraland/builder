@@ -1,0 +1,221 @@
+{
+  "add_to_contest": {
+    "contact_information": "联系信息",
+    "error_occurred": "提交项目时出错了:",
+    "subtitle": "几乎完成了。审查你的信息，然后提交",
+    "success_subtitle": "您的项目看起来非常好，谢谢您的提交！",
+    "success_title": "真棒！",
+    "title": "提交到大赛"
+  },
+  "contest": {
+    "banner": {
+      "cta": "看视频",
+      "text":
+        "提交你最有创意的场景，赚取钱包的份额：{br}{mana}和{land}（超过{usd}！）",
+      "title": "打电话给所有的建设者！"
+    },
+    "land": "50 LAND",
+    "mana": "900K MANA",
+    "submit_text": "提交比赛",
+    "update_text": "更新提交",
+    "usd": "50K美元"
+  },
+  "contest_modal": {
+    "i_accept_the": "我接受 ",
+    "know_more": "要了解更多，请阅读我们的 {blog_post_link}",
+    "start": "订阅就可以得到一个赢取土地的机会",
+    "subtitle":
+      "提交你最具创意的场景，赢取总奖金高达:90 万+ MANA 和 50 块土地 (超过 5 万美元!)的奖品",
+    "title": "设计人员大召集!"
+  },
+  "custom_layout": {
+    "title": "自定义",
+    "up_to": "最大 {max} 块地块"
+  },
+  "custom_layout_modal": {
+    "subtitle_one": "您可以自定义场景布局.",
+    "subtitle_two": "在下面的输入框中输入所需的大小值."
+  },
+  "edit_project_modal": {
+    "custom_layout_label": "布局",
+    "title": "项目详细信息"
+  },
+  "error_page": {
+    "or": "或者重试",
+    "reload": "重新加载页面",
+    "subtitle": "发生了一个错误，以下是错误信息:",
+    "support": "联系支持服务",
+    "title": "哎哟！"
+  },
+  "global": {
+    "back": "返回",
+    "blog_post": "博客",
+    "cancel": "取消",
+    "confirm": "确认",
+    "continue": "继续",
+    "create": "创建",
+    "dismiss": "解散",
+    "done": "完成",
+    "email": "email",
+    "eth_address": "ETH 地址",
+    "next": "下一个",
+    "or": "或",
+    "project": "项目",
+    "projects": "项目",
+    "save": "保存",
+    "send": "发送",
+    "submit": "提交",
+    "templates": "模板",
+    "terms_and_conditions": "使用条款"
+  },
+  "home_page": {
+    "empty_projects_cta": "在下面选择一个模板开始构建!",
+    "empty_projects_title": "这是您的项目所在",
+    "project_actions": {
+      "delete_project": "删除项目",
+      "duplicate_project": "复制项目"
+    },
+    "subtitle": "导入文件，或者从选择模板，或根据您的土地布局开始设计!",
+    "title": "设计一个独特的世界!"
+  },
+  "itemdrawer": {
+    "empty_ground": "末设置地面",
+    "no_results": "没找到",
+    "search": "搜索",
+    "search_category": "在 {category} 中查找",
+    "title": "抽屉"
+  },
+  "languages": {
+    "en": "英文",
+    "es": "西班牙语",
+    "fr": "法国",
+    "ja": "日本",
+    "ko": "朝鲜的",
+    "zh": "中文"
+  },
+  "layout_picker": {
+    "columns": "列",
+    "rows": "行"
+  },
+  "metrics": {
+    "bodies": "物体",
+    "entities": "实体",
+    "geometries": "几何体",
+    "height": "高度",
+    "materials": "材质",
+    "textures": "纹理",
+    "too_many": "{metric} 过多",
+    "triangles": "三角形"
+  },
+  "mobile_page": {
+    "message": "The Builder 不能在手机上运行，当可以时通知你:",
+    "success": "谢谢，我们会与您联系!",
+    "title": "设计一个独特的世界!!"
+  },
+  "not_found_page": {
+    "back": "返回项目",
+    "subtitle": "对不起，我们找不到您要找的项目",
+    "title": "404"
+  },
+  "popups": {
+    "metrics_help": "查看场景指标",
+    "shortcuts_help": "在此查看快捷键"
+  },
+  "project_card": {
+    "added_to_contest": "提交到大赛",
+    "confirm_delete_content": "确认删除 \"{title}\"? 此操作不能回退",
+    "confirm_delete_header": "删除 \"{title}\""
+  },
+  "project_fields": {
+    "description_field_label": "说明",
+    "description_field_placeholder": "没有说明",
+    "title_field_label": "名称",
+    "title_field_placeholder": "项目名称"
+  },
+  "project_layout_picker": {
+    "max_area_error": "您的场景不得超过 {area} 块地块",
+    "min_area_error": "您的场景太小了"
+  },
+  "shortcuts": {
+    "delete": "删除",
+    "duplicate": "复制",
+    "hold": "按住",
+    "move": "坐标轴",
+    "move_camera": "移动摄相机",
+    "precision": "精确度",
+    "preview": "预览",
+    "redo": "重做",
+    "reset": "重置",
+    "reset_camera": "重置摄相机",
+    "rotate": "旋转轴",
+    "shortcut_reference": "快捷方式",
+    "toggle_colliders": "碰撞器",
+    "toggle_sidebar": "侧边栏",
+    "undo": "撤消",
+    "zoom_in": "放大",
+    "zoom_out": "缩小"
+  },
+  "shortcuts_modal": {
+    "editor_shortcuts": "编辑器",
+    "item_shortcuts": "物品",
+    "other_shortcuts": "其它",
+    "title": "快捷键"
+  },
+  "toasts": {
+    "localstorage": "项目会自动保存到浏览器的本地存储中。"
+  },
+  "topbar": {
+    "add_to_contest_disabled_bounds": "物品超出bounds{br}移动边界内的物品！",
+    "add_to_contest_disabled_limits": "太多{metric}{br}尝试删除一些项目！",
+    "publish": "发表"
+  },
+  "tutorial_modal": {
+    "contest": "输入有机会赢得{mana}和{land}的份额。",
+    "email_disclaimer": "通过注册，您正在订阅有关Decentraland的新闻。",
+    "email_thanks": "谢谢！",
+    "slide0": {
+      "description": "这是Decentraland的新场景构建器。",
+      "title": "欢迎来到Builder！"
+    },
+    "slide1": {
+      "description": "要移动对象，请单击并拖动对象。",
+      "title": "移动物体"
+    },
+    "slide2": {
+      "description": "从右侧边栏向场景添加对象。",
+      "title": "添加对象"
+    },
+    "slide3": {
+      "description": "通过单击“旋转”工具并拖动轨道来旋转对象。",
+      "title": "箭和轨道"
+    },
+    "slide4": {
+      "description": "使用左键拖动可旋转相机。",
+      "title": "控制相机"
+    },
+    "slide5": {
+      "description":
+        "场景完成后，单击{submitButton}将其提交给Creator Contest。",
+      "email_cta": "注册Builder和比赛更新：",
+      "title": "参加比赛"
+    },
+    "subtitle": "The Builder 超级容易使用，在您开始之前，这里有一些提示或技巧",
+    "title": "开始使用 the Builder"
+  },
+  "unsupported_browser_page": {
+    "back": "返回项目",
+    "subtitle":
+      "The Builder 不能在您的浏览器中运行.{br}请使用 {chrome} 或者 {firefox} 浏览器！",
+    "title": "哎哟!"
+  },
+  "validation": {
+    "project": {
+      "description": {
+        "length": "描述长度必须是 {min} 到 {max} 个字符."
+      },
+      "title": {
+        "length": "名称长度必须是 {min} 到 {max} 个字符."
+      }
+    }
+  }
+}

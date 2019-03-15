@@ -1,0 +1,242 @@
+{
+  "add_to_contest": {
+    "contact_information": "Informations de contact",
+    "error_occurred":
+      "Une erreur s'est produite lors de la soumission de votre projet:",
+    "subtitle": "Vous avez presque fini. ",
+    "success_subtitle":
+      "Votre projet a l'air vraiment sympa, merci pour votre soumission!",
+    "success_title": "Impressionnant!",
+    "title": "Soumettez votre scène"
+  },
+  "contest": {
+    "banner": {
+      "cta": "Regarder la vidéo",
+      "text":
+        "Soumettez vos scènes les plus créatives et gagnez une part de la bourse: {br}{mana} et {land} (sur {usd}!)",
+      "title": "Appel à tous les constructeurs!"
+    },
+    "land": "50 LAND",
+    "mana": "900K MANA",
+    "submit_text": "Soumettre au concours",
+    "update_text": "Mettre à jour la soumission",
+    "usd": "50K USD"
+  },
+  "contest_modal": {
+    "i_accept_the": "J'accepte le",
+    "know_more": "Pour en savoir plus, lisez notre {blog_post_link}",
+    "start": "Abonnez-vous pour avoir une chance de gagner LAND",
+    "subtitle":
+      "Soumettez vos scènes les plus créatives et gagnez une part de la bourse: {mana} et {land} (plus de 50 000 USD!)",
+    "title": "Appel à tous les constructeurs!"
+  },
+  "custom_layout": {
+    "title": "Douane",
+    "up_to": "Jusqu'à {max} colis"
+  },
+  "custom_layout_modal": {
+    "subtitle_one":
+      "Vous pouvez créer des mises en page personnalisées pour votre scène.",
+    "subtitle_two":
+      "Entrez les valeurs dans les cases ci-dessous pour la taille souhaitée."
+  },
+  "edit_project_modal": {
+    "custom_layout_label": "Disposition",
+    "title": "Détails du projet"
+  },
+  "error_page": {
+    "or": "ou essayer",
+    "reload": "recharger la page",
+    "subtitle": "Il y avait une erreur, c'est tout ce que nous savons:",
+    "support": "Contactez le support",
+    "title": "Oops!"
+  },
+  "global": {
+    "back": "retour",
+    "blog_post": "article de blog",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "continue": "Continuer",
+    "create": "Créer",
+    "dismiss": "Rejeter",
+    "done": "terminé",
+    "email": "email",
+    "eth_address": "Adresse ETH",
+    "next": "suivant",
+    "or": "ou",
+    "project": "projet",
+    "projects": "projets",
+    "save": "Sauvegarder",
+    "send": "Envoyer",
+    "submit": "Soumettre",
+    "templates": "des modèles",
+    "terms_and_conditions": "Termes et conditions"
+  },
+  "home_page": {
+    "empty_projects_cta":
+      "Sélectionnez un modèle ci-dessous pour commencer à créer des trucs géniaux!",
+    "empty_projects_title": "Vos projets vivront ici",
+    "project_actions": {
+      "delete_project": "Supprimer le projet",
+      "duplicate_project": "Dupliquer le projet"
+    },
+    "subtitle":
+      "Bienvenue dans l'éditeur de scène glisser-déposer de Decentraland. ",
+    "title": "Construire quelque chose de cool!"
+  },
+  "itemdrawer": {
+    "empty_ground": "Pas de terre",
+    "no_results": "Aucun résultat",
+    "search": "Rechercher des articles",
+    "search_category": "Recherche {category}",
+    "title": "Tiroir d'article"
+  },
+  "languages": {
+    "en": "Anglais",
+    "es": "Espanol",
+    "fr": "Français",
+    "ja": "Japonais",
+    "ko": "Coréen",
+    "zh": "Chinois"
+  },
+  "layout_picker": {
+    "columns": "des colonnes",
+    "rows": "rangées"
+  },
+  "metrics": {
+    "bodies": "corps",
+    "entities": "entités",
+    "geometries": "les géométries",
+    "height": "la taille",
+    "materials": "matériaux",
+    "textures": "les textures",
+    "too_many": "Trop de {metric}",
+    "triangles": "Triangles"
+  },
+  "mobile_page": {
+    "message":
+      "Le générateur ne fonctionne pas encore sur les appareils mobiles. ",
+    "success": "Merci, nous vous tiendrons au courant!",
+    "title": "Oops!"
+  },
+  "not_found_page": {
+    "back": "Retour aux projets",
+    "subtitle":
+      "Désolé, nous n'avons pas trouvé le projet que vous recherchiez",
+    "title": "404"
+  },
+  "popups": {
+    "metrics_help": "Voir les métriques ici!",
+    "shortcuts_help": "Voir les raccourcis ici!"
+  },
+  "project_card": {
+    "added_to_contest": "Soumis au concours",
+    "confirm_delete_content":
+      "Êtes-vous sûr de vouloir supprimer votre projet \"{title}\"? ",
+    "confirm_delete_header": "Supprimer \"{title}\""
+  },
+  "project_fields": {
+    "description_field_label": "La description",
+    "description_field_placeholder": "Pas de description",
+    "title_field_label": "Titre",
+    "title_field_placeholder": "Titre du projet"
+  },
+  "project_layout_picker": {
+    "max_area_error": "Votre scène ne peut pas avoir plus que {area} colis",
+    "min_area_error": "Votre scène est trop petite"
+  },
+  "shortcuts": {
+    "delete": "Effacer l'article",
+    "duplicate": "Article en double",
+    "hold": "Tenir",
+    "move": "Basculer les flèches",
+    "move_camera": "Déplacer la caméra",
+    "precision": "Ignorer l'alignement sur la grille",
+    "preview": "Aperçu",
+    "redo": "Refaire",
+    "reset": "Réinitialiser l'élément",
+    "reset_camera": "Réinitialiser la caméra",
+    "rotate": "Basculer les orbites",
+    "shortcut_reference": "Référence de raccourci",
+    "toggle_colliders": "Montrer les colliders",
+    "toggle_sidebar": "Basculer la barre latérale",
+    "undo": "Annuler",
+    "zoom_in": "Agrandir",
+    "zoom_out": "Dézoomer"
+  },
+  "shortcuts_modal": {
+    "editor_shortcuts": "Éditeur",
+    "item_shortcuts": "Article",
+    "other_shortcuts": "Autre",
+    "title": "Raccourcis"
+  },
+  "toasts": {
+    "localstorage":
+      "Les projets sont automatiquement enregistrés dans la mémoire de votre navigateur."
+  },
+  "topbar": {
+    "add_to_contest_disabled_bounds":
+      "Élément en dehors de liés{br}Déplacez l'élément dans les limites!",
+    "add_to_contest_disabled_limits":
+      "Trop de {metric}{br}Essayez de supprimer certains éléments!",
+    "publish": "Publier"
+  },
+  "tutorial_modal": {
+    "contest":
+      "Participez pour courir la chance de gagner une part de {mana} et {land}.",
+    "email_disclaimer":
+      "En vous inscrivant, vous vous abonnez aux nouvelles de Decentraland.",
+    "email_thanks": "Merci! ",
+    "slide0": {
+      "description": "C'est le nouveau constructeur de scène de Decentraland. ",
+      "title": "Bienvenue chez le constructeur!"
+    },
+    "slide1": {
+      "description":
+        "Pour déplacer un objet, cliquez dessus et faites-le glisser.",
+      "title": "Objets en mouvement"
+    },
+    "slide2": {
+      "description":
+        "Ajoutez des objets à votre scène à partir de la barre latérale à droite.",
+      "title": "Ajout d'objets"
+    },
+    "slide3": {
+      "description":
+        "Faites pivoter des objets en cliquant sur l'outil Rotation et en faisant glisser les orbites.",
+      "title": "Flèches et orbites"
+    },
+    "slide4": {
+      "description":
+        "Faites glisser avec le bouton gauche pour faire pivoter la caméra. ",
+      "title": "Contrôler la caméra"
+    },
+    "slide5": {
+      "description":
+        "Lorsque votre scène est terminée, cliquez sur {submitButton} pour l'envoyer au concours Creator.",
+      "email_cta": "Inscrivez-vous à Builder et aux mises à jour du concours:",
+      "title": "Participer au concours"
+    },
+    "subtitle":
+      "Le constructeur est super facile à utiliser, voici quelques conseils avant de commencer",
+    "title": "Commencer avec le constructeur"
+  },
+  "unsupported_browser_page": {
+    "back": "Retour aux projets",
+    "subtitle":
+      "Le constructeur ne prend pas en charge votre navigateur.{br}Veuillez visiter cette page avec {chrome} ou {firefox}",
+    "title": "Oops!"
+  },
+  "validation": {
+    "project": {
+      "description": {
+        "length":
+          "La longueur de la description doit être comprise entre les caractères {min} et {max}."
+      },
+      "title": {
+        "length":
+          "La longueur du titre doit être comprise entre les caractères {min} et {max}."
+      }
+    }
+  }
+}
