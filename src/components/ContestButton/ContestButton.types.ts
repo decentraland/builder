@@ -1,5 +1,5 @@
 export type Props = {
-  updateEntry: boolean
-  disabled: boolean
+  shouldUpdateEntry: boolean
+  isDisabled: boolean
   onClick: () => void
 }

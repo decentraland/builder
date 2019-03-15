@@ -155,8 +155,8 @@ export default class TopBar extends React.PureComponent<Props> {
                   <span>
                     <ContestButton
                       onClick={this.handleAddToContestClick}
-                      disabled={isSceneLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries}
-                      updateEntry={hasSubmittedCurrentProject}
+                      isDisabled={isSceneLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries}
+                      shouldUpdateEntry={hasSubmittedCurrentProject}
                     />
                   </span>
                 }

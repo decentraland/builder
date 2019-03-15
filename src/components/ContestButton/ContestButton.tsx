@@ -8,18 +8,18 @@ import './ContestButton.css'
 
 export default class ContestButton extends React.PureComponent<Props> {
   static defaultProps: Props = {
-    updateEntry: false,
-    disabled: false,
+    shouldUpdateEntry: false,
+    isDisabled: false,
     onClick: () => {
       /* noop */
     }
   }
 
   render() {
-    const { disabled, updateEntry, onClick } = this.props
+    const { isDisabled, shouldUpdateEntry, onClick } = this.props
     return (
-      <Button className="ContestButton" size="mini" onClick={onClick} disabled={disabled}>
-        {updateEntry ? t('contest.update_text') : t('contest.submit_text')}
+      <Button className="ContestButton" size="mini" onClick={onClick} disabled={isDisabled}>
+        {shouldUpdateEntry ? t('contest.update_text') : t('contest.submit_text')}
       </Button>
     )
   }
