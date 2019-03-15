@@ -9,8 +9,6 @@ import './VideoModal.css'
 
 const YOUTUBE_ID = 'dQw4w9WgXcQ'
 
-export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
-
 export default class TutorialModal extends React.PureComponent<ModalProps> {
   render() {
     const { name, onClose } = this.props
