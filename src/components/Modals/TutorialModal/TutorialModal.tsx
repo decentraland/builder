@@ -9,6 +9,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
 import { api, EMAIL_INTEREST } from 'lib/api'
 import { preventDefault } from 'lib/preventDefault'
+import { getSlides } from './slides'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
@@ -23,11 +24,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     email: ''
   }
 
-  slides = new Array(6).fill(0).map((_, index) => ({
-    thumbnail: `tutorial_${index}`, // the last thumbnail won't exist
-    title: t(`tutorial_modal.slide${index}.title`),
-    description: <T id={`tutorial_modal.slide${index}.description`} values={{ br: <br /> }} />
-  }))
+  slides = getSlides()
 
   preventVideoContextMenu = preventDefault()
 
@@ -43,7 +40,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
       localStorage.setItem(LOCALSTORAGE_TUTORIAL_EMAIL_KEY, email)
     })
 
-    api.reportEmail(email, EMAIL_INTEREST.CONTEST).catch(() => console.error('Unable to submit email, something went wrong!'))
+    api.reportEmail(email, EMAIL_INTEREST.TUTORIAL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     this.setState({ isLoading: false })
   }
@@ -76,8 +73,6 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
             value={existingEmail || email}
             onChange={this.handleEmailChange}
             disabled={isLoading || !!existingEmail}
-            action={!existingEmail ? t('global.sign_up') : null}
-            onAction={this.handleSubmitEmail}
             message={existingEmail ? t('tutorial_modal.email_thanks') : t('tutorial_modal.email_disclaimer')}
           />
         </div>
@@ -143,7 +138,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
   render() {
     const { name } = this.props
-    const { step } = this.state
+    const { step, email } = this.state
 
     return (
       <Modal name={name} onClose={this.handleClose}>
@@ -159,7 +154,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
             )}
             <div className="steps">{this.renderSteps()}</div>
             <Button primary onClick={this.handleNextStep}>
-              {step === this.slides.length - 1 ? t('global.done') : t('global.next')}
+              {step === this.slides.length - 1 ? (email ? t('global.send') : t('global.done')) : t('global.next')}
             </Button>
           </div>
         </Modal.Content>

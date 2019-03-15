@@ -18,8 +18,7 @@
     "next": "next",
     "back": "back",
     "done": "done",
-    "dismiss": "Dismiss",
-    "sign_up": "Sign up"
+    "dismiss": "Dismiss"
   },
   "languages": {
     "en": "English"
@@ -69,8 +68,6 @@
     "empty_ground": "No Ground"
   },
   "topbar": {
-    "add_to_contest": "Submit to contest",
-    "update_contest_entry": "Update submission",
     "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
     "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
     "publish": "Publish"
@@ -193,7 +190,7 @@
     },
     "slide5": {
       "title": "Participate in the contest",
-      "description": "When your scene is finished, click \"Submit to contest\" to submit it to the Creator Contest.",
+      "description": "When your scene is finished, click {submitButton} to submit it to the Creator Contest.",
       "email_cta": "Sign up for Builder and contest updates:"
     }
   },
@@ -202,6 +199,8 @@
   },
   "contest": {
     "mana": "900K MANA",
-    "land": "50 LAND"
+    "land": "50 LAND",
+    "submit_text": "Submit to contest",
+    "update_text": "Update submission"
   }
 }

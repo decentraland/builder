@@ -39,7 +39,7 @@
 .TutorialModal .actions > .ui.button {
   margin-left: 0px !important;
   margin-right: 0px !important;
-  width: 95px;
+  width: auto;
 }
 
 .TutorialModal .actions .spacer {

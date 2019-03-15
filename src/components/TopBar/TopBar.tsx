@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Grid, Icon, Button, Popup } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Header, Grid, Icon, Popup } from 'decentraland-ui'
+import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import ShortcutTooltip from 'components/ShortcutTooltip'
+import ContestButton from 'components/ContestButton'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
@@ -152,14 +153,11 @@ export default class TopBar extends React.PureComponent<Props> {
                 position="bottom center"
                 trigger={
                   <span>
-                    <Button
-                      className="add-to-contest"
-                      size="mini"
+                    <ContestButton
                       onClick={this.handleAddToContestClick}
-                      disabled={isSceneLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries}
-                    >
-                      {hasSubmittedCurrentProject ? t('topbar.update_contest_entry') : t('topbar.add_to_contest')}
-                    </Button>
+                      isDisabled={isSceneLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries}
+                      shouldUpdateEntry={hasSubmittedCurrentProject}
+                    />
                   </span>
                 }
                 on="hover"
