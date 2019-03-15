@@ -40,7 +40,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
       localStorage.setItem(LOCALSTORAGE_TUTORIAL_EMAIL_KEY, email)
     })
 
-    api.reportEmail(email, EMAIL_INTEREST.CONTEST).catch(() => console.error('Unable to submit email, something went wrong!'))
+    api.reportEmail(email, EMAIL_INTEREST.TUTORIAL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     this.setState({ isLoading: false })
   }
