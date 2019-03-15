@@ -36,14 +36,15 @@ import {
   NewEditorSceneAction,
   PREFETCH_ASSET,
   PrefetchAssetAction,
-  SetEditorReadyAction
+  SetEditorReadyAction,
+  setEntitiesOutOfBoundaries
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
+import { getCurrentProject, getProject } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -53,7 +54,6 @@ import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { isWithinBounds } from 'modules/scene/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 
@@ -189,6 +189,8 @@ function* handleOpenEditor() {
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
 
+  yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
+
   // Creates a new scene in the dcl client's side
   const project: Project = yield select(getCurrentProject)
   yield createNewScene(project)
@@ -208,6 +210,7 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('transform', handleTransformChange))
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
+  yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
   yield put(unbindEditorKeyboardShortcuts())
 }
 
@@ -221,16 +224,27 @@ function resizeEditor() {
 }
 
 function* handleTogglePreview(action: TogglePreviewAction) {
+  const { editor } = editorWindow
   const { isEnabled } = action.payload
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
+  const project: Project = yield select(getCurrentProject)
+  if (!project) return
+
+  const x = (project.layout.rows * PARCEL_SIZE) / 2
+  const z = -1
 
   yield call(() => {
-    const { editor } = editorWindow
     editor.setPlayMode(isEnabled)
     editor.sendExternalAction(action)
     editor.selectGizmo(isEnabled ? Gizmo.NONE : gizmo)
     resizeEditor()
   })
+
+  if (!isEnabled) {
+    yield handleResetCamera()
+  } else {
+    editor.setCameraPosition({ x, y: 1, z })
+  }
 
   yield changeEditorState(!isEnabled)
 }
@@ -280,10 +294,7 @@ function* handleDropItem(action: DropItemAction) {
     yield put(setGround(project.id, project.layout, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
-    const bounds = yield select(getCurrentBounds)
-    if (isWithinBounds(position, bounds)) {
-      yield put(addItem(asset, position))
-    }
+    yield put(addItem(asset, position))
   }
 }
 
@@ -335,4 +346,9 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
       }
     }
   })
+}
+
+function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
+  const { entities } = args
+  store.dispatch(setEntitiesOutOfBoundaries(entities))
 }

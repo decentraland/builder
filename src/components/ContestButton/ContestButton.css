@@ -1,0 +1,18 @@
+.ContestButton.ui.button.mini {
+  padding: 0.3em 1.2em;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.ContestButton.ui.button.mini,
+.ContestButton.ui.button.mini:active,
+.ContestButton.ui.button.mini:focus,
+.ContestButton.ui.button.mini:hover {
+  background-image: url('../../images/contest-button.png');
+  background-size: 100%;
+}
+
+.ContestButton.ui.button.mini:hover {
+  background-color: var(--purplish-grey);
+  opacity: 0.9;
+}

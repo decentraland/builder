@@ -3,6 +3,7 @@ import { Header, Field, Button, Form } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
@@ -35,7 +36,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
 
     analytics.identify({ email }, () => {
-      // TODO: hit an special api for mailchimp
+      api.reportEmail(email, EMAIL_INTEREST.MOBILE).catch(() => console.error('Unable to submit email, something went wrong!'))
       localStorage.setItem('mobile-email', email)
       this.setState({ isLoading: false })
     })
@@ -48,7 +49,6 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     return (
       <div className="MobilePage">
         <Header size="large">{t('mobile_page.title')}</Header>
-        <p className="subtitle">{t('mobile_page.subtitle')}</p>
         <Form onSubmit={this.handleSubmit}>
           <p className="message">{t('mobile_page.message')}</p>
 
@@ -71,9 +71,6 @@ export default class MobilePage extends React.PureComponent<Props, State> {
             <div className="success">{t('mobile_page.success')}</div>
           )}
         </Form>
-        <span className="suggestion">
-          Participate in our contest for a chance to <a href="http://contest.decentraland.org">earn MANA and LAND</a>
-        </span>
       </div>
     )
   }

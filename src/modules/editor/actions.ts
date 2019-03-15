@@ -157,3 +157,11 @@ export const PREFETCH_ASSET = 'Prefetch Asset'
 export const prefetchAsset = (asset: Asset) => action(PREFETCH_ASSET, { asset })
 
 export type PrefetchAssetAction = ReturnType<typeof prefetchAsset>
+
+// Set entities out of bounds
+
+export const SET_ENTITIES_OUT_OF_BOUNDARIES = 'Set entities out of boundaries'
+
+export const setEntitiesOutOfBoundaries = (entities: string[]) => action(SET_ENTITIES_OUT_OF_BOUNDARIES, { entities })
+
+export type SetEntitiesOutOfBoundariesAction = ReturnType<typeof setEntitiesOutOfBoundaries>

@@ -1,3 +1,3 @@
-import TutorialModal from './TutorialModal'
+import TutorialModal from './TutorialModal.container'
 
 export default TutorialModal

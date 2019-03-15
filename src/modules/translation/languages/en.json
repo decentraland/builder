@@ -26,8 +26,8 @@
   },
   "home_page": {
     "title": "Build something cool!",
-    "subtitle": "Import a file or start from scratch with our templates or your own LAND!",
-    "empty_projects_title": "Here's where your projects will live",
+    "subtitle": "Welcome to Decentraland's drag-and-drop scene editor. Select one of the project templates below to get started.",
+    "empty_projects_title": "Your projects will live here",
     "empty_projects_cta": "Select a template below to start building awesome stuff!",
     "project_actions": {
       "delete_project": "Delete project",
@@ -35,9 +35,8 @@
     }
   },
   "mobile_page": {
-    "title": "Build something cool!",
-    "subtitle": "Pimp up your LAND",
-    "message": "The Builder does not work on mobile, get notified when it does:",
+    "title": "Oops!",
+    "message": "The Builder doesn’t work on mobile devices yet. We’ll let you when it does:",
     "success": "Thanks, we will keep you posted!"
   },
   "not_found_page": {
@@ -54,11 +53,11 @@
   },
   "unsupported_browser_page": {
     "title": "Oops!",
-    "subtitle": "The Builder does not work on your browser.{br}Please visit this page using {chrome} or {firefox}",
+    "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
     "back": "Back to Projects"
   },
   "project_card": {
-    "added_to_contest": "Added to contest",
+    "added_to_contest": "Submitted to contest",
     "confirm_delete_header": "Delete \"{title}\"",
     "confirm_delete_content": "Are you sure you want to delete your project \"{title}\"? This operation is not reversible"
   },
@@ -70,8 +69,8 @@
     "empty_ground": "No Ground"
   },
   "topbar": {
-    "add_to_contest": "Add to contest",
-    "update_contest_entry": "Update your entry",
+    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
+    "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
     "publish": "Publish"
   },
   "metrics": {
@@ -86,14 +85,16 @@
   },
   "contest_modal": {
     "title": "Calling all Builders!",
-    "subtitle": "Submit your most creative scenes, and earn a share of the purse: 900K+ MANA and 50 LAND (over 50K USD!)",
+    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50K USD!)",
     "start": "Subscribe for a chance to win LAND",
-    "know_more": "To know more read our {blog_post_link}",
+    "know_more": "To learn more, read our {blog_post_link}",
     "i_accept_the": "I accept the "
   },
   "add_to_contest": {
-    "title": "Add project to contest",
-    "subtitle": "Almost done. Review your information and before submitting it.",
+    "title": "Submit your scene",
+    "subtitle": "You're almost done. Please review your project and contact info before submitting your scene.",
+    "success_title": "Awesome!",
+    "success_subtitle": "Your project looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your project:"
   },
@@ -107,18 +108,18 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "reset_camera": "Reset camera",
-    "toggle_colliders": "Toggle colliders",
+    "toggle_colliders": "Show colliders",
     "toggle_sidebar": "Toggle sidebar",
     "preview": "Preview",
     "undo": "Undo",
     "redo": "Redo",
     "shortcut_reference": "Shortcut reference",
-    "precision": "Precision",
-    "hold": "Hodl"
+    "precision": "Ignore snap-to-grid",
+    "hold": "Hold"
   },
   "popups": {
-    "shortcuts_help": "Pssst! see shortcuts here",
-    "metrics_help": "Pssst! see metrics here"
+    "shortcuts_help": "See shortcuts here!",
+    "metrics_help": "See metrics here!"
   },
   "shortcuts_modal": {
     "title": "Shortcuts",
@@ -165,12 +166,48 @@
   "tutorial_modal": {
     "title": "Get started with the Builder",
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
-    "slide0": "Browse the categories on the right and drag-and-drop the item you want into your scene.",
-    "slide1": "To orient the camera, click and drag on the viewport. Use the arrow keys to move around.",
-    "slide2": "Click and drag an item to move it.",
-    "slide3": "If you need more precise control, click the Move icon on the toolbar and use the arrows to manipulate the item."
+    "email_thanks": "Thanks! We'll stay in touch!",
+    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
+    "contest": "Enter for a chance to win a share of {mana} and {land}.",
+    "slide0": {
+      "title": "Welcome to the Builder!",
+      "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around."
+    },
+    "slide1": {
+      "title": "Moving objects",
+      "description": "To move an object, click and drag the object."
+    },
+    "slide2": {
+      "title": "Adding objects",
+      "description": "Add objects to your scene from the sidebar on the right."
+    },
+    "slide3": {
+      "title": "Arrows and orbits",
+      "description": "Rotate objects by clicking on the Rotate tool and dragging the orbits."
+    },
+    "slide4": {
+      "title": "Controlling the camera",
+      "description": "Drag with the left button to rotate the camera. Use the right button to pan."
+    },
+    "slide5": {
+      "title": "Participate in the contest",
+      "description": "When your scene is finished, click {submitButton} to submit it to the Creator Contest.",
+      "email_cta": "Sign up for Builder and contest updates:"
+    }
   },
   "toasts": {
-    "localstorage": "Projects save automatically to your browser's local storage."
+    "localstorage": "Projects automatically save to your browser's storage"
+  },
+  "contest": {
+    "mana": "900K MANA",
+    "land": "50 LAND",
+    "usd": "50K USD",
+    "submit_text": "Submit to contest",
+    "update_text": "Update submission",
+    "banner": {
+      "title": "Calling all the Builders!",
+      "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
+      "cta": "Watch Video"
+    }
   }
 }

@@ -40,12 +40,15 @@
 }
 
 .toolbar .Tools .tool:last-child {
-  margin-right: 0px;
+  margin-right: 0;
   margin-left: 24px;
 }
 
 .toolbar .Tools .tool .shortcuts {
   bottom: 3px;
-  right: 8px;
   position: relative;
+}
+
+.ui.visible.popup.inverted.shortcut-popup:before {
+  right: 0.4em; /* The arrow needs to be on top of the icon */
 }

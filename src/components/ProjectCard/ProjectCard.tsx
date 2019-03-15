@@ -5,6 +5,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Confirm from 'components/Confirm'
 import { locations } from 'routing/locations'
+import { preventDefault } from 'lib/preventDefault'
 import { getProjectDimensions } from 'modules/project/utils'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
@@ -74,7 +75,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             inverted
           />
         ) : null}
-        <Dropdown direction="left" onClick={e => e.nativeEvent.preventDefault()}>
+        <Dropdown direction="left" onClick={preventDefault()}>
           <Dropdown.Menu>
             <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
             <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />

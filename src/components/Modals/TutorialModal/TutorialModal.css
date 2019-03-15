@@ -2,6 +2,11 @@
   width: 640px;
 }
 
+.ui.small.modal.TutorialModal .content {
+  display: flex;
+  flex-direction: column;
+}
+
 .TutorialModal .step {
   width: 10px;
   height: 10px;
@@ -19,6 +24,7 @@
   font-size: 17px;
   font-weight: 300;
   margin-top: 16px;
+  line-height: 26px;
 }
 
 .TutorialModal .step.active {
@@ -33,7 +39,7 @@
 .TutorialModal .actions > .ui.button {
   margin-left: 0px !important;
   margin-right: 0px !important;
-  width: 95px;
+  width: auto;
 }
 
 .TutorialModal .actions .spacer {
@@ -62,26 +68,27 @@
   user-select: none;
 }
 
-.TutorialModal .slide .description {
-  width: 100%;
-  font-size: 16px;
+.TutorialModal .form {
+  flex: 1;
+  margin-bottom: 60px;
+}
+
+.TutorialModal .form .banner {
+  height: 250px;
+  background: url('../../../images/contest.png') no-repeat;
+  background-size: 105%;
+  border-radius: 12px;
+  overflow: hidden;
+  background-position-y: -90px;
+  font-size: 30px;
+  font-weight: 400;
   text-align: center;
-  padding: 20px 16px;
-  background: linear-gradient(#00000000, var(--dark-two));
+  padding: 50px;
+  user-select: none;
+  margin: 40px 0px;
 }
 
-.TutorialModal .slide0 {
-  background-image: url('../../../images/tutorial-slide-0.gif');
-}
-
-.TutorialModal .slide1 {
-  background-image: url('../../../images/tutorial-slide-1.gif');
-}
-
-.TutorialModal .slide2 {
-  background-image: url('../../../images/tutorial-slide-2.gif');
-}
-
-.TutorialModal .slide3 {
-  background-image: url('../../../images/tutorial-slide-3.gif');
+.TutorialModal .form .banner .highlight {
+  font-weight: 600;
+  color: var(--contest-pink);
 }
