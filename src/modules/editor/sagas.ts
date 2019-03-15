@@ -224,16 +224,27 @@ function resizeEditor() {
 }
 
 function* handleTogglePreview(action: TogglePreviewAction) {
+  const { editor } = editorWindow
   const { isEnabled } = action.payload
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
+  const project: Project = yield select(getCurrentProject)
+  if (!project) return
+
+  const x = (project.layout.rows * PARCEL_SIZE) / 2
+  const z = -1
 
   yield call(() => {
-    const { editor } = editorWindow
     editor.setPlayMode(isEnabled)
     editor.sendExternalAction(action)
     editor.selectGizmo(isEnabled ? Gizmo.NONE : gizmo)
     resizeEditor()
   })
+
+  if (!isEnabled) {
+    yield handleResetCamera()
+  } else {
+    editor.setCameraPosition({ x, y: 1, z })
+  }
 
   yield changeEditorState(!isEnabled)
 }
