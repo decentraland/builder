@@ -5,9 +5,10 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
 import { api, EMAIL_INTEREST } from 'lib/api'
-
+import { preventDefault } from 'lib/preventDefault'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
@@ -27,6 +28,8 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     title: t(`tutorial_modal.slide${index}.title`),
     description: <T id={`tutorial_modal.slide${index}.description`} values={{ br: <br /> }} />
   }))
+
+  preventVideoContextMenu = preventDefault()
 
   handleSubmitEmail = async () => {
     const { email } = this.state
@@ -91,10 +94,6 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     }
 
     return out
-  }
-
-  preventVideoContextMenu(e: React.MouseEvent<HTMLDivElement>) {
-    e.preventDefault()
   }
 
   renderSlide = () => {

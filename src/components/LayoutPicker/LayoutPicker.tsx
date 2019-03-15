@@ -3,6 +3,7 @@ import { Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
+import { preventDefault } from 'lib/preventDefault'
 import { Props } from './LayoutPicker.types'
 
 import './LayoutPicker.css'
@@ -27,7 +28,7 @@ export default class LayoutPicker extends React.PureComponent<Props> {
 
   disableScroll = (ref: HTMLInputElement | null) => {
     if (ref) {
-      ref.addEventListener('mousewheel', (e: Event) => e.preventDefault())
+      ref.addEventListener('mousewheel', preventDefault())
     }
   }
 

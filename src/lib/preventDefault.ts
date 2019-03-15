@@ -1,10 +1,12 @@
 import { SyntheticEvent } from 'react'
 
-export function preventDefault(fn: Function) {
-  return function(event?: SyntheticEvent) {
+export function preventDefault(fn?: Function) {
+  return function(event?: SyntheticEvent | Event) {
     if (event) {
       event.preventDefault()
     }
-    fn.call(null, event)
+    if (fn) {
+      fn.call(null, event)
+    }
   }
 }
