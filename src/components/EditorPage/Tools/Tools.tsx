@@ -25,10 +25,13 @@ export default class Tools extends React.PureComponent<Props, State> {
     isShortcutPopupOpen: this.isShortcutPopupDismissed()
   }
 
+  _isMounted: boolean = false
+
   updatePopupPositionDebounced = debounce(() => this.updatePopupPosition(), 200)
 
   componentWillMount() {
     window.addEventListener('resize', this.handleResize)
+    this._isMounted = true
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -39,6 +42,7 @@ export default class Tools extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize)
+    this._isMounted = false
   }
 
   handleCloseShortcutPopup = () => {
@@ -59,6 +63,8 @@ export default class Tools extends React.PureComponent<Props, State> {
   }
 
   updatePopupPosition() {
+    if (!this._isMounted) return
+
     // We need to force a Popup re-render to give semantic a chance to re-compute the styles
     // Sadly the implementation doesn't allow for a way to do this cleanly
     this.closeShortcutPopup()

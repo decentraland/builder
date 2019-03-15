@@ -20,5 +20,6 @@
 @media (max-width: 1100px) {
   .toolbar > .LocalStorageToast {
     font-size: 12px;
+    margin-right: 12%;
   }
 }
