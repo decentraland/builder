@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { env } from 'decentraland-commons'
 import { Button, Field } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -10,6 +11,7 @@ import { api, EMAIL_INTEREST } from 'lib/api'
 import { Props, State } from './TutorialModal.types'
 import './TutorialModal.css'
 
+const PUBLIC_URL = env.get('PUBLIC_URL')
 const localStorage = getLocalStorage()
 export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
 
@@ -21,7 +23,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   }
 
   slides = new Array(6).fill(0).map((_, index) => ({
-    thumbnail: `slide${index}`, // the last thumbnail won't exist
+    thumbnail: `tutorial_${index}`, // the last thumbnail won't exist
     title: t(`tutorial_modal.slide${index}.title`),
     description: <T id={`tutorial_modal.slide${index}.description`} values={{ br: <br /> }} />
   }))
@@ -91,6 +93,10 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     return out
   }
 
+  preventVideoContextMenu(e: React.MouseEvent<HTMLDivElement>) {
+    e.preventDefault()
+  }
+
   renderSlide = () => {
     const { step } = this.state
     const slide = this.slides[step]
@@ -99,7 +105,13 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
       <>
         <div className="title">{slide.title}</div>
         <div className="subtitle">{slide.description}</div>
-        {step !== this.slides.length - 1 ? <div key={`slide-${step}`} className={'slide ' + slide.thumbnail} /> : this.renderForm()}
+        {step !== this.slides.length - 1 ? (
+          <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
+            <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
+          </div>
+        ) : (
+          this.renderForm()
+        )}
       </>
     )
   }
