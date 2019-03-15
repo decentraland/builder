@@ -1,25 +1,18 @@
 import * as React from 'react'
-import { Popup } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
 import Icon from 'components/Icon'
-import { ClosePopup } from 'components/Popups'
 import { SceneMetrics } from 'modules/scene/types'
 import { getExceededMetrics } from 'modules/scene/utils'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
 import './Metrics.css'
 
-export const LOCALSTORAGE_METRICS_POPUP_KEY = 'builder-metrics-popup'
-const localStorage = getLocalStorage()
-
 export default class Metrics extends React.PureComponent<Props, State> {
   state = {
-    isBubbleVisible: false,
-    isMetricsPopupOpen: !localStorage.getItem(LOCALSTORAGE_METRICS_POPUP_KEY)
+    isBubbleVisible: false
   }
 
   analytics = getAnalytics()
@@ -60,12 +53,6 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
     event.nativeEvent.stopImmediatePropagation()
-    this.handleCloseMetricsPopup()
-  }
-
-  handleCloseMetricsPopup = () => {
-    this.setState({ isMetricsPopupOpen: false })
-    localStorage.setItem(LOCALSTORAGE_METRICS_POPUP_KEY, '1')
   }
 
   renderMetrics() {
@@ -92,22 +79,11 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
   render() {
     const { rows, cols } = this.props
-    const { isBubbleVisible, isMetricsPopupOpen } = this.state
+    const { isBubbleVisible } = this.state
 
     return (
       <div className={`Metrics ${this.metricsExceeded.length > 0 ? 'metric-exceeded' : ''}`} onClick={this.handleClick}>
-        <Popup
-          open={isMetricsPopupOpen}
-          content={<ClosePopup text={t('popups.metrics_help')} onClick={this.handleCloseMetricsPopup} />}
-          position="top left"
-          verticalOffset={-1}
-          trigger={
-            <span>
-              <SquaresGrid rows={2} cols={2} size="tiny" onClick={this.handleToggle} />
-            </span>
-          }
-          inverted
-        />
+        <SquaresGrid rows={2} cols={2} size="tiny" onClick={this.handleToggle} />
 
         {isBubbleVisible ? (
           <div className="bubble">

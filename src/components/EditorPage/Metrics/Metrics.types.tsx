@@ -12,7 +12,6 @@ export type Props = {
 
 export type State = {
   isBubbleVisible: boolean
-  isMetricsPopupOpen: boolean
 }
 
 export type MapStateProps = Props
