@@ -2,23 +2,23 @@
   "add_to_contest": {
     "contact_information": "联系信息",
     "error_occurred": "提交项目时出错了:",
-    "subtitle": "几乎完成了。审查你的信息，然后提交",
-    "success_subtitle": "您的项目看起来非常好，谢谢您的提交！",
+    "subtitle": "就好了，请检查你的项目和联系信息，然后提交",
+    "success_subtitle": "不错的项目，谢谢您参加大赛！",
     "success_title": "真棒！",
     "title": "提交到大赛"
   },
   "contest": {
     "banner": {
-      "cta": "看视频",
+      "cta": "观看视频",
       "text":
-        "提交你最有创意的场景，赚取钱包的份额：{br}{mana}和{land}（超过{usd}！）",
-      "title": "打电话给所有的建设者！"
+        "提交你最有创意的场景，赢得大奖：{br}{mana} 和 {land}（超过 {usd}！）",
+      "title": "设计人员大召集！"
     },
     "land": "50 LAND",
     "mana": "900K MANA",
-    "submit_text": "提交比赛",
+    "submit_text": "提交到大赛",
     "update_text": "更新提交",
-    "usd": "50K美元"
+    "usd": "50K 美元"
   },
   "contest_modal": {
     "i_accept_the": "我接受 ",
@@ -165,17 +165,17 @@
     "localstorage": "项目会自动保存到浏览器的本地存储中。"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "物品超出bounds{br}移动边界内的物品！",
-    "add_to_contest_disabled_limits": "太多{metric}{br}尝试删除一些项目！",
-    "publish": "发表"
+    "add_to_contest_disabled_bounds": "物体超过边界{br}请将物品移动到边界内！",
+    "add_to_contest_disabled_limits": "{metric} 太多{br}请尝试删除一些物品！",
+    "publish": "发布"
   },
   "tutorial_modal": {
-    "contest": "输入有机会赢得{mana}和{land}的份额。",
-    "email_disclaimer": "通过注册，您正在订阅有关Decentraland的新闻。",
-    "email_thanks": "谢谢！",
+    "contest": "取得赢取总共 {mana} 和 {land} 的机会。",
+    "email_disclaimer": "注册订阅有关 Decentraland 的新闻。",
+    "email_thanks": "谢谢！我们会保持联系",
     "slide0": {
-      "description": "这是Decentraland的新场景构建器。",
-      "title": "欢迎来到Builder！"
+      "description": "这是 Decentraland 的新场景构建器。",
+      "title": "欢迎您的到来！"
     },
     "slide1": {
       "description": "要移动对象，请单击并拖动对象。",
@@ -187,19 +187,19 @@
     },
     "slide3": {
       "description": "通过单击“旋转”工具并拖动轨道来旋转对象。",
-      "title": "箭和轨道"
+      "title": "轨道和箭头"
     },
     "slide4": {
       "description": "使用左键拖动可旋转相机。",
-      "title": "控制相机"
+      "title": "相机控制"
     },
     "slide5": {
       "description":
-        "场景完成后，单击{submitButton}将其提交给Creator Contest。",
-      "email_cta": "注册Builder和比赛更新：",
-      "title": "参加比赛"
+        "场景完成后，单击{submitButton}将其提交到创作大赛。",
+      "email_cta": "注册以取得编辑器和大赛更新信息：",
+      "title": "参加大赛"
     },
-    "subtitle": "The Builder 超级容易使用，在您开始之前，这里有一些提示或技巧",
+    "subtitle": "内容编辑器非常容易使用，在您开始之前，这里有一些技巧和提示",
     "title": "开始使用 the Builder"
   },
   "unsupported_browser_page": {
