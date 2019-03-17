@@ -201,7 +201,13 @@
   "contest": {
     "mana": "900K MANA",
     "land": "50 LAND",
+    "usd": "50K USD",
     "submit_text": "Enviar al concurso",
-    "update_text": "Actualizar entrada"
+    "update_text": "Actualizar entrada",
+    "banner": {
+      "title": "A todos los creadores!",
+      "text": "Sube tus escenas más creativas y gana increíbles premios: {br}{mana} y {land} (más de {usd}!)",
+      "cta": "Mira el Video"
+    }
   }
 }
