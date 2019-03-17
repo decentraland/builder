@@ -1,18 +1,8 @@
 {
   "name": "builder",
   "alias": "builder-staging",
-  "version": 2,
-  "build": {
-    "env": {
-      "NODE_PATH": "src",
-      "REACT_APP_LOCAL_STORAGE_KEY": "@builder-local-storage-key",
-      "REACT_APP_CONTENT_SERVER": "@builder-content-server",
-      "REACT_APP_INTERCOM_APP_ID": "@builder-intercom-app-id",
-      "REACT_APP_API_URL": "@builder-api-url",
-      "REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS": "@builder-mana-token-contract-address"
-    }
-  },
-  "builds": [{ "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }],
+  "version": 1,
+  "type": "static",
   "public": false,
   "github": {
     "autoAlias": true,
