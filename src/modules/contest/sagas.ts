@@ -8,6 +8,7 @@ import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSucces
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { Project } from 'modules/project/types'
+import { getSecret } from 'modules/user/selectors'
 import { api } from 'lib/api'
 
 export function* contestSaga() {
@@ -20,6 +21,7 @@ function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
     const storage: ReturnType<typeof getStorage> = yield select(getStorage)
     const projects: ReturnType<typeof getProjects> = yield select(getProjects)
     const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const secret: string | null = yield select(getSecret)
 
     const project: Omit<Project, 'thumbnail'> = utils.omit(projects[projectId], ['thumbnail'])
 
@@ -37,7 +39,7 @@ function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
       analytics.identify({ email: contest.email })
     }
 
-    yield call(() => api.submitToContest(JSON.stringify(entry)))
+    yield call(() => api.submitToContest(JSON.stringify(entry), secret))
 
     yield put(submitProjectSuccess(projectId, contest))
   } catch (error) {
