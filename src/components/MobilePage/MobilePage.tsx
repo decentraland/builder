@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Header, Field, Button, Form } from 'decentraland-ui'
+import { Field, Button, Form } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -48,7 +48,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
 
     return (
       <div className="MobilePage">
-        <Header size="large">{t('mobile_page.title')}</Header>
+        <h1 className="title">{t('mobile_page.title')}</h1>
         <Form onSubmit={this.handleSubmit}>
           <p className="message">{t('mobile_page.message')}</p>
 
