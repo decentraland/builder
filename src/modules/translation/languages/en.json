@@ -36,7 +36,7 @@
   },
   "mobile_page": {
     "title": "Oops!",
-    "message": "The Builder doesn’t work on mobile devices yet. We’ll let you when it does:",
+    "message": "The Builder doesn't work on mobile devices yet. We'll let you know when it does:",
     "success": "Thanks, we will keep you posted!"
   },
   "not_found_page": {
@@ -205,7 +205,7 @@
     "submit_text": "Submit to contest",
     "update_text": "Update submission",
     "banner": {
-      "title": "Calling all the Builders!",
+      "title": "Calling all Builders!",
       "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
       "cta": "Watch Video"
     }
