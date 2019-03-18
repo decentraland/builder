@@ -18,6 +18,11 @@
   margin-top: 3%;
 }
 
+.MobilePage .title {
+  font-size: 64px;
+  user-select: none;
+}
+
 .MobilePage .ui.form .message {
   font-weight: 100;
   font-size: 16px;
