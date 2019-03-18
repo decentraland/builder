@@ -85,7 +85,7 @@
   },
   "contest_modal": {
     "title": "Calling all Builders!",
-    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50K USD!)",
+    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50,000 USD!)",
     "start": "Subscribe for a chance to win LAND",
     "know_more": "To learn more, read our {blog_post_link}",
     "i_accept_the": "I accept the "
@@ -199,9 +199,9 @@
     "localstorage": "Projects automatically save to your browser's storage"
   },
   "contest": {
-    "mana": "900K MANA",
+    "mana": "900,000 MANA",
     "land": "50 LAND",
-    "usd": "50K USD",
+    "usd": "50,000 USD",
     "submit_text": "Submit to contest",
     "update_text": "Update submission",
     "banner": {

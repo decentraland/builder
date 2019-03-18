@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Header, Button } from 'decentraland-ui'
+import { Header } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectCard from 'components/ProjectCard'
@@ -44,9 +44,9 @@ export default class HomePage extends React.PureComponent<Props> {
             }}
           />
         </div>
-        <Button className="banner-cta" onClick={this.handleWatchVideo}>
+        {/* <Button className="banner-cta" onClick={this.handleWatchVideo}>
           {t('contest.banner.cta')}
-        </Button>
+          </Button> */}
       </div>
     )
   }
