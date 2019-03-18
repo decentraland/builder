@@ -24,7 +24,7 @@ export function* segmentSaga() {
   yield takeLatest(ADD_ITEM, handleNewItem)
   yield takeLatest(DUPLICATE_ITEM, handleNewItem)
   yield takeLatest(SET_GROUND, handleNewItem)
-  yield takeLatest(DELETE_ITEM, handleRemoveItem)
+  yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SUBMIT_PROJECT_SUCCESS, handleSubmitProject)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
@@ -46,7 +46,7 @@ function* handleNewItem(_: AddItemAction | DuplicateItemAction | SetGroundAction
   track('New item', { projectId: project.id })
 }
 
-function* handleRemoveItem(_: DeleteItemAction) {
+function* handleDeleteItem(_: DeleteItemAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
 

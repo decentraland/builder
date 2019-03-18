@@ -19,6 +19,7 @@ import {
   SET_ENTITIES_OUT_OF_BOUNDARIES
 } from './actions'
 import { Gizmo } from './types'
+import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -50,6 +51,7 @@ export type EditorReducerAction =
   | CloseEditorAction
   | ToggleSnapToGridAction
   | SetEntitiesOutOfBoundariesAction
+  | DeleteItemAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -108,6 +110,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         entitiesOutOfBoundaries: action.payload.entities
+      }
+    }
+    case DELETE_ITEM: {
+      return {
+        ...state,
+        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => entityId !== state.selectedEntityId)
       }
     }
     default:
