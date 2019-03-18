@@ -9,7 +9,7 @@
 
 .AddToContestModal .category {
   margin-bottom: 20px;
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 
 .AddToContestModal .details,
