@@ -94,3 +94,4 @@ As you can see, the assets themselves are pointers to a location on the [content
 ## Content server
 
 As noted above, the content server holds the actual assets, which might be comprised of `.glb` and `.png` files. This server is found on the `REACT_APP_CONTENT_SERVER_URL` environment variable.
+
