@@ -70,12 +70,18 @@ function* handleSubmitProject(action: SubmitProjectSuccessAction) {
   })
 }
 
+let trackedEnablePrecision = false
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   if (!action.payload.enabled) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
 
-    track('Enable precision', { projectId: project.id })
+    if (!trackedEnablePrecision) {
+      track('Enable precision', { projectId: project.id })
+      trackedEnablePrecision = true
+    }
+  } else {
+    trackedEnablePrecision = false
   }
 }
 
