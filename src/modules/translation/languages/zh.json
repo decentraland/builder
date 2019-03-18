@@ -10,22 +10,20 @@
   "contest": {
     "banner": {
       "cta": "观看视频",
-      "text":
-        "提交你最有创意的场景，赢得大奖：{br}{mana} 和 {land}（超过 {usd}！）",
+      "text": "提交你最有创意的场景，赢得大奖：{br}{mana} 和 {land}（超过 {usd}！）",
       "title": "设计人员大召集！"
     },
     "land": "50 LAND",
-    "mana": "900K MANA",
+    "mana": "900,000 MANA",
     "submit_text": "提交到大赛",
     "update_text": "更新提交",
-    "usd": "50K 美元"
+    "usd": "50,000 美元"
   },
   "contest_modal": {
     "i_accept_the": "我接受 ",
     "know_more": "要了解更多，请阅读我们的 {blog_post_link}",
     "start": "订阅就可以得到一个赢取土地的机会",
-    "subtitle":
-      "提交你最具创意的场景，赢取总奖金高达:90 万+ MANA 和 50 块土地 (超过 5 万美元!)的奖品",
+    "subtitle": "提交你最具创意的场景，赢取总奖金高达:90 万+ MANA 和 50 块土地 (超过 5 万美元!)的奖品",
     "title": "设计人员大召集!"
   },
   "custom_layout": {
@@ -194,8 +192,7 @@
       "title": "相机控制"
     },
     "slide5": {
-      "description":
-        "场景完成后，单击{submitButton}将其提交到创作大赛。",
+      "description": "场景完成后，单击{submitButton}将其提交到创作大赛。",
       "email_cta": "注册以取得编辑器和大赛更新信息：",
       "title": "参加大赛"
     },
@@ -204,8 +201,7 @@
   },
   "unsupported_browser_page": {
     "back": "返回项目",
-    "subtitle":
-      "The Builder 不能在您的浏览器中运行.{br}请使用 {chrome} 或者 {firefox} 浏览器！",
+    "subtitle": "The Builder 不能在您的浏览器中运行.{br}请使用 {chrome} 或者 {firefox} 浏览器！",
     "title": "哎哟!"
   },
   "validation": {

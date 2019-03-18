@@ -199,9 +199,9 @@
     "localstorage": "Los proyectos se guardan automáticamente en su navegador"
   },
   "contest": {
-    "mana": "900K MANA",
+    "mana": "900,000 MANA",
     "land": "50 LAND",
-    "usd": "50K USD",
+    "usd": "50,000 USD",
     "submit_text": "Enviar al concurso",
     "update_text": "Actualizar entrada",
     "banner": {

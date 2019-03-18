@@ -3,20 +3,18 @@
     "contact_information": "연락처 정보",
     "error_occurred": "프로젝트를 제출하는 중에 오류가 발생했습니다.",
     "subtitle": "거의 끝났어. ",
-    "success_subtitle":
-      "프로젝트가 정말 멋져 보인다. 제출해 주셔서 감사합니다!",
+    "success_subtitle": "프로젝트가 정말 멋져 보인다. 제출해 주셔서 감사합니다!",
     "success_title": "굉장해!",
     "title": "당신의 장면을 제출하십시오"
   },
   "contest": {
     "banner": {
       "cta": "비디오를보다",
-      "text":
-        "가장 창의적인 장면을 제출하고 지갑의 점유율을 얻으십시오 : {br}{mana} 및 {land} ({usd} 이상!)",
+      "text": "가장 창의적인 장면을 제출하고 지갑의 점유율을 얻으십시오 : {br}{mana} 및 {land} ({usd} 이상!)",
       "title": "모든 빌더에게 전화!"
     },
     "land": "50 LAND",
-    "mana": "900K NT",
+    "mana": "900,000 NT",
     "submit_text": "경연 대회에 제출",
     "update_text": "제출 업데이트",
     "usd": "50,000 USD"
@@ -25,8 +23,7 @@
     "i_accept_the": "나는",
     "know_more": "자세한 내용은 {blog_post_link}",
     "start": "LAND을 획득 할 기회를 얻으세요.",
-    "subtitle":
-      "가장 창의적인 장면을 제출하고 지갑에서 돈을 버십시오 : {mana} 및 {land} (50,000 USD 이상)!",
+    "subtitle": "가장 창의적인 장면을 제출하고 지갑에서 돈을 버십시오 : {mana} 및 {land} (50,000 USD 이상)!",
     "title": "모든 빌더에게 전화!"
   },
   "custom_layout": {
@@ -70,15 +67,13 @@
     "terms_and_conditions": "이용 약관"
   },
   "home_page": {
-    "empty_projects_cta":
-      "멋진 템플릿을 만들기 위해 아래 템플릿을 선택하십시오!",
+    "empty_projects_cta": "멋진 템플릿을 만들기 위해 아래 템플릿을 선택하십시오!",
     "empty_projects_title": "귀하의 프로젝트는 여기에서 살 것입니다.",
     "project_actions": {
       "delete_project": "프로젝트 삭제",
       "duplicate_project": "프로젝트 중복"
     },
-    "subtitle":
-      "Decentraland의 끌어서 놓기 장면 편집기에 오신 것을 환영합니다. ",
+    "subtitle": "Decentraland의 끌어서 놓기 장면 편집기에 오신 것을 환영합니다. ",
     "title": "멋진 것을 만들어라!"
   },
   "itemdrawer": {
@@ -168,16 +163,13 @@
     "localstorage": "프로젝트가 자동으로 브라우저의 저장소에 저장됩니다."
   },
   "topbar": {
-    "add_to_contest_disabled_bounds":
-      "Item of bounds{br} 경계 안의 항목을 이동하십시오!",
-    "add_to_contest_disabled_limits":
-      "너무 많은 {metric}{br} 일부 항목을 삭제하십시오!",
+    "add_to_contest_disabled_bounds": "Item of bounds{br} 경계 안의 항목을 이동하십시오!",
+    "add_to_contest_disabled_limits": "너무 많은 {metric}{br} 일부 항목을 삭제하십시오!",
     "publish": "게시"
   },
   "tutorial_modal": {
     "contest": "{mana}와 {land}의 지분을 얻을 수있는 기회를 얻으십시오.",
-    "email_disclaimer":
-      "가입하면 Decentraland에 대한 뉴스를 구독하고 있습니다.",
+    "email_disclaimer": "가입하면 Decentraland에 대한 뉴스를 구독하고 있습니다.",
     "email_thanks": "감사! ",
     "slide0": {
       "description": "이것은 Decentraland의 새로운 장면 제작자입니다. ",
@@ -192,8 +184,7 @@
       "title": "객체 추가하기"
     },
     "slide3": {
-      "description":
-        "[회전] 도구를 클릭하고 궤도를 드래그하여 개체를 회전합니다.",
+      "description": "[회전] 도구를 클릭하고 궤도를 드래그하여 개체를 회전합니다.",
       "title": "화살표와 궤도"
     },
     "slide4": {
@@ -201,19 +192,16 @@
       "title": "카메라 제어하기"
     },
     "slide5": {
-      "description":
-        "장면이 끝나면 {submitButton}을 클릭하여 제작자 경연 대회에 제출하십시오.",
+      "description": "장면이 끝나면 {submitButton}을 클릭하여 제작자 경연 대회에 제출하십시오.",
       "email_cta": "빌더에 가입하고 컨테스트 업데이트 :",
       "title": "경연 대회에 참가하십시오."
     },
-    "subtitle":
-      "빌더는 사용하기 쉽고, 여기에 시작하기 전에 몇 가지 팁이 있습니다.",
+    "subtitle": "빌더는 사용하기 쉽고, 여기에 시작하기 전에 몇 가지 팁이 있습니다.",
     "title": "빌더 시작하기"
   },
   "unsupported_browser_page": {
     "back": "프로젝트로 돌아 가기",
-    "subtitle":
-      "작성자가 귀하의 브라우저를 지원하지 않습니다 .kk {chrome} 또는 {firefox}를 사용하여이 페이지를 방문하십시오.",
+    "subtitle": "작성자가 귀하의 브라우저를 지원하지 않습니다 .kk {chrome} 또는 {firefox}를 사용하여이 페이지를 방문하십시오.",
     "title": "죄송합니다."
   },
   "validation": {
