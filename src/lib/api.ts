@@ -13,8 +13,8 @@ export enum EMAIL_INTEREST {
 }
 
 export class API extends BaseAPI {
-  submitToContest(entry: any, secret: any) {
-    return this.request('post', `${CONTEST_URL}/entry`, { entry, secret })
+  submitToContest(entry: any) {
+    return this.request('post', `${CONTEST_URL}/entry`, { entry })
   }
 
   fetchAssetPack(id: string) {

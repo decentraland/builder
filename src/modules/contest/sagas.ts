@@ -39,7 +39,7 @@ function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
       analytics.identify({ email: contest.email })
     }
 
-    yield call(() => api.submitToContest(JSON.stringify(entry), secret))
+    yield call(() => api.submitToContest(JSON.stringify({ ...entry, secret })))
 
     yield put(submitProjectSuccess(projectId, contest))
   } catch (error) {
