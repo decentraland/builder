@@ -1,0 +1,11 @@
+{
+  "name": "builder",
+  "alias": "builder-staging",
+  "version": 1,
+  "type": "static",
+  "public": false,
+  "github": {
+    "autoAlias": true,
+    "enabled": true
+  }
+}
