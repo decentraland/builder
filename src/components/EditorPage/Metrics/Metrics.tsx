@@ -101,7 +101,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
         {this.metricsExceeded.length > 0 ? (
           <span className="value-too-high" onClick={this.handleToggle}>
             <Icon name="alert" />
-            {t('metrics.too_many', { metric: this.metricsExceeded[0] })}
+            {t('metrics.too_many', { metric: t(`metrics.${this.metricsExceeded[0]}`) })}
           </span>
         ) : null}
       </div>
