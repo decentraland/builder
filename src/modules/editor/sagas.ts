@@ -54,8 +54,6 @@ import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { getSecret } from 'modules/user/selectors'
-import { setSecret } from 'modules/user/actions'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
 
@@ -179,8 +177,6 @@ function handleEditorReadyChange() {
 }
 
 function* handleOpenEditor() {
-  const secret: string | null = yield select(getSecret)
-
   // Handles subscriptions to metrics
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
@@ -194,11 +190,6 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
 
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
-
-  if (!secret) {
-    const newSecret = (+Date.now()).toString()
-    yield put(setSecret(newSecret))
-  }
 
   // Creates a new scene in the dcl client's side
   const project: Project = yield select(getCurrentProject)

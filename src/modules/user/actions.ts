@@ -1,17 +1,17 @@
 import { action } from 'typesafe-actions'
 
+// Set id
+
+export const SET_USER_ID = 'Set user id'
+
+export const setUserId = (id: string) => action(SET_USER_ID, { id })
+
+export type SetUserIdAction = ReturnType<typeof setUserId>
+
 // Set email action
 
-export const SET_EMAIL = 'Set email'
+export const SET_USER_EMAIL = 'Set user email'
 
-export const setEmail = (email: string) => action(SET_EMAIL, { email })
+export const setUserEmail = (email: string) => action(SET_USER_EMAIL, { email })
 
-export type SetEmailAction = ReturnType<typeof setEmail>
-
-// Set secret
-
-export const SET_SECRET = 'Set secret'
-
-export const setSecret = (secret: string | null) => action(SET_SECRET, { secret })
-
-export type SetSecretAction = ReturnType<typeof setSecret>
+export type SetUserEmailAction = ReturnType<typeof setUserEmail>

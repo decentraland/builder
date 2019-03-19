@@ -13,7 +13,7 @@ import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { ACCEPT_TERMS, SUBMIT_PROJECT_SUCCESS } from 'modules/contest/actions'
-import { SET_EMAIL, SET_SECRET } from 'modules/user/actions'
+import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 
@@ -42,8 +42,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DELETE_PROJECT,
     ACCEPT_TERMS,
     SUBMIT_PROJECT_SUCCESS,
-    SET_EMAIL,
-    SET_SECRET
+    SET_USER_ID,
+    SET_USER_EMAIL
   ]
 })
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))

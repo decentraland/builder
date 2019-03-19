@@ -4,6 +4,6 @@ import { User } from './types'
 
 export const getState: (state: RootState) => UserState = state => state.user
 
-export const getEmail: (state: RootState) => User['email'] = state => getState(state).email
+export const getId: (state: RootState) => User['id'] = state => getState(state).id
 
-export const getSecret: (state: RootState) => User['secret'] = state => getState(state).secret
+export const getEmail: (state: RootState) => User['email'] = state => getState(state).email
