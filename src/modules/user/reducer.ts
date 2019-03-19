@@ -1,24 +1,29 @@
 import { SUBMIT_PROJECT_SUCCESS, SubmitProjectSuccessAction } from 'modules/contest/actions'
-import { SetEmailAction, SET_EMAIL } from './actions'
+import { SetUserIdAction, SetUserEmailAction, SET_USER_ID, SET_USER_EMAIL } from './actions'
 import { User } from './types'
 
 export type UserState = User
 
 const INITIAL_STATE: UserState = {
+  id: '',
   email: ''
 }
 
-export type UserReducerAction = SubmitProjectSuccessAction | SetEmailAction
+export type UserReducerAction = SubmitProjectSuccessAction | SetUserEmailAction | SetUserIdAction
 
 export const userReducer = (state = INITIAL_STATE, action: UserReducerAction): UserState => {
   switch (action.type) {
     case SUBMIT_PROJECT_SUCCESS: {
       const { contest } = action.payload
-      return { email: contest.email }
+      return { ...state, email: contest.email }
     }
-    case SET_EMAIL: {
+    case SET_USER_ID: {
+      const { id } = action.payload
+      return { ...state, id }
+    }
+    case SET_USER_EMAIL: {
       const { email } = action.payload
-      return { email }
+      return { ...state, email }
     }
     default:
       return state

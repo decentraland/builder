@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { getEmail } from 'modules/user/selectors'
-import { setEmail } from 'modules/user/actions'
+import { setUserEmail } from 'modules/user/actions'
 import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps } from './TutorialModal.types'
 import TutorialModal from './TutorialModal'
@@ -11,7 +11,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onSetEmail: email => dispatch(setEmail(email))
+  onSetEmail: email => dispatch(setUserEmail(email))
 })
 
 export default connect(

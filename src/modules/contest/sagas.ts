@@ -7,6 +7,7 @@ import { utils } from 'decentraland-commons'
 import { SUBMIT_PROJECT_REQUEST, SubmitProjectRequestAction, submitProjectSuccess, submitProjectFailure } from 'modules/contest/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
+import { getState as getUser } from 'modules/user/selectors'
 import { Project } from 'modules/project/types'
 import { api } from 'lib/api'
 
@@ -17,9 +18,11 @@ export function* contestSaga() {
 function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
   try {
     const { projectId, contest } = action.payload
+
     const storage: ReturnType<typeof getStorage> = yield select(getStorage)
     const projects: ReturnType<typeof getProjects> = yield select(getProjects)
     const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const user: ReturnType<typeof getUser> = yield select(getUser)
 
     const project: Omit<Project, 'thumbnail'> = utils.omit(projects[projectId], ['thumbnail'])
 
@@ -27,7 +30,8 @@ function* handleSubmitProjectRequest(action: SubmitProjectRequestAction) {
       version: storage.version,
       scene: scenes[project.sceneId],
       project,
-      contest
+      contest,
+      user: utils.pick(user, ['id'])
     }
 
     const analytics = getAnalytics()
