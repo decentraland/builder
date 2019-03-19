@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
 
 import { openEditor } from 'modules/editor/actions'
-
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatch, MapDispatchProps } from './Preview.types'
 import { isReady } from 'modules/editor/selectors'
 import { getCurrentLayout } from 'modules/project/selectors'
 import { dropItem } from 'modules/scene/actions'
+import { MapStateProps, MapDispatch, MapDispatchProps } from './Preview.types'
 import Preview from './Preview'
 
 const mapState = (state: RootState): MapStateProps => ({

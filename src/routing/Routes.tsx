@@ -16,7 +16,7 @@ import App from 'components/App'
 
 import { Props, State } from './Routes.types'
 
-export class Routes extends React.Component<Props, State> {
+export default class Routes extends React.Component<Props, State> {
   state = {
     hasError: false,
     stackTrace: ''
