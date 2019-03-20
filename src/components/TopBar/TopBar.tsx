@@ -84,16 +84,16 @@ export default class TopBar extends React.PureComponent<Props> {
     return (
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
-          <Header size="medium" className="project-title-container">
+          <Header size="medium" className="project-title-header">
             <Link className="text" to={locations.root()}>
               <Icon name="chevron left" />
             </Link>
             {currentProject ? (
               <>
-                <span className="project-title" onClick={this.handleTitleClick}>
+                <div className="project-title" onClick={this.handleTitleClick} title={currentProject.title}>
                   {currentProject.title}
-                  <OwnIcon name="edit" className="edit-project-icon" />
-                </span>
+                </div>
+                <OwnIcon name="edit" className="edit-project-icon" />
               </>
             ) : null}
           </Header>
