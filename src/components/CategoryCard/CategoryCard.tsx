@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Header } from 'decentraland-ui'
+
+import Icon from 'components/Icon'
 import { Props } from './CategoryCard.types'
 import './CategoryCard.css'
 
@@ -21,6 +23,7 @@ export default class CategoryCard extends React.PureComponent<Props> {
         <Header size="small" className="title">
           {name}
         </Header>
+        <Icon name="chevron-right" />
       </div>
     )
   }

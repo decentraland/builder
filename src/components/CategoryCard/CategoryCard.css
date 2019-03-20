@@ -11,7 +11,7 @@
 }
 
 .CategoryCard:last-child {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .CategoryCard:hover {
@@ -26,10 +26,15 @@
 }
 
 .CategoryCard .ui.header.small.title {
-  margin-top: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
   color: var(--sidebar-heading);
   font-size: 17px;
   line-height: 26px;
   font-weight: 400;
   text-transform: capitalize;
+}
+
+.CategoryCard .Icon {
+  margin-left: auto;
 }
