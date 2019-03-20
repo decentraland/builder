@@ -11,7 +11,7 @@ import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
 import { store, history } from 'modules/common/store'
 import * as modals from 'components/Modals'
 import * as languages from 'modules/translation/languages'
-import { Routes } from 'routing/Routes'
+import Routes from 'routing/Routes'
 
 import './modules/analytics/track'
 import './modules/analytics/rollbar'
