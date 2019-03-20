@@ -2,6 +2,7 @@ export type IconName =
   | 'alert'
   | 'arrow-down'
   | 'arrow-up'
+  | 'chevron-right'
   | 'close'
   | 'erase'
   | 'delete'

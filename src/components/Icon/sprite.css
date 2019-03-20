@@ -40,8 +40,14 @@
 	height: 6px;
 }
 
+.Icon.chevron-right {
+	background: url("icons.svg") 16.867469879518072% 100% no-repeat;
+	width: 8px;
+	height: 14px;
+}
+
 .Icon.close {
-	background: url("icons.svg") 18.181818181818183% 100% no-repeat;
+	background: url("icons.svg") 28.571428571428573% 100% no-repeat;
 	width: 14px;
 	height: 14px;
 }
@@ -89,7 +95,7 @@
 }
 
 .Icon.list-active {
-	background: url("icons.svg") 36.36363636363637% 92.06349206349206% no-repeat;
+	background: url("icons.svg") 46.753246753246756% 92.06349206349206% no-repeat;
 	width: 14px;
 	height: 9px;
 }
