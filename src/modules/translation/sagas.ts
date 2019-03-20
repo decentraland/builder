@@ -21,14 +21,7 @@ function* handleStorageLoad() {
   const locale = urlParams.get('locale')
   const locales = Object.keys(languages)
 
-  console.log({
-    locale,
-    locales,
-    currentLocale
-  })
-
   if (locale && locale !== currentLocale && locales.includes(locale)) {
-    console.log('Hey')
     yield put(changeLocale(locale as Locale))
   }
 }
