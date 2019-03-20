@@ -10,8 +10,8 @@ import * as languages from './languages'
 export function* translationSaga() {
   const mainSaga = createTranslationSaga({ translations: languages })
 
-  yield mainSaga()
   yield takeLatest(STORAGE_LOAD, handleStorageLoad)
+  yield mainSaga() // This should be last
 }
 
 function* handleStorageLoad() {
