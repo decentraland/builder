@@ -18,6 +18,12 @@ import './modules/analytics/rollbar'
 import './themes'
 import './index.css'
 
+export const DEV_HOST = 'builder.decentraland.zone'
+
+if (window.location.host === DEV_HOST && !window.location.search.includes('noredirect')) {
+  window.location.href = 'https://builder.decentraland.org'
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <DragDropContextProvider backend={HTML5Backend}>
