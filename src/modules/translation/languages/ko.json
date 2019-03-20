@@ -1,217 +1,213 @@
 {
-  "add_to_contest": {
-    "contact_information": "연락처 정보",
-    "error_occurred": "프로젝트를 제출하는 중에 오류가 발생했습니다.",
-    "subtitle": "거의 끝났어. ",
-    "success_subtitle": "프로젝트가 정말 멋져 보인다. 제출해 주셔서 감사합니다!",
-    "success_title": "굉장해!",
-    "title": "당신의 장면을 제출하십시오"
-  },
-  "contest": {
-    "banner": {
-      "cta": "비디오를보다",
-      "text": "가장 창의적인 장면을 제출하고 지갑의 점유율을 얻으십시오 : {br}{mana} 및 {land} ({usd} 이상!)",
-      "title": "모든 빌더에게 전화!"
-    },
-    "land": "50 LAND",
-    "mana": "900,000 NT",
-    "submit_text": "경연 대회에 제출",
-    "update_text": "제출 업데이트",
-    "usd": "50,000 USD"
-  },
-  "contest_modal": {
-    "i_accept_the": "나는",
-    "know_more": "자세한 내용은 {blog_post_link}",
-    "start": "LAND을 획득 할 기회를 얻으세요.",
-    "subtitle": "가장 창의적인 장면을 제출하고 지갑에서 돈을 버십시오 : {mana} 및 {land} (50,000 USD 이상)!",
-    "title": "모든 빌더에게 전화!"
-  },
-  "custom_layout": {
-    "title": "관습",
-    "up_to": "최대 {max} 소포"
-  },
-  "custom_layout_modal": {
-    "subtitle_one": "장면에 대한 사용자 정의 레이아웃을 만들 수 있습니다.",
-    "subtitle_two": "아래 상자에 원하는 크기로 값을 입력하십시오."
-  },
-  "edit_project_modal": {
-    "custom_layout_label": "형세",
-    "title": "프로젝트 세부 정보"
-  },
-  "error_page": {
-    "or": "시도해 보거나",
-    "reload": "페이지 새로 고침",
-    "subtitle": "오류가 발생했습니다. 이것이 우리가 알고있는 전부입니다.",
-    "support": "연락처 지원",
-    "title": "죄송합니다."
-  },
   "global": {
-    "back": "뒤로",
-    "blog_post": "블로그 게시물",
-    "cancel": "취소",
-    "confirm": "확인",
-    "continue": "잇다",
-    "create": "몹시 떠들어 대다",
-    "dismiss": "버리다",
-    "done": "끝난",
-    "email": "이메일",
-    "eth_address": "ETH 주소",
-    "next": "다음 것",
-    "or": "또는",
-    "project": "계획",
-    "projects": "프로젝트들",
-    "save": "구하다",
-    "send": "보내다",
-    "submit": "제출",
+    "projects": "프로젝트 목록",
+    "project": "프로젝트",
     "templates": "템플릿",
-    "terms_and_conditions": "이용 약관"
-  },
-  "home_page": {
-    "empty_projects_cta": "멋진 템플릿을 만들기 위해 아래 템플릿을 선택하십시오!",
-    "empty_projects_title": "귀하의 프로젝트는 여기에서 살 것입니다.",
-    "project_actions": {
-      "delete_project": "프로젝트 삭제",
-      "duplicate_project": "프로젝트 중복"
-    },
-    "subtitle": "Decentraland의 끌어서 놓기 장면 편집기에 오신 것을 환영합니다. ",
-    "title": "멋진 것을 만들어라!"
-  },
-  "itemdrawer": {
-    "empty_ground": "지상 없음",
-    "no_results": "결과 없음",
-    "search": "항목 검색",
-    "search_category": "검색 {category}",
-    "title": "품목 서랍"
+    "terms_and_conditions": "이용 약관",
+    "blog_post": "블로그 포스트",
+    "email": "이메일",
+    "eth_address": "ETH 지갑 주소",
+    "save": "저장",
+    "submit": "제출",
+    "continue": "계속하기",
+    "send": "보내기",
+    "confirm": "확인",
+    "cancel": "취소",
+    "create": "생성",
+    "or": "혹은",
+    "next": "다음",
+    "back": "뒤로",
+    "done": "완료",
+    "dismiss": "삭제"
   },
   "languages": {
     "en": "영어",
-    "es": "스페인 사람",
-    "fr": "프랑스 국민",
-    "ja": "일본어",
-    "ko": "한국어",
-    "zh": "중국말"
+    "zh": "중국어"
   },
-  "layout_picker": {
-    "columns": "기둥",
-    "rows": "행"
-  },
-  "metrics": {
-    "bodies": "시체",
-    "entities": "개체",
-    "geometries": "기하학",
-    "height": "신장",
-    "materials": "기재",
-    "textures": "텍스처",
-    "too_many": "너무 많은 {metric}",
-    "triangles": "삼각형"
+  "home_page": {
+    "title": "멋진 풍경을 제작해 보세요!",
+    "subtitle": "디센트럴랜드의 드래그 앤 드랍 풍경 에디터에 오신 것을 환영합니다. 아래 프로젝트 템플릿을 골라 풍경 제작을 시작하세요.",
+    "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
+    "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
+    "project_actions": {
+      "delete_project": "프로젝트 삭제",
+      "duplicate_project": "프로젝트 복사"
+    }
   },
   "mobile_page": {
-    "message": "빌더는 아직 모바일 장치에서 작동하지 않습니다. ",
-    "success": "고마워, 우리는 계속 게시 할 것입니다!",
-    "title": "죄송합니다."
+    "title": "어이쿠!",
+    "message": "아직 휴대기기에서는 빌더를 사용하실 수 없습니다. 가능하게 되면 말씀드릴게요:",
+    "success": "감사합니다. 새로운 소식 있으면 알려드릴게요!"
   },
   "not_found_page": {
-    "back": "프로젝트로 돌아 가기",
-    "subtitle": "죄송합니다. 찾고 있던 프로젝트를 찾을 수 없습니다.",
-    "title": "404"
+    "title": "404",
+    "subtitle": "죄송합니다. 당신이 찾던 프로젝트를 찾을 수 없습니다",
+    "back": "목록으로 돌아가기"
   },
-  "popups": {
-    "metrics_help": "여기에 통계를 참조하십시오!",
-    "shortcuts_help": "바로 가기를 참조하십시오!"
-  },
-  "project_card": {
-    "added_to_contest": "경연 대회에 제출 됨",
-    "confirm_delete_content": "\"{title}\"프로젝트를 삭제 하시겠습니까? ",
-    "confirm_delete_header": "\"{title}\"삭제"
-  },
-  "project_fields": {
-    "description_field_label": "기술",
-    "description_field_placeholder": "설명 없음",
-    "title_field_label": "표제",
-    "title_field_placeholder": "프로젝트 제목"
-  },
-  "project_layout_picker": {
-    "max_area_error": "귀하의 장면은 {area} 소포를 초과 할 수 없습니다.",
-    "min_area_error": "너의 장면이 너무 작아."
-  },
-  "shortcuts": {
-    "delete": "항목 삭제",
-    "duplicate": "중복 항목",
-    "hold": "보류",
-    "move": "토글 화살표",
-    "move_camera": "카메라 이동",
-    "precision": "그리드에 스냅 무시",
-    "preview": "시사",
-    "redo": "다시 하다",
-    "reset": "항목 재설정",
-    "reset_camera": "카메라 리셋",
-    "rotate": "궤도 전환",
-    "shortcut_reference": "바로 가기 참조",
-    "toggle_colliders": "충돌 자 표시",
-    "toggle_sidebar": "사이드 바 전환",
-    "undo": "끄르다",
-    "zoom_in": "확대",
-    "zoom_out": "축소"
-  },
-  "shortcuts_modal": {
-    "editor_shortcuts": "편집자",
-    "item_shortcuts": "목",
-    "other_shortcuts": "다른",
-    "title": "바로 가기"
-  },
-  "toasts": {
-    "localstorage": "프로젝트가 자동으로 브라우저의 저장소에 저장됩니다."
-  },
-  "topbar": {
-    "add_to_contest_disabled_bounds": "Item of bounds{br} 경계 안의 항목을 이동하십시오!",
-    "add_to_contest_disabled_limits": "너무 많은 {metric}{br} 일부 항목을 삭제하십시오!",
-    "publish": "게시"
-  },
-  "tutorial_modal": {
-    "contest": "{mana}와 {land}의 지분을 얻을 수있는 기회를 얻으십시오.",
-    "email_disclaimer": "가입하면 Decentraland에 대한 뉴스를 구독하고 있습니다.",
-    "email_thanks": "감사! ",
-    "slide0": {
-      "description": "이것은 Decentraland의 새로운 장면 제작자입니다. ",
-      "title": "빌더에 오신 것을 환영합니다!"
-    },
-    "slide1": {
-      "description": "개체를 이동하려면 개체를 클릭하여 끌어서 이동하십시오.",
-      "title": "움직이는 물체"
-    },
-    "slide2": {
-      "description": "오른쪽의 세로 막대에서 장면에 객체를 추가하십시오.",
-      "title": "객체 추가하기"
-    },
-    "slide3": {
-      "description": "[회전] 도구를 클릭하고 궤도를 드래그하여 개체를 회전합니다.",
-      "title": "화살표와 궤도"
-    },
-    "slide4": {
-      "description": "왼쪽 버튼으로 드래그하여 카메라를 회전시킵니다. ",
-      "title": "카메라 제어하기"
-    },
-    "slide5": {
-      "description": "장면이 끝나면 {submitButton}을 클릭하여 제작자 경연 대회에 제출하십시오.",
-      "email_cta": "빌더에 가입하고 컨테스트 업데이트 :",
-      "title": "경연 대회에 참가하십시오."
-    },
-    "subtitle": "빌더는 사용하기 쉽고, 여기에 시작하기 전에 몇 가지 팁이 있습니다.",
-    "title": "빌더 시작하기"
+  "error_page": {
+    "title": "어이쿠!",
+    "subtitle": "오류가 발생했는데, 무슨 문제인지는 모르겠네요:",
+    "support": "고객 센터",
+    "or": "혹은 새로고침을 시도해 보세요",
+    "reload": "페이지 새로고침"
   },
   "unsupported_browser_page": {
-    "back": "프로젝트로 돌아 가기",
-    "subtitle": "작성자가 귀하의 브라우저를 지원하지 않습니다 .kk {chrome} 또는 {firefox}를 사용하여이 페이지를 방문하십시오.",
-    "title": "죄송합니다."
+    "title": "어이쿠!",
+    "subtitle": "이 브라우저에서는 빌더에 접속하실 수 없습니다.{br} {chrome} 이나 {firefox}를 이용해 방문해 주세요",
+    "back": "목록으로 돌아가기"
+  },
+  "project_card": {
+    "added_to_contest": "대회에 출품되었습니다",
+    "confirm_delete_header": "\"{title}\" 삭제",
+    "confirm_delete_content": "정말 \"{title}\"를 삭제하시겠습니까? 삭제된 프로젝트는 되돌릴 수 없습니다"
+  },
+  "itemdrawer": {
+    "title": "아이템함",
+    "search": "아이템 검색",
+    "search_category": "{category} 검색",
+    "no_results": "아이템을 찾을 수 없습니다",
+    "empty_ground": "땅이 없습니다"
+  },
+  "topbar": {
+    "add_to_contest_disabled_limits": "{metric}이 너무 많습니다{br}아이템을 몇 개 지워 보세요!",
+    "add_to_contest_disabled_bounds": "아이템이 범위 밖에 있습니다{br}아이템을 범위 안으로 옮기세요!",
+    "publish": "Publish"
+  },
+  "metrics": {
+    "triangles": "삼각형",
+    "materials": "재료",
+    "geometries": "지오메트리",
+    "bodies": "물체",
+    "entities": "객체",
+    "textures": "텍스쳐",
+    "height": "높이",
+    "too_many": "{metric}이 너무 많습니다"
+  },
+  "contest_modal": {
+    "title": "모든 건축가님께 알립니다!",
+    "subtitle": "창의적인 풍경을 제출하고 상금을 획득하세요: {mana} 및 {land} (미화 50,000달러 이상!)",
+    "start": "구독하시면 추첨을 통해 LAND를 드립니다",
+    "know_more": "더 자세한 정보는 {blog_post_link}를 확인해 주세요",
+    "i_accept_the": "본인은 다음 사항에 동의합니다"
+  },
+  "add_to_contest": {
+    "title": "풍경 제출하기",
+    "subtitle": "거의 다 완료되셨네요. 풍경을 제출하기 전에 프로젝트와 연락처를 확인해 주세요.",
+    "success_title": "좋아요!",
+    "success_subtitle": "당신의 프로젝트는 정말 멋져 보이네요. 참여해 주셔서 감사합니다!",
+    "contact_information": "연락처",
+    "error_occurred": "프로젝트 출품 중에 오류가 발생했습니다:"
+  },
+  "shortcuts": {
+    "move": "이동",
+    "rotate": "회전",
+    "reset": "아이템 리셋",
+    "duplicate": "아이템 복사",
+    "delete": "아이템 삭제",
+    "move_camera": "카메라 이동",
+    "zoom_in": "줌인",
+    "zoom_out": "줌아웃",
+    "reset_camera": "카메라 리셋",
+    "toggle_colliders": "Collider 켜기",
+    "toggle_sidebar": "사이드바 켜기/끄기",
+    "preview": "미리 보기",
+    "undo": "실행 취소",
+    "redo": "다시 실행",
+    "shortcut_reference": "단축키 보기",
+    "precision": "Snap-to-grid 무시",
+    "hold": "고정"
+  },
+  "popups": {
+    "shortcuts_help": "여기서 단축기를 확인하세요!",
+    "metrics_help": "여기서 사용된 아이템의 수를 확인하세요!"
+  },
+  "shortcuts_modal": {
+    "title": "단축키",
+    "item_shortcuts": "아이템",
+    "editor_shortcuts": "에디터",
+    "other_shortcuts": "기타"
+  },
+  "edit_project_modal": {
+    "title": "프로젝트 정보",
+    "custom_layout_label": "크기"
+  },
+  "project_fields": {
+    "title_field_label": "제목",
+    "title_field_placeholder": "프로젝트 제목",
+    "description_field_label": "설명",
+    "description_field_placeholder": "설명 없음"
   },
   "validation": {
     "project": {
-      "description": {
-        "length": "설명 길이는 {min}과 {max} 문자 사이 여야합니다."
-      },
       "title": {
-        "length": "제목 길이는 {min} ~ {max} 문자 사이 여야합니다."
+        "length": "제목의 길이는 최소 {min}자, 최대 {max}자여야 합니다."
+      },
+      "description": {
+        "length": "풍경 설명은 최소 {min}자, 최대 {max}자여야 합니다."
       }
+    }
+  },
+  "custom_layout_modal": {
+    "subtitle_one": "제작할 풍경의 크기를 직접 설정할 수 있습니다.",
+    "subtitle_two": "원하는 크기를 아래 글상자에 입력하세요."
+  },
+  "layout_picker": {
+    "rows": "행",
+    "columns": "열"
+  },
+  "custom_layout": {
+    "title": "크기 직접 설정",
+    "up_to": "최대 {max} 구획"
+  },
+  "project_layout_picker": {
+    "max_area_error": "풍경은 최대 {area} 구획을 초과할 수 없습니다",
+    "min_area_error": "풍경이 너무 작습니다"
+  },
+  "tutorial_modal": {
+    "title": "빌더로 풍경 제작을 시작해 보세요",
+    "subtitle": "빌더는 사용하기 정말 쉽답니다. 시작하기 전에 약간의 팁을 알려 드릴게요",
+    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
+    "email_disclaimer": "구독함으로써 당신은 디센트럴랜드의 최신 정보를 메일로 받게 됩니다.",
+    "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
+    "slide0": {
+      "title": "빌더에 오신 것을 환영합니다!",
+      "description": "이 곳은 디센트럴랜드의 최신 풍경 빌더입니다. 시작하기 전에 기본적인 것을 가르쳐 드리겠습니다."
+    },
+    "slide1": {
+      "title": "오브젝트 이동하기",
+      "description": "오브젝트를 클릭하고 드래그하여 이동하세요."
+    },
+    "slide2": {
+      "title": "오브젝트 추가하기",
+      "description": "우측의 사이드바에서 오브젝트를 선택해 당신의 풍경에 추가해 보세요."
+    },
+    "slide3": {
+      "title": "이동과 회전",
+      "description": "회전을 클릭하고 마우스를 드래그하여 오브젝트를 회전하세요."
+    },
+    "slide4": {
+      "title": "카메라 조작하기",
+      "description": "마우스의 왼쪽 버튼으로 카메라를 회전하고, 오른쪽 버튼으로 높이를 조절하세요."
+    },
+    "slide5": {
+      "title": "대회에 참가하세요",
+      "description": "풍경 제작을 완료하신 후에는 {submitButton}을 클릭하여 제작자 콘테스트에 출품하세요.",
+      "email_cta": "빌더에 가입하고 최신 대회 정보를 받아 보세요:"
+    }
+  },
+  "toasts": {
+    "localstorage": "프로젝트는 브라우저 저장 공간에 자동 저장됩니다"
+  },
+  "contest": {
+    "mana": "900,000 MANA",
+    "land": "50 LAND",
+    "usd": "미화 50,000달러",
+    "submit_text": "대회에 출품하기",
+    "update_text": "제출 내역 업데이트",
+    "banner": {
+      "title": "모든 건축가님께 알립니다!",
+      "text": "창의적인 풍경을 제출하고 상금을 획득하세요:{br}{mana} 및 {land} (미화 {usd} 이상!)",
+      "cta": "영상 시청하기"
     }
   }
 }
