@@ -36,20 +36,17 @@
   margin-left: 8px;
 }
 
-.TopBar .project-title-container {
+.TopBar .project-title-header {
   display: flex;
   align-items: center;
-}
-
-.TopBar .ground {
-  margin-right: 10px;
 }
 
 .TopBar .project-title {
   user-select: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .TopBar .edit-project-icon {
