@@ -6,7 +6,6 @@ jobs:
     working_directory: /tmp/app
     steps:
       - checkout
-      # Frontend
       - restore_cache:
           keys:
             - frontend-dependencies-{{ checksum "package-lock.json" }}
@@ -62,6 +61,17 @@ workflows:
           context: builder-prd
           requires:
             - build
+  build-deploy-staging:
+    jobs:
+      - build:
+          context: builder-stg
+          filters:
+            branches:
+              only: staging
+      - deploy:
+          context: builder-stg
+          requires:
+            - build
   build-deploy-master:
     jobs:
       - build:
@@ -80,4 +90,5 @@ workflows:
             branches:
               ignore:
                 - master
+                - staging
                 - release
