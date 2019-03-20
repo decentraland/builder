@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Header } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { isStaging } from 'routing/locations'
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
@@ -9,7 +10,6 @@ import { Template } from 'modules/template/types'
 import { Props, DefaultProps } from './HomePage.types'
 
 import './HomePage.css'
-import { DEV_HOST } from 'index'
 
 export default class HomePage extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
@@ -57,7 +57,7 @@ export default class HomePage extends React.PureComponent<Props> {
     const templates = getTemplates()
     return (
       <div className="HomePage">
-        {window.location.host === DEV_HOST && (
+        {isStaging() && (
           <div className="dev-warning">
             <T id="global.dev" values={{ site: <a href="https://builder.decentraland.org">https://builder.decentraland.org</a> }} />
           </div>

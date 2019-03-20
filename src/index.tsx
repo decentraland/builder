@@ -12,15 +12,14 @@ import { store, history } from 'modules/common/store'
 import * as modals from 'components/Modals'
 import * as languages from 'modules/translation/languages'
 import { Routes } from 'routing/Routes'
+import { isStaging } from 'routing/locations'
 
 import './modules/analytics/track'
 import './modules/analytics/rollbar'
 import './themes'
 import './index.css'
 
-export const DEV_HOST = 'builder.decentraland.zone'
-
-if (window.location.host === DEV_HOST && !window.location.search.includes('noredirect')) {
+if (isStaging() && !window.location.search.includes('noredirect')) {
   window.location.href = 'https://builder.decentraland.org'
 }
 
