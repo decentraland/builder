@@ -64,7 +64,8 @@
     "send": "发送",
     "submit": "提交",
     "templates": "模板",
-    "terms_and_conditions": "使用条款"
+    "terms_and_conditions": "使用条款",
+    "dev": "警告：此站点仅供测试人员使用。要参加比赛，请访问 {site}"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",

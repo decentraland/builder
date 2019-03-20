@@ -64,7 +64,8 @@
     "send": "보내다",
     "submit": "제출",
     "templates": "템플릿",
-    "terms_and_conditions": "이용 약관"
+    "terms_and_conditions": "이용 약관",
+    "dev": "경고 :이 사이트는 테스터 전용입니다. 대회에 참가하려면 {site} 를 방문하십시오."
   },
   "home_page": {
     "empty_projects_cta": "멋진 템플릿을 만들기 위해 아래 템플릿을 선택하십시오!",

@@ -64,7 +64,8 @@
     "send": "Envoyer",
     "submit": "Soumettre",
     "templates": "des modèles",
-    "terms_and_conditions": "Termes et conditions"
+    "terms_and_conditions": "Termes et conditions",
+    "dev": "Avertissement: Ce site est réservé aux testeurs. Pour participer au concours, veuillez visiter {site}"
   },
   "home_page": {
     "empty_projects_cta": "Sélectionnez un modèle ci-dessous pour commencer à créer des trucs géniaux!",

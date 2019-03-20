@@ -64,7 +64,8 @@
     "send": "送る",
     "submit": "提出する",
     "templates": "テンプレート",
-    "terms_and_conditions": "利用規約"
+    "terms_and_conditions": "利用規約",
+    "dev": "警告：このサイトはテスター専用です。コンテストに参加するには、{site} にアクセスしてください。"
   },
   "home_page": {
     "empty_projects_cta": "下のテンプレートを選択して素晴らしいものを作り始めてください！",

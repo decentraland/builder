@@ -18,7 +18,8 @@
     "next": "siguiente",
     "back": "volver",
     "done": "OK",
-    "dismiss": "Descartar"
+    "dismiss": "Descartar",
+    "dev": "ADVERTENCIA: Este sitio esta destinado a pruebas, para participar del concurso visita {site}"
   },
   "languages": {
     "en": "English",

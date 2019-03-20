@@ -18,7 +18,8 @@
     "next": "next",
     "back": "back",
     "done": "done",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "dev": "WARNING: this site is for testers only, to participate in the contest please visit {site}"
   },
   "languages": {
     "en": "English",

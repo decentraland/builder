@@ -10,6 +10,8 @@ import { Props, DefaultProps } from './HomePage.types'
 
 import './HomePage.css'
 
+const STG_HOST = 'builder.decentraland.zone'
+
 export default class HomePage extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
     projects: {}
@@ -56,6 +58,11 @@ export default class HomePage extends React.PureComponent<Props> {
     const templates = getTemplates()
     return (
       <div className="HomePage">
+        {window.location.host === STG_HOST && (
+          <div className="dev-warning">
+            <T id="global.dev" values={{ site: <a href="https://builder.decentraland.org">https://builder.decentraland.org</a> }} />
+          </div>
+        )}
         <Header size="large">{t('home_page.title')}</Header>
         <p className="subtitle">{t('home_page.subtitle')}</p>
         {this.renderBanner()}
