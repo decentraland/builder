@@ -27,9 +27,9 @@
   },
   "home_page": {
     "title": "¡Crea algo espectacular!",
-    "subtitle": "Bienvenido al editor de escenas de Decentraland. Seleccione una de las plantillas de proyecto a continuación para comenzar.",
+    "subtitle": "Bienvenido al editor de escenas de Decentraland. Selecciona una de las plantillas de proyecto debajo para comenzar.",
     "empty_projects_title": "Tus proyectos vivirán aquí",
-    "empty_projects_cta": "¡Selecciona una plantilla a continuación para comenzar a construir cosas increíbles!",
+    "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
     "project_actions": {
       "delete_project": "Borrar proyecto",
       "duplicate_project": "Duplicar proyecto"
@@ -38,7 +38,7 @@
   "mobile_page": {
     "title": "Oops!",
     "message": "El Builder aún no funciona en dispositivos móbiles. Te avisaremos cuando esté listo:",
-    "success": "Gracias, te mantendremos al tanto!"
+    "success": "Gracias, ¡te mantendremos al tanto!"
   },
   "not_found_page": {
     "title": "404",
@@ -54,13 +54,13 @@
   },
   "unsupported_browser_page": {
     "title": "Oops!",
-    "subtitle": "El Builder no es compatible con su navegador. {br} Visite esta página usando {chrome} o {firefox}",
+    "subtitle": "El Builder no es compatible con su navegador.{br}Visita esta página usando {chrome} o {firefox}",
     "back": "Volver a Proyectos"
   },
   "project_card": {
     "added_to_contest": "Enviado al concurso",
     "confirm_delete_header": "Borrar \"{title}\"",
-    "confirm_delete_content": "Está seguro que quiere borrar su proyecto \"{title}\"? Esta operación no es reversible"
+    "confirm_delete_content": "¿Seguro que quieres borrar tu proyecto \"{title}\"? Esta operación es ireversible"
   },
   "itemdrawer": {
     "title": "Listado de objetos",
@@ -70,8 +70,8 @@
     "empty_ground": "Sin piso"
   },
   "topbar": {
-    "add_to_contest_disabled_limits": "Demasiados {metric}{br}Intenta borrar algunos objetos!",
-    "add_to_contest_disabled_bounds": "Objeto fuera de límites{br}Muevelo dentro de los límites!",
+    "add_to_contest_disabled_limits": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
+    "add_to_contest_disabled_bounds": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
     "publish": "Publicar"
   },
   "metrics": {
@@ -85,19 +85,19 @@
     "too_many": "Demasiados {metric}"
   },
   "contest_modal": {
-    "title": "Llamando a todos los creadores!",
+    "title": "¡Llamando a todos los creadores!",
     "subtitle": "Envía tus escenas más creativas y gana una parte del pozo: {mana} y {land} (¡más de 50 K USD!)",
     "start": "Suscríbete para tener la oportunidad de ganar ",
-    "know_more": "Para obtener más información, lea nuestro  {blog_post_link}",
+    "know_more": "Para obtener más información, lee nuestro {blog_post_link}",
     "i_accept_the": "Acepto los "
   },
   "add_to_contest": {
     "title": "Enviar tu escena",
     "subtitle": "Ya casi terminas. Por favor revise su proyecto e información de contacto antes de enviar su escena.",
     "success_title": "¡Genial!",
-    "success_subtitle": "Su proyecto se ve muy bien, ¡gracias!",
+    "success_subtitle": "El proyecto se ve muy bien, ¡gracias!",
     "contact_information": "Información de contacto",
-    "error_occurred": "Ocurrió un error enviando su proyecto:"
+    "error_occurred": "Ocurrió un error enviando el proyecto:"
   },
   "shortcuts": {
     "move": "Alternar flechas",
@@ -150,14 +150,14 @@
   },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
-    "subtitle_two": "Ingrese los valores debajo para el tamaño deseado."
+    "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
   "layout_picker": {
     "rows": "filas",
     "columns": "columnas"
   },
   "custom_layout": {
-    "title": "Personalizados",
+    "title": "Personalizada",
     "up_to": "Hasta {max} parcelas"
   },
   "project_layout_picker": {
@@ -171,12 +171,12 @@
     "email_disclaimer": "Al registrarte, te suscribes a las noticias sobre Decentraland",
     "contest": "Ingresa por una oportunidad de ganar una parte de {mana} y {land}",
     "slide0": {
-      "title": "Bienvenido al Builder!",
-      "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around."
+      "title": "¡Bienvenido al Builder!",
+      "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona."
     },
     "slide1": {
       "title": "Moviendo objetos",
-      "description": "Para mover un objeto, haga clic y arrastre el objeto."
+      "description": "Para mover un objeto, haz clic y arrastralo."
     },
     "slide2": {
       "title": "Añadiendo objetos",
@@ -188,12 +188,12 @@
     },
     "slide4": {
       "title": "Controlando la cámara",
-      "description": "Arrastre con el botón izquierdo para girar la cámara. Use el botón derecho para desplazarse."
+      "description": "Arrastra con el botón izquierdo para girar la cámara. Use el botón derecho para desplazarse."
     },
     "slide5": {
       "title": "Participa en el concurso",
-      "description": "Cuando la escena haya finalizado, haga clic en {submitButton} para enviarla al concurso",
-      "email_cta": "Regístrese para recibir actualizaciones del Builder y concursos:"
+      "description": "Cuando la escena esté terminada, haz clic en {submitButton} para enviarla al concurso",
+      "email_cta": "Regístrate para recibir actualizaciones del Builder y concursos:"
     }
   },
   "toasts": {
