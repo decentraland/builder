@@ -12,6 +12,15 @@
   text-transform: uppercase;
 }
 
+.AddToContestModal .terms {
+  display: flex;
+  align-items: center;
+}
+
+.AddToContestModal .terms .ui.checkbox label {
+  margin-right: 0px;
+}
+
 .AddToContestModal .details,
 .AddToContestModal .buttons-container,
 .AddToContestModal .loading-container {

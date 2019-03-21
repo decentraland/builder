@@ -7,7 +7,7 @@ import { getEmail } from 'modules/user/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { editProjectRequest } from 'modules/project/actions'
 import { submitProjectRequest } from 'modules/contest/actions'
-import { getData as getContest, isLoading, getError } from 'modules/contest/selectors'
+import { getData as getContest, isLoading, getError, hasAcceptedTerms } from 'modules/contest/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './AddToContestModal.types'
 import AddToContestModal from './AddToContestModal'
 
@@ -16,7 +16,8 @@ const mapState = (state: RootState): MapStateProps => ({
   contest: getContest(state),
   isLoading: isLoading(state),
   error: getError(state),
-  userEmail: getEmail(state)
+  userEmail: getEmail(state),
+  hasAcceptedTerms: hasAcceptedTerms(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

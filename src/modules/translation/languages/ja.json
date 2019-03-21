@@ -19,13 +19,6 @@
     "update_text": "投稿を更新する",
     "usd": "50,000 USD"
   },
-  "contest_modal": {
-    "i_accept_the": "私は受け入れます",
-    "know_more": "詳細については、私たちの{blog_post_link}を読んでください",
-    "start": "LANDを獲得するチャンスを購読する",
-    "subtitle": "あなたの最もクリエイティブなシーンを投稿して、財布のシェアを稼ぎましょう：{mana}と{land}（50,000ドル以上！）",
-    "title": "すべての建築者を呼ぶ！"
-  },
   "custom_layout": {
     "title": "カスタム",
     "up_to": "{max}区画まで"
@@ -64,7 +57,8 @@
     "send": "送る",
     "submit": "提出する",
     "templates": "テンプレート",
-    "terms_and_conditions": "利用規約"
+    "terms_and_conditions": "利用規約",
+    "optional": "オプション"
   },
   "home_page": {
     "empty_projects_cta": "下のテンプレートを選択して素晴らしいものを作り始めてください！",
