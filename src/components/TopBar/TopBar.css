@@ -1,6 +1,6 @@
 .ui.grid.TopBar {
   height: var(--topbar-height);
-  background: var(--dark);
+  background: var(--void);
 }
 
 .ui.grid.TopBar > .column:not(.row) {

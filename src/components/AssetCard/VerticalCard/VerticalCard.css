@@ -5,7 +5,7 @@
   justify-content: center;
   border-radius: 8px;
   flex-direction: column;
-  background: rgba(var(--purplish-grey-raw), 0.4);
+  background: rgba(var(--bluish-steel-raw), 0.4);
   padding: 16px 10px;
   height: 105px;
 }
@@ -16,7 +16,7 @@
 }
 
 .AssetCard.vertical:hover {
-  background: rgba(var(--purplish-grey-raw), 0.64);
+  background: rgba(var(--bluish-steel-raw), 0.64);
 }
 
 .AssetCard.vertical .thumbnail {

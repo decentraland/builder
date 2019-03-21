@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { Row } from 'decentraland-ui'
 
 import Icon from 'components/Icon'
 import { Props, DefaultProps } from './Chip.types'
+
 import './Chip.css'
 
 export default class Chip extends React.PureComponent<Props> {
@@ -32,9 +34,7 @@ export default class Chip extends React.PureComponent<Props> {
 
     return (
       <div className={this.getClassName()} onClick={isDisabled ? undefined : onClick}>
-        <div className="centered-container">
-          {text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}
-        </div>
+        <Row center>{text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}</Row>
       </div>
     )
   }

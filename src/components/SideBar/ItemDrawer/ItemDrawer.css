@@ -69,7 +69,7 @@
 .ItemDrawer .ui.search-input input,
 .ItemDrawer .ui.search-input input:focus {
   outline: none;
-  background: rgba(var(--purplish-grey-raw), 0.2);
+  background: rgba(var(--bluish-steel-raw), 0.2);
   border: none;
   border-radius: 8px;
   padding: 8px;
@@ -84,7 +84,7 @@
 }
 
 .ItemDrawer .search.icon {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
   position: absolute;
   left: 8px;
   top: 8px;
@@ -94,7 +94,7 @@
   width: 100%;
   text-align: center;
   padding: 16px;
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
 }
 
 .ItemDrawer img.thumbnail:after {
@@ -107,7 +107,7 @@
   bottom: 0;
   width: 50px;
   height: 50px;
-  background-color: rgba(var(--purplish-grey-raw), 0.28);
+  background-color: rgba(var(--bluish-steel-raw), 0.28);
   border-radius: 100%;
   content: '';
 }

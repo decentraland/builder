@@ -16,15 +16,15 @@
 }
 
 .ErrorPage .subtitle {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
 }
 
 .ErrorPage textarea.trace {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
   outline: none;
   border: 0px;
   border-radius: 6px;
-  background: var(--dark);
+  background: var(--void);
   margin: 24px 0px;
   padding: 16px;
   resize: none;

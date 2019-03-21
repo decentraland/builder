@@ -1,11 +1,10 @@
 import * as React from 'react'
-import { Popup } from 'decentraland-ui'
+import { Popup, Row, Close } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Icon from 'components/Icon'
 import ShortcutTooltip from 'components/ShortcutTooltip'
-import { ClosePopup } from 'components/Popups'
 import { IconName } from 'components/Icon/Icon.types'
 import { debounce } from 'lib/debounce'
 import { Shortcut } from 'modules/keyboard/types'
@@ -129,7 +128,12 @@ export default class Tools extends React.PureComponent<Props, State> {
         <Popup
           open={isShortcutPopupOpen && this.isShortcutPopupDismissed()}
           className="shortcut-popup"
-          content={<ClosePopup text={t('popups.shortcuts_help')} onClick={this.handleCloseShortcutPopup} />}
+          content={
+            <Row center>
+              {t('popups.shortcuts_help')}
+              <Close small onClick={this.handleCloseShortcutPopup} />
+            </Row>
+          }
           position="top right"
           verticalOffset={3}
           trigger={this.renderShortcutIcon()}

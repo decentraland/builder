@@ -1,22 +1,7 @@
 :root {
   /* Colors */
-  --purplish-grey: #676370;
-  --purplish-grey-raw: 103, 99, 112;
-
-  --error: var(--neon-red);
-  --error-raw: 255, 0, 68;
-
-  --dark: #16141a;
-
-  --dark-two: #242129;
-
   --contest-primary: #691fa9;
-
   --contest-pink: #ff80ff;
-
-  /* Decentraland UI */
-  --card-background: var(--purplish-grey);
-  --hover: #5b5760;
 
   /**
   * Component variables
@@ -37,8 +22,4 @@
   /* Preview */
   --preview-background: #38333f;
   --preview-z-index: 1100;
-
-  /* Modal */
-  --modal-border-radius: 16px;
-  --modal-title-font-size: 28px;
 }

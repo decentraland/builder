@@ -1,8 +1,3 @@
-.AddToContestModal .title {
-  font-size: var(--modal-title-font-size);
-  margin-bottom: 20px;
-}
-
 .AddToContestModal .subtitle {
   font-size: 17px;
 }
@@ -17,29 +12,29 @@
   align-items: center;
 }
 
+.AddToContestModal .terms .ui.radio.checkbox {
+  height: 27px;
+}
+
 .AddToContestModal .terms .ui.checkbox label {
   margin-right: 0px;
 }
 
-.AddToContestModal .details,
-.AddToContestModal .buttons-container,
-.AddToContestModal .loading-container {
+.AddToContestModal .terms,
+.AddToContestModal .terms a {
+  font-size: 17px;
+}
+
+.AddToContestModal .details {
   margin-top: 30px;
 }
 
-.AddToContestModal .loading-container {
-  margin-top: 25px;
-}
-
-.AddToContestModal .loading-container,
-.AddToContestModal .loading-container .ui.loader {
+.AddToContestModal .actions .ui.loader {
   position: relative;
-}
-
-.AddToContestModal .loading-container .ui.loader {
   top: 24px;
 }
 
 .AddToContestModal .error {
+  margin-top: 24px;
   color: var(--error);
 }

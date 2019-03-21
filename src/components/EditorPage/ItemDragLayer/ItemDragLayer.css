@@ -19,7 +19,7 @@
 }
 
 .ItemDragLayer .thumbnail.empty {
-  background: rgba(var(--purplish-grey-raw), 0.4);
+  background: rgba(var(--bluish-steel-raw), 0.4);
 }
 
 .ItemDragLayer .thumbnail.empty:after {
@@ -32,7 +32,7 @@
   bottom: 0;
   width: 30px;
   height: 30px;
-  background-color: rgba(var(--purplish-grey-raw), 0.28);
+  background-color: rgba(var(--bluish-steel-raw), 0.28);
   border-radius: 100%;
   content: '';
 }

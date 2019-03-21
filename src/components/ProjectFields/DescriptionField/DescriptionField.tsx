@@ -8,7 +8,7 @@ export default class DescriptionField extends React.PureComponent<FieldProps> {
   render() {
     return (
       <Field
-        icon={this.props.required ? 'asterisk' : ''}
+        icon={this.props.required ? 'asterisk' : undefined}
         label={t('project_fields.description_field_label')}
         placeholder={t('project_fields.description_field_placeholder')}
         pattern={`.{${MIN_DESCRIPTION_LENGTH},${MAX_DESCRIPTION_LENGTH}}`}

@@ -60,8 +60,7 @@
   width: 576px;
   height: 320px;
   border-radius: 8px;
-  background: var(--purplish-grey);
-  margin: 24px 0px;
+  background: var(--bluish-steel);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -91,4 +90,8 @@
 .TutorialModal .form .banner .highlight {
   font-weight: 600;
   color: var(--contest-pink);
+}
+
+.TutorialModal.ui.modal > .actions > .ui.button {
+  flex: none;
 }

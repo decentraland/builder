@@ -2,19 +2,6 @@
   width: 560px;
 }
 
-.EditProjectModal.ui.modal > .content {
-  font-size: 17px;
-  padding: 1.8em;
-}
-
-.EditProjectModal .title {
-  font-size: var(--modal-title-font-size);
-}
-
-.EditProjectModal .details {
-  margin-top: 40px;
-}
-
 .EditProjectModal .picker {
   margin-bottom: 31px;
 }

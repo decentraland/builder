@@ -6,12 +6,8 @@
   font-size: 17px;
 }
 
-.ShortcutsModal .title {
-  font-size: var(--modal-title-font-size);
-}
-
 .ShortcutsModal .shortcut-list .subtitle {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
   font-size: 13px;
   text-transform: uppercase;
 }

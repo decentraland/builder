@@ -65,9 +65,9 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
 
     return (
       <Modal name={name}>
-        <Modal.Content>
-          <div className="title">{t('edit_project_modal.title')}</div>
-          <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit}>
+          <Modal.Header>{t('edit_project_modal.title')}</Modal.Header>
+          <Modal.Content>
             <div className="details">
               <ProjectFields.Title value={title} onChange={this.handleTitleChange} required />
               <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
@@ -79,17 +79,16 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
                 <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} />
               </div>
             </div>
-
-            <div className="buttons-container">
-              <Button primary disabled={hasError}>
-                {t('global.save')}
-              </Button>
-              <Button secondary onClick={onClose}>
-                {t('global.cancel')}
-              </Button>
-            </div>
-          </Form>
-        </Modal.Content>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button primary disabled={hasError}>
+              {t('global.save')}
+            </Button>
+            <Button secondary onClick={onClose}>
+              {t('global.cancel')}
+            </Button>
+          </Modal.Actions>
+        </Form>
       </Modal>
     )
   }

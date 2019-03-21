@@ -1,7 +1,7 @@
 .Square {
-  border: 3px solid var(--purplish-grey);
+  border: 3px solid var(--bluish-steel);
   border-radius: 3px;
-  background-color: rgba(var(--purplish-grey-raw), 0.4);
+  background-color: rgba(var(--bluish-steel-raw), 0.4);
 }
 
 .Square.tiny {

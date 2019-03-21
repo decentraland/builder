@@ -1,10 +1,9 @@
 .HomePage {
   font-size: 17px;
-  margin-bottom: 96px;
 }
 
 .HomePage .subtitle {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
 }
 
 .HomePage .project-cards {
@@ -17,9 +16,9 @@
 .HomePage .empty-projects {
   padding: 47px 0;
   margin-top: var(--homepage-card-margin);
-  background-color: rgba(var(--purplish-grey-raw), 0.16);
+  background-color: rgba(var(--bluish-steel-raw), 0.16);
   border-radius: 12px;
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
   text-align: center;
 }
 .HomePage .empty-projects > div {
@@ -36,7 +35,7 @@
   border-radius: 12px;
   margin-top: var(--homepage-card-margin);
   margin-right: var(--homepage-card-margin);
-  background-color: rgba(var(--purplish-grey-raw), 0.16);
+  background-color: rgba(var(--bluish-steel-raw), 0.16);
   float: left;
   cursor: pointer;
   display: flex;
@@ -51,7 +50,7 @@
 
 .HomePage .banner {
   position: relative;
-  border: 1px solid rgba(var(--purplish-grey-raw), 0.4);
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.4);
   border-radius: 12px;
   padding: 32px;
   padding-top: 24px;

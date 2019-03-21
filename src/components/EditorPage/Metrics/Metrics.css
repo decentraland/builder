@@ -10,7 +10,7 @@
 }
 
 .Metrics.metric-exceeded .Square {
-  background-color: rgba(var(--error-raw), 0.4);
+  background-color: rgba(255, 0, 0, 0.4);
   border-color: var(--error);
 }
 
@@ -26,12 +26,12 @@
 
 .Metrics .bubble .dimensions,
 .Metrics .metric .value-limit {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
 }
 
 .Metrics .bubble {
   position: absolute;
-  background-color: var(--dark);
+  background-color: var(--void);
   padding: 12px;
   border-radius: 6px;
   bottom: 36px;
@@ -58,14 +58,14 @@
   border-top-color: inherit;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  color: var(--dark);
+  color: var(--void);
 }
 
 .Metrics .bubble .divider {
   height: 1px;
   width: 80%;
   margin: 10px auto;
-  border-top: 1px solid var(--purplish-grey);
+  border-top: 1px solid var(--bluish-steel);
   opacity: 0.2;
 }
 
