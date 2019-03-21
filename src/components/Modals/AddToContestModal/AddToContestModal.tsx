@@ -75,8 +75,10 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     }
   }
 
-  handleToggleTermsAndConditions = (_: any) => {
-    this.setState({ contest: { ...this.state.contest, hasAcceptedTerms: !this.state.contest.hasAcceptedTerms } })
+  handleToggleTermsAndConditions = () => {
+    const { contest } = this.state
+    const hasAcceptedTerms = !contest.hasAcceptedTerms
+    this.setState({ contest: { ...contest, hasAcceptedTerms } })
   }
 
   renderForm() {
