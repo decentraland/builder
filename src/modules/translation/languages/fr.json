@@ -19,13 +19,6 @@
     "update_text": "Mettre à jour la soumission",
     "usd": "50,000 USD"
   },
-  "contest_modal": {
-    "i_accept_the": "J'accepte le",
-    "know_more": "Pour en savoir plus, lisez notre {blog_post_link}",
-    "start": "Abonnez-vous pour avoir une chance de gagner LAND",
-    "subtitle": "Soumettez vos scènes les plus créatives et gagnez une part de la bourse: {mana} et {land} (plus de 50 000 USD!)",
-    "title": "Appel à tous les constructeurs!"
-  },
   "custom_layout": {
     "title": "Douane",
     "up_to": "Jusqu'à {max} colis"

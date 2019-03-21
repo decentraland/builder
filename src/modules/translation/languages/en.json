@@ -84,13 +84,6 @@
     "height": "height",
     "too_many": "Too many {metric}"
   },
-  "contest_modal": {
-    "title": "Calling all Builders!",
-    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over 50,000 USD!)",
-    "start": "Subscribe for a chance to win LAND",
-    "know_more": "To learn more, read our {blog_post_link}",
-    "i_accept_the": "I accept the "
-  },
   "add_to_contest": {
     "title": "Submit your scene",
     "subtitle": "You're almost done. Please review your project and contact info before submitting your scene.",

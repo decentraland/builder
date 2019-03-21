@@ -84,13 +84,6 @@
     "height": "altura",
     "too_many": "Demasiados {metric}"
   },
-  "contest_modal": {
-    "title": "¡Llamando a todos los creadores!",
-    "subtitle": "Envía tus escenas más creativas y gana una parte del pozo: {mana} y {land} (¡más de 50 K USD!)",
-    "start": "Suscríbete para tener la oportunidad de ganar ",
-    "know_more": "Para obtener más información, lee nuestro {blog_post_link}",
-    "i_accept_the": "Acepto los "
-  },
   "add_to_contest": {
     "title": "Enviar tu escena",
     "subtitle": "Ya casi terminas. Por favor revise su proyecto e información de contacto antes de enviar su escena.",

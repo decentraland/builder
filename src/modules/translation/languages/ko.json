@@ -84,13 +84,6 @@
     "height": "높이",
     "too_many": "{metric}이 너무 많습니다"
   },
-  "contest_modal": {
-    "title": "모든 건축가님께 알립니다!",
-    "subtitle": "창의적인 풍경을 제출하고 상금을 획득하세요: {mana} 및 {land} (미화 50,000달러 이상!)",
-    "start": "구독하시면 추첨을 통해 LAND를 드립니다",
-    "know_more": "더 자세한 정보는 {blog_post_link}를 확인해 주세요",
-    "i_accept_the": "본인은 다음 사항에 동의합니다"
-  },
   "add_to_contest": {
     "title": "풍경 제출하기",
     "subtitle": "거의 다 완료되셨네요. 풍경을 제출하기 전에 프로젝트와 연락처를 확인해 주세요.",

@@ -19,13 +19,6 @@
     "update_text": "更新提交",
     "usd": "50,000 美元"
   },
-  "contest_modal": {
-    "i_accept_the": "我接受 ",
-    "know_more": "要了解更多，请阅读我们的 {blog_post_link}",
-    "start": "订阅就可以得到一个赢取土地的机会",
-    "subtitle": "提交你最具创意的场景，赢取总奖金高达:90 万+ MANA 和 50 块土地 (超过 5 万美元!)的奖品",
-    "title": "设计人员大召集!"
-  },
   "custom_layout": {
     "title": "自定义",
     "up_to": "最大 {max} 块地块"
