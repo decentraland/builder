@@ -90,7 +90,8 @@
     "success_title": "좋아요!",
     "success_subtitle": "당신의 프로젝트는 정말 멋져 보이네요. 참여해 주셔서 감사합니다!",
     "contact_information": "연락처",
-    "error_occurred": "프로젝트 출품 중에 오류가 발생했습니다:"
+    "error_occurred": "프로젝트 출품 중에 오류가 발생했습니다:",
+    "i_accept_the": "본인은 다음 사항에 동의합니다"
   },
   "shortcuts": {
     "move": "이동",

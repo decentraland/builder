@@ -118,7 +118,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
             />
             <div className="terms">
               <span onClick={this.handleToggleTermsAndConditions}>
-                <Radio defaultChecked={false} checked={contest.hasAcceptedTerms} label={t('contest_modal.i_accept_the')} />
+                <Radio defaultChecked={false} checked={contest.hasAcceptedTerms} label={t('add_to_contest.i_accept_the')} />
               </span>
               &nbsp;
               <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
