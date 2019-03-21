@@ -40,13 +40,8 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   handleAddToContestClick = () => {
-    const { hasAcceptedTerms, onOpenModal } = this.props
-    if (hasAcceptedTerms) {
-      // Also serves as an update entry
-      onOpenModal('AddToContestModal')
-    } else {
-      onOpenModal('ContestModal')
-    }
+    const { onOpenModal } = this.props
+    onOpenModal('AddToContestModal')
   }
 
   handleTitleClick = () => {

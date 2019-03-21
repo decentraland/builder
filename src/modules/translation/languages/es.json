@@ -18,7 +18,8 @@
     "next": "siguiente",
     "back": "volver",
     "done": "OK",
-    "dismiss": "Descartar"
+    "dismiss": "Descartar",
+    "optional": "opcional"
   },
   "languages": {
     "en": "English",

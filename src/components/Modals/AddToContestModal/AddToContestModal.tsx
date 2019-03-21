@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Field, Button, Loader } from 'decentraland-ui'
+import { Form, Field, Button, Loader, Radio } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { api, EMAIL_INTEREST } from 'lib/api'
@@ -68,11 +68,15 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
   }
 
   getBaseState(): State {
-    const { contest, currentProject, userEmail } = this.props
+    const { contest, currentProject, userEmail, hasAcceptedTerms } = this.props
     return {
       project: { ...currentProject! },
-      contest: { ...contest, email: contest.email || userEmail || '' }
+      contest: { ...contest, email: contest.email || userEmail || '', hasAcceptedTerms }
     }
+  }
+
+  handleToggleTermsAndConditions = (_: any) => {
+    this.setState({ contest: { ...this.state.contest, hasAcceptedTerms: !this.state.contest.hasAcceptedTerms } })
   }
 
   renderForm() {
@@ -104,7 +108,21 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
               onChange={this.handleEmailChange}
               required
             />
-            <Field label={t('global.eth_address')} placeholder="0x" value={ethAddress} onChange={this.handleEthAddressChange} />
+            <Field
+              label={`${t('global.eth_address')} (${t('global.optional')})`}
+              placeholder="0x"
+              value={ethAddress}
+              onChange={this.handleEthAddressChange}
+            />
+            <div className="terms">
+              <span onClick={this.handleToggleTermsAndConditions}>
+                <Radio defaultChecked={false} checked={contest.hasAcceptedTerms} label={t('contest_modal.i_accept_the')} />
+              </span>
+              &nbsp;
+              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
+                {t('global.terms_and_conditions')}
+              </a>
+            </div>
           </div>
 
           {error ? (
@@ -119,7 +137,9 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
             </div>
           ) : (
             <div className="buttons-container">
-              <Button primary>{t('global.submit')}</Button>
+              <Button primary disabled={!contest.hasAcceptedTerms}>
+                {t('global.submit')}
+              </Button>
               <Button secondary onClick={preventDefault(onClose)}>
                 {t('global.cancel')}
               </Button>

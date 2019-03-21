@@ -1,5 +1,4 @@
 export { default as AddToContestModal } from './AddToContestModal'
-export { default as ContestModal } from './ContestModal'
 export { default as CustomLayoutModal } from './CustomLayoutModal'
 export { default as EditProjectModal } from './EditProjectModal'
 export { default as ShortcutsModal } from './ShortcutsModal'
