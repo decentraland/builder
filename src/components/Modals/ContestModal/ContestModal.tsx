@@ -70,7 +70,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
                 <Radio defaultChecked={false} checked={hasAcceptedTerms} label={t('contest_modal.i_accept_the')} />
               </span>
               &nbsp;
-              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
+              <a href="https://decentraland.org/contest-terms" rel="noopener noreferrer" target="_blank">
                 {t('global.terms_and_conditions')}
               </a>
             </div>
