@@ -90,7 +90,8 @@
     "success_title": "Awesome!",
     "success_subtitle": "Your project looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
-    "error_occurred": "An error occurred trying to submit your project:"
+    "error_occurred": "An error occurred trying to submit your project:",
+    "i_accept_the": "I accept the "
   },
   "shortcuts": {
     "move": "Toggle arrows",

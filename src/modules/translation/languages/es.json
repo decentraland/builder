@@ -90,7 +90,8 @@
     "success_title": "¡Genial!",
     "success_subtitle": "El proyecto se ve muy bien, ¡gracias!",
     "contact_information": "Información de contacto",
-    "error_occurred": "Ocurrió un error enviando el proyecto:"
+    "error_occurred": "Ocurrió un error enviando el proyecto:",
+    "i_accept_the": "Acepto los "
   },
   "shortcuts": {
     "move": "Alternar flechas",
