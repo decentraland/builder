@@ -20,6 +20,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
 
   componentWillMount() {
     document.addEventListener('click', this.handleClose)
+    this.updateMetrics(this.props)
   }
 
   componentWillUnmount() {
@@ -27,7 +28,11 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    const { metrics, limits } = nextProps
+    this.updateMetrics(nextProps)
+  }
+
+  updateMetrics(props: Props) {
+    const { metrics, limits } = props
     const metricsExceeded = getExceededMetrics(metrics, limits)
 
     for (const metric of metricsExceeded) {
