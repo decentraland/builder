@@ -9,8 +9,7 @@
 .ContestButton.ui.button.mini:active,
 .ContestButton.ui.button.mini:focus,
 .ContestButton.ui.button.mini:hover {
-  background-image: url('../../images/contest-button.png');
-  background-size: 100%;
+  background-color: var(--primary);
   transform: translateY(0px);
 }
 
