@@ -1,5 +1,5 @@
 .LayoutPicker {
-  border-radius: var(--radius);
+  border-radius: 6px;
   background-color: var(--background);
   padding: 32px;
 }
@@ -17,11 +17,11 @@
   display: flex;
   flex-flow: column;
   align-items: center;
-  border-bottom: 2px solid rgba(var(--purplish-grey-raw), 0.16);
+  border-bottom: 2px solid rgba(var(--bluish-steel-raw), 0.16);
 }
 
 .LayoutPicker .inputs label {
-  color: var(--purplish-grey);
+  color: var(--bluish-steel);
   font-size: 15px;
   line-height: 24px;
   text-transform: capitalize;
@@ -70,7 +70,7 @@
   background: var(--background);
   margin-top: 20px;
   padding: 20px 32px;
-  border-radius: var(--radius);
+  border-radius: 6px;
   text-align: center;
   color: var(--error);
 }

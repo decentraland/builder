@@ -21,9 +21,3 @@
   font-size: 12px;
   font-family: monospace;
 }
-
-.ShortcutTooltip .Chip .centered-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}

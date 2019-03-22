@@ -4,11 +4,11 @@
   align-items: center;
   padding: 8px 12px;
   border-radius: 4px;
-  background: rgba(var(--purplish-grey-raw), 0.4);
+  background: rgba(var(--bluish-steel-raw), 0.4);
 }
 
 .AssetCard.horizontal:hover {
-  background: rgba(var(--purplish-grey-raw), 0.72);
+  background: rgba(var(--bluish-steel-raw), 0.72);
 }
 
 .AssetCard.horizontal .thumbnail {

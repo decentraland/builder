@@ -97,15 +97,17 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <div className="title">{slide.title}</div>
-        <div className="subtitle">{slide.description}</div>
-        {step !== this.slides.length - 1 ? (
-          <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
-            <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
-          </div>
-        ) : (
-          this.renderForm()
-        )}
+        <Modal.Header>{slide.title}</Modal.Header>
+        <Modal.Description>{slide.description}</Modal.Description>
+        <Modal.Content>
+          {step !== this.slides.length - 1 ? (
+            <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
+              <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
+            </div>
+          ) : (
+            this.renderForm()
+          )}
+        </Modal.Content>
       </>
     )
   }
@@ -142,22 +144,20 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
     return (
       <Modal name={name} onClose={this.handleClose}>
-        <Modal.Content>
-          {this.renderSlide()}
-          <div className="actions">
-            {step !== 0 ? (
-              <Button onClick={this.handlePreviousStep} secondary>
-                {t('global.back')}
-              </Button>
-            ) : (
-              <div className="spacer" />
-            )}
-            <div className="steps">{this.renderSteps()}</div>
-            <Button primary onClick={this.handleNextStep}>
-              {step === this.slides.length - 1 ? (email ? t('global.send') : t('global.done')) : t('global.next')}
+        {this.renderSlide()}
+        <Modal.Actions>
+          {step !== 0 ? (
+            <Button onClick={this.handlePreviousStep} secondary>
+              {t('global.back')}
             </Button>
-          </div>
-        </Modal.Content>
+          ) : (
+            <div className="spacer" />
+          )}
+          <div className="steps">{this.renderSteps()}</div>
+          <Button primary onClick={this.handleNextStep}>
+            {step === this.slides.length - 1 ? (email ? t('global.send') : t('global.done')) : t('global.next')}
+          </Button>
+        </Modal.Actions>
       </Modal>
     )
   }

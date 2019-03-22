@@ -8,8 +8,6 @@ import { fromLayout } from 'modules/template/utils'
 import { ProjectLayout } from 'modules/project/types'
 import { Props, State } from './CustomLayoutModal.types'
 
-import './CustomLayoutModal.css'
-
 export default class CustomLayoutModal extends React.PureComponent<Props, State> {
   state = {
     rows: 2,
@@ -41,16 +39,15 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
         </Modal.Description>
         <Modal.Content>
           <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} showGrid />
-
-          <div className="buttons">
-            <Button primary disabled={hasError} onClick={this.handleCreate}>
-              {t('global.create')}
-            </Button>
-            <Button secondary onClick={onClose}>
-              {t('global.cancel')}
-            </Button>
-          </div>
         </Modal.Content>
+        <Modal.Actions>
+          <Button primary disabled={hasError} onClick={this.handleCreate}>
+            {t('global.create')}
+          </Button>
+          <Button secondary onClick={onClose}>
+            {t('global.cancel')}
+          </Button>
+        </Modal.Actions>
       </Modal>
     )
   }

@@ -13,7 +13,7 @@
 .Chip {
   font-size: 0.5em;
   border-radius: 4px;
-  background: rgba(var(--purplish-grey-raw), 0.64);
+  background: rgba(var(--bluish-steel-raw), 0.64);
   color: #fff;
   display: inline-block;
   display: flex;
@@ -22,11 +22,11 @@
 }
 
 .Chip.clickeable:hover {
-  background: var(--purplish-grey);
+  background: var(--bluish-steel);
 }
 
 .Chip.active {
-  background: rgba(var(--purplish-grey-raw), 0.32);
+  background: rgba(var(--bluish-steel-raw), 0.32);
 }
 
 .Chip.clickeable {
