@@ -163,7 +163,7 @@
     "subtitle": "El Builder es muy fácil de usar, aquí hay algunos consejos antes de comenzar",
     "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
     "email_disclaimer": "Al registrarte, te suscribes a las noticias sobre Decentraland",
-    "contest": "Ingresa por una oportunidad de ganar una parte de {mana} y {land}",
+    "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
     "slide0": {
       "title": "¡Bienvenido al Builder!",
       "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona."

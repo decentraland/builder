@@ -61,7 +61,8 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
             id="tutorial_modal.contest"
             values={{
               mana: <span className="highlight">{t('contest.mana')}</span>,
-              land: <span className="highlight">{t('contest.land')}</span>
+              land: <span className="highlight">{t('contest.land')}</span>,
+              usd: <span className="highlight">{t('contest.usd')}</span>
             }}
           />
         </div>
