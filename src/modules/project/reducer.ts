@@ -63,7 +63,8 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         data: {
           ...state.data,
           [id]: { ...state.data[id], ...project }
-        }
+        },
+        loading: loadingReducer(state.loading, action)
       }
     }
     case EDIT_PROJECT_FAILURE: {

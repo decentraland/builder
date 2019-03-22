@@ -16,6 +16,7 @@ import { ACCEPT_TERMS, SUBMIT_PROJECT_SUCCESS } from 'modules/contest/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
+import { migrations } from './migrations'
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -30,6 +31,7 @@ const loggerMiddleware = createLogger({
   collapsed: () => true
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
+  migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
   paths: ['project', ['scene', 'present'], 'contest', 'user'],
   actions: [

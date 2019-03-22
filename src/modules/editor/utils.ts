@@ -8,8 +8,8 @@ export const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER_URL', () => {
   throw new Error('Missing REACT_APP_CONTENT_SERVER_URL env variable')
 })
 
-export const THUMBNAIL_WIDTH = 492
-export const THUMBNAIL_HEIGHT = 364
+export const THUMBNAIL_WIDTH = 246
+export const THUMBNAIL_HEIGHT = 182
 
 export function getNewScene(project: Project): EditorScene {
   const mappings = {

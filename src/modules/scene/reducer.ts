@@ -1,6 +1,6 @@
 import undoable, { StateWithHistory, includeAction, ActionTypes } from 'redux-undo'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { EDITOR_UNDO, EDITOR_REDO, OPEN_EDITOR } from 'modules/editor/actions'
 import { Scene } from 'modules/scene/types'
 import {
@@ -41,8 +41,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       const { newScene } = action.payload
 
       return {
-        loading: loadingReducer(state.loading, action),
-        error: null,
+        ...state,
         data: {
           ...state.data,
           [newScene.id]: { ...newScene, components: { ...newScene.components }, entities: { ...newScene.entities } }
