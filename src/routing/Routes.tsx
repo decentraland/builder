@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { Responsive } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
-import { default as DappApp } from 'decentraland-dapps/dist/containers/App'
+import App from 'decentraland-dapps/dist/containers/App'
 
 import { locations } from 'routing/locations'
 
@@ -34,21 +34,21 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   wrapHomepage = (Component: React.ComponentType<any>) => (props: any) => (
-    <DappApp isFullscreen isOverlay>
+    <App isFullscreen isOverlay>
       <Component {...props} />
-    </DappApp>
+    </App>
   )
 
   wrapFullScreen = (Component: React.ComponentType<any>) => (props: any) => (
-    <DappApp isFullscreen>
+    <App isFullscreen>
       <Component {...props} />
-    </DappApp>
+    </App>
   )
 
   wrapApp = (Component: React.ComponentType<any>) => (props: any) => (
-    <DappApp>
+    <App>
       <Component {...props} />
-    </DappApp>
+    </App>
   )
 
   renderRoutes() {
