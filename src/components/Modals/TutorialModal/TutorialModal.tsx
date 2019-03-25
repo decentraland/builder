@@ -15,6 +15,12 @@ import './TutorialModal.css'
 
 const PUBLIC_URL = env.get('PUBLIC_URL')
 const localStorage = getLocalStorage()
+
+// Segment Events
+const TUTORIAL_STEP_EVENT = 'Tutorial Step'
+const TUTORIAL_SKIP_EVENT = 'Tutorial Skip'
+const TUTORIAL_COMPLETE = 'Tutorial Complete'
+
 export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
 
 export default class TutorialModal extends React.PureComponent<Props, State> {
@@ -27,6 +33,18 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   slides = getSlides()
 
   preventVideoContextMenu = preventDefault()
+
+  componentWillMount = () => {
+    const analytics = getAnalytics()
+    analytics.track(TUTORIAL_STEP_EVENT, { step: 0 })
+  }
+
+  handleSkip = () => {
+    const analytics = getAnalytics()
+    analytics.track(TUTORIAL_SKIP_EVENT)
+
+    this.goToSlide(this.slides.length - 1)
+  }
 
   handleSubmitEmail = async () => {
     const { email } = this.state
@@ -95,14 +113,13 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   renderSlide = () => {
     const { step } = this.state
     const slide = this.slides[step]
-    const last = this.slides.length - 1
 
     return (
       <>
         <Modal.Header>
           {slide.title}
-          {step === last ? null : (
-            <Button basic className="skip-tutorial" onClick={() => this.goToSlide(last)}>
+          {step === this.slides.length - 1 ? null : (
+            <Button basic className="skip-tutorial" onClick={this.handleSkip}>
               {t('tutorial_modal.skip_tutorial')}
             </Button>
           )}
@@ -128,9 +145,14 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
         this.handleSubmitEmail().catch(() => console.error('Unable to submit email, something went wrong!'))
       }
       this.props.onClose()
+      const analytics = getAnalytics()
+      analytics.track(TUTORIAL_COMPLETE, { suscribed: !!this.state.email })
       return
     }
     this.setState({ step: index })
+
+    const analytics = getAnalytics()
+    analytics.track(TUTORIAL_STEP_EVENT, { step: index })
   }
 
   handleNextStep = () => {
@@ -140,7 +162,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
   handlePreviousStep = () => {
     const previousStep = this.state.step - 1
-    this.setState({ step: previousStep })
+    this.goToSlide(previousStep)
   }
 
   handleClose = () => {
