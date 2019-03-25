@@ -9,11 +9,5 @@
 .ContestButton.ui.button.mini:active,
 .ContestButton.ui.button.mini:focus,
 .ContestButton.ui.button.mini:hover {
-  background-color: var(--primary);
   transform: translateY(0px);
-}
-
-.ContestButton.ui.button.mini:hover {
-  background-color: var(--bluish-steel);
-  opacity: 0.9;
 }
