@@ -166,6 +166,7 @@
     "contest": "Participez pour courir la chance de gagner une part de {mana} et {land}.",
     "email_disclaimer": "En vous inscrivant, vous vous abonnez aux nouvelles de Decentraland.",
     "email_thanks": "Merci! ",
+    "skip_tutorial": "Passer le tutoriel",
     "slide0": {
       "description": "C'est le nouveau constructeur de scène de Decentraland. ",
       "title": "Bienvenue chez le constructeur!"

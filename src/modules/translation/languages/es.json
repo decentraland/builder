@@ -164,6 +164,7 @@
     "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
     "email_disclaimer": "Al registrarte, te suscribes a las noticias sobre Decentraland",
     "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
+    "skip_tutorial": "Omitir tutorial",
     "slide0": {
       "title": "¡Bienvenido al Builder!",
       "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona."

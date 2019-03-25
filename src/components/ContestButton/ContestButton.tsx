@@ -18,7 +18,7 @@ export default class ContestButton extends React.PureComponent<Props> {
   render() {
     const { isDisabled, shouldUpdateEntry, onClick } = this.props
     return (
-      <Button className="ContestButton" size="mini" onClick={onClick} disabled={isDisabled}>
+      <Button primary className="ContestButton" size="mini" onClick={onClick} disabled={isDisabled}>
         {shouldUpdateEntry ? t('contest.update_text') : t('contest.submit_text')}
       </Button>
     )
