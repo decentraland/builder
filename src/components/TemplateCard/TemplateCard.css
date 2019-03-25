@@ -1,22 +1,35 @@
+.TemplateCard {
+  flex: 1;
+  background: rgba(var(--bluish-steel-raw), 0.16);
+  border-radius: 12px;
+  height: 184px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+  cursor: pointer;
+}
+
+.TemplateCard .wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
 .TemplateCard .project-data {
   width: 100%;
-  padding: 0 10px;
-  text-align: center;
   user-select: none;
+  left: 125px;
+  position: absolute;
 }
 
 .TemplateCard .title {
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  font-size: 20px;
 }
 
 .TemplateCard .description {
-  font-size: 15px;
-  opacity: 0.75;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.TemplateCard .SquaresGrid {
-  margin-bottom: 24px;
+  font-size: 17px;
+  color: #676370;
 }

@@ -3,14 +3,38 @@
 }
 
 .HomePage .subtitle {
-  color: var(--bluish-steel);
+  color: white;
+}
+
+.HomePage .template-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.HomePage .template-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.HomePage .template-row .TemplateCard:last-child {
+  margin-left: 24px;
 }
 
 .HomePage .project-cards {
   margin-top: 47px;
 }
-.HomePage .project-cards .subtitle {
-  font-size: 13px;
+
+.HomePage .template-cards {
+  margin-top: 80px;
+}
+
+.HomePage .project-cards .subtitle,
+.HomePage .template-cards .subtitle {
+  font-size: 20px;
 }
 
 .HomePage .empty-projects {
@@ -27,21 +51,9 @@
 
 .HomePage .CardList {
   overflow: hidden;
+  margin-top: 10px;
 }
 
-.HomePage .Card {
-  width: var(--homepage-card-width);
-  height: var(--homepage-card-height);
-  border-radius: 12px;
-  margin-top: var(--homepage-card-margin);
-  margin-right: var(--homepage-card-margin);
-  background-color: rgba(var(--bluish-steel-raw), 0.16);
-  float: left;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .HomePage .Card:last-child {
   margin-right: 0;
 }

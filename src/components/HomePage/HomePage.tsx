@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Header } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
@@ -27,41 +26,14 @@ export default class HomePage extends React.PureComponent<Props> {
     this.props.onOpenModal('VideoModal')
   }
 
-  renderBanner() {
-    return (
-      <div className="banner">
-        <Header size="large" className="banner-title">
-          {t('contest.banner.title')}
-        </Header>
-        <div className="banner-text">
-          <T
-            id="contest.banner.text"
-            values={{
-              mana: <span className="highlight">{t('contest.mana')}</span>,
-              land: <span className="highlight">{t('contest.land')}</span>,
-              usd: <span className="highlight">{t('contest.usd')}</span>,
-              br: <br />
-            }}
-          />
-        </div>
-        {/* <Button className="banner-cta" onClick={this.handleWatchVideo}>
-          {t('contest.banner.cta')}
-          </Button> */}
-      </div>
-    )
-  }
-
   render() {
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
     return (
       <div className="HomePage">
-        <Header size="large">{t('home_page.title')}</Header>
-        <p className="subtitle">{t('home_page.subtitle')}</p>
-        {this.renderBanner()}
-        <div className="project-cards">
-          <div className="subtitle">{t('global.projects').toUpperCase()}</div>
-          {projects.length > 0 ? (
+        {projects.length > 0 && (
+          <div className="project-cards">
+            <div className="subtitle">{t('home_page.projects_title')}</div>
             <div className="CardList">
               {projects
                 .sort(project => -project.createdAt)
@@ -69,20 +41,20 @@ export default class HomePage extends React.PureComponent<Props> {
                   <ProjectCard key={index} project={project} />
                 ))}
             </div>
-          ) : (
-            <div className="empty-projects">
-              <div>{t('home_page.empty_projects_title')}</div>
-              <small>{t('home_page.empty_projects_cta')}</small>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="project-cards">
-          <div className="subtitle">{t('global.templates').toUpperCase()}</div>
-          <div className="CardList">
-            {templates.map((template, index) => (
-              <TemplateCard key={index} template={template} onClick={this.handleTemplateClick} />
-            ))}
+        <div id="template-cards" className="template-cards">
+          <div className="subtitle">{t('home_page.templates_title')}</div>
+          <div className="template-list">
+            <div className="template-row">
+              <TemplateCard template={templates[0]} onClick={this.handleTemplateClick} />
+              <TemplateCard template={templates[1]} onClick={this.handleTemplateClick} />
+            </div>
+            <div className="template-row">
+              <TemplateCard template={templates[2]} onClick={this.handleTemplateClick} />
+              <TemplateCard template={templates[3]} onClick={this.handleTemplateClick} />
+            </div>
           </div>
         </div>
       </div>

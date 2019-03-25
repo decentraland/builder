@@ -26,9 +26,9 @@
     "es": "Español"
   },
   "home_page": {
-    "title": "¡Crea algo espectacular!",
-    "subtitle": "Bienvenido al editor de escenas de Decentraland. Selecciona una de las plantillas de proyecto debajo para comenzar.",
-    "empty_projects_title": "Tus proyectos vivirán aquí",
+    "title": "¡Llamando a todos los creadores!",
+    "subtitle": "Sube tus escenas más creativas y gana increíbles premios: {mana} y {land} (más de {usd}!). Cada participante obtendrá {mana_per_scene} for each scene.",
+    "templates_title": "Escoge el tamano de tu escena para comenzar",
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
     "project_actions": {
       "delete_project": "Borrar proyecto",

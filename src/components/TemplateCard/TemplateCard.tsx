@@ -17,10 +17,10 @@ export default class TemplateCard extends React.PureComponent<Props> {
 
   render() {
     const { template } = this.props
-    // Use 2x4 as the default size for the grid we render in the card
+    // Use 3x3 as the default size for the grid we render in the card
     // even if the undefined layout means `Custom build`
-    let rows = 2
-    let cols = 4
+    let rows = 3
+    let cols = 3
 
     if (template.layout) {
       rows = template.layout.rows
@@ -28,12 +28,13 @@ export default class TemplateCard extends React.PureComponent<Props> {
     }
 
     return (
-      <div className="TemplateCard Card" onClick={this.handleOnClick}>
-        <div className="project-data">
+      <div className="TemplateCard" onClick={this.handleOnClick}>
+        <div className="wrapper">
           <SquaresGrid cols={cols} rows={rows} />
-
-          <div className="title">{template.title}</div>
-          <div className="description">{template.description}</div>
+          <div className="project-data">
+            <div className="title">{template.title}</div>
+            <div className="description">{template.description}</div>
+          </div>
         </div>
       </div>
     )

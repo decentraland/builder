@@ -26,10 +26,12 @@
     "zh": "중국어"
   },
   "home_page": {
-    "title": "멋진 풍경을 제작해 보세요!",
-    "subtitle": "디센트럴랜드의 드래그 앤 드랍 풍경 에디터에 오신 것을 환영합니다. 아래 프로젝트 템플릿을 골라 풍경 제작을 시작하세요.",
+    "title": "모든 건축가님께 알립니다!",
+    "subtitle": "당신의 창의성을 최대로 발휘한 풍경을 제출하시고, 저희가 마련한 상금/상품 중 일부를 받아가시기 바랍니다: {mana} 와 {land} (over {usd}!). 모든 참여자는 유효한 풍경마다 {mana_per_scene} 를 받아가실 수 있습니다.",
     "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
     "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
+    "templates_title": "시작하기에 앞서 진행하고자 하는 풍경의 크기를 선택해주시기 바랍니다",
+    "projects_title": "내 풍경(들)",
     "project_actions": {
       "delete_project": "프로젝트 삭제",
       "duplicate_project": "프로젝트 복사"
@@ -203,6 +205,7 @@
       "title": "모든 건축가님께 알립니다!",
       "text": "창의적인 풍경을 제출하고 상금을 획득하세요:{br}{mana} 및 {land} (미화 {usd} 이상!)",
       "cta": "영상 시청하기"
-    }
+    },
+    "mana_per_scene": "100 MANA ($5)"
   }
 }

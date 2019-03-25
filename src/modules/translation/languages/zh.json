@@ -18,7 +18,8 @@
     "mana": "900,000 MANA",
     "submit_text": "提交到大赛",
     "update_text": "更新提交",
-    "usd": "50,000 美元"
+    "usd": "50,000 美元",
+    "mana_per_scene": "100 MANA ($5)"
   },
   "custom_layout": {
     "title": "自定义",
@@ -68,8 +69,10 @@
       "delete_project": "删除项目",
       "duplicate_project": "复制项目"
     },
-    "subtitle": "导入文件，或者从选择模板，或根据您的土地布局开始设计!",
-    "title": "设计一个独特的世界!"
+    "subtitle": "提交您最具创意的场景，即有可能中大奖：{mana} 和 {land} (价值 {usd}！). 参赛者提交的每个有效场景可赢得 {mana_per_scene}.",
+    "title": "设计人员大召集！",
+    "templates_title": "选择开始的场景大小",
+    "projects_title": "我的场景"
   },
   "itemdrawer": {
     "empty_ground": "末设置地面",
@@ -207,6 +210,15 @@
       "title": {
         "length": "名称长度必须是 {min} 到 {max} 个字符."
       }
+    }
+  },
+  "templates": {
+    "small": "迷你 (1x1)",
+    "medium": "标准 (2x2)",
+    "big": "大型 (2x3)",
+    "custom_layout": {
+      "title": "自定义",
+      "up_to": "最大 {max} 块地块"
     }
   }
 }

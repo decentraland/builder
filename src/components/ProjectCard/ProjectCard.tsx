@@ -12,7 +12,8 @@ import './ProjectCard.css'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
-    hasSubmittedProject: false
+    hasSubmittedProject: false,
+    items: 0
   }
 
   state = {
@@ -46,7 +47,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, hasSubmittedProject, onClick } = this.props
+    const { project, hasSubmittedProject, items, onClick } = this.props
     const { isDeleting } = this.state
 
     let style = {}
@@ -84,7 +85,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         <div className="project-data">
           <div className="title">{project.title}</div>
           <div className="description" title={project.description}>
-            {getProjectDimensions(project)}
+            {getProjectDimensions(project)} {items > 0 && `- ${items} items`}
           </div>
         </div>
       </>

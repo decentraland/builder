@@ -4,6 +4,7 @@ import { deleteProject, DeleteProjectAction, duplicateProject, DuplicateProjectA
 
 export type DefaultProps = {
   hasSubmittedProject: boolean
+  items: number
 }
 
 export type Props = DefaultProps & {
@@ -17,6 +18,6 @@ export type State = {
   isDeleting: boolean
 }
 
-export type MapStateProps = Pick<Props, 'hasSubmittedProject'>
+export type MapStateProps = Pick<Props, 'hasSubmittedProject' | 'items'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject'>
 export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction>
