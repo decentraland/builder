@@ -5,7 +5,7 @@
   border-radius: 12px;
   margin-top: var(--homepage-card-margin);
   margin-right: var(--homepage-card-margin);
-  background-color: rgba(var(--purplish-grey-raw), 0.16);
+  background: rgba(var(--bluish-steel-raw), 0.16);
   float: left;
   cursor: pointer;
   display: flex;

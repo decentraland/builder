@@ -3,10 +3,10 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { Responsive } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
+import { default as DappApp } from 'decentraland-dapps/dist/containers/App'
 
 import { locations } from 'routing/locations'
 
-import App from 'components/App'
 import HomePage from 'components/HomePage'
 import ErrorPage from 'components/ErrorPage'
 import MobilePage from 'components/MobilePage'
@@ -33,11 +33,19 @@ export default class Routes extends React.Component<Props, State> {
     document.body.classList.remove('loading-overlay')
   }
 
-  wrapInApp(Component: React.ComponentType<any>, isHomePage: boolean = false) {
+  wrapInApp(Component: React.ComponentType<any>) {
     return (props: any) => (
-      <App isHomePage={isHomePage}>
+      <DappApp>
         <Component {...props} />
-      </App>
+      </DappApp>
+    )
+  }
+
+  wrapHomepage(Component: React.ComponentType<any>) {
+    return (props: any) => (
+      <DappApp isOverlay isFullscreen>
+        <Component {...props} />
+      </DappApp>
     )
   }
 
@@ -59,7 +67,7 @@ export default class Routes extends React.Component<Props, State> {
         </Responsive>
         <Responsive minWidth={1025} as={React.Fragment}>
           <Switch>
-            <Route exact path={locations.root()} component={this.wrapInApp(HomePage, true)} />
+            <Route exact path={locations.root()} component={this.wrapHomepage(HomePage)} />
             <Route exact path={locations.notFound()} component={this.wrapInApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
             <Redirect to={locations.root()} />

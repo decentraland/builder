@@ -10,6 +10,10 @@
   cursor: pointer;
 }
 
+.TemplateCard:hover {
+  background: rgba(var(--bluish-steel-raw), 0.24);
+}
+
 .TemplateCard .wrapper {
   display: flex;
   align-items: center;
