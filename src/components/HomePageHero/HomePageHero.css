@@ -36,6 +36,16 @@
   font-weight: 500;
 }
 
+.HomePageHero .ui.button.hollow {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+}
+
+.homepagehero .ui.button.hollow:hover {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+
 @media (max-width: 1366px) {
   .HomePageHero .background {
     background-position-y: -100px;

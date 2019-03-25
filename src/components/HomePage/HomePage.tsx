@@ -22,10 +22,6 @@ export default class HomePage extends React.PureComponent<Props> {
     }
   }
 
-  handleWatchVideo = () => {
-    this.props.onOpenModal('VideoModal')
-  }
-
   render() {
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()

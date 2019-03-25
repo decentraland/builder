@@ -2,11 +2,16 @@ import * as React from 'react'
 import { Hero, Header, Button } from 'decentraland-ui'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Props } from './HomePageHero.types'
 import './HomePageHero.css'
 
-export default class HomePageHero extends React.PureComponent {
+export default class HomePageHero extends React.PureComponent<Props> {
   handleStart = () => {
     window.location.href = '#template-cards'
+  }
+
+  handleWatchVideo = () => {
+    this.props.onOpenModal('VideoModal')
   }
 
   render() {
@@ -29,6 +34,9 @@ export default class HomePageHero extends React.PureComponent {
               </div>
               <Button primary onClick={this.handleStart}>
                 Start Building
+              </Button>
+              <Button className="hollow" onClick={this.handleWatchVideo}>
+                Watch Tutorial
               </Button>
             </div>
           </div>
