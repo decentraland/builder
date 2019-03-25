@@ -1,9 +1,6 @@
-import { Dispatch } from 'redux'
-import { openModal, OpenModalAction } from 'modules/modal/actions'
-
 export type Props = {
-  onOpenModal: typeof openModal
+  onWatchVideo: () => void
+  onStart: () => void
 }
 
-export type MapDispatchProps = Pick<Props, 'onOpenModal'>
-export type MapDispatch = Dispatch<OpenModalAction>
+export type MapDispatchProps = Pick<Props, 'onWatchVideo'>

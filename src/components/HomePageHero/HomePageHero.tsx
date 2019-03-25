@@ -7,11 +7,11 @@ import './HomePageHero.css'
 
 export default class HomePageHero extends React.PureComponent<Props> {
   handleStart = () => {
-    window.location.href = '#template-cards'
+    this.props.onStart()
   }
 
   handleWatchVideo = () => {
-    this.props.onOpenModal('VideoModal')
+    this.props.onWatchVideo()
   }
 
   render() {
@@ -33,10 +33,10 @@ export default class HomePageHero extends React.PureComponent<Props> {
         </Hero.Description>
         <Hero.Actions>
           <Button primary onClick={this.handleStart}>
-            Start Building
+            {t('home_page.start')}
           </Button>
           <Button className="hollow" onClick={this.handleWatchVideo}>
-            Watch Tutorial
+            {t('home_page.learn_more')}
           </Button>
         </Hero.Actions>
 

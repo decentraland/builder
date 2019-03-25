@@ -32,6 +32,10 @@
   margin-top: 80px;
 }
 
+.HomePage .template-cards.animate .TemplateCard {
+  animation: templateAnimation 2s;
+}
+
 .HomePage .project-cards .subtitle,
 .HomePage .template-cards .subtitle {
   font-size: 20px;
@@ -96,4 +100,16 @@
 .HomePage .banner .banner-cta:active,
 .HomePage .banner .banner-cta:focus {
   background-color: #c640cd;
+}
+
+@keyframes templateAnimation {
+  0% {
+    background: rgba(var(--bluish-steel-raw), 0.16);
+  }
+  50% {
+    background: rgba(var(--bluish-steel-raw), 0.3);
+  }
+  100% {
+    background: rgba(var(--bluish-steel-raw), 0.16);
+  }
 }

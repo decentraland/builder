@@ -1,3 +1,3 @@
-import HomePageHero from './HomePageHero.container'
+import HomePageHero from './HomePageHero'
 
 export default HomePageHero

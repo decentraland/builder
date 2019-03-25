@@ -6,7 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import './VideoModal.css'
 
-const YOUTUBE_ID = 'dQw4w9WgXcQ'
+const YOUTUBE_ID = 'H8Fj72JobKo'
 
 export default class TutorialModal extends React.PureComponent<ModalProps> {
   render() {
