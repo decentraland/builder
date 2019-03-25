@@ -85,7 +85,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         <div className="project-data">
           <div className="title">{project.title}</div>
           <div className="description" title={project.description}>
-            {getProjectDimensions(project)} {items > 0 && `- ${items} items`}
+            {getProjectDimensions(project)} {items > 0 && `- ${items} ${t('global.items')}`}
           </div>
         </div>
       </>

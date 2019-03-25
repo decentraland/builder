@@ -73,7 +73,7 @@ export default class EditorPage extends React.PureComponent<Props> {
 
     if (!currentProject) {
       return (
-        <App>
+        <App isFullscreen>
           <NotFoundPage />
         </App>
       )

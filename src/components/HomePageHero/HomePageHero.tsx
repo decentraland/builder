@@ -17,30 +17,29 @@ export default class HomePageHero extends React.PureComponent<Props> {
   render() {
     return (
       <Hero height={472} className="HomePageHero">
-        <div className="container">
-          <Hero.Header>{t('home_page.title')}</Hero.Header>
-          <Hero.Description>
-            <span className="description">
-              <T
-                id="home_page.subtitle"
-                values={{
-                  mana: <span className="highlight">{t('contest.mana')}</span>,
-                  land: <span className="highlight">{t('contest.land')}</span>,
-                  usd: <span className="highlight">{t('contest.usd')}</span>,
-                  mana_per_scene: <span className="highlight">{t('contest.mana_per_scene')}</span>
-                }}
-              />
-            </span>
-          </Hero.Description>
-          <Hero.Actions>
-            <Button primary onClick={this.handleStart}>
-              Start Building
-            </Button>
-            <Button className="hollow" onClick={this.handleWatchVideo}>
-              Watch Tutorial
-            </Button>
-          </Hero.Actions>
-        </div>
+        <Hero.Header>{t('home_page.title')}</Hero.Header>
+        <Hero.Description>
+          <span className="description">
+            <T
+              id="home_page.subtitle"
+              values={{
+                mana: <span className="highlight">{t('contest.mana')}</span>,
+                land: <span className="highlight">{t('contest.land')}</span>,
+                usd: <span className="highlight">{t('contest.usd')}</span>,
+                mana_per_scene: <span className="highlight">{t('contest.mana_per_scene')}</span>
+              }}
+            />
+          </span>
+        </Hero.Description>
+        <Hero.Actions>
+          <Button primary onClick={this.handleStart}>
+            Start Building
+          </Button>
+          <Button className="hollow" onClick={this.handleWatchVideo}>
+            Watch Tutorial
+          </Button>
+        </Hero.Actions>
+
         <Hero.Content>
           <div className="background" />
         </Hero.Content>

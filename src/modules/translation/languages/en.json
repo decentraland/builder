@@ -17,7 +17,8 @@
     "back": "back",
     "done": "done",
     "dismiss": "Dismiss",
-    "optional": "optional"
+    "optional": "optional",
+    "items": "items"
   },
   "languages": {
     "en": "English",

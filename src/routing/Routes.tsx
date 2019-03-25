@@ -33,42 +33,44 @@ export default class Routes extends React.Component<Props, State> {
     document.body.classList.remove('loading-overlay')
   }
 
-  wrapInApp(Component: React.ComponentType<any>) {
-    return (props: any) => (
-      <DappApp>
-        <Component {...props} />
-      </DappApp>
-    )
-  }
+  wrapHomepage = (Component: React.ComponentType<any>) => (props: any) => (
+    <DappApp isFullscreen isOverlay>
+      <Component {...props} />
+    </DappApp>
+  )
 
-  wrapHomepage(Component: React.ComponentType<any>) {
-    return (props: any) => (
-      <DappApp isOverlay isFullscreen>
-        <Component {...props} />
-      </DappApp>
-    )
-  }
+  wrapFullScreen = (Component: React.ComponentType<any>) => (props: any) => (
+    <DappApp isFullscreen>
+      <Component {...props} />
+    </DappApp>
+  )
+
+  wrapApp = (Component: React.ComponentType<any>) => (props: any) => (
+    <DappApp>
+      <Component {...props} />
+    </DappApp>
+  )
 
   renderRoutes() {
     const { hasError, stackTrace } = this.state
 
     if (env.isDevelopment() && hasError) {
-      const WrappedErrorPage = this.wrapInApp(ErrorPage)
+      const WrappedErrorPage = this.wrapFullScreen(ErrorPage)
       return <WrappedErrorPage stackTrace={stackTrace} />
     } else if (window.navigator.userAgent.includes('Edge')) {
-      const WrappedUnsupportedBrowserPage = this.wrapInApp(UnsupportedBrowserPage)
+      const WrappedUnsupportedBrowserPage = this.wrapApp(UnsupportedBrowserPage)
       return <WrappedUnsupportedBrowserPage />
     }
 
     return (
       <>
         <Responsive maxWidth={1024} as={React.Fragment}>
-          <Route component={this.wrapInApp(MobilePage)} />
+          <Route component={this.wrapApp(MobilePage)} />
         </Responsive>
         <Responsive minWidth={1025} as={React.Fragment}>
           <Switch>
             <Route exact path={locations.root()} component={this.wrapHomepage(HomePage)} />
-            <Route exact path={locations.notFound()} component={this.wrapInApp(NotFoundPage)} />
+            <Route exact path={locations.notFound()} component={this.wrapApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
             <Redirect to={locations.root()} />
           </Switch>

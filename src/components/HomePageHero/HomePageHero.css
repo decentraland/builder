@@ -4,19 +4,15 @@
   justify-content: center;
 }
 
-.dcl.hero.HomePageHero .subtitle {
+.dcl.hero.HomePageHero .hero-subtitle {
   padding-right: 200px;
 }
 
-.dcl.hero.HomePageHero .actions {
+.dcl.hero.HomePageHero .hero-actions {
   margin-top: 36px;
 }
 
-.HomePageHero .container {
-  width: 1064px;
-}
-
-.HomePageHero .content {
+.HomePageHero .hero-content {
   background-image: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
   height: 100%;
 }
@@ -31,19 +27,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.HomePageHero .background .message {
-  width: 1064px;
-  height: 200px;
-}
-
-.HomePageHero .background .message .subtitle {
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 28px;
-  margin-bottom: 32px;
-  width: 80%;
 }
 
 .HomePageHero .description .highlight {
