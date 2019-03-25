@@ -1,8 +1,18 @@
 .dcl.hero.HomePageHero {
-  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dcl.hero.HomePageHero .subtitle {
+  padding-right: 200px;
 }
 
 .HomePageHero .container {
+  width: 1064px;
+}
+
+.HomePageHero .content {
   background-image: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
   height: 100%;
 }
@@ -32,7 +42,7 @@
   width: 80%;
 }
 
-.HomePageHero .background .message .subtitle .highlight {
+.HomePageHero .description .highlight {
   font-weight: 500;
 }
 
