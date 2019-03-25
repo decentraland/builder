@@ -8,6 +8,10 @@
   padding-right: 200px;
 }
 
+.dcl.hero.HomePageHero .actions {
+  margin-top: 36px;
+}
+
 .HomePageHero .container {
   width: 1064px;
 }
