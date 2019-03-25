@@ -95,10 +95,18 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   renderSlide = () => {
     const { step } = this.state
     const slide = this.slides[step]
+    const last = this.slides.length - 1
 
     return (
       <>
-        <Modal.Header>{slide.title}</Modal.Header>
+        <Modal.Header>
+          {slide.title}
+          {step === last ? null : (
+            <Button basic className="skip-tutorial" onClick={() => this.goToSlide(last)}>
+              {t('tutorial_modal.skip_tutorial')}
+            </Button>
+          )}
+        </Modal.Header>
         <Modal.Description>{slide.description}</Modal.Description>
         <Modal.Content>
           {step !== this.slides.length - 1 ? (

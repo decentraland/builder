@@ -166,6 +166,7 @@
     "contest": "取得赢取总共 {mana} 和 {land} 的机会。",
     "email_disclaimer": "注册订阅有关 Decentraland 的新闻。",
     "email_thanks": "谢谢！我们会保持联系",
+    "skip_tutorial": "跳过教程",
     "slide0": {
       "description": "这是 Decentraland 的新场景构建器。",
       "title": "欢迎您的到来！"

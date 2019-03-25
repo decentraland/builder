@@ -164,6 +164,7 @@
     "email_thanks": "Thanks! We'll stay in touch!",
     "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
     "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
+    "skip_tutorial": "Skip tutorial",
     "slide0": {
       "title": "Welcome to the Builder!",
       "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around."

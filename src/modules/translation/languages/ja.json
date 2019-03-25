@@ -166,6 +166,7 @@
     "contest": "{mana}と{land}のシェアを獲得するチャンスを入力してください。",
     "email_disclaimer": "サインアップすることで、Decentralandに関するニュースを購読することになります。",
     "email_thanks": "ありがとうございます。",
+    "skip_tutorial": "チュートリアルをスキップ",
     "slide0": {
       "description": "これはDecentralandの新しいシーンビルダーです。",
       "title": "ビルダーへようこそ！"
