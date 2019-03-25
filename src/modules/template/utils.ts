@@ -8,9 +8,24 @@ export const MAX_AREA = 32
 
 export function getTemplates(): Template[] {
   return [
-    { title: t('templates.small'), description: getDimensions(1, 1), thumbnail: 'thumb-1x1', layout: { rows: 1, cols: 1 } },
-    { title: t('templates.medium'), description: getDimensions(2, 2), thumbnail: 'thumb-2x2', layout: { rows: 2, cols: 2 } },
-    { title: t('templates.big'), description: getDimensions(2, 3), thumbnail: 'thumb-2x3', layout: { rows: 2, cols: 3 } },
+    {
+      title: t('templates.small'),
+      description: t('templates.description', { dimensions: getDimensions(1, 1), amount: 20 }),
+      thumbnail: 'thumb-1x1',
+      layout: { rows: 1, cols: 1 }
+    },
+    {
+      title: t('templates.medium'),
+      description: t('templates.description', { dimensions: getDimensions(2, 2), amount: 80 }),
+      thumbnail: 'thumb-2x2',
+      layout: { rows: 2, cols: 2 }
+    },
+    {
+      title: t('templates.big'),
+      description: t('templates.description', { dimensions: getDimensions(2, 3), amount: 120 }),
+      thumbnail: 'thumb-2x3',
+      layout: { rows: 2, cols: 3 }
+    },
     {
       title: t('templates.custom_layout.title'),
       description: t('templates.custom_layout.up_to', { max: MAX_AREA }),
