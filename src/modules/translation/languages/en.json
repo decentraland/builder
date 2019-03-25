@@ -56,7 +56,7 @@
   "unsupported_browser_page": {
     "title": "Oops!",
     "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
-    "back": "Back your Scenes"
+    "back": "Back to your Scenes"
   },
   "project_card": {
     "added_to_contest": "Submitted to contest",
