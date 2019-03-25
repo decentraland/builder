@@ -9,7 +9,7 @@ export default class DescriptionField extends React.PureComponent<FieldProps> {
     return (
       <Field
         icon={this.props.required ? 'asterisk' : undefined}
-        label={t('project_fields.description_field_label')}
+        label={`${t('project_fields.description_field_label')} (${t('global.optional')})`}
         placeholder={t('project_fields.description_field_placeholder')}
         pattern={`.{${MIN_DESCRIPTION_LENGTH},${MAX_DESCRIPTION_LENGTH}}`}
         title={t('validation.project.description.length', {
