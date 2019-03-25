@@ -51,7 +51,13 @@ addPayload(RESET_ITEM)
 addPayload(DUPLICATE_ITEM)
 
 // editor actions
-add(CREATE_PROJECT, CREATE_PROJECT, action => (action as CreateProjectAction).payload.project.layout)
+add(CREATE_PROJECT, CREATE_PROJECT, action => {
+  const { id, layout } = (action as CreateProjectAction).payload.project
+  return {
+    projectId: id,
+    ...layout
+  }
+})
 addPayload(EDITOR_UNDO)
 addPayload(EDITOR_REDO)
 addPayload(TOGGLE_PREVIEW)

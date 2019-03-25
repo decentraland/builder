@@ -95,3 +95,12 @@
 .TutorialModal.ui.modal > .actions > .ui.button {
   flex: none;
 }
+
+.TutorialModal .header {
+  position: relative;
+}
+
+.TutorialModal .skip-tutorial {
+  position: absolute;
+  right: 0px;
+}

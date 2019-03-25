@@ -87,7 +87,7 @@
   },
   "add_to_contest": {
     "title": "Submit your scene",
-    "subtitle": "You're almost done. Please review your scene and contact info before submitting your scene.",
+    "subtitle": "Submit your scene now to earn 100 MANA (worth $5 USD). Please review your project and contact info below before you submit.",
     "success_title": "Awesome!",
     "success_subtitle": "Your scene looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
@@ -171,6 +171,7 @@
     "email_thanks": "Thanks! We'll stay in touch!",
     "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
     "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
+    "skip_tutorial": "Skip tutorial",
     "slide0": {
       "title": "Welcome to the Builder!",
       "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around."
