@@ -43,9 +43,36 @@
   border: 1px solid rgba(255, 255, 255, 1);
 }
 
+@media (max-width: 1536px) {
+  .HomePageHero .background {
+    background-position-y: -200px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .HomePageHero .background {
+    background-position-y: -150px;
+  }
+}
+
 @media (max-width: 1366px) {
   .HomePageHero .background {
     background-position-y: -100px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .HomePageHero .background {
+    background-position-y: -80px;
+  }
+  .dcl.hero.HomePageHero .hero-subtitle {
+    padding-right: 100px;
+  }
+}
+
+@media (max-width: 1125px) {
+  .HomePageHero .background {
+    background-position-y: -20px;
   }
 }
 

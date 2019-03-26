@@ -1,7 +1,7 @@
 {
   "global": {
-    "projects": "프로젝트 목록",
-    "project": "프로젝트",
+    "projects": "장면 목록",
+    "project": "풍경",
     "templates": "템플릿",
     "terms_and_conditions": "이용 약관",
     "blog_post": "블로그 포스트",
@@ -19,23 +19,26 @@
     "back": "뒤로",
     "done": "완료",
     "dismiss": "삭제",
-    "optional": "오피셜"
+    "optional": "옵션",
+    "items": "아이템"
   },
   "languages": {
     "en": "영어",
     "zh": "중국어"
   },
   "home_page": {
-    "title": "모든 건축가님께 알립니다!",
-    "subtitle": "당신의 창의성을 최대로 발휘한 풍경을 제출하시고, 저희가 마련한 상금/상품 중 일부를 받아가시기 바랍니다: {mana} 와 {land} (over {usd}!). 모든 참여자는 유효한 풍경마다 {mana_per_scene} 를 받아가실 수 있습니다.",
+    "title": "모든 빌더 창작자분들을 소집합니다!",
+    "subtitle": "당신의 창의성을 최대로 발휘한 풍경을 제출하시고, 저희가 마련한 상금/상품 중 일부를 받아가시기 바랍니다: {mana} 와 {land} ({usd} 상당). 모든 참여자는 각 풍경마다 {mana_per_scene} 를 받아가실 수 있습니다.",
     "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
     "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
-    "templates_title": "시작하기에 앞서 진행하고자 하는 풍경의 크기를 선택해주시기 바랍니다",
-    "projects_title": "내 풍경(들)",
+    "templates_title": "풍경 제작에 앞서 제작하고자 하는 풍경의 크기를 선택하십시오",
+    "projects_title": "내 풍경",
     "project_actions": {
-      "delete_project": "프로젝트 삭제",
-      "duplicate_project": "프로젝트 복사"
-    }
+      "delete_project": "풍경 삭제하기",
+      "duplicate_project": "풍경 복사하기"
+    },
+    "start": "제작 시작하기",
+    "learn_more": "더 알아보기"
   },
   "mobile_page": {
     "title": "어이쿠!",
@@ -44,8 +47,8 @@
   },
   "not_found_page": {
     "title": "404",
-    "subtitle": "죄송합니다. 당신이 찾던 프로젝트를 찾을 수 없습니다",
-    "back": "목록으로 돌아가기"
+    "subtitle": "죄송합니다만. 찾고 계신 풍경을 찾을 수 없습니다",
+    "back": "내 풍경으로 돌아가기"
   },
   "error_page": {
     "title": "어이쿠!",
@@ -55,14 +58,14 @@
     "reload": "페이지 새로고침"
   },
   "unsupported_browser_page": {
-    "title": "어이쿠!",
-    "subtitle": "이 브라우저에서는 빌더에 접속하실 수 없습니다.{br} {chrome} 이나 {firefox}를 이용해 방문해 주세요",
-    "back": "목록으로 돌아가기"
+    "title": "이런!",
+    "subtitle": "빌더는 현재 사용 중인 브라우저를 지원하지 않습니다.{br}{크롬} 이나 {파이어폭스}를 사용하여 이 페이지를 방문해주시기 바랍니다",
+    "back": "내 풍경으로 돌아가기"
   },
   "project_card": {
-    "added_to_contest": "대회에 출품되었습니다",
-    "confirm_delete_header": "\"{title}\" 삭제",
-    "confirm_delete_content": "정말 \"{title}\"를 삭제하시겠습니까? 삭제된 프로젝트는 되돌릴 수 없습니다"
+    "added_to_contest": "콘테스트에 제출됨",
+    "confirm_delete_header": "\"{title}\" 삭제하기",
+    "confirm_delete_content": "\"{title}\" 를 진짜 삭제하시겠습니까?? 다시 되돌릴 수 없습니다"
   },
   "itemdrawer": {
     "title": "아이템함",
@@ -88,12 +91,12 @@
   },
   "add_to_contest": {
     "title": "풍경 제출하기",
-    "subtitle": "100 개의 MANA (미화 5 달러 상당)를 얻으려면 지금 씬을 제출하십시오. 풍경을 제출하기 전에 프로젝트와 연락처를 확인해 주세요.",
-    "success_title": "좋아요!",
-    "success_subtitle": "당신의 프로젝트는 정말 멋져 보이네요. 참여해 주셔서 감사합니다!",
-    "contact_information": "연락처",
-    "error_occurred": "프로젝트 출품 중에 오류가 발생했습니다:",
-    "i_accept_the": "본인은 다음 사항에 동의합니다"
+    "subtitle": "제출 과정 거의 마지막에 다다랐습니다. 여러분의 풍경을 제출하시기 전에 풍경과 연락 정보를 한번 더 확인해주시기 바랍니다.",
+    "success_title": "정말 멋지네요!",
+    "success_subtitle": "이 풍경은 정말 멋져보이네요. 제출해주셔서 감사합니다!",
+    "contact_information": "연락 정보",
+    "error_occurred": "해당 풍경을 제출하는 과정에서 오류가 발생했습니다:",
+    "i_accept_the": "수락합니다 "
   },
   "shortcuts": {
     "move": "이동",
@@ -125,12 +128,12 @@
     "other_shortcuts": "기타"
   },
   "edit_project_modal": {
-    "title": "프로젝트 정보",
-    "custom_layout_label": "크기"
+    "title": "풍경 세부사항",
+    "custom_layout_label": "레이아웃"
   },
   "project_fields": {
     "title_field_label": "제목",
-    "title_field_placeholder": "프로젝트 제목",
+    "title_field_placeholder": "풍경 제목",
     "description_field_label": "설명",
     "description_field_placeholder": "설명 없음"
   },
@@ -194,7 +197,7 @@
     }
   },
   "toasts": {
-    "localstorage": "프로젝트는 브라우저 저장 공간에 자동 저장됩니다"
+    "localstorage": "풍경(들)은 여러분의 브라우저 저장소에 자동 저장됩니다"
   },
   "contest": {
     "mana": "900,000 MANA",
@@ -208,5 +211,11 @@
       "cta": "영상 시청하기"
     },
     "mana_per_scene": "100 MANA ($5)"
+  },
+  "templates": {
+    "small": "소형(1x1)",
+    "medium": "중형 (2x2)",
+    "big": "대형 (2x3)",
+    "description": "{dimensions} - {amount} 아이템 최대"
   }
 }

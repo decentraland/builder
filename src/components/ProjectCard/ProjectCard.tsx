@@ -51,7 +51,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     const { isDeleting } = this.state
 
     let style = {}
-    let classes = 'ProjectCard Card'
+    let classes = 'ProjectCard'
     let Overlay = null
 
     if (project.thumbnail) {
