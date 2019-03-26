@@ -34,19 +34,19 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   wrapHomepage = (Component: React.ComponentType<any>) => (props: any) => (
-    <App isFullscreen isOverlay>
+    <App isFullscreen isOverlay onSignIn={undefined}>
       <Component {...props} />
     </App>
   )
 
   wrapFullScreen = (Component: React.ComponentType<any>) => (props: any) => (
-    <App isFullscreen>
+    <App isFullscreen onSignIn={undefined}>
       <Component {...props} />
     </App>
   )
 
   wrapApp = (Component: React.ComponentType<any>) => (props: any) => (
-    <App>
+    <App onSignIn={undefined}>
       <Component {...props} />
     </App>
   )

@@ -12,6 +12,19 @@
   margin-top: 36px;
 }
 
+.dcl.hero.HomePageHero .hero-actions button.primary {
+  border: 1px solid var(--primary);
+}
+
+.dcl.hero.HomePageHero .hero-actions button {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.16);
+  transition: box-shadow 0.1s ease-in-out;
+}
+
+.dcl.hero.HomePageHero .hero-actions button:hover {
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.24);
+}
+
 .HomePageHero .hero-content {
   background-image: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
   height: 100%;
