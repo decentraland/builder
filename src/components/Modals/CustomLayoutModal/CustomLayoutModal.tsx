@@ -32,7 +32,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
 
     return (
       <Modal name={name}>
-        <Modal.Header>{t('custom_layout.title')}</Modal.Header>
+        <Modal.Header>{t('templates.custom_layout.title')}</Modal.Header>
         <Modal.Description>
           <p>{t('custom_layout_modal.subtitle_one')}</p>
           <p>{t('custom_layout_modal.subtitle_two')}</p>

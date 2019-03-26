@@ -1,7 +1,7 @@
 {
   "global": {
-    "projects": "proyectos",
-    "project": "proyecto",
+    "projects": "escenas",
+    "project": "escena",
     "templates": "plantillas",
     "terms_and_conditions": "Términos y Condiciones",
     "blog_post": "blog post",
@@ -19,21 +19,25 @@
     "back": "volver",
     "done": "OK",
     "dismiss": "Descartar",
-    "optional": "opcional"
+    "optional": "opcional",
+    "items": "objetos"
   },
   "languages": {
     "en": "English",
     "es": "Español"
   },
   "home_page": {
-    "title": "¡Crea algo espectacular!",
-    "subtitle": "Bienvenido al editor de escenas de Decentraland. Selecciona una de las plantillas de proyecto debajo para comenzar.",
-    "empty_projects_title": "Tus proyectos vivirán aquí",
+    "title": "¡Llamando a todos los creadores!",
+    "subtitle": "Sube tus escenas más creativas y gana increíbles premios: {mana} y {land} (más de {usd}!). Cada participante obtendrá {mana_per_scene} for each scene.",
+    "templates_title": "Escoge el tamano de tu escena para comenzar",
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
     "project_actions": {
-      "delete_project": "Borrar proyecto",
-      "duplicate_project": "Duplicar proyecto"
-    }
+      "delete_project": "Borrar escena",
+      "duplicate_project": "Duplicar escena"
+    },
+    "projects_title": "Mis escenas",
+    "start": "Comenzar",
+    "learn_more": "Más información"
   },
   "mobile_page": {
     "title": "Oops!",
@@ -42,8 +46,8 @@
   },
   "not_found_page": {
     "title": "404",
-    "subtitle": "Lo sentimos, no pudimos encontrar el proyecto que buscabas.",
-    "back": "Volver a Proyectos"
+    "subtitle": "Lo sentimos, no pudimos encontrar la escena que buscabas.",
+    "back": "Volver a tus Escenas"
   },
   "error_page": {
     "title": "Oops!",
@@ -54,13 +58,13 @@
   },
   "unsupported_browser_page": {
     "title": "Oops!",
-    "subtitle": "El Builder no es compatible con su navegador.{br}Visita esta página usando {chrome} o {firefox}",
-    "back": "Volver a Proyectos"
+    "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
+    "back": "Volver a tus Escenas"
   },
   "project_card": {
     "added_to_contest": "Enviado al concurso",
     "confirm_delete_header": "Borrar \"{title}\"",
-    "confirm_delete_content": "¿Seguro que quieres borrar tu proyecto \"{title}\"? Esta operación es ireversible"
+    "confirm_delete_content": "¿Seguro que quieres borrar tu escena \"{title}\"? Esta operación es ireversible"
   },
   "itemdrawer": {
     "title": "Listado de objetos",
@@ -86,11 +90,11 @@
   },
   "add_to_contest": {
     "title": "Enviar tu escena",
-    "subtitle": "Envía tu escena para ganar 100 MANA (equivalente a $5 USD). Por favor revise su proyecto e información de contacto antes de enviar su escena.",
+    "subtitle": "Casi listo. Por favor, revisa tu escena e información de contacto antes de finalizar.",
     "success_title": "¡Genial!",
-    "success_subtitle": "El proyecto se ve muy bien, ¡gracias!",
+    "success_subtitle": "Tu escena se ve muy bien, ¡Gracias!",
     "contact_information": "Información de contacto",
-    "error_occurred": "Ocurrió un error enviando el proyecto:",
+    "error_occurred": "Ocurrió un error enviando tu escena:",
     "i_accept_the": "Acepto los "
   },
   "shortcuts": {
@@ -123,12 +127,12 @@
     "other_shortcuts": "Otros"
   },
   "edit_project_modal": {
-    "title": "Detalles del proyecto",
+    "title": "Detalles de la escena",
     "custom_layout_label": "Dimensiones"
   },
   "project_fields": {
     "title_field_label": "Título",
-    "title_field_placeholder": "Título del proyecto",
+    "title_field_placeholder": "Título de la escena",
     "description_field_label": "Descripción",
     "description_field_placeholder": "Sin descripción"
   },
@@ -192,7 +196,7 @@
     }
   },
   "toasts": {
-    "localstorage": "Los proyectos se guardan automáticamente en su navegador"
+    "localstorage": "Tus escenas se guardan automáticamente en el navegador"
   },
   "contest": {
     "mana": "900,000 MANA",
@@ -204,6 +208,17 @@
       "title": "A todos los creadores",
       "text": "Sube tus escenas más creativas y gana increíbles premios: {br}{mana} y {land} (más de {usd}!)",
       "cta": "Mira el Video"
+    },
+    "mana_per_scene": "100 MANA ($5)"
+  },
+  "templates": {
+    "small": "Mini (1x1)",
+    "medium": "Estándar (2x2)",
+    "big": "Grande (2x3)",
+    "description": "{dimensions} - {amount} objetos max",
+    "custom_layout": {
+      "title": "A medida",
+      "up_to": "Hasta {max} parcelas"
     }
   }
 }

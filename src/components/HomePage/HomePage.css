@@ -3,14 +3,42 @@
 }
 
 .HomePage .subtitle {
-  color: var(--bluish-steel);
+  color: white;
+}
+
+.HomePage .template-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.HomePage .template-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.HomePage .template-row .TemplateCard:last-child {
+  margin-left: 24px;
 }
 
 .HomePage .project-cards {
   margin-top: 47px;
 }
-.HomePage .project-cards .subtitle {
-  font-size: 13px;
+
+.HomePage .template-cards {
+  margin-top: 80px;
+}
+
+.HomePage .template-cards.animate .TemplateCard {
+  animation: templateAnimation 2s;
+}
+
+.HomePage .project-cards .subtitle,
+.HomePage .template-cards .subtitle {
+  font-size: 20px;
 }
 
 .HomePage .empty-projects {
@@ -27,61 +55,39 @@
 
 .HomePage .CardList {
   overflow: hidden;
+  margin-top: 10px;
 }
 
-.HomePage .Card {
-  width: var(--homepage-card-width);
-  height: var(--homepage-card-height);
-  border-radius: 12px;
-  margin-top: var(--homepage-card-margin);
-  margin-right: var(--homepage-card-margin);
-  background-color: rgba(var(--bluish-steel-raw), 0.16);
-  float: left;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.HomePage .Card:last-child {
+.HomePage .ProjectCard:last-child {
   margin-right: 0;
 }
 
-/* Banner */
-
-.HomePage .banner {
-  position: relative;
-  border: 1px solid rgba(var(--bluish-steel-raw), 0.4);
-  border-radius: 12px;
-  padding: 32px;
-  padding-top: 24px;
-  margin-top: 48px;
+.HomePage .TemplateCard,
+.HomePage .ProjectCard {
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.16);
 }
 
-.HomePage .banner .highlight {
-  font-weight: 600;
-  color: var(--contest-pink);
+.HomePage .TemplateCard:hover,
+.HomePage .ProjectCard:hover {
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.24);
+  transform: translateY(-4px);
 }
 
-.HomePage .banner .ui.header.banner-title {
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-
-.HomePage .banner .banner-text {
-  font-size: 15px;
-  line-height: 22px;
-  font-weight: 400;
-}
-
-.HomePage .banner .banner-cta {
-  position: absolute;
-  right: 56px;
-  top: calc(50% - 22px);
-  background-color: #a524b3;
-}
-
-.HomePage .banner .banner-cta:hover,
-.HomePage .banner .banner-cta:active,
-.HomePage .banner .banner-cta:focus {
-  background-color: #c640cd;
+@keyframes templateAnimation {
+  0% {
+    background: rgba(var(--bluish-steel-raw), 0.16);
+  }
+  25% {
+    background: rgba(var(--bluish-steel-raw), 0.3);
+  }
+  50% {
+    background: rgba(var(--bluish-steel-raw), 0.16);
+  }
+  75% {
+    background: rgba(var(--bluish-steel-raw), 0.3);
+  }
+  100% {
+    background: rgba(var(--bluish-steel-raw), 0.16);
+  }
 }

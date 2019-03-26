@@ -1,18 +1,19 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { Responsive } from 'decentraland-ui'
+import { Responsive, Locale } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
+import App from 'decentraland-dapps/dist/containers/App'
 
 import { locations } from 'routing/locations'
+import * as languages from 'modules/translation/languages'
 
 import HomePage from 'components/HomePage'
+import ErrorPage from 'components/ErrorPage'
 import MobilePage from 'components/MobilePage'
 import EditorPage from 'components/EditorPage'
 import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
-import ErrorPage from 'components/ErrorPage'
-import App from 'components/App'
 
 import { Props, State } from './Routes.types'
 
@@ -33,34 +34,44 @@ export default class Routes extends React.Component<Props, State> {
     document.body.classList.remove('loading-overlay')
   }
 
-  wrapInApp(Component: React.ComponentType<any>) {
-    return (props: any) => (
-      <App>
-        <Component {...props} />
-      </App>
-    )
-  }
+  wrapHomepage = (Component: React.ComponentType<any>) => (props: any) => (
+    <App isFullscreen isOverlay onSignIn={undefined} locales={Object.keys(languages) as Locale[]}>
+      <Component {...props} />
+    </App>
+  )
+
+  wrapFullScreen = (Component: React.ComponentType<any>) => (props: any) => (
+    <App isFullscreen onSignIn={undefined} locales={Object.keys(languages) as Locale[]}>
+      <Component {...props} />
+    </App>
+  )
+
+  wrapApp = (Component: React.ComponentType<any>) => (props: any) => (
+    <App onSignIn={undefined} locales={Object.keys(languages) as Locale[]}>
+      <Component {...props} />
+    </App>
+  )
 
   renderRoutes() {
     const { hasError, stackTrace } = this.state
 
     if (env.isDevelopment() && hasError) {
-      const WrappedErrorPage = this.wrapInApp(ErrorPage)
+      const WrappedErrorPage = this.wrapFullScreen(ErrorPage)
       return <WrappedErrorPage stackTrace={stackTrace} />
     } else if (window.navigator.userAgent.includes('Edge')) {
-      const WrappedUnsupportedBrowserPage = this.wrapInApp(UnsupportedBrowserPage)
+      const WrappedUnsupportedBrowserPage = this.wrapApp(UnsupportedBrowserPage)
       return <WrappedUnsupportedBrowserPage />
     }
 
     return (
       <>
         <Responsive maxWidth={1024} as={React.Fragment}>
-          <Route component={this.wrapInApp(MobilePage)} />
+          <Route component={this.wrapApp(MobilePage)} />
         </Responsive>
         <Responsive minWidth={1025} as={React.Fragment}>
           <Switch>
-            <Route exact path={locations.root()} component={this.wrapInApp(HomePage)} />
-            <Route exact path={locations.notFound()} component={this.wrapInApp(NotFoundPage)} />
+            <Route exact path={locations.root()} component={this.wrapHomepage(HomePage)} />
+            <Route exact path={locations.notFound()} component={this.wrapApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
             <Redirect to={locations.root()} />
           </Switch>

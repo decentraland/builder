@@ -1,8 +1,6 @@
 {
   "global": {
-    "projects": "projects",
-    "project": "project",
-    "templates": "templates",
+    "project": "scene",
     "terms_and_conditions": "Terms & Conditions",
     "blog_post": "blog post",
     "email": "email",
@@ -19,21 +17,24 @@
     "back": "back",
     "done": "done",
     "dismiss": "Dismiss",
-    "optional": "optional"
+    "optional": "optional",
+    "items": "items"
   },
   "languages": {
     "en": "English",
     "zh": "Chinese"
   },
   "home_page": {
-    "title": "Build something cool!",
-    "subtitle": "Welcome to Decentraland's drag-and-drop scene editor. Select one of the project templates below to get started.",
-    "empty_projects_title": "Your projects will live here",
-    "empty_projects_cta": "Select a template below to start building awesome stuff!",
+    "title": "Calling all Builders!",
+    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over {usd}). Every participant gets {mana_per_scene} for each scene.",
+    "templates_title": "Choose the size of your scene to get started",
+    "projects_title": "My scenes",
     "project_actions": {
-      "delete_project": "Delete project",
-      "duplicate_project": "Duplicate project"
-    }
+      "delete_project": "Delete scene",
+      "duplicate_project": "Duplicate scene"
+    },
+    "start": "Start building",
+    "learn_more": "Learn more"
   },
   "mobile_page": {
     "title": "Oops!",
@@ -42,8 +43,8 @@
   },
   "not_found_page": {
     "title": "404",
-    "subtitle": "Sorry, we couldn't find the project you were looking for",
-    "back": "Back to Projects"
+    "subtitle": "Sorry, we couldn't find the scene you were looking for",
+    "back": "Back to your Scenes"
   },
   "error_page": {
     "title": "Oops!",
@@ -55,12 +56,12 @@
   "unsupported_browser_page": {
     "title": "Oops!",
     "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
-    "back": "Back to Projects"
+    "back": "Back to your Scenes"
   },
   "project_card": {
     "added_to_contest": "Submitted to contest",
     "confirm_delete_header": "Delete \"{title}\"",
-    "confirm_delete_content": "Are you sure you want to delete your project \"{title}\"? This operation is not reversible"
+    "confirm_delete_content": "Are you sure you want to delete your scene \"{title}\"? This operation is not reversible"
   },
   "itemdrawer": {
     "title": "Item drawer",
@@ -88,9 +89,9 @@
     "title": "Submit your scene",
     "subtitle": "Submit your scene now to earn 100 MANA (worth $5 USD). Please review your project and contact info below before you submit.",
     "success_title": "Awesome!",
-    "success_subtitle": "Your project looks really nice, thank you for your submission!",
+    "success_subtitle": "Your scene looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
-    "error_occurred": "An error occurred trying to submit your project:",
+    "error_occurred": "An error occurred trying to submit your scene:",
     "i_accept_the": "I accept the "
   },
   "shortcuts": {
@@ -123,12 +124,12 @@
     "other_shortcuts": "Other"
   },
   "edit_project_modal": {
-    "title": "Project details",
+    "title": "Scene details",
     "custom_layout_label": "Layout"
   },
   "project_fields": {
     "title_field_label": "Title",
-    "title_field_placeholder": "Project title",
+    "title_field_placeholder": "Scene title",
     "description_field_label": "Description",
     "description_field_placeholder": "No description"
   },
@@ -150,9 +151,15 @@
     "rows": "rows",
     "columns": "columns"
   },
-  "custom_layout": {
-    "title": "Custom",
-    "up_to": "Up to {max} parcels"
+  "templates": {
+    "small": "Mini (1x1)",
+    "medium": "Standard (2x2)",
+    "big": "Big (2x3)",
+    "custom_layout": {
+      "title": "Custom",
+      "up_to": "Up to {max} parcels"
+    },
+    "description": "{dimensions} - {amount} items max"
   },
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
@@ -192,12 +199,13 @@
     }
   },
   "toasts": {
-    "localstorage": "Projects automatically save to your browser's storage"
+    "localstorage": "Scenes automatically save to your browser's storage"
   },
   "contest": {
     "mana": "900,000 MANA",
     "land": "50 LAND",
     "usd": "50,000 USD",
+    "mana_per_scene": "100 MANA ($5)",
     "submit_text": "Submit to contest",
     "update_text": "Update submission",
     "banner": {

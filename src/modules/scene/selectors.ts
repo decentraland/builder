@@ -16,6 +16,12 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   (project, scenes) => (project ? scenes[project.sceneId] : null)
 )
 
+export const getSceneById = (sceneId: string) =>
+  createSelector<RootState, SceneState['data'], Scene | null>(
+    getData,
+    scenes => scenes[sceneId]
+  )
+
 export const getCurrentMetrics = createSelector<RootState, Scene | null, SceneMetrics>(
   getCurrentScene,
   scene => (scene ? scene.metrics : EMPTY_SCENE_METRICS)

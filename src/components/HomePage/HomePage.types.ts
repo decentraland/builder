@@ -14,6 +14,10 @@ export type Props = DefaultProps & {
   onOpenModal: typeof openModal
 }
 
+export type State = {
+  isAnimationPlaying: boolean
+}
+
 export type MapStateProps = Pick<Props, 'projects'>
 export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal'>
 export type MapDispatch = Dispatch<NavigateToAction | CreateProjectFromTemplateAction | OpenModalAction>

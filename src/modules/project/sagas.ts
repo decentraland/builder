@@ -47,7 +47,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   const project: Project = {
     id: uuidv4(),
-    title: 'New project',
+    title: 'New scene',
     description: '',
     thumbnail: '',
     layout,

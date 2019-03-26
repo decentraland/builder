@@ -2,10 +2,10 @@
   "add_to_contest": {
     "contact_information": "联系信息",
     "error_occurred": "提交项目时出错了:",
-    "subtitle": "现在提交您的场景以获得100 MANA（相当于5美元）。就好了，请检查你的项目和联系信息，然后提交",
+    "subtitle": "就差一步了，请检查你的场景和联系信息，然后提交。",
     "success_subtitle": "不错的项目，谢谢您参加大赛！",
     "success_title": "真棒！",
-    "title": "提交到大赛",
+    "title": "提交场景",
     "i_accept_the": "我接受 "
   },
   "contest": {
@@ -18,7 +18,8 @@
     "mana": "900,000 MANA",
     "submit_text": "提交到大赛",
     "update_text": "更新提交",
-    "usd": "50,000 美元"
+    "usd": "50,000 美元",
+    "mana_per_scene": "100 MANA ($5)"
   },
   "custom_layout": {
     "title": "自定义",
@@ -30,7 +31,7 @@
   },
   "edit_project_modal": {
     "custom_layout_label": "布局",
-    "title": "项目详细信息"
+    "title": "场景详细信息"
   },
   "error_page": {
     "or": "或者重试",
@@ -52,24 +53,29 @@
     "eth_address": "ETH 地址",
     "next": "下一个",
     "or": "或",
-    "project": "项目",
+    "project": "场景",
     "projects": "项目",
     "save": "保存",
     "send": "发送",
     "submit": "提交",
     "templates": "模板",
     "terms_and_conditions": "使用条款",
-    "optional": "可选"
+    "optional": "可选",
+    "items": "模型"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",
     "empty_projects_title": "这是您的项目所在",
     "project_actions": {
-      "delete_project": "删除项目",
-      "duplicate_project": "复制项目"
+      "delete_project": "删除场景",
+      "duplicate_project": "复制场景"
     },
-    "subtitle": "导入文件，或者从选择模板，或根据您的土地布局开始设计!",
-    "title": "设计一个独特的世界!"
+    "subtitle": "提交你最有创意的场景，赢得大奖: {mana} 和 {land} (超过 {usd}). 参赛者提交的毎个场景可获得 {mana_per_scene}.",
+    "title": "召集设计人员!",
+    "templates_title": "请先选择场景大小",
+    "projects_title": "我的场景",
+    "start": "开始设计",
+    "learn_more": "更多"
   },
   "itemdrawer": {
     "empty_ground": "末设置地面",
@@ -106,8 +112,8 @@
     "title": "设计一个独特的世界!!"
   },
   "not_found_page": {
-    "back": "返回项目",
-    "subtitle": "对不起，我们找不到您要找的项目",
+    "back": "返回场景",
+    "subtitle": "不好意思，没有找到你要的场景",
     "title": "404"
   },
   "popups": {
@@ -116,14 +122,14 @@
   },
   "project_card": {
     "added_to_contest": "提交到大赛",
-    "confirm_delete_content": "确认删除 \"{title}\"? 此操作不能回退",
+    "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },
   "project_fields": {
-    "description_field_label": "说明",
+    "description_field_label": "描述或说胆",
     "description_field_placeholder": "没有说明",
     "title_field_label": "名称",
-    "title_field_placeholder": "项目名称"
+    "title_field_placeholder": "场景名称"
   },
   "project_layout_picker": {
     "max_area_error": "您的场景不得超过 {area} 块地块",
@@ -155,7 +161,7 @@
     "title": "快捷键"
   },
   "toasts": {
-    "localstorage": "项目会自动保存到浏览器的本地存储中。"
+    "localstorage": "场景会自动保存在浏览器的本地存储中"
   },
   "topbar": {
     "add_to_contest_disabled_bounds": "物体超过边界{br}请将物品移动到边界内！",
@@ -196,9 +202,9 @@
     "title": "开始使用 the Builder"
   },
   "unsupported_browser_page": {
-    "back": "返回项目",
-    "subtitle": "The Builder 不能在您的浏览器中运行.{br}请使用 {chrome} 或者 {firefox} 浏览器！",
-    "title": "哎哟!"
+    "back": "返回您的场景",
+    "subtitle": "The Builder 不支持您的浏览器.{br}请使用 {chrome} 或 {firefox}",
+    "title": "Oops!"
   },
   "validation": {
     "project": {
@@ -209,5 +215,15 @@
         "length": "名称长度必须是 {min} 到 {max} 个字符."
       }
     }
+  },
+  "templates": {
+    "small": "小 (1x1)",
+    "medium": "中 (2x2)",
+    "big": "大 (2x3)",
+    "custom_layout": {
+      "title": "自定义",
+      "up_to": "最大 {max} 块地块"
+    },
+    "description": "{dimensions} - 最多 {amount} 个模型"
   }
 }
