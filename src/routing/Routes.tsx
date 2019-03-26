@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { Responsive } from 'decentraland-ui'
+import { Responsive, Locale } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
 import App from 'decentraland-dapps/dist/containers/App'
 
 import { locations } from 'routing/locations'
+import * as languages from 'modules/translation/languages'
 
 import HomePage from 'components/HomePage'
 import ErrorPage from 'components/ErrorPage'
@@ -34,19 +35,19 @@ export default class Routes extends React.Component<Props, State> {
   }
 
   wrapHomepage = (Component: React.ComponentType<any>) => (props: any) => (
-    <App isFullscreen isOverlay onSignIn={undefined}>
+    <App isFullscreen isOverlay onSignIn={undefined} locales={Object.keys(languages) as Locale[]}>
       <Component {...props} />
     </App>
   )
 
   wrapFullScreen = (Component: React.ComponentType<any>) => (props: any) => (
-    <App isFullscreen onSignIn={undefined}>
+    <App isFullscreen onSignIn={undefined} locales={Object.keys(languages) as Locale[]}>
       <Component {...props} />
     </App>
   )
 
   wrapApp = (Component: React.ComponentType<any>) => (props: any) => (
-    <App onSignIn={undefined}>
+    <App onSignIn={undefined} locales={Object.keys(languages) as Locale[]}>
       <Component {...props} />
     </App>
   )
