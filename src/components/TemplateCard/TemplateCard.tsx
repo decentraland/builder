@@ -30,7 +30,9 @@ export default class TemplateCard extends React.PureComponent<Props> {
     return (
       <div className="TemplateCard" onClick={this.handleOnClick}>
         <div className="wrapper">
-          <SquaresGrid cols={cols} rows={rows} />
+          <div className="grid-container">
+            <SquaresGrid cols={cols} rows={rows} />
+          </div>
           <div className="project-data">
             <div className="title">{template.title}</div>
             <div className="description">{template.description}</div>

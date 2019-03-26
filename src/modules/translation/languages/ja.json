@@ -209,5 +209,8 @@
         "length": "タイトルの長さは{min}から{max}の間でなければなりません。"
       }
     }
+  },
+  "video_modal": {
+    "title": "Builderについてもっと知る"
   }
 }

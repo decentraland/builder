@@ -221,5 +221,8 @@
       "title": "관습",
       "up_to": "최대 {max} 소포"
     }
+  },
+  "video_modal": {
+    "title": "Builder에 대해 더 자세히 알아보십시오"
   }
 }

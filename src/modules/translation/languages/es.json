@@ -220,5 +220,8 @@
       "title": "A medida",
       "up_to": "Hasta {max} parcelas"
     }
+  },
+  "video_modal": {
+    "title": "Aprende más sobre el Builder"
   }
 }

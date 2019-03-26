@@ -14,7 +14,7 @@ export default class TutorialModal extends React.PureComponent<ModalProps> {
 
     return (
       <Modal name={name} closeIcon={<Close onClick={onClose} />}>
-        <Modal.Header>{t('contest.banner.title')}</Modal.Header>
+        <Modal.Header>{t('video_modal.title')}</Modal.Header>
         <Modal.Content>
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}`}
