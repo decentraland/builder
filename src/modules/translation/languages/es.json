@@ -215,6 +215,10 @@
     "small": "Mini (1x1)",
     "medium": "Estándar (2x2)",
     "big": "Grande (2x3)",
-    "description": "{dimensions} - {amount} objetos max"
+    "description": "{dimensions} - {amount} objetos max",
+    "custom_layout": {
+      "title": "A medida",
+      "up_to": "Hasta {max} parcelas"
+    }
   }
 }

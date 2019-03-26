@@ -216,6 +216,10 @@
     "small": "소형(1x1)",
     "medium": "중형 (2x2)",
     "big": "대형 (2x3)",
-    "description": "{dimensions} - {amount} 아이템 최대"
+    "description": "{dimensions} - {amount} 아이템 최대",
+    "custom_layout": {
+      "title": "관습",
+      "up_to": "최대 {max} 소포"
+    }
   }
 }
