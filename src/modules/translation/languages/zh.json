@@ -225,5 +225,8 @@
       "up_to": "最大 {max} 块地块"
     },
     "description": "{dimensions} - 最多 {amount} 个模型"
+  },
+  "video_modal": {
+    "title": "更多"
   }
 }

@@ -123,6 +123,9 @@
     "editor_shortcuts": "Editor",
     "other_shortcuts": "Other"
   },
+  "video_modal": {
+    "title": "Learn more about the Builder"
+  },
   "edit_project_modal": {
     "title": "Scene details",
     "custom_layout_label": "Layout"
@@ -145,7 +148,7 @@
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your scene.",
-    "subtitle_two": "Enter values in the boxes below for the desired size."
+    "subtitle_two": "Enter values in the inputs below for the desired size."
   },
   "layout_picker": {
     "rows": "rows",

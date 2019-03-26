@@ -209,5 +209,8 @@
         "length": "La longueur du titre doit être comprise entre les caractères {min} et {max}."
       }
     }
+  },
+  "video_modal": {
+    "title": "En savoir plus sur le Builder"
   }
 }

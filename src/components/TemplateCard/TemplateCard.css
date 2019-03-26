@@ -22,9 +22,8 @@
 }
 
 .TemplateCard .project-data {
-  width: 100%;
-  user-select: none;
   left: 125px;
+  user-select: none;
   position: absolute;
 }
 
@@ -36,4 +35,8 @@
 .TemplateCard .description {
   font-size: 17px;
   color: #676370;
+}
+
+.TemplateCard .grid-container {
+  width: 78px;
 }

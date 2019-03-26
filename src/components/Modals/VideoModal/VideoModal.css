@@ -3,6 +3,28 @@
   height: 377px;
 }
 
-.VideoModal.ui.modal > .content {
+.ui.small.modal.VideoModal {
+  width: 686px;
+}
+
+.ui.small.modal.VideoModal div.header {
+  margin: 16px 0px;
+  font-size: 20px;
+  font-weight: 300;
+  display: flex;
+  justify-content: center;
+}
+
+.ui.small.modal.VideoModal div.content {
+  margin-bottom: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 16px;
   padding-top: 0px;
+}
+
+.ui.small.modal.VideoModal div.close {
+  position: absolute;
+  right: 18px;
+  top: 14px;
 }
