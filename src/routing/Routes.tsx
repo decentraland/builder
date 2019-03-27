@@ -34,7 +34,7 @@ export default class Routes extends React.Component<Props, State> {
     document.body.classList.remove('loading-overlay')
   }
 
-  wrapHomepage = (Component: React.ComponentType<any>) => (props: any) => (
+  wrapOverlay = (Component: React.ComponentType<any>) => (props: any) => (
     <App activePage="builder" onSignIn={undefined} locales={Object.keys(languages) as Locale[]} isFullscreen isOverlay>
       <Component {...props} />
     </App>
@@ -66,11 +66,11 @@ export default class Routes extends React.Component<Props, State> {
     return (
       <>
         <Responsive maxWidth={1024} as={React.Fragment}>
-          <Route component={this.wrapApp(MobilePage)} />
+          <Route component={this.wrapOverlay(MobilePage)} />
         </Responsive>
         <Responsive minWidth={1025} as={React.Fragment}>
           <Switch>
-            <Route exact path={locations.root()} component={this.wrapHomepage(HomePage)} />
+            <Route exact path={locations.root()} component={this.wrapOverlay(HomePage)} />
             <Route exact path={locations.notFound()} component={this.wrapApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
             <Redirect to={locations.root()} />

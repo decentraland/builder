@@ -18,7 +18,8 @@
     "done": "done",
     "dismiss": "Dismiss",
     "optional": "optional",
-    "items": "items"
+    "items": "items",
+    "sign_up": "Sign up"
   },
   "languages": {
     "en": "English",
@@ -38,7 +39,12 @@
   },
   "mobile_page": {
     "title": "Oops!",
-    "message": "The Builder doesn't work on mobile devices yet. We'll let you know when it does:",
+    "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
+    "gallery_title": "Check out work from Builder users!",
+    "secondary_hero": {
+      "title": "Want to build when you're back at your computer?",
+      "action": "Read more"
+    },
     "success": "Thanks, we will keep you posted!"
   },
   "not_found_page": {
@@ -162,7 +168,7 @@
       "title": "Custom",
       "up_to": "Up to {max} parcels"
     },
-    "description": "{dimensions} - {amount} items max"
+    "description": "{dimensions} - about {amount} items max"
   },
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
