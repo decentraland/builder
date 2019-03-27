@@ -19,7 +19,8 @@
     "submit_text": "提交到大赛",
     "update_text": "更新提交",
     "usd": "50,000 美元",
-    "mana_per_scene": "100 MANA ($5)"
+    "mana_per_scene": "100 MANA ($5)",
+    "incentive_banner": "将您的场景提交给大赛以获得 100 MANA（价值 $5 ）！"
   },
   "custom_layout": {
     "title": "自定义",

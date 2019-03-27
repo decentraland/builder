@@ -162,7 +162,7 @@
       "title": "Custom",
       "up_to": "Up to {max} parcels"
     },
-    "description": "{dimensions} - {amount} items max"
+    "description": "{dimensions} - about {amount} items max"
   },
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
@@ -215,6 +215,7 @@
       "title": "Calling all Builders!",
       "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
       "cta": "Watch Video"
-    }
+    },
+    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!"
   }
 }

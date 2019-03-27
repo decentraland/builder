@@ -209,7 +209,8 @@
       "text": "Sube tus escenas más creativas y gana increíbles premios: {br}{mana} y {land} (más de {usd}!)",
       "cta": "Mira el Video"
     },
-    "mana_per_scene": "100 MANA ($5)"
+    "mana_per_scene": "100 MANA ($5)",
+    "incentive_banner": "Sube tu escena para ganar 100 MANA ($5 USD)!"
   },
   "templates": {
     "small": "Mini (1x1)",

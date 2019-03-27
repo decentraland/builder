@@ -20,10 +20,6 @@
   padding-bottom: 0px;
 }
 
-.ui.grid.horizontal-layout {
-  height: calc(100vh - var(--topbar-height));
-}
-
 .ui.grid.fullscreen {
   height: 100%;
 }

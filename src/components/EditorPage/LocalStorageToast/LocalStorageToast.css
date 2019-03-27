@@ -10,7 +10,7 @@
   line-height: 18px;
 }
 
-.LocalStorageToast .close {
+.LocalStorageToast .dcl.close {
   position: relative;
   margin-left: 8px;
   width: 16px;

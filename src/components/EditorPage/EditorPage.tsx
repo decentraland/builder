@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { Grid } from 'decentraland-ui'
+import { Grid, Close } from 'decentraland-ui'
 import App from 'decentraland-dapps/dist/containers/App'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import NotFoundPage from 'components/NotFoundPage'
 import TopBar from 'components/TopBar'
@@ -12,14 +13,20 @@ import Metrics from './Metrics'
 import LocalStorageToast from './LocalStorageToast'
 import ItemDragLayer from './ItemDragLayer'
 import { ToolName } from './Tools/Tools.types'
-import { Props } from './EditorPage.types'
+import { Props, State } from './EditorPage.types'
 
 import './EditorPage.css'
 
 export const LOCALSTORAGE_TUTORIAL_KEY = 'builder-tutorial'
+export const LOCALSTORAGE_INCENTIVE_BANNER_KEY = 'builder-incentive-banner'
+
 const localStorage = getLocalStorage()
 
-export default class EditorPage extends React.PureComponent<Props> {
+export default class EditorPage extends React.PureComponent<Props, State> {
+  state = {
+    isIncentiveBannerOpen: false
+  }
+
   componentWillMount() {
     const { currentProject, onLoadAssetPacks, onOpenModal } = this.props
 
@@ -29,7 +36,12 @@ export default class EditorPage extends React.PureComponent<Props> {
       onOpenModal('TutorialModal')
     }
 
-    document.body.classList.add('lock-scroll')
+    if (!localStorage.getItem(LOCALSTORAGE_INCENTIVE_BANNER_KEY)) {
+      this.setState({
+        isIncentiveBannerOpen: true
+      })
+    }
+
     document.body.scrollTop = 0
     document.body.addEventListener('mousewheel', this.handleMouseWheel)
   }
@@ -66,8 +78,16 @@ export default class EditorPage extends React.PureComponent<Props> {
     }
   }
 
+  handleCloseBanner = () => {
+    localStorage.setItem(LOCALSTORAGE_INCENTIVE_BANNER_KEY, '1')
+    this.setState({
+      isIncentiveBannerOpen: false
+    })
+  }
+
   render() {
     const { currentProject, isPreviewing, isSidebarOpen, isLoading } = this.props
+    const { isIncentiveBannerOpen } = this.state
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
 
@@ -81,9 +101,15 @@ export default class EditorPage extends React.PureComponent<Props> {
 
     return (
       <div className="EditorPage">
+        {isIncentiveBannerOpen && (
+          <div className="incentive-banner">
+            <span>{t('contest.incentive_banner')}</span>
+            <Close onClick={this.handleCloseBanner} small />
+          </div>
+        )}
         {isPreviewing ? null : <TopBar />}
         <Grid className={gridClasses}>
-          <Grid.Row className="wrapper">
+          <Grid.Row className={'wrapper' + (isIncentiveBannerOpen ? ' with-banner' : '')}>
             <ViewPort />
             {isLoading || isPreviewing ? null : (
               <div className={toolbarClasses}>
