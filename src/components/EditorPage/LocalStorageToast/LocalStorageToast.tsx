@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Close } from 'decentraland-ui'
 
-import Icon from 'components/Icon'
 import { Props, State } from './LocalStorageToast.types'
 
 import './LocalStorageToast.css'
@@ -28,7 +28,7 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
       <div className="LocalStorageToast">
         {t('toasts.localstorage')}
         <div className="close" onClick={this.handleClick} title={t('global.dismiss')}>
-          <Icon name="erase" />
+          <Close small />
         </div>
       </div>
     )

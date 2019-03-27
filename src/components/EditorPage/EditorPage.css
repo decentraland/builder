@@ -7,11 +7,11 @@
 }
 
 .EditorPage .wrapper.with-banner {
-  height: calc(100vh - var(--topbar-height) - 40px);
+  height: calc(100vh - var(--topbar-height) - var(--incentive-banner-height));
 }
 
 .EditorPage .incentive-banner {
-  height: 40px;
+  height: var(--incentive-banner-height);
   display: flex;
   align-items: center;
 
@@ -27,7 +27,7 @@
   flex: 1;
 }
 
-.EditorPage .incentive-banner .Icon {
+.EditorPage .incentive-banner .dcl.close {
   justify-self: flex-end;
   margin-right: 16px;
   transform: scale(1.4);

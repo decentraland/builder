@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Grid } from 'decentraland-ui'
+import { Grid, Close } from 'decentraland-ui'
 import App from 'decentraland-dapps/dist/containers/App'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -8,7 +8,6 @@ import NotFoundPage from 'components/NotFoundPage'
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
-import Icon from 'components/Icon'
 import Tools from './Tools'
 import Metrics from './Metrics'
 import LocalStorageToast from './LocalStorageToast'
@@ -105,7 +104,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
         {isIncentiveBannerOpen && (
           <div className="incentive-banner">
             <span>{t('contest.incentive_banner')}</span>
-            <Icon name="erase" onClick={this.handleCloseBanner} />
+            <Close onClick={this.handleCloseBanner} small />
           </div>
         )}
         {isPreviewing ? null : <TopBar />}

@@ -14,6 +14,9 @@
   /* TopBar */
   --topbar-height: 48px;
 
+  /* Editor page Banner */
+  --incentive-banner-height: 40px;
+
   /* SideBar */
   --sidebar-width: 370px;
   --sidebar-heading: rgba(255, 255, 255, 0.9);

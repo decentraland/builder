@@ -162,7 +162,7 @@
       "title": "Custom",
       "up_to": "Up to {max} parcels"
     },
-    "description": "{dimensions} - {amount} items max"
+    "description": "{dimensions} - about {amount} items max"
   },
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
