@@ -210,7 +210,8 @@
       "text": "창의적인 풍경을 제출하고 상금을 획득하세요:{br}{mana} 및 {land} (미화 {usd} 이상!)",
       "cta": "영상 시청하기"
     },
-    "mana_per_scene": "100 MANA ($5)"
+    "mana_per_scene": "100 MANA ($5)",
+    "incentive_banner": " (약 $5 미화 상당의) 100 MANA를 받아가기 위해 콘테스트에 여러분이 직접 제작한 풍경을 제출하시기 바랍니다."
   },
   "templates": {
     "small": "소형(1x1)",

@@ -29,6 +29,10 @@ export type Props = {
   onResetCamera: typeof resetCamera
 }
 
+export type State = {
+  isIncentiveBannerOpen: boolean
+}
+
 export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'isLoading' | 'currentProject'>
 export type MapDispatchProps = Pick<
   Props,
