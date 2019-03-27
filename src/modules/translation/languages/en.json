@@ -38,9 +38,9 @@
     "learn_more": "Learn more"
   },
   "mobile_page": {
-    "title": "Oops!",
     "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
     "gallery_title": "Check out work from Builder users!",
+    "learn_more": "Learn more about the Builder",
     "secondary_hero": {
       "title": "Want to build when you're back at your computer?",
       "action": "Read more"

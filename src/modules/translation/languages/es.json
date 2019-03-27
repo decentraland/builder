@@ -20,7 +20,8 @@
     "done": "OK",
     "dismiss": "Descartar",
     "optional": "opcional",
-    "items": "objetos"
+    "items": "objetos",
+    "sign_up": "Suscribirse"
   },
   "languages": {
     "en": "English",
@@ -40,9 +41,14 @@
     "learn_more": "Más información"
   },
   "mobile_page": {
-    "title": "Oops!",
-    "message": "El Builder aún no funciona en dispositivos móbiles. Te avisaremos cuando esté listo:",
-    "success": "Gracias, ¡te mantendremos al tanto!"
+    "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
+    "success": "Gracias, ¡te mantendremos al tanto!",
+    "gallery_title": "Esto es lo que se está costruyendo",
+    "learn_more": "Aprende más acerca del Builder",
+    "secondary_hero": {
+      "title": "¿Quieres comenzar a construir cuando estes en tu PC?",
+      "action": "Leer más"
+    }
   },
   "not_found_page": {
     "title": "404",

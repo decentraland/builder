@@ -76,7 +76,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
                   <Field
                     type="email"
                     icon="asterisk"
-                    placeholder="you@your-email.com"
+                    placeholder="name@email.com"
                     value={email}
                     onChange={this.handleEmailChange}
                     disabled={isLoading}
@@ -91,7 +91,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
               )}
             </Form>
             <Button className="hollow" onClick={this.handleOpenVideo}>
-              Learn about the Builder
+              {t('mobile_page.learn_more')}
             </Button>
           </Hero.Actions>
 
