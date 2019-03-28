@@ -61,7 +61,8 @@
     "templates": "模板",
     "terms_and_conditions": "使用条款",
     "optional": "可选",
-    "items": "模型"
+    "items": "模型",
+    "sign_up": "注册"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",
@@ -109,7 +110,12 @@
   "mobile_page": {
     "message": "The Builder 不能在手机上运行，当可以时通知你:",
     "success": "谢谢，我们会与您联系!",
-    "title": "设计一个独特的世界!!"
+    "gallery_title": "查看Builder用户的工作！",
+    "learn_more": "了解有关Builder的更多信息",
+    "secondary_hero": {
+      "title": "想要在你回到电脑前建立？",
+      "action": "阅读更多"
+    }
   },
   "not_found_page": {
     "back": "返回场景",
