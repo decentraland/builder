@@ -289,9 +289,11 @@ function* handleFixCurrentScene() {
   const componentIdKeys = Object.keys(scene.components)
   let components = { ...scene.components }
 
+  if (!bounds) return
+
   for (let key of componentIdKeys) {
     const component = scene.components[key] as ComponentDefinition<ComponentType.Transform>
-    if (component.type === ComponentType.Transform && bounds) {
+    if (component.type === ComponentType.Transform) {
       if (!isWithinBounds(component.data.position, bounds)) {
         components[key] = {
           ...component,
