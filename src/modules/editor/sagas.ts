@@ -39,12 +39,21 @@ import {
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
+import {
+  PROVISION_SCENE,
+  updateMetrics,
+  updateTransform,
+  DROP_ITEM,
+  DropItemAction,
+  addItem,
+  setGround,
+  fixCurrentScene
+} from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
 import { getAssetMappings } from 'modules/asset/selectors'
-import { getCurrentProject, getProject } from 'modules/project/selectors'
+import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
@@ -53,6 +62,7 @@ import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
+import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
 import { getGizmo, getSelectedEntityId } from './selectors'
@@ -137,7 +147,10 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
 }
 
 function handleTransformChange(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+  const bounds: ReturnType<typeof getCurrentBounds> = getCurrentBounds(store.getState() as RootState)
   const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
+  let position: Vector3 = { x: 0, y: 0, z: 0 }
+
   if (!project) return
 
   const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
@@ -146,14 +159,12 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   const transform = getEntityComponentByType(args.entityId, ComponentType.Transform)(store.getState() as RootState)
   if (!transform) return
 
-  const sanitizedPosition = {
-    x: Math.max(Math.min(args.transform.position.x, project.layout.rows * PARCEL_SIZE), 0),
-    y: Math.max(args.transform.position.y, 0),
-    z: Math.max(Math.min(args.transform.position.z, project.layout.cols * PARCEL_SIZE), 0)
+  if (bounds) {
+    position = snapToBounds(args.transform.position, bounds)
   }
 
   if (transform) {
-    store.dispatch(updateTransform(scene.id, transform.id, { position: sanitizedPosition, rotation: args.transform.rotation }))
+    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation }))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
@@ -200,6 +211,9 @@ function* handleOpenEditor() {
 
   // Enable snap to grid
   yield handleToggleSnapToGrid(toggleSnapToGrid(true))
+
+  // Apply scene fixes
+  yield put(fixCurrentScene())
 
   // Select gizmo
   yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))

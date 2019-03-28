@@ -15,7 +15,8 @@ import {
   DuplicateItemAction,
   DeleteItemAction,
   SET_GROUND,
-  SetGroundAction
+  SetGroundAction,
+  FIX_CURRENT_SCENE
 } from 'modules/scene/actions'
 import { RootState } from 'modules/common/types'
 import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponents, getScene } from 'modules/scene/selectors'
@@ -25,7 +26,7 @@ import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -36,6 +37,7 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
+  yield takeLatest(FIX_CURRENT_SCENE, handleFixCurrentScene)
 }
 
 function* handleAddItem(action: AddItemAction) {
@@ -279,4 +281,25 @@ function* handleSetGround(action: SetGroundAction) {
   }
 
   yield put(provisionScene({ ...scene, components, entities, ground }))
+}
+
+function* handleFixCurrentScene() {
+  const scene: Scene = yield select(getCurrentScene)
+  const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
+  const componentIdKeys = Object.keys(scene.components)
+  let components = { ...scene.components }
+
+  for (let key of componentIdKeys) {
+    const component = scene.components[key] as ComponentDefinition<ComponentType.Transform>
+    if (component.type === ComponentType.Transform && bounds) {
+      if (!isWithinBounds(component.data.position, bounds)) {
+        components[key] = {
+          ...component,
+          data: { ...component.data, position: snapToBounds(component.data.position, bounds) }
+        }
+      }
+    }
+  }
+
+  yield put(provisionScene({ ...scene, components }))
 }
