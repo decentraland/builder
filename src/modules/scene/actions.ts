@@ -85,3 +85,11 @@ export const SET_GROUND = 'Set ground'
 export const setGround = (projectId: string, layout?: Layout, asset?: Asset) => action(SET_GROUND, { projectId, layout, asset })
 
 export type SetGroundAction = ReturnType<typeof setGround>
+
+// Fix scene
+
+export const FIX_CURRENT_SCENE = 'Fix scene'
+
+export const fixCurrentScene = () => action(FIX_CURRENT_SCENE, {})
+
+export type FixCurrentSceneAction = ReturnType<typeof fixCurrentScene>
