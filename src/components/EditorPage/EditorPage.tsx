@@ -16,11 +16,14 @@ import { ToolName } from './Tools/Tools.types'
 import { Props, State } from './EditorPage.types'
 
 import './EditorPage.css'
+import { EditorWindow } from 'components/Preview/Preview.types'
 
 export const LOCALSTORAGE_TUTORIAL_KEY = 'builder-tutorial'
 export const LOCALSTORAGE_INCENTIVE_BANNER_KEY = 'builder-incentive-banner'
 
 const localStorage = getLocalStorage()
+
+const editorWindow = window as EditorWindow
 
 export default class EditorPage extends React.PureComponent<Props, State> {
   state = {
@@ -83,6 +86,8 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     this.setState({
       isIncentiveBannerOpen: false
     })
+
+    requestAnimationFrame(() => editorWindow.editor.resize())
   }
 
   render() {
