@@ -54,6 +54,7 @@ export default class Routes extends React.Component<Props, State> {
 
   renderRoutes() {
     const { hasError, stackTrace } = this.state
+    const { projectCount } = this.props
 
     if (env.isDevelopment() && hasError) {
       const WrappedErrorPage = this.wrapFullScreen(ErrorPage)
@@ -70,7 +71,11 @@ export default class Routes extends React.Component<Props, State> {
         </Responsive>
         <Responsive minWidth={1025} as={React.Fragment}>
           <Switch>
-            <Route exact path={locations.root()} component={this.wrapOverlay(HomePage)} />
+            <Route
+              exact
+              path={locations.root()}
+              component={projectCount === 0 ? this.wrapOverlay(HomePage) : this.wrapFullScreen(HomePage)}
+            />
             <Route exact path={locations.notFound()} component={this.wrapApp(NotFoundPage)} />
             <Route exact path={locations.editor()} component={EditorPage} />
             <Redirect to={locations.root()} />

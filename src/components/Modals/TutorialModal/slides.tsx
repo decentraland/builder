@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import ContestButton from 'components/ContestButton'
 
 export const getSlides = () => [
   {
@@ -27,10 +26,5 @@ export const getSlides = () => [
     thumbnail: `tutorial_4`,
     title: t(`tutorial_modal.slide4.title`),
     description: <T id={`tutorial_modal.slide4.description`} values={{ br: <br /> }} />
-  },
-  {
-    thumbnail: null,
-    title: t(`tutorial_modal.slide5.title`),
-    description: <T id={`tutorial_modal.slide5.description`} values={{ br: <br />, submitButton: <ContestButton /> }} />
   }
 ]

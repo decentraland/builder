@@ -10,6 +10,7 @@ import { Template } from 'modules/template/types'
 
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
+import Banner from 'components/Banner'
 
 export default class HomePage extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -40,13 +41,22 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onOpenModal('VideoModal')
   }
 
+  handleCloseBanner = () => {
+    return 1
+  }
+
   render() {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
     return (
       <>
-        <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+        {!projects.length && <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />}
+        <Banner className={'homepage-banner'} onClose={this.handleCloseBanner} isClosable>
+          {t('contest.end_message')}
+          <div className="orange" />
+          <div className="purple" />
+        </Banner>
         <Container>
           <div className="HomePage">
             {projects.length > 0 && (

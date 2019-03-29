@@ -4,7 +4,7 @@ import { Button, Field } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
 import { api, EMAIL_INTEREST } from 'lib/api'
@@ -74,16 +74,6 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
     return (
       <div className="form">
-        <div className="banner">
-          <T
-            id="tutorial_modal.contest"
-            values={{
-              mana: <span className="highlight">{t('contest.mana')}</span>,
-              land: <span className="highlight">{t('contest.land')}</span>,
-              usd: <span className="highlight">{t('contest.usd')}</span>
-            }}
-          />
-        </div>
         <div className="form-container">
           <Field
             type="email"

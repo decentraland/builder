@@ -1,0 +1,22 @@
+.Banner {
+  height: var(--incentive-banner-height);
+  display: flex;
+  align-items: center;
+
+  font-size: 15px;
+  width: 100%;
+  background: #691ea9;
+  color: white;
+}
+
+.Banner > span {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.Banner .dcl.close {
+  justify-self: flex-end;
+  margin-right: 16px;
+  transform: scale(1.4);
+}

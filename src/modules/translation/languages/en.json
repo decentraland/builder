@@ -26,8 +26,8 @@
     "zh": "Chinese"
   },
   "home_page": {
-    "title": "Calling all Builders!",
-    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over {usd}). Every participant gets {mana_per_scene} for each scene.",
+    "title": "Build something Cool!",
+    "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your scene to get started",
     "projects_title": "My scenes",
     "project_actions": {
@@ -42,8 +42,8 @@
     "gallery_title": "Check out work from Builder users!",
     "learn_more": "Learn more about the Builder",
     "secondary_hero": {
-      "title": "Want to build when you're back at your computer?",
-      "action": "Read more"
+      "title": "Want to build something when you get to your computer?",
+      "action": "Send yourself a reminder"
     },
     "success": "Thanks, we will keep you posted!"
   },
@@ -222,6 +222,7 @@
       "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
       "cta": "Watch Video"
     },
-    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!"
+    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!",
+    "end_message": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. Read more."
   }
 }

@@ -2,6 +2,8 @@
   /* Colors */
   --contest-pink: #ff80ff;
 
+  --metaverse-gradient: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
+
   /**
   * Component variables
   */
@@ -24,4 +26,8 @@
   /* Preview */
   --preview-background: #38333f;
   --preview-z-index: 1100;
+}
+
+.dcl.navbar .ui.menu .item {
+  color: rgba(255, 255, 255, 0.5);
 }

@@ -39,12 +39,6 @@ export default class EditorPage extends React.PureComponent<Props, State> {
       onOpenModal('TutorialModal')
     }
 
-    if (!localStorage.getItem(LOCALSTORAGE_INCENTIVE_BANNER_KEY)) {
-      this.setState({
-        isIncentiveBannerOpen: true
-      })
-    }
-
     document.body.scrollTop = 0
     document.body.addEventListener('mousewheel', this.handleMouseWheel)
   }

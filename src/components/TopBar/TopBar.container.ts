@@ -4,10 +4,10 @@ import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId, isReady, areEntitiesOutOfBoundaries } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
-import { hasSubmittedCurrentProject, hasAcceptedTerms } from 'modules/contest/selectors'
+import { hasAcceptedTerms } from 'modules/contest/selectors'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
-import { getCurrentMetrics, getCurrentLimits } from 'modules/scene/selectors'
+import { getCurrentMetrics } from 'modules/scene/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 
@@ -15,13 +15,11 @@ const mapState = (state: RootState): MapStateProps => ({
   gizmo: getGizmo(state),
   currentProject: getCurrentProject(state),
   metrics: getCurrentMetrics(state),
-  limits: getCurrentLimits(state),
   selectedEntityId: getSelectedEntityId(state),
   isLoading: isReady(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
   hasAcceptedTerms: hasAcceptedTerms(state),
-  hasSubmittedCurrentProject: hasSubmittedCurrentProject(state),
   areEntitiesOutOfBoundaries: areEntitiesOutOfBoundaries(state)
 })
 

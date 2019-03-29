@@ -17,16 +17,14 @@ import { SceneMetrics } from 'modules/scene/types'
 
 export type Props = {
   gizmo: Gizmo
-  currentProject: Project | null
   metrics: SceneMetrics
-  limits: SceneMetrics
+  currentProject: Project | null
   selectedEntityId: string | null
   isLoading: boolean
   isPreviewing: boolean
   isSidebarOpen: boolean
   areEntitiesOutOfBoundaries: boolean
   hasAcceptedTerms: boolean
-  hasSubmittedCurrentProject: boolean
   onSetGizmo: typeof setGizmo
   onTogglePreview: typeof togglePreview
   onToggleSidebar: typeof toggleSidebar
@@ -41,13 +39,11 @@ export type MapStateProps = Pick<
   | 'gizmo'
   | 'currentProject'
   | 'metrics'
-  | 'limits'
   | 'isLoading'
   | 'isPreviewing'
   | 'isSidebarOpen'
   | 'selectedEntityId'
   | 'hasAcceptedTerms'
-  | 'hasSubmittedCurrentProject'
   | 'areEntitiesOutOfBoundaries'
 >
 
