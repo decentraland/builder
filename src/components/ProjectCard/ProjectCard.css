@@ -86,7 +86,7 @@
   top: 20px;
   left: 20px;
   position: absolute;
-  background-color: var(--metaverse-gradient);
+  background-image: linear-gradient(to left, #861cb8, #5f31da);
   background-size: 100%;
 }
 
