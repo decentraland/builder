@@ -7,6 +7,7 @@ import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
+import Banner from 'components/Banner'
 
 const localStorage = getLocalStorage()
 
@@ -29,7 +30,9 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     this.setState({ email })
   }
 
-  handleSecondaryAction = () => window.open('https://contest.decentraland.org')
+  handleSecondaryAction = () => {
+    window.open(`mailto:?subject=${t('mobile_page.reminder_subject')}&body=${encodeURIComponent(t('mobile_page.reminder_body'))}`)
+  }
 
   handleOpenVideo = () => window.open('https://youtu.be/H8Fj72JobKo')
 
@@ -99,6 +102,13 @@ export default class MobilePage extends React.PureComponent<Props, State> {
             <div className="background" />
           </Hero.Content>
         </Hero>
+        <Banner className={'mobilepage-banner'}>
+          <div className="orange" />
+          <div className="purple" />
+          <span className="text">
+            <T id="banners.contest_end" values={{ read_more: <a href="">{t('global.read_more')}</a> }} />
+          </span>
+        </Banner>
         <div className="gallery">
           <Header size="huge" textAlign="center">
             {t('mobile_page.gallery_title')}

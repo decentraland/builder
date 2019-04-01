@@ -100,7 +100,7 @@
   background-image: url('../../images/purple.svg');
 }
 
-.Banner.homepage-banner span {
+.Banner.homepage-banner .text {
   display: block;
   padding: 0px 50px;
 }

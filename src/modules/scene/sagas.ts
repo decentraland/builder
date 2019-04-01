@@ -287,9 +287,10 @@ function* handleFixCurrentScene() {
   const scene: Scene = yield select(getCurrentScene)
   const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
   const componentIdKeys = Object.keys(scene.components)
-  let components = { ...scene.components }
 
-  if (!bounds) return
+  if (!bounds || !scene) return
+
+  let components = { ...scene.components }
 
   for (let key of componentIdKeys) {
     const component = scene.components[key] as ComponentDefinition<ComponentType.Transform>

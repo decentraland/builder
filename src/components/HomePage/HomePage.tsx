@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Container } from 'decentraland-ui'
 
 import HomePageHero from 'components/HomePageHero'
@@ -41,10 +41,6 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onOpenModal('VideoModal')
   }
 
-  handleCloseBanner = () => {
-    return 1
-  }
-
   render() {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
@@ -52,10 +48,12 @@ export default class HomePage extends React.PureComponent<Props, State> {
     return (
       <>
         {!projects.length && <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />}
-        <Banner className={'homepage-banner'} onClose={this.handleCloseBanner} isClosable>
-          {t('contest.end_message')}
+        <Banner className="homepage-banner">
           <div className="orange" />
           <div className="purple" />
+          <span className="text">
+            <T id="banners.contest_end" values={{ read_more: <a href="">{t('global.read_more')}</a> }} />
+          </span>
         </Banner>
         <Container>
           <div className="HomePage">

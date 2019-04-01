@@ -1,8 +1,7 @@
 .Banner {
-  height: var(--incentive-banner-height);
+  height: auto;
   display: flex;
   align-items: center;
-
   font-size: 15px;
   width: 100%;
   background: #691ea9;

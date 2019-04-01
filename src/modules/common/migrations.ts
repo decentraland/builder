@@ -9,10 +9,5 @@ export const migrations = {
         loading: []
       }
     }
-  },
-  '3': (data: RootState) => {
-    const { contest, ...newData } = data
-    localStorage.removeItem('builder-incentive-banner')
-    return newData as RootState
   }
 }

@@ -19,7 +19,9 @@
     "dismiss": "Dismiss",
     "optional": "optional",
     "items": "items",
-    "sign_up": "Sign up"
+    "sign_up": "Sign up",
+    "learn_more": "Learn more",
+    "read_more": "Read more"
   },
   "languages": {
     "en": "English",
@@ -34,8 +36,7 @@
       "delete_project": "Delete scene",
       "duplicate_project": "Duplicate scene"
     },
-    "start": "Start building",
-    "learn_more": "Learn more"
+    "start": "Start building"
   },
   "mobile_page": {
     "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
@@ -45,7 +46,9 @@
       "title": "Want to build something when you get to your computer?",
       "action": "Send yourself a reminder"
     },
-    "success": "Thanks, we will keep you posted!"
+    "success": "Thanks, we will keep you posted!",
+    "reminder_subject": "Reminder: Try out Decentraland's Builder",
+    "reminder_body": "Hey there!\n\nWhoops! It looks like you tried to use the Builder from a mobile device!\nThe Builder only runs on desktop and laptop computers. Grab your nearest computer, and try again at https://builder.decentraland.org\n\nHappy building!\n\nThe Decentraland Team"
   },
   "not_found_page": {
     "title": "404",
@@ -222,7 +225,9 @@
       "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
       "cta": "Watch Video"
     },
-    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!",
-    "end_message": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. Read more."
+    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!"
+  },
+  "banners": {
+    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April"
   }
 }
