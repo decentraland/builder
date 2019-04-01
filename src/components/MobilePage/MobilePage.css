@@ -116,7 +116,7 @@
 }
 
 .MobilePage .dcl.hero.secondary-hero .background {
-  background-image: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
+  background-image: var(--metaverse-gradient);
 }
 
 .MobilePage .dcl.hero .hero-content {
