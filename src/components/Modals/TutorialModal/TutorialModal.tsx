@@ -116,13 +116,9 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
         </Modal.Header>
         <Modal.Description>{slide.description}</Modal.Description>
         <Modal.Content>
-          {step !== this.slides.length - 1 ? (
-            <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
-              <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
-            </div>
-          ) : (
-            this.renderForm()
-          )}
+          <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
+            <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
+          </div>
         </Modal.Content>
       </>
     )
