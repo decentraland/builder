@@ -86,7 +86,7 @@
   top: 20px;
   left: 20px;
   position: absolute;
-  background-image: url('../../images/contest-button.png');
+  background-image: linear-gradient(to left, #861cb8, #5f31da);
   background-size: 100%;
 }
 

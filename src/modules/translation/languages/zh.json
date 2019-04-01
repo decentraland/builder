@@ -63,7 +63,9 @@
     "terms_and_conditions": "使用条款",
     "optional": "可选",
     "items": "模型",
-    "sign_up": "注册"
+    "sign_up": "注册",
+    "learn_more": "更多",
+    "read_more": "阅读更多"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",
@@ -72,12 +74,11 @@
       "delete_project": "删除场景",
       "duplicate_project": "复制场景"
     },
-    "subtitle": "提交你最有创意的场景，赢得大奖: {mana} 和 {land} (超过 {usd}). 参赛者提交的毎个场景可获得 {mana_per_scene}.",
-    "title": "召集设计人员!",
+    "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
+    "title": "设计酷炫场景！",
     "templates_title": "请先选择场景大小",
     "projects_title": "我的场景",
-    "start": "开始设计",
-    "learn_more": "更多"
+    "start": "开始设计"
   },
   "itemdrawer": {
     "empty_ground": "末设置地面",
@@ -115,8 +116,10 @@
     "learn_more": "了解有关Builder的更多信息",
     "secondary_hero": {
       "title": "想要继续在电脑上创建场景吗?",
-      "action": "阅读更多"
-    }
+      "action": "给我一个提醒"
+    },
+    "reminder_subject": "提醒：试试Decentraland的Builder",
+    "reminder_body": "嘿！\n\n哎呦！看起来您试图从移动设备使用Builder！\nBuilder只能在台式机和笔记本电脑上运行。拿起最近的电脑，然后再试一次 https://builder.decentraland.org\n\n快乐的建筑！\n\nThe Decentraland Team"
   },
   "not_found_page": {
     "back": "返回场景",
@@ -235,5 +238,8 @@
   },
   "video_modal": {
     "title": "更多"
+  },
+  "banners": {
+    "contest_end": "Builder比赛结束了！我们的评委会将在4月中旬宣布获奖者"
   }
 }

@@ -2,11 +2,6 @@
   padding: 10px 0;
 }
 
-.ui.modal.confirm .content,
-.ui.modal.confirm .actions {
-  padding: 1.25rem 1.5rem;
-}
-
 .ui.modal.confirm .actions {
   display: flex;
   flex-direction: row-reverse;
@@ -17,8 +12,8 @@
 }
 
 .ui.modal.confirm .actions > .ui.button:first-child {
-  margin-right: 0;
+  margin-left: 10px;
 }
 .ui.modal.confirm .actions > .ui.button:last-child {
-  margin-left: 0;
+  margin: 0px;
 }

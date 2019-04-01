@@ -2,10 +2,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 0px;
+  user-select: none;
 }
 
 .dcl.hero.HomePageHero .hero-subtitle {
-  padding-right: 200px;
+  padding-right: 400px;
 }
 
 .dcl.hero.HomePageHero .hero-actions {
@@ -26,16 +28,19 @@
 }
 
 .HomePageHero .hero-content {
-  background-image: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
+  background-color: black;
   height: 100%;
 }
 
 .HomePageHero .background {
-  background-image: url('../../images//homepage-hero.png');
+  background-image: url('../../images/hero.png');
+  opacity: 0.4;
   width: 100%;
   height: 472px;
 
   background-position-y: -230px;
+  background-position-x: 100px;
+
   background-size: cover;
   display: flex;
   align-items: center;
@@ -47,7 +52,7 @@
 }
 
 .HomePageHero .ui.button.hollow {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.48);
 }
 

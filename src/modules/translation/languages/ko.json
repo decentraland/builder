@@ -21,15 +21,17 @@
     "dismiss": "삭제",
     "optional": "옵션",
     "items": "아이템",
-    "sign_up": "회원가입"
+    "sign_up": "회원가입",
+    "learn_more": "더 알아보기",
+    "read_more": "더 많은 것을 읽으십시오"
   },
   "languages": {
     "en": "영어",
     "zh": "중국어"
   },
   "home_page": {
-    "title": "모든 빌더 창작자분들을 소집합니다!",
-    "subtitle": "당신의 창의성을 최대로 발휘한 풍경을 제출하시고, 저희가 마련한 상금/상품 중 일부를 받아가시기 바랍니다: {mana} 와 {land} ({usd} 상당). 모든 참여자는 각 풍경마다 {mana_per_scene} 를 받아가실 수 있습니다.",
+    "title": "독특하고 화려한 풍경을 만드세요!",
+    "subtitle": "손쉽게 사용할 수 있는 툴과 수백 개가 넘는 3D 아이템을 내장한 빌더는 디센트럴랜드의 세계를 보다 더 즐겁게 만들 수 있도록 합니다. 여러분의 창의력을 전부 발휘해보시기 바랍니다.",
     "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
     "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
     "templates_title": "풍경 제작에 앞서 제작하고자 하는 풍경의 크기를 선택하십시오",
@@ -38,8 +40,7 @@
       "delete_project": "풍경 삭제하기",
       "duplicate_project": "풍경 복사하기"
     },
-    "start": "제작 시작하기",
-    "learn_more": "더 알아보기"
+    "start": "제작 시작하기"
   },
   "mobile_page": {
     "message": "빌더는 현재 데스크탑에서만 사용할 수 있습니다. 업데이트 내용을 지속적으로 받아보기 위하여 회원가입을 해주고, 본인의 컴퓨터를 통해 업데이트 내역을 확인해보시기 바랍니다:",
@@ -48,8 +49,10 @@
     "learn_more": "Builder에 대해 더 알아보기",
     "secondary_hero": {
       "title": "본인의 컴퓨터로 계속해서 풍경을 제작하고 싶으신가요?",
-      "action": "더 알아보기"
-    }
+      "action": "나에게 알림을 보내라"
+    },
+    "reminder_subject": "알림 : Decentraland Builder를 사용해보세요",
+    "reminder_body": "이봐!\n\n와! 모바일 장치에서 Builder를 사용하려고 한 것 같습니다!\n빌더는 데스크톱 및 랩톱 컴퓨터에서만 실행됩니다. 가장 가까운 컴퓨터를 잡고 https://builder.decentraland.org에서 다시 시도하십시오.\n\n행복한 건물!\n\nThe Decentraland Team"
   },
   "not_found_page": {
     "title": "404",
@@ -231,5 +234,8 @@
   },
   "video_modal": {
     "title": "Builder에 대해 더 자세히 알아보십시오"
+  },
+  "banners": {
+    "contest_end": "작성기 경연 대회가 종료되었습니다! 심사원 패널이 4 월 중순에 수상자를 발표합니다."
   }
 }

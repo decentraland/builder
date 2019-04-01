@@ -10,29 +10,6 @@
   height: calc(100vh - var(--topbar-height) - var(--incentive-banner-height));
 }
 
-.EditorPage .incentive-banner {
-  height: var(--incentive-banner-height);
-  display: flex;
-  align-items: center;
-
-  font-size: 15px;
-  width: 100%;
-  background: #691ea9;
-  color: white;
-}
-
-.EditorPage .incentive-banner > span {
-  display: flex;
-  justify-content: center;
-  flex: 1;
-}
-
-.EditorPage .incentive-banner .dcl.close {
-  justify-self: flex-end;
-  margin-right: 16px;
-  transform: scale(1.4);
-}
-
 .toolbar {
   width: 100%;
   position: absolute;

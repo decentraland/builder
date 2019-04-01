@@ -21,15 +21,17 @@
     "dismiss": "Descartar",
     "optional": "opcional",
     "items": "objetos",
-    "sign_up": "Suscribirse"
+    "sign_up": "Suscribirse",
+    "learn_more": "Más información",
+    "read_more": "Leer más"
   },
   "languages": {
     "en": "English",
     "es": "Español"
   },
   "home_page": {
-    "title": "¡Llamando a todos los creadores!",
-    "subtitle": "Sube tus escenas más creativas y gana increíbles premios: {mana} y {land} (más de {usd}!). Cada participante obtendrá {mana_per_scene} for each scene.",
+    "title": "¡Construye algo genial!",
+    "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamano de tu escena para comenzar",
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
     "project_actions": {
@@ -37,18 +39,19 @@
       "duplicate_project": "Duplicar escena"
     },
     "projects_title": "Mis escenas",
-    "start": "Comenzar",
-    "learn_more": "Más información"
+    "start": "Comenzar"
   },
   "mobile_page": {
     "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
-    "success": "Gracias, ¡te mantendremos al tanto!",
+    "success": "Gracias, ¡Te mantendremos al tanto!",
     "gallery_title": "Esto es lo que se está costruyendo",
     "learn_more": "Aprende más acerca del Builder",
     "secondary_hero": {
       "title": "¿Quieres comenzar a construir cuando estes en tu PC?",
-      "action": "Leer más"
-    }
+      "action": "Enviar recordatorio"
+    },
+    "reminder_subject": "Recordatorio: Probar el Builder de Decentraland",
+    "reminder_body": "Ey!\n\nAl parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland"
   },
   "not_found_page": {
     "title": "404",
@@ -230,5 +233,8 @@
   },
   "video_modal": {
     "title": "Aprende más sobre el Builder"
+  },
+  "banners": {
+    "contest_end": "¡El concurso ha finalizado! Nuestro panel de jueces anunciará a los ganadores a mediados de Abril"
   }
 }

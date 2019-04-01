@@ -1,17 +1,14 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Grid, Icon, Popup } from 'decentraland-ui'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Header, Grid, Icon } from 'decentraland-ui'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
 import ShortcutTooltip from 'components/ShortcutTooltip'
-import ContestButton from 'components/ContestButton'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
-import { getExceededMetrics } from 'modules/scene/utils'
 import { Props } from './TopBar.types'
 import './TopBar.css'
 
@@ -39,19 +36,8 @@ export default class TopBar extends React.PureComponent<Props> {
     onToggleSidebar(!isSidebarOpen)
   }
 
-  handleAddToContestClick = () => {
-    const { onOpenModal } = this.props
-    onOpenModal('AddToContestModal')
-  }
-
   handleTitleClick = () => {
     this.props.onOpenModal('EditProjectModal')
-  }
-
-  getExceededMetric() {
-    const { metrics, limits } = this.props
-    const exceededMetrics = getExceededMetrics(metrics, limits)
-    return exceededMetrics.length > 0 ? exceededMetrics[0] : ''
   }
 
   isSceneLoading() {
@@ -60,21 +46,7 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   render() {
-    const {
-      gizmo,
-      currentProject,
-      isLoading,
-      isPreviewing,
-      isSidebarOpen,
-      selectedEntityId,
-      onReset,
-      onDelete,
-      onDuplicate,
-      hasSubmittedCurrentProject,
-      areEntitiesOutOfBoundaries
-    } = this.props
-    const exceededMetric = this.getExceededMetric()
-    const isSceneLoading = this.isSceneLoading()
+    const { gizmo, currentProject, isLoading, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
 
     return (
       <Grid className="TopBar">
@@ -134,31 +106,6 @@ export default class TopBar extends React.PureComponent<Props> {
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
-            <span className="contest-button-wrapper">
-              <Popup
-                className="contest-disabled"
-                disabled={isSceneLoading || (exceededMetric === '' && !areEntitiesOutOfBoundaries)}
-                content={
-                  areEntitiesOutOfBoundaries ? (
-                    <T id="topbar.add_to_contest_disabled_bounds" values={{ br: <br /> }} />
-                  ) : (
-                    <T id="topbar.add_to_contest_disabled_limits" values={{ metric: exceededMetric, br: <br /> }} />
-                  )
-                }
-                position="bottom center"
-                trigger={
-                  <span>
-                    <ContestButton
-                      onClick={this.handleAddToContestClick}
-                      isDisabled={isSceneLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries}
-                      shouldUpdateEntry={hasSubmittedCurrentProject}
-                    />
-                  </span>
-                }
-                on="hover"
-                inverted
-              />
-            </span>
           </Grid.Row>
         </Grid.Column>
       </Grid>

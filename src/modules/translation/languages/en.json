@@ -19,33 +19,36 @@
     "dismiss": "Dismiss",
     "optional": "optional",
     "items": "items",
-    "sign_up": "Sign up"
+    "sign_up": "Sign up",
+    "learn_more": "Learn more",
+    "read_more": "Read more"
   },
   "languages": {
     "en": "English",
     "zh": "Chinese"
   },
   "home_page": {
-    "title": "Calling all Builders!",
-    "subtitle": "Submit your most creative scenes, and earn a share of the purse: {mana} and {land} (over {usd}). Every participant gets {mana_per_scene} for each scene.",
+    "title": "Build something Cool!",
+    "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your scene to get started",
     "projects_title": "My scenes",
     "project_actions": {
       "delete_project": "Delete scene",
       "duplicate_project": "Duplicate scene"
     },
-    "start": "Start building",
-    "learn_more": "Learn more"
+    "start": "Start building"
   },
   "mobile_page": {
     "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
     "gallery_title": "Check out work from Builder users!",
     "learn_more": "Learn more about the Builder",
     "secondary_hero": {
-      "title": "Want to build when you're back at your computer?",
-      "action": "Read more"
+      "title": "Want to build something when you get to your computer?",
+      "action": "Send yourself a reminder"
     },
-    "success": "Thanks, we will keep you posted!"
+    "success": "Thanks, we will keep you posted!",
+    "reminder_subject": "Reminder: Try out Decentraland's Builder",
+    "reminder_body": "Hey there!\n\nWhoops! It looks like you tried to use the Builder from a mobile device!\nThe Builder only runs on desktop and laptop computers. Grab your nearest computer, and try again at https://builder.decentraland.org\n\nHappy building!\n\nThe Decentraland Team"
   },
   "not_found_page": {
     "title": "404",
@@ -223,5 +226,8 @@
       "cta": "Watch Video"
     },
     "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!"
+  },
+  "banners": {
+    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April"
   }
 }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Container } from 'decentraland-ui'
 
 import HomePageHero from 'components/HomePageHero'
@@ -10,6 +10,7 @@ import { Template } from 'modules/template/types'
 
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
+import Banner from 'components/Banner'
 
 export default class HomePage extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -46,7 +47,14 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const templates = getTemplates()
     return (
       <>
-        <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+        {!projects.length && <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />}
+        <Banner className="homepage-banner">
+          <div className="orange" />
+          <div className="purple" />
+          <span className="text">
+            <T id="banners.contest_end" values={{ read_more: <a href="">{t('global.read_more')}</a> }} />
+          </span>
+        </Banner>
         <Container>
           <div className="HomePage">
             {projects.length > 0 && (
