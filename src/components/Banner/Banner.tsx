@@ -1,11 +1,9 @@
 import * as React from 'react'
 import { Close } from 'decentraland-ui'
-import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import { Props, State, LocalStorageState } from './Banner.types'
 import './Banner.css'
 
-const localStorage = getLocalStorage()
 const MAX_SAVED_BANNERS = 2
 const STORAGE_KEY = 'dcl-banner-storage'
 
@@ -21,7 +19,7 @@ export default class Banner extends React.PureComponent<Props, State> {
     isClosed: false
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const savedState = localStorage.getItem(STORAGE_KEY)
     const { name } = this.props
     if (savedState && name) {
@@ -37,15 +35,19 @@ export default class Banner extends React.PureComponent<Props, State> {
     this.setState({ isClosed: true })
 
     if (name) {
-      const savedState = localStorage.getItem(STORAGE_KEY)
-      const parsed: LocalStorageState = savedState ? JSON.parse(savedState) : []
+      try {
+        const savedState = localStorage.getItem(STORAGE_KEY)
+        const parsed: LocalStorageState = savedState ? JSON.parse(savedState) : []
 
-      if (parsed.length >= MAX_SAVED_BANNERS) {
-        parsed.shift()
+        if (parsed.length >= MAX_SAVED_BANNERS) {
+          parsed.shift()
+        }
+
+        parsed.push(name)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed))
+      } catch (e) {
+        // swallow
       }
-
-      parsed.push(name)
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed))
     }
 
     onClose()
