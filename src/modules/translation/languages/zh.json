@@ -115,11 +115,11 @@
     "gallery_title": "查看内容编辑用户的作品!",
     "learn_more": "了解有关Builder的更多信息",
     "secondary_hero": {
-      "title": "想要继续在电脑上创建场景吗?",
-      "action": "给我一个提醒"
+      "title": "当回到电脑前就创作场景?",
+      "action": "发送提醒"
     },
     "reminder_subject": "提醒：试试Decentraland的Builder",
-    "reminder_body": "嘿！\n\n哎呦！看起来您试图从移动设备使用Builder！\nBuilder只能在台式机和笔记本电脑上运行。拿起最近的电脑，然后再试一次 https://builder.decentraland.org\n\n快乐的建筑！\n\nThe Decentraland Team"
+    "reminder_body": "您好！\n看来您试图在移动设备上使用内容编辑器\n目前内容编辑器只能运行在台式机和笔记本电脑上。拿起你最近的笔记本电脑或台式电脑，使用 https://builder.decentraland.org\n\n快乐的建筑！再试 !\n\n祝开发快乐！\n\nThe Decentraland Team"
   },
   "not_found_page": {
     "back": "返回场景",
@@ -240,6 +240,6 @@
     "title": "更多"
   },
   "banners": {
-    "contest_end": "Builder比赛结束了！我们的评委会将在4月中旬宣布获奖者"
+    "contest_end": "创作大赛已经结束！我们将在四月中旬宣布中奖者。更多请查看。"
   }
 }

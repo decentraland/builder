@@ -1,9 +1,12 @@
 import * as React from 'react'
 import { Hero, Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { env } from 'decentraland-commons'
 
 import { Props } from './HomePageHero.types'
 import './HomePageHero.css'
+
+const PUBLIC_URL = env.get('PUBLIC_URL')
 
 export default class HomePageHero extends React.PureComponent<Props> {
   handleStart = () => {
@@ -33,7 +36,10 @@ export default class HomePageHero extends React.PureComponent<Props> {
         </Hero.Actions>
 
         <Hero.Content>
-          <div className="background" />
+          <video src={`${PUBLIC_URL}/videos/hero.mp4`} autoPlay muted loop>
+            <div className="background" />
+          </video>
+          <div className="overlay" />
         </Hero.Content>
       </Hero>
     )

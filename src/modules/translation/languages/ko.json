@@ -48,11 +48,11 @@
     "gallery_title": "빌더 유저들이 손수 만든 작업물들을 확인해보시기 바랍니다!",
     "learn_more": "Builder에 대해 더 알아보기",
     "secondary_hero": {
-      "title": "본인의 컴퓨터로 계속해서 풍경을 제작하고 싶으신가요?",
-      "action": "나에게 알림을 보내라"
+      "title": "컴퓨터를 켰을 때 뭔가를 만들고 싶으신가요?",
+      "action": "알람을 받아보시기 바랍니다"
     },
     "reminder_subject": "알림 : Decentraland Builder를 사용해보세요",
-    "reminder_body": "이봐!\n\n와! 모바일 장치에서 Builder를 사용하려고 한 것 같습니다!\n빌더는 데스크톱 및 랩톱 컴퓨터에서만 실행됩니다. 가장 가까운 컴퓨터를 잡고 https://builder.decentraland.org에서 다시 시도하십시오.\n\n행복한 건물!\n\nThe Decentraland Team"
+    "reminder_body": "창작자 여러분들 반갑습니다!\n\n이런! 모바일 기기에서 빌더를 사용하시려고 하신 것 같군요!\n빌더는 데스크톱과 노트북에서만 구동이 됩니다. 데스크톱이나 노트북을 사용하여 https://builder.decentraland.org에서 다시 접속해주시기 바랍니다!\n\n빌더로 즐거운 경험 하시기 바랍니다!\n\nThe Decentraland Team"
   },
   "not_found_page": {
     "title": "404",
@@ -236,6 +236,6 @@
     "title": "Builder에 대해 더 자세히 알아보십시오"
   },
   "banners": {
-    "contest_end": "작성기 경연 대회가 종료되었습니다! 심사원 패널이 4 월 중순에 수상자를 발표합니다."
+    "contest_end": "빌더 콘테스트가 마감되었습니다! 4월 중순에 심사위원분들이 우승작을 선별하여 발표할 예정입니다. 자세히 보기."
   }
 }
