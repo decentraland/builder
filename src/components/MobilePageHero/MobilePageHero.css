@@ -7,12 +7,6 @@
   margin-bottom: 0px;
 }
 
-.MobilePageHero .description {
-  font-weight: 300;
-  font-size: 17px;
-  line-height: 26px;
-}
-
 .dcl.hero.MobilePageHero .hero-actions {
   margin-top: 36px;
 }
@@ -28,6 +22,12 @@
 
 .dcl.hero.MobilePageHero .hero-actions button:hover {
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.24);
+}
+
+.MobilePageHero .description {
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 26px;
 }
 
 .MobilePageHero > .ui.container {

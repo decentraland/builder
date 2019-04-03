@@ -235,6 +235,6 @@
     "title": "Aprende más sobre el Builder"
   },
   "banners": {
-    "contest_end": "¡El concurso ha finalizado! Nuestro panel de jueces anunciará a los ganadores a mediados de Abril"
+    "contest_end": "¡El concurso ha finalizado! Nuestro panel de jueces anunciará a los ganadores a mediados de Abril. {read_more}"
   }
 }
