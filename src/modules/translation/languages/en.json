@@ -228,6 +228,6 @@
     "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!"
   },
   "banners": {
-    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April"
+    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. {read_more}"
   }
 }

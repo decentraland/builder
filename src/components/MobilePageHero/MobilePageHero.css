@@ -1,0 +1,108 @@
+.dcl.hero.MobilePageHero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  padding: 100px 12px 100px 12px;
+  margin-bottom: 0px;
+}
+
+.dcl.hero.MobilePageHero .hero-actions {
+  margin-top: 36px;
+}
+
+.dcl.hero.MobilePageHero .hero-actions button.primary {
+  border: 1px solid var(--primary);
+}
+
+.dcl.hero.MobilePageHero .hero-actions button {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.16);
+  transition: box-shadow 0.1s ease-in-out;
+}
+
+.dcl.hero.MobilePageHero .hero-actions button:hover {
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.24);
+}
+
+.MobilePageHero .description {
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.MobilePageHero > .ui.container {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.MobilePageHero .hero-content {
+  background-color: black;
+  height: 100%;
+}
+
+.MobilePageHero .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.MobilePageHero .hero-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.MobilePageHero video {
+  background-image: url('../../images/hero.jpg');
+
+  background-position-y: -230px;
+  background-position-x: 100px;
+  /* Make video to at least 100% wide and tall */
+  min-width: 100%;
+  min-height: 100%;
+
+  /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+  width: auto;
+  height: auto;
+
+  /* Center the video */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.MobilePage .dcl.hero .hero-actions {
+  flex-direction: column;
+}
+
+.MobilePageHero .ui.button.hollow {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.48);
+}
+
+.MobilePageHero .ui.button.hollow:hover {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+
+@media (min-width: 768px) {
+  .dcl.hero.MobilePageHero .message {
+    margin-left: 100px;
+    margin-right: 100px;
+  }
+
+  .MobilePageHero .description {
+    margin-left: 100px;
+    margin-right: 100px;
+    display: block;
+  }
+
+  .dcl.hero.MobilePageHero .form .form-container .input input {
+    width: 279px;
+  }
+}

@@ -286,10 +286,10 @@ function* handleSetGround(action: SetGroundAction) {
 function* handleFixCurrentScene() {
   const scene: Scene = yield select(getCurrentScene)
   const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
-  const componentIdKeys = Object.keys(scene.components)
 
   if (!bounds || !scene) return
 
+  const componentIdKeys = Object.keys(scene.components)
   let components = { ...scene.components }
 
   for (let key of componentIdKeys) {

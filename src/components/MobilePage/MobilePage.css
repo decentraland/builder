@@ -59,52 +59,6 @@
   text-align: center;
 }
 
-.MobilePage .dcl.hero {
-  padding: 100px 12px 100px 12px;
-  margin-bottom: 0px;
-}
-
-.MobilePage .dcl.hero .description {
-  font-weight: 300;
-  font-size: 17px;
-  line-height: 26px;
-}
-
-.MobilePage .dcl.hero .description .highlight {
-  font-weight: 500;
-}
-
-.MobilePage .ui.button.hollow {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.48);
-}
-
-.MobilePage .dcl.hero .hero-actions {
-  flex-direction: column;
-}
-
-.MobilePage .dcl.hero.main-hero .background {
-  opacity: 0.4;
-  background-color: black;
-  background-image: url('../../images/hero.png');
-  background-position-x: calc(50% + 64px);
-}
-
-.MobilePage .dcl.hero .background {
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.MobilePage .dcl.hero.main-hero > .ui.container {
-  margin-left: 0px !important;
-  margin-right: 0px !important;
-}
-
 .MobilePage .dcl.hero.secondary-hero {
   padding: 64px 24px;
 }
@@ -116,12 +70,8 @@
 }
 
 .MobilePage .dcl.hero.secondary-hero .background {
-  background-image: var(--metaverse-gradient);
-}
-
-.MobilePage .dcl.hero .hero-content {
-  background-color: black;
   height: 100%;
+  background-image: var(--metaverse-gradient);
 }
 
 .MobilePage .gallery {
@@ -172,38 +122,13 @@
   background-image: url('../../images/mobile-thumb-4.jpg');
 }
 
-.MobilePage .Banner.mobilepage-banner {
+.MobilePage .mobile-page-banner {
   padding: 64px 24px;
   font-size: 20px;
   font-weight: 500;
   line-height: 26px;
   text-align: center;
   position: relative;
-}
-
-.MobilePage .Banner.mobilepage-banner .orange,
-.MobilePage .Banner.mobilepage-banner .purple {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0px;
-}
-
-.MobilePage .Banner.mobilepage-banner .orange {
-  background-image: url('../../images/orange.svg');
-}
-
-.MobilePage .Banner.mobilepage-banner .purple {
-  background-image: url('../../images/purple.svg');
-}
-
-.MobilePage .Banner.mobilepage-banner .text {
-  display: block;
-  line-height: 28px;
-}
-
-.HomePage .Banner.mobilepage-banner .dcl.close {
-  transform: scale(2);
 }
 
 @media (min-width: 768px) {

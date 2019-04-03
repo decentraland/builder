@@ -16,6 +16,16 @@
 
 .Banner .dcl.close {
   justify-self: flex-end;
-  margin-right: 16px;
+  margin-right: 24px;
   transform: scale(1.4);
+}
+
+@media (max-width: 1024px) {
+  .Banner .dcl.close {
+    display: block;
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    margin-right: 0px;
+  }
 }

@@ -74,43 +74,15 @@
   transform: translateY(-4px);
 }
 
-.Banner.homepage-banner {
+.home-page-banner {
   height: 80px;
-  padding: 0px 24px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 26px;
-  text-align: center;
-  position: relative;
+  padding: 0px;
 }
 
-.Banner.homepage-banner .orange,
-.Banner.homepage-banner .purple {
-  position: absolute;
+.home-page-divider {
+  height: 1px;
   width: 100%;
-  height: 100%;
-  top: 0px;
-}
-
-.Banner.homepage-banner .orange {
-  background-image: url('../../images/orange.svg');
-}
-
-.Banner.homepage-banner .purple {
-  background-image: url('../../images/purple.svg');
-}
-
-.Banner.homepage-banner .text {
-  display: block;
-  padding: 0px 50px;
-}
-
-.Banner.homepage-banner .dcl.close {
-  transform: scale(2);
-}
-
-.hero-spacer {
-  height: var(--navbar-height);
+  background: var(--divider);
 }
 
 @keyframes templateAnimation {

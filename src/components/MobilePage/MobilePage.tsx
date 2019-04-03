@@ -1,13 +1,14 @@
 import * as React from 'react'
-import { Field, Button, Form, Hero, Header } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Button, Hero, Header } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import HomePageBanner from 'components/Banners/HomePageBanner'
+import MobilePageHero from 'components/MobilePageHero/MobilePageHero'
 import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
-import Banner from 'components/Banner'
 
 const localStorage = getLocalStorage()
 
@@ -55,60 +56,15 @@ export default class MobilePage extends React.PureComponent<Props, State> {
 
     return (
       <div className="MobilePage">
-        <Hero className="main-hero" centered>
-          <Hero.Header>{t('home_page.title')}</Hero.Header>
-          <Hero.Description>
-            <span className="description">
-              <T
-                id="home_page.subtitle"
-                values={{
-                  mana: <span className="highlight">{t('contest.mana')}</span>,
-                  land: <span className="highlight">{t('contest.land')}</span>,
-                  usd: <span className="highlight">{t('contest.usd')}</span>,
-                  mana_per_scene: <span className="highlight">{t('contest.mana_per_scene')}</span>
-                }}
-              />
-            </span>
-          </Hero.Description>
-          <Hero.Actions>
-            <Form onSubmit={this.handleSubmit}>
-              <p className="message">{t('mobile_page.message')}</p>
-
-              {!hasMobileEmail ? (
-                <div className="form-container">
-                  <Field
-                    type="email"
-                    icon="asterisk"
-                    placeholder="name@email.com"
-                    value={email}
-                    onChange={this.handleEmailChange}
-                    disabled={isLoading}
-                    required
-                  />
-                  <Button primary size="medium" disabled={isLoading}>
-                    {t('global.sign_up')}
-                  </Button>
-                </div>
-              ) : (
-                <div className="success">{t('mobile_page.success')}</div>
-              )}
-            </Form>
-            <Button className="hollow" onClick={this.handleOpenVideo}>
-              {t('mobile_page.learn_more')}
-            </Button>
-          </Hero.Actions>
-
-          <Hero.Content>
-            <div className="background" />
-          </Hero.Content>
-        </Hero>
-        <Banner className={'mobilepage-banner'}>
-          <div className="orange" />
-          <div className="purple" />
-          <span className="text">
-            <T id="banners.contest_end" values={{ read_more: <a href="">{t('global.read_more')}</a> }} />
-          </span>
-        </Banner>
+        <MobilePageHero
+          email={email}
+          hasMobileEmail={hasMobileEmail}
+          isLoading={isLoading}
+          onSubmit={this.handleSubmit}
+          onChange={this.handleEmailChange}
+          onWatchVideo={this.handleOpenVideo}
+        />
+        <HomePageBanner className="mobile-page-banner" />
         <div className="gallery">
           <Header size="huge" textAlign="center">
             {t('mobile_page.gallery_title')}
