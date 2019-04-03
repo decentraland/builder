@@ -47,7 +47,11 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const templates = getTemplates()
     return (
       <>
-        {!projects.length && <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />}
+        {!projects.length ? (
+          <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+        ) : (
+          <div className="home-page-divider" />
+        )}
         <HomePageBanner className="home-page-banner" />
         <Container>
           <div className="HomePage">
