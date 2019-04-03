@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Dropdown, Popup } from 'decentraland-ui'
+import { Icon, Dropdown, Popup, Confirm, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import Confirm from 'components/Confirm'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { getProjectDimensions } from 'modules/project/utils'
@@ -102,10 +101,14 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             {children}
           </Link>
         )}
+
         <Confirm
+          size="tiny"
           open={isDeleting}
           header={t('project_card.confirm_delete_header', { title: project.title })}
           content={t('project_card.confirm_delete_content', { title: project.title })}
+          confirmButton={<Button primary>{t('global.confirm')}</Button>}
+          cancelButton={<Button secondary>{t('global.cancel')}</Button>}
           onCancel={this.handleCancelDeleteProject}
           onConfirm={this.handleDeleteProject}
         />
