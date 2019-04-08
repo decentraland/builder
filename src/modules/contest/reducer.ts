@@ -25,6 +25,7 @@ const INITIAL_STATE: ContestState = {
     email: '',
     ethAddress: '',
     hasAcceptedTerms: false,
+    upbitId: '',
     projects: {}
   },
   loading: [],
