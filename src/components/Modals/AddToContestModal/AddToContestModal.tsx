@@ -67,6 +67,12 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     this.setState({ contest: { ...contest, ethAddress } })
   }
 
+  handleUpbitChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const { contest } = this.state
+    const upbitId = event.currentTarget.value
+    this.setState({ contest: { ...contest, upbitId } })
+  }
+
   getBaseState(): State {
     const { contest, currentProject, userEmail, hasAcceptedTerms } = this.props
     return {
@@ -84,7 +90,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
   renderForm() {
     const { error } = this.props
     const { project, contest } = this.state
-    const { title, description } = project
+    const { title } = project
     const { email, ethAddress } = contest
 
     return (
@@ -93,7 +99,6 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
         <div className="details">
           <div className="category">{t('global.project')}</div>
           <ProjectFields.Title value={title} onChange={this.handleTitleChange} required />
-          <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
         </div>
         <div className="details">
           <div className="category">{t('add_to_contest.contact_information')}</div>
@@ -106,12 +111,9 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
             onChange={this.handleEmailChange}
             required
           />
-          <Field
-            label={`${t('global.eth_address')} (${t('global.optional')})`}
-            placeholder="0x"
-            value={ethAddress}
-            onChange={this.handleEthAddressChange}
-          />
+          <Field label={t('add_to_contest.upbit_id')} value={ethAddress} onChange={this.handleUpbitChange} required />
+
+          <Field label={`${t('global.eth_address')}`} placeholder="0x" value={ethAddress} onChange={this.handleEthAddressChange} required />
           <div className="terms">
             <span onClick={this.handleToggleTermsAndConditions}>
               <Radio defaultChecked={false} checked={contest.hasAcceptedTerms} label="" />

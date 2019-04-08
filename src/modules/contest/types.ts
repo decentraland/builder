@@ -6,5 +6,6 @@ export type Contest = UserContest & {
 
 export type UserContest = {
   email: string
-  ethAddress?: string
+  ethAddress: string
+  upbitId: string
 }

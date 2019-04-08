@@ -6,7 +6,7 @@
     "terms_and_conditions": "이용 약관",
     "blog_post": "블로그 포스트",
     "email": "이메일",
-    "eth_address": "ETH 지갑 주소",
+    "eth_address": "업비트 MANA 입금 주소",
     "save": "저장",
     "submit": "제출",
     "continue": "계속하기",
@@ -29,7 +29,7 @@
   },
   "home_page": {
     "title": "모든 빌더 창작자분들을 소집합니다!",
-    "subtitle": "당신의 창의성을 최대로 발휘한 풍경을 제출하시고, 저희가 마련한 상금/상품 중 일부를 받아가시기 바랍니다: {mana} 와 {land} ({usd} 상당). 모든 참여자는 각 풍경마다 {mana_per_scene} 를 받아가실 수 있습니다.",
+    "subtitle": "창작자분들을 모두 모십니다! 디센트럴랜드 빌더를 통해 상상력과 창의력을 무한으로 발산하시기 바랍니다. 최대 {land}개의 풍경을 제출하고, 미화 {mana}불 상당의 상금 및 상품을 획득할 수 있는 기회를 얻어가시기 바랍니다. 1개의 제출품마다 {mana_per_scene} (약 미화 5불 상당)를 같이 받아가실 수 있습니다! 더 알아보기.",
     "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
     "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
     "templates_title": "풍경 제작에 앞서 제작하고자 하는 풍경의 크기를 선택하십시오",
@@ -102,7 +102,8 @@
     "success_subtitle": "이 풍경은 정말 멋져보이네요. 제출해주셔서 감사합니다!",
     "contact_information": "연락 정보",
     "error_occurred": "해당 풍경을 제출하는 과정에서 오류가 발생했습니다:",
-    "i_accept_the": "수락합니다 "
+    "i_accept_the": "수락합니다 ",
+    "upbit_id": "업비트 유저 ID"
   },
   "shortcuts": {
     "move": "이동",
@@ -174,7 +175,7 @@
     "subtitle": "빌더는 사용하기 정말 쉽답니다. 시작하기 전에 약간의 팁을 알려 드릴게요",
     "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
     "email_disclaimer": "구독함으로써 당신은 디센트럴랜드의 최신 정보를 메일로 받게 됩니다.",
-    "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
+    "contest": "최대 {land}개의 풍경을 제출하고, 미화 {mana}불 상당의 상금 및 상품을 획득할 수 있는 기회를 얻어가시기 바랍니다.",
     "skip_tutorial": "자습서 건너 뛰기",
     "slide0": {
       "title": "빌더에 오신 것을 환영합니다!",
@@ -206,8 +207,8 @@
     "localstorage": "풍경(들)은 여러분의 브라우저 저장소에 자동 저장됩니다"
   },
   "contest": {
-    "mana": "900,000 MANA",
-    "land": "50 LAND",
+    "mana": "20,000 MANA",
+    "land": "20 LAND",
     "usd": "미화 50,000달러",
     "submit_text": "대회에 출품하기",
     "update_text": "제출 내역 업데이트",
@@ -217,7 +218,7 @@
       "cta": "영상 시청하기"
     },
     "mana_per_scene": "100 MANA ($5)",
-    "incentive_banner": " (약 $5 미화 상당의) 100 MANA를 받아가기 위해 콘테스트에 여러분이 직접 제작한 풍경을 제출하시기 바랍니다."
+    "incentive_banner": "직접 창작판 풍경을 제출하고 100 MANA를 받아가시기 바랍니다 (미화 5불 상당)."
   },
   "templates": {
     "small": "소형(1x1)",
