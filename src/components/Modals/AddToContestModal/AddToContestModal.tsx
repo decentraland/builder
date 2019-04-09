@@ -91,7 +91,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
     const { error } = this.props
     const { project, contest } = this.state
     const { title } = project
-    const { email, ethAddress } = contest
+    const { email, ethAddress, upbitId } = contest
 
     return (
       <>
@@ -111,7 +111,7 @@ export default class AddToContestModal extends React.PureComponent<Props, State>
             onChange={this.handleEmailChange}
             required
           />
-          <Field label={t('add_to_contest.upbit_id')} value={ethAddress} onChange={this.handleUpbitChange} required />
+          <Field label={t('add_to_contest.upbit_id')} value={upbitId} onChange={this.handleUpbitChange} required />
 
           <Field label={`${t('global.eth_address')}`} placeholder="0x" value={ethAddress} onChange={this.handleEthAddressChange} required />
           <div className="terms">
