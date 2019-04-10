@@ -8,7 +8,7 @@ import './VideoModal.css'
 
 const YOUTUBE_ID = 'H8Fj72JobKo'
 
-export default class TutorialModal extends React.PureComponent<ModalProps> {
+export default class VideoModal extends React.PureComponent<ModalProps> {
   render() {
     const { name, onClose } = this.props
 

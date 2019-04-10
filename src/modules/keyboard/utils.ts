@@ -68,6 +68,11 @@ export const getQwertyLayout = (): ShortcutLayout => ({
     value: 'shift',
     title: t('shortcuts.precision'),
     hold: true
+  },
+  [Shortcut.EXPORT_SCENE]: {
+    type: 'combination',
+    value: [SpecialKeys.OSCTRL, 'e'],
+    title: t('shortcuts.export')
   }
 })
 

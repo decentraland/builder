@@ -1,5 +1,7 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, take } from 'redux-saga/effects'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
+import { takeLatest, put, select, take, call } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -10,13 +12,15 @@ import {
   EDIT_PROJECT_REQUEST,
   EditProjectRequestAction,
   editProjectSuccess,
-  editProjectFailure
+  editProjectFailure,
+  EXPORT_PROJECT,
+  ExportProjectAction
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
 import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
+import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
@@ -28,6 +32,7 @@ export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
+  yield takeLatest(EXPORT_PROJECT, handleExportProject)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -125,4 +130,29 @@ function* handleEditProject(action: EditProjectRequestAction) {
   } catch (error) {
     yield put(editProjectFailure(error))
   }
+}
+
+function* handleExportProject(action: ExportProjectAction) {
+  const { project } = action.payload
+  const scene: Scene = yield select(getSceneById(project.sceneId))
+
+  let zip = new JSZip()
+  let sanitizedName = project.title.replace(/\s/g, '_')
+
+  zip.file(
+    'builder.json',
+    JSON.stringify(
+      {
+        project,
+        scene
+      },
+      null,
+      2
+    )
+  )
+
+  yield call(async () => {
+    const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
+    saveAs(artifact, `${sanitizedName}.zip`)
+  })
 }

@@ -62,3 +62,11 @@ export const DUPLICATE_PROJECT = 'Duplicate project'
 export const duplicateProject = (project: Project) => action(DUPLICATE_PROJECT, { project })
 
 export type DuplicateProjectAction = ReturnType<typeof duplicateProject>
+
+// Export project
+
+export const EXPORT_PROJECT = 'Export project'
+
+export const exportProject = (project: Project) => action(EXPORT_PROJECT, { project })
+
+export type ExportProjectAction = ReturnType<typeof exportProject>

@@ -34,7 +34,8 @@
     "projects_title": "My scenes",
     "project_actions": {
       "delete_project": "Delete scene",
-      "duplicate_project": "Duplicate scene"
+      "duplicate_project": "Duplicate scene",
+      "export_project": "Export scene"
     },
     "start": "Start building"
   },
@@ -120,7 +121,8 @@
     "redo": "Redo",
     "shortcut_reference": "Shortcut reference",
     "precision": "Ignore snap-to-grid",
-    "hold": "Hold"
+    "hold": "Hold",
+    "export": "Export scene"
   },
   "popups": {
     "shortcuts_help": "See shortcuts here!",
@@ -229,5 +231,10 @@
   },
   "banners": {
     "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. {read_more}"
+  },
+  "export_modal": {
+    "title": "Export your scene",
+    "description": "You can export your scene for use in the SDK and other builder instances. Any changes made with the SDK will not be reflected in the Builder.",
+    "action": "Export"
   }
 }
