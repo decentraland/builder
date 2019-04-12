@@ -4,6 +4,16 @@
 
 .HomePage .subtitle {
   color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.HomePage .subtitle .import-scene {
+  display: flex;
+}
+
+.HomePage .subtitle .import-scene .Icon {
+  margin-right: 12px;
 }
 
 .HomePage .template-list {

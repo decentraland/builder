@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 
-import { Project } from 'modules/project/types'
+import { Project, SavedProject } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
@@ -70,3 +70,11 @@ export const EXPORT_PROJECT = 'Export project'
 export const exportProject = (project: Project) => action(EXPORT_PROJECT, { project })
 
 export type ExportProjectAction = ReturnType<typeof exportProject>
+
+// Import project
+
+export const IMPORT_PROJECT = 'Import project'
+
+export const importProject = (projects: SavedProject[]) => action(IMPORT_PROJECT, { projects })
+
+export type ImportProjectAction = ReturnType<typeof importProject>

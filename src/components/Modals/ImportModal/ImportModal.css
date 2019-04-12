@@ -1,0 +1,35 @@
+.ui.small.modal.ImportModal {
+  width: 560px;
+}
+
+.ImportModal .details {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.ImportModal .dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 6px;
+  height: 276px;
+  width: 100%;
+  border: 2px solid rgba(115, 110, 125, 0.24);
+  outline: none;
+  user-select: none;
+}
+
+.ImportModal .image {
+  width: 64px;
+  height: 64px;
+  background-size: cover;
+  background-image: url('../../../images/import.svg');
+  margin-bottom: 32px;
+}
+
+.ImportModal .dropzone .action {
+  color: var(--primary);
+  background: transparent;
+  cursor: pointer;
+}

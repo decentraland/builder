@@ -235,6 +235,11 @@
   "export_modal": {
     "title": "Export your scene",
     "description": "You can export your scene for use in the SDK and other builder instances. Any changes made with the SDK will not be reflected in the Builder.",
-    "action": "Export"
+    "action": "I understand, download file"
+  },
+  "import_modal": {
+    "title": "Import a scene",
+    "description": "You can import a previously exported Builder scene.",
+    "action": "Import"
   }
 }

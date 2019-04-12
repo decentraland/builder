@@ -1,3 +1,5 @@
+import { Scene } from 'modules/scene/types'
+
 export type Project = {
   id: string
   title: string
@@ -13,3 +15,5 @@ export type Project = {
 export type Layout = { rows: number; cols: number }
 
 export type ProjectLayout = Layout & { hasError: boolean }
+
+export type SavedProject = { project: Project; scene: Scene }

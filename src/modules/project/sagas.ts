@@ -14,10 +14,12 @@ import {
   editProjectSuccess,
   editProjectFailure,
   EXPORT_PROJECT,
-  ExportProjectAction
+  ExportProjectAction,
+  IMPORT_PROJECT,
+  ImportProjectAction
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
-import { Project, Layout } from 'modules/project/types'
+import { Project, Layout, SavedProject } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
@@ -28,11 +30,14 @@ import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScre
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 import { ActionCreators } from 'redux-undo'
 
+export const BUILDER_FILE_NAME = 'builder.json'
+
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
   yield takeLatest(EXPORT_PROJECT, handleExportProject)
+  yield takeLatest(IMPORT_PROJECT, handleImportProject)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -139,20 +144,19 @@ function* handleExportProject(action: ExportProjectAction) {
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
 
-  zip.file(
-    'builder.json',
-    JSON.stringify(
-      {
-        project,
-        scene
-      },
-      null,
-      2
-    )
-  )
+  zip.file(BUILDER_FILE_NAME, JSON.stringify({ project, scene } as SavedProject, null, 2))
 
   yield call(async () => {
     const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
     saveAs(artifact, `${sanitizedName}.zip`)
   })
+}
+
+function* handleImportProject(action: ImportProjectAction) {
+  const { projects } = action.payload
+
+  for (let project of projects) {
+    yield put(createProject(project.project))
+    yield put(createScene(project.scene))
+  }
 }

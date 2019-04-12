@@ -89,13 +89,13 @@
 }
 
 .Icon.import {
-	background: url("icons.svg") 0 17.54385964912281% no-repeat;
-	width: 16px;
-	height: 16px;
+	background: url("icons.svg") 71.76470588235294% 28.03623683611067% no-repeat;
+	width: 14px;
+	height: 15.931px;
 }
 
 .Icon.list {
-	background: url("icons.svg") 71.76470588235294% 73.4375% no-repeat;
+	background: url("icons.svg") 71.76470588235294% 73.32968749999999% no-repeat;
 	width: 14px;
 	height: 9px;
 }
@@ -107,7 +107,7 @@
 }
 
 .Icon.move {
-	background: url("icons.svg") 73.49397590361446% 28.07017543859649% no-repeat;
+	background: url("icons.svg") 0 17.54385964912281% no-repeat;
 	width: 16px;
 	height: 16px;
 }
@@ -179,7 +179,7 @@
 }
 
 .Icon.zoom-out {
-	background: url("icons.svg") 72.61904761904762% 55.172413793103445% no-repeat;
+	background: url("icons.svg") 72.61904761904762% 55.05344827586207% no-repeat;
 	width: 15px;
 	height: 15px;
 }
