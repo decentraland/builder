@@ -16,4 +16,4 @@ export type Layout = { rows: number; cols: number }
 
 export type ProjectLayout = Layout & { hasError: boolean }
 
-export type SavedProject = { project: Project; scene: Scene }
+export type SavedProject = { project: Project & { thumbnail?: string }; scene: Scene }

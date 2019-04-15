@@ -240,6 +240,10 @@
   "import_modal": {
     "title": "Import a scene",
     "description": "You can import a previously exported Builder scene.",
-    "action": "Import"
+    "action": "Import",
+    "action_many": "Import {count} scenes",
+    "invalid_file": "Invalid file",
+    "upload_manually": "Update manually",
+    "cta": "Drag and drop your .zip file or {action}"
   }
 }

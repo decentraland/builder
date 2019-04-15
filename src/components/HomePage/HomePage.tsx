@@ -80,7 +80,15 @@ export default class HomePage extends React.PureComponent<Props, State> {
             )}
 
             <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
-              <div className="subtitle">{t('home_page.templates_title')}</div>
+              <div className="subtitle">
+                {t('home_page.templates_title')}
+                {!projects.length && (
+                  <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
+                    <Icon name="import" />
+                    Import scene
+                  </Button>
+                )}
+              </div>
               <div className="template-list">
                 <div className="template-row">
                   <TemplateCard template={templates[0]} onClick={this.handleTemplateClick} />

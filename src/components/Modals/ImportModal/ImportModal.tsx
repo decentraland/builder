@@ -1,19 +1,58 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
-import Dropzone, { DropzoneState } from 'react-dropzone'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import Modal from 'decentraland-dapps/dist/containers/Modal'
 import JSZip from 'jszip'
 import uuidv4 from 'uuid/v4'
 
+import Dropzone, { DropzoneState } from 'react-dropzone'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
+
+import Icon from 'components/Icon'
 import { BUILDER_FILE_NAME } from 'modules/project/sagas'
 import { SavedProject } from 'modules/project/types'
-import { Props, State } from './ImportModal.types'
+import { Props, State, AcceptedProject } from './ImportModal.types'
 import './ImportModal.css'
 
 export default class ImportModal extends React.PureComponent<Props, State> {
   state: State = {
-    acceptedProjects: []
+    acceptedProjects: [],
+    canImport: false
+  }
+
+  renderProject = (saved: AcceptedProject) => {
+    if (!saved.project || !saved.scene) {
+      if (saved.fileName) {
+        const key = `${saved.fileName}-${Math.random()}`.replace(/\s/g, '_')
+        return (
+          <div className="project-card error" key={key}>
+            <div className="close-button" onClick={() => this.handleRemoveProject(saved.id)}>
+              <Icon name="close" />
+            </div>
+            <div className="error-icon" />
+            <span className="title" title={saved.fileName}>
+              {saved.fileName}
+            </span>
+            <span className="error">Invalid file</span>
+          </div>
+        )
+      } else {
+        // Hide any weird cases where no fileName is available
+        this.handleRemoveProject(saved.id)
+        return null
+      }
+    }
+
+    return (
+      <div className="project-card" key={saved.project.id}>
+        <div className="close-button" onClick={() => this.handleRemoveProject(saved.id)}>
+          <Icon name="close" />
+        </div>
+        <img src={saved.project.thumbnail} />
+        <span className="title" title={saved.project.title}>
+          {saved.project.title}
+        </span>
+      </div>
+    )
   }
 
   renderDropZone = (props: DropzoneState) => {
@@ -29,15 +68,25 @@ export default class ImportModal extends React.PureComponent<Props, State> {
       <div {...getRootProps()} className={classes}>
         <input {...getInputProps()} />
 
-        {acceptedProjects.length ? (
-          (acceptedProjects as SavedProject[]).map(saved => <div key={saved.project.id}>{saved.project.title}</div>)
-        ) : (
+        {acceptedProjects.length === 1 && <div className="single-project">{this.renderProject(acceptedProjects[0])}</div>}
+
+        {acceptedProjects.length > 1 && (
+          <div className="multiple-projects">{(acceptedProjects as AcceptedProject[]).map(saved => this.renderProject(saved))} </div>
+        )}
+
+        {acceptedProjects.length === 0 && (
           <>
             <div className="image" />
-            Drag and drop your .zip file or
-            <span className="action" onClick={open}>
-              Upload manually
-            </span>
+            <T
+              id="import_modal.cta"
+              values={{
+                action: (
+                  <span className="action" onClick={open}>
+                    {t('import_modal.upload_manually')}
+                  </span>
+                )
+              }}
+            />
           </>
         )}
       </div>
@@ -48,17 +97,36 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     const { acceptedProjects } = this.state
 
     let projects = []
-    for (let file of acceptedFiles) {
-      const zip: JSZip = await JSZip.loadAsync(file)
-      const content = await zip.file(BUILDER_FILE_NAME).async('text')
-      const parsed: SavedProject = JSON.parse(content)
-      parsed.project.id = uuidv4()
-      parsed.scene.id = uuidv4()
-      parsed.project.sceneId = parsed.scene.id
 
-      projects.push(parsed)
+    for (let file of acceptedFiles) {
+      try {
+        const zip: JSZip = await JSZip.loadAsync(file)
+        const contentRaw = await zip.file(BUILDER_FILE_NAME)
+        const content = await contentRaw.async('text')
+        const parsed: AcceptedProject = JSON.parse(content)
+
+        if (!parsed.project || !parsed.scene) {
+          throw new Error('Invalid project')
+        }
+
+        parsed.id = uuidv4()
+        parsed.project.id = uuidv4()
+        parsed.scene.id = uuidv4()
+        parsed.project.sceneId = parsed.scene.id
+
+        projects.push(parsed)
+      } catch (e) {
+        projects.push({
+          id: uuidv4(),
+          project: null,
+          scene: null,
+          fileName: file.name,
+          isCorrupted: true
+        })
+      }
     }
-    this.setState({ acceptedProjects: [...acceptedProjects, ...projects] })
+
+    this.setState({ acceptedProjects: [...acceptedProjects, ...projects], canImport: true })
   }
 
   handleDropRejected = (rejectedFiles: File[]) => {
@@ -66,13 +134,24 @@ export default class ImportModal extends React.PureComponent<Props, State> {
   }
 
   handleImport = () => {
-    this.props.onImport(this.state.acceptedProjects)
+    // At this point we are sure that the accepted projects are all valid
+    this.props.onImport(this.state.acceptedProjects as SavedProject[])
     this.props.onClose()
+  }
+
+  handleRemoveProject = (id: string) => {
+    const acceptedProjects = this.state.acceptedProjects.filter(proj => proj.id !== id)
+    console.log('trying to remove', id, this.state.acceptedProjects, acceptedProjects)
+    this.setState({ acceptedProjects, canImport: acceptedProjects.length > 0 })
+  }
+
+  hasCorruptedProjects = () => {
+    return this.state.acceptedProjects.some(proj => proj.isCorrupted === true)
   }
 
   render() {
     const { name, onClose } = this.props
-
+    const { acceptedProjects, canImport } = this.state
     return (
       <Modal name={name}>
         <Modal.Header>{t('import_modal.title')}</Modal.Header>
@@ -87,8 +166,8 @@ export default class ImportModal extends React.PureComponent<Props, State> {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={this.handleImport}>
-            {t('import_modal.action')}
+          <Button primary onClick={this.handleImport} disabled={!canImport || this.hasCorruptedProjects()}>
+            {acceptedProjects.length > 1 ? t('import_modal.action_many', { count: acceptedProjects.length }) : t('import_modal.action')}
           </Button>
           <Button secondary onClick={onClose}>
             {t('global.cancel')}

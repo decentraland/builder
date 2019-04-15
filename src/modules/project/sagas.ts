@@ -155,8 +155,10 @@ function* handleExportProject(action: ExportProjectAction) {
 function* handleImportProject(action: ImportProjectAction) {
   const { projects } = action.payload
 
-  for (let project of projects) {
-    yield put(createProject(project.project))
-    yield put(createScene(project.scene))
+  for (let saved of projects) {
+    if (saved.scene && saved.project) {
+      yield put(createProject(saved.project))
+      yield put(createScene(saved.scene))
+    }
   }
 }
