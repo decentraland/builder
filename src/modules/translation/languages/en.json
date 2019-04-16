@@ -41,9 +41,9 @@
     "title": "Oops!"
   },
   "export_modal": {
-    "action": "I understand, download file",
-    "description": "You can export your scene for use in the SDK and other builder instances. Any changes made with the SDK will not be reflected in the Builder.",
-    "title": "Export your scene"
+    "action": "Download file",
+    "description": "You can export your scene for use in the Decentraland SDK, or other instances of the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
+    "title": "Export Scene"
   },
   "global": {
     "back": "back",

@@ -44,6 +44,11 @@
     "support": "Contactar soporte",
     "title": "Oops!"
   },
+  "export_modal": {
+    "action": "Descargar archivo",
+    "description": "Puedes exportar tu escena para usarla con el SDK o en otras instancias del Builder. Cualquier modificación realizada con el SDK no se verá reflejada en el Builder.",
+    "title": "Exportar Escena"
+  },
   "global": {
     "back": "volver",
     "blog_post": "blog post",
@@ -72,16 +77,17 @@
   },
   "home_page": {
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
+    "import_scene": "Importar escena",
     "project_actions": {
       "delete_project": "Borrar escena",
-      "duplicate_project": "Duplicar escena"
+      "duplicate_project": "Duplicar escena",
+      "export_project": "Exportar escena"
     },
     "projects_title": "Mis escenas",
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamano de tu escena para comenzar",
-    "title": "¡Construye algo genial!",
-    "import_scene": "Importar escena"
+    "title": "¡Construye algo genial!"
   },
   "import_modal": {
     "action": "Importar",
@@ -156,6 +162,7 @@
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
+    "export": "Exportar escena",
     "hold": "Sostener",
     "move": "Alternar flechas",
     "move_camera": "Mover cámara",

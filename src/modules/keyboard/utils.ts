@@ -42,7 +42,7 @@ export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.ROTATE]: { type: 'simple', value: 'e', title: t('shortcuts.rotate') },
   [Shortcut.RESET_ITEM]: { type: 'simple', value: 's', title: t('shortcuts.reset') },
   [Shortcut.DUPLICATE_ITEM]: { type: 'simple', value: 'd', title: t('shortcuts.duplicate') },
-  [Shortcut.PREVIEW]: { type: 'simple', value: 'o', title: t('shortcuts.preview') },
+  [Shortcut.PREVIEW]: { type: 'simple', value: 'i', title: t('shortcuts.preview') },
   [Shortcut.TOGGLE_SIDEBAR]: { type: 'simple', value: 'p', title: t('shortcuts.toggle_sidebar') },
   [Shortcut.DELETE_ITEM]: {
     type: 'alternative',
@@ -70,8 +70,8 @@ export const getQwertyLayout = (): ShortcutLayout => ({
     hold: true
   },
   [Shortcut.EXPORT_SCENE]: {
-    type: 'combination',
-    value: [SpecialKeys.OSCTRL, 'e'],
+    type: 'simple',
+    value: 'o',
     title: t('shortcuts.export')
   }
 })
@@ -178,6 +178,11 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_SNAP_TO_GRID]),
       callback: () => store.dispatch(toggleSnapToGrid(true)),
+      action: 'keyup'
+    },
+    {
+      combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.EXPORT_SCENE]),
+      callback: () => store.dispatch(toggleModal('ExportModal')),
       action: 'keyup'
     }
   ]

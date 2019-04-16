@@ -44,6 +44,11 @@
     "support": "联系支持服务",
     "title": "哎哟！"
   },
+  "export_modal": {
+    "action": "下载文件",
+    "description": "导出场景，用于 Decentraland SDK 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
+    "title": "场景导出"
+  },
   "global": {
     "back": "返回",
     "blog_post": "博客",
@@ -76,7 +81,8 @@
     "import_scene": "导入场景",
     "project_actions": {
       "delete_project": "删除场景",
-      "duplicate_project": "复制场景"
+      "duplicate_project": "复制场景",
+      "export_project": "场景导出"
     },
     "projects_title": "我的场景",
     "start": "开始设计",
@@ -161,6 +167,7 @@
   "shortcuts": {
     "delete": "删除",
     "duplicate": "复制",
+    "export": "场景导出",
     "hold": "按住",
     "move": "坐标轴",
     "move_camera": "移动摄相机",
