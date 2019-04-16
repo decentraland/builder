@@ -72,6 +72,17 @@ workflows:
           context: builder-prd-cn
           requires:
             - build
+  build-deploy-release-kr:
+    jobs:
+      - build:
+          context: builder-prd-kr
+          filters:
+            branches:
+              only: release-kr
+      - deploy:
+          context: builder-prd-kr
+          requires:
+            - build
   build-deploy-staging:
     jobs:
       - build:
@@ -104,3 +115,5 @@ workflows:
                 - staging
                 - release
                 - release-cn
+                - release-kr
+
