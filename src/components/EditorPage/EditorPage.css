@@ -6,6 +6,10 @@
   height: calc(100vh - var(--topbar-height));
 }
 
+.EditorPage .wrapper.fullscreen {
+  height: calc(100vh);
+}
+
 .EditorPage .wrapper.with-banner {
   height: calc(100vh - var(--topbar-height) - var(--incentive-banner-height));
 }
