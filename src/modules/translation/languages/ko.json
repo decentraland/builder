@@ -1,241 +1,242 @@
 {
-  "global": {
-    "projects": "장면 목록",
-    "project": "풍경",
-    "templates": "템플릿",
-    "terms_and_conditions": "이용 약관",
-    "blog_post": "블로그 포스트",
-    "email": "이메일",
-    "eth_address": "ETH 지갑 주소",
-    "save": "저장",
-    "submit": "제출",
-    "continue": "계속하기",
-    "send": "보내기",
-    "confirm": "확인",
-    "cancel": "취소",
-    "create": "생성",
-    "or": "혹은",
-    "next": "다음",
-    "back": "뒤로",
-    "done": "완료",
-    "dismiss": "삭제",
-    "optional": "옵션",
-    "items": "아이템",
-    "sign_up": "회원가입",
-    "learn_more": "더 알아보기",
-    "read_more": "더 많은 것을 읽으십시오"
-  },
-  "languages": {
-    "en": "영어",
-    "zh": "중국어"
-  },
-  "home_page": {
-    "title": "독특하고 화려한 풍경을 만드세요!",
-    "subtitle": "손쉽게 사용할 수 있는 툴과 수백 개가 넘는 3D 아이템을 내장한 빌더는 디센트럴랜드의 세계를 보다 더 즐겁게 만들 수 있도록 합니다. 여러분의 창의력을 전부 발휘해보시기 바랍니다.",
-    "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
-    "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
-    "templates_title": "풍경 제작에 앞서 제작하고자 하는 풍경의 크기를 선택하십시오",
-    "projects_title": "내 풍경",
-    "project_actions": {
-      "delete_project": "풍경 삭제하기",
-      "duplicate_project": "풍경 복사하기"
-    },
-    "start": "제작 시작하기"
-  },
-  "mobile_page": {
-    "message": "빌더는 현재 데스크탑에서만 사용할 수 있습니다. 업데이트 내용을 지속적으로 받아보기 위하여 회원가입을 해주고, 본인의 컴퓨터를 통해 업데이트 내역을 확인해보시기 바랍니다:",
-    "success": "감사합니다. 새로운 소식 있으면 알려드릴게요!",
-    "gallery_title": "빌더 유저들이 손수 만든 작업물들을 확인해보시기 바랍니다!",
-    "learn_more": "Builder에 대해 더 알아보기",
-    "secondary_hero": {
-      "title": "컴퓨터를 켰을 때 뭔가를 만들고 싶으신가요?",
-      "action": "알람을 받아보시기 바랍니다"
-    },
-    "reminder_subject": "알림 : Decentraland Builder를 사용해보세요",
-    "reminder_body": "창작자 여러분들 반갑습니다!\n\n이런! 모바일 기기에서 빌더를 사용하시려고 하신 것 같군요!\n빌더는 데스크톱과 노트북에서만 구동이 됩니다. 데스크톱이나 노트북을 사용하여 https://builder.decentraland.org에서 다시 접속해주시기 바랍니다!\n\n빌더로 즐거운 경험 하시기 바랍니다!\n\nThe Decentraland Team"
-  },
-  "not_found_page": {
-    "title": "404",
-    "subtitle": "죄송합니다만. 찾고 계신 풍경을 찾을 수 없습니다",
-    "back": "내 풍경으로 돌아가기"
-  },
-  "error_page": {
-    "title": "어이쿠!",
-    "subtitle": "오류가 발생했는데, 무슨 문제인지는 모르겠네요:",
-    "support": "고객 센터",
-    "or": "혹은 새로고침을 시도해 보세요",
-    "reload": "페이지 새로고침"
-  },
-  "unsupported_browser_page": {
-    "title": "이런!",
-    "subtitle": "빌더는 현재 사용 중인 브라우저를 지원하지 않습니다.{br}{크롬} 이나 {파이어폭스}를 사용하여 이 페이지를 방문해주시기 바랍니다",
-    "back": "내 풍경으로 돌아가기"
-  },
-  "project_card": {
-    "added_to_contest": "콘테스트에 제출됨",
-    "confirm_delete_header": "\"{title}\" 삭제하기",
-    "confirm_delete_content": "\"{title}\" 를 진짜 삭제하시겠습니까?? 다시 되돌릴 수 없습니다"
-  },
-  "itemdrawer": {
-    "title": "아이템함",
-    "search": "아이템 검색",
-    "search_category": "{category} 검색",
-    "no_results": "아이템을 찾을 수 없습니다",
-    "empty_ground": "땅이 없습니다"
-  },
-  "topbar": {
-    "add_to_contest_disabled_limits": "{metric}이 너무 많습니다{br}아이템을 몇 개 지워 보세요!",
-    "add_to_contest_disabled_bounds": "아이템이 범위 밖에 있습니다{br}아이템을 범위 안으로 옮기세요!",
-    "publish": "Publish"
-  },
-  "metrics": {
-    "triangles": "삼각형",
-    "materials": "재료",
-    "geometries": "지오메트리",
-    "bodies": "물체",
-    "entities": "객체",
-    "textures": "텍스쳐",
-    "height": "높이",
-    "too_many": "{metric}이 너무 많습니다"
-  },
   "add_to_contest": {
-    "title": "풍경 제출하기",
-    "subtitle": "제출 과정 거의 마지막에 다다랐습니다. 여러분의 풍경을 제출하시기 전에 풍경과 연락 정보를 한번 더 확인해주시기 바랍니다.",
-    "success_title": "정말 멋지네요!",
-    "success_subtitle": "이 풍경은 정말 멋져보이네요. 제출해주셔서 감사합니다!",
     "contact_information": "연락 정보",
     "error_occurred": "해당 풍경을 제출하는 과정에서 오류가 발생했습니다:",
-    "i_accept_the": "수락합니다 "
+    "i_accept_the": "수락합니다 ",
+    "subtitle": "제출 과정 거의 마지막에 다다랐습니다. 여러분의 풍경을 제출하시기 전에 풍경과 연락 정보를 한번 더 확인해주시기 바랍니다.",
+    "success_subtitle": "이 풍경은 정말 멋져보이네요. 제출해주셔서 감사합니다!",
+    "success_title": "정말 멋지네요!",
+    "title": "풍경 제출하기"
   },
-  "shortcuts": {
-    "move": "이동",
-    "rotate": "회전",
-    "reset": "아이템 리셋",
-    "duplicate": "아이템 복사",
-    "delete": "아이템 삭제",
-    "move_camera": "카메라 이동",
-    "zoom_in": "줌인",
-    "zoom_out": "줌아웃",
-    "reset_camera": "카메라 리셋",
-    "toggle_colliders": "Collider 켜기",
-    "toggle_sidebar": "사이드바 켜기/끄기",
-    "preview": "미리 보기",
-    "undo": "실행 취소",
-    "redo": "다시 실행",
-    "shortcut_reference": "단축키 보기",
-    "precision": "Snap-to-grid 무시",
-    "hold": "고정"
+  "banners": {
+    "contest_end": "빌더 콘테스트가 마감되었습니다! 4월 중순에 심사위원분들이 우승작을 선별하여 발표할 예정입니다. 자세히 보기. {read_more}"
   },
-  "popups": {
-    "shortcuts_help": "여기서 단축기를 확인하세요!",
-    "metrics_help": "여기서 사용된 아이템의 수를 확인하세요!"
-  },
-  "shortcuts_modal": {
-    "title": "단축키",
-    "item_shortcuts": "아이템",
-    "editor_shortcuts": "에디터",
-    "other_shortcuts": "기타"
-  },
-  "edit_project_modal": {
-    "title": "풍경 세부사항",
-    "custom_layout_label": "레이아웃"
-  },
-  "project_fields": {
-    "title_field_label": "제목",
-    "title_field_placeholder": "풍경 제목",
-    "description_field_label": "설명",
-    "description_field_placeholder": "설명 없음"
-  },
-  "validation": {
-    "project": {
-      "title": {
-        "length": "제목의 길이는 최소 {min}자, 최대 {max}자여야 합니다."
-      },
-      "description": {
-        "length": "풍경 설명은 최소 {min}자, 최대 {max}자여야 합니다."
-      }
-    }
-  },
-  "custom_layout_modal": {
-    "subtitle_one": "제작할 풍경의 크기를 직접 설정할 수 있습니다.",
-    "subtitle_two": "원하는 크기를 아래 글상자에 입력하세요."
-  },
-  "layout_picker": {
-    "rows": "행",
-    "columns": "열"
+  "contest": {
+    "banner": {
+      "cta": "영상 시청하기",
+      "text": "창의적인 풍경을 제출하고 상금을 획득하세요:{br}{mana} 및 {land} (미화 {usd} 이상!)",
+      "title": "모든 건축가님께 알립니다!"
+    },
+    "incentive_banner": " (약 $5 미화 상당의) 100 MANA를 받아가기 위해 콘테스트에 여러분이 직접 제작한 풍경을 제출하시기 바랍니다.",
+    "land": "50 LAND",
+    "mana": "900,000 MANA",
+    "mana_per_scene": "100 MANA ($5)",
+    "submit_text": "대회에 출품하기",
+    "update_text": "제출 내역 업데이트",
+    "usd": "미화 50,000달러"
   },
   "custom_layout": {
     "title": "크기 직접 설정",
     "up_to": "최대 {max} 구획"
   },
+  "custom_layout_modal": {
+    "subtitle_one": "제작할 풍경의 크기를 직접 설정할 수 있습니다.",
+    "subtitle_two": "원하는 크기를 아래 글상자에 입력하세요."
+  },
+  "edit_project_modal": {
+    "custom_layout_label": "레이아웃",
+    "title": "풍경 세부사항"
+  },
+  "error_page": {
+    "or": "혹은 새로고침을 시도해 보세요",
+    "reload": "페이지 새로고침",
+    "subtitle": "오류가 발생했는데, 무슨 문제인지는 모르겠네요:",
+    "support": "고객 센터",
+    "title": "어이쿠!"
+  },
+  "global": {
+    "back": "뒤로",
+    "blog_post": "블로그 포스트",
+    "cancel": "취소",
+    "confirm": "확인",
+    "continue": "계속하기",
+    "create": "생성",
+    "dismiss": "삭제",
+    "done": "완료",
+    "email": "이메일",
+    "eth_address": "ETH 지갑 주소",
+    "items": "아이템",
+    "learn_more": "더 알아보기",
+    "next": "다음",
+    "optional": "옵션",
+    "or": "혹은",
+    "project": "풍경",
+    "projects": "장면 목록",
+    "read_more": "더 많은 것을 읽으십시오",
+    "save": "저장",
+    "send": "보내기",
+    "sign_up": "회원가입",
+    "submit": "제출",
+    "templates": "템플릿",
+    "terms_and_conditions": "이용 약관"
+  },
+  "home_page": {
+    "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
+    "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
+    "project_actions": {
+      "delete_project": "풍경 삭제하기",
+      "duplicate_project": "풍경 복사하기"
+    },
+    "projects_title": "내 풍경",
+    "start": "제작 시작하기",
+    "subtitle": "손쉽게 사용할 수 있는 툴과 수백 개가 넘는 3D 아이템을 내장한 빌더는 디센트럴랜드의 세계를 보다 더 즐겁게 만들 수 있도록 합니다. 여러분의 창의력을 전부 발휘해보시기 바랍니다.",
+    "templates_title": "풍경 제작에 앞서 제작하고자 하는 풍경의 크기를 선택하십시오",
+    "title": "독특하고 화려한 풍경을 만드세요!"
+  },
+  "itemdrawer": {
+    "empty_ground": "땅이 없습니다",
+    "no_results": "아이템을 찾을 수 없습니다",
+    "search": "아이템 검색",
+    "search_category": "{category} 검색",
+    "title": "아이템함"
+  },
+  "languages": {
+    "en": "영어",
+    "zh": "중국어"
+  },
+  "layout_picker": {
+    "columns": "열",
+    "rows": "행"
+  },
+  "metrics": {
+    "bodies": "물체",
+    "entities": "객체",
+    "geometries": "지오메트리",
+    "height": "높이",
+    "materials": "재료",
+    "textures": "텍스쳐",
+    "too_many": "{metric}이 너무 많습니다",
+    "triangles": "삼각형"
+  },
+  "mobile_page": {
+    "gallery_title": "빌더 유저들이 손수 만든 작업물들을 확인해보시기 바랍니다!",
+    "learn_more": "Builder에 대해 더 알아보기",
+    "message": "빌더는 현재 데스크탑에서만 사용할 수 있습니다. 업데이트 내용을 지속적으로 받아보기 위하여 회원가입을 해주고, 본인의 컴퓨터를 통해 업데이트 내역을 확인해보시기 바랍니다:",
+    "reminder_body": "창작자 여러분들 반갑습니다!\n\n이런! 모바일 기기에서 빌더를 사용하시려고 하신 것 같군요!\n빌더는 데스크톱과 노트북에서만 구동이 됩니다. 데스크톱이나 노트북을 사용하여 https://builder.decentraland.org에서 다시 접속해주시기 바랍니다!\n\n빌더로 즐거운 경험 하시기 바랍니다!\n\nThe Decentraland Team",
+    "reminder_subject": "알림 : Decentraland Builder를 사용해보세요",
+    "secondary_hero": {
+      "action": "알람을 받아보시기 바랍니다",
+      "title": "컴퓨터를 켰을 때 뭔가를 만들고 싶으신가요?"
+    },
+    "success": "감사합니다. 새로운 소식 있으면 알려드릴게요!"
+  },
+  "not_found_page": {
+    "back": "내 풍경으로 돌아가기",
+    "subtitle": "죄송합니다만. 찾고 계신 풍경을 찾을 수 없습니다",
+    "title": "404"
+  },
+  "popups": {
+    "metrics_help": "여기서 사용된 아이템의 수를 확인하세요!",
+    "shortcuts_help": "여기서 단축기를 확인하세요!"
+  },
+  "project_card": {
+    "added_to_contest": "콘테스트에 제출됨",
+    "confirm_delete_content": "\"{title}\" 를 진짜 삭제하시겠습니까?? 다시 되돌릴 수 없습니다",
+    "confirm_delete_header": "\"{title}\" 삭제하기"
+  },
+  "project_fields": {
+    "description_field_label": "설명",
+    "description_field_placeholder": "설명 없음",
+    "title_field_label": "제목",
+    "title_field_placeholder": "풍경 제목"
+  },
   "project_layout_picker": {
     "max_area_error": "풍경은 최대 {area} 구획을 초과할 수 없습니다",
     "min_area_error": "풍경이 너무 작습니다"
   },
-  "tutorial_modal": {
-    "title": "빌더로 풍경 제작을 시작해 보세요",
-    "subtitle": "빌더는 사용하기 정말 쉽답니다. 시작하기 전에 약간의 팁을 알려 드릴게요",
-    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
-    "email_disclaimer": "구독함으로써 당신은 디센트럴랜드의 최신 정보를 메일로 받게 됩니다.",
-    "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
-    "skip_tutorial": "자습서 건너 뛰기",
-    "slide0": {
-      "title": "빌더에 오신 것을 환영합니다!",
-      "description": "이 곳은 디센트럴랜드의 최신 풍경 빌더입니다. 시작하기 전에 기본적인 것을 가르쳐 드리겠습니다."
+  "shortcuts": {
+    "delete": "아이템 삭제",
+    "duplicate": "아이템 복사",
+    "hold": "고정",
+    "move": "이동",
+    "move_camera": "카메라 이동",
+    "precision": "Snap-to-grid 무시",
+    "preview": "미리 보기",
+    "redo": "다시 실행",
+    "reset": "아이템 리셋",
+    "reset_camera": "카메라 리셋",
+    "rotate": "회전",
+    "shortcut_reference": "단축키 보기",
+    "toggle_colliders": "Collider 켜기",
+    "toggle_sidebar": "사이드바 켜기/끄기",
+    "undo": "실행 취소",
+    "zoom_in": "줌인",
+    "zoom_out": "줌아웃"
+  },
+  "shortcuts_modal": {
+    "editor_shortcuts": "에디터",
+    "item_shortcuts": "아이템",
+    "other_shortcuts": "기타",
+    "title": "단축키"
+  },
+  "templates": {
+    "big": "대형 (2x3)",
+    "custom_layout": {
+      "title": "관습",
+      "up_to": "최대 {max} 소포"
     },
-    "slide1": {
-      "title": "오브젝트 이동하기",
-      "description": "오브젝트를 클릭하고 드래그하여 이동하세요."
-    },
-    "slide2": {
-      "title": "오브젝트 추가하기",
-      "description": "우측의 사이드바에서 오브젝트를 선택해 당신의 풍경에 추가해 보세요."
-    },
-    "slide3": {
-      "title": "이동과 회전",
-      "description": "회전을 클릭하고 마우스를 드래그하여 오브젝트를 회전하세요."
-    },
-    "slide4": {
-      "title": "카메라 조작하기",
-      "description": "마우스의 왼쪽 버튼으로 카메라를 회전하고, 오른쪽 버튼으로 높이를 조절하세요."
-    },
-    "slide5": {
-      "title": "대회에 참가하세요",
-      "description": "풍경 제작을 완료하신 후에는 {submitButton}을 클릭하여 제작자 콘테스트에 출품하세요.",
-      "email_cta": "빌더에 가입하고 최신 대회 정보를 받아 보세요:"
-    }
+    "description": "{dimensions} - {amount} 아이템 최대",
+    "medium": "중형 (2x2)",
+    "small": "소형(1x1)"
   },
   "toasts": {
     "localstorage": "풍경(들)은 여러분의 브라우저 저장소에 자동 저장됩니다"
   },
-  "contest": {
-    "mana": "900,000 MANA",
-    "land": "50 LAND",
-    "usd": "미화 50,000달러",
-    "submit_text": "대회에 출품하기",
-    "update_text": "제출 내역 업데이트",
-    "banner": {
-      "title": "모든 건축가님께 알립니다!",
-      "text": "창의적인 풍경을 제출하고 상금을 획득하세요:{br}{mana} 및 {land} (미화 {usd} 이상!)",
-      "cta": "영상 시청하기"
-    },
-    "mana_per_scene": "100 MANA ($5)",
-    "incentive_banner": " (약 $5 미화 상당의) 100 MANA를 받아가기 위해 콘테스트에 여러분이 직접 제작한 풍경을 제출하시기 바랍니다."
+  "topbar": {
+    "add_to_contest_disabled_bounds": "아이템이 범위 밖에 있습니다{br}아이템을 범위 안으로 옮기세요!",
+    "add_to_contest_disabled_limits": "{metric}이 너무 많습니다{br}아이템을 몇 개 지워 보세요!",
+    "publish": "Publish"
   },
-  "templates": {
-    "small": "소형(1x1)",
-    "medium": "중형 (2x2)",
-    "big": "대형 (2x3)",
-    "description": "{dimensions} - {amount} 아이템 최대",
-    "custom_layout": {
-      "title": "관습",
-      "up_to": "최대 {max} 소포"
+  "tutorial_modal": {
+    "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
+    "email_disclaimer": "구독함으로써 당신은 디센트럴랜드의 최신 정보를 메일로 받게 됩니다.",
+    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
+    "skip_tutorial": "자습서 건너 뛰기",
+    "slide0": {
+      "description": "이 곳은 디센트럴랜드의 최신 풍경 빌더입니다. 시작하기 전에 기본적인 것을 가르쳐 드리겠습니다.",
+      "title": "빌더에 오신 것을 환영합니다!"
+    },
+    "slide1": {
+      "description": "오브젝트를 클릭하고 드래그하여 이동하세요.",
+      "title": "오브젝트 이동하기"
+    },
+    "slide2": {
+      "description": "우측의 사이드바에서 오브젝트를 선택해 당신의 풍경에 추가해 보세요.",
+      "title": "오브젝트 추가하기"
+    },
+    "slide3": {
+      "description": "회전을 클릭하고 마우스를 드래그하여 오브젝트를 회전하세요.",
+      "title": "이동과 회전"
+    },
+    "slide4": {
+      "description": "마우스의 왼쪽 버튼으로 카메라를 회전하고, 오른쪽 버튼으로 높이를 조절하세요.",
+      "title": "카메라 조작하기"
+    },
+    "slide5": {
+      "description": "풍경 제작을 완료하신 후에는 {submitButton}을 클릭하여 제작자 콘테스트에 출품하세요.",
+      "email_cta": "빌더에 가입하고 최신 대회 정보를 받아 보세요:",
+      "title": "대회에 참가하세요"
+    },
+    "subtitle": "빌더는 사용하기 정말 쉽답니다. 시작하기 전에 약간의 팁을 알려 드릴게요",
+    "title": "빌더로 풍경 제작을 시작해 보세요"
+  },
+  "unsupported_browser_page": {
+    "back": "내 풍경으로 돌아가기",
+    "subtitle": "빌더는 현재 사용 중인 브라우저를 지원하지 않습니다.{br}{크롬} 이나 {파이어폭스}를 사용하여 이 페이지를 방문해주시기 바랍니다",
+    "title": "이런!"
+  },
+  "validation": {
+    "project": {
+      "description": {
+        "length": "풍경 설명은 최소 {min}자, 최대 {max}자여야 합니다."
+      },
+      "title": {
+        "length": "제목의 길이는 최소 {min}자, 최대 {max}자여야 합니다."
+      }
     }
   },
   "video_modal": {
-    "title": "Builder에 대해 더 자세히 알아보십시오"
-  },
-  "banners": {
-    "contest_end": "빌더 콘테스트가 마감되었습니다! 4월 중순에 심사위원분들이 우승작을 선별하여 발표할 예정입니다. 자세히 보기. {read_more}"
+    "title": "Builder에 대해 더 자세히 알아보십시오",
+    "youtube_id": "cHEblD8xZwI"
   }
 }
