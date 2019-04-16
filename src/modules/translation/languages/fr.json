@@ -2,11 +2,11 @@
   "add_to_contest": {
     "contact_information": "Informations de contact",
     "error_occurred": "Une erreur s'est produite lors de la soumission de votre projet:",
+    "i_accept_the": "J'accepte le",
     "subtitle": "Vous avez presque fini. ",
     "success_subtitle": "Votre projet a l'air vraiment sympa, merci pour votre soumission!",
     "success_title": "Impressionnant!",
-    "title": "Soumettez votre scène",
-    "i_accept_the": "J'accepte le"
+    "title": "Soumettez votre scène"
   },
   "contest": {
     "banner": {
@@ -51,6 +51,7 @@
     "email": "email",
     "eth_address": "Adresse ETH",
     "next": "suivant",
+    "optional": "facultatif",
     "or": "ou",
     "project": "projet",
     "projects": "projets",
@@ -58,8 +59,7 @@
     "send": "Envoyer",
     "submit": "Soumettre",
     "templates": "des modèles",
-    "terms_and_conditions": "Termes et conditions",
-    "optional": "facultatif"
+    "terms_and_conditions": "Termes et conditions"
   },
   "home_page": {
     "empty_projects_cta": "Sélectionnez un modèle ci-dessous pour commencer à créer des trucs géniaux!",

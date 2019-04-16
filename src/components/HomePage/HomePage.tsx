@@ -46,6 +46,15 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onOpenModal('ImportModal')
   }
 
+  renderImportButton = () => {
+    return (
+      <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
+        <Icon name="import" />
+        {t('home_page.import_scene')}
+      </Button>
+    )
+  }
+
   render() {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
@@ -64,10 +73,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
               <div className="project-cards">
                 <div className="subtitle">
                   {t('home_page.projects_title')}
-                  <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
-                    <Icon name="import" />
-                    Import scene
-                  </Button>
+                  {this.renderImportButton()}
                 </div>
                 <div className="CardList">
                   {projects
@@ -82,12 +88,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
             <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
               <div className="subtitle">
                 {t('home_page.templates_title')}
-                {!projects.length && (
-                  <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
-                    <Icon name="import" />
-                    Import scene
-                  </Button>
-                )}
+                {!projects.length && this.renderImportButton()}
               </div>
               <div className="template-list">
                 <div className="template-row">

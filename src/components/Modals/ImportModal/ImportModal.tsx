@@ -32,7 +32,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
             <span className="title" title={saved.fileName}>
               {saved.fileName}
             </span>
-            <span className="error">Invalid file</span>
+            <span className="error">{t('import_modal.invalid_file')}</span>
           </div>
         )
       } else {
@@ -75,7 +75,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         )}
 
         {acceptedProjects.length === 0 && (
-          <>
+          <span className="cta">
             <div className="image" />
             <T
               id="import_modal.cta"
@@ -87,7 +87,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
                 )
               }}
             />
-          </>
+          </span>
         )}
       </div>
     )
@@ -101,7 +101,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     for (let file of acceptedFiles) {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
-        const contentRaw = await zip.file(BUILDER_FILE_NAME)
+        const contentRaw = zip.file(BUILDER_FILE_NAME)
         const content = await contentRaw.async('text')
         const parsed: AcceptedProject = JSON.parse(content)
 

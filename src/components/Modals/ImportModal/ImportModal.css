@@ -29,6 +29,13 @@
   margin-bottom: 32px;
 }
 
+.ImportModal .cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 .ImportModal .dropzone .action {
   display: block;
   color: var(--primary);
