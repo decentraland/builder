@@ -46,6 +46,7 @@
   },
   "export_modal": {
     "action": "Descargar archivo",
+    "loading": "Descargando...",
     "description": "Puedes exportar tu escena para usarla con el SDK o en otras instancias del Builder. Cualquier modificación realizada con el SDK no se verá reflejada en el Builder.",
     "title": "Exportar Escena"
   },

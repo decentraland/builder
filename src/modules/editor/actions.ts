@@ -165,3 +165,12 @@ export const SET_ENTITIES_OUT_OF_BOUNDARIES = 'Set entities out of boundaries'
 export const setEntitiesOutOfBoundaries = (entities: string[]) => action(SET_ENTITIES_OUT_OF_BOUNDARIES, { entities })
 
 export type SetEntitiesOutOfBoundariesAction = ReturnType<typeof setEntitiesOutOfBoundaries>
+
+// Set export loading
+
+export const SET_EXPORT_PROGRESS = 'Set export progress'
+
+export const setExportProgress = (args: { isLoading?: boolean; progress?: number; total?: number } = {}) =>
+  action(SET_EXPORT_PROGRESS, args)
+
+export type SetExportProgressAction = ReturnType<typeof setExportProgress>

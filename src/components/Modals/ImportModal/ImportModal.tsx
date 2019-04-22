@@ -7,9 +7,9 @@ import Dropzone, { DropzoneState } from 'react-dropzone'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
-import Icon from 'components/Icon'
-import { BUILDER_FILE_NAME } from 'modules/project/sagas'
 import { SavedProject } from 'modules/project/types'
+import { EXPORT_PATH } from 'modules/project/export'
+import Icon from 'components/Icon'
 import { Props, State, AcceptedProject } from './ImportModal.types'
 import './ImportModal.css'
 
@@ -101,7 +101,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     for (let file of acceptedFiles) {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
-        const contentRaw = zip.file(BUILDER_FILE_NAME)
+        const contentRaw = zip.file(EXPORT_PATH.BUILDER_FILE)
         const content = await contentRaw.async('text')
         const parsed: AcceptedProject = JSON.parse(content)
 

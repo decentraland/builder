@@ -42,6 +42,7 @@
   },
   "export_modal": {
     "action": "Download file",
+    "loading": "Downloading...",
     "description": "You can export your scene for use in the Decentraland SDK, or other instances of the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
     "title": "Export Scene"
   },

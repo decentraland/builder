@@ -2,6 +2,7 @@ import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { takeLatest, put, select, take, call } from 'redux-saga/effects'
+import { ActionCreators } from 'redux-undo'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -19,18 +20,18 @@ import {
   ImportProjectAction
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
-import { Project, Layout, SavedProject } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
-import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
+import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress } from 'modules/editor/actions'
+import { store } from 'modules/common/store'
+import { closeModal } from 'modules/modal/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
-import { ActionCreators } from 'redux-undo'
-
-export const BUILDER_FILE_NAME = 'builder.json'
+import { createFiles } from './export'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -143,13 +144,19 @@ function* handleExportProject(action: ExportProjectAction) {
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
+  yield put(setExportProgress({ isLoading: true, progress: 0, total: 0 }))
+  const files = yield call(() => createFiles({ project, scene, onProgress: progress => store.dispatch(setExportProgress(progress)) }))
 
-  zip.file(BUILDER_FILE_NAME, JSON.stringify({ project, scene } as SavedProject, null, 2))
+  for (const filename of Object.keys(files)) {
+    zip.file(filename, files[filename as keyof typeof files])
+  }
 
   yield call(async () => {
     const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
     saveAs(artifact, `${sanitizedName}.zip`)
   })
+  yield put(closeModal('ExportModal'))
+  yield put(setExportProgress({ isLoading: false, progress: 0, total: 0 }))
 }
 
 function* handleImportProject(action: ImportProjectAction) {

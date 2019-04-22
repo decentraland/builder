@@ -46,6 +46,7 @@
   },
   "export_modal": {
     "action": "下载文件",
+    "loading": "下载...",
     "description": "导出场景，用于 Decentraland SDK 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
     "title": "场景导出"
   },
