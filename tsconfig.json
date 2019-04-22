@@ -15,6 +15,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
+    "experimentalDecorators": true,
     "noImplicitReturns": true,
     "resolveJsonModule": true,
     "noUnusedParameters": true,

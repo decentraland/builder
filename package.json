@@ -117,6 +117,7 @@
     "dcl-tslint-config-standard": "^1.1.0",
     "decentraland-ecs": "^5.0.1-20190320193254.commit-e6a1414",
     "decentraland-rpc": "^3.1.5",
+    "fp-future": "^1.0.1",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"
   },

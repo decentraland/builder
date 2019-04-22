@@ -1,5 +1,6 @@
 import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
+import { NFTShape } from './NFTShape'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 
 declare var dcl: DecentralandInterface
@@ -145,7 +146,7 @@ function removeUnusedEntities(entities: Record<string, EntityDefinition>) {
   for (const entityId in engine.entities) {
     const inScene = entityId in entities
     if (!inScene) {
-      engine.removeEntity(engine.entities[entityId])
+      //engine.removeEntity(engine.entities[entityId])
     }
   }
 }
@@ -161,3 +162,15 @@ function subscribeToExternalActions() {
 }
 
 subscribeToExternalActions()
+
+{
+  const entity = new Entity()
+  const kitty = new NFTShape('ethereum://CryptoKitties/508395')
+
+  entity.addComponent(kitty)
+
+  // Remove next line after https://github.com/decentraland/explorer/pull/119 is merged
+  kitty.addedToEntity(entity)
+
+  engine.addEntity(entity)
+}
