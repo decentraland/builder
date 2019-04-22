@@ -6,6 +6,7 @@ import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/Inte
 import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
+import DeployButton from 'components/DeployButton'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
@@ -38,6 +39,10 @@ export default class TopBar extends React.PureComponent<Props> {
 
   handleTitleClick = () => {
     this.props.onOpenModal('EditProjectModal')
+  }
+
+  handleOpenDeployModal = () => {
+    this.props.onOpenModal('DeployModal')
   }
 
   isSceneLoading() {
@@ -106,6 +111,9 @@ export default class TopBar extends React.PureComponent<Props> {
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
+            <span className="tool">
+              <DeployButton onClick={this.handleOpenDeployModal} />
+            </span>
           </Grid.Row>
         </Grid.Column>
       </Grid>

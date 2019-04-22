@@ -1,233 +1,238 @@
 {
-  "global": {
-    "project": "scene",
-    "terms_and_conditions": "Terms & Conditions",
-    "blog_post": "blog post",
-    "email": "email",
-    "eth_address": "ETH address",
-    "save": "Save",
-    "submit": "Submit",
-    "continue": "Continue",
-    "send": "Send",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "create": "Create",
-    "or": "or",
-    "next": "next",
-    "back": "back",
-    "done": "done",
-    "dismiss": "Dismiss",
-    "optional": "optional",
-    "items": "items",
-    "sign_up": "Sign up",
-    "learn_more": "Learn more",
-    "read_more": "Read more"
-  },
-  "languages": {
-    "en": "English",
-    "zh": "Chinese"
-  },
-  "home_page": {
-    "title": "Build something Cool!",
-    "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
-    "templates_title": "Choose the size of your scene to get started",
-    "projects_title": "My scenes",
-    "project_actions": {
-      "delete_project": "Delete scene",
-      "duplicate_project": "Duplicate scene"
-    },
-    "start": "Start building"
-  },
-  "mobile_page": {
-    "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
-    "gallery_title": "Check out work from Builder users!",
-    "learn_more": "Learn more about the Builder",
-    "secondary_hero": {
-      "title": "Want to build something when you get to your computer?",
-      "action": "Send yourself a reminder"
-    },
-    "success": "Thanks, we will keep you posted!",
-    "reminder_subject": "Reminder: Try out Decentraland's Builder",
-    "reminder_body": "Hey there!\n\nWhoops! It looks like you tried to use the Builder from a mobile device!\nThe Builder only runs on desktop and laptop computers. Grab your nearest computer, and try again at https://builder.decentraland.org\n\nHappy building!\n\nThe Decentraland Team"
-  },
-  "not_found_page": {
-    "title": "404",
-    "subtitle": "Sorry, we couldn't find the scene you were looking for",
-    "back": "Back to your Scenes"
-  },
-  "error_page": {
-    "title": "Oops!",
-    "subtitle": "There was an error, this is all we know:",
-    "support": "Contact support",
-    "or": "or try",
-    "reload": "reloading the page"
-  },
-  "unsupported_browser_page": {
-    "title": "Oops!",
-    "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
-    "back": "Back to your Scenes"
-  },
-  "project_card": {
-    "added_to_contest": "Submitted to contest",
-    "confirm_delete_header": "Delete \"{title}\"",
-    "confirm_delete_content": "Are you sure you want to delete your scene \"{title}\"? This operation is not reversible"
-  },
-  "itemdrawer": {
-    "title": "Item drawer",
-    "search": "Search items",
-    "search_category": "Search {category}",
-    "no_results": "No results",
-    "empty_ground": "No Ground"
-  },
-  "topbar": {
-    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
-    "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
-    "publish": "Publish"
-  },
-  "metrics": {
-    "triangles": "triangles",
-    "materials": "materials",
-    "geometries": "geometries",
-    "bodies": "bodies",
-    "entities": "entities",
-    "textures": "textures",
-    "height": "height",
-    "too_many": "Too many {metric}"
-  },
   "add_to_contest": {
-    "title": "Submit your scene",
-    "subtitle": "Submit your scene now to earn 100 MANA (worth $5 USD). Please review your project and contact info below before you submit.",
-    "success_title": "Awesome!",
-    "success_subtitle": "Your scene looks really nice, thank you for your submission!",
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your scene:",
-    "i_accept_the": "I accept the "
+    "i_accept_the": "I accept the ",
+    "subtitle": "Submit your scene now to earn 100 MANA (worth $5 USD). Please review your project and contact info below before you submit.",
+    "success_subtitle": "Your scene looks really nice, thank you for your submission!",
+    "success_title": "Awesome!",
+    "title": "Submit your scene"
   },
-  "shortcuts": {
-    "move": "Toggle arrows",
-    "rotate": "Toggle orbits",
-    "reset": "Reset item",
-    "duplicate": "Duplicate item",
-    "delete": "Delete item",
-    "move_camera": "Move camera",
-    "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out",
-    "reset_camera": "Reset camera",
-    "toggle_colliders": "Show colliders",
-    "toggle_sidebar": "Toggle sidebar",
-    "preview": "Preview",
-    "undo": "Undo",
-    "redo": "Redo",
-    "shortcut_reference": "Shortcut reference",
-    "precision": "Ignore snap-to-grid",
-    "hold": "Hold"
+  "banners": {
+    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. {read_more}"
   },
-  "popups": {
-    "shortcuts_help": "See shortcuts here!",
-    "metrics_help": "See metrics here!"
-  },
-  "shortcuts_modal": {
-    "title": "Shortcuts",
-    "item_shortcuts": "Item",
-    "editor_shortcuts": "Editor",
-    "other_shortcuts": "Other"
-  },
-  "video_modal": {
-    "title": "Learn more about the Builder"
-  },
-  "edit_project_modal": {
-    "title": "Scene details",
-    "custom_layout_label": "Layout"
-  },
-  "project_fields": {
-    "title_field_label": "Title",
-    "title_field_placeholder": "Scene title",
-    "description_field_label": "Description",
-    "description_field_placeholder": "No description"
-  },
-  "validation": {
-    "project": {
-      "title": {
-        "length": "Title length must be between {min} and {max} characters."
-      },
-      "description": {
-        "length": "Description length must be between {min} and {max} characters."
-      }
-    }
+  "contest": {
+    "banner": {
+      "cta": "Watch Video",
+      "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
+      "title": "Calling all Builders!"
+    },
+    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!",
+    "land": "50 LAND",
+    "mana": "900,000 MANA",
+    "mana_per_scene": "100 MANA ($5)",
+    "submit_text": "Submit to contest",
+    "update_text": "Update submission",
+    "usd": "50,000 USD"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
-  "layout_picker": {
-    "rows": "rows",
-    "columns": "columns"
+  "deploy_modal": {
+    "description": "In the future you’ll be able to publish scenes directly from the Builder to your LAND! Subscribe to the Builder mailing list, and we’ll let you know when the feature is ready.",
+    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
+    "email_thanks": "Thanks! We'll stay in touch!",
+    "title": "Upload to your LAND"
   },
-  "templates": {
-    "small": "Mini (1x1)",
-    "medium": "Standard (2x2)",
-    "big": "Big (2x3)",
-    "custom_layout": {
-      "title": "Custom",
-      "up_to": "Up to {max} parcels"
+  "edit_project_modal": {
+    "custom_layout_label": "Layout",
+    "title": "Scene details"
+  },
+  "error_page": {
+    "or": "or try",
+    "reload": "reloading the page",
+    "subtitle": "There was an error, this is all we know:",
+    "support": "Contact support",
+    "title": "Oops!"
+  },
+  "global": {
+    "back": "back",
+    "blog_post": "blog post",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "create": "Create",
+    "dismiss": "Dismiss",
+    "done": "done",
+    "email": "email",
+    "eth_address": "ETH address",
+    "items": "items",
+    "learn_more": "Learn more",
+    "next": "next",
+    "optional": "optional",
+    "or": "or",
+    "project": "scene",
+    "read_more": "Read more",
+    "save": "Save",
+    "send": "Send",
+    "sign_up": "Sign up",
+    "submit": "Submit",
+    "subscribe": "Subscribe",
+    "terms_and_conditions": "Terms & Conditions"
+  },
+  "home_page": {
+    "project_actions": {
+      "delete_project": "Delete scene",
+      "duplicate_project": "Duplicate scene"
     },
-    "description": "{dimensions} - about {amount} items max"
+    "projects_title": "My scenes",
+    "start": "Start building",
+    "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
+    "templates_title": "Choose the size of your scene to get started",
+    "title": "Build something Cool!"
+  },
+  "itemdrawer": {
+    "empty_ground": "No Ground",
+    "no_results": "No results",
+    "search": "Search items",
+    "search_category": "Search {category}",
+    "title": "Item drawer"
+  },
+  "languages": {
+    "en": "English",
+    "zh": "Chinese"
+  },
+  "layout_picker": {
+    "columns": "columns",
+    "rows": "rows"
+  },
+  "metrics": {
+    "bodies": "bodies",
+    "entities": "entities",
+    "geometries": "geometries",
+    "height": "height",
+    "materials": "materials",
+    "textures": "textures",
+    "too_many": "Too many {metric}",
+    "triangles": "triangles"
+  },
+  "mobile_page": {
+    "gallery_title": "Check out work from Builder users!",
+    "learn_more": "Learn more about the Builder",
+    "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
+    "reminder_body": "Hey there!\n\nWhoops! It looks like you tried to use the Builder from a mobile device!\nThe Builder only runs on desktop and laptop computers. Grab your nearest computer, and try again at https://builder.decentraland.org\n\nHappy building!\n\nThe Decentraland Team",
+    "reminder_subject": "Reminder: Try out Decentraland's Builder",
+    "secondary_hero": {
+      "action": "Send yourself a reminder",
+      "title": "Want to build something when you get to your computer?"
+    },
+    "success": "Thanks, we will keep you posted!"
+  },
+  "not_found_page": {
+    "back": "Back to your Scenes",
+    "subtitle": "Sorry, we couldn't find the scene you were looking for",
+    "title": "404"
+  },
+  "popups": {
+    "metrics_help": "See metrics here!",
+    "shortcuts_help": "See shortcuts here!"
+  },
+  "project_card": {
+    "added_to_contest": "Submitted to contest",
+    "confirm_delete_content": "Are you sure you want to delete your scene \"{title}\"? This operation is not reversible",
+    "confirm_delete_header": "Delete \"{title}\""
+  },
+  "project_fields": {
+    "description_field_label": "Description",
+    "description_field_placeholder": "No description",
+    "title_field_label": "Title",
+    "title_field_placeholder": "Scene title"
   },
   "project_layout_picker": {
     "max_area_error": "Your scene can't have more than {area} parcels",
     "min_area_error": "Your scene is too small"
   },
-  "tutorial_modal": {
-    "title": "Get started with the Builder",
-    "subtitle": "The Builder is super easy to use, here are some tips before you begin",
-    "email_thanks": "Thanks! We'll stay in touch!",
-    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
-    "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
-    "skip_tutorial": "Skip tutorial",
-    "slide0": {
-      "title": "Welcome to the Builder!",
-      "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around."
+  "shortcuts": {
+    "delete": "Delete item",
+    "duplicate": "Duplicate item",
+    "hold": "Hold",
+    "move": "Toggle arrows",
+    "move_camera": "Move camera",
+    "precision": "Ignore snap-to-grid",
+    "preview": "Preview",
+    "redo": "Redo",
+    "reset": "Reset item",
+    "reset_camera": "Reset camera",
+    "rotate": "Toggle orbits",
+    "shortcut_reference": "Shortcut reference",
+    "toggle_colliders": "Show colliders",
+    "toggle_sidebar": "Toggle sidebar",
+    "undo": "Undo",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out"
+  },
+  "shortcuts_modal": {
+    "editor_shortcuts": "Editor",
+    "item_shortcuts": "Item",
+    "other_shortcuts": "Other",
+    "title": "Shortcuts"
+  },
+  "templates": {
+    "big": "Big (2x3)",
+    "custom_layout": {
+      "title": "Custom",
+      "up_to": "Up to {max} parcels"
     },
-    "slide1": {
-      "title": "Moving objects",
-      "description": "To move an object, click and drag the object."
-    },
-    "slide2": {
-      "title": "Adding objects",
-      "description": "Add objects to your scene from the sidebar on the right."
-    },
-    "slide3": {
-      "title": "Arrows and orbits",
-      "description": "Rotate objects by clicking on the Rotate tool and dragging the orbits."
-    },
-    "slide4": {
-      "title": "Controlling the camera",
-      "description": "Drag with the left button to rotate the camera. Use the right button to pan."
-    },
-    "slide5": {
-      "title": "Participate in the contest",
-      "description": "When your scene is finished, click {submitButton} to submit it to the Creator Contest.",
-      "email_cta": "Sign up for Builder and contest updates:"
-    }
+    "description": "{dimensions} - about {amount} items max",
+    "medium": "Standard (2x2)",
+    "small": "Mini (1x1)"
   },
   "toasts": {
     "localstorage": "Scenes automatically save to your browser's storage"
   },
-  "contest": {
-    "mana": "900,000 MANA",
-    "land": "50 LAND",
-    "usd": "50,000 USD",
-    "mana_per_scene": "100 MANA ($5)",
-    "submit_text": "Submit to contest",
-    "update_text": "Update submission",
-    "banner": {
-      "title": "Calling all Builders!",
-      "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
-      "cta": "Watch Video"
-    },
-    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!"
+  "topbar": {
+    "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
+    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
+    "publish": "Publish"
   },
-  "banners": {
-    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. {read_more}"
+  "tutorial_modal": {
+    "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
+    "skip_tutorial": "Skip tutorial",
+    "slide0": {
+      "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around.",
+      "title": "Welcome to the Builder!"
+    },
+    "slide1": {
+      "description": "To move an object, click and drag the object.",
+      "title": "Moving objects"
+    },
+    "slide2": {
+      "description": "Add objects to your scene from the sidebar on the right.",
+      "title": "Adding objects"
+    },
+    "slide3": {
+      "description": "Rotate objects by clicking on the Rotate tool and dragging the orbits.",
+      "title": "Arrows and orbits"
+    },
+    "slide4": {
+      "description": "Drag with the left button to rotate the camera. Use the right button to pan.",
+      "title": "Controlling the camera"
+    },
+    "slide5": {
+      "description": "When your scene is finished, click {submitButton} to submit it to the Creator Contest.",
+      "email_cta": "Sign up for Builder and contest updates:",
+      "title": "Participate in the contest"
+    },
+    "subtitle": "The Builder is super easy to use, here are some tips before you begin",
+    "title": "Get started with the Builder"
+  },
+  "unsupported_browser_page": {
+    "back": "Back to your Scenes",
+    "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
+    "title": "Oops!"
+  },
+  "validation": {
+    "project": {
+      "description": {
+        "length": "Description length must be between {min} and {max} characters."
+      },
+      "title": {
+        "length": "Title length must be between {min} and {max} characters."
+      }
+    }
+  },
+  "video_modal": {
+    "title": "Learn more about the Builder"
   }
 }

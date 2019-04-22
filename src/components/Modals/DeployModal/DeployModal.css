@@ -1,0 +1,9 @@
+.ui.small.modal.DeployModal {
+  width: 640px;
+  padding-bottom: 32px;
+}
+
+.DeployModal .description {
+  display: block;
+  margin-bottom: 50px;
+}
