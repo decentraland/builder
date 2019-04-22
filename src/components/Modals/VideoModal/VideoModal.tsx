@@ -6,8 +6,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import './VideoModal.css'
 
-const YOUTUBE_ID = 'H8Fj72JobKo'
-
 export default class TutorialModal extends React.PureComponent<ModalProps> {
   render() {
     const { name, onClose } = this.props
@@ -17,7 +15,7 @@ export default class TutorialModal extends React.PureComponent<ModalProps> {
         <Modal.Header>{t('video_modal.title')}</Modal.Header>
         <Modal.Content>
           <iframe
-            src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}`}
+            src={`https://www.youtube-nocookie.com/embed/${t('video_modal.youtube_id')}`}
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
