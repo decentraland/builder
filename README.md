@@ -60,7 +60,7 @@ Once you get that running, add the server URL to `REACT_APP_CONTEST_URL` on your
 
 ## Asset packs
 
-Every asset you're able to place on your scene (from the builder sidebar) belongs to an asset pack. An asset pack is a json file which points to a collection of assets.
+Every asset you're able to place on your scene (from the builder sidebar) belongs to an asset pack. An asset pack is a JSON file which points to a collection of assets.
 
 To populate the builder sidebar the front-end needs to fetch these asset packs from a remote server. This remote server is represented by the `REACT_APP_ASSETS_URL` environment variable. For example an asset pack might look like this:
 
@@ -91,7 +91,33 @@ To populate the builder sidebar the front-end needs to fetch these asset packs f
 
 As you can see, the assets themselves are pointers to a location on the [content server](#content-server), which holds the actual textures needed to render them on a scene.
 
+### Multiple asset packs
+
+The Builder is capable of using multiple asset packs at the same time. A JSON file is used for easy discovery
+of the supported ones to be loaded by the application.
+Each of the asset-pack entries points to the corresponding asset-pack definition file and supports and
+thumbnail for display in the asset drawer.
+
+```javascript
+{
+  "version": 1,
+  "packs": [
+    {
+      "id": "e6fa9601-3e47-4dff-9a84-e8e017add15a",
+      "name": "MiniTown",
+      "url": "/e6fa9601-3e47-4dff-9a84-e8e017add15a.json",
+      "thumbnail": "/d184ef93-07f6-4fa5-bbac-0c3b6e4c5899.png"
+    },
+    {
+      "id": "d184ef93-07f6-4fa5-bbac-0c3b6e4c5899",
+      "name": "Pirates",
+      "url": "/d184ef93-07f6-4fa5-bbac-0c3b6e4c5899.json",
+      "thumbnail": "/d184ef93-07f6-4fa5-bbac-0c3b6e4c5899.png"
+    }
+  ]
+}
+```
+
 ## Content server
 
 As noted above, the content server holds the actual assets, which might be comprised of `.glb` and `.png` files. This server is found on the `REACT_APP_CONTENT_SERVER_URL` environment variable.
-
