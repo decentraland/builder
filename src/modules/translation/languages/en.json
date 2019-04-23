@@ -41,9 +41,9 @@
     "title": "Oops!"
   },
   "export_modal": {
-    "action": "Download file",
-    "description": "You can export your scene for use in the Decentraland SDK, or other instances of the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
-    "title": "Export Scene"
+    "action": "Download",
+    "description": "You can backup your scene for use in other instances of the Builder. This is a great way to share scenes and collaborate with friends!",
+    "title": "Download scene"
   },
   "global": {
     "back": "back",
@@ -70,11 +70,11 @@
     "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
-    "import_scene": "Import scene",
+    "import_scene": "Upload scene",
     "project_actions": {
       "delete_project": "Delete scene",
       "duplicate_project": "Duplicate scene",
-      "export_project": "Export scene"
+      "export_project": "Download scene"
     },
     "projects_title": "My scenes",
     "start": "Start building",
@@ -83,12 +83,12 @@
     "title": "Build something Cool!"
   },
   "import_modal": {
-    "action": "Import",
-    "action_many": "Import {count} scenes",
+    "action": "Upload",
+    "action_many": "Upload {count} scenes",
     "cta": "Drag your scene file here, or {action}",
-    "description": "You can import scenes! The Builder accepts .zip files containing a scene exported from the Builder.",
+    "description": "You can upload scenes from other instances of the Builder!",
     "invalid_file": "Invalid file",
-    "title": "Import Scene",
+    "title": "Upload scene",
     "upload_manually": "Upload Manually"
   },
   "itemdrawer": {
@@ -155,7 +155,7 @@
   "shortcuts": {
     "delete": "Delete item",
     "duplicate": "Duplicate item",
-    "export": "Export scene",
+    "export": "Download scene",
     "hold": "Hold",
     "move": "Toggle arrows",
     "move_camera": "Move camera",

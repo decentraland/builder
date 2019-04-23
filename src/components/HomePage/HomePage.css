@@ -64,11 +64,12 @@
 }
 
 .HomePage .CardList {
-  overflow: hidden;
   margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.HomePage .ProjectCard:last-child {
+.project-card:nth-child(4n) {
   margin-right: 0;
 }
 

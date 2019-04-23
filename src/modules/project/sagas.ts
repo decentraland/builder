@@ -19,7 +19,7 @@ import {
   ImportProjectAction
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
-import { Project, Layout, SavedProject } from 'modules/project/types'
+import { Project, Layout, SaveFile } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
@@ -144,7 +144,7 @@ function* handleExportProject(action: ExportProjectAction) {
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
 
-  zip.file(BUILDER_FILE_NAME, JSON.stringify({ project, scene } as SavedProject, null, 2))
+  zip.file(BUILDER_FILE_NAME, JSON.stringify({ project, scene } as SaveFile, null, 2))
 
   yield call(async () => {
     const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })

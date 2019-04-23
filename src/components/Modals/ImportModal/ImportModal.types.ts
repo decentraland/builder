@@ -8,13 +8,13 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  acceptedProjects: AcceptedProject[] | []
+  acceptedProjects: ImportedFile[] | []
   canImport: boolean
 }
 
 export type MapDispatchProps = Pick<Props, 'onImport'>
 
-export type AcceptedProject = {
+export type ImportedFile = {
   id: string
   project: (Project & { thumbnail?: string }) | null
   scene: Scene | null
