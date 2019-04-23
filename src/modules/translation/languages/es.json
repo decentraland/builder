@@ -9,7 +9,8 @@
     "title": "Enviar tu escena"
   },
   "banners": {
-    "contest_end": "¡El concurso ha finalizado! Nuestro panel de jueces anunciará a los ganadores a mediados de Abril. {read_more}"
+    "contest_winners": "¡El concurso ha terminado! Descubre los ganadores {link}.",
+    "contest_winners_link": "https://contest.decentraland.org/es"
   },
   "contest": {
     "banner": {
@@ -33,6 +34,11 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
+  "deploy_modal": {
+    "description": "En el futuro podras publicar escenas a tu LAND de forma directa desde el Builder. ¡Subscribete con tu E-mail para enterarte cuando esta funcionalidad este lista!",
+    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
+    "title": "Publica a tu LAND"
+  },
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la escena"
@@ -45,10 +51,9 @@
     "title": "Oops!"
   },
   "export_modal": {
-    "action": "Descargar archivo",
-    "loading": "Descargando...",
-    "description": "Puedes exportar tu escena para usarla con el SDK o en otras instancias del Builder. Cualquier modificación realizada con el SDK no se verá reflejada en el Builder.",
-    "title": "Exportar Escena"
+    "action": "Descargar",
+    "description": "Puedes guardar tu escena para usarla en otras intancias del Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos!",
+    "title": "Descargar escena"
   },
   "global": {
     "back": "volver",
@@ -61,6 +66,7 @@
     "done": "OK",
     "email": "email",
     "eth_address": "ETH address",
+    "here": "aquí",
     "items": "objetos",
     "learn_more": "Más información",
     "next": "siguiente",
@@ -73,16 +79,17 @@
     "send": "Enviar",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
+    "subscribe": "Subscribirse",
     "templates": "plantillas",
     "terms_and_conditions": "Términos y Condiciones"
   },
   "home_page": {
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
-    "import_scene": "Importar escena",
+    "import_scene": "Cargar escena",
     "project_actions": {
       "delete_project": "Borrar escena",
       "duplicate_project": "Duplicar escena",
-      "export_project": "Exportar escena"
+      "export_project": "Descargar escena"
     },
     "projects_title": "Mis escenas",
     "start": "Comenzar",
@@ -91,13 +98,13 @@
     "title": "¡Construye algo genial!"
   },
   "import_modal": {
-    "action": "Importar",
-    "action_many": "Importar {count} escenas",
+    "action": "Cargar",
+    "action_many": "Cargar {count} escenas",
     "cta": "Arrastra un archivo o {action}",
-    "description": "¡Importa tus escenas! El Builder acepta escenas previamente exportadas como archivos .zip",
+    "description": "¡Puedes cargar escenas exportadas desde otras instancias del Builder!",
     "invalid_file": "Archivo inválido",
-    "title": "Importar Escena",
-    "upload_manually": "Súbelos manualmente"
+    "title": "Importar escena",
+    "upload_manually": "Súbelas manualmente"
   },
   "itemdrawer": {
     "empty_ground": "Sin piso",
@@ -163,7 +170,7 @@
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
-    "export": "Exportar escena",
+    "export": "Descargar escena",
     "hold": "Sostener",
     "move": "Alternar flechas",
     "move_camera": "Mover cámara",
@@ -200,15 +207,10 @@
     "localstorage": "Tus escenas se guardan automáticamente en el navegador"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
-    "add_to_contest_disabled_limits": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
-    "publish": "Publicar"
+    "publish": "Publicar a una LAND"
   },
   "tutorial_modal": {
     "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
-    "email_disclaimer": "Al registrarte, te suscribes a las noticias sobre Decentraland",
-    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
-    "skip_tutorial": "Omitir tutorial",
     "slide0": {
       "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
       "title": "¡Bienvenido al Builder!"
@@ -253,6 +255,7 @@
     }
   },
   "video_modal": {
-    "title": "Aprende más sobre el Builder"
+    "title": "Aprende más sobre el Builder",
+    "youtube_id": "4YSdIaxfg-E"
   }
 }

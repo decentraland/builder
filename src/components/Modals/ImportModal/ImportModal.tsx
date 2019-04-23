@@ -7,10 +7,10 @@ import Dropzone, { DropzoneState } from 'react-dropzone'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
-import { SavedProject } from 'modules/project/types'
+import { SaveFile } from 'modules/project/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import Icon from 'components/Icon'
-import { Props, State, AcceptedProject } from './ImportModal.types'
+import { Props, State, ImportedFile } from './ImportModal.types'
 import './ImportModal.css'
 
 export default class ImportModal extends React.PureComponent<Props, State> {
@@ -19,7 +19,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     canImport: false
   }
 
-  renderProject = (saved: AcceptedProject) => {
+  renderProject = (saved: ImportedFile) => {
     if (!saved.project || !saved.scene) {
       if (saved.fileName) {
         const key = `${saved.fileName}-${Math.random()}`.replace(/\s/g, '_')
@@ -71,7 +71,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         {acceptedProjects.length === 1 && <div className="single-project">{this.renderProject(acceptedProjects[0])}</div>}
 
         {acceptedProjects.length > 1 && (
-          <div className="multiple-projects">{(acceptedProjects as AcceptedProject[]).map(saved => this.renderProject(saved))} </div>
+          <div className="multiple-projects">{(acceptedProjects as ImportedFile[]).map(saved => this.renderProject(saved))} </div>
         )}
 
         {acceptedProjects.length === 0 && (
@@ -103,7 +103,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.BUILDER_FILE)
         const content = await contentRaw.async('text')
-        const parsed: AcceptedProject = JSON.parse(content)
+        const parsed: ImportedFile = JSON.parse(content)
 
         if (!parsed.project || !parsed.scene) {
           throw new Error('Invalid project')
@@ -135,7 +135,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
   handleImport = () => {
     // At this point we are sure that the accepted projects are all valid
-    this.props.onImport(this.state.acceptedProjects as SavedProject[])
+    this.props.onImport(this.state.acceptedProjects as SaveFile[])
     this.props.onClose()
   }
 

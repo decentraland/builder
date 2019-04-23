@@ -9,7 +9,8 @@
     "title": "풍경 제출하기"
   },
   "banners": {
-    "contest_end": "빌더 콘테스트가 마감되었습니다! 4월 중순에 심사위원분들이 우승작을 선별하여 발표할 예정입니다. 자세히 보기. {read_more}"
+    "contest_winners": "{link} 우승작들을 확인해보시기 바랍니다.",
+    "contest_winners_link": "https://contest.decentraland.org/ko"
   },
   "contest": {
     "banner": {
@@ -33,6 +34,11 @@
     "subtitle_one": "제작할 풍경의 크기를 직접 설정할 수 있습니다.",
     "subtitle_two": "원하는 크기를 아래 글상자에 입력하세요."
   },
+  "deploy_modal": {
+    "description": "여러분들은 멀지않은 미래에 빌더 상에서 풍경을 토지로 직접 퍼블리싱할 수 있게될 예정입니다! 빌더 관련 이메일 받아보기를 구독하시면 저희가 해당 기능이 준비가 됬을 때 알려드리도록 하겠습니다.",
+    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
+    "title": "내 랜드에 퍼블리싱하기"
+  },
   "edit_project_modal": {
     "custom_layout_label": "레이아웃",
     "title": "풍경 세부사항"
@@ -45,10 +51,9 @@
     "title": "어이쿠!"
   },
   "export_modal": {
-    "action": "파일 다운로드",
-    "loading": "다운로드 중 ...",
-    "description": "여러분은 디센트럴랜드 SDK를 사용하거나 빌더를 사용하면서 풍경을 내보낼 수 있습니다. 빌더 내보내기 기능을 통해 여러분은 친구들과 풍경을 공유하고 협업을 진행할 수 있습니다! SDK를 사용하여 풍경에 수정/변경이 진행되면 해당 수정/변경 내용은 빌더 상에 반영되지 않습니다.",
-    "title": "풍경 내보내기"
+    "action": "다운로드",
+    "description": "여러분은 빌더의 다른 인스턴스 상에서 풍경을 백업할 수 있습니다. 이 방법을 통해 여러분은 친구들과 풍경을 공유하고 협업을 할 수 있습니다.",
+    "title": "풍경 다운로드"
   },
   "global": {
     "back": "뒤로",
@@ -61,6 +66,7 @@
     "done": "완료",
     "email": "이메일",
     "eth_address": "ETH 지갑 주소",
+    "here": "이곳에서",
     "items": "아이템",
     "learn_more": "더 알아보기",
     "next": "다음",
@@ -73,17 +79,18 @@
     "send": "보내기",
     "sign_up": "회원가입",
     "submit": "제출",
+    "subscribe": "구독",
     "templates": "템플릿",
     "terms_and_conditions": "이용 약관"
   },
   "home_page": {
     "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
     "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
-    "import_scene": "풍경 불러오기",
+    "import_scene": "풍경 업로드",
     "project_actions": {
       "delete_project": "풍경 삭제하기",
       "duplicate_project": "풍경 복사하기",
-      "export_project": "풍경 내보내기"
+      "export_project": "풍경 다운로드"
     },
     "projects_title": "내 풍경",
     "start": "제작 시작하기",
@@ -92,12 +99,12 @@
     "title": "독특하고 화려한 풍경을 만드세요!"
   },
   "import_modal": {
-    "action": "불러오기",
-    "action_many": "풍경 {count}개 가져오기",
+    "action": "업로드",
+    "action_many": "풍경 {count}개 업로드",
     "cta": "이곳에 풍경 폴더를 마우스로 끌고와주시거나 {action}해주시기를 바랍니다.",
-    "description": "여러분은 빌더를 사용하면서 풍경을 불러올 수 있습니다. 빌더는 빌더에서 내보내진 풍경을 포함하고 있는 .zip 포맷의 파일을 허용합니다.",
+    "description": "여러분은 빌더의 타 인스턴스로부터 풍경을 업로드할 수 있습니다.",
     "invalid_file": "유효하지않은 파일",
-    "title": "풍경 불러오기",
+    "title": "풍경 업로드",
     "upload_manually": "직접 업로드"
   },
   "itemdrawer": {
@@ -164,7 +171,7 @@
   "shortcuts": {
     "delete": "아이템 삭제",
     "duplicate": "아이템 복사",
-    "export": "풍경 내보내기",
+    "export": "풍경 다운로드",
     "hold": "고정",
     "move": "이동",
     "move_camera": "카메라 이동",
@@ -201,15 +208,10 @@
     "localstorage": "풍경(들)은 여러분의 브라우저 저장소에 자동 저장됩니다"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "아이템이 범위 밖에 있습니다{br}아이템을 범위 안으로 옮기세요!",
-    "add_to_contest_disabled_limits": "{metric}이 너무 많습니다{br}아이템을 몇 개 지워 보세요!",
-    "publish": "Publish"
+    "publish": "랜드에 퍼블리싱하기"
   },
   "tutorial_modal": {
     "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
-    "email_disclaimer": "구독함으로써 당신은 디센트럴랜드의 최신 정보를 메일로 받게 됩니다.",
-    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
-    "skip_tutorial": "자습서 건너 뛰기",
     "slide0": {
       "description": "이 곳은 디센트럴랜드의 최신 풍경 빌더입니다. 시작하기 전에 기본적인 것을 가르쳐 드리겠습니다.",
       "title": "빌더에 오신 것을 환영합니다!"
@@ -254,6 +256,7 @@
     }
   },
   "video_modal": {
-    "title": "Builder에 대해 더 자세히 알아보십시오"
+    "title": "Builder에 대해 더 자세히 알아보십시오",
+    "youtube_id": "cHEblD8xZwI"
   }
 }

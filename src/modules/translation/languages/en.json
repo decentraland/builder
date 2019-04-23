@@ -9,7 +9,8 @@
     "title": "Submit your scene"
   },
   "banners": {
-    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. {read_more}"
+    "contest_winners": "The Creator Contest has ended! See the winners {link}.",
+    "contest_winners_link": "https://contest.decentraland.org/en"
   },
   "contest": {
     "banner": {
@@ -29,6 +30,11 @@
     "subtitle_one": "You can create custom layouts for your scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
+  "deploy_modal": {
+    "description": "Coming soon, you’ll be able to publish scenes directly from the Builder to your LAND! Subscribe to the Builder mailing list, and we’ll let you know when the feature is ready.",
+    "email_thanks": "Thanks! We'll stay in touch!",
+    "title": "Publish to your LAND"
+  },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
     "title": "Scene details"
@@ -41,10 +47,10 @@
     "title": "Oops!"
   },
   "export_modal": {
-    "action": "Download file",
+    "action": "Download",
     "loading": "Downloading...",
-    "description": "You can export your scene for use in the Decentraland SDK, or other instances of the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
-    "title": "Export Scene"
+    "description": "You can backup your scene for use in other instances of the Builder. This is a great way to share scenes and collaborate with friends!",
+    "title": "Download scene"
   },
   "global": {
     "back": "back",
@@ -57,6 +63,7 @@
     "done": "done",
     "email": "email",
     "eth_address": "ETH address",
+    "here": "here",
     "items": "items",
     "learn_more": "Learn more",
     "next": "next",
@@ -68,14 +75,15 @@
     "send": "Send",
     "sign_up": "Sign up",
     "submit": "Submit",
+    "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
-    "import_scene": "Import scene",
+    "import_scene": "Upload scene",
     "project_actions": {
       "delete_project": "Delete scene",
       "duplicate_project": "Duplicate scene",
-      "export_project": "Export scene"
+      "export_project": "Download scene"
     },
     "projects_title": "My scenes",
     "start": "Start building",
@@ -84,12 +92,12 @@
     "title": "Build something Cool!"
   },
   "import_modal": {
-    "action": "Import",
-    "action_many": "Import {count} scenes",
+    "action": "Upload",
+    "action_many": "Upload {count} scenes",
     "cta": "Drag your scene file here, or {action}",
-    "description": "You can import scenes! The Builder accepts .zip files containing a scene exported from the Builder.",
+    "description": "You can upload scenes from other instances of the Builder!",
     "invalid_file": "Invalid file",
-    "title": "Import Scene",
+    "title": "Upload scene",
     "upload_manually": "Upload Manually"
   },
   "itemdrawer": {
@@ -156,7 +164,7 @@
   "shortcuts": {
     "delete": "Delete item",
     "duplicate": "Duplicate item",
-    "export": "Export scene",
+    "export": "Download scene",
     "hold": "Hold",
     "move": "Toggle arrows",
     "move_camera": "Move camera",
@@ -193,15 +201,10 @@
     "localstorage": "Scenes automatically save to your browser's storage"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
-    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
-    "publish": "Publish"
+    "publish": "Publish to LAND"
   },
   "tutorial_modal": {
     "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
-    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
-    "email_thanks": "Thanks! We'll stay in touch!",
-    "skip_tutorial": "Skip tutorial",
     "slide0": {
       "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around.",
       "title": "Welcome to the Builder!"
@@ -246,6 +249,7 @@
     }
   },
   "video_modal": {
-    "title": "Learn more about the Builder"
+    "title": "Learn more about the Builder",
+    "youtube_id": "cHEblD8xZwI"
   }
 }

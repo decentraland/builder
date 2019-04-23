@@ -9,7 +9,8 @@
     "title": "提交场景"
   },
   "banners": {
-    "contest_end": "创作大赛已经结束！我们将在四月中旬宣布中奖者。更多请查看。 {read_more}"
+    "contest_winners": "创作大赛已经结束，请在{link}查看中奖名单",
+    "contest_winners_link": "https://contest.decentraland.org/zh"
   },
   "contest": {
     "banner": {
@@ -33,6 +34,11 @@
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
+  "deploy_modal": {
+    "description": "您将可以直接在编辑器中发布场景到土地！请订阅邮件列表，以便功能实现时，可以即时通知您。",
+    "email_thanks": "谢谢！我们会保持联系",
+    "title": "布署场景到土地"
+  },
   "edit_project_modal": {
     "custom_layout_label": "布局",
     "title": "场景详细信息"
@@ -45,10 +51,9 @@
     "title": "哎哟！"
   },
   "export_modal": {
-    "action": "下载文件",
-    "loading": "下载...",
-    "description": "导出场景，用于 Decentraland SDK 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
-    "title": "场景导出"
+    "action": "下载",
+    "description": "你可以备份你的场景，然后在另外的场景编辑器上使用。非常适合跟与朋友分享和合作场景设计",
+    "title": "下载场景"
   },
   "global": {
     "back": "返回",
@@ -61,6 +66,7 @@
     "done": "完成",
     "email": "email",
     "eth_address": "ETH 地址",
+    "here": "这里",
     "items": "模型",
     "learn_more": "更多",
     "next": "下一个",
@@ -73,13 +79,14 @@
     "send": "发送",
     "sign_up": "注册",
     "submit": "提交",
+    "subscribe": "订阅",
     "templates": "模板",
     "terms_and_conditions": "使用条款"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",
     "empty_projects_title": "这是您的项目所在",
-    "import_scene": "导入场景",
+    "import_scene": "上传场景",
     "project_actions": {
       "delete_project": "删除场景",
       "duplicate_project": "复制场景",
@@ -92,12 +99,12 @@
     "title": "设计酷炫场景！"
   },
   "import_modal": {
-    "action": "导入",
-    "action_many": "导入 {count} 个场景",
+    "action": "上传",
+    "action_many": "上传 {count} 个场景",
     "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "导入用于 Builder 的场景！ 可以导入 Builder 编辑器导出的包含场景的 .zip 文件。",
+    "description": "你将可以在其它场景编辑器中上传。",
     "invalid_file": "无效文件",
-    "title": "导入场景",
+    "title": "上传场景",
     "upload_manually": "手动上传"
   },
   "itemdrawer": {
@@ -205,15 +212,10 @@
     "localstorage": "场景会自动保存在浏览器的本地存储中"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "物体超过边界{br}请将物品移动到边界内！",
-    "add_to_contest_disabled_limits": "{metric} 太多{br}请尝试删除一些物品！",
-    "publish": "发布"
+    "publish": "布署场景"
   },
   "tutorial_modal": {
     "contest": "取得赢取总共 {mana} 和 {land} 的机会。",
-    "email_disclaimer": "注册订阅有关 Decentraland 的新闻。",
-    "email_thanks": "谢谢！我们会保持联系",
-    "skip_tutorial": "跳过教程",
     "slide0": {
       "description": "这是 Decentraland 的新场景构建器。",
       "title": "欢迎您的到来！"
@@ -258,6 +260,7 @@
     }
   },
   "video_modal": {
-    "title": "更多"
+    "title": "更多",
+    "youtube_id": "NhaP_M7tVc8"
   }
 }
