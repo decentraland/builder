@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
-
 import { RootState } from 'modules/common/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { MapStateProps } from './Routes.types'
+import { withRouter } from 'react-router'
+
 import Routes from './Routes'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -11,7 +12,9 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (_: any) => ({})
 
-export default connect(
-  mapState,
-  mapDispatch
-)(Routes)
+export default withRouter(
+  connect(
+    mapState,
+    mapDispatch
+  )(Routes)
+)
