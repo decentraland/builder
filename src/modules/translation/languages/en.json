@@ -9,7 +9,8 @@
     "title": "Submit your scene"
   },
   "banners": {
-    "contest_end": "The Builder contest has ended! Our panel of judges will announce the winners in mid-April. {read_more}"
+    "contest_winners": "The Creator Contest has ended! See the winners {link}.",
+    "contest_winners_link": "https://contest.decentraland.org/en"
   },
   "contest": {
     "banner": {
@@ -61,6 +62,7 @@
     "done": "done",
     "email": "email",
     "eth_address": "ETH address",
+    "here": "here",
     "items": "items",
     "learn_more": "Learn more",
     "next": "next",
@@ -202,9 +204,6 @@
   },
   "tutorial_modal": {
     "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
-    "email_disclaimer": "By signing up, you are subscribing to news about Decentraland.",
-    "email_thanks": "Thanks! We'll stay in touch!",
-    "skip_tutorial": "Skip tutorial",
     "slide0": {
       "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around.",
       "title": "Welcome to the Builder!"

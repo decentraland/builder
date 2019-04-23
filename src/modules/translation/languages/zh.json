@@ -9,7 +9,8 @@
     "title": "提交场景"
   },
   "banners": {
-    "contest_end": "创作大赛已经结束！我们将在四月中旬宣布中奖者。更多请查看。 {read_more}"
+    "contest_winners": "创作大赛已经结束，请在{link}查看中奖名单",
+    "contest_winners_link": "https://contest.decentraland.org/zh"
   },
   "contest": {
     "banner": {
@@ -65,6 +66,7 @@
     "done": "完成",
     "email": "email",
     "eth_address": "ETH 地址",
+    "here": "这里",
     "items": "模型",
     "learn_more": "更多",
     "next": "下一个",
@@ -214,9 +216,6 @@
   },
   "tutorial_modal": {
     "contest": "取得赢取总共 {mana} 和 {land} 的机会。",
-    "email_disclaimer": "注册订阅有关 Decentraland 的新闻。",
-    "email_thanks": "谢谢！我们会保持联系",
-    "skip_tutorial": "跳过教程",
     "slide0": {
       "description": "这是 Decentraland 的新场景构建器。",
       "title": "欢迎您的到来！"
