@@ -1,4 +1,5 @@
 import uuidv4 from 'uuid/v4'
+import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { takeLatest, put, select, take, call } from 'redux-saga/effects'
@@ -28,7 +29,22 @@ import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
 import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
-import { ActionCreators } from 'redux-undo'
+
+const DEFAULT_GROUND_ASSET = {
+  id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
+  name: 'Bermuda Grass',
+  thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
+  url: 'e6fa9601-3e47-4dff-9a84-e8e017add15a/FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  tags: ['ground'],
+  category: 'ground',
+  variations: [],
+  contents: {
+    'FloorBaseGrass_01/FloorBaseGrass_01.glb': 'QmSyvWnb5nKCaGHw9oHLSkwywvS5NYpj6vgb8L121kWveS',
+    'FloorBaseGrass_01/Floor_Grass01.png.png': 'QmT1WfQPMBVhgwyxV5SfcfWivZ6hqMCT74nxdKXwyZBiXb',
+    'FloorBaseGrass_01/thumbnail.png': 'QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'
+  },
+  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a'
+}
 
 export const BUILDER_FILE_NAME = 'builder.json'
 
@@ -71,6 +87,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   if (onSuccess) {
     onSuccess(project, scene)
+    yield put(setGround(project.id, project.layout, DEFAULT_GROUND_ASSET))
   }
 }
 

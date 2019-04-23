@@ -7,7 +7,7 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
-import { EMPTY_GROUND_ASSET_PACK_ID, addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES } from './utils'
+import { SIDEBAR_CATEGORIES } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -53,16 +53,11 @@ export const getSideBarCategories = createSelector<
   getAssetPacks,
   getAssets,
   (selectedAssetPackId, search, category, view, assetPacks, assets) => {
-    assets = addEmptyGroundAsset(assets)
-    assetPacks = addEmptyGroundAssetPack(assetPacks)
-
     const categories: { [categoryName: string]: Category } = {}
 
     // filter by selected asset pack, if none is selected use all asset packs
     const filteredAssetPacks = Object.keys(assetPacks)
-      .filter(
-        assetPackId => selectedAssetPackId == null || selectedAssetPackId === assetPackId || assetPackId === EMPTY_GROUND_ASSET_PACK_ID
-      )
+      .filter(assetPackId => selectedAssetPackId == null || selectedAssetPackId === assetPackId)
       .map(assetPackId => assetPacks[assetPackId])
 
     const filteredAssetIds = Object.keys(assets)
