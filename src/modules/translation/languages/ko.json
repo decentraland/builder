@@ -52,6 +52,7 @@
   },
   "export_modal": {
     "action": "다운로드",
+    "loading": "다운로드 중...",
     "description": "여러분은 빌더의 다른 인스턴스 상에서 풍경을 백업할 수 있습니다. 이 방법을 통해 여러분은 친구들과 풍경을 공유하고 협업을 할 수 있습니다.",
     "title": "풍경 다운로드"
   },
@@ -113,10 +114,6 @@
     "search": "아이템 검색",
     "search_category": "{category} 검색",
     "title": "아이템함"
-  },
-  "languages": {
-    "en": "영어",
-    "zh": "중국어"
   },
   "layout_picker": {
     "columns": "열",

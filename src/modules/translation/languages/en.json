@@ -107,10 +107,6 @@
     "search_category": "Search {category}",
     "title": "Item drawer"
   },
-  "languages": {
-    "en": "English",
-    "zh": "Chinese"
-  },
   "layout_picker": {
     "columns": "columns",
     "rows": "rows"

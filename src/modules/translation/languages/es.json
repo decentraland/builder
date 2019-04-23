@@ -52,6 +52,7 @@
   },
   "export_modal": {
     "action": "Descargar",
+    "loading": "Descargando...",
     "description": "Puedes guardar tu escena para usarla en otras intancias del Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos!",
     "title": "Descargar escena"
   },
@@ -112,10 +113,6 @@
     "search": "Buscar objetos",
     "search_category": "Buscar {category}",
     "title": "Listado de objetos"
-  },
-  "languages": {
-    "en": "English",
-    "es": "Español"
   },
   "layout_picker": {
     "columns": "columnas",
