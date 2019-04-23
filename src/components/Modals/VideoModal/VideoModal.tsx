@@ -6,7 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import './VideoModal.css'
 
-export default class TutorialModal extends React.PureComponent<ModalProps> {
+export default class VideoModal extends React.PureComponent<ModalProps> {
   render() {
     const { name, onClose } = this.props
 

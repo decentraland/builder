@@ -45,6 +45,11 @@
     "support": "Contact support",
     "title": "Oops!"
   },
+  "export_modal": {
+    "action": "Download",
+    "description": "You can backup your scene for use in other instances of the Builder. This is a great way to share scenes and collaborate with friends!",
+    "title": "Download scene"
+  },
   "global": {
     "back": "back",
     "blog_post": "blog post",
@@ -71,15 +76,26 @@
     "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
+    "import_scene": "Upload scene",
     "project_actions": {
       "delete_project": "Delete scene",
-      "duplicate_project": "Duplicate scene"
+      "duplicate_project": "Duplicate scene",
+      "export_project": "Download scene"
     },
     "projects_title": "My scenes",
     "start": "Start building",
     "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your scene to get started",
     "title": "Build something Cool!"
+  },
+  "import_modal": {
+    "action": "Upload",
+    "action_many": "Upload {count} scenes",
+    "cta": "Drag your scene file here, or {action}",
+    "description": "You can upload scenes from other instances of the Builder!",
+    "invalid_file": "Invalid file",
+    "title": "Upload scene",
+    "upload_manually": "Upload Manually"
   },
   "itemdrawer": {
     "empty_ground": "No Ground",
@@ -145,6 +161,7 @@
   "shortcuts": {
     "delete": "Delete item",
     "duplicate": "Duplicate item",
+    "export": "Download scene",
     "hold": "Hold",
     "move": "Toggle arrows",
     "move_camera": "Move camera",

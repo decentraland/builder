@@ -7,6 +7,7 @@ import { ProjectLayout, Project, Layout } from 'modules/project/types'
 import { getBlockchainParcelsFromLayout } from 'modules/project/utils'
 import ProjectFields from 'components/ProjectFields'
 import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
+
 import { Props, State } from './EditProjectModal.types'
 import './EditProjectModal.css'
 
@@ -60,8 +61,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
 
   render() {
     const { name, onClose } = this.props
-    const { title, description } = this.state
-    const { rows, cols, hasError } = this.state
+    const { title, description, rows, cols, hasError } = this.state
 
     return (
       <Modal name={name}>
@@ -81,11 +81,11 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
             </div>
           </Modal.Content>
           <Modal.Actions>
-            <Button primary disabled={hasError}>
-              {t('global.save')}
-            </Button>
             <Button secondary onClick={onClose}>
               {t('global.cancel')}
+            </Button>
+            <Button primary disabled={hasError}>
+              {t('global.save')}
             </Button>
           </Modal.Actions>
         </Form>

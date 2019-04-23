@@ -29,6 +29,8 @@ export type IconName =
   | 'arrow-key-down'
   | 'arrow-key-left'
   | 'arrow-key-right'
+  | 'import'
+  | 'export'
 
 export type DefaultProps = {
   isActive: boolean

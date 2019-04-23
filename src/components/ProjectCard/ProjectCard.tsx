@@ -45,6 +45,10 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     onDuplicateProject(project)
   }
 
+  handleExportScene = () => {
+    this.props.onOpenModal('ExportModal', { project: this.props.project })
+  }
+
   render() {
     const { project, hasSubmittedProject, items, onClick } = this.props
     const { isDeleting } = this.state
@@ -78,6 +82,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
         <Dropdown direction="left" onClick={preventDefault()}>
           <Dropdown.Menu>
             <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
+            <Dropdown.Item text={t('home_page.project_actions.export_project')} onClick={this.handleExportScene} />
             <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
           </Dropdown.Menu>
         </Dropdown>

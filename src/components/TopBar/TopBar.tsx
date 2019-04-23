@@ -45,6 +45,10 @@ export default class TopBar extends React.PureComponent<Props> {
     this.props.onOpenModal('DeployModal')
   }
 
+  handleExport = () => {
+    this.props.onOpenModal('ExportModal', { project: this.props.currentProject })
+  }
+
   isSceneLoading() {
     const { metrics, isLoading } = this.props
     return isLoading || (metrics.entities > 0 && metrics.triangles === 0)
@@ -107,6 +111,9 @@ export default class TopBar extends React.PureComponent<Props> {
           <Grid.Row>
             <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="preview" isActive={isPreviewing} isDisabled={isLoading} onClick={this.handleTogglePreview} />
+            </ShortcutTooltip>
+            <ShortcutTooltip shortcut={Shortcut.EXPORT_SCENE} position="bottom center" className="tool" popupClassName="top-bar-popup">
+              <Chip icon="export" isDisabled={isLoading} onClick={this.handleExport} />
             </ShortcutTooltip>
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />

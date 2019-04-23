@@ -49,6 +49,11 @@
     "support": "고객 센터",
     "title": "어이쿠!"
   },
+  "export_modal": {
+    "action": "다운로드",
+    "description": "여러분은 빌더의 다른 인스턴스 상에서 풍경을 백업할 수 있습니다. 이 방법을 통해 여러분은 친구들과 풍경을 공유하고 협업을 할 수 있습니다.",
+    "title": "풍경 다운로드"
+  },
   "global": {
     "back": "뒤로",
     "blog_post": "블로그 포스트",
@@ -79,15 +84,26 @@
   "home_page": {
     "empty_projects_cta": "아래 템플릿을 골라 멋진 풍경을 제작해 보세요!",
     "empty_projects_title": "당신의 프로젝트는 이 곳에 보관됩니다",
+    "import_scene": "풍경 업로드",
     "project_actions": {
       "delete_project": "풍경 삭제하기",
-      "duplicate_project": "풍경 복사하기"
+      "duplicate_project": "풍경 복사하기",
+      "export_project": "풍경 다운로드"
     },
     "projects_title": "내 풍경",
     "start": "제작 시작하기",
     "subtitle": "손쉽게 사용할 수 있는 툴과 수백 개가 넘는 3D 아이템을 내장한 빌더는 디센트럴랜드의 세계를 보다 더 즐겁게 만들 수 있도록 합니다. 여러분의 창의력을 전부 발휘해보시기 바랍니다.",
     "templates_title": "풍경 제작에 앞서 제작하고자 하는 풍경의 크기를 선택하십시오",
     "title": "독특하고 화려한 풍경을 만드세요!"
+  },
+  "import_modal": {
+    "action": "업로드",
+    "action_many": "풍경 {count}개 업로드",
+    "cta": "이곳에 풍경 폴더를 마우스로 끌고와주시거나 {action}해주시기를 바랍니다.",
+    "description": "여러분은 빌더의 타 인스턴스로부터 풍경을 업로드할 수 있습니다.",
+    "invalid_file": "유효하지않은 파일",
+    "title": "풍경 업로드",
+    "upload_manually": "직접 업로드"
   },
   "itemdrawer": {
     "empty_ground": "땅이 없습니다",
@@ -153,6 +169,7 @@
   "shortcuts": {
     "delete": "아이템 삭제",
     "duplicate": "아이템 복사",
+    "export": "풍경 다운로드",
     "hold": "고정",
     "move": "이동",
     "move_camera": "카메라 이동",
