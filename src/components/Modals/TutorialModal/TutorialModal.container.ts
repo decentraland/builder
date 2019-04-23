@@ -1,9 +1,9 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
+import { closeModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps } from './TutorialModal.types'
 import TutorialModal from './TutorialModal'
-import { closeModal } from 'modules/modal/actions'
 
 const mapState = (_: RootState): MapStateProps => ({})
 
