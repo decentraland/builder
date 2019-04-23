@@ -9,7 +9,8 @@
     "title": "Enviar tu escena"
   },
   "banners": {
-    "contest_end": "¡El concurso ha finalizado! Nuestro panel de jueces anunciará a los ganadores a mediados de Abril. {read_more}"
+    "contest_winners": "¡El concurso ha terminado! Descubre los ganadores {link}.",
+    "contest_winners_link": "https://contest.decentraland.org/es"
   },
   "contest": {
     "banner": {
@@ -65,6 +66,7 @@
     "done": "OK",
     "email": "email",
     "eth_address": "ETH address",
+    "here": "aquí",
     "items": "objetos",
     "learn_more": "Más información",
     "next": "siguiente",
@@ -209,9 +211,6 @@
   },
   "tutorial_modal": {
     "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
-    "email_disclaimer": "Al registrarte, te suscribes a las noticias sobre Decentraland",
-    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
-    "skip_tutorial": "Omitir tutorial",
     "slide0": {
       "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
       "title": "¡Bienvenido al Builder!"

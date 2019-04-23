@@ -9,7 +9,8 @@
     "title": "풍경 제출하기"
   },
   "banners": {
-    "contest_end": "빌더 콘테스트가 마감되었습니다! 4월 중순에 심사위원분들이 우승작을 선별하여 발표할 예정입니다. 자세히 보기. {read_more}"
+    "contest_winners": "{link} 우승작들을 확인해보시기 바랍니다.",
+    "contest_winners_link": "https://contest.decentraland.org/ko"
   },
   "contest": {
     "banner": {
@@ -65,6 +66,7 @@
     "done": "완료",
     "email": "이메일",
     "eth_address": "ETH 지갑 주소",
+    "here": "이곳에서",
     "items": "아이템",
     "learn_more": "더 알아보기",
     "next": "다음",
@@ -210,9 +212,6 @@
   },
   "tutorial_modal": {
     "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
-    "email_disclaimer": "구독함으로써 당신은 디센트럴랜드의 최신 정보를 메일로 받게 됩니다.",
-    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
-    "skip_tutorial": "자습서 건너 뛰기",
     "slide0": {
       "description": "이 곳은 디센트럴랜드의 최신 풍경 빌더입니다. 시작하기 전에 기본적인 것을 가르쳐 드리겠습니다.",
       "title": "빌더에 오신 것을 환영합니다!"

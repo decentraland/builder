@@ -1,17 +1,14 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { getEmail } from 'modules/user/selectors'
-import { setUserEmail } from 'modules/user/actions'
 import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps } from './TutorialModal.types'
 import TutorialModal from './TutorialModal'
+import { closeModal } from 'modules/modal/actions'
 
-const mapState = (state: RootState): MapStateProps => ({
-  email: getEmail(state)
-})
+const mapState = (_: RootState): MapStateProps => ({})
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onSetEmail: email => dispatch(setUserEmail(email))
+  onClose: () => dispatch(closeModal('TutorialModal'))
 })
 
 export default connect(
