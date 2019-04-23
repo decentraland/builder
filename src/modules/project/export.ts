@@ -178,7 +178,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
   // Filter asset packs
   for (const component of Object.values(scene.components)) {
     if (component.type === ComponentType.GLTFShape) {
-      //@ts-ignore
+      // @ts-ignore
       const [assetPackId, ...rest] = (component as ComponentDefinition<ComponentType.GLTFShape>).data.src.split('/')
       if (!(assetPackId in assetsByAssetPack)) {
         assetsByAssetPack[assetPackId] = []
