@@ -33,6 +33,11 @@
     "subtitle_one": "제작할 풍경의 크기를 직접 설정할 수 있습니다.",
     "subtitle_two": "원하는 크기를 아래 글상자에 입력하세요."
   },
+  "deploy_modal": {
+    "description": "여러분들은 멀지않은 미래에 빌더 상에서 풍경을 토지로 직접 퍼블리싱할 수 있게될 예정입니다! 빌더 관련 이메일 받아보기를 구독하시면 저희가 해당 기능이 준비가 됬을 때 알려드리도록 하겠습니다.",
+    "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
+    "title": "내 랜드에 퍼블리싱하기"
+  },
   "edit_project_modal": {
     "custom_layout_label": "레이아웃",
     "title": "풍경 세부사항"
@@ -67,6 +72,7 @@
     "send": "보내기",
     "sign_up": "회원가입",
     "submit": "제출",
+    "subscribe": "구독",
     "templates": "템플릿",
     "terms_and_conditions": "이용 약관"
   },
@@ -183,9 +189,7 @@
     "localstorage": "풍경(들)은 여러분의 브라우저 저장소에 자동 저장됩니다"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "아이템이 범위 밖에 있습니다{br}아이템을 범위 안으로 옮기세요!",
-    "add_to_contest_disabled_limits": "{metric}이 너무 많습니다{br}아이템을 몇 개 지워 보세요!",
-    "publish": "Publish"
+    "publish": "랜드에 퍼블리싱하기"
   },
   "tutorial_modal": {
     "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",

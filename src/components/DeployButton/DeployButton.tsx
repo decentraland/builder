@@ -18,7 +18,7 @@ export default class DeployButton extends React.PureComponent<Props> {
     const { isDisabled, onClick } = this.props
     return (
       <Button primary className="DeployButton" size="mini" onClick={onClick} disabled={isDisabled}>
-        {t('deploy_button.text')}
+        {t('topbar.publish')}
       </Button>
     )
   }

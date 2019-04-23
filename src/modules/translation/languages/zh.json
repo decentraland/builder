@@ -33,6 +33,11 @@
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
+  "deploy_modal": {
+    "description": "您将可以直接在编辑器中发布场景到土地！请订阅邮件列表，以便功能实现时，可以即时通知您。",
+    "email_thanks": "谢谢！我们会保持联系",
+    "title": "布署场景到土地"
+  },
   "edit_project_modal": {
     "custom_layout_label": "布局",
     "title": "场景详细信息"
@@ -67,6 +72,7 @@
     "send": "发送",
     "sign_up": "注册",
     "submit": "提交",
+    "subscribe": "订阅",
     "templates": "模板",
     "terms_and_conditions": "使用条款"
   },
@@ -187,9 +193,7 @@
     "localstorage": "场景会自动保存在浏览器的本地存储中"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "物体超过边界{br}请将物品移动到边界内！",
-    "add_to_contest_disabled_limits": "{metric} 太多{br}请尝试删除一些物品！",
-    "publish": "发布"
+    "publish": "布署场景"
   },
   "tutorial_modal": {
     "contest": "取得赢取总共 {mana} 和 {land} 的机会。",

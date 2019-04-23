@@ -49,7 +49,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             disabled={isLoading || !!existingEmail}
             action={t('global.subscribe')}
             onAction={this.handleSubmitEmail}
-            message={existingEmail ? t('deploy_modal.email_thanks') : t('deploy_modal.email_disclaimer')}
+            message={existingEmail ? t('deploy_modal.email_thanks') : ''}
           />
         </Modal.Content>
       </Modal>

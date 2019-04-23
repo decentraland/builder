@@ -1,6 +1,6 @@
 .ui.small.modal.DeployModal {
   width: 640px;
-  padding-bottom: 32px;
+  padding-bottom: 16px;
 }
 
 .DeployModal .description {

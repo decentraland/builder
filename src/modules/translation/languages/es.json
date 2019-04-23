@@ -33,6 +33,11 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
+  "deploy_modal": {
+    "description": "En el futuro podras publicar escenas a tu LAND de forma directa desde el Builder. ¡Subscribete con tu E-mail para enterarte cuando esta funcionalidad este lista!",
+    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
+    "title": "Publica a tu LAND"
+  },
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la escena"
@@ -67,6 +72,7 @@
     "send": "Enviar",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
+    "subscribe": "Subscribirse",
     "templates": "plantillas",
     "terms_and_conditions": "Términos y Condiciones"
   },
@@ -182,9 +188,7 @@
     "localstorage": "Tus escenas se guardan automáticamente en el navegador"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
-    "add_to_contest_disabled_limits": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
-    "publish": "Publicar"
+    "publish": "Publicar a una LAND"
   },
   "tutorial_modal": {
     "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
