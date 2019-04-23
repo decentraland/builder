@@ -4,6 +4,16 @@
 
 .HomePage .subtitle {
   color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.HomePage .subtitle .import-scene {
+  display: flex;
+}
+
+.HomePage .subtitle .import-scene .Icon {
+  margin-right: 12px;
 }
 
 .HomePage .template-list {
@@ -54,11 +64,12 @@
 }
 
 .HomePage .CardList {
-  overflow: hidden;
   margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.HomePage .ProjectCard:last-child {
+.project-card:nth-child(4n) {
   margin-right: 0;
 }
 

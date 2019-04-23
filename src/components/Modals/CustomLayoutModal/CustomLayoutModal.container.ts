@@ -5,7 +5,7 @@ import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { createProjectFromTemplate } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CustomLayoutModal.types'
-import ShortcutsModal from './CustomLayoutModal'
+import CustomLayoutModal from './CustomLayoutModal'
 
 const mapState = (_: RootState): MapStateProps => ({})
 
@@ -21,4 +21,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
 export default connect(
   mapState,
   mapDispatch
-)(ShortcutsModal)
+)(CustomLayoutModal)

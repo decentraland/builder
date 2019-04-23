@@ -44,6 +44,11 @@
     "support": "Contactar soporte",
     "title": "Oops!"
   },
+  "export_modal": {
+    "action": "Descargar",
+    "description": "Puedes guardar tu escena para usarla en otras intancias del Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos!",
+    "title": "Descargar escena"
+  },
   "global": {
     "back": "volver",
     "blog_post": "blog post",
@@ -72,15 +77,26 @@
   },
   "home_page": {
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
+    "import_scene": "Cargar escena",
     "project_actions": {
       "delete_project": "Borrar escena",
-      "duplicate_project": "Duplicar escena"
+      "duplicate_project": "Duplicar escena",
+      "export_project": "Descargar escena"
     },
     "projects_title": "Mis escenas",
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamano de tu escena para comenzar",
     "title": "¡Construye algo genial!"
+  },
+  "import_modal": {
+    "action": "Cargar",
+    "action_many": "Cargar {count} escenas",
+    "cta": "Arrastra un archivo o {action}",
+    "description": "¡Puedes cargar escenas exportadas desde otras instancias del Builder!",
+    "invalid_file": "Archivo inválido",
+    "title": "Importar escena",
+    "upload_manually": "Súbelas manualmente"
   },
   "itemdrawer": {
     "empty_ground": "Sin piso",
@@ -146,6 +162,7 @@
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
+    "export": "Descargar escena",
     "hold": "Sostener",
     "move": "Alternar flechas",
     "move_camera": "Mover cámara",

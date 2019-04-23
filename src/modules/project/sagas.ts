@@ -1,6 +1,8 @@
 import uuidv4 from 'uuid/v4'
 import { ActionCreators } from 'redux-undo'
-import { takeLatest, put, select, take } from 'redux-saga/effects'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
+import { takeLatest, put, select, take, call } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -11,13 +13,17 @@ import {
   EDIT_PROJECT_REQUEST,
   EditProjectRequestAction,
   editProjectSuccess,
-  editProjectFailure
+  editProjectFailure,
+  EXPORT_PROJECT,
+  ExportProjectAction,
+  IMPORT_PROJECT,
+  ImportProjectAction
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
-import { Project, Layout } from 'modules/project/types'
+import { Project, Layout, SaveFile } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
+import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
@@ -40,10 +46,14 @@ const DEFAULT_GROUND_ASSET = {
   assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a'
 }
 
+export const BUILDER_FILE_NAME = 'builder.json'
+
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
+  yield takeLatest(EXPORT_PROJECT, handleExportProject)
+  yield takeLatest(IMPORT_PROJECT, handleImportProject)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -141,5 +151,31 @@ function* handleEditProject(action: EditProjectRequestAction) {
     }
   } catch (error) {
     yield put(editProjectFailure(error))
+  }
+}
+
+function* handleExportProject(action: ExportProjectAction) {
+  const { project } = action.payload
+  const scene: Scene = yield select(getSceneById(project.sceneId))
+
+  let zip = new JSZip()
+  let sanitizedName = project.title.replace(/\s/g, '_')
+
+  zip.file(BUILDER_FILE_NAME, JSON.stringify({ project, scene } as SaveFile, null, 2))
+
+  yield call(async () => {
+    const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
+    saveAs(artifact, `${sanitizedName}.zip`)
+  })
+}
+
+function* handleImportProject(action: ImportProjectAction) {
+  const { projects } = action.payload
+
+  for (let saved of projects) {
+    if (saved.scene && saved.project) {
+      yield put(createProject(saved.project))
+      yield put(createScene(saved.scene))
+    }
   }
 }

@@ -16,6 +16,7 @@ const ShortcutCategories: Record<string, Shortcut[]> = {
     Shortcut.ZOOM_OUT,
     Shortcut.RESET_CAMERA,
     Shortcut.TOGGLE_SIDEBAR,
+    Shortcut.EXPORT_SCENE,
     Shortcut.PREVIEW,
     Shortcut.UNDO,
     Shortcut.REDO

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Container } from 'decentraland-ui'
+import { Container, Button } from 'decentraland-ui'
 
 import HomePageBanner from 'components/Banners/HomePageBanner'
 import HomePageHero from 'components/HomePageHero'
@@ -8,6 +8,7 @@ import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
 import { Template } from 'modules/template/types'
+import Icon from 'components/Icon'
 
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
@@ -41,6 +42,19 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onOpenModal('VideoModal')
   }
 
+  handleOpenImportModal = () => {
+    this.props.onOpenModal('ImportModal')
+  }
+
+  renderImportButton = () => {
+    return (
+      <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
+        <Icon name="import" />
+        {t('home_page.import_scene')}
+      </Button>
+    )
+  }
+
   render() {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
@@ -57,7 +71,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
           <div className="HomePage">
             {projects.length > 0 && (
               <div className="project-cards">
-                <div className="subtitle">{t('home_page.projects_title')}</div>
+                <div className="subtitle">
+                  {t('home_page.projects_title')}
+                  {this.renderImportButton()}
+                </div>
                 <div className="CardList">
                   {projects
                     .sort(project => -project.createdAt)
@@ -69,7 +86,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
             )}
 
             <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
-              <div className="subtitle">{t('home_page.templates_title')}</div>
+              <div className="subtitle">
+                {t('home_page.templates_title')}
+                {!projects.length && this.renderImportButton()}
+              </div>
               <div className="template-list">
                 <div className="template-row">
                   <TemplateCard template={templates[0]} onClick={this.handleTemplateClick} />
