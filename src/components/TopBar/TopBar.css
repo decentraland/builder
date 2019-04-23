@@ -72,17 +72,7 @@
   margin-top: 20px;
 }
 
-.ui.popup.inverted.contest-disabled {
-  height: 48px;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-  margin-top: 20px;
-}
-
-.ui.popup.inverted.contest-disabled:first-line {
-  color: white;
-}
-
-.ui.visible.popup.inverted.contest-disabled:before {
-  right: 60px; /* The arrow needs to be in the middle of the button - kinda */
+.TopBar .DeployButton {
+  margin-left: 24px;
+  height: 100%;
 }

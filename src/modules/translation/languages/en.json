@@ -29,6 +29,11 @@
     "subtitle_one": "You can create custom layouts for your scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
+  "deploy_modal": {
+    "description": "Coming soon, you’ll be able to publish scenes directly from the Builder to your LAND! Subscribe to the Builder mailing list, and we’ll let you know when the feature is ready.",
+    "email_thanks": "Thanks! We'll stay in touch!",
+    "title": "Publish to your LAND"
+  },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
     "title": "Scene details"
@@ -67,6 +72,7 @@
     "send": "Send",
     "sign_up": "Sign up",
     "submit": "Submit",
+    "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
@@ -192,9 +198,7 @@
     "localstorage": "Scenes automatically save to your browser's storage"
   },
   "topbar": {
-    "add_to_contest_disabled_bounds": "Item out of bounds{br}Move the item inside the boundaries!",
-    "add_to_contest_disabled_limits": "Too many {metric}{br}Try deleting some items!",
-    "publish": "Publish"
+    "publish": "Publish to LAND"
   },
   "tutorial_modal": {
     "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",

@@ -9,7 +9,8 @@ const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
   CONTEST = 'builder-app-submit',
-  TUTORIAL = 'builder-app-tutorial'
+  TUTORIAL = 'builder-app-tutorial',
+  PUBLISH = 'builder-publish-preview'
 }
 
 export class API extends BaseAPI {
