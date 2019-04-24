@@ -1,4 +1,4 @@
-import { Component, executeTask, Entity, BasicMaterial, PlaneShape, engine } from 'decentraland-ecs'
+import { Component, executeTask, Entity, BasicMaterial, PlaneShape, engine, Texture } from 'decentraland-ecs'
 import assert from 'assert'
 
 // const USER_FETCH_URL = 'https://api.opensea.io/api/v1/assets/?owner={owner}&asset_contract_address={contract}'
@@ -83,7 +83,7 @@ export class NFTShape {
     const imageUrl = await fetchBase64Image(assetData.image_preview_url)
     const material = new BasicMaterial()
 
-    material.texture = imageUrl
+    material.texture = new Texture(imageUrl)
 
     const entity = new Entity()
 

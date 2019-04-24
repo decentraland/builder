@@ -169,8 +169,5 @@ subscribeToExternalActions()
 
   entity.addComponent(kitty)
 
-  // Remove next line after https://github.com/decentraland/explorer/pull/119 is merged
-  kitty.addedToEntity(entity)
-
   engine.addEntity(entity)
 }
