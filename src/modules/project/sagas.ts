@@ -30,6 +30,8 @@ import { createScene, setGround, provisionScene } from 'modules/scene/actions'
 import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 
+export const BUILDER_FILE_VERSION = 1
+
 const DEFAULT_GROUND_ASSET = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
@@ -161,7 +163,7 @@ function* handleExportProject(action: ExportProjectAction) {
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
 
-  zip.file(BUILDER_FILE_NAME, JSON.stringify({ project, scene } as SaveFile, null, 2))
+  zip.file(BUILDER_FILE_NAME, JSON.stringify({ version: BUILDER_FILE_VERSION, project, scene } as SaveFile, null, 2))
 
   yield call(async () => {
     const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
