@@ -48,7 +48,7 @@
   },
   "export_modal": {
     "action": "Download",
-    "description": "You can backup your scene for use in other instances of the Builder. This is a great way to share scenes and collaborate with friends!",
+    "description": "You can backup your scene for use elsewhere. This is a great way to share scenes and collaborate with friends!",
     "title": "Download scene"
   },
   "global": {
@@ -93,8 +93,8 @@
   "import_modal": {
     "action": "Upload",
     "action_many": "Upload {count} scenes",
-    "cta": "Drag your scene file here, or {action}",
-    "description": "You can upload scenes from other instances of the Builder!",
+    "cta": "Drag your scene .zip file here, or {action}",
+    "description": "You can upload any scene made with the Builder!",
     "invalid_file": "Invalid file",
     "title": "Upload scene",
     "upload_manually": "Upload Manually"
