@@ -1,19 +1,18 @@
-import { Asset, BaseAsset } from 'modules/asset/types'
+import { Asset } from 'modules/asset/types'
 
-export type AssetPack = BaseAssetPack & {
-  assets: string[] // asset ids
-}
-
-export type RemoteAssetPack = BaseAssetPack & {
-  assets: BaseAsset[]
+export type BaseAssetPack = {
+  id: string
+  title: string
+  thumbnail: string
+  url: string
+  isNew: boolean
+  isLoaded: boolean
 }
 
 export type FullAssetPack = BaseAssetPack & {
   assets: Asset[]
 }
 
-type BaseAssetPack = {
-  id: string
-  version: number
-  title: string
+export type AssetPack = BaseAssetPack & {
+  assets: string[] // asset ids
 }

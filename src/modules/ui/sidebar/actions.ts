@@ -3,11 +3,11 @@ import { SidebarView } from './types'
 
 // Select Asset Pack
 
-export const SELECT_ASSET_PACK = 'Select asset pack'
+export const TOGGLE_ASSET_PACK = 'Toggle asset pack'
 
-export const selectAssetPack = (assetPackId: string | null) => action(SELECT_ASSET_PACK, { assetPackId })
+export const toggleAssetPack = (assetPackId: string, enabled: boolean) => action(TOGGLE_ASSET_PACK, { assetPackId, enabled })
 
-export type SelectAssetPackAction = ReturnType<typeof selectAssetPack>
+export type ToggleAssetPackAction = ReturnType<typeof toggleAssetPack>
 
 // Search Assets
 
@@ -32,3 +32,11 @@ export const SET_SIDEBAR_VIEW = 'Set sidebar view'
 export const setSidebarView = (view: SidebarView) => action(SET_SIDEBAR_VIEW, { view })
 
 export type SetSidebarViewAction = ReturnType<typeof setSidebarView>
+
+// Set available asset packs
+
+export const SET_AVAILABLE_ASSET_PACKS = 'Set available asset packs'
+
+export const setAvailableAssetPacks = (assetPackIds: string[]) => action(SET_AVAILABLE_ASSET_PACKS, { assetPackIds })
+
+export type setAvailableAssetPacksAction = ReturnType<typeof setAvailableAssetPacks>
