@@ -27,6 +27,7 @@ let planeShape: PlaneShape | null = null
 @Component('nft-shape')
 export class NFTShape {
   private finalShape!: Promise<Entity>
+  private material?: BasicMaterial
 
   constructor(url: string) {
     this.finalShape = executeTask(async () => this.init(url))
@@ -34,11 +35,9 @@ export class NFTShape {
 
   addedToEntity(entity: Entity) {
     this.finalShape.then(newEntity => {
-      debugger
       newEntity.setParent(entity)
-
-      // TODO: remove this after updating to 5.1, entities are added automatically to the engine
-      engine.addEntity(newEntity)
+      newEntity.addComponent(planeShape!)
+      newEntity.addComponent(this.material!)
     })
   }
 
@@ -81,18 +80,15 @@ export class NFTShape {
     assert(!!assetData.image_preview_url, 'image_preview_url was empty')
 
     const imageUrl = await fetchBase64Image(assetData.image_preview_url)
-    const material = new BasicMaterial()
-
-    material.texture = new Texture(imageUrl)
+    this.material = new BasicMaterial()
+    this.material.texture = new Texture(imageUrl)
 
     const entity = new Entity()
 
     if (!planeShape) {
       planeShape = new PlaneShape()
+      planeShape.withCollisions = true
     }
-
-    entity.addComponent(planeShape)
-    entity.addComponent(material)
 
     return entity
   }

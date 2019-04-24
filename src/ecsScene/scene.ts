@@ -73,6 +73,10 @@ function createComponents(components: Record<string, AnyComponent>) {
         case 'Transform':
           editorComponents[id] = new Transform()
           break
+        case 'NFTShape':
+          editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
+          editorComponents[id].isPickable = true
+          break
       }
     }
 
@@ -99,6 +103,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
     if (!entity) {
       entity = new Entity()
       ;(entity as any).uuid = id
+
       if (!builderEntity.disableGizmos) {
         entity.addComponentOrReplace(gizmoEvent)
         entity.addComponentOrReplace(gizmo)
@@ -125,6 +130,7 @@ function removeUnusedComponents(components: Record<string, AnyComponent>) {
       const originalComponent = editorComponents[componentId]
 
       try {
+        console.log('removing component', originalComponent)
         engine.disposeComponent(originalComponent)
       } catch (e) {
         // stub, non-disposable components fall here
@@ -146,7 +152,8 @@ function removeUnusedEntities(entities: Record<string, EntityDefinition>) {
   for (const entityId in engine.entities) {
     const inScene = entityId in entities
     if (!inScene) {
-      //engine.removeEntity(engine.entities[entityId])
+      console.log('removing entity', entityId)
+      engine.removeEntity(engine.entities[entityId])
     }
   }
 }
@@ -162,12 +169,3 @@ function subscribeToExternalActions() {
 }
 
 subscribeToExternalActions()
-
-{
-  const entity = new Entity()
-  const kitty = new NFTShape('ethereum://CryptoKitties/508395')
-
-  entity.addComponent(kitty)
-
-  engine.addEntity(entity)
-}

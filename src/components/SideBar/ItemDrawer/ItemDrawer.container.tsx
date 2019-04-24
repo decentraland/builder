@@ -7,6 +7,7 @@ import { isLoading } from 'modules/assetPack/selectors'
 import { searchAssets, setSidebarView, selectCategory } from 'modules/ui/sidebar/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { prefetchAsset } from 'modules/editor/actions'
+import { getCollectibleAssets } from 'modules/asset/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
 
@@ -16,7 +17,8 @@ const mapState = (state: RootState): MapStateProps => ({
   view: getSidebarView(state),
   search: getSearch(state),
   isLoading: isLoading(state),
-  currentProject: getCurrentProject(state)
+  currentProject: getCurrentProject(state),
+  collectibles: getCollectibleAssets(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

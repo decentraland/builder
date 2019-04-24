@@ -21,6 +21,20 @@ export class API extends BaseAPI {
     return this.request('get', `${ASSETS_URL}/${id}`, {})
   }
 
+  async fetchCollectibles(ownerAddress: string, contractAddress: string) {
+    const req = await fetch(
+      `https://api.opensea.io/api/v1/assets/?owner=${ownerAddress}&asset_contract_address=${contractAddress}&force_update=true`
+    )
+    const json = await req.json()
+    return json
+  }
+
+  async refreshCollectible(contractAddress: string, tokenId: string) {
+    const req = await fetch(`https://api.opensea.io/asset/${contractAddress}/${tokenId}/?force_update=true`)
+    const json = await req.json()
+    return json
+  }
+
   reportEmail(email: string, interest: EMAIL_INTEREST) {
     return this.request('post', `${EMAIL_SERVER_URL}`, { email, interest })
   }

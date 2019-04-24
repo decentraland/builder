@@ -7,7 +7,7 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
-import { EMPTY_GROUND_ASSET_PACK_ID, addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES } from './utils'
+import { addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -58,37 +58,24 @@ export const getSideBarCategories = createSelector<
 
     const categories: { [categoryName: string]: Category } = {}
 
-    // filter by selected asset pack, if none is selected use all asset packs
-    const filteredAssetPacks = Object.keys(assetPacks)
-      .filter(
-        assetPackId => selectedAssetPackId == null || selectedAssetPackId === assetPackId || assetPackId === EMPTY_GROUND_ASSET_PACK_ID
-      )
-      .map(assetPackId => assetPacks[assetPackId])
-
-    const filteredAssetIds = Object.keys(assets)
-      .filter(assetId => !search || isSearchResult(assets[assetId], search)) // filter assets by search (if any)
-      .filter(assetId => view === SidebarView.LIST || category == null || assets[assetId].category === category) // if sidebar is in not in "list" view, filter by selected category
-      .reduce((ids, assetId) => ({ ...ids, [assetId]: true }), {})
-
-    for (const assetPack of filteredAssetPacks) {
-      for (const assetId of assetPack.assets) {
-        // check if it hasn't been filtered out
-        if (assetId in filteredAssetIds) {
-          const asset = assets[assetId]
-          // check if category already exits, otherwise create it
-          const categoryExists = asset.category in categories
-          if (!categoryExists) {
-            categories[asset.category] = {
-              name: asset.category,
-              assets: [],
-              thumbnail: ''
-            }
+    Object.values(assets)
+      // filter by selected asset pack
+      .filter(asset => selectedAssetPackId == null || selectedAssetPackId === asset.assetPackId)
+      // filter assets by search (if any)
+      .filter(asset => !search || isSearchResult(asset, search))
+      // if sidebar is in not in "list" view, filter by selected category
+      .filter(asset => view === SidebarView.LIST || category == null || asset.category === category)
+      // populate categories with filtered assets
+      .forEach(asset => {
+        if (!(asset.category in categories)) {
+          categories[asset.category] = {
+            name: asset.category,
+            assets: [],
+            thumbnail: ''
           }
-          // add asset to category
-          categories[asset.category].assets.push(asset)
         }
-      }
-    }
+        categories[asset.category].assets.push(asset)
+      })
 
     // convert map to array
     const categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
@@ -106,6 +93,6 @@ export const getSideBarCategories = createSelector<
       }
     })
 
-    return categoryArray
+    return [...categoryArray]
   }
 )

@@ -59,7 +59,7 @@ export const SIDEBAR_CATEGORIES: { name: string; thumbnail: string }[] = [
     thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`
   },
   {
-    name: 'year of the pig',
-    thumbnail: `${CONTENT_SERVER}QmeHgdLkKaRLpFKPECUxQTEb3NEHbcKkgCcjhBq693d62n`
+    name: 'collectibles',
+    thumbnail: 'https://www.cryptokitties.co/icons/logo.svg'
   }
 ]

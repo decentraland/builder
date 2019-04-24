@@ -31,9 +31,10 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   componentWillMount() {
-    const { currentProject, onLoadAssetPacks, onOpenModal } = this.props
+    const { currentProject, onLoadAssetPacks, onOpenModal, onLoadCollectibles } = this.props
 
     onLoadAssetPacks()
+    onLoadCollectibles()
 
     if (currentProject && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
       onOpenModal('TutorialModal')

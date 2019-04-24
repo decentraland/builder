@@ -6,14 +6,19 @@ import { Props } from './CategoryCard.types'
 import './CategoryCard.css'
 
 export default class CategoryCard extends React.PureComponent<Props> {
+  static defaultProps = {
+    special: false
+  }
+
   handleClick = () => {
     const { category, onClick } = this.props
     onClick(category.name)
   }
-  render() {
-    const { category } = this.props
 
-    if (!category || category.assets.length === 0) return null
+  render() {
+    const { category, special } = this.props
+
+    if ((!category || category.assets.length === 0) && !special) return null
 
     const { name, thumbnail } = category
 

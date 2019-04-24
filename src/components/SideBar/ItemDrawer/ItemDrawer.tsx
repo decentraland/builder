@@ -103,7 +103,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     this.props.onSetSidebarView(SidebarView.LIST)
   }
 
-  renderGrid(assets: Asset[]) {
+  renderGrid = (assets: Asset[]) => {
     const { view } = this.props
     const columnCount = this.getColumnCount()
     let el = []
@@ -143,7 +143,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     this.handleSearchDebounced('')
   }
 
-  scrollItemsToTop() {
+  scrollItemsToTop = () => {
     if (this.drawerContainer) {
       this.drawerContainer.scrollTop = 0
     }
@@ -155,7 +155,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  getColumnCount(): number {
+  getColumnCount = (): number => {
     return Number(this.props.columnCount)
   }
 
@@ -163,9 +163,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return <div className="no-results">{t('itemdrawer.no_results')}</div>
   }
 
-  renderCategories() {
+  renderCategories = () => {
     const { categories, onSelectCategory } = this.props
-    return categories.map(category => <CategoryCard key={`category-${category.name}`} category={category} onClick={onSelectCategory} />)
+    const assetPackCategories = categories.map(category => (
+      <CategoryCard key={`category-${category.name}`} category={category} onClick={onSelectCategory} />
+    ))
+    return assetPackCategories
   }
 
   handleGoBack = () => {

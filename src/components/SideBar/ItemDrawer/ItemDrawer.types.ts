@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { GridProps } from 'decentraland-ui'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Category, SidebarView } from 'modules/ui/sidebar/types'
 import { Asset } from 'modules/asset/types'
 import { addItem, AddItemAction, setGround, SetGroundAction } from 'modules/scene/actions'
@@ -21,6 +22,7 @@ export type DefaultProps = {
 
 export type Props = DefaultProps & {
   categories: Category[]
+  collectibles: DataByKey<Asset>
   selectedCategory: string | null
   view: SidebarView
   search: string
@@ -34,7 +36,10 @@ export type Props = DefaultProps & {
   onPrefetchAsset: typeof prefetchAsset
 }
 
-export type MapStateProps = Pick<Props, 'categories' | 'selectedCategory' | 'search' | 'view' | 'isLoading' | 'currentProject'>
+export type MapStateProps = Pick<
+  Props,
+  'categories' | 'collectibles' | 'selectedCategory' | 'search' | 'view' | 'isLoading' | 'currentProject'
+>
 export type MapDispatchProps = Pick<
   Props,
   'onAddItem' | 'onSearch' | 'onSetSidebarView' | 'onSelectCategory' | 'onSetGround' | 'onPrefetchAsset'

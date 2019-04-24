@@ -110,4 +110,18 @@ export const getGLTFId = (src: string) => (state: RootState) => {
   return null
 }
 
+export const getCollectibleId = (url: string) => (state: RootState) => {
+  const scene = getCurrentScene(state)
+  if (!scene) return null
+
+  const componentData = scene.components
+
+  for (let key in componentData) {
+    const comp = componentData[key] as ComponentDefinition<ComponentType.NFTShape>
+    if (comp.type === ComponentType.NFTShape && comp.data.url === url) return key
+  }
+
+  return null
+}
+
 export const hasHistory = (state: RootState) => state.scene.past.length > 0
