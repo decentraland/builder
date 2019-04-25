@@ -1,4 +1,4 @@
-import { Component, executeTask, Entity, BasicMaterial, PlaneShape, engine, Texture } from 'decentraland-ecs'
+import { Component, executeTask, Entity, BasicMaterial, PlaneShape, Texture } from 'decentraland-ecs'
 import assert from 'assert'
 
 // const USER_FETCH_URL = 'https://api.opensea.io/api/v1/assets/?owner={owner}&asset_contract_address={contract}'
@@ -26,7 +26,7 @@ let planeShape: PlaneShape | null = null
 
 @Component('nft-shape')
 export class NFTShape {
-  private finalShape!: Promise<Entity>
+  private finalShape!: Promise<void>
   private material?: BasicMaterial
 
   constructor(url: string) {
@@ -34,20 +34,19 @@ export class NFTShape {
   }
 
   addedToEntity(entity: Entity) {
-    this.finalShape.then(newEntity => {
-      newEntity.setParent(entity)
-      newEntity.addComponent(planeShape!)
-      newEntity.addComponent(this.material!)
+    this.finalShape.then(() => {
+      entity.addComponent(planeShape!)
+      entity.addComponent(this.material!)
     })
   }
 
   removedFromEntity(_entity: Entity) {
-    this.finalShape.then(newEntity => {
-      engine.removeEntity(newEntity)
+    this.finalShape.then(() => {
+      /* stub */
     })
   }
 
-  private async init(url: string): Promise<Entity> {
+  private async init(url: string): Promise<void> {
     const parsedUrl = parseURL(url)
 
     if (!parsedUrl) throw new Error('The provided URL is not valid: ' + url)
@@ -70,7 +69,11 @@ export class NFTShape {
 
     if (!asset) throw new Error('An asset id is required. ' + url)
 
-    const assetsRequest = await fetch(ASSET_FETCH_URL.replace('{asset}', asset).replace('{contract}', contract))
+    const assetsRequest = await fetch(ASSET_FETCH_URL.replace('{asset}', asset).replace('{contract}', contract), {
+      headers: {
+        'X-API-KEY': 'd0069866528645918451cd3592e47473'
+      }
+    })
     const assetsResponseJson = await assetsRequest.json()
 
     assert(assetsResponseJson.assets.length > 0, 'Empty response, there is no asset')
@@ -83,14 +86,10 @@ export class NFTShape {
     this.material = new BasicMaterial()
     this.material.texture = new Texture(imageUrl)
 
-    const entity = new Entity()
-
     if (!planeShape) {
       planeShape = new PlaneShape()
       planeShape.withCollisions = true
     }
-
-    return entity
   }
 }
 

@@ -4,6 +4,7 @@ import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { AssetPack } from 'modules/assetPack/types'
 import { CONTENT_SERVER } from 'modules/editor/utils'
+import { Category } from './types'
 
 export const EMPTY_GROUND_ASSET_ID = 'EMPTY_GROUND_ASSET_ID'
 export const EMPTY_GROUND_ASSET_PACK_ID = 'EMPTY_GROUND_ASSET_PACK_ID'
@@ -37,29 +38,44 @@ export function addEmptyGroundAssetPack(assetPacks: DataByKey<AssetPack>) {
   }
 }
 
-export const SIDEBAR_CATEGORIES: { name: string; thumbnail: string }[] = [
-  {
-    name: GROUND_CATEGORY,
-    thumbnail: `${CONTENT_SERVER}QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6`
+export enum CategoryName {
+  GROUND_CATEGORY = 'ground',
+  TILES_CATEGORY = 'tiles',
+  NATURE_CATEGORY = 'nature',
+  STRUCTURES_CATEGORY = 'structures',
+  DECORATIONS_CATEGORY = 'decorations',
+  COLLECTIBLE_CATEGORY = 'collectible'
+}
+
+export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
+  [CategoryName.GROUND_CATEGORY]: {
+    name: CategoryName.GROUND_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6`,
+    assets: []
   },
-  {
-    name: 'tiles',
-    thumbnail: `${CONTENT_SERVER}QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH`
+  [CategoryName.TILES_CATEGORY]: {
+    name: CategoryName.TILES_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH`,
+    assets: []
   },
-  {
-    name: 'nature',
-    thumbnail: `${CONTENT_SERVER}QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg`
+  [CategoryName.NATURE_CATEGORY]: {
+    name: CategoryName.NATURE_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg`,
+    assets: []
   },
-  {
-    name: 'structures',
-    thumbnail: `${CONTENT_SERVER}Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA`
+  [CategoryName.STRUCTURES_CATEGORY]: {
+    name: CategoryName.STRUCTURES_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA`,
+    assets: []
   },
-  {
-    name: 'decorations',
-    thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`
+  [CategoryName.DECORATIONS_CATEGORY]: {
+    name: CategoryName.DECORATIONS_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
+    assets: []
   },
-  {
-    name: 'collectibles',
-    thumbnail: 'https://www.cryptokitties.co/icons/logo.svg'
+  [CategoryName.COLLECTIBLE_CATEGORY]: {
+    name: CategoryName.COLLECTIBLE_CATEGORY,
+    thumbnail: 'https://www.cryptokitties.co/icons/logo.svg',
+    assets: []
   }
-]
+}

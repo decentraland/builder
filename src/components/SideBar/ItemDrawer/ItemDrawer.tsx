@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Header, Grid, Icon, Input } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
+import { SignInPage } from 'decentraland-dapps/dist/containers'
 import { debounce } from 'lib/debounce'
 import Drawer from 'components/Drawer'
 import AssetCard from 'components/AssetCard'
@@ -9,6 +9,7 @@ import CategoryCard from 'components/CategoryCard'
 import Chip from 'components/Chip'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { SidebarView } from 'modules/ui/sidebar/types'
+import { CategoryName } from 'modules/ui/sidebar/utils'
 import { Props, State, DefaultProps } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
@@ -176,8 +177,38 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     onSelectCategory(null)
   }
 
-  render() {
+  isInCategory = (category: CategoryName) => {
+    const { categories } = this.props
+    return categories.length === 1 && categories[0].name === category
+  }
+
+  renderItemDrawerContent = () => {
     const { search, categories, selectedCategory, columnCount, view } = this.props
+    const isList = view === SidebarView.LIST
+
+    if (search.length > 0 && categories.length === 0) {
+      return this.renderNoResults()
+    }
+
+    if (!isList && !selectedCategory && search.length === 0) {
+      return this.renderCategories()
+    }
+
+    if (this.isInCategory(CategoryName.COLLECTIBLE_CATEGORY) && categories[0].assets.length === 0) {
+      return <SignInPage />
+    }
+
+    return categories.map(category => (
+      <Drawer key={`drawer-${category.name}`} label={category.name} hasLabel={selectedCategory === null && categories.length > 1}>
+        <Grid columns={isList ? 1 : columnCount} padded="horizontally" className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}>
+          {this.renderGrid(category.assets)}
+        </Grid>
+      </Drawer>
+    ))
+  }
+
+  render() {
+    const { search, selectedCategory, view } = this.props
     const isList = view === SidebarView.LIST
 
     return (
@@ -199,35 +230,23 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           ) : null}
         </Header>
 
-        <div className="search-container">
-          <Icon name="search" />
-          <Input
-            className="search-input"
-            placeholder={
-              selectedCategory === null ? t('itemdrawer.search') : t('itemdrawer.search_category', { category: selectedCategory })
-            }
-            icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
-            value={this.state.search}
-            onChange={this.handleSearch}
-          />
-        </div>
+        {!this.isInCategory(CategoryName.COLLECTIBLE_CATEGORY) && (
+          <div className="search-container">
+            <Icon name="search" />
+            <Input
+              className="search-input"
+              placeholder={
+                selectedCategory === null ? t('itemdrawer.search') : t('itemdrawer.search_category', { category: selectedCategory })
+              }
+              icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
+              value={this.state.search}
+              onChange={this.handleSearch}
+            />
+          </div>
+        )}
 
         <div ref={this.setDrawerContainer} className="overflow-container">
-          {search.length > 0 && categories.length === 0
-            ? this.renderNoResults()
-            : !isList && !selectedCategory && search.length === 0
-            ? this.renderCategories()
-            : categories.map(category => (
-                <Drawer key={`drawer-${category.name}`} label={category.name} hasLabel={selectedCategory === null && categories.length > 1}>
-                  <Grid
-                    columns={isList ? 1 : columnCount}
-                    padded="horizontally"
-                    className={`asset-grid ${isList ? 'item-list' : 'item-grid'}`}
-                  >
-                    {this.renderGrid(category.assets)}
-                  </Grid>
-                </Drawer>
-              ))}
+          {this.renderItemDrawerContent()}
         </div>
       </div>
     )

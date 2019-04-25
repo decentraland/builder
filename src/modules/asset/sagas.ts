@@ -9,7 +9,8 @@ import {
   ForceLoadCollectibleRequestAction,
   forceLoadCollectibleSuccess
 } from './actions'
-import { Asset, COLLECTIBLE_CATEGORY, RemoteCollectibleAssetResponse, RemoteCollectibleAsset } from './types'
+import { Asset, RemoteCollectibleAssetResponse, RemoteCollectibleAsset } from './types'
+import { CategoryName } from 'modules/ui/sidebar/utils'
 
 export function* assetSaga() {
   yield takeLatest(LOAD_COLLECTIBLES_REQUEST, handleLoadCollectibles)
@@ -33,7 +34,7 @@ function* handleLoadCollectibles(action: LoadCollectiblesRequestAction) {
         assetPackId: null,
         id: asset.token_id,
         tags: [],
-        category: COLLECTIBLE_CATEGORY,
+        category: CategoryName.COLLECTIBLE_CATEGORY,
         variations: [],
         contents: {},
         name: asset.name,
@@ -55,7 +56,7 @@ function* handleForceLoadCollectible(action: ForceLoadCollectibleRequestAction) 
     assetPackId: null,
     id: response.token_id,
     tags: [],
-    category: COLLECTIBLE_CATEGORY,
+    category: CategoryName.COLLECTIBLE_CATEGORY,
     variations: [],
     contents: {},
     name: response.name,

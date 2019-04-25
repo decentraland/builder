@@ -7,7 +7,7 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
-import { addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES } from './utils'
+import { addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES, CategoryName } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -78,10 +78,12 @@ export const getSideBarCategories = createSelector<
       })
 
     // convert map to array
-    const categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
-      ...categories[name],
-      thumbnail
-    }))
+    const categoryArray = Object.values(SIDEBAR_CATEGORIES)
+      .filter(({ name }) => name in categories)
+      .map<Category>(({ name, thumbnail }) => ({
+        ...categories[name],
+        thumbnail
+      }))
 
     // add categories that are not present in SIDEBAR_CATEGORIES (fallback)
     Object.values(categories).forEach(category => {
@@ -93,6 +95,10 @@ export const getSideBarCategories = createSelector<
       }
     })
 
-    return [...categoryArray]
+    if (!(CategoryName.COLLECTIBLE_CATEGORY in categories)) {
+      categoryArray.push(SIDEBAR_CATEGORIES.collectible)
+    }
+
+    return categoryArray
   }
 )

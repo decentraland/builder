@@ -33,8 +33,8 @@ import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
+import { CategoryName } from 'modules/ui/sidebar/utils'
 import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds } from './utils'
-import { COLLECTIBLE_CATEGORY } from 'modules/asset/types'
 
 const editorWindow = window as EditorWindow
 
@@ -58,7 +58,7 @@ function* handleAddItem(action: AddItemAction) {
   const transformId = uuidv4()
   const newComponents = { ...scene.components }
 
-  if (asset.category === COLLECTIBLE_CATEGORY) {
+  if (asset.category === CategoryName.COLLECTIBLE_CATEGORY) {
     shapeId = yield select(getCollectibleId(asset.url))
 
     if (!shapeId) {
@@ -88,7 +88,7 @@ function* handleAddItem(action: AddItemAction) {
 
   if (!position) {
     position = yield call(editorWindow.editor.getCameraTarget)
-    if (asset.category === COLLECTIBLE_CATEGORY) {
+    if (asset.category === CategoryName.COLLECTIBLE_CATEGORY) {
       position!.y = 1
     } else {
       position!.y = 0

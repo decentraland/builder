@@ -1,7 +1,5 @@
 export const GROUND_CATEGORY = 'ground'
 
-export const COLLECTIBLE_CATEGORY = 'collectibles'
-
 export type Asset = BaseAsset & {
   assetPackId: string | null // collectibles and custom gltfs wouldn't have asset
 }

@@ -16,9 +16,9 @@ export default class CategoryCard extends React.PureComponent<Props> {
   }
 
   render() {
-    const { category, special } = this.props
+    const { category } = this.props
 
-    if ((!category || category.assets.length === 0) && !special) return null
+    if (!category) return null
 
     const { name, thumbnail } = category
 
