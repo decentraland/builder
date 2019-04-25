@@ -1,14 +1,6 @@
 import { action } from 'typesafe-actions'
 import { SidebarView } from './types'
 
-// Select Asset Pack
-
-export const TOGGLE_ASSET_PACK = 'Toggle asset pack'
-
-export const toggleAssetPack = (assetPackId: string, enabled: boolean) => action(TOGGLE_ASSET_PACK, { assetPackId, enabled })
-
-export type ToggleAssetPackAction = ReturnType<typeof toggleAssetPack>
-
 // Search Assets
 
 export const SEARCH_ASSETS = 'Search assets'

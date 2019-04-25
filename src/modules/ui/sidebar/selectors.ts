@@ -7,6 +7,8 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
+import { getCurrentProject } from 'modules/project/selectors'
+import { Project } from 'modules/project/types'
 import { SIDEBAR_CATEGORIES } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
@@ -53,15 +55,23 @@ export const getSelectedAssetPackIds = createSelector<RootState, SidebarState, A
   }
 )
 
-export const getSideBarCategories = createSelector<RootState, string[], string, string | null, SidebarView, AssetState['data'], Category[]>(
-  getSelectedAssetPackIds,
+export const getSideBarCategories = createSelector<
+  RootState,
+  Project | null,
+  string,
+  string | null,
+  SidebarView,
+  AssetState['data'],
+  Category[]
+>(
+  getCurrentProject,
   getSearch,
   getSelectedCategory,
   getSidebarView,
   getAssets,
-  (selectedAssetPackId, search, category, view, assets) => {
+  (project, search, category, view, assets) => {
     const categories: { [categoryName: string]: Category } = {}
-
+    const selectedAssetPackId = project ? project.assetPackIds || [] : []
     Object.values(assets)
       // filter by selected asset pack
       .filter(asset => selectedAssetPackId.length === 0 || selectedAssetPackId.includes(asset.assetPackId))

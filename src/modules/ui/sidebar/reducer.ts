@@ -1,8 +1,6 @@
 import { OPEN_EDITOR, OpenEditorAction } from 'modules/editor/actions'
 import {
-  ToggleAssetPackAction,
   SearchAssetsAction,
-  TOGGLE_ASSET_PACK,
   SEARCH_ASSETS,
   SetSidebarViewAction,
   SET_SIDEBAR_VIEW,
@@ -32,7 +30,6 @@ const INITIAL_STATE: SidebarState = {
 }
 
 export type SidebarReducerAction =
-  | ToggleAssetPackAction
   | SearchAssetsAction
   | OpenEditorAction
   | SetSidebarViewAction
@@ -41,14 +38,6 @@ export type SidebarReducerAction =
 
 export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerAction): SidebarState => {
   switch (action.type) {
-    case TOGGLE_ASSET_PACK: {
-      const { assetPackId, enabled } = action.payload
-      const selectedAssetPackIds = state.selectedAssetPackIds.filter(id => id !== assetPackId)
-      return {
-        ...state,
-        selectedAssetPackIds: enabled ? [...selectedAssetPackIds, assetPackId] : selectedAssetPackIds
-      }
-    }
     case SEARCH_ASSETS: {
       return {
         ...state,

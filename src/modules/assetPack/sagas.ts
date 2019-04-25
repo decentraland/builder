@@ -8,10 +8,13 @@ import {
 } from 'modules/assetPack/actions'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getData as getAssets } from 'modules/asset/selectors'
-import { getSelectedAssetPackIds, getAvailableAssetPackIds } from 'modules/ui/sidebar/selectors'
+import { getAvailableAssetPackIds } from 'modules/ui/sidebar/selectors'
 import { BaseAssetPack, FullAssetPack } from 'modules/assetPack/types'
 import { setAvailableAssetPacks, setNewAssetPacks } from 'modules/ui/sidebar/actions'
+import { getCurrentProject } from 'modules/project/selectors'
+import { toggleAssetPack } from 'modules/project/actions'
 import { api } from 'lib/api'
+import { getDefualtSelection } from './utils'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -42,13 +45,24 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
     yield put(setNewAssetPacks(newAssetPackIds))
 
     // Get user selection of asset packs
-    const selectedAssetPackIds: ReturnType<typeof getSelectedAssetPackIds> = yield select(getSelectedAssetPackIds)
-    const assetPackSelection = new Set(selectedAssetPackIds)
+    let selectedAssetPackIds: Set<string>
+    const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
+    if (!project) {
+      selectedAssetPackIds = new Set()
+    } else if (project.assetPackIds && project.assetPackIds.length > 0) {
+      selectedAssetPackIds = new Set(project!.assetPackIds)
+    } else {
+      const defaultSelection = getDefualtSelection(remoteAssetPacks)
+      yield put(toggleAssetPack(project, defaultSelection, true))
+      selectedAssetPackIds = new Set(defaultSelection)
+    }
 
+    // Get asset pack list
     const assetPacks: FullAssetPack[] = []
+
     for (const remoteAssetPack of remoteAssetPacks) {
       // Check if the asset pack is selected
-      if (assetPackSelection.has(remoteAssetPack.id)) {
+      if (selectedAssetPackIds.has(remoteAssetPack.id)) {
         const assetPacksInState: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
         const assetPackInState = assetPacksInState[remoteAssetPack.id]
         // Check if the asset pack not in the state or is not loaded and if so, fetch it
