@@ -193,8 +193,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
   total += assetPackIds.length
   onProgress({ progress, total })
   for (const assetPackId of assetPackIds) {
-    // TODO: this should fetch the actual asset packs once the server exists
-    const promise = api.fetchAssetPack('default-pack.json').then((assetPack: FullAssetPack) => {
+    const promise = api.fetchAssetPack(assetPackId).then((assetPack: FullAssetPack) => {
       progress++
       onProgress({ progress, total })
       assetPacks[assetPackId] = assetPack
