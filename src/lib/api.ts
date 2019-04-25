@@ -18,8 +18,13 @@ export class API extends BaseAPI {
     return this.request('post', `${CONTEST_URL}/entry`, { entry })
   }
 
+  async fetchAssetPacks() {
+    const data = await this.request('get', `${ASSETS_URL}`, {})
+    return data.packs
+  }
+
   fetchAssetPack(id: string) {
-    return this.request('get', `${ASSETS_URL}/${id}`, {})
+    return this.request('get', `${ASSETS_URL}/${id}.json`, {})
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {

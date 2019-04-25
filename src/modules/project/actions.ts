@@ -78,3 +78,12 @@ export const IMPORT_PROJECT = 'Import project'
 export const importProject = (projects: SaveFile[]) => action(IMPORT_PROJECT, { projects })
 
 export type ImportProjectAction = ReturnType<typeof importProject>
+
+// Toggle Asset Pack
+
+export const TOGGLE_ASSET_PACK = 'Toggle asset pack'
+
+export const toggleAssetPack = (project: Project, idOrArray: string | string[], enabled: boolean) =>
+  action(TOGGLE_ASSET_PACK, { project, assetPackIds: typeof idOrArray === 'string' ? [idOrArray] : idOrArray, enabled })
+
+export type ToggleAssetPackAction = ReturnType<typeof toggleAssetPack>

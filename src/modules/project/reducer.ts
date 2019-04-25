@@ -13,7 +13,9 @@ import {
   DeleteProjectAction,
   DELETE_PROJECT,
   EDIT_PROJECT_THUMBNAIL,
-  EditProjectThumbnailAction
+  EditProjectThumbnailAction,
+  ToggleAssetPackAction,
+  TOGGLE_ASSET_PACK
 } from 'modules/project/actions'
 
 export type ProjectState = {
@@ -35,6 +37,7 @@ export type ProjectReducerAction =
   | EditProjectFailureAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
+  | ToggleAssetPackAction
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
@@ -95,6 +98,26 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
       delete newState.data[project.id]
       return newState
+    }
+    case TOGGLE_ASSET_PACK: {
+      const { project, assetPackIds, enabled } = action.payload
+      // remove toggled asset packs
+      const oldAssetPackIds = project.assetPackIds || []
+      let newAssetPackIds = oldAssetPackIds.filter(id => assetPackIds.indexOf(id) === -1) // !includes
+      if (enabled) {
+        // if enabled, add the new ones
+        newAssetPackIds = [...newAssetPackIds, ...assetPackIds]
+      }
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [project.id]: {
+            ...state.data[project.id],
+            assetPackIds: newAssetPackIds
+          }
+        }
+      }
     }
     default:
       return state
