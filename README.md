@@ -35,7 +35,7 @@ Here are the basic requirements to run the project:
 
 NODE_PATH=src
 
-REACT_APP_ASSETS_URL=https://builder-pack.now.sh
+REACT_APP_ASSETS_URL=https://builder-packs-stg.now.sh
 REACT_APP_CONTEST_URL= # Only useful if you want to run your own contest. If you do read the contest server section below
 REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.today/contents/
 
