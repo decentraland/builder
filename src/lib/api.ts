@@ -9,7 +9,8 @@ const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
   CONTEST = 'builder-app-submit',
-  TUTORIAL = 'builder-app-tutorial'
+  TUTORIAL = 'builder-app-tutorial',
+  PUBLISH = 'builder-publish-preview'
 }
 
 export class API extends BaseAPI {
@@ -17,8 +18,13 @@ export class API extends BaseAPI {
     return this.request('post', `${CONTEST_URL}/entry`, { entry })
   }
 
+  async fetchAssetPacks() {
+    const data = await this.request('get', `${ASSETS_URL}`, {})
+    return data.packs
+  }
+
   fetchAssetPack(id: string) {
-    return this.request('get', `${ASSETS_URL}/${id}`, {})
+    return this.request('get', `${ASSETS_URL}/${id}.json`, {})
   }
 
   async fetchCollectibles(ownerAddress: string, contractAddress: string) {

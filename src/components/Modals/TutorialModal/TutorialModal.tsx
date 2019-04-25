@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { env } from 'decentraland-commons'
-import { Button, Field } from 'decentraland-ui'
+import { Button, Close } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { LOCALSTORAGE_TUTORIAL_KEY } from 'components/EditorPage/EditorPage'
-import { api, EMAIL_INTEREST } from 'lib/api'
 import { preventDefault } from 'lib/preventDefault'
 import { getSlides } from './slides'
 import { Props, State } from './TutorialModal.types'
@@ -25,9 +24,7 @@ export const LOCALSTORAGE_TUTORIAL_EMAIL_KEY = 'builder-tutorial-email'
 
 export default class TutorialModal extends React.PureComponent<Props, State> {
   state = {
-    step: 0,
-    isLoading: false,
-    email: ''
+    step: 0
   }
 
   slides = getSlides()
@@ -42,51 +39,8 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   handleSkip = () => {
     const analytics = getAnalytics()
     analytics.track(TUTORIAL_SKIP_EVENT)
-
-    this.goToSlide(this.slides.length - 1)
-  }
-
-  handleSubmitEmail = async () => {
-    const { email } = this.state
-    const analytics = getAnalytics()
-
-    this.props.onSetEmail(email)
-
-    this.setState({ isLoading: true })
-
-    analytics.identify({ email }, () => {
-      localStorage.setItem(LOCALSTORAGE_TUTORIAL_EMAIL_KEY, email)
-    })
-
-    api.reportEmail(email, EMAIL_INTEREST.TUTORIAL).catch(() => console.error('Unable to submit email, something went wrong!'))
-
-    this.setState({ isLoading: false })
-  }
-
-  handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const email = event.currentTarget.value
-    this.setState({ email })
-  }
-
-  renderForm = () => {
-    const { email, isLoading } = this.state
-    const existingEmail = this.props.email
-
-    return (
-      <div className="form">
-        <div className="form-container">
-          <Field
-            type="email"
-            label={t('global.email')}
-            placeholder="you@your-email.com"
-            value={existingEmail || email}
-            onChange={this.handleEmailChange}
-            disabled={isLoading || !!existingEmail}
-            message={existingEmail ? t('tutorial_modal.email_thanks') : t('tutorial_modal.email_disclaimer')}
-          />
-        </div>
-      </div>
-    )
+    localStorage.setItem(LOCALSTORAGE_TUTORIAL_KEY, '1')
+    this.props.onClose()
   }
 
   renderSteps = () => {
@@ -106,14 +60,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <Modal.Header>
-          {slide.title}
-          {step === this.slides.length - 1 ? null : (
-            <Button basic className="skip-tutorial" onClick={this.handleSkip}>
-              {t('tutorial_modal.skip_tutorial')}
-            </Button>
-          )}
-        </Modal.Header>
+        <Modal.Header>{slide.title}</Modal.Header>
         <Modal.Description>{slide.description}</Modal.Description>
         <Modal.Content>
           <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
@@ -127,12 +74,9 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
   goToSlide = (index: number) => {
     if (index === this.slides.length) {
       localStorage.setItem(LOCALSTORAGE_TUTORIAL_KEY, '1')
-      if (this.state.email && !this.props.email) {
-        this.handleSubmitEmail().catch(() => console.error('Unable to submit email, something went wrong!'))
-      }
       this.props.onClose()
       const analytics = getAnalytics()
-      analytics.track(TUTORIAL_COMPLETE, { suscribed: !!this.state.email })
+      analytics.track(TUTORIAL_COMPLETE, { suscribed: false })
       return
     }
     this.setState({ step: index })
@@ -151,16 +95,12 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
     this.goToSlide(previousStep)
   }
 
-  handleClose = () => {
-    /* noop */
-  }
-
   render() {
     const { name } = this.props
-    const { step, email } = this.state
+    const { step } = this.state
 
     return (
-      <Modal name={name} onClose={this.handleClose}>
+      <Modal name={name} onClose={this.handleSkip} closeIcon={<Close onClick={this.handleSkip} />}>
         {this.renderSlide()}
         <Modal.Actions>
           {step !== 0 ? (
@@ -172,7 +112,7 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
           )}
           <div className="steps">{this.renderSteps()}</div>
           <Button primary onClick={this.handleNextStep}>
-            {step === this.slides.length - 1 ? (email ? t('global.send') : t('global.done')) : t('global.next')}
+            {step === this.slides.length - 1 ? t('global.done') : t('global.next')}
           </Button>
         </Modal.Actions>
       </Modal>

@@ -21,7 +21,8 @@ export enum Shortcut {
   RESET_CAMERA = 'RESET_CAMERA',
   ZOOM_IN = 'ZOOM_IN',
   ZOOM_OUT = 'ZOOM_OUT',
-  TOGGLE_SNAP_TO_GRID = 'TOGGLE_SNAP_TO_GRID'
+  TOGGLE_SNAP_TO_GRID = 'TOGGLE_SNAP_TO_GRID',
+  EXPORT_SCENE = 'EXPORT_SCENE'
 }
 
 export type LabeledShortcut = { title: string | null }

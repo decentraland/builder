@@ -24,10 +24,12 @@ export function makeFakeAssetPack(assetCount: number = 1): FullAssetPack {
   const id = uuid.v4()
   const categories = ['nature', 'furniture', 'items', 'misc']
 
-  let out: { id: string; version: number; title: string; assets: Asset[] } = {
+  let out: FullAssetPack = {
     id,
-    version: 1,
     title: 'Default Asset Pack',
+    thumbnail: '',
+    url: '',
+    isLoaded: true,
     assets: []
   }
 

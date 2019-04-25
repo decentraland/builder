@@ -1,0 +1,13 @@
+.DeployButton.ui.button.mini {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.DeployButton.ui.button.mini,
+.DeployButton.ui.button.mini:active,
+.DeployButton.ui.button.mini:focus,
+.DeployButton.ui.button.mini:hover {
+  transform: translateY(0px);
+}

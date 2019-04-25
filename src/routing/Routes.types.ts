@@ -1,4 +1,6 @@
-export type Props = {
+import { RouteComponentProps } from 'react-router'
+
+export type Props = RouteComponentProps & {
   projectCount: number
 }
 

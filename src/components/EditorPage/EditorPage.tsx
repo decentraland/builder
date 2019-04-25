@@ -41,6 +41,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     }
 
     document.body.scrollTop = 0
+    document.body.classList.add('lock-scroll')
     document.body.addEventListener('mousewheel', this.handleMouseWheel)
   }
 
@@ -90,6 +91,13 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     const { isIncentiveBannerOpen } = this.state
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
+    let wrapperClasses = 'wrapper'
+
+    if (isIncentiveBannerOpen) {
+      wrapperClasses += ' with-banner'
+    } else if (isPreviewing) {
+      wrapperClasses += ' fullscreen'
+    }
 
     if (!currentProject) {
       return (
@@ -109,7 +117,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
         )}
         {isPreviewing ? null : <TopBar />}
         <Grid className={gridClasses}>
-          <Grid.Row className={'wrapper' + (isIncentiveBannerOpen ? ' with-banner' : '')}>
+          <Grid.Row className={wrapperClasses}>
             <ViewPort />
             {isLoading || isPreviewing ? null : (
               <div className={toolbarClasses}>

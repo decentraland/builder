@@ -6,6 +6,7 @@ import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/Inte
 import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
+import DeployButton from 'components/DeployButton'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
@@ -38,6 +39,14 @@ export default class TopBar extends React.PureComponent<Props> {
 
   handleTitleClick = () => {
     this.props.onOpenModal('EditProjectModal')
+  }
+
+  handleOpenDeployModal = () => {
+    this.props.onOpenModal('DeployModal')
+  }
+
+  handleExport = () => {
+    this.props.onOpenModal('ExportModal', { project: this.props.currentProject })
   }
 
   isSceneLoading() {
@@ -103,9 +112,15 @@ export default class TopBar extends React.PureComponent<Props> {
             <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="preview" isActive={isPreviewing} isDisabled={isLoading} onClick={this.handleTogglePreview} />
             </ShortcutTooltip>
+            <ShortcutTooltip shortcut={Shortcut.EXPORT_SCENE} position="bottom center" className="tool" popupClassName="top-bar-popup">
+              <Chip icon="export" isDisabled={isLoading} onClick={this.handleExport} />
+            </ShortcutTooltip>
             <ShortcutTooltip shortcut={Shortcut.TOGGLE_SIDEBAR} position="bottom center" className="tool" popupClassName="top-bar-popup">
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
+            <span className="tool">
+              <DeployButton onClick={this.handleOpenDeployModal} />
+            </span>
           </Grid.Row>
         </Grid.Column>
       </Grid>

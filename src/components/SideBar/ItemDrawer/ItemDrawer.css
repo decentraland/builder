@@ -50,6 +50,7 @@
 .ItemDrawer .overflow-container {
   height: calc(100% - 96px);
   overflow-y: auto;
+  position: relative;
 }
 
 .ItemDrawer .search-container {
@@ -81,6 +82,7 @@
 .ItemDrawer .ui.icon.input > i.icon.close {
   cursor: pointer;
   pointer-events: inherit;
+  color: var(--bluish-steel);
 }
 
 .ItemDrawer .search.icon {

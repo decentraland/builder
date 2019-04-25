@@ -69,7 +69,7 @@ export default class MobilePageHero extends React.PureComponent<Props> {
         </Hero.Actions>
 
         <Hero.Content>
-          <video src={`${PUBLIC_URL}/videos/hero_mobile.mp4`} autoPlay muted loop />
+          <video src={`${PUBLIC_URL}/videos/hero_mobile.mp4`} autoPlay loop muted playsInline />
           <div className="overlay" />
         </Hero.Content>
       </Hero>

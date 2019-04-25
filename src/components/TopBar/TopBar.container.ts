@@ -30,7 +30,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onReset: () => dispatch(resetItem()),
   onDuplicate: () => dispatch(duplicateItem()),
   onDelete: () => dispatch(deleteItem()),
-  onOpenModal: name => dispatch(openModal(name))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(

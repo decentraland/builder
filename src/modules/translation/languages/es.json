@@ -1,240 +1,261 @@
 {
-  "global": {
-    "projects": "escenas",
-    "project": "escena",
-    "templates": "plantillas",
-    "terms_and_conditions": "Términos y Condiciones",
-    "blog_post": "blog post",
-    "email": "email",
-    "eth_address": "ETH address",
-    "save": "Salvar",
-    "submit": "Enviar",
-    "continue": "Continuar",
-    "send": "Enviar",
-    "confirm": "Confirmar",
-    "cancel": "Cancelar",
-    "create": "Crear",
-    "or": "o",
-    "next": "siguiente",
-    "back": "volver",
-    "done": "OK",
-    "dismiss": "Descartar",
-    "optional": "opcional",
-    "items": "objetos",
-    "sign_up": "Suscribirse",
-    "learn_more": "Más información",
-    "read_more": "Leer más"
-  },
-  "languages": {
-    "en": "English",
-    "es": "Español"
-  },
-  "home_page": {
-    "title": "¡Construye algo genial!",
-    "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
-    "templates_title": "Escoge el tamano de tu escena para comenzar",
-    "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
-    "project_actions": {
-      "delete_project": "Borrar escena",
-      "duplicate_project": "Duplicar escena"
-    },
-    "projects_title": "Mis escenas",
-    "start": "Comenzar"
-  },
-  "mobile_page": {
-    "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
-    "success": "Gracias, ¡Te mantendremos al tanto!",
-    "gallery_title": "Esto es lo que se está costruyendo",
-    "learn_more": "Aprende más acerca del Builder",
-    "secondary_hero": {
-      "title": "¿Quieres comenzar a construir cuando estes en tu PC?",
-      "action": "Enviar recordatorio"
-    },
-    "reminder_subject": "Recordatorio: Probar el Builder de Decentraland",
-    "reminder_body": "Ey!\n\nAl parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland"
-  },
-  "not_found_page": {
-    "title": "404",
-    "subtitle": "Lo sentimos, no pudimos encontrar la escena que buscabas.",
-    "back": "Volver a tus Escenas"
-  },
-  "error_page": {
-    "title": "Oops!",
-    "subtitle": "Ocurrió un error, esto es todo lo que sabemos:",
-    "support": "Contactar soporte",
-    "or": "o intentar",
-    "reload": "recargar la página"
-  },
-  "unsupported_browser_page": {
-    "title": "Oops!",
-    "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
-    "back": "Volver a tus Escenas"
-  },
-  "project_card": {
-    "added_to_contest": "Enviado al concurso",
-    "confirm_delete_header": "Borrar \"{title}\"",
-    "confirm_delete_content": "¿Seguro que quieres borrar tu escena \"{title}\"? Esta operación es ireversible"
-  },
-  "itemdrawer": {
-    "title": "Listado de objetos",
-    "search": "Buscar objetos",
-    "search_category": "Buscar {category}",
-    "no_results": "Sin resultados",
-    "empty_ground": "Sin piso"
-  },
-  "topbar": {
-    "add_to_contest_disabled_limits": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
-    "add_to_contest_disabled_bounds": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
-    "publish": "Publicar"
-  },
-  "metrics": {
-    "triangles": "triángulos",
-    "materials": "materiales",
-    "geometries": "geometrias",
-    "bodies": "cuerpos",
-    "entities": "entidades",
-    "textures": "texturas",
-    "height": "altura",
-    "too_many": "Demasiados {metric}"
-  },
   "add_to_contest": {
-    "title": "Enviar tu escena",
-    "subtitle": "Casi listo. Por favor, revisa tu escena e información de contacto antes de finalizar.",
-    "success_title": "¡Genial!",
-    "success_subtitle": "Tu escena se ve muy bien, ¡Gracias!",
     "contact_information": "Información de contacto",
     "error_occurred": "Ocurrió un error enviando tu escena:",
-    "i_accept_the": "Acepto los "
+    "i_accept_the": "Acepto los ",
+    "subtitle": "Casi listo. Por favor, revisa tu escena e información de contacto antes de finalizar.",
+    "success_subtitle": "Tu escena se ve muy bien, ¡Gracias!",
+    "success_title": "¡Genial!",
+    "title": "Enviar tu escena"
   },
-  "shortcuts": {
-    "move": "Alternar flechas",
-    "rotate": "Alternar órbitas",
-    "reset": "Restablecer objeto",
-    "duplicate": "Objeto duplicado",
-    "delete": "Eliminar objeto",
-    "move_camera": "Mover cámara",
-    "zoom_in": "Aumentar el zoom",
-    "zoom_out": "Disminuir el zoom",
-    "reset_camera": "Restablecer cámara",
-    "toggle_colliders": "Mostrar colisionadores",
-    "toggle_sidebar": "Alternar barra lateral",
-    "preview": "Avance",
-    "undo": "Deshacer",
-    "redo": "Rehacer",
-    "shortcut_reference": "Referencia de atajos",
-    "precision": "Ignorar ajustado a la grilla",
-    "hold": "Sostener"
+  "banners": {
+    "contest_winners": "¡El concurso ha terminado! Descubre los ganadores {link}.",
+    "contest_winners_link": "https://contest.decentraland.org/es"
   },
-  "popups": {
-    "shortcuts_help": "¡Ver atajos aquí!",
-    "metrics_help": "¡Ver métricas aquí!"
-  },
-  "shortcuts_modal": {
-    "title": "Atajos",
-    "item_shortcuts": "Objeto",
-    "editor_shortcuts": "Editor",
-    "other_shortcuts": "Otros"
-  },
-  "edit_project_modal": {
-    "title": "Detalles de la escena",
-    "custom_layout_label": "Dimensiones"
-  },
-  "project_fields": {
-    "title_field_label": "Título",
-    "title_field_placeholder": "Título de la escena",
-    "description_field_label": "Descripción",
-    "description_field_placeholder": "Sin descripción"
-  },
-  "validation": {
-    "project": {
-      "title": {
-        "length": "La longitud del título debe estar entre {min} y {max} caracteres."
-      },
-      "description": {
-        "length": "La longitud de la descripción debe estar entre {min} y {max} caracteres."
-      }
-    }
-  },
-  "custom_layout_modal": {
-    "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
-    "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
-  },
-  "layout_picker": {
-    "rows": "filas",
-    "columns": "columnas"
+  "contest": {
+    "banner": {
+      "cta": "Mira el Video",
+      "text": "Sube tus escenas más creativas y gana increíbles premios: {br}{mana} y {land} (más de {usd}!)",
+      "title": "A todos los creadores"
+    },
+    "incentive_banner": "Sube tu escena para ganar 100 MANA ($5 USD)!",
+    "land": "50 LAND",
+    "mana": "900,000 MANA",
+    "mana_per_scene": "100 MANA ($5)",
+    "submit_text": "Enviar al concurso",
+    "update_text": "Actualizar entrada",
+    "usd": "50,000 USD"
   },
   "custom_layout": {
     "title": "Personalizada",
     "up_to": "Hasta {max} parcelas"
   },
+  "custom_layout_modal": {
+    "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
+    "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
+  },
+  "deploy_modal": {
+    "description": "En el futuro podras publicar escenas a tu LAND de forma directa desde el Builder. ¡Subscribete con tu E-mail para enterarte cuando esta funcionalidad este lista!",
+    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
+    "title": "Publica a tu LAND"
+  },
+  "edit_project_modal": {
+    "custom_layout_label": "Dimensiones",
+    "title": "Detalles de la escena"
+  },
+  "error_page": {
+    "or": "o intentar",
+    "reload": "recargar la página",
+    "subtitle": "Ocurrió un error, esto es todo lo que sabemos:",
+    "support": "Contactar soporte",
+    "title": "Oops!"
+  },
+  "export_modal": {
+    "action": "Descargar",
+    "description": "Puedes guardar tu escena para usarla en otras intancias del Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos!",
+    "title": "Descargar escena"
+  },
+  "global": {
+    "back": "volver",
+    "blog_post": "blog post",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "continue": "Continuar",
+    "create": "Crear",
+    "dismiss": "Descartar",
+    "done": "OK",
+    "email": "email",
+    "eth_address": "ETH address",
+    "here": "aquí",
+    "items": "objetos",
+    "learn_more": "Más información",
+    "next": "siguiente",
+    "optional": "opcional",
+    "or": "o",
+    "project": "escena",
+    "projects": "escenas",
+    "read_more": "Leer más",
+    "save": "Salvar",
+    "send": "Enviar",
+    "sign_up": "Suscribirse",
+    "submit": "Enviar",
+    "subscribe": "Subscribirse",
+    "templates": "plantillas",
+    "terms_and_conditions": "Términos y Condiciones"
+  },
+  "home_page": {
+    "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
+    "import_scene": "Cargar escena",
+    "project_actions": {
+      "delete_project": "Borrar escena",
+      "duplicate_project": "Duplicar escena",
+      "export_project": "Descargar escena"
+    },
+    "projects_title": "Mis escenas",
+    "start": "Comenzar",
+    "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
+    "templates_title": "Escoge el tamano de tu escena para comenzar",
+    "title": "¡Construye algo genial!"
+  },
+  "import_modal": {
+    "action": "Cargar",
+    "action_many": "Cargar {count} escenas",
+    "cta": "Arrastra un .zip archivo o {action}",
+    "description": "¡Puedes cargar escenas exportadas desde otras instancias del Builder!",
+    "invalid_file": "Archivo inválido",
+    "title": "Importar escena",
+    "upload_manually": "Súbelas manualmente"
+  },
+  "itemdrawer": {
+    "empty_ground": "Sin piso",
+    "no_results": "Sin resultados",
+    "search": "Buscar objetos",
+    "search_category": "Buscar {category}",
+    "title": "Listado de objetos"
+  },
+  "languages": {
+    "en": "English",
+    "es": "Español"
+  },
+  "layout_picker": {
+    "columns": "columnas",
+    "rows": "filas"
+  },
+  "metrics": {
+    "bodies": "cuerpos",
+    "entities": "entidades",
+    "geometries": "geometrias",
+    "height": "altura",
+    "materials": "materiales",
+    "textures": "texturas",
+    "too_many": "Demasiados {metric}",
+    "triangles": "triángulos"
+  },
+  "mobile_page": {
+    "gallery_title": "Esto es lo que se está costruyendo",
+    "learn_more": "Aprende más acerca del Builder",
+    "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
+    "reminder_body": "Ey!\n\nAl parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland",
+    "reminder_subject": "Recordatorio: Probar el Builder de Decentraland",
+    "secondary_hero": {
+      "action": "Enviar recordatorio",
+      "title": "¿Quieres comenzar a construir cuando estes en tu PC?"
+    },
+    "success": "Gracias, ¡Te mantendremos al tanto!"
+  },
+  "not_found_page": {
+    "back": "Volver a tus Escenas",
+    "subtitle": "Lo sentimos, no pudimos encontrar la escena que buscabas.",
+    "title": "404"
+  },
+  "popups": {
+    "metrics_help": "¡Ver métricas aquí!",
+    "shortcuts_help": "¡Ver atajos aquí!"
+  },
+  "project_card": {
+    "added_to_contest": "Enviado al concurso",
+    "confirm_delete_content": "¿Seguro que quieres borrar tu escena \"{title}\"? Esta operación es ireversible",
+    "confirm_delete_header": "Borrar \"{title}\""
+  },
+  "project_fields": {
+    "description_field_label": "Descripción",
+    "description_field_placeholder": "Sin descripción",
+    "title_field_label": "Título",
+    "title_field_placeholder": "Título de la escena"
+  },
   "project_layout_picker": {
     "max_area_error": "Tu escena no puede tener más de {area} parcelas",
     "min_area_error": "Tu escena es muy chica"
   },
-  "tutorial_modal": {
-    "title": "Comienza con el Builder",
-    "subtitle": "El Builder es muy fácil de usar, aquí hay algunos consejos antes de comenzar",
-    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
-    "email_disclaimer": "Al registrarte, te suscribes a las noticias sobre Decentraland",
-    "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
-    "skip_tutorial": "Omitir tutorial",
-    "slide0": {
-      "title": "¡Bienvenido al Builder!",
-      "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona."
+  "shortcuts": {
+    "delete": "Eliminar objeto",
+    "duplicate": "Objeto duplicado",
+    "export": "Descargar escena",
+    "hold": "Sostener",
+    "move": "Alternar flechas",
+    "move_camera": "Mover cámara",
+    "precision": "Ignorar ajustado a la grilla",
+    "preview": "Avance",
+    "redo": "Rehacer",
+    "reset": "Restablecer objeto",
+    "reset_camera": "Restablecer cámara",
+    "rotate": "Alternar órbitas",
+    "shortcut_reference": "Referencia de atajos",
+    "toggle_colliders": "Mostrar colisionadores",
+    "toggle_sidebar": "Alternar barra lateral",
+    "undo": "Deshacer",
+    "zoom_in": "Aumentar el zoom",
+    "zoom_out": "Disminuir el zoom"
+  },
+  "shortcuts_modal": {
+    "editor_shortcuts": "Editor",
+    "item_shortcuts": "Objeto",
+    "other_shortcuts": "Otros",
+    "title": "Atajos"
+  },
+  "templates": {
+    "big": "Grande (2x3)",
+    "custom_layout": {
+      "title": "A medida",
+      "up_to": "Hasta {max} parcelas"
     },
-    "slide1": {
-      "title": "Moviendo objetos",
-      "description": "Para mover un objeto, haz clic y arrastralo."
-    },
-    "slide2": {
-      "title": "Añadiendo objetos",
-      "description": "Agrega objetos a tu escena desde la barra lateral a la derecha."
-    },
-    "slide3": {
-      "title": "Flechas y órbitas",
-      "description": "Girar objetos haciendo clic en la herramienta Rotar y arrastrando las órbitas."
-    },
-    "slide4": {
-      "title": "Controlando la cámara",
-      "description": "Arrastra con el botón izquierdo para girar la cámara. Use el botón derecho para desplazarse."
-    },
-    "slide5": {
-      "title": "Participa en el concurso",
-      "description": "Cuando la escena esté terminada, haz clic en {submitButton} para enviarla al concurso",
-      "email_cta": "Regístrate para recibir actualizaciones del Builder y concursos:"
-    }
+    "description": "{dimensions} - {amount} objetos aprox",
+    "medium": "Estándar (2x2)",
+    "small": "Mini (1x1)"
   },
   "toasts": {
     "localstorage": "Tus escenas se guardan automáticamente en el navegador"
   },
-  "contest": {
-    "mana": "900,000 MANA",
-    "land": "50 LAND",
-    "usd": "50,000 USD",
-    "submit_text": "Enviar al concurso",
-    "update_text": "Actualizar entrada",
-    "banner": {
-      "title": "A todos los creadores",
-      "text": "Sube tus escenas más creativas y gana increíbles premios: {br}{mana} y {land} (más de {usd}!)",
-      "cta": "Mira el Video"
-    },
-    "mana_per_scene": "100 MANA ($5)",
-    "incentive_banner": "Sube tu escena para ganar 100 MANA ($5 USD)!"
+  "topbar": {
+    "publish": "Publicar a una LAND"
   },
-  "templates": {
-    "small": "Mini (1x1)",
-    "medium": "Estándar (2x2)",
-    "big": "Grande (2x3)",
-    "description": "{dimensions} - {amount} objetos aprox",
-    "custom_layout": {
-      "title": "A medida",
-      "up_to": "Hasta {max} parcelas"
+  "tutorial_modal": {
+    "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
+    "slide0": {
+      "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
+      "title": "¡Bienvenido al Builder!"
+    },
+    "slide1": {
+      "description": "Para mover un objeto, haz clic y arrastralo.",
+      "title": "Moviendo objetos"
+    },
+    "slide2": {
+      "description": "Agrega objetos a tu escena desde la barra lateral a la derecha.",
+      "title": "Añadiendo objetos"
+    },
+    "slide3": {
+      "description": "Girar objetos haciendo clic en la herramienta Rotar y arrastrando las órbitas.",
+      "title": "Flechas y órbitas"
+    },
+    "slide4": {
+      "description": "Arrastra con el botón izquierdo para girar la cámara. Use el botón derecho para desplazarse.",
+      "title": "Controlando la cámara"
+    },
+    "slide5": {
+      "description": "Cuando la escena esté terminada, haz clic en {submitButton} para enviarla al concurso",
+      "email_cta": "Regístrate para recibir actualizaciones del Builder y concursos:",
+      "title": "Participa en el concurso"
+    },
+    "subtitle": "El Builder es muy fácil de usar, aquí hay algunos consejos antes de comenzar",
+    "title": "Comienza con el Builder"
+  },
+  "unsupported_browser_page": {
+    "back": "Volver a tus Escenas",
+    "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
+    "title": "Oops!"
+  },
+  "validation": {
+    "project": {
+      "description": {
+        "length": "La longitud de la descripción debe estar entre {min} y {max} caracteres."
+      },
+      "title": {
+        "length": "La longitud del título debe estar entre {min} y {max} caracteres."
+      }
     }
   },
   "video_modal": {
-    "title": "Aprende más sobre el Builder"
-  },
-  "banners": {
-    "contest_end": "¡El concurso ha finalizado! Nuestro panel de jueces anunciará a los ganadores a mediados de Abril. {read_more}"
+    "title": "Aprende más sobre el Builder",
+    "youtube_id": "4YSdIaxfg-E"
   }
 }

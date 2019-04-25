@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { Project } from 'modules/project/types'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { deleteProject, DeleteProjectAction, duplicateProject, DuplicateProjectAction } from 'modules/project/actions'
 
 export type DefaultProps = {
@@ -12,6 +13,7 @@ export type Props = DefaultProps & {
   onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
   onDuplicateProject: typeof duplicateProject
+  onOpenModal: typeof openModal
 }
 
 export type State = {
@@ -19,5 +21,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'hasSubmittedProject' | 'items'>
-export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject'>
-export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction>
+export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal'>
+export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction | OpenModalAction>

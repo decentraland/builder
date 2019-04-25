@@ -7,11 +7,11 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
-import { addEmptyGroundAsset, addEmptyGroundAssetPack, SIDEBAR_CATEGORIES, CategoryName } from './utils'
+import { getCurrentProject } from 'modules/project/selectors'
+import { Project } from 'modules/project/types'
+import { SIDEBAR_CATEGORIES, CategoryName } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
-
-export const getSelectedAssetPackId = (state: RootState) => getState(state).selectedAssetPackId
 
 export const getSearch = (state: RootState) => getState(state).search
 
@@ -36,31 +36,45 @@ const isSearchResult = (asset: Asset, search: string) => {
   return false
 }
 
+export const getAvailableAssetPackIds = (state: RootState) => getState(state).availableAssetPackIds
+
+export const getNewAssetPackIds = (state: RootState) => getState(state).newAssetPackIds
+
+export const getSelectedAssetPackIds = createSelector<RootState, SidebarState, AssetPackState['data'], string[]>(
+  getState,
+  getAssetPacks,
+  (sidebar, _assetPacks) => {
+    const { selectedAssetPackIds, availableAssetPackIds } = sidebar
+    if (selectedAssetPackIds.length === 0) {
+      // Default selection for first time users
+      return availableAssetPackIds
+    } else {
+      // Selection for existing users
+      return selectedAssetPackIds
+    }
+  }
+)
+
 export const getSideBarCategories = createSelector<
   RootState,
-  string | null,
+  Project | null,
   string,
   string | null,
   SidebarView,
-  AssetPackState['data'],
   AssetState['data'],
   Category[]
 >(
-  getSelectedAssetPackId,
+  getCurrentProject,
   getSearch,
   getSelectedCategory,
   getSidebarView,
-  getAssetPacks,
   getAssets,
-  (selectedAssetPackId, search, category, view, assetPacks, assets) => {
-    assets = addEmptyGroundAsset(assets)
-    assetPacks = addEmptyGroundAssetPack(assetPacks)
-
+  (project, search, category, view, assets) => {
     const categories: { [categoryName: string]: Category } = {}
-
+    const selectedAssetPackId = project ? project.assetPackIds || [] : []
     Object.values(assets)
       // filter by selected asset pack
-      .filter(asset => selectedAssetPackId == null || selectedAssetPackId === asset.assetPackId)
+      .filter(asset => selectedAssetPackId.length === 0 || (asset.assetPackId && selectedAssetPackId.includes(asset.assetPackId)))
       // filter assets by search (if any)
       .filter(asset => !search || isSearchResult(asset, search))
       // if sidebar is in not in "list" view, filter by selected category
