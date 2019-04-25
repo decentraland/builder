@@ -40,6 +40,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     }
 
     document.body.scrollTop = 0
+    document.body.classList.add('lock-scroll')
     document.body.addEventListener('mousewheel', this.handleMouseWheel)
   }
 
