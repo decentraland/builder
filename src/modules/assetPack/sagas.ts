@@ -14,7 +14,7 @@ import { setAvailableAssetPacks, setNewAssetPacks } from 'modules/ui/sidebar/act
 import { getCurrentProject } from 'modules/project/selectors'
 import { toggleAssetPack } from 'modules/project/actions'
 import { api } from 'lib/api'
-import { getDefualtSelection } from './utils'
+import { getDefaultSelection } from './utils'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -50,9 +50,9 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
     if (!project) {
       selectedAssetPackIds = new Set()
     } else if (project.assetPackIds && project.assetPackIds.length > 0) {
-      selectedAssetPackIds = new Set(project!.assetPackIds)
+      selectedAssetPackIds = new Set(project.assetPackIds)
     } else {
-      const defaultSelection = getDefualtSelection(remoteAssetPacks)
+      const defaultSelection = getDefaultSelection(remoteAssetPacks)
       yield put(toggleAssetPack(project, defaultSelection, true))
       selectedAssetPackIds = new Set(defaultSelection)
     }
