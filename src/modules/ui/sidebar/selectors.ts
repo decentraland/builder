@@ -36,6 +36,8 @@ const isSearchResult = (asset: Asset, search: string) => {
 
 export const getAvailableAssetPackIds = (state: RootState) => getState(state).availableAssetPackIds
 
+export const getNewAssetPackIds = (state: RootState) => getState(state).newAssetPackIds
+
 export const getSelectedAssetPackIds = createSelector<RootState, SidebarState, AssetPackState['data'], string[]>(
   getState,
   getAssetPacks,
@@ -95,6 +97,6 @@ export const getSideBarCategories = createSelector<RootState, string[], string, 
       }
     })
 
-    return [...categoryArray]
+    return categoryArray
   }
 )

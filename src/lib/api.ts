@@ -20,8 +20,7 @@ export class API extends BaseAPI {
 
   async fetchAssetPacks() {
     const data = await this.request('get', `${ASSETS_URL}`, {})
-    return data.packs // TODO: remove the .map once the server returns `title`
-      .map((assetPack: any) => ({ title: assetPack.name, ...assetPack }))
+    return data.packs
   }
 
   fetchAssetPack(id: string) {

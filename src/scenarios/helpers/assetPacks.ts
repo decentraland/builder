@@ -29,7 +29,6 @@ export function makeFakeAssetPack(assetCount: number = 1): FullAssetPack {
     title: 'Default Asset Pack',
     thumbnail: '',
     url: '',
-    isNew: false,
     isLoaded: true,
     assets: []
   }

@@ -81,6 +81,7 @@
 .ItemDrawer .ui.icon.input > i.icon.close {
   cursor: pointer;
   pointer-events: inherit;
+  color: var(--bluish-steel);
 }
 
 .ItemDrawer .search.icon {

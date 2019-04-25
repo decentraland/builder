@@ -5,7 +5,6 @@ export type BaseAssetPack = {
   title: string
   thumbnail: string
   url: string
-  isNew: boolean
   isLoaded: boolean
 }
 

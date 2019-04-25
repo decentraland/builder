@@ -10,8 +10,8 @@ import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { getSelectedAssetPackIds, getAvailableAssetPackIds } from 'modules/ui/sidebar/selectors'
 import { BaseAssetPack, FullAssetPack } from 'modules/assetPack/types'
+import { setAvailableAssetPacks, setNewAssetPacks } from 'modules/ui/sidebar/actions'
 import { api } from 'lib/api'
-import { setAvailableAssetPacks } from 'modules/ui/sidebar/actions'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -24,11 +24,22 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
     // Asset pack ids available last time the user visited
     const previousAvailableAssetPackIds: ReturnType<typeof getAvailableAssetPackIds> = yield select(getAvailableAssetPackIds)
 
-    // Fresh available asset packs
-    const newAvailableAssetPackIds = remoteAssetPacks.map(assetPack => assetPack.id)
+    // Current available asset packs
+    const currentAvailableAssetPackIds = remoteAssetPacks.map(assetPack => assetPack.id)
+
+    // New asset packs since last visit
+    const newAssetPackIds = []
+    for (const assetPackId of currentAvailableAssetPackIds) {
+      if (!previousAvailableAssetPackIds.includes(assetPackId)) {
+        newAssetPackIds.push(assetPackId)
+      }
+    }
 
     // Update the available asset packs in state
-    yield put(setAvailableAssetPacks(newAvailableAssetPackIds))
+    yield put(setAvailableAssetPacks(currentAvailableAssetPackIds))
+
+    // Update the new asset packs in state
+    yield put(setNewAssetPacks(newAssetPackIds))
 
     // Get user selection of asset packs
     const selectedAssetPackIds: ReturnType<typeof getSelectedAssetPackIds> = yield select(getSelectedAssetPackIds)
@@ -45,9 +56,7 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
           const assetPack: FullAssetPack = yield call(() => api.fetchAssetPack(remoteAssetPack.id))
           assetPacks.push({
             // Add the fetched asset pack and mark it as loaded
-            ...remoteAssetPack, // TODO: we can remove this once the `thumbnail` and `url` are added to the individual asset packs
             ...assetPack,
-            isNew: false,
             isLoaded: true,
             assets: assetPack.assets.map(asset => ({
               ...asset,
@@ -68,22 +77,13 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
         // If the asset pack is not selected then just add the remote asset pack and mark is as not loaded
         assetPacks.push({
           ...remoteAssetPack,
-          isNew: false,
           isLoaded: false,
           assets: []
         })
       }
     }
 
-    // Mark new asset packs as new
-    if (previousAvailableAssetPackIds.length > 0) {
-      // This are the asset packs the user has seen already
-      const oldAssetPacks = new Set(previousAvailableAssetPackIds)
-      for (const assetPack of assetPacks) {
-        assetPack.isNew = !oldAssetPacks.has(assetPack.id)
-      }
-    }
-
+    // Success
     yield put(loadAssetPacksSuccess(assetPacks))
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))

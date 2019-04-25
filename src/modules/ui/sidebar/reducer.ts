@@ -16,6 +16,7 @@ import { SidebarView } from './types'
 export type SidebarState = {
   selectedAssetPackIds: string[]
   availableAssetPackIds: string[]
+  newAssetPackIds: string[]
   selectedCategory: string | null
   search: string
   view: SidebarView
@@ -24,6 +25,7 @@ export type SidebarState = {
 const INITIAL_STATE: SidebarState = {
   selectedAssetPackIds: [],
   availableAssetPackIds: [],
+  newAssetPackIds: [],
   selectedCategory: null,
   search: '',
   view: SidebarView.GRID
@@ -68,7 +70,10 @@ export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerActi
       }
     }
     case OPEN_EDITOR: {
-      return INITIAL_STATE
+      return {
+        ...INITIAL_STATE,
+        availableAssetPackIds: state.availableAssetPackIds
+      }
     }
 
     case SET_AVAILABLE_ASSET_PACKS: {
