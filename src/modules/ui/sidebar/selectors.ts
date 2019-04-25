@@ -7,11 +7,11 @@ import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
+import { getCurrentProject } from 'modules/project/selectors'
+import { Project } from 'modules/project/types'
 import { SIDEBAR_CATEGORIES } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
-
-export const getSelectedAssetPackId = (state: RootState) => getState(state).selectedAssetPackId
 
 export const getSearch = (state: RootState) => getState(state).search
 
@@ -36,54 +36,60 @@ const isSearchResult = (asset: Asset, search: string) => {
   return false
 }
 
+export const getAvailableAssetPackIds = (state: RootState) => getState(state).availableAssetPackIds
+
+export const getNewAssetPackIds = (state: RootState) => getState(state).newAssetPackIds
+
+export const getSelectedAssetPackIds = createSelector<RootState, SidebarState, AssetPackState['data'], string[]>(
+  getState,
+  getAssetPacks,
+  (sidebar, _assetPacks) => {
+    const { selectedAssetPackIds, availableAssetPackIds } = sidebar
+    if (selectedAssetPackIds.length === 0) {
+      // Default selection for first time users
+      return availableAssetPackIds
+    } else {
+      // Selection for existing users
+      return selectedAssetPackIds
+    }
+  }
+)
+
 export const getSideBarCategories = createSelector<
   RootState,
-  string | null,
+  Project | null,
   string,
   string | null,
   SidebarView,
-  AssetPackState['data'],
   AssetState['data'],
   Category[]
 >(
-  getSelectedAssetPackId,
+  getCurrentProject,
   getSearch,
   getSelectedCategory,
   getSidebarView,
-  getAssetPacks,
   getAssets,
-  (selectedAssetPackId, search, category, view, assetPacks, assets) => {
+  (project, search, category, view, assets) => {
     const categories: { [categoryName: string]: Category } = {}
-
-    // filter by selected asset pack, if none is selected use all asset packs
-    const filteredAssetPacks = Object.keys(assetPacks)
-      .filter(assetPackId => selectedAssetPackId == null || selectedAssetPackId === assetPackId)
-      .map(assetPackId => assetPacks[assetPackId])
-
-    const filteredAssetIds = Object.keys(assets)
-      .filter(assetId => !search || isSearchResult(assets[assetId], search)) // filter assets by search (if any)
-      .filter(assetId => view === SidebarView.LIST || category == null || assets[assetId].category === category) // if sidebar is in not in "list" view, filter by selected category
-      .reduce((ids, assetId) => ({ ...ids, [assetId]: true }), {})
-
-    for (const assetPack of filteredAssetPacks) {
-      for (const assetId of assetPack.assets) {
-        // check if it hasn't been filtered out
-        if (assetId in filteredAssetIds) {
-          const asset = assets[assetId]
-          // check if category already exits, otherwise create it
-          const categoryExists = asset.category in categories
-          if (!categoryExists) {
-            categories[asset.category] = {
-              name: asset.category,
-              assets: [],
-              thumbnail: ''
-            }
+    const selectedAssetPackId = project ? project.assetPackIds || [] : []
+    Object.values(assets)
+      // filter by selected asset pack
+      .filter(asset => selectedAssetPackId.length === 0 || selectedAssetPackId.includes(asset.assetPackId))
+      // filter assets by search (if any)
+      .filter(asset => !search || isSearchResult(asset, search))
+      // if sidebar is in not in "list" view, filter by selected category
+      .filter(asset => view === SidebarView.LIST || category == null || asset.category === category)
+      // populate categories with filtered assets
+      .forEach(asset => {
+        if (!(asset.category in categories)) {
+          categories[asset.category] = {
+            name: asset.category,
+            assets: [],
+            thumbnail: ''
           }
-          // add asset to category
-          categories[asset.category].assets.push(asset)
         }
-      }
-    }
+        categories[asset.category].assets.push(asset)
+      })
 
     // convert map to array
     const categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({

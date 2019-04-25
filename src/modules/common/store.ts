@@ -10,10 +10,11 @@ import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analy
 
 import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
-import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
+import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS, TOGGLE_ASSET_PACK } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { ACCEPT_TERMS, SUBMIT_PROJECT_SUCCESS } from 'modules/contest/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
+import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { migrations } from './migrations'
@@ -33,7 +34,7 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
-  paths: ['project', ['scene', 'present'], 'contest', 'user'],
+  paths: ['project', ['scene', 'present'], 'contest', 'user', ['ui', 'sidebar', 'availableAssetPackIds']],
   actions: [
     CREATE_PROJECT,
     CREATE_SCENE,
@@ -45,7 +46,9 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ACCEPT_TERMS,
     SUBMIT_PROJECT_SUCCESS,
     SET_USER_ID,
-    SET_USER_EMAIL
+    SET_USER_EMAIL,
+    TOGGLE_ASSET_PACK,
+    SET_AVAILABLE_ASSET_PACKS
   ]
 })
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))

@@ -78,6 +78,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     title: 'New scene',
     description: '',
     thumbnail: '',
+    assetPackIds: [],
     layout,
     parcels: getBlockchainParcelsFromLayout(layout),
     sceneId: scene.id,
