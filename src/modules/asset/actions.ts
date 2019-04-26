@@ -7,8 +7,7 @@ export const LOAD_COLLECTIBLES_REQUEST = '[Request] Load Collectibles'
 export const LOAD_COLLECTIBLES_SUCCESS = '[Success] Load Collectibles'
 export const LOAD_COLLECTIBLES_FAILURE = '[Failure] Load Collectibles'
 
-export const loadCollectiblesRequest = (owner: string = 'asd', contract: string = '0x06012c8cf97bead5deae237070f9587f8e7a266d') =>
-  action(LOAD_COLLECTIBLES_REQUEST, { owner, contract })
+export const loadCollectiblesRequest = () => action(LOAD_COLLECTIBLES_REQUEST, {})
 export const loadCollectiblesSuccess = (assets: Asset[]) => action(LOAD_COLLECTIBLES_SUCCESS, { assets })
 export const loadCollectiblesFailure = (error: string) => action(LOAD_COLLECTIBLES_FAILURE, { error })
 

@@ -182,6 +182,11 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     return categories.length === 1 && categories[0].name === category
   }
 
+  canSearchAssets = (category: CategoryName) => {
+    const { categories } = this.props
+    return this.isInCategory(category) && categories[0].assets.length > 0
+  }
+
   renderItemDrawerContent = () => {
     const { search, categories, selectedCategory, columnCount, view } = this.props
     const isList = view === SidebarView.LIST
@@ -230,7 +235,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           ) : null}
         </Header>
 
-        {!this.isInCategory(CategoryName.COLLECTIBLE_CATEGORY) && (
+        {this.canSearchAssets(CategoryName.COLLECTIBLE_CATEGORY) && (
           <div className="search-container">
             <Icon name="search" />
             <Input

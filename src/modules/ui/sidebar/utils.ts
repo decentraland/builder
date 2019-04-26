@@ -7,7 +7,8 @@ export enum CategoryName {
   NATURE_CATEGORY = 'nature',
   STRUCTURES_CATEGORY = 'structures',
   DECORATIONS_CATEGORY = 'decorations',
-  COLLECTIBLE_CATEGORY = 'collectible'
+  COLLECTIBLE_CATEGORY = 'collectibles',
+  FURNITURE = 'furniture'
 }
 
 export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
@@ -33,6 +34,11 @@ export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
   },
   [CategoryName.DECORATIONS_CATEGORY]: {
     name: CategoryName.DECORATIONS_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
+    assets: []
+  },
+  [CategoryName.FURNITURE]: {
+    name: CategoryName.FURNITURE,
     thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
     assets: []
   },

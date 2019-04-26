@@ -70,11 +70,17 @@ export const getSideBarCategories = createSelector<
   getSidebarView,
   getAssets,
   (project, search, category, view, assets) => {
-    const categories: { [categoryName: string]: Category } = {}
+    const categories: Record<string, Category> = {}
     const selectedAssetPackId = project ? project.assetPackIds || [] : []
+
     Object.values(assets)
-      // filter by selected asset pack
-      .filter(asset => selectedAssetPackId.length === 0 || (asset.assetPackId && selectedAssetPackId.includes(asset.assetPackId)))
+      // filter by selected asset packs
+      .filter(
+        asset =>
+          selectedAssetPackId.length === 0 ||
+          asset.assetPackId === null ||
+          (asset.assetPackId && selectedAssetPackId.includes(asset.assetPackId))
+      )
       // filter assets by search (if any)
       .filter(asset => !search || isSearchResult(asset, search))
       // if sidebar is in not in "list" view, filter by selected category
@@ -99,18 +105,10 @@ export const getSideBarCategories = createSelector<
         thumbnail
       }))
 
-    // add categories that are not present in SIDEBAR_CATEGORIES (fallback)
-    Object.values(categories).forEach(category => {
-      if (!categoryArray.some(cat => cat.name === category.name)) {
-        categoryArray.push({
-          ...category,
-          thumbnail: category.assets[0].thumbnail
-        })
-      }
-    })
+    console.log('selected categories', categoryArray, category)
 
-    if (!(CategoryName.COLLECTIBLE_CATEGORY in categories)) {
-      categoryArray.push(SIDEBAR_CATEGORIES.collectible)
+    if ((category === null || category === CategoryName.COLLECTIBLE_CATEGORY) && !(CategoryName.COLLECTIBLE_CATEGORY in categories)) {
+      categoryArray.push(SIDEBAR_CATEGORIES.collectibles)
     }
 
     return categoryArray

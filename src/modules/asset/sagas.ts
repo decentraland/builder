@@ -1,4 +1,4 @@
-import { call, put, takeLatest, actionChannel, take } from 'redux-saga/effects'
+import { call, put, takeLatest, actionChannel, take, select } from 'redux-saga/effects'
 import { api } from 'lib/api'
 import {
   LoadCollectiblesRequestAction,
@@ -11,20 +11,27 @@ import {
 } from './actions'
 import { Asset, RemoteCollectibleAssetResponse, RemoteCollectibleAsset } from './types'
 import { CategoryName } from 'modules/ui/sidebar/utils'
+import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { delay } from 'redux-saga'
 
 export function* assetSaga() {
   yield takeLatest(LOAD_COLLECTIBLES_REQUEST, handleLoadCollectibles)
+  yield takeLatest(CONNECT_WALLET_SUCCESS, handleLoadCollectibles)
   const requestChan = yield actionChannel(FORCE_LOAD_COLLECTIBLE_REQUEST)
 
   while (true) {
     const action = yield take(requestChan)
+    yield delay(1000)
     yield call(handleForceLoadCollectible, action)
   }
 }
 
-function* handleLoadCollectibles(action: LoadCollectiblesRequestAction) {
-  const { owner, contract } = action.payload
-  const response: RemoteCollectibleAssetResponse = yield call(() => api.fetchCollectibles(owner, contract))
+function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
+  const contract = '0x06012c8cf97bead5deae237070f9587f8e7a266d'
+  const address = yield select(getAddress)
+  console.log('got address', address)
+  const response: RemoteCollectibleAssetResponse = yield call(() => api.fetchCollectibles(address, contract))
 
   const assets: Asset[] = []
 
