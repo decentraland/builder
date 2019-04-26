@@ -24,6 +24,7 @@ export const assetSource: DragSourceSpec<Props, DragObject> = {
   }
 }
 
+// @ts-ignore
 export const collect: DragSourceCollector<CollectedProps> = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
