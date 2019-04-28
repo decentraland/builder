@@ -1,0 +1,35 @@
+.AssetList .ui.grid.asset-grid .column {
+  padding: 4px;
+}
+
+.AssetList .ui.grid.asset-grid.item-grid .column {
+  width: 112px;
+}
+
+.AssetList .ui.grid.asset-grid.item-list .column {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.AssetList .ui.grid.asset-grid.item-grid .row .column:first-child {
+  padding-left: 0px;
+}
+
+.AssetList .ui.grid.asset-grid.item-grid .row .column:nth-child(3) {
+  padding-right: 0px;
+}
+
+.AssetList img.thumbnail:after {
+  display: block;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(var(--bluish-steel-raw), 0.28);
+  border-radius: 100%;
+  content: '';
+}

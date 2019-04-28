@@ -103,7 +103,7 @@
     "empty_ground": "No Ground",
     "no_results": "No results",
     "search": "Search items",
-    "search_category": "Search {category}",
+    "search_scope": "Search {scope}",
     "title": "Item drawer"
   },
   "languages": {

@@ -110,7 +110,7 @@
     "empty_ground": "Sin piso",
     "no_results": "Sin resultados",
     "search": "Buscar objetos",
-    "search_category": "Buscar {category}",
+    "search_scope": "Buscar {scope}",
     "title": "Listado de objetos"
   },
   "languages": {

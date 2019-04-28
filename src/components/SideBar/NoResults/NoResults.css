@@ -1,0 +1,6 @@
+.NoResults {
+  width: 100%;
+  text-align: center;
+  padding: 16px;
+  color: var(--bluish-steel);
+}

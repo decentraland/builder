@@ -10,7 +10,7 @@ import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analy
 
 import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
-import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS, TOGGLE_ASSET_PACK } from 'modules/project/actions'
+import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { ACCEPT_TERMS, SUBMIT_PROJECT_SUCCESS } from 'modules/contest/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
@@ -47,7 +47,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     SUBMIT_PROJECT_SUCCESS,
     SET_USER_ID,
     SET_USER_EMAIL,
-    TOGGLE_ASSET_PACK,
     SET_AVAILABLE_ASSET_PACKS
   ]
 })
