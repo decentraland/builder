@@ -47,8 +47,8 @@ function trimProject(action: CreateProjectAction | ExportProjectAction) {
   }
   const { id, layout } = action.payload.project
   return {
-    id,
-    layout
+    projectId: id,
+    ...layout
   }
 }
 
