@@ -10,6 +10,7 @@ export default class SidebarCard extends React.PureComponent<Props> {
     const { id, onClick } = this.props
     onClick(id)
   }
+
   render() {
     const { title, thumbnail, isVisible } = this.props
 
