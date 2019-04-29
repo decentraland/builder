@@ -19,11 +19,11 @@ export const SIDEBAR_CATEGORIES: { name: string; thumbnail: string }[] = [
     thumbnail: `${CONTENT_SERVER}Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA`
   },
   {
-    name: 'decorations',
+    name: 'furniture',
     thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`
   },
   {
-    name: 'year of the pig',
-    thumbnail: `${CONTENT_SERVER}QmeHgdLkKaRLpFKPECUxQTEb3NEHbcKkgCcjhBq693d62n`
+    name: 'decorations',
+    thumbnail: `${CONTENT_SERVER}QmUQZQEGF2tSz2hBy4xyKZ4uoWoURvQUcTxJMEyHPEWjhX`
   }
 ]

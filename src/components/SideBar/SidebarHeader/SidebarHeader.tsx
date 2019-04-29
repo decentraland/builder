@@ -10,8 +10,10 @@ import './SidebarHeader.css'
 
 export default class SidebarHeader extends React.PureComponent<Props> {
   handleGoBack = () => {
-    const { selectedAssetPack, selectedCategory, onSelectAssetPack, onSelectCategory } = this.props
-    if (selectedCategory !== null) {
+    const { selectedAssetPack, selectedCategory, onSelectAssetPack, onSelectCategory, search, onSearch } = this.props
+    if (search) {
+      onSearch('')
+    } else if (selectedCategory !== null) {
       onSelectCategory(null)
     } else if (selectedAssetPack !== null) {
       onSelectAssetPack(null)
@@ -27,19 +29,27 @@ export default class SidebarHeader extends React.PureComponent<Props> {
   }
 
   render() {
-    const { selectedAssetPack, selectedCategory, isList } = this.props
+    const { selectedAssetPack, selectedCategory, isList, search } = this.props
+
     const isRoot = selectedAssetPack === null && selectedCategory === null
+    const isSearch = search.length > 0
+
     return (
       <Header className="SidebarHeader" size="medium">
-        {isRoot ? (
+        {isSearch ? (
+          <span className="selected-scope" onClick={this.handleGoBack}>
+            <Icon name="chevron left" />
+            {t('itemdrawer.results')}
+          </span>
+        ) : isRoot ? (
           t('itemdrawer.title')
         ) : (
           <span className="selected-scope" onClick={this.handleGoBack}>
             <Icon name="chevron left" />
-            {selectedCategory ? selectedCategory : selectedAssetPack!.title}
+            {selectedCategory ? selectedCategory : selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...'}
           </span>
-        )}{' '}
-        {isRoot ? (
+        )}
+        {isRoot && !isSearch ? (
           <div className="item-drawer-type-buttons">
             <Chip icon="grid" isActive={!isList} onClick={this.handleSetGridView} />
             <Chip icon="list" isActive={isList} onClick={this.handleSetListView} />

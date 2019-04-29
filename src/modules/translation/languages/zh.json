@@ -81,7 +81,8 @@
     "submit": "提交",
     "subscribe": "订阅",
     "templates": "模板",
-    "terms_and_conditions": "使用条款"
+    "terms_and_conditions": "使用条款",
+    "loading": "装载"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",

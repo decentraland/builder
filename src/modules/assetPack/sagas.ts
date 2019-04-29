@@ -51,7 +51,7 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
         const assetPack: FullAssetPack = yield call(() => api.fetchAssetPack(remoteAssetPack.id))
         assetPacks.push({
           // Add the fetched asset pack and mark it as loaded
-          ...assetPack,
+          ...remoteAssetPack,
           isLoaded: true,
           assets: assetPack.assets.map(asset => ({
             ...asset,

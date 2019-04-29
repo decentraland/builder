@@ -66,29 +66,37 @@ export const getSideBarCategories = createSelector<
   getSelectedCategory,
   getSidebarView,
   getAssets,
-  (selectedAssetPack, search, category, view, assets) => {
+  (selectedAssetPack, search, selectedCategory, view, assets) => {
     const categories: { [categoryName: string]: Category } = {}
-    Object.values(assets)
-      // filter by selected asset pack
-      .filter(asset => selectedAssetPack == null || selectedAssetPack.id === asset.assetPackId)
-      // filter assets by search (if any)
-      .filter(asset => !search || isSearchResult(asset, search))
-      // if sidebar is in not in "list" view, filter by selected category
-      .filter(asset => view === SidebarView.LIST || category == null || asset.category === category)
-      // populate categories with filtered assets
-      .forEach(asset => {
-        if (!(asset.category in categories)) {
-          categories[asset.category] = {
-            name: asset.category,
-            assets: [],
-            thumbnail: ''
-          }
+
+    let results = Object.values(assets)
+
+    // filter by search
+    if (search) {
+      results = results.filter(asset => isSearchResult(asset, search))
+    } else if (view !== SidebarView.LIST && selectedAssetPack) {
+      // filter by asset pack if one is selected (and not in list view)
+      results = results.filter(asset => selectedAssetPack.id === asset.assetPackId)
+      // filter by category if one is selected
+      if (selectedCategory) {
+        results = results.filter(asset => asset.category === selectedCategory)
+      }
+    }
+
+    // build categories
+    for (const asset of results) {
+      if (!(asset.category in categories)) {
+        categories[asset.category] = {
+          name: asset.category,
+          assets: [],
+          thumbnail: ''
         }
-        categories[asset.category].assets.push(asset)
-      })
+      }
+      categories[asset.category].assets.push(asset)
+    }
 
     // convert map to array
-    const categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
+    let categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
       ...categories[name],
       thumbnail
     }))
@@ -102,6 +110,26 @@ export const getSideBarCategories = createSelector<
         })
       }
     })
+
+    // move selected category up
+    if (selectedCategory) {
+      categoryArray = [...categoryArray.filter(c => c.name === selectedCategory), ...categoryArray.filter(c => c.name !== selectedCategory)]
+    }
+
+    // move selected asset pack up
+    for (const category of categoryArray) {
+      category.assets.sort((a, b) => {
+        if (selectedAssetPack) {
+          if (a.assetPackId === selectedAssetPack.id && b.assetPackId !== selectedAssetPack.id) {
+            return -1
+          }
+          if (a.assetPackId !== selectedAssetPack.id && b.assetPackId === selectedAssetPack.id) {
+            return 1
+          }
+        }
+        return 0
+      })
+    }
 
     return categoryArray
   }

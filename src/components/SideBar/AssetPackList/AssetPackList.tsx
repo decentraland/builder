@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { ASSETS_URL } from 'lib/api'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 
@@ -11,7 +12,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
         key={assetPack.id}
         id={assetPack.id}
         title={assetPack.title}
-        thumbnail={assetPack.thumbnail}
+        thumbnail={ASSETS_URL + assetPack.thumbnail}
         onClick={onSelectAssetPack}
         isVisible
       />

@@ -72,20 +72,13 @@ export default class SidebarSearch extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedAssetPack, selectedCategory, search } = this.props
-    let placeholder = t('itemdrawer.search')
-    if (selectedAssetPack) {
-      placeholder = t('itemdrawer.search_scope', { scope: selectedAssetPack.title.toLowerCase() })
-      if (selectedCategory) {
-        placeholder = t('itemdrawer.search_scope', { scope: selectedCategory })
-      }
-    }
+    const { search } = this.props
     return (
       <div className="SidebarSearch">
         <Icon name="search" />
         <Input
           className="search-input"
-          placeholder={placeholder}
+          placeholder={t('itemdrawer.search')}
           icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
           value={this.state.search}
           onChange={this.handleSearch}
