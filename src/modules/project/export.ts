@@ -133,14 +133,22 @@ export function createDynamicFiles(project: Project) {
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify({
-      ...sceneJson,
-      scene: {
-        ...sceneJson.scene,
-        parcels,
-        base: parcels[0]
-      }
-    })
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(
+      {
+        ...sceneJson,
+        scene: {
+          ...sceneJson.scene,
+          parcels,
+          base: parcels[0]
+        },
+        source: {
+          origin: 'builder',
+          projectId: project.id
+        }
+      },
+      null,
+      2
+    )
   }
 }
 
