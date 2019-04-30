@@ -62,6 +62,7 @@ export class NFTShape {
     }
 
     const contract = contracts.get(registry)
+
     if (!contract) {
       const available = Array.from(contracts.keys())
       throw new Error(`Invalid DAR: ${registry} valids are: ${available.join(', ')}`)
@@ -74,6 +75,7 @@ export class NFTShape {
         'X-API-KEY': 'd0069866528645918451cd3592e47473'
       }
     })
+
     const assetsResponseJson = await assetsRequest.json()
 
     assert(assetsResponseJson.assets.length > 0, 'Empty response, there is no asset')

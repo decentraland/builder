@@ -88,11 +88,7 @@ function* handleAddItem(action: AddItemAction) {
 
   if (!position) {
     position = yield call(editorWindow.editor.getCameraTarget)
-    if (asset.category === CategoryName.COLLECTIBLE_CATEGORY) {
-      position!.y = 1
-    } else {
-      position!.y = 0
-    }
+    position!.y = 0
   }
 
   const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
