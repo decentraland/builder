@@ -23,6 +23,7 @@ export const previewTarget: DropTargetSpec<Props> = {
   }
 }
 
+// @ts-ignore
 export const collect: DropTargetCollector<CollectedProps> = (connect, monitor) => {
   return {
     connectDropTarget: connect.dropTarget(),

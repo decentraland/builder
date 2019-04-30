@@ -1,6 +1,8 @@
 import { CONTENT_SERVER } from 'modules/editor/utils'
 import { Category } from './types'
 
+export const COLLECTIBLE_ASSET_PACK_ID = 'collectibles'
+
 export enum CategoryName {
   GROUND_CATEGORY = 'ground',
   TILES_CATEGORY = 'tiles',
@@ -34,7 +36,7 @@ export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
   },
   [CategoryName.DECORATIONS_CATEGORY]: {
     name: CategoryName.DECORATIONS_CATEGORY,
-    thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
+    thumbnail: `${CONTENT_SERVER}QmUQZQEGF2tSz2hBy4xyKZ4uoWoURvQUcTxJMEyHPEWjhX`,
     assets: []
   },
   [CategoryName.FURNITURE]: {

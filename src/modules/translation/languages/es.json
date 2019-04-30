@@ -81,7 +81,8 @@
     "submit": "Enviar",
     "subscribe": "Subscribirse",
     "templates": "plantillas",
-    "terms_and_conditions": "Términos y Condiciones"
+    "terms_and_conditions": "Términos y Condiciones",
+    "loading": "Cargando"
   },
   "home_page": {
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
@@ -110,7 +111,6 @@
     "empty_ground": "Sin piso",
     "no_results": "Sin resultados",
     "search": "Buscar objetos",
-    "search_category": "Buscar {category}",
     "title": "Listado de objetos"
   },
   "languages": {

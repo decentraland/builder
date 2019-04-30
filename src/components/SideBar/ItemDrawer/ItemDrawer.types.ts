@@ -1,52 +1,25 @@
 import { Dispatch } from 'redux'
-import { GridProps } from 'decentraland-ui'
+import { Category } from 'modules/ui/sidebar/types'
+import { AssetPack } from 'modules/assetPack/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import { Category, SidebarView } from 'modules/ui/sidebar/types'
 import { Asset } from 'modules/asset/types'
-import { addItem, AddItemAction, setGround, SetGroundAction } from 'modules/scene/actions'
-import {
-  searchAssets,
-  SearchAssetsAction,
-  setSidebarView,
-  SetSidebarViewAction,
-  SelectCategoryAction,
-  selectCategory
-} from 'modules/ui/sidebar/actions'
-import { Project } from 'modules/project/types'
-import { prefetchAsset, PrefetchAssetAction } from 'modules/editor/actions'
 
-export type DefaultProps = {
-  columnCount: GridProps['columns']
-  onClick: (asset: Asset) => any
-}
-
-export type Props = DefaultProps & {
+export type Props = {
   categories: Category[]
-  collectibles: DataByKey<Asset>
+  selectedAssetPack: AssetPack | null
   selectedCategory: string | null
-  view: SidebarView
   search: string
-  isLoading?: boolean
-  currentProject: Project | null
-  onAddItem: typeof addItem
-  onSearch: typeof searchAssets
-  onSetSidebarView: typeof setSidebarView
-  onSelectCategory: typeof selectCategory
-  onSetGround: typeof setGround
-  onPrefetchAsset: typeof prefetchAsset
+  isList: boolean
+  isConnected: boolean
+  collectibles: DataByKey<Asset>
 }
 
 export type MapStateProps = Pick<
   Props,
-  'categories' | 'collectibles' | 'selectedCategory' | 'search' | 'view' | 'isLoading' | 'currentProject'
+  'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList' | 'isConnected' | 'collectibles'
 >
-export type MapDispatchProps = Pick<
-  Props,
-  'onAddItem' | 'onSearch' | 'onSetSidebarView' | 'onSelectCategory' | 'onSetGround' | 'onPrefetchAsset'
->
-export type MapDispatch = Dispatch<
-  AddItemAction | SearchAssetsAction | SetSidebarViewAction | SelectCategoryAction | SetGroundAction | PrefetchAssetAction
->
+export type MapDispatchProps = {}
+export type MapDispatch = Dispatch
 
 export type State = {
   search: string

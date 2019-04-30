@@ -1,6 +1,5 @@
-import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component, NFTShape } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
-import { NFTShape } from './NFTShape'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 
 declare var dcl: DecentralandInterface

@@ -10,7 +10,7 @@ import {
   forceLoadCollectibleSuccess
 } from './actions'
 import { Asset, RemoteCollectibleAssetResponse, RemoteCollectibleAsset } from './types'
-import { CategoryName } from 'modules/ui/sidebar/utils'
+import { CategoryName, COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { delay } from 'redux-saga'
@@ -37,7 +37,7 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
   for (let asset of response.assets) {
     if (asset.image_thumbnail_url) {
       assets.push({
-        assetPackId: null,
+        assetPackId: COLLECTIBLE_ASSET_PACK_ID,
         id: asset.token_id,
         tags: [],
         category: CategoryName.COLLECTIBLE_CATEGORY,

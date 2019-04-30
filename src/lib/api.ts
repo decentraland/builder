@@ -1,10 +1,10 @@
 import { env } from 'decentraland-commons'
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 
-const API_URL = env.get('REACT_APP_API_URL', '')
-const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
-const CONTEST_URL = env.get('REACT_APP_CONTEST_SERVER_URL', '')
-const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
+export const API_URL = env.get('REACT_APP_API_URL', '')
+export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
+export const CONTEST_URL = env.get('REACT_APP_CONTEST_SERVER_URL', '')
+export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
