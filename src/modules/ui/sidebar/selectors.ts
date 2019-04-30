@@ -1,14 +1,14 @@
 import { createSelector } from 'reselect'
+
 import { RootState } from 'modules/common/types'
 import { SidebarState } from 'modules/ui/sidebar/reducer'
 import { Category, SidebarView } from 'modules/ui/sidebar/types'
-import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
-import { AssetPackState } from 'modules/assetPack/reducer'
 import { Asset } from 'modules/asset/types'
-import { getCurrentProject } from 'modules/project/selectors'
-import { Project } from 'modules/project/types'
+import { AssetPackState } from 'modules/assetPack/reducer'
+import { getData as getAssetPacks } from 'modules/assetPack/selectors'
+import { AssetPack } from 'modules/assetPack/types'
 import { SIDEBAR_CATEGORIES } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
@@ -16,6 +16,8 @@ export const getState: (state: RootState) => SidebarState = state => state.ui.si
 export const getSearch = (state: RootState) => getState(state).search
 
 export const getSelectedCategory = (state: RootState) => getState(state).selectedCategory
+
+export const getSelectedAssetPackId = (state: RootState) => getState(state).selectedAssetPackId
 
 export const getSidebarView = (state: RootState) => getState(state).view
 
@@ -36,63 +38,65 @@ const isSearchResult = (asset: Asset, search: string) => {
   return false
 }
 
+export const isList = (state: RootState) => getSidebarView(state) === SidebarView.LIST
+
 export const getAvailableAssetPackIds = (state: RootState) => getState(state).availableAssetPackIds
 
 export const getNewAssetPackIds = (state: RootState) => getState(state).newAssetPackIds
 
-export const getSelectedAssetPackIds = createSelector<RootState, SidebarState, AssetPackState['data'], string[]>(
-  getState,
+export const getSelectedAssetPack = createSelector<RootState, string | null, AssetPackState['data'], AssetPack | null>(
+  getSelectedAssetPackId,
   getAssetPacks,
-  (sidebar, _assetPacks) => {
-    const { selectedAssetPackIds, availableAssetPackIds } = sidebar
-    if (selectedAssetPackIds.length === 0) {
-      // Default selection for first time users
-      return availableAssetPackIds
-    } else {
-      // Selection for existing users
-      return selectedAssetPackIds
-    }
+  (selectedAssetPackId, assetPacks) => {
+    return selectedAssetPackId ? assetPacks[selectedAssetPackId] : null
   }
 )
 
 export const getSideBarCategories = createSelector<
   RootState,
-  Project | null,
+  AssetPack | null,
   string,
   string | null,
   SidebarView,
   AssetState['data'],
   Category[]
 >(
-  getCurrentProject,
+  getSelectedAssetPack,
   getSearch,
   getSelectedCategory,
   getSidebarView,
   getAssets,
-  (project, search, category, view, assets) => {
+  (selectedAssetPack, search, selectedCategory, view, assets) => {
     const categories: { [categoryName: string]: Category } = {}
-    const selectedAssetPackId = project ? project.assetPackIds || [] : []
-    Object.values(assets)
-      // filter by selected asset pack
-      .filter(asset => selectedAssetPackId.length === 0 || selectedAssetPackId.includes(asset.assetPackId))
-      // filter assets by search (if any)
-      .filter(asset => !search || isSearchResult(asset, search))
-      // if sidebar is in not in "list" view, filter by selected category
-      .filter(asset => view === SidebarView.LIST || category == null || asset.category === category)
-      // populate categories with filtered assets
-      .forEach(asset => {
-        if (!(asset.category in categories)) {
-          categories[asset.category] = {
-            name: asset.category,
-            assets: [],
-            thumbnail: ''
-          }
+
+    let results = Object.values(assets)
+
+    // filter by search
+    if (search) {
+      results = results.filter(asset => isSearchResult(asset, search))
+    } else if (view !== SidebarView.LIST && selectedAssetPack) {
+      // filter by asset pack if one is selected (and not in list view)
+      results = results.filter(asset => selectedAssetPack.id === asset.assetPackId)
+      // filter by category if one is selected
+      if (selectedCategory) {
+        results = results.filter(asset => asset.category === selectedCategory)
+      }
+    }
+
+    // build categories
+    for (const asset of results) {
+      if (!(asset.category in categories)) {
+        categories[asset.category] = {
+          name: asset.category,
+          assets: [],
+          thumbnail: ''
         }
-        categories[asset.category].assets.push(asset)
-      })
+      }
+      categories[asset.category].assets.push(asset)
+    }
 
     // convert map to array
-    const categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
+    let categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
       ...categories[name],
       thumbnail
     }))
@@ -107,6 +111,34 @@ export const getSideBarCategories = createSelector<
       }
     })
 
+    // move selected category up
+    if (selectedCategory) {
+      categoryArray = [...categoryArray.filter(c => c.name === selectedCategory), ...categoryArray.filter(c => c.name !== selectedCategory)]
+    }
+
+    // move selected asset pack up
+    for (const category of categoryArray) {
+      category.assets.sort((a, b) => {
+        if (selectedAssetPack) {
+          if (a.assetPackId === selectedAssetPack.id && b.assetPackId !== selectedAssetPack.id) {
+            return -1
+          }
+          if (a.assetPackId !== selectedAssetPack.id && b.assetPackId === selectedAssetPack.id) {
+            return 1
+          }
+        }
+        return 0
+      })
+    }
+
     return categoryArray
+  }
+)
+
+export const getSidebarAssetPacks = createSelector<RootState, string[], AssetPackState['data'], AssetPack[]>(
+  getAvailableAssetPackIds,
+  getAssetPacks,
+  (availableAssetPackIds, assetPacks) => {
+    return availableAssetPackIds.map(id => assetPacks[id]).filter(assetPack => !!assetPack)
   }
 )

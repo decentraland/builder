@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Icon } from 'decentraland-ui'
 import { Props, State } from './Drawer.types'
+
 import './Drawer.css'
 
 export default class Drawer extends React.PureComponent<Props, State> {
@@ -15,11 +16,15 @@ export default class Drawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, children, hasLabel } = this.props
+    const { label, children, hasLabel, className } = this.props
     const { isOpen } = this.state
 
+    let classes = 'Drawer'
+    if (className) {
+      classes += ' ' + className
+    }
     return (
-      <div className="Drawer">
+      <div className={classes}>
         {hasLabel ? (
           <div className="heading" onClick={this.handleClick}>
             <span className="label">{label}</span>

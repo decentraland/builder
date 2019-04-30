@@ -76,7 +76,8 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions"
+    "terms_and_conditions": "Terms & Conditions",
+    "loading": "Loading"
   },
   "home_page": {
     "import_scene": "Upload scene",
@@ -102,10 +103,10 @@
   },
   "itemdrawer": {
     "empty_ground": "No Ground",
+    "results": "Results",
     "no_results": "No results",
     "search": "Search items",
-    "search_category": "Search {category}",
-    "title": "Item drawer"
+    "title": "Item Catalog"
   },
   "layout_picker": {
     "columns": "columns",

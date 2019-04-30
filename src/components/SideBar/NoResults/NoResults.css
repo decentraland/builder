@@ -1,0 +1,17 @@
+.NoResults {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.NoResults .text {
+  margin-top: 32px;
+  color: var(--bluish-steel);
+}
+
+.NoResults .watermelon {
+  background: url('../../../images/watermelon.svg');
+}

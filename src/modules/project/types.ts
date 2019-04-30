@@ -7,7 +7,6 @@ export type Project = {
   thumbnail: string
   sceneId: string
   layout: Layout
-  assetPackIds: string[]
   parcels?: { x: number; y: number }[] // Blockchain parcels
   ownerEmail?: string
   createdAt: number

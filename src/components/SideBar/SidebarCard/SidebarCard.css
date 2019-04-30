@@ -1,4 +1,4 @@
-.CategoryCard {
+.SidebarCard {
   display: flex;
   width: calc(var(--sidebar-width) - 32px);
   height: 80px;
@@ -10,22 +10,22 @@
   margin-bottom: 8px;
 }
 
-.CategoryCard:last-child {
+.SidebarCard:last-child {
   margin-bottom: 0;
 }
 
-.CategoryCard:hover {
+.SidebarCard:hover {
   background: rgba(var(--bluish-steel-raw), 0.72);
 }
 
-.CategoryCard .thumbnail {
+.SidebarCard .thumbnail {
   width: 48px;
   height: 48px;
   margin-right: 16px;
   border-radius: 8px;
 }
 
-.CategoryCard .ui.header.small.title {
+.SidebarCard .ui.header.small.title {
   margin-top: 0;
   margin-bottom: 0;
   color: var(--sidebar-heading);
@@ -35,6 +35,6 @@
   text-transform: capitalize;
 }
 
-.CategoryCard .Icon {
+.SidebarCard .Icon {
   margin-left: auto;
 }
