@@ -81,7 +81,8 @@
     "submit": "提交",
     "subscribe": "订阅",
     "templates": "模板",
-    "terms_and_conditions": "使用条款"
+    "terms_and_conditions": "使用条款",
+    "loading": "装载"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",
@@ -111,7 +112,6 @@
     "empty_ground": "末设置地面",
     "no_results": "没找到",
     "search": "搜索",
-    "search_category": "在 {category} 中查找",
     "title": "抽屉"
   },
   "languages": {

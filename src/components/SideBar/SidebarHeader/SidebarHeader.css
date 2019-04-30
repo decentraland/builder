@@ -1,0 +1,40 @@
+.SidebarHeader {
+  color: var(--sidebar-heading);
+  font-size: 17px;
+  user-select: none;
+}
+
+.SidebarHeader.ui.header.medium {
+  padding-right: 16px;
+}
+
+.SidebarHeader .item-drawer-type-buttons .Chip:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.SidebarHeader .item-drawer-type-buttons .Chip:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.SidebarHeader .item-drawer-type-buttons {
+  float: right;
+}
+
+.SidebarHeader .item-drawer-type-buttons .Chip {
+  float: left;
+}
+
+.SidebarHeader .selected-scope {
+  position: relative;
+  display: block;
+  text-align: center;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.SidebarHeader .selected-scope .icon {
+  position: absolute;
+  left: 0px;
+}
