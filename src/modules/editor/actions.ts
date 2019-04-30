@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 
 import { Scene } from 'modules/scene/types'
-import { AssetMappings, Asset } from 'modules/asset/types'
+import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
 import { Gizmo } from './types'
 
@@ -41,7 +41,8 @@ export type CloseEditorAction = ReturnType<typeof closeEditor>
 
 export const UPDATE_EDITOR = 'Update editor'
 
-export const updateEditor = (sceneId: string, scene: Scene, mappings: AssetMappings) => action(UPDATE_EDITOR, { sceneId, scene, mappings })
+export const updateEditor = (sceneId: string, scene: Scene, mappings: Record<string, string>) =>
+  action(UPDATE_EDITOR, { sceneId, scene, mappings })
 
 export type UpdateEditorAction = ReturnType<typeof updateEditor>
 

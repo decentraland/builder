@@ -18,6 +18,7 @@ import {
   SetGroundAction,
   FIX_CURRENT_SCENE
 } from 'modules/scene/actions'
+import { getMappings } from 'modules/asset/utils'
 import { RootState } from 'modules/common/types'
 import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponents, getScene } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
@@ -58,7 +59,8 @@ function* handleAddItem(action: AddItemAction) {
       id: gltfId,
       type: ComponentType.GLTFShape,
       data: {
-        src: asset.url
+        src: asset.url,
+        mappings: getMappings(asset)
       }
     }
   }
@@ -239,7 +241,8 @@ function* handleSetGround(action: SetGroundAction) {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.url
+          src: asset.url,
+          mappings: getMappings(asset)
         }
       }
     } else {
