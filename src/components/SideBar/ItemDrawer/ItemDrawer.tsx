@@ -33,7 +33,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
       return <NoResults />
     } else if (!isList && !selectedAssetPack && !isSearch) {
       return <AssetPackList />
-    } else if (!isList && !selectedCategory && !isSearch) {
+    } else if (!isList && !selectedCategory && !isSearch && categories.length > 1) {
       return <CategoryList />
     } else {
       return categories.map(category => <AssetList category={category} hasLabel={categories.length > 1} />)
