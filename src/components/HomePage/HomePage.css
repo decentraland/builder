@@ -90,12 +90,6 @@
   padding: 0px;
 }
 
-.pirate-banner {
-  height: 100px;
-  width: 100%;
-  background: url(../../images/pirate-banner.png);
-}
-
 @keyframes templateAnimation {
   0% {
     background: rgba(var(--bluish-steel-raw), 0.16);
