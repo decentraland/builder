@@ -9,8 +9,9 @@
     "title": "Enviar tu escena"
   },
   "banners": {
-    "contest_winners": "¡El concurso ha terminado! Descubre los ganadores {link}.",
-    "contest_winners_link": "https://contest.decentraland.org/es"
+    "promo_title": "Estan listos chicos?",
+    "promo_subtitle": "El paquete de Piratas acaba de zarpar! Construye escenas y cuenta historias sobre tesoros y aventuras con cientos de nuevos objetos.",
+    "promo_cta": "Start Building"
   },
   "contest": {
     "banner": {
