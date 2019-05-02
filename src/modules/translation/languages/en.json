@@ -49,7 +49,7 @@
   "export_modal": {
     "action": "Download",
     "loading": "Downloading...",
-    "description": "You can backup your scene for use elsewhere. This is a great way to share scenes and collaborate with friends!",
+    "description": "You can export your scene for use in the Decentraland SDK, or the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
     "title": "Download scene"
   },
   "global": {
