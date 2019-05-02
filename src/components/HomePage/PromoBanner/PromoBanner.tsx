@@ -1,10 +1,10 @@
 import React from 'react'
 import { Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { Props } from './PromoBanner.types'
 
 import './PromoBanner.css'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export default class PromoBanner extends React.PureComponent<Props> {
   render() {
