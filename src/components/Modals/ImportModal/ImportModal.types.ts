@@ -16,6 +16,7 @@ export type MapDispatchProps = Pick<Props, 'onImport'>
 
 export type ImportedFile = {
   id: string
+  version: number
   project: (Project & { thumbnail?: string }) | null
   scene: Scene | null
   fileName: string

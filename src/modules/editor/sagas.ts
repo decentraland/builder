@@ -52,12 +52,11 @@ import {
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
-import { getAssetMappings } from 'modules/asset/selectors'
 import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
-import { AssetMappings, GROUND_CATEGORY } from 'modules/asset/types'
+import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
@@ -65,7 +64,7 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
-import { getGizmo, getSelectedEntityId } from './selectors'
+import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
 
 const editorWindow = window as EditorWindow
 
@@ -133,8 +132,8 @@ function* handleSceneChange() {
 function* renderScene() {
   const scene: Scene = yield select(getCurrentScene)
   if (scene) {
-    const assetMappings: AssetMappings = yield select(getAssetMappings)
-    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, assetMappings)))
+    const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
+    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, mappings)))
   }
 }
 

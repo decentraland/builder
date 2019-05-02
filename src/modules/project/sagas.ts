@@ -30,7 +30,7 @@ import { createScene, setGround, provisionScene } from 'modules/scene/actions'
 import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 
-export const BUILDER_FILE_VERSION = 1
+export const BUILDER_FILE_VERSION = 2
 
 const DEFAULT_GROUND_ASSET = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',

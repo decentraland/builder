@@ -18,8 +18,6 @@ export type AssetResource = {
   thumbnail: string
 }
 
-export type AssetMappings = Record<string, string>
-
 export type AssetRegistryResponse = {
   registries: AssetRegistry[]
 }
