@@ -2,7 +2,7 @@
 
 # Decentraland Builder
 
-You can create beautiful scenes for [Decentraland](https://decentraland.org) even if you don't own a parcel.
+You can create beautiful scenes for [Decentraland](https://decentraland.org) even if you don't own a parcel!
 
 ![](https://github.com/decentraland/builder/blob/master/public/images/intro.gif)
 
