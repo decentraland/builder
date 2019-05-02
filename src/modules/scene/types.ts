@@ -16,6 +16,7 @@ export enum ComponentType {
 export type ComponentData = {
   [ComponentType.GLTFShape]: {
     src: string
+    mappings: Record<string, string>
   }
 
   [ComponentType.Transform]: {

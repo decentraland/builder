@@ -6,9 +6,9 @@ import { Layout } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)
 
-export const CREATE_SCENE = 'Provision scene'
+export const CREATE_SCENE = 'Create scene'
 
-export const createScene = (newScene: Scene) => action(CREATE_SCENE, { newScene })
+export const createScene = (scene: Scene) => action(CREATE_SCENE, { scene })
 
 export type CreateSceneAction = ReturnType<typeof createScene>
 
@@ -16,7 +16,7 @@ export type CreateSceneAction = ReturnType<typeof createScene>
 
 export const PROVISION_SCENE = 'Provision scene'
 
-export const provisionScene = (newScene: Scene) => action(PROVISION_SCENE, { newScene })
+export const provisionScene = (scene: Scene) => action(PROVISION_SCENE, { scene })
 
 export type ProvisionSceneAction = ReturnType<typeof provisionScene>
 

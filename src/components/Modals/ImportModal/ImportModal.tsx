@@ -8,9 +8,11 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
 import Icon from 'components/Icon'
-import { BUILDER_FILE_NAME } from 'modules/project/sagas'
+import { BUILDER_FILE_NAME, BUILDER_FILE_VERSION } from 'modules/project/sagas'
+import { migrations } from 'modules/migrations/import'
 import { SaveFile } from 'modules/project/types'
 import { Props, State, ImportedFile } from './ImportModal.types'
+
 import './ImportModal.css'
 
 export default class ImportModal extends React.PureComponent<Props, State> {
@@ -103,7 +105,16 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(BUILDER_FILE_NAME)
         const content = await contentRaw.async('text')
-        const parsed: ImportedFile = JSON.parse(content)
+        let parsed: ImportedFile = JSON.parse(content)
+
+        // run migrations
+        let version = parsed.version
+        while (version < BUILDER_FILE_VERSION) {
+          version++
+          if (version in migrations) {
+            parsed = migrations[version](parsed)
+          }
+        }
 
         if (!parsed.project || !parsed.scene) {
           throw new Error('Invalid project')
@@ -118,6 +129,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
       } catch (e) {
         projects.push({
           id: uuidv4(),
+          version: BUILDER_FILE_VERSION,
           project: null,
           scene: null,
           fileName: file.name,
