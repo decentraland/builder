@@ -25,9 +25,10 @@ import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
+import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds, areEqualMappings } from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -39,6 +40,7 @@ export function* sceneSaga() {
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
   yield takeLatest(FIX_CURRENT_SCENE, handleFixCurrentScene)
+  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
 }
 
 function* handleAddItem(action: AddItemAction) {
@@ -308,4 +310,52 @@ function* handleFixCurrentScene() {
   }
 
   yield put(provisionScene({ ...scene, components }))
+}
+
+function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
+  // load current scene (if any)
+  const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
+  if (!scene) return
+
+  // keep track of the updated components
+  const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
+
+  // generate map of GLTFShape components by source
+  const gltfShapes: Record<string, ComponentDefinition<ComponentType.GLTFShape>[]> = {}
+  for (const component of Object.values(scene.components)) {
+    if (component.type === ComponentType.GLTFShape) {
+      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+      if (!gltfShapes[gltfShape.data.src]) {
+        gltfShapes[gltfShape.data.src] = []
+      }
+      gltfShapes[gltfShape.data.src].push(gltfShape)
+    }
+  }
+
+  // loop over each loaded asset and update the mappings of the components using it
+  for (const assetPack of action.payload.assetPacks) {
+    for (const asset of assetPack.assets) {
+      if (asset.url in gltfShapes) {
+        for (const component of gltfShapes[asset.url]) {
+          const mappings = getMappings(asset)
+          if (!areEqualMappings(component.data.mappings, mappings)) {
+            updatedComponents[component.id] = {
+              ...component,
+              data: {
+                ...component.data,
+                mappings: getMappings(asset)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // if there are any components that need to be updated, provision a new scene
+  const hasUpdates = Object.keys(updatedComponents).length > 0
+  if (hasUpdates) {
+    const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
+    yield put(provisionScene(newScene))
+  }
 }

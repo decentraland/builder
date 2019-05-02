@@ -71,3 +71,17 @@ export function snapToBounds(position: Vector3, bounds: Vector3): Vector3 {
     z: Math.max(Math.min(position.z, bounds.z), 0)
   }
 }
+
+export function areEqualMappings(mappingsA: Record<string, string>, mappingsB: Record<string, string>) {
+  for (const keyA of Object.keys(mappingsA)) {
+    if (mappingsA[keyA] !== mappingsB[keyA]) {
+      return false
+    }
+  }
+  for (const keyB of Object.keys(mappingsB)) {
+    if (mappingsA[keyB] !== mappingsB[keyB]) {
+      return false
+    }
+  }
+  return true
+}
