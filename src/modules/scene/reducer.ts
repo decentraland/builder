@@ -38,13 +38,13 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
   switch (action.type) {
     case CREATE_SCENE:
     case PROVISION_SCENE: {
-      const { newScene } = action.payload
+      const { scene } = action.payload
 
       return {
         ...state,
         data: {
           ...state.data,
-          [newScene.id]: { ...newScene, components: { ...newScene.components }, entities: { ...newScene.entities } }
+          [scene.id]: { ...scene, components: { ...scene.components }, entities: { ...scene.entities } }
         }
       }
     }
