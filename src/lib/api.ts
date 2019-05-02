@@ -27,12 +27,14 @@ export class API extends BaseAPI {
     return this.request('get', `${ASSETS_URL}/${id}.json`, {})
   }
 
-  async fetchCollectibles(ownerAddress: string, contractAddress: string) {
-    const req = await fetch(
-      `https://api.opensea.io/api/v1/assets/?owner=${ownerAddress}&asset_contract_address=${contractAddress}&force_update=true`
-    )
-    const json = await req.json()
-    return json
+  async fetchCollectibleRegistries() {
+    const req = await fetch(`https://schema-api-staging.now.sh/dar/`)
+    return req.json()
+  }
+
+  async fetchCollectibleAssets(registry: string, ownerAddress: string) {
+    const req = await fetch(`https://schema-api-staging.now.sh/dar/${registry}/address/${ownerAddress}`)
+    return req.json()
   }
 
   async refreshCollectible(contractAddress: string, tokenId: string) {

@@ -5,7 +5,7 @@ import { ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { getComponentByType } from 'modules/scene/selectors'
 import { AssetMappings, Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { CategoryName } from 'modules/ui/sidebar/utils'
+import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
 
@@ -62,7 +62,7 @@ export const getCollectibleAssets = createSelector<RootState, AssetState['data']
     let out: ModelById<Asset> = {}
 
     for (let asset of Object.values(assets)) {
-      if (asset.category === CategoryName.COLLECTIBLE_CATEGORY) {
+      if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
         out[asset.id] = asset
       }
     }

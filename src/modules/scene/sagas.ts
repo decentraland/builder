@@ -33,7 +33,7 @@ import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { CategoryName } from 'modules/ui/sidebar/utils'
+import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds } from './utils'
 
 const editorWindow = window as EditorWindow
@@ -58,7 +58,7 @@ function* handleAddItem(action: AddItemAction) {
   const transformId = uuidv4()
   const newComponents = { ...scene.components }
 
-  if (asset.category === CategoryName.COLLECTIBLE_CATEGORY) {
+  if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
     shapeId = yield select(getCollectibleId(asset.url))
 
     if (!shapeId) {

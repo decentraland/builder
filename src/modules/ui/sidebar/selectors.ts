@@ -9,7 +9,7 @@ import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
-import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID } from './utils'
+import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, CategoryName } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -95,13 +95,22 @@ export const getSideBarCategories = createSelector<
       categories[asset.category].assets.push(asset)
     }
 
-    // convert map to array
-    let categoryArray = Object.values(SIDEBAR_CATEGORIES)
-      .filter(({ name }) => name in categories)
-      .map<Category>(({ name, thumbnail }) => ({
+    let categoryArray = Object.values(categories).map<Category>(({ name }) => {
+      const knownCategory = SIDEBAR_CATEGORIES[name as CategoryName]
+      const category = categories[name]
+      let thumbnail = category.thumbnail
+
+      if (knownCategory) {
+        thumbnail = knownCategory.thumbnail
+      } else if (!thumbnail) {
+        thumbnail = category.assets[0].thumbnail
+      }
+
+      return {
         ...categories[name],
         thumbnail
-      }))
+      }
+    })
 
     // move selected category up
     if (selectedCategory) {

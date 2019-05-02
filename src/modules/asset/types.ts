@@ -20,17 +20,42 @@ export type AssetResource = {
 
 export type AssetMappings = Record<string, string>
 
-export type RemoteCollectibleAssetResponse = {
-  asset_type_ownerships: []
-  assets: RemoteCollectibleAsset[]
+export type AssetRegistryResponse = {
+  registries: AssetRegistry[]
 }
 
-export type RemoteCollectibleAsset = {
-  token_id: string
-  background_color: string
-  image_thumbnail_url: string
+export type AssetRegistry = {
+  common_name: string
   name: string
+  contract_uri: string
   description: string
-  external_link: string
-  /* Excerpt of the entire OpenSea API */
+  schema_url: string
+  image_url: string
+}
+
+export type DARAssetsResponse = {
+  assets: DARAsset[]
+}
+
+export type DARAsset = {
+  name: string
+  owner: string
+  description: string
+  image: string
+  registry: string
+  token_id: string
+  uri: string
+  files: DARAssetFile[]
+  traits: any[]
+}
+
+export type DARAssetFile = {
+  name: string
+  url: string
+}
+
+export type DARAssetTrait = {
+  id: string
+  name: string
+  type: string
 }
