@@ -343,7 +343,7 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
               ...component,
               data: {
                 ...component.data,
-                mappings: getMappings(asset)
+                mappings
               }
             }
           }
