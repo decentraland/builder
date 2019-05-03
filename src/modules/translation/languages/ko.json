@@ -9,8 +9,9 @@
     "title": "풍경 제출하기"
   },
   "banners": {
-    "contest_winners": "{link} 우승작들을 확인해보시기 바랍니다.",
-    "contest_winners_link": "https://contest.decentraland.org/ko"
+    "promo_title": "준비 되셨나요?",
+    "promo_subtitle": "빌더용 해적 팩이 출항 준비를 마쳤습니다! 수백 개의 해적 테마 아이템을 가지고 모험과 보물에 대한 이야기를 기술하는 풍경을 만들어 보시기 바랍니다.",
+    "promo_cta": "제작 시작하기"
   },
   "contest": {
     "banner": {

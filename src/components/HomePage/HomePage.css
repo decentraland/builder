@@ -90,12 +90,6 @@
   padding: 0px;
 }
 
-.home-page-divider {
-  height: 1px;
-  width: 100%;
-  background: var(--divider);
-}
-
 @keyframes templateAnimation {
   0% {
     background: rgba(var(--bluish-steel-raw), 0.16);

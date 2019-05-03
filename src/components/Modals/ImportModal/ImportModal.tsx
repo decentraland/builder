@@ -6,11 +6,12 @@ import uuidv4 from 'uuid/v4'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-
+import { migrations } from 'modules/migrations/import'
 import { SaveFile } from 'modules/project/types'
-import { EXPORT_PATH } from 'modules/project/export'
+import { EXPORT_PATH, BUILDER_FILE_VERSION } from 'modules/project/export'
 import Icon from 'components/Icon'
 import { Props, State, ImportedFile } from './ImportModal.types'
+
 import './ImportModal.css'
 
 export default class ImportModal extends React.PureComponent<Props, State> {
@@ -103,7 +104,16 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.BUILDER_FILE)
         const content = await contentRaw.async('text')
-        const parsed: ImportedFile = JSON.parse(content)
+        let parsed: ImportedFile = JSON.parse(content)
+
+        // run migrations
+        let version = parsed.version || 1
+        while (version < BUILDER_FILE_VERSION) {
+          version++
+          if (version in migrations) {
+            parsed = migrations[version](parsed)
+          }
+        }
 
         if (!parsed.project || !parsed.scene) {
           throw new Error('Invalid project')
@@ -118,6 +128,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
       } catch (e) {
         projects.push({
           id: uuidv4(),
+          version: BUILDER_FILE_VERSION,
           project: null,
           scene: null,
           fileName: file.name,

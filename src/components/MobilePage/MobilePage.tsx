@@ -3,7 +3,6 @@ import { Button, Hero, Header } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import HomePageBanner from 'components/Banners/HomePageBanner'
 import MobilePageHero from 'components/MobilePageHero/MobilePageHero'
 import { api, EMAIL_INTEREST } from 'lib/api'
 
@@ -64,7 +63,6 @@ export default class MobilePage extends React.PureComponent<Props, State> {
           onChange={this.handleEmailChange}
           onWatchVideo={this.handleOpenVideo}
         />
-        <HomePageBanner className="mobile-page-banner" />
         <div className="gallery">
           <Header size="huge" textAlign="center">
             {t('mobile_page.gallery_title')}

@@ -11,7 +11,7 @@ import { FullAssetPack } from 'modules/assetPack/types'
 import { CONTENT_SERVER } from 'modules/editor/utils'
 import { api } from 'lib/api'
 
-export const BUILDER_FILE_VERSION = 1
+export const BUILDER_FILE_VERSION = 2
 
 export enum EXPORT_PATH {
   BUILDER_FILE = 'builder.json',

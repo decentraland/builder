@@ -15,9 +15,9 @@ import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { ACCEPT_TERMS, SUBMIT_PROJECT_SUCCESS } from 'modules/contest/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
+import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
-import { migrations } from './migrations'
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
