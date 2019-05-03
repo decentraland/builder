@@ -11,7 +11,10 @@
   "banners": {
     "promo_title": "准备好了吗？",
     "promo_subtitle": "编辑器刚刚推出海盗主题！用上百种新的海盗物品制作和讲述有关宝藏和冒险的故事。",
-    "promo_cta": "开始设计"
+    "promo_cta": "开始设计",
+
+    "contest_winners": "创作大赛已经结束，请在{link}查看中奖名单",
+    "contest_winners_link": "https://contest.decentraland.org/zh"
   },
   "contest": {
     "banner": {
