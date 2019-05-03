@@ -9,6 +9,8 @@
     "title": "Submit your scene"
   },
   "banners": {
+    "contest_winners": "The Creator Contest has ended! See the winners {link}.",
+    "contest_winners_link": "https://contest.decentraland.org/en",
     "promo_title": "Arrr you ready?",
     "promo_subtitle": "The Pirate Pack for the Builder has just set sail! Build scenes telling tales of treasure and adventure with hundreds of new pirate-themed items.",
     "promo_cta": "Start Building"
