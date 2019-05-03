@@ -7,9 +7,7 @@ import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
 import { Project } from 'modules/project/types'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
-import { FullAssetPack } from 'modules/assetPack/types'
 import { CONTENT_SERVER } from 'modules/editor/utils'
-import { api } from 'lib/api'
 
 export const BUILDER_FILE_VERSION = 2
 
@@ -23,8 +21,6 @@ export enum EXPORT_PATH {
   TSCONFIG_FILE = 'tsconfig.json',
   MODELS_FOLDER = 'models'
 }
-
-type ModelPath = { local: string; remote: string }
 
 export async function createFiles(args: {
   project: Project
@@ -176,73 +172,43 @@ export function createStaticFiles() {
 
 export async function createModels(args: { scene: Scene; onProgress: (args: { progress: number; total: number }) => void }) {
   const { scene, onProgress } = args
-  const modelPaths: ModelPath[] = []
-  const assetsByAssetPack: Record<string, string[]> = {}
+  const mappings: Record<string, string> = {}
 
-  // progress
+  // Track progress
   let progress = 0
   let total = 0
 
-  // Filter asset packs
+  // Gather mappings
   for (const component of Object.values(scene.components)) {
     if (component.type === ComponentType.GLTFShape) {
-      // @ts-ignore
-      const [assetPackId, ...rest] = (component as ComponentDefinition<ComponentType.GLTFShape>).data.src.split('/')
-      if (!(assetPackId in assetsByAssetPack)) {
-        assetsByAssetPack[assetPackId] = []
-      }
-      const src = rest.join('/')
-      assetsByAssetPack[assetPackId].push(src)
-    }
-  }
-  const assetPacks: Record<string, FullAssetPack> = {}
-  const assetPackIds = Object.keys(assetsByAssetPack)
-  const assetPackPromises = []
-  total += assetPackIds.length
-  onProgress({ progress, total })
-  for (const assetPackId of assetPackIds) {
-    const promise = api.fetchAssetPack(assetPackId).then((assetPack: FullAssetPack) => {
-      progress++
-      onProgress({ progress, total })
-      assetPacks[assetPackId] = assetPack
-    })
-    assetPackPromises.push(promise)
-  }
-  await Promise.all(assetPackPromises)
-
-  for (const assetPackId of Object.keys(assetsByAssetPack)) {
-    const assetPack = assetPacks[assetPackId]
-    for (const assetSrc of assetsByAssetPack[assetPackId]) {
-      const asset = assetPack.assets.find(asset => assetSrc in asset.contents)
-      if (!asset) {
-        console.warn(`Could not load asset with src "${assetSrc}"`)
-        continue
-      }
-      for (const path of Object.keys(asset.contents)) {
-        const hash = asset.contents[path]
-        const isThumbnail = asset.thumbnail.includes(hash)
-        if (!isThumbnail) {
-          modelPaths.push({ local: path, remote: CONTENT_SERVER + hash })
-        }
+      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+      for (const key of Object.keys(gltfShape.data.mappings)) {
+        const path = key
+          .split('/')
+          .slice(1)
+          .join('/') // drop the asset pack id namespace
+        mappings[path] = CONTENT_SERVER + gltfShape.data.mappings[key]
       }
     }
   }
 
-  const modelPromises = []
-  total += modelPaths.length
+  // Download models
+  const promises = []
+  total += Object.keys(mappings).length
   onProgress({ progress, total })
-  for (const modelPath of modelPaths) {
-    const promise = fetch(modelPath.remote)
+  for (const path of Object.keys(mappings)) {
+    const promise = fetch(mappings[path])
       .then(resp => resp.blob())
       .then(blob => {
         progress++
         onProgress({ progress, total })
-        return { path: modelPath.local, blob }
+        return { path, blob }
       })
-    modelPromises.push(promise)
+    promises.push(promise)
   }
 
-  const results = await Promise.all<{ path: string; blob: Blob }>(modelPromises)
+  // Reduce results into a record of blobs
+  const results = await Promise.all<{ path: string; blob: Blob }>(promises)
   return results.reduce<Record<string, Blob>>((obj, item) => {
     const path = `${EXPORT_PATH.MODELS_FOLDER}/${item.path}`
     return { ...obj, [path]: item.blob }
