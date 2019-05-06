@@ -4,7 +4,7 @@ FROM node:10.15.1 as base
 
 # env vars for building
 ENV NODE_PATH src
-ENV REACT_APP_ASSETS_URL https://builder-pack.now.sh/
+ENV REACT_APP_ASSETS_URL https://builder-packs-stg.now.sh
 ENV REACT_APP_CONTENT_SERVER_URL https://content.decentraland.today/contents/
 ENV REACT_APP_CONTEST_SERVER_URL https://contest-server.decentraland.today/v1
 ENV REACT_APP_INTERCOM_APP_ID z0h94kay
@@ -19,14 +19,11 @@ RUN \
   apt-get install -y build-essential g++
 
 # use cached layer for node modules
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-
-# set the default working directory
+ADD . /tmp
 RUN mkdir -p /app
+RUN cd /tmp && npm install && cp /tmp/node_modules/decentraland-ecs/artifacts/editor.js /tmp/public
 RUN cp -a /tmp/node_modules /app/
-
-# copy local files
+RUN cp -a /tmp/public /app/
 ADD . /app
 ADD package.json /app/package.json
 WORKDIR /app
