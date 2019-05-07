@@ -55,6 +55,7 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
           }
         }
       }
+      break
     }
     case 'Close editor': {
       for (const componentId in editorComponents) {
@@ -63,6 +64,7 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
       for (const entityId in engine.entities) {
         engine.removeEntity(engine.entities[entityId])
       }
+      break
     }
   }
 }
