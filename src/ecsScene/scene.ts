@@ -56,6 +56,14 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         }
       }
     }
+    case 'Close editor': {
+      for (const componentId in editorComponents) {
+        removeComponent(componentId)
+      }
+      for (const entityId in engine.entities) {
+        engine.removeEntity(engine.entities[entityId])
+      }
+    }
   }
 }
 
@@ -121,24 +129,29 @@ function removeUnusedComponents(components: Record<string, AnyComponent>) {
   for (const componentId in editorComponents) {
     const inScene = componentId in components
     if (!inScene) {
-      const originalComponent = editorComponents[componentId]
-
-      try {
-        engine.disposeComponent(originalComponent)
-      } catch (e) {
-        // stub, non-disposable components fall here
-      }
-
-      for (const entityId in engine.entities) {
-        const entity = engine.entities[entityId]
-        if (entity.hasComponent(originalComponent)) {
-          entity.removeComponent(originalComponent)
-        }
-      }
-
-      delete editorComponents[componentId]
+      removeComponent(componentId)
     }
   }
+}
+
+function removeComponent(componentId: string) {
+  const originalComponent = editorComponents[componentId]
+  if (!originalComponent) return
+
+  try {
+    engine.disposeComponent(originalComponent)
+  } catch (e) {
+    // stub, non-disposable components fall here
+  }
+
+  for (const entityId in engine.entities) {
+    const entity = engine.entities[entityId]
+    if (entity.hasComponent(originalComponent)) {
+      entity.removeComponent(originalComponent)
+    }
+  }
+
+  delete editorComponents[componentId]
 }
 
 function removeUnusedEntities(entities: Record<string, EntityDefinition>) {
