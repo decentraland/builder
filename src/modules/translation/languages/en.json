@@ -1,4 +1,9 @@
 {
+  "@dapps": {
+    "sign_in": {
+      "get_started": "asd"
+    }
+  },
   "add_to_contest": {
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your scene:",

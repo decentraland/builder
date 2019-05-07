@@ -3,7 +3,12 @@ import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Asset } from 'modules/asset/types'
 import { LOAD_ASSET_PACKS_REQUEST, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_FAILURE } from 'modules/assetPack/actions'
 import { AssetPackReducerAction } from 'modules/assetPack/reducer'
-import { LOAD_COLLECTIBLES_SUCCESS, LoadCollectiblesSuccessAction } from './actions'
+import {
+  LOAD_COLLECTIBLES_SUCCESS,
+  LoadCollectiblesSuccessAction,
+  LOAD_COLLECTIBLES_REQUEST,
+  LoadCollectiblesRequestAction
+} from './actions'
 
 export type AssetState = {
   data: ModelById<Asset>
@@ -17,10 +22,11 @@ const INITIAL_STATE: AssetState = {
   error: null
 }
 
-export type AssetReducerAction = AssetPackReducerAction | LoadCollectiblesSuccessAction
+export type AssetReducerAction = AssetPackReducerAction | LoadCollectiblesSuccessAction | LoadCollectiblesRequestAction
 
 export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction): AssetState => {
   switch (action.type) {
+    case LOAD_COLLECTIBLES_REQUEST:
     case LOAD_ASSET_PACKS_REQUEST: {
       return {
         ...state,

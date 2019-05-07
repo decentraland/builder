@@ -70,7 +70,7 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.NFTShape,
         data: {
-          url: `ethereum://CryptoKitties/${asset.id}`
+          url: asset.url
         }
       }
     }

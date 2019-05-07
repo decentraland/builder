@@ -12,11 +12,12 @@ export type Props = {
   isList: boolean
   isConnected: boolean
   collectibles: DataByKey<Asset>
+  isLoadingAssets: boolean
 }
 
 export type MapStateProps = Pick<
   Props,
-  'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList' | 'isConnected' | 'collectibles'
+  'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList' | 'isConnected' | 'isLoadingAssets' | 'collectibles'
 >
 export type MapDispatchProps = {}
 export type MapDispatch = Dispatch
