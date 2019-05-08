@@ -8,6 +8,7 @@
   background: rgba(var(--bluish-steel-raw), 0.4);
   cursor: pointer;
   margin-bottom: 8px;
+  user-select: none;
 }
 
 .SidebarCard:last-child {
@@ -23,6 +24,20 @@
   height: 48px;
   margin-right: 16px;
   border-radius: 8px;
+}
+
+.SidebarCard img.thumbnail:after {
+  display: block;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(var(--bluish-steel-raw), 0.28);
+  border-radius: 100%;
+  content: '';
 }
 
 .SidebarCard .ui.header.small.title {

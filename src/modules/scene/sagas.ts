@@ -20,7 +20,14 @@ import {
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import { RootState } from 'modules/common/types'
-import { getGLTFId, getCurrentScene, getEntityComponentByType, getEntityComponents, getScene } from 'modules/scene/selectors'
+import {
+  getGLTFId,
+  getCurrentScene,
+  getEntityComponentByType,
+  getEntityComponents,
+  getScene,
+  getCollectibleId
+} from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
@@ -28,6 +35,7 @@ import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
+import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds, areEqualMappings } from './utils'
 
 const editorWindow = window as EditorWindow
@@ -47,29 +55,46 @@ function* handleAddItem(action: AddItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
+  let shapeId: string
   let { position } = action.payload
   const { asset } = action.payload
-
-  let gltfId = yield select(getGLTFId(asset.url))
   const transformId = uuidv4()
-
   const newComponents = { ...scene.components }
-
-  if (!gltfId) {
-    gltfId = uuidv4()
-    newComponents[gltfId] = {
-      id: gltfId,
-      type: ComponentType.GLTFShape,
-      data: {
-        src: asset.url,
-        mappings: getMappings(asset)
-      }
-    }
-  }
 
   if (!position) {
     position = yield call(editorWindow.editor.getCameraTarget)
     position!.y = 0
+  }
+
+  if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
+    shapeId = yield select(getCollectibleId(asset.url))
+
+    if (!shapeId) {
+      shapeId = uuidv4()
+      newComponents[shapeId] = {
+        id: shapeId,
+        type: ComponentType.NFTShape,
+        data: {
+          url: asset.url
+        }
+      }
+    }
+
+    position = { ...position!, y: 1.72 }
+  } else {
+    shapeId = yield select(getGLTFId(asset.url))
+
+    if (!shapeId) {
+      shapeId = uuidv4()
+      newComponents[shapeId] = {
+        id: shapeId,
+        type: ComponentType.GLTFShape,
+        data: {
+          src: asset.url,
+          mappings: getMappings(asset)
+        }
+      }
+    }
   }
 
   const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
@@ -90,7 +115,7 @@ function* handleAddItem(action: AddItemAction) {
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: [gltfId, transformId] }
+  newEntities[entityId] = { id: entityId, components: [shapeId, transformId] }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action

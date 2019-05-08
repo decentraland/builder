@@ -18,7 +18,7 @@ export default class SidebarCard extends React.PureComponent<Props> {
 
     return (
       <div className="SidebarCard" onClick={this.handleClick}>
-        <img className="thumbnail" src={thumbnail} alt={`${title} thumbnail`} />
+        <img className="thumbnail" src={thumbnail} alt="" />
         <Header size="small" className="title">
           {title}
         </Header>

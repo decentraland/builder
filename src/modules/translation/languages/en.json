@@ -1,4 +1,9 @@
 {
+  "@dapps": {
+    "sign_in": {
+      "get_started": "asd"
+    }
+  },
   "add_to_contest": {
     "contact_information": "Contact information",
     "error_occurred": "An error occurred trying to submit your scene:",
@@ -9,9 +14,18 @@
     "title": "Submit your scene"
   },
   "banners": {
-    "promo_title": "Arrr you ready?",
-    "promo_subtitle": "The Pirate Pack for the Builder has just set sail! Build scenes telling tales of treasure and adventure with hundreds of new pirate-themed items.",
-    "promo_cta": "Start Building"
+    "promo_title": "You’re looking Dapper today!",
+    "promo_subtitle": "Complete the look by displaying your CryptoKitty in your scene. Don't have a CryptoKitty? Make a Dapper wallet and get a free, unique Purrstige Cat.",
+    "promo_cta": "Install Dapper",
+    "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Get a Dapper wallet with a free {cta}.",
+    "dapper_homepage_cta": "Purrstige Cat",
+    "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!"
+  },
+  "wallet": {
+    "title": "Connect your wallet to decorate your scene with crypto-collectibles.",
+    "promo_title": "Don’t have a wallet yet?",
+    "promo_body": "Get one from {cta} with a free Purrstige Cat to add to your scene!",
+    "promo_cta": "Dapper"
   },
   "contest": {
     "banner": {

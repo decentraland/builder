@@ -9,7 +9,7 @@ import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
-import { SIDEBAR_CATEGORIES } from './utils'
+import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, CategoryName } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -95,19 +95,20 @@ export const getSideBarCategories = createSelector<
       categories[asset.category].assets.push(asset)
     }
 
-    // convert map to array
-    let categoryArray = SIDEBAR_CATEGORIES.filter(({ name }) => name in categories).map<Category>(({ name, thumbnail }) => ({
-      ...categories[name],
-      thumbnail
-    }))
+    let categoryArray = Object.values(categories).map<Category>(({ name }) => {
+      const knownCategory = SIDEBAR_CATEGORIES[name as CategoryName]
+      const category = categories[name]
+      let thumbnail = category.thumbnail
 
-    // add categories that are not present in SIDEBAR_CATEGORIES (fallback)
-    Object.values(categories).forEach(category => {
-      if (!categoryArray.some(cat => cat.name === category.name)) {
-        categoryArray.push({
-          ...category,
-          thumbnail: category.assets[0].thumbnail
-        })
+      if (knownCategory) {
+        thumbnail = knownCategory.thumbnail
+      } else if (!thumbnail) {
+        thumbnail = category.assets[0].thumbnail
+      }
+
+      return {
+        ...categories[name],
+        thumbnail
       }
     })
 
@@ -135,10 +136,15 @@ export const getSideBarCategories = createSelector<
   }
 )
 
-export const getSidebarAssetPacks = createSelector<RootState, string[], AssetPackState['data'], AssetPack[]>(
-  getAvailableAssetPackIds,
+export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['data'], AssetPack[]>(
   getAssetPacks,
-  (availableAssetPackIds, assetPacks) => {
-    return availableAssetPackIds.map(id => assetPacks[id]).filter(assetPack => !!assetPack)
+  assetPacks => {
+    const a = Object.values(assetPacks).sort((_, pack) => {
+      if (pack.id === COLLECTIBLE_ASSET_PACK_ID) return -1
+      return 0
+    })
+
+    console.log(a)
+    return a
   }
 )

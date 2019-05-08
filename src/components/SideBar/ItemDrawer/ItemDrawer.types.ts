@@ -1,6 +1,8 @@
 import { Dispatch } from 'redux'
 import { Category } from 'modules/ui/sidebar/types'
 import { AssetPack } from 'modules/assetPack/types'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { Asset } from 'modules/asset/types'
 
 export type Props = {
   categories: Category[]
@@ -8,9 +10,15 @@ export type Props = {
   selectedCategory: string | null
   search: string
   isList: boolean
+  isConnected: boolean
+  collectibles: DataByKey<Asset>
+  isLoadingAssets: boolean
 }
 
-export type MapStateProps = Pick<Props, 'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList'>
+export type MapStateProps = Pick<
+  Props,
+  'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList' | 'isConnected' | 'isLoadingAssets' | 'collectibles'
+>
 export type MapDispatchProps = {}
 export type MapDispatch = Dispatch
 

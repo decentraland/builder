@@ -1,8 +1,8 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import Watermelon from 'components/Watermelon'
 
 import './NoResults.css'
-import Watermelon from 'components/Watermelon'
 
 export default class NoResults extends React.PureComponent {
   render() {

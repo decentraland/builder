@@ -355,7 +355,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
     for (let [file, hash] of contentEntries) {
       if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(CONTENT_SERVER + hash)
+        editorWindow.editor.preloadFile(`${CONTENT_SERVER}/${hash}`)
       }
     }
   })

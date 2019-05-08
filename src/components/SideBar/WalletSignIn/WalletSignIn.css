@@ -1,0 +1,82 @@
+.WalletSignIn {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+.WalletSignIn .connect {
+  flex: none;
+}
+
+.WalletSignIn .error {
+  visibility: hidden;
+  user-select: none;
+  color: var(--primary);
+  margin-top: 20px;
+}
+
+.WalletSignIn .error.visible {
+  visibility: visible;
+}
+
+.WalletSignIn .promo .header,
+.WalletSignIn > .message {
+  font-weight: 400;
+  font-size: 18px;
+  text-align: center;
+  line-height: 28px;
+}
+
+.WalletSignIn > .message {
+  margin: 24px 30px;
+}
+
+.WalletSignIn .WalletIcon {
+  margin-top: 40px;
+  width: 140px;
+  height: 140px;
+  background-color: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 90px;
+  flex: none;
+}
+
+.WalletSignIn .WalletIcon svg {
+  fill: var(--text);
+  transform: scale(0.75);
+}
+
+.WalletSignIn .promo {
+  background-color: var(--secondary);
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.WalletSignIn .promo .header {
+  margin: 20px 20px 10px 20px;
+}
+
+.WalletSignIn .promo .message {
+  line-height: 25px;
+  text-align: center;
+  margin: 0px 20px;
+  font-size: 15px;
+  font-weight: 200;
+}
+
+.WalletSignIn .logo {
+  background: url('https://www.cryptokitties.co/icons/logo.svg') no-repeat;
+  background-size: contain;
+  width: 100px;
+  height: 100px;
+}

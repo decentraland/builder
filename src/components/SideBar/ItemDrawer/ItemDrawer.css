@@ -5,4 +5,5 @@
 .ItemDrawer .overflow-container {
   height: calc(100% - 96px);
   overflow-y: auto;
+  position: relative;
 }

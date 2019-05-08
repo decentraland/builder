@@ -1,11 +1,14 @@
 import * as React from 'react'
+import { Loader } from 'decentraland-ui'
 
+import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import SidebarHeader from '../SidebarHeader'
 import SidebarSearch from '../SidebarSearch'
 import AssetPackList from '../AssetPackList'
 import CategoryList from '../CategoryList'
 import AssetList from '../AssetList'
 import NoResults from '../NoResults'
+import WalletSignIn from '../WalletSignIn'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
@@ -25,11 +28,15 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   renderList() {
-    const { search, isList, selectedAssetPack, selectedCategory, categories } = this.props
+    const { search, isList, selectedAssetPack, selectedCategory, categories, isConnected, isLoadingAssets } = this.props
 
     const isSearch = search.length > 0
 
-    if (isSearch && categories.length === 0) {
+    if (isLoadingAssets) {
+      return <Loader active size="massive" />
+    } else if (selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID && !isConnected) {
+      return <WalletSignIn />
+    } else if (categories.length === 0) {
       return <NoResults />
     } else if (!isList && !selectedAssetPack && !isSearch) {
       return <AssetPackList />

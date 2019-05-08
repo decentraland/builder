@@ -17,16 +17,17 @@ export default class HomePageBanner extends React.PureComponent<Props> {
     }
 
     return (
-      <Banner className={classes} name="builder-contest-winners" isClosable>
-        <div className="orange" />
+      <Banner className={classes} name="dapper-homepage-banner" isClosable>
+        <div className="bg" />
         <div className="purple" />
         <span className="text">
           <T
-            id="banners.contest_winners"
+            id="banners.dapper_homepage"
             values={{
-              link: (
-                <a href={t('banners.contest_winners_link')} rel="noopener noreferrer" target="_blank">
-                  {t('global.here')}
+              br: <br />,
+              cta: (
+                <a href="https://www.meetdapper.com/?utm_source=decentraland" rel="noopener noreferrer" target="_blank">
+                  {t('banners.dapper_homepage_cta')}
                 </a>
               )
             }}

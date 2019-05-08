@@ -10,7 +10,8 @@ export type EntityDefinition = {
 
 export enum ComponentType {
   GLTFShape = 'GLTFShape',
-  Transform = 'Transform'
+  Transform = 'Transform',
+  NFTShape = 'NFTShape'
 }
 
 export type ComponentData = {
@@ -22,6 +23,9 @@ export type ComponentData = {
   [ComponentType.Transform]: {
     position: Vector3
     rotation: Quaternion
+  }
+  [ComponentType.NFTShape]: {
+    url: string
   }
 }
 
