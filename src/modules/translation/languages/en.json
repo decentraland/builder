@@ -14,9 +14,11 @@
     "title": "Submit your scene"
   },
   "banners": {
-    "promo_title": "Arrr you ready?",
-    "promo_subtitle": "The Pirate Pack for the Builder has just set sail! Build scenes telling tales of treasure and adventure with hundreds of new pirate-themed items.",
-    "promo_cta": "Start Building"
+    "promo_title": "You’re looking Dapper today!",
+    "promo_subtitle": "Complete the look by displaying your CryptoKitty in your scene. Don't have a CryptoKitty? Make a Dapper wallet and get a free, unique Purrstige Cat.",
+    "promo_cta": "Install Dapper",
+    "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Get a Dapper wallet with a free {cta}.",
+    "dapper_homepage_cta": "Purrstige Cat"
   },
   "contest": {
     "banner": {

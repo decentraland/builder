@@ -1,8 +1,13 @@
-import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component, NFTShape } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component, NFTShape, IEntity } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 
 declare var dcl: DecentralandInterface
+declare module 'decentraland-ecs' {
+  export class NFTShape {
+    constructor(path: string)
+  }
+}
 
 @Component('staticEntity')
 // @ts-ignore
@@ -97,7 +102,7 @@ function createComponents(components: Record<string, AnyComponent>) {
 function createEntities(entities: Record<string, EntityDefinition>) {
   for (let id in entities) {
     const builderEntity = entities[id]
-    let entity: Entity = engine.entities[id]
+    let entity: IEntity = engine.entities[id]
 
     if (!entity) {
       entity = new Entity()

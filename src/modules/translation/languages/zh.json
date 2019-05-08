@@ -9,9 +9,11 @@
     "title": "提交场景"
   },
   "banners": {
-    "promo_title": "准备好了吗？",
-    "promo_subtitle": "编辑器刚刚推出海盗主题！用上百种新的海盗物品制作和讲述有关宝藏和冒险的故事。",
-    "promo_cta": "开始设计"
+    "promo_title": "今天的您好 Dapper (酷)!",
+    "promo_subtitle": "在场景中显示您的谜恋猫。没有猫咪？安装 Dapper 钱包，就能得到一只免费的、独一无二的猫咪。",
+    "promo_cta": "安装 Dapper",
+    "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
+    "dapper_homepage_cta": "Purrstige 猫"
   },
   "contest": {
     "banner": {

@@ -14,7 +14,13 @@ export default class PromoBanner extends React.PureComponent<Props> {
         <div className="logo" />
         <div className="title">{t('banners.promo_title')}</div>
         <div className="subtitle">{t('banners.promo_subtitle')}</div>
-        <Button className="cta" onClick={this.props.onStart} primary>
+        <Button
+          className="cta"
+          href="https://www.meetdapper.com/?utm_source=decentraland"
+          target="_blank"
+          rel="noopener noreferrer"
+          primary
+        >
           {t('banners.promo_cta')}
         </Button>
       </div>
