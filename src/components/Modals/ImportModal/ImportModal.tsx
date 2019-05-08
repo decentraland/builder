@@ -108,7 +108,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         let parsed: ImportedFile = JSON.parse(content)
 
         // run migrations
-        let version = parsed.version
+        let version = parsed.version || 1
         while (version < BUILDER_FILE_VERSION) {
           version++
           if (version in migrations) {
