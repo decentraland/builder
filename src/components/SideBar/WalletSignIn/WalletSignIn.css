@@ -6,6 +6,10 @@
   flex-direction: column;
 }
 
+.WalletSignIn .connect {
+  flex: none;
+}
+
 .WalletSignIn .error {
   visibility: hidden;
   user-select: none;
@@ -38,6 +42,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 90px;
+  flex: none;
 }
 
 .WalletSignIn .WalletIcon svg {
