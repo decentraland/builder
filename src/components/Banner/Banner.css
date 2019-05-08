@@ -4,7 +4,7 @@
   align-items: center;
   font-size: 15px;
   width: 100%;
-  background: #691ea9;
+  background: var(--purple-banner);
   color: white;
 }
 

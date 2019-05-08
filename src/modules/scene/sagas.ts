@@ -61,6 +61,11 @@ function* handleAddItem(action: AddItemAction) {
   const transformId = uuidv4()
   const newComponents = { ...scene.components }
 
+  if (!position) {
+    position = yield call(editorWindow.editor.getCameraTarget)
+    position!.y = 0
+  }
+
   if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
     shapeId = yield select(getCollectibleId(asset.url))
 
@@ -74,6 +79,8 @@ function* handleAddItem(action: AddItemAction) {
         }
       }
     }
+
+    position = { ...position!, y: 1.72 }
   } else {
     shapeId = yield select(getGLTFId(asset.url))
 
@@ -88,11 +95,6 @@ function* handleAddItem(action: AddItemAction) {
         }
       }
     }
-  }
-
-  if (!position) {
-    position = yield call(editorWindow.editor.getCameraTarget)
-    position!.y = 0
   }
 
   const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)

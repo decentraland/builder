@@ -50,6 +50,7 @@ export type DARAsset = {
 export type DARAssetFile = {
   name: string
   url: string
+  role: string
 }
 
 export type DARAssetTrait = {

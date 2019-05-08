@@ -18,7 +18,8 @@
     "promo_subtitle": "Complete the look by displaying your CryptoKitty in your scene. Don't have a CryptoKitty? Make a Dapper wallet and get a free, unique Purrstige Cat.",
     "promo_cta": "Install Dapper",
     "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Get a Dapper wallet with a free {cta}.",
-    "dapper_homepage_cta": "Purrstige Cat"
+    "dapper_homepage_cta": "Purrstige Cat",
+    "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!"
   },
   "contest": {
     "banner": {

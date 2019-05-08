@@ -13,7 +13,8 @@
     "promo_subtitle": "在场景中显示您的谜恋猫。没有猫咪？安装 Dapper 钱包，就能得到一只免费的、独一无二的猫咪。",
     "promo_cta": "安装 Dapper",
     "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
-    "dapper_homepage_cta": "Purrstige 猫"
+    "dapper_homepage_cta": "Purrstige 猫",
+    "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！"
   },
   "contest": {
     "banner": {

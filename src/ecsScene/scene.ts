@@ -3,6 +3,7 @@ import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 
 declare var dcl: DecentralandInterface
+
 declare module 'decentraland-ecs' {
   export class NFTShape {
     constructor(path: string)
