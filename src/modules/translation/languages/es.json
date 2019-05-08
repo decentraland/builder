@@ -16,6 +16,12 @@
     "dapper_homepage_cta": "CryptoKitty especial",
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}"
   },
+  "wallet": {
+    "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables.",
+    "promo_title": "¿No tienes una billetera?",
+    "promo_body": "¡Instala {cta} y obtén un CryptoKitty gratuito!",
+    "promo_cta": "Dapper"
+  },
   "contest": {
     "banner": {
       "cta": "Mira el Video",

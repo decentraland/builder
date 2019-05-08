@@ -7,7 +7,7 @@ import './AssetPackList.css'
 
 export default class AssetPackList extends React.PureComponent<Props> {
   handlePromoClick = () => {
-    window.location.href = 'https://www.meetdapper.com/?utm_source=decentraland'
+    window.open('https://www.meetdapper.com/?utm_source=decentraland')
   }
 
   render() {

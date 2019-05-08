@@ -21,6 +21,12 @@
     "dapper_homepage_cta": "Purrstige Cat",
     "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!"
   },
+  "wallet": {
+    "title": "Connect your wallet to decorate your scene with crypto-collectibles.",
+    "promo_title": "Don’t have a wallet yet?",
+    "promo_body": "Get one from {cta} with a free Purrstige Cat to add to your scene!",
+    "promo_cta": "Dapper"
+  },
   "contest": {
     "banner": {
       "cta": "Watch Video",

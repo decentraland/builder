@@ -1,6 +1,6 @@
 import React from 'react'
 import { WalletIcon, Button } from 'decentraland-ui'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { Props } from './WalletSignIn.types'
 import './WalletSignIn.css'
@@ -20,7 +20,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
     return (
       <div className="WalletSignIn">
         <WalletIcon />
-        <span className="message">Connect your wallet to decorate your scene with crypto-collectibles.</span>
+        <span className="message">{t('wallet.title')}</span>
         <Button primary onClick={this.handleConnect}>
           {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}
         </Button>
@@ -31,8 +31,19 @@ export default class WalletSignIn extends React.PureComponent<Props> {
 
         <div className="promo">
           <div className="logo" />
-          <span className="header">Don’t have a wallet yet?</span>
-          <span className="message">Get one from Dapper with a free Purrstige Cat to add to your scene!</span>
+          <span className="header">{t('wallet.promo_title')}</span>
+          <span className="message">
+            <T
+              id="wallet.promo_body"
+              values={{
+                cta: (
+                  <a href="https://www.meetdapper.com/?utm_source=decentraland" target="_blank">
+                    {t('wallet.promo_cta')}
+                  </a>
+                )
+              }}
+            />
+          </span>
         </div>
       </div>
     )

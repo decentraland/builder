@@ -16,6 +16,12 @@
     "dapper_homepage_cta": "Purrstige 猫",
     "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！"
   },
+  "wallet": {
+    "title": "连接钱包用加密收藏品装饰你的场景。",
+    "promo_title": "还没有钱包吗",
+    "promo_body": "从 {cta} 获得一个免费的 Purrstige 猫添加到你的场景！",
+    "promo_cta": "Dapper"
+  },
   "contest": {
     "banner": {
       "cta": "观看视频",
