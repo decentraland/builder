@@ -14,7 +14,9 @@
     "dapper_homepage_cta": "CryptoKitty especial",
     "promo_cta": "Instala Dapper",
     "promo_subtitle": "Muestra tu CryptoKitty en tu escena. No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un CryptoKitty especial.",
-    "promo_title": "¡Prueba Dapper!"
+    "promo_title": "¡Prueba Dapper!",
+    "mobile_dapper_homepage": "Conoce lo último:{br}{cta}",
+    "mobile_dapper_hompage_cta": "Cuadros + Dapper"
   },
   "contest": {
     "banner": {

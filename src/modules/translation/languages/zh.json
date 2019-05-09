@@ -14,7 +14,9 @@
     "dapper_homepage_cta": "Purrstige 猫",
     "promo_cta": "安装 Dapper",
     "promo_subtitle": "在场景中显示您的谜恋猫。没有猫咪？安装 Dapper 钱包，就能得到一只免费的、独一无二的猫咪。",
-    "promo_title": "今天的您好 Dapper (酷)!"
+    "promo_title": "今天的您好 Dapper (酷)!",
+    "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
+    "mobile_dapper_hompage_cta": "Picture Frames + Dapper"
   },
   "contest": {
     "banner": {

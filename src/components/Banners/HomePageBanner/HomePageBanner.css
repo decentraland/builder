@@ -43,8 +43,8 @@
   display: block;
   line-height: 28px;
   z-index: 999;
-  margin: 0px 64px;
 }
+
 .HomePageBanner .text a {
   color: white;
   text-decoration: underline;
@@ -52,4 +52,10 @@
 
 .HomePageBanner .dcl.close {
   transform: scale(2);
+}
+
+@media (min-width: 768px) {
+  .HomePageBanner .text {
+    margin: 0px 64px;
+  }
 }
