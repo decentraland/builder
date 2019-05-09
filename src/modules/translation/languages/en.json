@@ -14,18 +14,12 @@
     "title": "Submit your scene"
   },
   "banners": {
-    "promo_title": "You’re looking Dapper today!",
-    "promo_subtitle": "Complete the look by displaying your CryptoKitty in your scene. Don't have a CryptoKitty? Make a Dapper wallet and get a free, unique Purrstige Cat.",
-    "promo_cta": "Install Dapper",
-    "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Get a Dapper wallet with a free {cta}.",
+    "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!",
+    "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Make a Dapper wallet and get a free {cta}.",
     "dapper_homepage_cta": "Purrstige Cat",
-    "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!"
-  },
-  "wallet": {
-    "title": "Connect your wallet to decorate your scene with crypto-collectibles.",
-    "promo_title": "Don’t have a wallet yet?",
-    "promo_body": "Get one from {cta} with a free Purrstige Cat to add to your scene!",
-    "promo_cta": "Dapper"
+    "promo_cta": "Install Dapper",
+    "promo_subtitle": "Complete the look by displaying your CryptoKitty in your scene. Don't have a CryptoKitty? Make a Dapper wallet and get a free, unique Purrstige Cat.",
+    "promo_title": "You’re looking Dapper today!"
   },
   "contest": {
     "banner": {
@@ -80,6 +74,7 @@
     "here": "here",
     "items": "items",
     "learn_more": "Learn more",
+    "loading": "Loading",
     "next": "next",
     "optional": "optional",
     "or": "or",
@@ -90,8 +85,7 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions",
-    "loading": "Loading"
+    "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
     "import_scene": "Upload scene",
@@ -117,8 +111,8 @@
   },
   "itemdrawer": {
     "empty_ground": "No Ground",
-    "results": "Results",
     "no_results": "No results",
+    "results": "Results",
     "search": "Search items",
     "title": "Item Catalog"
   },
@@ -266,5 +260,11 @@
   "video_modal": {
     "title": "Learn more about the Builder",
     "youtube_id": "cHEblD8xZwI"
+  },
+  "wallet": {
+    "promo_body": "Get one from {cta} with a free Purrstige Cat to add to your scene!",
+    "promo_cta": "Dapper",
+    "promo_title": "Don’t have a wallet yet?",
+    "title": "Connect your wallet to decorate your scene with crypto-collectibles."
   }
 }

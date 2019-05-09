@@ -26,7 +26,7 @@ export default class HomePageBanner extends React.PureComponent<Props> {
             values={{
               br: <br />,
               cta: (
-                <a href="https://www.meetdapper.com/?utm_source=decentraland" rel="noopener noreferrer" target="_blank">
+                <a href="https://dap.pr/dclinstallp" rel="noopener noreferrer" target="_blank">
                   {t('banners.dapper_homepage_cta')}
                 </a>
               )

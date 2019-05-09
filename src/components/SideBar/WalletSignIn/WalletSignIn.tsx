@@ -37,7 +37,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
               id="wallet.promo_body"
               values={{
                 cta: (
-                  <a href="https://www.meetdapper.com/?utm_source=decentraland" target="_blank">
+                  <a href="https://dap.pr/dclinstallp" target="_blank">
                     {t('wallet.promo_cta')}
                   </a>
                 )
