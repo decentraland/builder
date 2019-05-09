@@ -153,7 +153,6 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
   handleRemoveProject = (id: string) => {
     const acceptedProjects = this.state.acceptedProjects.filter(proj => proj.id !== id)
-    console.log('trying to remove', id, this.state.acceptedProjects, acceptedProjects)
     this.setState({ acceptedProjects, canImport: acceptedProjects.length > 0 })
   }
 

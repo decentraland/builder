@@ -144,7 +144,6 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
       return 0
     })
 
-    console.log(a)
     return a
   }
 )
