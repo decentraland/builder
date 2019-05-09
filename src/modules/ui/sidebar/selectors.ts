@@ -139,11 +139,12 @@ export const getSideBarCategories = createSelector<
 export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['data'], AssetPack[]>(
   getAssetPacks,
   assetPacks => {
-    const a = Object.values(assetPacks).sort((_, pack) => {
-      if (pack.id === COLLECTIBLE_ASSET_PACK_ID) return -1
-      return 0
-    })
-
-    return a
+    let array = Object.values(assetPacks)
+    const collectibles = array.findIndex(pack => pack.id === COLLECTIBLE_ASSET_PACK_ID)
+    if (collectibles > -1) {
+      const pack = array.splice(collectibles, 1)
+      array = array.concat(pack)
+    }
+    return array
   }
 )
