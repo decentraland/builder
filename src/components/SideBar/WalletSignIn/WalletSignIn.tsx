@@ -29,7 +29,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
           <T id="@dapps.sign_in.error" />
         </p>
 
-        <div className="promo">
+        {/* <div className="promo">
           <div className="logo" />
           <span className="header">{t('wallet.promo_title')}</span>
           <span className="message">
@@ -44,7 +44,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
               }}
             />
           </span>
-        </div>
+        </div> */}
       </div>
     )
   }

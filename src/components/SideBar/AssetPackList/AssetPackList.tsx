@@ -1,5 +1,6 @@
 import React from 'react'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+
+// import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { Campaign } from 'modules/analytics/campaigns'
 
@@ -21,7 +22,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
 
     return (
       <div className="AssetPackList">
-        <div className="promo" onClick={this.handlePromoClick}>
+        {/* <div className="promo" onClick={this.handlePromoClick}>
           <div className="icon" />
           <T
             id="banners.dapper_assetpack_banner"
@@ -29,7 +30,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
               cat: <span className="highlight">{t('banners.dapper_homepage_cta')}</span>
             }}
           />
-        </div>
+        </div> */}
         {assetPacks.map(assetPack => (
           <SidebarCard
             key={assetPack.id}

@@ -9,7 +9,7 @@ import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
 import { Template } from 'modules/template/types'
 import Icon from 'components/Icon'
-import PromoBanner from './PromoBanner'
+// import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
 
@@ -67,9 +67,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
             <HomePageBanner />
           </>
         ) : (
-          <Container>
-            <PromoBanner onStart={this.handleStart} />
-          </Container>
+          <Container>{/* <PromoBanner onStart={this.handleStart} /> */}</Container>
         )}
         <Container>
           <div className="HomePage">
