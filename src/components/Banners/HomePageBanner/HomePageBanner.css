@@ -7,6 +7,26 @@
   position: relative;
 }
 
+.HomePageBanner .wrapper {
+  display: flex;
+  align-items: center;
+  z-index: 999;
+}
+
+.HomePageBanner .logo-left {
+  background: url('../../../images/dapper-logo.png') no-repeat;
+  width: 100px;
+  height: 100px;
+  background-size: contain;
+}
+
+.HomePageBanner .logo-right {
+  background: url('https://www.cryptokitties.co/icons/logo.svg') no-repeat;
+  width: 100px;
+  height: 100px;
+  background-size: contain;
+}
+
 .HomePageBanner .bg {
   position: absolute;
   width: 100%;
@@ -23,6 +43,7 @@
   display: block;
   line-height: 28px;
   z-index: 999;
+  margin: 0px 64px;
 }
 .HomePageBanner .text a {
   color: white;

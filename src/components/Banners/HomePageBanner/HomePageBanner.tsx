@@ -20,19 +20,23 @@ export default class HomePageBanner extends React.PureComponent<Props> {
       <Banner className={classes} name="dapper-homepage-banner" isClosable>
         <div className="bg" />
         <div className="purple" />
-        <span className="text">
-          <T
-            id="banners.dapper_homepage"
-            values={{
-              br: <br />,
-              cta: (
-                <a href="https://dap.pr/dclinstallp" rel="noopener noreferrer" target="_blank">
-                  {t('banners.dapper_homepage_cta')}
-                </a>
-              )
-            }}
-          />
-        </span>
+        <div className="wrapper">
+          <div className="logo-left" />
+          <span className="text">
+            <T
+              id="banners.dapper_homepage"
+              values={{
+                br: <br />,
+                cta: (
+                  <a href="https://dap.pr/dclinstallp" rel="noopener noreferrer" target="_blank">
+                    {t('banners.dapper_homepage_cta')}
+                  </a>
+                )
+              }}
+            />
+          </span>
+          <div className="logo-right" />
+        </div>
       </Banner>
     )
   }
