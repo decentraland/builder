@@ -1,29 +1,52 @@
-import { GROUND_CATEGORY } from 'modules/asset/types'
 import { CONTENT_SERVER } from 'modules/editor/utils'
+import { Category } from './types'
 
-export const SIDEBAR_CATEGORIES: { name: string; thumbnail: string }[] = [
-  {
-    name: GROUND_CATEGORY,
-    thumbnail: `${CONTENT_SERVER}QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6`
+export const COLLECTIBLE_ASSET_PACK_ID = 'collectibles'
+
+export enum CategoryName {
+  GROUND_CATEGORY = 'ground',
+  TILES_CATEGORY = 'tiles',
+  NATURE_CATEGORY = 'nature',
+  STRUCTURES_CATEGORY = 'structures',
+  DECORATIONS_CATEGORY = 'decorations',
+  FURNITURE = 'furniture',
+  CRYPTOKITTIES = 'CryptoKitties'
+}
+
+export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
+  [CategoryName.GROUND_CATEGORY]: {
+    name: CategoryName.GROUND_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}/QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6`,
+    assets: []
   },
-  {
-    name: 'tiles',
-    thumbnail: `${CONTENT_SERVER}QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH`
+  [CategoryName.TILES_CATEGORY]: {
+    name: CategoryName.TILES_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}/QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH`,
+    assets: []
   },
-  {
-    name: 'nature',
-    thumbnail: `${CONTENT_SERVER}QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg`
+  [CategoryName.NATURE_CATEGORY]: {
+    name: CategoryName.NATURE_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}/QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg`,
+    assets: []
   },
-  {
-    name: 'structures',
-    thumbnail: `${CONTENT_SERVER}Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA`
+  [CategoryName.STRUCTURES_CATEGORY]: {
+    name: CategoryName.STRUCTURES_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}/Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA`,
+    assets: []
   },
-  {
-    name: 'furniture',
-    thumbnail: `${CONTENT_SERVER}Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`
+  [CategoryName.DECORATIONS_CATEGORY]: {
+    name: CategoryName.DECORATIONS_CATEGORY,
+    thumbnail: `${CONTENT_SERVER}/QmUQZQEGF2tSz2hBy4xyKZ4uoWoURvQUcTxJMEyHPEWjhX`,
+    assets: []
   },
-  {
-    name: 'decorations',
-    thumbnail: `${CONTENT_SERVER}QmUQZQEGF2tSz2hBy4xyKZ4uoWoURvQUcTxJMEyHPEWjhX`
+  [CategoryName.FURNITURE]: {
+    name: CategoryName.FURNITURE,
+    thumbnail: `${CONTENT_SERVER}/Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
+    assets: []
+  },
+  [CategoryName.CRYPTOKITTIES]: {
+    name: CategoryName.CRYPTOKITTIES,
+    thumbnail: 'https://www.cryptokitties.co/icons/logo.svg',
+    assets: []
   }
-]
+}

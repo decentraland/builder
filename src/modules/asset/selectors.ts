@@ -3,6 +3,7 @@ import { RootState } from 'modules/common/types'
 import { AssetState } from 'modules/asset/reducer'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
 
@@ -28,3 +29,18 @@ export const getGroundAssets = createSelector<RootState, AssetState['data'], Mod
 )
 
 export const getGroundAsset = (state: RootState, assetId: string) => getGroundAssets(state)[assetId]
+
+export const getCollectibleAssets = createSelector<RootState, AssetState['data'], ModelById<Asset>>(
+  getData,
+  assets => {
+    let out: ModelById<Asset> = {}
+
+    for (let asset of Object.values(assets)) {
+      if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
+        out[asset.id] = asset
+      }
+    }
+
+    return out
+  }
+)

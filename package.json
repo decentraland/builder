@@ -122,7 +122,7 @@
     "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
     "decentraland": "^3.0.0",
-    "decentraland-ecs": "^5.0.1-20190320193254.commit-e6a1414",
+    "decentraland-ecs": "^6.0.2-20190508195545.commit-3796e94",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"

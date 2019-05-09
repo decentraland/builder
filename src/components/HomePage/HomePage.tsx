@@ -2,6 +2,7 @@ import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Container, Button } from 'decentraland-ui'
 
+import HomePageBanner from 'components/Banners/HomePageBanner'
 import HomePageHero from 'components/HomePageHero'
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
@@ -63,6 +64,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
         {!projects.length ? (
           <>
             <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+            <HomePageBanner />
           </>
         ) : (
           <Container>

@@ -46,7 +46,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
         ) : (
           <span className="selected-scope" onClick={this.handleGoBack}>
             <Icon name="chevron left" />
-            {selectedCategory ? selectedCategory : selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...'}
+            {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
           </span>
         )}
         {isRoot && !isSearch ? (

@@ -9,9 +9,18 @@
     "title": "풍경 제출하기"
   },
   "banners": {
-    "promo_title": "준비 되셨나요?",
-    "promo_subtitle": "빌더용 해적 팩이 출항 준비를 마쳤습니다! 수백 개의 해적 테마 아이템을 가지고 모험과 보물에 대한 이야기를 기술하는 풍경을 만들어 보시기 바랍니다.",
-    "promo_cta": "제작 시작하기"
+    "promo_title": "굉장히 댑하게 보이시네요!",
+    "promo_subtitle": "여러분의 풍경에 보유하고 계신 크립토키티를 디스플레이하여 외형을 완성시키시길 바랍니다. 크립토키티가 없으신가요? Dapper 지갑을 만드시고 무료로 고유한 Purrstige Cat을 받아가시기 바랍니다.",
+    "promo_cta": "Dapper 설치",
+    "dapper_homepage": "여러분의 풍경에 보유하고 계신 크립토키티 사진을 올리시기 바랍니다! 크립토키티가 없으신가요 Dapper 지갑을 설치하시고 {cta}",
+    "dapper_homepage_cta": "무료로 Purrstige Cat을 받아가시기 바랍니다.",
+    "dapper_assetpack_banner": "너의 장면을 위해 Dapper 지갑과 무료 Purststige Cat을 잡아라!"
+  },
+  "wallet": {
+    "title": "보유하고 계신 크립토 콜렉티블을 가지고 여러분의 풍경을 꾸미시기 위하여 지갑을 연동하시길 바랍니다.",
+    "promo_title": "아직 지갑이 없으신가요?",
+    "promo_body": "여러분이 보유하고 있는 풍경에 Purrstige Cat을 추가하기 위해 {cta}에서 한 마리 분양해가시길 바랍니다.",
+    "promo_cta": "Dapper"
   },
   "contest": {
     "banner": {
