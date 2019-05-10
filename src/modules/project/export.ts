@@ -56,6 +56,11 @@ export function createGameFile(args: { project: Project; scene: Scene }) {
         components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${modelName}`)
         break
       }
+      case ComponentType.NFTShape: {
+        const { url } = (component as ComponentDefinition<ComponentType.NFTShape>).data
+        components[component.id] = new ECS.NFTShape(url)
+        break
+      }
       case ComponentType.Transform: {
         const { position, rotation } = (component as ComponentDefinition<ComponentType.Transform>).data
         components[component.id] = new ECS.Transform({
