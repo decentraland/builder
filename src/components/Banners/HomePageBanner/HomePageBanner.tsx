@@ -1,13 +1,28 @@
 import * as React from 'react'
-
 import { Responsive } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { Campaign } from 'modules/analytics/campaigns'
 import Banner from 'components/Banner'
 
 import { Props } from './HomePageBanner.types'
 import './HomePageBanner.css'
 
 export default class HomePageBanner extends React.PureComponent<Props> {
+  handleHomePageClick = () => {
+    const analytics = getAnalytics()
+    analytics.track('HomePage CTA', {
+      campaign: Campaign.DAPPER
+    })
+  }
+
+  handleMobilePageClick = () => {
+    const analytics = getAnalytics()
+    analytics.track('MobilePage CTA', {
+      campaign: Campaign.DAPPER
+    })
+  }
+
   render() {
     const { className } = this.props
 
@@ -33,7 +48,7 @@ export default class HomePageBanner extends React.PureComponent<Props> {
                 values={{
                   br: <br />,
                   cta: (
-                    <a href="https://dap.pr/dclinstallp" rel="noopener noreferrer" target="_blank">
+                    <a href="https://dap.pr/dclinstallp" rel="noopener noreferrer" target="_blank" onClick={this.handleHomePageClick}>
                       {t('banners.dapper_homepage_cta')}
                     </a>
                   )
@@ -50,7 +65,12 @@ export default class HomePageBanner extends React.PureComponent<Props> {
                   br: <br />,
 
                   cta: (
-                    <a href="https://decentraland.org/blog/picture-frames-dapper" rel="noopener noreferrer" target="_blank">
+                    <a
+                      href="https://decentraland.org/blog/picture-frames-dapper"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      onClick={this.handleMobilePageClick}
+                    >
                       {t('banners.mobile_dapper_hompage_cta')}
                     </a>
                   )

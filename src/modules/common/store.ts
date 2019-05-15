@@ -2,7 +2,7 @@ import { createStore, compose, applyMiddleware } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
 import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
-import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 
 import { env } from 'decentraland-commons'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
@@ -22,7 +22,7 @@ import { rootSaga } from './sagas'
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const history = createHistory()
+const history = createBrowserHistory()
 const rootReducer = createRootReducer(history)
 
 const historyMiddleware = routerMiddleware(history)

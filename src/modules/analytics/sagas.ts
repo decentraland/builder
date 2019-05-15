@@ -1,5 +1,6 @@
 import { takeLatest, select } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject, getProject } from 'modules/project/selectors'
@@ -28,6 +29,7 @@ export function* segmentSaga() {
   yield takeLatest(SUBMIT_PROJECT_SUCCESS, handleSubmitProject)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
+  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -90,4 +92,18 @@ function* handleUpdateTransfrom(_: UpdateTransfromAction) {
   if (!project) return
 
   track('Update item', { projectId: project.id })
+}
+
+function handleConnectWallet(action: ConnectWalletSuccessAction) {
+  const web3 = (window as any)['web3']
+
+  let provider = null
+
+  if (web3.currentProvider.isMetaMask) {
+    provider = 'metamask'
+  } else if (web3.currentProvider.isDapper) {
+    provider = 'dapper'
+  }
+
+  track('Connect wallet', { address: action.payload.wallet.address, provider })
 }

@@ -115,6 +115,7 @@
     "upload_manually": "직접 업로드"
   },
   "itemdrawer": {
+    "collectible_disclaimer": "보유하고 계신 모든 크립토-콜렉티블이 보이지 않나요?{br}곧 지원 내역을 추가할 예정입니다!",
     "empty_ground": "땅이 없습니다",
     "no_results": "아이템을 찾을 수 없습니다",
     "search": "아이템 검색",
