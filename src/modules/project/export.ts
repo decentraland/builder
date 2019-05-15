@@ -19,7 +19,8 @@ export enum EXPORT_PATH {
   DOCKER_FILE = 'Dockerfile',
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
-  MODELS_FOLDER = 'models'
+  MODELS_FOLDER = 'models',
+  NFT_BASIC_FRAME_FILE = 'models/frames/basic.glb'
 }
 
 export async function createFiles(args: {
@@ -98,21 +99,32 @@ export function createGameFile(args: { project: Project; scene: Scene }) {
 }
 
 export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames: Set<string>) {
-  const gltf = Object.values(scene.components).find(component => component.type === 'GLTFShape' && entity.components.includes(component.id))
-  if (!gltf) {
-    throw new Error(`Could not compile entity with id "${entity.id}": Missing GLTFShape component`)
-  }
-  const data = gltf.data as ComponentData[ComponentType.GLTFShape]
   let modelName
   try {
-    modelName = data.src // path/to/ModelName.glb
-      .split('/') // ["path", "to", "ModelName.glb"]
-      .pop()! // "ModelName.glb"
-      .split('.') // ["ModelName", "glb"]
-      .shift() // "ModelName"
-    if (!modelName) throw Error('Invalid name')
+    const gltf = Object.values(scene.components).find(
+      component => component.type === ComponentType.GLTFShape && entity.components.includes(component.id)
+    )
+    if (gltf) {
+      const data = gltf.data as ComponentData[ComponentType.GLTFShape]
+      modelName = data.src // path/to/ModelName.glb
+        .split('/') // ["path", "to", "ModelName.glb"]
+        .pop()! // "ModelName.glb"
+        .split('.') // ["ModelName", "glb"]
+        .shift() // "ModelName"
+      if (!modelName) throw Error('Invalid name')
+      modelName = modelName[0].toLowerCase() + modelName.slice(1) // PascalCase to camelCase
+    } else {
+      const nft = Object.values(scene.components).find(
+        component => component.type === ComponentType.NFTShape && entity.components.includes(component.id)
+      )
+      if (nft) {
+        modelName = 'nft'
+      } else {
+        throw new Error("Can't generate a name")
+      }
+    }
   } catch (e) {
-    modelName = 'Entity'
+    modelName = 'entity'
   }
   let name = modelName
   let attempts = 1
@@ -179,6 +191,9 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
   const { scene, onProgress } = args
   const mappings: Record<string, string> = {}
 
+  let models = {}
+  let shouldDownloadFrame = false
+
   // Track progress
   let progress = 0
   let total = 0
@@ -194,6 +209,8 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
           .join('/') // drop the asset pack id namespace
         mappings[path] = CONTENT_SERVER + gltfShape.data.mappings[key]
       }
+    } else if (component.type === ComponentType.NFTShape) {
+      shouldDownloadFrame = true
     }
   }
 
@@ -214,8 +231,22 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
 
   // Reduce results into a record of blobs
   const results = await Promise.all<{ path: string; blob: Blob }>(promises)
-  return results.reduce<Record<string, Blob>>((obj, item) => {
+  models = results.reduce<Record<string, Blob>>((obj, item) => {
     const path = `${EXPORT_PATH.MODELS_FOLDER}/${item.path}`
     return { ...obj, [path]: item.blob }
   }, {})
+
+  if (shouldDownloadFrame) {
+    total++
+    const resp = await fetch('/' + EXPORT_PATH.NFT_BASIC_FRAME_FILE)
+    const blob = await resp.blob()
+    progress++
+    onProgress({ progress, total })
+    models = {
+      ...models,
+      [EXPORT_PATH.NFT_BASIC_FRAME_FILE]: blob
+    }
+  }
+
+  return models
 }

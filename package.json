@@ -21,7 +21,7 @@
     "chalk": "2.4.1",
     "connected-react-router": "^6.1.0",
     "css-loader": "1.0.0",
-    "dcl-scene-writer": "^0.3.0",
+    "dcl-scene-writer": "^0.4.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^4.0.0",
     "decentraland-eth": "^8.8.0",
@@ -122,7 +122,7 @@
     "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
     "decentraland": "^3.0.0",
-    "decentraland-ecs": "^6.0.2-20190508195545.commit-3796e94",
+    "decentraland-ecs": "^6.0.4",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"
