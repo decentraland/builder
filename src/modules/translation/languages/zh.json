@@ -9,18 +9,14 @@
     "title": "提交场景"
   },
   "banners": {
-    "promo_title": "今天的您好 Dapper (酷)!",
-    "promo_subtitle": "在场景中显示您的谜恋猫。没有猫咪？安装 Dapper 钱包，就能得到一只免费的、独一无二的猫咪。",
-    "promo_cta": "安装 Dapper",
+    "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！",
     "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
     "dapper_homepage_cta": "Purrstige 猫",
-    "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！"
-  },
-  "wallet": {
-    "title": "连接钱包用加密收藏品装饰你的场景。",
-    "promo_title": "还没有钱包吗",
-    "promo_body": "从 {cta} 获得一个免费的 Purrstige 猫添加到你的场景！",
-    "promo_cta": "Dapper"
+    "promo_cta": "安装 Dapper",
+    "promo_subtitle": "在场景中显示您的谜恋猫。没有猫咪？安装 Dapper 钱包，就能得到一只免费的、独一无二的猫咪。",
+    "promo_title": "今天的您好 Dapper (酷)!",
+    "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
+    "mobile_dapper_hompage_cta": "Picture Frames + Dapper"
   },
   "contest": {
     "banner": {
@@ -80,6 +76,7 @@
     "here": "这里",
     "items": "模型",
     "learn_more": "更多",
+    "loading": "装载",
     "next": "下一个",
     "optional": "可选",
     "or": "或",
@@ -92,8 +89,7 @@
     "submit": "提交",
     "subscribe": "订阅",
     "templates": "模板",
-    "terms_and_conditions": "使用条款",
-    "loading": "装载"
+    "terms_and_conditions": "使用条款"
   },
   "home_page": {
     "empty_projects_cta": "在下面选择一个模板开始构建!",
@@ -265,5 +261,11 @@
   "video_modal": {
     "title": "更多",
     "youtube_id": "NhaP_M7tVc8"
+  },
+  "wallet": {
+    "promo_body": "从 {cta} 获得一个免费的 Purrstige 猫添加到你的场景！",
+    "promo_cta": "Dapper",
+    "promo_title": "还没有钱包吗",
+    "title": "连接钱包用加密收藏品装饰你的场景。"
   }
 }

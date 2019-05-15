@@ -7,7 +7,7 @@ import './AssetPackList.css'
 
 export default class AssetPackList extends React.PureComponent<Props> {
   handlePromoClick = () => {
-    window.open('https://www.meetdapper.com/?utm_source=decentraland')
+    window.open('https://dap.pr/dclinstallp')
   }
 
   render() {
