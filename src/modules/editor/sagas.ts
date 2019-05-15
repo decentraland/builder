@@ -37,7 +37,8 @@ import {
   PREFETCH_ASSET,
   PrefetchAssetAction,
   SetEditorReadyAction,
-  setEntitiesOutOfBoundaries
+  setEntitiesOutOfBoundaries,
+  closeEditor
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -224,6 +225,7 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
   yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
+  yield call(() => editorWindow.editor.sendExternalAction(closeEditor()))
   yield put(unbindEditorKeyboardShortcuts())
 }
 
