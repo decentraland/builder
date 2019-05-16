@@ -297,6 +297,7 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
   const { isReady } = action.payload
 
   if (isReady) {
+    yield handleResetCamera()
     yield pollEditor()
     yield put(setEditorLoading(false))
   }
