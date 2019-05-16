@@ -115,6 +115,7 @@
     "upload_manually": "Súbelas manualmente"
   },
   "itemdrawer": {
+    "collectible_disclaimer": "¿No ves todos tus coleccionables?{br}¡Agregaremos más próximamente!",
     "empty_ground": "Sin piso",
     "no_results": "Sin resultados",
     "search": "Buscar objetos",
