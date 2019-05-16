@@ -38,7 +38,7 @@ import {
   PrefetchAssetAction,
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
-  setEditorLoading
+  setEditorLoading,
   closeEditor
 } from 'modules/editor/actions'
 import {
