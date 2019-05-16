@@ -21,7 +21,7 @@ export const unbindEditorKeyboardShortcuts = () => action(UNBIND_EDITOR_KEYBOARD
 
 export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorKeyboardShortcuts>
 
-// Close editor
+// Open editor
 
 export const OPEN_EDITOR = 'Open editor'
 
