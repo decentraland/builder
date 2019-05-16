@@ -4,12 +4,6 @@ import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'mo
 
 declare var dcl: DecentralandInterface
 
-declare module 'decentraland-ecs' {
-  export class NFTShape {
-    constructor(path: string)
-  }
-}
-
 @Component('staticEntity')
 // @ts-ignore
 export class StaticEntity {}

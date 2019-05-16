@@ -10,7 +10,8 @@ export const isSidebarOpen = (state: RootState) => getState(state).sidebar
 export const isPreviewing = (state: RootState) => getState(state).preview
 export const isSnapToGridEnabled = (state: RootState) => getState(state).snapToGrid
 export const getSelectedEntityId = (state: RootState) => getState(state).selectedEntityId
-export const isReady = (state: RootState) => !getState(state).isReady
+export const isReady = (state: RootState) => getState(state).isReady
+export const isLoading = (state: RootState) => getState(state).isLoading
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
 export const getSceneMappings = createSelector<RootState, ComponentDefinition<ComponentType.GLTFShape>[], Record<string, string>>(

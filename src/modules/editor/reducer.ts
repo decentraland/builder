@@ -16,7 +16,11 @@ import {
   ToggleSnapToGridAction,
   TOGGLE_SNAP_TO_GRID,
   SetEntitiesOutOfBoundariesAction,
-  SET_ENTITIES_OUT_OF_BOUNDARIES
+  SET_ENTITIES_OUT_OF_BOUNDARIES,
+  SetExportProgressAction,
+  SET_EXPORT_PROGRESS,
+  SET_EDITOR_LOADING,
+  SetEditorLoadingAction
 } from './actions'
 import { Gizmo } from './types'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
@@ -28,7 +32,13 @@ export type EditorState = {
   snapToGrid: boolean
   selectedEntityId: string | null
   entitiesOutOfBoundaries: string[]
-  isReady: boolean
+  isReady: boolean // editor is ready to be interacted with via API
+  isLoading: boolean // models are done loading
+  export: {
+    isLoading: boolean
+    progress: number
+    total: number
+  }
 }
 
 const INITIAL_STATE: EditorState = {
@@ -38,7 +48,13 @@ const INITIAL_STATE: EditorState = {
   snapToGrid: true,
   selectedEntityId: null,
   entitiesOutOfBoundaries: [],
-  isReady: false
+  isReady: false,
+  isLoading: false,
+  export: {
+    isLoading: false,
+    progress: 0,
+    total: 0
+  }
 }
 
 export type EditorReducerAction =
@@ -52,6 +68,8 @@ export type EditorReducerAction =
   | ToggleSnapToGridAction
   | SetEntitiesOutOfBoundariesAction
   | DeleteItemAction
+  | SetExportProgressAction
+  | SetEditorLoadingAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -92,6 +110,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       const { isReady } = action.payload
       return {
         ...state,
+        isLoading: isReady,
         isReady
       }
     }
@@ -116,6 +135,21 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => entityId !== state.selectedEntityId)
+      }
+    }
+    case SET_EXPORT_PROGRESS: {
+      return {
+        ...state,
+        export: {
+          ...state.export,
+          ...action.payload
+        }
+      }
+    }
+    case SET_EDITOR_LOADING: {
+      return {
+        ...state,
+        isLoading: action.payload.isLoading
       }
     }
     default:

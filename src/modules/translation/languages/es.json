@@ -58,7 +58,8 @@
   },
   "export_modal": {
     "action": "Descargar",
-    "description": "Puedes guardar tu escena para usarla en otras intancias del Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos!",
+    "loading": "Descargando...",
+    "description": "Puedes guardar tu escena para usarla con el SDK de Decentraland, o en el Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
     "title": "Descargar escena"
   },
   "global": {
@@ -118,10 +119,6 @@
     "no_results": "Sin resultados",
     "search": "Buscar objetos",
     "title": "Listado de objetos"
-  },
-  "languages": {
-    "en": "English",
-    "es": "Español"
   },
   "layout_picker": {
     "columns": "columnas",

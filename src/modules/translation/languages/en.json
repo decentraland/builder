@@ -59,7 +59,8 @@
   },
   "export_modal": {
     "action": "Download",
-    "description": "You can backup your scene for use elsewhere. This is a great way to share scenes and collaborate with friends!",
+    "loading": "Downloading...",
+    "description": "You can export your scene for use in the Decentraland SDK, or the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
     "title": "Download scene"
   },
   "global": {
@@ -117,10 +118,6 @@
     "results": "Results",
     "search": "Search items",
     "title": "Item Catalog"
-  },
-  "languages": {
-    "en": "English",
-    "zh": "Chinese"
   },
   "layout_picker": {
     "columns": "columns",

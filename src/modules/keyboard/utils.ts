@@ -14,7 +14,8 @@ import {
 } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen, getGizmo } from 'modules/editor/selectors'
-import { toggleModal } from 'modules/modal/actions'
+import { getCurrentProject } from 'modules/project/selectors'
+import { toggleModal, openModal } from 'modules/modal/actions'
 import { Gizmo } from 'modules/editor/types'
 import {
   ShortcutDefinition,
@@ -182,7 +183,7 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     },
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.EXPORT_SCENE]),
-      callback: () => store.dispatch(toggleModal('ExportModal')),
+      callback: () => store.dispatch(openModal('ExportModal', { project: getCurrentProject(store.getState()) })),
       action: 'keyup'
     }
   ]

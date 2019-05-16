@@ -20,17 +20,18 @@ import {
   ImportProjectAction
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
-import { Project, Layout, SaveFile } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
-import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot } from 'modules/editor/actions'
+import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress } from 'modules/editor/actions'
+import { store } from 'modules/common/store'
+import { closeModal } from 'modules/modal/actions'
 import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
-
-export const BUILDER_FILE_VERSION = 2
+import { createFiles } from './export'
 
 const DEFAULT_GROUND_ASSET = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -47,8 +48,6 @@ const DEFAULT_GROUND_ASSET = {
   },
   assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a'
 }
-
-export const BUILDER_FILE_NAME = 'builder.json'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -162,13 +161,20 @@ function* handleExportProject(action: ExportProjectAction) {
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
+  yield put(setExportProgress({ isLoading: true, progress: 0, total: 0 }))
+  const files = yield call(() => createFiles({ project, scene, onProgress: progress => store.dispatch(setExportProgress(progress)) }))
 
-  zip.file(BUILDER_FILE_NAME, JSON.stringify({ version: BUILDER_FILE_VERSION, project, scene } as SaveFile, null, 2))
+  for (const filename of Object.keys(files)) {
+    zip.file(filename, files[filename as keyof typeof files])
+  }
 
   yield call(async () => {
     const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
     saveAs(artifact, `${sanitizedName}.zip`)
   })
+
+  yield put(closeModal('ExportModal'))
+  yield put(setExportProgress({ isLoading: false, progress: 0, total: 0 }))
 }
 
 function* handleImportProject(action: ImportProjectAction) {

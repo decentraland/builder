@@ -9,7 +9,7 @@ import { MapStateProps, MapDispatch, MapDispatchProps } from './Preview.types'
 import Preview from './Preview'
 
 const mapState = (state: RootState): MapStateProps => ({
-  isLoading: isReady(state),
+  isLoading: !isReady(state),
   layout: getCurrentLayout(state)!
 })
 

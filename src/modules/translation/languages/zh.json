@@ -58,7 +58,8 @@
   },
   "export_modal": {
     "action": "下载",
-    "description": "你可以备份你的场景，然后在另外的场景编辑器上使用。非常适合跟与朋友分享和合作场景设计",
+    "loading": "下载...",
+    "description": "导出场景，用于 Decentraland SDK 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
     "title": "下载场景"
   },
   "global": {
@@ -119,14 +120,6 @@
     "no_results": "没找到",
     "search": "搜索",
     "title": "抽屉"
-  },
-  "languages": {
-    "en": "英文",
-    "es": "西班牙语",
-    "fr": "法国",
-    "ja": "日本",
-    "ko": "朝鲜的",
-    "zh": "中文"
   },
   "layout_picker": {
     "columns": "列",

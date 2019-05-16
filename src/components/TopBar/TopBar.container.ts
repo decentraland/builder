@@ -2,7 +2,15 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId, isReady, areEntitiesOutOfBoundaries } from 'modules/editor/selectors'
+import {
+  getGizmo,
+  isPreviewing,
+  isSidebarOpen,
+  getSelectedEntityId,
+  isLoading,
+  areEntitiesOutOfBoundaries,
+  isReady
+} from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { hasAcceptedTerms } from 'modules/contest/selectors'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
@@ -16,7 +24,7 @@ const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),
   metrics: getCurrentMetrics(state),
   selectedEntityId: getSelectedEntityId(state),
-  isLoading: isReady(state),
+  isLoading: !isReady(state) || isLoading(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
   hasAcceptedTerms: hasAcceptedTerms(state),

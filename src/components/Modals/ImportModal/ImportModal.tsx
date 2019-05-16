@@ -6,11 +6,10 @@ import uuidv4 from 'uuid/v4'
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-
-import Icon from 'components/Icon'
-import { BUILDER_FILE_NAME, BUILDER_FILE_VERSION } from 'modules/project/sagas'
 import { migrations } from 'modules/migrations/import'
 import { SaveFile } from 'modules/project/types'
+import { EXPORT_PATH, BUILDER_FILE_VERSION } from 'modules/project/export'
+import Icon from 'components/Icon'
 import { Props, State, ImportedFile } from './ImportModal.types'
 
 import './ImportModal.css'
@@ -103,7 +102,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     for (let file of acceptedFiles) {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
-        const contentRaw = zip.file(BUILDER_FILE_NAME)
+        const contentRaw = zip.file(EXPORT_PATH.BUILDER_FILE)
         const content = await contentRaw.async('text')
         let parsed: ImportedFile = JSON.parse(content)
 

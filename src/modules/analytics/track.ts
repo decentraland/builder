@@ -22,7 +22,7 @@ import {
 } from 'modules/editor/actions'
 import { SEARCH_ASSETS, SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
-import { CREATE_PROJECT, CreateProjectAction } from 'modules/project/actions'
+import { CREATE_PROJECT, CreateProjectAction, ExportProjectAction, EXPORT_PROJECT, IMPORT_PROJECT } from 'modules/project/actions'
 
 function addPayload(actionType: string, getPayload = (action: any) => action.payload) {
   add(actionType, actionType, getPayload)
@@ -41,6 +41,17 @@ function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
   }
 }
 
+function trimProject(action: CreateProjectAction | ExportProjectAction) {
+  if (!action.payload.project) {
+    return action.payload
+  }
+  const { id, layout } = action.payload.project
+  return {
+    projectId: id,
+    ...layout
+  }
+}
+
 // contest actions
 add(SUBMIT_PROJECT_FAILURE, 'Submit project failure')
 
@@ -51,13 +62,7 @@ addPayload(RESET_ITEM)
 addPayload(DUPLICATE_ITEM)
 
 // editor actions
-add(CREATE_PROJECT, CREATE_PROJECT, action => {
-  const { id, layout } = (action as CreateProjectAction).payload.project
-  return {
-    projectId: id,
-    ...layout
-  }
-})
+addPayload(CREATE_PROJECT, trimProject)
 addPayload(EDITOR_UNDO)
 addPayload(EDITOR_REDO)
 addPayload(TOGGLE_PREVIEW)
@@ -74,3 +79,7 @@ addPayload(SET_GROUND, trimAsset)
 addPayload(ZOOM_IN)
 addPayload(ZOOM_OUT)
 addPayload(RESET_CAMERA)
+
+// import/export
+addPayload(EXPORT_PROJECT, trimProject)
+addPayload(IMPORT_PROJECT, () => ({}))

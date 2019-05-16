@@ -38,6 +38,10 @@
   cursor: default;
 }
 
+.Chip.disabled .Icon {
+  cursor: default;
+}
+
 .Chip .Icon {
   display: block;
 }

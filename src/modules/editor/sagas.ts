@@ -38,6 +38,7 @@ import {
   PrefetchAssetAction,
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
+  setEditorLoading,
   closeEditor
 } from 'modules/editor/actions'
 import {
@@ -52,7 +53,7 @@ import {
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
-import { getCurrentScene, getEntityComponentByType } from 'modules/scene/selectors'
+import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
@@ -90,6 +91,22 @@ export function* editorSaga() {
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
+}
+
+function* pollEditor() {
+  const scene = yield select(getCurrentScene)
+  let metrics
+  let entities
+
+  do {
+    entities = Object.values(scene.entities).length
+    metrics = yield select(getCurrentMetrics)
+    yield delay(300)
+  } while (entities > 0 && metrics.entities === 0)
+
+  while (editorWindow.editor.getLoadingEntity() !== null) {
+    yield delay(500)
+  }
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -277,7 +294,14 @@ function handleZoomOut() {
 }
 
 function* handleSetEditorReady(action: SetEditorReadyAction) {
-  yield changeEditorState(action.payload.isReady)
+  const { isReady } = action.payload
+
+  if (isReady) {
+    yield pollEditor()
+    yield put(setEditorLoading(false))
+  }
+
+  yield changeEditorState(isReady)
 }
 
 function* changeEditorState(isReady: boolean) {

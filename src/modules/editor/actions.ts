@@ -21,7 +21,7 @@ export const unbindEditorKeyboardShortcuts = () => action(UNBIND_EDITOR_KEYBOARD
 
 export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorKeyboardShortcuts>
 
-// Close editor
+// Open editor
 
 export const OPEN_EDITOR = 'Open editor'
 
@@ -127,6 +127,14 @@ export const setEditorReady = (isReady: boolean) => action(SET_EDITOR_READY, { i
 
 export type SetEditorReadyAction = ReturnType<typeof setEditorReady>
 
+// Set editor loading (loading 3D entities)
+
+export const SET_EDITOR_LOADING = 'Set editor loading'
+
+export const setEditorLoading = (isLoading: boolean) => action(SET_EDITOR_LOADING, { isLoading })
+
+export type SetEditorLoadingAction = ReturnType<typeof setEditorLoading>
+
 // Screenshot
 
 export const TAKE_SCREENSHOT = 'Take screenshot'
@@ -166,3 +174,12 @@ export const SET_ENTITIES_OUT_OF_BOUNDARIES = 'Set entities out of boundaries'
 export const setEntitiesOutOfBoundaries = (entities: string[]) => action(SET_ENTITIES_OUT_OF_BOUNDARIES, { entities })
 
 export type SetEntitiesOutOfBoundariesAction = ReturnType<typeof setEntitiesOutOfBoundaries>
+
+// Set export loading
+
+export const SET_EXPORT_PROGRESS = 'Set export progress'
+
+export const setExportProgress = (args: { isLoading?: boolean; progress?: number; total?: number } = {}) =>
+  action(SET_EXPORT_PROGRESS, args)
+
+export type SetExportProgressAction = ReturnType<typeof setExportProgress>
