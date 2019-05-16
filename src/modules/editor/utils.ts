@@ -17,7 +17,7 @@ export function getNewScene(project: Project): EditorScene {
   }
 
   return {
-    baseUrl: CONTENT_SERVER as string,
+    baseUrl: `${CONTENT_SERVER}/` as string,
     display: {
       title: project.title
     },

@@ -127,6 +127,14 @@ export const setEditorReady = (isReady: boolean) => action(SET_EDITOR_READY, { i
 
 export type SetEditorReadyAction = ReturnType<typeof setEditorReady>
 
+// Set editor loading (loading 3D entities)
+
+export const SET_EDITOR_LOADING = 'Set editor loading'
+
+export const setEditorLoading = (isLoading: boolean) => action(SET_EDITOR_LOADING, { isLoading })
+
+export type SetEditorLoadingAction = ReturnType<typeof setEditorLoading>
+
 // Screenshot
 
 export const TAKE_SCREENSHOT = 'Take screenshot'

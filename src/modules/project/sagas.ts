@@ -172,6 +172,7 @@ function* handleExportProject(action: ExportProjectAction) {
     const artifact = await zip.generateAsync<'blob'>({ type: 'blob' })
     saveAs(artifact, `${sanitizedName}.zip`)
   })
+
   yield put(closeModal('ExportModal'))
   yield put(setExportProgress({ isLoading: false, progress: 0, total: 0 }))
 }

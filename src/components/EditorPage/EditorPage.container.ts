@@ -13,7 +13,7 @@ import EditorPage from './EditorPage'
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
-  isLoading: isReady(state),
+  isLoading: !isReady(state),
   currentProject: getCurrentProject(state)
 })
 

@@ -207,7 +207,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
           .split('/')
           .slice(1)
           .join('/') // drop the asset pack id namespace
-        mappings[path] = CONTENT_SERVER + gltfShape.data.mappings[key]
+        mappings[path] = CONTENT_SERVER + '/' + gltfShape.data.mappings[key]
       }
     } else if (component.type === ComponentType.NFTShape) {
       shouldDownloadFrame = true

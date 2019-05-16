@@ -26,6 +26,7 @@ export type Editor = {
   getCameraTarget: () => Promise<Vector3>
   takeScreenshot: () => Promise<string>
   setGridResolution: (position: number, rotation: number, scale: number) => void
+  getLoadingEntity: () => any | null
 }
 
 export type EditorWindow = typeof window & {
