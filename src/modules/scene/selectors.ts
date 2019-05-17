@@ -4,7 +4,7 @@ import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics } from './types'
-import { EMPTY_SCENE_METRICS } from './constants'
+import { EMPTY_SCENE_METRICS, ShapeComponents } from './constants'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
@@ -72,6 +72,23 @@ export const getEntityComponentByType = <T extends ComponentType>(entityId: stri
         const componentReferences = entities[entityId].components
         for (const componentId of componentReferences) {
           if (components && componentId in components && components[componentId].type === type) {
+            return components[componentId] as ComponentDefinition<T>
+          }
+        }
+      }
+      return null
+    }
+  )
+
+export const getEntityShape = <T extends ComponentType>(entityId: string) =>
+  createSelector<RootState, Scene['entities'], Scene['components'], ComponentDefinition<T> | null>(
+    getEntities,
+    getComponents,
+    (entities, components) => {
+      if (entityId && entities && entityId in entities) {
+        const componentReferences = entities[entityId].components
+        for (const componentId of componentReferences) {
+          if (components && componentId in components && ShapeComponents.includes(components[componentId].type)) {
             return components[componentId] as ComponentDefinition<T>
           }
         }
