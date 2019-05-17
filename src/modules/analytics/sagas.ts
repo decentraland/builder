@@ -3,7 +3,7 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
-import { getCurrentProject, getProject } from 'modules/project/selectors'
+import { getCurrentProject } from 'modules/project/selectors'
 import {
   ADD_ITEM,
   DUPLICATE_ITEM,
@@ -16,9 +16,6 @@ import {
   UPDATE_TRANSFORM,
   UpdateTransfromAction
 } from 'modules/scene/actions'
-import { SUBMIT_PROJECT_SUCCESS, SubmitProjectSuccessAction } from 'modules/contest/actions'
-import { RootState } from 'modules/common/types'
-import { getScene } from 'modules/scene/selectors'
 
 export function* segmentSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
@@ -26,7 +23,6 @@ export function* segmentSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleNewItem)
   yield takeLatest(SET_GROUND, handleNewItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
-  yield takeLatest(SUBMIT_PROJECT_SUCCESS, handleSubmitProject)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
@@ -53,23 +49,6 @@ function* handleDeleteItem(_: DeleteItemAction) {
   if (!project) return
 
   track('Delete item', { projectId: project.id })
-}
-
-function* handleSubmitProject(action: SubmitProjectSuccessAction) {
-  const project: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, action.payload.projectId))
-  if (!project) return
-
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, project.sceneId))
-  if (!scene) return
-
-  const { email, ethAddress } = action.payload.contest
-  track('Submit project', {
-    projectId: project.id,
-    email,
-    ethAddress,
-    entitiesAmount: Object.keys(scene.entities).length,
-    layout: project.layout
-  })
 }
 
 let trackedEnablePrecision = false

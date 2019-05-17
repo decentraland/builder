@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { hasSubmittedProject } from 'modules/contest/selectors'
 import { deleteProject, duplicateProject } from 'modules/project/actions'
 import { getSceneById } from 'modules/scene/selectors'
 import { openModal } from 'modules/modal/actions'
@@ -12,7 +11,6 @@ import ProjectCard from './ProjectCard'
 const mapState = (state: RootState, { project }: { project: Project }): MapStateProps => {
   const scene = getSceneById(project.sceneId)(state)
   return {
-    hasSubmittedProject: hasSubmittedProject(state, project.id),
     items: scene ? scene.metrics.entities : 0
   }
 }

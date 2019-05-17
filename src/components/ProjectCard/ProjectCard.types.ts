@@ -4,7 +4,6 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { deleteProject, DeleteProjectAction, duplicateProject, DuplicateProjectAction } from 'modules/project/actions'
 
 export type DefaultProps = {
-  hasSubmittedProject: boolean
   items: number
 }
 
@@ -20,6 +19,6 @@ export type State = {
   isDeleting: boolean
 }
 
-export type MapStateProps = Pick<Props, 'hasSubmittedProject' | 'items'>
+export type MapStateProps = Pick<Props, 'items'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal'>
 export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction | OpenModalAction>

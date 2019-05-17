@@ -1,5 +1,4 @@
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { SUBMIT_PROJECT_FAILURE } from 'modules/contest/actions'
 import {
   ADD_ITEM,
   DROP_ITEM,
@@ -51,9 +50,6 @@ function trimProject(action: CreateProjectAction | ExportProjectAction) {
     ...layout
   }
 }
-
-// contest actions
-add(SUBMIT_PROJECT_FAILURE, 'Submit project failure')
 
 // item actions
 addPayload(ADD_ITEM, trimAsset)

@@ -1,13 +1,4 @@
 {
-  "add_to_contest": {
-    "contact_information": "연락 정보",
-    "error_occurred": "해당 풍경을 제출하는 과정에서 오류가 발생했습니다:",
-    "i_accept_the": "수락합니다 ",
-    "subtitle": "제출 과정 거의 마지막에 다다랐습니다. 여러분의 풍경을 제출하시기 전에 풍경과 연락 정보를 한번 더 확인해주시기 바랍니다.",
-    "success_subtitle": "이 풍경은 정말 멋져보이네요. 제출해주셔서 감사합니다!",
-    "success_title": "정말 멋지네요!",
-    "title": "풍경 제출하기"
-  },
   "banners": {
     "dapper_assetpack_banner": "너의 장면을 위해 Dapper 지갑과 무료 Purststige Cat을 잡아라!",
     "dapper_homepage": "여러분의 풍경에 보유하고 계신 크립토키티 사진을 올리시기 바랍니다! 크립토키티가 없으신가요 Dapper 지갑을 설치하시고 {cta}",
@@ -17,20 +8,6 @@
     "promo_title": "굉장히 댑하게 보이시네요!",
     "mobile_dapper_homepage": "최신 기능 : {cta}에 대해 자세히 알아보십시오.",
     "mobile_dapper_hompage_cta": "Picture Frames + Dapper"
-  },
-  "contest": {
-    "banner": {
-      "cta": "영상 시청하기",
-      "text": "창의적인 풍경을 제출하고 상금을 획득하세요:{br}{mana} 및 {land} (미화 {usd} 이상!)",
-      "title": "모든 건축가님께 알립니다!"
-    },
-    "incentive_banner": " (약 $5 미화 상당의) 100 MANA를 받아가기 위해 콘테스트에 여러분이 직접 제작한 풍경을 제출하시기 바랍니다.",
-    "land": "50 LAND",
-    "mana": "900,000 MANA",
-    "mana_per_scene": "100 MANA ($5)",
-    "submit_text": "대회에 출품하기",
-    "update_text": "제출 내역 업데이트",
-    "usd": "미화 50,000달러"
   },
   "custom_layout": {
     "title": "크기 직접 설정",
@@ -158,7 +135,6 @@
     "shortcuts_help": "여기서 단축기를 확인하세요!"
   },
   "project_card": {
-    "added_to_contest": "콘테스트에 제출됨",
     "confirm_delete_content": "\"{title}\" 를 진짜 삭제하시겠습니까?? 다시 되돌릴 수 없습니다",
     "confirm_delete_header": "\"{title}\" 삭제하기"
   },
@@ -215,7 +191,6 @@
     "publish": "랜드에 퍼블리싱하기"
   },
   "tutorial_modal": {
-    "contest": "대회에 참가해 {mana} 와 {land}를 획득하세요.",
     "slide0": {
       "description": "이 곳은 디센트럴랜드의 최신 풍경 빌더입니다. 시작하기 전에 기본적인 것을 가르쳐 드리겠습니다.",
       "title": "빌더에 오신 것을 환영합니다!"
