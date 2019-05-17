@@ -24,7 +24,6 @@ export type Props = {
   isPreviewing: boolean
   isSidebarOpen: boolean
   areEntitiesOutOfBoundaries: boolean
-  hasAcceptedTerms: boolean
   onSetGizmo: typeof setGizmo
   onTogglePreview: typeof togglePreview
   onToggleSidebar: typeof toggleSidebar
@@ -43,7 +42,6 @@ export type MapStateProps = Pick<
   | 'isPreviewing'
   | 'isSidebarOpen'
   | 'selectedEntityId'
-  | 'hasAcceptedTerms'
   | 'areEntitiesOutOfBoundaries'
 >
 

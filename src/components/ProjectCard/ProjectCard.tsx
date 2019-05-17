@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Dropdown, Popup, Confirm, Button } from 'decentraland-ui'
+import { Dropdown, Confirm, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
@@ -11,7 +11,6 @@ import './ProjectCard.css'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
-    hasSubmittedProject: false,
     items: 0
   }
 
@@ -50,7 +49,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, hasSubmittedProject, items, onClick } = this.props
+    const { project, items, onClick } = this.props
     const { isDeleting } = this.state
 
     let style = {}
@@ -66,19 +65,6 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     const children = (
       <>
         {Overlay}
-        {hasSubmittedProject ? (
-          <Popup
-            content={t('project_card.added_to_contest')}
-            position="top center"
-            trigger={
-              <span className="contest-badge">
-                <Icon name="star" />
-              </span>
-            }
-            on="hover"
-            inverted
-          />
-        ) : null}
         <Dropdown direction="left" onClick={preventDefault()}>
           <Dropdown.Menu>
             <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
