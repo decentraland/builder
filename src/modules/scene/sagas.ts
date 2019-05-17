@@ -26,7 +26,8 @@ import {
   getEntityComponentByType,
   getEntityComponents,
   getScene,
-  getCollectibleId
+  getCollectibleId,
+  getEntityShape
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
@@ -175,14 +176,14 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   const newComponents = { ...scene.components }
 
-  const gltfShape: ComponentDefinition<ComponentType.Transform> | null = yield select(
-    getEntityComponentByType(selectedEntityId, ComponentType.GLTFShape)
+  const shape: ComponentDefinition<ComponentType.GLTFShape> | ComponentDefinition<ComponentType.NFTShape> | null = yield select(
+    getEntityShape(selectedEntityId)
   )
   const transform: ComponentDefinition<ComponentType.Transform> | null = yield select(
     getEntityComponentByType(selectedEntityId, ComponentType.Transform)
   )
 
-  if (!gltfShape || !transform) return
+  if (!shape || !transform) return
 
   const {
     data: { position, rotation }
@@ -204,7 +205,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: [gltfShape.id, transformId] }
+  newEntities[entityId] = { id: entityId, components: [shape.id, transformId] }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
