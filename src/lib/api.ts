@@ -22,12 +22,12 @@ export class API extends BaseAPI {
   }
 
   async fetchCollectibleRegistries() {
-    const req = await fetch(`https://schema-api-staging.now.sh/dar/`)
+    const req = await fetch(`https://schema-api-v2.now.sh/dar/`)
     return req.json()
   }
 
   async fetchCollectibleAssets(registry: string, ownerAddress: string) {
-    const req = await fetch(`https://schema-api-staging.now.sh/dar/${registry}/address/${ownerAddress}`)
+    const req = await fetch(`https://schema-api-v2.now.sh/dar/${registry}/address/${ownerAddress}`)
     return req.json()
   }
 
