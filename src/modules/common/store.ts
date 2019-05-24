@@ -17,9 +17,16 @@ import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
 import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
+import { RootState } from './types'
 
 // @ts-ignore: Dev tools
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+    stateSanitizer: (state: RootState) => {
+      const { scene: _, ...newState } = state
+      return newState
+    }
+  }) || compose
 
 const history = createBrowserHistory()
 const rootReducer = createRootReducer(history)

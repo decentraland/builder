@@ -4,6 +4,7 @@ import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
 export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
+export const DAR_URL = env.get('REACT_APP_DAR_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
@@ -22,19 +23,13 @@ export class API extends BaseAPI {
   }
 
   async fetchCollectibleRegistries() {
-    const req = await fetch(`https://schema-api-staging.now.sh/dar/`)
+    const req = await fetch(DAR_URL)
     return req.json()
   }
 
   async fetchCollectibleAssets(registry: string, ownerAddress: string) {
-    const req = await fetch(`https://schema-api-staging.now.sh/dar/${registry}/address/${ownerAddress}`)
+    const req = await fetch(`${DAR_URL}/${registry}/address/${ownerAddress}`)
     return req.json()
-  }
-
-  async refreshCollectible(contractAddress: string, tokenId: string) {
-    const req = await fetch(`https://api.opensea.io/asset/${contractAddress}/${tokenId}/?force_update=true`)
-    const json = await req.json()
-    return json
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {

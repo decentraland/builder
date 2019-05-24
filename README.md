@@ -37,7 +37,7 @@ NODE_PATH=src
 
 REACT_APP_ASSETS_URL=https://builder-packs-stg.now.sh
 REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.today/contents
-
+REACT_APP_DAR_URL=https://schema-api-staging.now.sh/dar
 REACT_APP_LOCAL_STORAGE_KEY=builder-storage
 
 # Third party

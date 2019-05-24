@@ -49,8 +49,9 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedAssetPack, isLoadingAssets, isConnected } = this.props
-    const isViewingCollectibles = selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID && isConnected && !isLoadingAssets
+    const { search, selectedAssetPack, isLoadingAssets, isConnected } = this.props
+    const isViewingCollectibles =
+      selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID && isConnected && !isLoadingAssets && !search
     return (
       <div className="ItemDrawer">
         <SidebarHeader />
