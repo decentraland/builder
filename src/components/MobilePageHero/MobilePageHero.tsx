@@ -29,15 +29,7 @@ export default class MobilePageHero extends React.PureComponent<Props> {
         <Hero.Header>{t('home_page.title')}</Hero.Header>
         <Hero.Description>
           <span className="description">
-            <T
-              id="home_page.subtitle"
-              values={{
-                mana: <span className="highlight">{t('contest.mana')}</span>,
-                land: <span className="highlight">{t('contest.land')}</span>,
-                usd: <span className="highlight">{t('contest.usd')}</span>,
-                mana_per_scene: <span className="highlight">{t('contest.mana_per_scene')}</span>
-              }}
-            />
+            <T id="home_page.subtitle" />
           </span>
         </Hero.Description>
         <Hero.Actions>

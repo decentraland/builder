@@ -1,13 +1,4 @@
 {
-  "add_to_contest": {
-    "contact_information": "Información de contacto",
-    "error_occurred": "Ocurrió un error enviando tu escena:",
-    "i_accept_the": "Acepto los ",
-    "subtitle": "Casi listo. Por favor, revisa tu escena e información de contacto antes de finalizar.",
-    "success_subtitle": "Tu escena se ve muy bien, ¡Gracias!",
-    "success_title": "¡Genial!",
-    "title": "Enviar tu escena"
-  },
   "banners": {
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
     "dapper_homepage": "Muestra tu CryptoKitty en tu escena. No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un {cta}.",
@@ -17,20 +8,6 @@
     "promo_title": "¡Prueba Dapper!",
     "mobile_dapper_homepage": "Conoce lo último:{br}{cta}",
     "mobile_dapper_hompage_cta": "Cuadros + Dapper"
-  },
-  "contest": {
-    "banner": {
-      "cta": "Mira el Video",
-      "text": "Sube tus escenas más creativas y gana increíbles premios: {br}{mana} y {land} (más de {usd}!)",
-      "title": "A todos los creadores"
-    },
-    "incentive_banner": "Sube tu escena para ganar 100 MANA ($5 USD)!",
-    "land": "50 LAND",
-    "mana": "900,000 MANA",
-    "mana_per_scene": "100 MANA ($5)",
-    "submit_text": "Enviar al concurso",
-    "update_text": "Actualizar entrada",
-    "usd": "50,000 USD"
   },
   "custom_layout": {
     "title": "Personalizada",
@@ -157,7 +134,6 @@
     "shortcuts_help": "¡Ver atajos aquí!"
   },
   "project_card": {
-    "added_to_contest": "Enviado al concurso",
     "confirm_delete_content": "¿Seguro que quieres borrar tu escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },
@@ -214,7 +190,6 @@
     "publish": "Publicar a una LAND"
   },
   "tutorial_modal": {
-    "contest": "{mana} y {land} en premios (equivalente a {usd}+)",
     "slide0": {
       "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
       "title": "¡Bienvenido al Builder!"

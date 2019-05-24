@@ -8,7 +8,6 @@ import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
-import { ContestState } from 'modules/contest/reducer'
 import { UIState } from 'modules/ui/reducer'
 import { UserState } from 'modules/user/reducer'
 import { ProjectState } from 'modules/project/reducer'
@@ -27,7 +26,6 @@ export type RootState = {
   modal: ModalState
   assetPack: AssetPackState
   asset: AssetState
-  contest: ContestState
   ui: UIState
   user: UserState
   project: ProjectState

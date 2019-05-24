@@ -12,7 +12,6 @@ import {
   isReady
 } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
-import { hasAcceptedTerms } from 'modules/contest/selectors'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { getCurrentMetrics } from 'modules/scene/selectors'
@@ -27,7 +26,6 @@ const mapState = (state: RootState): MapStateProps => ({
   isLoading: !isReady(state) || isLoading(state),
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
-  hasAcceptedTerms: hasAcceptedTerms(state),
   areEntitiesOutOfBoundaries: areEntitiesOutOfBoundaries(state)
 })
 

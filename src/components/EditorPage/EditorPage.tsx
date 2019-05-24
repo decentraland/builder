@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Grid, Close } from 'decentraland-ui'
+import { Grid } from 'decentraland-ui'
 import App from 'decentraland-dapps/dist/containers/App'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import NotFoundPage from 'components/NotFoundPage'
 import TopBar from 'components/TopBar'
@@ -16,20 +15,13 @@ import { ToolName } from './Tools/Tools.types'
 import { Props, State } from './EditorPage.types'
 
 import './EditorPage.css'
-import { EditorWindow } from 'components/Preview/Preview.types'
 
 export const LOCALSTORAGE_TUTORIAL_KEY = 'builder-tutorial'
 export const LOCALSTORAGE_INCENTIVE_BANNER_KEY = 'builder-incentive-banner'
 
 const localStorage = getLocalStorage()
 
-const editorWindow = window as EditorWindow
-
 export default class EditorPage extends React.PureComponent<Props, State> {
-  state = {
-    isIncentiveBannerOpen: false
-  }
-
   componentWillMount() {
     const { currentProject, onLoadAssetPacks, onOpenModal } = this.props
 
@@ -76,25 +68,13 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     }
   }
 
-  handleCloseBanner = () => {
-    localStorage.setItem(LOCALSTORAGE_INCENTIVE_BANNER_KEY, '1')
-    this.setState({
-      isIncentiveBannerOpen: false
-    })
-
-    requestAnimationFrame(() => editorWindow.editor.resize())
-  }
-
   render() {
     const { currentProject, isPreviewing, isSidebarOpen, isLoading } = this.props
-    const { isIncentiveBannerOpen } = this.state
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     let wrapperClasses = 'wrapper'
 
-    if (isIncentiveBannerOpen) {
-      wrapperClasses += ' with-banner'
-    } else if (isPreviewing) {
+    if (isPreviewing) {
       wrapperClasses += ' fullscreen'
     }
 
@@ -108,12 +88,6 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
     return (
       <div className="EditorPage">
-        {isIncentiveBannerOpen && (
-          <div className="incentive-banner">
-            <span>{t('contest.incentive_banner')}</span>
-            <Close onClick={this.handleCloseBanner} small />
-          </div>
-        )}
         {isPreviewing ? null : <TopBar />}
         <Grid className={gridClasses}>
           <Grid.Row className={wrapperClasses}>

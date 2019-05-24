@@ -1,13 +1,4 @@
 {
-  "add_to_contest": {
-    "contact_information": "联系信息",
-    "error_occurred": "提交项目时出错了:",
-    "i_accept_the": "我接受 ",
-    "subtitle": "就差一步了，请检查你的场景和联系信息，然后提交。",
-    "success_subtitle": "不错的项目，谢谢您参加大赛！",
-    "success_title": "真棒！",
-    "title": "提交场景"
-  },
   "banners": {
     "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！",
     "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
@@ -17,20 +8,6 @@
     "promo_title": "今天的您好 Dapper (酷)!",
     "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
     "mobile_dapper_hompage_cta": "Picture Frames + Dapper"
-  },
-  "contest": {
-    "banner": {
-      "cta": "观看视频",
-      "text": "提交你最有创意的场景，赢得大奖：{br}{mana} 和 {land}（超过 {usd}！）",
-      "title": "设计人员大召集！"
-    },
-    "incentive_banner": "将您的场景提交给大赛以获得 100 MANA（价值 $5 ）！",
-    "land": "50 LAND",
-    "mana": "900,000 MANA",
-    "mana_per_scene": "100 MANA ($5)",
-    "submit_text": "提交到大赛",
-    "update_text": "更新提交",
-    "usd": "50,000 美元"
   },
   "custom_layout": {
     "title": "自定义",
@@ -158,7 +135,6 @@
     "shortcuts_help": "在此查看快捷键"
   },
   "project_card": {
-    "added_to_contest": "提交到大赛",
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },
@@ -215,7 +191,6 @@
     "publish": "布署场景"
   },
   "tutorial_modal": {
-    "contest": "取得赢取总共 {mana} 和 {land} 的机会。",
     "slide0": {
       "description": "这是 Decentraland 的新场景构建器。",
       "title": "欢迎您的到来！"

@@ -4,15 +4,6 @@
       "get_started": "asd"
     }
   },
-  "add_to_contest": {
-    "contact_information": "Contact information",
-    "error_occurred": "An error occurred trying to submit your scene:",
-    "i_accept_the": "I accept the ",
-    "subtitle": "Submit your scene now to earn 100 MANA (worth $5 USD). Please review your project and contact info below before you submit.",
-    "success_subtitle": "Your scene looks really nice, thank you for your submission!",
-    "success_title": "Awesome!",
-    "title": "Submit your scene"
-  },
   "banners": {
     "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!",
     "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Make a Dapper wallet and get a free {cta}.",
@@ -22,20 +13,6 @@
     "promo_cta": "Install Dapper",
     "promo_subtitle": "Complete the look by displaying your CryptoKitty in your scene. Don't have a CryptoKitty? Make a Dapper wallet and get a free, unique Purrstige Cat.",
     "promo_title": "You’re looking Dapper today!"
-  },
-  "contest": {
-    "banner": {
-      "cta": "Watch Video",
-      "text": "Submit your most creative scenes, and earn a share of the purse:{br}{mana} and {land} (over {usd}!)",
-      "title": "Calling all Builders!"
-    },
-    "incentive_banner": "Submit your scene to the contest to earn 100 MANA (worth $5 USD)!",
-    "land": "50 LAND",
-    "mana": "900,000 MANA",
-    "mana_per_scene": "100 MANA ($5)",
-    "submit_text": "Submit to contest",
-    "update_text": "Update submission",
-    "usd": "50,000 USD"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your scene.",
@@ -156,7 +133,6 @@
     "shortcuts_help": "See shortcuts here!"
   },
   "project_card": {
-    "added_to_contest": "Submitted to contest",
     "confirm_delete_content": "Are you sure you want to delete your scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },
@@ -213,7 +189,6 @@
     "publish": "Publish to LAND"
   },
   "tutorial_modal": {
-    "contest": "{mana} and {land} parcels in prizes! (worth {usd}+)",
     "slide0": {
       "description": "This is Decentraland’s new scene builder. Before you get started, let us show you around.",
       "title": "Welcome to the Builder!"
@@ -233,11 +208,6 @@
     "slide4": {
       "description": "Drag with the left button to rotate the camera. Use the right button to pan.",
       "title": "Controlling the camera"
-    },
-    "slide5": {
-      "description": "When your scene is finished, click {submitButton} to submit it to the Creator Contest.",
-      "email_cta": "Sign up for Builder and contest updates:",
-      "title": "Participate in the contest"
     },
     "subtitle": "The Builder is super easy to use, here are some tips before you begin",
     "title": "Get started with the Builder"

@@ -6,7 +6,6 @@ FROM node:10.15.1 as base
 ENV NODE_PATH src
 ENV REACT_APP_ASSETS_URL https://builder-packs-stg.now.sh
 ENV REACT_APP_CONTENT_SERVER_URL https://content.decentraland.today/contents
-ENV REACT_APP_CONTEST_SERVER_URL https://contest-server.decentraland.today/v1
 ENV REACT_APP_DAR_URL https://schema-api-staging.now.sh/dar
 ENV REACT_APP_INTERCOM_APP_ID z0h94kay
 ENV REACT_APP_LOCAL_STORAGE_KEY builder
