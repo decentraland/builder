@@ -37,8 +37,8 @@ NODE_PATH=src
 
 REACT_APP_ASSETS_URL=https://builder-packs-stg.now.sh
 REACT_APP_CONTEST_URL= # Only useful if you want to run your own contest. If you do read the contest server section below
-REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.today/contents/
-
+REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.today/contents
+REACT_APP_DAR_URL=https://schema-api-staging.now.sh/dar
 REACT_APP_LOCAL_STORAGE_KEY=builder-storage
 
 # Third party
@@ -51,12 +51,6 @@ REACT_APP_ROLLBAR_ACCESS_TOKEN=
 
 REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS=0x2a8fd99c19271f4f04b1b7b9c4f7cf264b626edb # Ropsten address
 ```
-
-## Contest server
-
-If you want to run your own [contest](https://contest.decentraland.org/), you'll have to deploy your own [contest server](https://github.com/decentraland/builder-contest-server) to store the entries. You can find how to run the server on the [repo](https://github.com/decentraland/builder-contest-server).
-
-Once you get that running, add the server URL to `REACT_APP_CONTEST_URL` on your `.env` file
 
 ## Asset packs
 
