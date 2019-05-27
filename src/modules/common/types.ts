@@ -13,6 +13,7 @@ import { UserState } from 'modules/user/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
+import { DeploymentState } from 'modules/deployment/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -32,6 +33,7 @@ export type RootState = {
   scene: UndoableSceneState
   router: RouterState
   editor: EditorState
+  deployment: DeploymentState
 }
 
 export type RootStore = Store<RootState>
