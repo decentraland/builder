@@ -7,3 +7,30 @@
   display: block;
   margin-bottom: 50px;
 }
+
+.DeployModal .category {
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.DeployModal .details {
+  margin-top: 30px;
+}
+
+.DeployModal .terms {
+  display: flex;
+  align-items: center;
+}
+
+.DeployModal .terms .ui.radio.checkbox {
+  height: 27px;
+}
+
+.DeployModal .terms .ui.checkbox label {
+  margin-right: 0px;
+}
+
+.DeployModal .terms,
+.DeployModal .terms a {
+  font-size: 17px;
+}

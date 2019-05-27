@@ -18,10 +18,17 @@
     "subtitle_one": "You can create custom layouts for your scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
-  "deploy_modal": {
+  "deployment_modal": {
     "description": "Coming soon, you’ll be able to publish scenes directly from the Builder to your LAND! Subscribe to the Builder mailing list, and we’ll let you know when the feature is ready.",
     "email_thanks": "Thanks! We'll stay in touch!",
-    "title": "Publish to your LAND"
+    "title": "Publish to your LAND",
+    "pool": {
+      "title": "Publish to Scene Pool",
+      "subtitle": "Submit your scene and we will contact you if your work gets picked",
+      "contact_information": "Contact information",
+      "error_ocurred": "An error ocurred",
+      "i_accept_the": "I accept the "
+    }
   },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
