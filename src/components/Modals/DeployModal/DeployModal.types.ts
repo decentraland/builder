@@ -1,5 +1,8 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Project } from 'modules/project/types'
+import { setUserProfile } from 'modules/user/actions'
+import { deployToPoolRequest } from 'modules/deployment/actions'
+import { editProjectRequest } from 'modules/project/actions'
 
 export type Props = ModalProps & {
   currentProject: Project | null
@@ -7,10 +10,9 @@ export type Props = ModalProps & {
   userEmail: string
   error: string | null
   isLoading: boolean
-  onSetEmail: (email: string) => void
-  onPublishToPool: (projectId: string, email: string, ethAddress: string) => void
-  onSaveProject: (projectId: string, project: Project) => void
-  onSaveUser: (email: string, ethAddress: string) => void
+  onDeployToPool: typeof deployToPoolRequest
+  onSaveProject: typeof editProjectRequest
+  onSaveUser: typeof setUserProfile
 }
 
 export type State = {
@@ -18,6 +20,7 @@ export type State = {
   email: string
   ethAddress: string
   project: Project
+  terms: boolean
 }
 
 export type Step = {
@@ -26,4 +29,4 @@ export type Step = {
 }
 
 export type MapStateProps = Pick<Props, 'currentProject' | 'userEmail' | 'userEthAddress' | 'error' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSetEmail'>
+export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onSaveUser' | 'onSaveProject'>

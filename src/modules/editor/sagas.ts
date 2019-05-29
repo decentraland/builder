@@ -1,5 +1,6 @@
-import { delay } from 'redux-saga'
-import { takeLatest, select, put, call } from 'redux-saga/effects'
+// @ts-ignore
+import { WebmEncoder } from './webm'
+import { takeLatest, select, put, call, delay } from 'redux-saga/effects'
 
 import {
   updateEditor,
@@ -39,7 +40,8 @@ import {
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
   setEditorLoading,
-  closeEditor
+  closeEditor,
+  RECORD_VIDEO
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -91,6 +93,7 @@ export function* editorSaga() {
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
+  yield takeLatest(RECORD_VIDEO, handleRecordVideo)
 }
 
 function* pollEditor() {
@@ -391,4 +394,56 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
   store.dispatch(setEntitiesOutOfBoundaries(entities))
+}
+
+export function* handleRecordVideo() {
+  const project: Project = yield select(getCurrentProject)
+  const side = Math.max(project.layout.cols, project.layout.rows)
+  const zoom = (side - 1) * 25
+  const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
+
+  canvas.classList.add('recording')
+
+  const encoder = new WebmEncoder(15)
+
+  yield call(() => {
+    try {
+      editorWindow.editor.resize()
+      editorWindow.editor.selectEntity(null as any)
+      editorWindow.editor.resetCameraZoom()
+      editorWindow.editor.setCameraZoomDelta(zoom)
+      editorWindow.editor.setCameraRotation(0, Math.PI / 3)
+    } catch (e) {
+      // stub
+    }
+  })
+
+  const steps = 32
+  const stepAngle = Math.PI / steps
+  let angle = 0
+  let thumbnail: string = ''
+
+  while (angle < Math.PI * 2) {
+    yield call(() => editorWindow.editor.setCameraRotation(angle, Math.PI / 3))
+    let screenshot = yield call(() => editorWindow.editor.takeScreenshot('image/webp'))
+
+    if (!thumbnail) {
+      thumbnail = yield call(() => editorWindow.editor.takeScreenshot())
+    }
+
+    encoder.add(screenshot)
+    angle += stepAngle
+  }
+
+  const blob = yield call(
+    () =>
+      new Promise(resolve => {
+        encoder.compile(resolve)
+      })
+  )
+
+  canvas.classList.remove('recording')
+  yield call(() => editorWindow.editor.resize())
+
+  return { blob, thumbnail }
 }

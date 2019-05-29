@@ -13,7 +13,8 @@ export const THUMBNAIL_HEIGHT = 182
 
 export function getNewScene(project: Project): EditorScene {
   const mappings = {
-    'game.js': `data:application/javascript;base64,${btoa(script)}`
+    'game.js': `data:application/javascript;base64,${btoa(script)}`,
+    'scene.json': 'Qm' // stub required by the client
   }
 
   return {

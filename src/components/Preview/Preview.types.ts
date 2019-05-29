@@ -16,7 +16,6 @@ export type Editor = {
   initEngine: (x: number, y: number) => Promise<void>
   resize: () => void
   getDCLCanvas: () => Promise<HTMLCanvasElement>
-  enableGizmo: (entityId: string) => void
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
   handleMessage: (msg: { type: 'update'; payload: any }) => void
@@ -27,11 +26,11 @@ export type Editor = {
   resetCameraZoom: () => void
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
-  selectEntity: (entityId: string) => void
+  selectEntity: (entityId?: string) => void
   getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>
-  takeScreenshot: () => Promise<string>
+  takeScreenshot: (mime?: string) => Promise<string>
   setGridResolution: (position: number, rotation: number, scale: number) => void
   getLoadingEntity: () => any | null
 }

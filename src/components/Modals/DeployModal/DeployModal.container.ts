@@ -1,10 +1,14 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { setUserEmail } from 'modules/user/actions'
+import { Project } from 'modules/project/types'
+import { User } from 'modules/user/types'
 import { getEmail, getEthAddress } from 'modules/user/selectors'
 import { isLoading, getError } from 'modules/deployment/selectors'
+import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
+import { setUserProfile } from 'modules/user/actions'
+import { editProjectRequest } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps } from './DeployModal.types'
 import DeployModal from './DeployModal'
 
@@ -17,7 +21,9 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onSetEmail: email => dispatch(setUserEmail(email))
+  onDeployToPool: (projectId: string) => dispatch(deployToPoolRequest(projectId)),
+  onSaveUser: (user: Partial<User>) => dispatch(setUserProfile(user)),
+  onSaveProject: (id: string, project: Partial<Project>) => dispatch(editProjectRequest(id, project))
 })
 
 export default connect(

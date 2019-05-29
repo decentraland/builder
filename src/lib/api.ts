@@ -37,6 +37,11 @@ export class API extends BaseAPI {
   reportEmail(email: string, interest: EMAIL_INTEREST) {
     return this.request('post', `${EMAIL_SERVER_URL}`, { email, interest })
   }
+
+  async deployToPool() {
+    const req = await fetch(``)
+    return req.json()
+  }
 }
 
 export const api = new API(API_URL)
