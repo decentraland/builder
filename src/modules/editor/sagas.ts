@@ -67,7 +67,7 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER } from './utils'
+import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER, dataURLtoBlob } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
 
 const editorWindow = window as EditorWindow
@@ -435,7 +435,7 @@ export function* handleRecordVideo() {
     angle += stepAngle
   }
 
-  const blob = yield call(
+  const video = yield call(
     () =>
       new Promise(resolve => {
         encoder.compile(resolve)
@@ -445,5 +445,5 @@ export function* handleRecordVideo() {
   canvas.classList.remove('recording')
   yield call(() => editorWindow.editor.resize())
 
-  return { blob, thumbnail }
+  return { video, thumbnail: dataURLtoBlob(thumbnail) }
 }

@@ -1,5 +1,6 @@
 import { env } from 'decentraland-commons'
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
+import { Project } from 'modules/project/types'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
@@ -38,8 +39,14 @@ export class API extends BaseAPI {
     return this.request('post', `${EMAIL_SERVER_URL}`, { email, interest })
   }
 
-  async deployToPool() {
-    const req = await fetch(``)
+  async deployToPool(project: Project, video: Blob, thumbnail: Blob) {
+    const formData = new FormData()
+    formData.append('attachment', video)
+    formData.append('attachment', thumbnail)
+    const req = await fetch(`http://10.1.2.53:5000/v1/project/${project.id}/preview`, {
+      method: 'POST',
+      body: formData
+    })
     return req.json()
   }
 }

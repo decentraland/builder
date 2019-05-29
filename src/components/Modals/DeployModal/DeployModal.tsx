@@ -11,6 +11,23 @@ import './DeployModal.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
+  isSubmitting = false
+  isSuccess = false
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { isLoading, error } = nextProps
+
+    if (this.isSubmitting && !isLoading && !error) {
+      this.isSubmitting = false
+      this.isSuccess = true
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState(this.getBaseState())
+    this.isSubmitting = false
+    this.isSuccess = false
+  }
 
   getBaseState(): State {
     const { currentProject, userEmail, userEthAddress } = this.props
@@ -60,7 +77,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = async () => {
-    const { currentProject, onDeployToPool, onSaveProject, onSaveUser, onClose } = this.props
+    const { currentProject, onDeployToPool, onSaveProject, onSaveUser } = this.props
     const { email, ethAddress, project } = this.state
     const projectId = currentProject!.id
 
@@ -69,8 +86,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     onSaveUser({ email, ethAddress })
     onSaveProject(projectId, project)
     onDeployToPool(projectId)
-
-    onClose()
   }
 
   renderForm() {
@@ -143,7 +158,11 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   render() {
     const { name, onClose } = this.props
     const { isLoading, terms, email } = this.state
-    const isSubmitDIsabled = !terms || !email
+    const isSubmitDIsabled = !terms || !email || isLoading
+
+    if (this.isSuccess) {
+      return this.renderSuccess()
+    }
 
     return (
       <Modal name={name}>
@@ -156,7 +175,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             ) : (
               <>
                 <Button primary disabled={isSubmitDIsabled}>
-                  {t('global.submit')}
+                  {isLoading ? 'Processing...' : t('global.submit')}
                 </Button>
                 <Button secondary onClick={onClose}>
                   {t('global.cancel')}
