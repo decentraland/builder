@@ -18,7 +18,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       email: userEmail,
       ethAddress: userEthAddress,
       isLoading: false,
-      project: { ...currentProject! }
+      project: { ...currentProject! },
+      terms: false
     }
   }
 
@@ -26,7 +27,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { email } = this.state
     const analytics = getAnalytics()
 
-    this.props.onSetEmail(email)
     this.setState({ isLoading: true })
     analytics.identify({ email })
     api.reportEmail(email, EMAIL_INTEREST.PUBLISH).catch(() => console.error('Unable to submit email, something went wrong!'))
@@ -56,24 +56,26 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   handleToggleTermsAndConditions = () => {
-    /* stub */
+    this.setState({ terms: !this.state.terms })
   }
 
   handleSubmit = async () => {
-    const { currentProject, onPublishToPool, onSaveProject, onSaveUser } = this.props
+    const { currentProject, onDeployToPool, onSaveProject, onSaveUser, onClose } = this.props
     const { email, ethAddress, project } = this.state
     const projectId = currentProject!.id
 
     api.reportEmail(email, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
-    onSaveUser(email, ethAddress)
+    onSaveUser({ email, ethAddress })
     onSaveProject(projectId, project)
-    onPublishToPool(projectId, email, ethAddress)
+    onDeployToPool(projectId)
+
+    onClose()
   }
 
   renderForm() {
     const { error } = this.props
-    const { project, email, ethAddress } = this.state
+    const { project, email, ethAddress, terms } = this.state
     const { title, description } = project
 
     return (
@@ -103,7 +105,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
           />
           <div className="terms">
             <span onClick={this.handleToggleTermsAndConditions}>
-              <Radio defaultChecked={false} checked={false} label="" />
+              <Radio defaultChecked={false} checked={terms} label="" />
             </span>
             <span>
               {t('deployment_modal.pool.i_accept_the')}
@@ -140,7 +142,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   render() {
     const { name, onClose } = this.props
-    const { isLoading } = this.state
+    const { isLoading, terms, email } = this.state
+    const isSubmitDIsabled = !terms || !email
+
     return (
       <Modal name={name}>
         <Form onSubmit={this.handleSubmit}>
@@ -151,7 +155,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
               <Loader size="large" />
             ) : (
               <>
-                <Button primary>{t('global.submit')}</Button>
+                <Button primary disabled={isSubmitDIsabled}>
+                  {t('global.submit')}
+                </Button>
                 <Button secondary onClick={onClose}>
                   {t('global.cancel')}
                 </Button>

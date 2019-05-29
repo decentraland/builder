@@ -15,6 +15,13 @@
   display: block;
   outline: none;
 }
+
+.Preview > canvas.recording {
+  visibility: hidden !important;
+  width: 1280px !important;
+  height: 720px !important;
+}
+
 .Preview.loading > canvas {
   position: absolute !important;
 }

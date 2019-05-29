@@ -1,6 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { delay } from 'redux-saga'
-import { takeLatest, put, select, call } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 
 import {
   ADD_ITEM,
