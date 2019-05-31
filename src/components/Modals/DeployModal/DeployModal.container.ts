@@ -4,7 +4,7 @@ import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { getEmail, getEthAddress } from 'modules/user/selectors'
-import { isLoading, getError } from 'modules/deployment/selectors'
+import { isLoading, getError, getThumbnail } from 'modules/deployment/selectors'
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { setUserProfile } from 'modules/user/actions'
@@ -17,7 +17,8 @@ const mapState = (state: RootState): MapStateProps => ({
   userEmail: getEmail(state),
   userEthAddress: getEthAddress(state),
   currentProject: getCurrentProject(state),
-  isLoading: isLoading(state)
+  isLoading: isLoading(state),
+  deploymentThumbnail: getThumbnail(state)
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
