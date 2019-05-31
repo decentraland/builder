@@ -3,11 +3,11 @@
     "dapper_assetpack_banner": "너의 장면을 위해 Dapper 지갑과 무료 Purststige Cat을 잡아라!",
     "dapper_homepage": "여러분의 풍경에 보유하고 계신 크립토키티 사진을 올리시기 바랍니다! 크립토키티가 없으신가요 Dapper 지갑을 설치하시고 {cta}",
     "dapper_homepage_cta": "무료로 Purrstige Cat을 받아가시기 바랍니다.",
+    "mobile_dapper_homepage": "최신 기능 : {cta}에 대해 자세히 알아보십시오.",
+    "mobile_dapper_hompage_cta": "Picture Frames + Dapper",
     "promo_cta": "Dapper 설치",
     "promo_subtitle": "여러분의 풍경에 보유하고 계신 크립토키티를 디스플레이하여 외형을 완성시키시길 바랍니다. 크립토키티가 없으신가요? Dapper 지갑을 만드시고 무료로 고유한 Purrstige Cat을 받아가시기 바랍니다.",
-    "promo_title": "굉장히 댑하게 보이시네요!",
-    "mobile_dapper_homepage": "최신 기능 : {cta}에 대해 자세히 알아보십시오.",
-    "mobile_dapper_hompage_cta": "Picture Frames + Dapper"
+    "promo_title": "굉장히 댑하게 보이시네요!"
   },
   "custom_layout": {
     "title": "크기 직접 설정",
@@ -17,10 +17,21 @@
     "subtitle_one": "제작할 풍경의 크기를 직접 설정할 수 있습니다.",
     "subtitle_two": "원하는 크기를 아래 글상자에 입력하세요."
   },
-  "deploy_modal": {
+  "deployment_modal": {
     "description": "여러분들은 멀지않은 미래에 빌더 상에서 풍경을 토지로 직접 퍼블리싱할 수 있게될 예정입니다! 빌더 관련 이메일 받아보기를 구독하시면 저희가 해당 기능이 준비가 됬을 때 알려드리도록 하겠습니다.",
     "email_thanks": "감사합니다! 최신 정보를 알려 드리겠습니다!",
-    "title": "내 랜드에 퍼블리싱하기"
+    "title": "내 랜드에 퍼블리싱하기",
+    "pool": {
+      "title": "장면 게시",
+      "subtitle": "우리 현장 수영장에 작품을 제출하여 출판 할 기회를 얻으십시오. LAND는 필요하지 않습니다.",
+      "contact_information": "연락처",
+      "error_ocurred": "프로젝트 출품 중에 오류가 발생했습니다:",
+      "i_accept_the": "Decentraland에서받은 소식에 동의합니다.",
+      "success": {
+        "title": "장면을 업로드 해 주셔서 감사합니다!",
+        "body": "씬이 게시되도록 선택한 경우 이메일 알림을 받게됩니다."
+      }
+    }
   },
   "edit_project_modal": {
     "custom_layout_label": "레이아웃",
@@ -35,8 +46,8 @@
   },
   "export_modal": {
     "action": "다운로드",
-    "loading": "다운로드 중...",
     "description": "여러분은 디센트럴랜드 SDK를 사용하거나 빌더를 사용하면서 풍경을 내보낼 수 있습니다. 빌더 내보내기 기능을 통해 여러분은 친구들과 풍경을 공유하고 협업을 진행할 수 있습니다! SDK를 사용하여 풍경에 수정/변경이 진행되면 해당 수정/변경 내용은 빌더 상에 반영되지 않습니다.",
+    "loading": "다운로드 중...",
     "title": "풍경 다운로드"
   },
   "global": {

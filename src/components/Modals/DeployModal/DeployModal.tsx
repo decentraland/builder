@@ -34,20 +34,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     return {
       email: userEmail,
       ethAddress: userEthAddress,
-      isLoading: false,
       project: { ...currentProject! },
       terms: false
     }
-  }
-
-  handleSubmitEmail = async () => {
-    const { email } = this.state
-    const analytics = getAnalytics()
-
-    this.setState({ isLoading: true })
-    analytics.identify({ email })
-    api.reportEmail(email, EMAIL_INTEREST.PUBLISH).catch(() => console.error('Unable to submit email, something went wrong!'))
-    this.setState({ isLoading: false })
   }
 
   handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -80,7 +69,11 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { currentProject, onDeployToPool, onSaveProject, onSaveUser } = this.props
     const { email, ethAddress, project } = this.state
     const projectId = currentProject!.id
+    const analytics = getAnalytics()
 
+    this.isSubmitting = true
+
+    analytics.identify({ email })
     api.reportEmail(email, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     onSaveUser({ email, ethAddress })
@@ -88,8 +81,14 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     onDeployToPool(projectId)
   }
 
+  handleClose = () => {
+    if (!this.props.isLoading) {
+      this.props.onClose()
+    }
+  }
+
   renderForm() {
-    const { error } = this.props
+    const { error, isLoading } = this.props
     const { project, email, ethAddress, terms } = this.state
     const { title, description } = project
 
@@ -98,8 +97,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
         <div className="subtitle">{t('deployment_modal.pool.subtitle')}</div>
         <div className="details">
           <div className="category">{t('global.project')}</div>
-          <ProjectFields.Title value={title} onChange={this.handleTitleChange} required />
-          <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
+          <ProjectFields.Title value={title} onChange={this.handleTitleChange} required disabled={isLoading} />
+          <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} disabled={isLoading} />
         </div>
         <div className="details">
           <div className="category">{t('deployment_modal.pool.contact_information')}</div>
@@ -110,6 +109,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             placeholder="mail@domain.com"
             value={email}
             onChange={this.handleEmailChange}
+            disabled={isLoading}
             required
           />
           <Field
@@ -117,21 +117,17 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             placeholder="0x"
             value={ethAddress}
             onChange={this.handleEthAddressChange}
+            disabled={isLoading}
           />
           <div className="terms">
             <span onClick={this.handleToggleTermsAndConditions}>
-              <Radio defaultChecked={false} checked={terms} label="" />
+              <Radio defaultChecked={false} checked={terms} label="" disabled={isLoading} />
             </span>
-            <span>
-              {t('deployment_modal.pool.i_accept_the')}
-              <a href="https://decentraland.org/terms" rel="noopener noreferrer" target="_blank">
-                {t('global.terms_and_conditions')}
-              </a>
-            </span>
+            <span>{t('deployment_modal.pool.i_accept_the')}</span>
           </div>
           {error ? (
             <div className="error">
-              {t('deployment_modal.pool.error_occurred')} "{error}"
+              {t('deployment_modal.pool.error_ocurred')} "{error}"
             </div>
           ) : null}
         </div>
@@ -140,12 +136,15 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderSuccess() {
-    const { name, onClose } = this.props
+    const { name, deploymentThumbnail, onClose } = this.props
 
     return (
       <Modal name={name}>
-        <Modal.Header>{t('add_to_contest.success_title')}</Modal.Header>
-        <Modal.Content>{t('add_to_contest.success_subtitle')}</Modal.Content>
+        <img src={deploymentThumbnail || ''} className="preview" />
+        <Modal.Header>{t('deployment_modal.pool.success.title')}</Modal.Header>
+        <Modal.Content>
+          <div className="success">{t('deployment_modal.pool.success.body')}</div>
+        </Modal.Content>
         <Modal.Actions>
           <Button primary onClick={onClose}>
             {t('global.done')}
@@ -156,16 +155,16 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { name, onClose } = this.props
-    const { isLoading, terms, email } = this.state
-    const isSubmitDIsabled = !terms || !email || isLoading
+    const { name, onClose, isLoading } = this.props
+    const { terms, email } = this.state
+    const isSubmitDIsabled = !terms || !email
 
     if (this.isSuccess) {
       return this.renderSuccess()
     }
 
     return (
-      <Modal name={name}>
+      <Modal name={name} onClose={this.handleClose}>
         <Form onSubmit={this.handleSubmit}>
           <Modal.Header>{t('deployment_modal.pool.title')}</Modal.Header>
           <Modal.Content>{this.renderForm()}</Modal.Content>

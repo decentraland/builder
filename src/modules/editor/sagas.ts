@@ -396,54 +396,71 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   store.dispatch(setEntitiesOutOfBoundaries(entities))
 }
 
+const Rotation = {
+  NORTH: Math.PI * 1.5,
+  EAST: 0,
+  SOUTH: Math.PI / 2,
+  WEST: Math.PI
+}
+
 export function* handleRecordVideo() {
   const project: Project = yield select(getCurrentProject)
   const side = Math.max(project.layout.cols, project.layout.rows)
-  const zoom = (side - 1) * 25
+  const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
-
-  canvas.classList.add('recording')
-
   const encoder = new WebmEncoder(15)
+  const stepAngle = Math.PI / 32
+  const initialAngle = Math.PI / 1.5
+  const shots = {
+    north: null,
+    east: null,
+    south: null,
+    west: null
+  }
 
-  yield call(() => {
-    try {
-      editorWindow.editor.resize()
-      editorWindow.editor.selectEntity(null as any)
-      editorWindow.editor.resetCameraZoom()
-      editorWindow.editor.setCameraZoomDelta(zoom)
-      editorWindow.editor.setCameraRotation(0, Math.PI / 3)
-    } catch (e) {
-      // stub
-    }
-  })
+  let angle = initialAngle
+  let thumbnail
 
-  const steps = 32
-  const stepAngle = Math.PI / steps
-  let angle = 0
-  let thumbnail: string = ''
+  // Prepare the canvas for recording
+  canvas.classList.add('recording')
+  yield call(() => editorWindow.editor.resize())
+  editorWindow.editor.resetCameraZoom()
+  yield delay(200) // big scenes need some extra time to reset the camera
 
-  while (angle < Math.PI * 2) {
+  // Prepare the camera to fit the scene
+  editorWindow.editor.setCameraZoomDelta(zoom)
+  editorWindow.editor.setCameraRotation(0, Math.PI / 3)
+  editorWindow.editor.setCameraPosition({ x: (project.layout.rows * PARCEL_SIZE) / 2, y: 2, z: (project.layout.cols * PARCEL_SIZE) / 2 })
+
+  // Spin the camera and capture video frames
+  while (angle < Math.PI * 2 + initialAngle) {
     yield call(() => editorWindow.editor.setCameraRotation(angle, Math.PI / 3))
     let screenshot = yield call(() => editorWindow.editor.takeScreenshot('image/webp'))
 
     if (!thumbnail) {
-      thumbnail = yield call(() => editorWindow.editor.takeScreenshot())
+      thumbnail = yield takeEditorScreenshot(angle)
     }
 
     encoder.add(screenshot)
     angle += stepAngle
   }
 
-  const video = yield call(
-    () =>
-      new Promise(resolve => {
-        encoder.compile(resolve)
-      })
-  )
+  const video = yield call(() => new Promise(resolve => encoder.compile(resolve)))
 
+  shots.north = yield takeEditorScreenshot(Rotation.NORTH)
+  shots.east = yield takeEditorScreenshot(Rotation.EAST)
+  shots.south = yield takeEditorScreenshot(Rotation.SOUTH)
+  shots.west = yield takeEditorScreenshot(Rotation.WEST)
+
+  // Cleanup
   canvas.classList.remove('recording')
   yield call(() => editorWindow.editor.resize())
 
-  return { video, thumbnail: dataURLtoBlob(thumbnail) }
+  return { video, shots, thumbnail }
+}
+
+function* takeEditorScreenshot(angle: number) {
+  editorWindow.editor.setCameraRotation(angle, Math.PI / 3)
+  const shot = yield call(() => editorWindow.editor.takeScreenshot())
+  return dataURLtoBlob(shot)
 }

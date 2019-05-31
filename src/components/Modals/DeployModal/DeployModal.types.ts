@@ -10,13 +10,13 @@ export type Props = ModalProps & {
   userEmail: string
   error: string | null
   isLoading: boolean
+  deploymentThumbnail: string | null
   onDeployToPool: typeof deployToPoolRequest
   onSaveProject: typeof editProjectRequest
   onSaveUser: typeof setUserProfile
 }
 
 export type State = {
-  isLoading: boolean
   email: string
   ethAddress: string
   project: Project
@@ -28,5 +28,5 @@ export type Step = {
   description: string
 }
 
-export type MapStateProps = Pick<Props, 'currentProject' | 'userEmail' | 'userEthAddress' | 'error' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'currentProject' | 'userEmail' | 'userEthAddress' | 'error' | 'deploymentThumbnail' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onSaveUser' | 'onSaveProject'>

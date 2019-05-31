@@ -10,11 +10,13 @@ import {
 } from './actions'
 
 export type DeploymentState = {
+  thumbnail: string | null
   loading: LoadingState
   error: string | null
 }
 
 const INITIAL_STATE: DeploymentState = {
+  thumbnail: null,
   loading: [],
   error: null
 }
@@ -32,7 +34,9 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_POOL_SUCCESS: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        thumbnail: action.payload.thumbnail,
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
     case DEPLOY_TO_POOL_FAILURE: {
