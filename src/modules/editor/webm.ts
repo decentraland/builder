@@ -424,7 +424,7 @@ export class WebmEncoder {
   }
 
   add(frame: string, duration: number = this.duration) {
-    if (typeof frame === 'string' && !/^data:image\/webp;base64,/gi.test(frame)) {
+    if (!/^data:image\/webp;base64,/gi.test(frame)) {
       throw new Error('Input must be formatted properly as a base64 encoded DataURI of type image/webp')
     }
 
