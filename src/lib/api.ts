@@ -9,7 +9,7 @@ export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
 export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 export const DAR_URL = env.get('REACT_APP_DAR_URL', '')
-export const BUILDER_SERVER_URL = env.get('REACT_BUILDER_SERVER_URL', '')
+export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
@@ -30,11 +30,13 @@ export class API extends BaseAPI {
   }
 
   async fetchCollectibleRegistries() {
-    return this.request('get', DAR_URL, {})
+    const req = await fetch(DAR_URL)
+    return req.json()
   }
 
   async fetchCollectibleAssets(registry: string, ownerAddress: string) {
-    return this.request('get', `${DAR_URL}/${registry}/address/${ownerAddress}`, {})
+    const req = await fetch(`${DAR_URL}/${registry}/address/${ownerAddress}`)
+    return req.json()
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {

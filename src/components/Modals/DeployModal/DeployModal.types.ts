@@ -21,6 +21,8 @@ export type State = {
   ethAddress: string
   project: Project
   terms: boolean
+  isSubmitting: boolean
+  isSuccess: boolean
 }
 
 export type Step = {

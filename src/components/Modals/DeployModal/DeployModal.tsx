@@ -11,22 +11,25 @@ import './DeployModal.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
-  isSubmitting = false
-  isSuccess = false
 
   componentWillReceiveProps(nextProps: Props) {
     const { isLoading, error } = nextProps
 
-    if (this.isSubmitting && !isLoading && !error) {
-      this.isSubmitting = false
-      this.isSuccess = true
+    if (this.state.isSubmitting && !isLoading && !error) {
+      this.setState({
+        isSubmitting: false,
+        isSuccess: true
+      })
     }
   }
 
   componentWillUnmount() {
     this.setState(this.getBaseState())
-    this.isSubmitting = false
-    this.isSuccess = false
+
+    this.setState({
+      isSubmitting: false,
+      isSuccess: false
+    })
   }
 
   getBaseState(): State {
@@ -35,7 +38,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       email: userEmail,
       ethAddress: userEthAddress,
       project: { ...currentProject! },
-      terms: false
+      terms: false,
+      isSubmitting: false,
+      isSuccess: false
     }
   }
 
@@ -71,7 +76,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const projectId = currentProject!.id
     const analytics = getAnalytics()
 
-    this.isSubmitting = true
+    this.setState({ isSubmitting: true })
 
     analytics.identify({ email })
     api.reportEmail(email, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
@@ -159,7 +164,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { terms, email } = this.state
     const isSubmitDIsabled = !terms || !email
 
-    if (this.isSuccess) {
+    if (this.state.isSuccess) {
       return this.renderSuccess()
     }
 
