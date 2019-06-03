@@ -19,6 +19,8 @@
 .DeployModal .terms {
   display: flex;
   align-items: center;
+  color: var(--secondary-text);
+  font-size: 15px;
 }
 
 .DeployModal .terms .ui.radio.checkbox {

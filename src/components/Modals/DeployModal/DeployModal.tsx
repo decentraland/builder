@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Field, Form, Loader, Button, Radio } from 'decentraland-ui'
+import { Field, Form, Loader, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -38,7 +38,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       email: userEmail,
       ethAddress: userEthAddress,
       project: { ...currentProject! },
-      terms: false,
       isSubmitting: false,
       isSuccess: false
     }
@@ -66,10 +65,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     this.setState({ ethAddress })
   }
 
-  handleToggleTermsAndConditions = () => {
-    this.setState({ terms: !this.state.terms })
-  }
-
   handleSubmit = async () => {
     const { currentProject, onDeployToPool, onSaveProject, onSaveUser } = this.props
     const { email, ethAddress, project } = this.state
@@ -94,7 +89,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   renderForm() {
     const { error, isLoading } = this.props
-    const { project, email, ethAddress, terms } = this.state
+    const { project, email, ethAddress } = this.state
     const { title, description } = project
 
     return (
@@ -125,9 +120,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             disabled={isLoading}
           />
           <div className="terms">
-            <span onClick={this.handleToggleTermsAndConditions}>
-              <Radio defaultChecked={false} checked={terms} label="" disabled={isLoading} />
-            </span>
             <span>{t('deployment_modal.pool.i_accept_the')}</span>
           </div>
           {error ? (
@@ -161,8 +153,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   render() {
     const { name, onClose, isLoading } = this.props
-    const { terms, email } = this.state
-    const isSubmitDIsabled = !terms || !email
+    const { email } = this.state
+    const isSubmitDIsabled = !email
 
     if (this.state.isSuccess) {
       return this.renderSuccess()
