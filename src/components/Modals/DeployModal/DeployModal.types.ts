@@ -20,7 +20,6 @@ export type State = {
   email: string
   ethAddress: string
   project: Project
-  terms: boolean
   isSubmitting: boolean
   isSuccess: boolean
 }
