@@ -1,4 +1,5 @@
 import { Asset } from 'modules/asset/types'
+import { COLLECTIBLE_ASSET_PACK_ID, CategoryName } from 'modules/ui/sidebar/utils'
 
 export function getMappings(asset: Asset) {
   const mappings: Record<string, string> = {}
@@ -9,4 +10,12 @@ export function getMappings(asset: Asset) {
     }
   }
   return mappings
+}
+
+export function isNFT(asset: Asset) {
+  return asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID
+}
+
+export function isGround(asset: Asset) {
+  return asset.category === CategoryName.GROUND_CATEGORY
 }

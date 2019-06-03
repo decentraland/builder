@@ -63,7 +63,7 @@ export const getEntityComponents = (entityId: string) =>
     }
   )
 
-export const getEntityComponentByType = <T extends ComponentType>(entityId: string, type: T) =>
+export const getEntityComponentByType = <T extends ComponentType>(entityId: string | null, type: T) =>
   createSelector<RootState, Scene['entities'], Scene['components'], ComponentDefinition<T> | null>(
     getEntities,
     getComponents,
@@ -97,7 +97,7 @@ export const getEntityShape = <T extends ComponentType>(entityId: string) =>
     }
   )
 
-export const getComponentByType = <T extends ComponentType>(type: T) => (state: RootState) => {
+export const getComponentsByType = <T extends ComponentType>(type: T) => (state: RootState) => {
   const scene = getCurrentScene(state)
   if (!scene) return []
 

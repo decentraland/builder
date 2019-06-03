@@ -9,7 +9,8 @@ import {
   getSelectedEntityId,
   isLoading,
   areEntitiesOutOfBoundaries,
-  isReady
+  isReady,
+  getEnabledTools
 } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
@@ -18,16 +19,20 @@ import { getCurrentMetrics } from 'modules/scene/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 
-const mapState = (state: RootState): MapStateProps => ({
-  gizmo: getGizmo(state),
-  currentProject: getCurrentProject(state),
-  metrics: getCurrentMetrics(state),
-  selectedEntityId: getSelectedEntityId(state),
-  isLoading: !isReady(state) || isLoading(state),
-  isPreviewing: isPreviewing(state),
-  isSidebarOpen: isSidebarOpen(state),
-  areEntitiesOutOfBoundaries: areEntitiesOutOfBoundaries(state)
-})
+const mapState = (state: RootState): MapStateProps => {
+  const selectedEntityId = getSelectedEntityId(state)
+  return {
+    gizmo: getGizmo(state),
+    currentProject: getCurrentProject(state),
+    metrics: getCurrentMetrics(state),
+    selectedEntityId,
+    isLoading: !isReady(state) || isLoading(state),
+    isPreviewing: isPreviewing(state),
+    isSidebarOpen: isSidebarOpen(state),
+    enabledTools: getEnabledTools(selectedEntityId)(state),
+    areEntitiesOutOfBoundaries: areEntitiesOutOfBoundaries(state)
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetGizmo: gizmo => dispatch(setGizmo(gizmo)),

@@ -12,10 +12,13 @@ export default class HorizontalCard extends React.PureComponent<Props> {
     if (isDragging) {
       classes += ' is-dragging'
     }
+    if (asset.isDisabled) {
+      classes += ' disabled'
+    }
 
     return (
       <div className={classes}>
-        <img className="thumbnail" src={thumbnail} alt="" />
+        <img className="thumbnail" src={thumbnail} alt="" draggable={false} />
         <Header size="small" className="title">
           {name}
         </Header>

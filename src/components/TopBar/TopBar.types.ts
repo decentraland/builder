@@ -23,6 +23,7 @@ export type Props = {
   isLoading: boolean
   isPreviewing: boolean
   isSidebarOpen: boolean
+  enabledTools: Record<string, boolean>
   areEntitiesOutOfBoundaries: boolean
   onSetGizmo: typeof setGizmo
   onTogglePreview: typeof togglePreview
@@ -42,6 +43,7 @@ export type MapStateProps = Pick<
   | 'isPreviewing'
   | 'isSidebarOpen'
   | 'selectedEntityId'
+  | 'enabledTools'
   | 'areEntitiesOutOfBoundaries'
 >
 

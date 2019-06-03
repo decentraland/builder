@@ -183,6 +183,8 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     getEntityComponentByType(selectedEntityId, ComponentType.Transform)
   )
 
+  if (shape && shape.type === ComponentType.NFTShape) return
+
   if (!shape || !transform) return
 
   const {

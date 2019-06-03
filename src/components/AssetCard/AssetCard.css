@@ -5,3 +5,8 @@
 .AssetCard.is-dragging {
   opacity: 0.5;
 }
+
+.AssetCard.disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
