@@ -10,10 +10,9 @@ import './HomePageBanner.css'
 
 export default class HomePageBanner extends React.PureComponent<Props> {
   handleHomePageClick = () => {
-    const analytics = getAnalytics()
-    analytics.track('HomePage CTA', {
-      campaign: Campaign.DAPPER
-    })
+    if (this.props.onClick) {
+      this.props.onClick()
+    }
   }
 
   handleMobilePageClick = () => {
@@ -47,11 +46,7 @@ export default class HomePageBanner extends React.PureComponent<Props> {
                 id="banners.dapper_homepage"
                 values={{
                   br: <br />,
-                  cta: (
-                    <a href="https://dap.pr/dclinstallp" rel="noopener noreferrer" target="_blank" onClick={this.handleHomePageClick}>
-                      {t('banners.dapper_homepage_cta')}
-                    </a>
-                  )
+                  cta: <a onClick={this.handleHomePageClick}>{t('banners.dapper_homepage_cta')}</a>
                 }}
               />
             </span>

@@ -4,6 +4,10 @@
       "get_started": "asd"
     }
   },
+  "adblock_modal": {
+    "body": "Please disable any Ad Blocker before installing Dapper Wallet to receive a free Purrstige Cat.",
+    "title": "Warning: Disable Ad Blockers"
+  },
   "banners": {
     "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!",
     "dapper_homepage": "Place a picture of your CryptoKitty in your scene!{br}Don't have a CryptoKitty? Make a Dapper wallet and get a free {cta}.",
@@ -21,18 +25,18 @@
   "deployment_modal": {
     "description": "Coming soon, you’ll be able to publish scenes directly from the Builder to your LAND! Subscribe to the Builder mailing list, and we’ll let you know when the feature is ready.",
     "email_thanks": "Thanks! We'll stay in touch!",
-    "title": "Publish to your LAND",
     "pool": {
-      "title": "Publish your Scene",
-      "subtitle": "Submit your work to our scene pool for a chance to get it published. No LAND required.",
       "contact_information": "Contact information",
       "error_ocurred": "An error ocurred",
-      "i_accept_the": "I agree to receive news from Decentraland",
+      "i_accept_the": "By clicking \"submit\" you agree to receive news from Decentraland",
+      "subtitle": "Submit your work to our scene pool for a chance to get it published. No LAND required.",
       "success": {
-        "title": "Thanks for uploading your Scene!",
-        "body": "You will receive an email notification if your scene is picked to be published."
-      }
-    }
+        "body": "You will receive an email notification if your scene is picked to be published.",
+        "title": "Thanks for uploading your Scene!"
+      },
+      "title": "Publish your Scene"
+    },
+    "title": "Publish to your LAND"
   },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
@@ -47,8 +51,8 @@
   },
   "export_modal": {
     "action": "Download",
-    "loading": "Downloading...",
     "description": "You can export your scene for use in the Decentraland SDK, or the Builder. This is a great way to share scenes and collaborate with friends! Any changes made to your scene using the SDK will not be reflected in the Builder.",
+    "loading": "Downloading...",
     "title": "Download scene"
   },
   "global": {

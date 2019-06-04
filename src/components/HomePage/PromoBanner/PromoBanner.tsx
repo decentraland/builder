@@ -1,8 +1,6 @@
 import React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { Campaign } from 'modules/analytics/campaigns'
 
 import { Props } from './PromoBanner.types'
 
@@ -10,11 +8,7 @@ import './PromoBanner.css'
 
 export default class PromoBanner extends React.PureComponent<Props> {
   handleCTAClick = () => {
-    const analytics = getAnalytics()
-    analytics.track('HomePage Promo CTA', {
-      campaign: Campaign.DAPPER
-    })
-    window.open('https://dap.pr/dclinstallp')
+    this.props.onClick()
   }
 
   render() {

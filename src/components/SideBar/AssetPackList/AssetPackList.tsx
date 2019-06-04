@@ -1,7 +1,5 @@
 import React from 'react'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { Campaign } from 'modules/analytics/campaigns'
 
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
@@ -9,11 +7,7 @@ import './AssetPackList.css'
 
 export default class AssetPackList extends React.PureComponent<Props> {
   handlePromoClick = () => {
-    const analytics = getAnalytics()
-    analytics.track('Item catalog Dapper CTA', {
-      campaign: Campaign.DAPPER
-    })
-    window.open('https://dap.pr/dclinstallp')
+    this.props.onOpenModal('AdBlockModal', { origin: 'Item catalog Dapper CTA' })
   }
 
   render() {
