@@ -159,7 +159,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Modal name={name}>
+      <Modal name={name} onClose={this.handleClose}>
         <Modal.Header>
           {progress < 100 ? (
             <>
