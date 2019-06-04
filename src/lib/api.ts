@@ -4,6 +4,7 @@ import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
 import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
+import { AssetRegistryResponse, DARAssetsResponse } from 'modules/asset/types'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
@@ -31,12 +32,16 @@ export class API extends BaseAPI {
 
   async fetchCollectibleRegistries() {
     const req = await fetch(DAR_URL)
-    return req.json()
+    if (!req.ok) return []
+    const resp = (await req.json()) as AssetRegistryResponse
+    return resp.registries || [] // TODO: remove the || [] when the DAR stops sending registries: null
   }
 
   async fetchCollectibleAssets(registry: string, ownerAddress: string) {
     const req = await fetch(`${DAR_URL}/${registry}/address/${ownerAddress}`)
-    return req.json()
+    if (!req.ok) return []
+    const resp = (await req.json()) as DARAssetsResponse
+    return resp.assets || [] // TODO: remove the || [] when the DAR stops sending assets: null
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {
