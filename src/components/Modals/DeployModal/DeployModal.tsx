@@ -24,9 +24,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    this.setState(this.getBaseState())
-
     this.setState({
+      ...this.getBaseState(),
       isSubmitting: false,
       isSuccess: false
     })
