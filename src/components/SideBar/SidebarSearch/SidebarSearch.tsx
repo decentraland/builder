@@ -72,9 +72,13 @@ export default class SidebarSearch extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { search } = this.props
+    const { search, isDisabled } = this.props
+    let classes = 'SidebarSearch'
+    if (isDisabled) {
+      classes += ' disabled'
+    }
     return (
-      <div className="SidebarSearch">
+      <div className={classes}>
         <Icon name="search" />
         <Input
           className="search-input"
@@ -82,6 +86,7 @@ export default class SidebarSearch extends React.PureComponent<Props, State> {
           icon={search.length > 0 ? { name: 'close', size: 'small', onClick: this.handleCleanSearch } : null}
           value={this.state.search}
           onChange={this.handleSearch}
+          disabled={isDisabled}
         />
       </div>
     )
