@@ -113,6 +113,10 @@ export const getSideBarCategories = createSelector<
       }
     })
 
+    // sort category array using the order of keys of SIDEBAR_CATEGORIES
+    const order = Object.keys(SIDEBAR_CATEGORIES)
+    categoryArray.sort((a, b) => (order.indexOf(a.name) > order.indexOf(b.name) ? 1 : -1))
+
     // move selected category up
     if (selectedCategory) {
       categoryArray = [...categoryArray.filter(c => c.name === selectedCategory), ...categoryArray.filter(c => c.name !== selectedCategory)]
