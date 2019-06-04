@@ -20,13 +20,15 @@ import { rootSaga } from './sagas'
 import { RootState } from './types'
 
 // @ts-ignore: Dev tools
-const composeEnhancers =
-  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-    stateSanitizer: (state: RootState) => {
-      const { scene: _, ...newState } = state
-      return newState
-    }
-  }) || compose
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  ? // prettier-ignore
+    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      stateSanitizer: (state: RootState) => {
+        const { scene: _, ...newState } = state
+        return newState
+      }
+    })
+  : compose
 
 const history = createBrowserHistory()
 const rootReducer = createRootReducer(history)

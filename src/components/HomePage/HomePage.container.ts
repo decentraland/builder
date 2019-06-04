@@ -23,7 +23,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
         }
       })
     ),
-  onOpenModal: name => dispatch(openModal(name))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(

@@ -1,3 +1,3 @@
 export type Props = {
-  onStart: () => void
+  onClick: () => void
 }

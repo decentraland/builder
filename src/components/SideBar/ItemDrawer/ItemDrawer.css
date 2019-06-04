@@ -6,6 +6,8 @@
   height: calc(100% - 96px);
   overflow-y: auto;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .ItemDrawer .disclaimer {

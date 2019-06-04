@@ -21,6 +21,10 @@
   visibility: visible;
 }
 
+.WalletSignIn .promo a {
+  cursor: pointer;
+}
+
 .WalletSignIn .promo .header,
 .WalletSignIn > .message {
   font-weight: 400;

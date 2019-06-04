@@ -1,9 +1,86 @@
 .ui.small.modal.DeployModal {
   width: 640px;
-  padding-bottom: 16px;
 }
 
 .DeployModal .description {
   display: block;
   margin-bottom: 50px;
+}
+
+.DeployModal .category {
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.DeployModal .details {
+  margin-top: 30px;
+}
+
+.DeployModal .terms {
+  display: flex;
+  align-items: center;
+  color: var(--secondary-text);
+  font-size: 15px;
+}
+
+.DeployModal .terms .ui.radio.checkbox {
+  height: 27px;
+}
+
+.DeployModal .terms .ui.checkbox label {
+  margin-right: 0px;
+}
+
+.DeployModal .actions .ui.loader {
+  position: relative;
+  top: 24px;
+}
+
+.DeployModal .terms,
+.DeployModal .terms a {
+  font-size: 17px;
+}
+
+.DeployModal .preview {
+  width: 100%;
+  height: 300px;
+  display: block;
+  object-fit: cover;
+}
+
+.DeployModal .success {
+  display: flex;
+  flex-direction: column;
+}
+
+.DeployModal .error {
+  margin-top: 24px;
+  color: var(--error);
+}
+
+.DeployModal .progress-bar-container {
+  width: 100%;
+  background: var(--secondary-on-modal);
+  border-radius: 16px;
+}
+
+.DeployModal .progress-bar {
+  background: var(--primary);
+  height: 16px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.DeployModal .progress-bar.active:after {
+  content: '';
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 16px;
+  -webkit-animation: progress-active 2s ease infinite;
+  animation: progress-active 2s ease infinite;
 }

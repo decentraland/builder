@@ -32,3 +32,7 @@
   left: 8px;
   top: 8px;
 }
+
+.SidebarSearch.disabled {
+  opacity: 0.7;
+}

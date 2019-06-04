@@ -130,7 +130,7 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
             <span className="tool">
-              <DeployButton onClick={this.handleOpenDeployModal} />
+              <DeployButton onClick={this.handleOpenDeployModal} isDisabled={isLoading} />
             </span>
           </Grid.Row>
         </Grid.Column>
