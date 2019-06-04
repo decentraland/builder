@@ -3,9 +3,9 @@ import { Close, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { Campaign } from 'modules/analytics/campaigns'
 
 import { Props } from './AdBlockModal.types'
-import { Campaign } from 'modules/analytics/campaigns'
 
 import './AdBlockModal.css'
 

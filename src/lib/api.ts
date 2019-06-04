@@ -15,7 +15,6 @@ export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
   TUTORIAL = 'builder-app-tutorial',
-  PUBLISH = 'builder-publish-preview', // TODO: deprecate this
   PUBLISH_POOL = 'builder-publish-pool',
   PUBLISH_DIRECT = 'builder-publish-direct'
 }

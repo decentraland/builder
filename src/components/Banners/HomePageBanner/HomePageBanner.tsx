@@ -61,7 +61,7 @@ export default class HomePageBanner extends React.PureComponent<Props> {
 
                   cta: (
                     <a
-                      href="https://decentraland.org/blog/picture-frames-dapper"
+                      href="https://decentraland.org/blog/announcements/dapper-announcement/"
                       rel="noopener noreferrer"
                       target="_blank"
                       onClick={this.handleMobilePageClick}
