@@ -28,7 +28,7 @@
     "pool": {
       "contact_information": "Contact information",
       "error_ocurred": "An error ocurred",
-      "i_accept_the": "I agree to receive news from Decentraland",
+      "i_accept_the": "By clicking \"submit\" you agree to receive news from Decentraland",
       "subtitle": "Submit your work to our scene pool for a chance to get it published. No LAND required.",
       "success": {
         "body": "You will receive an email notification if your scene is picked to be published.",
