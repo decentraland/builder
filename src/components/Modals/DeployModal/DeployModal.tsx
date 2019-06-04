@@ -151,24 +151,39 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderProgress() {
-    const { name, progress } = this.props
+    const { name, stage, progress } = this.props
 
     let classes = 'progress-bar'
     if (progress === 100) {
       classes += ' active'
     }
 
+    let title
+    switch (stage) {
+      case 'record': {
+        title = (
+          <>
+            {t('deployment_modal.pool.progress')}&hellip;&nbsp;{progress}%
+          </>
+        )
+        break
+      }
+      case 'upload': {
+        title = (
+          <>
+            {t('deployment_modal.pool.uploading')}&hellip;&nbsp;{progress}%
+          </>
+        )
+        break
+      }
+
+      default:
+        title = t('global.loading')
+    }
+
     return (
       <Modal name={name} onClose={this.handleClose}>
-        <Modal.Header>
-          {progress < 100 ? (
-            <>
-              {t('deployment_modal.pool.progress')}&hellip;&nbsp;{progress}%
-            </>
-          ) : (
-            <>{t('deployment_modal.pool.uploading')}&hellip;</>
-          )}
-        </Modal.Header>
+        <Modal.Header>{title}</Modal.Header>
         <Modal.Content>
           <div className="progress-bar-container">
             <div className={classes} style={{ width: `${progress}%` }} />

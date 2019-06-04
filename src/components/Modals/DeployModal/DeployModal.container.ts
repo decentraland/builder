@@ -4,7 +4,7 @@ import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { getEmail, getEthAddress } from 'modules/user/selectors'
-import { isLoading, getError, getThumbnail, getProgress } from 'modules/deployment/selectors'
+import { isLoading, getError, getThumbnail, getProgress, getStage } from 'modules/deployment/selectors'
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { setUserProfile } from 'modules/user/actions'
@@ -19,6 +19,7 @@ const mapState = (state: RootState): MapStateProps => ({
   currentProject: getCurrentProject(state),
   isLoading: isLoading(state),
   progress: getProgress(state),
+  stage: getStage(state),
   deploymentThumbnail: getThumbnail(state)
 })
 

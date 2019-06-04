@@ -8,13 +8,18 @@ import {
   DeployToPoolSuccessAction,
   DeployToPoolFailureAction,
   SetProgressAction,
-  SET_PROGRESS
+  SET_PROGRESS,
+  SetStageAction,
+  SET_STAGE
 } from './actions'
+
+export type DeploymentStage = 'record' | 'upload' | null
 
 export type DeploymentState = {
   data: {
     thumbnail: string | null
     progress: number
+    stage: DeploymentStage
   }
   loading: LoadingState
   error: string | null
@@ -23,13 +28,19 @@ export type DeploymentState = {
 const INITIAL_STATE: DeploymentState = {
   data: {
     thumbnail: null,
-    progress: 0
+    progress: 0,
+    stage: null
   },
   loading: [],
   error: null
 }
 
-export type DeploymentReducerAction = DeployToPoolRequestAction | DeployToPoolSuccessAction | DeployToPoolFailureAction | SetProgressAction
+export type DeploymentReducerAction =
+  | DeployToPoolRequestAction
+  | DeployToPoolSuccessAction
+  | DeployToPoolFailureAction
+  | SetProgressAction
+  | SetStageAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -44,7 +55,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         ...state,
         data: {
           ...state.data,
-          thumbnail: action.payload.thumbnail
+          thumbnail: action.payload.thumbnail,
+          stage: null
         },
         loading: loadingReducer(state.loading, action),
         error: null
@@ -53,6 +65,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_POOL_FAILURE: {
       return {
         ...state,
+        data: {
+          ...state.data,
+          stage: null
+        },
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }
@@ -63,6 +79,16 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         data: {
           ...state.data,
           progress: action.payload.progress
+        }
+      }
+    }
+    case SET_STAGE: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          stage: action.payload.stage,
+          progress: 0
         }
       }
     }

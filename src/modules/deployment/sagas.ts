@@ -9,7 +9,14 @@ import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
 import { api } from 'lib/api'
-import { DEPLOY_TO_POOL_REQUEST, deployToPoolFailure, deployToPoolSuccess } from './actions'
+import { DEPLOY_TO_POOL_REQUEST, deployToPoolFailure, deployToPoolSuccess, setProgress, setStage } from './actions'
+import { store } from 'modules/common/store'
+
+function onUploadProgress(args: { loaded: number; total: number }) {
+  const { loaded, total } = args
+  const progress = ((loaded / total) * 100) | 0
+  store.dispatch(setProgress(progress))
+}
 
 export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
@@ -22,10 +29,12 @@ export function* handleDeployToPoolRequest() {
   const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
 
   try {
+    yield put(setStage('record'))
     const data = yield handleRecordVideo()
 
+    yield put(setStage('upload'))
     yield call(() => api.deployToPool(project, scene, user))
-    yield call(() => api.publishScenePreview(rawProject.id, data.video, data.thumbnail, data.shots))
+    yield call(() => api.publishScenePreview(rawProject.id, data.video, data.thumbnail, data.shots, onUploadProgress))
 
     yield put(deployToPoolSuccess(window.URL.createObjectURL(data.thumbnail)))
   } catch (e) {

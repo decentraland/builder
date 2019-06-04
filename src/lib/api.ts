@@ -52,7 +52,13 @@ export class API extends BaseAPI {
     return this.request('post', `${BUILDER_SERVER_URL}/project/`, { entry: JSON.stringify({ version: 1, project, scene, user }) })
   }
 
-  async publishScenePreview(projectId: string, video: Blob, thumbnail: Blob, shots: Record<string, Blob>) {
+  async publishScenePreview(
+    projectId: string,
+    video: Blob,
+    thumbnail: Blob,
+    shots: Record<string, Blob>,
+    onUploadProgress?: (progress: { loaded: number; total: number }) => void
+  ) {
     const formData = new FormData()
     formData.append('thumb', thumbnail)
     formData.append('north', shots.north)
@@ -61,7 +67,9 @@ export class API extends BaseAPI {
     formData.append('west', shots.west)
     formData.append('video', video)
 
-    return this.request('post', `${BUILDER_SERVER_URL}/project/${projectId}/preview`, formData)
+    return this.request('post', `${BUILDER_SERVER_URL}/project/${projectId}/preview`, formData, {
+      onUploadProgress
+    })
   }
 }
 
