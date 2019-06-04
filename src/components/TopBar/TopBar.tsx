@@ -55,7 +55,18 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   render() {
-    const { gizmo, currentProject, isLoading, isPreviewing, isSidebarOpen, selectedEntityId, onReset, onDelete, onDuplicate } = this.props
+    const {
+      gizmo,
+      currentProject,
+      isLoading,
+      isPreviewing,
+      isSidebarOpen,
+      selectedEntityId,
+      enabledTools,
+      onReset,
+      onDelete,
+      onDuplicate
+    } = this.props
 
     return (
       <Grid className="TopBar">
@@ -82,7 +93,7 @@ export default class TopBar extends React.PureComponent<Props> {
                   <Chip
                     icon="move"
                     isActive={gizmo === Gizmo.MOVE && !!selectedEntityId}
-                    isDisabled={!selectedEntityId}
+                    isDisabled={!enabledTools.move}
                     onClick={this.handleMoveMode}
                   />
                 </ShortcutTooltip>
@@ -90,19 +101,19 @@ export default class TopBar extends React.PureComponent<Props> {
                   <Chip
                     icon="rotate"
                     isActive={gizmo === Gizmo.ROTATE && !!selectedEntityId}
-                    isDisabled={!selectedEntityId}
+                    isDisabled={!enabledTools.rotate}
                     onClick={this.handleRotateMode}
                   />
                 </ShortcutTooltip>
               </span>
               <ShortcutTooltip shortcut={Shortcut.RESET_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">
-                <Chip icon="undo" isDisabled={!selectedEntityId} onClick={onReset} />
+                <Chip icon="undo" isDisabled={!enabledTools.reset} onClick={onReset} />
               </ShortcutTooltip>
               <ShortcutTooltip shortcut={Shortcut.DUPLICATE_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">
-                <Chip icon="duplicate" isDisabled={!selectedEntityId} onClick={onDuplicate} />
+                <Chip icon="duplicate" isDisabled={!enabledTools.duplicate} onClick={onDuplicate} />
               </ShortcutTooltip>
               <ShortcutTooltip shortcut={Shortcut.DELETE_ITEM} position="bottom center" className="tool" popupClassName="top-bar-popup">
-                <Chip icon="delete" isDisabled={!selectedEntityId} onClick={onDelete} />
+                <Chip icon="delete" isDisabled={!enabledTools.delete} onClick={onDelete} />
               </ShortcutTooltip>
             </div>
           </Grid.Row>

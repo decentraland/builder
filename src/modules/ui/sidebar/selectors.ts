@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { SidebarState } from 'modules/ui/sidebar/reducer'
 import { Category, SidebarView } from 'modules/ui/sidebar/types'
-import { getData as getAssets, isLoading as isLoadingAssets } from 'modules/asset/selectors'
+import { getData as getAssets, isLoading as isLoadingAssets, getDisabledAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
@@ -59,6 +59,7 @@ export const getSideBarCategories = createSelector<
   string,
   string | null,
   SidebarView,
+  string[],
   AssetState['data'],
   Category[]
 >(
@@ -66,8 +67,9 @@ export const getSideBarCategories = createSelector<
   getSearch,
   getSelectedCategory,
   getSidebarView,
+  getDisabledAssets,
   getAssets,
-  (selectedAssetPack, search, selectedCategory, view, assets) => {
+  (selectedAssetPack, search, selectedCategory, view, disabledAssets, assets) => {
     const categories: { [categoryName: string]: Category } = {}
 
     let results = Object.values(assets)
@@ -93,7 +95,14 @@ export const getSideBarCategories = createSelector<
           thumbnail: ''
         }
       }
-      categories[asset.category].assets.push(asset)
+
+      if (disabledAssets.includes(asset.id)) {
+        let newAsset = { ...asset }
+        newAsset.isDisabled = true
+        categories[asset.category].assets.push(newAsset)
+      } else {
+        categories[asset.category].assets.push(asset)
+      }
     }
 
     let categoryArray = Object.values(categories).map<Category>(({ name }) => {

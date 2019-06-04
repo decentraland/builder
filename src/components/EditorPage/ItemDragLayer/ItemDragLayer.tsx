@@ -22,7 +22,7 @@ function getItemStyles(props: CollectedProps) {
 class ItemDragLayer extends React.PureComponent<CollectedProps> {
   render() {
     const { asset } = this.props
-    if (!asset) return null
+    if (!asset || asset.isDisabled) return null
     const { thumbnail } = asset
 
     return (

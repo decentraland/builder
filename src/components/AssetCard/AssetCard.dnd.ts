@@ -21,6 +21,9 @@ export const assetSource: DragSourceSpec<Props, DragObject> = {
     return {
       asset: props.asset
     }
+  },
+  canDrag(props) {
+    return !props.asset.isDisabled
   }
 }
 

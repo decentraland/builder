@@ -2,6 +2,7 @@ export const GROUND_CATEGORY = 'ground'
 
 export type Asset = BaseAsset & {
   assetPackId: string | null // collectibles and custom gltfs wouldn't have asset
+  isDisabled?: boolean
 }
 
 export type BaseAsset = AssetResource & {

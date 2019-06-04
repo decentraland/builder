@@ -17,6 +17,9 @@ export default class VerticalCard extends React.PureComponent<Props> {
     if (asset.category === GROUND_CATEGORY) {
       classes += ' ground'
     }
+    if (asset.isDisabled) {
+      classes += ' disabled'
+    }
 
     return (
       <Popup
@@ -24,7 +27,7 @@ export default class VerticalCard extends React.PureComponent<Props> {
         position="top center"
         trigger={
           <div className={classes}>
-            <img className="thumbnail" src={thumbnail} alt="" />
+            <img className="thumbnail" src={thumbnail} alt="" draggable={false} />
           </div>
         }
         hideOnScroll={true}
