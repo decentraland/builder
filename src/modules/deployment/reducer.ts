@@ -6,22 +6,30 @@ import {
   DEPLOY_TO_POOL_FAILURE,
   DeployToPoolRequestAction,
   DeployToPoolSuccessAction,
-  DeployToPoolFailureAction
+  DeployToPoolFailureAction,
+  SetProgressAction,
+  SET_PROGRESS
 } from './actions'
 
 export type DeploymentState = {
-  thumbnail: string | null
+  data: {
+    thumbnail: string | null
+    progress: number
+  }
   loading: LoadingState
   error: string | null
 }
 
 const INITIAL_STATE: DeploymentState = {
-  thumbnail: null,
+  data: {
+    thumbnail: null,
+    progress: 0
+  },
   loading: [],
   error: null
 }
 
-export type DeploymentReducerAction = DeployToPoolRequestAction | DeployToPoolSuccessAction | DeployToPoolFailureAction
+export type DeploymentReducerAction = DeployToPoolRequestAction | DeployToPoolSuccessAction | DeployToPoolFailureAction | SetProgressAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -34,7 +42,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_POOL_SUCCESS: {
       return {
         ...state,
-        thumbnail: action.payload.thumbnail,
+        data: {
+          ...state.data,
+          thumbnail: action.payload.thumbnail
+        },
         loading: loadingReducer(state.loading, action),
         error: null
       }
@@ -44,6 +55,15 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case SET_PROGRESS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          progress: action.payload.progress
+        }
       }
     }
     default:

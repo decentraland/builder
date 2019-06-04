@@ -57,3 +57,30 @@
   margin-top: 24px;
   color: var(--error);
 }
+
+.DeployModal .progress-bar-container {
+  width: 100%;
+  background: var(--secondary-on-modal);
+  border-radius: 16px;
+}
+
+.DeployModal .progress-bar {
+  background: var(--primary);
+  height: 16px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.DeployModal .progress-bar.active:after {
+  content: '';
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 16px;
+  -webkit-animation: progress-active 2s ease infinite;
+  animation: progress-active 2s ease infinite;
+}

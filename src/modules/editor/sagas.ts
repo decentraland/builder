@@ -69,6 +69,7 @@ import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER, dataURLtoBlob } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
+import { setProgress } from 'modules/deployment/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -417,6 +418,8 @@ export function* handleRecordVideo() {
     south: null,
     west: null
   }
+  let currentStep = 0
+  const totalSteps = (Math.PI * 2) / stepAngle
 
   let angle = initialAngle
   let thumbnail
@@ -443,6 +446,10 @@ export function* handleRecordVideo() {
 
     encoder.add(screenshot)
     angle += stepAngle
+
+    // Compute and dispatch progress
+    const progress = ((currentStep++ / totalSteps) * 100) | 0
+    yield put(setProgress(progress))
   }
 
   const video = yield call(() => new Promise(resolve => encoder.compile(resolve)))

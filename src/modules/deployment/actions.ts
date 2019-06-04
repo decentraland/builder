@@ -13,3 +13,9 @@ export const deployToPoolFailure = (error: string) => action(DEPLOY_TO_POOL_FAIL
 export type DeployToPoolRequestAction = ReturnType<typeof deployToPoolRequest>
 export type DeployToPoolSuccessAction = ReturnType<typeof deployToPoolSuccess>
 export type DeployToPoolFailureAction = ReturnType<typeof deployToPoolFailure>
+
+// Set progress
+
+export const SET_PROGRESS = 'Set progress'
+export const setProgress = (progress: number) => action(SET_PROGRESS, { progress })
+export type SetProgressAction = ReturnType<typeof setProgress>

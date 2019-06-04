@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Field, Form, Loader, Button } from 'decentraland-ui'
+import { Field, Form, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -150,6 +150,34 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     )
   }
 
+  renderProgress() {
+    const { name, progress } = this.props
+
+    let classes = 'progress-bar'
+    if (progress === 100) {
+      classes += ' active'
+    }
+
+    return (
+      <Modal name={name}>
+        <Modal.Header>
+          {progress < 100 ? (
+            <>
+              {t('deployment_modal.pool.progress')}&hellip;&nbsp;{progress}%
+            </>
+          ) : (
+            <>{t('deployment_modal.pool.uploading')}&hellip;</>
+          )}
+        </Modal.Header>
+        <Modal.Content>
+          <div className="progress-bar-container">
+            <div className={classes} style={{ width: `${progress}%` }} />
+          </div>
+        </Modal.Content>
+      </Modal>
+    )
+  }
+
   render() {
     const { name, onClose, isLoading } = this.props
     const { email } = this.state
@@ -159,24 +187,22 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       return this.renderSuccess()
     }
 
+    if (isLoading) {
+      return this.renderProgress()
+    }
+
     return (
       <Modal name={name} onClose={this.handleClose}>
         <Form onSubmit={this.handleSubmit}>
           <Modal.Header>{t('deployment_modal.pool.title')}</Modal.Header>
           <Modal.Content>{this.renderForm()}</Modal.Content>
           <Modal.Actions>
-            {isLoading ? (
-              <Loader size="large" />
-            ) : (
-              <>
-                <Button primary disabled={isSubmitDIsabled}>
-                  {isLoading ? 'Processing...' : t('global.submit')}
-                </Button>
-                <Button secondary onClick={onClose}>
-                  {t('global.cancel')}
-                </Button>
-              </>
-            )}
+            <Button primary disabled={isSubmitDIsabled}>
+              {t('global.submit')}
+            </Button>
+            <Button secondary onClick={onClose}>
+              {t('global.cancel')}
+            </Button>
           </Modal.Actions>
         </Form>
       </Modal>
