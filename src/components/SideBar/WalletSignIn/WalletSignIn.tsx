@@ -10,6 +10,10 @@ export default class WalletSignIn extends React.PureComponent<Props> {
     this.props.onConnect!()
   }
 
+  handlePromoClick = () => {
+    this.props.onOpenModal('AdBlockModal', { origin: 'Wallet Connect Dapper CTA' })
+  }
+
   render() {
     const { hasError, isConnecting } = this.props
     let errorClasses = 'error'
@@ -21,7 +25,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
       <div className="WalletSignIn">
         <WalletIcon />
         <span className="message">{t('wallet.title')}</span>
-        <Button className="connect" primary onClick={this.handleConnect}>
+        <Button className="connect" primary onClick={this.handleConnect} disabled={isConnecting}>
           {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}
         </Button>
 
@@ -36,11 +40,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
             <T
               id="wallet.promo_body"
               values={{
-                cta: (
-                  <a href="https://dap.pr/dclinstallp" target="_blank">
-                    {t('wallet.promo_cta')}
-                  </a>
-                )
+                cta: <a onClick={this.handlePromoClick}>{t('wallet.promo_cta')}</a>
               }}
             />
           </span>

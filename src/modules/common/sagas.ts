@@ -13,6 +13,7 @@ import { editorSaga } from 'modules/editor/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 import { segmentSaga } from 'modules/analytics/sagas'
 import { assetSaga } from 'modules/asset/sagas'
+import { deploymentSaga } from 'modules/deployment/sagas'
 
 export function* rootSaga() {
   yield all([
@@ -28,6 +29,7 @@ export function* rootSaga() {
     userSaga(),
     editorSaga(),
     keyboardSaga(),
-    assetSaga()
+    assetSaga(),
+    deploymentSaga()
   ])
 }

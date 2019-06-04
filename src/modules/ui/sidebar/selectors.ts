@@ -3,13 +3,14 @@ import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { SidebarState } from 'modules/ui/sidebar/reducer'
 import { Category, SidebarView } from 'modules/ui/sidebar/types'
-import { getData as getAssets } from 'modules/asset/selectors'
+import { getData as getAssets, isLoading as isLoadingAssets } from 'modules/asset/selectors'
 import { AssetState } from 'modules/asset/reducer'
 import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
 import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, CategoryName } from './utils'
+import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -112,6 +113,10 @@ export const getSideBarCategories = createSelector<
       }
     })
 
+    // sort category array using the order of keys of SIDEBAR_CATEGORIES
+    const order = Object.keys(SIDEBAR_CATEGORIES)
+    categoryArray.sort((a, b) => (order.indexOf(a.name) > order.indexOf(b.name) ? 1 : -1))
+
     // move selected category up
     if (selectedCategory) {
       categoryArray = [...categoryArray.filter(c => c.name === selectedCategory), ...categoryArray.filter(c => c.name !== selectedCategory)]
@@ -146,5 +151,20 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
       array = array.concat(pack)
     }
     return array
+  }
+)
+
+export const isSearchDisabled = createSelector<RootState, string | null, boolean, string, Category[], boolean, boolean>(
+  getSelectedAssetPackId,
+  isLoadingAssets,
+  getSearch,
+  getSideBarCategories,
+  isConnected,
+  (selectedAssetPackId, isLoading, search, categories, connected) => {
+    // disable search when crypto-collectibles are loading or when the wallet is connected and it's empty
+    const isLoadingCollectibles = selectedAssetPackId === COLLECTIBLE_ASSET_PACK_ID && isLoading
+    const isEmptyWallet = selectedAssetPackId === COLLECTIBLE_ASSET_PACK_ID && connected && !search && categories.length === 0
+
+    return isLoadingCollectibles || isEmptyWallet
   }
 )

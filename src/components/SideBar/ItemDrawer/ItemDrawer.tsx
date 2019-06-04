@@ -32,10 +32,11 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     const { search, isList, selectedAssetPack, selectedCategory, categories, isConnected, isLoadingAssets } = this.props
 
     const isSearch = search.length > 0
+    const isCollectibleAssetPackSelected = selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID
 
-    if (isLoadingAssets) {
+    if (isCollectibleAssetPackSelected && isLoadingAssets) {
       return <Loader active size="massive" />
-    } else if (selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID && !isConnected) {
+    } else if (isCollectibleAssetPackSelected && !isConnected) {
       return <WalletSignIn />
     } else if (categories.length === 0) {
       return <NoResults />

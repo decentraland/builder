@@ -1,13 +1,17 @@
 {
+  "adblock_modal": {
+    "body": "Por favor deshabilita cualquier Ad Blocker antes de instalar Dapper Wallet para recibir un Purrstige Cat gratuito.",
+    "title": "Deshabilita cualquier Ad Blocker"
+  },
   "banners": {
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
     "dapper_homepage": "Muestra tu CryptoKitty en tu escena. No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un {cta}.",
-    "dapper_homepage_cta": "CryptoKitty especial",
-    "promo_cta": "Instala Dapper",
-    "promo_subtitle": "Muestra tu CryptoKitty en tu escena. No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un CryptoKitty especial.",
-    "promo_title": "¡Prueba Dapper!",
+    "dapper_homepage_cta": "Purrstige Cat",
     "mobile_dapper_homepage": "Conoce lo último:{br}{cta}",
-    "mobile_dapper_hompage_cta": "Cuadros + Dapper"
+    "mobile_dapper_hompage_cta": "Cuadros + Dapper",
+    "promo_cta": "Instala Dapper",
+    "promo_subtitle": "Muestra tu CryptoKitty en tu escena. ¿No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un Purrstige Cat.",
+    "promo_title": "¡Prueba Dapper!"
   },
   "custom_layout": {
     "title": "Personalizada",
@@ -17,9 +21,22 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
-  "deploy_modal": {
+  "deployment_modal": {
     "description": "En el futuro podras publicar escenas a tu LAND de forma directa desde el Builder. ¡Subscribete con tu E-mail para enterarte cuando esta funcionalidad este lista!",
     "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
+    "pool": {
+      "contact_information": "Información de contacto",
+      "error_ocurred": "Ha ocurrido un error",
+      "i_accept_the": "Al enviar tu escena aceptas recibir noticias de Decentraland.",
+      "progress": "Procesando",
+      "subtitle": "Sube tú escena al Pool de Escenas para que los Landowners puedan publicarla. No es necesario poseer LAND.",
+      "success": {
+        "body": "Recibirás una notificación vía Email en caso de que elijamos tú escena para ser publicada.",
+        "title": "¡Gracias por subir tu Escena!"
+      },
+      "title": "Publica tu Escena",
+      "uploading": "Cargando"
+    },
     "title": "Publica a tu LAND"
   },
   "edit_project_modal": {
@@ -35,8 +52,8 @@
   },
   "export_modal": {
     "action": "Descargar",
-    "loading": "Descargando...",
     "description": "Puedes guardar tu escena para usarla con el SDK de Decentraland, o en el Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
+    "loading": "Descargando...",
     "title": "Descargar escena"
   },
   "global": {
@@ -187,7 +204,7 @@
     "localstorage": "Tus escenas se guardan automáticamente en el navegador"
   },
   "topbar": {
-    "publish": "Publicar a una LAND"
+    "publish": "Publicar"
   },
   "tutorial_modal": {
     "slide0": {

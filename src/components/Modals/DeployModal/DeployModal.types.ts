@@ -1,13 +1,30 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { Project } from 'modules/project/types'
+import { setUserProfile } from 'modules/user/actions'
+import { deployToPoolRequest } from 'modules/deployment/actions'
+import { editProjectRequest } from 'modules/project/actions'
+import { DeploymentStage } from 'modules/deployment/reducer'
 
 export type Props = ModalProps & {
-  email: string
-  onSetEmail: (email: string) => void
+  currentProject: Project | null
+  userEthAddress: string
+  userEmail: string
+  error: string | null
+  isLoading: boolean
+  progress: number
+  stage: DeploymentStage
+  deploymentThumbnail: string | null
+  onDeployToPool: typeof deployToPoolRequest
+  onSaveProject: typeof editProjectRequest
+  onSaveUser: typeof setUserProfile
 }
 
 export type State = {
-  isLoading: boolean
   email: string
+  ethAddress: string
+  project: Project
+  isSubmitting: boolean
+  isSuccess: boolean
 }
 
 export type Step = {
@@ -15,5 +32,8 @@ export type Step = {
   description: string
 }
 
-export type MapStateProps = Pick<Props, 'email'>
-export type MapDispatchProps = Pick<Props, 'onSetEmail'>
+export type MapStateProps = Pick<
+  Props,
+  'currentProject' | 'userEmail' | 'userEthAddress' | 'error' | 'deploymentThumbnail' | 'isLoading' | 'progress' | 'stage'
+>
+export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onSaveUser' | 'onSaveProject'>

@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 
+import { openModal } from 'modules/modal/actions'
 import { RootState } from 'modules/common/types'
 import { getSidebarAssetPacks } from 'modules/ui/sidebar/selectors'
 import { selectAssetPack } from 'modules/ui/sidebar/actions'
@@ -11,7 +12,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSelectAssetPack: assetPackId => dispatch(selectAssetPack(assetPackId))
+  onSelectAssetPack: assetPackId => dispatch(selectAssetPack(assetPackId)),
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(
