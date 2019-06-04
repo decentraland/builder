@@ -97,21 +97,24 @@ export const getEntityShape = <T extends ComponentType>(entityId: string) =>
     }
   )
 
-export const getComponentsByType = <T extends ComponentType>(type: T) => (state: RootState) => {
-  const scene = getCurrentScene(state)
-  if (!scene) return []
+export const getComponentsByType = <T extends ComponentType>(type: T) =>
+  createSelector<RootState, Scene | null, ComponentDefinition<T>[]>(
+    getCurrentScene,
+    scene => {
+      if (!scene) return []
 
-  const components = scene.components
-  const out: ComponentDefinition<T>[] = []
+      const components = scene.components
+      const out: ComponentDefinition<T>[] = []
 
-  for (let component of Object.values(components)) {
-    if (component.type === type) {
-      out.push(component as ComponentDefinition<T>)
+      for (let component of Object.values(components)) {
+        if (component.type === type) {
+          out.push(component as ComponentDefinition<T>)
+        }
+      }
+
+      return out
     }
-  }
-
-  return out
-}
+  )
 
 export const getGLTFId = (src: string) => (state: RootState) => {
   const scene = getCurrentScene(state)

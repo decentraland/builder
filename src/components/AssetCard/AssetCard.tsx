@@ -26,7 +26,9 @@ class AssetCard extends React.PureComponent<Props & CollectedProps> {
 
   handleClick = () => {
     const { asset, onClick } = this.props
-    onClick(asset)
+    if (!asset.isDisabled) {
+      onClick(asset)
+    }
   }
 
   render() {
