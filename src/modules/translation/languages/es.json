@@ -28,12 +28,14 @@
       "contact_information": "Información de contacto",
       "error_ocurred": "Ha ocurrido un error",
       "i_accept_the": "Al enviar tu escena aceptas recibir noticias de Decentraland.",
+      "progress": "Procesando",
       "subtitle": "Sube tú escena al Pool de Escenas para que los Landowners puedan publicarla. No es necesario poseer LAND.",
       "success": {
         "body": "Recibirás una notificación vía Email en caso de que elijamos tú escena para ser publicada.",
         "title": "¡Gracias por subir tu Escena!"
       },
-      "title": "Publica tu Escena"
+      "title": "Publica tu Escena",
+      "uploading": "Cargando"
     },
     "title": "Publica a tu LAND"
   },

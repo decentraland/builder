@@ -28,12 +28,14 @@
       "contact_information": "联系信息",
       "error_ocurred": "提交项目时出错了:",
       "i_accept_the": "我同意接收Decentraland的消息",
+      "progress": "处理",
       "subtitle": "将您的作品提交到我们的场景池，以便有机会将其发布。无需LAND。",
       "success": {
         "body": "如果您的场景被选中要发布，您将收到电子邮件通知。",
         "title": "感谢您上传您的场景！"
       },
-      "title": "发布您的场景"
+      "title": "发布您的场景",
+      "uploading": "上传"
     },
     "title": "布署场景到土地"
   },

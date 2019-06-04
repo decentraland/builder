@@ -28,12 +28,14 @@
       "contact_information": "연락처",
       "error_ocurred": "프로젝트 출품 중에 오류가 발생했습니다:",
       "i_accept_the": "Decentraland에서받은 소식에 동의합니다.",
+      "progress": "가공",
       "subtitle": "우리 현장 수영장에 작품을 제출하여 출판 할 기회를 얻으십시오. LAND는 필요하지 않습니다.",
       "success": {
         "body": "씬이 게시되도록 선택한 경우 이메일 알림을 받게됩니다.",
         "title": "장면을 업로드 해 주셔서 감사합니다!"
       },
-      "title": "장면 게시"
+      "title": "장면 게시",
+      "uploading": "업로드 중"
     },
     "title": "내 랜드에 퍼블리싱하기"
   },
