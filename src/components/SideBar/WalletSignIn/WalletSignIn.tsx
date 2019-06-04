@@ -21,7 +21,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
       <div className="WalletSignIn">
         <WalletIcon />
         <span className="message">{t('wallet.title')}</span>
-        <Button className="connect" primary onClick={this.handleConnect}>
+        <Button className="connect" primary onClick={this.handleConnect} disabled={isConnecting}>
           {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}
         </Button>
 
