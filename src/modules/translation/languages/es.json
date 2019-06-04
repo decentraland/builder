@@ -1,7 +1,7 @@
 {
   "adblock_modal": {
     "body": "Por favor deshabilita cualquier Ad Blocker antes de instalar Dapper Wallet para recibir un Purrstige Cat gratuito.",
-    "title": "Advertencia: Deshabilita cualquier Ad Blocker"
+    "title": "Deshabilita cualquier Ad Blocker"
   },
   "banners": {
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",

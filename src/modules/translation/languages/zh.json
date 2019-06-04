@@ -1,7 +1,7 @@
 {
   "adblock_modal": {
     "body": "在安装Dapper钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
-    "title": "警告：停用广告拦截器"
+    "title": "停用广告拦截器"
   },
   "banners": {
     "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！",

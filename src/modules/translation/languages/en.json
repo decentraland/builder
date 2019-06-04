@@ -1,12 +1,7 @@
 {
-  "@dapps": {
-    "sign_in": {
-      "get_started": "asd"
-    }
-  },
   "adblock_modal": {
     "body": "Please disable any Ad Blocker before installing Dapper Wallet to receive a free Purrstige Cat.",
-    "title": "Warning: Disable Ad Blockers"
+    "title": "Disable Ad Blockers"
   },
   "banners": {
     "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your scene!",
