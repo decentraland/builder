@@ -199,7 +199,7 @@
     "localstorage": "场景会自动保存在浏览器的本地存储中"
   },
   "topbar": {
-    "publish": "布署场景"
+    "publish": "发布"
   },
   "tutorial_modal": {
     "slide0": {
