@@ -1,4 +1,8 @@
 {
+  "adblock_modal": {
+    "body": "Por favor deshabilita cualquier Ad Blocker antes de instalar Dapper Wallet para recibir un CryptoKitty Purrstige gratis.",
+    "title": "Advertencia: Deshabilita tu Ad Blocker"
+  },
   "banners": {
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
     "dapper_homepage": "Muestra tu CryptoKitty en tu escena. No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un {cta}.",

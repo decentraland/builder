@@ -1,4 +1,8 @@
 {
+  "adblock_modal": {
+    "body": "在安装Dapper钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
+    "title": "警告：停用广告拦截器"
+  },
   "banners": {
     "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！",
     "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
@@ -20,18 +24,18 @@
   "deployment_modal": {
     "description": "您将可以直接在编辑器中发布场景到土地！请订阅邮件列表，以便功能实现时，可以即时通知您。",
     "email_thanks": "谢谢！我们会保持联系",
-    "title": "布署场景到土地",
     "pool": {
-      "title": "发布您的场景",
-      "subtitle": "将您的作品提交到我们的场景池，以便有机会将其发布。无需LAND。",
       "contact_information": "联系信息",
       "error_ocurred": "提交项目时出错了:",
       "i_accept_the": "我同意接收Decentraland的消息",
+      "subtitle": "将您的作品提交到我们的场景池，以便有机会将其发布。无需LAND。",
       "success": {
-        "title": "感谢您上传您的场景！",
-        "body": "如果您的场景被选中要发布，您将收到电子邮件通知。"
-      }
-    }
+        "body": "如果您的场景被选中要发布，您将收到电子邮件通知。",
+        "title": "感谢您上传您的场景！"
+      },
+      "title": "发布您的场景"
+    },
+    "title": "布署场景到土地"
   },
   "edit_project_modal": {
     "custom_layout_label": "布局",
