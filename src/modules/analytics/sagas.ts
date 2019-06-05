@@ -4,6 +4,7 @@ import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
+import { getState as getUserState } from 'modules/user/selectors'
 import {
   ADD_ITEM,
   DUPLICATE_ITEM,
@@ -16,6 +17,7 @@ import {
   UPDATE_TRANSFORM,
   UpdateTransfromAction
 } from 'modules/scene/actions'
+import { DeployToPoolSuccessAction, DEPLOY_TO_POOL_SUCCESS } from 'modules/deployment/actions'
 
 export function* segmentSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
@@ -26,6 +28,7 @@ export function* segmentSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
+  yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -87,4 +90,11 @@ function handleConnectWallet(action: ConnectWalletSuccessAction) {
   }
 
   track('Connect wallet', { address: action.payload.wallet.address, provider })
+}
+
+function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
+  const project = yield select(getCurrentProject)
+  const user = yield select(getUserState)
+  if (!project) return
+  track('Deploy to pool', { project_id: project.id, user })
 }

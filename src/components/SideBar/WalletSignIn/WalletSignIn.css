@@ -3,7 +3,20 @@
   width: 100%;
   height: 100%;
   align-items: center;
+  align-self: center;
   flex-direction: column;
+  padding-right: 16px;
+}
+
+.WalletSignIn .main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.WalletSignIn .main:only-child {
+  flex: 1;
 }
 
 .WalletSignIn .connect {
@@ -26,15 +39,15 @@
 }
 
 .WalletSignIn .promo .header,
-.WalletSignIn > .message {
+.WalletSignIn .message {
   font-weight: 400;
   font-size: 18px;
   text-align: center;
   line-height: 28px;
 }
 
-.WalletSignIn > .message {
-  margin: 24px 30px;
+.WalletSignIn .message {
+  margin: 24px 20px;
 }
 
 .WalletSignIn .WalletIcon {
