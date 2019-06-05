@@ -18,7 +18,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
 
   render() {
     const { hasError, isConnecting } = this.props
-    const shouldRenderPromo = ethereum && !ethereum.isDapper
+    const shouldRenderPromo = !ethereum || !ethereum.isDapper
     let errorClasses = 'error'
 
     if (hasError) {

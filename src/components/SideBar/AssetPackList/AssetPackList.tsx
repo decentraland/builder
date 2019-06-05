@@ -14,7 +14,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
 
   render() {
     const { assetPacks, onSelectAssetPack } = this.props
-    const shouldRenderPromo = ethereum && !ethereum.isDapper
+    const shouldRenderPromo = !ethereum || !ethereum.isDapper
 
     return (
       <div className="AssetPackList">

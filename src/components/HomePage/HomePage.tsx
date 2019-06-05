@@ -69,7 +69,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
-    const shouldRenderPromo = ethereum && !ethereum.isDapper
+    const shouldRenderPromo = !ethereum || !ethereum.isDapper
     return (
       <>
         {!projects.length ? (
