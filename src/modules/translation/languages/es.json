@@ -5,12 +5,12 @@
   },
   "banners": {
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
-    "dapper_homepage": "Muestra tu CryptoKitty en tu escena. No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un {cta}.",
+    "dapper_homepage": "Muestra tu CryptoKitty en tu escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un {cta}.",
     "dapper_homepage_cta": "Purrstige Cat",
     "mobile_dapper_homepage": "Conoce lo último:{br}{cta}",
     "mobile_dapper_hompage_cta": "Cuadros + Dapper",
     "promo_cta": "Instala Dapper",
-    "promo_subtitle": "Muestra tu CryptoKitty en tu escena. ¿No tienes un CryptoKitty? Crea una cuenta en Dapper y obtén gratis un Purrstige Cat.",
+    "promo_subtitle": "Muestra tu CryptoKitty en tu escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un Purrstige Cat.",
     "promo_title": "¡Prueba Dapper!"
   },
   "custom_layout": {

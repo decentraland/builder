@@ -13,6 +13,8 @@ import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
 
+const ethereum = (window as any)['ethereum']
+
 export default class HomePage extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
     projects: {}
@@ -67,6 +69,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
+    const shouldRenderPromo = !ethereum || !ethereum.isDapper
     return (
       <>
         {!projects.length ? (
@@ -75,9 +78,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
             <HomePageBanner onClick={this.handleBannerCTA} />
           </>
         ) : (
-          <Container>
-            <PromoBanner onClick={this.handlePromoCTA} />
-          </Container>
+          <Container>{shouldRenderPromo && <PromoBanner onClick={this.handlePromoCTA} />}</Container>
         )}
         <Container>
           <div className="HomePage">

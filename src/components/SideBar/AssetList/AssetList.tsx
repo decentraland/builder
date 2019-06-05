@@ -1,11 +1,11 @@
 import React from 'react'
+import { Grid } from 'decentraland-ui'
+
+import Drawer from 'components/Drawer'
+import AssetCard from 'components/AssetCard'
+import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 
 import { Props, DefaultProps } from './AssetList.types'
-import Drawer from 'components/Drawer'
-import { Grid } from 'decentraland-ui'
-import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
-import AssetCard from 'components/AssetCard'
-
 import './AssetList.css'
 
 const DEFAULT_COLUMN_COUNT = 3
