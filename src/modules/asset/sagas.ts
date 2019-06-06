@@ -6,7 +6,17 @@ import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-export const COLLECTIBLE_WHITELIST = ['crypto-kitties']
+export const COLLECTIBLE_WHITELIST = [
+  'crypto-kitties',
+  'hyper-dragons',
+  'axie-infinity',
+  'blockchain-cuties',
+  'chibi-fighters',
+  'etheremon',
+  'mlb-champions',
+  'mycryptoheroes',
+  'mycryptoheroes-extension'
+]
 
 export function* assetSaga() {
   yield takeLatest(LOAD_COLLECTIBLES_REQUEST, handleLoadCollectibles)
