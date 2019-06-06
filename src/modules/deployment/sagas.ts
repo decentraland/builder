@@ -9,7 +9,14 @@ import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
 import { api } from 'lib/api'
-import { DEPLOY_TO_POOL_REQUEST, deployToPoolFailure, deployToPoolSuccess, setProgress, setStage } from './actions'
+import {
+  DEPLOY_TO_POOL_REQUEST,
+  deployToPoolFailure,
+  deployToPoolSuccess,
+  setProgress,
+  setStage,
+  DeployToPoolRequestAction
+} from './actions'
 import { store } from 'modules/common/store'
 
 function onUploadProgress(args: { loaded: number; total: number }) {
@@ -22,7 +29,7 @@ export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
 }
 
-export function* handleDeployToPoolRequest() {
+export function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
   const rawProject: Project = yield select(getCurrentProject)
   const scene: Scene = yield select(getCurrentScene)
   const user: User = yield select(getUserState)
@@ -33,7 +40,7 @@ export function* handleDeployToPoolRequest() {
     const data = yield handleRecordVideo()
 
     yield put(setStage('upload'))
-    yield call(() => api.deployToPool(project, scene, user))
+    yield call(() => api.deployToPool(project, scene, user, action.payload.ethAddress))
     yield call(() => api.publishScenePreview(rawProject.id, data.video, data.thumbnail, data.shots, onUploadProgress))
 
     yield put(deployToPoolSuccess(window.URL.createObjectURL(data.thumbnail)))

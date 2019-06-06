@@ -7,5 +7,3 @@ export const getState: (state: RootState) => UserState = state => state.user
 export const getId: (state: RootState) => User['id'] = state => getState(state).id
 
 export const getEmail: (state: RootState) => User['email'] = state => getState(state).email
-
-export const getEthAddress: (state: RootState) => User['ethAddress'] = state => getState(state).ethAddress

@@ -7,7 +7,7 @@ export const DEPLOY_TO_POOL_REQUEST = '[Request] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_SUCCESS = '[Success] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_FAILURE = '[Failure] Deploy to LAND pool'
 
-export const deployToPoolRequest = (projectId: string) => action(DEPLOY_TO_POOL_REQUEST, { projectId })
+export const deployToPoolRequest = (projectId: string, ethAddress: string) => action(DEPLOY_TO_POOL_REQUEST, { projectId, ethAddress })
 export const deployToPoolSuccess = (thumbnail: string) => action(DEPLOY_TO_POOL_SUCCESS, { thumbnail })
 export const deployToPoolFailure = (error: string) => action(DEPLOY_TO_POOL_FAILURE, { error })
 
