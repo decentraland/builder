@@ -1,24 +1,14 @@
-import {
-  SetUserIdAction,
-  SetUserEmailAction,
-  SET_USER_ID,
-  SET_USER_EMAIL,
-  SET_ETH_ADDRESS,
-  SetEthereumAddressAction,
-  SetUserProfileAction,
-  SET_USER_PROFILE
-} from './actions'
+import { SetUserIdAction, SetUserEmailAction, SET_USER_ID, SET_USER_EMAIL, SetUserProfileAction, SET_USER_PROFILE } from './actions'
 import { User } from './types'
 
 export type UserState = User
 
 const INITIAL_STATE: UserState = {
   id: '',
-  email: '',
-  ethAddress: ''
+  email: ''
 }
 
-export type UserReducerAction = SetUserEmailAction | SetUserIdAction | SetEthereumAddressAction | SetUserProfileAction
+export type UserReducerAction = SetUserEmailAction | SetUserIdAction | SetUserProfileAction
 
 export const userReducer = (state = INITIAL_STATE, action: UserReducerAction): UserState => {
   switch (action.type) {
@@ -29,10 +19,6 @@ export const userReducer = (state = INITIAL_STATE, action: UserReducerAction): U
     case SET_USER_EMAIL: {
       const { email } = action.payload
       return { ...state, email }
-    }
-    case SET_ETH_ADDRESS: {
-      const { ethAddress } = action.payload
-      return { ...state, ethAddress }
     }
     case SET_USER_PROFILE: {
       const { data } = action.payload

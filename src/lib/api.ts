@@ -47,8 +47,10 @@ export class API extends BaseAPI {
     return this.request('post', `${EMAIL_SERVER_URL}`, { email, interest })
   }
 
-  async deployToPool(project: Omit<Project, 'thumbnail'>, scene: Scene, user: User) {
-    return this.request('post', `${BUILDER_SERVER_URL}/project/`, { entry: JSON.stringify({ version: 1, project, scene, user }) })
+  async deployToPool(project: Omit<Project, 'thumbnail'>, scene: Scene, user: User, ethAddress: string) {
+    return this.request('post', `${BUILDER_SERVER_URL}/project/`, {
+      entry: JSON.stringify({ version: 1, project, scene, user: { ...user, ethAddress } })
+    })
   }
 
   async publishScenePreview(

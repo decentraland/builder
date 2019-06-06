@@ -7,7 +7,6 @@ import { DeploymentStage } from 'modules/deployment/reducer'
 
 export type Props = ModalProps & {
   currentProject: Project | null
-  userEthAddress: string
   userEmail: string
   error: string | null
   isLoading: boolean
@@ -34,6 +33,6 @@ export type Step = {
 
 export type MapStateProps = Pick<
   Props,
-  'currentProject' | 'userEmail' | 'userEthAddress' | 'error' | 'deploymentThumbnail' | 'isLoading' | 'progress' | 'stage'
+  'currentProject' | 'userEmail' | 'error' | 'deploymentThumbnail' | 'isLoading' | 'progress' | 'stage'
 >
 export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onSaveUser' | 'onSaveProject'>

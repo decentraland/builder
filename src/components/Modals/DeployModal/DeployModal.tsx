@@ -9,6 +9,8 @@ import { EMAIL_INTEREST, api } from 'lib/api'
 import { Props, State } from './DeployModal.types'
 import './DeployModal.css'
 
+const ethereum = (window as any)['ethereum']
+
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
 
@@ -32,10 +34,10 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   getBaseState(): State {
-    const { currentProject, userEmail, userEthAddress } = this.props
+    const { currentProject, userEmail } = this.props
     return {
       email: userEmail,
-      ethAddress: userEthAddress,
+      ethAddress: ethereum.selectedAddress || '',
       project: { ...currentProject! },
       isSubmitting: false,
       isSuccess: false
@@ -66,7 +68,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   handleSubmit = async () => {
     const { currentProject, onDeployToPool, onSaveProject, onSaveUser } = this.props
-    const { email, ethAddress, project } = this.state
+    const { email, project, ethAddress } = this.state
     const projectId = currentProject!.id
     const analytics = getAnalytics()
 
@@ -75,9 +77,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     analytics.identify({ email })
     api.reportEmail(email, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
-    onSaveUser({ email, ethAddress })
+    onSaveUser({ email })
     onSaveProject(projectId, project)
-    onDeployToPool(projectId)
+    onDeployToPool(projectId, ethAddress)
   }
 
   handleClose = () => {
@@ -196,7 +198,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   render() {
     const { name, onClose, isLoading } = this.props
     const { email } = this.state
-    const isSubmitDIsabled = !email
+    const isSubmitDisabled = !email
 
     if (this.state.isSuccess) {
       return this.renderSuccess()
@@ -212,7 +214,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
           <Modal.Header>{t('deployment_modal.pool.title')}</Modal.Header>
           <Modal.Content>{this.renderForm()}</Modal.Content>
           <Modal.Actions>
-            <Button primary disabled={isSubmitDIsabled}>
+            <Button primary disabled={isSubmitDisabled}>
               {t('global.submit')}
             </Button>
             <Button secondary onClick={onClose}>
