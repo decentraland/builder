@@ -9,6 +9,8 @@ import { EMAIL_INTEREST, api } from 'lib/api'
 import { Props, State } from './DeployModal.types'
 import './DeployModal.css'
 
+const ethereum = (window as any)['ethereum']
+
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
 
@@ -35,7 +37,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { currentProject, userEmail, userEthAddress } = this.props
     return {
       email: userEmail,
-      ethAddress: userEthAddress,
+      ethAddress: userEthAddress || ethereum.selectedAddress,
       project: { ...currentProject! },
       isSubmitting: false,
       isSuccess: false
