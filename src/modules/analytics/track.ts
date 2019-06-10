@@ -1,14 +1,5 @@
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
-import {
-  ADD_ITEM,
-  DROP_ITEM,
-  RESET_ITEM,
-  DUPLICATE_ITEM,
-  SET_GROUND,
-  AddItemAction,
-  DropItemAction,
-  SetGroundAction
-} from 'modules/scene/actions'
+import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
   EDITOR_REDO,
@@ -19,7 +10,7 @@ import {
   ZOOM_OUT,
   RESET_CAMERA
 } from 'modules/editor/actions'
-import { SEARCH_ASSETS, SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
+import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
 import { CREATE_PROJECT, CreateProjectAction, ExportProjectAction, EXPORT_PROJECT, IMPORT_PROJECT } from 'modules/project/actions'
 
@@ -27,7 +18,7 @@ function addPayload(actionType: string, getPayload = (action: any) => action.pay
   add(actionType, actionType, getPayload)
 }
 
-function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
+export function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
   if (!action.payload.asset) {
     return action.payload
   }
@@ -52,7 +43,6 @@ function trimProject(action: CreateProjectAction | ExportProjectAction) {
 }
 
 // item actions
-addPayload(ADD_ITEM, trimAsset)
 addPayload(DROP_ITEM, trimAsset)
 addPayload(RESET_ITEM)
 addPayload(DUPLICATE_ITEM)
@@ -66,7 +56,6 @@ addPayload(TOGGLE_SIDEBAR)
 addPayload(SET_SIDEBAR_VIEW)
 addPayload(SELECT_ASSET_PACK)
 addPayload(SELECT_CATEGORY)
-addPayload(SEARCH_ASSETS)
 addPayload(OPEN_MODAL)
 addPayload(SET_GIZMO)
 addPayload(SET_GROUND, trimAsset)
