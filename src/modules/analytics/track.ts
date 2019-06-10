@@ -1,14 +1,5 @@
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
-import {
-  ADD_ITEM,
-  DROP_ITEM,
-  RESET_ITEM,
-  DUPLICATE_ITEM,
-  SET_GROUND,
-  AddItemAction,
-  DropItemAction,
-  SetGroundAction
-} from 'modules/scene/actions'
+import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
   EDITOR_REDO,
@@ -27,7 +18,7 @@ function addPayload(actionType: string, getPayload = (action: any) => action.pay
   add(actionType, actionType, getPayload)
 }
 
-function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
+export function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
   if (!action.payload.asset) {
     return action.payload
   }
@@ -52,7 +43,6 @@ function trimProject(action: CreateProjectAction | ExportProjectAction) {
 }
 
 // item actions
-addPayload(ADD_ITEM, trimAsset)
 addPayload(DROP_ITEM, trimAsset)
 addPayload(RESET_ITEM)
 addPayload(DUPLICATE_ITEM)

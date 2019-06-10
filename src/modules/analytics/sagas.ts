@@ -19,7 +19,8 @@ import {
 } from 'modules/scene/actions'
 import { DeployToPoolSuccessAction, DEPLOY_TO_POOL_SUCCESS } from 'modules/deployment/actions'
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
-import { getSideBarCategories } from 'modules/ui/sidebar/selectors'
+import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
+import { trimAsset } from './track'
 
 export function* segmentSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
@@ -43,9 +44,17 @@ function* handleOpenEditor(_: OpenEditorAction) {
   track('Open project', { projectId: project.id })
 }
 
-function* handleNewItem(_: AddItemAction | DuplicateItemAction | SetGroundAction) {
+function* handleNewItem(action: AddItemAction | DuplicateItemAction | SetGroundAction) {
   const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
   if (!project) return
+
+  if (action.type === ADD_ITEM) {
+    const search: ReturnType<typeof getSearch> = yield select(getSearch)
+    track(ADD_ITEM, {
+      ...trimAsset(action),
+      search
+    })
+  }
 
   track('New item', { projectId: project.id })
 }
