@@ -11,7 +11,7 @@ import './AdBlockModal.css'
 
 export default class AdBlockModal extends React.PureComponent<Props> {
   handleClick = () => {
-    const { metadata } = this.props
+    const { metadata, onClose } = this.props
     if (metadata) {
       const analytics = getAnalytics()
       analytics.track(this.props.metadata.origin, {
@@ -19,6 +19,7 @@ export default class AdBlockModal extends React.PureComponent<Props> {
       })
     }
     window.open('https://dap.pr/dclinstallp')
+    onClose()
   }
 
   render() {
