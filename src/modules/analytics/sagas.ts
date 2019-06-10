@@ -18,6 +18,8 @@ import {
   UpdateTransfromAction
 } from 'modules/scene/actions'
 import { DeployToPoolSuccessAction, DEPLOY_TO_POOL_SUCCESS } from 'modules/deployment/actions'
+import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
+import { getSideBarCategories } from 'modules/ui/sidebar/selectors'
 
 export function* segmentSaga() {
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
@@ -29,6 +31,7 @@ export function* segmentSaga() {
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
+  yield takeLatest(SEARCH_ASSETS, handleSearchAssets)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -97,4 +100,10 @@ function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const user = yield select(getUserState)
   if (!project) return
   track('Deploy to pool', { project_id: project.id, user })
+}
+
+function* handleSearchAssets(action: SearchAssetsAction) {
+  const categories: ReturnType<typeof getSideBarCategories> = yield select(getSideBarCategories)
+  const hits = categories.reduce<number>((hits, category) => hits + category.assets.length, 0)
+  track(SEARCH_ASSETS, { ...action.payload, hits })
 }
