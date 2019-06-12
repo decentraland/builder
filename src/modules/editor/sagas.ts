@@ -53,6 +53,7 @@ import {
   setGround,
   fixCurrentScene
 } from 'modules/scene/actions'
+import { CONTENT_SERVER_URL } from 'lib/api'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
@@ -67,7 +68,7 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER, dataURLtoBlob } from './utils'
+import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, dataURLtoBlob } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
 import { setProgress } from 'modules/deployment/actions'
 
@@ -386,7 +387,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
     for (let [file, hash] of contentEntries) {
       if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${CONTENT_SERVER}/${hash}`)
+        editorWindow.editor.preloadFile(`${CONTENT_SERVER_URL}/contents/${hash}`)
       }
     }
   })

@@ -5,9 +5,9 @@ import Writer from 'dcl-scene-writer'
 import packageJson from 'decentraland/dist/samples/ecs/package.json'
 import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
-import { Project } from 'modules/project/types'
+import { Project, Rotation, Coordinate } from 'modules/project/types'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
-import { CONTENT_SERVER } from 'modules/editor/utils'
+import { CONTENT_SERVER_URL } from 'lib/api'
 
 export const BUILDER_FILE_VERSION = 2
 
@@ -20,20 +20,24 @@ export enum EXPORT_PATH {
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
   MODELS_FOLDER = 'models',
-  NFT_BASIC_FRAME_FILE = 'models/frames/basic.glb'
+  NFT_BASIC_FRAME_FILE = 'models/frames/basic.glb',
+  BUNDLED_GAME_FILE = 'bin/game.js'
 }
 
 export async function createFiles(args: {
   project: Project
   scene: Scene
+  point: Coordinate
   onProgress: (args: { progress: number; total: number }) => void
 }) {
-  const { project, scene, onProgress } = args
+  const { project, scene, point, onProgress } = args
   const models = await createModels({ scene, onProgress })
+  const gameFile = createGameFile({ project, scene })
   return {
     [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({ version: BUILDER_FILE_VERSION, project, scene }),
-    [EXPORT_PATH.GAME_FILE]: createGameFile({ project, scene }),
-    ...createDynamicFiles(project),
+    [EXPORT_PATH.GAME_FILE]: gameFile,
+    [EXPORT_PATH.BUNDLED_GAME_FILE]: createGameFileBundle(gameFile),
+    ...createDynamicFiles({ project, scene, point, rotation: 'east' }),
     ...createStaticFiles(),
     ...models
   }
@@ -98,6 +102,11 @@ export function createGameFile(args: { project: Project; scene: Scene }) {
   return writer.emitCode()
 }
 
+export function createGameFileBundle(gameFile: string): string {
+  const ecs = require('raw-loader!decentraland-ecs/dist/src/index.js')
+  return ecs + '\n// Builder generated code below\n' + gameFile + '\n'
+}
+
 export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames: Set<string>) {
   let modelName
   try {
@@ -133,36 +142,6 @@ export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames
   }
   takenNames.add(name)
   return name
-}
-
-export function createDynamicFiles(project: Project) {
-  const parcels = project.parcels!.map(({ x, y }) => x + ',' + y)
-  return {
-    [EXPORT_PATH.PACKAGE_FILE]: JSON.stringify(
-      {
-        ...packageJson,
-        name: project.title.toLowerCase().replace(/\s/g, '_')
-      },
-      null,
-      2
-    ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(
-      {
-        ...sceneJson,
-        scene: {
-          ...sceneJson.scene,
-          parcels,
-          base: parcels[0]
-        },
-        source: {
-          origin: 'builder',
-          projectId: project.id
-        }
-      },
-      null,
-      2
-    )
-  }
 }
 
 export function createStaticFiles() {
@@ -207,7 +186,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
           .split('/')
           .slice(1)
           .join('/') // drop the asset pack id namespace
-        mappings[path] = CONTENT_SERVER + '/' + gltfShape.data.mappings[key]
+        mappings[path] = CONTENT_SERVER_URL + '/contents/' + gltfShape.data.mappings[key]
       }
     } else if (component.type === ComponentType.NFTShape) {
       shouldDownloadFrame = true
@@ -249,4 +228,86 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
   }
 
   return models
+}
+
+export function createDynamicFiles(args: { project: Project; scene: Scene; point: Coordinate; rotation: Rotation }) {
+  const { project, scene, rotation, point } = args
+
+  // rotate scene
+  const { cols, rows } = project.layout
+  const parcels = []
+  switch (rotation) {
+    case 'north': {
+      for (let x = point.x; x < point.x + cols; x++) {
+        for (let y = point.y; y < point.y + rows; y++) {
+          const parcel = { x, y }
+          parcels.push(parcel)
+        }
+      }
+      break
+    }
+    case 'east': {
+      for (let x = point.x; x < point.x + rows; x++) {
+        for (let y = point.y; y < point.y + cols; y++) {
+          parcels.push({ x, y })
+        }
+      }
+      break
+    }
+    case 'south': {
+      for (let x = point.x; x > point.x - cols; x--) {
+        for (let y = point.y; y > point.y - rows; y--) {
+          parcels.push({ x, y })
+        }
+      }
+      break
+    }
+    case 'west': {
+      for (let x = point.x; x > point.x - rows; x--) {
+        for (let y = point.y; y > point.y - cols; y--) {
+          parcels.push({ x, y })
+        }
+      }
+      break
+    }
+  }
+  const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
+
+  const files = {
+    [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({
+      version: BUILDER_FILE_VERSION,
+      project,
+      scene
+    }),
+    [EXPORT_PATH.PACKAGE_FILE]: JSON.stringify(
+      {
+        ...packageJson,
+        name: project.id
+      },
+      null,
+      2
+    ),
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(
+      {
+        ...sceneJson,
+        scene: {
+          ...sceneJson.scene,
+          parcels: parcels.map(parcelToString),
+          base: parcelToString(base)
+        },
+        source: {
+          origin: 'builder',
+          projectId: project.id
+        }
+      },
+      null,
+      2
+    )
+  }
+
+  return files
+}
+
+function parcelToString({ x, y }: { x: number; y: number }) {
+  return x + ',' + y
 }

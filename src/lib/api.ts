@@ -5,12 +5,14 @@ import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
 import { AssetRegistryResponse, DARAssetsResponse } from 'modules/asset/types'
+import { ContentManifest, ContentUploadRequestMetadata, ContentFile } from 'modules/deployment/types'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
 export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 export const DAR_URL = env.get('REACT_APP_DAR_URL', '')
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
+export const CONTENT_SERVER_URL = env.get('REACT_APP_CONTENT_SERVER_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
@@ -67,6 +69,30 @@ export class API extends BaseAPI {
     formData.append('video', video)
 
     return this.request('post', `${BUILDER_SERVER_URL}/project/${projectId}/preview`, formData, {
+      onUploadProgress
+    })
+  }
+
+  async uploadToContentService(
+    rootCID: string,
+    manifest: ContentManifest,
+    metadata: ContentUploadRequestMetadata,
+    files: ContentFile[],
+    onUploadProgress?: (progress: { loaded: number; total: number }) => void
+  ) {
+    const data = new FormData()
+    data.append('metadata', JSON.stringify(metadata))
+    data.append(rootCID, JSON.stringify(Object.values(manifest)))
+
+    for (let file of files) {
+      const indentifier = manifest[file.path]
+      let content = new Blob([file.content], {
+        type: 'text/plain'
+      })
+      data.append(indentifier.cid, content, file.path)
+    }
+
+    return this.request('post', `${CONTENT_SERVER_URL}/mappings`, data, {
       onUploadProgress
     })
   }
