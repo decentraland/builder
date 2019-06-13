@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { env } from 'decentraland-commons'
 import { RootState } from 'modules/common/types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { AssetPackState } from './reducer'
@@ -11,7 +12,7 @@ export const getData = createSelector<RootState, AssetPackState, AssetPackState[
     assetPacks[COLLECTIBLE_ASSET_PACK_ID] = {
       id: COLLECTIBLE_ASSET_PACK_ID,
       title: 'Collectibles',
-      thumbnail: 'https://www.cryptokitties.co/icons/logo.svg',
+      thumbnail: `${env.get('PUBLIC_URL')}/images/nft-icon.png`,
       url: '',
       isLoaded: true,
       assets: []
