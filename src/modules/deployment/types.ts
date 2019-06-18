@@ -3,10 +3,17 @@ export type ContentIdentifier = {
   name: string
 }
 
-export type ContentFile = {
+export type ContentServiceFile = {
   path: string
   content: Buffer
   size: number
+}
+
+export enum ProgressStage {
+  NONE,
+  RECORD, // Client images/video are captured
+  UPLOAD_RECORDING, // Client images/video are uploaded to LAND pool
+  UPLOAD_SCENE_ASSETS // Scene assets are uploaded to the content server (LAND deployment)
 }
 
 export type ContentManifest = Record<string, ContentIdentifier>

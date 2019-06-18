@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
-import { DeploymentStage } from './reducer'
 import { Coordinate, Rotation } from 'modules/project/types'
+import { ProgressStage } from './types'
 
 // Deploy to LAND pool
 
@@ -9,7 +9,7 @@ export const DEPLOY_TO_POOL_SUCCESS = '[Success] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_FAILURE = '[Failure] Deploy to LAND pool'
 
 export const deployToPoolRequest = (projectId: string) => action(DEPLOY_TO_POOL_REQUEST, { projectId })
-export const deployToPoolSuccess = (thumbnail: string) => action(DEPLOY_TO_POOL_SUCCESS, { thumbnail })
+export const deployToPoolSuccess = (images: string) => action(DEPLOY_TO_POOL_SUCCESS, { images })
 export const deployToPoolFailure = (error: string) => action(DEPLOY_TO_POOL_FAILURE, { error })
 
 export type DeployToPoolRequestAction = ReturnType<typeof deployToPoolRequest>
@@ -40,5 +40,5 @@ export type SetProgressAction = ReturnType<typeof setProgress>
 // Set stage
 
 export const SET_STAGE = 'Set stage'
-export const setStage = (stage: DeploymentStage) => action(SET_STAGE, { stage })
+export const setStage = (stage: ProgressStage) => action(SET_STAGE, { stage })
 export type SetStageAction = ReturnType<typeof setStage>

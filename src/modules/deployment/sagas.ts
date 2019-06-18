@@ -1,10 +1,9 @@
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
-import { takeLatest, put, select, call } from 'redux-saga/effects'
+import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentScene, getSceneById } from 'modules/scene/selectors'
-import { handleRecordVideo } from 'modules/editor/sagas'
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
@@ -23,7 +22,9 @@ import {
 import { store } from 'modules/common/store'
 import { createFiles } from 'modules/project/export'
 import { makeContentFile, getFileManifest, getCID, buildUploadRequestMetadata } from './utils'
-import { ContentFile } from './types'
+import { ContentServiceFile, ProgressStage } from './types'
+import { recordMediaRequest, RECORD_MEDIA_SUCCESS } from 'modules/media/actions'
+import { getMediaByCID } from 'modules/media/selectors'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -43,16 +44,20 @@ export function* handleDeployToPoolRequest() {
   const scene: Scene = yield select(getCurrentScene)
   const user: User = yield select(getUserState)
   const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
+  const contentFiles: ContentServiceFile[] = yield getContentServiceFiles()
+  const rootCID = yield call(() => getCID(contentFiles, true))
 
   try {
-    yield put(setStage('record'))
-    const data = yield handleRecordVideo()
+    yield put(setStage(ProgressStage.RECORD))
+    yield put(recordMediaRequest(rootCID))
+    yield take(RECORD_MEDIA_SUCCESS)
+    const { north, east, south, west, video, thumbnail } = yield select(getMediaByCID(rootCID))
 
-    yield put(setStage('upload'))
+    yield put(setStage(ProgressStage.UPLOAD_RECORDING))
     yield call(() => api.deployToPool(project, scene, user))
-    yield call(() => api.publishScenePreview(rawProject.id, data.video, data.thumbnail, data.shots, onUploadProgress))
+    yield call(() => api.publishScenePreview(rawProject.id, video, thumbnail, { north, east, south, west }, onUploadProgress))
 
-    yield put(deployToPoolSuccess(window.URL.createObjectURL(data.thumbnail)))
+    yield put(deployToPoolSuccess(window.URL.createObjectURL(thumbnail)))
   } catch (e) {
     yield put(deployToPoolFailure(e.message))
   }
@@ -61,6 +66,22 @@ export function* handleDeployToPoolRequest() {
 export function* handleDeployToLandRequest(_: DeployToLandRequestAction) {
   // const { ethAddress } = action.payload
   const user: User = yield select(getUserState)
+
+  if (!eth.wallet) {
+    yield put(deployToLandFailure('Unable to connect to wallet'))
+  }
+
+  const contentFiles: ContentServiceFile[] = yield getContentServiceFiles()
+  const rootCID = yield call(() => getCID(contentFiles, true))
+  const manifest = yield call(() => getFileManifest(contentFiles))
+  const timestamp = Math.round(Date.now() / 1000)
+  const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
+  const metadata = buildUploadRequestMetadata(rootCID, signature, (window as any)['ethereum'].selectedAddress, timestamp, user.id)
+
+  yield call(() => api.uploadToContentService(rootCID, manifest, metadata, contentFiles))
+}
+
+function* getContentServiceFiles() {
   const project: Project = yield select(getCurrentProject)
   const scene: Scene = yield select(getSceneById(project.sceneId))
   const files = yield call(() =>
@@ -74,23 +95,13 @@ export function* handleDeployToLandRequest(_: DeployToLandRequestAction) {
     })
   )
 
-  if (!eth.wallet) {
-    yield put(deployToLandFailure('Unable to connect to wallet'))
-  }
-
-  let contentFiles: ContentFile[] = []
+  let contentFiles: ContentServiceFile[] = []
 
   for (const fileName of Object.keys(files)) {
     if (blacklist.includes(fileName)) continue
-    const file: ContentFile = yield call(() => makeContentFile(fileName, files[fileName]))
+    const file: ContentServiceFile = yield call(() => makeContentFile(fileName, files[fileName]))
     contentFiles.push(file)
   }
 
-  const rootCID = yield call(() => getCID(contentFiles, true))
-  const manifest = yield call(() => getFileManifest(contentFiles))
-  const timestamp = Math.round(Date.now() / 1000)
-  const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
-  const metadata = buildUploadRequestMetadata(rootCID, signature, (window as any)['ethereum'].selectedAddress, timestamp, user.id)
-
-  yield call(() => api.uploadToContentService(rootCID, manifest, metadata, contentFiles))
+  return contentFiles
 }

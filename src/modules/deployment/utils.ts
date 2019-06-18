@@ -5,14 +5,14 @@ const pull = require('pull-stream')
 const Importer = require('ipfs-unixfs-engine').Importer
 const toBuffer = require('blob-to-buffer')
 
-import { ContentIdentifier, ContentFile, ContentManifest, ContentUploadRequestMetadata } from './types'
+import { ContentIdentifier, ContentServiceFile, ContentManifest, ContentUploadRequestMetadata } from './types'
 
-export async function getCID(files: ContentFile[], shareRoot: boolean): Promise<string> {
+export async function getCID(files: ContentServiceFile[], shareRoot: boolean): Promise<string> {
   const importer = new Importer(new MemoryDatastore(), { onlyHash: true })
   return new Promise<string>((resolve, reject) => {
     pull(
       pull.values(files),
-      pull.asyncMap((file: ContentFile, cb: any) => {
+      pull.asyncMap((file: ContentServiceFile, cb: any) => {
         const data = {
           path: shareRoot ? '/tmp/' + file.path : file.path,
           content: file.content
@@ -32,7 +32,7 @@ export async function getCID(files: ContentFile[], shareRoot: boolean): Promise<
   })
 }
 
-export async function getFileManifest(files: ContentFile[]): Promise<ContentManifest> {
+export async function getFileManifest(files: ContentServiceFile[]): Promise<ContentManifest> {
   const result: Record<string, ContentIdentifier> = {}
   for (const file of files) {
     const fileCID: string = await getCID([{ path: path.basename(file.path), content: file.content, size: file.size }], false)
@@ -41,7 +41,7 @@ export async function getFileManifest(files: ContentFile[]): Promise<ContentMani
   return result
 }
 
-export function makeContentFile(path: string, content: string | Blob): Promise<ContentFile> {
+export function makeContentFile(path: string, content: string | Blob): Promise<ContentServiceFile> {
   return new Promise((resolve, reject) => {
     if (typeof content === 'string') {
       const buffer = Buffer.from(content)

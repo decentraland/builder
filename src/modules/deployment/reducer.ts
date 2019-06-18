@@ -12,14 +12,16 @@ import {
   SetStageAction,
   SET_STAGE
 } from './actions'
-
-export type DeploymentStage = 'record' | 'upload' | null
+import { ProgressStage } from './types'
 
 export type DeploymentState = {
   data: {
-    thumbnail: string | null
-    progress: number
-    stage: DeploymentStage
+    remoteCID: string | null
+    isDirty: boolean
+    progress: {
+      stage: ProgressStage
+      value: number
+    }
   }
   loading: LoadingState
   error: string | null
@@ -27,9 +29,12 @@ export type DeploymentState = {
 
 const INITIAL_STATE: DeploymentState = {
   data: {
-    thumbnail: null,
-    progress: 0,
-    stage: null
+    progress: {
+      stage: ProgressStage.NONE,
+      value: 0
+    },
+    remoteCID: null,
+    isDirty: true
   },
   loading: [],
   error: null
@@ -54,9 +59,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       return {
         ...state,
         data: {
-          ...state.data,
-          thumbnail: action.payload.thumbnail,
-          stage: null
+          ...state.data
         },
         loading: loadingReducer(state.loading, action),
         error: null
@@ -66,8 +69,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       return {
         ...state,
         data: {
-          ...state.data,
-          stage: null
+          ...state.data
         },
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
@@ -78,7 +80,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         ...state,
         data: {
           ...state.data,
-          progress: action.payload.progress
+          progress: {
+            ...state.data.progress,
+            value: action.payload.progress
+          }
         }
       }
     }
@@ -87,8 +92,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         ...state,
         data: {
           ...state.data,
-          stage: action.payload.stage,
-          progress: 0
+          progress: {
+            ...state.data.progress,
+            value: 0
+          }
         }
       }
     }

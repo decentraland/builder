@@ -5,7 +5,7 @@ import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
 import { AssetRegistryResponse, DARAssetsResponse } from 'modules/asset/types'
-import { ContentManifest, ContentUploadRequestMetadata, ContentFile } from 'modules/deployment/types'
+import { ContentManifest, ContentUploadRequestMetadata, ContentServiceFile } from 'modules/deployment/types'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
@@ -77,7 +77,7 @@ export class API extends BaseAPI {
     rootCID: string,
     manifest: ContentManifest,
     metadata: ContentUploadRequestMetadata,
-    files: ContentFile[],
+    files: ContentServiceFile[],
     onUploadProgress?: (progress: { loaded: number; total: number }) => void
   ) {
     const data = new FormData()

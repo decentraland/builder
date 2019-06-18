@@ -1,8 +1,11 @@
 import { RootState } from 'modules/common/types'
+import { ProgressStage } from './types'
 
 export const getState = (state: RootState) => state.deployment
 export const isLoading = (state: RootState) => getState(state).loading.length > 0
 export const getError = (state: RootState) => getState(state).error
-export const getThumbnail = (state: RootState) => getState(state).data.thumbnail
+export const getImages = (state: RootState) => getState(state).data.images
 export const getProgress = (state: RootState) => getState(state).data.progress
-export const getStage = (state: RootState) => getState(state).data.stage
+export const isRecording = (state: RootState) => getState(state).data.progress.stage === ProgressStage.RECORD
+export const isUploadingRecording = (state: RootState) => getState(state).data.progress.stage === ProgressStage.UPLOAD_RECORDING
+export const isUploadingAssets = (state: RootState) => getState(state).data.progress.stage === ProgressStage.UPLOAD_SCENE_ASSETS

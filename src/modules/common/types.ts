@@ -14,6 +14,7 @@ import { ProjectState } from 'modules/project/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
 import { DeploymentState } from 'modules/deployment/reducer'
+import { MediaState } from 'modules/media/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -34,6 +35,7 @@ export type RootState = {
   router: RouterState
   editor: EditorState
   deployment: DeploymentState
+  media: MediaState
 }
 
 export type RootStore = Store<RootState>

@@ -1,0 +1,10 @@
+.DeployToLand .error {
+  visibility: hidden;
+  user-select: none;
+  color: var(--primary);
+  margin-top: 20px;
+}
+
+.DeployToLand .error.visible {
+  visibility: visible;
+}
