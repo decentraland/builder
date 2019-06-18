@@ -1,5 +1,4 @@
 // @ts-ignore
-import { WebmEncoder } from './webm'
 import { takeLatest, select, put, call, delay } from 'redux-saga/effects'
 
 import {
@@ -40,8 +39,7 @@ import {
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
   setEditorLoading,
-  closeEditor,
-  RECORD_VIDEO
+  closeEditor
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -94,7 +92,6 @@ export function* editorSaga() {
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
-  yield takeLatest(RECORD_VIDEO, handleRecordVideo)
 }
 
 function* pollEditor() {
@@ -404,13 +401,11 @@ const Rotation = {
   WEST: Math.PI
 }
 
-export function* handleRecordVideo() {
+export function* handleTakePictures() {
   const project: Project = yield select(getCurrentProject)
   const side = Math.max(project.layout.cols, project.layout.rows)
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
-  const encoder = new WebmEncoder(15)
-  const stepAngle = Math.PI / 32
   const initialAngle = Math.PI / 1.5
   const shots = {
     north: null,
@@ -418,10 +413,7 @@ export function* handleRecordVideo() {
     south: null,
     west: null
   }
-  let currentStep = 0
-  const totalSteps = (Math.PI * 2) / stepAngle
 
-  let angle = initialAngle
   let thumbnail
 
   // Prepare the canvas for recording
@@ -435,35 +427,23 @@ export function* handleRecordVideo() {
   editorWindow.editor.setCameraRotation(0, Math.PI / 3)
   editorWindow.editor.setCameraPosition({ x: (project.layout.rows * PARCEL_SIZE) / 2, y: 2, z: (project.layout.cols * PARCEL_SIZE) / 2 })
 
-  // Spin the camera and capture video frames
-  while (angle < Math.PI * 2 + initialAngle) {
-    yield call(() => editorWindow.editor.setCameraRotation(angle, Math.PI / 3))
-    let screenshot = yield call(() => editorWindow.editor.takeScreenshot('image/webp'))
-
-    if (!thumbnail) {
-      thumbnail = yield takeEditorScreenshot(angle)
-    }
-
-    encoder.add(screenshot)
-    angle += stepAngle
-
-    // Compute and dispatch progress
-    const progress = ((currentStep++ / totalSteps) * 100) | 0
-    yield put(setProgress(progress))
-  }
-
-  const video = yield call(() => new Promise(resolve => encoder.compile(resolve)))
-
+  yield put(setProgress(0))
+  thumbnail = yield takeEditorScreenshot(initialAngle)
+  yield put(setProgress(20))
   shots.north = yield takeEditorScreenshot(Rotation.NORTH)
+  yield put(setProgress(40))
   shots.east = yield takeEditorScreenshot(Rotation.EAST)
+  yield put(setProgress(60))
   shots.south = yield takeEditorScreenshot(Rotation.SOUTH)
+  yield put(setProgress(80))
   shots.west = yield takeEditorScreenshot(Rotation.WEST)
+  yield put(setProgress(100))
 
   // Cleanup
   canvas.classList.remove('recording')
   yield call(() => editorWindow.editor.resize())
 
-  return { video, shots, thumbnail }
+  return { shots, thumbnail }
 }
 
 function* takeEditorScreenshot(angle: number) {

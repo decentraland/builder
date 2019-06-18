@@ -37,7 +37,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { currentProject, userEmail } = this.props
     return {
       email: userEmail,
-      ethAddress: ethereum.selectedAddress || '',
+      ethAddress: (ethereum && ethereum.selected) || '',
       project: { ...currentProject! },
       isSubmitting: false,
       isSuccess: false

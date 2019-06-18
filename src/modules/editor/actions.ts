@@ -183,11 +183,3 @@ export const setExportProgress = (args: { isLoading?: boolean; progress?: number
   action(SET_EXPORT_PROGRESS, args)
 
 export type SetExportProgressAction = ReturnType<typeof setExportProgress>
-
-// Record video
-
-export const RECORD_VIDEO = 'Record video'
-
-export const recordVideo = () => action(RECORD_VIDEO, {})
-
-export type RecordVideoAction = ReturnType<typeof recordVideo>
