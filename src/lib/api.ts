@@ -55,7 +55,6 @@ export class API extends BaseAPI {
 
   async publishScenePreview(
     projectId: string,
-    video: Blob,
     thumbnail: Blob,
     shots: Record<string, Blob>,
     onUploadProgress?: (progress: { loaded: number; total: number }) => void
@@ -66,7 +65,6 @@ export class API extends BaseAPI {
     formData.append('east', shots.east)
     formData.append('south', shots.south)
     formData.append('west', shots.west)
-    formData.append('video', video)
 
     return this.request('post', `${BUILDER_SERVER_URL}/project/${projectId}/preview`, formData, {
       onUploadProgress

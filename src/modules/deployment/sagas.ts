@@ -4,7 +4,7 @@ import { takeLatest, put, select, call } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
-import { handleRecordVideo } from 'modules/editor/sagas'
+import { handleTakePictures } from 'modules/editor/sagas'
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
@@ -37,11 +37,11 @@ export function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
 
   try {
     yield put(setStage('record'))
-    const data = yield handleRecordVideo()
+    const data = yield handleTakePictures()
 
     yield put(setStage('upload'))
     yield call(() => api.deployToPool(project, scene, user, action.payload.ethAddress))
-    yield call(() => api.publishScenePreview(rawProject.id, data.video, data.thumbnail, data.shots, onUploadProgress))
+    yield call(() => api.publishScenePreview(rawProject.id, data.thumbnail, data.shots, onUploadProgress))
 
     yield put(deployToPoolSuccess(window.URL.createObjectURL(data.thumbnail)))
   } catch (e) {
