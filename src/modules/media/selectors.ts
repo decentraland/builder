@@ -6,8 +6,8 @@ import { Media } from './types'
 export const getState = (state: RootState) => state.media
 export const getData = (state: RootState) => getState(state).data
 export const isLoading = (state: RootState) => getState(state).loading.length > 0
-export const getMediaByCID = (cid: string) =>
-  createSelector<RootState, MediaState['data'], Media>(
+export const getMediaByCID = (cid: string | null) =>
+  createSelector<RootState, MediaState['data'], Media | null>(
     getData,
-    data => data[cid]
+    data => (cid ? data[cid] : null)
   )

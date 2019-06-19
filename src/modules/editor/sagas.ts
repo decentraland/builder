@@ -1,5 +1,4 @@
 // @ts-ignore
-import { WebmEncoder } from './webm'
 import { takeLatest, select, put, call, delay } from 'redux-saga/effects'
 
 import {

@@ -4,5 +4,4 @@ export type Media = {
   east: string
   south: string
   west: string
-  video: string
 }

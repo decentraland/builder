@@ -44,16 +44,16 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isConnected, isRecording, isUploadingAssets, images } = this.props
+    const { isConnected, isRecording, isUploadingAssets, media } = this.props
     const { placement } = this.state
 
     if (!isConnected) return this.renderConnectForm()
 
     if (isConnected && (isRecording || isUploadingAssets)) return this.renderProgress()
 
-    if (isConnected && images && !placement) return this.renderMap()
+    if (isConnected && media && !placement) return this.renderMap()
 
-    if (isConnected && images && placement && !isUploadingAssets) return this.renderConfirmation()
+    if (isConnected && media && placement && !isUploadingAssets) return this.renderConfirmation()
 
     return <Loader size="big" />
   }

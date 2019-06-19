@@ -8,7 +8,6 @@ import { env } from 'decentraland-commons'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 
-import { scenarioMiddleware, eventEmitter } from 'scenarios/helpers/middleware'
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
@@ -60,10 +59,6 @@ const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT
 
 const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware]
 
-if (env.isDevelopment()) {
-  middlewares.push(scenarioMiddleware)
-}
-
 const middleware = applyMiddleware(...middlewares)
 
 const enhancer = composeEnhancers(middleware)
@@ -74,21 +69,6 @@ loadStorageMiddleware(store)
 
 export function getState() {
   return store.getState()
-}
-
-if (env.isDevelopment()) {
-  // tslint:disable-next-line:semicolon
-  ;(window as any).getState = store.getState
-
-  const urlParams = new URLSearchParams(window.location.search)
-  const scenarioName = urlParams.get('scenario')
-
-  if (scenarioName) {
-    const scenarios = require('../../scenarios').default
-    if (scenarios[scenarioName]) {
-      scenarios[scenarioName].run(store, eventEmitter)
-    }
-  }
 }
 
 export { store, history }

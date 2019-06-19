@@ -17,7 +17,8 @@ import {
   setStage,
   DEPLOY_TO_LAND_REQUEST,
   deployToLandFailure,
-  DeployToLandRequestAction
+  DeployToLandRequestAction,
+  DeployToPoolRequestAction
 } from './actions'
 import { store } from 'modules/common/store'
 import { createFiles } from 'modules/project/export'
@@ -39,7 +40,7 @@ export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
 }
 
-export function* handleDeployToPoolRequest() {
+export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
   const rawProject: Project = yield select(getCurrentProject)
   const scene: Scene = yield select(getCurrentScene)
   const user: User = yield select(getUserState)
@@ -51,11 +52,11 @@ export function* handleDeployToPoolRequest() {
     yield put(setStage(ProgressStage.RECORD))
     yield put(recordMediaRequest(rootCID))
     yield take(RECORD_MEDIA_SUCCESS)
-    const { north, east, south, west, video, thumbnail } = yield select(getMediaByCID(rootCID))
+    const { north, east, south, west, thumbnail } = yield select(getMediaByCID(rootCID))
 
     yield put(setStage(ProgressStage.UPLOAD_RECORDING))
     yield call(() => api.deployToPool(project, scene, user))
-    yield call(() => api.publishScenePreview(rawProject.id, video, thumbnail, { north, east, south, west }, onUploadProgress))
+    yield call(() => api.publishScenePreview(rawProject.id, thumbnail, { north, east, south, west }, onUploadProgress))
 
     yield put(deployToPoolSuccess(window.URL.createObjectURL(thumbnail)))
   } catch (e) {

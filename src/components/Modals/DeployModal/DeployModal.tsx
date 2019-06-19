@@ -1,10 +1,10 @@
 import * as React from 'react'
+import { Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import DeployToLand from './DeployToLand'
 import DeployToPool from './DeployToPool'
 import { Props, State } from './DeployModal.types'
 import './DeployModal.css'
-import { Button } from 'decentraland-ui'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = {

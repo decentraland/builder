@@ -16,7 +16,8 @@ import { ProgressStage } from './types'
 
 export type DeploymentState = {
   data: {
-    remoteCID: string | null
+    remoteCID: string | null // CID as reported by the content server
+    localCID: string | null // CID calculated at the time of the deployment
     isDirty: boolean
     progress: {
       stage: ProgressStage
@@ -34,6 +35,7 @@ const INITIAL_STATE: DeploymentState = {
       value: 0
     },
     remoteCID: null,
+    localCID: null,
     isDirty: true
   },
   loading: [],
