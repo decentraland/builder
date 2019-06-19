@@ -11,7 +11,6 @@ export type ContentServiceFile = {
 
 export enum ProgressStage {
   NONE,
-  RECORD, // Client images/video are captured
   UPLOAD_RECORDING, // Client images/video are uploaded to LAND pool
   UPLOAD_SCENE_ASSETS // Scene assets are uploaded to the content server (LAND deployment)
 }
@@ -27,4 +26,9 @@ export type ContentUploadRequestMetadata = {
   sequence: number
   timestamp: number
   userId: string
+}
+
+export type Deployment = {
+  remoteCID: string | null // CID as reported by the content server
+  isDirty: boolean
 }

@@ -8,35 +8,27 @@ import {
   DeployToPoolSuccessAction,
   DeployToPoolFailureAction,
   SetProgressAction,
-  SET_PROGRESS,
-  SetStageAction,
-  SET_STAGE
+  SET_PROGRESS
 } from './actions'
-import { ProgressStage } from './types'
+import { ProgressStage, Deployment } from './types'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { RecordMediaProgressAction, RecordMediaSuccessAction } from 'modules/media/actions'
 
 export type DeploymentState = {
-  data: {
-    remoteCID: string | null // CID as reported by the content server
-    localCID: string | null // CID calculated at the time of the deployment
-    isDirty: boolean
-    progress: {
-      stage: ProgressStage
-      value: number
-    }
+  data: DataByKey<Deployment>
+  progress: {
+    stage: ProgressStage
+    value: number
   }
   loading: LoadingState
   error: string | null
 }
 
 const INITIAL_STATE: DeploymentState = {
-  data: {
-    progress: {
-      stage: ProgressStage.NONE,
-      value: 0
-    },
-    remoteCID: null,
-    localCID: null,
-    isDirty: true
+  data: {},
+  progress: {
+    stage: ProgressStage.NONE,
+    value: 0
   },
   loading: [],
   error: null
@@ -47,7 +39,8 @@ export type DeploymentReducerAction =
   | DeployToPoolSuccessAction
   | DeployToPoolFailureAction
   | SetProgressAction
-  | SetStageAction
+  | RecordMediaProgressAction
+  | RecordMediaSuccessAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -80,24 +73,9 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case SET_PROGRESS: {
       return {
         ...state,
-        data: {
-          ...state.data,
-          progress: {
-            ...state.data.progress,
-            value: action.payload.progress
-          }
-        }
-      }
-    }
-    case SET_STAGE: {
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          progress: {
-            ...state.data.progress,
-            value: 0
-          }
+        progress: {
+          ...state.progress,
+          value: action.payload.progress
         }
       }
     }

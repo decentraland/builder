@@ -34,11 +34,11 @@ export type DeployToLandFailureAction = ReturnType<typeof deployToLandFailure>
 // Set progress
 
 export const SET_PROGRESS = 'Set progress'
-export const setProgress = (progress: number) => action(SET_PROGRESS, { progress })
+export const setProgress = (stage: ProgressStage, progress: number) => action(SET_PROGRESS, { stage, progress })
 export type SetProgressAction = ReturnType<typeof setProgress>
 
-// Set stage
+// Generate media
 
-export const SET_STAGE = 'Set stage'
-export const setStage = (stage: ProgressStage) => action(SET_STAGE, { stage })
-export type SetStageAction = ReturnType<typeof setStage>
+export const GENERATE_MEDIA = 'Generate media'
+export const generateMedia = () => action(GENERATE_MEDIA, {})
+export type GenerateMediaAction = ReturnType<typeof generateMedia>

@@ -1,24 +1,23 @@
-import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { Media } from './types'
 import {
   RecordMediaRequestAction,
   RECORD_MEDIA_SUCCESS,
   RecordMediaSuccessAction,
+  RECORD_MEDIA_REQUEST,
   RecordMediaProgressAction,
   RECORD_MEDIA_PROGRESS
 } from './actions'
+import { Media } from './types'
 
 export type MediaState = {
-  data: DataByKey<Media>
+  cid: string | null // used a hash to check against and avoid taking new pictures
+  media: Media | null
   progress: number
-  loading: LoadingState
 }
 
 const INITIAL_STATE: MediaState = {
-  data: {},
-  progress: 0,
-  loading: []
+  cid: null,
+  media: null,
+  progress: 0
 }
 
 export type MediaReducerAction = RecordMediaRequestAction | RecordMediaSuccessAction | RecordMediaProgressAction
@@ -28,7 +27,13 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
     case RECORD_MEDIA_SUCCESS: {
       return {
         ...state,
-        data: { ...state.data, [action.payload.cid]: action.payload.media }
+        media: action.payload.media
+      }
+    }
+    case RECORD_MEDIA_REQUEST: {
+      return {
+        ...state,
+        cid: action.payload.cid
       }
     }
     case RECORD_MEDIA_PROGRESS: {

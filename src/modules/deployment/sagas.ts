@@ -4,7 +4,7 @@ import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentScene, getSceneById } from 'modules/scene/selectors'
-import { Project } from 'modules/project/types'
+import { Project, Coordinate, Rotation } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
 import { api } from 'lib/api'
@@ -14,7 +14,6 @@ import {
   deployToPoolFailure,
   deployToPoolSuccess,
   setProgress,
-  setStage,
   DEPLOY_TO_LAND_REQUEST,
   deployToLandFailure,
   DeployToLandRequestAction,
@@ -22,17 +21,17 @@ import {
 } from './actions'
 import { store } from 'modules/common/store'
 import { createFiles } from 'modules/project/export'
-import { makeContentFile, getFileManifest, getCID, buildUploadRequestMetadata } from './utils'
+import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS } from 'modules/media/actions'
-import { getMediaByCID } from 'modules/media/selectors'
+import { getMedia } from 'modules/media/selectors'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
-function onUploadProgress(args: { loaded: number; total: number }) {
+function onUploadRecordingProgress(args: { loaded: number; total: number }) {
   const { loaded, total } = args
   const progress = ((loaded / total) * 100) | 0
-  store.dispatch(setProgress(progress))
+  store.dispatch(setProgress(ProgressStage.UPLOAD_RECORDING, progress))
 }
 
 export function* deploymentSaga() {
@@ -45,18 +44,15 @@ export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
   const scene: Scene = yield select(getCurrentScene)
   const user: User = yield select(getUserState)
   const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
-  const contentFiles: ContentServiceFile[] = yield getContentServiceFiles()
-  const rootCID = yield call(() => getCID(contentFiles, true))
 
   try {
-    yield put(setStage(ProgressStage.RECORD))
-    yield put(recordMediaRequest(rootCID))
+    yield put(recordMediaRequest(null))
     yield take(RECORD_MEDIA_SUCCESS)
-    const { north, east, south, west, thumbnail } = yield select(getMediaByCID(rootCID))
 
-    yield put(setStage(ProgressStage.UPLOAD_RECORDING))
+    const { north, east, south, west, thumbnail } = yield select(getMedia)
+
     yield call(() => api.deployToPool(project, scene, user))
-    yield call(() => api.publishScenePreview(rawProject.id, thumbnail, { north, east, south, west }, onUploadProgress))
+    yield call(() => api.publishScenePreview(rawProject.id, thumbnail, { north, east, south, west }, onUploadRecordingProgress))
 
     yield put(deployToPoolSuccess(window.URL.createObjectURL(thumbnail)))
   } catch (e) {
@@ -64,34 +60,35 @@ export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
   }
 }
 
-export function* handleDeployToLandRequest(_: DeployToLandRequestAction) {
-  // const { ethAddress } = action.payload
+export function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
+  const { ethAddress, position, rotation } = action.payload
   const user: User = yield select(getUserState)
 
   if (!eth.wallet) {
     yield put(deployToLandFailure('Unable to connect to wallet'))
   }
 
-  const contentFiles: ContentServiceFile[] = yield getContentServiceFiles()
+  const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(position, rotation)
   const rootCID = yield call(() => getCID(contentFiles, true))
   const manifest = yield call(() => getFileManifest(contentFiles))
   const timestamp = Math.round(Date.now() / 1000)
   const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
-  const metadata = buildUploadRequestMetadata(rootCID, signature, (window as any)['ethereum'].selectedAddress, timestamp, user.id)
+  const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
 
   yield call(() => api.uploadToContentService(rootCID, manifest, metadata, contentFiles))
 }
 
-function* getContentServiceFiles() {
+function* getContentServiceFiles(point: Coordinate, rotation: Rotation) {
   const project: Project = yield select(getCurrentProject)
   const scene: Scene = yield select(getSceneById(project.sceneId))
   const files = yield call(() =>
     createFiles({
       project,
       scene,
-      point: { x: -149, y: -28 },
+      point,
+      rotation,
       onProgress: e => {
-        store.dispatch(setProgress(e.progress))
+        store.dispatch(setProgress(ProgressStage.UPLOAD_SCENE_ASSETS, e.progress))
       }
     })
   )

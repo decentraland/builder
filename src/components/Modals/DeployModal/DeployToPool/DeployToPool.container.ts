@@ -5,30 +5,26 @@ import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { getEmail } from 'modules/user/selectors'
-import { isLoading, getError, getProgress, isRecording, isUploadingRecording, getLocalCID } from 'modules/deployment/selectors'
+import { isLoading, getError, getProgress, isUploadingRecording } from 'modules/deployment/selectors'
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getMediaByCID } from 'modules/media/selectors'
 import { setUserProfile } from 'modules/user/actions'
+import { getMedia, isRecording } from 'modules/media/selectors'
 import { editProjectRequest } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
 
-const mapState = (state: RootState): MapStateProps => {
-  const cid = getLocalCID(state)
-
-  return {
-    error: getError(state),
-    userEmail: getEmail(state),
-    currentProject: getCurrentProject(state),
-    isLoading: isLoading(state),
-    progress: getProgress(state).value,
-    isRecording: isRecording(state),
-    isUploadingRecording: isUploadingRecording(state),
-    media: getMediaByCID(cid)(state),
-    ethAddress: getAddress(state)
-  }
-}
+const mapState = (state: RootState): MapStateProps => ({
+  error: getError(state),
+  userEmail: getEmail(state),
+  currentProject: getCurrentProject(state),
+  isLoading: isLoading(state),
+  progress: getProgress(state).value,
+  isRecording: isRecording(state),
+  isUploadingRecording: isUploadingRecording(state),
+  media: getMedia(state),
+  ethAddress: getAddress(state)
+})
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onDeployToPool: (projectId: string) => dispatch(deployToPoolRequest(projectId)),

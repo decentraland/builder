@@ -28,16 +28,17 @@ export async function createFiles(args: {
   project: Project
   scene: Scene
   point: Coordinate
+  rotation: Rotation
   onProgress: (args: { progress: number; total: number }) => void
 }) {
-  const { project, scene, point, onProgress } = args
+  const { project, scene, point, rotation, onProgress } = args
   const models = await createModels({ scene, onProgress })
   const gameFile = createGameFile({ project, scene })
   return {
     [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({ version: BUILDER_FILE_VERSION, project, scene }),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: createGameFileBundle(gameFile),
-    ...createDynamicFiles({ project, scene, point, rotation: 'east' }),
+    ...createDynamicFiles({ project, scene, point, rotation }),
     ...createStaticFiles(),
     ...models
   }

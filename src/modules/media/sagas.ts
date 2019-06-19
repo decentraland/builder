@@ -1,11 +1,12 @@
 import { select, delay, put, call, takeLatest } from 'redux-saga/effects'
 import { getCurrentProject } from 'modules/project/selectors'
-import { setProgress } from 'modules/deployment/actions'
 import { dataURLtoBlob } from 'modules/editor/utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { Project } from 'modules/project/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { RECORD_MEDIA_REQUEST } from './actions'
+import { RECORD_MEDIA_REQUEST, recordMediaProgress, recordMediaSuccess } from './actions'
+import { Omit } from 'decentraland-dapps/dist/lib/types'
+import { Media } from './types'
 
 const editorWindow = window as EditorWindow
 
@@ -26,11 +27,11 @@ export function* handleTakePictures() {
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
   const initialAngle = Math.PI / 1.5
-  const shots = {
-    north: null,
-    east: null,
-    south: null,
-    west: null
+  const shots: Omit<Media, 'thumbnail'> = {
+    north: '',
+    east: '',
+    south: '',
+    west: ''
   }
 
   let thumbnail
@@ -46,23 +47,23 @@ export function* handleTakePictures() {
   editorWindow.editor.setCameraRotation(0, Math.PI / 3)
   editorWindow.editor.setCameraPosition({ x: (project.layout.rows * PARCEL_SIZE) / 2, y: 2, z: (project.layout.cols * PARCEL_SIZE) / 2 })
 
-  yield put(setProgress(0))
+  yield put(recordMediaProgress(0))
   thumbnail = yield takeEditorScreenshot(initialAngle)
-  yield put(setProgress(20))
+  yield put(recordMediaProgress(20))
   shots.north = yield takeEditorScreenshot(Rotation.NORTH)
-  yield put(setProgress(40))
+  yield put(recordMediaProgress(40))
   shots.east = yield takeEditorScreenshot(Rotation.EAST)
-  yield put(setProgress(60))
+  yield put(recordMediaProgress(60))
   shots.south = yield takeEditorScreenshot(Rotation.SOUTH)
-  yield put(setProgress(80))
+  yield put(recordMediaProgress(80))
   shots.west = yield takeEditorScreenshot(Rotation.WEST)
-  yield put(setProgress(100))
+  yield put(recordMediaProgress(100))
 
   // Cleanup
   canvas.classList.remove('recording')
   yield call(() => editorWindow.editor.resize())
 
-  return { shots, thumbnail }
+  yield put(recordMediaSuccess({ ...shots, thumbnail }))
 }
 
 function* takeEditorScreenshot(angle: number) {

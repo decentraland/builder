@@ -1,13 +1,19 @@
 import * as React from 'react'
-import { Button, Loader } from 'decentraland-ui'
+import { Button, Loader, Atlas } from 'decentraland-ui'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 import './DeployToLand.css'
 
 import { Props, State } from './DeployToLand.types'
 
 export default class DeployToLand extends React.PureComponent<Props, State> {
+  state = {
+    placement: null,
+    hasError: false
+  }
+
   handleConnect = () => {
     this.props.onConnect!()
+    this.props.onRecord()
   }
 
   renderConnectForm = () => {
@@ -36,7 +42,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderMap = () => {
-    return <>map</>
+    return <Atlas />
   }
 
   renderConfirmation = () => {

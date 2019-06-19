@@ -1,5 +1,6 @@
 .ui.small.modal.DeployModal {
   width: 640px;
+  min-height: 400px;
 }
 
 .DeployModal .description {

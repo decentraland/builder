@@ -163,7 +163,13 @@ function* handleExportProject(action: ExportProjectAction) {
   let sanitizedName = project.title.replace(/\s/g, '_')
   yield put(setExportProgress({ isLoading: true, progress: 0, total: 0 }))
   const files = yield call(() =>
-    createFiles({ project, scene, point: { x: 0, y: 0 }, onProgress: progress => store.dispatch(setExportProgress(progress)) })
+    createFiles({
+      project,
+      scene,
+      point: { x: 0, y: 0 },
+      rotation: 'east',
+      onProgress: progress => store.dispatch(setExportProgress(progress))
+    })
   )
 
   for (const filename of Object.keys(files)) {

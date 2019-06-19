@@ -5,12 +5,17 @@ import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wall
 import { Coordinate, Rotation } from 'modules/project/types'
 import { Media } from 'modules/media/types'
 
+import { DeployToLandRequestAction } from 'modules/deployment/actions'
+import { RecordMediaRequestAction } from 'modules/media/actions'
+
 export type Props = SignInProps & {
   isConnected: boolean
   isRecording: boolean
   isUploadingAssets: boolean
   media: Media | null
   onClose: ModalProps['onClose']
+  onDeploy: () => DeployToLandRequestAction
+  onRecord: () => RecordMediaRequestAction
 }
 
 export type State = {
@@ -23,6 +28,6 @@ export type State = {
 
 export type MapStateProps = Pick<Props, 'isConnecting' | 'media' | 'hasError' | 'isRecording' | 'isUploadingAssets' | 'isConnected'>
 
-export type MapDispatchProps = Pick<Props, 'onConnect'>
+export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord'>
 
-export type MapDispatch = Dispatch<ConnectWalletRequestAction>
+export type MapDispatch = Dispatch<ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction>
