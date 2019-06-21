@@ -15,7 +15,7 @@ declare type Gizmo = any
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 
 export type Editor = {
-  initEngine: (x: number, y: number) => Promise<void>
+  initEngine: (container: HTMLElement, x: number, y: number) => Promise<void>
   resize: () => void
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   on: (event: string, listener: (...args: any[]) => void) => void

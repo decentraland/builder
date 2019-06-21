@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 
 import { Project } from 'modules/project/types'
-declare enum Gizmo {
+enum Gizmo {
   MOVE = 'MOVE',
   ROTATE = 'ROTATE',
   SCALE = 'SCALE',

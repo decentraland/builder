@@ -71,7 +71,7 @@ import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTE
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
 import { setProgress } from 'modules/deployment/actions'
 
-declare enum Gizmo {
+enum Gizmo {
   MOVE = 'MOVE',
   ROTATE = 'ROTATE',
   SCALE = 'SCALE',

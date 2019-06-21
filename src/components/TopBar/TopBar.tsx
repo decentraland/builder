@@ -15,7 +15,7 @@ import './TopBar.css'
 
 const widget = IntercomWidget.getInstance()
 
-declare enum Gizmo {
+enum Gizmo {
   MOVE = 'MOVE',
   ROTATE = 'ROTATE',
   SCALE = 'SCALE',
