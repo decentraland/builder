@@ -154,7 +154,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 disabled={isLoading || (exceededMetric === '' && !areEntitiesOutOfBoundaries)}
                 trigger={
                   <span>
-                    <DeployButton onClick={this.handleOpenDeployModal} isDisabled={isLoading || exceededMetric !== ''} />
+                    <DeployButton onClick={this.handleOpenDeployModal} isDisabled={isLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries} />
                   </span>
                 }
                 on="hover"
