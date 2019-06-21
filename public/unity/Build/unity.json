@@ -1,0 +1,13 @@
+{
+"companyName": "Decentraland",
+"productName": "DecentralandUnityClient",
+"dataUrl": "unity.data.unityweb",
+"wasmCodeUrl": "unity.wasm.code.unityweb",
+"wasmFrameworkUrl": "unity.wasm.framework.unityweb",
+"TOTAL_MEMORY": 536870912,
+"graphicsAPI": ["WebGL 2.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Light",
+"backgroundColor": "#FFFFFF",
+"cacheControl": {"default": "must-revalidate"}
+}

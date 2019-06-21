@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader } from 'decentraland-ui'
+//import { Loader } from 'decentraland-ui'
 import { DropTarget } from 'react-dnd'
 
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
@@ -55,11 +55,13 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     return connectDropTarget(
       <div className="Preview-wrapper">
         <div className={`Preview ${isLoading ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer}>
-          {isLoading && (
-            <div className="overlay">
-              <Loader active size="massive" />
-            </div>
-          )}
+          {
+            //isLoading && (
+            //<div className="overlay">
+            //  <Loader active size="massive" />
+            //</div>
+            // )
+          }
         </div>
       </div>
     )
