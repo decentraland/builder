@@ -198,6 +198,8 @@
     "localstorage": "Scenes automatically save to your browser's storage"
   },
   "topbar": {
+    "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
+    "limits_exceeded": "Too many {metric}{br}Try deleting some items!",
     "publish": "Publish"
   },
   "tutorial_modal": {
