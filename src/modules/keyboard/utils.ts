@@ -16,7 +16,12 @@ import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen, getGizmo } from 'modules/editor/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { toggleModal, openModal } from 'modules/modal/actions'
-import { Gizmo } from 'modules/editor/types'
+declare enum Gizmo {
+  MOVE = 'MOVE',
+  ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
+  NONE = 'NONE'
+}
 import {
   ShortcutDefinition,
   Shortcut,

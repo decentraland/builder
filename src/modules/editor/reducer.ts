@@ -22,9 +22,13 @@ import {
   SET_EDITOR_LOADING,
   SetEditorLoadingAction
 } from './actions'
-import { Gizmo } from './types'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
-
+export enum Gizmo {
+  MOVE = 'MOVE',
+  ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
+  NONE = 'NONE'
+}
 export type EditorState = {
   gizmo: Gizmo
   preview: boolean

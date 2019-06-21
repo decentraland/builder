@@ -1,5 +1,3 @@
-export { Gizmo } from 'decentraland-ecs'
-
 export type EditorScene = {
   baseUrl: string
   display: {
@@ -25,7 +23,7 @@ export type EditorScene = {
     teleportPosition: string
   }
   tracking: {
-    origin: "builder"
+    origin: 'builder'
   }
   main: string
   _mappings: Record<string, string>

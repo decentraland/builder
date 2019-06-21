@@ -1,7 +1,12 @@
 import { Dispatch } from 'redux'
 
 import { Project } from 'modules/project/types'
-import { Gizmo } from 'modules/editor/types'
+declare enum Gizmo {
+  MOVE = 'MOVE',
+  ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
+  NONE = 'NONE'
+}
 import {
   setGizmo,
   togglePreview,

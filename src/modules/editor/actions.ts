@@ -3,7 +3,8 @@ import { action } from 'typesafe-actions'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { Gizmo } from './types'
+
+declare type Gizmo = any
 
 // Bind keyboard shortcuts
 

@@ -9,7 +9,9 @@ import {
   CloseEditorAction
 } from 'modules/editor/actions'
 import { Layout } from 'modules/project/types'
-import { Gizmo } from 'modules/editor/types'
+
+declare type Gizmo = any
+
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 
 export type Editor = {

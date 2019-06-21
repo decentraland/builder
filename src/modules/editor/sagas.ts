@@ -59,7 +59,7 @@ import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'mo
 import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
+import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -70,6 +70,13 @@ import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER, dataURLtoBlob } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
 import { setProgress } from 'modules/deployment/actions'
+
+declare enum Gizmo {
+  MOVE = 'MOVE',
+  ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
+  NONE = 'NONE'
+}
 
 const editorWindow = window as EditorWindow
 
