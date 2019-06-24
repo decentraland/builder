@@ -45,7 +45,8 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
     case RECORD_MEDIA_REQUEST: {
       return {
         ...state,
-        cid: action.payload.cid
+        cid: action.payload.cid,
+        media: null
       }
     }
     case RECORD_MEDIA_PROGRESS: {

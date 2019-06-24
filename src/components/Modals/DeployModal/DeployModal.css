@@ -58,20 +58,20 @@
   color: var(--error);
 }
 
-.DeployModal > .progress-bar-container {
+.DeployModal .progress-bar-container {
   width: 100%;
   background: var(--secondary-on-modal);
   border-radius: 16px;
 }
 
-.DeployModal > .progress-bar {
+.DeployModal .progress-bar {
   background: var(--primary);
   height: 16px;
   border-radius: 16px;
   position: relative;
 }
 
-.DeployModal > .progress-bar.active:after {
+.DeployModal .progress-bar.active:after {
   content: '';
   opacity: 0;
   position: absolute;
@@ -103,7 +103,7 @@
   font-size: 17px;
   font-weight: 100;
   text-align: center;
-  width: 300px;
+  width: 400px;
 }
 
 .DeployModal .choice-form .options {
@@ -144,4 +144,21 @@
 .DeployModal .choice-form .card .ui.button {
   width: 100%;
   font-weight: 400;
+}
+
+.DeployModal .card .thumbnail {
+  height: 150px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position-y: 45%;
+}
+
+.DeployModal .card .thumbnail.deploy-to-pool {
+  background-image: url('../../../images/deploy-to-pool.svg');
+  width: 78px;
+}
+
+.DeployModal .card .thumbnail.deploy-to-land {
+  background-image: url('../../../images/deploy-to-land.svg');
+  width: 70px;
 }

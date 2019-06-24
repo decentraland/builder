@@ -95,6 +95,8 @@ function* getContentServiceFiles(point: Coordinate, rotation: Rotation) {
     })
   )
 
+  console.log(files)
+
   let contentFiles: ContentServiceFile[] = []
 
   for (const fileName of Object.keys(files)) {

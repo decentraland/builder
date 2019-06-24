@@ -25,21 +25,123 @@
 .DeployToLand.atlas {
   margin: 0px;
   width: 640px;
-  height: 640px;
   align-items: unset;
   justify-items: unset;
 }
 
 .DeployToLand.atlas .atlas-container {
   height: 480px;
+  margin-top: 64px;
 }
 
 .DeployToLand.atlas .thumbnail {
   position: absolute;
+  z-index: 99999;
+  top: calc(64px + 16px);
+  left: 16px;
+  border: 2px solid white;
+  border-radius: 5px;
   width: 180px;
   height: 100px;
+  overflow: hidden;
+}
+
+.DeployToLand.atlas .thumbnail img {
+  width: 100%;
+  height: 100%;
+}
+
+.DeployToLand.atlas .thumbnail .rotate {
+  background: rgba(0, 0, 0, 0.4);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 4px;
+}
+
+.DeployToLand.atlas .thumbnail .rotate.clockwise {
+  left: 44px;
+}
+
+.DeployToLand.atlas .actions {
+  display: flex;
+  align-items: center;
+}
+
+.DeployToLand.atlas .actions .summary {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.32);
+  border-radius: 5px;
+  padding: 8px 0px;
+  text-align: center;
+  margin: 24px 12px 24px 24px;
+  font-weight: 100;
+  font-size: 15px;
+  flex: 1;
+}
+
+.DeployToLand.atlas .actions .ui.button.primary {
+  margin-right: 24px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.DeployToLand.progress {
+  width: 480px;
+  margin: 48px;
+}
+
+.DeployToLand.progress .progress-bar-container {
+  margin-top: 32px;
+}
+
+.DeployToLand.confirmation {
+  width: 560px;
+  margin: 48px;
+}
+
+.DeployToLand.confirmation .details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 24px 64px;
+  margin-bottom: 32px;
+  margin-top: 32px;
+}
+
+.DeployToLand.confirmation .details img {
   border: 2px solid white;
-  z-index: 99999;
-  top: 96px;
-  left: 16px;
+  border-radius: 5px;
+  width: 213px;
+  height: 120px;
+}
+
+.DeployToLand.confirmation .details .details-row {
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+}
+
+.DeployToLand.confirmation .details .detail {
+  display: flex;
+  flex-direction: column;
+  margin-right: 48px;
+}
+
+.DeployToLand.confirmation .details .detail .label {
+  text-transform: uppercase;
+  color: #736e7d;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.DeployToLand.confirmation .details .detail .value {
+  color: white;
+  font-weight: 400;
+  font-size: 17px;
 }

@@ -11,10 +11,10 @@ import { RawMedia } from './types'
 const editorWindow = window as EditorWindow
 
 const Rotation = {
-  NORTH: Math.PI * 1.5,
-  EAST: 0,
-  SOUTH: Math.PI / 2,
-  WEST: Math.PI
+  NORTH: Math.PI,
+  EAST: Math.PI * 1.5,
+  SOUTH: 0,
+  WEST: Math.PI / 2
 }
 
 export function* mediaSaga() {

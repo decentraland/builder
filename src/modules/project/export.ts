@@ -8,6 +8,7 @@ import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
 import { Project, Rotation, Coordinate } from 'modules/project/types'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
 import { CONTENT_SERVER_URL } from 'lib/api'
+import { getParcelOrientation } from './utils'
 
 export const BUILDER_FILE_VERSION = 2
 
@@ -33,7 +34,7 @@ export async function createFiles(args: {
 }) {
   const { project, scene, point, rotation, onProgress } = args
   const models = await createModels({ scene, onProgress })
-  const gameFile = createGameFile({ project, scene })
+  const gameFile = createGameFile({ project, scene, rotation })
   return {
     [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({ version: BUILDER_FILE_VERSION, project, scene }),
     [EXPORT_PATH.GAME_FILE]: gameFile,
@@ -44,10 +45,47 @@ export async function createFiles(args: {
   }
 }
 
-export function createGameFile(args: { project: Project; scene: Scene }) {
-  const { scene } = args
+export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }) {
+  const { scene, project, rotation } = args
   const takenNames = new Set<string>()
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
+  const { cols, rows } = project.layout
+  const sceneEntity = new ECS.Entity()
+
+  // 0. Rotate scene
+  const size = 16
+  let x = 0
+  let y = 0
+  let z = 0
+
+  switch (rotation) {
+    case 'north':
+      y = -90
+      x = cols * size
+      z = 0
+      break
+    case 'east':
+      y = 0
+      x = 0
+      z = 0
+      break
+    case 'south':
+      y = 90
+      x = 0
+      z = rows * size
+      break
+    case 'west':
+      y = 180
+      x = rows * size
+      z = cols * size
+      break
+  }
+  const transform = new ECS.Transform({
+    position: new ECS.Vector3(x, 0, z),
+    rotation: ECS.Quaternion.Euler(0, y, 0)
+  })
+  sceneEntity.addComponent(transform)
+  writer.addEntity('scene', sceneEntity as any)
 
   // 1. Create all components
   const components: Record<string, object> = {}
@@ -86,6 +124,7 @@ export function createGameFile(args: { project: Project; scene: Scene }) {
   for (const entity of Object.values(scene.entities)) {
     try {
       const ecsEntity = new ECS.Entity()
+      ecsEntity.setParent(sceneEntity)
 
       for (const componentId of entity.components) {
         ecsEntity.addComponent(components[componentId])
@@ -233,45 +272,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
 
 export function createDynamicFiles(args: { project: Project; scene: Scene; point: Coordinate; rotation: Rotation }) {
   const { project, scene, rotation, point } = args
-
-  // rotate scene
-  const { cols, rows } = project.layout
-  const parcels = []
-  switch (rotation) {
-    case 'north': {
-      for (let x = point.x; x < point.x + cols; x++) {
-        for (let y = point.y; y < point.y + rows; y++) {
-          const parcel = { x, y }
-          parcels.push(parcel)
-        }
-      }
-      break
-    }
-    case 'east': {
-      for (let x = point.x; x < point.x + rows; x++) {
-        for (let y = point.y; y < point.y + cols; y++) {
-          parcels.push({ x, y })
-        }
-      }
-      break
-    }
-    case 'south': {
-      for (let x = point.x; x > point.x - cols; x--) {
-        for (let y = point.y; y > point.y - rows; y--) {
-          parcels.push({ x, y })
-        }
-      }
-      break
-    }
-    case 'west': {
-      for (let x = point.x; x > point.x - rows; x--) {
-        for (let y = point.y; y > point.y - cols; y--) {
-          parcels.push({ x, y })
-        }
-      }
-      break
-    }
-  }
+  const parcels = getParcelOrientation(project, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
 
   const files = {
