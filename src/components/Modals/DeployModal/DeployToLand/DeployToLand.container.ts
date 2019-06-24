@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getError as getWalletError, isConnecting, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isUploadingAssets } from 'modules/deployment/selectors'
 import { getMedia, isRecording } from 'modules/media/selectors'
 
@@ -18,7 +18,8 @@ const mapState = (state: RootState): MapStateProps => {
     isRecording: isRecording(state),
     isUploadingAssets: isUploadingAssets(state),
     hasError: !!getWalletError(state),
-    media: getMedia(state)
+    media: getMedia(state),
+    ethAddress: getAddress(state)
   }
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button } from 'decentraland-ui'
+import { Button, Header } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import DeployToLand from './DeployToLand'
 import DeployToPool from './DeployToPool'
@@ -25,14 +25,30 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   renderChoiceForm = () => {
     return (
-      <>
-        <Button primary onClick={this.handleDeployToLand}>
-          I own land
-        </Button>
-        <Button secondary onClick={this.handleDeployToPool}>
-          I don't land
-        </Button>
-      </>
+      <div className="choice-form">
+        <Header size="large" className="modal-title">
+          Publish your scene
+        </Header>
+        <p className="modal-subtitle">You can deploy the scene to your LAND or submit it to the Scene Pool.</p>
+        <div className="options">
+          <div className="card">
+            <span className="title">Scene Pool</span>
+            <span className="description">
+              This will be an explanation on what is a Scene pool, so the users can understand what's going on.
+            </span>
+            <Button primary size="small" onClick={this.handleDeployToPool}>
+              Apply
+            </Button>
+          </div>
+          <div className="card">
+            <span className="title">Land Pool</span>
+            <span className="description">This will be an explanation on what is a LAND, so the users can understand what's going on.</span>
+            <Button primary size="small" onClick={this.handleDeployToLand}>
+              Publish to LAND
+            </Button>
+          </div>
+        </div>
+      </div>
     )
   }
 

@@ -5,3 +5,11 @@ export type Media = {
   south: string
   west: string
 }
+
+export type RawMedia = {
+  thumbnail: Blob | null
+  north: Blob | null
+  east: Blob | null
+  south: Blob | null
+  west: Blob | null
+}

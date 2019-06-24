@@ -13,6 +13,7 @@ export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 export const DAR_URL = env.get('REACT_APP_DAR_URL', '')
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 export const CONTENT_SERVER_URL = env.get('REACT_APP_CONTENT_SERVER_URL', '')
+export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
@@ -43,6 +44,10 @@ export class API extends BaseAPI {
     if (!req.ok) return []
     const resp = (await req.json()) as DARAssetsResponse
     return resp.assets || [] // TODO: remove the || [] when the DAR stops sending assets: null
+  }
+
+  fetchAuthorizedParcels(address: string) {
+    return this.request('get', `${MARKETPLACE_URL}/address/${address}/parcels/authorized`, {})
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {

@@ -1,78 +1,77 @@
 .ui.small.modal.DeployModal {
-  width: 640px;
-  min-height: 400px;
+  width: auto;
 }
 
-.DeployModal .description {
+.DeployModal > .description {
   display: block;
   margin-bottom: 50px;
 }
 
-.DeployModal .category {
+.DeployModal > .category {
   margin-bottom: 20px;
   text-transform: uppercase;
 }
 
-.DeployModal .details {
+.DeployModal > .details {
   margin-top: 30px;
 }
 
-.DeployModal .terms {
+.DeployModal > .terms {
   display: flex;
   align-items: center;
   color: var(--secondary-text);
   font-size: 15px;
 }
 
-.DeployModal .terms .ui.radio.checkbox {
+.DeployModal > .terms .ui.radio.checkbox {
   height: 27px;
 }
 
-.DeployModal .terms .ui.checkbox label {
+.DeployModal > .terms .ui.checkbox label {
   margin-right: 0px;
 }
 
-.DeployModal .actions .ui.loader {
+.DeployModal > .actions .ui.loader {
   position: relative;
   top: 24px;
 }
 
-.DeployModal .terms,
-.DeployModal .terms a {
+.DeployModal > .terms,
+.DeployModal > .terms a {
   font-size: 17px;
 }
 
-.DeployModal .preview {
+.DeployModal > .preview {
   width: 100%;
   height: 300px;
   display: block;
   object-fit: cover;
 }
 
-.DeployModal .success {
+.DeployModal > .success {
   display: flex;
   flex-direction: column;
 }
 
-.DeployModal .error {
+.DeployModal > .error {
   margin-top: 24px;
   color: var(--error);
 }
 
-.DeployModal .progress-bar-container {
+.DeployModal > .progress-bar-container {
   width: 100%;
   background: var(--secondary-on-modal);
   border-radius: 16px;
 }
 
-.DeployModal .progress-bar {
+.DeployModal > .progress-bar {
   background: var(--primary);
   height: 16px;
   border-radius: 16px;
   position: relative;
 }
 
-.DeployModal .progress-bar.active:after {
+.DeployModal > .progress-bar.active:after {
   content: '';
   opacity: 0;
   position: absolute;
@@ -84,4 +83,65 @@
   border-radius: 16px;
   -webkit-animation: progress-active 2s ease infinite;
   animation: progress-active 2s ease infinite;
+}
+
+.DeployModal .choice-form {
+  width: 560px;
+  margin: 64px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.DeployModal .ui.header.modal-title {
+  font-size: 21px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.DeployModal .modal-subtitle {
+  font-size: 17px;
+  font-weight: 100;
+  text-align: center;
+  width: 300px;
+}
+
+.DeployModal .choice-form .options {
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+}
+
+.DeployModal .choice-form .card {
+  background: rgba(var(--bluish-steel-raw), 0.32);
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.DeployModal .choice-form .card:last-child {
+  margin-left: 24px;
+}
+
+.DeployModal .choice-form .card .title {
+  font-size: 17px;
+  text-align: center;
+  display: block;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.DeployModal .choice-form .card .description {
+  font-size: 15px;
+  font-weight: 100;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.DeployModal .choice-form .card .ui.button {
+  width: 100%;
+  font-weight: 400;
 }

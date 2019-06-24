@@ -23,8 +23,7 @@ import { store } from 'modules/common/store'
 import { createFiles } from 'modules/project/export'
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
-import { recordMediaRequest, RECORD_MEDIA_SUCCESS } from 'modules/media/actions'
-import { getMedia } from 'modules/media/selectors'
+import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -47,9 +46,12 @@ export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
 
   try {
     yield put(recordMediaRequest(null))
-    yield take(RECORD_MEDIA_SUCCESS)
+    const successAction: RecordMediaSuccessAction = yield take(RECORD_MEDIA_SUCCESS)
+    const { north, east, south, west, thumbnail } = successAction.payload.media
 
-    const { north, east, south, west, thumbnail } = yield select(getMedia)
+    if (!north || !east || !south || !west || !thumbnail) {
+      throw new Error('Failed to capture scene preview')
+    }
 
     yield call(() => api.deployToPool(project, scene, user))
     yield call(() => api.publishScenePreview(rawProject.id, thumbnail, { north, east, south, west }, onUploadRecordingProgress))

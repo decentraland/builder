@@ -6,7 +6,7 @@ import { Project } from 'modules/project/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { RECORD_MEDIA_REQUEST, recordMediaProgress, recordMediaSuccess } from './actions'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
-import { Media } from './types'
+import { RawMedia } from './types'
 
 const editorWindow = window as EditorWindow
 
@@ -27,11 +27,11 @@ export function* handleTakePictures() {
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
   const initialAngle = Math.PI / 1.5
-  const shots: Omit<Media, 'thumbnail'> = {
-    north: '',
-    east: '',
-    south: '',
-    west: ''
+  const shots: Omit<RawMedia, 'thumbnail'> = {
+    north: null,
+    east: null,
+    south: null,
+    west: null
   }
 
   let thumbnail

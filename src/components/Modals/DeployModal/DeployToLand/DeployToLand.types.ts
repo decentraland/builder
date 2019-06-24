@@ -12,6 +12,7 @@ export type Props = SignInProps & {
   isConnected: boolean
   isRecording: boolean
   isUploadingAssets: boolean
+  ethAddress: string | undefined
   media: Media | null
   onClose: ModalProps['onClose']
   onDeploy: () => DeployToLandRequestAction
@@ -23,10 +24,14 @@ export type State = {
     point: Coordinate
     rotation: Rotation
   } | null
+  parcels: Record<string, { x: number; y: number }>
   hasError: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isConnecting' | 'media' | 'hasError' | 'isRecording' | 'isUploadingAssets' | 'isConnected'>
+export type MapStateProps = Pick<
+  Props,
+  'isConnecting' | 'media' | 'hasError' | 'isRecording' | 'isUploadingAssets' | 'isConnected' | 'ethAddress'
+>
 
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord'>
 

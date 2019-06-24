@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { Media } from './types'
+import { RawMedia } from './types'
 
 // Record media
 
@@ -8,7 +8,7 @@ export const recordMediaRequest = (cid: string | null) => action(RECORD_MEDIA_RE
 export type RecordMediaRequestAction = ReturnType<typeof recordMediaRequest>
 
 export const RECORD_MEDIA_SUCCESS = '[Success] Record media'
-export const recordMediaSuccess = (media: Media) => action(RECORD_MEDIA_SUCCESS, { media })
+export const recordMediaSuccess = (media: RawMedia) => action(RECORD_MEDIA_SUCCESS, { media })
 export type RecordMediaSuccessAction = ReturnType<typeof recordMediaSuccess>
 
 export const RECORD_MEDIA_PROGRESS = '[Progress] Record media'
