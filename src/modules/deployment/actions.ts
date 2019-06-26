@@ -37,8 +37,8 @@ export const SET_PROGRESS = 'Set progress'
 export const setProgress = (stage: ProgressStage, progress: number) => action(SET_PROGRESS, { stage, progress })
 export type SetProgressAction = ReturnType<typeof setProgress>
 
-// Generate media
+// Mark Dirty
 
-export const GENERATE_MEDIA = 'Generate media'
-export const generateMedia = () => action(GENERATE_MEDIA, {})
-export type GenerateMediaAction = ReturnType<typeof generateMedia>
+export const MARK_DIRTY = 'Mark dirty'
+export const markDirty = (projectId: string) => action(MARK_DIRTY, { projectId })
+export type MarkDirtyAction = ReturnType<typeof markDirty>

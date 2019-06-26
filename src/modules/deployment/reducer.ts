@@ -10,11 +10,12 @@ import {
   SetProgressAction,
   SET_PROGRESS,
   DEPLOY_TO_LAND_SUCCESS,
-  DeployToLandSuccessAction
+  DeployToLandSuccessAction,
+  MARK_DIRTY,
+  MarkDirtyAction
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
-import { RecordMediaProgressAction, RecordMediaSuccessAction } from 'modules/media/actions'
 
 export type DeploymentState = {
   data: DataByKey<Deployment>
@@ -41,9 +42,8 @@ export type DeploymentReducerAction =
   | DeployToPoolSuccessAction
   | DeployToPoolFailureAction
   | SetProgressAction
-  | RecordMediaProgressAction
-  | RecordMediaSuccessAction
   | DeployToLandSuccessAction
+  | MarkDirtyAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -86,7 +86,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           [projectId]: {
             ...state.data[projectId],
             remoteCID: cid,
-            placement: { ...placement }
+            placement: { ...placement },
+            isDirty: false
           }
         },
         progress: {
@@ -104,6 +105,19 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           ...state.progress,
           stage,
           value: progress
+        }
+      }
+    }
+    case MARK_DIRTY: {
+      const { projectId } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [projectId]: {
+            ...state.data[projectId],
+            isDirty: true
+          }
         }
       }
     }

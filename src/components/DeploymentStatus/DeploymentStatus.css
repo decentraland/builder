@@ -13,3 +13,7 @@
 .DeploymentStatus.published {
   background: #3fff47;
 }
+
+.DeploymentStatus.dirty {
+  background: orange;
+}

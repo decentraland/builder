@@ -22,7 +22,10 @@ export function* mediaSaga() {
 }
 
 export function* handleTakePictures() {
-  const project: Project = yield select(getCurrentProject)
+  const project: Project | null = yield select(getCurrentProject)
+
+  if (!project) return
+
   const side = Math.max(project.layout.cols, project.layout.rows)
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())

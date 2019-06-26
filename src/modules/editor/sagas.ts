@@ -221,20 +221,25 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
-  const project: Project = yield select(getCurrentProject)
-  yield createNewScene(project)
+  const project: Project | null = yield select(getCurrentProject)
 
-  // Spawns the assets
-  yield renderScene()
+  if (project) {
+    yield createNewScene(project)
 
-  // Enable snap to grid
-  yield handleToggleSnapToGrid(toggleSnapToGrid(true))
+    // Spawns the assets
+    yield renderScene()
 
-  // Apply scene fixes
-  yield put(fixCurrentScene())
+    // Enable snap to grid
+    yield handleToggleSnapToGrid(toggleSnapToGrid(true))
 
-  // Select gizmo
-  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+    // Apply scene fixes
+    yield put(fixCurrentScene())
+
+    // Select gizmo
+    yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+  } else {
+    console.error('Unable to Open Editor: Invalid project')
+  }
 }
 
 function* handleCloseEditor() {
@@ -260,7 +265,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   const { editor } = editorWindow
   const { isEnabled } = action.payload
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
-  const project: Project = yield select(getCurrentProject)
+  const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
   const x = (project.layout.rows * PARCEL_SIZE) / 2
@@ -316,7 +321,7 @@ function* changeEditorState(isReady: boolean) {
 }
 
 function* handleResetCamera() {
-  const project: Project = yield select(getCurrentProject)
+  const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
   const x = (project.layout.rows * PARCEL_SIZE) / 2

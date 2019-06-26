@@ -41,7 +41,7 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
-  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds']],
+  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds'], 'deployment'],
   actions: [
     CREATE_PROJECT,
     CREATE_SCENE,
