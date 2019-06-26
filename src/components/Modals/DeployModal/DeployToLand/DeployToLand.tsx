@@ -1,145 +1,28 @@
 import * as React from 'react'
-import { api } from 'lib/api'
-import { Button, Loader, Atlas, Header, Layer } from 'decentraland-ui'
+import { Button, Loader, Header } from 'decentraland-ui'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Coordinate, Rotation } from 'modules/project/types'
-import { getParcelOrientation } from 'modules/project/utils'
+import LandAtlas from './LandAtlas'
 import { Props, State } from './DeployToLand.types'
 import './DeployToLand.css'
-
-const ROTATION_ORDER: Rotation[] = ['north', 'east', 'south', 'west']
+import { DeploymentStatus } from 'modules/deployment/types'
 
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
     placement: null,
     hasError: false,
-    parcels: {},
-    hover: { x: 0, y: 0 },
-    rotation: 'north',
     needsConfirmation: false
   }
 
-  hover: Coordinate = { x: 0, y: 0 }
-
-  mounted: boolean = true
-
   componentDidMount() {
-    this.mounted = true
     this.props.onRecord()
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (Object.keys(this.state.parcels).length === 0 && nextProps.ethAddress) {
-      this.fetchAuthorizedParcels(nextProps.ethAddress)
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false
-  }
-
-  fetchAuthorizedParcels = async (ethAddress: string) => {
-    const res = await api.fetchAuthorizedParcels(ethAddress)
-    if (this.mounted) {
-      this.setState({
-        parcels: res.parcels.reduce(
-          (parcels: any, parcel: any) => ({
-            ...parcels,
-            [parcel.id]: {
-              x: parcel.x,
-              y: parcel.y
-            }
-          }),
-          {}
-        )
-      })
-    }
-  }
-
-  isValid = () => {
-    const { hover } = this
-    const { project } = this.props
-    const { rotation, parcels } = this.state
-    const projectParcels = getParcelOrientation(project!, hover, rotation)
-
-    if (!hover) return false
-
-    return projectParcels.every(({ x, y }) => !!parcels[`${x},${y}`])
-  }
-
-  isHighlighted = (x: number, y: number) => {
-    const { hover } = this
-    const { project } = this.props
-    const { rotation } = this.state
-    const projectParcels = getParcelOrientation(project!, hover, rotation)
-
-    if (!hover) return false
-    return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
-  }
-
-  isPlaced = (x: number, y: number) => {
-    const { project } = this.props
-    const { placement } = this.state
-
-    if (!placement) return null
-
-    const projectParcels = getParcelOrientation(project!, placement.point, placement.rotation)
-    return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
-  }
-
-  authorizedLayer: Layer = (x: number, y: number) => {
-    const { parcels } = this.state
-
-    if (parcels[x + ',' + y]) {
-      return { color: this.isPlaced(x, y) ? '#ff4053' : '#00d3ff' }
-    }
-    return null
-  }
-
-  hoverStrokeLayer: Layer = (x: number, y: number) => {
-    if (this.isHighlighted(x, y)) {
-      return {
-        color: this.isValid() ? '#44ff00' : '#ff0044',
-        scale: 1.5
-      }
-    }
-    return null
-  }
-
-  hoverFillLayer: Layer = (x: number, y: number) => {
-    if (this.isHighlighted(x, y)) {
-      return {
-        color: this.isValid() ? '#99ff90' : '#ff9990',
-        scale: 1.2
-      }
-    }
-    return null
-  }
-
-  handleHover = (x: number, y: number) => {
-    this.hover.x = x
-    this.hover.y = y
-  }
-
-  handlePlacement = (x: number, y: number) => {
-    if (!this.isValid()) return
-
-    this.setState({
-      placement: { point: { x, y }, rotation: this.state.rotation }
-    })
-  }
-
-  handleSelectPlacement = () => {
-    this.setState({ needsConfirmation: true })
   }
 
   handleDeploy = () => {
     const { placement } = this.state
 
     if (placement) {
-      const { point, rotation } = placement
       this.setState({ needsConfirmation: true })
-      this.props.onDeploy(this.props.ethAddress!, point, rotation)
+      this.props.onDeploy(this.props.ethAddress!, placement)
     }
   }
 
@@ -147,16 +30,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     this.props.onConnect!()
   }
 
-  handleRotateAntiClockwise = () => {
-    const { rotation } = this.state
-    const newRotation = (((ROTATION_ORDER.indexOf(rotation) - 1) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
-    this.setState({ rotation: ROTATION_ORDER[newRotation] })
-  }
-
-  handleRotateClockwise = () => {
-    const { rotation } = this.state
-    const newRotation = (((ROTATION_ORDER.indexOf(rotation) + 1) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
-    this.setState({ rotation: ROTATION_ORDER[newRotation] })
+  handleConfirmPlacement = (placement: State['placement']) => {
+    this.setState({
+      placement,
+      needsConfirmation: true
+    })
   }
 
   renderConnectForm = () => {
@@ -186,57 +64,30 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderProgress = () => {
-    const { mediaProgress } = this.props
+    const { mediaProgress, deploymentProgress, isRecording, isCreatingFiles, isUploadingAssets } = this.props
 
     let classes = 'progress-bar'
 
-    if (mediaProgress === 100) {
+    const progress = isRecording ? mediaProgress : deploymentProgress.value
+
+    if (progress === 100) {
       classes += ' active'
     }
 
     return (
       <div className="DeployToLand progress">
         <Header size="large" className="modal-title">
-          Capturing Preview
+          {isUploadingAssets && 'Uploading assets'}
+          {isRecording && 'Capturing Preview'}
+          {isCreatingFiles && 'Creating Asset files'}
         </Header>
-        <p className="modal-subtitle">Please wait while a preview of your project is captured.</p>
-
+        <p className="modal-subtitle">
+          {isUploadingAssets && 'Please wait while your scene is uploaded.'}
+          {isCreatingFiles && 'Please wait while create the files that will be uploaded.'}
+          {isRecording && 'Please wait while a preview of your scene is captured.'}
+        </p>
         <div className="progress-bar-container">
-          <div className={classes} style={{ width: `${mediaProgress}%` }} />
-        </div>
-      </div>
-    )
-  }
-
-  renderMap = () => {
-    const { media, project } = this.props
-    const { placement, rotation } = this.state
-
-    const hasPlacement = !!placement && !!project && !!project.parcels
-
-    return (
-      <div className="DeployToLand atlas">
-        <div className="thumbnail">
-          <img src={media ? media[rotation] : ''} />
-          <div className="rotate anticlockwise" onClick={this.handleRotateAntiClockwise} />
-          <div className="rotate clockwise" onClick={this.handleRotateClockwise} />
-        </div>
-        <div className="atlas-container">
-          <Atlas
-            layers={[this.authorizedLayer, this.hoverStrokeLayer, this.hoverFillLayer]}
-            onHover={this.handleHover}
-            onClick={this.handlePlacement}
-          />
-        </div>
-        <div className="actions">
-          <div className="summary">
-            {hasPlacement
-              ? `Placing a ${project!.parcels!.length} LAND scene at ${placement!.point.x},${placement!.point.y}`
-              : 'Choose a parcel where to place your scene'}
-          </div>
-          <Button primary size="small" disabled={!hasPlacement} onClick={this.handleSelectPlacement}>
-            Continue
-          </Button>
+          <div className={classes} style={{ width: `${progress}%` }} />
         </div>
       </div>
     )
@@ -281,17 +132,42 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     )
   }
 
+  renderMap = () => {
+    const { ethAddress, media, project } = this.props
+    return <LandAtlas ethAddress={ethAddress} media={media} project={project} onConfirmPlacement={this.handleConfirmPlacement} />
+  }
+
+  renderSuccess = () => {
+    return (
+      <div className="DeployToLand progress">
+        <Header size="large" className="modal-title">
+          Thank you!
+        </Header>
+        <p className="modal-subtitle">Your work is now available on the Metaverse</p>
+        <Button size="small" primary>
+          Keep working
+        </Button>
+        <Button size="small" secondary>
+          Back to Dashboard
+        </Button>
+      </div>
+    )
+  }
+
   render() {
-    const { isConnected, isRecording, isUploadingAssets, media } = this.props
+    const { isConnected, isRecording, isUploadingAssets, isCreatingFiles, media, deploymentStatus } = this.props
     const { needsConfirmation } = this.state
+    const isLoading = isRecording || isUploadingAssets || isCreatingFiles
 
     if (!isConnected) return this.renderConnectForm()
 
-    if (isConnected && (isRecording || isUploadingAssets)) return this.renderProgress()
+    if (isConnected && isLoading) return this.renderProgress()
 
     if (isConnected && media && !needsConfirmation) return this.renderMap()
 
-    if (isConnected && media && !isUploadingAssets && needsConfirmation) return this.renderConfirmation()
+    if (!isLoading && needsConfirmation && deploymentStatus === DeploymentStatus.PUBLISHED) return this.renderSuccess()
+
+    if (isConnected && media && !isLoading && needsConfirmation) return this.renderConfirmation()
 
     return <Loader size="big" />
   }

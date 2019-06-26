@@ -1,0 +1,103 @@
+.LandAtlas {
+  margin: 0px;
+  width: 640px;
+  align-items: unset;
+  justify-items: unset;
+}
+
+.LandAtlas .atlas-container {
+  height: 480px;
+  margin-top: 64px;
+}
+
+.LandAtlas .tool-container {
+  position: absolute;
+  z-index: 9999;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LandAtlas .tool-container .tool,
+.LandAtlas .tool-container .tool-group {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 6px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  cursor: pointer;
+}
+
+.LandAtlas .tool-container .tool-group .tool {
+  background: transparent;
+  padding: unset;
+  border-radius: unset;
+}
+
+.LandAtlas .tool-container .tool.locate-land {
+  margin-right: 8px;
+}
+
+.LandAtlas .tool-container .tool-group:last-child .tool:first-child {
+  margin-right: 20px;
+}
+
+.LandAtlas .thumbnail {
+  position: absolute;
+  z-index: 99999;
+  top: calc(64px + 16px);
+  left: 16px;
+  border: 2px solid white;
+  border-radius: 5px;
+  width: 180px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.LandAtlas .thumbnail img {
+  width: 100%;
+  height: 100%;
+}
+
+.LandAtlas .thumbnail .rotate {
+  background: rgba(0, 0, 0, 0.4);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LandAtlas .thumbnail .rotate.clockwise {
+  left: 44px;
+}
+
+.LandAtlas .actions {
+  display: flex;
+  align-items: center;
+}
+
+.LandAtlas .actions .summary {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.32);
+  border-radius: 5px;
+  padding: 8px 0px;
+  text-align: center;
+  margin: 24px 12px 24px 24px;
+  font-weight: 100;
+  font-size: 15px;
+  flex: 1;
+}
+
+.LandAtlas .actions .ui.button.primary {
+  margin-right: 24px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}

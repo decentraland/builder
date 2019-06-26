@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { Project } from 'modules/project/types'
 import { getState as getEditor } from 'modules/editor/selectors'
-import { exportProject } from 'modules/project/actions'
+import { exportProjectRequest } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
 import { MapDispatchProps } from './ExportModal.types'
 import ExportModal from './ExportModal'
@@ -18,7 +18,7 @@ const mapState = (state: RootState) => {
 }
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onExport: (project: Project) => dispatch(exportProject(project))
+  onExport: (project: Project) => dispatch(exportProjectRequest(project))
 })
 
 export default connect(

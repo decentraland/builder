@@ -1,4 +1,5 @@
-import { Project, Layout, Coordinate, Rotation } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
+import { Coordinate, Rotation } from 'modules/deployment/types'
 import { getDimensions } from 'lib/layout'
 
 export const MIN_TITLE_LENGTH = 3 // Size in chars

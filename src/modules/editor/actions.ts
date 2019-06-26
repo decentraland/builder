@@ -179,7 +179,6 @@ export type SetEntitiesOutOfBoundariesAction = ReturnType<typeof setEntitiesOutO
 
 export const SET_EXPORT_PROGRESS = 'Set export progress'
 
-export const setExportProgress = (args: { isLoading?: boolean; progress?: number; total?: number } = {}) =>
-  action(SET_EXPORT_PROGRESS, args)
+export const setExportProgress = (args: { loaded: number; total: number }) => action(SET_EXPORT_PROGRESS, args)
 
 export type SetExportProgressAction = ReturnType<typeof setExportProgress>

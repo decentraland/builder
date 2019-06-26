@@ -5,7 +5,8 @@ import Writer from 'dcl-scene-writer'
 import packageJson from 'decentraland/dist/samples/ecs/package.json'
 import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
-import { Project, Rotation, Coordinate } from 'modules/project/types'
+import { Rotation, Coordinate } from 'modules/deployment/types'
+import { Project } from 'modules/project/types'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
 import { CONTENT_SERVER_URL } from 'lib/api'
 import { getParcelOrientation } from './utils'
@@ -30,7 +31,7 @@ export async function createFiles(args: {
   scene: Scene
   point: Coordinate
   rotation: Rotation
-  onProgress: (args: { progress: number; total: number }) => void
+  onProgress: (args: { loaded: number; total: number }) => void
 }) {
   const { project, scene, point, rotation, onProgress } = args
   const models = await createModels({ scene, onProgress })
@@ -206,7 +207,7 @@ export function createStaticFiles() {
   }
 }
 
-export async function createModels(args: { scene: Scene; onProgress: (args: { progress: number; total: number }) => void }) {
+export async function createModels(args: { scene: Scene; onProgress: (args: { loaded: number; total: number }) => void }) {
   const { scene, onProgress } = args
   const mappings: Record<string, string> = {}
 
@@ -236,13 +237,14 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
   // Download models
   const promises = []
   total += Object.keys(mappings).length
-  onProgress({ progress, total })
+  onProgress({ loaded: progress, total })
+
   for (const path of Object.keys(mappings)) {
     const promise = fetch(mappings[path])
       .then(resp => resp.blob())
       .then(blob => {
         progress++
-        onProgress({ progress, total })
+        onProgress({ loaded: progress, total })
         return { path, blob }
       })
     promises.push(promise)
@@ -260,7 +262,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { pr
     const resp = await fetch('/' + EXPORT_PATH.NFT_BASIC_FRAME_FILE)
     const blob = await resp.blob()
     progress++
-    onProgress({ progress, total })
+    onProgress({ loaded: progress, total })
     models = {
       ...models,
       [EXPORT_PATH.NFT_BASIC_FRAME_FILE]: blob

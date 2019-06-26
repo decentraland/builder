@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { Coordinate, Rotation } from 'modules/project/types'
+import { Placement } from 'modules/deployment/types'
 import { ProgressStage } from './types'
 
 // Deploy to LAND pool
@@ -22,9 +22,9 @@ export const DEPLOY_TO_LAND_REQUEST = '[Request] Deploy to LAND'
 export const DEPLOY_TO_LAND_SUCCESS = '[Success] Deploy to LAND'
 export const DEPLOY_TO_LAND_FAILURE = '[Failure] Deploy to LAND'
 
-export const deployToLandRequest = (ethAddress: string, position: Coordinate, rotation: Rotation) =>
-  action(DEPLOY_TO_LAND_REQUEST, { ethAddress, position, rotation })
-export const deployToLandSuccess = (thumbnail: string) => action(DEPLOY_TO_LAND_SUCCESS, { thumbnail })
+export const deployToLandRequest = (ethAddress: string, placement: Placement) => action(DEPLOY_TO_LAND_REQUEST, { ethAddress, placement })
+export const deployToLandSuccess = (projectId: string, cid: string, placement: Placement) =>
+  action(DEPLOY_TO_LAND_SUCCESS, { projectId, cid, placement })
 export const deployToLandFailure = (error: string) => action(DEPLOY_TO_LAND_FAILURE, { error })
 
 export type DeployToLandRequestAction = ReturnType<typeof deployToLandRequest>

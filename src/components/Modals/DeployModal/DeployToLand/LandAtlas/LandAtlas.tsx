@@ -1,0 +1,233 @@
+import * as React from 'react'
+import { api } from 'lib/api'
+import { Layer, Button, Atlas } from 'decentraland-ui'
+
+import Icon from 'components/Icon'
+import { Rotation, Coordinate } from 'modules/deployment/types'
+import { getParcelOrientation } from 'modules/project/utils'
+
+import { Props, State } from './LandAtlas.types'
+import './LandAtlas.css'
+import { IconName } from 'components/Icon/Icon.types'
+
+const ROTATION_ORDER: Rotation[] = ['north', 'east', 'south', 'west']
+const CLOCKWISE_ROTATION = 1
+const ANTICLOCKWISE_ROTATION = -1
+
+export default class LandAtlas extends React.PureComponent<Props, State> {
+  state: State = {
+    placement: null,
+    hover: { x: 0, y: 0 },
+    parcels: {},
+    rotation: 'north',
+    zoom: 1,
+    landTarget: '0,0'
+  }
+
+  mounted: boolean = true
+
+  componentDidMount() {
+    this.mounted = true
+    if (Object.keys(this.state.parcels).length === 0 && this.props.ethAddress) {
+      this.fetchAuthorizedParcels(this.props.ethAddress)
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (Object.keys(this.state.parcels).length === 0 && nextProps.ethAddress) {
+      this.fetchAuthorizedParcels(nextProps.ethAddress)
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
+  }
+
+  fetchAuthorizedParcels = async (ethAddress: string) => {
+    const res = await api.fetchAuthorizedParcels(ethAddress)
+    if (this.mounted) {
+      const parcels = res.parcels.reduce(
+        (parcels: any, parcel: any) => ({
+          ...parcels,
+          [parcel.id]: {
+            x: parcel.x,
+            y: parcel.y
+          }
+        }),
+        {}
+      )
+      this.setState({
+        parcels,
+        landTarget: res.parcels[0].id
+      })
+    }
+  }
+
+  isValid = () => {
+    const { project } = this.props
+    const { rotation, parcels, hover } = this.state
+    const projectParcels = getParcelOrientation(project!, hover, rotation)
+
+    if (!hover) return false
+
+    return projectParcels.every(({ x, y }) => !!parcels[`${x},${y}`])
+  }
+
+  isHighlighted = (x: number, y: number) => {
+    const { project } = this.props
+    const { rotation, hover } = this.state
+    const projectParcels = getParcelOrientation(project!, hover, rotation)
+
+    if (!hover) return false
+    return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
+  }
+
+  isPlaced = (x: number, y: number) => {
+    const { project } = this.props
+    const { placement } = this.state
+
+    if (!placement) return null
+
+    const projectParcels = getParcelOrientation(project!, placement.point, placement.rotation)
+    return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
+  }
+
+  authorizedLayer: Layer = (x: number, y: number) => {
+    const { parcels } = this.state
+
+    if (parcels[x + ',' + y]) {
+      return { color: this.isPlaced(x, y) ? '#ff4053' : '#00d3ff' }
+    }
+    return null
+  }
+
+  hoverStrokeLayer: Layer = (x: number, y: number) => {
+    if (this.isHighlighted(x, y)) {
+      return {
+        color: this.isValid() ? '#44ff00' : '#ff0044',
+        scale: 1.5
+      }
+    }
+    return null
+  }
+
+  hoverFillLayer: Layer = (x: number, y: number) => {
+    if (this.isHighlighted(x, y)) {
+      return {
+        color: this.isValid() ? '#99ff90' : '#ff9990',
+        scale: 1.2
+      }
+    }
+    return null
+  }
+
+  handleHover = (x: number, y: number) => {
+    this.setState({
+      hover: { x, y }
+    })
+  }
+
+  handlePlacement = (x: number, y: number) => {
+    if (!this.isValid()) return
+
+    this.setState({
+      placement: { point: { x, y }, rotation: this.state.rotation }
+    })
+  }
+
+  handleSelectPlacement = () => {
+    const { placement } = this.state
+    const { onConfirmPlacement } = this.props
+    if (placement) {
+      onConfirmPlacement(placement)
+    }
+  }
+
+  handleRotate = (direction: 1 | -1) => () => {
+    const { rotation } = this.state
+    const newRotation =
+      (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
+    this.setState({ rotation: ROTATION_ORDER[newRotation] })
+  }
+
+  handleLocateLand = () => {
+    const { landTarget, parcels } = this.state
+    const parcelKeys = Object.keys(parcels)
+    const index = landTarget ? parcelKeys.indexOf(landTarget) : 0
+    const nextIndex = (((index + 1) % parcelKeys.length) + parcelKeys.length) % parcelKeys.length
+    this.setState({
+      landTarget: parcelKeys[nextIndex]
+    })
+  }
+
+  handleZoomIn = () => {
+    this.setState({
+      zoom: this.state.zoom + 0.5
+    })
+  }
+
+  handleZoomOut = () => {
+    this.setState({
+      zoom: this.state.zoom - 0.5
+    })
+  }
+
+  renderTool = (icon: IconName, clickHandler: () => void) => {
+    return (
+      <div className={`tool ${icon}`} onClick={clickHandler}>
+        <Icon name={icon} />
+      </div>
+    )
+  }
+
+  render() {
+    const { media, project } = this.props
+    const { placement, rotation, zoom, landTarget, parcels } = this.state
+
+    const hasPlacement = !!placement && !!project && !!project.parcels
+
+    const target: Coordinate = landTarget && Object.keys(parcels).length ? parcels[landTarget] : { x: 0, y: 0 }
+
+    return (
+      <div className="LandAtlas">
+        <div className="thumbnail">
+          <img src={media ? media[rotation] : ''} />
+          <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
+            <Icon name="rotate-left" />
+          </div>
+          <div className="rotate clockwise" onClick={this.handleRotate(CLOCKWISE_ROTATION)}>
+            <Icon name="rotate-right" />
+          </div>
+        </div>
+        <div className="atlas-container">
+          <div className="tool-container">
+            {this.renderTool('locate-land', this.handleLocateLand)}
+            <div className="tool-group">
+              {this.renderTool('atlas-zoom-out', this.handleZoomOut)}
+              {this.renderTool('atlas-zoom-in', this.handleZoomIn)}
+            </div>
+          </div>
+
+          <Atlas
+            layers={[this.authorizedLayer, this.hoverStrokeLayer, this.hoverFillLayer]}
+            onHover={this.handleHover}
+            onClick={this.handlePlacement}
+            zoom={zoom}
+            x={target.x}
+            y={target.y}
+          />
+        </div>
+        <div className="actions">
+          <div className="summary">
+            {hasPlacement
+              ? `Placing a ${project!.parcels!.length} LAND scene at ${placement!.point.x},${placement!.point.y}`
+              : 'Choose a parcel where to place your scene'}
+          </div>
+          <Button primary size="small" disabled={!hasPlacement} onClick={this.handleSelectPlacement}>
+            Continue
+          </Button>
+        </div>
+      </div>
+    )
+  }
+}

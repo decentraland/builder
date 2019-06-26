@@ -31,6 +31,11 @@ export type IconName =
   | 'arrow-key-right'
   | 'import'
   | 'export'
+  | 'atlas-zoom-in'
+  | 'atlas-zoom-out'
+  | 'locate-land'
+  | 'rotate-left'
+  | 'rotate-right'
 
 export type DefaultProps = {
   isActive: boolean

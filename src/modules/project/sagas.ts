@@ -14,10 +14,11 @@ import {
   EditProjectRequestAction,
   editProjectSuccess,
   editProjectFailure,
-  EXPORT_PROJECT,
-  ExportProjectAction,
+  EXPORT_PROJECT_REQUEST,
+  ExportProjectRequestAction,
   IMPORT_PROJECT,
-  ImportProjectAction
+  ImportProjectAction,
+  exportProjectSuccess
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
 import { Project, Layout } from 'modules/project/types'
@@ -53,7 +54,7 @@ export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
-  yield takeLatest(EXPORT_PROJECT, handleExportProject)
+  yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
 }
 
@@ -155,13 +156,13 @@ function* handleEditProject(action: EditProjectRequestAction) {
   }
 }
 
-function* handleExportProject(action: ExportProjectAction) {
+function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
   const scene: Scene = yield select(getSceneById(project.sceneId))
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
-  yield put(setExportProgress({ isLoading: true, progress: 0, total: 0 }))
+  yield put(setExportProgress({ loaded: 0, total: 0 }))
   const files = yield call(() =>
     createFiles({
       project,
@@ -182,7 +183,7 @@ function* handleExportProject(action: ExportProjectAction) {
   })
 
   yield put(closeModal('ExportModal'))
-  yield put(setExportProgress({ isLoading: false, progress: 0, total: 0 }))
+  yield put(exportProjectSuccess())
 }
 
 function* handleImportProject(action: ImportProjectAction) {

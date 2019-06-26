@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Header, Grid, Icon } from 'decentraland-ui'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
+import DeploymentStatus from 'components/DeploymentStatus'
 import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
@@ -77,6 +78,7 @@ export default class TopBar extends React.PureComponent<Props> {
             </Link>
             {currentProject ? (
               <>
+                <DeploymentStatus />
                 <div className="project-title" onClick={this.handleTitleClick} title={currentProject.title}>
                   {currentProject.title}
                 </div>

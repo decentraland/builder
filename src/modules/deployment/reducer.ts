@@ -8,7 +8,9 @@ import {
   DeployToPoolSuccessAction,
   DeployToPoolFailureAction,
   SetProgressAction,
-  SET_PROGRESS
+  SET_PROGRESS,
+  DEPLOY_TO_LAND_SUCCESS,
+  DeployToLandSuccessAction
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
@@ -41,6 +43,7 @@ export type DeploymentReducerAction =
   | SetProgressAction
   | RecordMediaProgressAction
   | RecordMediaSuccessAction
+  | DeployToLandSuccessAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -56,6 +59,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         data: {
           ...state.data
         },
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        },
         loading: loadingReducer(state.loading, action),
         error: null
       }
@@ -70,12 +77,33 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         error: action.payload.error
       }
     }
+    case DEPLOY_TO_LAND_SUCCESS: {
+      const { projectId, cid, placement } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [projectId]: {
+            ...state.data[projectId],
+            remoteCID: cid,
+            placement: { ...placement }
+          }
+        },
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        }
+      }
+    }
     case SET_PROGRESS: {
+      const { stage, progress } = action.payload
+
       return {
         ...state,
         progress: {
           ...state.progress,
-          value: action.payload.progress
+          stage,
+          value: progress
         }
       }
     }

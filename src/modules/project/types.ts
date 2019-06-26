@@ -17,9 +17,3 @@ export type Layout = { rows: number; cols: number }
 export type ProjectLayout = Layout & { hasError: boolean }
 
 export type SaveFile = { version: number; project: Project & { thumbnail?: string }; scene: Scene }
-
-export type Coordinate = { x: number; y: number }
-
-export type Rotation = 'north' | 'east' | 'south' | 'west'
-
-export type Placement = { point: Coordinate; rotation: Rotation }

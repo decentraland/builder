@@ -39,7 +39,8 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
           south: window.URL.createObjectURL(south),
           west: window.URL.createObjectURL(west),
           thumbnail: window.URL.createObjectURL(thumbnail)
-        }
+        },
+        progress: 0
       }
     }
     case RECORD_MEDIA_REQUEST: {

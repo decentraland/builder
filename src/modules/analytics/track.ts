@@ -12,7 +12,13 @@ import {
 } from 'modules/editor/actions'
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
-import { CREATE_PROJECT, CreateProjectAction, ExportProjectAction, EXPORT_PROJECT, IMPORT_PROJECT } from 'modules/project/actions'
+import {
+  CREATE_PROJECT,
+  CreateProjectAction,
+  ExportProjectRequestAction,
+  EXPORT_PROJECT_REQUEST,
+  IMPORT_PROJECT
+} from 'modules/project/actions'
 
 function addPayload(actionType: string, getPayload = (action: any) => action.payload) {
   add(actionType, actionType, getPayload)
@@ -31,7 +37,7 @@ export function trimAsset(action: AddItemAction | DropItemAction | SetGroundActi
   }
 }
 
-function trimProject(action: CreateProjectAction | ExportProjectAction) {
+function trimProject(action: CreateProjectAction | ExportProjectRequestAction) {
   if (!action.payload.project) {
     return action.payload
   }
@@ -66,5 +72,5 @@ addPayload(ZOOM_OUT)
 addPayload(RESET_CAMERA)
 
 // import/export
-addPayload(EXPORT_PROJECT, trimProject)
+addPayload(EXPORT_PROJECT_REQUEST, trimProject)
 addPayload(IMPORT_PROJECT, () => ({}))

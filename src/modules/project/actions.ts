@@ -65,11 +65,14 @@ export type DuplicateProjectAction = ReturnType<typeof duplicateProject>
 
 // Export project
 
-export const EXPORT_PROJECT = 'Export project'
+export const EXPORT_PROJECT_REQUEST = '[Request] Export project'
+export const EXPORT_PROJECT_SUCCESS = '[Success] Export project'
 
-export const exportProject = (project: Project) => action(EXPORT_PROJECT, { project })
+export const exportProjectRequest = (project: Project) => action(EXPORT_PROJECT_REQUEST, { project })
+export const exportProjectSuccess = () => action(EXPORT_PROJECT_SUCCESS, {})
 
-export type ExportProjectAction = ReturnType<typeof exportProject>
+export type ExportProjectRequestAction = ReturnType<typeof exportProjectRequest>
+export type ExportProjectSuccessAction = ReturnType<typeof exportProjectSuccess>
 
 // Import project
 
