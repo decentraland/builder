@@ -5147,9 +5147,9 @@ var UnityLoader = UnityLoader || {
             // e.progress.appendChild(e.progress.percentageTextContainer),
             e.container.appendChild(e.progress)),
           (e.progress.full.style.width = currentProgress),
-          1 == t && (e.logo.style.display = e.progress.style.display = 'none'),
-          document.getElementById("gameContainer").style.cssText = "background: #24222b; width: 100%; height: 100%; margin: auto"
-          document.getElementsByTagName("body")[0].style.cssText = "background: #24222b"
+          1 == t && (e.logo.style.display = e.progress.style.display = 'none')//,
+        //  document.getElementById("gameContainer").style.cssText = "background: #24222b; width: 100%; height: 100%; margin: auto"
+        //  document.getElementsByTagName("body")[0].style.cssText = "background: #24222b"
       }
     },
     update: function(e, t, r) {

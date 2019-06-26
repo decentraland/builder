@@ -24,6 +24,7 @@
     "dcl-scene-writer": "^0.4.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^4.2.0",
+    "decentraland-ecs": "^6.2.0",
     "decentraland-eth": "^8.8.0",
     "decentraland-ui": "^2.2.1",
     "dotenv": "6.0.0",
@@ -123,7 +124,6 @@
     "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
     "decentraland": "^3.0.0",
-    "decentraland-ecs": "^6.0.5-20190529143042.commit-d3d1809",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"
