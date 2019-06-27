@@ -99,6 +99,11 @@ export class API extends BaseAPI {
       onUploadProgress
     })
   }
+
+  async fetchContentServerValidation(x: number, y: number) {
+    const req = await fetch(`${CONTENT_SERVER_URL}/validate?x=${x}&y=${y}`)
+    return req.json()
+  }
 }
 
 export const api = new API(API_URL)

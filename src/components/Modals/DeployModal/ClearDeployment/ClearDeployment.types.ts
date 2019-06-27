@@ -1,35 +1,24 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
 import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { Coordinate, Rotation, DeploymentStatus, Deployment } from 'modules/deployment/types'
-import { DeployToLandRequestAction, deployToLandRequest } from 'modules/deployment/actions'
-import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
+import { DeploymentStatus } from 'modules/deployment/types'
+import { clearDeploymentRequest, ClearDeploymentRequestAction } from 'modules/deployment/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
-import { Media } from 'modules/media/types'
 
 export type Props = SignInProps & {
   isConnected: boolean
-  isRecording: boolean
   isUploadingAssets: boolean
   isCreatingFiles: boolean
-  mediaProgress: number
   deploymentProgress: DeploymentState['progress']
   ethAddress: string | undefined
   project: Project | null
-  media: Media | null
   deploymentStatus: DeploymentStatus
-  deployment: Deployment | null
   onClose: () => void
-  onDeploy: typeof deployToLandRequest
-  onRecord: typeof recordMediaRequest
+  onClearDeployment: typeof clearDeploymentRequest
 }
 
 export type State = {
-  placement: {
-    point: Coordinate
-    rotation: Rotation
-  } | null
   hasError: boolean
   needsConfirmation: boolean
 }
@@ -37,20 +26,16 @@ export type State = {
 export type MapStateProps = Pick<
   Props,
   | 'isConnecting'
-  | 'media'
   | 'hasError'
-  | 'isRecording'
   | 'isUploadingAssets'
   | 'isCreatingFiles'
   | 'isConnected'
   | 'ethAddress'
   | 'project'
   | 'deploymentStatus'
-  | 'deployment'
-  | 'mediaProgress'
   | 'deploymentProgress'
 >
 
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord'>
+export type MapDispatchProps = Pick<Props, 'onConnect' | 'onClearDeployment'>
 
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction>
+export type MapDispatch = Dispatch<ConnectWalletRequestAction | ClearDeploymentRequestAction>

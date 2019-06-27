@@ -9,13 +9,11 @@ import {
 import { Media } from './types'
 
 export type MediaState = {
-  cid: string | null // used a hash to check against and avoid taking new pictures
   media: Media | null
   progress: number
 }
 
 const INITIAL_STATE: MediaState = {
-  cid: null,
   media: null,
   progress: 0
 }
@@ -46,7 +44,6 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
     case RECORD_MEDIA_REQUEST: {
       return {
         ...state,
-        cid: action.payload.cid,
         media: null
       }
     }

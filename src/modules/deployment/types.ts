@@ -32,7 +32,7 @@ export type ContentUploadRequestMetadata = {
 }
 
 export type Deployment = {
-  remoteCID: string | null // CID as reported by the content server
+  cid: string | null // CID as reported by the content server
   isDirty: boolean
   placement: Placement
 }
@@ -47,4 +47,15 @@ export enum DeploymentStatus {
   UNPUBLISHED,
   PUBLISHED,
   NEEDS_SYNC
+}
+
+export type ContentServiceValidation = {
+  pubkey: string
+  root_cid: string
+  sequence: number
+  signature: string
+  timestamp: number
+  validity: string
+  validityType: number
+  value: string
 }

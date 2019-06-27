@@ -122,7 +122,7 @@ function* handleUnbindEditorKeyboardShortcuts() {
 
 function* handleNewEditorScene(action: NewEditorSceneAction) {
   const { id, project } = action.payload
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
+  const currentProject: Project | null = yield select(getProject(id))
   if (currentProject) {
     yield createNewScene({ ...currentProject, ...project })
   }

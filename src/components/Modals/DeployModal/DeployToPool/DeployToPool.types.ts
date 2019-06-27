@@ -1,4 +1,3 @@
-import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Project } from 'modules/project/types'
 import { setUserProfile } from 'modules/user/actions'
 import { deployToPoolRequest } from 'modules/deployment/actions'
@@ -18,7 +17,7 @@ export type Props = {
   onDeployToPool: typeof deployToPoolRequest
   onSaveProject: typeof editProjectRequest
   onSaveUser: typeof setUserProfile
-  onClose: ModalProps['onClose']
+  onClose: () => void
 }
 
 export type State = {

@@ -6,6 +6,7 @@ export type Props = {
   ethAddress: string | undefined
   project: Project | null
   media: Media | null
+  initialPoint?: Coordinate
   onConfirmPlacement: (placement: Placement) => void
 }
 

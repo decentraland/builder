@@ -3,24 +3,41 @@ import { Button, Header } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import DeployToLand from './DeployToLand'
 import DeployToPool from './DeployToPool'
-import { Props, State } from './DeployModal.types'
+import ClearDeployment from './ClearDeployment'
+import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
-  state = {
-    hasLand: null
+  state: State = {
+    view: DeployModalView.NONE
+  }
+
+  componentDidMount() {
+    const { metadata } = this.props
+    if (metadata && metadata.intent === 'clear_deployment') {
+      this.setState({
+        view: DeployModalView.CLEAR_DEPLOYMENT
+      })
+    }
   }
 
   handleDeployToLand = () => {
     this.setState({
-      hasLand: true
+      view: DeployModalView.DEPLOY_TO_LAND
     })
   }
 
   handleDeployToPool = () => {
     this.setState({
-      hasLand: false
+      view: DeployModalView.DEPLOY_TO_POOL
     })
+  }
+
+  handleClose = () => {
+    this.setState({
+      view: DeployModalView.NONE
+    })
+    this.props.onClose()
   }
 
   renderChoiceForm = () => {
@@ -55,14 +72,15 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { name, onClose } = this.props
-    const { hasLand } = this.state
+    const { name } = this.props
+    const { view } = this.state
 
     return (
-      <Modal name={name} onClose={onClose}>
-        {hasLand === true && <DeployToLand onClose={onClose} />}
-        {hasLand === false && <DeployToPool onClose={onClose} />}
-        {hasLand === null && this.renderChoiceForm()}
+      <Modal name={name} onClose={this.handleClose}>
+        {view === DeployModalView.CLEAR_DEPLOYMENT && <ClearDeployment onClose={this.handleClose} />}
+        {view === DeployModalView.DEPLOY_TO_LAND && <DeployToLand onClose={this.handleClose} />}
+        {view === DeployModalView.DEPLOY_TO_POOL && <DeployToPool onClose={this.handleClose} />}
+        {view === DeployModalView.NONE && this.renderChoiceForm()}
       </Modal>
     )
   }

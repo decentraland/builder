@@ -36,6 +36,7 @@
   background: transparent;
   padding: unset;
   border-radius: unset;
+  cursor: pointer;
 }
 
 .LandAtlas .tool-container .tool.locate-land {

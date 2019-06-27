@@ -12,7 +12,11 @@ import {
   DEPLOY_TO_LAND_SUCCESS,
   DeployToLandSuccessAction,
   MARK_DIRTY,
-  MarkDirtyAction
+  MarkDirtyAction,
+  ClearDeploymentSuccessAction,
+  ClearDeploymentFailureAction,
+  CLEAR_DEPLOYMENT_SUCCESS,
+  CLEAR_DEPLOYMENT_FAILURE
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
@@ -44,6 +48,8 @@ export type DeploymentReducerAction =
   | SetProgressAction
   | DeployToLandSuccessAction
   | MarkDirtyAction
+  | ClearDeploymentSuccessAction
+  | ClearDeploymentFailureAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -85,7 +91,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           ...state.data,
           [projectId]: {
             ...state.data[projectId],
-            remoteCID: cid,
+            cid,
             placement: { ...placement },
             isDirty: false
           }
@@ -109,16 +115,41 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       }
     }
     case MARK_DIRTY: {
-      const { projectId } = action.payload
+      const { projectId, isDirty } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
           [projectId]: {
             ...state.data[projectId],
-            isDirty: true
+            isDirty: isDirty
           }
         }
+      }
+    }
+    case CLEAR_DEPLOYMENT_SUCCESS: {
+      const { projectId } = action.payload
+      const newState = {
+        ...state,
+        data: {
+          ...state.data
+        },
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        }
+      }
+      delete newState.data[projectId]
+      return newState
+    }
+    case CLEAR_DEPLOYMENT_FAILURE: {
+      return {
+        ...state,
+        data: {
+          ...state.data
+        },
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error
       }
     }
     default:

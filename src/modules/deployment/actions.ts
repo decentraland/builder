@@ -22,7 +22,7 @@ export const DEPLOY_TO_LAND_REQUEST = '[Request] Deploy to LAND'
 export const DEPLOY_TO_LAND_SUCCESS = '[Success] Deploy to LAND'
 export const DEPLOY_TO_LAND_FAILURE = '[Failure] Deploy to LAND'
 
-export const deployToLandRequest = (ethAddress: string, placement: Placement) => action(DEPLOY_TO_LAND_REQUEST, { ethAddress, placement })
+export const deployToLandRequest = (projectId: string, placement: Placement) => action(DEPLOY_TO_LAND_REQUEST, { projectId, placement })
 export const deployToLandSuccess = (projectId: string, cid: string, placement: Placement) =>
   action(DEPLOY_TO_LAND_SUCCESS, { projectId, cid, placement })
 export const deployToLandFailure = (error: string) => action(DEPLOY_TO_LAND_FAILURE, { error })
@@ -30,6 +30,20 @@ export const deployToLandFailure = (error: string) => action(DEPLOY_TO_LAND_FAIL
 export type DeployToLandRequestAction = ReturnType<typeof deployToLandRequest>
 export type DeployToLandSuccessAction = ReturnType<typeof deployToLandSuccess>
 export type DeployToLandFailureAction = ReturnType<typeof deployToLandFailure>
+
+// Clear LAND deployment
+
+export const CLEAR_DEPLOYMENT_REQUEST = '[Request] Clear Deployment'
+export const CLEAR_DEPLOYMENT_SUCCESS = '[Success] Clear Deployment'
+export const CLEAR_DEPLOYMENT_FAILURE = '[Failure] Clear Deployment'
+
+export const clearDeploymentRequest = (projectId: string) => action(CLEAR_DEPLOYMENT_REQUEST, { projectId })
+export const clearDeploymentSuccess = (projectId: string) => action(CLEAR_DEPLOYMENT_SUCCESS, { projectId })
+export const clearDeploymentFailure = (error: string) => action(CLEAR_DEPLOYMENT_FAILURE, { error })
+
+export type ClearDeploymentRequestAction = ReturnType<typeof clearDeploymentRequest>
+export type ClearDeploymentSuccessAction = ReturnType<typeof clearDeploymentSuccess>
+export type ClearDeploymentFailureAction = ReturnType<typeof clearDeploymentFailure>
 
 // Set progress
 
@@ -40,5 +54,5 @@ export type SetProgressAction = ReturnType<typeof setProgress>
 // Mark Dirty
 
 export const MARK_DIRTY = 'Mark dirty'
-export const markDirty = (projectId: string) => action(MARK_DIRTY, { projectId })
+export const markDirty = (projectId: string, isDirty: boolean = true) => action(MARK_DIRTY, { projectId, isDirty })
 export type MarkDirtyAction = ReturnType<typeof markDirty>

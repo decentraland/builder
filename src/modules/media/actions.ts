@@ -4,7 +4,7 @@ import { RawMedia } from './types'
 // Record media
 
 export const RECORD_MEDIA_REQUEST = '[Request] Record media'
-export const recordMediaRequest = (cid: string | null) => action(RECORD_MEDIA_REQUEST, { cid })
+export const recordMediaRequest = () => action(RECORD_MEDIA_REQUEST, {})
 export type RecordMediaRequestAction = ReturnType<typeof recordMediaRequest>
 
 export const RECORD_MEDIA_SUCCESS = '[Success] Record media'

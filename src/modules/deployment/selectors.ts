@@ -13,15 +13,16 @@ export const getProgress = (state: RootState) => getState(state).progress
 export const isUploadingRecording = (state: RootState) => getState(state).progress.stage === ProgressStage.UPLOAD_RECORDING
 export const isUploadingAssets = (state: RootState) => getState(state).progress.stage === ProgressStage.UPLOAD_SCENE_ASSETS
 export const isCreatingFiles = (state: RootState) => getState(state).progress.stage === ProgressStage.CREATE_FILES
-export const getRemoteCID = createSelector<RootState, DeploymentState['data'], Project | null, string | null>(
+export const getCurrentDeploymentCID = createSelector<RootState, DeploymentState['data'], Project | null, string | null>(
   getData,
   getCurrentProject,
   (data, project) => {
     if (!project || Object.keys(data).length === 0) return null
-    return data[project.id].remoteCID
+    return data[project.id].cid
   }
 )
-export const getDeployment = createSelector<RootState, DeploymentState['data'], Project | null, Deployment | null>(
+
+export const getCurrentDeployment = createSelector<RootState, DeploymentState['data'], Project | null, Deployment | null>(
   getData,
   getCurrentProject,
   (data, project) => {
@@ -29,7 +30,8 @@ export const getDeployment = createSelector<RootState, DeploymentState['data'], 
     return data[project.id]
   }
 )
-export const getDeploymentStatus = createSelector<RootState, DeploymentState['data'], Project | null, DeploymentStatus>(
+
+export const getCurrentDeploymentStatus = createSelector<RootState, DeploymentState['data'], Project | null, DeploymentStatus>(
   getData,
   getCurrentProject,
   (data, project) => {
@@ -37,8 +39,20 @@ export const getDeploymentStatus = createSelector<RootState, DeploymentState['da
 
     const deployment = data[project.id]
 
-    if (deployment.isDirty) return DeploymentStatus.NEEDS_SYNC
-    if (deployment.remoteCID) return DeploymentStatus.PUBLISHED
+    if (deployment) {
+      if (deployment.isDirty) return DeploymentStatus.NEEDS_SYNC
+      if (deployment.cid) return DeploymentStatus.PUBLISHED
+    }
+
     return DeploymentStatus.UNPUBLISHED
   }
 )
+
+export const getDeployment = (projectId: string) =>
+  createSelector<RootState, DeploymentState['data'], Deployment | null>(
+    getData,
+    data => {
+      if (Object.keys(data).length === 0) return null
+      return data[projectId]
+    }
+  )

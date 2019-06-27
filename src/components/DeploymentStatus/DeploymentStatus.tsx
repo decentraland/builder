@@ -8,9 +8,13 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
     const { status } = this.props
     let classes = 'DeploymentStatus'
 
-    if (status === Status.UNPUBLISHED) classes += ' unpublished'
-    if (status === Status.PUBLISHED) classes += ' published'
-    if (status === Status.NEEDS_SYNC) classes += ' dirty'
+    if (status === Status.PUBLISHED) {
+      classes += ' published'
+    } else if (status === Status.NEEDS_SYNC) {
+      classes += ' dirty'
+    } else {
+      classes += ' unpublished'
+    }
 
     return <div className={classes} />
   }

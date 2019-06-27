@@ -1,10 +1,11 @@
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
-import { getCurrentProject } from 'modules/project/selectors'
+import { getCurrentProject, getProject } from 'modules/project/selectors'
 import { getCurrentScene, getSceneById } from 'modules/scene/selectors'
-import { Coordinate, Rotation, Deployment } from 'modules/deployment/types'
+import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
 import { Scene } from 'modules/scene/types'
@@ -21,16 +22,20 @@ import {
   DeployToLandRequestAction,
   DeployToPoolRequestAction,
   deployToLandSuccess,
-  markDirty
+  markDirty,
+  CLEAR_DEPLOYMENT_REQUEST,
+  ClearDeploymentRequestAction,
+  clearDeploymentFailure,
+  clearDeploymentSuccess
 } from './actions'
 import { store } from 'modules/common/store'
-import { createFiles } from 'modules/project/export'
-import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
+import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
+import { EDITOR_REDO, EDITOR_UNDO, OPEN_EDITOR } from 'modules/editor/actions'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { PROVISION_SCENE } from 'modules/scene/actions'
-import { EDITOR_REDO, EDITOR_UNDO } from 'modules/editor/actions'
+import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
-import { getDeployment } from './selectors'
+import { getCurrentDeployment, getCurrentDeploymentCID, getDeployment } from './selectors'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -43,20 +48,22 @@ const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: 
 export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
+  yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeployment)
   yield takeLatest(PROVISION_SCENE, handleMarkDirty)
   yield takeLatest(EDITOR_REDO, handleMarkDirty)
   yield takeLatest(EDITOR_UNDO, handleMarkDirty)
+  yield takeLatest(OPEN_EDITOR, handleQueryRemoteCID)
 }
 
 function* handleMarkDirty() {
   const project: Project | null = yield select(getCurrentProject)
-  const deployment: Deployment | null = yield select(getDeployment)
+  const deployment: Deployment | null = yield select(getCurrentDeployment)
   if (deployment && project) {
     yield put(markDirty(project.id))
   }
 }
 
-export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
+function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
   const rawProject: Project | null = yield select(getCurrentProject)
   const scene: Scene = yield select(getCurrentScene)
   const user: User = yield select(getUserState)
@@ -65,7 +72,7 @@ export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
     const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
 
     try {
-      yield put(recordMediaRequest(null))
+      yield put(recordMediaRequest())
       const successAction: RecordMediaSuccessAction = yield take(RECORD_MEDIA_SUCCESS)
       const { north, east, south, west, thumbnail } = successAction.payload.media
 
@@ -87,10 +94,11 @@ export function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
   }
 }
 
-export function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
-  const { ethAddress, placement } = action.payload
+function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
+  const { placement, projectId } = action.payload
+  const ethAddress = yield select(getAddress)
   const user: User = yield select(getUserState)
-  const project: Project | null = yield select(getCurrentProject)
+  const project: Project | null = yield select(getProject(projectId))
 
   if (!eth.wallet) {
     yield put(deployToLandFailure('Unable to connect to wallet'))
@@ -117,7 +125,61 @@ export function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   }
 }
 
-function* getContentServiceFiles(point: Coordinate, rotation: Rotation) {
+function* handleQueryRemoteCID() {
+  const project: Project | null = yield select(getCurrentProject)
+  const deployment: Deployment | null = yield select(getCurrentDeployment)
+  if (!project || !deployment) return
+  const { x, y } = deployment.placement.point
+
+  try {
+    const res: ContentServiceValidation = yield call(() => api.fetchContentServerValidation(x, y))
+    const remoteCID = res.root_cid
+    const localCID: string = yield select(getCurrentDeploymentCID)
+
+    if (remoteCID === localCID) {
+      yield put(markDirty(project.id, false))
+    } else {
+      yield put(markDirty(project.id))
+    }
+  } catch (e) {
+    // error handling
+  }
+}
+
+function* handleClearDeployment(action: ClearDeploymentRequestAction) {
+  const { projectId } = action.payload
+  const ethAddress = yield select(getAddress)
+  const user: User = yield select(getUserState)
+  const deployment: Deployment | null = yield select(getDeployment(projectId))
+  const project: Project | null = yield select(getProject(projectId))
+
+  if (!eth.wallet) {
+    yield put(deployToLandFailure('Unable to connect to wallet'))
+  }
+
+  if (project && deployment) {
+    const { placement } = deployment
+    const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(placement.point, placement.rotation, true)
+    const rootCID = yield call(() => getCID(contentFiles, true))
+    const manifest = yield call(() => getFileManifest(contentFiles))
+    const timestamp = Math.round(Date.now() / 1000)
+    const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
+    const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
+
+    try {
+      yield call(() =>
+        api.uploadToContentService(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS))
+      )
+      yield put(clearDeploymentSuccess(projectId))
+    } catch (e) {
+      yield put(clearDeploymentFailure(e.message))
+    }
+  } else {
+    yield put(clearDeploymentFailure('Unable to Publish: Invalid project'))
+  }
+}
+
+function* getContentServiceFiles(point: Coordinate, rotation: Rotation, createEmptyGame: boolean = false) {
   const project: Project | null = yield select(getCurrentProject)
 
   if (project) {
@@ -137,7 +199,12 @@ function* getContentServiceFiles(point: Coordinate, rotation: Rotation) {
 
     for (const fileName of Object.keys(files)) {
       if (blacklist.includes(fileName)) continue
-      const file: ContentServiceFile = yield call(() => makeContentFile(fileName, files[fileName]))
+      let file: ContentServiceFile
+      if (fileName === EXPORT_PATH.BUNDLED_GAME_FILE && createEmptyGame) {
+        file = yield call(() => makeContentFile(fileName, createGameFileBundle('')))
+      } else {
+        file = yield call(() => makeContentFile(fileName, files[fileName]))
+      }
       contentFiles.push(file)
     }
 

@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { Button, Loader, Header } from 'decentraland-ui'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { DeploymentStatus } from 'modules/deployment/types'
 import LandAtlas from './LandAtlas'
 import { Props, State } from './DeployToLand.types'
 import './DeployToLand.css'
-import { DeploymentStatus } from 'modules/deployment/types'
 
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
@@ -19,10 +19,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   handleDeploy = () => {
     const { placement } = this.state
+    const { project } = this.props
 
-    if (placement) {
+    if (placement && project) {
       this.setState({ needsConfirmation: true })
-      this.props.onDeploy(this.props.ethAddress!, placement)
+      this.props.onDeploy(project.id, placement)
     }
   }
 
@@ -133,8 +134,17 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderMap = () => {
-    const { ethAddress, media, project } = this.props
-    return <LandAtlas ethAddress={ethAddress} media={media} project={project} onConfirmPlacement={this.handleConfirmPlacement} />
+    const { ethAddress, media, project, deployment } = this.props
+    const initialPoint = deployment ? deployment.placement.point : undefined
+    return (
+      <LandAtlas
+        ethAddress={ethAddress}
+        media={media}
+        project={project}
+        initialPoint={initialPoint}
+        onConfirmPlacement={this.handleConfirmPlacement}
+      />
+    )
   }
 
   renderSuccess = () => {

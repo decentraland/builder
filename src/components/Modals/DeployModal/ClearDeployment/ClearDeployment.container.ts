@@ -7,15 +7,13 @@ import {
   isUploadingAssets,
   getProgress as getUploadProgress,
   isCreatingFiles,
-  getCurrentDeploymentStatus,
-  getCurrentDeployment
+  getCurrentDeploymentStatus
 } from 'modules/deployment/selectors'
-import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 
-import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToLand.types'
-import WalletSignIn from './DeployToLand'
-import { deployToLandRequest } from 'modules/deployment/actions'
-import { recordMediaRequest } from 'modules/media/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './ClearDeployment.types'
+import WalletSignIn from './ClearDeployment'
+import { clearDeploymentRequest } from 'modules/deployment/actions'
+
 import { getCurrentProject } from 'modules/project/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
@@ -23,23 +21,18 @@ const mapState = (state: RootState): MapStateProps => {
     project: getCurrentProject(state),
     isConnecting: isConnecting(state),
     isConnected: isConnected(state),
-    isRecording: isRecording(state),
     isUploadingAssets: isUploadingAssets(state),
     isCreatingFiles: isCreatingFiles(state),
     hasError: !!getWalletError(state),
-    media: getMedia(state),
     ethAddress: getAddress(state),
-    mediaProgress: getProgress(state),
     deploymentProgress: getUploadProgress(state),
-    deploymentStatus: getCurrentDeploymentStatus(state),
-    deployment: getCurrentDeployment(state)
+    deploymentStatus: getCurrentDeploymentStatus(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
-  onRecord: () => dispatch(recordMediaRequest()),
-  onDeploy: (projectId, placement) => dispatch(deployToLandRequest(projectId, placement))
+  onClearDeployment: placement => dispatch(clearDeploymentRequest(placement))
 })
 
 export default connect(

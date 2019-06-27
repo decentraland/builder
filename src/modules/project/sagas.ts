@@ -111,10 +111,10 @@ function* handleEditProject(action: EditProjectRequestAction) {
   const { id, project } = action.payload
   let ground = action.payload.ground
 
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
+  const currentProject: Project | null = yield select(getProject(id))
   if (!currentProject) return
 
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
   const hasNewLayout = project.layout && !isEqualLayout(project.layout, currentProject.layout)

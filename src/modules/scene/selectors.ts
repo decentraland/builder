@@ -32,7 +32,7 @@ export const getCurrentLimits = createSelector<RootState, Scene | null, SceneMet
   scene => (scene ? scene.limits : EMPTY_SCENE_METRICS)
 )
 
-export const getScene = (state: RootState, sceneId: string): Scene | null => getData(state)[sceneId] || null
+export const getScene = (sceneId: string) => (state: RootState): Scene | null => getData(state)[sceneId] || null
 
 export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(
   getCurrentScene,

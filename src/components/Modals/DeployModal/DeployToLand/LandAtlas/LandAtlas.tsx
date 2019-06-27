@@ -15,14 +15,7 @@ const CLOCKWISE_ROTATION = 1
 const ANTICLOCKWISE_ROTATION = -1
 
 export default class LandAtlas extends React.PureComponent<Props, State> {
-  state: State = {
-    placement: null,
-    hover: { x: 0, y: 0 },
-    parcels: {},
-    rotation: 'north',
-    zoom: 1,
-    landTarget: '0,0'
-  }
+  state: State = this.getBaseState()
 
   mounted: boolean = true
 
@@ -43,7 +36,20 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     this.mounted = false
   }
 
+  getBaseState(): State {
+    const { initialPoint } = this.props
+    return {
+      placement: null,
+      hover: { x: 0, y: 0 },
+      parcels: {},
+      rotation: 'north',
+      zoom: 1,
+      landTarget: initialPoint ? `${initialPoint.x},${initialPoint.y}` : '0,0'
+    }
+  }
+
   fetchAuthorizedParcels = async (ethAddress: string) => {
+    const { landTarget } = this.state
     const res = await api.fetchAuthorizedParcels(ethAddress)
     if (this.mounted) {
       const parcels = res.parcels.reduce(
@@ -56,9 +62,11 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
         }),
         {}
       )
+
       this.setState({
         parcels,
-        landTarget: res.parcels[0].id
+        // Only point to the first authorized parcel if no initialPoint was provided
+        landTarget: landTarget === '0,0' ? res.parcels[0].id : landTarget
       })
     }
   }
