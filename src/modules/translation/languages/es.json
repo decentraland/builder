@@ -204,6 +204,8 @@
     "localstorage": "Tus escenas se guardan automáticamente en el navegador"
   },
   "topbar": {
+    "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
+    "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
     "publish": "Publicar"
   },
   "tutorial_modal": {
