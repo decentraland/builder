@@ -22,12 +22,14 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   componentDidMount() {
     this.mounted = true
     if (Object.keys(this.state.parcels).length === 0 && this.props.ethAddress) {
+      // tslint:disable-next-line
       this.fetchAuthorizedParcels(this.props.ethAddress)
     }
   }
 
   componentWillReceiveProps(nextProps: Props) {
     if (Object.keys(this.state.parcels).length === 0 && nextProps.ethAddress) {
+      // tslint:disable-next-line
       this.fetchAuthorizedParcels(nextProps.ethAddress)
     }
   }
@@ -50,24 +52,28 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   fetchAuthorizedParcels = async (ethAddress: string) => {
     const { landTarget } = this.state
-    const res = await api.fetchAuthorizedParcels(ethAddress)
-    if (this.mounted) {
-      const parcels = res.parcels.reduce(
-        (parcels: any, parcel: any) => ({
-          ...parcels,
-          [parcel.id]: {
-            x: parcel.x,
-            y: parcel.y
-          }
-        }),
-        {}
-      )
+    try {
+      const res = await api.fetchAuthorizedParcels(ethAddress)
+      if (this.mounted) {
+        const parcels = res.parcels.reduce(
+          (parcels: any, parcel: any) => ({
+            ...parcels,
+            [parcel.id]: {
+              x: parcel.x,
+              y: parcel.y
+            }
+          }),
+          {}
+        )
 
-      this.setState({
-        parcels,
-        // Only point to the first authorized parcel if no initialPoint was provided
-        landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget
-      })
+        this.setState({
+          parcels,
+          // Only point to the first authorized parcel if no initialPoint was provided
+          landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget
+        })
+      }
+    } catch (e) {
+      console.error('Unable to fetch authorized LANDs', e)
     }
   }
 
