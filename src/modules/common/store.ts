@@ -17,7 +17,7 @@ import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
-import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY } from 'modules/deployment/actions'
+import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -55,6 +55,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     SET_USER_EMAIL,
     SET_AVAILABLE_ASSET_PACKS,
     DEPLOY_TO_LAND_SUCCESS,
+    CLEAR_DEPLOYMENT_SUCCESS,
     MARK_DIRTY
   ]
 })

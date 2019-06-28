@@ -7,6 +7,7 @@ export type Props = {
   project: Project | null
   media: Media | null
   initialPoint?: Coordinate
+  onNoAuthorizedParcels: () => void
   onConfirmPlacement: (placement: Placement) => void
 }
 

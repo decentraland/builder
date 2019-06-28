@@ -1,13 +1,43 @@
-.DeployButton.ui.button.mini {
+.DeployButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.DeployButton .ui.button.mini {
   font-size: 11px;
   line-height: 16px;
   padding: 4px 12px;
   border-radius: 4px;
+  height: 100%;
+  min-width: 80px;
 }
 
-.DeployButton.ui.button.mini,
-.DeployButton.ui.button.mini:active,
-.DeployButton.ui.button.mini:focus,
-.DeployButton.ui.button.mini:hover {
+.DeployButton .ui.button.mini,
+.DeployButton .ui.button.mini:active,
+.DeployButton .ui.button.mini:focus,
+.DeployButton .ui.button.mini:hover {
   transform: translateY(0px);
+}
+
+.DeployButton .dropdown.icon {
+  background: rgba(var(--bluish-steel-raw), 0.64);
+  border-radius: 4px;
+  padding: 8px 10px 16px 10px;
+  color: white !important;
+}
+
+.ui.popup.inverted.publish-disabled {
+  height: auto;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 20px;
+}
+
+.ui.popup.inverted.publish-disabled:first-line {
+  color: white;
+}
+
+.ui.visible.popup.inverted.publish-disabled:before {
+  right: 30px; /* The arrow needs to be in the middle of the button - kinda */
 }

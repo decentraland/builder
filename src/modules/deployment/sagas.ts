@@ -30,12 +30,13 @@ import {
 } from './actions'
 import { store } from 'modules/common/store'
 import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
-import { EDITOR_REDO, EDITOR_UNDO, OPEN_EDITOR } from 'modules/editor/actions'
+import { OPEN_EDITOR } from 'modules/editor/actions'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
-import { PROVISION_SCENE } from 'modules/scene/actions'
+import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getCurrentDeploymentCID, getDeployment } from './selectors'
+import { EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -49,10 +50,16 @@ export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeployment)
-  yield takeLatest(PROVISION_SCENE, handleMarkDirty)
-  yield takeLatest(EDITOR_REDO, handleMarkDirty)
-  yield takeLatest(EDITOR_UNDO, handleMarkDirty)
   yield takeLatest(OPEN_EDITOR, handleQueryRemoteCID)
+
+  yield takeLatest(ADD_ITEM, handleMarkDirty)
+  yield takeLatest(DROP_ITEM, handleMarkDirty)
+  yield takeLatest(RESET_ITEM, handleMarkDirty)
+  yield takeLatest(DUPLICATE_ITEM, handleMarkDirty)
+  yield takeLatest(DELETE_ITEM, handleMarkDirty)
+  yield takeLatest(SET_GROUND, handleMarkDirty)
+  yield takeLatest(UPDATE_TRANSFORM, handleMarkDirty)
+  yield takeLatest(EDIT_PROJECT_SUCCESS, handleMarkDirty)
 }
 
 function* handleMarkDirty() {

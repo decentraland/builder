@@ -8,9 +8,7 @@ import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
-  state: State = {
-    view: DeployModalView.NONE
-  }
+  state: State = this.getBaseState()
 
   componentDidMount() {
     const { metadata } = this.props
@@ -18,6 +16,13 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       this.setState({
         view: DeployModalView.CLEAR_DEPLOYMENT
       })
+    }
+  }
+
+  getBaseState(): State {
+    const { deployment } = this.props
+    return {
+      view: deployment ? DeployModalView.DEPLOY_TO_LAND : DeployModalView.NONE
     }
   }
 
@@ -78,7 +83,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     return (
       <Modal name={name} onClose={this.handleClose}>
         {view === DeployModalView.CLEAR_DEPLOYMENT && <ClearDeployment onClose={this.handleClose} />}
-        {view === DeployModalView.DEPLOY_TO_LAND && <DeployToLand onClose={this.handleClose} />}
+        {view === DeployModalView.DEPLOY_TO_LAND && <DeployToLand onClose={this.handleClose} onDeployToPool={this.handleDeployToPool} />}
         {view === DeployModalView.DEPLOY_TO_POOL && <DeployToPool onClose={this.handleClose} />}
         {view === DeployModalView.NONE && this.renderChoiceForm()}
       </Modal>

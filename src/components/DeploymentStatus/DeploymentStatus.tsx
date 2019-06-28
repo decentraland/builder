@@ -1,11 +1,13 @@
 import * as React from 'react'
+import { Popup } from 'decentraland-ui'
 import { DeploymentStatus as Status } from 'modules/deployment/types'
 import { Props } from './DeploymentStatus.types'
 import './DeploymentStatus.css'
 
 export default class DeploymentStatus extends React.PureComponent<Props> {
   render() {
-    const { status } = this.props
+    const { status, deployment } = this.props
+    const { x, y } = deployment ? deployment.placement.point : { x: 0, y: 0 }
     let classes = 'DeploymentStatus'
 
     if (status === Status.PUBLISHED) {
@@ -16,6 +18,18 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
       classes += ' unpublished'
     }
 
-    return <div className={classes} />
+    return (
+      <Popup
+        position="bottom left"
+        content={<span>Published at {`${x},${y}`}</span>}
+        trigger={
+          <span>
+            <div className={classes} />
+          </span>
+        }
+        on="hover"
+        inverted
+      />
+    )
   }
 }

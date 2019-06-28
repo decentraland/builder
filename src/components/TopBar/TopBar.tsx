@@ -1,9 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Grid, Icon, Popup } from 'decentraland-ui'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Header, Grid, Icon } from 'decentraland-ui'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
-import { getExceededMetrics } from 'modules/scene/utils'
 
 import DeploymentStatus from 'components/DeploymentStatus'
 import ShortcutTooltip from 'components/ShortcutTooltip'
@@ -57,28 +55,19 @@ export default class TopBar extends React.PureComponent<Props> {
     return isLoading || (metrics.entities > 0 && metrics.triangles === 0)
   }
 
-  getExceededMetric() {
-    const { metrics, limits } = this.props
-    const exceededMetrics = getExceededMetrics(metrics, limits)
-    return exceededMetrics.length > 0 ? exceededMetrics[0] : ''
-  }
-
   render() {
     const {
       gizmo,
-      areEntitiesOutOfBoundaries,
       currentProject,
-      isLoading,
       isPreviewing,
       isSidebarOpen,
       selectedEntityId,
       enabledTools,
+      isLoading,
       onReset,
       onDelete,
       onDuplicate
     } = this.props
-
-    const exceededMetric = this.getExceededMetric()
 
     return (
       <Grid className="TopBar">
@@ -143,25 +132,7 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
             <span className="contest-button-wrapper">
-              <Popup
-                className="contest-disabled"
-                content={
-                  areEntitiesOutOfBoundaries ? (
-                    <T id="topbar.bounds_exceeded" values={{ br: <br /> }} />
-                  ) : (
-                    <T id="topbar.limits_exceeded" values={{ metric: exceededMetric, br: <br /> }} />
-                  )
-                }
-                position="bottom center"
-                disabled={isLoading || (exceededMetric === '' && !areEntitiesOutOfBoundaries)}
-                trigger={
-                  <span>
-                    <DeployButton onClick={this.handleOpenDeployModal} isDisabled={isLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries} />
-                  </span>
-                }
-                on="hover"
-                inverted
-              />
+              <DeployButton onClick={this.handleOpenDeployModal} />
             </span>
           </Grid.Row>
         </Grid.Column>

@@ -10,6 +10,7 @@ import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 
 import { Props, State } from './EditProjectModal.types'
 import './EditProjectModal.css'
+import { DeploymentStatus } from 'modules/deployment/types'
 
 export default class EditProjectModal extends React.PureComponent<Props, State> {
   state = {
@@ -60,8 +61,9 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { name, onClose } = this.props
+    const { name, deploymentStatus, onClose } = this.props
     const { title, description, rows, cols, hasError } = this.state
+    const isSubmitDisabled = hasError || deploymentStatus !== DeploymentStatus.UNPUBLISHED
 
     return (
       <Modal name={name}>
@@ -79,12 +81,15 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
                 <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} />
               </div>
             </div>
+            <div className="error">
+              {deploymentStatus !== DeploymentStatus.UNPUBLISHED && 'Please Unpublish your scene before updating your Scene Details'}
+            </div>
           </Modal.Content>
           <Modal.Actions>
             <Button secondary onClick={onClose}>
               {t('global.cancel')}
             </Button>
-            <Button primary disabled={hasError}>
+            <Button primary disabled={isSubmitDisabled}>
               {t('global.save')}
             </Button>
           </Modal.Actions>

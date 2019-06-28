@@ -66,7 +66,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
       this.setState({
         parcels,
         // Only point to the first authorized parcel if no initialPoint was provided
-        landTarget: landTarget === '0,0' ? res.parcels[0].id : landTarget
+        landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget
       })
     }
   }
@@ -83,10 +83,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   isHighlighted = (x: number, y: number) => {
     const { project } = this.props
-    const { rotation, hover } = this.state
+    const { rotation, hover, placement } = this.state
     const projectParcels = getParcelOrientation(project!, hover, rotation)
 
-    if (!hover) return false
+    if (!hover || placement) return false
     return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
   }
 
@@ -100,31 +100,29 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
   }
 
-  authorizedLayer: Layer = (x: number, y: number) => {
-    const { parcels } = this.state
-
-    if (parcels[x + ',' + y]) {
-      return { color: this.isPlaced(x, y) ? '#ff4053' : '#00d3ff' }
-    }
-    return null
-  }
-
-  hoverStrokeLayer: Layer = (x: number, y: number) => {
-    if (this.isHighlighted(x, y)) {
+  strokeLayer: Layer = (x: number, y: number) => {
+    const placed = this.isPlaced(x, y)
+    if (this.isHighlighted(x, y) || placed) {
       return {
-        color: this.isValid() ? '#44ff00' : '#ff0044',
+        color: this.isValid() || placed ? '#ff0044' : '#3a3541',
         scale: 1.5
       }
     }
     return null
   }
 
-  hoverFillLayer: Layer = (x: number, y: number) => {
-    if (this.isHighlighted(x, y)) {
-      return {
-        color: this.isValid() ? '#99ff90' : '#ff9990',
-        scale: 1.2
-      }
+  authorizedLayer: Layer = (x: number, y: number) => {
+    const { parcels } = this.state
+    if (parcels[x + ',' + y]) {
+      return { color: '#00d3ff', scale: 1 }
+    }
+    return null
+  }
+
+  highlightLayer: Layer = (x: number, y: number) => {
+    const placed = this.isPlaced(x, y)
+    if (this.isHighlighted(x, y) || placed) {
+      return { color: this.isValid() || placed ? '#ff9990' : '#716b7a', scale: 1.2 }
     }
     return null
   }
@@ -152,7 +150,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   handleRotate = (direction: 1 | -1) => () => {
-    const { rotation } = this.state
+    const { rotation, placement } = this.state
+    if (placement) return
     const newRotation =
       (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
     this.setState({ rotation: ROTATION_ORDER[newRotation] })
@@ -180,6 +179,16 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     })
   }
 
+  handleResetPlacement = () => {
+    this.setState({
+      placement: null
+    })
+  }
+
+  handleNoAuthorizedParcels = () => {
+    this.props.onNoAuthorizedParcels()
+  }
+
   renderTool = (icon: IconName, clickHandler: () => void) => {
     return (
       <div className={`tool ${icon}`} onClick={clickHandler}>
@@ -191,14 +200,21 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   render() {
     const { media, project } = this.props
     const { placement, rotation, zoom, landTarget, parcels } = this.state
-
     const hasPlacement = !!placement && !!project && !!project.parcels
-
-    const target: Coordinate = landTarget && Object.keys(parcels).length ? parcels[landTarget] : { x: 0, y: 0 }
+    const parcelCount = Object.keys(parcels).length
+    const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
 
     return (
       <div className="LandAtlas">
-        <div className="thumbnail">
+        {parcelCount === 0 && (
+          <div className="notice">
+            It seems that you don't own any LAND
+            <span className="inline-action" onClick={this.handleNoAuthorizedParcels}>
+              Submit to Scene pool
+            </span>
+          </div>
+        )}
+        <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
           <img src={media ? media[rotation] : ''} />
           <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
             <Icon name="rotate-left" />
@@ -217,7 +233,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           </div>
 
           <Atlas
-            layers={[this.authorizedLayer, this.hoverStrokeLayer, this.hoverFillLayer]}
+            layers={[this.authorizedLayer, this.strokeLayer, this.highlightLayer]}
             onHover={this.handleHover}
             onClick={this.handlePlacement}
             zoom={zoom}
@@ -227,9 +243,16 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
         </div>
         <div className="actions">
           <div className="summary">
-            {hasPlacement
-              ? `Placing a ${project!.parcels!.length} LAND scene at ${placement!.point.x},${placement!.point.y}`
-              : 'Choose a parcel where to place your scene'}
+            {hasPlacement ? (
+              <span>
+                {`Placing a ${project!.parcels!.length} LAND scene at ${placement!.point.x},${placement!.point.y}`}{' '}
+                <span className="inline-action" onClick={this.handleResetPlacement}>
+                  Reset
+                </span>
+              </span>
+            ) : (
+              'Choose a parcel where to place your scene'
+            )}
           </div>
           <Button primary size="small" disabled={!hasPlacement} onClick={this.handleSelectPlacement}>
             Continue

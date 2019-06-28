@@ -23,6 +23,7 @@ export type Props = SignInProps & {
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
+  onDeployToPool: () => void
 }
 
 export type State = {

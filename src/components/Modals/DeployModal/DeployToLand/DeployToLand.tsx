@@ -17,6 +17,16 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     this.props.onRecord()
   }
 
+  componentWillReceiveProps(props: Props) {
+    if (props.deployment) {
+      // If a deployment exists, it means we can skip the Atlas (we are updating)
+      this.setState({
+        needsConfirmation: true,
+        placement: { ...props.deployment.placement }
+      })
+    }
+  }
+
   handleDeploy = () => {
     const { placement } = this.state
     const { project } = this.props
@@ -36,6 +46,10 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       placement,
       needsConfirmation: true
     })
+  }
+
+  handleDeployToPool = () => {
+    this.props.onDeployToPool()
   }
 
   renderConnectForm = () => {
@@ -143,6 +157,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         project={project}
         initialPoint={initialPoint}
         onConfirmPlacement={this.handleConfirmPlacement}
+        onNoAuthorizedParcels={this.handleDeployToPool}
       />
     )
   }
@@ -165,7 +180,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isConnected, isRecording, isUploadingAssets, isCreatingFiles, media, deploymentStatus } = this.props
+    const { isConnected, isRecording, isUploadingAssets, isCreatingFiles, media, deploymentStatus, deployment } = this.props
     const { needsConfirmation } = this.state
     const isLoading = isRecording || isUploadingAssets || isCreatingFiles
 
@@ -173,7 +188,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
     if (isConnected && isLoading) return this.renderProgress()
 
-    if (isConnected && media && !needsConfirmation) return this.renderMap()
+    if (isConnected && media && !needsConfirmation && !deployment) return this.renderMap()
 
     if (!isLoading && needsConfirmation && deploymentStatus === DeploymentStatus.PUBLISHED) return this.renderSuccess()
 
