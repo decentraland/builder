@@ -18,8 +18,8 @@ export type MapStateProps = Pick<Props, 'deployment'>
 export type MapDispatchProps = {}
 
 export enum DeployModalView {
-  NONE,
-  CLEAR_DEPLOYMENT,
-  DEPLOY_TO_LAND,
-  DEPLOY_TO_POOL
+  NONE = 'NONE',
+  CLEAR_DEPLOYMENT = 'CLEAR_DEPLOYMENT',
+  DEPLOY_TO_LAND = 'DEPLOY_TO_LAND',
+  DEPLOY_TO_POOL = 'DEPLOY_TO_POOL'
 }

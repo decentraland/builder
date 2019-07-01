@@ -9,6 +9,7 @@ import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
+import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
@@ -17,7 +18,6 @@ import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
-import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__

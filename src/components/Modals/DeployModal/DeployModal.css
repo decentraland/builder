@@ -1,5 +1,6 @@
 .ui.small.modal.DeployModal {
   width: auto;
+  border-radius: 12px;
 }
 
 .DeployModal > .description {
@@ -87,16 +88,31 @@
 
 .DeployModal .choice-form {
   width: 560px;
-  margin: 64px 24px 24px 24px;
+  margin: 0px 24px 24px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.DeployModal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0px;
+  margin-bottom: 0px;
+  width: 100%;
+  flex-direction: row-reverse;
+}
+
+.DeployModal .modal-header .ui.header.modal-title {
+  margin-bottom: 0px;
 }
 
 .DeployModal .ui.header.modal-title {
   font-size: 21px;
   margin-bottom: 8px;
   text-align: center;
+  margin-top: 0px;
 }
 
 .DeployModal .modal-subtitle {

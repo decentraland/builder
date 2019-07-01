@@ -6,6 +6,7 @@ import DeployToPool from './DeployToPool'
 import ClearDeployment from './ClearDeployment'
 import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
+import Icon from 'components/Icon'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state: State = this.getBaseState()
@@ -45,9 +46,18 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     this.props.onClose()
   }
 
+  handleBack = () => {
+    this.setState({
+      view: DeployModalView.NONE
+    })
+  }
+
   renderChoiceForm = () => {
     return (
       <div className="choice-form">
+        <div className="modal-header">
+          <Icon name="modal-close" onClick={this.handleClose} />
+        </div>
         <Header size="large" className="modal-title">
           Publish your scene
         </Header>
@@ -83,7 +93,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     return (
       <Modal name={name} onClose={this.handleClose}>
         {view === DeployModalView.CLEAR_DEPLOYMENT && <ClearDeployment onClose={this.handleClose} />}
-        {view === DeployModalView.DEPLOY_TO_LAND && <DeployToLand onClose={this.handleClose} onDeployToPool={this.handleDeployToPool} />}
+        {view === DeployModalView.DEPLOY_TO_LAND && (
+          <DeployToLand onClose={this.handleClose} onDeployToPool={this.handleDeployToPool} onBack={this.handleBack} />
+        )}
         {view === DeployModalView.DEPLOY_TO_POOL && <DeployToPool onClose={this.handleClose} />}
         {view === DeployModalView.NONE && this.renderChoiceForm()}
       </Modal>

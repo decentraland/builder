@@ -24,6 +24,7 @@ export type Props = SignInProps & {
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
   onDeployToPool: () => void
+  onBack: () => void
 }
 
 export type State = {
@@ -33,6 +34,7 @@ export type State = {
   } | null
   hasError: boolean
   needsConfirmation: boolean
+  view: DeployToLandView
 }
 
 export type MapStateProps = Pick<
@@ -55,3 +57,12 @@ export type MapStateProps = Pick<
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord'>
 
 export type MapDispatch = Dispatch<ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction>
+
+export enum DeployToLandView {
+  NONE = 'NONE',
+  CONNECT = 'CONNECT',
+  PROGRESS = 'PROGRESS',
+  MAP = 'MAP',
+  SUCCESS = 'SUCCESS',
+  CONFIRMATION = 'CONFIRMATION'
+}

@@ -36,6 +36,8 @@ export type IconName =
   | 'locate-land'
   | 'rotate-left'
   | 'rotate-right'
+  | 'modal-back'
+  | 'modal-close'
 
 export type DefaultProps = {
   isActive: boolean
