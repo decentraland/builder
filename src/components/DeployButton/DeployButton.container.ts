@@ -7,8 +7,10 @@ import { MapStateProps, MapDispatch, MapDispatchProps } from './DeployButton.typ
 import DeployButton from './DeployButton'
 import { getCurrentLimits, getCurrentMetrics } from 'modules/scene/selectors'
 import { isReady, isLoading, areEntitiesOutOfBoundaries } from 'modules/editor/selectors'
+import { getCurrentProject } from 'modules/project/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
+  project: getCurrentProject(state)!,
   limits: getCurrentLimits(state),
   metrics: getCurrentMetrics(state),
   isLoading: !isReady(state) || isLoading(state),

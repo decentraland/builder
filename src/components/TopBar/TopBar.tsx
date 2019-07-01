@@ -42,10 +42,6 @@ export default class TopBar extends React.PureComponent<Props> {
     this.props.onOpenModal('EditProjectModal')
   }
 
-  handleOpenDeployModal = () => {
-    this.props.onOpenModal('DeployModal')
-  }
-
   handleExport = () => {
     this.props.onOpenModal('ExportModal', { project: this.props.currentProject })
   }
@@ -132,7 +128,7 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
             <span className="contest-button-wrapper">
-              <DeployButton onClick={this.handleOpenDeployModal} />
+              <DeployButton />
             </span>
           </Grid.Row>
         </Grid.Column>

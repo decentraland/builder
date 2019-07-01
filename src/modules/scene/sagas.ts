@@ -30,7 +30,7 @@ import {
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
-import { getCurrentBounds, getCurrentProject } from 'modules/project/selectors'
+import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -242,9 +242,8 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { layout, asset } = action.payload
-
-  const currentProject: Project | null = yield select(getCurrentProject)
+  const { layout, asset, projectId } = action.payload
+  const currentProject: Project | null = yield select(getProject(projectId))
   if (!currentProject) return
 
   const scene: Scene | null = yield select(getScene(currentProject.sceneId))

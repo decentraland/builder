@@ -1,13 +1,12 @@
 import * as React from 'react'
 
-import { Button, Dropdown, Popup } from 'decentraland-ui'
+import { Button, Popup } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { preventDefault } from 'lib/preventDefault'
 import { getExceededMetrics } from 'modules/scene/utils'
-
+import { DeploymentStatus } from 'modules/deployment/types'
+import { DeployModalMetadata, DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { Props, DefaultProps } from './DeployButton.types'
 import './DeployButton.css'
-import { DeploymentStatus } from 'modules/deployment/types'
 
 export default class DeployButton extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
@@ -17,12 +16,25 @@ export default class DeployButton extends React.PureComponent<Props> {
   }
 
   handleClearDeployment = () => {
-    this.props.onOpenModal('DeployModal', {
-      intent: 'clear_deployment'
-    })
+    const { project, onOpenModal } = this.props
+    onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, projectId: project.id } as DeployModalMetadata)
   }
 
-  getExceededMetric() {
+  handleClick = () => {
+    const { project, onOpenModal } = this.props
+    const canUpdate = this.canUpdate()
+    onOpenModal('DeployModal', {
+      view: canUpdate ? DeployModalView.DEPLOY_TO_LAND : DeployModalView.NONE,
+      projectId: project.id
+    } as DeployModalMetadata)
+  }
+
+  canUpdate = () => {
+    const { deploymentStatus } = this.props
+    return deploymentStatus !== DeploymentStatus.UNPUBLISHED
+  }
+
+  getExceededMetric = () => {
     const { metrics, limits } = this.props
     const exceededMetrics = getExceededMetrics(metrics, limits)
     return exceededMetrics.length > 0 ? exceededMetrics[0] : ''
@@ -46,13 +58,11 @@ export default class DeployButton extends React.PureComponent<Props> {
   }
 
   render() {
-    const { deploymentStatus, areEntitiesOutOfBoundaries, isLoading, onClick } = this.props
+    const { deploymentStatus, areEntitiesOutOfBoundaries, isLoading } = this.props
     const exceededMetric = this.getExceededMetric()
     const didExceedMetrics = exceededMetric !== '' || areEntitiesOutOfBoundaries
-    const needsSync = deploymentStatus === DeploymentStatus.NEEDS_SYNC
-    const isPublished = deploymentStatus === DeploymentStatus.PUBLISHED
-    const canUpdate = needsSync || isPublished
-    const isButtonDisabled = isLoading || didExceedMetrics || isPublished
+    const canUpdate = this.canUpdate()
+    const isButtonDisabled = isLoading || didExceedMetrics || deploymentStatus === DeploymentStatus.PUBLISHED
     const isPopupDisabled = isLoading || !isButtonDisabled
 
     return (
@@ -64,7 +74,7 @@ export default class DeployButton extends React.PureComponent<Props> {
           disabled={isPopupDisabled}
           trigger={
             <span>
-              <Button primary size="mini" onClick={onClick} disabled={isButtonDisabled}>
+              <Button primary size="mini" onClick={this.handleClick} disabled={isButtonDisabled}>
                 {canUpdate ? 'Update Scene' : t('topbar.publish')}
               </Button>
             </span>
@@ -72,11 +82,6 @@ export default class DeployButton extends React.PureComponent<Props> {
           on="hover"
           inverted
         />
-        <Dropdown direction="left" onClick={preventDefault()} disabled={!canUpdate || isLoading}>
-          <Dropdown.Menu>
-            <Dropdown.Item text="Unpublish" onClick={this.handleClearDeployment} />
-          </Dropdown.Menu>
-        </Dropdown>
       </span>
     )
   }

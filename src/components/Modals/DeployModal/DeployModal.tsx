@@ -1,29 +1,24 @@
 import * as React from 'react'
 import { Button, Header } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import Icon from 'components/Icon'
 import DeployToLand from './DeployToLand'
 import DeployToPool from './DeployToPool'
 import ClearDeployment from './ClearDeployment'
 import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
-import Icon from 'components/Icon'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
-  state: State = this.getBaseState()
+  state: State = {
+    view: DeployModalView.NONE
+  }
 
   componentDidMount() {
     const { metadata } = this.props
-    if (metadata && metadata.intent === 'clear_deployment') {
+    if (metadata && metadata.view === DeployModalView.CLEAR_DEPLOYMENT) {
       this.setState({
         view: DeployModalView.CLEAR_DEPLOYMENT
       })
-    }
-  }
-
-  getBaseState(): State {
-    const { deployment } = this.props
-    return {
-      view: deployment ? DeployModalView.DEPLOY_TO_LAND : DeployModalView.NONE
     }
   }
 
@@ -86,19 +81,30 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     )
   }
 
-  render() {
+  wrapInModal = (view: JSX.Element) => {
     const { name } = this.props
-    const { view } = this.state
-
     return (
       <Modal name={name} onClose={this.handleClose}>
-        {view === DeployModalView.CLEAR_DEPLOYMENT && <ClearDeployment onClose={this.handleClose} />}
-        {view === DeployModalView.DEPLOY_TO_LAND && (
-          <DeployToLand onClose={this.handleClose} onDeployToPool={this.handleDeployToPool} onBack={this.handleBack} />
-        )}
-        {view === DeployModalView.DEPLOY_TO_POOL && <DeployToPool onClose={this.handleClose} />}
-        {view === DeployModalView.NONE && this.renderChoiceForm()}
+        {view}
       </Modal>
     )
+  }
+
+  render() {
+    const { metadata } = this.props
+    const { view } = this.state
+
+    if (view === DeployModalView.CLEAR_DEPLOYMENT) {
+      return this.wrapInModal(<ClearDeployment projectId={metadata ? metadata.projectId : undefined} onClose={this.handleClose} />)
+    }
+    if (view === DeployModalView.DEPLOY_TO_LAND) {
+      return this.wrapInModal(<DeployToLand onDeployToPool={this.handleDeployToPool} onBack={this.handleBack} onClose={this.handleClose} />)
+    }
+
+    if (view === DeployModalView.DEPLOY_TO_POOL) {
+      return this.wrapInModal(<DeployToPool onClose={this.handleClose} />)
+    }
+
+    return this.wrapInModal(this.renderChoiceForm())
   }
 }

@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import { Dropdown, Confirm, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { DeployModalMetadata, DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { getProjectDimensions } from 'modules/project/utils'
+import { DeploymentStatus as Status } from 'modules/deployment/types'
 import DeploymentStatus from 'components/DeploymentStatus'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
@@ -49,9 +51,15 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     this.props.onOpenModal('ExportModal', { project: this.props.project })
   }
 
+  handleClearDeployment = () => {
+    const { project, onOpenModal } = this.props
+    onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, projectId: project.id } as DeployModalMetadata)
+  }
+
   render() {
-    const { project, items, onClick } = this.props
+    const { project, items, deploymentStatus, onClick } = this.props
     const { isDeleting } = this.state
+    const canClearDeployment = deploymentStatus !== Status.UNPUBLISHED
 
     let style = {}
     let classes = 'ProjectCard'
@@ -72,6 +80,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
             <Dropdown.Item text={t('home_page.project_actions.export_project')} onClick={this.handleExportScene} />
             <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
+            {canClearDeployment && <Dropdown.Item text="Unpublish" onClick={this.handleClearDeployment} />}
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">

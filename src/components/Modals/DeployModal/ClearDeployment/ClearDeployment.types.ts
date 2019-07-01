@@ -7,6 +7,7 @@ import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
 
 export type Props = SignInProps & {
+  projectId: string
   isConnected: boolean
   isUploadingAssets: boolean
   isCreatingFiles: boolean
@@ -22,6 +23,8 @@ export type State = {
   hasError: boolean
   needsConfirmation: boolean
 }
+
+export type OwnProps = Pick<Props, 'projectId'>
 
 export type MapStateProps = Pick<
   Props,

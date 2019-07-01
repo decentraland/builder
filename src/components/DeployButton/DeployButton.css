@@ -39,5 +39,5 @@
 }
 
 .ui.visible.popup.inverted.publish-disabled:before {
-  right: 30px; /* The arrow needs to be in the middle of the button - kinda */
+  right: 40px; /* The arrow needs to be in the middle of the button - kinda */
 }

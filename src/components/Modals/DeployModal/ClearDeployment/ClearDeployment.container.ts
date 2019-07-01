@@ -1,24 +1,18 @@
 import { connect } from 'react-redux'
 
-import { RootState } from 'modules/common/types'
 import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import {
-  isUploadingAssets,
-  getProgress as getUploadProgress,
-  isCreatingFiles,
-  getCurrentDeploymentStatus
-} from 'modules/deployment/selectors'
-
-import { MapStateProps, MapDispatchProps, MapDispatch } from './ClearDeployment.types'
-import WalletSignIn from './ClearDeployment'
 import { clearDeploymentRequest } from 'modules/deployment/actions'
+import { getProject } from 'modules/project/selectors'
+import { RootState } from 'modules/common/types'
+import { isUploadingAssets, getProgress as getUploadProgress, isCreatingFiles, getDeploymentStatus } from 'modules/deployment/selectors'
 
-import { getCurrentProject } from 'modules/project/selectors'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ClearDeployment.types'
+import WalletSignIn from './ClearDeployment'
 
-const mapState = (state: RootState): MapStateProps => {
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
-    project: getCurrentProject(state),
+    project: getProject(ownProps.projectId)(state),
     isConnecting: isConnecting(state),
     isConnected: isConnected(state),
     isUploadingAssets: isUploadingAssets(state),
@@ -26,7 +20,7 @@ const mapState = (state: RootState): MapStateProps => {
     hasError: !!getWalletError(state),
     ethAddress: getAddress(state),
     deploymentProgress: getUploadProgress(state),
-    deploymentStatus: getCurrentDeploymentStatus(state)
+    deploymentStatus: getDeploymentStatus(ownProps.projectId)(state)
   }
 }
 

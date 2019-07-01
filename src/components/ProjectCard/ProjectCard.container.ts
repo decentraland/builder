@@ -4,14 +4,17 @@ import { RootState } from 'modules/common/types'
 import { deleteProject, duplicateProject } from 'modules/project/actions'
 import { getSceneById } from 'modules/scene/selectors'
 import { openModal } from 'modules/modal/actions'
-import { Project } from 'modules/project/types'
-import { MapStateProps, MapDispatch, MapDispatchProps } from './ProjectCard.types'
-import ProjectCard from './ProjectCard'
 
-const mapState = (state: RootState, { project }: { project: Project }): MapStateProps => {
+import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
+import ProjectCard from './ProjectCard'
+import { getDeploymentStatus } from 'modules/deployment/selectors'
+
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
+  const { project } = ownProps
   const scene = getSceneById(project.sceneId)(state)
   return {
-    items: scene ? scene.metrics.entities : 0
+    items: scene ? scene.metrics.entities : 0,
+    deploymentStatus: getDeploymentStatus(ownProps.project.id)(state)
   }
 }
 

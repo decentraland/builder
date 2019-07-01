@@ -114,7 +114,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
 
   if (project) {
     try {
-      const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(placement.point, placement.rotation)
+      const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation)
       const rootCID = yield call(() => getCID(contentFiles, true))
       const manifest = yield call(() => getFileManifest(contentFiles))
       const timestamp = Math.round(Date.now() / 1000)
@@ -165,7 +165,7 @@ function* handleClearDeployment(action: ClearDeploymentRequestAction) {
 
   if (project && deployment) {
     const { placement } = deployment
-    const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(placement.point, placement.rotation, true)
+    const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation, true)
     const rootCID = yield call(() => getCID(contentFiles, true))
     const manifest = yield call(() => getFileManifest(contentFiles))
     const timestamp = Math.round(Date.now() / 1000)
@@ -185,37 +185,31 @@ function* handleClearDeployment(action: ClearDeploymentRequestAction) {
   }
 }
 
-function* getContentServiceFiles(point: Coordinate, rotation: Rotation, createEmptyGame: boolean = false) {
-  const project: Project | null = yield select(getCurrentProject)
+function* getContentServiceFiles(project: Project, point: Coordinate, rotation: Rotation, createEmptyGame: boolean = false) {
+  const scene: Scene = yield select(getSceneById(project.sceneId))
 
-  if (project) {
-    const scene: Scene = yield select(getSceneById(project.sceneId))
+  const files = yield call(() =>
+    createFiles({
+      project,
+      scene,
+      point,
+      rotation,
+      onProgress: handleProgress(ProgressStage.CREATE_FILES)
+    })
+  )
 
-    const files = yield call(() =>
-      createFiles({
-        project,
-        scene,
-        point,
-        rotation,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES)
-      })
-    )
+  let contentFiles: ContentServiceFile[] = []
 
-    let contentFiles: ContentServiceFile[] = []
-
-    for (const fileName of Object.keys(files)) {
-      if (blacklist.includes(fileName)) continue
-      let file: ContentServiceFile
-      if (fileName === EXPORT_PATH.BUNDLED_GAME_FILE && createEmptyGame) {
-        file = yield call(() => makeContentFile(fileName, createGameFileBundle('')))
-      } else {
-        file = yield call(() => makeContentFile(fileName, files[fileName]))
-      }
-      contentFiles.push(file)
+  for (const fileName of Object.keys(files)) {
+    if (blacklist.includes(fileName)) continue
+    let file: ContentServiceFile
+    if (fileName === EXPORT_PATH.BUNDLED_GAME_FILE && createEmptyGame) {
+      file = yield call(() => makeContentFile(fileName, createGameFileBundle('')))
+    } else {
+      file = yield call(() => makeContentFile(fileName, files[fileName]))
     }
-
-    return contentFiles
+    contentFiles.push(file)
   }
 
-  return []
+  return contentFiles
 }

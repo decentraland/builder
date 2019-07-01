@@ -1,12 +1,12 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps } from './DeployModal.types'
+import { getDeployment } from 'modules/deployment/selectors'
+import { MapStateProps, MapDispatchProps, OwnProps } from './DeployModal.types'
 import DeployModal from './DeployModal'
-import { getCurrentDeployment } from 'modules/deployment/selectors'
 
-const mapState = (state: RootState): MapStateProps => ({
-  deployment: getCurrentDeployment(state)
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
+  deployment: getDeployment(ownProps.metadata.projectId)(state)
 })
 
 const mapDispatch = (_: Dispatch): MapDispatchProps => ({})
