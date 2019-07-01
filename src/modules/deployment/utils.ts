@@ -5,7 +5,7 @@ const pull = require('pull-stream')
 const Importer = require('ipfs-unixfs-engine').Importer
 const toBuffer = require('blob-to-buffer')
 
-import { ContentIdentifier, ContentServiceFile, ContentManifest, ContentUploadRequestMetadata } from './types'
+import { ContentIdentifier, ContentServiceFile, ContentManifest, ContentUploadRequestMetadata, Deployment, DeploymentStatus } from './types'
 
 export async function getCID(files: ContentServiceFile[], shareRoot: boolean): Promise<string> {
   const importer = new Importer(new MemoryDatastore(), { onlyHash: true })
@@ -76,4 +76,13 @@ export function buildUploadRequestMetadata(
     timestamp,
     userId
   }
+}
+
+export function getStatus(deployment: Deployment) {
+  if (deployment) {
+    if (deployment.isDirty) return DeploymentStatus.NEEDS_SYNC
+    if (deployment.lastPublishedCID) return DeploymentStatus.PUBLISHED
+  }
+
+  return DeploymentStatus.UNPUBLISHED
 }

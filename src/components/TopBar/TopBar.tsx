@@ -78,7 +78,7 @@ export default class TopBar extends React.PureComponent<Props> {
             </Link>
             {currentProject ? (
               <>
-                <DeploymentStatus />
+                <DeploymentStatus projectId={currentProject.id} />
                 <div className="project-title" onClick={this.handleTitleClick} title={currentProject.title}>
                   {currentProject.title}
                 </div>

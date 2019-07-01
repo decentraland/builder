@@ -1,16 +1,19 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { MapStateProps } from './DeploymentStatus.types'
+import { queryRemoteCID } from 'modules/deployment/actions'
+import { getCurrentDeployment, getDeploymentStatus } from 'modules/deployment/selectors'
+import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './DeploymentStatus.types'
 import DeploymentStatus from './DeploymentStatus'
-import { getCurrentDeploymentStatus, getCurrentDeployment } from 'modules/deployment/selectors'
 
-const mapState = (state: RootState): MapStateProps => ({
-  status: getCurrentDeploymentStatus(state),
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
+  status: getDeploymentStatus(ownProps.projectId)(state),
   deployment: getCurrentDeployment(state)
 })
 
-const mapDispatch = () => ({})
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onQueryRemoteCID: (projectId: string) => dispatch(queryRemoteCID(projectId))
+})
 
 export default connect(
   mapState,

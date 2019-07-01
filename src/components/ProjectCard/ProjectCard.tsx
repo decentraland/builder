@@ -6,6 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { getProjectDimensions } from 'modules/project/utils'
+import DeploymentStatus from 'components/DeploymentStatus'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
 
@@ -65,6 +66,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     const children = (
       <>
         {Overlay}
+        <DeploymentStatus projectId={project.id} className="deployment-status" />
         <Dropdown direction="left" onClick={preventDefault()}>
           <Dropdown.Menu>
             <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />

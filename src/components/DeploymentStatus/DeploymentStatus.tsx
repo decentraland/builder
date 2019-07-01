@@ -5,10 +5,15 @@ import { Props } from './DeploymentStatus.types'
 import './DeploymentStatus.css'
 
 export default class DeploymentStatus extends React.PureComponent<Props> {
+  componentDidMount() {
+    const { projectId, onQueryRemoteCID } = this.props
+    onQueryRemoteCID(projectId)
+  }
+
   render() {
-    const { status, deployment } = this.props
+    const { deployment, status, className = '' } = this.props
     const { x, y } = deployment ? deployment.placement.point : { x: 0, y: 0 }
-    let classes = 'DeploymentStatus'
+    let classes = `DeploymentStatus ${className}`
 
     if (status === Status.PUBLISHED) {
       classes += ' published'
@@ -22,11 +27,7 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
       <Popup
         position="bottom left"
         content={<span>Published at {`${x},${y}`}</span>}
-        trigger={
-          <span>
-            <div className={classes} />
-          </span>
-        }
+        trigger={<span className={classes} />}
         on="hover"
         inverted
       />

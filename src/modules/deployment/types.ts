@@ -32,7 +32,7 @@ export type ContentUploadRequestMetadata = {
 }
 
 export type Deployment = {
-  cid: string | null // CID as reported by the content server
+  lastPublishedCID: string | null
   isDirty: boolean
   placement: Placement
 }

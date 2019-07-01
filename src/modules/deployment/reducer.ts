@@ -91,7 +91,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           ...state.data,
           [projectId]: {
             ...state.data[projectId],
-            cid,
+            lastPublishedCID: cid,
             placement: { ...placement },
             isDirty: false
           }

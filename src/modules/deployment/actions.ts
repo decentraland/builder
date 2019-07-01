@@ -56,3 +56,9 @@ export type SetProgressAction = ReturnType<typeof setProgress>
 export const MARK_DIRTY = 'Mark dirty'
 export const markDirty = (projectId: string, isDirty: boolean = true) => action(MARK_DIRTY, { projectId, isDirty })
 export type MarkDirtyAction = ReturnType<typeof markDirty>
+
+// Query remote CID
+
+export const QUERY_REMOTE_CID = 'Query remote CID'
+export const queryRemoteCID = (projectId: string) => action(QUERY_REMOTE_CID, { projectId })
+export type QueryRemoteCIDAction = ReturnType<typeof queryRemoteCID>

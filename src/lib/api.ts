@@ -102,7 +102,8 @@ export class API extends BaseAPI {
 
   async fetchContentServerValidation(x: number, y: number) {
     const req = await fetch(`${CONTENT_SERVER_URL}/validate?x=${x}&y=${y}`)
-    return req.json()
+    const res = await req.json()
+    return res
   }
 }
 

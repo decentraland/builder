@@ -12,6 +12,14 @@
   justify-content: center;
 }
 
+.ProjectCard .deployment-status {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 10px;
+  height: 10px;
+}
+
 .ProjectCard .project-data {
   width: 100%;
   margin: 90px 20px 0px 20px;

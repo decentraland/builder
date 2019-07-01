@@ -3,6 +3,7 @@
   width: 8px;
   height: 8px;
   margin-right: 10px;
+  display: block;
 }
 
 .DeploymentStatus.unpublished {

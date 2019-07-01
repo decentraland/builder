@@ -26,16 +26,17 @@ import {
   CLEAR_DEPLOYMENT_REQUEST,
   ClearDeploymentRequestAction,
   clearDeploymentFailure,
-  clearDeploymentSuccess
+  clearDeploymentSuccess,
+  QUERY_REMOTE_CID,
+  QueryRemoteCIDAction
 } from './actions'
 import { store } from 'modules/common/store'
 import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
-import { OPEN_EDITOR } from 'modules/editor/actions'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
-import { getCurrentDeployment, getCurrentDeploymentCID, getDeployment } from './selectors'
+import { getCurrentDeployment, getDeployment } from './selectors'
 import { EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
@@ -50,7 +51,7 @@ export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeployment)
-  yield takeLatest(OPEN_EDITOR, handleQueryRemoteCID)
+  yield takeLatest(QUERY_REMOTE_CID, handleQueryRemoteCID)
 
   yield takeLatest(ADD_ITEM, handleMarkDirty)
   yield takeLatest(DROP_ITEM, handleMarkDirty)
@@ -112,14 +113,14 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   }
 
   if (project) {
-    const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(placement.point, placement.rotation)
-    const rootCID = yield call(() => getCID(contentFiles, true))
-    const manifest = yield call(() => getFileManifest(contentFiles))
-    const timestamp = Math.round(Date.now() / 1000)
-    const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
-    const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
-
     try {
+      const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(placement.point, placement.rotation)
+      const rootCID = yield call(() => getCID(contentFiles, true))
+      const manifest = yield call(() => getFileManifest(contentFiles))
+      const timestamp = Math.round(Date.now() / 1000)
+      const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
+      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
+
       yield call(() =>
         api.uploadToContentService(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS))
       )
@@ -132,21 +133,19 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   }
 }
 
-function* handleQueryRemoteCID() {
-  const project: Project | null = yield select(getCurrentProject)
-  const deployment: Deployment | null = yield select(getCurrentDeployment)
-  if (!project || !deployment) return
+function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
+  const { projectId } = action.payload
+  const deployment: Deployment | null = yield select(getDeployment(projectId))
+  if (!deployment) return
   const { x, y } = deployment.placement.point
-
   try {
     const res: ContentServiceValidation = yield call(() => api.fetchContentServerValidation(x, y))
+    const lastPublishedCID: string | null = deployment.lastPublishedCID
     const remoteCID = res.root_cid
-    const localCID: string = yield select(getCurrentDeploymentCID)
 
-    if (remoteCID === localCID) {
-      yield put(markDirty(project.id, false))
-    } else {
-      yield put(markDirty(project.id))
+    if (!deployment.isDirty) {
+      const isSynced = remoteCID === lastPublishedCID
+      yield put(markDirty(projectId, !isSynced))
     }
   } catch (e) {
     // error handling
