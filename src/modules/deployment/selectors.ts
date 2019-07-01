@@ -3,7 +3,7 @@ import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { DeploymentState } from './reducer'
-import { ProgressStage, DeploymentStatus, Deployment } from './types'
+import { ProgressStage, DeploymentStatus, Deployment, Coordinate } from './types'
 import { getStatus } from './utils'
 
 export const getState = (state: RootState) => state.deployment
@@ -50,5 +50,20 @@ export const getCurrentDeploymentStatus = createSelector<RootState, DeploymentSt
     if (!project || Object.keys(data).length === 0) return DeploymentStatus.UNPUBLISHED
     const deployment = data[project.id]
     return getStatus(deployment)
+  }
+)
+
+export const getDeploymentsForMap = createSelector<RootState, DeploymentState['data'], Record<string, Coordinate>>(
+  getData,
+  data => {
+    const out: Record<string, Coordinate> = {}
+    for (let key in data) {
+      const deployment = data[key]
+      if (deployment) {
+        const { x, y } = deployment.placement.point
+        out[`${x},${y}`] = { x, y }
+      }
+    }
+    return out
   }
 )

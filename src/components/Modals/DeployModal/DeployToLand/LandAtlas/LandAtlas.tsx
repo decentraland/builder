@@ -3,12 +3,12 @@ import { api } from 'lib/api'
 import { Layer, Button, Atlas } from 'decentraland-ui'
 
 import Icon from 'components/Icon'
+import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
 
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
-import { IconName } from 'components/Icon/Icon.types'
 
 const ROTATION_ORDER: Rotation[] = ['north', 'east', 'south', 'west']
 const CLOCKWISE_ROTATION = 1
@@ -118,10 +118,15 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   authorizedLayer: Layer = (x: number, y: number) => {
+    const { occupiedParcels } = this.props
     const { parcels } = this.state
-    if (parcels[x + ',' + y]) {
+
+    if (occupiedParcels[x + ',' + y]) {
+      return { color: '#965853', scale: 1 }
+    } else if (parcels[x + ',' + y]) {
       return { color: '#00d3ff', scale: 1 }
     }
+
     return null
   }
 
@@ -204,11 +209,12 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { media, project } = this.props
+    const { media, project, occupiedParcels } = this.props
     const { placement, rotation, zoom, landTarget, parcels } = this.state
     const hasPlacement = !!placement && !!project && !!project.parcels
     const parcelCount = Object.keys(parcels).length
     const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
+    const isOccuppied = placement ? !!occupiedParcels[`${placement.point.x},${placement.point.y}`] : false
 
     return (
       <div className="LandAtlas">
@@ -217,6 +223,14 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             It seems that you don't own any LAND
             <span className="inline-action" onClick={this.handleNoAuthorizedParcels}>
               Submit to Scene pool
+            </span>
+          </div>
+        )}
+        {isOccuppied && (
+          <div className="notice">
+            This LAND is occupied by another Builder scene
+            <span className="inline-action" onClick={this.handleNoAuthorizedParcels}>
+              Unpublish
             </span>
           </div>
         )}
@@ -260,7 +274,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
               'Choose a parcel where to place your scene'
             )}
           </div>
-          <Button primary size="small" disabled={!hasPlacement} onClick={this.handleSelectPlacement}>
+          <Button primary size="small" disabled={!hasPlacement || isOccuppied} onClick={this.handleSelectPlacement}>
             Continue
           </Button>
         </div>

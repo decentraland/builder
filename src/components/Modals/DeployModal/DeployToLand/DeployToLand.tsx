@@ -189,7 +189,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderMap = () => {
-    const { ethAddress, media, project, deployment } = this.props
+    const { ethAddress, media, project, deployment, occupiedParcels } = this.props
     const initialPoint = deployment ? deployment.placement.point : undefined
     return (
       <div className="DeployToLand atlas">
@@ -204,6 +204,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           ethAddress={ethAddress}
           media={media}
           project={project}
+          occupiedParcels={occupiedParcels}
           initialPoint={initialPoint}
           onConfirmPlacement={this.handleConfirmPlacement}
           onNoAuthorizedParcels={this.handleDeployToPool}

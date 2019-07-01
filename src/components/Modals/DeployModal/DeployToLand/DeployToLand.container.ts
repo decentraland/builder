@@ -8,7 +8,8 @@ import {
   getProgress as getUploadProgress,
   isCreatingFiles,
   getCurrentDeploymentStatus,
-  getCurrentDeployment
+  getCurrentDeployment,
+  getDeploymentsForMap
 } from 'modules/deployment/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 
@@ -32,6 +33,7 @@ const mapState = (state: RootState): MapStateProps => {
     mediaProgress: getProgress(state),
     deploymentProgress: getUploadProgress(state),
     deploymentStatus: getCurrentDeploymentStatus(state),
+    occupiedParcels: getDeploymentsForMap(state),
     deployment: getCurrentDeployment(state)
   }
 }

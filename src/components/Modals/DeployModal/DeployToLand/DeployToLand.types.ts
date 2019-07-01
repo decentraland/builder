@@ -20,6 +20,7 @@ export type Props = SignInProps & {
   media: Media | null
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null
+  occupiedParcels: Record<string, Coordinate>
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
@@ -52,6 +53,7 @@ export type MapStateProps = Pick<
   | 'deployment'
   | 'mediaProgress'
   | 'deploymentProgress'
+  | 'occupiedParcels'
 >
 
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord'>
