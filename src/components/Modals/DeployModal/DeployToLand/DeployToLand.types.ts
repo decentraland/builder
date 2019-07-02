@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
 import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { Coordinate, Rotation, DeploymentStatus, Deployment } from 'modules/deployment/types'
+import { Coordinate, Rotation, DeploymentStatus, Deployment, OccupiedAtlasParcel } from 'modules/deployment/types'
 import { DeployToLandRequestAction, deployToLandRequest } from 'modules/deployment/actions'
 import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
@@ -20,11 +20,12 @@ export type Props = SignInProps & {
   media: Media | null
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null
-  occupiedParcels: Record<string, Coordinate>
+  occupiedParcels: Record<string, OccupiedAtlasParcel>
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
   onDeployToPool: () => void
+  onClearDeployment: (projectId: string) => void
   onBack: () => void
 }
 

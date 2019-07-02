@@ -200,6 +200,24 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     this.props.onNoAuthorizedParcels()
   }
 
+  handleClearDeployment = () => {
+    const occupiedParcel = this.getOccupiedParcel()!
+    this.props.onClearDeployment(occupiedParcel.projectId)
+  }
+
+  truncateTitle(input: string, max: number = 10) {
+    if (input.length > max) {
+      return input.substring(0, max) + '...'
+    }
+    return input
+  }
+
+  getOccupiedParcel = () => {
+    const { occupiedParcels } = this.props
+    const { placement } = this.state
+    return placement ? occupiedParcels[`${placement.point.x},${placement.point.y}`] : null
+  }
+
   renderTool = (icon: IconName, clickHandler: () => void) => {
     return (
       <div className={`tool ${icon}`} onClick={clickHandler}>
@@ -209,12 +227,12 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { media, project, occupiedParcels } = this.props
+    const { media, project } = this.props
     const { placement, rotation, zoom, landTarget, parcels } = this.state
     const hasPlacement = !!placement && !!project && !!project.parcels
     const parcelCount = Object.keys(parcels).length
     const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
-    const isOccuppied = placement ? !!occupiedParcels[`${placement.point.x},${placement.point.y}`] : false
+    const occupiedParcel = this.getOccupiedParcel()
 
     return (
       <div className="LandAtlas">
@@ -226,10 +244,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             </span>
           </div>
         )}
-        {isOccuppied && (
+        {occupiedParcel && (
           <div className="notice">
-            This LAND is occupied by another Builder scene
-            <span className="inline-action" onClick={this.handleNoAuthorizedParcels}>
+            Scene "{this.truncateTitle(occupiedParcel.title)}" is already published at this position
+            <span className="inline-action" onClick={this.handleClearDeployment}>
               Unpublish
             </span>
           </div>
@@ -274,7 +292,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
               'Choose a parcel where to place your scene'
             )}
           </div>
-          <Button primary size="small" disabled={!hasPlacement || isOccuppied} onClick={this.handleSelectPlacement}>
+          <Button primary size="small" disabled={!hasPlacement || !!occupiedParcel} onClick={this.handleSelectPlacement}>
             Continue
           </Button>
         </div>

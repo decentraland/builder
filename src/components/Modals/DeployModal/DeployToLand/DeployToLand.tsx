@@ -89,6 +89,10 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     this.props.onDeployToPool()
   }
 
+  handleClearDeployment = (projectId: string) => {
+    this.props.onClearDeployment(projectId)
+  }
+
   renderConnectForm = () => {
     const { hasError, isConnecting } = this.props
     let errorClasses = 'error'
@@ -208,6 +212,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           initialPoint={initialPoint}
           onConfirmPlacement={this.handleConfirmPlacement}
           onNoAuthorizedParcels={this.handleDeployToPool}
+          onClearDeployment={this.handleClearDeployment}
         />
       </div>
     )

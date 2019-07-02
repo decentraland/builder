@@ -8,6 +8,7 @@ export type Props = ModalProps & {
 
 export type State = {
   view: DeployModalView
+  projectId: string | null
 }
 
 export type Step = {

@@ -59,3 +59,8 @@ export type ContentServiceValidation = {
   validityType: number
   value: string
 }
+
+export type OccupiedAtlasParcel = Coordinate & {
+  title: string
+  projectId: string
+}

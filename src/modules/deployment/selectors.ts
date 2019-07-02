@@ -1,10 +1,12 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
-import { getCurrentProject } from 'modules/project/selectors'
+import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { DeploymentState } from './reducer'
-import { ProgressStage, DeploymentStatus, Deployment, Coordinate } from './types'
+import { ProgressStage, DeploymentStatus, Deployment, OccupiedAtlasParcel } from './types'
 import { getStatus } from './utils'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { getParcelOrientation } from 'modules/project/utils'
 
 export const getState = (state: RootState) => state.deployment
 export const getData = (state: RootState) => getState(state).data
@@ -53,15 +55,28 @@ export const getCurrentDeploymentStatus = createSelector<RootState, DeploymentSt
   }
 )
 
-export const getDeploymentsForMap = createSelector<RootState, DeploymentState['data'], Record<string, Coordinate>>(
+export const getOccuppiedParcels = createSelector<
+  RootState,
+  DeploymentState['data'],
+  DataByKey<Project>,
+  Record<string, OccupiedAtlasParcel>
+>(
   getData,
-  data => {
-    const out: Record<string, Coordinate> = {}
-    for (let key in data) {
-      const deployment = data[key]
-      if (deployment) {
-        const { x, y } = deployment.placement.point
-        out[`${x},${y}`] = { x, y }
+  getProjects,
+  (data, projects) => {
+    const out: Record<string, OccupiedAtlasParcel> = {}
+    for (let projectId in data) {
+      const deployment = data[projectId]
+      const project = projects[projectId]
+
+      if (deployment && project) {
+        const { title } = project
+        const { point, rotation } = deployment.placement
+        const deployedParcels = getParcelOrientation(project, point, rotation)
+        for (let coordinate of deployedParcels) {
+          const { x, y } = coordinate
+          out[`${x},${y}`] = { x, y, title, projectId }
+        }
       }
     }
     return out

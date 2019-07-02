@@ -1,5 +1,7 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
+import { DELETE_PROJECT, DeleteProjectAction } from 'modules/project/actions'
 import {
   DEPLOY_TO_POOL_REQUEST,
   DEPLOY_TO_POOL_SUCCESS,
@@ -19,7 +21,6 @@ import {
   CLEAR_DEPLOYMENT_FAILURE
 } from './actions'
 import { ProgressStage, Deployment } from './types'
-import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 export type DeploymentState = {
   data: DataByKey<Deployment>
@@ -50,6 +51,7 @@ export type DeploymentReducerAction =
   | MarkDirtyAction
   | ClearDeploymentSuccessAction
   | ClearDeploymentFailureAction
+  | DeleteProjectAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -151,6 +153,21 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }
+    }
+    case DELETE_PROJECT: {
+      const { project } = action.payload
+      const newState = {
+        ...state,
+        data: {
+          ...state.data
+        },
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        }
+      }
+      delete newState.data[project.id]
+      return newState
     }
     default:
       return state

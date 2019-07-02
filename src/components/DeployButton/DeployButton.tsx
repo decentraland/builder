@@ -23,6 +23,7 @@ export default class DeployButton extends React.PureComponent<Props> {
   handleClick = () => {
     const { project, onOpenModal } = this.props
     const canUpdate = this.canUpdate()
+
     onOpenModal('DeployModal', {
       view: canUpdate ? DeployModalView.DEPLOY_TO_LAND : DeployModalView.NONE,
       projectId: project.id
