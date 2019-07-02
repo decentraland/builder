@@ -1,12 +1,13 @@
 import * as React from 'react'
-import { Field, Form, Button } from 'decentraland-ui'
-import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { Field, Form, Button, Header, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import ProjectFields from 'components/ProjectFields'
+import Icon from 'components/Icon'
 
 import { EMAIL_INTEREST, api } from 'lib/api'
 import { Props, State } from './DeployToPool.types'
+import './DeployToPool.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
@@ -89,21 +90,23 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { error, isLoading } = this.props
     const { project, email, ethAddress } = this.state
     const { title, description } = project
+    const isSubmitDisabled = !email
 
     return (
-      <>
-        <div className="subtitle">{t('deployment_modal.pool.subtitle')}</div>
-        <div className="details">
-          <div className="category">{t('global.project')}</div>
+      <div className="DeployToPool">
+        <div className="modal-header">
+          <Icon name="modal-close" onClick={this.handleClose} />
+        </div>
+        <Header size="large" className="modal-title">
+          Submit Scene
+        </Header>
+        <p className="modal-subtitle">You are about to submit your work to the Scene pool</p>
+        <Form className="form" onSubmit={this.handleSubmit}>
           <ProjectFields.Title value={title} onChange={this.handleTitleChange} required disabled={isLoading} />
           <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} disabled={isLoading} />
-        </div>
-        <div className="details">
-          <div className="category">{t('deployment_modal.pool.contact_information')}</div>
           <Field
             type="email"
             label={t('global.email')}
-            icon="asterisk"
             placeholder="mail@domain.com"
             value={email}
             onChange={this.handleEmailChange}
@@ -125,8 +128,12 @@ export default class DeployModal extends React.PureComponent<Props, State> {
               {t('deployment_modal.pool.error_ocurred')} "{error}"
             </div>
           ) : null}
-        </div>
-      </>
+
+          <Button className="submit" primary disabled={isSubmitDisabled}>
+            Apply
+          </Button>
+        </Form>
+      </div>
     )
   }
 
@@ -134,18 +141,16 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { media, onClose } = this.props
 
     return (
-      <>
+      <div className="DeployToPool success">
         <img src={media ? media.thumbnail : ''} className="preview" />
-        <Modal.Header>{t('deployment_modal.pool.success.title')}</Modal.Header>
-        <Modal.Content>
-          <div className="success">{t('deployment_modal.pool.success.body')}</div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button primary onClick={onClose}>
-            {t('global.done')}
-          </Button>
-        </Modal.Actions>
-      </>
+        <Header size="large" className="modal-title">
+          {t('deployment_modal.pool.success.title')}
+        </Header>
+        <p className="modal-subtitle">{t('deployment_modal.pool.success.body')}</p>
+        <Button className="submit" primary onClick={onClose}>
+          {t('global.done')}
+        </Button>
+      </div>
     )
   }
 
@@ -157,60 +162,31 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       classes += ' active'
     }
 
-    let title = <>t('global.loading')</>
-
-    if (isRecording) {
-      title = (
-        <>
-          {t('deployment_modal.pool.progress')}&hellip;&nbsp;{progress}%{' '}
-        </>
-      )
-    } else if (isUploadingRecording) {
-      title = (
-        <>
-          {t('deployment_modal.pool.uploading')}&hellip;&nbsp;{progress}%
-        </>
-      )
-    }
-
     return (
-      <>
-        <Modal.Header>{title}</Modal.Header>
-        <Modal.Content>
-          <div className="progress-bar-container">
-            <div className={classes} style={{ width: `${progress}%` }} />
-          </div>
-        </Modal.Content>
-      </>
+      <div className="DeployToPool progress">
+        <Header size="large" className="modal-title">
+          {isRecording && 'Capturing Preview'}
+          {isUploadingRecording && 'Uploading Preview'}
+        </Header>
+        <p className="modal-subtitle">
+          {isRecording && 'Please wait while a preview of your scene is captured.'}
+          {isUploadingRecording && 'Please wait while finish up your request.'}
+        </p>
+        <div className="progress-bar-container">
+          <div className={classes} style={{ width: `${progress}%` }} />
+        </div>
+      </div>
     )
   }
 
   render() {
-    const { onClose, isLoading } = this.props
-    const { email } = this.state
-    const isSubmitDisabled = !email
+    const { isRecording, isUploadingRecording, isLoading } = this.props
+    const hasProgress = isRecording || isUploadingRecording
 
-    if (this.state.isSuccess) {
-      return this.renderSuccess()
-    }
+    if (this.state.isSuccess) return this.renderSuccess()
+    if (hasProgress) return this.renderProgress()
+    if (!hasProgress && !isLoading) return this.renderForm()
 
-    if (isLoading) {
-      return this.renderProgress()
-    }
-
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <Modal.Header>{t('deployment_modal.pool.title')}</Modal.Header>
-        <Modal.Content>{this.renderForm()}</Modal.Content>
-        <Modal.Actions>
-          <Button primary disabled={isSubmitDisabled}>
-            {t('global.submit')}
-          </Button>
-          <Button secondary onClick={onClose}>
-            {t('global.cancel')}
-          </Button>
-        </Modal.Actions>
-      </Form>
-    )
+    return <Loader size="big" />
   }
 }

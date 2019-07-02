@@ -71,7 +71,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
           <Modal.Header>{t('edit_project_modal.title')}</Modal.Header>
           <Modal.Content>
             <div className="details">
-              <ProjectFields.Title value={title} onChange={this.handleTitleChange} required />
+              <ProjectFields.Title value={title} onChange={this.handleTitleChange} required icon="asterisk" />
               <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} />
 
               <div className="picker">

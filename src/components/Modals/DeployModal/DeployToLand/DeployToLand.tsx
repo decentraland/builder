@@ -220,7 +220,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   renderSuccess = () => {
     return (
-      <div className="DeployToLand progress">
+      <div className="DeployToLand success">
         <Header size="large" className="modal-title">
           Thank you!
         </Header>

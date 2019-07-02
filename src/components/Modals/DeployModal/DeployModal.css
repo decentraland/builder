@@ -3,62 +3,6 @@
   border-radius: 12px;
 }
 
-.DeployModal > .description {
-  display: block;
-  margin-bottom: 50px;
-}
-
-.DeployModal > .category {
-  margin-bottom: 20px;
-  text-transform: uppercase;
-}
-
-.DeployModal > .details {
-  margin-top: 30px;
-}
-
-.DeployModal > .terms {
-  display: flex;
-  align-items: center;
-  color: var(--secondary-text);
-  font-size: 15px;
-}
-
-.DeployModal > .terms .ui.radio.checkbox {
-  height: 27px;
-}
-
-.DeployModal > .terms .ui.checkbox label {
-  margin-right: 0px;
-}
-
-.DeployModal > .actions .ui.loader {
-  position: relative;
-  top: 24px;
-}
-
-.DeployModal > .terms,
-.DeployModal > .terms a {
-  font-size: 17px;
-}
-
-.DeployModal > .preview {
-  width: 100%;
-  height: 300px;
-  display: block;
-  object-fit: cover;
-}
-
-.DeployModal > .success {
-  display: flex;
-  flex-direction: column;
-}
-
-.DeployModal > .error {
-  margin-top: 24px;
-  color: var(--error);
-}
-
 .DeployModal .progress-bar-container {
   width: 100%;
   background: var(--secondary-on-modal);
@@ -129,7 +73,7 @@
 }
 
 .DeployModal .choice-form .card {
-  background: rgba(var(--bluish-steel-raw), 0.32);
+  background: rgba(var(--purplish-grey-raw), 0.32);
   padding: 20px;
   border-radius: 8px;
   display: flex;
