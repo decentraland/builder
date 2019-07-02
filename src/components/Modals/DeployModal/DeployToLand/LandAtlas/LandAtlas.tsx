@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { api } from 'lib/api'
-import { Layer, Button, Atlas } from 'decentraland-ui'
+import { Layer, Button, Atlas, Popup } from 'decentraland-ui'
 
 import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
@@ -200,11 +200,6 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     this.props.onNoAuthorizedParcels()
   }
 
-  handleClearDeployment = () => {
-    const occupiedParcel = this.getOccupiedParcel()!
-    this.props.onClearDeployment(occupiedParcel.projectId)
-  }
-
   truncateTitle(input: string, max: number = 10) {
     if (input.length > max) {
       return input.substring(0, max) + '...'
@@ -212,17 +207,29 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     return input
   }
 
-  getOccupiedParcel = () => {
-    const { occupiedParcels } = this.props
+  hasOccupiedParcels = () => {
+    const { occupiedParcels, project } = this.props
     const { placement } = this.state
-    return placement ? occupiedParcels[`${placement.point.x},${placement.point.y}`] : null
+    if (project && placement) {
+      const projectParcels = getParcelOrientation(project, placement.point, placement.rotation)
+      return projectParcels.some(parcel => !!occupiedParcels[`${parcel.x},${parcel.y}`])
+    }
+    return false
   }
 
-  renderTool = (icon: IconName, clickHandler: () => void) => {
+  renderTool = (icon: IconName, tooltip: string, clickHandler: () => void) => {
     return (
-      <div className={`tool ${icon}`} onClick={clickHandler}>
-        <Icon name={icon} />
-      </div>
+      <Popup
+        content={tooltip}
+        position="top center"
+        trigger={
+          <div className={`tool ${icon}`} onClick={clickHandler}>
+            <Icon name={icon} />
+          </div>
+        }
+        on="hover"
+        inverted
+      />
     )
   }
 
@@ -232,7 +239,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const hasPlacement = !!placement && !!project && !!project.parcels
     const parcelCount = Object.keys(parcels).length
     const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
-    const occupiedParcel = this.getOccupiedParcel()
+    const hasOccupiedParcels = this.hasOccupiedParcels()
 
     return (
       <div className="LandAtlas">
@@ -244,14 +251,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             </span>
           </div>
         )}
-        {occupiedParcel && (
-          <div className="notice">
-            Scene "{this.truncateTitle(occupiedParcel.title)}" is already published at this position
-            <span className="inline-action" onClick={this.handleClearDeployment}>
-              Unpublish
-            </span>
-          </div>
-        )}
+        {hasOccupiedParcels && <div className="notice">At least one scene is already published at this location</div>}
         <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
           <img src={media ? media[rotation] : ''} />
           <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
@@ -263,10 +263,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
         </div>
         <div className="atlas-container">
           <div className="tool-container">
-            {this.renderTool('locate-land', this.handleLocateLand)}
+            {this.renderTool('locate-land', 'Locate next LAND', this.handleLocateLand)}
             <div className="tool-group">
-              {this.renderTool('atlas-zoom-out', this.handleZoomOut)}
-              {this.renderTool('atlas-zoom-in', this.handleZoomIn)}
+              {this.renderTool('atlas-zoom-out', 'Zoom in', this.handleZoomOut)}
+              {this.renderTool('atlas-zoom-in', 'Zoom out', this.handleZoomIn)}
             </div>
           </div>
 
@@ -292,9 +292,27 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
               'Choose a parcel where to place your scene'
             )}
           </div>
-          <Button primary size="small" disabled={!hasPlacement || !!occupiedParcel} onClick={this.handleSelectPlacement}>
-            Continue
-          </Button>
+          <Popup
+            className="publish-disabled"
+            content={
+              <span>
+                Free up LAND space.
+                <br />
+                Unpublish scenes from your dashboard.
+              </span>
+            }
+            position="top center"
+            disabled={!hasOccupiedParcels}
+            trigger={
+              <span>
+                <Button primary size="small" disabled={!hasPlacement || hasOccupiedParcels} onClick={this.handleSelectPlacement}>
+                  Continue
+                </Button>
+              </span>
+            }
+            on="hover"
+            inverted
+          />
         </div>
       </div>
     )

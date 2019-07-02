@@ -32,7 +32,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="DeployToLand">
+      <div className="ClearDeployment">
         <Header size="large" className="modal-title">
           Unpublish scene
         </Header>
@@ -61,7 +61,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="DeployToLand progress">
+      <div className="ClearDeployment progress">
         <Header size="large" className="modal-title">
           {isUploadingAssets && 'Uploading assets'}
           {isCreatingFiles && 'Creating Asset files'}
@@ -81,7 +81,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     const { project } = this.props
 
     return (
-      <div className="DeployToLand confirmation">
+      <div className="ClearDeployment confirmation">
         <Header size="large" className="modal-title">
           Unpublish Scene
         </Header>
@@ -96,7 +96,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
 
   renderSuccess = () => {
     return (
-      <div className="DeployToLand progress">
+      <div className="ClearDeployment progress">
         <Header size="large" className="modal-title">
           All clear!
         </Header>

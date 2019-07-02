@@ -105,10 +105,11 @@
 .LandAtlas .notice {
   position: absolute;
   z-index: 999999;
-  background: rgba(36, 33, 41, 0.83);
+  background: var(--card);
+  text-transform: uppercase;
+  font-size: 12px;
   width: 100%;
   padding: 16px;
-  font-size: 16px;
   text-align: center;
   user-select: none;
 }
