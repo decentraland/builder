@@ -17,6 +17,7 @@ export type Props = SignInProps & {
   deploymentStatus: DeploymentStatus
   onClose: () => void
   onClearDeployment: typeof clearDeploymentRequest
+  onContinue?: () => void
 }
 
 export type State = {
