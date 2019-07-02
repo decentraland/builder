@@ -9,7 +9,6 @@ export type Props = ModalProps & {
 export type State = {
   view: DeployModalView
   projectId: string | null
-  origin: DeployOrigin
 }
 
 export type Step = {
@@ -20,11 +19,6 @@ export type Step = {
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'deployment'>
 export type MapDispatchProps = {}
-
-export enum DeployOrigin {
-  NONE = 'NONE',
-  DEPLOY_TO_LAND = 'DEPLOY_TO_LAND'
-}
 
 export enum DeployModalView {
   NONE = 'NONE',

@@ -32,7 +32,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="ClearDeployment">
+      <div className="DeployToLand">
         <Header size="large" className="modal-title">
           Unpublish scene
         </Header>
@@ -61,7 +61,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="ClearDeployment progress">
+      <div className="DeployToLand progress">
         <Header size="large" className="modal-title">
           {isUploadingAssets && 'Uploading assets'}
           {isCreatingFiles && 'Creating Asset files'}
@@ -81,11 +81,11 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     const { project } = this.props
 
     return (
-      <div className="ClearDeployment confirmation">
+      <div className="DeployToLand confirmation">
         <Header size="large" className="modal-title">
           Unpublish Scene
         </Header>
-        <p className="modal-subtitle">You are about to unpublish "{project!.title}" from the Metaverse</p>
+        <p className="modal-subtitle">You are about to unpublish "{project!.title}" from the Metaverse:</p>
 
         <Button primary size="small" onClick={this.handleDeploy}>
           continue
@@ -95,27 +95,18 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderSuccess = () => {
-    const { onContinue } = this.props
     return (
       <div className="DeployToLand progress">
         <Header size="large" className="modal-title">
           All clear!
         </Header>
         <p className="modal-subtitle">The land is now clear and ready to host something else!</p>
-        {onContinue ? (
-          <Button size="small" primary onClick={onContinue}>
-            Continue
-          </Button>
-        ) : (
-          <>
-            <Button size="small" primary>
-              Keep working
-            </Button>
-            <Button size="small" secondary>
-              Back to Dashboard
-            </Button>
-          </>
-        )}
+        <Button size="small" primary>
+          Keep working
+        </Button>
+        <Button size="small" secondary>
+          Back to Dashboard
+        </Button>
       </div>
     )
   }

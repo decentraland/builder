@@ -5,13 +5,12 @@ import Icon from 'components/Icon'
 import DeployToLand from './DeployToLand'
 import DeployToPool from './DeployToPool'
 import ClearDeployment from './ClearDeployment'
-import { Props, State, DeployModalView, DeployOrigin } from './DeployModal.types'
+import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state: State = {
     view: DeployModalView.NONE,
-    origin: DeployOrigin.NONE,
     projectId: null
   }
 
@@ -40,22 +39,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   handleClearDeployment = (projectId: string) => {
     this.setState({
       view: DeployModalView.CLEAR_DEPLOYMENT,
-      origin: DeployOrigin.DEPLOY_TO_LAND,
       projectId
-    })
-  }
-
-  handleSuccess = () => {
-    const { origin } = this.state
-    let nextView: DeployModalView = DeployModalView.NONE
-
-    if (origin === DeployOrigin.DEPLOY_TO_LAND) {
-      nextView = DeployModalView.DEPLOY_TO_LAND
-    }
-
-    this.setState({
-      view: nextView,
-      origin: DeployOrigin.NONE
     })
   }
 
@@ -116,11 +100,10 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { view, projectId, origin } = this.state
-    const successHandler = origin !== DeployOrigin.NONE ? this.handleSuccess : undefined
+    const { view, projectId } = this.state
 
     if (view === DeployModalView.CLEAR_DEPLOYMENT && projectId) {
-      return this.wrapInModal(<ClearDeployment projectId={projectId} onContinue={successHandler} onClose={this.handleClose} />)
+      return this.wrapInModal(<ClearDeployment projectId={projectId} onClose={this.handleClose} />)
     }
 
     if (view === DeployModalView.DEPLOY_TO_LAND) {
