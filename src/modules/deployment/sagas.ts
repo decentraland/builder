@@ -11,7 +11,6 @@ import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
 import { api } from 'lib/api'
-import { eth } from 'decentraland-eth'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -38,6 +37,7 @@ import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } 
 import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getDeployment } from './selectors'
 import { EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
+import { signMessage } from 'modules/wallet/sagas'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -108,17 +108,13 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   const user: User = yield select(getUserState)
   const project: Project | null = yield select(getProject(projectId))
 
-  if (!eth.wallet) {
-    yield put(deployToLandFailure('Unable to connect to wallet'))
-  }
-
   if (project) {
     try {
       const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation)
       const rootCID = yield call(() => getCID(contentFiles, true))
       const manifest = yield call(() => getFileManifest(contentFiles))
       const timestamp = Math.round(Date.now() / 1000)
-      const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
+      const signature = yield signMessage(`${rootCID}.${timestamp}`)
       const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
 
       yield call(() =>
@@ -126,7 +122,8 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       )
       yield put(deployToLandSuccess(project.id, rootCID, placement))
     } catch (e) {
-      yield put(deployToLandFailure(e.message))
+      console.log(e, e.__proto__)
+      yield put(deployToLandFailure(e.message.split('\n')[0]))
     }
   } else {
     yield put(deployToLandFailure('Unable to Publish: Invalid project'))
@@ -159,20 +156,16 @@ function* handleClearDeployment(action: ClearDeploymentRequestAction) {
   const deployment: Deployment | null = yield select(getDeployment(projectId))
   const project: Project | null = yield select(getProject(projectId))
 
-  if (!eth.wallet) {
-    yield put(deployToLandFailure('Unable to connect to wallet'))
-  }
-
   if (project && deployment) {
-    const { placement } = deployment
-    const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation, true)
-    const rootCID = yield call(() => getCID(contentFiles, true))
-    const manifest = yield call(() => getFileManifest(contentFiles))
-    const timestamp = Math.round(Date.now() / 1000)
-    const signature = yield call(() => eth.wallet.sign(`${rootCID}.${timestamp}`))
-    const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
-
     try {
+      const { placement } = deployment
+      const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation, true)
+      const rootCID = yield call(() => getCID(contentFiles, true))
+      const manifest = yield call(() => getFileManifest(contentFiles))
+      const timestamp = Math.round(Date.now() / 1000)
+      const signature = yield signMessage(`${rootCID}.${timestamp}`)
+      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
+
       yield call(() =>
         api.uploadToContentService(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS))
       )

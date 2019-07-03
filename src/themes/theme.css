@@ -32,6 +32,6 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-.ui.popup {
+.ui.popup.modal-tooltip {
   z-index: 999999999999999;
 }

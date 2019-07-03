@@ -3,7 +3,6 @@ import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 import { DELETE_PROJECT, DeleteProjectAction } from 'modules/project/actions'
 import {
-  DEPLOY_TO_POOL_REQUEST,
   DEPLOY_TO_POOL_SUCCESS,
   DEPLOY_TO_POOL_FAILURE,
   DeployToPoolRequestAction,
@@ -18,7 +17,14 @@ import {
   ClearDeploymentSuccessAction,
   ClearDeploymentFailureAction,
   CLEAR_DEPLOYMENT_SUCCESS,
-  CLEAR_DEPLOYMENT_FAILURE
+  CLEAR_DEPLOYMENT_FAILURE,
+  DEPLOY_TO_LAND_FAILURE,
+  DeployToLandFailureAction,
+  DEPLOY_TO_POOL_REQUEST,
+  DEPLOY_TO_LAND_REQUEST,
+  DeployToLandRequestAction,
+  CLEAR_DEPLOYMENT_REQUEST,
+  ClearDeploymentRequestAction
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 
@@ -47,8 +53,11 @@ export type DeploymentReducerAction =
   | DeployToPoolSuccessAction
   | DeployToPoolFailureAction
   | SetProgressAction
+  | DeployToLandRequestAction
   | DeployToLandSuccessAction
+  | DeployToLandFailureAction
   | MarkDirtyAction
+  | ClearDeploymentRequestAction
   | ClearDeploymentSuccessAction
   | ClearDeploymentFailureAction
   | DeleteProjectAction
@@ -58,7 +67,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_POOL_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        error: null
       }
     }
     case DEPLOY_TO_POOL_SUCCESS: {
@@ -71,7 +80,6 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           stage: ProgressStage.NONE,
           value: 0
         },
-        loading: loadingReducer(state.loading, action),
         error: null
       }
     }
@@ -81,8 +89,13 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         data: {
           ...state.data
         },
-        loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case DEPLOY_TO_LAND_REQUEST: {
+      return {
+        ...state,
+        error: null
       }
     }
     case DEPLOY_TO_LAND_SUCCESS: {
@@ -102,6 +115,15 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           stage: ProgressStage.NONE,
           value: 0
         }
+      }
+    }
+    case DEPLOY_TO_LAND_FAILURE: {
+      return {
+        ...state,
+        data: {
+          ...state.data
+        },
+        error: action.payload.error
       }
     }
     case SET_PROGRESS: {
@@ -127,6 +149,12 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
             isDirty: isDirty
           }
         }
+      }
+    }
+    case CLEAR_DEPLOYMENT_REQUEST: {
+      return {
+        ...state,
+        error: null
       }
     }
     case CLEAR_DEPLOYMENT_SUCCESS: {

@@ -5,7 +5,13 @@ import { getError as getWalletError, isConnecting, isConnected, getAddress } fro
 import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { getProject } from 'modules/project/selectors'
 import { RootState } from 'modules/common/types'
-import { isUploadingAssets, getProgress as getUploadProgress, isCreatingFiles, getDeploymentStatus } from 'modules/deployment/selectors'
+import {
+  isUploadingAssets,
+  getProgress as getUploadProgress,
+  isCreatingFiles,
+  getDeploymentStatus,
+  getError as getDeploymentError
+} from 'modules/deployment/selectors'
 
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ClearDeployment.types'
 import WalletSignIn from './ClearDeployment'
@@ -20,7 +26,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     hasError: !!getWalletError(state),
     ethAddress: getAddress(state),
     deploymentProgress: getUploadProgress(state),
-    deploymentStatus: getDeploymentStatus(ownProps.projectId)(state)
+    deploymentStatus: getDeploymentStatus(ownProps.projectId)(state),
+    error: getDeploymentError(state)
   }
 }
 

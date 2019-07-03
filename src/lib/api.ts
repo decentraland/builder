@@ -95,9 +95,18 @@ export class API extends BaseAPI {
       data.append(indentifier.cid, content, file.path)
     }
 
-    return this.request('post', `${CONTENT_SERVER_URL}/mappings`, data, {
-      onUploadProgress
-    })
+    try {
+      await this.request('post', `${CONTENT_SERVER_URL}/mappings`, data, {
+        onUploadProgress
+      })
+    } catch (e) {
+      const { status } = e.response
+      if (status === 401) {
+        throw new Error('Your current address is not authorized to update the specified LAND')
+      } else {
+        throw new Error('Unable to update LAND')
+      }
+    }
   }
 
   async fetchContentServerValidation(x: number, y: number) {

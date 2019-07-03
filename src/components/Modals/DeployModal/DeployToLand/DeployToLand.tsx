@@ -2,10 +2,10 @@ import * as React from 'react'
 import { Button, Loader, Header } from 'decentraland-ui'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
+import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
-import Icon from 'components/Icon'
 
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
@@ -30,20 +30,20 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate() {
-    const { isConnected, isRecording, isUploadingAssets, isCreatingFiles, media, deploymentStatus, deployment } = this.props
+    const { isConnected, isRecording, isUploadingAssets, isCreatingFiles, media, deploymentStatus, deployment, error } = this.props
     const { needsConfirmation } = this.state
     const isLoading = isRecording || isUploadingAssets || isCreatingFiles
     let view: DeployToLandView = DeployToLandView.NONE
 
     if (!isConnected) {
       view = DeployToLandView.CONNECT
-    } else if (isConnected && isLoading) {
+    } else if (isConnected && isLoading && !error) {
       view = DeployToLandView.PROGRESS
     } else if (isConnected && media && !needsConfirmation && !deployment) {
       view = DeployToLandView.MAP
     } else if (!isLoading && needsConfirmation && deploymentStatus === DeploymentStatus.PUBLISHED) {
       view = DeployToLandView.SUCCESS
-    } else if (isConnected && media && !isLoading && needsConfirmation) {
+    } else if (isConnected && media && (!isLoading || error) && needsConfirmation) {
       view = DeployToLandView.CONFIRMATION
     }
 
@@ -51,6 +51,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   handleClose = () => {
+    this.props.onClose()
+  }
+
+  handleNavigateHome = () => {
+    this.props.onNavigateHome()
     this.props.onClose()
   }
 
@@ -94,21 +99,24 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderConnectForm = () => {
-    const { hasError, isConnecting } = this.props
+    const { walletError, isConnecting } = this.props
     let errorClasses = 'error'
 
-    if (hasError) {
+    if (walletError) {
       errorClasses += ' visible'
     }
 
     return (
-      <div className="DeployToLand">
+      <div className="DeployToLand connect">
+        <div className="modal-header">
+          <Icon name="modal-close" onClick={this.handleClose} />
+        </div>
         <Header size="large" className="modal-title">
           Publish your scene
         </Header>
         <p className="modal-subtitle">Connect your wallet to continue. You sure have one if you own LAND.</p>
 
-        <Button className="connect" primary onClick={this.handleConnect} disabled={isConnecting}>
+        <Button className="connect" primary size="small" onClick={this.handleConnect} disabled={isConnecting}>
           {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}
         </Button>
 
@@ -150,14 +158,14 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderConfirmation = () => {
-    const { media, project } = this.props
+    const { media, project, error, deployment } = this.props
     const { placement } = this.state
 
     return (
       <div className="DeployToLand confirmation">
         <div className="modal-header">
           <Icon name="modal-close" onClick={this.handleClose} />
-          <Icon name="modal-back" onClick={this.handleBack} />
+          {!deployment && <Icon name="modal-back" onClick={this.handleBack} />}
         </div>
         <Header size="large" className="modal-title">
           Publish Scene
@@ -188,6 +196,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         <Button primary size="small" onClick={this.handleDeploy}>
           Publish
         </Button>
+
+        {error && <div className="error visible">{error}</div>}
       </div>
     )
   }
@@ -221,16 +231,22 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   renderSuccess = () => {
     return (
       <div className="DeployToLand success">
+        <div className="modal-header">
+          <Icon name="modal-close" onClick={this.handleClose} />
+        </div>
         <Header size="large" className="modal-title">
-          Thank you!
+          Scene Published!
         </Header>
         <p className="modal-subtitle">Your work is now available on the Metaverse</p>
-        <Button size="small" primary>
-          Keep working
-        </Button>
-        <Button size="small" secondary>
-          Back to Dashboard
-        </Button>
+        <div className="actions">
+          <Button size="small" primary onClick={this.handleClose}>
+            Keep working
+          </Button>
+
+          <Button className="hollow" size="small" secondary onClick={this.handleNavigateHome}>
+            Back to Dashboard
+          </Button>
+        </div>
       </div>
     )
   }

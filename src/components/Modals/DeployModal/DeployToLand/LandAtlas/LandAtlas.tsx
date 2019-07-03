@@ -220,6 +220,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   renderTool = (icon: IconName, tooltip: string, clickHandler: () => void) => {
     return (
       <Popup
+        className="modal-tooltip"
         content={tooltip}
         position="top center"
         trigger={
@@ -293,7 +294,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             )}
           </div>
           <Popup
-            className="publish-disabled"
+            className="publish-disabled modal-tooltip"
             content={
               <span>
                 Free up LAND space.

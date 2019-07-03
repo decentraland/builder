@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
+import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
 import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Coordinate, Rotation, DeploymentStatus, Deployment, OccupiedAtlasParcel } from 'modules/deployment/types'
 import { DeployToLandRequestAction, deployToLandRequest } from 'modules/deployment/actions'
@@ -8,8 +9,11 @@ import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
 import { Media } from 'modules/media/types'
 
-export type Props = SignInProps & {
-  isConnected: boolean
+export type Props = {
+  error: string | null
+  walletError: SignInProps['hasError']
+  isConnected: SignInProps['isConnected']
+  isConnecting: SignInProps['isConnecting']
   isRecording: boolean
   isUploadingAssets: boolean
   isCreatingFiles: boolean
@@ -21,12 +25,14 @@ export type Props = SignInProps & {
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null
   occupiedParcels: Record<string, OccupiedAtlasParcel>
+  onConnect: SignInProps['onConnect']
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
   onDeployToPool: () => void
   onClearDeployment: (projectId: string) => void
   onBack: () => void
+  onNavigateHome: () => void
 }
 
 export type State = {
@@ -43,7 +49,8 @@ export type MapStateProps = Pick<
   Props,
   | 'isConnecting'
   | 'media'
-  | 'hasError'
+  | 'error'
+  | 'walletError'
   | 'isRecording'
   | 'isUploadingAssets'
   | 'isCreatingFiles'
@@ -57,9 +64,9 @@ export type MapStateProps = Pick<
   | 'occupiedParcels'
 >
 
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord'>
+export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
 
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction>
+export type MapDispatch = Dispatch<ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | NavigateToAction>
 
 export enum DeployToLandView {
   NONE = 'NONE',

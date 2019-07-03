@@ -43,6 +43,12 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     })
   }
 
+  handleClickOutside = () => {
+    if (this.state.view === DeployModalView.NONE) {
+      this.props.onClose()
+    }
+  }
+
   handleClose = () => {
     this.setState({
       view: DeployModalView.NONE
@@ -93,7 +99,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   wrapInModal = (view: JSX.Element) => {
     const { name } = this.props
     return (
-      <Modal name={name} onClose={this.handleClose}>
+      <Modal name={name} onClose={this.handleClickOutside}>
         {view}
       </Modal>
     )

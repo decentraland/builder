@@ -103,7 +103,6 @@
 
 .DeployModal .choice-form .card .ui.button {
   width: 100%;
-  font-weight: 400;
 }
 
 .DeployModal .card .thumbnail {
@@ -121,4 +120,25 @@
 .DeployModal .card .thumbnail.deploy-to-land {
   background-image: url('../../../images/deploy-to-land.svg');
   width: 70px;
+}
+
+.DeployModal .ui.button {
+  height: 36px;
+  font-weight: 400;
+}
+
+.DeployModal .ui.button.hollow {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.DeployModal .error {
+  visibility: hidden;
+  user-select: none;
+  color: var(--primary);
+  margin-top: 20px;
+}
+
+.DeployModal .error.visible {
+  visibility: visible;
 }

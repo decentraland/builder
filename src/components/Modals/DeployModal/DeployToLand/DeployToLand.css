@@ -7,19 +7,13 @@
   width: 560px;
 }
 
-.DeployToLand .ui.button.connect {
+.DeployToLand.connect {
+  margin: 0px 24px 24px 24px;
+}
+
+.DeployToLand.connect .ui.button.connect {
   margin-top: 24px;
-}
-
-.DeployToLand .error {
-  visibility: hidden;
-  user-select: none;
-  color: var(--primary);
-  margin-top: 20px;
-}
-
-.DeployToLand .error.visible {
-  visibility: visible;
+  font-weight: 400;
 }
 
 .DeployToLand.progress {
@@ -88,4 +82,23 @@
   color: white;
   font-weight: 400;
   font-size: 17px;
+}
+
+.DeployToLand.success {
+  margin: 0px 24px 24px 24px;
+}
+
+.DeployToLand.success .actions {
+  margin: 24px 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.DeployToLand.success .ui.button {
+  width: 240px;
+  margin-bottom: 12px;
+}
+
+.DeployToLand.success .ui.button.hollow {
+  margin-left: 0px;
 }
