@@ -15,7 +15,7 @@ import {
 import { openModal } from 'modules/modal/actions'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
-import { getCurrentMetrics } from 'modules/scene/selectors'
+import { getCurrentMetrics, getCurrentLimits } from 'modules/scene/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 
@@ -24,6 +24,7 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     gizmo: getGizmo(state),
     currentProject: getCurrentProject(state),
+    limits: getCurrentLimits(state),
     metrics: getCurrentMetrics(state),
     selectedEntityId,
     isLoading: !isReady(state) || isLoading(state),

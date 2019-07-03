@@ -205,6 +205,8 @@
     "localstorage": "场景会自动保存在浏览器的本地存储中"
   },
   "topbar": {
+    "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
+    "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
     "publish": "发布"
   },
   "tutorial_modal": {

@@ -61,17 +61,6 @@ workflows:
           context: builder-prd
           requires:
             - build
-  build-deploy-release-cn:
-    jobs:
-      - build:
-          context: builder-prd-cn
-          filters:
-            branches:
-              only: release-cn
-      - deploy:
-          context: builder-prd-cn
-          requires:
-            - build
   build-deploy-staging:
     jobs:
       - build:
@@ -83,17 +72,17 @@ workflows:
           context: builder-stg
           requires:
             - build
-  # build-deploy-master:
-  #   jobs:
-  #     - build:
-  #         context: builder-dev
-  #         filters:
-  #           branches:
-  #             only: master
-  #     - deploy:
-  #         context: builder-dev
-  #         requires:
-  #           - build
+  build-deploy-master:
+    jobs:
+      - build:
+          context: builder-dev
+          filters:
+            branches:
+              only: master
+      - deploy:
+          context: builder-dev
+          requires:
+            - build
   build-branch:
     jobs:
       - build:
@@ -103,4 +92,3 @@ workflows:
                 - master
                 - staging
                 - release
-                - release-cn

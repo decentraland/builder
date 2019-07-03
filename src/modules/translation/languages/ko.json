@@ -205,6 +205,8 @@
     "localstorage": "풍경(들)은 여러분의 브라우저 저장소에 자동 저장됩니다"
   },
   "topbar": {
+    "bounds_exceeded": "아이템이 범위 밖에 있습니다{br}아이템을 범위 안으로 옮기세요!",
+    "limits_exceeded": "{metric}이 너무 많습니다{br}아이템을 몇 개 지워 보세요!",
     "publish": "게시"
   },
   "tutorial_modal": {
