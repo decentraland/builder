@@ -24,7 +24,7 @@ import { RootState } from 'modules/common/types'
 import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
+import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
@@ -158,7 +158,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
 
 function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
-  const scene: Scene = yield select(getSceneById(project.sceneId))
+  const scene: Scene = yield select(getScene(project.sceneId))
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')

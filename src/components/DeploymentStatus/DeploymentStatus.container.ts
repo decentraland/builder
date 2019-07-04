@@ -7,7 +7,7 @@ import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './Deploy
 import DeploymentStatus from './DeploymentStatus'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
-  status: getDeploymentStatus(ownProps.projectId)(state),
+  status: getDeploymentStatus(state)[ownProps.projectId],
   deployment: getDeployment(ownProps.projectId)(state)
 })
 

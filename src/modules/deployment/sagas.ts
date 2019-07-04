@@ -4,7 +4,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
 import { getCurrentProject, getProject } from 'modules/project/selectors'
-import { getCurrentScene, getSceneById } from 'modules/scene/selectors'
+import { getCurrentScene, getScene } from 'modules/scene/selectors'
 import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
@@ -179,7 +179,7 @@ function* handleClearDeployment(action: ClearDeploymentRequestAction) {
 }
 
 function* getContentServiceFiles(project: Project, point: Coordinate, rotation: Rotation, createEmptyGame: boolean = false) {
-  const scene: Scene = yield select(getSceneById(project.sceneId))
+  const scene: Scene = yield select(getScene(project.sceneId))
 
   const files = yield call(() =>
     createFiles({

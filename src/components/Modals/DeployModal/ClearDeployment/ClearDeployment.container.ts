@@ -26,7 +26,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     hasError: !!getWalletError(state),
     ethAddress: getAddress(state),
     deploymentProgress: getUploadProgress(state),
-    deploymentStatus: getDeploymentStatus(ownProps.projectId)(state),
+    deploymentStatus: getDeploymentStatus(state)[ownProps.projectId],
     error: getDeploymentError(state)
   }
 }
