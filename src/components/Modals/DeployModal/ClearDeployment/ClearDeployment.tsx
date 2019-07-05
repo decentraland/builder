@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button, Loader, Header } from 'decentraland-ui'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import Icon from 'components/Icon'
 import { Props, State } from './ClearDeployment.types'
@@ -38,9 +38,9 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           <Icon name="modal-close" onClick={this.props.onClose} />
         </div>
         <Header size="large" className="modal-title">
-          Unpublish scene
+          {t('deployment_modal.clear.connect.title')}
         </Header>
-        <p className="modal-subtitle">Connect your wallet to continue.</p>
+        <p className="modal-subtitle">{t('deployment_modal.clear.connect.description')}</p>
 
         <Button className="connect" primary size="small" onClick={this.handleConnect} disabled={isConnecting}>
           {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}
@@ -90,12 +90,14 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           <Icon name="modal-close" onClick={this.props.onClose} />
         </div>
         <Header size="large" className="modal-title">
-          Unpublish Scene
+          {t('deployment_modal.clear.confirmation.title')}
         </Header>
-        <p className="modal-subtitle">You are about to unpublish "{project!.title}" from the Metaverse</p>
+        <p className="modal-subtitle">
+          <T id="deployment_modal.clear.confirmation.description" values={{ project: project!.title }} />
+        </p>
 
         <Button primary size="small" onClick={this.handleDeploy}>
-          continue
+          {t('deployment_modal.clear.confirmation.action')}
         </Button>
 
         {error && <div className="error visible">{error}</div>}
@@ -110,11 +112,11 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           <Icon name="modal-close" onClick={this.props.onClose} />
         </div>
         <Header size="large" className="modal-title">
-          All clear!
+          {t('deployment_modal.clear.success.title')}
         </Header>
-        <p className="modal-subtitle">The land is now clear and ready to host something else!</p>
+        <p className="modal-subtitle">{t('deployment_modal.clear.success.description')}</p>
         <Button size="small" primary onClick={this.props.onClose}>
-          Done
+          {t('deployment_modal.clear.success.continue')}
         </Button>
       </div>
     )

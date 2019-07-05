@@ -18,8 +18,17 @@
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
   "deployment_modal": {
-    "description": "Coming soon, you’ll be able to publish scenes directly from the Builder to your LAND! Subscribe to the Builder mailing list, and we’ll let you know when the feature is ready.",
-    "email_thanks": "Thanks! We'll stay in touch!",
+    "description": "Deploy your scene to your LAND, or apply for a permit from landowners.",
+    "option_pool": {
+      "title": "Scene Pool",
+      "description": "Apply with your scene to be deployed on LAND that belongs to others.",
+      "action": "Apply"
+    },
+    "option_land": {
+      "title": "My LAND",
+      "description": "Deploy your scene to your LAND or Estate.",
+      "action": "Publish to LAND"
+    },
     "pool": {
       "contact_information": "Contact information",
       "error_ocurred": "An error ocurred",
@@ -33,7 +42,71 @@
       "title": "Publish your Scene",
       "uploading": "Uploading"
     },
-    "title": "Publish to your LAND"
+    "land": {
+      "title": "Publish Scene",
+      "map": {
+        "title": "Publish scene",
+        "no_land_warning": "It seems that you don't own any LAND",
+        "no_land_action": "Submit to Scene pool",
+        "occupied_warning": "At least one scene is already published at this location",
+        "placement_default": "Select the LANDs that will host your scene",
+        "placement_active": "Placing a {count} LAND scene at {x},{y}",
+        "occupied_tooltip": "Free up LAND space{br}Unpublish scenes from your dashboard",
+        "continue": "Continue",
+        "locate_land": "Locate next LAND",
+        "reset": "Reset",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out"
+      },
+      "confirmation": {
+        "description": "You are publishing the following scene to your LANDs:",
+        "title_label": "Title",
+        "size_label": "Size",
+        "location_label": "Published at",
+        "action": "Publish"
+      },
+      "progress": {
+        "uploading_assets": {
+          "title": "Uploading to the Metaverse",
+          "description": "Please wait while your scene is uploaded."
+        },
+        "recording": {
+          "title": "Capturing preview",
+          "description": "Please wait while a preview of your scene is captured."
+        },
+        "creating_files": {
+          "title": "Creating Asset Files",
+          "description": "Please wait while create the files that will be uploaded."
+        }
+      },
+      "connect": {
+        "title": "Publish scene",
+        "description": "Connect your wallet to continue."
+      },
+      "success": {
+        "title": "DONE!",
+        "description": "Your scene is now published!",
+        "continue": "Continue working",
+        "back_home": "Back to Dashboard"
+      }
+    },
+    "clear": {
+      "connect": {
+        "title": "Connect your wallet",
+        "description": "Connect your wallet to continue unpublishing your scene."
+      },
+      "confirmation": {
+        "title": "Unpublish scene",
+        "description": "You are about to unpublish \"{project}\" from the Metaverse",
+        "action": "Publish"
+      },
+      "success": {
+        "title": "All clear!",
+        "description": "The land is now clear and ready to host something else!",
+        "continue": "Done"
+      }
+    },
+    "title": "Publish your scene"
   },
   "edit_project_modal": {
     "custom_layout_label": "Layout",

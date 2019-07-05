@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button, Loader, Header } from 'decentraland-ui'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
@@ -112,9 +112,9 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           <Icon name="modal-close" onClick={this.handleClose} />
         </div>
         <Header size="large" className="modal-title">
-          Publish your scene
+          {t('deployment_modal.land.connect.title')}
         </Header>
-        <p className="modal-subtitle">Connect your wallet to continue. You sure have one if you own LAND.</p>
+        <p className="modal-subtitle">{t('deployment_modal.land.connect.description')}</p>
 
         <Button className="connect" primary size="small" onClick={this.handleConnect} disabled={isConnecting}>
           {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}
@@ -141,14 +141,14 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     return (
       <div className="DeployToLand progress">
         <Header size="large" className="modal-title">
-          {isUploadingAssets && 'Uploading assets'}
-          {isRecording && 'Capturing Preview'}
-          {isCreatingFiles && 'Creating Asset files'}
+          {isUploadingAssets && t('deployment_modal.land.progress.uploading_assets.title')}
+          {isRecording && t('deployment_modal.land.progress.recording.title')}
+          {isCreatingFiles && t('deployment_modal.land.progress.creating_files.title')}
         </Header>
         <p className="modal-subtitle">
-          {isUploadingAssets && 'Please wait while your scene is uploaded.'}
-          {isCreatingFiles && 'Please wait while create the files that will be uploaded.'}
-          {isRecording && 'Please wait while a preview of your scene is captured.'}
+          {isUploadingAssets && t('deployment_modal.land.progress.uploading_assets.description')}
+          {isCreatingFiles && t('deployment_modal.land.progress.recording.description')}
+          {isRecording && t('deployment_modal.land.progress.creating_files.description')}
         </p>
         <div className="progress-bar-container">
           <div className={classes} style={{ width: `${progress}%` }} />
@@ -168,33 +168,33 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           {!deployment && <Icon name="modal-back" onClick={this.handleBack} />}
         </div>
         <Header size="large" className="modal-title">
-          Publish Scene
+          {t('deployment_modal.pool.title')}
         </Header>
-        <p className="modal-subtitle">You are about to publish the following scene to the Metaverse:</p>
+        <p className="modal-subtitle">{t('deployment_modal.land.confirmation.description')}</p>
 
         <div className="details">
           <img src={media ? media.thumbnail : ''} />
 
           <div className="details-row">
             <div className="detail">
-              <span className="label">Scene</span>
+              <span className="label">{t('deployment_modal.land.confirmation.title_label')}</span>
               <span className="value">{project!.title}</span>
             </div>
 
             <div className="detail">
-              <span className="label">Size</span>
+              <span className="label">{t('deployment_modal.land.confirmation.size_label')}</span>
               <span className="value">{project!.parcels!.length}</span>
             </div>
 
             <div className="detail">
-              <span className="label">Publish at</span>
+              <span className="label">{t('deployment_modal.land.confirmation.location_label')}</span>
               <span className="value">{`${placement!.point.x}, ${placement!.point.y}`}</span>
             </div>
           </div>
         </div>
 
         <Button primary size="small" onClick={this.handleDeploy}>
-          Publish
+          {t('deployment_modal.land.confirmation.action')}
         </Button>
 
         {error && <div className="error visible">{error}</div>}
@@ -210,7 +210,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         <div className="modal-header">
           <Icon name="modal-close" onClick={this.handleClose} />
           <Header size="large" className="modal-title">
-            Publish your scene
+            {t('deployment_modal.land.map.title')}
           </Header>
           <Icon name="modal-back" onClick={this.handleBack} />
         </div>
@@ -235,16 +235,16 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           <Icon name="modal-close" onClick={this.handleClose} />
         </div>
         <Header size="large" className="modal-title">
-          Scene Published!
+          {t('deployment_modal.land.success.title')}
         </Header>
-        <p className="modal-subtitle">Your work is now available on the Metaverse</p>
+        <p className="modal-subtitle">{t('deployment_modal.land.success.description')}</p>
         <div className="actions">
           <Button size="small" primary onClick={this.handleClose}>
-            Keep working
+            {t('deployment_modal.land.success.continue')}
           </Button>
 
           <Button className="hollow" size="small" secondary onClick={this.handleNavigateHome}>
-            Back to Dashboard
+            {t('deployment_modal.land.success.back_home')}
           </Button>
         </div>
       </div>

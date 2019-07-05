@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { api } from 'lib/api'
 import { Layer, Button, Atlas, Popup } from 'decentraland-ui'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
@@ -246,13 +247,13 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
       <div className="LandAtlas">
         {parcelCount === 0 && (
           <div className="notice">
-            It seems that you don't own any LAND
+            {t('deployment_modal.land.map.no_land_warning')}
             <span className="inline-action" onClick={this.handleNoAuthorizedParcels}>
-              Submit to Scene pool
+              {t('deployment_modal.land.map.no_land_action')}
             </span>
           </div>
         )}
-        {hasOccupiedParcels && <div className="notice">At least one scene is already published at this location</div>}
+        {hasOccupiedParcels && <div className="notice">{t('deployment_modal.land.map.occupied_warning')}</div>}
         <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
           <img src={media ? media[rotation] : ''} />
           <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
@@ -284,22 +285,27 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           <div className="summary">
             {hasPlacement ? (
               <span>
-                {`Placing a ${project!.parcels!.length} LAND scene at ${placement!.point.x},${placement!.point.y}`}{' '}
+                <T
+                  id="deployment_modal.land.map.placement_active"
+                  values={{
+                    count: project!.parcels!.length,
+                    x: placement!.point.x,
+                    y: placement!.point.y
+                  }}
+                />
                 <span className="inline-action" onClick={this.handleResetPlacement}>
                   Reset
                 </span>
               </span>
             ) : (
-              'Choose a parcel where to place your scene'
+              t('deployment_modal.land.map.placement_default')
             )}
           </div>
           <Popup
             className="publish-disabled modal-tooltip"
             content={
               <span>
-                Free up LAND space.
-                <br />
-                Unpublish scenes from your dashboard.
+                <T id="deployment_modal.land.map.occupied_tooltip" values={{ br: <br /> }} />
               </span>
             }
             position="top center"
@@ -307,7 +313,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             trigger={
               <span>
                 <Button primary size="small" disabled={!hasPlacement || hasOccupiedParcels} onClick={this.handleSelectPlacement}>
-                  Continue
+                  {t('deployment_modal.land.map.continue')}
                 </Button>
               </span>
             }

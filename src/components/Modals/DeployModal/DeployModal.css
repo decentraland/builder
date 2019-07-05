@@ -70,6 +70,7 @@
   display: flex;
   flex-direction: row;
   margin-top: 32px;
+  width: 100%;
 }
 
 .DeployModal .choice-form .card {
@@ -79,9 +80,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: calc(50% - 12px);
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
-.DeployModal .choice-form .card:last-child {
+.DeployModal .choice-form .card + .card {
   margin-left: 24px;
 }
 
@@ -99,6 +103,7 @@
   line-height: 24px;
   text-align: center;
   margin-bottom: 24px;
+  flex: 1;
 }
 
 .DeployModal .choice-form .card .ui.button {
