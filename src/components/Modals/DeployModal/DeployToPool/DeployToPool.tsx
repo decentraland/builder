@@ -129,8 +129,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             </div>
           ) : null}
 
-          <Button className="submit" primary disabled={isSubmitDisabled}>
-            Apply
+          <Button className="submit" primary size="small" disabled={isSubmitDisabled}>
+            {t('deployment_modal.pool.action')}
           </Button>
         </Form>
       </div>
@@ -147,7 +147,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
           {t('deployment_modal.pool.success.title')}
         </Header>
         <p className="modal-subtitle">{t('deployment_modal.pool.success.body')}</p>
-        <Button className="submit" primary onClick={onClose}>
+        <Button className="submit" size="small" primary onClick={onClose}>
           {t('global.done')}
         </Button>
       </div>
