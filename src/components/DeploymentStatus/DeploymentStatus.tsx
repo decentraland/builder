@@ -25,6 +25,7 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
 
     return (
       <Popup
+        className="status"
         position="bottom left"
         content={<span>Published at {`${x},${y}`}</span>}
         trigger={<span className={classes} />}

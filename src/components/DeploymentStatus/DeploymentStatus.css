@@ -18,3 +18,8 @@
 .DeploymentStatus.dirty {
   background: orange;
 }
+
+.ui.visible.popup.inverted.status {
+  margin-left: -14px;
+  margin-top: 16px;
+}
