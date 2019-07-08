@@ -81,9 +81,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
                 <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} />
               </div>
             </div>
-            <div className="error">
-              {deploymentStatus !== DeploymentStatus.UNPUBLISHED && 'Please Unpublish your scene before updating your Scene Details'}
-            </div>
+            <div className="error">{deploymentStatus !== DeploymentStatus.UNPUBLISHED && t('edit_project_modal.unpublish_needed')}</div>
           </Modal.Content>
           <Modal.Actions>
             <Button secondary onClick={onClose}>

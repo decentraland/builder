@@ -47,13 +47,7 @@ export default class DeployButton extends React.PureComponent<Props> {
     if (areEntitiesOutOfBoundaries) return <T id="topbar.bounds_exceeded" values={{ br: <br /> }} />
     if (exceededMetric !== '') return <T id="topbar.limits_exceeded" values={{ metric: exceededMetric, br: <br /> }} />
     if (deploymentStatus === DeploymentStatus.PUBLISHED) {
-      return (
-        <span>
-          Up to date!
-          <br />
-          All the changes are published
-        </span>
-      )
+      return <T id="topbar.up_to_date" values={{ br: <br /> }} />
     }
     return null
   }
@@ -76,7 +70,7 @@ export default class DeployButton extends React.PureComponent<Props> {
           trigger={
             <span>
               <Button primary size="mini" onClick={this.handleClick} disabled={isButtonDisabled}>
-                {canUpdate ? 'Update Scene' : t('topbar.publish')}
+                {canUpdate ? t('topbar.update_scene') : t('topbar.publish')}
               </Button>
             </span>
           }
