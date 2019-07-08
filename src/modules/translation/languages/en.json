@@ -159,7 +159,8 @@
     "project_actions": {
       "delete_project": "Delete Scene",
       "duplicate_project": "Duplicate Scene",
-      "export_project": "Download Scene"
+      "export_project": "Download Scene",
+      "unpublish": "Unpublish"
     },
     "projects_title": "My Scenes",
     "start": "Start building",

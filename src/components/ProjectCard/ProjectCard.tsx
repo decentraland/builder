@@ -80,7 +80,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
             <Dropdown.Item text={t('home_page.project_actions.export_project')} onClick={this.handleExportScene} />
             <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
-            {canClearDeployment && <Dropdown.Item text="Unpublish" onClick={this.handleClearDeployment} />}
+            {canClearDeployment && <Dropdown.Item text={t('home_page.project_actions.unpublish')} onClick={this.handleClearDeployment} />}
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">
