@@ -5,12 +5,12 @@
   },
   "banners": {
     "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
-    "dapper_homepage": "Muestra tu CryptoKitty en tu escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un {cta}.",
+    "dapper_homepage": "Muestra tu CryptoKitty en tu Escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un {cta}.",
     "dapper_homepage_cta": "Purrstige Cat",
     "mobile_dapper_homepage": "Conoce lo último:{br}{cta}",
     "mobile_dapper_hompage_cta": "Cuadros + Dapper",
     "promo_cta": "Instala Dapper",
-    "promo_subtitle": "Muestra tu CryptoKitty en tu escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un Purrstige Cat.",
+    "promo_subtitle": "Muestra tu CryptoKitty en tu Escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un Purrstige Cat.",
     "promo_title": "¡Prueba Dapper!"
   },
   "custom_layout": {
@@ -18,30 +18,105 @@
     "up_to": "Hasta {max} parcelas"
   },
   "custom_layout_modal": {
-    "subtitle_one": "Puedes crear diseños personalizados para tu escena.",
+    "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
   "deployment_modal": {
-    "description": "En el futuro podras publicar escenas a tu LAND de forma directa desde el Builder. ¡Subscribete con tu E-mail para enterarte cuando esta funcionalidad este lista!",
-    "email_thanks": "¡Gracias! Nos mantendremos en contacto!",
-    "pool": {
-      "contact_information": "Información de contacto",
-      "error_ocurred": "Ha ocurrido un error",
-      "i_accept_the": "Al enviar tu escena aceptas recibir noticias de Decentraland.",
-      "progress": "Procesando",
-      "subtitle": "Sube tú escena al Pool de Escenas para que los Landowners puedan publicarla. No es necesario poseer LAND.",
+    "clear": {
+      "confirmation": {
+        "action": "Despublicar",
+        "description": "Estás a punto de desculicar \"{project}\" del Metaverse",
+        "title": "Despublicar Escena"
+      },
+      "connect": {
+        "description": "Conecta to Wallet para despuplicar to Escena.",
+        "title": "Conecta tu wallet"
+      },
       "success": {
-        "body": "Recibirás una notificación vía Email en caso de que elijamos tú escena para ser publicada.",
-        "title": "¡Gracias por subir tu Escena!"
+        "continue": "OK",
+        "description": "La LAND ya esta despejada y lista para publicar una nueva Escena!",
+        "title": "Todo despejado!"
+      }
+    },
+    "description": "Sube to Escena a tu LAND o aplica por un permiso para que landowners lo hagan por tí.",
+    "land": {
+      "confirmation": {
+        "action": "Publicar",
+        "description": "Estas publicando la siguiente Escena en tu LAND:",
+        "location_label": "Publicada en",
+        "size_label": "Tamaño",
+        "title_label": "Título"
+      },
+      "connect": {
+        "description": "Conecta tu wallet para continuar.",
+        "title": "Publish Scene"
+      },
+      "map": {
+        "continue": "Continuar",
+        "locate_land": "Localiza la siguente LAND",
+        "no_land_action": "Sube to Escena al Pool",
+        "no_land_warning": "Para que no posees LAND",
+        "occupied_tooltip": "Libera espacio de tu LAND{br}Despuplica la Escena desde el dashboard",
+        "occupied_warning": "Al menos una Escena ya está publicada en esta ubicación",
+        "placement_active": "Colocando una {count} Escena en la siguente LAND {x},{y}",
+        "placement_default": "Selectiona las lANDs donde publicarás tu Escena",
+        "reset": "Restablecer",
+        "title": "Publica la Escena",
+        "zoom_in": "Acercarse",
+        "zoom_out": "Alejarse"
+      },
+      "progress": {
+        "creating_files": {
+          "description": "Por favor espera mientras se crean los arhivos para ser subidos.",
+          "title": "Creando Archivos"
+        },
+        "recording": {
+          "description": "Por Favor espera mientras se captura una previsualización de tu Escena.",
+          "title": "Capturando Previsualización"
+        },
+        "uploading_assets": {
+          "description": "Por Favor espera mientras tu Escena es subida.",
+          "title": "Subiendo Escena al Metaverse"
+        }
+      },
+      "success": {
+        "back_home": "Volver al Dashboard",
+        "continue": "Continuar trabjando",
+        "description": "Tu Escena ahora está publicada!",
+        "title": "OK!"
+      },
+      "title": "Publicar Escena"
+    },
+    "option_land": {
+      "action": "Publicar a LAND",
+      "description": "Publica tu Escena en tu Land o Estate.",
+      "title": "Mi LAND"
+    },
+    "option_pool": {
+      "action": "Aplicar",
+      "description": "Aplica para que tu Escena sea publicada en una LAND que pertenece a otros.",
+      "title": "Pool de Escenas"
+    },
+    "pool": {
+      "action": "Enviar",
+      "contact_information": "Información de contacto",
+      "error_ocurred": "Un error ha ocurrido",
+      "i_accept_the": "Al clikear sobre \"enviar\" aceptas recibir noticias de Decentraland",
+      "progress": "Procesando",
+      "subtitle": "Envía to trabajo a nuestro pool de Escenas para obtener la chance de que esta sea Publicada. Incluye un NFT coleccionable en tu Escena antes de enviarlo y aplica para ganar 100 MANA.",
+      "success": {
+        "body": "Recibirás una notificación por email si tu Escena es elegida para ser publicada.",
+        "title": "Gracias por subir tu Escena!"
       },
       "title": "Publica tu Escena",
-      "uploading": "Cargando"
+      "uploading": "Subiendo"
     },
-    "title": "Publica a tu LAND"
+    "title": "Publica tu Escena"
   },
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
-    "title": "Detalles de la escena"
+    "title": "Detalles de la Escena",
+    "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la Escena"
   },
   "error_page": {
     "or": "o intentar",
@@ -52,9 +127,9 @@
   },
   "export_modal": {
     "action": "Descargar",
-    "description": "Puedes guardar tu escena para usarla con el SDK de Decentraland, o en el Builder. ¡Esta es la manera de compartir tus escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
+    "description": "Puedes guardar tu Escena para usarla con el SDK de Decentraland, o en el Builder. ¡Esta es la manera de compartir tus Escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
     "loading": "Descargando...",
-    "title": "Descargar escena"
+    "title": "Descargar Escena"
   },
   "global": {
     "back": "volver",
@@ -74,8 +149,8 @@
     "next": "siguiente",
     "optional": "opcional",
     "or": "o",
-    "project": "escena",
-    "projects": "escenas",
+    "project": "Escena",
+    "projects": "Escenas",
     "read_more": "Leer más",
     "save": "Salvar",
     "send": "Enviar",
@@ -87,25 +162,26 @@
   },
   "home_page": {
     "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
-    "import_scene": "Cargar escena",
+    "import_Scene": "Cargar Escena",
     "project_actions": {
-      "delete_project": "Borrar escena",
-      "duplicate_project": "Duplicar escena",
-      "export_project": "Descargar escena"
+      "delete_project": "Borrar Escena",
+      "duplicate_project": "Duplicar Escena",
+      "export_project": "Descargar Escena",
+      "unpublish": "Despublicar"
     },
-    "projects_title": "Mis escenas",
+    "projects_title": "Mis Escenas",
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
-    "templates_title": "Escoge el tamano de tu escena para comenzar",
+    "templates_title": "Escoge el tamano de tu Escena para comenzar",
     "title": "¡Construye algo genial!"
   },
   "import_modal": {
     "action": "Cargar",
-    "action_many": "Cargar {count} escenas",
+    "action_many": "Cargar {count} Escenas",
     "cta": "Arrastra un .zip archivo o {action}",
-    "description": "¡Puedes cargar escenas exportadas desde otras instancias del Builder!",
+    "description": "¡Puedes cargar Escenas exportadas desde otras instancias del Builder!",
     "invalid_file": "Archivo inválido",
-    "title": "Importar escena",
+    "title": "Importar Escena",
     "upload_manually": "Súbelas manualmente"
   },
   "itemdrawer": {
@@ -143,7 +219,7 @@
   },
   "not_found_page": {
     "back": "Volver a tus Escenas",
-    "subtitle": "Lo sentimos, no pudimos encontrar la escena que buscabas.",
+    "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
   },
   "popups": {
@@ -151,23 +227,23 @@
     "shortcuts_help": "¡Ver atajos aquí!"
   },
   "project_card": {
-    "confirm_delete_content": "¿Seguro que quieres borrar tu escena \"{title}\"? Esta operación es ireversible",
+    "confirm_delete_content": "¿Seguro que quieres borrar tu Escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },
   "project_fields": {
     "description_field_label": "Descripción",
     "description_field_placeholder": "Sin descripción",
     "title_field_label": "Título",
-    "title_field_placeholder": "Título de la escena"
+    "title_field_placeholder": "Título de la Escena"
   },
   "project_layout_picker": {
-    "max_area_error": "Tu escena no puede tener más de {area} parcelas",
-    "min_area_error": "Tu escena es muy chica"
+    "max_area_error": "Tu Escena no puede tener más de {area} parcelas",
+    "min_area_error": "Tu Escena es muy chica"
   },
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
-    "export": "Descargar escena",
+    "export": "Descargar Escena",
     "hold": "Sostener",
     "move": "Alternar flechas",
     "move_camera": "Mover cámara",
@@ -201,16 +277,18 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Tus escenas se guardan automáticamente en el navegador"
+    "localstorage": "Tus Escenas se guardan automáticamente en el navegador"
   },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
     "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
-    "publish": "Publicar"
+    "publish": "Publicar",
+    "up_to_date": "Al día!{br}Todos los cambios están actualizados",
+    "update_Scene": "Actualizar Escena"
   },
   "tutorial_modal": {
     "slide0": {
-      "description": "Este es el nuevo constructor de escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
+      "description": "Este es el nuevo constructor de Escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",
       "title": "¡Bienvenido al Builder!"
     },
     "slide1": {
@@ -218,7 +296,7 @@
       "title": "Moviendo objetos"
     },
     "slide2": {
-      "description": "Agrega objetos a tu escena desde la barra lateral a la derecha.",
+      "description": "Agrega objetos a tu Escena desde la barra lateral a la derecha.",
       "title": "Añadiendo objetos"
     },
     "slide3": {
@@ -230,7 +308,7 @@
       "title": "Controlando la cámara"
     },
     "slide5": {
-      "description": "Cuando la escena esté terminada, haz clic en {submitButton} para enviarla al concurso",
+      "description": "Cuando la Escena esté terminada, haz clic en {submitButton} para enviarla al concurso",
       "email_cta": "Regístrate para recibir actualizaciones del Builder y concursos:",
       "title": "Participa en el concurso"
     },

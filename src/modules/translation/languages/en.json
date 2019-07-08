@@ -34,7 +34,7 @@
         "title": "All clear!"
       }
     },
-    "description": "Deploy your Scene to your LAND, or apply for a permit from landowners.",
+    "description": "Deploy your Scene to your LAND or apply for a permit from landowners.",
     "land": {
       "confirmation": {
         "action": "Publish",
@@ -63,7 +63,7 @@
       },
       "progress": {
         "creating_files": {
-          "description": "Please wait while create the files that will be uploaded.",
+          "description": "Please wait while we create the files to be uploaded.",
           "title": "Creating Asset Files"
         },
         "recording": {
@@ -78,7 +78,7 @@
       "success": {
         "back_home": "Back to Dashboard",
         "continue": "Continue working",
-        "description": "Your Scene is now published!",
+        "description": "Your Scene has now been published.",
         "title": "Done!"
       },
       "title": "Publish Scene"
