@@ -8,7 +8,7 @@ import { Project } from 'modules/project/types'
 
 export type Props = SignInProps & {
   error: string | null
-
+  name: string
   projectId: string
   isConnected: boolean
   isUploadingAssets: boolean

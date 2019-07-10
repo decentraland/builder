@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Button, Loader, Header } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import Icon from 'components/Icon'
@@ -122,7 +123,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     )
   }
 
-  render() {
+  renderView = () => {
     const { isConnected, isUploadingAssets, isCreatingFiles, deploymentStatus, error } = this.props
     const { needsConfirmation } = this.state
     const isLoading = isUploadingAssets || isCreatingFiles
@@ -136,5 +137,18 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     if (isConnected && (!isLoading || error) && needsConfirmation) return this.renderConfirmation()
 
     return <Loader size="big" />
+  }
+
+  wrapInModal = (view: JSX.Element) => {
+    const { name, onClose } = this.props
+    return (
+      <Modal name={name} onClose={onClose}>
+        {view}
+      </Modal>
+    )
+  }
+
+  render() {
+    return this.wrapInModal(this.renderView())
   }
 }

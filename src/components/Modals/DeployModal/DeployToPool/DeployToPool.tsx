@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Field, Form, Button, Header, Loader } from 'decentraland-ui'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import ProjectFields from 'components/ProjectFields'
@@ -86,7 +87,8 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   handleClose = () => {
-    if (!this.props.isLoading) {
+    const { isLoading, isRecording, isUploadingRecording } = this.props
+    if (!isLoading && !isRecording && !isUploadingRecording) {
       this.props.onClose()
     }
   }
@@ -184,7 +186,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     )
   }
 
-  render() {
+  renderView = () => {
     const { isRecording, isUploadingRecording, isLoading } = this.props
     const hasProgress = isRecording || isUploadingRecording
 
@@ -193,5 +195,18 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     if (!hasProgress && !isLoading) return this.renderForm()
 
     return <Loader size="big" />
+  }
+
+  wrapInModal = (view: JSX.Element) => {
+    const { name } = this.props
+    return (
+      <Modal name={name} onClose={this.handleClose}>
+        {view}
+      </Modal>
+    )
+  }
+
+  render() {
+    return this.wrapInModal(this.renderView())
   }
 }

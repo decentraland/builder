@@ -5,6 +5,7 @@ import { editProjectRequest } from 'modules/project/actions'
 import { Media } from 'modules/media/types'
 
 export type Props = {
+  name: string
   currentProject: Project | null
   userEmail: string
   error: string | null

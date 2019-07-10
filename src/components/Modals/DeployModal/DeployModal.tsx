@@ -64,56 +64,53 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderChoiceForm = () => {
-    return (
-      <div className="choice-form">
-        <div className="modal-header">
-          <Icon name="modal-close" onClick={this.handleClose} />
-        </div>
-        <Header size="large" className="modal-title">
-          {t('deployment_modal.title')}
-        </Header>
-        <p className="modal-subtitle">{t('deployment_modal.description')}</p>
-        <div className="options">
-          <div className="card">
-            <div className="thumbnail deploy-to-pool" />
-            <span className="title">{t('deployment_modal.option_pool.title')}</span>
-            <span className="description">{t('deployment_modal.option_pool.description')}</span>
-            <Button primary size="small" onClick={this.handleDeployToPool}>
-              {t('deployment_modal.option_pool.action')}
-            </Button>
-          </div>
-          <div className="card">
-            <div className="thumbnail deploy-to-land" />
-            <span className="title">{t('deployment_modal.option_land.title')}</span>
-            <span className="description">{t('deployment_modal.option_land.description')}</span>
-            <Button primary size="small" onClick={this.handleDeployToLand}>
-              {t('deployment_modal.option_land.action')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  wrapInModal = (view: JSX.Element) => {
     const { name } = this.props
+
     return (
       <Modal name={name} onClose={this.handleClickOutside}>
-        {view}
+        <div className="choice-form">
+          <div className="modal-header">
+            <Icon name="modal-close" onClick={this.handleClose} />
+          </div>
+          <Header size="large" className="modal-title">
+            {t('deployment_modal.title')}
+          </Header>
+          <p className="modal-subtitle">{t('deployment_modal.description')}</p>
+          <div className="options">
+            <div className="card">
+              <div className="thumbnail deploy-to-pool" />
+              <span className="title">{t('deployment_modal.option_pool.title')}</span>
+              <span className="description">{t('deployment_modal.option_pool.description')}</span>
+              <Button primary size="small" onClick={this.handleDeployToPool}>
+                {t('deployment_modal.option_pool.action')}
+              </Button>
+            </div>
+            <div className="card">
+              <div className="thumbnail deploy-to-land" />
+              <span className="title">{t('deployment_modal.option_land.title')}</span>
+              <span className="description">{t('deployment_modal.option_land.description')}</span>
+              <Button primary size="small" onClick={this.handleDeployToLand}>
+                {t('deployment_modal.option_land.action')}
+              </Button>
+            </div>
+          </div>
+        </div>
       </Modal>
     )
   }
 
   render() {
     const { view, projectId } = this.state
+    const { name } = this.props
 
     if (view === DeployModalView.CLEAR_DEPLOYMENT && projectId) {
-      return this.wrapInModal(<ClearDeployment projectId={projectId} onClose={this.handleClose} />)
+      return <ClearDeployment projectId={projectId} name={name} onClose={this.handleClose} />
     }
 
     if (view === DeployModalView.DEPLOY_TO_LAND) {
-      return this.wrapInModal(
+      return (
         <DeployToLand
+          name={name}
           onDeployToPool={this.handleDeployToPool}
           onClearDeployment={this.handleClearDeployment}
           onBack={this.handleBack}
@@ -123,9 +120,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     }
 
     if (view === DeployModalView.DEPLOY_TO_POOL) {
-      return this.wrapInModal(<DeployToPool onClose={this.handleClose} />)
+      return <DeployToPool name={name} onClose={this.handleClose} />
     }
 
-    return this.wrapInModal(this.renderChoiceForm())
+    return this.renderChoiceForm()
   }
 }

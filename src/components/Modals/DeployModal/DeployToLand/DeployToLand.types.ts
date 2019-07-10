@@ -10,6 +10,7 @@ import { Project } from 'modules/project/types'
 import { Media } from 'modules/media/types'
 
 export type Props = {
+  name: string
   error: string | null
   walletError: SignInProps['hasError']
   isConnected: SignInProps['isConnected']
