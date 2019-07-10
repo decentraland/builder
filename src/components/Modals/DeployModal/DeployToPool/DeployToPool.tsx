@@ -9,8 +9,14 @@ import { EMAIL_INTEREST, api } from 'lib/api'
 import { Props, State } from './DeployToPool.types'
 import './DeployToPool.css'
 
+const analytics = getAnalytics()
+
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
+
+  componentDidMount() {
+    analytics.track('Publish to Pool')
+  }
 
   componentWillReceiveProps(nextProps: Props) {
     const { isLoading, error } = nextProps
@@ -68,7 +74,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     const { currentProject, onDeployToPool, onSaveProject, onSaveUser } = this.props
     const { email, project } = this.state
     const projectId = currentProject!.id
-    const analytics = getAnalytics()
 
     this.setState({ isSubmitting: true })
 

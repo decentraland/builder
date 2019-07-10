@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { api } from 'lib/api'
-import { Layer, Button, Atlas, Popup } from 'decentraland-ui'
+import { Layer, Button, Atlas, Popup, Loader } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
@@ -14,6 +15,7 @@ import './LandAtlas.css'
 const ROTATION_ORDER: Rotation[] = ['north', 'east', 'south', 'west']
 const CLOCKWISE_ROTATION = 1
 const ANTICLOCKWISE_ROTATION = -1
+const analytics = getAnalytics()
 
 export default class LandAtlas extends React.PureComponent<Props, State> {
   state: State = this.getBaseState()
@@ -47,12 +49,14 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
       parcels: {},
       rotation: 'north',
       zoom: 1,
-      landTarget: initialPoint ? `${initialPoint.x},${initialPoint.y}` : '0,0'
+      landTarget: initialPoint ? `${initialPoint.x},${initialPoint.y}` : '0,0',
+      isLoadingMap: true
     }
   }
 
   fetchAuthorizedParcels = async (ethAddress: string) => {
     const { landTarget } = this.state
+
     try {
       const res = await api.fetchAuthorizedParcels(ethAddress)
       if (this.mounted) {
@@ -67,10 +71,13 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           {}
         )
 
+        analytics.track('LAND authorized for publish', { count: res.parcels.length })
+
         this.setState({
           parcels,
           // Only point to the first authorized parcel if no initialPoint was provided
-          landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget
+          landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget,
+          isLoadingMap: false
         })
       }
     } catch (e) {
@@ -166,6 +173,9 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     if (placement) return
     const newRotation =
       (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
+
+    analytics.track('Publish to LAND atlas rotate', { direction })
+
     this.setState({ rotation: ROTATION_ORDER[newRotation] })
   }
 
@@ -174,6 +184,9 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const parcelKeys = Object.keys(parcels)
     const index = landTarget ? parcelKeys.indexOf(landTarget) : 0
     const nextIndex = (((index + 1) % parcelKeys.length) + parcelKeys.length) % parcelKeys.length
+
+    analytics.track('Publish to LAND atlas locate')
+
     this.setState({
       landTarget: parcelKeys[nextIndex]
     })
@@ -237,11 +250,19 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   render() {
     const { media, project } = this.props
-    const { placement, rotation, zoom, landTarget, parcels } = this.state
+    const { placement, rotation, zoom, landTarget, parcels, isLoadingMap } = this.state
     const hasPlacement = !!placement && !!project && !!project.parcels
     const parcelCount = Object.keys(parcels).length
     const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
     const hasOccupiedParcels = this.hasOccupiedParcels()
+
+    if (isLoadingMap) {
+      return (
+        <div className="LandAtlas">
+          <Loader size="big" />
+        </div>
+      )
+    }
 
     return (
       <div className="LandAtlas">

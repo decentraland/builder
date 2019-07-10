@@ -23,4 +23,5 @@ export type State = {
   rotation: Rotation
   zoom: number
   landTarget: string | null
+  isLoadingMap: boolean
 }

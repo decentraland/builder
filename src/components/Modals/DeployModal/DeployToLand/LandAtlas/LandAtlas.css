@@ -3,6 +3,7 @@
   width: 640px;
   align-items: unset;
   justify-items: unset;
+  min-height: 540px;
 }
 
 .LandAtlas .atlas-container {

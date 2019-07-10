@@ -1,14 +1,14 @@
 {
   "adblock_modal": {
-    "body": "在安装Dapper钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
+    "body": "在安装 Dapper 钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
     "title": "停用广告拦截器"
   },
   "banners": {
-    "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！",
+    "dapper_assetpack_banner": "获取 Dapper 钱包和免费的{cat}, 适合您的场景！",
     "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
     "dapper_homepage_cta": "Purrstige 猫",
     "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
-    "mobile_dapper_hompage_cta": "Picture Frames + Dapper",
+    "mobile_dapper_hompage_cta": "Picture Frames 相框 + Dapper",
     "promo_cta": "安装 Dapper",
     "promo_subtitle": "在场景中显示您的谜恋猫。没有的话可以安装 Dapper 钱包，就能得到一只免费的、独一无二的 Purrstige 猫。。",
     "promo_title": "今天的您好 Dapper (酷)!"
@@ -22,26 +22,101 @@
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
   "deployment_modal": {
-    "description": "您将可以直接在编辑器中发布场景到土地！请订阅邮件列表，以便功能实现时，可以即时通知您。",
-    "email_thanks": "谢谢！我们会保持联系",
-    "pool": {
-      "contact_information": "联系信息",
-      "error_ocurred": "提交项目时出错了:",
-      "i_accept_the": "我同意接收Decentraland的消息",
-      "progress": "处理",
-      "subtitle": "将您的作品提交到我们的场景池，以便有机会将其发布。无需LAND。",
-      "success": {
-        "body": "如果您的场景被选中要发布，您将收到电子邮件通知。",
-        "title": "感谢您上传您的场景！"
+    "clear": {
+      "confirmation": {
+        "action": "撤回发布",
+        "description": "从虚拟世界撤回 \"{project}\"",
+        "title": "撤回已发布的场景"
       },
-      "title": "发布您的场景",
-      "uploading": "上传"
+      "connect": {
+        "description": "请连接到您的钱包以撤回已发布的场景。",
+        "title": "连接您的钱包"
+      },
+      "success": {
+        "continue": "已完成",
+        "description": "土地已经清空,可以发布其他场景了!",
+        "title": "土地已经清空!"
+      }
     },
-    "title": "布署场景到土地"
+    "description": "将场景部署到土地上，或向土地所有者申请许可。",
+    "land": {
+      "confirmation": {
+        "action": "发布",
+        "description": "您将发布以下场景到土地:",
+        "location_label": "发布到",
+        "size_label": "大小",
+        "title_label": "标题"
+      },
+      "connect": {
+        "description": "连接您的钱包继续。",
+        "title": "发布场景"
+      },
+      "map": {
+        "continue": "继续",
+        "locate_land": "定位下一地块",
+        "no_land_action": "提交到场景池",
+        "no_land_warning": "好象您没有任何土地",
+        "occupied_tooltip": "清空土地空间{br}从仪表板撤回发布的场景",
+        "occupied_warning": "在这个位置至少有一个场景布署",
+        "placement_active": "在 {x},{y} 布署 {count} 块土地场景 ",
+        "placement_default": "选择要发布场景的土地",
+        "reset": "重置",
+        "title": "发布场景",
+        "zoom_in": "放大",
+        "zoom_out": "缩小"
+      },
+      "progress": {
+        "creating_files": {
+          "description": "正在建立上传的文件，请稍等。",
+          "title": "创建资源文件"
+        },
+        "recording": {
+          "description": "请稍等，正在录制场景预览。",
+          "title": "录制场景预览"
+        },
+        "uploading_assets": {
+          "description": "正在上传场景，请稍等。",
+          "title": "上传到虚拟世界"
+        }
+      },
+      "success": {
+        "back_home": "返回仪表板",
+        "continue": "继续工作",
+        "description": "场景已上传。",
+        "title": "已完成!"
+      },
+      "title": "发布场景"
+    },
+    "option_land": {
+      "action": "布署到 LAND 土地",
+      "description": "布署场景到 LAND 土地或 Estate 连块土地.",
+      "title": "我的 LAND 土地"
+    },
+    "option_pool": {
+      "action": "应用",
+      "description": "将你的场景应用到其他人的领地。",
+      "title": "场景池"
+    },
+    "pool": {
+      "action": "提交",
+      "contact_information": "联系信息",
+      "error_ocurred": "出错了",
+      "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
+      "progress": "正在处理",
+      "subtitle": "把作品提交到场景池，就有机会发布。提交之前在场景中加入 NFT 并申请赢取 100 MANA。",
+      "success": {
+        "body": "如果您的场景被选中发布，您将收到电子邮件通知。",
+        "title": "谢谢上传你的场景!"
+      },
+      "title": "发布场景",
+      "uploading": "正在上传"
+    },
+    "title": "正在发布场景"
   },
   "edit_project_modal": {
     "custom_layout_label": "布局",
-    "title": "场景详细信息"
+    "title": "场景详细信息",
+    "unpublish_needed": "请在更新您的场景细节之前先取消发布您的场景"
   },
   "error_page": {
     "or": "或者重试",
@@ -92,7 +167,8 @@
     "project_actions": {
       "delete_project": "删除场景",
       "duplicate_project": "复制场景",
-      "export_project": "场景导出"
+      "export_project": "场景导出",
+      "unpublish": "撤消发布"
     },
     "projects_title": "我的场景",
     "start": "开始设计",
@@ -207,7 +283,9 @@
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
     "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
-    "publish": "发布"
+    "publish": "发布",
+    "up_to_date": "已最新！{br}所有更改都已发布",
+    "update_scene": "更新场景"
   },
   "tutorial_modal": {
     "slide0": {
