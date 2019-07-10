@@ -7,6 +7,7 @@ import { createBrowserHistory } from 'history'
 import { env } from 'decentraland-commons'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
+import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -18,6 +19,15 @@ import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
+
+const builderVersion = require('../../../package.json').version
+
+configureAnalytics({
+  transformPayload: payload => {
+    if (typeof payload === 'string' || payload === undefined) return payload
+    return { ...payload, version: builderVersion }
+  }
+})
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__

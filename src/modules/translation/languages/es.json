@@ -54,12 +54,12 @@
       "map": {
         "continue": "Continuar",
         "locate_land": "Localiza la siguente LAND",
-        "no_land_action": "Sube to Escena al Pool",
+        "no_land_action": "Sube tu Escena al Pool",
         "no_land_warning": "Parece que no posees LAND",
         "occupied_tooltip": "Libera espacio de tu LAND{br}Despublica la Escena desde el dashboard",
         "occupied_warning": "Al menos una Escena ya está publicada en esta ubicación",
         "placement_active": "Colocando una {count} Escena en la siguente LAND {x},{y}",
-        "placement_default": "Selecciona las lANDs donde publicarás tu Escena",
+        "placement_default": "Selecciona las LANDs donde publicarás tu Escena",
         "reset": "Restablecer",
         "title": "Publica la Escena",
         "zoom_in": "Acercarse",
@@ -72,7 +72,7 @@
         },
         "recording": {
           "description": "Por Favor espera mientras se captura una previsualización de tu Escena.",
-          "title": "Capturando Previsualización"
+          "title": "Capturando previsualización"
         },
         "uploading_assets": {
           "description": "Por favor espera mientras tu Escena es subida.",
@@ -103,7 +103,7 @@
       "error_ocurred": "Un error ha ocurrido",
       "i_accept_the": "Al clikear sobre \"enviar\" aceptas recibir noticias de Decentraland",
       "progress": "Procesando",
-      "subtitle": "Envía tu trabajo a nuestro pool de Escenas para obtener la chance de que esta sea Publicada. Incluye un NFT coleccionable en tu Escena antes de enviarlo y aplica para ganar 100 MANA.",
+      "subtitle": "Envía tu trabajo a nuestro pool de Escenas para obtener la chance de que esta sea Publicada.",
       "success": {
         "body": "Recibirás una notificación por email si tu Escena es elegida para ser publicada.",
         "title": "Gracias por subir tu Escena!"
@@ -113,10 +113,11 @@
     },
     "title": "Publica tu Escena"
   },
+
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la Escena",
-    "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la Escena"
+    "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la esta"
   },
   "error_page": {
     "or": "o intentar",
@@ -172,7 +173,7 @@
     "projects_title": "Mis Escenas",
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
-    "templates_title": "Escoge el tamano de tu Escena para comenzar",
+    "templates_title": "Escoge el tamaño de tu Escena para comenzar",
     "title": "¡Construye algo genial!"
   },
   "import_modal": {
@@ -254,7 +255,7 @@
     "reset_camera": "Restablecer cámara",
     "rotate": "Alternar órbitas",
     "shortcut_reference": "Referencia de atajos",
-    "toggle_colliders": "Mostrar colisionadores",
+    "toggle_colliders": "Mostrar colisiones",
     "toggle_sidebar": "Alternar barra lateral",
     "undo": "Deshacer",
     "zoom_in": "Aumentar el zoom",

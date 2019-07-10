@@ -105,9 +105,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
           <Icon name="modal-close" onClick={this.handleClose} />
         </div>
         <Header size="large" className="modal-title">
-          Submit Scene
+          {t('deployment_modal.pool.title')}
         </Header>
-        <p className="modal-subtitle">You are about to submit your work to the Scene pool</p>
+        <p className="modal-subtitle">{t('deployment_modal.pool.subtitle')}</p>
         <Form className="form" onSubmit={this.handleSubmit}>
           <ProjectFields.Title value={title} onChange={this.handleTitleChange} required disabled={isLoading} />
           <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} disabled={isLoading} />
