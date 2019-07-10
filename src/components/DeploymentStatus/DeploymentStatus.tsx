@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Popup } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeploymentStatus as Status } from 'modules/deployment/types'
 import { Props } from './DeploymentStatus.types'
 import './DeploymentStatus.css'
@@ -27,7 +28,11 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
       <Popup
         className="status"
         position="bottom left"
-        content={<span>Published at {`${x},${y}`}</span>}
+        content={
+          <span>
+            {t('deployment_modal.land.confirmation.location_label')} {`${x},${y}`}
+          </span>
+        }
         trigger={<span className={classes} />}
         on="hover"
         inverted

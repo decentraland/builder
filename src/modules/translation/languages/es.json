@@ -339,6 +339,7 @@
     "promo_body": "¡Instala {cta} y obtén un CryptoKitty gratuito!",
     "promo_cta": "Dapper",
     "promo_title": "¿No tienes una billetera?",
-    "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
+    "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables.",
+    "signature_error": "Error al firmar el mensaje"
   }
 }
