@@ -155,7 +155,7 @@
     "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
-    "import_Scene": "Upload Scene",
+    "import_scene": "Upload Scene",
     "project_actions": {
       "delete_project": "Delete Scene",
       "duplicate_project": "Duplicate Scene",

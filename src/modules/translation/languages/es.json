@@ -284,7 +284,7 @@
     "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
     "publish": "Publicar",
     "up_to_date": "Al día!{br}Todos los cambios están actualizados",
-    "update_Scene": "Actualizar Escena"
+    "update_scene": "Actualizar Escena"
   },
   "tutorial_modal": {
     "slide0": {

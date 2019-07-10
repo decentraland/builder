@@ -288,8 +288,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           <div className="tool-container">
             {this.renderTool('locate-land', 'Locate next LAND', this.handleLocateLand)}
             <div className="tool-group">
-              {this.renderTool('atlas-zoom-out', 'Zoom in', this.handleZoomOut)}
-              {this.renderTool('atlas-zoom-in', 'Zoom out', this.handleZoomIn)}
+              {this.renderTool('atlas-zoom-out', t('deployment_modal.land.map.zoom_out'), this.handleZoomOut)}
+              {this.renderTool('atlas-zoom-in', t('deployment_modal.land.map.zoom_in'), this.handleZoomIn)}
             </div>
           </div>
 
