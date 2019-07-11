@@ -22,4 +22,5 @@
 .ui.visible.popup.inverted.status {
   margin-left: -14px;
   margin-top: 16px;
+  z-index: 99999999999;
 }
