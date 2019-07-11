@@ -59,6 +59,10 @@
   display: none;
 }
 
+.ProjectCard:hover {
+  z-index: 999999;
+}
+
 .ProjectCard:hover .ui.dropdown {
   display: inline-block;
 }

@@ -103,7 +103,7 @@
       "error_ocurred": "出错了",
       "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
       "progress": "正在处理",
-      "subtitle": "把作品提交到场景池，就有机会发布。提交之前在场景中加入 NFT 并申请赢取 100 MANA。",
+      "subtitle": "把作品提交到场景池，就有机会发布。",
       "success": {
         "body": "如果您的场景被选中发布，您将收到电子邮件通知。",
         "title": "谢谢上传你的场景!"
@@ -189,6 +189,7 @@
     "collectible_disclaimer": "没看到你所有的加密收藏品？{br}我们很快就会加入支持！",
     "empty_ground": "末设置地面",
     "no_results": "没找到",
+    "results": "结果",
     "search": "搜索",
     "title": "抽屉"
   },
@@ -339,7 +340,7 @@
     "promo_body": "从 {cta} 获得一个免费的 Purrstige 猫添加到你的场景！",
     "promo_cta": "Dapper",
     "promo_title": "还没有钱包吗",
-    "title": "连接钱包用加密收藏品装饰你的场景。",
-    "signature_error": "签名消息失败"
+    "signature_error": "签名消息失败",
+    "title": "连接钱包用加密收藏品装饰你的场景。"
   }
 }
