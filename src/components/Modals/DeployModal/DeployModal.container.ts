@@ -1,32 +1,15 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { Project } from 'modules/project/types'
-import { User } from 'modules/user/types'
-import { getEmail } from 'modules/user/selectors'
-import { isLoading, getError, getThumbnail, getProgress, getStage } from 'modules/deployment/selectors'
-import { deployToPoolRequest } from 'modules/deployment/actions'
-import { getCurrentProject } from 'modules/project/selectors'
-import { setUserProfile } from 'modules/user/actions'
-import { editProjectRequest } from 'modules/project/actions'
-import { MapStateProps, MapDispatchProps } from './DeployModal.types'
+import { getDeployment } from 'modules/deployment/selectors'
+import { MapStateProps, MapDispatchProps, OwnProps } from './DeployModal.types'
 import DeployModal from './DeployModal'
 
-const mapState = (state: RootState): MapStateProps => ({
-  error: getError(state),
-  userEmail: getEmail(state),
-  currentProject: getCurrentProject(state),
-  isLoading: isLoading(state),
-  progress: getProgress(state),
-  stage: getStage(state),
-  deploymentThumbnail: getThumbnail(state)
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
+  deployment: getDeployment(ownProps.metadata.projectId)(state)
 })
 
-const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onDeployToPool: (projectId: string, ethAddress: string) => dispatch(deployToPoolRequest(projectId, ethAddress)),
-  onSaveUser: (user: Partial<User>) => dispatch(setUserProfile(user)),
-  onSaveProject: (id: string, project: Partial<Project>) => dispatch(editProjectRequest(id, project))
-})
+const mapDispatch = (_: Dispatch): MapDispatchProps => ({})
 
 export default connect(
   mapState,

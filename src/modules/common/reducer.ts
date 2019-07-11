@@ -16,6 +16,7 @@ import { userReducer as user } from 'modules/user/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
+import { mediaReducer as media } from 'modules/media/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -33,6 +34,7 @@ export function createRootReducer(history: History) {
       project,
       scene,
       deployment,
+      media,
       router: connectRouter(history)
     })
   )

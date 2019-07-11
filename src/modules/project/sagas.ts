@@ -14,16 +14,17 @@ import {
   EditProjectRequestAction,
   editProjectSuccess,
   editProjectFailure,
-  EXPORT_PROJECT,
-  ExportProjectAction,
+  EXPORT_PROJECT_REQUEST,
+  ExportProjectRequestAction,
   IMPORT_PROJECT,
-  ImportProjectAction
+  ImportProjectAction,
+  exportProjectSuccess
 } from 'modules/project/actions'
 import { RootState } from 'modules/common/types'
 import { Project, Layout } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
+import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
 import { getGroundAsset } from 'modules/asset/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, provisionScene } from 'modules/scene/actions'
@@ -53,7 +54,7 @@ export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
-  yield takeLatest(EXPORT_PROJECT, handleExportProject)
+  yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
 }
 
@@ -110,10 +111,10 @@ function* handleEditProject(action: EditProjectRequestAction) {
   const { id, project } = action.payload
   let ground = action.payload.ground
 
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
+  const currentProject: Project | null = yield select(getProject(id))
   if (!currentProject) return
 
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
   const hasNewLayout = project.layout && !isEqualLayout(project.layout, currentProject.layout)
@@ -155,14 +156,22 @@ function* handleEditProject(action: EditProjectRequestAction) {
   }
 }
 
-function* handleExportProject(action: ExportProjectAction) {
+function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
-  const scene: Scene = yield select(getSceneById(project.sceneId))
+  const scene: Scene = yield select(getScene(project.sceneId))
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
-  yield put(setExportProgress({ isLoading: true, progress: 0, total: 0 }))
-  const files = yield call(() => createFiles({ project, scene, onProgress: progress => store.dispatch(setExportProgress(progress)) }))
+  yield put(setExportProgress({ loaded: 0, total: 0 }))
+  const files = yield call(() =>
+    createFiles({
+      project,
+      scene,
+      point: { x: 0, y: 0 },
+      rotation: 'east',
+      onProgress: progress => store.dispatch(setExportProgress(progress))
+    })
+  )
 
   for (const filename of Object.keys(files)) {
     zip.file(filename, files[filename as keyof typeof files])
@@ -174,7 +183,7 @@ function* handleExportProject(action: ExportProjectAction) {
   })
 
   yield put(closeModal('ExportModal'))
-  yield put(setExportProgress({ isLoading: false, progress: 0, total: 0 }))
+  yield put(exportProjectSuccess())
 }
 
 function* handleImportProject(action: ImportProjectAction) {

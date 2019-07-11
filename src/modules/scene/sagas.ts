@@ -18,7 +18,6 @@ import {
   FIX_CURRENT_SCENE
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
-import { RootState } from 'modules/common/types'
 import {
   getGLTFId,
   getCurrentScene,
@@ -37,6 +36,7 @@ import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds, areEqualMappings } from './utils'
+import { Project } from 'modules/project/types'
 
 const editorWindow = window as EditorWindow
 
@@ -242,12 +242,11 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { projectId, layout, asset } = action.payload
-
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
+  const { layout, asset, projectId } = action.payload
+  const currentProject: Project | null = yield select(getProject(projectId))
   if (!currentProject) return
 
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
   const hasLayoutChanged = layout && !isEqualLayout(currentProject.layout, layout)

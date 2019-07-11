@@ -7,8 +7,10 @@ import { createBrowserHistory } from 'history'
 import { env } from 'decentraland-commons'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
+import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
+import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
@@ -17,6 +19,15 @@ import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
+
+const builderVersion = require('../../../package.json').version
+
+configureAnalytics({
+  transformPayload: payload => {
+    if (typeof payload === 'string' || payload === undefined) return payload
+    return { ...payload, version: builderVersion }
+  }
+})
 
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -41,7 +52,7 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
-  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds']],
+  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds'], ['deployment', 'data']],
   actions: [
     CREATE_PROJECT,
     CREATE_SCENE,
@@ -52,7 +63,10 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DELETE_PROJECT,
     SET_USER_ID,
     SET_USER_EMAIL,
-    SET_AVAILABLE_ASSET_PACKS
+    SET_AVAILABLE_ASSET_PACKS,
+    DEPLOY_TO_LAND_SUCCESS,
+    CLEAR_DEPLOYMENT_SUCCESS,
+    MARK_DIRTY
   ]
 })
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))

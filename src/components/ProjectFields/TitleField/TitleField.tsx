@@ -8,7 +8,6 @@ export default class TitleField extends React.PureComponent<FieldProps> {
   render() {
     return (
       <Field
-        icon={this.props.required ? 'asterisk' : ''}
         label={t('project_fields.title_field_label')}
         placeholder={t('project_fields.title_field_placeholder')}
         pattern={`.{${MIN_TITLE_LENGTH},${MAX_TITLE_LENGTH}}`}

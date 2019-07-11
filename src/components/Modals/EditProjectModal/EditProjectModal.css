@@ -19,3 +19,8 @@
 .EditProjectModal .LayoutPicker .input {
   width: 40%;
 }
+
+.EditProjectModal .error {
+  font-size: 12px;
+  color: red;
+}

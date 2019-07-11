@@ -20,6 +20,7 @@ import {
 import { DeployToPoolSuccessAction, DEPLOY_TO_POOL_SUCCESS } from 'modules/deployment/actions'
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
+import { Project } from 'modules/project/types'
 import { trimAsset } from './track'
 
 export function* segmentSaga() {
@@ -105,7 +106,7 @@ function handleConnectWallet(action: ConnectWalletSuccessAction) {
 }
 
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
-  const project = yield select(getCurrentProject)
+  const project: Project | null = yield select(getCurrentProject)
   const user = yield select(getUserState)
   if (!project) return
   track('Deploy to pool', { project_id: project.id, user })

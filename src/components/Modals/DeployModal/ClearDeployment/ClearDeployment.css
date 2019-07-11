@@ -1,0 +1,52 @@
+.ClearDeployment {
+  margin: 0px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 560px;
+}
+
+.ClearDeployment .ui.button.connect {
+  margin-top: 24px;
+  width: 140px;
+}
+
+.ClearDeployment .error {
+  visibility: hidden;
+  user-select: none;
+  color: var(--primary);
+  margin-top: 20px;
+}
+
+.ClearDeployment .error.visible {
+  visibility: visible;
+}
+
+.ClearDeployment.progress {
+  margin: 64px 24px 24px 24px;
+  width: 480px;
+  margin: 48px;
+}
+
+.ClearDeployment.progress .progress-bar-container {
+  margin-top: 32px;
+}
+
+.ClearDeployment.confirmation {
+  margin-bottom: 48px;
+}
+
+.ClearDeployment.confirmation .ui.button {
+  margin-top: 24px;
+  width: 140px;
+}
+
+.ClearDeployment.success {
+  margin: 0px 24px 48px 24px;
+}
+
+.ClearDeployment.success .ui.button {
+  margin-top: 24px;
+  width: 140px;
+}

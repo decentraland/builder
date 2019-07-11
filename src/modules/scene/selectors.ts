@@ -16,7 +16,7 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   (project, scenes) => (project ? scenes[project.sceneId] : null)
 )
 
-export const getSceneById = (sceneId: string) =>
+export const getScene = (sceneId: string) =>
   createSelector<RootState, SceneState['data'], Scene | null>(
     getData,
     scenes => scenes[sceneId]
@@ -31,8 +31,6 @@ export const getCurrentLimits = createSelector<RootState, Scene | null, SceneMet
   getCurrentScene,
   scene => (scene ? scene.limits : EMPTY_SCENE_METRICS)
 )
-
-export const getScene = (state: RootState, sceneId: string): Scene | null => getData(state)[sceneId] || null
 
 export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(
   getCurrentScene,

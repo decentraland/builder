@@ -5,12 +5,15 @@ import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
 import { AssetRegistryResponse, DARAssetsResponse } from 'modules/asset/types'
+import { ContentManifest, ContentUploadRequestMetadata, ContentServiceFile } from 'modules/deployment/types'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
 export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 export const DAR_URL = env.get('REACT_APP_DAR_URL', '')
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
+export const CONTENT_SERVER_URL = env.get('REACT_APP_CONTENT_SERVER_URL', '')
+export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
@@ -43,14 +46,16 @@ export class API extends BaseAPI {
     return resp.assets || [] // TODO: remove the || [] when the DAR stops sending assets: null
   }
 
+  fetchAuthorizedParcels(address: string) {
+    return this.request('get', `${MARKETPLACE_URL}/address/${address}/parcels/authorized`, {})
+  }
+
   reportEmail(email: string, interest: EMAIL_INTEREST) {
     return this.request('post', `${EMAIL_SERVER_URL}`, { email, interest })
   }
 
-  async deployToPool(project: Omit<Project, 'thumbnail'>, scene: Scene, user: User, ethAddress: string) {
-    return this.request('post', `${BUILDER_SERVER_URL}/project/`, {
-      entry: JSON.stringify({ version: 1, project, scene, user: { ...user, ethAddress } })
-    })
+  async deployToPool(project: Omit<Project, 'thumbnail'>, scene: Scene, user: User) {
+    return this.request('post', `${BUILDER_SERVER_URL}/project/`, { entry: JSON.stringify({ version: 1, project, scene, user }) })
   }
 
   async publishScenePreview(
@@ -69,6 +74,45 @@ export class API extends BaseAPI {
     return this.request('post', `${BUILDER_SERVER_URL}/project/${projectId}/preview`, formData, {
       onUploadProgress
     })
+  }
+
+  async uploadToContentService(
+    rootCID: string,
+    manifest: ContentManifest,
+    metadata: ContentUploadRequestMetadata,
+    files: ContentServiceFile[],
+    onUploadProgress?: (progress: { loaded: number; total: number }) => void
+  ) {
+    const data = new FormData()
+    data.append('metadata', JSON.stringify(metadata))
+    data.append(rootCID, JSON.stringify(Object.values(manifest)))
+
+    for (let file of files) {
+      const indentifier = manifest[file.path]
+      let content = new Blob([file.content], {
+        type: 'text/plain'
+      })
+      data.append(indentifier.cid, content, file.path)
+    }
+
+    try {
+      await this.request('post', `${CONTENT_SERVER_URL}/mappings`, data, {
+        onUploadProgress
+      })
+    } catch (e) {
+      const { status } = e.response
+      if (status === 401) {
+        throw new Error('Your current address is not authorized to update the specified LAND')
+      } else {
+        throw new Error('Unable to update LAND')
+      }
+    }
+  }
+
+  async fetchContentServerValidation(x: number, y: number) {
+    const req = await fetch(`${CONTENT_SERVER_URL}/validate?x=${x}&y=${y}`)
+    const res = await req.json()
+    return res
   }
 }
 
