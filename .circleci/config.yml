@@ -57,10 +57,14 @@ workflows:
           filters:
             branches:
               only: release
+      - build-approval:
+          type: approval
+          requires:
+            - build
       - deploy:
           context: builder-prd
           requires:
-            - build
+            - build-approval
   build-deploy-staging:
     jobs:
       - build:
