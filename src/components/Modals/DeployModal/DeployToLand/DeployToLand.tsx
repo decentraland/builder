@@ -278,7 +278,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   wrapInModal = (view: JSX.Element) => {
     const { name } = this.props
-    debugger
     return (
       <Modal name={name} onClose={this.handleClose}>
         {view}
