@@ -15,7 +15,8 @@ export const COLLECTIBLE_WHITELIST = [
   'etheremon',
   'mlb-champions',
   'mycryptoheroes',
-  'mycryptoheroes-extension'
+  'mycryptoheroes-extension',
+  'chainbreakers'
 ]
 
 export function* assetSaga() {
