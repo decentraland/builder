@@ -11,7 +11,8 @@ import {
   isCreatingFiles,
   getCurrentDeploymentStatus,
   getCurrentDeployment,
-  getOccuppiedParcels
+  getOccuppiedParcels,
+  isUploadingRecording
 } from 'modules/deployment/selectors'
 import { deployToLandRequest } from 'modules/deployment/actions'
 import { recordMediaRequest } from 'modules/media/actions'
@@ -29,6 +30,7 @@ const mapState = (state: RootState): MapStateProps => {
     isConnected: isConnected(state),
     isRecording: isRecording(state),
     isUploadingAssets: isUploadingAssets(state),
+    isUploadingRecording: isUploadingRecording(state),
     isCreatingFiles: isCreatingFiles(state),
     walletError: !!getWalletError(state),
     media: getMedia(state),

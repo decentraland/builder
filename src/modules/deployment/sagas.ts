@@ -30,6 +30,8 @@ import {
   QueryRemoteCIDAction
 } from './actions'
 import { store } from 'modules/common/store'
+import { Media } from 'modules/media/types'
+import { getMedia } from 'modules/media/selectors'
 import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
@@ -38,6 +40,7 @@ import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getDeployment } from './selectors'
 import { EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
+import { objectURLToBlob } from 'modules/media/utils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -116,6 +119,20 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       const timestamp = Math.round(Date.now() / 1000)
       const signature = yield signMessage(`${rootCID}.${timestamp}`)
       const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
+      const media: Media | null = yield select(getMedia)
+      if (media) {
+        const north: Blob = yield call(() => objectURLToBlob(media.north))
+        const east: Blob = yield call(() => objectURLToBlob(media.east))
+        const south: Blob = yield call(() => objectURLToBlob(media.south))
+        const west: Blob = yield call(() => objectURLToBlob(media.west))
+        const thumbnail: Blob = yield call(() => objectURLToBlob(media.thumbnail))
+
+        yield call(() =>
+          api.publishScenePreview(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+        )
+      } else {
+        console.warn('Failed to upload scene preview')
+      }
 
       yield call(() =>
         api.uploadToContentService(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS))

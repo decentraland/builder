@@ -73,6 +73,10 @@
         "uploading_assets": {
           "description": "Please wait while your Scene is uploaded.",
           "title": "Uploading to the Metaverse"
+        },
+        "uploading_recording": {
+          "description": "Please wait while upload your Scene preview.",
+          "title": "Uploading Preview"
         }
       },
       "success": {

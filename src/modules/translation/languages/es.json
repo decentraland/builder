@@ -58,7 +58,7 @@
         "no_land_warning": "Parece que no posees LAND",
         "occupied_tooltip": "Libera espacio de tu LAND{br}Despublica la Escena desde el dashboard",
         "occupied_warning": "Al menos una Escena ya está publicada en esta ubicación",
-        "placement_active": "Colocando una {count} Escena en la siguente LAND {x},{y}",
+        "placement_active": "Colocando una Escena de {count} LAND en {x},{y}",
         "placement_default": "Selecciona las LANDs donde publicarás tu Escena",
         "reset": "Restablecer",
         "title": "Publica la Escena",
@@ -77,6 +77,10 @@
         "uploading_assets": {
           "description": "Por favor espera mientras tu Escena es subida.",
           "title": "Subiendo Escena al Metaverse"
+        },
+        "uploading_recording": {
+          "description": "Por favor espera mientras la previsualización de tu Escena es subida.",
+          "title": "Subiendo previsualización"
         }
       },
       "success": {

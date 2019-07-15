@@ -77,6 +77,10 @@
         "uploading_assets": {
           "description": "正在上传场景，请稍等。",
           "title": "上传到虚拟世界"
+        },
+        "uploading_recording": {
+          "description": "上传场景预览时请稍候。",
+          "title": "正在上传预览"
         }
       },
       "success": {

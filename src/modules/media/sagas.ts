@@ -1,6 +1,6 @@
 import { select, delay, put, call, takeLatest } from 'redux-saga/effects'
 import { getCurrentProject } from 'modules/project/selectors'
-import { dataURLtoBlob } from 'modules/editor/utils'
+import { dataURLToBlob } from 'modules/media/utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { Project } from 'modules/project/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -72,5 +72,5 @@ export function* handleTakePictures() {
 function* takeEditorScreenshot(angle: number) {
   editorWindow.editor.setCameraRotation(angle, Math.PI / 3)
   const shot = yield call(() => editorWindow.editor.takeScreenshot())
-  return dataURLtoBlob(shot)
+  return dataURLToBlob(shot)
 }
