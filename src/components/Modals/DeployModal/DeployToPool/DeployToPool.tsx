@@ -172,12 +172,12 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     return (
       <div className="DeployToPool progress">
         <Header size="large" className="modal-title">
-          {isRecording && 'Capturing Preview'}
-          {isUploadingRecording && 'Uploading Preview'}
+          {isRecording && t('deployment_modal.land.progress.recording.title')}
+          {isUploadingRecording && t('deployment_modal.land.progress.uploading_recording.title')}
         </Header>
         <p className="modal-subtitle">
-          {isRecording && 'Please wait while a preview of your scene is captured.'}
-          {isUploadingRecording && 'Please wait while finish up your request.'}
+          {isRecording && t('deployment_modal.land.progress.creating_files.description')}
+          {isUploadingRecording && t('deployment_modal.land.progress.uploading_recording.description')}
         </p>
         <div className="progress-bar-container">
           <div className={classes} style={{ width: `${progress}%` }} />

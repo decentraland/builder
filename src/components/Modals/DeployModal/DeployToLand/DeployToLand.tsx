@@ -34,9 +34,19 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate() {
-    const { isConnected, isRecording, isUploadingAssets, isCreatingFiles, media, deploymentStatus, deployment, error } = this.props
+    const {
+      isConnected,
+      isRecording,
+      isUploadingAssets,
+      isCreatingFiles,
+      isUploadingRecording,
+      media,
+      deploymentStatus,
+      deployment,
+      error
+    } = this.props
     const { needsConfirmation } = this.state
-    const isLoading = isRecording || isUploadingAssets || isCreatingFiles
+    const isLoading = isRecording || isUploadingAssets || isCreatingFiles || isUploadingRecording
     let view: DeployToLandView = DeployToLandView.NONE
 
     if (!isConnected) {
@@ -137,7 +147,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderProgress = () => {
-    const { mediaProgress, deploymentProgress, isRecording, isCreatingFiles, isUploadingAssets } = this.props
+    const { mediaProgress, deploymentProgress, isRecording, isCreatingFiles, isUploadingAssets, isUploadingRecording } = this.props
 
     let classes = 'progress-bar'
 
@@ -153,11 +163,13 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           {isUploadingAssets && t('deployment_modal.land.progress.uploading_assets.title')}
           {isRecording && t('deployment_modal.land.progress.recording.title')}
           {isCreatingFiles && t('deployment_modal.land.progress.creating_files.title')}
+          {isUploadingRecording && t('deployment_modal.land.progress.uploading_recording.title')}
         </Header>
         <p className="modal-subtitle">
           {isUploadingAssets && t('deployment_modal.land.progress.uploading_assets.description')}
-          {isCreatingFiles && t('deployment_modal.land.progress.recording.description')}
-          {isRecording && t('deployment_modal.land.progress.creating_files.description')}
+          {isCreatingFiles && t('deployment_modal.land.progress.creating_files.description')}
+          {isRecording && t('deployment_modal.land.progress.recording.description')}
+          {isUploadingRecording && t('deployment_modal.land.progress.uploading_recording.description')}
         </p>
         <div className="progress-bar-container">
           <div className={classes} style={{ width: `${progress}%` }} />
@@ -278,7 +290,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   wrapInModal = (view: JSX.Element) => {
     const { name } = this.props
-    debugger
     return (
       <Modal name={name} onClose={this.handleClose}>
         {view}

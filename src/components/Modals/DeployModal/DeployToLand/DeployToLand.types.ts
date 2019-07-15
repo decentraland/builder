@@ -18,6 +18,7 @@ export type Props = {
   isRecording: boolean
   isUploadingAssets: boolean
   isCreatingFiles: boolean
+  isUploadingRecording: boolean
   mediaProgress: number
   deploymentProgress: DeploymentState['progress']
   ethAddress: string | undefined
@@ -54,6 +55,7 @@ export type MapStateProps = Pick<
   | 'walletError'
   | 'isRecording'
   | 'isUploadingAssets'
+  | 'isUploadingRecording'
   | 'isCreatingFiles'
   | 'isConnected'
   | 'ethAddress'
