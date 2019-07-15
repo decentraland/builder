@@ -17,7 +17,14 @@ import {
   UPDATE_TRANSFORM,
   UpdateTransfromAction
 } from 'modules/scene/actions'
-import { DeployToPoolSuccessAction, DEPLOY_TO_POOL_SUCCESS } from 'modules/deployment/actions'
+import {
+  DeployToPoolSuccessAction,
+  DEPLOY_TO_POOL_SUCCESS,
+  DEPLOY_TO_LAND_SUCCESS,
+  CLEAR_DEPLOYMENT_SUCCESS,
+  DeployToLandSuccessAction,
+  ClearDeploymentSuccessAction
+} from 'modules/deployment/actions'
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
@@ -33,6 +40,8 @@ export function* segmentSaga() {
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
+  yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
+  yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(SEARCH_ASSETS, handleSearchAssets)
 }
 
@@ -109,7 +118,21 @@ function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   const user = yield select(getUserState)
   if (!project) return
-  track('Deploy to pool', { project_id: project.id, user })
+  track(DEPLOY_TO_POOL_SUCCESS, { project_id: project.id, user })
+}
+
+function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
+  const project: Project | null = yield select(getCurrentProject)
+  const user = yield select(getUserState)
+  if (!project) return
+  track(DEPLOY_TO_LAND_SUCCESS, { project_id: project.id, user })
+}
+
+function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
+  const project: Project | null = yield select(getCurrentProject)
+  const user = yield select(getUserState)
+  if (!project) return
+  track(CLEAR_DEPLOYMENT_SUCCESS, { project_id: project.id, user })
 }
 
 function* handleSearchAssets(action: SearchAssetsAction) {

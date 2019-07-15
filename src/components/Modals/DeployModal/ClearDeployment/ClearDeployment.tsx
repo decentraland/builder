@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Button, Loader, Header } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import Icon from 'components/Icon'
 import { Props, State } from './ClearDeployment.types'
@@ -13,7 +14,13 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     needsConfirmation: true
   }
 
-  handleDeploy = () => {
+  analytics = getAnalytics()
+
+  componentDidMount() {
+    this.analytics.track('Unpublish Scene')
+  }
+
+  handleClearDeploy = () => {
     const { project } = this.props
 
     if (project) {
@@ -97,7 +104,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           <T id="deployment_modal.clear.confirmation.description" values={{ project: project!.title }} />
         </p>
 
-        <Button primary size="small" onClick={this.handleDeploy}>
+        <Button primary size="small" onClick={this.handleClearDeploy}>
           {t('deployment_modal.clear.confirmation.action')}
         </Button>
 

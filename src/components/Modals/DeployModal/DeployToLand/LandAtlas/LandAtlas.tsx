@@ -276,15 +276,17 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           </div>
         )}
         {hasOccupiedParcels && <div className="notice">{t('deployment_modal.land.map.occupied_warning')}</div>}
-        <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
-          <img src={media ? media[rotation] : ''} />
-          <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
-            <Icon name="rotate-left" />
+        {parcelCount !== 0 && (
+          <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
+            <img src={media ? media[rotation] : ''} />
+            <div className="rotate anticlockwise" onClick={this.handleRotate(ANTICLOCKWISE_ROTATION)}>
+              <Icon name="rotate-left" />
+            </div>
+            <div className="rotate clockwise" onClick={this.handleRotate(CLOCKWISE_ROTATION)}>
+              <Icon name="rotate-right" />
+            </div>
           </div>
-          <div className="rotate clockwise" onClick={this.handleRotate(CLOCKWISE_ROTATION)}>
-            <Icon name="rotate-right" />
-          </div>
-        </div>
+        )}
         <div className="atlas-container">
           <div className="tool-container">
             {this.renderTool('locate-land', t('deployment_modal.land.map.locate_land'), this.handleLocateLand)}
@@ -293,7 +295,6 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
               {this.renderTool('atlas-zoom-in', t('deployment_modal.land.map.zoom_in'), this.handleZoomIn)}
             </div>
           </div>
-
           <Atlas
             layers={[this.authorizedLayer, this.strokeLayer, this.highlightLayer]}
             onHover={this.handleHover}
