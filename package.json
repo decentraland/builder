@@ -1,6 +1,6 @@
 {
   "name": "builder",
-  "version": "0.14.3",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
