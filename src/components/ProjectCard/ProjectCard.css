@@ -60,7 +60,7 @@
 }
 
 .ProjectCard:hover {
-  z-index: 999999;
+  z-index: 999;
 }
 
 .ProjectCard:hover .ui.dropdown {
