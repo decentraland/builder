@@ -15,12 +15,13 @@ import './LandAtlas.css'
 const ROTATION_ORDER: Rotation[] = ['north', 'east', 'south', 'west']
 const CLOCKWISE_ROTATION = 1
 const ANTICLOCKWISE_ROTATION = -1
-const analytics = getAnalytics()
 
 export default class LandAtlas extends React.PureComponent<Props, State> {
   state: State = this.getBaseState()
 
   mounted: boolean = true
+
+  analytics = getAnalytics()
 
   componentDidMount() {
     this.mounted = true
@@ -71,7 +72,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           {}
         )
 
-        analytics.track('LAND authorized for publish', { count: res.parcels.length })
+        this.analytics.track('LAND authorized for publish', { count: res.parcels.length })
 
         this.setState({
           parcels,
@@ -174,7 +175,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const newRotation =
       (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
 
-    analytics.track('Publish to LAND atlas rotate', { direction })
+    this.analytics.track('Publish to LAND atlas rotate', { direction })
 
     this.setState({ rotation: ROTATION_ORDER[newRotation] })
   }
@@ -185,7 +186,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const index = landTarget ? parcelKeys.indexOf(landTarget) : 0
     const nextIndex = (((index + 1) % parcelKeys.length) + parcelKeys.length) % parcelKeys.length
 
-    analytics.track('Publish to LAND atlas locate')
+    this.analytics.track('Publish to LAND atlas locate')
 
     this.setState({
       landTarget: parcelKeys[nextIndex]

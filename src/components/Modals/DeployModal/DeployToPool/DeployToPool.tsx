@@ -10,13 +10,13 @@ import { EMAIL_INTEREST, api } from 'lib/api'
 import { Props, State } from './DeployToPool.types'
 import './DeployToPool.css'
 
-const analytics = getAnalytics()
-
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = this.getBaseState()
 
+  analytics = getAnalytics()
+
   componentDidMount() {
-    analytics.track('Publish to Pool')
+    this.analytics.track('Publish to Pool')
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -78,7 +78,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
     this.setState({ isSubmitting: true })
 
-    analytics.identify({ email })
+    this.analytics.identify({ email })
     api.reportEmail(email, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     onSaveUser({ email })

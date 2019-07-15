@@ -9,8 +9,6 @@ import LandAtlas from './LandAtlas'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
 
-const analytics = getAnalytics()
-
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
     placement: null,
@@ -18,6 +16,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     needsConfirmation: false,
     view: DeployToLandView.NONE
   }
+
+  analytics = getAnalytics()
 
   componentDidMount() {
     this.props.onRecord()
@@ -30,6 +30,12 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         needsConfirmation: true,
         placement: { ...props.deployment.placement }
       })
+    }
+  }
+
+  componentWillUpdate(_: Props, nextState: State) {
+    if (nextState.view !== this.state.view) {
+      this.analytics.track('Publish to LAND step', { step: nextState.view })
     }
   }
 
@@ -60,8 +66,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     } else if (isConnected && media && (!isLoading || error) && needsConfirmation) {
       view = DeployToLandView.CONFIRMATION
     }
-
-    analytics.track('Publish to LAND step', { step: view })
 
     this.setState({ view })
   }
