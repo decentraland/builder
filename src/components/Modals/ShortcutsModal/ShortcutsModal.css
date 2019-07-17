@@ -4,6 +4,8 @@
 
 .ShortcutsModal.ui.modal > .content {
   font-size: 17px;
+  max-height: 60vh;
+  overflow: auto;
 }
 
 .ShortcutsModal .shortcut-list .subtitle {
@@ -12,7 +14,7 @@
   text-transform: uppercase;
 }
 
-.ShortcutsModal .shortcut-list {
+.ShortcutsModal .shortcut-list:not(:first-child) {
   margin-top: 45px;
 }
 
