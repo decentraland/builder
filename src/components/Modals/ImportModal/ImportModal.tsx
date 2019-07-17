@@ -5,6 +5,7 @@ import uuidv4 from 'uuid/v4'
 
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { migrations } from 'modules/migrations/import'
 import { SaveFile } from 'modules/project/types'
@@ -19,6 +20,8 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     acceptedProjects: [],
     canImport: false
   }
+
+  analytics = getAnalytics()
 
   renderProject = (saved: ImportedFile) => {
     if (!saved.project || !saved.scene) {
@@ -126,6 +129,10 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
         projects.push(parsed)
       } catch (e) {
+        this.analytics.track('Import project failure', {
+          fileName: file.name
+        })
+
         projects.push({
           id: uuidv4(),
           version: BUILDER_FILE_VERSION,
