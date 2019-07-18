@@ -16,7 +16,10 @@ export const COLLECTIBLE_WHITELIST = [
   'mlb-champions',
   'mycryptoheroes',
   'mycryptoheroes-extension',
-  'chainbreakers'
+  'chainbreakers-items',
+  'chainbreakers-pets',
+  'chainbreakers-units',
+  'chainbreakers-rings'
 ]
 
 export function* assetSaga() {
