@@ -63,6 +63,7 @@ function* handleAddItem(action: AddItemAction) {
 
   if (!position) {
     position = yield call(editorWindow.editor.getCameraTarget)
+    console.log(position)
     position!.y = 0
   }
 
