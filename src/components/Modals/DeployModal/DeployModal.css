@@ -2,6 +2,10 @@
   width: 640px;
 }
 
+.DeployModal .subtitle {
+  line-height: 20px;
+}
+
 .DeployModal .description {
   display: block;
   margin-bottom: 50px;
