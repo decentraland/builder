@@ -15,12 +15,14 @@ import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { MediaState } from 'modules/media/reducer'
+import { AuthState } from 'modules/auth/types'
 
 export type Vector3 = { x: number; y: number; z: number }
 
 export type Quaternion = { x: number; y: number; z: number; w: number }
 
 export type RootState = {
+  auth: AuthState
   location: LocationState
   translation: TranslationState
   storage: StorageState

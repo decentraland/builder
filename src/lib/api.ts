@@ -6,6 +6,7 @@ import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
 import { AssetRegistryResponse, DARAssetsResponse } from 'modules/asset/types'
 import { ContentManifest, ContentUploadRequestMetadata, ContentServiceFile } from 'modules/deployment/types'
+import { createHeaders } from 'modules/auth/utils'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
 export const ASSETS_URL = env.get('REACT_APP_ASSETS_URL', '')
@@ -14,6 +15,7 @@ export const DAR_URL = env.get('REACT_APP_DAR_URL', '')
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 export const CONTENT_SERVER_URL = env.get('REACT_APP_CONTENT_SERVER_URL', '')
 export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_URL', '')
+export const AVATARS_API_URL = env.get('REACT_APP_AVATARS_API_URL', '')
 
 export enum EMAIL_INTEREST {
   MOBILE = 'builder-app-mobile',
@@ -113,6 +115,11 @@ export class API extends BaseAPI {
     const req = await fetch(`${CONTENT_SERVER_URL}/validate?x=${x}&y=${y}`)
     const res = await req.json()
     return res
+  }
+
+  async fetchUser(idToken: string) {
+    const headers = createHeaders(idToken)
+    return this.request('get', `${AVATARS_API_URL}/profile`, null, { headers })
   }
 }
 

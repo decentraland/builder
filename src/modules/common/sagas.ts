@@ -1,5 +1,5 @@
 import { all } from 'redux-saga/effects'
-import { locationSaga } from 'decentraland-dapps/dist/modules/location/sagas'
+import { locationSaga as dappsLocationSaga } from 'decentraland-dapps/dist/modules/location/sagas'
 import { analyticsSaga } from 'decentraland-dapps/dist/modules/analytics/sagas'
 
 import { walletSaga } from 'modules/wallet/sagas'
@@ -15,11 +15,13 @@ import { segmentSaga } from 'modules/analytics/sagas'
 import { assetSaga } from 'modules/asset/sagas'
 import { deploymentSaga } from 'modules/deployment/sagas'
 import { mediaSaga } from 'modules/media/sagas'
+import { authSaga } from 'modules/auth/sagas'
+import { locationSaga } from 'modules/location/sagas'
 
 export function* rootSaga() {
   yield all([
     segmentSaga(),
-    locationSaga(),
+    dappsLocationSaga(),
     analyticsSaga(),
     translationSaga(),
     walletSaga(),
@@ -32,6 +34,8 @@ export function* rootSaga() {
     keyboardSaga(),
     assetSaga(),
     deploymentSaga(),
-    mediaSaga()
+    mediaSaga(),
+    authSaga(),
+    locationSaga()
   ])
 }

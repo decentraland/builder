@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Container, Button } from 'decentraland-ui'
+import { Container, Button, Page } from 'decentraland-ui'
 
 import HomePageBanner from 'components/Banners/HomePageBanner'
 import HomePageHero from 'components/HomePageHero'
@@ -12,6 +12,8 @@ import Icon from 'components/Icon'
 import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 
 const ethereum = (window as any)['ethereum']
 
@@ -72,50 +74,54 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const shouldRenderPromo = !ethereum || !ethereum.isDapper
     return (
       <>
-        {!projects.length ? (
-          <>
-            <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
-            <HomePageBanner onClick={this.handleBannerCTA} />
-          </>
-        ) : (
-          <Container>{shouldRenderPromo && <PromoBanner onClick={this.handlePromoCTA} />}</Container>
-        )}
-        <Container>
-          <div className="HomePage">
-            {projects.length > 0 && (
-              <div className="project-cards">
-                <div className="subtitle">
-                  {t('home_page.projects_title')}
-                  {this.renderImportButton()}
+        <Navbar isFullscreen isOverlay={projects.length === 0} />
+        <Page isFullscreen>
+          {!projects.length ? (
+            <>
+              <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+              <HomePageBanner onClick={this.handleBannerCTA} />
+            </>
+          ) : (
+            <Container>{shouldRenderPromo && <PromoBanner onClick={this.handlePromoCTA} />}</Container>
+          )}
+          <Container>
+            <div className="HomePage">
+              {projects.length > 0 && (
+                <div className="project-cards">
+                  <div className="subtitle">
+                    {t('home_page.projects_title')}
+                    {this.renderImportButton()}
+                  </div>
+                  <div className="CardList">
+                    {projects
+                      .sort(project => -project.createdAt)
+                      .map((project, index) => (
+                        <ProjectCard key={index} project={project} />
+                      ))}
+                  </div>
                 </div>
-                <div className="CardList">
-                  {projects
-                    .sort(project => -project.createdAt)
-                    .map((project, index) => (
-                      <ProjectCard key={index} project={project} />
-                    ))}
-                </div>
-              </div>
-            )}
+              )}
 
-            <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
-              <div className="subtitle">
-                {t('home_page.templates_title')}
-                {!projects.length && this.renderImportButton()}
-              </div>
-              <div className="template-list">
-                <div className="template-row">
-                  <TemplateCard template={templates[0]} onClick={this.handleTemplateClick} />
-                  <TemplateCard template={templates[1]} onClick={this.handleTemplateClick} />
+              <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
+                <div className="subtitle">
+                  {t('home_page.templates_title')}
+                  {!projects.length && this.renderImportButton()}
                 </div>
-                <div className="template-row">
-                  <TemplateCard template={templates[2]} onClick={this.handleTemplateClick} />
-                  <TemplateCard template={templates[3]} onClick={this.handleTemplateClick} />
+                <div className="template-list">
+                  <div className="template-row">
+                    <TemplateCard template={templates[0]} onClick={this.handleTemplateClick} />
+                    <TemplateCard template={templates[1]} onClick={this.handleTemplateClick} />
+                  </div>
+                  <div className="template-row">
+                    <TemplateCard template={templates[2]} onClick={this.handleTemplateClick} />
+                    <TemplateCard template={templates[3]} onClick={this.handleTemplateClick} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Container>
+          </Container>
+        </Page>
+        <Footer />
       </>
     )
   }

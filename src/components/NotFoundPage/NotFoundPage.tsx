@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { Button } from 'decentraland-ui'
+import { Button, Page } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 
 import { Props } from './NotFoundPage.types'
 import './NotFoundPage.css'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 
 export default class NotFoundPage extends React.PureComponent<Props> {
   componentDidMount() {
@@ -24,13 +26,18 @@ export default class NotFoundPage extends React.PureComponent<Props> {
 
   render() {
     return (
-      <div className="NotFoundPage">
-        <h1 className="title">{t('not_found_page.title')}</h1>
-        <p className="subtitle">{t('not_found_page.subtitle')}</p>
-        <Button className="back" onClick={this.handleOnClick} primary>
-          {t('not_found_page.back')}
-        </Button>
-      </div>
+      <>
+        <Navbar isFullscreen />
+        <Page isFullscreen />
+        <div className="NotFoundPage">
+          <h1 className="title">{t('not_found_page.title')}</h1>
+          <p className="subtitle">{t('not_found_page.subtitle')}</p>
+          <Button className="back" onClick={this.handleOnClick} primary>
+            {t('not_found_page.back')}
+          </Button>
+        </div>
+        <Footer isFullscreen />
+      </>
     )
   }
 }
