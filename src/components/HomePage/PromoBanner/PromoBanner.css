@@ -1,4 +1,7 @@
 .PromoBanner {
+  color: var(--promo-banner-text);
+  background-color: var(--promo-banner-bg);
+  cursor: pointer;
   position: relative;
   width: 100%;
   height: 150px;
@@ -7,50 +10,40 @@
   margin-top: 32px;
 }
 
-.PromoBanner .bg {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-image: url(../../../images/purple_banner_bg.png);
-  background-position-x: center;
-  background-position-y: -200px;
-  background-size: cover;
-}
-
-.PromoBanner .logo {
-  position: absolute;
-  top: 29px;
-  left: 40px;
-  width: 93px;
-  height: 94px;
-  background-image: url(../../../images/dapper-logo.png);
-  background-position: center;
-  background-size: cover;
-}
-
 .PromoBanner .title {
   position: absolute;
   font-size: 28px;
+  font-weight: bold;
   line-height: 34px;
   letter-spacing: 0.3px;
-  top: 28px;
-  left: 180px;
-  color: var(--text);
+  top: 24px;
+  left: 28px;
 }
 
 .PromoBanner .subtitle {
   position: absolute;
   font-size: 17px;
+  font-weight: bold;
   line-height: 26px;
   letter-spacing: -0.2px;
-  top: 70px;
-  left: 180px;
-  color: var(--text);
+  top: 60px;
+  left: 28px;
   width: calc(100% - 454px);
 }
 
-.PromoBanner .cta {
+.PromoBanner .body {
   position: absolute;
-  top: 54px;
-  right: 54px;
+  top: 90px;
+  left: 28px;
+  font-size: 14px;
+  width: calc(100% - 454px);
+}
+
+.PromoBanner .promo-image {
+  position: absolute;
+  right: 24px;
+  background: url('../../../images/avatars-promo-1.png') no-repeat;
+  width: 250px;
+  height: 150px;
+  background-size: contain;
 }

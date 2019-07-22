@@ -1,3 +1,4 @@
 export const Campaign = {
-  DAPPER: 'dapper'
+  DAPPER: 'dapper',
+  AVATARS: 'avatars'
 }

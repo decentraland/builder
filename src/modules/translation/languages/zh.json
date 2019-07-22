@@ -4,11 +4,7 @@
     "title": "停用广告拦截器"
   },
   "banners": {
-    "dapper_assetpack_banner": "获取 Dapper 钱包和免费的{cat}, 适合您的场景！",
-    "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
-    "dapper_homepage_cta": "Purrstige 猫",
-    "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
-    "mobile_dapper_hompage_cta": "Picture Frames 相框 + Dapper",
+    "promo_assetpack_banner": "获取 Dapper 钱包和免费的{cat}, 适合您的场景！",
     "promo_cta": "安装 Dapper",
     "promo_subtitle": "在场景中显示您的谜恋猫。没有的话可以安装 Dapper 钱包，就能得到一只免费的、独一无二的 Purrstige 猫。。",
     "promo_title": "今天的您好 Dapper (酷)!"
