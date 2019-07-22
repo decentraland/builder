@@ -324,9 +324,6 @@
     "youtube_id": "cHEblD8xZwI"
   },
   "wallet": {
-    "promo_body": "Get one from {cta} with a free Purrstige Cat to add to your Scene!",
-    "promo_cta": "Dapper",
-    "promo_title": "Don’t have a wallet yet?",
     "title": "Connect your wallet to decorate your Scene with crypto-collectibles.",
     "signature_error": "Failed to sign message"
   },
