@@ -6,6 +6,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { MANAToken } from 'modules/common/contracts'
 
+const web3 = (window as any).web3
+
 const baseWalletSaga = createWalletSaga({
   provider: env.get('REACT_APP_PROVIDER_URL'),
   contracts: [MANAToken],
@@ -22,7 +24,7 @@ export function* signMessage(msg: string) {
   }
 
   try {
-    return yield call(() => eth.wallet.sign(msg))
+    return yield call(() => eth.wallet.sign(web3.toHex(msg)))
   } catch (e) {
     throw new Error(t('wallet.signature_error'))
   }
