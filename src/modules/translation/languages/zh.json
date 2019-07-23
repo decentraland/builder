@@ -1,13 +1,9 @@
 {
-  "adblock_modal": {
-    "body": "在安装 Dapper 钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
-    "title": "停用广告拦截器"
-  },
   "banners": {
-    "promo_assetpack_banner": "获取 Dapper 钱包和免费的{cat}, 适合您的场景！",
-    "promo_cta": "安装 Dapper",
-    "promo_subtitle": "在场景中显示您的谜恋猫。没有的话可以安装 Dapper 钱包，就能得到一只免费的、独一无二的 Purrstige 猫。。",
-    "promo_title": "今天的您好 Dapper (酷)!"
+    "promo_assetpack_banner": "自定义您的虚拟化身外观，申请自己的名字，获得虚拟世界通行证",
+    "promo_body": "自定义您的外观，申请您中意的名字并获取通行证。 单点登录即可连接到 Decentraland 所有应用。",
+    "promo_subtitle": "在虚拟世界展示自己",
+    "promo_title": "Decentraland 虚拟化身"
   },
   "custom_layout": {
     "title": "自定义",

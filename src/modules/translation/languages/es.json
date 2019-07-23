@@ -1,13 +1,9 @@
 {
-  "adblock_modal": {
-    "body": "Por favor deshabilita cualquier Ad Blocker antes de instalar Dapper Wallet para recibir un Purrstige Cat gratuito.",
-    "title": "Deshabilita cualquier Ad Blocker"
-  },
   "banners": {
-    "promo_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
-    "promo_cta": "Instala Dapper",
-    "promo_subtitle": "Muestra tu CryptoKitty en tu Escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un Purrstige Cat.",
-    "promo_title": "¡Prueba Dapper!"
+    "promo_assetpack_banner": "Personaliza tu estilo, elige tu nombre, toma tu pasaporte y ¡EMPIEZA!",
+    "promo_body": "Personaliza tu estilo, elige tu nombre y toma tu pasaporte. Un registro único para conectarte a todas tus experiencias en Decentraland.",
+    "promo_subtitle": "Ingresa al Metaverse con estilo",
+    "promo_title": "Avatars de Decentraland"
   },
   "custom_layout": {
     "title": "Personalizada",
