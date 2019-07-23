@@ -1,13 +1,18 @@
 import React from 'react'
+import { env } from 'decentraland-commons'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
 
+const PROMO_URL = env.get('REACT_APP_PROMO_URL')
+
 export default class AssetPackList extends React.PureComponent<Props> {
   handlePromoClick = () => {
-    window.open('https://avatars.decentraland.org?utm_source=builder&utm_campaign=catalog')
+    if (PROMO_URL) {
+      window.open(`${PROMO_URL}?utm_source=builder&utm_campaign=catalog`)
+    }
   }
 
   render() {

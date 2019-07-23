@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { env } from 'decentraland-commons'
 import { Container, Button, Page } from 'decentraland-ui'
 
 import HomePageHero from 'components/HomePageHero'
@@ -14,6 +15,8 @@ import LoadingPage from 'components/LoadingPage'
 import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
+
+const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
 export default class HomePage extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -49,7 +52,9 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   handlePromoCTA = () => {
-    window.open('https://avatars.decentraland.org?utm_source=builder&utm_campaign=homepage')
+    if (PROMO_URL) {
+      window.open(`${PROMO_URL}?utm_source=builder&utm_campaign=homepage`)
+    }
   }
 
   renderImportButton = () => {
