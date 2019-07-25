@@ -22,6 +22,11 @@ export default class UserMenu extends React.Component<Props, State> {
     this.setState({ isOpen: !this.state.isOpen })
   }
 
+  handleProfileClick = () => {
+    // TODO: this should be part of decentraland-ui later on, that's why i'm not extracting this to a constant or something
+    window.location.href = 'https://avatars.decentraland.org'
+  }
+
   render() {
     const { face, name, email, isLoggedIn, isLoggingIn, onLogin, onLogout } = this.props
     const { isOpen } = this.state
@@ -39,7 +44,7 @@ export default class UserMenu extends React.Component<Props, State> {
               <AvatarFace size="medium" face={face} />
             </div>
             <div className={`menu ${isOpen ? 'open' : ''}`}>
-              <a className="info" href="https://avatars.decentraland.zone">
+              <div className="info" onClick={this.handleProfileClick}>
                 <div className="image">
                   <AvatarFace size="small" face={face} />
                 </div>
@@ -47,7 +52,7 @@ export default class UserMenu extends React.Component<Props, State> {
                   <div className="name">{name || t('user_menu.guest')}</div>
                   <div className="email">{email}</div>
                 </div>
-              </a>
+              </div>
               <ul className="actions">
                 <li onClick={onLogout}>
                   <i className="sign-out-icon" />

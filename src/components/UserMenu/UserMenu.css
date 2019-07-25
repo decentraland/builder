@@ -45,6 +45,7 @@
   align-items: center;
   border-bottom: 1px solid var(--dropdown-hover);
   padding: 12px 16px;
+  cursor: pointer;
 }
 
 .UserMenu .info:hover {
