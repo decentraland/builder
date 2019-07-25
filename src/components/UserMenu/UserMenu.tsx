@@ -3,12 +3,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui'
 
 import AvatarFace from '../AvatarFace'
-// @ts-ignore
-import addIcon from './add.svg'
-// @ts-ignore
-import switchIcon from './switch.svg'
-// @ts-ignore
-import signoutIcon from './signout.svg'
 import { Props, State } from './UserMenu.types'
 
 import './UserMenu.css'
@@ -21,7 +15,7 @@ export default class UserMenu extends React.Component<Props, State> {
   ref: HTMLElement | null = null
 
   handleClose = () => {
-    setTimeout(() => this.setState({ isOpen: false }), 100)
+    this.setState({ isOpen: false })
   }
 
   handleToggle = () => {
@@ -56,9 +50,7 @@ export default class UserMenu extends React.Component<Props, State> {
               </a>
               <ul className="actions">
                 <li onClick={onLogout}>
-                  <i>
-                    <img alt="logout" src={signoutIcon} />
-                  </i>
+                  <i className="sign-out-icon" />
                   {t('user_menu.sign_out')}
                 </li>
               </ul>

@@ -2,8 +2,6 @@ import * as React from 'react'
 
 import { bustCache } from './utils'
 import { Props } from './AvatarFace.types'
-// @ts-ignore
-import guestFace from './guest.svg'
 
 import './AvatarFace.css'
 
@@ -13,7 +11,7 @@ export default class AvatarFace extends React.PureComponent<Props> {
 
     return (
       <div className={`AvatarFace ${this.props.size}`}>
-        <img src={bustCache(hasFace ? this.props.face : guestFace)} alt="" />
+        {hasFace ? <img src={bustCache(this.props.face!)} alt="" /> : <div className="guest-face" />}
       </div>
     )
   }
