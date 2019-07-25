@@ -1,10 +1,10 @@
 import { fork, call, all, takeLatest, put, select } from 'redux-saga/effects'
 
+import { api } from 'lib/api'
 import { AUTH_REQUEST, LOGIN, LOGOUT, authRequest, authSuccess, authFailure } from './actions'
 import { login, logout, handleCallback, restoreSession } from './utils'
 import { isExpired } from './selectors'
 import { AuthData } from './types'
-import { api } from 'lib/api'
 
 export function* authSaga() {
   yield fork(handleRestoreSession)

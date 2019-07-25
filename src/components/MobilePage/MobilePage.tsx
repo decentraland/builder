@@ -5,12 +5,12 @@ import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import MobilePageHero from 'components/MobilePageHero/MobilePageHero'
 import HomePageBanner from 'components/Banners/HomePageBanner'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 import { api, EMAIL_INTEREST } from 'lib/api'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
-import Footer from 'components/Footer'
-import Navbar from 'components/Navbar'
 
 const localStorage = getLocalStorage()
 

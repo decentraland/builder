@@ -9,11 +9,11 @@ import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
 import { Template } from 'modules/template/types'
 import Icon from 'components/Icon'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
-import Footer from 'components/Footer'
-import Navbar from 'components/Navbar'
 
 const ethereum = (window as any)['ethereum']
 

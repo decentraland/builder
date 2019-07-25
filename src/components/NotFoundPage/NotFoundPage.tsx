@@ -3,11 +3,11 @@ import { Button, Page } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 
 import { Props } from './NotFoundPage.types'
 import './NotFoundPage.css'
-import Footer from 'components/Footer'
-import Navbar from 'components/Navbar'
 
 export default class NotFoundPage extends React.PureComponent<Props> {
   componentDidMount() {
