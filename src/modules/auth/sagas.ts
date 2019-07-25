@@ -2,7 +2,7 @@ import { fork, call, all, takeLatest, put, select } from 'redux-saga/effects'
 
 import { AUTH_REQUEST, LOGIN, LOGOUT, authRequest, authSuccess, authFailure } from './actions'
 import { login, logout, handleCallback, restoreSession } from './utils'
-import { isLoggedIn, isExpired } from './selectors'
+import { isExpired } from './selectors'
 import { AuthData } from './types'
 import { api } from 'lib/api'
 
@@ -20,10 +20,7 @@ function* handleLogout() {
 }
 
 export function* handleRestoreSession() {
-  const loggedIn = yield select(isLoggedIn)
-  if (!loggedIn) {
-    yield put(authRequest())
-  }
+  yield put(authRequest())
 }
 
 export function* checkExpiredSession() {
