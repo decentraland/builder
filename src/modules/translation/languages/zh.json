@@ -346,5 +346,10 @@
     "promo_title": "还没有钱包吗",
     "signature_error": "签名消息失败",
     "title": "连接钱包用加密收藏品装饰你的场景。"
+  },
+  "user_menu": {
+    "sign_in": "登入",
+    "sign_out": "登出",
+    "guest": "客人"
   }
 }

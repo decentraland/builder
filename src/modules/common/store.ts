@@ -15,6 +15,7 @@ import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/pr
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
+import { AUTH_SUCCESS, AUTH_FAILURE } from 'modules/auth/actions'
 import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
@@ -52,7 +53,7 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
-  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds'], ['deployment', 'data']],
+  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds'], ['deployment', 'data'], ['auth', 'data']],
   actions: [
     CREATE_PROJECT,
     CREATE_SCENE,
@@ -66,7 +67,9 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     SET_AVAILABLE_ASSET_PACKS,
     DEPLOY_TO_LAND_SUCCESS,
     CLEAR_DEPLOYMENT_SUCCESS,
-    MARK_DIRTY
+    MARK_DIRTY,
+    AUTH_SUCCESS,
+    AUTH_FAILURE
   ]
 })
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))

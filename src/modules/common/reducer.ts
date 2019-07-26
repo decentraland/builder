@@ -17,12 +17,14 @@ import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
+import { authReducer as auth } from 'modules/auth/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
     combineReducers<RootState>({
       storage,
       location,
+      auth,
       editor,
       translation,
       wallet,

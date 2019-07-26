@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
-import App from 'decentraland-dapps/dist/containers/App'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import NotFoundPage from 'components/NotFoundPage'
@@ -79,11 +78,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     }
 
     if (!currentProject) {
-      return (
-        <App isFullscreen>
-          <NotFoundPage />
-        </App>
-      )
+      return <NotFoundPage />
     }
 
     return (

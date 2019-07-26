@@ -3,5 +3,6 @@ export const locations = {
   editor: (projectId = ':projectId') => `/editor/${projectId}`,
   signIn: () => '/sign-in',
   mobile: () => '/mobile',
-  notFound: () => '/404'
+  notFound: () => '/404',
+  callback: () => '/callback'
 }

@@ -333,5 +333,10 @@
     "promo_title": "Don’t have a wallet yet?",
     "title": "Connect your wallet to decorate your Scene with crypto-collectibles.",
     "signature_error": "Failed to sign message"
+  },
+  "user_menu": {
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out",
+    "guest": "Guest"
   }
 }

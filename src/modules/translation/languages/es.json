@@ -345,5 +345,10 @@
     "promo_title": "¿No tienes una billetera?",
     "signature_error": "Error al firmar el mensaje",
     "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
+  },
+  "user_menu": {
+    "sign_in": "Iniciar Sesión",
+    "sign_out": "Cerrar Sesión",
+    "guest": "Invitado"
   }
 }
