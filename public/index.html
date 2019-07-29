@@ -92,9 +92,11 @@
         'delighted'
       )
 
-      delighted.survey({
-        initialDelay: 90
-      })
+      setTimeout(() => {
+        delighted.survey({
+          recurringPeriod: false
+        })
+      }, 90)
     </script>
     <script src="%PUBLIC_URL%/editor.js"></script>
   </body>
