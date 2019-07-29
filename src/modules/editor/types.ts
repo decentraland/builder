@@ -24,8 +24,8 @@ export type EditorScene = {
     blacklist: string[]
     teleportPosition: string
   }
-  tracking: {
-    origin: "builder"
+  source: {
+    origin: 'builder'
   }
   main: string
   _mappings: Record<string, string>

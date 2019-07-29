@@ -22,9 +22,9 @@ export default class TemplateCard extends React.PureComponent<Props> {
     let rows = 3
     let cols = 3
 
-    if (template.layout) {
-      rows = template.layout.rows
-      cols = template.layout.cols
+    if (template) {
+      rows = template.rows
+      cols = template.cols
     }
 
     return (

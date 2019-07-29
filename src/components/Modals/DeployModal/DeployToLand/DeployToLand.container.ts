@@ -25,7 +25,7 @@ import WalletSignIn from './DeployToLand'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
-    project: getCurrentProject(state),
+    project: getCurrentProject(state)!,
     isConnecting: isConnecting(state),
     isConnected: isConnected(state),
     isRecording: isRecording(state),

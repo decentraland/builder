@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/selectors'
-import { Project, Layout } from 'modules/project/types'
+import { Project } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
@@ -22,16 +22,11 @@ export const getCurrentProject = createSelector<RootState, string | undefined, P
   (projectId, projects) => projects[projectId!] || null
 )
 
-export const getCurrentLayout = createSelector<RootState, Project | null, Layout | null>(
-  getCurrentProject,
-  project => (project ? project.layout : null)
-)
-
 export const getCurrentBounds = createSelector<RootState, Project | null, Vector3 | null>(
   getCurrentProject,
   project => {
     if (!project) return null
-    const { rows, cols } = project.layout
+    const { rows, cols } = project
     return {
       x: rows * PARCEL_SIZE,
       y: Math.log2(rows * cols + 1) * 20,

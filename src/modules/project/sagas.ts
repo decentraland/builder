@@ -18,10 +18,15 @@ import {
   ExportProjectRequestAction,
   IMPORT_PROJECT,
   ImportProjectAction,
-  exportProjectSuccess
+  exportProjectSuccess,
+  LOAD_PROJECTS_REQUEST,
+  loadProjectsSuccess,
+  loadProjectSuccess,
+  LOAD_PROJECT_REQUEST
 } from 'modules/project/actions'
+import { api } from 'lib/api'
 import { RootState } from 'modules/common/types'
-import { Project, Layout } from 'modules/project/types'
+import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getProject } from 'modules/project/selectors'
 import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
@@ -31,8 +36,9 @@ import { createScene, setGround, provisionScene } from 'modules/scene/actions'
 import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
-import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
 import { createFiles } from './export'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 
 const DEFAULT_GROUND_ASSET = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -56,6 +62,9 @@ export function* projectSaga() {
   yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
+  yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
+  yield takeLatest(STORAGE_LOAD, handleLoadProjectsRequest)
+  yield takeLatest(LOAD_PROJECT_REQUEST, handleLoadProject)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -71,15 +80,15 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     ground: null
   }
 
-  const layout: Layout = template.layout!
+  const { rows, cols } = template
 
   const project: Project = {
     id: uuidv4(),
     title: 'New scene',
     description: '',
     thumbnail: '',
-    layout,
-    parcels: getBlockchainParcelsFromLayout(layout),
+    rows,
+    cols,
     sceneId: scene.id,
     createdAt: Date.now()
   }
@@ -89,7 +98,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   if (onSuccess) {
     onSuccess(project, scene)
-    yield put(setGround(project.id, project.layout, DEFAULT_GROUND_ASSET))
+    yield put(setGround(project.id, DEFAULT_GROUND_ASSET))
   }
 }
 
@@ -115,9 +124,10 @@ function* handleEditProject(action: EditProjectRequestAction) {
   if (!currentProject) return
 
   const scene: Scene | null = yield select(getScene(currentProject.sceneId))
-  if (!scene) return
+  if (!scene || !project) return
 
-  const hasNewLayout = project.layout && !isEqualLayout(project.layout, currentProject.layout)
+  const hasNewLayout = project.rows && project.cols
+
   try {
     if (hasNewLayout) {
       yield put(setEditorReady(false))
@@ -134,7 +144,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
     }
 
     if (ground) {
-      yield put(setGround(id, project.layout, ground))
+      yield put(setGround(id, ground))
     }
 
     yield put(editProjectSuccess(id, project))
@@ -152,7 +162,7 @@ function* handleEditProject(action: EditProjectRequestAction) {
       }
     }
   } catch (error) {
-    yield put(editProjectFailure(error))
+    yield put(editProjectFailure(id, error))
   }
 }
 
@@ -194,5 +204,41 @@ function* handleImportProject(action: ImportProjectAction) {
       yield put(createProject(saved.project))
       yield put(createScene(saved.scene))
     }
+  }
+}
+
+function* handleLoadProjectsRequest() {
+  try {
+    const projects: { data: Project[] } = yield call(() => api.getProjects())
+    const record: ModelById<Project> = {}
+
+    for (let project of projects.data) {
+      record[project.id] = {
+        id: project.id,
+        title: project.title,
+        description: project.description,
+        thumbnail: project.thumbnail,
+        sceneId: project.sceneId,
+        rows: (project as any).rows,
+        cols: (project as any).cols,
+        ownerEmail: project.ownerEmail,
+        createdAt: project.createdAt
+      }
+    }
+
+    yield put(loadProjectsSuccess(record))
+  } catch (e) {
+    // err
+    console.error(e)
+  }
+}
+
+function* handleLoadProject() {
+  console.log('pidiending conson')
+  try {
+    const response = yield call(() => api.getProject())
+    yield put(loadProjectSuccess(response.data.manifest))
+  } catch (e) {
+    console.error(e)
   }
 }

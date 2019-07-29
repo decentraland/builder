@@ -22,7 +22,7 @@ export type Props = {
   mediaProgress: number
   deploymentProgress: DeploymentState['progress']
   ethAddress: string | undefined
-  project: Project | null
+  project: Project
   media: Media | null
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null

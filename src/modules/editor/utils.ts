@@ -1,18 +1,21 @@
 import { CONTENT_SERVER_URL } from 'lib/api'
 import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
+import { getSceneDefinition } from 'modules/project/export'
+
 const script = require('raw-loader!../../ecsScene/scene.js')
 
 export const THUMBNAIL_WIDTH = 246
 export const THUMBNAIL_HEIGHT = 182
 
-export function getNewScene(project: Project): EditorScene {
+export function getNewEditorScene(project: Project): EditorScene {
   const mappings = {
     'game.js': `data:application/javascript;base64,${btoa(script)}`,
     'scene.json': 'Qm' // stub required by the client
   }
 
   return {
+    ...getSceneDefinition(project, { x: 0, y: 0 }, 'east'),
     baseUrl: `${CONTENT_SERVER_URL}/contents/` as string,
     display: {
       title: project.title
@@ -21,11 +24,6 @@ export function getNewScene(project: Project): EditorScene {
     contact: {
       name: 'Decentraland',
       email: 'support@decentraland.org'
-    },
-    scene: {
-      // TODO: This should be received as param
-      parcels: project.parcels ? project.parcels.map(({ x, y }) => `${x},${y}`) : ['0,0'],
-      base: project.parcels ? `${project.parcels[0].x}, ${project.parcels[0].y}` : '0,0'
     },
     communications: {
       type: 'webrtc',
@@ -37,12 +35,9 @@ export function getNewScene(project: Project): EditorScene {
       blacklist: [],
       teleportPosition: '0,0,0'
     },
-    tracking: {
-      origin: 'builder'
-    },
     main: 'game.js',
     _mappings: mappings
-  }
+  } as EditorScene
 }
 
 // Screenshots

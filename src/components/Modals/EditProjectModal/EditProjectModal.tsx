@@ -3,8 +3,7 @@ import { Header, Button, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { ProjectLayout, Project, Layout } from 'modules/project/types'
-import { getBlockchainParcelsFromLayout } from 'modules/project/utils'
+import { ProjectLayout, Project } from 'modules/project/types'
 import ProjectFields from 'components/ProjectFields'
 import ProjectLayoutPicker from 'components/ProjectLayoutPicker'
 
@@ -17,8 +16,8 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     title: this.props.currentProject.title,
     description: this.props.currentProject.description,
 
-    rows: this.props.currentProject.layout.rows,
-    cols: this.props.currentProject.layout.cols,
+    rows: this.props.currentProject.rows,
+    cols: this.props.currentProject.cols,
     hasError: false
   }
 
@@ -35,12 +34,11 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     const { currentProject, onSave, onClose } = this.props
 
     if (currentProject) {
-      const layout: Layout = { cols, rows }
       const newProject: Partial<Project> = {
         title,
         description,
-        layout: layout,
-        parcels: getBlockchainParcelsFromLayout(layout)
+        rows,
+        cols
       }
 
       onSave(currentProject.id, newProject)

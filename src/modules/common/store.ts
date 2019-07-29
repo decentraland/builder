@@ -5,6 +5,7 @@ import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
 
 import { env } from 'decentraland-commons'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -12,15 +13,16 @@ import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
+import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
 import { AUTH_SUCCESS, AUTH_FAILURE } from 'modules/auth/actions'
+import { Project } from 'modules/project/types'
 import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
-
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -53,7 +55,15 @@ const loggerMiddleware = createLogger({
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
-  paths: ['project', ['scene', 'present'], 'user', ['ui', 'sidebar', 'availableAssetPackIds'], ['deployment', 'data'], ['auth', 'data']],
+  paths: [
+    'project',
+    ['scene', 'present'],
+    'user',
+    ['ui', 'sidebar', 'availableAssetPackIds'],
+    ['deployment', 'data'],
+    ['auth', 'data'],
+    ['sync', 'localProjectIds']
+  ],
   actions: [
     CREATE_PROJECT,
     CREATE_SCENE,
@@ -69,9 +79,29 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     CLEAR_DEPLOYMENT_SUCCESS,
     MARK_DIRTY,
     AUTH_SUCCESS,
-    AUTH_FAILURE
-  ]
+    AUTH_FAILURE,
+    SAVE_PROJECT_SUCCESS
+  ],
+  transform: state => {
+    let projects: DataByKey<Project> = {}
+
+    for (let id of state.sync.localProjectIds) {
+      projects[id] = state.project.data[id]
+    }
+
+    const newState = {
+      ...state,
+      project: {
+        ...state.project,
+        data: projects
+      }
+    }
+
+    console.log('guardanding', newState)
+    return newState
+  }
 })
+
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))
 
 const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware]

@@ -18,6 +18,7 @@ import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
 import { authReducer as auth } from 'modules/auth/reducer'
+import { syncReducer as sync } from 'modules/sync/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -37,6 +38,7 @@ export function createRootReducer(history: History) {
       scene,
       deployment,
       media,
+      sync,
       router: connectRouter(history)
     })
   )

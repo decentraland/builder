@@ -2,7 +2,6 @@ import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
 import { Asset } from 'modules/asset/types'
 import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
-import { Layout } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)
 
@@ -82,9 +81,17 @@ export type DeleteItemAction = ReturnType<typeof deleteItem>
 
 export const SET_GROUND = 'Set ground'
 
-export const setGround = (projectId: string, layout?: Layout, asset?: Asset) => action(SET_GROUND, { projectId, layout, asset })
+export const setGround = (projectId: string, asset?: Asset) => action(SET_GROUND, { projectId, asset })
 
 export type SetGroundAction = ReturnType<typeof setGround>
+
+// Set Layout
+
+export const SET_LAYOUT = 'Set Layout'
+
+export const setLayout = (projectId: string, rows: number, cols: number) => action(SET_LAYOUT, { projectId, rows, cols })
+
+export type SetLayoutAction = ReturnType<typeof setLayout>
 
 // Fix scene
 

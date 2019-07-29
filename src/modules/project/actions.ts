@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
 
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project, SaveFile } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'
@@ -33,7 +34,7 @@ export const EDIT_PROJECT_FAILURE = '[Failure] Edit project'
 export const editProjectRequest = (id: string, project: Partial<Project>, ground?: Asset) =>
   action(EDIT_PROJECT_REQUEST, { id, project, ground })
 export const editProjectSuccess = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_SUCCESS, { id, project })
-export const editProjectFailure = (error: string) => action(EDIT_PROJECT_FAILURE, { error })
+export const editProjectFailure = (projectId: string, error: string) => action(EDIT_PROJECT_FAILURE, { projectId, error })
 
 export type EditProjectRequestAction = ReturnType<typeof editProjectRequest>
 export type EditProjectSuccessAction = ReturnType<typeof editProjectSuccess>
@@ -81,3 +82,31 @@ export const IMPORT_PROJECT = 'Import project'
 export const importProject = (projects: SaveFile[]) => action(IMPORT_PROJECT, { projects })
 
 export type ImportProjectAction = ReturnType<typeof importProject>
+
+// Loud cloud projects
+
+export const LOAD_PROJECTS_REQUEST = '[Request] Load projects'
+export const LOAD_PROJECTS_SUCCESS = '[Success] Load projects'
+export const LOAD_PROJECTS_FAILURE = '[Failure] Load projects'
+
+export const loadProjectsRequest = () => action(LOAD_PROJECTS_REQUEST, {})
+export const loadProjectsSuccess = (projects: ModelById<Project>) => action(LOAD_PROJECTS_SUCCESS, { projects })
+export const loadProjectsFailure = (error: string) => action(LOAD_PROJECTS_FAILURE, { error })
+
+export type LoadProjectsRequestAction = ReturnType<typeof loadProjectsRequest>
+export type LoadProjectsSuccessAction = ReturnType<typeof loadProjectsSuccess>
+export type LoadProjectsFailureAction = ReturnType<typeof loadProjectsFailure>
+
+// Load individual project
+
+export const LOAD_PROJECT_REQUEST = '[Request] Load project'
+export const LOAD_PROJECT_SUCCESS = '[Success] Load project'
+export const LOAD_PROJECT_FAILURE = '[Failure] Load project'
+
+export const loadProjectRequest = () => action(LOAD_PROJECT_REQUEST, {})
+export const loadProjectSuccess = (manifest: SaveFile) => action(LOAD_PROJECT_SUCCESS, { manifest })
+export const loadProjectFailure = (error: string) => action(LOAD_PROJECT_FAILURE, { error })
+
+export type LoadProjectRequestAction = ReturnType<typeof loadProjectRequest>
+export type LoadProjectSuccessAction = ReturnType<typeof loadProjectSuccess>
+export type LoadProjectFailureAction = ReturnType<typeof loadProjectFailure>

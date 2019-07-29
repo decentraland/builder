@@ -4,7 +4,7 @@ import { Coordinate, Rotation, Placement, OccupiedAtlasParcel } from 'modules/de
 
 export type Props = {
   ethAddress: string | undefined
-  project: Project | null
+  project: Project
   media: Media | null
   initialPoint?: Coordinate
   occupiedParcels: Record<string, OccupiedAtlasParcel>
