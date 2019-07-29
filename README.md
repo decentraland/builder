@@ -19,7 +19,7 @@ For more information, check the [create-react-app](https://github.com/facebook/c
 
 ## Environment
 
-This project depends on a few environment variables to work, aswell as external services for some features.
+This project depends on a few environment variables to work, as well as external services for some features.
 The front-end connects to these services via URLs set via environment variables.
 
 **Creating an environment file**
