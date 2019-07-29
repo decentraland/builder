@@ -12,7 +12,7 @@ The builder is a SPA or single page application built with [create-react-app](ht
 
 After that, to run this app you have two options:
 
-- **Development server**: run `npm start` from the [`root`](https://github.com/decentraland/builder/tree/master) path
+- **Development Server**: run `npm start` from the [`root`](https://github.com/decentraland/builder/tree/master) path
 - **Production**: run `npm run build` and host the resulting index.html file with your server of choice, for example `python -m SimpleHTTPServer 5000`
 
 For more information, check the [create-react-app](https://github.com/facebook/create-react-app) repo.
