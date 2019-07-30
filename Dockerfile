@@ -14,6 +14,10 @@ ENV REACT_APP_ROLLBAR_ACCESS_TOKEN 46e4b7e45c844b9ab81315c8b0919e99
 ENV REACT_APP_SEGMENT_API_KEY H21EgRI4eYwICDZf5uW6ek2BiykIR6wA
 ENV REACT_APP_BUILDER_SERVER_URL https://builder-api.decentraland.today/v1
 ENV REACT_APP_MARKETPLACE_URL https://api.decentraland.today/v1
+ENV REACT_APP_AVATARS_API_URL https://avatars-api.decentraland.today/api
+ENV REACT_APP_AUTH0_CLIENT_ID iRGF5TR5DBngi8yifjDGuHzixa9Q9HA8
+ENV REACT_APP_AUTH0_DOMAIN dcl-test.auth0.com
+ENV REACT_APP_AUTH0_REDIRECT https://builder.decentraland.today/callback
 
 # base packages
 RUN \

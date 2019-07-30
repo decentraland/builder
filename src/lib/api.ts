@@ -117,8 +117,8 @@ export class API extends BaseAPI {
     return res
   }
 
-  async fetchUser(idToken: string) {
-    const headers = createHeaders(idToken)
+  async fetchUser(accessToken: string) {
+    const headers = createHeaders(accessToken)
     return this.request('get', `${AVATARS_API_URL}/profile`, null, { headers })
   }
 

@@ -8,6 +8,7 @@ export const webAuth = new auth0.WebAuth({
   domain: env.get('REACT_APP_AUTH0_DOMAIN'),
   redirectUri: env.get('REACT_APP_AUTH0_REDIRECT'),
   responseType: 'token id_token',
+  audience: env.get('REACT_APP_AUTH0_AUDIENCE'),
   scope: 'openid email'
 })
 

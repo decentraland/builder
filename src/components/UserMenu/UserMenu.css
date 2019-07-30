@@ -96,7 +96,7 @@
   width: 12px;
   height: 12px;
   filter: var(--brightness);
-  background: url(/static/media/signout.fa240eed.svg);
+  background: url(../../images/signout.svg);
   background-position: center;
   background-repeat: no-repeat;
   margin-right: 12px;
