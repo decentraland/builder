@@ -25,6 +25,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.mounted = true
+    const { onFetchDeployments } = this.props
+    onFetchDeployments()
     if (Object.keys(this.state.parcels).length === 0 && this.props.ethAddress) {
       // tslint:disable-next-line
       this.fetchAuthorizedParcels(this.props.ethAddress)
@@ -57,11 +59,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   fetchAuthorizedParcels = async (ethAddress: string) => {
     const { landTarget } = this.state
-
     try {
-      const res = await api.fetchAuthorizedParcels(ethAddress)
+      const authorizedParcels = await api.fetchAuthorizedParcels(ethAddress)
       if (this.mounted) {
-        const parcels = res.parcels.reduce(
+        const parcels = authorizedParcels.reduce(
           (parcels: any, parcel: any) => ({
             ...parcels,
             [parcel.id]: {
@@ -72,12 +73,12 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           {}
         )
 
-        this.analytics.track('LAND authorized for publish', { count: res.parcels.length })
+        this.analytics.track('LAND authorized for publish', { count: authorizedParcels.length })
 
         this.setState({
           parcels,
           // Only point to the first authorized parcel if no initialPoint was provided
-          landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget,
+          landTarget: landTarget === '0,0' && authorizedParcels.length ? authorizedParcels[0].id : landTarget,
           isLoadingMap: false
         })
       }

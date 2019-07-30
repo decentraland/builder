@@ -5,7 +5,7 @@ import { Project } from 'modules/project/types'
 import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
 import { AssetRegistryResponse, DARAssetsResponse } from 'modules/asset/types'
-import { ContentManifest, ContentUploadRequestMetadata, ContentServiceFile } from 'modules/deployment/types'
+import { ContentManifest, ContentUploadRequestMetadata, ContentServiceFile, Deployment } from 'modules/deployment/types'
 import { createHeaders } from 'modules/auth/utils'
 
 export const API_URL = env.get('REACT_APP_API_URL', '')
@@ -49,7 +49,7 @@ export class API extends BaseAPI {
   }
 
   fetchAuthorizedParcels(address: string) {
-    return this.request('get', `${MARKETPLACE_URL}/address/${address}/parcels/authorized`, {})
+    return this.request('get', `${MARKETPLACE_URL}/addresses/${address}/parcels`, {})
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {
@@ -120,6 +120,15 @@ export class API extends BaseAPI {
   async fetchUser(accessToken: string) {
     const headers = createHeaders(accessToken)
     return this.request('get', `${AVATARS_API_URL}/profile`, null, { headers })
+  }
+
+  async fetchDeployments() {
+    return Promise.resolve<Deployment[]>([])
+  }
+
+  async saveDeployment(deployment: Deployment) {
+    console.log('Saving deployment', deployment)
+    return Promise.resolve()
   }
 }
 
