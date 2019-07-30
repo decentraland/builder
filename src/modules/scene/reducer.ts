@@ -12,7 +12,7 @@ import {
   CREATE_SCENE,
   CreateSceneAction
 } from 'modules/scene/actions'
-import { DeleteProjectAction, DELETE_PROJECT, LOAD_PROJECT_SUCCESS, LoadProjectSuccessAction } from 'modules/project/actions'
+import { DeleteProjectAction, DELETE_PROJECT, LoadProjectSuccessAction } from 'modules/project/actions'
 
 export type SceneState = {
   data: ModelById<Scene>
@@ -79,17 +79,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       }
       delete newState.data[project.sceneId]
       return newState
-    }
-    case LOAD_PROJECT_SUCCESS: {
-      // const { manifest } = action.payload
-
-      return {
-        ...state
-        // data: {
-        //   ...state.data,
-        //   [manifest.scene.id]: manifest.scene
-        // }
-      }
     }
     default:
       return state
