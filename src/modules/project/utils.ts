@@ -1,4 +1,4 @@
-import { Project, Layout } from 'modules/project/types'
+import { Project } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
 import { getDimensions } from 'lib/layout'
 
@@ -9,26 +9,12 @@ export const MAX_DESCRIPTION_LENGTH = 140 // Size in chars
 export const PARCEL_SIZE = 16 // Side size in meters
 
 export function getProjectDimensions(project: Project): string {
-  const { rows, cols } = project.layout
+  const { rows, cols } = project
   return getDimensions(rows, cols)
 }
 
-export function getBlockchainParcelsFromLayout(layout: Layout) {
-  let out = []
-  for (let y = 0; y < layout.cols; y++) {
-    for (let x = 0; x < layout.rows; x++) {
-      out.push({ x, y })
-    }
-  }
-  return out
-}
-
-export function isEqualLayout(left: Layout, right: Layout) {
-  return left.cols === right.cols && left.rows === right.rows
-}
-
 export function getParcelOrientation(project: Project, point: Coordinate, rotation: Rotation): Coordinate[] {
-  const { rows, cols } = project.layout
+  const { rows, cols } = project
   const parcels: Coordinate[] = []
 
   switch (rotation) {

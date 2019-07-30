@@ -1,5 +1,5 @@
 // @ts-ignore
-import { takeLatest, select, put, call, delay } from 'redux-saga/effects'
+import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
 
 import {
   updateEditor,
@@ -38,8 +38,8 @@ import {
   PrefetchAssetAction,
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
-  setEditorLoading,
-  closeEditor
+  closeEditor,
+  setEditorLoading
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -53,12 +53,18 @@ import {
 } from 'modules/scene/actions'
 import { CONTENT_SERVER_URL } from 'lib/api'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
-import { editProjectThumbnail } from 'modules/project/actions'
+import {
+  editProjectThumbnail,
+  loadProjectRequest,
+  LOAD_PROJECT_SUCCESS,
+  LoadProjectSuccessAction,
+  LOAD_PROJECT_FAILURE
+} from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
+import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -66,8 +72,9 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
+import { getLocalProjectIds } from 'modules/sync/selectors'
 
 const editorWindow = window as EditorWindow
 
@@ -94,8 +101,7 @@ export function* editorSaga() {
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
 }
 
-function* pollEditor() {
-  const scene = yield select(getCurrentScene)
+function* pollEditor(scene: Scene) {
   let metrics
   let entities
 
@@ -108,6 +114,12 @@ function* pollEditor() {
   while (editorWindow.editor.getLoadingEntity() !== null) {
     yield delay(500)
   }
+}
+
+function* handleEditorReady(scene: Scene) {
+  yield handleResetCamera()
+  yield pollEditor(scene)
+  yield put(setEditorLoading(false))
 }
 
 function* handleBindEditorKeyboardShortcuts() {
@@ -124,12 +136,13 @@ function* handleNewEditorScene(action: NewEditorSceneAction) {
   const { id, project } = action.payload
   const currentProject: Project | null = yield select(getProject(id))
   if (currentProject) {
-    yield createNewScene({ ...currentProject, ...project })
+    yield createNewEditorScene({ ...currentProject, ...project })
   }
 }
 
-function* createNewScene(project: Project) {
-  const newScene: EditorPayloadScene = getNewScene(project)
+function* createNewEditorScene(project: Project) {
+  console.log('create editor scene')
+  const newScene: EditorScene = getNewEditorScene(project)
 
   const msg = {
     type: 'update',
@@ -152,6 +165,7 @@ function* renderScene() {
   const scene: Scene = yield select(getCurrentScene)
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
+    console.log('renderScene', mappings)
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, mappings)))
   }
 }
@@ -224,7 +238,7 @@ function* handleOpenEditor() {
   const project: Project | null = yield select(getCurrentProject)
 
   if (project) {
-    yield createNewScene(project)
+    yield createNewEditorScene(project)
 
     // Spawns the assets
     yield renderScene()
@@ -268,7 +282,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
-  const x = (project.layout.rows * PARCEL_SIZE) / 2
+  const x = (project.rows * PARCEL_SIZE) / 2
   const z = -1
 
   yield call(() => {
@@ -301,14 +315,35 @@ function handleZoomOut() {
 
 function* handleSetEditorReady(action: SetEditorReadyAction) {
   const { isReady } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  const localProjects: string[] = yield select(getLocalProjectIds)
 
-  if (isReady) {
-    yield handleResetCamera()
-    yield pollEditor()
-    yield put(setEditorLoading(false))
+  if (project) {
+    if (isReady) {
+      let scene: Scene
+
+      if (localProjects.includes(project.id)) {
+        scene = yield select(getCurrentScene)
+      } else {
+        yield put(loadProjectRequest())
+
+        const result: { success?: LoadProjectSuccessAction } = yield race({
+          success: take(LOAD_PROJECT_SUCCESS),
+          failure: take(LOAD_PROJECT_FAILURE)
+        })
+
+        if (result.success) {
+          scene = result.success.payload.manifest.scene
+        } else {
+          return
+        }
+      }
+
+      yield handleEditorReady(scene)
+    }
+
+    yield changeEditorState(isReady)
   }
-
-  yield changeEditorState(isReady)
 }
 
 function* changeEditorState(isReady: boolean) {
@@ -324,8 +359,8 @@ function* handleResetCamera() {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
-  const x = (project.layout.rows * PARCEL_SIZE) / 2
-  const z = (project.layout.cols * PARCEL_SIZE) / 2
+  const x = (project.rows * PARCEL_SIZE) / 2
+  const z = (project.cols * PARCEL_SIZE) / 2
 
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })
@@ -337,7 +372,7 @@ function* handleDropItem(action: DropItemAction) {
   if (asset.category === GROUND_CATEGORY) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
-    yield put(setGround(project.id, project.layout, asset))
+    yield put(setGround(project.id, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
     yield put(addItem(asset, position))

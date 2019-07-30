@@ -50,7 +50,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   const { scene, project, rotation } = args
   const takenNames = new Set<string>()
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
-  const { cols, rows } = project.layout
+  const { cols, rows } = project
   const sceneEntity = new ECS.Entity()
 
   // 0. Rotate scene
@@ -274,8 +274,6 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { lo
 
 export function createDynamicFiles(args: { project: Project; scene: Scene; point: Coordinate; rotation: Rotation }) {
   const { project, scene, rotation, point } = args
-  const parcels = getParcelOrientation(project, point, rotation)
-  const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
 
   const files = {
     [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({
@@ -291,27 +289,30 @@ export function createDynamicFiles(args: { project: Project; scene: Scene; point
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(
-      {
-        ...sceneJson,
-        scene: {
-          ...sceneJson.scene,
-          parcels: parcels.map(parcelToString),
-          base: parcelToString(base)
-        },
-        source: {
-          origin: 'builder',
-          projectId: project.id
-        }
-      },
-      null,
-      2
-    )
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation), null, 2)
   }
 
   return files
 }
 
-function parcelToString({ x, y }: { x: number; y: number }) {
+export function getSceneDefinition(project: Project, point: Coordinate, rotation: Rotation) {
+  const parcels = getParcelOrientation(project, point, rotation)
+  const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
+
+  return {
+    ...sceneJson,
+    scene: {
+      ...sceneJson.scene,
+      parcels: parcels.map(parcelToString),
+      base: parcelToString(base)
+    },
+    source: {
+      origin: 'builder',
+      projectId: project.id
+    }
+  }
+}
+
+export function parcelToString({ x, y }: { x: number; y: number }) {
   return x + ',' + y
 }

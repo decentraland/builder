@@ -16,6 +16,7 @@ import { EditorState } from 'modules/editor/reducer'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { MediaState } from 'modules/media/reducer'
 import { AuthState } from 'modules/auth/types'
+import { SyncState } from 'modules/sync/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -38,6 +39,7 @@ export type RootState = {
   editor: EditorState
   deployment: DeploymentState
   media: MediaState
+  sync: SyncState
 }
 
 export type RootStore = Store<RootState>

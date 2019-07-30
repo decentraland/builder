@@ -1,9 +1,7 @@
-import { Layout } from 'modules/project/types'
-
 export type Props = {
   rows: number
   cols: number
-  onChange: (layout: Partial<Layout>) => void
+  onChange: (rows: number, cols: number) => void
   errorMessage?: string
   showGrid?: boolean
 }

@@ -32,11 +32,12 @@ import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getProject } from 'modules/project/selectors'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
-import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
+import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds, areEqualMappings } from './utils'
 import { Project } from 'modules/project/types'
+import { LOAD_PROJECT_SUCCESS, LoadProjectSuccessAction } from 'modules/project/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -49,6 +50,11 @@ export function* sceneSaga() {
   yield takeLatest(SET_GROUND, handleSetGround)
   yield takeLatest(FIX_CURRENT_SCENE, handleFixCurrentScene)
   yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
+  yield takeLatest(LOAD_PROJECT_SUCCESS, handleLoadProjectSuccess)
+}
+
+function* handleLoadProjectSuccess(action: LoadProjectSuccessAction) {
+  yield put(provisionScene(action.payload.manifest.scene))
 }
 
 function* handleAddItem(action: AddItemAction) {
@@ -242,23 +248,17 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { layout, asset, projectId } = action.payload
+  const { asset, projectId } = action.payload
   const currentProject: Project | null = yield select(getProject(projectId))
   if (!currentProject) return
 
   const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
-  const hasLayoutChanged = layout && !isEqualLayout(currentProject.layout, layout)
-  const currentLayout = layout || currentProject.layout
+  const { rows, cols } = currentProject
   let components = { ...scene.components }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
-
-  // Skip if there are no updates
-  if (asset && scene.ground && scene.ground.assetId === asset.id && !hasLayoutChanged) {
-    return
-  }
 
   if (asset) {
     // Create the Shape component if necessary
@@ -281,8 +281,8 @@ function* handleSetGround(action: SetGroundAction) {
       entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
     }
 
-    for (let j = 0; j < currentLayout.cols; j++) {
-      for (let i = 0; i < currentLayout.rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      for (let i = 0; i < rows; i++) {
         const entityId = uuidv4()
         const transformId = uuidv4()
 

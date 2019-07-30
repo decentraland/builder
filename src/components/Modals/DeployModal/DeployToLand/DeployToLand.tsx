@@ -203,12 +203,12 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           <div className="details-row">
             <div className="detail">
               <span className="label">{t('deployment_modal.land.confirmation.title_label')}</span>
-              <span className="value">{project!.title}</span>
+              <span className="value">{project.title}</span>
             </div>
 
             <div className="detail">
               <span className="label">{t('deployment_modal.land.confirmation.size_label')}</span>
-              <span className="value">{project!.parcels!.length}</span>
+              <span className="value">{project.rows * project.cols}</span>
             </div>
 
             <div className="detail">

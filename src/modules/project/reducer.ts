@@ -13,19 +13,23 @@ import {
   DeleteProjectAction,
   DELETE_PROJECT,
   EDIT_PROJECT_THUMBNAIL,
-  EditProjectThumbnailAction
+  EditProjectThumbnailAction,
+  LOAD_PROJECTS_SUCCESS,
+  LoadProjectsSuccessAction,
+  LOAD_PROJECTS_REQUEST,
+  LoadProjectsRequestAction
 } from 'modules/project/actions'
 
 export type ProjectState = {
   data: ModelById<Project>
   loading: LoadingState
-  error: string | null
+  error: Record<string, string>
 }
 
 const INITIAL_STATE: ProjectState = {
   data: {},
   loading: [],
-  error: null
+  error: {}
 }
 
 export type ProjectReducerAction =
@@ -35,6 +39,8 @@ export type ProjectReducerAction =
   | EditProjectFailureAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
+  | LoadProjectsRequestAction
+  | LoadProjectsSuccessAction
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
@@ -68,10 +74,14 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
     }
     case EDIT_PROJECT_FAILURE: {
+      const { projectId, error } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error
+        error: {
+          ...state.error,
+          [projectId]: error
+        }
       }
     }
     case EDIT_PROJECT_THUMBNAIL: {
@@ -95,6 +105,23 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       }
       delete newState.data[project.id]
       return newState
+    }
+    case LOAD_PROJECTS_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case LOAD_PROJECTS_SUCCESS: {
+      const { projects } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...projects
+        },
+        loading: loadingReducer(state.loading, action)
+      }
     }
     default:
       return state

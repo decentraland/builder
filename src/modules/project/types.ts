@@ -6,14 +6,12 @@ export type Project = {
   description: string
   thumbnail: string
   sceneId: string
-  layout: Layout
-  parcels?: { x: number; y: number }[] // Blockchain parcels
+  rows: number
+  cols: number
   ownerEmail?: string
   createdAt: number
 }
 
-export type Layout = { rows: number; cols: number }
-
-export type ProjectLayout = Layout & { hasError: boolean }
+export type ProjectLayout = { rows: number; cols: number; hasError: boolean }
 
 export type SaveFile = { version: number; project: Project & { thumbnail?: string }; scene: Scene }
