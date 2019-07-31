@@ -14,7 +14,7 @@ import {
   getOccuppiedParcels,
   isUploadingRecording
 } from 'modules/deployment/selectors'
-import { deployToLandRequest } from 'modules/deployment/actions'
+import { deployToLandRequest, fetchDeploymentsRequest } from 'modules/deployment/actions'
 import { recordMediaRequest } from 'modules/media/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
@@ -48,7 +48,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest()),
   onRecord: () => dispatch(recordMediaRequest()),
   onDeploy: (projectId, placement) => dispatch(deployToLandRequest(projectId, placement)),
-  onNavigateHome: () => dispatch(navigateTo(locations.root()))
+  onNavigateHome: () => dispatch(navigateTo(locations.root())),
+  onFetchDeployments: () => dispatch(fetchDeploymentsRequest())
 })
 
 export default connect(

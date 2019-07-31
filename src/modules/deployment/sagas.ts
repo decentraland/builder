@@ -27,7 +27,17 @@ import {
   clearDeploymentFailure,
   clearDeploymentSuccess,
   QUERY_REMOTE_CID,
-  QueryRemoteCIDAction
+  QueryRemoteCIDAction,
+  FETCH_DEPLOYMENTS_REQUEST,
+  FetchDeploymentsRequestAction,
+  fetchDeploymentsFailure,
+  fetchDeploymentsSuccess,
+  fetchDeploymentsRequest,
+  SAVE_DEPLOYMENT_REQUEST,
+  SaveDeploymentRequestAction,
+  saveDeploymentFailure,
+  saveDeploymentSuccess,
+  saveDeploymentRequest
 } from './actions'
 import { store } from 'modules/common/store'
 import { Media } from 'modules/media/types'
@@ -41,6 +51,8 @@ import { getCurrentDeployment, getDeployment } from './selectors'
 import { EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
+import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
+import { isLoggedIn } from 'modules/auth/selectors'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -55,7 +67,6 @@ export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeployment)
   yield takeLatest(QUERY_REMOTE_CID, handleQueryRemoteCID)
-
   yield takeLatest(ADD_ITEM, handleMarkDirty)
   yield takeLatest(DROP_ITEM, handleMarkDirty)
   yield takeLatest(RESET_ITEM, handleMarkDirty)
@@ -64,6 +75,9 @@ export function* deploymentSaga() {
   yield takeLatest(SET_GROUND, handleMarkDirty)
   yield takeLatest(UPDATE_TRANSFORM, handleMarkDirty)
   yield takeLatest(EDIT_PROJECT_SUCCESS, handleMarkDirty)
+  yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
+  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
+  yield takeLatest(SAVE_DEPLOYMENT_REQUEST, handleSaveDeploymentRequest)
 }
 
 function* handleMarkDirty() {
@@ -138,7 +152,22 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       yield call(() =>
         api.uploadToContentService(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS))
       )
-      yield put(deployToLandSuccess(project.id, rootCID, placement))
+
+      // generate new deployment
+      const deployment: Deployment = {
+        id: project.id,
+        lastPublishedCID: rootCID,
+        placement,
+        isDirty: false
+      }
+
+      // save deployment on cloud (if logged in)
+      if (yield select(isLoggedIn)) {
+        yield put(saveDeploymentRequest(deployment))
+      }
+
+      // notify success
+      yield put(deployToLandSuccess(deployment))
     } catch (e) {
       console.log(e, e.__proto__)
       yield put(deployToLandFailure(e.message.split('\n')[0]))
@@ -224,4 +253,27 @@ function* getContentServiceFiles(project: Project, point: Coordinate, rotation: 
   }
 
   return contentFiles
+}
+
+function* handleFetchDeploymentsRequest(_action: FetchDeploymentsRequestAction) {
+  try {
+    const deployments: Deployment[] = yield call(() => api.fetchDeployments())
+    yield put(fetchDeploymentsSuccess(deployments))
+  } catch (e) {
+    yield put(fetchDeploymentsFailure(e.message))
+  }
+}
+
+function* handleAuthSuccess(_action: AuthSuccessAction) {
+  yield put(fetchDeploymentsRequest())
+}
+
+function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
+  const { deployment } = action.payload
+  try {
+    yield call(() => api.saveDeployment(deployment))
+    yield put(saveDeploymentSuccess(deployment))
+  } catch (e) {
+    yield put(saveDeploymentFailure(deployment, e.message))
+  }
 }

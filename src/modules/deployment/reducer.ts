@@ -24,7 +24,10 @@ import {
   DEPLOY_TO_LAND_REQUEST,
   DeployToLandRequestAction,
   CLEAR_DEPLOYMENT_REQUEST,
-  ClearDeploymentRequestAction
+  ClearDeploymentRequestAction,
+  FetchDeploymentsSuccessAction,
+  FetchDeploymentsFailureAction,
+  FETCH_DEPLOYMENTS_SUCCESS
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 
@@ -61,6 +64,8 @@ export type DeploymentReducerAction =
   | ClearDeploymentSuccessAction
   | ClearDeploymentFailureAction
   | DeleteProjectAction
+  | FetchDeploymentsSuccessAction
+  | FetchDeploymentsFailureAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -99,17 +104,12 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       }
     }
     case DEPLOY_TO_LAND_SUCCESS: {
-      const { projectId, cid, placement } = action.payload
+      const { deployment } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
-          [projectId]: {
-            ...state.data[projectId],
-            lastPublishedCID: cid,
-            placement: { ...placement },
-            isDirty: false
-          }
+          [deployment.id]: deployment
         },
         progress: {
           stage: ProgressStage.NONE,
@@ -196,6 +196,18 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       }
       delete newState.data[project.id]
       return newState
+    }
+    case FETCH_DEPLOYMENTS_SUCCESS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...action.payload.deployments.reduce<DataByKey<Deployment>>((obj, deployment) => {
+            obj[deployment.id] = deployment
+            return obj
+          }, {})
+        }
+      }
     }
     default:
       return state

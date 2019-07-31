@@ -11,6 +11,7 @@ export type Props = {
   onNoAuthorizedParcels: () => void
   onConfirmPlacement: (placement: Placement) => void
   onClearDeployment: (projectId: string) => void
+  onFetchDeployments: () => void
 }
 
 export type State = {
