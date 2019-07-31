@@ -3,7 +3,7 @@ import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
-import { getCurrentProject, getProject } from 'modules/project/selectors'
+import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { getCurrentScene, getScene } from 'modules/scene/selectors'
 import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
@@ -109,7 +109,8 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   const { placement, projectId } = action.payload
   const ethAddress = yield select(getAddress)
   const user: User = yield select(getUserState)
-  const project: Project | null = yield select(getProject(projectId))
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const project = projects[projectId]
 
   if (project) {
     try {
@@ -171,7 +172,8 @@ function* handleClearDeployment(action: ClearDeploymentRequestAction) {
   const ethAddress = yield select(getAddress)
   const user: User = yield select(getUserState)
   const deployment: Deployment | null = yield select(getDeployment(projectId))
-  const project: Project | null = yield select(getProject(projectId))
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const project = projects[projectId]
 
   if (project && deployment) {
     try {

@@ -4,7 +4,6 @@ import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project, SaveFile } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'
-import { Asset } from 'modules/asset/types'
 
 // Create project from template
 
@@ -31,8 +30,7 @@ export const EDIT_PROJECT_REQUEST = '[Request] Edit project'
 export const EDIT_PROJECT_SUCCESS = '[Success] Edit project'
 export const EDIT_PROJECT_FAILURE = '[Failure] Edit project'
 
-export const editProjectRequest = (id: string, project: Partial<Project>, ground?: Asset) =>
-  action(EDIT_PROJECT_REQUEST, { id, project, ground })
+export const editProjectRequest = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_REQUEST, { id, project })
 export const editProjectSuccess = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_SUCCESS, { id, project })
 export const editProjectFailure = (projectId: string, error: string) => action(EDIT_PROJECT_FAILURE, { projectId, error })
 

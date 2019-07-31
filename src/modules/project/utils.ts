@@ -13,6 +13,20 @@ export function getProjectDimensions(project: Project): string {
   return getDimensions(rows, cols)
 }
 
+export function didUpdateLayout(update: Partial<Project>, project: Project): boolean {
+  let res: boolean = false
+
+  if (update.rows && update.rows !== project.rows) {
+    res = true
+  }
+
+  if (update.cols && update.cols !== project.cols) {
+    res = true
+  }
+
+  return res
+}
+
 export function getParcelOrientation(project: Project, point: Coordinate, rotation: Rotation): Coordinate[] {
   const { rows, cols } = project
   const parcels: Coordinate[] = []

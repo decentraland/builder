@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
 import { Asset } from 'modules/asset/types'
 import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
+import { Project } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)
 
@@ -87,16 +88,8 @@ export type SetGroundAction = ReturnType<typeof setGround>
 
 // Set Layout
 
-export const SET_LAYOUT = 'Set Layout'
+export const APPLY_LAYOUT = 'Apply Layout'
 
-export const setLayout = (projectId: string, rows: number, cols: number) => action(SET_LAYOUT, { projectId, rows, cols })
+export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project })
 
-export type SetLayoutAction = ReturnType<typeof setLayout>
-
-// Fix scene
-
-export const FIX_CURRENT_SCENE = 'Fix scene'
-
-export const fixCurrentScene = () => action(FIX_CURRENT_SCENE, {})
-
-export type FixCurrentSceneAction = ReturnType<typeof fixCurrentScene>
+export type ApplyLayoutAction = ReturnType<typeof applyLayout>

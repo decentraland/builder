@@ -14,8 +14,6 @@ export const isLoading: (state: RootState) => boolean = state => getState(state)
 
 export const getError: (state: RootState) => ProjectState['error'] = state => getState(state).error
 
-export const getProject = (projectId: string) => (state: RootState): Project | null => getData(state)[projectId] || null
-
 export const getCurrentProject = createSelector<RootState, string | undefined, ProjectState['data'], Project | null>(
   getProjectId,
   getData,

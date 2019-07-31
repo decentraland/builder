@@ -15,7 +15,8 @@ import {
   DeleteItemAction,
   SET_GROUND,
   SetGroundAction,
-  FIX_CURRENT_SCENE
+  ApplyLayoutAction,
+  APPLY_LAYOUT
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import {
@@ -30,14 +31,15 @@ import {
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
-import { getCurrentBounds, getProject } from 'modules/project/selectors'
+import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { Project } from 'modules/project/types'
 import { LOAD_PROJECT_SUCCESS, LoadProjectSuccessAction } from 'modules/project/actions'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds, areEqualMappings } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings } from './utils'
+import { getGroundAssets } from 'modules/asset/selectors'
+import { Asset } from 'modules/asset/types'
 
 const editorWindow = window as EditorWindow
 
@@ -48,9 +50,9 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(FIX_CURRENT_SCENE, handleFixCurrentScene)
   yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
   yield takeLatest(LOAD_PROJECT_SUCCESS, handleLoadProjectSuccess)
+  yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
 }
 
 function* handleLoadProjectSuccess(action: LoadProjectSuccessAction) {
@@ -249,13 +251,82 @@ function* handleDeleteItem(_: DeleteItemAction) {
 
 function* handleSetGround(action: SetGroundAction) {
   const { asset, projectId } = action.payload
-  const currentProject: Project | null = yield select(getProject(projectId))
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const currentProject = projects[projectId]
   if (!currentProject) return
 
   const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
   const { rows, cols } = currentProject
+
+  if (asset) {
+    yield applyGround(scene, rows, cols, asset)
+  }
+}
+
+function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
+  // load current scene (if any)
+  const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
+  if (!scene) return
+
+  // keep track of the updated components
+  const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
+
+  // generate map of GLTFShape components by source
+  const gltfShapes: Record<string, ComponentDefinition<ComponentType.GLTFShape>[]> = {}
+  for (const component of Object.values(scene.components)) {
+    if (component.type === ComponentType.GLTFShape) {
+      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+      if (!gltfShapes[gltfShape.data.src]) {
+        gltfShapes[gltfShape.data.src] = []
+      }
+      gltfShapes[gltfShape.data.src].push(gltfShape)
+    }
+  }
+
+  // loop over each loaded asset and update the mappings of the components using it
+  for (const assetPack of action.payload.assetPacks) {
+    for (const asset of assetPack.assets) {
+      if (asset.url in gltfShapes) {
+        for (const component of gltfShapes[asset.url]) {
+          const mappings = getMappings(asset)
+          if (!areEqualMappings(component.data.mappings, mappings)) {
+            updatedComponents[component.id] = {
+              ...component,
+              data: {
+                ...component.data,
+                mappings
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // if there are any components that need to be updated, provision a new scene
+  const hasUpdates = Object.keys(updatedComponents).length > 0
+  if (hasUpdates) {
+    const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
+    yield put(provisionScene(newScene))
+  }
+}
+
+function* handleApplyLayout(action: ApplyLayoutAction) {
+  const { project } = action.payload
+  const { rows, cols } = project
+  const scene: Scene | null = yield select(getScene(project.sceneId))
+
+  if (scene && scene.ground) {
+    const groundId = scene.ground.assetId
+    const assets: ReturnType<typeof getGroundAssets> = yield select(getGroundAssets)
+    const ground = assets[groundId]
+    yield applyGround(scene, rows, cols, ground)
+  }
+}
+
+function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   let components = { ...scene.components }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
@@ -312,76 +383,4 @@ function* handleSetGround(action: SetGroundAction) {
   }
 
   yield put(provisionScene({ ...scene, components, entities, ground }))
-}
-
-function* handleFixCurrentScene() {
-  const scene: Scene = yield select(getCurrentScene)
-  const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
-
-  if (!bounds || !scene) return
-
-  const componentIdKeys = Object.keys(scene.components)
-  let components = { ...scene.components }
-
-  for (let key of componentIdKeys) {
-    const component = scene.components[key] as ComponentDefinition<ComponentType.Transform>
-    if (component.type === ComponentType.Transform) {
-      if (!isWithinBounds(component.data.position, bounds)) {
-        components[key] = {
-          ...component,
-          data: { ...component.data, position: snapToBounds(component.data.position, bounds) }
-        }
-      }
-    }
-  }
-
-  yield put(provisionScene({ ...scene, components }))
-}
-
-function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
-  // load current scene (if any)
-  const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-  if (!scene) return
-
-  // keep track of the updated components
-  const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
-
-  // generate map of GLTFShape components by source
-  const gltfShapes: Record<string, ComponentDefinition<ComponentType.GLTFShape>[]> = {}
-  for (const component of Object.values(scene.components)) {
-    if (component.type === ComponentType.GLTFShape) {
-      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      if (!gltfShapes[gltfShape.data.src]) {
-        gltfShapes[gltfShape.data.src] = []
-      }
-      gltfShapes[gltfShape.data.src].push(gltfShape)
-    }
-  }
-
-  // loop over each loaded asset and update the mappings of the components using it
-  for (const assetPack of action.payload.assetPacks) {
-    for (const asset of assetPack.assets) {
-      if (asset.url in gltfShapes) {
-        for (const component of gltfShapes[asset.url]) {
-          const mappings = getMappings(asset)
-          if (!areEqualMappings(component.data.mappings, mappings)) {
-            updatedComponents[component.id] = {
-              ...component,
-              data: {
-                ...component.data,
-                mappings
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // if there are any components that need to be updated, provision a new scene
-  const hasUpdates = Object.keys(updatedComponents).length > 0
-  if (hasUpdates) {
-    const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
-    yield put(provisionScene(newScene))
-  }
 }

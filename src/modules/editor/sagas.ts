@@ -32,25 +32,16 @@ import {
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
   toggleSnapToGrid,
-  NEW_EDITOR_SCENE,
-  NewEditorSceneAction,
   PREFETCH_ASSET,
   PrefetchAssetAction,
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
   closeEditor,
-  setEditorLoading
+  setEditorLoading,
+  CREATE_EDITOR_SCENE,
+  CreateEditorSceneAction
 } from 'modules/editor/actions'
-import {
-  PROVISION_SCENE,
-  updateMetrics,
-  updateTransform,
-  DROP_ITEM,
-  DropItemAction,
-  addItem,
-  setGround,
-  fixCurrentScene
-} from 'modules/scene/actions'
+import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { CONTENT_SERVER_URL } from 'lib/api'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import {
@@ -61,7 +52,7 @@ import {
   LOAD_PROJECT_FAILURE
 } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
-import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
+import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
@@ -83,7 +74,6 @@ export function* editorSaga() {
   yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(NEW_EDITOR_SCENE, handleNewEditorScene)
   yield takeLatest(PROVISION_SCENE, handleSceneChange)
   yield takeLatest(EDITOR_REDO, handleSceneChange)
   yield takeLatest(EDITOR_UNDO, handleSceneChange)
@@ -99,6 +89,7 @@ export function* editorSaga() {
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
+  yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
 }
 
 function* pollEditor(scene: Scene) {
@@ -132,16 +123,11 @@ function* handleUnbindEditorKeyboardShortcuts() {
   yield put(unbindKeyboardShortcuts(shortcuts))
 }
 
-function* handleNewEditorScene(action: NewEditorSceneAction) {
-  const { id, project } = action.payload
-  const currentProject: Project | null = yield select(getProject(id))
-  if (currentProject) {
-    yield createNewEditorScene({ ...currentProject, ...project })
-  }
+function* handleCreateEditorScene(action: CreateEditorSceneAction) {
+  yield createNewEditorScene(action.payload.project)
 }
 
 function* createNewEditorScene(project: Project) {
-  console.log('create editor scene')
   const newScene: EditorScene = getNewEditorScene(project)
 
   const msg = {
@@ -245,9 +231,6 @@ function* handleOpenEditor() {
 
     // Enable snap to grid
     yield handleToggleSnapToGrid(toggleSnapToGrid(true))
-
-    // Apply scene fixes
-    yield put(fixCurrentScene())
 
     // Select gizmo
     yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))

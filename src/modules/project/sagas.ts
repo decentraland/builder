@@ -25,20 +25,19 @@ import {
   LOAD_PROJECT_REQUEST
 } from 'modules/project/actions'
 import { api } from 'lib/api'
-import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
-import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene, getCurrentScene } from 'modules/scene/selectors'
-import { getGroundAsset } from 'modules/asset/selectors'
+import { getData as getProjects } from 'modules/project/selectors'
+import { getData as getScenes, getScene } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene, setGround, provisionScene } from 'modules/scene/actions'
-import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress } from 'modules/editor/actions'
+import { createScene, setGround, applyLayout } from 'modules/scene/actions'
+import { SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { createFiles } from './export'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
+import { didUpdateLayout } from './utils'
 
 const DEFAULT_GROUND_ASSET = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -118,49 +117,30 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
 function* handleEditProject(action: EditProjectRequestAction) {
   const { id, project } = action.payload
-  let ground = action.payload.ground
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const targetProject = projects[id]
 
-  const currentProject: Project | null = yield select(getProject(id))
-  if (!currentProject) return
+  if (!targetProject || !project) return
 
-  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
-  if (!scene || !project) return
+  const scene: Scene | null = yield select(getScene(targetProject.sceneId))
 
-  const hasNewLayout = project.rows && project.cols
+  if (!scene) return
+
+  const shouldSetLayout = didUpdateLayout(project, targetProject)
 
   try {
-    if (hasNewLayout) {
+    if (shouldSetLayout) {
+      const newProject = { ...targetProject, ...project }
       yield put(setEditorReady(false))
-      yield put(newEditorScene(id, project))
-
+      yield createEditorScene(newProject)
       yield take(SET_EDITOR_READY)
-
-      if (!ground && scene.ground) {
-        const groundId = scene.ground.assetId
-        ground = yield select((state: RootState) => getGroundAsset(state, groundId))
-      }
-
-      yield put(provisionScene(scene))
-    }
-
-    if (ground) {
-      yield put(setGround(id, ground))
+      yield put(applyLayout(newProject))
+      yield put(ActionCreators.clearHistory())
+      yield put(resetCamera())
+      yield put(takeScreenshot())
     }
 
     yield put(editProjectSuccess(id, project))
-
-    if (hasNewLayout) {
-      // The user could've navigated away, we need to compensate for this
-      const currentScene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-
-      if (!currentScene) {
-        yield put(setEditorReady(false))
-      } else if (currentScene.id === currentProject.sceneId) {
-        yield put(ActionCreators.clearHistory())
-        yield put(resetCamera())
-        yield put(takeScreenshot())
-      }
-    }
   } catch (error) {
     yield put(editProjectFailure(id, error))
   }
