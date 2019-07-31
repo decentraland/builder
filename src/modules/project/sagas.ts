@@ -2,6 +2,7 @@ import uuidv4 from 'uuid/v4'
 import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { takeLatest, put, select, take, call } from 'redux-saga/effects'
 
 import {
@@ -34,9 +35,8 @@ import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
+import { AUTH_SUCCESS } from 'modules/auth/actions'
 import { createFiles } from './export'
-import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 import { didUpdateLayout } from './utils'
 
 const DEFAULT_GROUND_ASSET = {
@@ -62,7 +62,7 @@ export function* projectSaga() {
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
-  yield takeLatest(STORAGE_LOAD, handleLoadProjectsRequest)
+  yield takeLatest(AUTH_SUCCESS, handleLoadProjectsRequest)
   yield takeLatest(LOAD_PROJECT_REQUEST, handleLoadProject)
 }
 
