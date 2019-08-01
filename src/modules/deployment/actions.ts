@@ -15,19 +15,6 @@ export type FetchDeploymentsRequestAction = ReturnType<typeof fetchDeploymentsRe
 export type FetchDeploymentsSuccessAction = ReturnType<typeof fetchDeploymentsSuccess>
 export type FetchDeploymentsFailureAction = ReturnType<typeof fetchDeploymentsFailure>
 
-// Save deployment
-export const SAVE_DEPLOYMENT_REQUEST = '[Request] Save deployment'
-export const SAVE_DEPLOYMENT_SUCCESS = '[Success] Save deployment'
-export const SAVE_DEPLOYMENT_FAILURE = '[Failure] Save deployment'
-
-export const saveDeploymentRequest = (deployment: Deployment) => action(SAVE_DEPLOYMENT_REQUEST, { deployment })
-export const saveDeploymentSuccess = (deployment: Deployment) => action(SAVE_DEPLOYMENT_SUCCESS, { deployment })
-export const saveDeploymentFailure = (deployment: Deployment, error: string) => action(SAVE_DEPLOYMENT_FAILURE, { deployment, error })
-
-export type SaveDeploymentRequestAction = ReturnType<typeof saveDeploymentRequest>
-export type SaveDeploymentSuccessAction = ReturnType<typeof saveDeploymentSuccess>
-export type SaveDeploymentFailureAction = ReturnType<typeof saveDeploymentFailure>
-
 // Deploy to LAND pool
 export const DEPLOY_TO_POOL_REQUEST = '[Request] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_SUCCESS = '[Success] Deploy to LAND pool'

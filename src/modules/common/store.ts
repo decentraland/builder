@@ -13,7 +13,7 @@ import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
-import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
+import { SAVE_PROJECT_SUCCESS, SAVE_DEPLOYMENT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
@@ -23,6 +23,8 @@ import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
+import { Deployment } from 'modules/deployment/types'
+import { Scene } from 'modules/scene/types'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -80,20 +82,40 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     MARK_DIRTY,
     AUTH_SUCCESS,
     AUTH_FAILURE,
-    SAVE_PROJECT_SUCCESS
+    SAVE_PROJECT_SUCCESS,
+    SAVE_DEPLOYMENT_SUCCESS
   ],
   transform: state => {
     let projects: DataByKey<Project> = {}
+    let scene: DataByKey<Scene> = {}
+    let deployments: DataByKey<Deployment> = {}
 
-    for (let id of state.sync.localProjectIds) {
-      projects[id] = state.project.data[id]
+    for (let id of state.sync.project.localIds) {
+      const project = state.project.data[id]
+      projects[id] = project
+      scene[project.sceneId] = state.scene.present.data[project.sceneId]
     }
 
-    const newState = {
+    for (let id of state.sync.deployment.localIds) {
+      deployments[id] = state.deployment.data[id]
+    }
+
+    const newState: RootState = {
       ...state,
       project: {
         ...state.project,
         data: projects
+      },
+      deployment: {
+        ...state.deployment,
+        data: deployments
+      },
+      scene: {
+        ...state.scene,
+        present: {
+          ...state.scene.present,
+          data: scene
+        }
       }
     }
 

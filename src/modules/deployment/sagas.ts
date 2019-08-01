@@ -32,12 +32,7 @@ import {
   FetchDeploymentsRequestAction,
   fetchDeploymentsFailure,
   fetchDeploymentsSuccess,
-  fetchDeploymentsRequest,
-  SAVE_DEPLOYMENT_REQUEST,
-  SaveDeploymentRequestAction,
-  saveDeploymentFailure,
-  saveDeploymentSuccess,
-  saveDeploymentRequest
+  fetchDeploymentsRequest
 } from './actions'
 import { store } from 'modules/common/store'
 import { Media } from 'modules/media/types'
@@ -53,6 +48,7 @@ import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
+import { saveDeploymentRequest } from 'modules/sync/actions'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -77,7 +73,6 @@ export function* deploymentSaga() {
   yield takeLatest(EDIT_PROJECT_SUCCESS, handleMarkDirty)
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
-  yield takeLatest(SAVE_DEPLOYMENT_REQUEST, handleSaveDeploymentRequest)
 }
 
 function* handleMarkDirty() {
@@ -266,14 +261,4 @@ function* handleFetchDeploymentsRequest(_action: FetchDeploymentsRequestAction) 
 
 function* handleAuthSuccess(_action: AuthSuccessAction) {
   yield put(fetchDeploymentsRequest())
-}
-
-function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
-  const { deployment } = action.payload
-  try {
-    yield call(() => api.saveDeployment(deployment))
-    yield put(saveDeploymentSuccess(deployment))
-  } catch (e) {
-    yield put(saveDeploymentFailure(deployment, e.message))
-  }
 }
