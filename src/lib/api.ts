@@ -49,7 +49,7 @@ export class API extends BaseAPI {
   }
 
   fetchAuthorizedParcels(address: string) {
-    return this.request('get', `${MARKETPLACE_URL}/address/${address}/parcels/authorized`, {})
+    return this.request('get', `${MARKETPLACE_URL}/addresses/${address}/parcels`, {})
   }
 
   reportEmail(email: string, interest: EMAIL_INTEREST) {
