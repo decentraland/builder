@@ -59,9 +59,9 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { landTarget } = this.state
 
     try {
-      const res = await api.fetchAuthorizedParcels(ethAddress)
+      const authorizedParcels = await api.fetchAuthorizedParcels(ethAddress)
       if (this.mounted) {
-        const parcels = res.parcels.reduce(
+        const parcels = authorizedParcels.reduce(
           (parcels: any, parcel: any) => ({
             ...parcels,
             [parcel.id]: {
@@ -72,12 +72,12 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           {}
         )
 
-        this.analytics.track('LAND authorized for publish', { count: res.parcels.length })
+        this.analytics.track('LAND authorized for publish', { count: authorizedParcels.length })
 
         this.setState({
           parcels,
           // Only point to the first authorized parcel if no initialPoint was provided
-          landTarget: landTarget === '0,0' && res.parcels.length ? res.parcels[0].id : landTarget,
+          landTarget: landTarget === '0,0' && authorizedParcels.length ? authorizedParcels[0].id : landTarget,
           isLoadingMap: false
         })
       }
