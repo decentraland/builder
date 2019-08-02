@@ -99,7 +99,10 @@ export class API extends BaseAPI {
 
     try {
       await this.request('post', `${CONTENT_SERVER_URL}/mappings`, data, {
-        onUploadProgress
+        onUploadProgress,
+        headers: {
+          'x-upload-origin': 'builder'
+        }
       })
     } catch (e) {
       const { status } = e.response
