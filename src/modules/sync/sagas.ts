@@ -30,7 +30,7 @@ import {
   saveDeploymentRequest
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds, getFailedDeploymentIds, getLocalDeploymentIds } from './selectors'
-import { forEach } from './utils'
+import { forEach, saveProject } from './utils'
 
 export function* syncSaga() {
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
@@ -78,8 +78,7 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
   const scene = scenes[project.sceneId]
 
   try {
-    // TODO: debounce this per projectId
-    yield call(() => api.saveProject(project, scene))
+    yield call(() => saveProject(project.id, project, scene))
     yield put(saveProjectSuccess(project))
   } catch (e) {
     yield put(saveProjectFailure(project, e))
