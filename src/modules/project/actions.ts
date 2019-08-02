@@ -16,6 +16,14 @@ type CreateProjectFromTemplateMeta = { onSuccess?: (project: Project, scene: Sce
 
 export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFromTemplate>
 
+// Create project (like SET_PROJECT but only called on creation)
+
+export const CREATE_PROJECT = 'Create project'
+
+export const createProject = (project: Project) => action(CREATE_PROJECT, { project })
+
+export type CreateProjectAction = ReturnType<typeof createProject>
+
 // Set project
 
 export const SET_PROJECT = 'Set project'

@@ -21,7 +21,8 @@ import {
   LOAD_PROJECT_REQUEST,
   EDIT_PROJECT,
   setProject,
-  EditProjectAction
+  EditProjectAction,
+  createProject
 } from 'modules/project/actions'
 import { api } from 'lib/api'
 import { Project } from 'modules/project/types'
@@ -82,7 +83,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   const project: Project = {
     id: uuidv4(),
-    title: 'New scene',
+    title: 'New scene', // TODO translate this into different languages
     description: '',
     thumbnail: '',
     rows,
@@ -92,7 +93,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
   }
 
   yield put(createScene(scene))
-  yield put(setProject(project))
+  yield put(createProject(project))
 
   if (onSuccess) {
     onSuccess(project, scene)
@@ -111,7 +112,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
   const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: Date.now() }
 
   yield put(createScene(newScene))
-  yield put(setProject(newProject))
+  yield put(createProject(newProject))
 }
 
 function* handleEditProject(action: EditProjectAction) {
@@ -175,8 +176,8 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield put(setProject(saved.project))
       yield put(createScene(saved.scene))
+      yield put(createProject(saved.project))
     }
   }
 }
