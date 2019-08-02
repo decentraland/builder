@@ -94,7 +94,10 @@
 
       setTimeout(() => {
         delighted.survey({
-          recurringPeriod: false
+          recurringPeriod: false,
+          properties: {
+            anonymous_id: analytics ? analytics.user().anonymousId() : null
+          }
         })
       }, 90 * 1000)
     </script>
