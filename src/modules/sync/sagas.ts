@@ -2,11 +2,15 @@ import { takeLatest, select, put, call } from 'redux-saga/effects'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
-import { getData as getProjects } from 'modules/project/selectors'
+import { getData as getProjects, getCurrentProject } from 'modules/project/selectors'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
+import { CREATE_PROJECT, CreateProjectAction, SET_PROJECT, SetProjectAction } from 'modules/project/actions'
+import { isLoggedIn } from 'modules/auth/selectors'
+import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
+import { DEPLOY_TO_LAND_SUCCESS, DeployToLandSuccessAction } from 'modules/deployment/actions'
 import { api } from 'lib/api'
 import {
   SAVE_PROJECT_REQUEST,
@@ -34,6 +38,10 @@ export function* syncSaga() {
   yield takeLatest(RETRY_SYNC, handleRetrySync)
   yield takeLatest(SAVE_PROJECT_REQUEST, handleSaveProjectRequest)
   yield takeLatest(SAVE_DEPLOYMENT_REQUEST, handleSaveDeploymentRequest)
+  yield takeLatest(CREATE_PROJECT, handleCreateProject)
+  yield takeLatest(SET_PROJECT, handleSetProject)
+  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
+  yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
 }
 
 function* handleAuthSuccess(_action: AuthSuccessAction) {
@@ -70,6 +78,7 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
   const scene = scenes[project.sceneId]
 
   try {
+    // TODO: debounce this per projectId
     yield call(() => api.saveProject(project, scene))
     yield put(saveProjectSuccess(project))
   } catch (e) {
@@ -84,5 +93,32 @@ function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
     yield put(saveDeploymentSuccess(deployment))
   } catch (e) {
     yield put(saveDeploymentFailure(deployment, e.message))
+  }
+}
+
+function* handleCreateProject(action: CreateProjectAction) {
+  if (yield select(isLoggedIn)) {
+    yield put(saveProjectRequest(action.payload.project))
+  }
+}
+
+function* handleSetProject(action: SetProjectAction) {
+  if (yield select(isLoggedIn)) {
+    yield put(saveProjectRequest(action.payload.project))
+  }
+}
+
+function* handleProvisionScene(_action: ProvisionSceneAction) {
+  if (yield select(isLoggedIn)) {
+    const project: Project | null = yield select(getCurrentProject)
+    if (project) {
+      yield put(saveProjectRequest(project))
+    }
+  }
+}
+
+function* handleDeployToLandSuccess(action: DeployToLandSuccessAction) {
+  if (yield select(isLoggedIn)) {
+    yield put(saveDeploymentRequest(action.payload.deployment))
   }
 }

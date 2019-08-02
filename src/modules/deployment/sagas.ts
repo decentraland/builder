@@ -47,8 +47,6 @@ import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
-import { isLoggedIn } from 'modules/auth/selectors'
-import { saveDeploymentRequest } from 'modules/sync/actions'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -154,11 +152,6 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         lastPublishedCID: rootCID,
         placement,
         isDirty: false
-      }
-
-      // save deployment on cloud (if logged in)
-      if (yield select(isLoggedIn)) {
-        yield put(saveDeploymentRequest(deployment))
       }
 
       // notify success
