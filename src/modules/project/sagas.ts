@@ -8,13 +8,8 @@ import { takeLatest, put, select, take, call } from 'redux-saga/effects'
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
   CreateProjectFromTemplateAction,
-  createProject,
   DUPLICATE_PROJECT,
   DuplicateProjectAction,
-  EDIT_PROJECT_REQUEST,
-  EditProjectRequestAction,
-  editProjectSuccess,
-  editProjectFailure,
   EXPORT_PROJECT_REQUEST,
   ExportProjectRequestAction,
   IMPORT_PROJECT,
@@ -23,7 +18,10 @@ import {
   LOAD_PROJECTS_REQUEST,
   loadProjectsSuccess,
   loadProjectSuccess,
-  LOAD_PROJECT_REQUEST
+  LOAD_PROJECT_REQUEST,
+  EDIT_PROJECT,
+  setProject,
+  EditProjectAction
 } from 'modules/project/actions'
 import { api } from 'lib/api'
 import { Project } from 'modules/project/types'
@@ -32,14 +30,15 @@ import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes, getScene } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
-import { SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
+import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
+import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS } from 'modules/auth/actions'
 import { createFiles } from './export'
 import { didUpdateLayout } from './utils'
 
-const DEFAULT_GROUND_ASSET = {
+const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
   thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
@@ -58,7 +57,7 @@ const DEFAULT_GROUND_ASSET = {
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
-  yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
+  yield takeLatest(EDIT_PROJECT, handleEditProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
@@ -93,7 +92,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
   }
 
   yield put(createScene(scene))
-  yield put(createProject(project))
+  yield put(setProject(project))
 
   if (onSuccess) {
     onSuccess(project, scene)
@@ -112,10 +111,10 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
   const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: Date.now() }
 
   yield put(createScene(newScene))
-  yield put(createProject(newProject))
+  yield put(setProject(newProject))
 }
 
-function* handleEditProject(action: EditProjectRequestAction) {
+function* handleEditProject(action: EditProjectAction) {
   const { id, project } = action.payload
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const targetProject = projects[id]
@@ -126,23 +125,18 @@ function* handleEditProject(action: EditProjectRequestAction) {
 
   if (!scene) return
 
-  const shouldSetLayout = didUpdateLayout(project, targetProject)
+  const shouldApplyLayout = didUpdateLayout(project, targetProject)
+  const newProject = { ...targetProject, ...project }
 
-  try {
-    if (shouldSetLayout) {
-      const newProject = { ...targetProject, ...project }
-      yield put(setEditorReady(false))
-      yield createEditorScene(newProject)
-      yield take(SET_EDITOR_READY)
-      yield put(applyLayout(newProject))
-      yield put(ActionCreators.clearHistory())
-      yield put(resetCamera())
-      yield put(takeScreenshot())
-    }
+  yield put(setProject(newProject))
 
-    yield put(editProjectSuccess(id, project))
-  } catch (error) {
-    yield put(editProjectFailure(id, error))
+  if (shouldApplyLayout) {
+    yield put(setEditorReady(false))
+    yield put(createEditorScene(newProject))
+    yield take(SET_EDITOR_READY)
+    yield put(applyLayout(newProject))
+    yield put(ActionCreators.clearHistory())
+    yield put(takeScreenshot())
   }
 }
 
@@ -181,7 +175,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield put(createProject(saved.project))
+      yield put(setProject(saved.project))
       yield put(createScene(saved.scene))
     }
   }
@@ -214,7 +208,6 @@ function* handleLoadProjectsRequest() {
 }
 
 function* handleLoadProject() {
-  console.log('pidiending conson')
   try {
     const response = yield call(() => api.getProject())
     yield put(loadProjectSuccess(response.data.manifest))

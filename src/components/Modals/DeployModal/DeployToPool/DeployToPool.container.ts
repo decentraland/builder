@@ -10,7 +10,7 @@ import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { setUserProfile } from 'modules/user/actions'
 import { getMedia, isRecording } from 'modules/media/selectors'
-import { editProjectRequest } from 'modules/project/actions'
+import { editProject } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
 
@@ -29,7 +29,7 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onDeployToPool: (projectId: string) => dispatch(deployToPoolRequest(projectId)),
   onSaveUser: (user: Partial<User>) => dispatch(setUserProfile(user)),
-  onSaveProject: (id: string, project: Partial<Project>) => dispatch(editProjectRequest(id, project))
+  onSaveProject: (id: string, project: Partial<Project>) => dispatch(editProject(id, project))
 })
 
 export default connect(

@@ -2,14 +2,6 @@ import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/lo
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
 import {
-  CreateProjectAction,
-  CREATE_PROJECT,
-  EDIT_PROJECT_REQUEST,
-  EDIT_PROJECT_SUCCESS,
-  EDIT_PROJECT_FAILURE,
-  EditProjectRequestAction,
-  EditProjectSuccessAction,
-  EditProjectFailureAction,
   DeleteProjectAction,
   DELETE_PROJECT,
   EDIT_PROJECT_THUMBNAIL,
@@ -17,7 +9,10 @@ import {
   LOAD_PROJECTS_SUCCESS,
   LoadProjectsSuccessAction,
   LOAD_PROJECTS_REQUEST,
-  LoadProjectsRequestAction
+  LoadProjectsRequestAction,
+  EditProjectAction,
+  SetProjectAction,
+  SET_PROJECT
 } from 'modules/project/actions'
 
 export type ProjectState = {
@@ -33,10 +28,8 @@ const INITIAL_STATE: ProjectState = {
 }
 
 export type ProjectReducerAction =
-  | CreateProjectAction
-  | EditProjectRequestAction
-  | EditProjectSuccessAction
-  | EditProjectFailureAction
+  | SetProjectAction
+  | EditProjectAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
   | LoadProjectsRequestAction
@@ -44,7 +37,7 @@ export type ProjectReducerAction =
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
-    case CREATE_PROJECT: {
+    case SET_PROJECT: {
       const { project } = action.payload
 
       return {
@@ -52,35 +45,6 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         data: {
           ...state.data,
           [project.id]: { ...project }
-        }
-      }
-    }
-    case EDIT_PROJECT_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
-      }
-    }
-    case EDIT_PROJECT_SUCCESS: {
-      const { id, project } = action.payload
-
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [id]: { ...state.data[id], ...project }
-        },
-        loading: loadingReducer(state.loading, action)
-      }
-    }
-    case EDIT_PROJECT_FAILURE: {
-      const { projectId, error } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: {
-          ...state.error,
-          [projectId]: error
         }
       }
     }

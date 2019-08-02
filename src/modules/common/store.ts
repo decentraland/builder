@@ -12,7 +12,7 @@ import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
-import { CREATE_PROJECT, DELETE_PROJECT, EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
+import { SET_PROJECT, DELETE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_DEPLOYMENT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
@@ -67,12 +67,11 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ['sync', 'localProjectIds']
   ],
   actions: [
-    CREATE_PROJECT,
+    SET_PROJECT,
     CREATE_SCENE,
     PROVISION_SCENE,
     EDITOR_UNDO,
     EDITOR_REDO,
-    EDIT_PROJECT_SUCCESS,
     DELETE_PROJECT,
     SET_USER_ID,
     SET_USER_EMAIL,
@@ -119,7 +118,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
       }
     }
 
-    console.log('guardanding', newState)
     return newState
   }
 })

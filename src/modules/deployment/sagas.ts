@@ -43,7 +43,7 @@ import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUN
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getDeployment } from './selectors'
-import { EDIT_PROJECT_SUCCESS } from 'modules/project/actions'
+import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
@@ -70,7 +70,7 @@ export function* deploymentSaga() {
   yield takeLatest(DELETE_ITEM, handleMarkDirty)
   yield takeLatest(SET_GROUND, handleMarkDirty)
   yield takeLatest(UPDATE_TRANSFORM, handleMarkDirty)
-  yield takeLatest(EDIT_PROJECT_SUCCESS, handleMarkDirty)
+  yield takeLatest(SET_PROJECT, handleMarkDirty)
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
 }
@@ -164,7 +164,6 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       // notify success
       yield put(deployToLandSuccess(deployment))
     } catch (e) {
-      console.log(e, e.__proto__)
       yield put(deployToLandFailure(e.message.split('\n')[0]))
     }
   } else {

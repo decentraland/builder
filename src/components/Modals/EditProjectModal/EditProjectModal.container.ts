@@ -4,7 +4,7 @@ import { RootState } from 'modules/common/types'
 
 import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentScene } from 'modules/scene/selectors'
-import { editProjectRequest } from 'modules/project/actions'
+import { editProject } from 'modules/project/actions'
 
 import { MapStateProps, MapDispatchProps, MapDispatch } from './EditProjectModal.types'
 import EditProjectModal from './EditProjectModal'
@@ -18,7 +18,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSave: (id, project) => dispatch(editProjectRequest(id, project))
+  onSave: (id, project) => dispatch(editProject(id, project))
 })
 
 export default connect(

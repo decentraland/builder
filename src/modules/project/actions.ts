@@ -16,27 +16,21 @@ type CreateProjectFromTemplateMeta = { onSuccess?: (project: Project, scene: Sce
 
 export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFromTemplate>
 
-// Create project
+// Set project
 
-export const CREATE_PROJECT = 'Create project'
+export const SET_PROJECT = 'Set project'
 
-export const createProject = (project: Project) => action(CREATE_PROJECT, { project })
+export const setProject = (project: Project) => action(SET_PROJECT, { project })
 
-export type CreateProjectAction = ReturnType<typeof createProject>
+export type SetProjectAction = ReturnType<typeof setProject>
 
 // Edit project
 
-export const EDIT_PROJECT_REQUEST = '[Request] Edit project'
-export const EDIT_PROJECT_SUCCESS = '[Success] Edit project'
-export const EDIT_PROJECT_FAILURE = '[Failure] Edit project'
+export const EDIT_PROJECT = 'Edit project'
 
-export const editProjectRequest = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_REQUEST, { id, project })
-export const editProjectSuccess = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_SUCCESS, { id, project })
-export const editProjectFailure = (projectId: string, error: string) => action(EDIT_PROJECT_FAILURE, { projectId, error })
+export const editProject = (id: string, project: Partial<Project>) => action(EDIT_PROJECT, { id, project })
 
-export type EditProjectRequestAction = ReturnType<typeof editProjectRequest>
-export type EditProjectSuccessAction = ReturnType<typeof editProjectSuccess>
-export type EditProjectFailureAction = ReturnType<typeof editProjectFailure>
+export type EditProjectAction = ReturnType<typeof editProject>
 
 // Edit project thumbnail
 

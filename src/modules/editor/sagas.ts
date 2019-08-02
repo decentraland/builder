@@ -139,6 +139,7 @@ function* createNewEditorScene(project: Project) {
 
   // @ts-ignore: Client api
   yield call(() => editorWindow.editor.handleMessage(msg))
+  yield handleResetCamera()
 }
 
 function* handleSceneChange() {
