@@ -58,13 +58,17 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     this.setState({ description: event.currentTarget.value })
   }
 
+  handleClose = () => {
+    // do nothing, prevents dismissing
+  }
+
   render() {
     const { name, deploymentStatus, onClose } = this.props
     const { title, description, rows, cols, hasError } = this.state
     const isSubmitDisabled = hasError || deploymentStatus !== DeploymentStatus.UNPUBLISHED
 
     return (
-      <Modal name={name} onClose={() => {}}>
+      <Modal name={name} onClose={this.handleClose}>
         <Form onSubmit={this.handleSubmit}>
           <Modal.Header>{t('edit_project_modal.title')}</Modal.Header>
           <Modal.Content>
