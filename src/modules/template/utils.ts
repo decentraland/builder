@@ -32,8 +32,8 @@ export function getTemplates(): Template[] {
       title: t('templates.custom_layout.title'),
       description: t('templates.custom_layout.up_to', { max: MAX_AREA }),
       thumbnail: 'thumb-custombuild',
-      rows: 0,
-      cols: 0,
+      rows: 3,
+      cols: 3,
       custom: true
     }
   ]
