@@ -20,12 +20,12 @@ import {
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import {
-  getGLTFId,
+  getGLTFsBySrc,
   getCurrentScene,
   getEntityComponentByType,
   getEntityComponents,
   getScene,
-  getCollectibleId,
+  getCollectiblesByURL,
   getEntityShape
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
@@ -63,7 +63,7 @@ function* handleAddItem(action: AddItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  let shapeId: string
+  let shapeId: string | null
   let { position } = action.payload
   const { asset } = action.payload
   const transformId = uuidv4()
@@ -75,7 +75,9 @@ function* handleAddItem(action: AddItemAction) {
   }
 
   if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
-    shapeId = yield select(getCollectibleId(asset.url))
+    const collectibles: ReturnType<typeof getCollectiblesByURL> = yield select(getCollectiblesByURL)
+    const collectible = collectibles[asset.url]
+    shapeId = collectible ? collectibles[asset.url].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -90,7 +92,9 @@ function* handleAddItem(action: AddItemAction) {
 
     position = { ...position!, y: 1.72 }
   } else {
-    shapeId = yield select(getGLTFId(asset.url))
+    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
+    const gltf = gltfs[asset.url]
+    shapeId = gltf ? gltfs[asset.url].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -332,9 +336,11 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   let gltfId: string = uuidv4()
 
   if (asset) {
-    // Create the Shape component if necessary
-    const foundId = yield select(getGLTFId(asset.url))
+    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
+    const gltf = gltfs[asset.url]
+    const foundId = gltf ? gltfs[asset.url].id : null
 
+    // Create the Shape component if necessary
     if (!foundId) {
       components[gltfId] = {
         id: gltfId,
