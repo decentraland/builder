@@ -12,6 +12,8 @@ export const getData: (state: RootState) => ProjectState['data'] = state => getS
 
 export const getError: (state: RootState) => ProjectState['error'] = state => getState(state).error
 
+export const getLoading = (state: RootState) => getState(state).loading
+
 export const getCurrentProject = createSelector<RootState, string | undefined, ProjectState['data'], Project | null>(
   getProjectId,
   getData,

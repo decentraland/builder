@@ -14,7 +14,14 @@ import {
   SetProjectAction,
   SET_PROJECT,
   CREATE_PROJECT,
-  CreateProjectAction
+  CreateProjectAction,
+  LOAD_MANIFEST_REQUEST,
+  LoadProjectsFailureAction,
+  LOAD_PROJECTS_FAILURE,
+  LoadManifestRequestAction,
+  LoadManifestSuccessAction,
+  LoadManifestFailureAction,
+  LOAD_MANIFEST_SUCCESS
 } from 'modules/project/actions'
 
 export type ProjectState = {
@@ -37,6 +44,10 @@ export type ProjectReducerAction =
   | DeleteProjectAction
   | LoadProjectsRequestAction
   | LoadProjectsSuccessAction
+  | LoadProjectsFailureAction
+  | LoadManifestRequestAction
+  | LoadManifestSuccessAction
+  | LoadManifestFailureAction
 
 export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerAction): ProjectState => {
   switch (action.type) {
@@ -88,6 +99,20 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
           ...state.data,
           ...projects
         },
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case LOAD_PROJECTS_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case LOAD_MANIFEST_REQUEST:
+    case LOAD_MANIFEST_SUCCESS:
+    case LOAD_PROJECTS_FAILURE: {
+      return {
+        ...state,
         loading: loadingReducer(state.loading, action)
       }
     }

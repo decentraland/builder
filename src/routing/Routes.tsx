@@ -12,7 +12,7 @@ import MobilePage from 'components/MobilePage'
 import EditorPage from 'components/EditorPage'
 import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
-import CallbackPage from 'components/CallbackPage'
+import LoadingPage from 'components/LoadingPage'
 
 import { Props, State } from './Routes.types'
 
@@ -52,7 +52,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.editor()} component={EditorPage} />
-            <Route exact path={locations.callback()} component={CallbackPage} />
+            <Route exact path={locations.callback()} component={LoadingPage} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

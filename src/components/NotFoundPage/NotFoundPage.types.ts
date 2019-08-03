@@ -5,5 +5,9 @@ export type Props = {
   onNavigate: typeof navigateTo
 }
 
+export type State = {
+  isLoading: boolean
+}
+
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<NavigateToAction>
