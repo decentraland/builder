@@ -32,7 +32,10 @@ export class ContentAPI extends BaseAPI {
 
     try {
       await this.request('post', `/mappings`, data, {
-        onUploadProgress
+        onUploadProgress,
+        headers: {
+          'x-upload-origin': 'builder'
+        }
       })
     } catch (e) {
       const { status } = e.response
