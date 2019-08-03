@@ -94,7 +94,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
                   </div>
                   <div className="CardList">
                     {projects
-                      .sort(project => -project.createdAt)
+                      .sort(project => -new Date(project.createdAt))
                       .map((project, index) => (
                         <ProjectCard key={index} project={project} />
                       ))}

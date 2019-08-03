@@ -68,7 +68,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentProject, isPreviewing, isSidebarOpen, isLoading } = this.props
+    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isLoggedIn } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     let wrapperClasses = 'wrapper'
@@ -93,7 +93,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
                   <Metrics />
                   <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
                   <ItemDragLayer />
-                  <LocalStorageToast />
+                  {isLoggedIn ? null : <LocalStorageToast />}
                 </>
               </div>
             )}

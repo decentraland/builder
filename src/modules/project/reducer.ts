@@ -48,7 +48,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         ...state,
         data: {
           ...state.data,
-          [project.id]: { ...project }
+          [project.id]: { ...project, updatedAt: new Date().toISOString() }
         }
       }
     }
@@ -59,7 +59,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         ...state,
         data: {
           ...state.data,
-          [id]: { ...state.data[id], thumbnail }
+          [id]: { ...state.data[id], thumbnail, updatedAt: new Date().toISOString() }
         }
       }
     }

@@ -3,7 +3,7 @@ import { SignInProps } from 'decentraland-ui'
 import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
 import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Coordinate, Rotation, DeploymentStatus, Deployment, OccupiedAtlasParcel } from 'modules/deployment/types'
-import { DeployToLandRequestAction, deployToLandRequest, FetchDeploymentsRequestAction } from 'modules/deployment/actions'
+import { DeployToLandRequestAction, deployToLandRequest, LoadDeploymentsRequestAction } from 'modules/deployment/actions'
 import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
@@ -71,7 +71,7 @@ export type MapStateProps = Pick<
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome' | 'onFetchDeployments'>
 
 export type MapDispatch = Dispatch<
-  ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | NavigateToAction | FetchDeploymentsRequestAction
+  ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | NavigateToAction | LoadDeploymentsRequestAction
 >
 
 export enum DeployToLandView {

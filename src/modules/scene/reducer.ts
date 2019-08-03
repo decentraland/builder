@@ -12,7 +12,7 @@ import {
   CREATE_SCENE,
   CreateSceneAction
 } from 'modules/scene/actions'
-import { DeleteProjectAction, DELETE_PROJECT, LoadProjectSuccessAction } from 'modules/project/actions'
+import { DeleteProjectAction, DELETE_PROJECT, LoadManifestSuccessAction } from 'modules/project/actions'
 
 export type SceneState = {
   data: ModelById<Scene>
@@ -27,7 +27,7 @@ export type SceneReducerAction =
   | UpdateTransfromAction
   | CreateSceneAction
   | DeleteProjectAction
-  | LoadProjectSuccessAction
+  | LoadManifestSuccessAction
 
 const INITIAL_STATE: SceneState = {
   data: {},

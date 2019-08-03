@@ -44,7 +44,7 @@ export function* handleAuthRequest() {
     }
   }
   try {
-    result.user = yield call(() => api.fetchUser(result.accessToken))
+    result.user = yield call(() => api.fetchUser())
   } catch (e) {
     // user doesn't have a profile created via avatars.decentraland.{env}
   }

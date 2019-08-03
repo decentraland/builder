@@ -3,17 +3,17 @@ import { Placement, Deployment } from 'modules/deployment/types'
 import { ProgressStage } from './types'
 
 // Fetch deployments
-export const FETCH_DEPLOYMENTS_REQUEST = '[Request] Fetch deployments'
-export const FETCH_DEPLOYMENTS_SUCCESS = '[Success] Fetch deployments'
-export const FETCH_DEPLOYMENTS_FAILURE = '[Failure] Fetch deployments'
+export const LOAD_DEPLOYMENTS_REQUEST = '[Request] Load deployments'
+export const LOAD_DEPLOYMENTS_SUCCESS = '[Success] Load deployments'
+export const LOAD_DEPLOYMENTS_FAILURE = '[Failure] Load deployments'
 
-export const fetchDeploymentsRequest = () => action(FETCH_DEPLOYMENTS_REQUEST)
-export const fetchDeploymentsSuccess = (deployments: Deployment[]) => action(FETCH_DEPLOYMENTS_SUCCESS, { deployments })
-export const fetchDeploymentsFailure = (error: string) => action(FETCH_DEPLOYMENTS_FAILURE, { error })
+export const loadDeploymentsRequest = () => action(LOAD_DEPLOYMENTS_REQUEST)
+export const loadDeploymentsSuccess = (deployments: Deployment[]) => action(LOAD_DEPLOYMENTS_SUCCESS, { deployments })
+export const loadDeploymentsFailure = (error: string) => action(LOAD_DEPLOYMENTS_FAILURE, { error })
 
-export type FetchDeploymentsRequestAction = ReturnType<typeof fetchDeploymentsRequest>
-export type FetchDeploymentsSuccessAction = ReturnType<typeof fetchDeploymentsSuccess>
-export type FetchDeploymentsFailureAction = ReturnType<typeof fetchDeploymentsFailure>
+export type LoadDeploymentsRequestAction = ReturnType<typeof loadDeploymentsRequest>
+export type LoadDeploymentsSuccessAction = ReturnType<typeof loadDeploymentsSuccess>
+export type LoadDeploymentsFailureAction = ReturnType<typeof loadDeploymentsFailure>
 
 // Deploy to LAND pool
 export const DEPLOY_TO_POOL_REQUEST = '[Request] Deploy to LAND pool'

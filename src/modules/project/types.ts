@@ -6,12 +6,13 @@ export type Project = {
   description: string
   thumbnail: string
   sceneId: string
+  userId: string | null
   rows: number
   cols: number
-  ownerEmail?: string
-  createdAt: number
+  createdAt: string
+  updatedAt: string
 }
 
 export type ProjectLayout = { rows: number; cols: number; hasError: boolean }
 
-export type SaveFile = { version: number; project: Project & { thumbnail?: string }; scene: Scene }
+export type Manifest = { version: number; project: Project; scene: Scene }

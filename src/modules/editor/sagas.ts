@@ -42,14 +42,13 @@ import {
   CreateEditorSceneAction
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
-import { CONTENT_SERVER_URL } from 'lib/api'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import {
   editProjectThumbnail,
-  loadProjectRequest,
-  LOAD_PROJECT_SUCCESS,
-  LoadProjectSuccessAction,
-  LOAD_PROJECT_FAILURE
+  loadManifestRequest,
+  LOAD_MANIFEST_SUCCESS,
+  LoadManifestSuccessAction,
+  LOAD_MANIFEST_FAILURE
 } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
@@ -66,6 +65,7 @@ import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
 import { getLocalProjectIds } from 'modules/sync/selectors'
+import { CONTENT_SERVER_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
 
@@ -308,11 +308,11 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
       if (localProjects.includes(project.id)) {
         scene = yield select(getCurrentScene)
       } else {
-        yield put(loadProjectRequest())
+        yield put(loadManifestRequest(project.id))
 
-        const result: { success?: LoadProjectSuccessAction } = yield race({
-          success: take(LOAD_PROJECT_SUCCESS),
-          failure: take(LOAD_PROJECT_FAILURE)
+        const result: { success?: LoadManifestSuccessAction } = yield race({
+          success: take(LOAD_MANIFEST_SUCCESS),
+          failure: take(LOAD_MANIFEST_FAILURE)
         })
 
         if (result.success) {

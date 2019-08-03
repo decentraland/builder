@@ -17,12 +17,15 @@ import {
   exportProjectSuccess,
   LOAD_PROJECTS_REQUEST,
   loadProjectsSuccess,
-  loadProjectSuccess,
-  LOAD_PROJECT_REQUEST,
+  loadManifestSuccess,
+  LOAD_MANIFEST_REQUEST,
   EDIT_PROJECT,
   setProject,
   EditProjectAction,
-  createProject
+  createProject,
+  LoadManifestRequestAction,
+  loadManifestFailure,
+  loadProjectsFailure
 } from 'modules/project/actions'
 import { api } from 'lib/api'
 import { Project } from 'modules/project/types'
@@ -38,6 +41,7 @@ import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS } from 'modules/auth/actions'
 import { createFiles } from './export'
 import { didUpdateLayout } from './utils'
+import { getSub } from 'modules/auth/selectors'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -63,7 +67,7 @@ export function* projectSaga() {
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(AUTH_SUCCESS, handleLoadProjectsRequest)
-  yield takeLatest(LOAD_PROJECT_REQUEST, handleLoadProject)
+  yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -89,7 +93,9 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     rows,
     cols,
     sceneId: scene.id,
-    createdAt: Date.now()
+    userId: yield select(getSub),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 
   yield put(createScene(scene))
@@ -109,7 +115,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
   if (!scene) return
 
   const newScene = { ...scene, id: uuidv4() }
-  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: Date.now() }
+  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString() }
 
   yield put(createScene(newScene))
   yield put(createProject(newProject))
@@ -184,35 +190,24 @@ function* handleImportProject(action: ImportProjectAction) {
 
 function* handleLoadProjectsRequest() {
   try {
-    const projects: { data: Project[] } = yield call(() => api.getProjects())
+    const projects: Project[] = yield call(() => api.fetchProjects())
     const record: ModelById<Project> = {}
 
-    for (let project of projects.data) {
-      record[project.id] = {
-        id: project.id,
-        title: project.title,
-        description: project.description,
-        thumbnail: project.thumbnail,
-        sceneId: project.sceneId,
-        rows: (project as any).rows,
-        cols: (project as any).cols,
-        ownerEmail: project.ownerEmail,
-        createdAt: project.createdAt
-      }
+    for (let project of projects) {
+      record[project.id] = project
     }
 
     yield put(loadProjectsSuccess(record))
   } catch (e) {
-    // err
-    console.error(e)
+    yield put(loadProjectsFailure(e.message))
   }
 }
 
-function* handleLoadProject() {
+function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
   try {
-    const response = yield call(() => api.getProject())
-    yield put(loadProjectSuccess(response.data.manifest))
+    const manifest = yield call(() => api.fetchManifest(action.payload.id))
+    yield put(loadManifestSuccess(manifest))
   } catch (e) {
-    console.error(e)
+    yield put(loadManifestFailure(e.message))
   }
 }

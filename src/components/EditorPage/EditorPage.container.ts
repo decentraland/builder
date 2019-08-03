@@ -9,11 +9,13 @@ import { loadCollectiblesRequest } from 'modules/asset/actions'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
+import { isLoggedIn } from 'modules/auth/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isSidebarOpen: isSidebarOpen(state),
   isLoading: !isReady(state),
+  isLoggedIn: isLoggedIn(state),
   currentProject: getCurrentProject(state)
 })
 

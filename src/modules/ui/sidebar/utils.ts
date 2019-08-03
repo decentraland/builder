@@ -1,4 +1,4 @@
-import { CONTENT_SERVER_URL } from 'lib/api'
+import { CONTENT_SERVER_URL } from 'lib/api/content'
 import { Category } from './types'
 
 export const COLLECTIBLE_ASSET_PACK_ID = 'collectibles'

@@ -36,7 +36,7 @@ import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/a
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { LOAD_PROJECT_SUCCESS, LoadProjectSuccessAction } from 'modules/project/actions'
+import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
 import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings } from './utils'
 import { getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
@@ -51,11 +51,11 @@ export function* sceneSaga() {
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
   yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
-  yield takeLatest(LOAD_PROJECT_SUCCESS, handleLoadProjectSuccess)
+  yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
 }
 
-function* handleLoadProjectSuccess(action: LoadProjectSuccessAction) {
+function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
   yield put(provisionScene(action.payload.manifest.scene))
 }
 

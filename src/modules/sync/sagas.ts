@@ -7,10 +7,24 @@ import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
-import { CREATE_PROJECT, CreateProjectAction, SET_PROJECT, SetProjectAction } from 'modules/project/actions'
+import {
+  CREATE_PROJECT,
+  CreateProjectAction,
+  SET_PROJECT,
+  SetProjectAction,
+  DELETE_PROJECT,
+  DeleteProjectAction
+} from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
-import { DEPLOY_TO_LAND_SUCCESS, DeployToLandSuccessAction } from 'modules/deployment/actions'
+import {
+  DEPLOY_TO_LAND_SUCCESS,
+  DeployToLandSuccessAction,
+  CLEAR_DEPLOYMENT_SUCCESS,
+  ClearDeploymentSuccessAction,
+  MARK_DIRTY,
+  MarkDirtyAction
+} from 'modules/deployment/actions'
 import { api } from 'lib/api'
 import {
   SAVE_PROJECT_REQUEST,
@@ -27,7 +41,17 @@ import {
   SYNC,
   RETRY_SYNC,
   RetrySyncAction,
-  saveDeploymentRequest
+  saveDeploymentRequest,
+  DeleteProjectRequestAction,
+  deleteProjectSuccess,
+  deleteProjectFailure,
+  deleteDeploymentSuccess,
+  deleteDeploymentFailure,
+  DELETE_PROJECT_REQUEST,
+  DELETE_DEPLOYMENT_REQUEST,
+  DeleteDeploymentRequestAction,
+  deleteProjectRequest,
+  deleteDeploymentRequest
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds, getFailedDeploymentIds, getLocalDeploymentIds } from './selectors'
 import { forEach, saveProject } from './utils'
@@ -37,11 +61,16 @@ export function* syncSaga() {
   yield takeLatest(SYNC, handleSync)
   yield takeLatest(RETRY_SYNC, handleRetrySync)
   yield takeLatest(SAVE_PROJECT_REQUEST, handleSaveProjectRequest)
+  yield takeLatest(DELETE_PROJECT_REQUEST, handleDeleteProjectRequest)
   yield takeLatest(SAVE_DEPLOYMENT_REQUEST, handleSaveDeploymentRequest)
+  yield takeLatest(DELETE_DEPLOYMENT_REQUEST, handleDeleteDeploymentRequest)
   yield takeLatest(CREATE_PROJECT, handleCreateProject)
   yield takeLatest(SET_PROJECT, handleSetProject)
+  yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeLatest(PROVISION_SCENE, handleProvisionScene)
   yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
+  yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
+  yield takeLatest(MARK_DIRTY, handleMarkDirty)
 }
 
 function* handleAuthSuccess(_action: AuthSuccessAction) {
@@ -85,6 +114,16 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
   }
 }
 
+function* handleDeleteProjectRequest(action: DeleteProjectRequestAction) {
+  const { id } = action.payload
+  try {
+    yield call(() => api.deleteProject(id))
+    yield put(deleteProjectSuccess(id))
+  } catch (e) {
+    yield put(deleteProjectFailure(id, e))
+  }
+}
+
 function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
   const { deployment } = action.payload
   try {
@@ -92,6 +131,16 @@ function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
     yield put(saveDeploymentSuccess(deployment))
   } catch (e) {
     yield put(saveDeploymentFailure(deployment, e.message))
+  }
+}
+
+function* handleDeleteDeploymentRequest(action: DeleteDeploymentRequestAction) {
+  const { id } = action.payload
+  try {
+    yield call(() => api.deleteDeployment(id))
+    yield put(deleteDeploymentSuccess(id))
+  } catch (e) {
+    yield put(deleteDeploymentFailure(id, e))
   }
 }
 
@@ -107,6 +156,12 @@ function* handleSetProject(action: SetProjectAction) {
   }
 }
 
+function* handleDeleteProject(action: DeleteProjectAction) {
+  if (yield select(isLoggedIn)) {
+    yield put(deleteProjectRequest(action.payload.project.id))
+  }
+}
+
 function* handleProvisionScene(_action: ProvisionSceneAction) {
   if (yield select(isLoggedIn)) {
     const project: Project | null = yield select(getCurrentProject)
@@ -119,5 +174,21 @@ function* handleProvisionScene(_action: ProvisionSceneAction) {
 function* handleDeployToLandSuccess(action: DeployToLandSuccessAction) {
   if (yield select(isLoggedIn)) {
     yield put(saveDeploymentRequest(action.payload.deployment))
+  }
+}
+
+function* handleClearDeploymentSuccess(action: ClearDeploymentSuccessAction) {
+  if (yield select(isLoggedIn)) {
+    yield put(deleteDeploymentRequest(action.payload.projectId))
+  }
+}
+
+function* handleMarkDirty(action: MarkDirtyAction) {
+  if (yield select(isLoggedIn)) {
+    const deployments: DataByKey<Deployment> = yield select(getDeployments)
+    const deployment = deployments[action.payload.projectId]
+    if (deployment) {
+      yield put(saveDeploymentRequest(deployment))
+    }
   }
 }

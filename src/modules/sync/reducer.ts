@@ -39,8 +39,8 @@ export const syncReducer = (state = INITIAL_STATE, action: SyncReducerAction): S
   switch (action.type) {
     case STORAGE_LOAD: {
       const { payload } = action
-      const projectIds = Object.keys(payload.project.data)
-      const deploymentIds = Object.keys(payload.deployment.data)
+      const projectIds = payload.project.data ? Object.keys(payload.project.data) : []
+      const deploymentIds = payload.deployment.data ? Object.keys(payload.deployment.data) : []
       return {
         ...state,
         project: domainReducer(state.project, init(projectIds)),

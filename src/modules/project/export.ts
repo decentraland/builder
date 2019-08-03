@@ -6,15 +6,15 @@ import packageJson from 'decentraland/dist/samples/ecs/package.json'
 import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
-import { Project } from 'modules/project/types'
+import { Project, Manifest } from 'modules/project/types'
+import { CONTENT_SERVER_URL } from 'lib/api/content'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
-import { CONTENT_SERVER_URL } from 'lib/api'
 import { getParcelOrientation } from './utils'
 
-export const BUILDER_FILE_VERSION = 2
+export const MANIFEST_FILE_VERSION = 2
 
 export enum EXPORT_PATH {
-  BUILDER_FILE = 'builder.json',
+  MANIFEST_FILE = 'builder.json',
   GAME_FILE = 'src/game.ts',
   SCENE_FILE = 'scene.json',
   PACKAGE_FILE = 'package.json',
@@ -37,13 +37,17 @@ export async function createFiles(args: {
   const models = await createModels({ scene, onProgress })
   const gameFile = createGameFile({ project, scene, rotation })
   return {
-    [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({ version: BUILDER_FILE_VERSION, project, scene }),
+    [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: createGameFileBundle(gameFile),
     ...createDynamicFiles({ project, scene, point, rotation }),
     ...createStaticFiles(),
     ...models
   }
+}
+
+export function createManifest(project: Project, scene: Scene): Manifest {
+  return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 
 export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }) {
@@ -276,8 +280,8 @@ export function createDynamicFiles(args: { project: Project; scene: Scene; point
   const { project, scene, rotation, point } = args
 
   const files = {
-    [EXPORT_PATH.BUILDER_FILE]: JSON.stringify({
-      version: BUILDER_FILE_VERSION,
+    [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
+      version: MANIFEST_FILE_VERSION,
       project,
       scene
     }),

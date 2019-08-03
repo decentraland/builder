@@ -64,7 +64,7 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
     const isSubmitDisabled = hasError || deploymentStatus !== DeploymentStatus.UNPUBLISHED
 
     return (
-      <Modal name={name}>
+      <Modal name={name} onClose={() => {}}>
         <Form onSubmit={this.handleSubmit}>
           <Modal.Header>{t('edit_project_modal.title')}</Modal.Header>
           <Modal.Content>
@@ -82,11 +82,11 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
             <div className="error">{deploymentStatus !== DeploymentStatus.UNPUBLISHED && t('edit_project_modal.unpublish_needed')}</div>
           </Modal.Content>
           <Modal.Actions>
-            <Button secondary onClick={onClose}>
-              {t('global.cancel')}
-            </Button>
             <Button primary disabled={isSubmitDisabled}>
               {t('global.save')}
+            </Button>
+            <Button secondary onClick={onClose}>
+              {t('global.cancel')}
             </Button>
           </Modal.Actions>
         </Form>

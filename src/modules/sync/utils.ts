@@ -6,7 +6,7 @@ import { Scene } from 'modules/scene/types'
 import { api } from 'lib/api'
 import { debounceByKey } from 'lib/debounce'
 
-export const SAVE_DEBOUNCE = 2000
+export const SAVE_DEBOUNCE = 4000
 
 export const saveProject = debounceByKey((project: Project, scene: Scene) => api.saveProject(project, scene), SAVE_DEBOUNCE)
 

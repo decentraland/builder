@@ -36,6 +36,9 @@ export type Deployment = {
   lastPublishedCID: string | null
   isDirty: boolean
   placement: Placement
+  userId: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export type Coordinate = { x: number; y: number }

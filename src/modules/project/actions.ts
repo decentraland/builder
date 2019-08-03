@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { Project, SaveFile } from 'modules/project/types'
+import { Project, Manifest } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'
 
@@ -79,7 +79,7 @@ export type ExportProjectSuccessAction = ReturnType<typeof exportProjectSuccess>
 
 export const IMPORT_PROJECT = 'Import project'
 
-export const importProject = (projects: SaveFile[]) => action(IMPORT_PROJECT, { projects })
+export const importProject = (projects: Manifest[]) => action(IMPORT_PROJECT, { projects })
 
 export type ImportProjectAction = ReturnType<typeof importProject>
 
@@ -97,16 +97,16 @@ export type LoadProjectsRequestAction = ReturnType<typeof loadProjectsRequest>
 export type LoadProjectsSuccessAction = ReturnType<typeof loadProjectsSuccess>
 export type LoadProjectsFailureAction = ReturnType<typeof loadProjectsFailure>
 
-// Load individual project
+// Load project manifest
 
-export const LOAD_PROJECT_REQUEST = '[Request] Load project'
-export const LOAD_PROJECT_SUCCESS = '[Success] Load project'
-export const LOAD_PROJECT_FAILURE = '[Failure] Load project'
+export const LOAD_MANIFEST_REQUEST = '[Request] Load manifest'
+export const LOAD_MANIFEST_SUCCESS = '[Success] Load manifest'
+export const LOAD_MANIFEST_FAILURE = '[Failure] Load manifest'
 
-export const loadProjectRequest = () => action(LOAD_PROJECT_REQUEST, {})
-export const loadProjectSuccess = (manifest: SaveFile) => action(LOAD_PROJECT_SUCCESS, { manifest })
-export const loadProjectFailure = (error: string) => action(LOAD_PROJECT_FAILURE, { error })
+export const loadManifestRequest = (id: string) => action(LOAD_MANIFEST_REQUEST, { id })
+export const loadManifestSuccess = (manifest: Manifest) => action(LOAD_MANIFEST_SUCCESS, { manifest })
+export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILURE, { error })
 
-export type LoadProjectRequestAction = ReturnType<typeof loadProjectRequest>
-export type LoadProjectSuccessAction = ReturnType<typeof loadProjectSuccess>
-export type LoadProjectFailureAction = ReturnType<typeof loadProjectFailure>
+export type LoadManifestRequestAction = ReturnType<typeof loadManifestRequest>
+export type LoadManifestSuccessAction = ReturnType<typeof loadManifestSuccess>
+export type LoadManifestFailureAction = ReturnType<typeof loadManifestFailure>

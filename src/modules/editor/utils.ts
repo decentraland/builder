@@ -1,7 +1,7 @@
-import { CONTENT_SERVER_URL } from 'lib/api'
 import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
+import { CONTENT_SERVER_URL } from 'lib/api/content'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 

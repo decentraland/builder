@@ -8,8 +8,8 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { migrations } from 'modules/migrations/import'
-import { SaveFile } from 'modules/project/types'
-import { EXPORT_PATH, BUILDER_FILE_VERSION } from 'modules/project/export'
+import { Manifest } from 'modules/project/types'
+import { EXPORT_PATH, MANIFEST_FILE_VERSION } from 'modules/project/export'
 import Icon from 'components/Icon'
 import { Props, State, ImportedFile } from './ImportModal.types'
 
@@ -105,13 +105,13 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     for (let file of acceptedFiles) {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
-        const contentRaw = zip.file(EXPORT_PATH.BUILDER_FILE)
+        const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
         const content = await contentRaw.async('text')
         let parsed: ImportedFile = JSON.parse(content)
 
         // run migrations
         let version = parsed.version || 1
-        while (version < BUILDER_FILE_VERSION) {
+        while (version < MANIFEST_FILE_VERSION) {
           version++
           if (version in migrations) {
             parsed = migrations[version](parsed)
@@ -135,7 +135,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
         projects.push({
           id: uuidv4(),
-          version: BUILDER_FILE_VERSION,
+          version: MANIFEST_FILE_VERSION,
           project: null,
           scene: null,
           fileName: file.name,
@@ -153,7 +153,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
   handleImport = () => {
     // At this point we are sure that the accepted projects are all valid
-    this.props.onImport(this.state.acceptedProjects as SaveFile[])
+    this.props.onImport(this.state.acceptedProjects as Manifest[])
     this.props.onClose()
   }
 
