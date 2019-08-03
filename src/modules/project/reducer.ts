@@ -21,7 +21,8 @@ import {
   LoadManifestRequestAction,
   LoadManifestSuccessAction,
   LoadManifestFailureAction,
-  LOAD_MANIFEST_SUCCESS
+  LOAD_MANIFEST_SUCCESS,
+  LOAD_MANIFEST_FAILURE
 } from 'modules/project/actions'
 
 export type ProjectState = {
@@ -110,7 +111,7 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     }
     case LOAD_MANIFEST_REQUEST:
     case LOAD_MANIFEST_SUCCESS:
-    case LOAD_PROJECTS_FAILURE: {
+    case LOAD_MANIFEST_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
