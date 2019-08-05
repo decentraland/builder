@@ -12,12 +12,13 @@ export type DefaultProps = {
 export type Props = DefaultProps & {
   onCreateProject: typeof createProjectFromTemplate
   onOpenModal: typeof openModal
+  isFetching: boolean
 }
 
 export type State = {
   isAnimationPlaying: boolean
 }
 
-export type MapStateProps = Pick<Props, 'projects'>
+export type MapStateProps = Pick<Props, 'projects' | 'isFetching'>
 export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal'>
 export type MapDispatch = Dispatch<NavigateToAction | CreateProjectFromTemplateAction | OpenModalAction>

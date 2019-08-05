@@ -11,6 +11,7 @@ import { Template } from 'modules/template/types'
 import Icon from 'components/Icon'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
+import LoadingPage from 'components/LoadingPage'
 import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
@@ -68,6 +69,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const { isFetching } = this.props
+    if (isFetching) {
+      return <LoadingPage />
+    }
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()

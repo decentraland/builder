@@ -1,10 +1,15 @@
 import { createSelector } from 'reselect'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/selectors'
+import { getLoading as getAuthLoading } from 'modules/auth/selectors'
+import { AUTH_REQUEST } from 'modules/auth/actions'
 import { Project } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
+import { LOAD_PROJECTS_REQUEST } from './actions'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
 
@@ -31,4 +36,10 @@ export const getCurrentBounds = createSelector<RootState, Project | null, Vector
       z: cols * PARCEL_SIZE
     }
   }
+)
+
+export const isFetching = createSelector<RootState, LoadingState, LoadingState, boolean>(
+  getLoading,
+  getAuthLoading,
+  (projectLoading, authLoading) => isLoadingType(authLoading, AUTH_REQUEST) || isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST)
 )

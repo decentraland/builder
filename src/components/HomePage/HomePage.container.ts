@@ -7,11 +7,13 @@ import { Template } from 'modules/template/types'
 import { openModal } from 'modules/modal/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
+import { isFetching } from 'modules/project/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
 
 const mapState = (state: RootState): MapStateProps => ({
-  projects: getProjects(state)
+  projects: getProjects(state),
+  isFetching: isFetching(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

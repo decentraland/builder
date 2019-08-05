@@ -25,7 +25,8 @@ import {
   createProject,
   LoadManifestRequestAction,
   loadManifestFailure,
-  loadProjectsFailure
+  loadProjectsFailure,
+  loadProjectsRequest
 } from 'modules/project/actions'
 import { api } from 'lib/api'
 import { Project } from 'modules/project/types'
@@ -38,7 +39,7 @@ import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, cr
 import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
-import { AUTH_SUCCESS } from 'modules/auth/actions'
+import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { createFiles } from './export'
 import { didUpdateLayout } from './utils'
 import { getSub } from 'modules/auth/selectors'
@@ -66,8 +67,8 @@ export function* projectSaga() {
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
-  yield takeLatest(AUTH_SUCCESS, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
+  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -210,4 +211,8 @@ function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
   } catch (e) {
     yield put(loadManifestFailure(e.message))
   }
+}
+
+function* handleAuthSuccess(_action: AuthSuccessAction) {
+  yield put(loadProjectsRequest())
 }
