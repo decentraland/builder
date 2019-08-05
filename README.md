@@ -35,12 +35,12 @@ Here are the basic requirements to run the project:
 
 NODE_PATH=src
 
-REACT_APP_ASSETS_URL=https://builder-packs-stg.now.sh
-REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.today/contents
+REACT_APP_ASSETS_URL=https://builder-packs-prod.now.sh
+REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.org
 REACT_APP_DAR_URL=https://schema-api-staging.now.sh/dar
-REACT_APP_LOCAL_STORAGE_KEY=builder-storage
-REACT_APP_BUILDER_SERVER_URL=
-REACT_APP_MARKETPLACE_API=https://api.decentraland.zone/v1
+REACT_APP_BUILDER_SERVER_URL=https://builder-api.decentraland.org/v1
+REACT_APP_MARKETPLACE_URL=https://api.decentraland.org/v1
+REACT_APP_AVATARS_API_URL=https://avatars-api.decentraland.org/api
 
 # Third party
 
@@ -50,7 +50,7 @@ REACT_APP_ROLLBAR_ACCESS_TOKEN=
 
 # Contracts
 
-REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS=0x2a8fd99c19271f4f04b1b7b9c4f7cf264b626edb # Ropsten address
+REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS=0x0f5d2fb29fb7d3cfee444a200298f468908cc942
 ```
 
 ## Asset packs
@@ -116,4 +116,3 @@ thumbnail for display in the asset drawer.
 ## Content server
 
 As noted above, the content server holds the actual assets, which might be comprised of `.glb` and `.png` files. This server is found on the `REACT_APP_CONTENT_SERVER_URL` environment variable.
-
