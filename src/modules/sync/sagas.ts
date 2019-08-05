@@ -1,4 +1,4 @@
-import { takeLatest, select, put, call } from 'redux-saga/effects'
+import { takeLatest, select, put, call, takeEvery } from 'redux-saga/effects'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
@@ -60,9 +60,9 @@ export function* syncSaga() {
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
   yield takeLatest(SYNC, handleSync)
   yield takeLatest(RETRY_SYNC, handleRetrySync)
-  yield takeLatest(SAVE_PROJECT_REQUEST, handleSaveProjectRequest)
+  yield takeEvery(SAVE_PROJECT_REQUEST, handleSaveProjectRequest)
   yield takeLatest(DELETE_PROJECT_REQUEST, handleDeleteProjectRequest)
-  yield takeLatest(SAVE_DEPLOYMENT_REQUEST, handleSaveDeploymentRequest)
+  yield takeEvery(SAVE_DEPLOYMENT_REQUEST, handleSaveDeploymentRequest)
   yield takeLatest(DELETE_DEPLOYMENT_REQUEST, handleDeleteDeploymentRequest)
   yield takeLatest(CREATE_PROJECT, handleCreateProject)
   yield takeLatest(SET_PROJECT, handleSetProject)
