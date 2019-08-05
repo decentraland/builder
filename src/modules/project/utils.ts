@@ -9,26 +9,28 @@ export const MAX_DESCRIPTION_LENGTH = 140 // Size in chars
 export const PARCEL_SIZE = 16 // Side size in meters
 
 export function getProjectDimensions(project: Project): string {
-  const { rows, cols } = project
+  const { rows, cols } = project.layout
   return getDimensions(rows, cols)
 }
 
 export function didUpdateLayout(update: Partial<Project>, project: Project): boolean {
   let res: boolean = false
 
-  if (update.rows && update.rows !== project.rows) {
-    res = true
-  }
+  if (update.layout && project.layout) {
+    if (update.layout.rows && update.layout.rows !== project.layout.rows) {
+      res = true
+    }
 
-  if (update.cols && update.cols !== project.cols) {
-    res = true
+    if (update.layout.cols && update.layout.cols !== project.layout.cols) {
+      res = true
+    }
   }
 
   return res
 }
 
 export function getParcelOrientation(project: Project, point: Coordinate, rotation: Rotation): Coordinate[] {
-  const { rows, cols } = project
+  const { rows, cols } = project.layout
   const parcels: Coordinate[] = []
 
   switch (rotation) {

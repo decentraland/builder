@@ -262,7 +262,7 @@ function* handleSetGround(action: SetGroundAction) {
   const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
-  const { rows, cols } = currentProject
+  const { rows, cols } = currentProject.layout
 
   if (asset) {
     yield applyGround(scene, rows, cols, asset)
@@ -319,7 +319,7 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
 
 function* handleApplyLayout(action: ApplyLayoutAction) {
   const { project } = action.payload
-  const { rows, cols } = project
+  const { rows, cols } = project.layout
   const scene: Scene | null = yield select(getScene(project.sceneId))
 
   if (scene && scene.ground) {

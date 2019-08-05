@@ -33,8 +33,8 @@ function toRemoteProject(project: Project): RemoteProject {
     thumbnail: project.thumbnail,
     scene_id: project.sceneId,
     user_id: project.userId,
-    rows: project.rows,
-    cols: project.cols,
+    rows: project.layout.rows,
+    cols: project.layout.cols,
     created_at: project.createdAt,
     updated_at: project.updatedAt
   }

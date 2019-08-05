@@ -43,7 +43,8 @@ function trimProject(action: CreateProjectAction | SetProjectAction | ExportProj
   if (!action.payload.project) {
     return action.payload
   }
-  const { id, rows, cols } = action.payload.project
+  const { id, layout } = action.payload.project
+  const { rows, cols } = layout
   return {
     projectId: id,
     rows,

@@ -265,7 +265,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
-  const x = (project.rows * PARCEL_SIZE) / 2
+  const x = (project.layout.rows * PARCEL_SIZE) / 2
   const z = -1
 
   yield call(() => {
@@ -342,8 +342,8 @@ function* handleResetCamera() {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
-  const x = (project.rows * PARCEL_SIZE) / 2
-  const z = (project.cols * PARCEL_SIZE) / 2
+  const x = (project.layout.rows * PARCEL_SIZE) / 2
+  const z = (project.layout.cols * PARCEL_SIZE) / 2
 
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })

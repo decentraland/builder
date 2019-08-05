@@ -185,6 +185,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   renderConfirmation = () => {
     const { media, project, error, deployment } = this.props
     const { placement } = this.state
+    const { rows, cols } = project.layout
 
     return (
       <div className="DeployToLand confirmation">
@@ -208,7 +209,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
             <div className="detail">
               <span className="label">{t('deployment_modal.land.confirmation.size_label')}</span>
-              <span className="value">{project.rows * project.cols}</span>
+              <span className="value">{rows * cols}</span>
             </div>
 
             <div className="detail">
