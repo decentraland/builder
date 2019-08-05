@@ -257,6 +257,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const parcelCount = Object.keys(parcels).length
     const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
     const hasOccupiedParcels = this.hasOccupiedParcels()
+    const { rows, cols } = project.layout
 
     if (isLoadingMap) {
       return (
@@ -312,7 +313,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
                 <T
                   id="deployment_modal.land.map.placement_active"
                   values={{
-                    count: project.rows * project.cols,
+                    count: rows * cols,
                     x: placement!.point.x,
                     y: placement!.point.y
                   }}

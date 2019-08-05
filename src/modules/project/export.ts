@@ -54,7 +54,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   const { scene, project, rotation } = args
   const takenNames = new Set<string>()
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
-  const { cols, rows } = project
+  const { cols, rows } = project.layout
   const sceneEntity = new ECS.Entity()
 
   // 0. Rotate scene

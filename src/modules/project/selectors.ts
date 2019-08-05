@@ -24,7 +24,7 @@ export const getCurrentBounds = createSelector<RootState, Project | null, Vector
   getCurrentProject,
   project => {
     if (!project) return null
-    const { rows, cols } = project
+    const { rows, cols } = project.layout
     return {
       x: rows * PARCEL_SIZE,
       y: Math.log2(rows * cols + 1) * 20,

@@ -12,7 +12,7 @@ const mapState = (state: RootState): MapStateProps => {
   const limits = getCurrentLimits(state)
 
   if (currentProject) {
-    const { rows, cols } = currentProject
+    const { rows, cols } = currentProject.layout
     return {
       rows,
       cols,

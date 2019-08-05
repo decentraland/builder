@@ -90,8 +90,10 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     title: 'New scene', // TODO translate this into different languages
     description: '',
     thumbnail: '',
-    rows,
-    cols,
+    layout: {
+      rows,
+      cols
+    },
     sceneId: scene.id,
     userId: yield select(getSub),
     createdAt: new Date().toISOString(),

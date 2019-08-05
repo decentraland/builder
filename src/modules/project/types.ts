@@ -7,12 +7,16 @@ export type Project = {
   thumbnail: string
   sceneId: string
   userId: string | null
-  rows: number
-  cols: number
   createdAt: string
   updatedAt: string
+  layout: Layout
 }
 
-export type ProjectLayout = { rows: number; cols: number; hasError: boolean }
+export type Layout = {
+  rows: number
+  cols: number
+}
+
+export type ProjectLayout = Layout & { hasError: boolean }
 
 export type Manifest = { version: number; project: Project; scene: Scene }
