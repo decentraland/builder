@@ -40,7 +40,7 @@ function toRemoteProject(project: Project): RemoteProject {
   }
 }
 
-function fromRemoteProject(remoteProject: RemoteProject) {
+function fromRemoteProject(remoteProject: RemoteProject): Project {
   return {
     id: remoteProject.id,
     title: remoteProject.title,
@@ -48,8 +48,10 @@ function fromRemoteProject(remoteProject: RemoteProject) {
     thumbnail: remoteProject.thumbnail,
     sceneId: remoteProject.scene_id,
     userId: remoteProject.user_id,
-    rows: remoteProject.rows,
-    cols: remoteProject.cols,
+    layout: {
+      rows: remoteProject.rows,
+      cols: remoteProject.cols
+    },
     createdAt: remoteProject.created_at,
     updatedAt: remoteProject.updated_at
   }
