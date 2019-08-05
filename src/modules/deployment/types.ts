@@ -32,9 +32,13 @@ export type ContentUploadRequestMetadata = {
 }
 
 export type Deployment = {
+  id: string
   lastPublishedCID: string | null
   isDirty: boolean
   placement: Placement
+  userId: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export type Coordinate = { x: number; y: number }

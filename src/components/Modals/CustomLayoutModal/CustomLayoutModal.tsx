@@ -22,7 +22,7 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
   handleCreate = () => {
     const { rows, cols } = this.state
     const { onCreateProject, onClose } = this.props
-    onCreateProject(fromLayout({ rows, cols }))
+    onCreateProject(fromLayout(rows, cols))
     onClose()
   }
 

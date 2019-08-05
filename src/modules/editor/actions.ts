@@ -153,11 +153,11 @@ export type ToggleSnapToGridAction = ReturnType<typeof toggleSnapToGrid>
 
 // Create update the editor scene from a project
 
-export const NEW_EDITOR_SCENE = 'New editor scene'
+export const CREATE_EDITOR_SCENE = 'Create editor scene'
 
-export const newEditorScene = (id: string, project: Partial<Project>) => action(NEW_EDITOR_SCENE, { id, project })
+export const createEditorScene = (project: Project) => action(CREATE_EDITOR_SCENE, { project })
 
-export type NewEditorSceneAction = ReturnType<typeof newEditorScene>
+export type CreateEditorSceneAction = ReturnType<typeof createEditorScene>
 
 // Close editor
 

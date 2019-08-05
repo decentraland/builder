@@ -12,7 +12,7 @@ import {
   CREATE_SCENE,
   CreateSceneAction
 } from 'modules/scene/actions'
-import { DeleteProjectAction, DELETE_PROJECT } from 'modules/project/actions'
+import { DeleteProjectAction, DELETE_PROJECT, LoadManifestSuccessAction } from 'modules/project/actions'
 
 export type SceneState = {
   data: ModelById<Scene>
@@ -27,6 +27,7 @@ export type SceneReducerAction =
   | UpdateTransfromAction
   | CreateSceneAction
   | DeleteProjectAction
+  | LoadManifestSuccessAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -48,7 +49,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
         }
       }
     }
-
     case UPDATE_METRICS: {
       const { sceneId, metrics, limits } = action.payload
       return {
@@ -69,7 +69,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
         }
       }
     }
-
     case DELETE_PROJECT: {
       const { project } = action.payload
       const newState = {
@@ -81,7 +80,6 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       delete newState.data[project.sceneId]
       return newState
     }
-
     default:
       return state
   }

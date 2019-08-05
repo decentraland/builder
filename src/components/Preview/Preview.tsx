@@ -37,7 +37,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   }
 
   async startEditor() {
-    await editorWindow.editor.initEngine(this.props.layout.rows, this.props.layout.cols)
+    const { rows, cols } = this.props.project.layout
+    await editorWindow.editor.initEngine(rows, cols)
     try {
       canvas = await editorWindow.editor.getDCLCanvas()
       canvas.classList.add('dcl-canvas')

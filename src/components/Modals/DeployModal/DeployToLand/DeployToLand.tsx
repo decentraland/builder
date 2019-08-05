@@ -185,6 +185,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   renderConfirmation = () => {
     const { media, project, error, deployment } = this.props
     const { placement } = this.state
+    const { rows, cols } = project.layout
 
     return (
       <div className="DeployToLand confirmation">
@@ -203,12 +204,12 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           <div className="details-row">
             <div className="detail">
               <span className="label">{t('deployment_modal.land.confirmation.title_label')}</span>
-              <span className="value">{project!.title}</span>
+              <span className="value">{project.title}</span>
             </div>
 
             <div className="detail">
               <span className="label">{t('deployment_modal.land.confirmation.size_label')}</span>
-              <span className="value">{project!.parcels!.length}</span>
+              <span className="value">{rows * cols}</span>
             </div>
 
             <div className="detail">
@@ -228,7 +229,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderMap = () => {
-    const { ethAddress, media, project, deployment, occupiedParcels } = this.props
+    const { ethAddress, media, project, deployment, occupiedParcels, onFetchDeployments } = this.props
     const initialPoint = deployment ? deployment.placement.point : undefined
     return (
       <div className="DeployToLand atlas">
@@ -248,6 +249,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           onConfirmPlacement={this.handleConfirmPlacement}
           onNoAuthorizedParcels={this.handleDeployToPool}
           onClearDeployment={this.handleClearDeployment}
+          onFetchDeployments={onFetchDeployments}
         />
       </div>
     )

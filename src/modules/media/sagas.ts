@@ -23,10 +23,11 @@ export function* mediaSaga() {
 
 export function* handleTakePictures() {
   const project: Project | null = yield select(getCurrentProject)
-
   if (!project) return
 
-  const side = Math.max(project.layout.cols, project.layout.rows)
+  const { rows, cols } = project.layout
+
+  const side = Math.max(cols, rows)
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
   const initialAngle = Math.PI / 1.5
@@ -48,7 +49,7 @@ export function* handleTakePictures() {
   // Prepare the camera to fit the scene
   editorWindow.editor.setCameraZoomDelta(zoom)
   editorWindow.editor.setCameraRotation(0, Math.PI / 3)
-  editorWindow.editor.setCameraPosition({ x: (project.layout.rows * PARCEL_SIZE) / 2, y: 2, z: (project.layout.cols * PARCEL_SIZE) / 2 })
+  editorWindow.editor.setCameraPosition({ x: (rows * PARCEL_SIZE) / 2, y: 2, z: (cols * PARCEL_SIZE) / 2 })
 
   yield put(recordMediaProgress(0))
   thumbnail = yield takeEditorScreenshot(initialAngle)

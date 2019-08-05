@@ -25,6 +25,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.mounted = true
+    const { onFetchDeployments } = this.props
+    onFetchDeployments()
     if (Object.keys(this.state.parcels).length === 0 && this.props.ethAddress) {
       // tslint:disable-next-line
       this.fetchAuthorizedParcels(this.props.ethAddress)
@@ -57,7 +59,6 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   fetchAuthorizedParcels = async (ethAddress: string) => {
     const { landTarget } = this.state
-
     try {
       const authorizedParcels = await api.fetchAuthorizedParcels(ethAddress)
       if (this.mounted) {
@@ -252,10 +253,11 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   render() {
     const { media, project } = this.props
     const { placement, rotation, zoom, landTarget, parcels, isLoadingMap } = this.state
-    const hasPlacement = !!placement && !!project && !!project.parcels
+    const hasPlacement = !!placement
     const parcelCount = Object.keys(parcels).length
     const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
     const hasOccupiedParcels = this.hasOccupiedParcels()
+    const { rows, cols } = project.layout
 
     if (isLoadingMap) {
       return (
@@ -311,7 +313,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
                 <T
                   id="deployment_modal.land.map.placement_active"
                   values={{
-                    count: project!.parcels!.length,
+                    count: rows * cols,
                     x: placement!.point.x,
                     y: placement!.point.y
                   }}

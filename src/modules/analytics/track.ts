@@ -13,11 +13,13 @@ import {
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
 import {
-  CREATE_PROJECT,
-  CreateProjectAction,
+  SET_PROJECT,
   ExportProjectRequestAction,
   EXPORT_PROJECT_REQUEST,
-  IMPORT_PROJECT
+  IMPORT_PROJECT,
+  SetProjectAction,
+  CreateProjectAction,
+  CREATE_PROJECT
 } from 'modules/project/actions'
 
 function addPayload(actionType: string, getPayload = (action: any) => action.payload) {
@@ -37,14 +39,16 @@ export function trimAsset(action: AddItemAction | DropItemAction | SetGroundActi
   }
 }
 
-function trimProject(action: CreateProjectAction | ExportProjectRequestAction) {
+function trimProject(action: CreateProjectAction | SetProjectAction | ExportProjectRequestAction) {
   if (!action.payload.project) {
     return action.payload
   }
   const { id, layout } = action.payload.project
+  const { rows, cols } = layout
   return {
     projectId: id,
-    ...layout
+    rows,
+    cols
   }
 }
 
@@ -55,6 +59,7 @@ addPayload(DUPLICATE_ITEM)
 
 // editor actions
 addPayload(CREATE_PROJECT, trimProject)
+addPayload(SET_PROJECT, trimProject)
 addPayload(EDITOR_UNDO)
 addPayload(EDITOR_REDO)
 addPayload(TOGGLE_PREVIEW)

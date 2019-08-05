@@ -1,5 +1,5 @@
 // @ts-ignore
-import { takeLatest, select, put, call, delay } from 'redux-saga/effects'
+import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
 
 import {
   updateEditor,
@@ -32,33 +32,29 @@ import {
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
   toggleSnapToGrid,
-  NEW_EDITOR_SCENE,
-  NewEditorSceneAction,
   PREFETCH_ASSET,
   PrefetchAssetAction,
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
+  closeEditor,
   setEditorLoading,
-  closeEditor
+  CREATE_EDITOR_SCENE,
+  CreateEditorSceneAction
 } from 'modules/editor/actions'
-import {
-  PROVISION_SCENE,
-  updateMetrics,
-  updateTransform,
-  DROP_ITEM,
-  DropItemAction,
-  addItem,
-  setGround,
-  fixCurrentScene
-} from 'modules/scene/actions'
-import { CONTENT_SERVER_URL } from 'lib/api'
+import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
-import { editProjectThumbnail } from 'modules/project/actions'
+import {
+  editProjectThumbnail,
+  loadManifestRequest,
+  LOAD_MANIFEST_SUCCESS,
+  LoadManifestSuccessAction,
+  LOAD_MANIFEST_FAILURE
+} from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
-import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
+import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene as EditorPayloadScene, Gizmo } from 'modules/editor/types'
+import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -66,8 +62,10 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
+import { getLocalProjectIds } from 'modules/sync/selectors'
+import { CONTENT_SERVER_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
 
@@ -76,7 +74,6 @@ export function* editorSaga() {
   yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(NEW_EDITOR_SCENE, handleNewEditorScene)
   yield takeLatest(PROVISION_SCENE, handleSceneChange)
   yield takeLatest(EDITOR_REDO, handleSceneChange)
   yield takeLatest(EDITOR_UNDO, handleSceneChange)
@@ -92,10 +89,10 @@ export function* editorSaga() {
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
+  yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
 }
 
-function* pollEditor() {
-  const scene = yield select(getCurrentScene)
+function* pollEditor(scene: Scene) {
   let metrics
   let entities
 
@@ -110,6 +107,12 @@ function* pollEditor() {
   }
 }
 
+function* handleEditorReady(scene: Scene) {
+  yield handleResetCamera()
+  yield pollEditor(scene)
+  yield put(setEditorLoading(false))
+}
+
 function* handleBindEditorKeyboardShortcuts() {
   const shortcuts = getEditorShortcuts(store)
   yield put(bindKeyboardShortcuts(shortcuts))
@@ -120,16 +123,12 @@ function* handleUnbindEditorKeyboardShortcuts() {
   yield put(unbindKeyboardShortcuts(shortcuts))
 }
 
-function* handleNewEditorScene(action: NewEditorSceneAction) {
-  const { id, project } = action.payload
-  const currentProject: Project | null = yield select(getProject(id))
-  if (currentProject) {
-    yield createNewScene({ ...currentProject, ...project })
-  }
+function* handleCreateEditorScene(action: CreateEditorSceneAction) {
+  yield createNewEditorScene(action.payload.project)
 }
 
-function* createNewScene(project: Project) {
-  const newScene: EditorPayloadScene = getNewScene(project)
+function* createNewEditorScene(project: Project) {
+  const newScene: EditorScene = getNewEditorScene(project)
 
   const msg = {
     type: 'update',
@@ -140,6 +139,7 @@ function* createNewScene(project: Project) {
 
   // @ts-ignore: Client api
   yield call(() => editorWindow.editor.handleMessage(msg))
+  yield handleResetCamera()
 }
 
 function* handleSceneChange() {
@@ -224,16 +224,13 @@ function* handleOpenEditor() {
   const project: Project | null = yield select(getCurrentProject)
 
   if (project) {
-    yield createNewScene(project)
+    yield createNewEditorScene(project)
 
     // Spawns the assets
     yield renderScene()
 
     // Enable snap to grid
     yield handleToggleSnapToGrid(toggleSnapToGrid(true))
-
-    // Apply scene fixes
-    yield put(fixCurrentScene())
 
     // Select gizmo
     yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
@@ -301,14 +298,35 @@ function handleZoomOut() {
 
 function* handleSetEditorReady(action: SetEditorReadyAction) {
   const { isReady } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  const localProjects: string[] = yield select(getLocalProjectIds)
 
-  if (isReady) {
-    yield handleResetCamera()
-    yield pollEditor()
-    yield put(setEditorLoading(false))
+  if (project) {
+    if (isReady) {
+      let scene: Scene
+
+      if (localProjects.includes(project.id)) {
+        scene = yield select(getCurrentScene)
+      } else {
+        yield put(loadManifestRequest(project.id))
+
+        const result: { success?: LoadManifestSuccessAction } = yield race({
+          success: take(LOAD_MANIFEST_SUCCESS),
+          failure: take(LOAD_MANIFEST_FAILURE)
+        })
+
+        if (result.success) {
+          scene = result.success.payload.manifest.scene
+        } else {
+          return
+        }
+      }
+
+      yield handleEditorReady(scene)
+    }
+
+    yield changeEditorState(isReady)
   }
-
-  yield changeEditorState(isReady)
 }
 
 function* changeEditorState(isReady: boolean) {
@@ -337,7 +355,7 @@ function* handleDropItem(action: DropItemAction) {
   if (asset.category === GROUND_CATEGORY) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
-    yield put(setGround(project.id, project.layout, asset))
+    yield put(setGround(project.id, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
     yield put(addItem(asset, position))

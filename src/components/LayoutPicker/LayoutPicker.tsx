@@ -11,19 +11,20 @@ import './LayoutPicker.css'
 export default class LayoutPicker extends React.PureComponent<Props> {
   getValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim()
-    return value ? Math.floor(Number(value) || 0) : undefined
+    // TODO review this
+    return value ? Math.floor(Number(value) || 1) : 1
   }
 
   handleChangeCols = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { rows, onChange } = this.props
     const cols = this.getValue(e)
-    onChange({ rows, cols })
+    onChange(rows, cols)
   }
 
   handleChangeRows = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { cols, onChange } = this.props
     const rows = this.getValue(e)
-    onChange({ rows, cols })
+    onChange(rows, cols)
   }
 
   disableScroll = (ref: HTMLInputElement | null) => {

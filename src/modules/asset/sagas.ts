@@ -35,19 +35,24 @@ function* handleConnectWallet() {
 function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
   const darRegistries: AssetRegistry[] = yield call(() => api.fetchCollectibleRegistries())
 
+  const assets: Asset[] = []
+  const address = yield select(getAddress)
+  const promises: Promise<{ assets: DARAsset[]; registry: AssetRegistry }>[] = []
+
   for (const registry of darRegistries) {
     if (!COLLECTIBLE_WHITELIST.includes(registry.common_name)) continue
-    const address = yield select(getAddress)
+    promises.push(api.fetchCollectibleAssets(registry.common_name, address).then(assets => ({ assets, registry })))
+  }
 
-    const darAssets: DARAsset[] = yield call(() => api.fetchCollectibleAssets(registry.common_name, address))
-    const assets: Asset[] = []
+  const results: { assets: DARAsset[]; registry: AssetRegistry }[] = yield call(() => Promise.all(promises))
 
-    for (let asset of darAssets) {
+  for (const result of results) {
+    for (let asset of result.assets) {
       assets.push({
         assetPackId: COLLECTIBLE_ASSET_PACK_ID,
         id: asset.token_id,
         tags: [],
-        category: registry.name,
+        category: result.registry.name,
         variations: [],
         contents: {},
         name: asset.name,
@@ -55,7 +60,7 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         thumbnail: asset.image
       })
     }
-
-    yield put(loadCollectiblesSuccess(assets))
   }
+
+  yield put(loadCollectiblesSuccess(assets))
 }

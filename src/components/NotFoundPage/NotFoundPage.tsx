@@ -5,15 +5,23 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
+import LoadingPage from 'components/LoadingPage'
 
-import { Props } from './NotFoundPage.types'
+import { Props, State } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
-export default class NotFoundPage extends React.PureComponent<Props> {
+const LOADING_TIMEOUT = 2000
+
+export default class NotFoundPage extends React.PureComponent<Props, State> {
+  state = {
+    isLoading: true
+  }
+
   componentDidMount() {
     const analytics = getAnalytics()
     document.body.classList.add('notfound-body')
     analytics.track('Not found page', {})
+    setTimeout(() => this.setState({ isLoading: false }), LOADING_TIMEOUT)
   }
 
   componentWillUnmount() {
@@ -25,6 +33,9 @@ export default class NotFoundPage extends React.PureComponent<Props> {
   }
 
   render() {
+    if (this.state.isLoading) {
+      return <LoadingPage />
+    }
     return (
       <>
         <Navbar isFullscreen />

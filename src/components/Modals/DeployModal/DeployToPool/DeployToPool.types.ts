@@ -1,7 +1,7 @@
 import { Project } from 'modules/project/types'
 import { setUserProfile } from 'modules/user/actions'
 import { deployToPoolRequest } from 'modules/deployment/actions'
-import { editProjectRequest } from 'modules/project/actions'
+import { editProject } from 'modules/project/actions'
 import { Media } from 'modules/media/types'
 
 export type Props = {
@@ -16,7 +16,7 @@ export type Props = {
   media: Media | null
   ethAddress: string | undefined
   onDeployToPool: typeof deployToPoolRequest
-  onSaveProject: typeof editProjectRequest
+  onSaveProject: typeof editProject
   onSaveUser: typeof setUserProfile
   onClose: () => void
 }

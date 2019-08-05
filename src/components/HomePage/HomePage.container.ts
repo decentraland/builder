@@ -5,13 +5,14 @@ import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { Template } from 'modules/template/types'
 import { openModal } from 'modules/modal/actions'
-import { getData as getProjects } from 'modules/project/selectors'
+import { getData as getProjects, isFetching } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
 
 const mapState = (state: RootState): MapStateProps => ({
-  projects: getProjects(state)
+  projects: getProjects(state),
+  isFetching: isFetching(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

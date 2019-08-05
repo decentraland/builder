@@ -3,6 +3,7 @@ import { Grid } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import NotFoundPage from 'components/NotFoundPage'
+import LoadingPage from 'components/LoadingPage'
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
@@ -68,7 +69,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentProject, isPreviewing, isSidebarOpen, isLoading } = this.props
+    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isLoggedIn, isFetching } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     let wrapperClasses = 'wrapper'
@@ -76,7 +77,9 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     if (isPreviewing) {
       wrapperClasses += ' fullscreen'
     }
-
+    if (isFetching) {
+      return <LoadingPage />
+    }
     if (!currentProject) {
       return <NotFoundPage />
     }
@@ -93,7 +96,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
                   <Metrics />
                   <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
                   <ItemDragLayer />
-                  <LocalStorageToast />
+                  {isLoggedIn ? null : <LocalStorageToast />}
                 </>
               </div>
             )}

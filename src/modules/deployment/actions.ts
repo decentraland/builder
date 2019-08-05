@@ -1,9 +1,21 @@
 import { action } from 'typesafe-actions'
-import { Placement } from 'modules/deployment/types'
+import { Placement, Deployment } from 'modules/deployment/types'
 import { ProgressStage } from './types'
 
-// Deploy to LAND pool
+// Fetch deployments
+export const LOAD_DEPLOYMENTS_REQUEST = '[Request] Load deployments'
+export const LOAD_DEPLOYMENTS_SUCCESS = '[Success] Load deployments'
+export const LOAD_DEPLOYMENTS_FAILURE = '[Failure] Load deployments'
 
+export const loadDeploymentsRequest = () => action(LOAD_DEPLOYMENTS_REQUEST)
+export const loadDeploymentsSuccess = (deployments: Deployment[]) => action(LOAD_DEPLOYMENTS_SUCCESS, { deployments })
+export const loadDeploymentsFailure = (error: string) => action(LOAD_DEPLOYMENTS_FAILURE, { error })
+
+export type LoadDeploymentsRequestAction = ReturnType<typeof loadDeploymentsRequest>
+export type LoadDeploymentsSuccessAction = ReturnType<typeof loadDeploymentsSuccess>
+export type LoadDeploymentsFailureAction = ReturnType<typeof loadDeploymentsFailure>
+
+// Deploy to LAND pool
 export const DEPLOY_TO_POOL_REQUEST = '[Request] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_SUCCESS = '[Success] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_FAILURE = '[Failure] Deploy to LAND pool'
@@ -23,8 +35,7 @@ export const DEPLOY_TO_LAND_SUCCESS = '[Success] Deploy to LAND'
 export const DEPLOY_TO_LAND_FAILURE = '[Failure] Deploy to LAND'
 
 export const deployToLandRequest = (projectId: string, placement: Placement) => action(DEPLOY_TO_LAND_REQUEST, { projectId, placement })
-export const deployToLandSuccess = (projectId: string, cid: string, placement: Placement) =>
-  action(DEPLOY_TO_LAND_SUCCESS, { projectId, cid, placement })
+export const deployToLandSuccess = (deployment: Deployment) => action(DEPLOY_TO_LAND_SUCCESS, { deployment })
 export const deployToLandFailure = (error: string) => action(DEPLOY_TO_LAND_FAILURE, { error })
 
 export type DeployToLandRequestAction = ReturnType<typeof deployToLandRequest>
