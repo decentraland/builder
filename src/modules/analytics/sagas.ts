@@ -1,4 +1,4 @@
-import { takeLatest, select } from 'redux-saga/effects'
+import { takeLatest, select, fork } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 
@@ -29,8 +29,10 @@ import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
 import { trimAsset } from './track'
+import { handleDelighted } from './delighted'
 
 export function* segmentSaga() {
+  yield fork(handleDelighted)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(ADD_ITEM, handleNewItem)
   yield takeLatest(DUPLICATE_ITEM, handleNewItem)
