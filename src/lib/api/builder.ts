@@ -59,8 +59,8 @@ function fromRemoteProject(remoteProject: RemoteProject) {
 
 export type RemoteDeployment = {
   id: string
-  lastPublishedCID: string | null
-  isDirty: boolean
+  last_published_cid: string | null
+  is_dirty: boolean
   x: number
   y: number
   rotation: Rotation
@@ -72,8 +72,8 @@ export type RemoteDeployment = {
 export function toRemoteDeployment(deployment: Deployment): RemoteDeployment {
   return {
     id: deployment.id,
-    lastPublishedCID: deployment.lastPublishedCID,
-    isDirty: deployment.isDirty,
+    last_published_cid: deployment.lastPublishedCID,
+    is_dirty: deployment.isDirty,
     x: deployment.placement.point.x,
     y: deployment.placement.point.y,
     rotation: deployment.placement.rotation,
@@ -86,8 +86,8 @@ export function toRemoteDeployment(deployment: Deployment): RemoteDeployment {
 export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deployment {
   return {
     id: remoteDeployment.id,
-    lastPublishedCID: remoteDeployment.lastPublishedCID,
-    isDirty: remoteDeployment.isDirty,
+    lastPublishedCID: remoteDeployment.last_published_cid,
+    isDirty: remoteDeployment.is_dirty,
     placement: {
       point: {
         x: remoteDeployment.x,
