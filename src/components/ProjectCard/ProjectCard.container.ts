@@ -5,10 +5,10 @@ import { deleteProject, duplicateProject } from 'modules/project/actions'
 import { getDeploymentStatus } from 'modules/deployment/selectors'
 import { getScene } from 'modules/scene/selectors'
 import { openModal } from 'modules/modal/actions'
+import { getLoadingSet } from 'modules/sync/selectors'
 
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
-import { getLoadingSet } from 'modules/sync/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { project } = ownProps

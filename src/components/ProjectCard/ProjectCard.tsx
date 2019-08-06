@@ -9,9 +9,9 @@ import { preventDefault } from 'lib/preventDefault'
 import { getProjectDimensions } from 'modules/project/utils'
 import { DeploymentStatus as Status } from 'modules/deployment/types'
 import DeploymentStatus from 'components/DeploymentStatus'
+import Icon from 'components/Icon'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
-import Icon from 'components/Icon'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
