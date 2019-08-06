@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28" height="28" viewBox="0 0 28 28">
+    <defs>
+        <filter id="a" width="108.5%" height="175%" x="-4.2%" y="-37.5%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/>
+            <feColorMatrix in="shadowBlurOuter1" result="shadowMatrixOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.16 0"/>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <circle id="c" cx="8" cy="8" r="8"/>
+        <filter id="b" width="187.5%" height="187.5%" x="-43.8%" y="-31.2%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="evenodd" filter="url(#a)" transform="translate(-2 -6)">
+        <g transform="translate(8 8)">
+            <use fill="#000" filter="url(#b)" xlink:href="#c"/>
+            <circle cx="8" cy="8" r="7.25" fill="#F00" stroke="#FFF" stroke-linejoin="square" stroke-width="1.5"/>
+        </g>
+        <path fill="#FFF" d="M17 12.5v4a1 1 0 1 1-2 0v-4a1 1 0 1 1 2 0zm-2 7a1 1 0 1 1 2 0 1 1 0 0 1-2 0z"/>
+    </g>
+</svg>

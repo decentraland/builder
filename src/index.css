@@ -39,6 +39,19 @@ body canvas.dcl-canvas {
   color: var(--text);
 }
 
+.is-uploading {
+  animation: uploading 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes uploading {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* 
 ISSUE 329: https://github.com/decentraland/builder/issues/329
 
