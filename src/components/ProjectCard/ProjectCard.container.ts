@@ -8,13 +8,15 @@ import { openModal } from 'modules/modal/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
+import { getLoadingSet } from 'modules/sync/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { project } = ownProps
   const scene = getScene(project.sceneId)(state)
   return {
     items: scene ? scene.metrics.entities : 0,
-    deploymentStatus: getDeploymentStatus(state)[ownProps.project.id]
+    deploymentStatus: getDeploymentStatus(state)[ownProps.project.id],
+    isUploading: getLoadingSet(state).has(project.id)
   }
 }
 

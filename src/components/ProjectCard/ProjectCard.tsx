@@ -11,6 +11,7 @@ import { DeploymentStatus as Status } from 'modules/deployment/types'
 import DeploymentStatus from 'components/DeploymentStatus'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
+import Icon from 'components/Icon'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -57,7 +58,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, items, deploymentStatus, onClick } = this.props
+    const { project, items, deploymentStatus, onClick, isUploading } = this.props
     const { isDeleting } = this.state
     const canClearDeployment = deploymentStatus !== Status.UNPUBLISHED
 
@@ -84,7 +85,10 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">
-          <div className="title">{project.title}</div>
+          <div className="title-wrapper">
+            <div className="title">{project.title}</div>
+            {isUploading ? <Icon name="cloud-upload" className="is-uploading" /> : null}
+          </div>
           <div className="description" title={project.description}>
             {getProjectDimensions(project)} {items > 0 && `- ${items} ${t('global.items')}`}
           </div>

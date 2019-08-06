@@ -4,6 +4,7 @@ export type IconName =
   | 'arrow-up'
   | 'chevron-right'
   | 'close'
+  | 'cloud-upload'
   | 'delete'
   | 'duplicate'
   | 'grid'
