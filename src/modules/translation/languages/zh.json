@@ -1,17 +1,9 @@
 {
-  "adblock_modal": {
-    "body": "在安装 Dapper 钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
-    "title": "停用广告拦截器"
-  },
   "banners": {
-    "dapper_assetpack_banner": "获取 Dapper 钱包和免费的{cat}, 适合您的场景！",
-    "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
-    "dapper_homepage_cta": "Purrstige 猫",
-    "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
-    "mobile_dapper_hompage_cta": "Picture Frames 相框 + Dapper",
-    "promo_cta": "安装 Dapper",
-    "promo_subtitle": "在场景中显示您的谜恋猫。没有的话可以安装 Dapper 钱包，就能得到一只免费的、独一无二的 Purrstige 猫。。",
-    "promo_title": "今天的您好 Dapper (酷)!"
+    "promo_assetpack_banner": "自定义您的虚拟化身外观，申请自己的名字，获得虚拟世界通行证",
+    "promo_body": "自定义您的外观，申请您中意的名字并获取通行证。 单点登录即可连接到 Decentraland 所有应用。",
+    "promo_subtitle": "在虚拟世界展示自己",
+    "promo_title": "Decentraland 虚拟化身"
   },
   "custom_layout": {
     "title": "自定义",
@@ -341,11 +333,8 @@
     "youtube_id": "NhaP_M7tVc8"
   },
   "wallet": {
-    "promo_body": "从 {cta} 获得一个免费的 Purrstige 猫添加到你的场景！",
-    "promo_cta": "Dapper",
-    "promo_title": "还没有钱包吗",
-    "signature_error": "签名消息失败",
-    "title": "连接钱包用加密收藏品装饰你的场景。"
+    "title": "连接钱包用加密收藏品装饰你的场景。",
+    "signature_error": "签名消息失败"
   },
   "user_menu": {
     "sign_in": "登入",
