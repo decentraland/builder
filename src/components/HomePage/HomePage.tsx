@@ -51,14 +51,6 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onOpenModal('ImportModal')
   }
 
-  handlePromoCTA = () => {
-    this.props.onOpenModal('AdBlockModal', { origin: 'HomePage Promo CTA' })
-  }
-
-  handleBannerCTA = () => {
-    this.props.onOpenModal('AdBlockModal', { origin: 'HomePage CTA' })
-  }
-
   renderImportButton = () => {
     return (
       <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
@@ -84,10 +76,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
           {!projects.length ? (
             <>
               <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
-              <HomePageBanner onClick={this.handleBannerCTA} />
+              <HomePageBanner />
             </>
           ) : (
-            <Container>{shouldRenderPromo && <PromoBanner onClick={this.handlePromoCTA} />}</Container>
+            <Container>{shouldRenderPromo && <PromoBanner onClick={() => ({})} />}</Container>
           )}
           <Container>
             <div className="HomePage">

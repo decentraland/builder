@@ -12,10 +12,6 @@ export default class WalletSignIn extends React.PureComponent<Props> {
     this.props.onConnect!()
   }
 
-  handlePromoClick = () => {
-    this.props.onOpenModal('AdBlockModal', { origin: 'Wallet Connect Dapper CTA' })
-  }
-
   render() {
     const { hasError, isConnecting } = this.props
     const shouldRenderPromo = !ethereum || !ethereum.isDapper
@@ -45,7 +41,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
               <T
                 id="wallet.promo_body"
                 values={{
-                  cta: <a onClick={this.handlePromoClick}>{t('wallet.promo_cta')}</a>
+                  cta: <a>{t('wallet.promo_cta')}</a>
                 }}
               />
             </span>

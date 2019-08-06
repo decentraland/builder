@@ -8,10 +8,6 @@ import './AssetPackList.css'
 const ethereum = (window as any)['ethereum']
 
 export default class AssetPackList extends React.PureComponent<Props> {
-  handlePromoClick = () => {
-    this.props.onOpenModal('AdBlockModal', { origin: 'Item catalog Dapper CTA' })
-  }
-
   render() {
     const { assetPacks, onSelectAssetPack } = this.props
     const shouldRenderPromo = !ethereum || !ethereum.isDapper
@@ -19,7 +15,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
     return (
       <div className="AssetPackList">
         {shouldRenderPromo && (
-          <div className="promo" onClick={this.handlePromoClick}>
+          <div className="promo">
             <div className="icon" />
             <T
               id="banners.dapper_assetpack_banner"

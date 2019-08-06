@@ -107,7 +107,8 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         const zip: JSZip = await JSZip.loadAsync(file)
         const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
         const content = await contentRaw.async('text')
-        let parsed: ImportedFile = JSON.parse(content)
+        const req = new Response(content)
+        let parsed: ImportedFile = await req.json()
 
         // run migrations
         let version = parsed.version || 1

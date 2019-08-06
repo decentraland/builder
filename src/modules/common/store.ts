@@ -25,6 +25,7 @@ import { rootSaga } from './sagas'
 import { RootState } from './types'
 import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -120,6 +121,11 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     }
 
     return newState
+  },
+  onError: err => {
+    if (err instanceof DOMException && err.name === 'QuotaExceededError') {
+      store.dispatch(openModal('QuotaExceededModal'))
+    }
   }
 })
 
