@@ -39,8 +39,8 @@ export const getFailedDeploymentIds = createSelector<RootState, Record<string, s
   deploymentErrors => Object.keys(deploymentErrors)
 )
 
-export const getErrorCount = createSelector<RootState, string[], string[], number>(
+export const getErrorSet = createSelector<RootState, string[], string[], Set<string>>(
   getFailedProjectIds,
   getFailedDeploymentIds,
-  (failedProjectIds, failedDeploymentIds) => new Set<string>([...failedProjectIds, ...failedDeploymentIds]).size
+  (failedProjectIds, failedDeploymentIds) => new Set<string>([...failedProjectIds, ...failedDeploymentIds])
 )

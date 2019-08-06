@@ -263,6 +263,11 @@
     "other_shortcuts": "Otros",
     "title": "Atajos"
   },
+  "sync": {
+    "loading": "Tus escenas estan siendo subidas a la nube",
+    "success": "Escenas subidas exitosamente!",
+    "error": "{errorCount} {errorCount, plural, one {escena} other {escenas}} fallaron al ser subidas"
+  },
   "templates": {
     "big": "Grande (2x3)",
     "custom_layout": {

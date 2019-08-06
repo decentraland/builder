@@ -50,6 +50,8 @@ export function domainReducer(state: DomainState = INITIAL_STATE, action: Reduce
       const { id, error } = action.payload
       return {
         ...state,
+        localIds: addElement(state.localIds, id),
+        loadingIds: removeElement(state.localIds, id),
         errorsById: addEntry(state.errorsById, id, error)
       }
     }

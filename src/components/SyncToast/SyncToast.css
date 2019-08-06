@@ -1,0 +1,33 @@
+.SyncToast {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.SyncToast .message {
+  display: flex;
+  background: rgba(var(--bluish-steel-raw), 0.24);
+  font-size: 13px;
+  line-height: 18px;
+  padding: 7px 16px;
+  border-radius: 16px;
+}
+
+.SyncToast .message .close {
+  margin-left: 10px;
+}
+
+.SyncToast .error-indicator {
+  width: 16px;
+  height: 16px;
+  background: url(/static/media/save-error.30420aec.svg);
+  background-repeat: no-repeat;
+  background-position: center -2px;
+  margin-top: 1px;
+  margin-right: 8px;
+}
+
+.SyncToast .ui.button.basic {
+  padding: 0px 0px 0px 16px;
+}

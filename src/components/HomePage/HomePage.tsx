@@ -15,6 +15,7 @@ import LoadingPage from 'components/LoadingPage'
 import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
+import SyncToast from 'components/SyncToast'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
@@ -90,6 +91,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
             <div className="HomePage">
               {projects.length > 0 && (
                 <div className="project-cards">
+                  <SyncToast />
                   <div className="subtitle">
                     {t('home_page.projects_title')}
                     {this.renderImportButton()}
