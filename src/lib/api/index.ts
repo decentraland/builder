@@ -16,7 +16,7 @@ import { marketplace } from './marketplace'
 export const api = {
   fetchAssetPack: (id: string) => assets.fetchAssetPack(id),
   fetchAssetPacks: () => assets.fetchAssetPacks(),
-  fetchUser: () => avatars.fetchUser(),
+  fetchUser: (accessToken?: string) => avatars.fetchUser(accessToken),
   deleteDeployment: (id: string) => builder.deleteDeployment(id),
   deleteProject: (id: string) => builder.deleteProject(id),
   deployToPool: (project: Omit<Project, 'thumbnail'>, scene: Scene, user: User) => builder.deployToPool(project, scene, user),
