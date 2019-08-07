@@ -40,10 +40,10 @@ import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
-import { createFiles } from './export'
-import { didUpdateLayout } from './utils'
 import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
+import { createFiles } from './export'
+import { didUpdateLayout } from './utils'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
