@@ -9,6 +9,8 @@ import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
@@ -25,7 +27,6 @@ import { rootSaga } from './sagas'
 import { RootState } from './types'
 import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
-import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -123,7 +124,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     return newState
   },
   onError: err => {
-    if (err instanceof DOMException && err.name === 'QuotaExceededError') {
+    const isQuotaModalOpen = !!getOpenModals(store.getState())['QuotaExceededModal']
+    if (err instanceof DOMException && err.name === 'QuotaExceededError' && !isQuotaModalOpen) {
       store.dispatch(openModal('QuotaExceededModal'))
     }
   }
