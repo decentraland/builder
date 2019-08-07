@@ -101,7 +101,7 @@
 .ProjectCard .error-indicator {
   width: 16px;
   height: 16px;
-  background: url(/static/media/save-error.30420aec.svg);
+  background: url(../../images/save-error.svg);
   background-repeat: no-repeat;
   background-position: center -2px;
   margin-top: 3px;
