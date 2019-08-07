@@ -58,7 +58,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, items, deploymentStatus, onClick, isUploading } = this.props
+    const { project, items, deploymentStatus, onClick, isUploading, hasError } = this.props
     const { isDeleting } = this.state
     const canClearDeployment = deploymentStatus !== Status.UNPUBLISHED
 
@@ -88,6 +88,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
           <div className="title-wrapper">
             <div className="title">{project.title}</div>
             {isUploading ? <Icon name="cloud-upload" className="is-uploading" /> : null}
+            {!isUploading && hasError ? <div className="error-indicator" /> : null}
           </div>
           <div className="description" title={project.description}>
             {getProjectDimensions(project)} {items > 0 && `- ${items} ${t('global.items')}`}

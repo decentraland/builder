@@ -36,6 +36,7 @@
 
 .HomePage .project-cards {
   margin-top: 47px;
+  position: relative;
 }
 
 .HomePage .template-cards {

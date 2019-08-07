@@ -13,6 +13,7 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import PromoBanner from './PromoBanner'
+import SyncToast from 'components/SyncToast'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
 
@@ -90,6 +91,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
             <div className="HomePage">
               {projects.length > 0 && (
                 <div className="project-cards">
+                  <SyncToast />
                   <div className="subtitle">
                     {t('home_page.projects_title')}
                     {this.renderImportButton()}

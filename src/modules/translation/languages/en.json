@@ -266,6 +266,12 @@
     "other_shortcuts": "Other",
     "title": "Shortcuts"
   },
+  "sync": {
+    "loading": "Your scenes are being uploaded to the cloud",
+    "success": "All scenes uploaded successfully!",
+    "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
+    "retry": "Retry"
+  },
   "templates": {
     "big": "Big (2x3)",
     "custom_layout": {
