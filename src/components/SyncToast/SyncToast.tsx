@@ -44,7 +44,7 @@ export default class SyncToast extends React.PureComponent<Props, State> {
             <div className="error-indicator" />
             {t('sync.error', { errorCount })}
             <Button basic onClick={this.handleRetry}>
-              Retry
+              {t('sync.retry')}
             </Button>
           </div>
         </div>
