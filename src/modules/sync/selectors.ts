@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
 import { getLocalIds, getErrors, getLoadingIds } from './domain/selectors'
+import { getCurrentProject } from 'modules/project/selectors'
+import { Project } from 'modules/project/types'
 
 export const getState = (state: RootState) => state.sync
 export const getProjects = (state: RootState) => getState(state).project
@@ -16,6 +18,15 @@ export const getLoadingSet = createSelector<RootState, string[], string[], Set<s
   getLoadingProjectIds,
   getLoadingDeploymentIds,
   (projectIds, deploymentIds) => new Set([...projectIds, ...deploymentIds])
+)
+
+export const isSavingCurrentProject = createSelector<RootState, Project | null, Set<string>, boolean>(
+  getCurrentProject,
+  getLoadingSet,
+  (currentProject, loadingSet) => {
+    if (!currentProject) return false
+    return loadingSet.has(currentProject.id)
+  }
 )
 
 export const getFailedProjectIds = createSelector<RootState, Record<string, string>, string[]>(

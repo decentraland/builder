@@ -10,6 +10,7 @@ export type DefaultProps = {
 
 export type Props = DefaultProps & {
   project: Project
+  isUploading: boolean
   deploymentStatus: DeploymentStatus
   onClick?: (project: Project) => any
   onDeleteProject: typeof deleteProject
@@ -23,6 +24,6 @@ export type State = {
   isDeleting: boolean
 }
 
-export type MapStateProps = Pick<Props, 'items' | 'deploymentStatus'>
+export type MapStateProps = Pick<Props, 'items' | 'deploymentStatus' | 'isUploading'>
 export type MapDispatchProps = Pick<Props, 'onDeleteProject' | 'onDuplicateProject' | 'onOpenModal'>
 export type MapDispatch = Dispatch<DeleteProjectAction | DuplicateProjectAction | OpenModalAction>

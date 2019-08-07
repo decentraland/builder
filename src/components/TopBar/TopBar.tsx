@@ -56,6 +56,7 @@ export default class TopBar extends React.PureComponent<Props> {
       gizmo,
       currentProject,
       isPreviewing,
+      isUploading,
       isSidebarOpen,
       selectedEntityId,
       enabledTools,
@@ -78,7 +79,11 @@ export default class TopBar extends React.PureComponent<Props> {
                 <div className="project-title" onClick={this.handleTitleClick} title={currentProject.title}>
                   {currentProject.title}
                 </div>
-                <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+                {isUploading ? (
+                  <OwnIcon name="cloud-upload" className="cloud-upload-indicator is-uploading" />
+                ) : (
+                  <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+                )}
               </>
             ) : null}
           </Header>

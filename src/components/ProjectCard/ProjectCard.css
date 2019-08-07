@@ -88,3 +88,12 @@
   background-size: cover;
   background-position: center;
 }
+
+.ProjectCard .title-wrapper {
+  display: flex;
+}
+
+.ProjectCard .Icon.is-uploading {
+  margin-left: 4px;
+  margin-top: 2px;
+}

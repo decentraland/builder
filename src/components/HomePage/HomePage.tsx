@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { env } from 'decentraland-commons'
 import { Container, Button, Page } from 'decentraland-ui'
 
-import HomePageBanner from 'components/Banners/HomePageBanner'
 import HomePageHero from 'components/HomePageHero'
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
@@ -16,7 +16,7 @@ import PromoBanner from './PromoBanner'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
 
-const ethereum = (window as any)['ethereum']
+const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
 export default class HomePage extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -51,6 +51,12 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onOpenModal('ImportModal')
   }
 
+  handlePromoCTA = () => {
+    if (PROMO_URL) {
+      window.open(`${PROMO_URL}?utm_source=builder&utm_campaign=homepage`)
+    }
+  }
+
   renderImportButton = () => {
     return (
       <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
@@ -68,7 +74,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const { isAnimationPlaying } = this.state
     const projects = Object.values(this.props.projects)
     const templates = getTemplates()
-    const shouldRenderPromo = !ethereum || !ethereum.isDapper
+
     return (
       <>
         <Navbar isFullscreen isOverlay={projects.length === 0} />
@@ -76,10 +82,9 @@ export default class HomePage extends React.PureComponent<Props, State> {
           {!projects.length ? (
             <>
               <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
-              <HomePageBanner />
             </>
           ) : (
-            <Container>{shouldRenderPromo && <PromoBanner onClick={() => ({})} />}</Container>
+            <Container>{<PromoBanner onClick={this.handlePromoCTA} />}</Container>
           )}
           <Container>
             <div className="HomePage">
