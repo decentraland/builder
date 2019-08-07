@@ -139,7 +139,6 @@ const middleware = applyMiddleware(...middlewares)
 
 const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer)
-store.dispatch(openModal('QuotaExceededModal'))
 
 sagasMiddleware.run(rootSaga)
 loadStorageMiddleware(store)
