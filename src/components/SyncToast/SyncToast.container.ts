@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './SyncToast.types'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
 import { retrySync } from 'modules/sync/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './SyncToast.types'
 import SyncToast from './SyncToast'
 
 const mapState = (state: RootState): MapStateProps => ({

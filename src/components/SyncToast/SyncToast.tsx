@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import { Props, State } from './SyncToast.types'
-
-import './SyncToast.css'
 import { Close, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
+import { Props, State } from './SyncToast.types'
+import './SyncToast.css'
 
 export default class SyncToast extends React.PureComponent<Props, State> {
   state: State = {

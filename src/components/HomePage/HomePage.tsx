@@ -13,9 +13,9 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import PromoBanner from './PromoBanner'
+import SyncToast from 'components/SyncToast'
 import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
-import SyncToast from 'components/SyncToast'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
