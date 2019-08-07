@@ -57,11 +57,11 @@ export default class QuotaExceeded extends React.PureComponent<Props> {
   render() {
     const { name, currentProject, isLoggedIn, onClose } = this.props
 
-    const offerRetry = currentProject && isLoggedIn
+    const shouldRetry = currentProject && isLoggedIn
 
     return (
       <Modal name={name} closeIcon={<Close onClick={onClose} />}>
-        {offerRetry ? this.renderRetry() : this.renderSignIn()}
+        {shouldRetry ? this.renderRetry() : this.renderSignIn()}
       </Modal>
     )
   }

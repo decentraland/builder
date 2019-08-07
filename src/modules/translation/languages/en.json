@@ -173,16 +173,6 @@
     "title": "Upload Scene",
     "upload_manually": "Upload Manually"
   },
-  "quota_exceeded_modal": {
-    "sign_in": {
-      "title": "Oh noes!",
-      "description": "You ran out of anonymous storage space, please sign in to continue"
-    },
-    "retry": {
-      "title": "On snap!",
-      "description": "We were unable to save your work"
-    }
-  },
   "itemdrawer": {
     "collectible_disclaimer": "Don’t see all of your crypto-collectibles?{br}We are adding support for more soon!",
     "empty_ground": "No Ground",
@@ -240,6 +230,16 @@
     "max_area_error": "Your Scene can't have more than {area} parcels",
     "min_area_error": "Your Scene is too small"
   },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "We were unable to save your work",
+      "title": "On snap!"
+    },
+    "sign_in": {
+      "description": "You've reached the limit of your browser's storage, please sign in to continue",
+      "title": "Oh noes!"
+    }
+  },
   "shortcuts": {
     "delete": "Delete item",
     "duplicate": "Duplicate item",
@@ -267,10 +267,10 @@
     "title": "Shortcuts"
   },
   "sync": {
-    "loading": "Your scenes are being uploaded to the cloud",
-    "success": "All scenes uploaded successfully!",
     "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
-    "retry": "Retry"
+    "loading": "Your scenes are being uploaded to the cloud",
+    "retry": "Retry",
+    "success": "All scenes uploaded successfully!"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -321,6 +321,11 @@
     "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
     "title": "Oops!"
   },
+  "user_menu": {
+    "guest": "Guest",
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out"
+  },
   "validation": {
     "project": {
       "description": {
@@ -336,12 +341,7 @@
     "youtube_id": "cHEblD8xZwI"
   },
   "wallet": {
-    "title": "Connect your wallet to decorate your Scene with crypto-collectibles.",
-    "signature_error": "Failed to sign message"
-  },
-  "user_menu": {
-    "sign_in": "Sign In",
-    "sign_out": "Sign Out",
-    "guest": "Guest"
+    "signature_error": "Failed to sign message",
+    "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
   }
 }
