@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Close, Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props } from './QuotaExceededModal.types'
 import './QuotaExceededModal.css'
@@ -12,10 +13,11 @@ export default class QuotaExceeded extends React.PureComponent<Props> {
 
   renderRetry = () => (
     <>
-      <Modal.Content>We were unable to save your work</Modal.Content>
+      <Modal.Header>{t('quota_exceeded_modal.retry.title')}</Modal.Header>
+      <Modal.Content>{t('quota_exceeded_modal.retry.description')}</Modal.Content>
       <Modal.Actions>
         <Button primary onClick={this.handleClick}>
-          Retry
+          {t('sync.retry')}
         </Button>
       </Modal.Actions>
     </>
@@ -23,10 +25,11 @@ export default class QuotaExceeded extends React.PureComponent<Props> {
 
   renderSignIn = () => (
     <>
-      <Modal.Content>You ran out of anonymous storage space, please sign in to continue</Modal.Content>
+      <Modal.Header>{t('quota_exceeded_modal.sign_in.title')}</Modal.Header>
+      <Modal.Content>{t('quota_exceeded_modal.sign_in.description')}</Modal.Content>
       <Modal.Actions>
         <Button primary onClick={this.handleClick}>
-          Sign in
+          {t('user_menu.sign_in')}
         </Button>
       </Modal.Actions>
     </>
@@ -39,7 +42,6 @@ export default class QuotaExceeded extends React.PureComponent<Props> {
 
     return (
       <Modal name={name} closeIcon={<Close onClick={onClose} />}>
-        <Modal.Header>Oh noes</Modal.Header>
         {offerRetry ? this.renderRetry() : this.renderSignIn()}
       </Modal>
     )

@@ -173,6 +173,16 @@
     "title": "Upload Scene",
     "upload_manually": "Upload Manually"
   },
+  "quota_exceeded_modal": {
+    "sign_in": {
+      "title": "Oh noes!",
+      "description": "You ran out of anonymous storage space, please sign in to continue"
+    },
+    "retry": {
+      "title": "On snap!",
+      "description": "We were unable to save your work"
+    }
+  },
   "itemdrawer": {
     "collectible_disclaimer": "Don’t see all of your crypto-collectibles?{br}We are adding support for more soon!",
     "empty_ground": "No Ground",

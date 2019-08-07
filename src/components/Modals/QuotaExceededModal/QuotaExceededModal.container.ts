@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { authRequest } from 'modules/auth/actions'
+import { login } from 'modules/auth/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { MapDispatchProps, MapStateProps } from './QuotaExceededModal.types'
@@ -13,7 +13,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onAuth: () => dispatch(authRequest())
+  onAuth: () => dispatch(login())
 })
 
 export default connect(
