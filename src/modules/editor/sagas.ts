@@ -43,13 +43,7 @@ import {
 } from 'modules/editor/actions'
 import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
-import {
-  editProjectThumbnail,
-  loadManifestRequest,
-  LOAD_MANIFEST_SUCCESS,
-  LoadManifestSuccessAction,
-  LOAD_MANIFEST_FAILURE
-} from 'modules/project/actions'
+import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
@@ -60,11 +54,10 @@ import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
-import { snapToBounds } from 'modules/scene/utils'
+import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
-import { getLocalProjectIds } from 'modules/sync/selectors'
 import { CONTENT_SERVER_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
@@ -299,30 +292,14 @@ function handleZoomOut() {
 function* handleSetEditorReady(action: SetEditorReadyAction) {
   const { isReady } = action.payload
   const project: Project | null = yield select(getCurrentProject)
-  const localProjects: string[] = yield select(getLocalProjectIds)
-
   if (project) {
     if (isReady) {
-      let scene: Scene
-
-      if (localProjects.includes(project.id)) {
-        scene = yield select(getCurrentScene)
-      } else {
-        yield put(loadManifestRequest(project.id))
-
-        const result: { success?: LoadManifestSuccessAction } = yield race({
-          success: take(LOAD_MANIFEST_SUCCESS),
-          failure: take(LOAD_MANIFEST_FAILURE)
-        })
-
-        if (result.success) {
-          scene = result.success.payload.manifest.scene
-        } else {
-          return
-        }
+      try {
+        let scene = yield getSceneByProjectId(project.id)
+        yield handleEditorReady(scene)
+      } catch (error) {
+        console.error(error)
       }
-
-      yield handleEditorReady(scene)
     }
 
     yield changeEditorState(isReady)
