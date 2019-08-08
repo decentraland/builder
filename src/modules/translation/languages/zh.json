@@ -346,5 +346,15 @@
     "sign_in": "登入",
     "sign_out": "登出",
     "guest": "客人"
+  },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "我们无法保存您的工作",
+      "title": "不好了！"
+    },
+    "sign_in": {
+      "description": "您已用完匿名存储空间，请继续登录",
+      "title": "出现了问题"
+    }
   }
 }

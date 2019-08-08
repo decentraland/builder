@@ -3,7 +3,7 @@ import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { takeLatest, put, select, take, call } from 'redux-saga/effects'
+import { takeLatest, put, select, take, call, all } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -184,8 +184,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield put(createScene(saved.scene))
-      yield put(createProject(saved.project))
+      yield all([put(createScene(saved.scene)), put(createProject(saved.project))])
     }
   }
 }

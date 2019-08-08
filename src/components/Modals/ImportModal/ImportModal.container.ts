@@ -9,7 +9,7 @@ import ImportModal from './ImportModal'
 const mapState = () => ({})
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onImport: (project: Manifest[]) => dispatch(importProject(project))
+  onImport: (projects: Manifest[]) => dispatch(importProject(projects))
 })
 
 export default connect(

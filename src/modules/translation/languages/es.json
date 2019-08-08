@@ -237,6 +237,16 @@
     "max_area_error": "Tu Escena no puede tener más de {area} parcelas",
     "min_area_error": "Tu Escena es muy chica"
   },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "No hemos podido guardar tu trabajo",
+      "title": "On no!"
+    },
+    "sign_in": {
+      "description": "Te has quedado sin espacio de almacenamiento local, inicia sesion para continuar",
+      "title": "Ha ocurrido un problema"
+    }
+  },
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
@@ -264,10 +274,10 @@
     "title": "Atajos"
   },
   "sync": {
-    "loading": "Tus escenas estan siendo subidas a la nube",
-    "success": "Escenas subidas exitosamente!",
     "error": "{errorCount} {errorCount, plural, one {escena} other {escenas}} fallaron al ser subidas",
-    "retry": "Reintentar"
+    "loading": "Tus escenas estan siendo subidas a la nube",
+    "retry": "Reintentar",
+    "success": "Escenas subidas exitosamente!"
   },
   "templates": {
     "big": "Grande (2x3)",
@@ -323,6 +333,11 @@
     "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
     "title": "Oops!"
   },
+  "user_menu": {
+    "guest": "Invitado",
+    "sign_in": "Iniciar Sesión",
+    "sign_out": "Cerrar Sesión"
+  },
   "validation": {
     "project": {
       "description": {
@@ -338,12 +353,7 @@
     "youtube_id": "4YSdIaxfg-E"
   },
   "wallet": {
-    "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables.",
-    "signature_error": "Error al firmar el mensaje"
-  },
-  "user_menu": {
-    "sign_in": "Iniciar Sesión",
-    "sign_out": "Cerrar Sesión",
-    "guest": "Invitado"
+    "signature_error": "Error al firmar el mensaje",
+    "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
   }
 }
