@@ -47,7 +47,7 @@ export const throttle = <T extends (...args: any[]) => any>(fn: T, ms: number) =
 
     if (!timer || now >= timer + ms) {
       timers[key] = +Date.now()
-      fn(...args)
+      return fn(...args)
     }
   }
 }

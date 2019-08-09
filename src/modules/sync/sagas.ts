@@ -121,7 +121,7 @@ function* handleSaveThumbnail(action: EditProjectThumbnailAction) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project: Project = projects[action.payload.id]
   try {
-    yield call(() => saveThumbnail(project.id, project))
+    saveThumbnail(project.id, project)
   } catch (e) {
     // fail gracefully
   }
