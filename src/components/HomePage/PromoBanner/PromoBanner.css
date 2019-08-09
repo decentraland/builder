@@ -7,6 +7,7 @@
   border-radius: 12px;
   overflow: hidden;
   margin-top: 32px;
+  box-shadow: inset 300px 0px 50px 0px rgba(0, 0, 0, 0.4);
 }
 
 .PromoBanner .title {
