@@ -9,6 +9,7 @@ import { preventDefault } from 'lib/preventDefault'
 import { getProjectDimensions } from 'modules/project/utils'
 import { DeploymentStatus as Status } from 'modules/deployment/types'
 import DeploymentStatus from 'components/DeploymentStatus'
+import Icon from 'components/Icon'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
 
@@ -57,7 +58,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, items, deploymentStatus, onClick } = this.props
+    const { project, items, deploymentStatus, onClick, isUploading, hasError } = this.props
     const { isDeleting } = this.state
     const canClearDeployment = deploymentStatus !== Status.UNPUBLISHED
 
@@ -84,7 +85,11 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
           </Dropdown.Menu>
         </Dropdown>
         <div className="project-data">
-          <div className="title">{project.title}</div>
+          <div className="title-wrapper">
+            <div className="title">{project.title}</div>
+            {isUploading ? <Icon name="cloud-upload" className="is-uploading" /> : null}
+            {!isUploading && hasError ? <div className="error-indicator" /> : null}
+          </div>
           <div className="description" title={project.description}>
             {getProjectDimensions(project)} {items > 0 && `- ${items} ${t('global.items')}`}
           </div>

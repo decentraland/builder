@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { Props } from './PromoBanner.types'
@@ -13,14 +12,11 @@ export default class PromoBanner extends React.PureComponent<Props> {
 
   render() {
     return (
-      <div className="PromoBanner">
-        <div className="bg" />
-        <div className="logo" />
+      <div className="PromoBanner" onClick={this.handleCTAClick}>
         <div className="title">{t('banners.promo_title')}</div>
         <div className="subtitle">{t('banners.promo_subtitle')}</div>
-        <Button className="cta" primary onClick={this.handleCTAClick}>
-          {t('banners.promo_cta')}
-        </Button>
+        <div className="body">{t('banners.promo_body')}</div>
+        <div className="promo-image" />
       </div>
     )
   }

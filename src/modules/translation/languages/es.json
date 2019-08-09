@@ -1,17 +1,9 @@
 {
-  "adblock_modal": {
-    "body": "Por favor deshabilita cualquier Ad Blocker antes de instalar Dapper Wallet para recibir un Purrstige Cat gratuito.",
-    "title": "Deshabilita cualquier Ad Blocker"
-  },
   "banners": {
-    "dapper_assetpack_banner": "Prueba Dapper y obtén gratis un {cat}",
-    "dapper_homepage": "Muestra tu CryptoKitty en tu Escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un {cta}.",
-    "dapper_homepage_cta": "Purrstige Cat",
-    "mobile_dapper_homepage": "Conoce lo último:{br}{cta}",
-    "mobile_dapper_hompage_cta": "Cuadros + Dapper",
-    "promo_cta": "Instala Dapper",
-    "promo_subtitle": "Muestra tu CryptoKitty en tu Escena ¿No tienes un CryptoKitty? Instala Dapper wallet y obtén gratis un Purrstige Cat.",
-    "promo_title": "¡Prueba Dapper!"
+    "promo_assetpack_banner": "Personaliza tu estilo, elige tu nombre, toma tu pasaporte y ¡EMPIEZA!",
+    "promo_body": "Personaliza tu estilo, elige tu nombre y toma tu pasaporte. Un registro único para conectarte a todas tus experiencias en Decentraland.",
+    "promo_subtitle": "Ingresa al Metaverse con estilo",
+    "promo_title": "Avatars de Decentraland"
   },
   "custom_layout": {
     "title": "Personalizada",
@@ -245,6 +237,16 @@
     "max_area_error": "Tu Escena no puede tener más de {area} parcelas",
     "min_area_error": "Tu Escena es muy chica"
   },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "No hemos podido guardar tu trabajo",
+      "title": "On no!"
+    },
+    "sign_in": {
+      "description": "Te has quedado sin espacio de almacenamiento local, inicia sesion para continuar",
+      "title": "Ha ocurrido un problema"
+    }
+  },
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
@@ -270,6 +272,12 @@
     "item_shortcuts": "Objeto",
     "other_shortcuts": "Otros",
     "title": "Atajos"
+  },
+  "sync": {
+    "error": "{errorCount} {errorCount, plural, one {escena} other {escenas}} fallaron al ser subidas",
+    "loading": "Tus escenas estan siendo subidas a la nube",
+    "retry": "Reintentar",
+    "success": "Escenas subidas exitosamente!"
   },
   "templates": {
     "big": "Grande (2x3)",
@@ -325,6 +333,11 @@
     "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
     "title": "Oops!"
   },
+  "user_menu": {
+    "guest": "Invitado",
+    "sign_in": "Iniciar Sesión",
+    "sign_out": "Cerrar Sesión"
+  },
   "validation": {
     "project": {
       "description": {
@@ -340,15 +353,7 @@
     "youtube_id": "4YSdIaxfg-E"
   },
   "wallet": {
-    "promo_body": "¡Instala {cta} y obtén un CryptoKitty gratuito!",
-    "promo_cta": "Dapper",
-    "promo_title": "¿No tienes una billetera?",
     "signature_error": "Error al firmar el mensaje",
     "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
-  },
-  "user_menu": {
-    "sign_in": "Iniciar Sesión",
-    "sign_out": "Cerrar Sesión",
-    "guest": "Invitado"
   }
 }

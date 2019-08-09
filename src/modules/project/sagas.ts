@@ -3,7 +3,7 @@ import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { takeLatest, put, select, take, call } from 'redux-saga/effects'
+import { takeLatest, put, select, take, call, all } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -32,7 +32,7 @@ import { api } from 'lib/api'
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
-import { getData as getScenes, getScene } from 'modules/scene/selectors'
+import { getScene } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
@@ -40,9 +40,10 @@ import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
+import { getSub } from 'modules/auth/selectors'
+import { getSceneByProjectId } from 'modules/scene/utils'
 import { createFiles } from './export'
 import { didUpdateLayout } from './utils'
-import { getSub } from 'modules/auth/selectors'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -113,9 +114,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 function* handleDuplicateProject(action: DuplicateProjectAction) {
   const { project } = action.payload
 
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[project.sceneId]
-  if (!scene) return
+  const scene = yield getSceneByProjectId(project.id)
 
   const newScene = { ...scene, id: uuidv4() }
   const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString() }
@@ -152,7 +151,7 @@ function* handleEditProject(action: EditProjectAction) {
 
 function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
-  const scene: Scene = yield select(getScene(project.sceneId))
+  const scene = yield getSceneByProjectId(project.id)
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
@@ -185,8 +184,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield put(createScene(saved.scene))
-      yield put(createProject(saved.project))
+      yield all([put(createScene(saved.scene)), put(createProject(saved.project))])
     }
   }
 }

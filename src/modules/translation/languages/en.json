@@ -1,17 +1,9 @@
 {
-  "adblock_modal": {
-    "body": "Please disable any Ad Blocker before installing Dapper Wallet to receive a free Purrstige Cat.",
-    "title": "Disable Ad Blockers"
-  },
   "banners": {
-    "dapper_assetpack_banner": "Get Dapper wallet and a free {cat} for your Scene!",
-    "dapper_homepage": "Place a picture of your CryptoKitty in your Scene!{br}Don't have a CryptoKitty? Make a Dapper wallet and get a free {cta}.",
-    "dapper_homepage_cta": "Purrstige Cat",
-    "mobile_dapper_homepage": "Learn about our latest feature:{br}{cta}",
-    "mobile_dapper_hompage_cta": "Picture Frames + Dapper",
-    "promo_cta": "Install Dapper",
-    "promo_subtitle": "Complete the look by displaying your CryptoKitty in your Scene. Don't have a CryptoKitty? Install Dapper wallet and get a free, unique Purrstige Cat.",
-    "promo_title": "You’re looking Dapper today!"
+    "promo_assetpack_banner": "Customize your look, claim your name, grab your Passport and GO!",
+    "promo_body": "Customize your look, claim your name and grab your Passport. A single sign-on to connect all of your experiences in Decentraland.",
+    "promo_subtitle": "Enter the Metaverse in style",
+    "promo_title": "Decentraland Avatars"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -238,6 +230,16 @@
     "max_area_error": "Your Scene can't have more than {area} parcels",
     "min_area_error": "Your Scene is too small"
   },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "We were unable to save your work",
+      "title": "On snap!"
+    },
+    "sign_in": {
+      "description": "You've reached the limit of your browser's storage, please sign in to continue",
+      "title": "Oh noes!"
+    }
+  },
   "shortcuts": {
     "delete": "Delete item",
     "duplicate": "Duplicate item",
@@ -263,6 +265,12 @@
     "item_shortcuts": "Item",
     "other_shortcuts": "Other",
     "title": "Shortcuts"
+  },
+  "sync": {
+    "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
+    "loading": "Your scenes are being uploaded to the cloud",
+    "retry": "Retry",
+    "success": "All scenes uploaded successfully!"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -313,6 +321,11 @@
     "subtitle": "The Builder does not support your browser.{br}Please visit this page using {chrome} or {firefox}",
     "title": "Oops!"
   },
+  "user_menu": {
+    "guest": "Guest",
+    "sign_in": "Sign In",
+    "sign_out": "Sign Out"
+  },
   "validation": {
     "project": {
       "description": {
@@ -328,15 +341,7 @@
     "youtube_id": "cHEblD8xZwI"
   },
   "wallet": {
-    "promo_body": "Get one from {cta} with a free Purrstige Cat to add to your Scene!",
-    "promo_cta": "Dapper",
-    "promo_title": "Don’t have a wallet yet?",
-    "title": "Connect your wallet to decorate your Scene with crypto-collectibles.",
-    "signature_error": "Failed to sign message"
-  },
-  "user_menu": {
-    "sign_in": "Sign In",
-    "sign_out": "Sign Out",
-    "guest": "Guest"
+    "signature_error": "Failed to sign message",
+    "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
   }
 }

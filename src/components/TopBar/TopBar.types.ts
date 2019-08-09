@@ -22,6 +22,7 @@ export type Props = {
   selectedEntityId: string | null
   isLoading: boolean
   isPreviewing: boolean
+  isUploading: boolean
   isSidebarOpen: boolean
   enabledTools: Record<string, boolean>
   onSetGizmo: typeof setGizmo
@@ -35,7 +36,15 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'gizmo' | 'currentProject' | 'metrics' | 'isLoading' | 'isPreviewing' | 'isSidebarOpen' | 'selectedEntityId' | 'enabledTools'
+  | 'gizmo'
+  | 'currentProject'
+  | 'metrics'
+  | 'isLoading'
+  | 'isPreviewing'
+  | 'isUploading'
+  | 'isSidebarOpen'
+  | 'selectedEntityId'
+  | 'enabledTools'
 >
 
 export type MapDispatchProps = Pick<

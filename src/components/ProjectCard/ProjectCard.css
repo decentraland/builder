@@ -88,3 +88,22 @@
   background-size: cover;
   background-position: center;
 }
+
+.ProjectCard .title-wrapper {
+  display: flex;
+}
+
+.ProjectCard .Icon.is-uploading {
+  margin-left: 4px;
+  margin-top: 2px;
+}
+
+.ProjectCard .error-indicator {
+  width: 16px;
+  height: 16px;
+  background: url(../../images/save-error.svg);
+  background-repeat: no-repeat;
+  background-position: center -2px;
+  margin-top: 3px;
+  margin-left: 7px;
+}

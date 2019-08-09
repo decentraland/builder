@@ -5,6 +5,7 @@ import { deleteProject, duplicateProject } from 'modules/project/actions'
 import { getDeploymentStatus } from 'modules/deployment/selectors'
 import { getScene } from 'modules/scene/selectors'
 import { openModal } from 'modules/modal/actions'
+import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
 
 import { MapStateProps, MapDispatch, MapDispatchProps, OwnProps } from './ProjectCard.types'
 import ProjectCard from './ProjectCard'
@@ -14,7 +15,9 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const scene = getScene(project.sceneId)(state)
   return {
     items: scene ? scene.metrics.entities : 0,
-    deploymentStatus: getDeploymentStatus(state)[ownProps.project.id]
+    deploymentStatus: getDeploymentStatus(state)[ownProps.project.id],
+    isUploading: getLoadingSet(state).has(project.id),
+    hasError: getErrorSet(state).has(project.id)
   }
 }
 

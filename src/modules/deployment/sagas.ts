@@ -1,10 +1,10 @@
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { takeLatest, put, select, call, take, race } from 'redux-saga/effects'
+import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getState as getUserState } from 'modules/user/selectors'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { getCurrentScene, getScene } from 'modules/scene/selectors'
+import { getCurrentScene } from 'modules/scene/selectors'
 import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
@@ -43,18 +43,12 @@ import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUN
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getDeployment } from './selectors'
-import {
-  SET_PROJECT,
-  loadManifestRequest,
-  LOAD_MANIFEST_FAILURE,
-  LOAD_MANIFEST_SUCCESS,
-  LoadManifestFailureAction,
-  LoadManifestSuccessAction
-} from 'modules/project/actions'
+import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getSub } from 'modules/auth/selectors'
+import { getSceneByProjectId } from 'modules/scene/utils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -221,21 +215,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
 }
 
 function* getContentServiceFiles(project: Project, point: Coordinate, rotation: Rotation, createEmptyGame: boolean = false) {
-  let scene: Scene = yield select(getScene(project.sceneId))
-  if (!scene) {
-    yield put(loadManifestRequest(project.id))
-    const result: { failure?: LoadManifestFailureAction; success?: LoadManifestSuccessAction } = yield race({
-      success: take(LOAD_MANIFEST_SUCCESS),
-      failure: take(LOAD_MANIFEST_FAILURE)
-    })
-    if (result.success) {
-      scene = result.success.payload.manifest.scene
-    } else if (result.failure) {
-      throw new Error(result.failure.payload.error)
-    } else {
-      throw new Error('Error loading scene')
-    }
-  }
+  const scene = yield getSceneByProjectId(project.id)
 
   const files = yield call(() =>
     createFiles({

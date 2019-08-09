@@ -2,8 +2,7 @@
 // and they get converted to regular objects and arrays
 
 export function addElement(set: string[], element: string) {
-  removeElement(set, element)
-  return [...set, element]
+  return [...removeElement(set, element), element]
 }
 
 export function removeElement(set: string[], element: string) {
