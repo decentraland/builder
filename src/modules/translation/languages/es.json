@@ -157,8 +157,12 @@
     "terms_and_conditions": "Términos y Condiciones"
   },
   "home_page": {
-    "empty_projects_cta": "¡Selecciona una plantilla debajo para comenzar a construir cosas increíbles!",
     "import_scene": "Cargar Escena",
+    "sort": {
+      "newest": "Más Nuevas",
+      "name": "Nombre",
+      "size": "Tamaño"
+    },
     "project_actions": {
       "delete_project": "Borrar Escena",
       "duplicate_project": "Duplicar Escena",

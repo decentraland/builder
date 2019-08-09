@@ -152,6 +152,11 @@
   },
   "home_page": {
     "import_scene": "Upload Scene",
+    "sort": {
+      "newest": "Newest",
+      "name": "Name",
+      "size": "Size"
+    },
     "project_actions": {
       "delete_project": "Delete Scene",
       "duplicate_project": "Duplicate Scene",
