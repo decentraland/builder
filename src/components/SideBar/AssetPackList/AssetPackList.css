@@ -3,7 +3,7 @@
   color: var(--promo-banner-text);
   width: calc(var(--sidebar-width) - 32px);
   height: 80px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
   margin-bottom: 8px;
   border-radius: 8px;
