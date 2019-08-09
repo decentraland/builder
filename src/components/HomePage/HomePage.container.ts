@@ -5,14 +5,18 @@ import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { Template } from 'modules/template/types'
 import { openModal } from 'modules/modal/actions'
-import { getData as getProjects, isFetching } from 'modules/project/selectors'
+import { isFetching } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
+import { getProjects, getPage, getSortBy, getTotalPages } from 'modules/ui/dashboard/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
 
 const mapState = (state: RootState): MapStateProps => ({
   projects: getProjects(state),
-  isFetching: isFetching(state)
+  isFetching: isFetching(state),
+  page: getPage(state),
+  sortBy: getSortBy(state),
+  totalPages: getTotalPages(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
@@ -24,7 +28,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
         }
       })
     ),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onPageChange: options => dispatch(navigateTo(locations.root(options)))
 })
 
 export default connect(
