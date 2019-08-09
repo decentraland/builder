@@ -20,12 +20,12 @@
 }
 
 .AssetPackList .promo .icon {
-  background-image: url('../../../images/avatars-promo-2.png');
+  background-image: url('../../../images/promo-assets.png');
   background-repeat: no-repeat;
   background-size: contain;
-  width: 80px;
-  height: 80px;
-  margin-right: 16px;
+  width: 128px;
+  height: 100px;
+  margin-right: 10px;
   background-position: center;
   flex: none;
 }
