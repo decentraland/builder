@@ -5,8 +5,8 @@ import { CONTENT_SERVER_URL } from 'lib/api/content'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
-export const THUMBNAIL_WIDTH = 246
-export const THUMBNAIL_HEIGHT = 182
+export const THUMBNAIL_WIDTH = 492
+export const THUMBNAIL_HEIGHT = 364
 
 export function getNewEditorScene(project: Project): EditorScene {
   const mappings = {

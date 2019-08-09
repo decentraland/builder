@@ -31,7 +31,7 @@ export function* handleTakePictures() {
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
   const initialAngle = Math.PI / 1.5
-  const shots: Omit<RawMedia, 'thumbnail'> = {
+  const shots: Omit<RawMedia, 'preview'> = {
     north: null,
     east: null,
     south: null,
@@ -67,7 +67,7 @@ export function* handleTakePictures() {
   canvas.classList.remove('recording')
   yield call(() => editorWindow.editor.resize())
 
-  yield put(recordMediaSuccess({ ...shots, thumbnail }))
+  yield put(recordMediaSuccess({ ...shots, preview: thumbnail }))
 }
 
 function* takeEditorScreenshot(angle: number) {

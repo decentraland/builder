@@ -13,6 +13,7 @@ export const debounce = (fn: Function, ms: number) => {
 export const debounceByKey = <T extends (...args: any[]) => any>(fn: T, ms: number) => {
   let timeouts: Record<string, any> = {}
   let futures: Record<string, IFuture<void>> = {}
+
   return (key: string, ...args: Parameters<T>): Promise<void> => {
     const timeout = timeouts[key]
     if (timeout) {
@@ -34,5 +35,19 @@ export const debounceByKey = <T extends (...args: any[]) => any>(fn: T, ms: numb
       }
     }, ms)
     return futures[key]
+  }
+}
+
+export const throttle = <T extends (...args: any[]) => any>(fn: T, ms: number) => {
+  let timers: Record<string, number> = {}
+
+  return (key: string, ...args: Parameters<T>) => {
+    const timer = timers[key]
+    const now = +Date.now()
+
+    if (!timer || now >= timer + ms) {
+      timers[key] = +Date.now()
+      fn(...args)
+    }
   }
 }

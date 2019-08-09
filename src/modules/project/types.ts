@@ -19,4 +19,4 @@ export type Layout = {
 
 export type ProjectLayout = Layout & { hasError: boolean }
 
-export type Manifest = { version: number; project: Project; scene: Scene }
+export type Manifest<T = Project> = { version: number; project: T; scene: Scene }

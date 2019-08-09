@@ -85,3 +85,27 @@ export function areEqualMappings(mappingsA: Record<string, string> = {}, mapping
   }
   return true
 }
+<<<<<<< Updated upstream
+=======
+
+export function* getSceneByProjectId(projectId: string) {
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  let project = projects[projectId]
+  let scene = project && scenes[project.sceneId]
+
+  if (!scene) {
+    yield put(loadManifestRequest(project.id))
+    const result: { success?: LoadManifestSuccessAction; failure?: LoadManifestFailureAction } = yield race({
+      success: take(LOAD_MANIFEST_SUCCESS),
+      failure: take(LOAD_MANIFEST_FAILURE)
+    })
+    if (result.success) {
+      scene = result.success.payload.manifest.scene
+    } else if (result.failure) {
+      throw new Error(result.failure.payload.error)
+    }
+  }
+  return scene
+}
+>>>>>>> Stashed changes

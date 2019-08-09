@@ -13,7 +13,9 @@ import {
   SET_PROJECT,
   SetProjectAction,
   DELETE_PROJECT,
-  DeleteProjectAction
+  DeleteProjectAction,
+  EditProjectThumbnailAction,
+  EDIT_PROJECT_THUMBNAIL
 } from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
@@ -54,7 +56,7 @@ import {
   deleteDeploymentRequest
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds, getFailedDeploymentIds, getLocalDeploymentIds } from './selectors'
-import { forEach, saveProject } from './utils'
+import { forEach, saveProject, saveThumbnail } from './utils'
 
 export function* syncSaga() {
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
@@ -71,6 +73,7 @@ export function* syncSaga() {
   yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(MARK_DIRTY, handleMarkDirty)
+  yield takeLatest(EDIT_PROJECT_THUMBNAIL, handleSaveThumbnail)
 }
 
 function* handleAuthSuccess(_action: AuthSuccessAction) {
@@ -111,6 +114,16 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
     yield put(saveProjectSuccess(project))
   } catch (e) {
     yield put(saveProjectFailure(project, e))
+  }
+}
+
+function* handleSaveThumbnail(action: EditProjectThumbnailAction) {
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const project: Project = projects[action.payload.id]
+  try {
+    yield call(() => saveThumbnail(project.id, project))
+  } catch (e) {
+    // fail gracefully
   }
 }
 

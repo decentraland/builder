@@ -100,18 +100,18 @@ function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
     try {
       yield put(recordMediaRequest())
       const successAction: RecordMediaSuccessAction = yield take(RECORD_MEDIA_SUCCESS)
-      const { north, east, south, west, thumbnail } = successAction.payload.media
+      const { north, east, south, west, preview } = successAction.payload.media
 
-      if (!north || !east || !south || !west || !thumbnail) {
+      if (!north || !east || !south || !west || !preview) {
         throw new Error('Failed to capture scene preview')
       }
 
       yield call(() => api.deployToPool(project, scene, user))
       yield call(() =>
-        api.uploadMedia(rawProject.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+        api.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
       )
 
-      yield put(deployToPoolSuccess(window.URL.createObjectURL(thumbnail)))
+      yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
     } catch (e) {
       yield put(deployToPoolFailure(e.message))
     }
@@ -141,7 +141,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         const east: Blob = yield call(() => objectURLToBlob(media.east))
         const south: Blob = yield call(() => objectURLToBlob(media.south))
         const west: Blob = yield call(() => objectURLToBlob(media.west))
-        const thumbnail: Blob = yield call(() => objectURLToBlob(media.thumbnail))
+        const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
 
         yield call(() =>
           api.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
