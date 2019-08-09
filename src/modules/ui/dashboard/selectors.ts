@@ -60,10 +60,10 @@ export const getProjects = createSelector<RootState, number, SortBy, DataByKey<P
       .sort((a, b) => {
         switch (sortBy) {
           case SortBy.NEWEST: {
-            return a.createdAt > b.createdAt ? 1 : -1
+            return +new Date(a.createdAt) > +new Date(b.createdAt) ? -1 : 1
           }
           case SortBy.NAME: {
-            return a.title > b.title ? 1 : -1
+            return a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
           }
           case SortBy.SIZE: {
             return a.layout.rows * a.layout.cols > b.layout.cols * b.layout.rows ? -1 : 1

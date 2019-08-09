@@ -20,7 +20,6 @@ import { Props, State, DefaultProps } from './HomePage.types'
 import './HomePage.css'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
-const SORT_OPTIONS = [{ value: SortBy.NEWEST, text: 'Newest' }, { value: SortBy.NAME, text: 'Name' }, { value: SortBy.SIZE, text: 'Size' }]
 
 export default class HomePage extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -72,7 +71,18 @@ export default class HomePage extends React.PureComponent<Props, State> {
 
   renderSortDropdown = () => {
     const { sortBy } = this.props
-    return <Dropdown direction="left" value={sortBy} options={SORT_OPTIONS} onChange={this.handleDropdownChange} />
+    return (
+      <Dropdown
+        direction="left"
+        value={sortBy}
+        options={[
+          { value: SortBy.NEWEST, text: t('home_page.sort.newest') },
+          { value: SortBy.NAME, text: t('home_page.sort.name') },
+          { value: SortBy.SIZE, text: t('home_page.sort.size') }
+        ]}
+        onChange={this.handleDropdownChange}
+      />
+    )
   }
 
   handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
@@ -119,8 +129,8 @@ export default class HomePage extends React.PureComponent<Props, State> {
                   <div className="subtitle">
                     {t('home_page.projects_title')}
                     <div className="menu">
-                      {this.renderSortDropdown()}
-                      {hasPagination ? this.renderImportButton() : null}
+                      {projects.length > 1 ? this.renderSortDropdown() : null}
+                      {this.renderImportButton()}
                     </div>
                   </div>
                   <div className="CardList">
