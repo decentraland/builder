@@ -1,6 +1,3 @@
-import { Omit } from 'decentraland-dapps/dist/lib/types'
-
-import { User } from 'modules/user/types'
 import { Scene } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { Deployment, ContentManifest, ContentServiceFile, ContentUploadRequestMetadata } from 'modules/deployment/types'
@@ -19,7 +16,7 @@ export const api = {
   fetchUser: (accessToken?: string) => avatars.fetchUser(accessToken),
   deleteDeployment: (id: string) => builder.deleteDeployment(id),
   deleteProject: (id: string) => builder.deleteProject(id),
-  deployToPool: (project: Omit<Project, 'thumbnail'>, scene: Scene, user: User) => builder.deployToPool(project, scene, user),
+  deployToPool: (projectId: string) => builder.deployToPool(projectId),
   fetchDeployments: () => builder.fetchDeployments(),
   fetchManifest: (id: string) => builder.fetchManifest(id),
   fetchProjects: () => builder.fetchProjects(),

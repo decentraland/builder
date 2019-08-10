@@ -101,7 +101,12 @@
         "title": "Thanks for uploading your Scene!"
       },
       "title": "Publish your Scene",
-      "uploading": "Uploading"
+      "uploading": "Uploading",
+      "sign_in": {
+        "title": "Sign In",
+        "subtitle": "You need to sign in before you publish to the Scene pool",
+        "action": "Sign In"
+      }
     },
     "title": "Publish your Scene"
   },

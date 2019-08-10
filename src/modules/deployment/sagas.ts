@@ -2,14 +2,10 @@ import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
-import { getState as getUserState } from 'modules/user/selectors'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { getCurrentScene } from 'modules/scene/selectors'
 import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
-import { Scene } from 'modules/scene/types'
-import { User } from 'modules/user/types'
 import { api } from 'lib/api'
 import {
   DEPLOY_TO_POOL_REQUEST,
@@ -85,8 +81,6 @@ function* handleMarkDirty() {
 
 function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
   const rawProject: Project | null = yield select(getCurrentProject)
-  const scene: Scene = yield select(getCurrentScene)
-  const user: User = yield select(getUserState)
 
   if (rawProject) {
     const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
@@ -100,10 +94,10 @@ function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
         throw new Error('Failed to capture scene preview')
       }
 
-      yield call(() => api.deployToPool(project, scene, user))
       yield call(() =>
         api.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
       )
+      yield call(() => api.deployToPool(project.id))
 
       yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
     } catch (e) {
@@ -117,7 +111,7 @@ function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
 function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   const { placement, projectId } = action.payload
   const ethAddress = yield select(getAddress)
-  const user: User = yield select(getUserState)
+  const userId = yield select(getSub)
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
 
@@ -128,7 +122,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       const manifest = yield call(() => getFileManifest(contentFiles))
       const timestamp = Math.round(Date.now() / 1000)
       const signature = yield signMessage(`${rootCID}.${timestamp}`)
-      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
+      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, userId)
       const media: Media | null = yield select(getMedia)
       if (media) {
         const north: Blob = yield call(() => objectURLToBlob(media.north))
@@ -189,7 +183,7 @@ function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
 function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   const { projectId } = action.payload
   const ethAddress = yield select(getAddress)
-  const user: User = yield select(getUserState)
+  const userId = yield select(getSub)
   const deployment: Deployment | null = yield select(getDeployment(projectId))
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
@@ -202,7 +196,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
       const manifest = yield call(() => getFileManifest(contentFiles))
       const timestamp = Math.round(Date.now() / 1000)
       const signature = yield signMessage(`${rootCID}.${timestamp}`)
-      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, user.id)
+      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, userId)
 
       yield call(() => api.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
       yield put(clearDeploymentSuccess(projectId))

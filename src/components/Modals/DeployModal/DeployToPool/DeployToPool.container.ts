@@ -1,35 +1,30 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { Project } from 'modules/project/types'
-import { User } from 'modules/user/types'
-import { getEmail } from 'modules/user/selectors'
 import { isLoading, getError, getProgress, isUploadingRecording } from 'modules/deployment/selectors'
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { setUserProfile } from 'modules/user/actions'
 import { getMedia, isRecording } from 'modules/media/selectors'
-import { editProject } from 'modules/project/actions'
+import { getEmail, isLoggedIn } from 'modules/auth/selectors'
 import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
+import { login } from 'modules/auth/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   error: getError(state),
-  userEmail: getEmail(state),
-  currentProject: getCurrentProject(state),
+  email: getEmail(state),
+  project: getCurrentProject(state),
   isLoading: isLoading(state),
   progress: getProgress(state).value,
   isRecording: isRecording(state),
   isUploadingRecording: isUploadingRecording(state),
   media: getMedia(state),
-  ethAddress: getAddress(state)
+  isLoggedIn: isLoggedIn(state)
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onDeployToPool: (projectId: string) => dispatch(deployToPoolRequest(projectId)),
-  onSaveUser: (user: Partial<User>) => dispatch(setUserProfile(user)),
-  onSaveProject: (id: string, project: Partial<Project>) => dispatch(editProject(id, project))
+  onLogin: () => dispatch(login())
 })
 
 export default connect(

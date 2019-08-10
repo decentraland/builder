@@ -12,7 +12,6 @@ import { RootState } from 'modules/common/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
 import { UIState } from 'modules/ui/reducer'
-import { UserState } from 'modules/user/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
@@ -38,7 +37,6 @@ export type RootState = {
   assetPack: AssetPackState
   asset: AssetState
   ui: UIState
-  user: UserState
   project: ProjectState
   scene: UndoableSceneState
   router: RouterState

@@ -62,7 +62,7 @@ export function buildUploadRequestMetadata(
   signature: string,
   address: string,
   timestamp: number,
-  userId: string
+  userId: string | null
 ): ContentUploadRequestMetadata {
   const validity = new Date()
   validity.setMonth(validity.getMonth() + 6)
@@ -74,7 +74,7 @@ export function buildUploadRequestMetadata(
     validity,
     sequence: 2,
     timestamp,
-    userId
+    userId: userId || ''
   }
 }
 

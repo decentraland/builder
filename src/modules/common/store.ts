@@ -17,7 +17,6 @@ import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'mo
 import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_DEPLOYMENT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
-import { SET_USER_ID, SET_USER_EMAIL } from 'modules/user/actions'
 import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
 import { AUTH_SUCCESS, AUTH_FAILURE } from 'modules/auth/actions'
 import { Project } from 'modules/project/types'
@@ -76,8 +75,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     EDITOR_UNDO,
     EDITOR_REDO,
     DELETE_PROJECT,
-    SET_USER_ID,
-    SET_USER_EMAIL,
     SET_AVAILABLE_ASSET_PACKS,
     DEPLOY_TO_LAND_SUCCESS,
     CLEAR_DEPLOYMENT_SUCCESS,

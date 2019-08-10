@@ -12,7 +12,6 @@ import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { editorReducer as editor } from 'modules/editor/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
-import { userReducer as user } from 'modules/user/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
@@ -33,7 +32,6 @@ export function createRootReducer(history: History) {
       assetPack,
       asset,
       ui,
-      user,
       project,
       scene,
       deployment,

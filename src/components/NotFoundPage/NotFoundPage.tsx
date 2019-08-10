@@ -10,22 +10,31 @@ import LoadingPage from 'components/LoadingPage'
 import { Props, State } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
-const LOADING_TIMEOUT = 2000
+const LOADING_TIMEOUT = 10000
 
 export default class NotFoundPage extends React.PureComponent<Props, State> {
   state = {
     isLoading: true
   }
 
-  componentDidMount() {
+  mounted = false
+
+  componentWillMount() {
     const analytics = getAnalytics()
     document.body.classList.add('notfound-body')
     analytics.track('Not found page', {})
-    setTimeout(() => this.setState({ isLoading: false }), LOADING_TIMEOUT)
+    this.mounted = true
+    this.setState({ isLoading: true })
+    setTimeout(() => {
+      if (this.mounted) {
+        this.setState({ isLoading: false }), LOADING_TIMEOUT
+      }
+    })
   }
 
   componentWillUnmount() {
     document.body.classList.remove('notfound-body')
+    this.mounted = false
   }
 
   handleOnClick = () => {

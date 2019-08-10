@@ -72,7 +72,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case DEPLOY_TO_POOL_REQUEST: {
       return {
         ...state,
-        error: null
+        error: null,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case DEPLOY_TO_POOL_SUCCESS: {
@@ -85,7 +86,8 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
           stage: ProgressStage.NONE,
           value: 0
         },
-        error: null
+        error: null,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case DEPLOY_TO_POOL_FAILURE: {
@@ -94,7 +96,12 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         data: {
           ...state.data
         },
-        error: action.payload.error
+        progress: {
+          stage: ProgressStage.NONE,
+          value: 0
+        },
+        error: action.payload.error,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case DEPLOY_TO_LAND_REQUEST: {
