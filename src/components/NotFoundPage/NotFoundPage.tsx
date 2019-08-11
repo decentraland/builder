@@ -10,7 +10,7 @@ import LoadingPage from 'components/LoadingPage'
 import { Props, State } from './NotFoundPage.types'
 import './NotFoundPage.css'
 
-const LOADING_TIMEOUT = 10000
+const LOADING_TIMEOUT = 2000
 
 export default class NotFoundPage extends React.PureComponent<Props, State> {
   state = {
@@ -27,9 +27,9 @@ export default class NotFoundPage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
     setTimeout(() => {
       if (this.mounted) {
-        this.setState({ isLoading: false }), LOADING_TIMEOUT
+        this.setState({ isLoading: false })
       }
-    })
+    }, LOADING_TIMEOUT)
   }
 
   componentWillUnmount() {
