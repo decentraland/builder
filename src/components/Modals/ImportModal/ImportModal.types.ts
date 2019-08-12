@@ -7,7 +7,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  acceptedProjects: ImportedFile[] | []
+  acceptedProjects: ImportedFile[]
   canImport: boolean
 }
 

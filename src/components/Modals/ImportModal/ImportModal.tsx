@@ -159,7 +159,8 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
   handleImport = () => {
     // At this point we are sure that the accepted projects are all valid
-    this.props.onImport(this.state.acceptedProjects as Manifest[])
+    const manifests = this.state.acceptedProjects.map(p => p.manifest!)
+    this.props.onImport(manifests)
     this.props.onClose()
   }
 
