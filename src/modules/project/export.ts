@@ -46,7 +46,7 @@ export async function createFiles(args: {
   }
 }
 
-export function createManifest(project: Project, scene: Scene): Manifest {
+export function createManifest<T = Project>(project: T, scene: Scene): Manifest<T> {
   return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 

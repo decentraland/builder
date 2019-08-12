@@ -25,6 +25,7 @@ export const api = {
   fetchProjects: () => builder.fetchProjects(),
   saveDeployment: (deployment: Deployment) => builder.saveDeployment(deployment),
   saveProject: (project: Project, scene: Scene) => builder.saveProject(project, scene),
+  saveThumbnail: (project: Project) => builder.saveThumbnail(project),
   uploadMedia: (
     projectId: string,
     thumbnail: Blob,

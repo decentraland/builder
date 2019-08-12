@@ -109,8 +109,18 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         loading: loadingReducer(state.loading, action)
       }
     }
+    case LOAD_MANIFEST_SUCCESS: {
+      const { manifest } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [manifest.project.id]: { ...manifest.project }
+        },
+        loading: loadingReducer(state.loading, action)
+      }
+    }
     case LOAD_MANIFEST_REQUEST:
-    case LOAD_MANIFEST_SUCCESS:
     case LOAD_MANIFEST_FAILURE: {
       return {
         ...state,

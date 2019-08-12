@@ -16,7 +16,7 @@ import {
   DeleteProjectAction
 } from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
-import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
+import { PROVISION_SCENE } from 'modules/scene/actions'
 import {
   DEPLOY_TO_LAND_SUCCESS,
   DeployToLandSuccessAction,
@@ -51,10 +51,12 @@ import {
   DELETE_DEPLOYMENT_REQUEST,
   DeleteDeploymentRequestAction,
   deleteProjectRequest,
-  deleteDeploymentRequest
+  deleteDeploymentRequest,
+  SAVE_PROJECT_SUCCESS,
+  SaveProjectSuccessAction
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds, getFailedDeploymentIds, getLocalDeploymentIds } from './selectors'
-import { forEach, saveProject } from './utils'
+import { forEach, saveProject, saveThumbnail } from './utils'
 
 export function* syncSaga() {
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
@@ -71,6 +73,7 @@ export function* syncSaga() {
   yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(MARK_DIRTY, handleMarkDirty)
+  yield takeLatest(SAVE_PROJECT_SUCCESS, handleSaveProjectSuccess)
 }
 
 function* handleAuthSuccess(_action: AuthSuccessAction) {
@@ -111,6 +114,17 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
     yield put(saveProjectSuccess(project))
   } catch (e) {
     yield put(saveProjectFailure(project, e))
+  }
+}
+
+function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const project = projects[action.payload.project.id]
+
+  try {
+    saveThumbnail(project.id, project)
+  } catch (e) {
+    console.error(e)
   }
 }
 
@@ -162,7 +176,7 @@ function* handleDeleteProject(action: DeleteProjectAction) {
   }
 }
 
-function* handleProvisionScene(_action: ProvisionSceneAction) {
+function* handleProvisionScene() {
   if (yield select(isLoggedIn)) {
     const project: Project | null = yield select(getCurrentProject)
     if (project) {

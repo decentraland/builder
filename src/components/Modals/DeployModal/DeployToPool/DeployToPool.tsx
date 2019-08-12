@@ -150,7 +150,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
     return (
       <div className="DeployToPool success">
-        <img src={media ? media.thumbnail : ''} className="preview" />
+        <img src={media ? media.preview : ''} className="preview" />
         <Header size="large" className="modal-title">
           {t('deployment_modal.pool.success.title')}
         </Header>

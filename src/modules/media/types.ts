@@ -1,5 +1,5 @@
 export type Media = {
-  thumbnail: string
+  preview: string
   north: string
   east: string
   south: string
@@ -7,7 +7,7 @@ export type Media = {
 }
 
 export type RawMedia = {
-  thumbnail: Blob | null
+  preview: Blob | null
   north: Blob | null
   east: Blob | null
   south: Blob | null

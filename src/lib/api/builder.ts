@@ -7,6 +7,7 @@ import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { User } from 'modules/user/types'
 import { createManifest } from 'modules/project/export'
+import { dataURLToBlob } from 'modules/media/utils'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -25,12 +26,15 @@ export type RemoteProject = {
   updated_at: string
 }
 
-function toRemoteProject(project: Project): RemoteProject {
+/**
+ * Transforms a Project into a RemoteProject for saving purposes only.
+ * The `thumbnail` is omitted.
+ */
+function toRemoteProject(project: Project): Omit<RemoteProject, 'thumbnail'> {
   return {
     id: project.id,
     title: project.title,
     description: project.description,
-    thumbnail: project.thumbnail,
     scene_id: project.sceneId,
     user_id: project.userId,
     rows: project.layout.rows,
@@ -45,7 +49,7 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     id: remoteProject.id,
     title: remoteProject.title,
     description: remoteProject.description,
-    thumbnail: remoteProject.thumbnail,
+    thumbnail: `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/thumbnail.png`,
     sceneId: remoteProject.scene_id,
     userId: remoteProject.user_id,
     layout: {
@@ -113,12 +117,12 @@ export class BuilderAPI extends BaseAPI {
 
   async uploadMedia(
     projectId: string,
-    thumbnail: Blob,
+    preview: Blob,
     shots: Record<string, Blob>,
     onUploadProgress?: (progress: { loaded: number; total: number }) => void
   ) {
     const formData = new FormData()
-    formData.append('thumb', thumbnail)
+    formData.append('preview', preview)
     formData.append('north', shots.north)
     formData.append('east', shots.east)
     formData.append('south', shots.south)
@@ -150,8 +154,17 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async saveProject(project: Project, scene: Scene) {
-    const manifest = createManifest(toRemoteProject(project) as any, scene)
+    const manifest = createManifest(toRemoteProject(project), scene)
     await this.request('put', `/projects/${project.id}/manifest`, { manifest }, authorize())
+  }
+
+  async saveThumbnail(project: Project) {
+    const blob = dataURLToBlob(project.thumbnail)
+    const formData = new FormData()
+    if (blob) {
+      formData.append('thumbnail', blob)
+      await this.request('post', `/projects/${project.id}/media`, formData, authorize())
+    }
   }
 
   async deleteProject(id: string) {

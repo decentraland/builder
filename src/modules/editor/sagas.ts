@@ -341,14 +341,14 @@ function* handleDropItem(action: DropItemAction) {
 
 function* handleScreenshot(_: TakeScreenshotAction) {
   try {
+    const currentProject: Project | null = yield select(getCurrentProject)
+    if (!currentProject) return
+
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return
 
     const thumbnail = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
     if (!thumbnail) return
-
-    const currentProject: Project | null = yield select(getCurrentProject)
-    if (!currentProject) return
 
     yield put(editProjectThumbnail(currentProject.id, thumbnail))
   } catch (e) {

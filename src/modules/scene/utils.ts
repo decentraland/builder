@@ -100,10 +100,8 @@ export function* getSceneByProjectId(projectId: string) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
   let project = projects[projectId]
-  if (!project) {
-    throw new Error(`Project with id "${projectId}" not found in store`)
-  }
-  let scene = scenes[project.sceneId]
+  let scene = project && scenes[project.sceneId]
+
   if (!scene) {
     yield put(loadManifestRequest(project.id))
     const result: { success?: LoadManifestSuccessAction; failure?: LoadManifestFailureAction } = yield race({
