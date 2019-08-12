@@ -4,7 +4,6 @@ import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getState as getUserState } from 'modules/user/selectors'
 import {
   ADD_ITEM,
   DUPLICATE_ITEM,
@@ -30,6 +29,7 @@ import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
 import { trimAsset } from './track'
 import { handleDelighted } from './delighted'
+import { getSub } from 'modules/auth/selectors'
 
 export function* segmentSaga() {
   yield fork(handleDelighted)
@@ -118,23 +118,23 @@ function handleConnectWallet(action: ConnectWalletSuccessAction) {
 
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
-  const user = yield select(getUserState)
   if (!project) return
-  track(DEPLOY_TO_POOL_SUCCESS, { project_id: project.id, user })
+  const userId = yield select(getSub)
+  track(DEPLOY_TO_POOL_SUCCESS, { project_id: project.id, user_id: userId })
 }
 
 function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
-  const user = yield select(getUserState)
   if (!project) return
-  track(DEPLOY_TO_LAND_SUCCESS, { project_id: project.id, user })
+  const userId = yield select(getSub)
+  track(DEPLOY_TO_LAND_SUCCESS, { project_id: project.id, user_id: userId })
 }
 
 function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
-  const user = yield select(getUserState)
   if (!project) return
-  track(CLEAR_DEPLOYMENT_SUCCESS, { project_id: project.id, user })
+  const userId = yield select(getSub)
+  track(CLEAR_DEPLOYMENT_SUCCESS, { project_id: project.id, user_id: userId })
 }
 
 function* handleSearchAssets(action: SearchAssetsAction) {

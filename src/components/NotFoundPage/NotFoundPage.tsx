@@ -17,15 +17,24 @@ export default class NotFoundPage extends React.PureComponent<Props, State> {
     isLoading: true
   }
 
-  componentDidMount() {
+  mounted = false
+
+  componentWillMount() {
     const analytics = getAnalytics()
     document.body.classList.add('notfound-body')
     analytics.track('Not found page', {})
-    setTimeout(() => this.setState({ isLoading: false }), LOADING_TIMEOUT)
+    this.mounted = true
+    this.setState({ isLoading: true })
+    setTimeout(() => {
+      if (this.mounted) {
+        this.setState({ isLoading: false })
+      }
+    }, LOADING_TIMEOUT)
   }
 
   componentWillUnmount() {
     document.body.classList.remove('notfound-body')
+    this.mounted = false
   }
 
   handleOnClick = () => {

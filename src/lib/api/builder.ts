@@ -1,11 +1,10 @@
 import { env } from 'decentraland-commons'
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
+import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { authorize } from './auth'
 import { Rotation, Deployment } from 'modules/deployment/types'
-import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
-import { User } from 'modules/user/types'
 import { createManifest } from 'modules/project/export'
 import { dataURLToBlob } from 'modules/media/utils'
 
@@ -110,8 +109,8 @@ export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deploy
 // API
 
 export class BuilderAPI extends BaseAPI {
-  async deployToPool(project: Omit<Project, 'thumbnail'>, scene: Scene, user: User) {
-    await this.request('post', `/project`, { entry: JSON.stringify({ version: 1, project, scene, user }) })
+  async deployToPool(projectId: string) {
+    await this.request('put', `/projects/${projectId}/pool`, null, authorize())
     return
   }
 

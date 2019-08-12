@@ -1,30 +1,25 @@
 import { Project } from 'modules/project/types'
-import { setUserProfile } from 'modules/user/actions'
 import { deployToPoolRequest } from 'modules/deployment/actions'
-import { editProject } from 'modules/project/actions'
 import { Media } from 'modules/media/types'
+import { login } from 'modules/auth/actions'
 
 export type Props = {
   name: string
-  currentProject: Project | null
-  userEmail: string
+  project: Project | null
+  email: string | null
   error: string | null
   isLoading: boolean
   progress: number
   isRecording: boolean
+  isLoggedIn: boolean
   isUploadingRecording: boolean
   media: Media | null
-  ethAddress: string | undefined
   onDeployToPool: typeof deployToPoolRequest
-  onSaveProject: typeof editProject
-  onSaveUser: typeof setUserProfile
+  onLogin: typeof login
   onClose: () => void
 }
 
 export type State = {
-  email: string
-  ethAddress: string
-  project: Project
   isSubmitting: boolean
   isSuccess: boolean
 }
@@ -36,6 +31,6 @@ export type Step = {
 
 export type MapStateProps = Pick<
   Props,
-  'currentProject' | 'isRecording' | 'isLoading' | 'isUploadingRecording' | 'userEmail' | 'error' | 'media' | 'ethAddress' | 'progress'
+  'project' | 'isRecording' | 'isLoading' | 'isUploadingRecording' | 'email' | 'error' | 'media' | 'progress' | 'isLoggedIn'
 >
-export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onSaveUser' | 'onSaveProject'>
+export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onLogin'>
