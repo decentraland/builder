@@ -26,7 +26,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
 
   renderProject = (saved: ImportedFile) => {
-    if (!saved.manifest) return
+    if (!saved.manifest) return null
 
     if (!saved.manifest.project || !saved.manifest.scene) {
       if (saved.fileName) {
