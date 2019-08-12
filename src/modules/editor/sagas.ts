@@ -58,7 +58,7 @@ import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
-import { CONTENT_SERVER_URL } from 'lib/api/content'
+import { ASSETS_CONTENT_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
 
@@ -383,7 +383,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
     for (let [file, hash] of contentEntries) {
       if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${CONTENT_SERVER_URL}/contents/${hash}`)
+        editorWindow.editor.preloadFile(`${ASSETS_CONTENT_URL}/${hash}`)
       }
     }
   })

@@ -7,7 +7,7 @@ import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { CONTENT_SERVER_URL } from 'lib/api/content'
+import { ASSETS_CONTENT_URL } from 'lib/api/content'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
 import { getParcelOrientation } from './utils'
 
@@ -231,7 +231,7 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { lo
           .split('/')
           .slice(1)
           .join('/') // drop the asset pack id namespace
-        mappings[path] = CONTENT_SERVER_URL + '/contents/' + gltfShape.data.mappings[key]
+        mappings[path] = ASSETS_CONTENT_URL + '/' + gltfShape.data.mappings[key]
       }
     } else if (component.type === ComponentType.NFTShape) {
       shouldDownloadFrame = true
