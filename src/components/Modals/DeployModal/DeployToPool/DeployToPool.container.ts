@@ -6,9 +6,9 @@ import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getMedia, isRecording } from 'modules/media/selectors'
 import { getEmail, isLoggedIn } from 'modules/auth/selectors'
+import { login } from 'modules/auth/actions'
 import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
-import { login } from 'modules/auth/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   error: getError(state),

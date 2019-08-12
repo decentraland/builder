@@ -5,10 +5,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { EMAIL_INTEREST } from 'lib/api/email'
 import { api } from 'lib/api'
+import Icon from 'components/Icon'
 
 import { Props, State } from './DeployToPool.types'
 import './DeployToPool.css'
-import Icon from 'components/Icon'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
   state = {
