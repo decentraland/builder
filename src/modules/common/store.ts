@@ -26,6 +26,7 @@ import { rootSaga } from './sagas'
 import { RootState } from './types'
 import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
+import { getLoadingSet } from 'modules/sync/selectors'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -142,6 +143,11 @@ loadStorageMiddleware(store)
 
 export function getState() {
   return store.getState()
+}
+
+window.onbeforeunload = function() {
+  const syncCount = getLoadingSet(store.getState() as RootState).size
+  return syncCount > 0 || null
 }
 
 export { store, history }
