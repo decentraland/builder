@@ -157,9 +157,12 @@
     "terms_and_conditions": "使用条款"
   },
   "home_page": {
-    "empty_projects_cta": "在下面选择一个模板开始构建!",
-    "empty_projects_title": "这是您的项目所在",
     "import_scene": "上传场景",
+    "sort": {
+      "newest": "最新",
+      "name": "名称",
+      "size": "尺寸"
+    },
     "project_actions": {
       "delete_project": "删除场景",
       "duplicate_project": "复制场景",

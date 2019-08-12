@@ -68,6 +68,7 @@
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
 }
 
 .project-card:nth-child(4n) {
@@ -89,6 +90,46 @@
 .home-page-banner {
   height: 80px;
   padding: 0px;
+}
+
+.HomePage .project-cards .menu {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.HomePage .project-cards .menu .ui.dropdown {
+  margin-right: 32px;
+}
+
+.HomePage .project-cards.has-pagination .CardList {
+  min-height: 606px;
+}
+
+.HomePage .project-cards .ui.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.HomePage .project-cards .ui.pagination {
+  margin-top: 40px;
+}
+
+.HomePage .project-cards .ui.pagination .item[type='nextItem'],
+.HomePage .project-cards .ui.pagination .item[type='prevItem'] {
+  position: absolute;
+  background-color: var(--secondary);
+}
+
+.HomePage .project-cards .ui.pagination .item[type='prevItem'] {
+  left: 0px;
+}
+
+.HomePage .project-cards .ui.pagination .item[type='nextItem'] {
+  right: 0px;
 }
 
 @keyframes templateAnimation {
