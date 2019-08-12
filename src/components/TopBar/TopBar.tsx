@@ -39,7 +39,10 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   handleTitleClick = () => {
-    this.props.onOpenModal('EditProjectModal')
+    const { isLoading, onOpenModal } = this.props
+    if (!isLoading) {
+      onOpenModal('EditProjectModal')
+    }
   }
 
   handleExport = () => {
@@ -76,7 +79,11 @@ export default class TopBar extends React.PureComponent<Props> {
             {currentProject ? (
               <>
                 <DeploymentStatus projectId={currentProject.id} />
-                <div className="project-title" onClick={this.handleTitleClick} title={currentProject.title}>
+                <div
+                  className={`project-title ${isLoading ? 'disabled' : ''}`}
+                  onClick={this.handleTitleClick}
+                  title={currentProject.title}
+                >
                   {currentProject.title}
                 </div>
                 {isUploading ? (

@@ -49,6 +49,11 @@
   overflow: hidden;
 }
 
+.TopBar .project-title.disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .TopBar .edit-project-icon {
   margin-left: 12px;
 }
