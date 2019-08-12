@@ -73,7 +73,7 @@ export function* syncSaga() {
   yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
   yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(MARK_DIRTY, handleMarkDirty)
-  yield takeLatest(EDIT_PROJECT_THUMBNAIL, handleSaveThumbnail)
+  yield takeLatest(EDIT_PROJECT_THUMBNAIL, handleEditProjectThumbnail)
 }
 
 function* handleAuthSuccess(_action: AuthSuccessAction) {
@@ -117,7 +117,7 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
   }
 }
 
-function* handleSaveThumbnail(action: EditProjectThumbnailAction) {
+function* handleEditProjectThumbnail(action: EditProjectThumbnailAction) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project: Project = projects[action.payload.id]
   try {

@@ -163,9 +163,7 @@ export class BuilderAPI extends BaseAPI {
     const formData = new FormData()
     if (blob) {
       formData.append('thumbnail', blob)
-      await this.request('post', `/projects/${project.id}/media`, formData, {
-        ...authorize()
-      })
+      await this.request('post', `/projects/${project.id}/media`, formData, authorize())
     }
   }
 

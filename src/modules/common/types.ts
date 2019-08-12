@@ -20,7 +20,6 @@ import { DeploymentState } from 'modules/deployment/reducer'
 import { MediaState } from 'modules/media/reducer'
 import { AuthState } from 'modules/auth/types'
 import { SyncState } from 'modules/sync/types'
-import { Omit } from 'react-redux'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -51,4 +50,3 @@ export type RootState = {
 
 export type RootStore = Store<RootState>
 export type RootReducer = Reducer<RootState>
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>

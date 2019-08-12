@@ -23,7 +23,7 @@ export type MediaReducerAction = RecordMediaRequestAction | RecordMediaSuccessAc
 export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction): MediaState => {
   switch (action.type) {
     case RECORD_MEDIA_SUCCESS: {
-      const { north, east, south, west, preview: thumbnail } = action.payload.media
+      const { north, east, south, west, preview } = action.payload.media
 
       if (state.media) {
         Object.values(state.media).forEach(url => window.URL.revokeObjectURL(url))
@@ -36,7 +36,7 @@ export const mediaReducer = (state = INITIAL_STATE, action: MediaReducerAction):
           east: window.URL.createObjectURL(east),
           south: window.URL.createObjectURL(south),
           west: window.URL.createObjectURL(west),
-          preview: window.URL.createObjectURL(thumbnail)
+          preview: window.URL.createObjectURL(preview)
         },
         progress: 0
       }
