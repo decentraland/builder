@@ -57,7 +57,7 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
-import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isReady } from './selectors'
 import { ASSETS_CONTENT_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
@@ -137,7 +137,6 @@ function* createNewEditorScene(project: Project) {
 
 function* handleSceneChange() {
   yield renderScene()
-  yield delay(500)
   yield put(takeScreenshot())
 }
 
@@ -343,6 +342,15 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   try {
     const currentProject: Project | null = yield select(getCurrentProject)
     if (!currentProject) return
+
+    let editorReady: boolean = yield select(isReady)
+
+    while (!editorReady) {
+      const readyAction: SetEditorReadyAction = yield take(SET_EDITOR_READY)
+      editorReady = readyAction.payload.isReady
+    }
+
+    yield delay(500)
 
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return
