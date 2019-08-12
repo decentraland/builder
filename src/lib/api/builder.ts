@@ -7,6 +7,8 @@ import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { createManifest } from 'modules/project/export'
 import { dataURLToBlob } from 'modules/media/utils'
+import { runMigrations } from 'modules/migrations/utils'
+import { migrations } from 'modules/migrations/manifest'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -172,11 +174,13 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchManifest(id: string) {
-    const manifest = await this.request('get', `/projects/${id}/manifest`, null, authorize())
-    return {
-      ...manifest,
-      project: fromRemoteProject(manifest.project)
+    const remoteManifest = await this.request('get', `/projects/${id}/manifest`, null, authorize())
+    const manifest = {
+      ...remoteManifest,
+      project: fromRemoteProject(remoteManifest.project)
     } as Manifest
+
+    return runMigrations(manifest, migrations)
   }
 }
 
