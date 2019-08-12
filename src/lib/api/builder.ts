@@ -49,7 +49,7 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     id: remoteProject.id,
     title: remoteProject.title,
     description: remoteProject.description,
-    thumbnail: remoteProject.thumbnail || `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/preview.png`,
+    thumbnail: `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/preview.png`,
     sceneId: remoteProject.scene_id,
     userId: remoteProject.user_id,
     layout: {
