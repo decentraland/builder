@@ -145,8 +145,8 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchProjects() {
-    const remoteProjects: RemoteProject[] = await this.request('get', `/projects`, null, authorize())
-    return remoteProjects.map(fromRemoteProject)
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', `/projects`, null, authorize())
+    return items.map(fromRemoteProject)
   }
 
   async saveProject(project: Project, scene: Scene) {
