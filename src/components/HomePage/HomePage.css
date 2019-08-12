@@ -92,7 +92,7 @@
   padding: 0px;
 }
 
-.HomePage .project-cards .menu {
+.HomePage .project-cards .subtitle > .menu {
   display: flex;
   align-items: center;
   font-size: 13px;
@@ -100,7 +100,7 @@
   text-transform: uppercase;
 }
 
-.HomePage .project-cards .menu .ui.dropdown {
+.HomePage .project-cards .subtitle > .menu .ui.dropdown {
   margin-right: 32px;
 }
 
