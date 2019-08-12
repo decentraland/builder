@@ -105,6 +105,11 @@
         "title": "谢谢上传你的场景!"
       },
       "title": "发布场景",
+      "sign_in": {
+        "title": "登入",
+        "subtitle": "您需要在上传场景之前登录",
+        "action": "登入"
+      },
       "uploading": "正在上传"
     },
     "title": "正在发布场景"

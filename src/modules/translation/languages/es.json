@@ -105,6 +105,11 @@
         "title": "¡Gracias por subir tu Escena!"
       },
       "title": "Publica tu Escena",
+      "sign_in": {
+        "title": "Iniciar Sesión",
+        "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
+        "action": "Iniciar Sesión"
+      },
       "uploading": "Subiendo"
     },
     "title": "Publica tu Escena"
