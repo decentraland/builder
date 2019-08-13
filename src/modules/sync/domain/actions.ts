@@ -16,6 +16,10 @@ export const FAILURE = 'Failure'
 export const failure = (id: string, error: string) => action(FAILURE, { id, error })
 export type FailureAction = ReturnType<typeof failure>
 
-export const ADD_LOCAL = 'Add local'
-export const addLocal = (id: string) => action(ADD_LOCAL, { id })
-export type AddLocalAction = ReturnType<typeof addLocal>
+export const CREATE = 'Create'
+export const create = (id: string) => action(CREATE, { id })
+export type CreateAction = ReturnType<typeof create>
+
+export const REMOVE = 'Remove'
+export const remove = (id: string) => action(REMOVE, { id })
+export type RemoveAction = ReturnType<typeof remove>
