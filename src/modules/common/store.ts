@@ -14,7 +14,7 @@ import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
 import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
-import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
+import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_DEPLOYMENT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { SET_AVAILABLE_ASSET_PACKS } from 'modules/ui/sidebar/actions'
@@ -83,7 +83,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     AUTH_SUCCESS,
     AUTH_FAILURE,
     SAVE_PROJECT_SUCCESS,
-    SAVE_DEPLOYMENT_SUCCESS
+    SAVE_DEPLOYMENT_SUCCESS,
+    EDIT_PROJECT_THUMBNAIL
   ],
   transform: state => {
     let projects: DataByKey<Project> = {}
