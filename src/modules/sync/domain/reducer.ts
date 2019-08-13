@@ -8,8 +8,10 @@ import {
   REQUEST,
   SUCCESS,
   FAILURE,
-  AddLocalAction,
-  ADD_LOCAL
+  CreateAction,
+  CREATE,
+  RemoveAction,
+  REMOVE
 } from './actions'
 import { addElement, removeElement, addEntry, removeEntry } from './utils'
 
@@ -19,7 +21,7 @@ export const INITIAL_STATE: DomainState = {
   errorsById: {}
 }
 
-export type ReducerAction = InitAction | RequestAction | SuccessAction | FailureAction | AddLocalAction
+export type ReducerAction = InitAction | RequestAction | SuccessAction | FailureAction | CreateAction | RemoveAction
 
 export function domainReducer(state: DomainState = INITIAL_STATE, action: ReducerAction): DomainState {
   switch (action.type) {
@@ -55,11 +57,20 @@ export function domainReducer(state: DomainState = INITIAL_STATE, action: Reduce
         errorsById: addEntry(state.errorsById, id, error)
       }
     }
-    case ADD_LOCAL: {
+    case CREATE: {
       const { id } = action.payload
       return {
         ...state,
         localIds: addElement(state.localIds, id)
+      }
+    }
+    case REMOVE: {
+      const { id } = action.payload
+      return {
+        ...state,
+        localIds: removeElement(state.localIds, id),
+        loadingIds: removeElement(state.loadingIds, id),
+        errorsById: removeEntry(state.errorsById, id)
       }
     }
   }

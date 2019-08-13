@@ -92,6 +92,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
 
     for (let id of state.sync.project.localIds) {
       const project = state.project.data[id]
+      if (!project) continue
       projects[id] = project
       scene[project.sceneId] = state.scene.present.data[project.sceneId]
     }

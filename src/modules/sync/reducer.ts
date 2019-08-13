@@ -16,9 +16,15 @@ import {
 } from 'modules/sync/actions'
 import { StorageLoadAction } from 'modules/common/types'
 import { domainReducer, INITIAL_STATE as DOMAIN_INITIAL_STATE } from './domain/reducer'
-import { success, init, request, failure, addLocal } from './domain/actions'
+import { success, init, request, failure, create, remove } from './domain/actions'
 import { SyncState } from './types'
-import { CREATE_PROJECT, CreateProjectAction } from 'modules/project/actions'
+import { CREATE_PROJECT, CreateProjectAction, DELETE_PROJECT, DeleteProjectAction } from 'modules/project/actions'
+import {
+  DeployToLandSuccessAction,
+  DEPLOY_TO_LAND_SUCCESS,
+  CLEAR_DEPLOYMENT_SUCCESS,
+  ClearDeploymentSuccessAction
+} from 'modules/deployment/actions'
 
 const INITIAL_STATE: SyncState = {
   project: DOMAIN_INITIAL_STATE,
@@ -33,6 +39,9 @@ export type SyncReducerAction =
   | SaveDeploymentSuccessAction
   | SaveDeploymentFailureAction
   | CreateProjectAction
+  | DeployToLandSuccessAction
+  | DeleteProjectAction
+  | ClearDeploymentSuccessAction
   | StorageLoadAction
 
 export const syncReducer = (state = INITIAL_STATE, action: SyncReducerAction): SyncState => {
@@ -93,7 +102,29 @@ export const syncReducer = (state = INITIAL_STATE, action: SyncReducerAction): S
       const { project } = action.payload
       return {
         ...state,
-        project: domainReducer(state.project, addLocal(project.id))
+        project: domainReducer(state.project, create(project.id))
+      }
+    }
+    case DEPLOY_TO_LAND_SUCCESS: {
+      const { deployment } = action.payload
+      return {
+        ...state,
+        deployment: domainReducer(state.project, create(deployment.id))
+      }
+    }
+    case DELETE_PROJECT: {
+      const { project } = action.payload
+      return {
+        ...state,
+        project: domainReducer(state.project, remove(project.id)),
+        deployment: domainReducer(state.deployment, remove(project.id))
+      }
+    }
+    case CLEAR_DEPLOYMENT_SUCCESS: {
+      const { projectId } = action.payload
+      return {
+        ...state,
+        deployment: domainReducer(state.deployment, remove(projectId))
       }
     }
     default:
