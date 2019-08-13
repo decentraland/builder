@@ -177,9 +177,10 @@ function* handleDeleteProject(action: DeleteProjectAction) {
 }
 
 function* handleProvisionScene(action: ProvisionSceneAction) {
+  if (action.payload.init) return
   if (yield select(isLoggedIn)) {
     const project: Project | null = yield select(getCurrentProject)
-    if (project && !action.payload.init) {
+    if (project) {
       yield put(saveProjectRequest(project))
     }
   }
