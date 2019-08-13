@@ -67,7 +67,7 @@ export const syncReducer = (state = INITIAL_STATE, action: SyncReducerAction): S
       const { deployment } = action.payload
       return {
         ...state,
-        deployment: domainReducer(state.project, request(deployment.id))
+        deployment: domainReducer(state.deployment, request(deployment.id))
       }
     }
     case SAVE_PROJECT_SUCCESS: {

@@ -1,7 +1,8 @@
 import { Project } from 'modules/project/types'
+import { Deployment } from 'modules/deployment/types'
 import { Migration, Versionable } from './types'
 
-export function toCloudSchema(project: Project) {
+export function toProjectCloudSchema(project: Project): Project {
   const newProject = {
     ...project,
     userId: null,
@@ -11,6 +12,15 @@ export function toCloudSchema(project: Project) {
   delete (newProject as any).ownerEmail
   delete (newProject as any).parcels
   return newProject
+}
+
+export function toDeploymentCloudSchema(id: string, deployment: Deployment): Deployment {
+  return {
+    ...deployment,
+    id,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
 }
 
 export function runMigrations<T extends Versionable>(input: T, migrations: Migration<T>) {

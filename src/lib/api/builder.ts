@@ -160,6 +160,8 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async saveThumbnail(project: Project) {
+    if (!project.thumbnail) return
+
     const blob = dataURLToBlob(project.thumbnail)
     const formData = new FormData()
     if (blob) {

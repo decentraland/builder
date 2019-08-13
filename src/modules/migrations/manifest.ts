@@ -1,6 +1,6 @@
 import { Manifest } from 'modules/project/types'
 import { addMappings } from './ISSUE-485'
-import { toCloudSchema } from './utils'
+import { toProjectCloudSchema } from './utils'
 import { Migration } from './types'
 
 export const migrations: Migration<Manifest> = {
@@ -10,7 +10,7 @@ export const migrations: Migration<Manifest> = {
   },
   '3': input => {
     if (input.project) {
-      input.project = toCloudSchema(input.project)
+      input.project = toProjectCloudSchema(input.project)
     }
     return input
   }
