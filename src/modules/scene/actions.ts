@@ -16,7 +16,7 @@ export type CreateSceneAction = ReturnType<typeof createScene>
 
 export const PROVISION_SCENE = 'Provision scene'
 
-export const provisionScene = (scene: Scene) => action(PROVISION_SCENE, { scene })
+export const provisionScene = (scene: Scene, init = false) => action(PROVISION_SCENE, { scene, init })
 
 export type ProvisionSceneAction = ReturnType<typeof provisionScene>
 

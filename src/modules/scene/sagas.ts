@@ -56,7 +56,7 @@ export function* sceneSaga() {
 }
 
 function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
-  yield put(provisionScene(action.payload.manifest.scene))
+  yield put(provisionScene(action.payload.manifest.scene, true))
 }
 
 function* handleAddItem(action: AddItemAction) {

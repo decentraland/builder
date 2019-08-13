@@ -16,7 +16,7 @@ import {
   DeleteProjectAction
 } from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
-import { PROVISION_SCENE } from 'modules/scene/actions'
+import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
 import {
   DEPLOY_TO_LAND_SUCCESS,
   DeployToLandSuccessAction,
@@ -176,7 +176,8 @@ function* handleDeleteProject(action: DeleteProjectAction) {
   }
 }
 
-function* handleProvisionScene() {
+function* handleProvisionScene(action: ProvisionSceneAction) {
+  if (action.payload.init) return
   if (yield select(isLoggedIn)) {
     const project: Project | null = yield select(getCurrentProject)
     if (project) {

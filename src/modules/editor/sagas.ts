@@ -41,7 +41,16 @@ import {
   CREATE_EDITOR_SCENE,
   CreateEditorSceneAction
 } from 'modules/editor/actions'
-import { PROVISION_SCENE, updateMetrics, updateTransform, DROP_ITEM, DropItemAction, addItem, setGround } from 'modules/scene/actions'
+import {
+  PROVISION_SCENE,
+  updateMetrics,
+  updateTransform,
+  DROP_ITEM,
+  DropItemAction,
+  addItem,
+  setGround,
+  ProvisionSceneAction
+} from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
@@ -67,9 +76,9 @@ export function* editorSaga() {
   yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(PROVISION_SCENE, handleSceneChange)
-  yield takeLatest(EDITOR_REDO, handleSceneChange)
-  yield takeLatest(EDITOR_UNDO, handleSceneChange)
+  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
+  yield takeLatest(EDITOR_REDO, handleHistory)
+  yield takeLatest(EDITOR_UNDO, handleHistory)
   yield takeLatest(SET_GIZMO, handleSetGizmo)
   yield takeLatest(TOGGLE_PREVIEW, handleTogglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
@@ -135,7 +144,14 @@ function* createNewEditorScene(project: Project) {
   yield handleResetCamera()
 }
 
-function* handleSceneChange() {
+function* handleProvisionScene(action: ProvisionSceneAction) {
+  yield renderScene()
+  if (!action.payload.init) {
+    yield put(takeScreenshot())
+  }
+}
+
+function* handleHistory() {
   yield renderScene()
   yield put(takeScreenshot())
 }
