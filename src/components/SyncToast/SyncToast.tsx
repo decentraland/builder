@@ -19,18 +19,26 @@ export default class SyncToast extends React.PureComponent<Props, State> {
     }
   }
 
-  handleClose = () => {
-    this.setState({ isSynced: false })
-  }
-
   handleRetry = () => {
     const { onRetry } = this.props
     onRetry()
   }
 
   render() {
-    const { syncCount, errorCount } = this.props
+    const {
+      syncCount,
+      errorCount,
+      didDismissSignInToast,
+      didDismissSyncedToast,
+      isLoggedIn,
+      onDismissSignInToast,
+      onDismissSyncedToast
+    } = this.props
     const { isSynced } = this.state
+
+    const showSynced = isSynced && !didDismissSyncedToast
+    const showSignIn = !isLoggedIn && !didDismissSignInToast
+
     if (syncCount > 0) {
       return (
         <div className="SyncToast">
@@ -49,12 +57,21 @@ export default class SyncToast extends React.PureComponent<Props, State> {
           </div>
         </div>
       )
-    } else if (isSynced) {
+    } else if (showSynced) {
       return (
         <div className="SyncToast">
           <div className="message">
             {t('sync.success')}
-            <Close small onClick={this.handleClose} />
+            <Close small onClick={onDismissSyncedToast} />
+          </div>
+        </div>
+      )
+    } else if (showSignIn) {
+      return (
+        <div className="SyncToast">
+          <div className="message">
+            {t('sync.sign_in')}
+            <Close small onClick={onDismissSignInToast} />
           </div>
         </div>
       )

@@ -277,7 +277,8 @@
     "loading": "您的场景正在上传到云端",
     "success": "所有场景上传成功！",
     "error": "无法上传{errorCount}个场景",
-    "retry": "重试"
+    "retry": "重试",
+    "sign_in": "登录以将您的场景保存在云端"
   },
   "templates": {
     "big": "大 (2x3)",

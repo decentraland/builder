@@ -284,10 +284,11 @@
     "title": "Atajos"
   },
   "sync": {
-    "error": "{errorCount} {errorCount, plural, one {escena} other {escenas}} fallaron al ser subidas",
-    "loading": "Tus escenas estan siendo subidas a la nube",
+    "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
+    "loading": "Guardando...",
     "retry": "Reintentar",
-    "success": "Escenas subidas exitosamente!"
+    "success": "Escenas guardadas exitosamente!",
+    "sign_in": "Inicia sesión para guardar tus Escenas en la nube"
   },
   "templates": {
     "big": "Grande (2x3)",
