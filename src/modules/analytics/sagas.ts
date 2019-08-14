@@ -157,7 +157,9 @@ function* handleSearchAssets(action: SearchAssetsAction) {
 
 function* handleSync(_: SyncAction) {
   const loading: Set<string> = yield select(getLoadingSet)
-  track('Sync projects', { count: loading.size })
+  if (loading.size > 0) {
+    track('Sync projects', { count: loading.size })
+  }
 }
 
 function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
