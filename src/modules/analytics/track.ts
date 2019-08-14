@@ -11,19 +11,13 @@ import {
   RESET_CAMERA
 } from 'modules/editor/actions'
 import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui/sidebar/actions'
+import { SET_PROJECT, EXPORT_PROJECT_REQUEST, IMPORT_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
+import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
-import {
-  SET_PROJECT,
-  ExportProjectRequestAction,
-  EXPORT_PROJECT_REQUEST,
-  IMPORT_PROJECT,
-  SetProjectAction,
-  CreateProjectAction,
-  CREATE_PROJECT
-} from 'modules/project/actions'
+import { AnyAction } from 'redux'
 
-function addPayload(actionType: string, getPayload = (action: any) => action.payload) {
-  add(actionType, actionType, getPayload)
+function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
+  add(actionType, eventName, getPayload)
 }
 
 export function trimAsset(action: AddItemAction | DropItemAction | SetGroundAction) {
@@ -39,7 +33,7 @@ export function trimAsset(action: AddItemAction | DropItemAction | SetGroundActi
   }
 }
 
-function trimProject(action: CreateProjectAction | SetProjectAction | ExportProjectRequestAction) {
+function trimProject(action: AnyAction) {
   if (!action.payload.project) {
     return action.payload
   }
@@ -53,29 +47,34 @@ function trimProject(action: CreateProjectAction | SetProjectAction | ExportProj
 }
 
 // item actions
-addPayload(DROP_ITEM, trimAsset)
-addPayload(RESET_ITEM)
-addPayload(DUPLICATE_ITEM)
+addPayload(DROP_ITEM, 'Drop item', trimAsset)
+addPayload(RESET_ITEM, 'Reset item')
+addPayload(DUPLICATE_ITEM, 'Duplicate item')
 
 // editor actions
-addPayload(CREATE_PROJECT, trimProject)
-addPayload(SET_PROJECT, trimProject)
-addPayload(EDITOR_UNDO)
-addPayload(EDITOR_REDO)
-addPayload(TOGGLE_PREVIEW)
-addPayload(TOGGLE_SIDEBAR)
-addPayload(SET_SIDEBAR_VIEW)
-addPayload(SELECT_ASSET_PACK)
-addPayload(SELECT_CATEGORY)
-addPayload(OPEN_MODAL)
-addPayload(SET_GIZMO)
-addPayload(SET_GROUND, trimAsset)
+addPayload(CREATE_PROJECT, 'Create project', trimProject)
+addPayload(SET_PROJECT, 'Set project', trimProject)
+addPayload(EDITOR_UNDO, 'Editor undo')
+addPayload(EDITOR_REDO, 'Editor redo')
+addPayload(TOGGLE_PREVIEW, 'Toggle preview')
+addPayload(TOGGLE_SIDEBAR, 'Toggle sidebar')
+addPayload(SET_SIDEBAR_VIEW, 'Set sidebar view')
+addPayload(SELECT_ASSET_PACK, 'Select asset pack')
+addPayload(SELECT_CATEGORY, 'Select category')
+addPayload(OPEN_MODAL, 'Open modal')
+addPayload(SET_GIZMO, 'Set gizmo')
+addPayload(SET_GROUND, 'Set ground', trimAsset)
 
 // camera actions
-addPayload(ZOOM_IN)
-addPayload(ZOOM_OUT)
-addPayload(RESET_CAMERA)
+addPayload(ZOOM_IN, 'Zoom in')
+addPayload(ZOOM_OUT, 'Zoom out')
+addPayload(RESET_CAMERA, 'Reset camera')
 
 // import/export
-addPayload(EXPORT_PROJECT_REQUEST, trimProject)
-addPayload(IMPORT_PROJECT, () => ({}))
+// Do not change this event name format
+addPayload(EXPORT_PROJECT_REQUEST, '[Request] Export project', trimProject)
+addPayload(IMPORT_PROJECT, 'Import project', () => ({}))
+
+// sync
+addPayload(SAVE_PROJECT_SUCCESS, 'Save Project success', trimProject)
+addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
