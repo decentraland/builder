@@ -12,12 +12,13 @@ export type DefaultProps = {
 }
 
 export type Props = DefaultProps & {
-  onCreateProject: typeof createProjectFromTemplate
-  onOpenModal: typeof openModal
   isFetching: boolean
+  didSync: boolean
   page: number
   sortBy: SortBy
   totalPages: number
+  onCreateProject: typeof createProjectFromTemplate
+  onOpenModal: typeof openModal
   onPageChange: (options: PaginationOptions) => void
 }
 
@@ -25,6 +26,6 @@ export type State = {
   isAnimationPlaying: boolean
 }
 
-export type MapStateProps = Pick<Props, 'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages'>
+export type MapStateProps = Pick<Props, 'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages' | 'didSync'>
 export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange'>
 export type MapDispatch = Dispatch<NavigateToAction | CreateProjectFromTemplateAction | OpenModalAction>

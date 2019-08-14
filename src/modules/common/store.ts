@@ -64,6 +64,7 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ['scene', 'present'],
     'user',
     ['ui', 'sidebar', 'availableAssetPackIds'],
+    ['ui', 'dashboard', 'didSync'],
     ['deployment', 'data'],
     ['auth', 'data'],
     ['sync', 'localProjectIds']

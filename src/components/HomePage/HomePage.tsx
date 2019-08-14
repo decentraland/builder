@@ -101,7 +101,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page } = this.props
+    const { projects, isFetching, totalPages, page, didSync } = this.props
     if (isFetching) {
       return <LoadingPage />
     }
@@ -117,6 +117,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
           {!projects.length ? (
             <>
               <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+              {didSync && <div className="home-page-banner">Welcome back! Sign in to access your previous creations</div>}
             </>
           ) : (
             <Container>{<PromoBanner onClick={this.handlePromoCTA} />}</Container>
