@@ -8,7 +8,7 @@ import { debounceByKey, throttle } from 'lib/debounce'
 
 export const SAVE_DEBOUNCE = 4000
 
-export const THUMBNAIL_THROTTLE = 60000
+export const THUMBNAIL_THROTTLE = 30000
 
 export const saveProject = debounceByKey((project: Project, scene: Scene) => api.saveProject(project, scene), SAVE_DEBOUNCE)
 

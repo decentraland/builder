@@ -1,4 +1,4 @@
-import { takeLatest, select, put, call, takeEvery } from 'redux-saga/effects'
+import { takeLatest, select, put, call, takeEvery, take } from 'redux-saga/effects'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
@@ -13,7 +13,9 @@ import {
   SET_PROJECT,
   SetProjectAction,
   DELETE_PROJECT,
-  DeleteProjectAction
+  DeleteProjectAction,
+  EDIT_PROJECT_THUMBNAIL,
+  EditProjectThumbnailAction
 } from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
@@ -119,8 +121,14 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
 
 function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  const project = projects[action.payload.project.id]
-
+  let project = projects[action.payload.project.id]
+  if (!project.thumbnail) {
+    const action: EditProjectThumbnailAction = yield take(EDIT_PROJECT_THUMBNAIL)
+    project = {
+      ...project,
+      thumbnail: action.payload.thumbnail
+    }
+  }
   try {
     saveThumbnail(project.id, project)
   } catch (e) {
