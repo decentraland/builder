@@ -67,7 +67,12 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     let Overlay = null
 
     if (project.thumbnail) {
-      style = { backgroundImage: `url(${project.thumbnail})` }
+      // prevent caching remote images when they are updated
+      let url = project.thumbnail
+      if (url && url.startsWith('http')) {
+        url += `?updated_at=${+new Date(project.updatedAt)}`
+      }
+      style = { backgroundImage: `url(${url})` }
       classes += ' has-thumbnail'
       Overlay = <div className="overlay" />
     }
