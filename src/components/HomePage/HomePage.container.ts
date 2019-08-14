@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 
 import { locations } from 'routing/locations'
+import { login } from 'modules/auth/actions'
 import { RootState } from 'modules/common/types'
 import { Template } from 'modules/template/types'
 import { openModal } from 'modules/modal/actions'
@@ -21,6 +22,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onLogin: () => dispatch(login()),
   onCreateProject: (template: Template) =>
     dispatch(
       createProjectFromTemplate(template, {

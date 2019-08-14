@@ -97,6 +97,17 @@
   font-size: 20px;
 }
 
+.home-page-banner a {
+  color: white;
+  text-decoration: underline;
+  margin: 0px 4px;
+}
+
+.home-page-banner a:hover {
+  color: white;
+  text-decoration: none;
+}
+
 .HomePage .project-cards .subtitle > .menu {
   display: flex;
   align-items: center;

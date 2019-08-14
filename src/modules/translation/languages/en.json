@@ -3,7 +3,8 @@
     "promo_assetpack_banner": "The Fantasy Asset Pack allows you to conjure all manner of dazzling creations!",
     "promo_body": "Get the Fantasy Asset Pack and conjure all manner of dazzling creations!",
     "promo_subtitle": "Where the magic happens!",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "returning_user": "Looking for your previous creations? {sign_in} to view them!"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",

@@ -3,7 +3,8 @@
     "promo_assetpack_banner": "Con el Fantasy Asset Pack conjura todo tipo de creaciones deslumbrantes!",
     "promo_body": "Con el Fantasy Asset Pack podrás conjurar todo tipo de creaciones deslumbrantes!",
     "promo_subtitle": "Donde la magia ocurre!",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "returning_user": "¿No encuentras tu trabajo? {sign_in} para verlo!"
   },
   "custom_layout": {
     "title": "Personalizada",
