@@ -9,7 +9,6 @@ import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
 import Tools from './Tools'
 import Metrics from './Metrics'
-import LocalStorageToast from './LocalStorageToast'
 import ItemDragLayer from './ItemDragLayer'
 import { ToolName } from './Tools/Tools.types'
 import { Props, State } from './EditorPage.types'
@@ -69,7 +68,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isLoggedIn, isFetching } = this.props
+    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isFetching } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     let wrapperClasses = 'wrapper'
@@ -96,7 +95,6 @@ export default class EditorPage extends React.PureComponent<Props, State> {
                   <Metrics />
                   <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
                   <ItemDragLayer />
-                  {isLoggedIn ? null : <LocalStorageToast />}
                 </>
               </div>
             )}

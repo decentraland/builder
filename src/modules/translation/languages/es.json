@@ -300,9 +300,6 @@
     "medium": "Estándar (2x2)",
     "small": "Mini (1x1)"
   },
-  "toasts": {
-    "localstorage": "Tus Escenas se guardan automáticamente en el navegador"
-  },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
     "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",

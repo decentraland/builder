@@ -294,9 +294,6 @@
     "medium": "Standard (2x2)",
     "small": "Mini (1x1)"
   },
-  "toasts": {
-    "localstorage": "Scenes automatically save to your browser's storage"
-  },
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
     "limits_exceeded": "Too many {metric}{br}Try deleting some items!",

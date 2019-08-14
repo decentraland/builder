@@ -290,9 +290,6 @@
     "medium": "中 (2x2)",
     "small": "小 (1x1)"
   },
-  "toasts": {
-    "localstorage": "场景会自动保存在浏览器的本地存储中"
-  },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
     "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
