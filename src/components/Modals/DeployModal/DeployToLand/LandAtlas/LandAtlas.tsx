@@ -25,8 +25,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.mounted = true
-    const { onFetchDeployments } = this.props
-    onFetchDeployments()
+    const { isLoggedIn, onFetchDeployments } = this.props
+    if (isLoggedIn) {
+      onFetchDeployments()
+    }
     if (Object.keys(this.state.parcels).length === 0 && this.props.ethAddress) {
       // tslint:disable-next-line
       this.fetchAuthorizedParcels(this.props.ethAddress)
