@@ -5,14 +5,13 @@ import { isLoading, getError, getProgress, isUploadingRecording } from 'modules/
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getMedia, isRecording } from 'modules/media/selectors'
-import { getEmail, isLoggedIn } from 'modules/auth/selectors'
+import { isLoggedIn } from 'modules/auth/selectors'
 import { login } from 'modules/auth/actions'
 import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
 
 const mapState = (state: RootState): MapStateProps => ({
   error: getError(state),
-  email: getEmail(state),
   project: getCurrentProject(state),
   isLoading: isLoading(state),
   progress: getProgress(state).value,

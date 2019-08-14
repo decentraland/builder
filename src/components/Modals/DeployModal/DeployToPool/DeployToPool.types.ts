@@ -6,7 +6,6 @@ import { login } from 'modules/auth/actions'
 export type Props = {
   name: string
   project: Project | null
-  email: string | null
   error: string | null
   isLoading: boolean
   progress: number
@@ -31,6 +30,6 @@ export type Step = {
 
 export type MapStateProps = Pick<
   Props,
-  'project' | 'isRecording' | 'isLoading' | 'isUploadingRecording' | 'email' | 'error' | 'media' | 'progress' | 'isLoggedIn'
+  'project' | 'isRecording' | 'isLoading' | 'isUploadingRecording' | 'error' | 'media' | 'progress' | 'isLoggedIn'
 >
 export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onLogin'>

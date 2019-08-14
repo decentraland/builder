@@ -3,8 +3,6 @@ import { Button, Header, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { EMAIL_INTEREST } from 'lib/api/email'
-import { api } from 'lib/api'
 import Icon from 'components/Icon'
 
 import { Props, State } from './DeployToPool.types'
@@ -41,13 +39,10 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = async () => {
-    const { project, email, onDeployToPool } = this.props
+    const { project, onDeployToPool } = this.props
     const projectId = project!.id
 
     this.setState({ isSubmitting: true })
-
-    this.analytics.identify({ email })
-    api.reportEmail(email!, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
 
     onDeployToPool(projectId)
   }
@@ -64,8 +59,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderSubmit() {
-    const { email, error } = this.props
-    const isSubmitDisabled = !email
+    const { error } = this.props
 
     return (
       <div className="DeployToPool">
@@ -81,7 +75,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             {t('deployment_modal.pool.error_ocurred')} "{error}"
           </div>
         ) : null}
-        <Button className="submit" primary size="small" disabled={isSubmitDisabled} onClick={this.handleSubmit}>
+        <Button className="submit" primary size="small" onClick={this.handleSubmit}>
           {t('deployment_modal.pool.action')}
         </Button>
       </div>
