@@ -39,7 +39,9 @@ import {
   closeEditor,
   setEditorLoading,
   CREATE_EDITOR_SCENE,
-  CreateEditorSceneAction
+  CreateEditorSceneAction,
+  SET_EDITOR_LOADING,
+  SetEditorLoadingAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -66,7 +68,7 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
-import { getGizmo, getSelectedEntityId, getSceneMappings, isReady } from './selectors'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
 import { ASSETS_CONTENT_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
@@ -359,13 +361,21 @@ function* handleScreenshot(_: TakeScreenshotAction) {
     const currentProject: Project | null = yield select(getCurrentProject)
     if (!currentProject) return
 
-    let editorReady: boolean = yield select(isReady)
-
-    while (!editorReady) {
+    // wait for editor to be ready
+    let ready: boolean = yield select(isReady)
+    while (!ready) {
       const readyAction: SetEditorReadyAction = yield take(SET_EDITOR_READY)
-      editorReady = readyAction.payload.isReady
+      ready = readyAction.payload.isReady
     }
 
+    // wait for assets to load
+    let loading: boolean = yield select(isLoading)
+    while (loading) {
+      const loadingAction: SetEditorLoadingAction = yield take(SET_EDITOR_LOADING)
+      loading = loadingAction.payload.isLoading
+    }
+
+    // rendering leeway
     yield delay(500)
 
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
