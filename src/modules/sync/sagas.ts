@@ -91,6 +91,13 @@ function* handleSync(_action: SyncAction) {
   // sync deployments
   const localDeploymentIds: string[] = yield select(getLocalDeploymentIds)
   const deployments: DataByKey<Deployment> = yield select(getDeployments)
+  // wait for projects to be saved before syncing deployments
+  let waitFor = localProjectIds.filter(projectId => localDeploymentIds.includes(projectId))
+  while (waitFor.length > 0) {
+    const action: SaveProjectSuccessAction = yield take(SAVE_PROJECT_SUCCESS)
+    const { project } = action.payload
+    waitFor = waitFor.filter(projectId => projectId !== project.id)
+  }
   yield forEach<Deployment>(localDeploymentIds, deployments, deployment => saveDeploymentRequest(deployment))
 }
 
