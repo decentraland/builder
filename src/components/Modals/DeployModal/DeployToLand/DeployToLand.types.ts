@@ -19,6 +19,7 @@ export type Props = {
   isUploadingAssets: boolean
   isCreatingFiles: boolean
   isUploadingRecording: boolean
+  isLoggedIn: boolean
   mediaProgress: number
   deploymentProgress: DeploymentState['progress']
   ethAddress: string | undefined
@@ -59,6 +60,7 @@ export type MapStateProps = Pick<
   | 'isUploadingRecording'
   | 'isCreatingFiles'
   | 'isConnected'
+  | 'isLoggedIn'
   | 'ethAddress'
   | 'project'
   | 'deploymentStatus'

@@ -6,6 +6,7 @@ export type Props = {
   ethAddress: string | undefined
   project: Project
   media: Media | null
+  isLoggedIn: boolean
   initialPoint?: Coordinate
   occupiedParcels: Record<string, OccupiedAtlasParcel>
   onNoAuthorizedParcels: () => void

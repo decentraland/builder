@@ -43,7 +43,7 @@ import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
-import { getSub } from 'modules/auth/selectors'
+import { getSub, isLoggedIn } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
@@ -123,19 +123,23 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       const timestamp = Math.round(Date.now() / 1000)
       const signature = yield signMessage(`${rootCID}.${timestamp}`)
       const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, userId)
-      const media: Media | null = yield select(getMedia)
-      if (media) {
-        const north: Blob = yield call(() => objectURLToBlob(media.north))
-        const east: Blob = yield call(() => objectURLToBlob(media.east))
-        const south: Blob = yield call(() => objectURLToBlob(media.south))
-        const west: Blob = yield call(() => objectURLToBlob(media.west))
-        const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
 
-        yield call(() =>
-          api.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
-        )
-      } else {
-        console.warn('Failed to upload scene preview')
+      // upload media if logged in
+      if (yield select(isLoggedIn)) {
+        const media: Media | null = yield select(getMedia)
+        if (media) {
+          const north: Blob = yield call(() => objectURLToBlob(media.north))
+          const east: Blob = yield call(() => objectURLToBlob(media.east))
+          const south: Blob = yield call(() => objectURLToBlob(media.south))
+          const west: Blob = yield call(() => objectURLToBlob(media.west))
+          const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
+
+          yield call(() =>
+            api.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+          )
+        } else {
+          console.warn('Failed to upload scene preview')
+        }
       }
 
       yield call(() => api.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))

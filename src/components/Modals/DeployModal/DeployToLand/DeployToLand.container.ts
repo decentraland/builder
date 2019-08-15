@@ -22,6 +22,7 @@ import { locations } from 'routing/locations'
 
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToLand.types'
 import WalletSignIn from './DeployToLand'
+import { isLoggedIn } from 'modules/auth/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -32,6 +33,7 @@ const mapState = (state: RootState): MapStateProps => {
     isUploadingAssets: isUploadingAssets(state),
     isUploadingRecording: isUploadingRecording(state),
     isCreatingFiles: isCreatingFiles(state),
+    isLoggedIn: isLoggedIn(state),
     walletError: !!getWalletError(state),
     media: getMedia(state),
     ethAddress: getAddress(state),
