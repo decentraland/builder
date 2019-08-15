@@ -3,7 +3,8 @@
     "promo_assetpack_banner": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
     "promo_body": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
     "promo_subtitle": "奇迹发生的地方!",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "returning_user": "寻找您之前的作品？{sign_in} 查看它们！"
   },
   "custom_layout": {
     "title": "自定义",
@@ -276,7 +277,8 @@
     "loading": "您的场景正在上传到云端",
     "success": "所有场景上传成功！",
     "error": "无法上传{errorCount}个场景",
-    "retry": "重试"
+    "retry": "重试",
+    "sign_in": "登录以将您的场景保存在云端"
   },
   "templates": {
     "big": "大 (2x3)",
@@ -287,9 +289,6 @@
     "description": "{dimensions} - 最多 {amount} 个模型",
     "medium": "中 (2x2)",
     "small": "小 (1x1)"
-  },
-  "toasts": {
-    "localstorage": "场景会自动保存在浏览器的本地存储中"
   },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",

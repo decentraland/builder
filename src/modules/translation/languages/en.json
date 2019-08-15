@@ -3,7 +3,8 @@
     "promo_assetpack_banner": "The Fantasy Asset Pack allows you to conjure all manner of dazzling creations!",
     "promo_body": "Get the Fantasy Asset Pack and conjure all manner of dazzling creations!",
     "promo_subtitle": "Where the magic happens!",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "returning_user": "Looking for your previous creations? {sign_in} to view them!"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -156,7 +157,7 @@
     "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
-    "import_scene": "Upload Scene",
+    "import_scene": "Import Scene",
     "sort": {
       "newest": "Newest",
       "name": "Name",
@@ -175,13 +176,13 @@
     "title": "Build something Cool!"
   },
   "import_modal": {
-    "action": "Upload",
-    "action_many": "Upload {count} Scenes",
+    "action": "Import",
+    "action_many": "Import {count} Scenes",
     "cta": "Drag your Scene .zip file here, or {action}",
-    "description": "You can upload any Scene made with the Builder!",
+    "description": "You can import any Scene made with the Builder!",
     "invalid_file": "Invalid file",
-    "title": "Upload Scene",
-    "upload_manually": "Upload Manually"
+    "title": "Import Scene",
+    "upload_manually": "Import Manually"
   },
   "itemdrawer": {
     "collectible_disclaimer": "Don’t see all of your crypto-collectibles?{br}We are adding support for more soon!",
@@ -278,9 +279,10 @@
   },
   "sync": {
     "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
-    "loading": "Your scenes are being uploaded to the cloud",
+    "loading": "Uploading...",
     "retry": "Retry",
-    "success": "All scenes uploaded successfully!"
+    "success": "All Scenes saved successfully!",
+    "sign_in": "Sign in to save your Scenes in the cloud"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -291,9 +293,6 @@
     "description": "{dimensions} - about {amount} items max",
     "medium": "Standard (2x2)",
     "small": "Mini (1x1)"
-  },
-  "toasts": {
-    "localstorage": "Scenes automatically save to your browser's storage"
   },
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",

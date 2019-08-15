@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps } from 'decentraland-ui'
 
@@ -85,6 +85,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
     )
   }
 
+  handleLogin = () => {
+    this.props.onLogin()
+  }
+
   handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
     this.paginate({ sortBy: value as SortBy })
 
@@ -101,7 +105,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page } = this.props
+    const { projects, isFetching, totalPages, page, didSync } = this.props
     if (isFetching) {
       return <LoadingPage />
     }
@@ -117,6 +121,20 @@ export default class HomePage extends React.PureComponent<Props, State> {
           {!projects.length ? (
             <>
               <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+              {didSync && (
+                <div className="home-page-banner">
+                  <T
+                    id="banners.returning_user"
+                    values={{
+                      sign_in: (
+                        <a href="#" onClick={this.handleLogin}>
+                          {t('user_menu.sign_in')}
+                        </a>
+                      )
+                    }}
+                  />
+                </div>
+              )}
             </>
           ) : (
             <Container>{<PromoBanner onClick={this.handlePromoCTA} />}</Container>

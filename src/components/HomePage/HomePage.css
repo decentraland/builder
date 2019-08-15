@@ -90,6 +90,22 @@
 .home-page-banner {
   height: 80px;
   padding: 0px;
+  background: var(--purple-banner);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.home-page-banner a {
+  color: white;
+  text-decoration: underline;
+  margin: 0px 4px;
+}
+
+.home-page-banner a:hover {
+  color: white;
+  text-decoration: none;
 }
 
 .HomePage .project-cards .subtitle > .menu {
@@ -98,6 +114,7 @@
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
+  z-index: 1000;
 }
 
 .HomePage .project-cards .subtitle > .menu .ui.dropdown {

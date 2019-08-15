@@ -2,12 +2,13 @@ import { connect } from 'react-redux'
 import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 
 import { locations } from 'routing/locations'
+import { login } from 'modules/auth/actions'
 import { RootState } from 'modules/common/types'
 import { Template } from 'modules/template/types'
 import { openModal } from 'modules/modal/actions'
 import { isFetching } from 'modules/project/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
-import { getProjects, getPage, getSortBy, getTotalPages } from 'modules/ui/dashboard/selectors'
+import { getProjects, getPage, getSortBy, getTotalPages, didSync } from 'modules/ui/dashboard/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
 
@@ -16,10 +17,12 @@ const mapState = (state: RootState): MapStateProps => ({
   isFetching: isFetching(state),
   page: getPage(state),
   sortBy: getSortBy(state),
-  totalPages: getTotalPages(state)
+  totalPages: getTotalPages(state),
+  didSync: didSync(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onLogin: () => dispatch(login()),
   onCreateProject: (template: Template) =>
     dispatch(
       createProjectFromTemplate(template, {
