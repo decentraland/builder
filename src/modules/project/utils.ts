@@ -71,3 +71,18 @@ export function getParcelOrientation(project: Project, point: Coordinate, rotati
 
   return parcels
 }
+
+export async function getImageAsDataUrl(url: string): Promise<string> {
+  const reader = new FileReader()
+  const res = await fetch(url)
+  const blob = await res.blob()
+
+  const out = new Promise<string>((resolve, reject) => {
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = e => reject(e)
+  })
+
+  reader.readAsDataURL(blob)
+
+  return out
+}

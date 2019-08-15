@@ -42,8 +42,8 @@ import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
+import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
-import { didUpdateLayout } from './utils'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -116,8 +116,14 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
   const scene = yield getSceneByProjectId(project.id)
 
+  let thumbnail = project.thumbnail
+
+  if (thumbnail && !thumbnail.startsWith('data:image/png;')) {
+    thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
+  }
+
   const newScene = { ...scene, id: uuidv4() }
-  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString() }
+  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString(), thumbnail }
 
   yield put(createScene(newScene))
   yield put(createProject(newProject))
