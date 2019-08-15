@@ -118,7 +118,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
   let thumbnail = project.thumbnail
 
-  if (thumbnail && !thumbnail.startsWith('data:image/png;')) {
+  if (thumbnail && thumbnail.startsWith('http')) {
     thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
   }
 
