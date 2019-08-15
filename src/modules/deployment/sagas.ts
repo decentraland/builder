@@ -175,9 +175,10 @@ function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
     const lastPublishedCID: string | null = deployment.lastPublishedCID
     const remoteCID = res.root_cid
 
-    if (!deployment.isDirty) {
-      const isSynced = remoteCID === lastPublishedCID
-      yield put(markDirty(projectId, !isSynced))
+    const isSynced = remoteCID === lastPublishedCID
+    const isDirty = !isSynced
+    if (isDirty !== deployment.isDirty) {
+      yield put(markDirty(projectId, isDirty))
     }
   } catch (e) {
     // error handling
