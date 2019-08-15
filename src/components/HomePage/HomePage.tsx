@@ -105,7 +105,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page, didSync } = this.props
+    const { projects, isFetching, totalPages, page, didSync, isLoggedIn } = this.props
     if (isFetching) {
       return <LoadingPage />
     }
@@ -121,7 +121,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
           {!projects.length ? (
             <>
               <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
-              {didSync && (
+              {!isLoggedIn && didSync && (
                 <div className="home-page-banner">
                   <T
                     id="banners.returning_user"
