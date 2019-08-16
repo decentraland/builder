@@ -297,6 +297,10 @@
     "up_to_date": "已最新！{br}所有更改都已发布",
     "update_scene": "更新场景"
   },
+  "toasts": {
+    "localstorage": "场景存储在浏览器中。 {sign_in}以将其保存在云端！",
+    "localstorage_sign_in": "登录"
+  },
   "tutorial_modal": {
     "slide0": {
       "description": "这是 Decentraland 的新场景构建器。",

@@ -1,5 +1,6 @@
 import auth0 from 'auth0-js'
 import { env } from 'decentraland-commons'
+import uuid from 'uuid'
 
 import { AuthData } from './types'
 
@@ -12,7 +13,9 @@ export const webAuth = new auth0.WebAuth({
   scope: 'openid email'
 })
 
-export function handleCallback(): Promise<AuthData> {
+export type CallbackResult = { data: AuthData; redirectUrl: string | null }
+
+export function handleCallback(): Promise<CallbackResult> {
   return new Promise((resolve, reject) => {
     webAuth.parseHash((err, auth) => {
       if (err) {
@@ -25,14 +28,23 @@ export function handleCallback(): Promise<AuthData> {
             reject(err)
             return
           }
-          const result: AuthData = {
+
+          let redirectUrl = null
+          if (auth.state) {
+            redirectUrl = localStorage.getItem(auth.state)
+            if (redirectUrl) {
+              localStorage.removeItem(auth.state)
+            }
+          }
+
+          const data: AuthData = {
             email: user.email!,
             sub: user.sub,
             expiresAt: auth.expiresIn! * 1000 + new Date().getTime(),
             accessToken: auth.accessToken!,
             idToken: auth.idToken!
           }
-          resolve(result)
+          resolve({ data, redirectUrl })
         })
       } else {
         reject(new Error('No access token found in the url hash'))
@@ -41,8 +53,14 @@ export function handleCallback(): Promise<AuthData> {
   })
 }
 
-export function login() {
-  webAuth.authorize()
+export function login(redirectUrl?: string) {
+  let options: auth0.AuthorizeOptions = {}
+  if (redirectUrl) {
+    const nonce = uuid.v4()
+    localStorage.setItem(nonce, redirectUrl)
+    options.state = nonce
+  }
+  webAuth.authorize(options)
 }
 
 export function restoreSession(): Promise<AuthData> {

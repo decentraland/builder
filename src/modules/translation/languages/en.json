@@ -282,7 +282,7 @@
     "loading": "Uploading...",
     "retry": "Retry",
     "success": "All Scenes saved successfully!",
-    "sign_in": "Sign in to save your Scenes in the cloud"
+    "sign_in": "Sign in to save your Scenes in the Cloud"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -300,6 +300,10 @@
     "publish": "Publish",
     "up_to_date": "Up to date!{br}All the changes are published",
     "update_scene": "Update Scene"
+  },
+  "toasts": {
+    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
+    "localstorage_sign_in": "Sign in"
   },
   "tutorial_modal": {
     "slide0": {

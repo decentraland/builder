@@ -22,7 +22,7 @@ export function authReducer(state: AuthState = INITIAL_STATE, action: AuthReduce
     case AUTH_SUCCESS: {
       return {
         ...state,
-        data: action.payload,
+        data: action.payload.data,
         loading: loadingReducer(state.loading, action),
         error: null
       }

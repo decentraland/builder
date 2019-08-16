@@ -7,6 +7,7 @@ import LoadingPage from 'components/LoadingPage'
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
+import LocalStorageToast from 'components/LocalStorageToast'
 import Tools from './Tools'
 import Metrics from './Metrics'
 import ItemDragLayer from './ItemDragLayer'
@@ -17,6 +18,7 @@ import './EditorPage.css'
 
 export const LOCALSTORAGE_TUTORIAL_KEY = 'builder-tutorial'
 export const LOCALSTORAGE_INCENTIVE_BANNER_KEY = 'builder-incentive-banner'
+const TOAST_ITEMS_THRESHOLD = 5 // local storage toast will show when a user has at least this amount of items
 
 const localStorage = getLocalStorage()
 
@@ -68,7 +70,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isFetching } = this.props
+    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isFetching, isLoggedIn, numItems } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     let wrapperClasses = 'wrapper'
@@ -83,6 +85,8 @@ export default class EditorPage extends React.PureComponent<Props, State> {
       return <NotFoundPage />
     }
 
+    const showLocalStorageToast = !isLoggedIn && numItems >= TOAST_ITEMS_THRESHOLD
+
     return (
       <div className="EditorPage">
         {isPreviewing ? null : <TopBar />}
@@ -95,6 +99,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
                   <Metrics />
                   <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
                   <ItemDragLayer />
+                  <LocalStorageToast isVisible={showLocalStorageToast} />
                 </>
               </div>
             )}
