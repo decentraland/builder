@@ -3,8 +3,7 @@
     "promo_assetpack_banner": "The Fantasy Asset Pack allows you to conjure all manner of dazzling creations!",
     "promo_body": "Get the Fantasy Asset Pack and conjure all manner of dazzling creations!",
     "promo_subtitle": "Where the magic happens!",
-    "promo_title": "Decentraland",
-    "returning_user": "Looking for your creations? {sign_in} to view them!"
+    "promo_title": "Decentraland"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -173,7 +172,9 @@
     "start": "Start building",
     "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your Scene to get started",
-    "title": "Build something Cool!"
+    "title": "Build something Cool!",
+    "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
+    "no_projects": "It looks like you don't have any Scenes.{br}Choose an option below to get started."
   },
   "import_modal": {
     "action": "Import",

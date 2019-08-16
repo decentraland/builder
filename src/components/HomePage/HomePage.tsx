@@ -85,6 +85,37 @@ export default class HomePage extends React.PureComponent<Props, State> {
     )
   }
 
+  renderProjects = () => {
+    const { isLoggedIn, projects } = this.props
+
+    if (projects.length > 0) {
+      return projects.map((project, index) => <ProjectCard key={index} project={project} />)
+    } else if (isLoggedIn) {
+      return (
+        <div className="empty-projects">
+          <T id="home_page.no_projects" values={{ br: <br /> }} />
+        </div>
+      )
+    }
+
+    return (
+      <div className="empty-projects">
+        {' '}
+        <T
+          id="home_page.no_projects_guest"
+          values={{
+            br: <br />,
+            sign_in: (
+              <a href="#" onClick={this.handleLogin}>
+                {t('user_menu.sign_in')}
+              </a>
+            )
+          }}
+        />
+      </div>
+    )
+  }
+
   handleLogin = () => {
     this.props.onLogin()
   }
@@ -111,37 +142,21 @@ export default class HomePage extends React.PureComponent<Props, State> {
     }
     const { isAnimationPlaying } = this.state
     const templates = getTemplates()
-
+    const showDashboard = isLoggedIn || didSync
     const hasPagination = totalPages > 1
 
     return (
       <>
-        <Navbar isFullscreen isOverlay={projects.length === 0} />
+        <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen>
-          {!projects.length ? (
-            <>
-              <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
-              {!isLoggedIn && didSync && (
-                <div className="home-page-banner">
-                  <T
-                    id="banners.returning_user"
-                    values={{
-                      sign_in: (
-                        <a href="#" onClick={this.handleLogin}>
-                          {t('user_menu.sign_in')}
-                        </a>
-                      )
-                    }}
-                  />
-                </div>
-              )}
-            </>
+          {!showDashboard ? (
+            <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
           ) : (
             <Container>{<PromoBanner onClick={this.handlePromoCTA} />}</Container>
           )}
           <Container>
             <div className="HomePage">
-              {projects.length > 0 && (
+              {showDashboard && (
                 <div className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
                   <SyncToast />
                   <div className="subtitle">
@@ -151,11 +166,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
                       {this.renderImportButton()}
                     </div>
                   </div>
-                  <div className="CardList">
-                    {projects.map((project, index) => (
-                      <ProjectCard key={index} project={project} />
-                    ))}
-                  </div>
+                  <div className="CardList">{this.renderProjects()}</div>
                   {hasPagination ? (
                     <Pagination
                       firstItem={null}
@@ -167,11 +178,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
                   ) : null}
                 </div>
               )}
-
               <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
                 <div className="subtitle">
                   {t('home_page.templates_title')}
-                  {!projects.length && this.renderImportButton()}
+                  {!showDashboard && this.renderImportButton()}
                 </div>
                 <div className="template-list">
                   <div className="template-row">

@@ -3,8 +3,7 @@
     "promo_assetpack_banner": "Con el Fantasy Asset Pack conjura todo tipo de creaciones deslumbrantes!",
     "promo_body": "Con el Fantasy Asset Pack podrás conjurar todo tipo de creaciones deslumbrantes!",
     "promo_subtitle": "Donde la magia ocurre!",
-    "promo_title": "Decentraland",
-    "returning_user": "¿No encuentras tu trabajo? {sign_in} para verlo!"
+    "promo_title": "Decentraland"
   },
   "custom_layout": {
     "title": "Personalizada",
@@ -179,7 +178,9 @@
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamaño de tu Escena para comenzar",
-    "title": "¡Construye algo genial!"
+    "title": "¡Construye algo genial!",
+    "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
+    "no_projects": "No tienes ninguna Escena aún.{br}Elige una opción abajo para continuar."
   },
   "import_modal": {
     "action": "Cargar",
