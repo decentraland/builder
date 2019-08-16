@@ -308,6 +308,10 @@
     "up_to_date": "Al día!{br}Todos los cambios están actualizados",
     "update_scene": "Actualizar Escena"
   },
+  "toasts": {
+    "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la Nube!",
+    "localstorage_sign_in": "Inicia sesión"
+  },
   "tutorial_modal": {
     "slide0": {
       "description": "Este es el nuevo constructor de Escenas de Decentraland. Antes de comenzar, déjanos mostrarte cómo funciona.",

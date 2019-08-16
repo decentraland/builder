@@ -153,3 +153,16 @@ export const getCollectiblesByURL = createSelector<RootState, Scene | null, Reco
 )
 
 export const hasHistory = (state: RootState) => state.scene.past.length > 0
+export const numItems = createSelector<RootState, Project | null, Scene | null, number>(
+  getCurrentProject,
+  getCurrentScene,
+  (project, scene) => {
+    if (!project || !scene) return 0
+    const numTransforms = Object.values(scene.components).reduce<number>(
+      (total, component) => (component.type === ComponentType.Transform ? total + 1 : total),
+      0
+    )
+    const numGrounds = project.layout.cols * project.layout.rows
+    return numTransforms - numGrounds
+  }
+)

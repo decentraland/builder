@@ -248,8 +248,8 @@
       "title": "On snap!"
     },
     "sign_in": {
-      "description": "You've reached the limit of your browser's storage, please sign in to continue",
-      "title": "Oh noes!"
+      "description": "You've reached the limit of your browser's storage. Please sign in to continue",
+      "title": "Ummm..."
     }
   },
   "shortcuts": {
@@ -283,7 +283,7 @@
     "loading": "Uploading...",
     "retry": "Retry",
     "success": "All Scenes saved successfully!",
-    "sign_in": "Sign in to save your Scenes in the cloud"
+    "sign_in": "Sign in to save your Scenes in the Cloud"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -301,6 +301,10 @@
     "publish": "Publish",
     "up_to_date": "Up to date!{br}All the changes are published",
     "update_scene": "Update Scene"
+  },
+  "toasts": {
+    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
+    "localstorage_sign_in": "Sign in"
   },
   "tutorial_modal": {
     "slide0": {
