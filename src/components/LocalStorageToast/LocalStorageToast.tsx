@@ -6,7 +6,9 @@ import { Close } from 'decentraland-ui'
 import { Props, State } from './LocalStorageToast.types'
 
 import './LocalStorageToast.css'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
+export const LOCAL_STORAGE_SIGN_IN_EVENT = 'Sign in from editor toast'
 export const LOCALSTORAGE_TOAST_KEY = 'builder-localstorage-signin-toast'
 const localStorage = getLocalStorage()
 
@@ -29,6 +31,8 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
   handleLogin = () => {
     const { project, onLogin } = this.props
     if (project) {
+      const analytics = getAnalytics()
+      analytics.track(LOCAL_STORAGE_SIGN_IN_EVENT)
       onLogin(project.id)
     }
   }
