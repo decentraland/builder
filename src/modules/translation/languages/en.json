@@ -4,7 +4,7 @@
     "promo_body": "Get the Fantasy Asset Pack and conjure all manner of dazzling creations!",
     "promo_subtitle": "Where the magic happens!",
     "promo_title": "Decentraland",
-    "returning_user": "Looking for your previous creations? {sign_in} to view them!"
+    "returning_user": "Looking for your creations? {sign_in} to view them!"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -247,8 +247,8 @@
       "title": "On snap!"
     },
     "sign_in": {
-      "description": "You've reached the limit of your browser's storage, please sign in to continue",
-      "title": "Oh noes!"
+      "description": "You've reached the limit of your browser's storage. Please sign in to continue",
+      "title": "Ummm..."
     }
   },
   "shortcuts": {
