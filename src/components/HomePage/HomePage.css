@@ -47,7 +47,7 @@
   border: 1px solid var(--divider);
   align-items: center;
   justify-content: center;
-  color: var(--bluish-steel);
+  color: var(--secondary-text);
   user-select: none;
   text-align: center;
   line-height: 28px;
