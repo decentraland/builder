@@ -32,7 +32,7 @@ import { trimAsset } from './track'
 import { handleDelighted } from './delighted'
 import { getSub } from 'modules/auth/selectors'
 import { SyncAction, SYNC } from 'modules/sync/actions'
-import { getLoadingSet } from 'modules/sync/selectors'
+import { getLocalProjectIds } from 'modules/sync/selectors'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
@@ -156,9 +156,9 @@ function* handleSearchAssets(action: SearchAssetsAction) {
 }
 
 function* handleSync(_: SyncAction) {
-  const loading: Set<string> = yield select(getLoadingSet)
-  if (loading.size > 0) {
-    track('Sync projects', { count: loading.size })
+  const localProjectIds: string[] = yield select(getLocalProjectIds)
+  if (localProjectIds.length > 0) {
+    track('Sync projects', { count: localProjectIds.length })
   }
 }
 

@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux'
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
@@ -14,7 +15,7 @@ import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui
 import { SET_PROJECT, EXPORT_PROJECT_REQUEST, IMPORT_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
-import { AnyAction } from 'redux'
+import { LOGOUT } from 'modules/auth/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -78,3 +79,6 @@ addPayload(IMPORT_PROJECT, 'Import project', () => ({}))
 // sync
 addPayload(SAVE_PROJECT_SUCCESS, 'Save Project success', trimProject)
 addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
+
+// auth
+addPayload(LOGOUT, 'Logout')
