@@ -86,32 +86,31 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   renderProjects = () => {
-    const { isLoggedIn, projects } = this.props
+    const { isLoggedIn, didSync, projects } = this.props
 
     if (projects.length > 0) {
       return projects.map((project, index) => <ProjectCard key={index} project={project} />)
-    } else if (isLoggedIn) {
+    } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
-          <T id="home_page.no_projects" values={{ br: <br /> }} />
+          {' '}
+          <T
+            id="home_page.no_projects_guest"
+            values={{
+              br: <br />,
+              sign_in: (
+                <a href="#" onClick={this.handleLogin}>
+                  {t('user_menu.sign_in')}
+                </a>
+              )
+            }}
+          />
         </div>
       )
     }
-
     return (
       <div className="empty-projects">
-        {' '}
-        <T
-          id="home_page.no_projects_guest"
-          values={{
-            br: <br />,
-            sign_in: (
-              <a href="#" onClick={this.handleLogin}>
-                {t('user_menu.sign_in')}
-              </a>
-            )
-          }}
-        />
+        <T id="home_page.no_projects" values={{ br: <br /> }} />
       </div>
     )
   }
@@ -136,13 +135,13 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page, didSync, isLoggedIn } = this.props
+    const { projects, isFetching, totalPages, page, didCreate, didSync, isLoggedIn } = this.props
     if (isFetching) {
       return <LoadingPage />
     }
     const { isAnimationPlaying } = this.state
     const templates = getTemplates()
-    const showDashboard = isLoggedIn || didSync || projects.length > 0
+    const showDashboard = isLoggedIn || didCreate || didSync || projects.length > 0
     const hasPagination = totalPages > 1
 
     return (

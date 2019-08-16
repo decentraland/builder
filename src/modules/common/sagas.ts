@@ -16,6 +16,7 @@ import { mediaSaga } from 'modules/media/sagas'
 import { authSaga } from 'modules/auth/sagas'
 import { locationSaga } from 'modules/location/sagas'
 import { syncSaga } from 'modules/sync/sagas'
+import { uiSaga } from 'modules/ui/sagas'
 
 export function* rootSaga() {
   yield all([
@@ -34,6 +35,7 @@ export function* rootSaga() {
     mediaSaga(),
     authSaga(),
     locationSaga(),
-    syncSaga()
+    syncSaga(),
+    uiSaga()
   ])
 }
