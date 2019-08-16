@@ -39,6 +39,20 @@
   position: relative;
 }
 
+.HomePage .empty-projects {
+  display: flex;
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid var(--bluish-steel);
+  align-items: center;
+  justify-content: center;
+  color: var(--bluish-steel);
+  user-select: none;
+  text-align: center;
+  line-height: 28px;
+}
+
 .HomePage .template-cards {
   margin-top: 80px;
 }
@@ -50,18 +64,6 @@
 .HomePage .project-cards .subtitle,
 .HomePage .template-cards .subtitle {
   font-size: 20px;
-}
-
-.HomePage .empty-projects {
-  padding: 47px 0;
-  margin-top: var(--homepage-card-margin);
-  background-color: rgba(var(--bluish-steel-raw), 0.16);
-  border-radius: 12px;
-  color: var(--bluish-steel);
-  text-align: center;
-}
-.HomePage .empty-projects > div {
-  margin-bottom: 10px;
 }
 
 .HomePage .CardList {
@@ -85,27 +87,6 @@
 .HomePage .ProjectCard:hover {
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.24);
   transform: translateY(-4px);
-}
-
-.home-page-banner {
-  height: 80px;
-  padding: 0px;
-  background: var(--purple-banner);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-}
-
-.home-page-banner a {
-  color: white;
-  text-decoration: underline;
-  margin: 0px 4px;
-}
-
-.home-page-banner a:hover {
-  color: white;
-  text-decoration: none;
 }
 
 .HomePage .project-cards .subtitle > .menu {

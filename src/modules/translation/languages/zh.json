@@ -3,8 +3,7 @@
     "promo_assetpack_banner": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
     "promo_body": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
     "promo_subtitle": "奇迹发生的地方!",
-    "promo_title": "Decentraland",
-    "returning_user": "寻找您之前的作品？{sign_in} 查看它们！"
+    "promo_title": "Decentraland"
   },
   "custom_layout": {
     "title": "自定义",
@@ -179,7 +178,9 @@
     "start": "开始设计",
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
-    "title": "设计酷炫场景！"
+    "title": "设计酷炫场景！",
+    "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
+    "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用."
   },
   "import_modal": {
     "action": "上传",
