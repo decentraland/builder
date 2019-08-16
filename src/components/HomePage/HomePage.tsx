@@ -142,7 +142,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
     }
     const { isAnimationPlaying } = this.state
     const templates = getTemplates()
-    const showDashboard = isLoggedIn || didSync
+    const showDashboard = isLoggedIn || didSync || projects.length > 0
     const hasPagination = totalPages > 1
 
     return (
