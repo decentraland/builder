@@ -1,8 +1,8 @@
 import { fork, call, all, takeLatest, put, select } from 'redux-saga/effects'
 
 import { api } from 'lib/api'
-import { AUTH_REQUEST, LOGIN, LOGOUT, authRequest, authSuccess, authFailure } from './actions'
-import { login, logout, handleCallback, restoreSession } from './utils'
+import { AUTH_REQUEST, LOGIN, LOGOUT, authRequest, authSuccess, authFailure, LoginAction } from './actions'
+import { login, logout, handleCallback, restoreSession, CallbackResult } from './utils'
 import { isExpired } from './selectors'
 import { AuthData } from './types'
 
@@ -11,8 +11,8 @@ export function* authSaga() {
   yield all([takeLatest(LOGIN, handleLogin), takeLatest(LOGOUT, handleLogout), takeLatest(AUTH_REQUEST, handleAuthRequest)])
 }
 
-export function* handleLogin() {
-  yield call(login)
+export function* handleLogin(action: LoginAction) {
+  yield call(login, action.payload.redirectUrl)
 }
 
 function* handleLogout() {
@@ -31,23 +31,25 @@ export function* checkExpiredSession() {
 }
 
 export function* handleAuthRequest() {
-  let result: AuthData
-
+  let data: AuthData
+  let redirectUrl: string | null = null
   try {
-    result = yield call(handleCallback)
+    const result: CallbackResult = yield call(handleCallback)
+    data = result.data
+    redirectUrl = result.redirectUrl
   } catch (error) {
     try {
-      result = yield call(restoreSession)
+      data = yield call(restoreSession)
     } catch (error) {
       yield put(authFailure(error.message))
       return
     }
   }
   try {
-    result.user = yield call(() => api.fetchUser(result.accessToken))
+    data.user = yield call(() => api.fetchUser(data.accessToken))
   } catch (e) {
     // user doesn't have a profile created via avatars.decentraland.{env}
   }
 
-  yield put(authSuccess(result))
+  yield put(authSuccess(data, redirectUrl))
 }

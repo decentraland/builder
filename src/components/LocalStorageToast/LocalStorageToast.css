@@ -1,0 +1,30 @@
+.toolbar > .LocalStorageToast {
+  position: relative;
+  background: var(--void);
+  bottom: 46px;
+  padding: 7px 12px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  background-color: var(--void);
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.LocalStorageToast .dcl.close {
+  position: relative;
+  margin-left: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.LocalStorageToast .sign-in {
+  color: var(--primary);
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .toolbar > .LocalStorageToast {
+    font-size: 12px;
+    margin-right: 12%;
+  }
+}

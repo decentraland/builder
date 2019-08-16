@@ -7,9 +7,13 @@ export function* locationSaga() {
   yield all([takeLatest(AUTH_SUCCESS, handleCallback), takeLatest(AUTH_FAILURE, handleCallback)])
 }
 
-function* handleCallback(_action: AuthSuccessAction) {
-  const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  if (location.pathname === locations.callback()) {
-    yield put(replace(locations.root()))
+function* handleCallback(action: AuthSuccessAction) {
+  if (action.payload.redirectUrl) {
+    yield put(replace(action.payload.redirectUrl))
+  } else {
+    const location: ReturnType<typeof getLocation> = yield select(getLocation)
+    if (location.pathname === locations.callback()) {
+      yield put(replace(locations.root()))
+    }
   }
 }

@@ -4,7 +4,7 @@
     "promo_body": "Get the Fantasy Asset Pack and conjure all manner of dazzling creations!",
     "promo_subtitle": "Where the magic happens!",
     "promo_title": "Decentraland",
-    "returning_user": "Looking for your previous creations? {sign_in} to view them!"
+    "returning_user": "Looking for your creations? {sign_in} to view them!"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -247,8 +247,8 @@
       "title": "On snap!"
     },
     "sign_in": {
-      "description": "You've reached the limit of your browser's storage, please sign in to continue",
-      "title": "Oh noes!"
+      "description": "You've reached the limit of your browser's storage. Please sign in to continue",
+      "title": "Ummm..."
     }
   },
   "shortcuts": {
@@ -282,7 +282,7 @@
     "loading": "Uploading...",
     "retry": "Retry",
     "success": "All Scenes saved successfully!",
-    "sign_in": "Sign in to save your Scenes in the cloud"
+    "sign_in": "Sign in to save your Scenes in the Cloud"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -300,6 +300,10 @@
     "publish": "Publish",
     "up_to_date": "Up to date!{br}All the changes are published",
     "update_scene": "Update Scene"
+  },
+  "toasts": {
+    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
+    "localstorage_sign_in": "Sign in"
   },
   "tutorial_modal": {
     "slide0": {

@@ -7,6 +7,8 @@ import { closeEditor, zoomIn, zoomOut, resetCamera } from 'modules/editor/action
 import { isSidebarOpen, isPreviewing, isReady, isFetching } from 'modules/editor/selectors'
 import { loadCollectiblesRequest } from 'modules/asset/actions'
 import { openModal } from 'modules/modal/actions'
+import { numItems } from 'modules/scene/selectors'
+import { isLoggedIn } from 'modules/auth/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
 
@@ -15,7 +17,9 @@ const mapState = (state: RootState): MapStateProps => ({
   isSidebarOpen: isSidebarOpen(state),
   isLoading: !isReady(state),
   isFetching: isFetching(state),
-  currentProject: getCurrentProject(state)
+  isLoggedIn: isLoggedIn(state),
+  currentProject: getCurrentProject(state),
+  numItems: numItems(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

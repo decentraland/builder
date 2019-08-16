@@ -27,8 +27,13 @@ export default class UserMenu extends React.Component<Props, State> {
     window.location.href = 'https://avatars.decentraland.org'
   }
 
+  handleLogin = () => {
+    const { onLogin } = this.props
+    onLogin()
+  }
+
   render() {
-    const { face, name, email, isLoggedIn, isLoggingIn, onLogin, onLogout } = this.props
+    const { face, name, email, isLoggedIn, isLoggingIn, onLogout } = this.props
     const { isOpen } = this.state
 
     let classes = 'UserMenu'
@@ -63,7 +68,7 @@ export default class UserMenu extends React.Component<Props, State> {
           </>
         )}
         {!isLoggedIn && (
-          <Button primary disabled={isLoggingIn} onClick={onLogin}>
+          <Button primary disabled={isLoggingIn} onClick={this.handleLogin}>
             {t('user_menu.sign_in')}
           </Button>
         )}
