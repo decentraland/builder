@@ -28,6 +28,7 @@ export default class SyncToast extends React.PureComponent<Props, State> {
     const {
       syncCount,
       errorCount,
+      projectCount,
       didDismissSignInToast,
       didDismissSyncedToast,
       isLoggedIn,
@@ -37,7 +38,7 @@ export default class SyncToast extends React.PureComponent<Props, State> {
     const { isSynced } = this.state
 
     const showSynced = isSynced && !didDismissSyncedToast
-    const showSignIn = !isLoggedIn && !didDismissSignInToast
+    const showSignIn = !isLoggedIn && !didDismissSignInToast && projectCount > 0
 
     if (syncCount > 0) {
       return (
