@@ -15,6 +15,7 @@ export type DefaultProps = {
 export type Props = DefaultProps & {
   isFetching: boolean
   didSync: boolean
+  didCreate: boolean
   isLoggedIn: boolean
   page: number
   sortBy: SortBy
@@ -29,6 +30,9 @@ export type State = {
   isAnimationPlaying: boolean
 }
 
-export type MapStateProps = Pick<Props, 'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'isLoggedIn'>
+export type MapStateProps = Pick<
+  Props,
+  'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'didCreate' | 'isLoggedIn'
+>
 export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin'>
 export type MapDispatch = Dispatch<NavigateToAction | CreateProjectFromTemplateAction | OpenModalAction | LoginAction>

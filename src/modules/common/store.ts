@@ -27,7 +27,7 @@ import { RootState } from './types'
 import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
-import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST } from 'modules/ui/dashboard/actions'
+import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -88,7 +88,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     SAVE_DEPLOYMENT_SUCCESS,
     EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
-    DISMISS_SYNCED_TOAST
+    DISMISS_SYNCED_TOAST,
+    SET_SYNC
   ],
   transform: state => {
     let projects: DataByKey<Project> = {}

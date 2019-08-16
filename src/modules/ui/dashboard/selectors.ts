@@ -11,6 +11,8 @@ export const PAGE_SIZE = 12
 
 export const getState = (state: RootState) => state.ui.dashboard
 
+export const didCreate = (state: RootState) => getState(state).didCreate
+
 export const didSync = (state: RootState) => getState(state).didSync
 
 export const didDismissSyncedToast = (state: RootState) => getState(state).didDismissSyncedToast
