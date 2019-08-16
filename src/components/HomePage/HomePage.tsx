@@ -142,21 +142,21 @@ export default class HomePage extends React.PureComponent<Props, State> {
     }
     const { isAnimationPlaying } = this.state
     const templates = getTemplates()
-    const renderDashboard = isLoggedIn || didSync
+    const showDashboard = isLoggedIn || didSync
     const hasPagination = totalPages > 1
 
     return (
       <>
-        <Navbar isFullscreen isOverlay={!renderDashboard} />
+        <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen>
-          {!renderDashboard ? (
+          {!showDashboard ? (
             <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
           ) : (
             <Container>{<PromoBanner onClick={this.handlePromoCTA} />}</Container>
           )}
           <Container>
             <div className="HomePage">
-              {renderDashboard && (
+              {showDashboard && (
                 <div className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
                   <SyncToast />
                   <div className="subtitle">
@@ -181,7 +181,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
               <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
                 <div className="subtitle">
                   {t('home_page.templates_title')}
-                  {!renderDashboard && this.renderImportButton()}
+                  {!showDashboard && this.renderImportButton()}
                 </div>
                 <div className="template-list">
                   <div className="template-row">
