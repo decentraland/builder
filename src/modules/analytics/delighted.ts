@@ -1,6 +1,7 @@
-import { delay, call } from 'redux-saga/effects'
+import { delay, call, select } from 'redux-saga/effects'
 import { env } from 'decentraland-commons'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { getEmail } from 'modules/auth/selectors'
 
 const DELIGHTED_DELAY = 180 * 1000
 const DELIGHTED_API_KEY = env.get('REACT_APP_DELIGHTED_API_KEY', '')
@@ -23,14 +24,16 @@ export function* handleDelighted() {
     )
   })
   yield delay(DELIGHTED_DELAY)
+  const email: string | null = yield select(getEmail)
   yield call(() => {
     const analytics = getAnalytics()
     const delighted = (window as any).delighted
-    delighted.survey({
+    const payload = {
       recurringPeriod: false,
       properties: {
         anonymous_id: analytics ? analytics.user().anonymousId() : null
       }
-    })
+    }
+    delighted.survey(email ? { email, ...payload } : payload)
   })
 }
