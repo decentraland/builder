@@ -6,23 +6,6 @@ import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-export const COLLECTIBLE_WHITELIST = [
-  'crypto-kitties',
-  'hyper-dragons',
-  'axie-infinity',
-  'blockchain-cuties',
-  'chibi-fighters',
-  'etheremon',
-  'mlb-champions',
-  'mycryptoheroes',
-  'mycryptoheroes-extension',
-  'chainbreakers-items',
-  'chainbreakers-pets',
-  'chainbreakers-units',
-  'chainbreakers-rings',
-  'chainguardians'
-]
-
 export function* assetSaga() {
   yield takeLatest(LOAD_COLLECTIBLES_REQUEST, handleLoadCollectibles)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
@@ -40,7 +23,6 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
   const promises: Promise<{ assets: DARAsset[]; registry: AssetRegistry }>[] = []
 
   for (const registry of darRegistries) {
-    if (!COLLECTIBLE_WHITELIST.includes(registry.common_name)) continue
     promises.push(api.fetchCollectibleAssets(registry.common_name, address).then(assets => ({ assets, registry })))
   }
 
