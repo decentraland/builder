@@ -95,18 +95,18 @@
       "error_ocurred": "An error ocurred",
       "i_accept_the": "By clicking \"submit\" you agree to receive news from Decentraland",
       "progress": "Processing",
+      "sign_in": {
+        "action": "Sign In",
+        "subtitle": "You need to sign in before you publish to the Scene pool",
+        "title": "Sign In"
+      },
       "subtitle": "Submit your work to our Scene pool for a chance to get it published.",
       "success": {
         "body": "You will receive an email notification if your Scene is picked to be published.",
         "title": "Thanks for uploading your Scene!"
       },
       "title": "Publish your Scene",
-      "uploading": "Uploading",
-      "sign_in": {
-        "title": "Sign In",
-        "subtitle": "You need to sign in before you publish to the Scene pool",
-        "action": "Sign In"
-      }
+      "uploading": "Uploading"
     },
     "title": "Publish your Scene"
   },
@@ -157,11 +157,8 @@
   },
   "home_page": {
     "import_scene": "Import Scene",
-    "sort": {
-      "newest": "Newest",
-      "name": "Name",
-      "size": "Size"
-    },
+    "no_projects": "It looks like you don't have any Scenes.{br}Choose an option below to get started.",
+    "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
       "delete_project": "Delete Scene",
       "duplicate_project": "Duplicate Scene",
@@ -169,12 +166,15 @@
       "unpublish": "Unpublish"
     },
     "projects_title": "My Scenes",
+    "sort": {
+      "name": "Name",
+      "newest": "Newest",
+      "size": "Size"
+    },
     "start": "Start building",
     "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your Scene to get started",
-    "title": "Build something Cool!",
-    "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
-    "no_projects": "It looks like you don't have any Scenes.{br}Choose an option below to get started."
+    "title": "Build something Cool!"
   },
   "import_modal": {
     "action": "Import",
@@ -282,8 +282,8 @@
     "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
     "loading": "Uploading...",
     "retry": "Retry",
-    "success": "All Scenes saved successfully!",
-    "sign_in": "Sign in to save your Scenes in the Cloud"
+    "sign_in": "Sign in to save your Scenes in the Cloud",
+    "success": "All Scenes saved successfully!"
   },
   "templates": {
     "big": "Big (2x3)",
@@ -295,16 +295,16 @@
     "medium": "Standard (2x2)",
     "small": "Mini (1x1)"
   },
+  "toasts": {
+    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
+    "localstorage_sign_in": "Sign in"
+  },
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
     "limits_exceeded": "Too many {metric}{br}Try deleting some items!",
     "publish": "Publish",
     "up_to_date": "Up to date!{br}All the changes are published",
     "update_scene": "Update Scene"
-  },
-  "toasts": {
-    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
-    "localstorage_sign_in": "Sign in"
   },
   "tutorial_modal": {
     "slide0": {

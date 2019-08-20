@@ -5,10 +5,6 @@
     "promo_subtitle": "奇迹发生的地方!",
     "promo_title": "Decentraland"
   },
-  "custom_layout": {
-    "title": "自定义",
-    "up_to": "最大 {max} 块地块"
-  },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
@@ -26,8 +22,8 @@
       },
       "success": {
         "continue": "已完成",
-        "description": "土地已经清空,可以发布其他场景了!",
-        "title": "土地已经清空!"
+        "description": "已清空土地,与在可以发布其他场景!",
+        "title": "已清空土地!"
       }
     },
     "description": "将场景部署到土地上，或向土地所有者申请许可。",
@@ -71,7 +67,7 @@
           "title": "上传到虚拟世界"
         },
         "uploading_recording": {
-          "description": "上传场景预览时请稍候。",
+          "description": "正上传场景预览，请稍候。",
           "title": "正在上传预览"
         }
       },
@@ -99,18 +95,18 @@
       "error_ocurred": "出错了",
       "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
       "progress": "正在处理",
+      "sign_in": {
+        "action": "登录",
+        "subtitle": "登录以发布到场景池",
+        "title": "登录"
+      },
       "subtitle": "把作品提交到场景池，就有机会发布。",
       "success": {
         "body": "如果您的场景被选中发布，您将收到电子邮件通知。",
         "title": "谢谢上传你的场景!"
       },
-      "title": "发布场景",
-      "sign_in": {
-        "title": "登入",
-        "subtitle": "您需要在上传场景之前登录",
-        "action": "登入"
-      },
-      "uploading": "正在上传"
+      "title": "正在发布场景",
+      "uploading": "上传中..."
     },
     "title": "正在发布场景"
   },
@@ -124,7 +120,7 @@
     "reload": "重新加载页面",
     "subtitle": "发生了一个错误，以下是错误信息:",
     "support": "联系支持服务",
-    "title": "哎哟！"
+    "title": "糟糕！"
   },
   "export_modal": {
     "action": "下载",
@@ -151,23 +147,18 @@
     "optional": "可选",
     "or": "或",
     "project": "场景",
-    "projects": "项目",
     "read_more": "阅读更多",
     "save": "保存",
     "send": "发送",
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
-    "templates": "模板",
     "terms_and_conditions": "使用条款"
   },
   "home_page": {
     "import_scene": "上传场景",
-    "sort": {
-      "newest": "最新",
-      "name": "名称",
-      "size": "尺寸"
-    },
+    "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用.",
+    "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
       "duplicate_project": "复制场景",
@@ -175,21 +166,24 @@
       "unpublish": "撤消发布"
     },
     "projects_title": "我的场景",
+    "sort": {
+      "name": "名称",
+      "newest": "最新",
+      "size": "尺寸"
+    },
     "start": "开始设计",
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
-    "title": "设计酷炫场景！",
-    "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
-    "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用."
+    "title": "设计酷炫场景！"
   },
   "import_modal": {
-    "action": "上传",
-    "action_many": "上传 {count} 个场景",
+    "action": "导入",
+    "action_many": "导入 {count} 个场景",
     "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "你将可以在其它场景编辑器中上传。",
+    "description": "您可以导入使用 Builder 设计的任何场景！",
     "invalid_file": "无效文件",
-    "title": "上传场景",
-    "upload_manually": "手动上传"
+    "title": "导入场景",
+    "upload_manually": "手动导入"
   },
   "itemdrawer": {
     "collectible_disclaimer": "没看到你所有的加密收藏品？{br}我们很快就会加入支持！",
@@ -248,6 +242,16 @@
     "max_area_error": "您的场景不得超过 {area} 块地块",
     "min_area_error": "您的场景太小了"
   },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "无法保存",
+      "title": "糟糕！"
+    },
+    "sign_in": {
+      "description": "您已达到浏览器存储空间的限制，请登录以继续",
+      "title": "糟糕！"
+    }
+  },
   "shortcuts": {
     "delete": "删除",
     "duplicate": "复制",
@@ -275,11 +279,11 @@
     "title": "快捷键"
   },
   "sync": {
-    "loading": "您的场景正在上传到云端",
-    "success": "所有场景上传成功！",
-    "error": "无法上传{errorCount}个场景",
+    "error": "{errorCount} {errorCount, plural, one {场景} other {场景}} 无法上传",
+    "loading": "上传中...",
     "retry": "重试",
-    "sign_in": "登录以将您的场景保存在云端"
+    "sign_in": "登录以将您的场景保存在云端",
+    "success": "所有场景成功保存！"
   },
   "templates": {
     "big": "大 (2x3)",
@@ -291,16 +295,16 @@
     "medium": "中 (2x2)",
     "small": "小 (1x1)"
   },
+  "toasts": {
+    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！",
+    "localstorage_sign_in": "登录"
+  },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
     "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
     "publish": "发布",
     "up_to_date": "已最新！{br}所有更改都已发布",
     "update_scene": "更新场景"
-  },
-  "toasts": {
-    "localstorage": "场景存储在浏览器中。 {sign_in}以将其保存在云端！",
-    "localstorage_sign_in": "登录"
   },
   "tutorial_modal": {
     "slide0": {
@@ -323,11 +327,6 @@
       "description": "使用左键拖动可旋转相机。",
       "title": "相机控制"
     },
-    "slide5": {
-      "description": "场景完成后，单击{submitButton}将其提交到创作大赛。",
-      "email_cta": "注册以取得编辑器和大赛更新信息：",
-      "title": "参加大赛"
-    },
     "subtitle": "内容编辑器非常容易使用，在您开始之前，这里有一些技巧和提示",
     "title": "开始使用 the Builder"
   },
@@ -335,6 +334,11 @@
     "back": "返回您的场景",
     "subtitle": "The Builder 不支持您的浏览器.{br}请使用 {chrome} 或 {firefox}",
     "title": "Oops!"
+  },
+  "user_menu": {
+    "guest": "客人",
+    "sign_in": "登录",
+    "sign_out": "注销"
   },
   "validation": {
     "project": {
@@ -351,22 +355,7 @@
     "youtube_id": "NhaP_M7tVc8"
   },
   "wallet": {
-    "title": "连接钱包用加密收藏品装饰你的场景。",
-    "signature_error": "签名消息失败"
-  },
-  "user_menu": {
-    "sign_in": "登入",
-    "sign_out": "登出",
-    "guest": "客人"
-  },
-  "quota_exceeded_modal": {
-    "retry": {
-      "description": "我们无法保存您的工作",
-      "title": "不好了！"
-    },
-    "sign_in": {
-      "description": "您已用完匿名存储空间，请继续登录",
-      "title": "出现了问题"
-    }
+    "signature_error": "签名消息失败",
+    "title": "连接钱包用加密收藏品装饰你的场景。"
   }
 }

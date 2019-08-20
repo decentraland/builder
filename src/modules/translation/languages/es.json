@@ -5,10 +5,6 @@
     "promo_subtitle": "Donde la magia ocurre!",
     "promo_title": "Decentraland"
   },
-  "custom_layout": {
-    "title": "Personalizada",
-    "up_to": "Hasta {max} parcelas"
-  },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
@@ -105,12 +101,12 @@
         "title": "¡Gracias por subir tu Escena!"
       },
       "title": "Publica tu Escena",
+      "uploading": "Subiendo...",
       "sign_in": {
         "title": "Iniciar Sesión",
         "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
         "action": "Iniciar Sesión"
-      },
-      "uploading": "Subiendo"
+      }
     },
     "title": "Publica tu Escena"
   },
@@ -151,14 +147,12 @@
     "optional": "opcional",
     "or": "o",
     "project": "Escena",
-    "projects": "Escenas",
     "read_more": "Leer más",
     "save": "Salvar",
     "send": "Enviar",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
     "subscribe": "Subscribirse",
-    "templates": "plantillas",
     "terms_and_conditions": "Términos y Condiciones"
   },
   "home_page": {
@@ -255,7 +249,7 @@
     },
     "sign_in": {
       "description": "Te has quedado sin espacio de almacenamiento local, inicia sesion para continuar",
-      "title": "Ha ocurrido un problema"
+      "title": "¡Oh no!"
     }
   },
   "shortcuts": {
@@ -332,11 +326,6 @@
     "slide4": {
       "description": "Arrastra con el botón izquierdo para girar la cámara. Use el botón derecho para desplazarse.",
       "title": "Controlando la cámara"
-    },
-    "slide5": {
-      "description": "Cuando la Escena esté terminada, haz clic en {submitButton} para enviarla al concurso",
-      "email_cta": "Regístrate para recibir actualizaciones del Builder y concursos:",
-      "title": "Participa en el concurso"
     },
     "subtitle": "El Builder es muy fácil de usar, aquí hay algunos consejos antes de comenzar",
     "title": "Comienza con el Builder"
