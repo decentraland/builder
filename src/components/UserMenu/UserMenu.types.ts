@@ -1,13 +1,12 @@
 import { Dispatch } from 'redux'
 
 import { logout, LogoutAction, login, LoginAction } from 'modules/auth/actions'
+import { User } from 'modules/auth/types'
 
 export type Props = {
   isLoggedIn: boolean
   isLoggingIn: boolean
-  email: string | null
-  name: string | null
-  face: string | null
+  user: User | null
   onLogout: typeof logout
   onLogin: typeof login
 }
@@ -16,6 +15,6 @@ export type State = {
   isOpen: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isLoggedIn' | 'isLoggingIn' | 'email' | 'name' | 'face'>
+export type MapStateProps = Pick<Props, 'isLoggedIn' | 'isLoggingIn' | 'user'>
 export type MapDispatchProps = Pick<Props, 'onLogin' | 'onLogout'>
 export type MapDispatch = Dispatch<LoginAction | LogoutAction>
