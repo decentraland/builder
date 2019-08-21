@@ -1,18 +1,21 @@
 import * as React from 'react'
 
-import { bustCache } from './utils'
 import { Props } from './AvatarFace.types'
 
 import './AvatarFace.css'
 
 export default class AvatarFace extends React.PureComponent<Props> {
   render() {
-    const hasFace = this.props.face && this.props.face.length > 0
+    const { user } = this.props
 
-    return (
-      <div className={`AvatarFace ${this.props.size}`}>
-        {hasFace ? <img src={bustCache(this.props.face!)} alt="" /> : <div className="guest-face" />}
-      </div>
-    )
+    let face
+    if (user) {
+      const url = user.snapshots.face + '?updated_at=' + user.updatedAt
+      face = <img src={url} alt="" />
+    } else {
+      face = <div className="guest-face" />
+    }
+
+    return <div className={`AvatarFace ${this.props.size}`}>{face}</div>
   }
 }

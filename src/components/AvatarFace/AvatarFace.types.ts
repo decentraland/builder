@@ -1,4 +1,6 @@
+import { User } from 'modules/auth/types'
+
 export type Props = {
-  face?: string | null
+  user?: User | null
   size: 'small' | 'medium' | 'large' | 'responsive'
 }
