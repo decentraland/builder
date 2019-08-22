@@ -1,19 +1,16 @@
 .AssetPackList .promo {
-  background-image: url('../../../images/purple_banner_bg.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  color: white;
+  background-color: var(--promo-banner-bg);
+  color: var(--promo-banner-text);
   width: calc(var(--sidebar-width) - 32px);
   height: 80px;
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: bold;
   margin-bottom: 8px;
   border-radius: 8px;
   display: flex;
   align-items: center;
-  padding: 16px 20px;
-  cursor: pointer;
-  line-height: 24px;
+  padding: 16px 20px 16px 0;
+  line-height: 20px;
   user-select: none;
 }
 
@@ -23,12 +20,12 @@
 }
 
 .AssetPackList .promo .icon {
-  background-image: url('../../../images/dapper-logo.png');
+  background-image: url('../../../images/promo-assets.png');
   background-repeat: no-repeat;
   background-size: contain;
-  width: 48px;
-  height: 48px;
-  margin-right: 16px;
+  width: 128px;
+  height: 100px;
+  margin-right: 10px;
   background-position: center;
   flex: none;
 }

@@ -1,3 +1,3 @@
-import DeployButton from './DeployButton'
+import DeployButton from './DeployButton.container'
 
 export default DeployButton

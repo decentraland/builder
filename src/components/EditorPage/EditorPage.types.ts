@@ -21,7 +21,10 @@ export type Props = {
   currentProject: Project | null
   isSidebarOpen: boolean
   isPreviewing: boolean
+  isFetching: boolean
   isLoading: boolean
+  isLoggedIn: boolean
+  numItems: number
   onOpenModal: typeof openModal
   onLoadAssetPacks: typeof loadAssetPacksRequest
   onLoadCollectibles: typeof loadCollectiblesRequest
@@ -35,7 +38,10 @@ export type State = {
   isIncentiveBannerOpen: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isSidebarOpen' | 'isPreviewing' | 'isLoading' | 'currentProject'>
+export type MapStateProps = Pick<
+  Props,
+  'isSidebarOpen' | 'isPreviewing' | 'isLoading' | 'isFetching' | 'isLoggedIn' | 'currentProject' | 'numItems'
+>
 export type MapDispatchProps = Pick<
   Props,
   'onOpenModal' | 'onLoadAssetPacks' | 'onCloseEditor' | 'onZoomOut' | 'onZoomIn' | 'onResetCamera' | 'onLoadCollectibles'

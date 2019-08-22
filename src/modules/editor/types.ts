@@ -1,3 +1,5 @@
+export { Gizmo } from 'decentraland-ecs'
+
 export type EditorScene = {
   baseUrl: string
   display: {
@@ -22,7 +24,7 @@ export type EditorScene = {
     blacklist: string[]
     teleportPosition: string
   }
-  tracking: {
+  source: {
     origin: 'builder'
   }
   main: string

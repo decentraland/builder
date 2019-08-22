@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Header, Grid, Icon, Popup } from 'decentraland-ui'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Header, Grid, Icon } from 'decentraland-ui'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
-import { getExceededMetrics } from 'modules/scene/utils'
 
+import DeploymentStatus from 'components/DeploymentStatus'
 import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
@@ -47,11 +46,10 @@ export default class TopBar extends React.PureComponent<Props> {
   }
 
   handleTitleClick = () => {
-    this.props.onOpenModal('EditProjectModal')
-  }
-
-  handleOpenDeployModal = () => {
-    this.props.onOpenModal('DeployModal')
+    const { isLoading, onOpenModal } = this.props
+    if (!isLoading) {
+      onOpenModal('EditProjectModal')
+    }
   }
 
   handleExport = () => {
@@ -63,28 +61,20 @@ export default class TopBar extends React.PureComponent<Props> {
     return isLoading || (metrics.entities > 0 && metrics.triangles === 0)
   }
 
-  getExceededMetric() {
-    const { metrics, limits } = this.props
-    const exceededMetrics = getExceededMetrics(metrics, limits)
-    return exceededMetrics.length > 0 ? exceededMetrics[0] : ''
-  }
-
   render() {
     const {
       gizmo,
-      areEntitiesOutOfBoundaries,
       currentProject,
-      isLoading,
       isPreviewing,
+      isUploading,
       isSidebarOpen,
       selectedEntityId,
       enabledTools,
+      isLoading,
       onReset,
       onDelete,
       onDuplicate
     } = this.props
-
-    const exceededMetric = this.getExceededMetric()
 
     return (
       <Grid className="TopBar">
@@ -95,10 +85,19 @@ export default class TopBar extends React.PureComponent<Props> {
             </Link>
             {currentProject ? (
               <>
-                <div className="project-title" onClick={this.handleTitleClick} title={currentProject.title}>
+                <DeploymentStatus projectId={currentProject.id} />
+                <div
+                  className={`project-title ${isLoading ? 'disabled' : ''}`}
+                  onClick={this.handleTitleClick}
+                  title={currentProject.title}
+                >
                   {currentProject.title}
                 </div>
-                <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+                {isUploading ? (
+                  <OwnIcon name="cloud-upload" className="cloud-upload-indicator is-uploading" />
+                ) : (
+                  <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+                )}
               </>
             ) : null}
           </Header>
@@ -148,25 +147,7 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
             <span className="contest-button-wrapper">
-              <Popup
-                className="contest-disabled"
-                content={
-                  areEntitiesOutOfBoundaries ? (
-                    <T id="topbar.bounds_exceeded" values={{ br: <br /> }} />
-                  ) : (
-                    <T id="topbar.limits_exceeded" values={{ metric: exceededMetric, br: <br /> }} />
-                  )
-                }
-                position="bottom center"
-                disabled={isLoading || (exceededMetric === '' && !areEntitiesOutOfBoundaries)}
-                trigger={
-                  <span>
-                    <DeployButton onClick={this.handleOpenDeployModal} isDisabled={isLoading || exceededMetric !== '' || areEntitiesOutOfBoundaries} />
-                  </span>
-                }
-                on="hover"
-                inverted
-              />
+              <DeployButton />
             </span>
           </Grid.Row>
         </Grid.Column>

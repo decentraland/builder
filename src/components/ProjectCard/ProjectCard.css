@@ -12,6 +12,14 @@
   justify-content: center;
 }
 
+.ProjectCard .deployment-status {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 10px;
+  height: 10px;
+}
+
 .ProjectCard .project-data {
   width: 100%;
   margin: 90px 20px 0px 20px;
@@ -23,6 +31,9 @@
   margin-bottom: 14px;
   font-size: 20px;
   font-weight: 500;
+  max-width: 175px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ProjectCard .description {
@@ -51,6 +62,10 @@
   display: none;
 }
 
+.ProjectCard:hover {
+  z-index: 999;
+}
+
 .ProjectCard:hover .ui.dropdown {
   display: inline-block;
 }
@@ -75,4 +90,23 @@
   position: relative;
   background-size: cover;
   background-position: center;
+}
+
+.ProjectCard .title-wrapper {
+  display: flex;
+}
+
+.ProjectCard .Icon.is-uploading {
+  margin-left: 4px;
+  margin-top: 2px;
+}
+
+.ProjectCard .error-indicator {
+  width: 16px;
+  height: 16px;
+  background: url(../../images/save-error.svg);
+  background-repeat: no-repeat;
+  background-position: center -2px;
+  margin-top: 3px;
+  margin-left: 7px;
 }

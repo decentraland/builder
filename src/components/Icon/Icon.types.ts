@@ -4,6 +4,7 @@ export type IconName =
   | 'arrow-up'
   | 'chevron-right'
   | 'close'
+  | 'cloud-upload'
   | 'delete'
   | 'duplicate'
   | 'grid'
@@ -31,6 +32,13 @@ export type IconName =
   | 'arrow-key-right'
   | 'import'
   | 'export'
+  | 'atlas-zoom-in'
+  | 'atlas-zoom-out'
+  | 'locate-land'
+  | 'rotate-left'
+  | 'rotate-right'
+  | 'modal-back'
+  | 'modal-close'
 
 export type DefaultProps = {
   isActive: boolean

@@ -1,54 +1,126 @@
 {
-  "adblock_modal": {
-    "body": "在安装Dapper钱包以获得免费 Purrstige 猫之前，请先停用广告拦截器",
-    "title": "停用广告拦截器"
-  },
   "banners": {
-    "dapper_assetpack_banner": "获取Dapper钱包和免费的{cat}, 适合您的场景！",
-    "dapper_homepage": "在你的场景里放一张你的加密猫的照片!没有加密猫? 安装 Dapper 钱包，就可以得到免费赠送: {cta}",
-    "dapper_homepage_cta": "Purrstige 猫",
-    "mobile_dapper_homepage": "了解我们的最新功能：{br}{cta}",
-    "mobile_dapper_hompage_cta": "Picture Frames + Dapper",
-    "promo_cta": "安装 Dapper",
-    "promo_subtitle": "在场景中显示您的谜恋猫。没有的话可以安装 Dapper 钱包，就能得到一只免费的、独一无二的 Purrstige 猫。。",
-    "promo_title": "今天的您好 Dapper (酷)!"
-  },
-  "custom_layout": {
-    "title": "自定义",
-    "up_to": "最大 {max} 块地块"
+    "promo_assetpack_banner": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
+    "promo_body": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
+    "promo_subtitle": "奇迹发生的地方!",
+    "promo_title": "Decentraland"
   },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
   "deployment_modal": {
-    "description": "您将可以直接在编辑器中发布场景到土地！请订阅邮件列表，以便功能实现时，可以即时通知您。",
-    "email_thanks": "谢谢！我们会保持联系",
-    "pool": {
-      "contact_information": "联系信息",
-      "error_ocurred": "提交项目时出错了:",
-      "i_accept_the": "我同意接收Decentraland的消息",
-      "progress": "处理",
-      "subtitle": "将您的作品提交到我们的场景池，以便有机会将其发布。无需LAND。",
-      "success": {
-        "body": "如果您的场景被选中要发布，您将收到电子邮件通知。",
-        "title": "感谢您上传您的场景！"
+    "clear": {
+      "confirmation": {
+        "action": "撤回发布",
+        "description": "从虚拟世界撤回 \"{project}\"",
+        "title": "撤回已发布的场景"
       },
-      "title": "发布您的场景",
-      "uploading": "上传"
+      "connect": {
+        "description": "请连接到您的钱包以撤回已发布的场景。",
+        "title": "连接您的钱包"
+      },
+      "success": {
+        "continue": "已完成",
+        "description": "已清空土地,与在可以发布其他场景!",
+        "title": "已清空土地!"
+      }
     },
-    "title": "布署场景到土地"
+    "description": "将场景部署到土地上，或向土地所有者申请许可。",
+    "land": {
+      "confirmation": {
+        "action": "发布",
+        "description": "您将发布以下场景到土地:",
+        "location_label": "发布到",
+        "size_label": "大小",
+        "title_label": "标题"
+      },
+      "connect": {
+        "description": "连接您的钱包继续。",
+        "title": "发布场景"
+      },
+      "map": {
+        "continue": "继续",
+        "locate_land": "定位下一地块",
+        "no_land_action": "提交到场景池",
+        "no_land_warning": "好象您没有任何土地",
+        "occupied_tooltip": "清空土地空间{br}从仪表板撤回发布的场景",
+        "occupied_warning": "在这个位置至少有一个场景布署",
+        "placement_active": "在 {x},{y} 布署 {count} 块土地场景 ",
+        "placement_default": "选择要发布场景的土地",
+        "reset": "重置",
+        "title": "发布场景",
+        "zoom_in": "放大",
+        "zoom_out": "缩小"
+      },
+      "progress": {
+        "creating_files": {
+          "description": "正在建立上传的文件，请稍等。",
+          "title": "创建资源文件"
+        },
+        "recording": {
+          "description": "请稍等，正在录制场景预览。",
+          "title": "录制场景预览"
+        },
+        "uploading_assets": {
+          "description": "正在上传场景，请稍等。",
+          "title": "上传到虚拟世界"
+        },
+        "uploading_recording": {
+          "description": "正上传场景预览，请稍候。",
+          "title": "正在上传预览"
+        }
+      },
+      "success": {
+        "back_home": "返回仪表板",
+        "continue": "继续工作",
+        "description": "场景已上传。",
+        "title": "已完成!"
+      },
+      "title": "发布场景"
+    },
+    "option_land": {
+      "action": "布署到 LAND 土地",
+      "description": "布署场景到 LAND 土地或 Estate 连块土地.",
+      "title": "我的 LAND 土地"
+    },
+    "option_pool": {
+      "action": "应用",
+      "description": "将你的场景应用到其他人的领地。",
+      "title": "场景池"
+    },
+    "pool": {
+      "action": "提交",
+      "contact_information": "联系信息",
+      "error_ocurred": "出错了",
+      "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
+      "progress": "正在处理",
+      "sign_in": {
+        "action": "登录",
+        "subtitle": "登录以发布到场景池",
+        "title": "登录"
+      },
+      "subtitle": "把作品提交到场景池，就有机会发布。",
+      "success": {
+        "body": "如果您的场景被选中发布，您将收到电子邮件通知。",
+        "title": "谢谢上传你的场景!"
+      },
+      "title": "正在发布场景",
+      "uploading": "上传中..."
+    },
+    "title": "正在发布场景"
   },
   "edit_project_modal": {
     "custom_layout_label": "布局",
-    "title": "场景详细信息"
+    "title": "场景详细信息",
+    "unpublish_needed": "请在更新您的场景细节之前先取消发布您的场景"
   },
   "error_page": {
     "or": "或者重试",
     "reload": "重新加载页面",
     "subtitle": "发生了一个错误，以下是错误信息:",
     "support": "联系支持服务",
-    "title": "哎哟！"
+    "title": "糟糕！"
   },
   "export_modal": {
     "action": "下载",
@@ -75,44 +147,49 @@
     "optional": "可选",
     "or": "或",
     "project": "场景",
-    "projects": "项目",
     "read_more": "阅读更多",
     "save": "保存",
     "send": "发送",
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
-    "templates": "模板",
     "terms_and_conditions": "使用条款"
   },
   "home_page": {
-    "empty_projects_cta": "在下面选择一个模板开始构建!",
-    "empty_projects_title": "这是您的项目所在",
     "import_scene": "上传场景",
+    "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用.",
+    "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
       "duplicate_project": "复制场景",
-      "export_project": "场景导出"
+      "export_project": "场景导出",
+      "unpublish": "撤消发布"
     },
     "projects_title": "我的场景",
+    "sort": {
+      "name": "名称",
+      "newest": "最新",
+      "size": "尺寸"
+    },
     "start": "开始设计",
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
     "title": "设计酷炫场景！"
   },
   "import_modal": {
-    "action": "上传",
-    "action_many": "上传 {count} 个场景",
+    "action": "导入",
+    "action_many": "导入 {count} 个场景",
     "cta": "拖拽场景文件到此，或者 {action}",
-    "description": "你将可以在其它场景编辑器中上传。",
+    "description": "您可以导入使用 Builder 设计的任何场景！",
     "invalid_file": "无效文件",
-    "title": "上传场景",
-    "upload_manually": "手动上传"
+    "title": "导入场景",
+    "upload_manually": "手动导入"
   },
   "itemdrawer": {
     "collectible_disclaimer": "没看到你所有的加密收藏品？{br}我们很快就会加入支持！",
     "empty_ground": "末设置地面",
     "no_results": "没找到",
+    "results": "结果",
     "search": "搜索",
     "title": "抽屉"
   },
@@ -165,6 +242,16 @@
     "max_area_error": "您的场景不得超过 {area} 块地块",
     "min_area_error": "您的场景太小了"
   },
+  "quota_exceeded_modal": {
+    "retry": {
+      "description": "无法保存",
+      "title": "糟糕！"
+    },
+    "sign_in": {
+      "description": "您已达到浏览器存储空间的限制，请登录以继续",
+      "title": "糟糕！"
+    }
+  },
   "shortcuts": {
     "delete": "删除",
     "duplicate": "复制",
@@ -191,6 +278,13 @@
     "other_shortcuts": "其它",
     "title": "快捷键"
   },
+  "sync": {
+    "error": "{errorCount} {errorCount, plural, one {场景} other {场景}} 无法上传",
+    "loading": "上传中...",
+    "retry": "重试",
+    "sign_in": "登录以将您的场景保存在云端",
+    "success": "所有场景成功保存！"
+  },
   "templates": {
     "big": "大 (2x3)",
     "custom_layout": {
@@ -202,12 +296,15 @@
     "small": "小 (1x1)"
   },
   "toasts": {
-    "localstorage": "场景会自动保存在浏览器的本地存储中"
+    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！",
+    "localstorage_sign_in": "登录"
   },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",
     "limits_exceeded": "{metric} 太多{br}请尝试删除一些物品！",
-    "publish": "发布"
+    "publish": "发布",
+    "up_to_date": "已最新！{br}所有更改都已发布",
+    "update_scene": "更新场景"
   },
   "tutorial_modal": {
     "slide0": {
@@ -230,11 +327,6 @@
       "description": "使用左键拖动可旋转相机。",
       "title": "相机控制"
     },
-    "slide5": {
-      "description": "场景完成后，单击{submitButton}将其提交到创作大赛。",
-      "email_cta": "注册以取得编辑器和大赛更新信息：",
-      "title": "参加大赛"
-    },
     "subtitle": "内容编辑器非常容易使用，在您开始之前，这里有一些技巧和提示",
     "title": "开始使用 the Builder"
   },
@@ -242,6 +334,11 @@
     "back": "返回您的场景",
     "subtitle": "The Builder 不支持您的浏览器.{br}请使用 {chrome} 或 {firefox}",
     "title": "Oops!"
+  },
+  "user_menu": {
+    "guest": "客人",
+    "sign_in": "登录",
+    "sign_out": "注销"
   },
   "validation": {
     "project": {
@@ -258,9 +355,7 @@
     "youtube_id": "NhaP_M7tVc8"
   },
   "wallet": {
-    "promo_body": "从 {cta} 获得一个免费的 Purrstige 猫添加到你的场景！",
-    "promo_cta": "Dapper",
-    "promo_title": "还没有钱包吗",
+    "signature_error": "签名消息失败",
     "title": "连接钱包用加密收藏品装饰你的场景。"
   }
 }

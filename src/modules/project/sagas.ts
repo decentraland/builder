@@ -2,38 +2,50 @@ import uuidv4 from 'uuid/v4'
 import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
-import { takeLatest, put, select, take, call } from 'redux-saga/effects'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { takeLatest, put, select, take, call, all } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
   CreateProjectFromTemplateAction,
-  createProject,
   DUPLICATE_PROJECT,
   DuplicateProjectAction,
-  EDIT_PROJECT_REQUEST,
-  EditProjectRequestAction,
-  editProjectSuccess,
-  editProjectFailure,
-  EXPORT_PROJECT,
-  ExportProjectAction,
+  EXPORT_PROJECT_REQUEST,
+  ExportProjectRequestAction,
   IMPORT_PROJECT,
-  ImportProjectAction
+  ImportProjectAction,
+  exportProjectSuccess,
+  LOAD_PROJECTS_REQUEST,
+  loadProjectsSuccess,
+  loadManifestSuccess,
+  LOAD_MANIFEST_REQUEST,
+  EDIT_PROJECT,
+  setProject,
+  EditProjectAction,
+  createProject,
+  LoadManifestRequestAction,
+  loadManifestFailure,
+  loadProjectsFailure,
+  loadProjectsRequest
 } from 'modules/project/actions'
-import { RootState } from 'modules/common/types'
-import { Project, Layout } from 'modules/project/types'
+import { api } from 'lib/api'
+import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
-import { getProject } from 'modules/project/selectors'
-import { getData as getScenes, getScene, getCurrentScene, getSceneById } from 'modules/scene/selectors'
-import { getGroundAsset } from 'modules/asset/selectors'
+import { getData as getProjects } from 'modules/project/selectors'
+import { getScene } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
-import { createScene, setGround, provisionScene } from 'modules/scene/actions'
-import { newEditorScene, SET_EDITOR_READY, setEditorReady, resetCamera, takeScreenshot, setExportProgress } from 'modules/editor/actions'
+import { createScene, setGround, applyLayout } from 'modules/scene/actions'
+import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
+import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
-import { getBlockchainParcelsFromLayout, isEqualLayout } from './utils'
+import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
+import { getSub } from 'modules/auth/selectors'
+import { getSceneByProjectId } from 'modules/scene/utils'
+import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 
-const DEFAULT_GROUND_ASSET = {
+const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
   thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
@@ -52,9 +64,12 @@ const DEFAULT_GROUND_ASSET = {
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
-  yield takeLatest(EDIT_PROJECT_REQUEST, handleEditProject)
-  yield takeLatest(EXPORT_PROJECT, handleExportProject)
+  yield takeLatest(EDIT_PROJECT, handleEditProject)
+  yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
+  yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
+  yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
+  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -70,17 +85,21 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     ground: null
   }
 
-  const layout: Layout = template.layout!
+  const { rows, cols } = template
 
   const project: Project = {
     id: uuidv4(),
-    title: 'New scene',
+    title: 'New scene', // TODO translate this into different languages
     description: '',
     thumbnail: '',
-    layout,
-    parcels: getBlockchainParcelsFromLayout(layout),
+    layout: {
+      rows,
+      cols
+    },
     sceneId: scene.id,
-    createdAt: Date.now()
+    userId: yield select(getSub),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 
   yield put(createScene(scene))
@@ -88,81 +107,70 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   if (onSuccess) {
     onSuccess(project, scene)
-    yield put(setGround(project.id, project.layout, DEFAULT_GROUND_ASSET))
+    yield put(setGround(project.id, DEFAULT_GROUND_ASSET))
   }
 }
 
 function* handleDuplicateProject(action: DuplicateProjectAction) {
   const { project } = action.payload
 
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[project.sceneId]
-  if (!scene) return
+  const scene = yield getSceneByProjectId(project.id)
+
+  let thumbnail = project.thumbnail
+
+  if (thumbnail && thumbnail.startsWith('http')) {
+    thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
+  }
 
   const newScene = { ...scene, id: uuidv4() }
-  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: Date.now() }
+  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString(), thumbnail }
 
   yield put(createScene(newScene))
   yield put(createProject(newProject))
 }
 
-function* handleEditProject(action: EditProjectRequestAction) {
+function* handleEditProject(action: EditProjectAction) {
   const { id, project } = action.payload
-  let ground = action.payload.ground
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const targetProject = projects[id]
 
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
-  if (!currentProject) return
+  if (!targetProject || !project) return
 
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  const scene: Scene | null = yield select(getScene(targetProject.sceneId))
+
   if (!scene) return
 
-  const hasNewLayout = project.layout && !isEqualLayout(project.layout, currentProject.layout)
-  try {
-    if (hasNewLayout) {
-      yield put(setEditorReady(false))
-      yield put(newEditorScene(id, project))
+  const shouldApplyLayout = didUpdateLayout(project, targetProject)
+  const newProject = { ...targetProject, ...project }
 
-      yield take(SET_EDITOR_READY)
+  yield put(setProject(newProject))
 
-      if (!ground && scene.ground) {
-        const groundId = scene.ground.assetId
-        ground = yield select((state: RootState) => getGroundAsset(state, groundId))
-      }
-
-      yield put(provisionScene(scene))
-    }
-
-    if (ground) {
-      yield put(setGround(id, project.layout, ground))
-    }
-
-    yield put(editProjectSuccess(id, project))
-
-    if (hasNewLayout) {
-      // The user could've navigated away, we need to compensate for this
-      const currentScene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-
-      if (!currentScene) {
-        yield put(setEditorReady(false))
-      } else if (currentScene.id === currentProject.sceneId) {
-        yield put(ActionCreators.clearHistory())
-        yield put(resetCamera())
-        yield put(takeScreenshot())
-      }
-    }
-  } catch (error) {
-    yield put(editProjectFailure(error))
+  if (shouldApplyLayout) {
+    yield put(setEditorReady(false))
+    yield put(createEditorScene(newProject))
+    yield take(SET_EDITOR_READY)
+    yield put(applyLayout(newProject))
+    yield put(ActionCreators.clearHistory())
+    yield put(takeScreenshot())
   }
 }
 
-function* handleExportProject(action: ExportProjectAction) {
+function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
-  const scene: Scene = yield select(getSceneById(project.sceneId))
+  const scene = yield getSceneByProjectId(project.id)
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
-  yield put(setExportProgress({ isLoading: true, progress: 0, total: 0 }))
-  const files = yield call(() => createFiles({ project, scene, onProgress: progress => store.dispatch(setExportProgress(progress)) }))
+  yield put(setExportProgress({ loaded: 0, total: 0 }))
+  const files = yield call(() =>
+    createFiles({
+      project,
+      scene,
+      point: { x: 0, y: 0 },
+      rotation: 'east',
+      onProgress: progress => store.dispatch(setExportProgress(progress))
+    })
+  )
 
   for (const filename of Object.keys(files)) {
     zip.file(filename, files[filename as keyof typeof files])
@@ -174,7 +182,7 @@ function* handleExportProject(action: ExportProjectAction) {
   })
 
   yield put(closeModal('ExportModal'))
-  yield put(setExportProgress({ isLoading: false, progress: 0, total: 0 }))
+  yield put(exportProjectSuccess())
 }
 
 function* handleImportProject(action: ImportProjectAction) {
@@ -182,8 +190,35 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield put(createProject(saved.project))
-      yield put(createScene(saved.scene))
+      yield all([put(createScene(saved.scene)), put(createProject(saved.project))])
     }
   }
+}
+
+function* handleLoadProjectsRequest() {
+  try {
+    const projects: Project[] = yield call(() => api.fetchProjects())
+    const record: ModelById<Project> = {}
+
+    for (let project of projects) {
+      record[project.id] = project
+    }
+
+    yield put(loadProjectsSuccess(record))
+  } catch (e) {
+    yield put(loadProjectsFailure(e.message))
+  }
+}
+
+function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
+  try {
+    const manifest = yield call(() => api.fetchManifest(action.payload.id))
+    yield put(loadManifestSuccess(manifest))
+  } catch (e) {
+    yield put(loadManifestFailure(e.message))
+  }
+}
+
+function* handleAuthSuccess(_action: AuthSuccessAction) {
+  yield put(loadProjectsRequest())
 }

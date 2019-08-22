@@ -1,0 +1,7 @@
+.ui.small.modal.QuotaExceededModal {
+  width: 600px;
+}
+
+.QuotaExceededModal .ui.button {
+  width: 200px;
+}

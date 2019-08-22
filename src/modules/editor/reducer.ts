@@ -23,12 +23,14 @@ import {
   SetEditorLoadingAction
 } from './actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
-export enum Gizmo {
-  MOVE = 'MOVE',
-  ROTATE = 'ROTATE',
-  SCALE = 'SCALE',
-  NONE = 'NONE'
-}
+import {
+  EXPORT_PROJECT_SUCCESS,
+  EXPORT_PROJECT_REQUEST,
+  ExportProjectRequestAction,
+  ExportProjectSuccessAction
+} from 'modules/project/actions'
+import { Gizmo } from './types'
+
 export type EditorState = {
   gizmo: Gizmo
   preview: boolean
@@ -74,6 +76,8 @@ export type EditorReducerAction =
   | DeleteItemAction
   | SetExportProgressAction
   | SetEditorLoadingAction
+  | ExportProjectRequestAction
+  | ExportProjectSuccessAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -141,12 +145,35 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => entityId !== state.selectedEntityId)
       }
     }
-    case SET_EXPORT_PROGRESS: {
+    case EXPORT_PROJECT_REQUEST: {
       return {
         ...state,
         export: {
           ...state.export,
-          ...action.payload
+          isLoading: true
+        }
+      }
+    }
+    case SET_EXPORT_PROGRESS: {
+      const { loaded, total } = action.payload
+      return {
+        ...state,
+        export: {
+          ...state.export,
+          ...action.payload,
+          progress: loaded,
+          total
+        }
+      }
+    }
+    case EXPORT_PROJECT_SUCCESS: {
+      return {
+        ...state,
+        export: {
+          ...state.export,
+          isLoading: false,
+          progress: 0,
+          total: 0
         }
       }
     }

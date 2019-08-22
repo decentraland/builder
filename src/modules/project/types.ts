@@ -6,14 +6,17 @@ export type Project = {
   description: string
   thumbnail: string
   sceneId: string
+  userId: string | null
+  createdAt: string
+  updatedAt: string
   layout: Layout
-  parcels?: { x: number; y: number }[] // Blockchain parcels
-  ownerEmail?: string
-  createdAt: number
 }
 
-export type Layout = { rows: number; cols: number }
+export type Layout = {
+  rows: number
+  cols: number
+}
 
 export type ProjectLayout = Layout & { hasError: boolean }
 
-export type SaveFile = { version: number; project: Project & { thumbnail?: string }; scene: Scene }
+export type Manifest<T = Project> = { version: number; project: T; scene: Scene }

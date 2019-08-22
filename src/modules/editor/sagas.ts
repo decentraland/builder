@@ -1,5 +1,5 @@
 // @ts-ignore
-import { takeLatest, select, put, call, delay } from 'redux-saga/effects'
+import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
 
 import {
   updateEditor,
@@ -32,14 +32,16 @@ import {
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
   toggleSnapToGrid,
-  NEW_EDITOR_SCENE,
-  NewEditorSceneAction,
   PREFETCH_ASSET,
   PrefetchAssetAction,
   SetEditorReadyAction,
   setEntitiesOutOfBoundaries,
+  closeEditor,
   setEditorLoading,
-  closeEditor
+  CREATE_EDITOR_SCENE,
+  CreateEditorSceneAction,
+  SET_EDITOR_LOADING,
+  SetEditorLoadingAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -49,32 +51,25 @@ import {
   DropItemAction,
   addItem,
   setGround,
-  fixCurrentScene
+  ProvisionSceneAction
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
-import { getCurrentProject, getProject, getCurrentBounds } from 'modules/project/selectors'
+import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene as EditorPayloadScene } from 'modules/editor/types'
+import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
-import { snapToBounds } from 'modules/scene/utils'
+import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { getNewScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, CONTENT_SERVER, dataURLtoBlob } from './utils'
-import { getGizmo, getSelectedEntityId, getSceneMappings } from './selectors'
-import { setProgress } from 'modules/deployment/actions'
-
-enum Gizmo {
-  MOVE = 'MOVE',
-  ROTATE = 'ROTATE',
-  SCALE = 'SCALE',
-  NONE = 'NONE'
-}
+import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
+import { ASSETS_CONTENT_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
 
@@ -83,10 +78,9 @@ export function* editorSaga() {
   yield takeLatest(UNBIND_EDITOR_KEYBOARD_SHORTCUTS, handleUnbindEditorKeyboardShortcuts)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(CLOSE_EDITOR, handleCloseEditor)
-  yield takeLatest(NEW_EDITOR_SCENE, handleNewEditorScene)
-  yield takeLatest(PROVISION_SCENE, handleSceneChange)
-  yield takeLatest(EDITOR_REDO, handleSceneChange)
-  yield takeLatest(EDITOR_UNDO, handleSceneChange)
+  yield takeLatest(PROVISION_SCENE, handleProvisionScene)
+  yield takeLatest(EDITOR_REDO, handleHistory)
+  yield takeLatest(EDITOR_UNDO, handleHistory)
   yield takeLatest(SET_GIZMO, handleSetGizmo)
   yield takeLatest(TOGGLE_PREVIEW, handleTogglePreview)
   yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
@@ -99,10 +93,10 @@ export function* editorSaga() {
   yield takeLatest(SELECT_ENTITY, handleSelectEntity)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
+  yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
 }
 
-function* pollEditor() {
-  const scene = yield select(getCurrentScene)
+function* pollEditor(scene: Scene) {
   let metrics
   let entities
 
@@ -117,6 +111,12 @@ function* pollEditor() {
   }
 }
 
+function* handleEditorReady(scene: Scene) {
+  yield handleResetCamera()
+  yield pollEditor(scene)
+  yield put(setEditorLoading(false))
+}
+
 function* handleBindEditorKeyboardShortcuts() {
   const shortcuts = getEditorShortcuts(store)
   yield put(bindKeyboardShortcuts(shortcuts))
@@ -127,16 +127,12 @@ function* handleUnbindEditorKeyboardShortcuts() {
   yield put(unbindKeyboardShortcuts(shortcuts))
 }
 
-function* handleNewEditorScene(action: NewEditorSceneAction) {
-  const { id, project } = action.payload
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, id))
-  if (currentProject) {
-    yield createNewScene({ ...currentProject, ...project })
-  }
+function* handleCreateEditorScene(action: CreateEditorSceneAction) {
+  yield createNewEditorScene(action.payload.project)
 }
 
-function* createNewScene(project: Project) {
-  const newScene: EditorPayloadScene = getNewScene(project)
+function* createNewEditorScene(project: Project) {
+  const newScene: EditorScene = getNewEditorScene(project)
 
   const msg = {
     type: 'update',
@@ -147,11 +143,18 @@ function* createNewScene(project: Project) {
 
   // @ts-ignore: Client api
   yield call(() => editorWindow.editor.handleMessage(msg))
+  yield handleResetCamera()
 }
 
-function* handleSceneChange() {
+function* handleProvisionScene(action: ProvisionSceneAction) {
   yield renderScene()
-  yield delay(500)
+  if (!action.payload.init) {
+    yield put(takeScreenshot())
+  }
+}
+
+function* handleHistory() {
+  yield renderScene()
   yield put(takeScreenshot())
 }
 
@@ -228,20 +231,22 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
-  const project: Project = yield select(getCurrentProject)
-  yield createNewScene(project)
+  const project: Project | null = yield select(getCurrentProject)
 
-  // Spawns the assets
-  yield renderScene()
+  if (project) {
+    yield createNewEditorScene(project)
 
-  // Enable snap to grid
-  yield handleToggleSnapToGrid(toggleSnapToGrid(true))
+    // Spawns the assets
+    yield renderScene()
 
-  // Apply scene fixes
-  yield put(fixCurrentScene())
+    // Enable snap to grid
+    yield handleToggleSnapToGrid(toggleSnapToGrid(true))
 
-  // Select gizmo
-  yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+    // Select gizmo
+    yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+  } else {
+    console.error('Unable to Open Editor: Invalid project')
+  }
 }
 
 function* handleCloseEditor() {
@@ -267,7 +272,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   const { editor } = editorWindow
   const { isEnabled } = action.payload
   const gizmo: ReturnType<typeof getGizmo> = yield select(getGizmo)
-  const project: Project = yield select(getCurrentProject)
+  const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
   const x = (project.layout.rows * PARCEL_SIZE) / 2
@@ -303,14 +308,19 @@ function handleZoomOut() {
 
 function* handleSetEditorReady(action: SetEditorReadyAction) {
   const { isReady } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  if (project) {
+    if (isReady) {
+      try {
+        let scene = yield getSceneByProjectId(project.id)
+        yield handleEditorReady(scene)
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
-  if (isReady) {
-    yield handleResetCamera()
-    yield pollEditor()
-    yield put(setEditorLoading(false))
+    yield changeEditorState(isReady)
   }
-
-  yield changeEditorState(isReady)
 }
 
 function* changeEditorState(isReady: boolean) {
@@ -323,7 +333,7 @@ function* changeEditorState(isReady: boolean) {
 }
 
 function* handleResetCamera() {
-  const project: Project = yield select(getCurrentProject)
+  const project: Project | null = yield select(getCurrentProject)
   if (!project) return
 
   const x = (project.layout.rows * PARCEL_SIZE) / 2
@@ -339,7 +349,7 @@ function* handleDropItem(action: DropItemAction) {
   if (asset.category === GROUND_CATEGORY) {
     const project: ReturnType<typeof getCurrentProject> = yield select(getCurrentProject)
     if (!project) return
-    yield put(setGround(project.id, project.layout, asset))
+    yield put(setGround(project.id, asset))
   } else {
     const position: Vector3 = yield call(() => editorWindow.editor.getMouseWorldPosition(x, y))
     yield put(addItem(asset, position))
@@ -348,14 +358,31 @@ function* handleDropItem(action: DropItemAction) {
 
 function* handleScreenshot(_: TakeScreenshotAction) {
   try {
+    const currentProject: Project | null = yield select(getCurrentProject)
+    if (!currentProject) return
+
+    // wait for editor to be ready
+    let ready: boolean = yield select(isReady)
+    while (!ready) {
+      const readyAction: SetEditorReadyAction = yield take(SET_EDITOR_READY)
+      ready = readyAction.payload.isReady
+    }
+
+    // wait for assets to load
+    let loading: boolean = yield select(isLoading)
+    while (loading) {
+      const loadingAction: SetEditorLoadingAction = yield take(SET_EDITOR_LOADING)
+      loading = loadingAction.payload.isLoading
+    }
+
+    // rendering leeway
+    yield delay(500)
+
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return
 
     const thumbnail = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
     if (!thumbnail) return
-
-    const currentProject: Project | null = yield select(getCurrentProject)
-    if (!currentProject) return
 
     yield put(editProjectThumbnail(currentProject.id, thumbnail))
   } catch (e) {
@@ -390,7 +417,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
     for (let [file, hash] of contentEntries) {
       if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${CONTENT_SERVER}/${hash}`)
+        editorWindow.editor.preloadFile(`${ASSETS_CONTENT_URL}/${hash}`)
       }
     }
   })
@@ -399,62 +426,4 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
   store.dispatch(setEntitiesOutOfBoundaries(entities))
-}
-
-const Rotation = {
-  NORTH: Math.PI * 1.5,
-  EAST: 0,
-  SOUTH: Math.PI / 2,
-  WEST: Math.PI
-}
-
-export function* handleTakePictures() {
-  const project: Project = yield select(getCurrentProject)
-  const side = Math.max(project.layout.cols, project.layout.rows)
-  const zoom = (side - 1) * 32
-  const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
-  const initialAngle = Math.PI / 1.5
-  const shots = {
-    north: null,
-    east: null,
-    south: null,
-    west: null
-  }
-
-  let thumbnail
-
-  // Prepare the canvas for recording
-  canvas.classList.add('recording')
-  yield call(() => editorWindow.editor.resize())
-  editorWindow.editor.resetCameraZoom()
-  yield delay(200) // big scenes need some extra time to reset the camera
-
-  // Prepare the camera to fit the scene
-  editorWindow.editor.setCameraZoomDelta(zoom)
-  editorWindow.editor.setCameraRotation(0, Math.PI / 3)
-  editorWindow.editor.setCameraPosition({ x: (project.layout.rows * PARCEL_SIZE) / 2, y: 2, z: (project.layout.cols * PARCEL_SIZE) / 2 })
-
-  yield put(setProgress(0))
-  thumbnail = yield takeEditorScreenshot(initialAngle)
-  yield put(setProgress(20))
-  shots.north = yield takeEditorScreenshot(Rotation.NORTH)
-  yield put(setProgress(40))
-  shots.east = yield takeEditorScreenshot(Rotation.EAST)
-  yield put(setProgress(60))
-  shots.south = yield takeEditorScreenshot(Rotation.SOUTH)
-  yield put(setProgress(80))
-  shots.west = yield takeEditorScreenshot(Rotation.WEST)
-  yield put(setProgress(100))
-
-  // Cleanup
-  canvas.classList.remove('recording')
-  yield call(() => editorWindow.editor.resize())
-
-  return { shots, thumbnail }
-}
-
-function* takeEditorScreenshot(angle: number) {
-  editorWindow.editor.setCameraRotation(angle, Math.PI / 3)
-  const shot = yield call(() => editorWindow.editor.takeScreenshot())
-  return dataURLtoBlob(shot)
 }

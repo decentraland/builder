@@ -2,6 +2,10 @@
   /* Colors */
   --metaverse-gradient: linear-gradient(to bottom, #060d2b, #132d7d 52%, #9763c1);
   --purple-banner: #691ea9;
+  --purplish-grey-raw: 115, 110, 125;
+
+  --promo-banner-text: white;
+  --promo-banner-bg: #171717;
 
   /**
   * Component variables
@@ -29,4 +33,8 @@
 
 .dcl.navbar .ui.menu .item {
   color: rgba(255, 255, 255, 0.5);
+}
+
+.ui.popup.modal-tooltip {
+  z-index: 999999999999999;
 }

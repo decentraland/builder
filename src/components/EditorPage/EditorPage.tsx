@@ -1,15 +1,15 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
-import App from 'decentraland-dapps/dist/containers/App'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 
 import NotFoundPage from 'components/NotFoundPage'
+import LoadingPage from 'components/LoadingPage'
 import TopBar from 'components/TopBar'
 import ViewPort from 'components/ViewPort'
 import SideBar from 'components/SideBar'
+import LocalStorageToast from 'components/LocalStorageToast'
 import Tools from './Tools'
 import Metrics from './Metrics'
-import LocalStorageToast from './LocalStorageToast'
 import ItemDragLayer from './ItemDragLayer'
 import { ToolName } from './Tools/Tools.types'
 import { Props, State } from './EditorPage.types'
@@ -18,6 +18,7 @@ import './EditorPage.css'
 
 export const LOCALSTORAGE_TUTORIAL_KEY = 'builder-tutorial'
 export const LOCALSTORAGE_INCENTIVE_BANNER_KEY = 'builder-incentive-banner'
+const TOAST_ITEMS_THRESHOLD = 5 // local storage toast will show when a user has at least this amount of items
 
 const localStorage = getLocalStorage()
 
@@ -69,7 +70,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentProject, isPreviewing, isSidebarOpen, isLoading } = this.props
+    const { currentProject, isPreviewing, isSidebarOpen, isLoading, isFetching, isLoggedIn, numItems } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
     let wrapperClasses = 'wrapper'
@@ -77,14 +78,14 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     if (isPreviewing) {
       wrapperClasses += ' fullscreen'
     }
-
-    if (!currentProject) {
-      return (
-        <App isFullscreen>
-          <NotFoundPage />
-        </App>
-      )
+    if (isFetching) {
+      return <LoadingPage />
     }
+    if (!currentProject) {
+      return <NotFoundPage />
+    }
+
+    const showLocalStorageToast = !isLoggedIn && numItems >= TOAST_ITEMS_THRESHOLD
 
     return (
       <div className="EditorPage">
@@ -98,7 +99,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
                   <Metrics />
                   <Tools isSidebarOpen={isSidebarOpen} onClick={this.handleToolClick} />
                   <ItemDragLayer />
-                  <LocalStorageToast />
+                  <LocalStorageToast isVisible={showLocalStorageToast} />
                 </>
               </div>
             )}

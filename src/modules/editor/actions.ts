@@ -154,11 +154,11 @@ export type ToggleSnapToGridAction = ReturnType<typeof toggleSnapToGrid>
 
 // Create update the editor scene from a project
 
-export const NEW_EDITOR_SCENE = 'New editor scene'
+export const CREATE_EDITOR_SCENE = 'Create editor scene'
 
-export const newEditorScene = (id: string, project: Partial<Project>) => action(NEW_EDITOR_SCENE, { id, project })
+export const createEditorScene = (project: Project) => action(CREATE_EDITOR_SCENE, { project })
 
-export type NewEditorSceneAction = ReturnType<typeof newEditorScene>
+export type CreateEditorSceneAction = ReturnType<typeof createEditorScene>
 
 // Close editor
 
@@ -180,7 +180,6 @@ export type SetEntitiesOutOfBoundariesAction = ReturnType<typeof setEntitiesOutO
 
 export const SET_EXPORT_PROGRESS = 'Set export progress'
 
-export const setExportProgress = (args: { isLoading?: boolean; progress?: number; total?: number } = {}) =>
-  action(SET_EXPORT_PROGRESS, args)
+export const setExportProgress = (args: { loaded: number; total: number }) => action(SET_EXPORT_PROGRESS, args)
 
 export type SetExportProgressAction = ReturnType<typeof setExportProgress>

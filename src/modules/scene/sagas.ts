@@ -15,28 +15,31 @@ import {
   DeleteItemAction,
   SET_GROUND,
   SetGroundAction,
-  FIX_CURRENT_SCENE
+  ApplyLayoutAction,
+  APPLY_LAYOUT
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
-import { RootState } from 'modules/common/types'
 import {
-  getGLTFId,
+  getGLTFsBySrc,
   getCurrentScene,
   getEntityComponentByType,
   getEntityComponents,
   getScene,
-  getCollectibleId,
+  getCollectiblesByURL,
   getEntityShape
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
-import { getCurrentBounds, getProject } from 'modules/project/selectors'
+import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
-import { PARCEL_SIZE, isEqualLayout } from 'modules/project/utils'
+import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, isWithinBounds, areEqualMappings } from './utils'
+import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings } from './utils'
+import { getGroundAssets } from 'modules/asset/selectors'
+import { Asset } from 'modules/asset/types'
 
 const editorWindow = window as EditorWindow
 
@@ -47,15 +50,20 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(FIX_CURRENT_SCENE, handleFixCurrentScene)
   yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
+  yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
+  yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
+}
+
+function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
+  yield put(provisionScene(action.payload.manifest.scene, true))
 }
 
 function* handleAddItem(action: AddItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  let shapeId: string
+  let shapeId: string | null
   let { position } = action.payload
   const { asset } = action.payload
   const transformId = uuidv4()
@@ -68,7 +76,9 @@ function* handleAddItem(action: AddItemAction) {
   }
 
   if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
-    shapeId = yield select(getCollectibleId(asset.url))
+    const collectibles: ReturnType<typeof getCollectiblesByURL> = yield select(getCollectiblesByURL)
+    const collectible = collectibles[asset.url]
+    shapeId = collectible ? collectibles[asset.url].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -83,7 +93,9 @@ function* handleAddItem(action: AddItemAction) {
 
     position = { ...position!, y: 1.72 }
   } else {
-    shapeId = yield select(getGLTFId(asset.url))
+    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
+    const gltf = gltfs[asset.url]
+    shapeId = gltf ? gltfs[asset.url].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -243,101 +255,19 @@ function* handleDeleteItem(_: DeleteItemAction) {
 }
 
 function* handleSetGround(action: SetGroundAction) {
-  const { projectId, layout, asset } = action.payload
-
-  const currentProject: ReturnType<typeof getProject> = yield select((state: RootState) => getProject(state, projectId))
+  const { asset, projectId } = action.payload
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const currentProject = projects[projectId]
   if (!currentProject) return
 
-  const scene: ReturnType<typeof getScene> = yield select((state: RootState) => getScene(state, currentProject.sceneId))
+  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
   if (!scene) return
 
-  const hasLayoutChanged = layout && !isEqualLayout(currentProject.layout, layout)
-  const currentLayout = layout || currentProject.layout
-  let components = { ...scene.components }
-  let entities = cloneEntities(scene)
-  let gltfId: string = uuidv4()
-
-  // Skip if there are no updates
-  if (asset && scene.ground && scene.ground.assetId === asset.id && !hasLayoutChanged) {
-    return
-  }
+  const { rows, cols } = currentProject.layout
 
   if (asset) {
-    // Create the Shape component if necessary
-    const foundId = yield select(getGLTFId(asset.url))
-
-    if (!foundId) {
-      components[gltfId] = {
-        id: gltfId,
-        type: ComponentType.GLTFShape,
-        data: {
-          src: asset.url,
-          mappings: getMappings(asset)
-        }
-      }
-    } else {
-      gltfId = foundId
-    }
-
-    if (scene.ground) {
-      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
-    }
-
-    for (let j = 0; j < currentLayout.cols; j++) {
-      for (let i = 0; i < currentLayout.rows; i++) {
-        const entityId = uuidv4()
-        const transformId = uuidv4()
-
-        components[transformId] = {
-          id: transformId,
-          type: ComponentType.Transform,
-          data: {
-            position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-            rotation: { x: 0, y: 0, z: 0, w: 1 }
-          }
-        }
-
-        entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
-      }
-    }
-  } else if (scene.ground) {
-    entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
+    yield applyGround(scene, rows, cols, asset)
   }
-
-  const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
-
-  // remove unused components
-  for (const component of Object.values(components)) {
-    if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
-      delete components[component.id]
-    }
-  }
-
-  yield put(provisionScene({ ...scene, components, entities, ground }))
-}
-
-function* handleFixCurrentScene() {
-  const scene: Scene = yield select(getCurrentScene)
-  const bounds: ReturnType<typeof getCurrentBounds> = yield select(getCurrentBounds)
-
-  if (!bounds || !scene) return
-
-  const componentIdKeys = Object.keys(scene.components)
-  let components = { ...scene.components }
-
-  for (let key of componentIdKeys) {
-    const component = scene.components[key] as ComponentDefinition<ComponentType.Transform>
-    if (component.type === ComponentType.Transform) {
-      if (!isWithinBounds(component.data.position, bounds)) {
-        components[key] = {
-          ...component,
-          data: { ...component.data, position: snapToBounds(component.data.position, bounds) }
-        }
-      }
-    }
-  }
-
-  yield put(provisionScene({ ...scene, components }))
 }
 
 function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
@@ -386,4 +316,78 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
     const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
     yield put(provisionScene(newScene))
   }
+}
+
+function* handleApplyLayout(action: ApplyLayoutAction) {
+  const { project } = action.payload
+  const { rows, cols } = project.layout
+  const scene: Scene | null = yield select(getScene(project.sceneId))
+
+  if (scene && scene.ground) {
+    const groundId = scene.ground.assetId
+    const assets: ReturnType<typeof getGroundAssets> = yield select(getGroundAssets)
+    const ground = assets[groundId]
+    yield applyGround(scene, rows, cols, ground)
+  }
+}
+
+function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
+  let components = { ...scene.components }
+  let entities = cloneEntities(scene)
+  let gltfId: string = uuidv4()
+
+  if (asset) {
+    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
+    const gltf = gltfs[asset.url]
+    const foundId = gltf ? gltfs[asset.url].id : null
+
+    // Create the Shape component if necessary
+    if (!foundId) {
+      components[gltfId] = {
+        id: gltfId,
+        type: ComponentType.GLTFShape,
+        data: {
+          src: asset.url,
+          mappings: getMappings(asset)
+        }
+      }
+    } else {
+      gltfId = foundId
+    }
+
+    if (scene.ground) {
+      entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
+    }
+
+    for (let j = 0; j < cols; j++) {
+      for (let i = 0; i < rows; i++) {
+        const entityId = uuidv4()
+        const transformId = uuidv4()
+
+        components[transformId] = {
+          id: transformId,
+          type: ComponentType.Transform,
+          data: {
+            position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
+            rotation: { x: 0, y: 0, z: 0, w: 1 }
+          }
+        }
+
+        entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
+      }
+    }
+  } else if (scene.ground) {
+    entities = filterEntitiesWithComponent(scene.ground.componentId, entities)
+  }
+
+  const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
+
+  // remove unused components
+  for (const component of Object.values(components)) {
+    if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
+      delete components[component.id]
+    }
+  }
+
+  yield put(provisionScene({ ...scene, components, entities, ground }))
 }

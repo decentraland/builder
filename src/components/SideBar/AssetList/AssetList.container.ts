@@ -15,7 +15,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onAddItem: asset => dispatch(addItem(asset)),
-  onSetGround: (projectId, layout, ground) => dispatch(setGround(projectId, layout, ground)),
+  onSetGround: (projectId, ground) => dispatch(setGround(projectId, ground)),
   onPrefetchAsset: asset => dispatch(prefetchAsset(asset))
 })
 

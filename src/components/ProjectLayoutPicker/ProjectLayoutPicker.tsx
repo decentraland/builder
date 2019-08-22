@@ -2,7 +2,7 @@ import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { MAX_AREA } from 'modules/template/utils'
-import { Layout, ProjectLayout } from 'modules/project/types'
+import { ProjectLayout } from 'modules/project/types'
 import LayoutPicker from 'components/LayoutPicker'
 import { Props, State } from './ProjectLayoutPicker.types'
 
@@ -11,9 +11,7 @@ export default class ProjectLayoutPicker extends React.PureComponent<Props, Stat
     hasMaxError: false
   }
 
-  handleChange = (layout: Partial<Layout>) => {
-    const { rows, cols } = layout
-
+  handleChange = (rows: number, cols: number) => {
     const hasEmptyFields = !rows || !cols
     let hasMaxError = false
     let hasMinError = false

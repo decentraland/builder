@@ -36,6 +36,21 @@
 
 .HomePage .project-cards {
   margin-top: 47px;
+  position: relative;
+}
+
+.HomePage .empty-projects {
+  display: flex;
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+  user-select: none;
+  text-align: center;
+  line-height: 28px;
 }
 
 .HomePage .template-cards {
@@ -51,22 +66,11 @@
   font-size: 20px;
 }
 
-.HomePage .empty-projects {
-  padding: 47px 0;
-  margin-top: var(--homepage-card-margin);
-  background-color: rgba(var(--bluish-steel-raw), 0.16);
-  border-radius: 12px;
-  color: var(--bluish-steel);
-  text-align: center;
-}
-.HomePage .empty-projects > div {
-  margin-bottom: 10px;
-}
-
 .HomePage .CardList {
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
 }
 
 .project-card:nth-child(4n) {
@@ -85,9 +89,45 @@
   transform: translateY(-4px);
 }
 
-.home-page-banner {
-  height: 80px;
-  padding: 0px;
+.HomePage .project-cards .subtitle > .menu {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+  z-index: 1000;
+}
+
+.HomePage .project-cards .subtitle > .menu .ui.dropdown {
+  margin-right: 32px;
+}
+
+.HomePage .project-cards.has-pagination .CardList {
+  min-height: 606px;
+}
+
+.HomePage .project-cards .ui.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.HomePage .project-cards .ui.pagination {
+  margin-top: 40px;
+}
+
+.HomePage .project-cards .ui.pagination .item[type='nextItem'],
+.HomePage .project-cards .ui.pagination .item[type='prevItem'] {
+  position: absolute;
+  background-color: var(--secondary);
+}
+
+.HomePage .project-cards .ui.pagination .item[type='prevItem'] {
+  left: 0px;
+}
+
+.HomePage .project-cards .ui.pagination .item[type='nextItem'] {
+  right: 0px;
 }
 
 @keyframes templateAnimation {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-//import { Loader } from 'decentraland-ui'
+import { Loader } from 'decentraland-ui'
 import { DropTarget } from 'react-dnd'
 
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
@@ -37,11 +37,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   }
 
   async startEditor() {
+    const { rows, cols } = this.props.project.layout
     if (!this.canvasContainer.current) {
       throw new Error('Missing canvas container')
     }
-
-    await editorWindow.editor.initEngine(this.canvasContainer.current, this.props.layout.rows, this.props.layout.cols)
+    await editorWindow.editor.initEngine(this.canvasContainer.current, rows, cols)
     try {
       canvas = await editorWindow.editor.getDCLCanvas()
       canvas.classList.add('dcl-canvas')
@@ -59,13 +59,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     return connectDropTarget(
       <div className="Preview-wrapper">
         <div className={`Preview ${isLoading ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer}>
-          {
-            //isLoading && (
-            //<div className="overlay">
-            //  <Loader active size="massive" />
-            //</div>
-            // )
-          }
+          {isLoading && (
+            <div className="overlay">
+              <Loader active size="massive" />
+            </div>
+          )}
         </div>
       </div>
     )

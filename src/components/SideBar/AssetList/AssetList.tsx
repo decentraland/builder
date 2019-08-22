@@ -23,7 +23,7 @@ export default class AssetList extends React.PureComponent<Props> {
     if (asset.category === GROUND_CATEGORY) {
       const { currentProject, onSetGround } = this.props
       if (currentProject) {
-        onSetGround(currentProject.id, currentProject.layout, asset)
+        onSetGround(currentProject.id, asset)
       }
     } else {
       const { onAddItem } = this.props

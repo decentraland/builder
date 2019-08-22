@@ -49,8 +49,18 @@
   overflow: hidden;
 }
 
+.TopBar .project-title.disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .TopBar .edit-project-icon {
   margin-left: 12px;
+}
+
+.TopBar .cloud-upload-indicator {
+  margin-left: 6px;
+  margin-top: 6px;
 }
 
 .TopBar .project-title:hover .edit-project-icon {
@@ -64,27 +74,8 @@
   opacity: 0.32;
 }
 
-.TopBar .contest-button-wrapper {
-  margin-left: 32px;
-}
-
 .ui.popup.bottom.top-bar-popup {
   margin-top: 20px;
-}
-
-.ui.popup.inverted.contest-disabled {
-  height: 48px;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-  margin-top: 20px;
-}
-
-.ui.popup.inverted.contest-disabled:first-line {
-  color: white;
-}
-
-.ui.visible.popup.inverted.contest-disabled:before {
-  right: 35px; /* The arrow needs to be in the middle of the button - kinda */
 }
 
 .TopBar .DeployButton {

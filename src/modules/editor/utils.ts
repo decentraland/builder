@@ -1,24 +1,22 @@
-import { env } from 'decentraland-commons'
-
 import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
+import { getSceneDefinition } from 'modules/project/export'
+import { ASSETS_CONTENT_URL } from 'lib/api/content'
+
 const script = require('raw-loader!../../ecsScene/scene.js')
 
-export const CONTENT_SERVER = env.get('REACT_APP_CONTENT_SERVER_URL', () => {
-  throw new Error('Missing REACT_APP_CONTENT_SERVER_URL env variable')
-})
+export const THUMBNAIL_WIDTH = 984
+export const THUMBNAIL_HEIGHT = 728
 
-export const THUMBNAIL_WIDTH = 246
-export const THUMBNAIL_HEIGHT = 182
-
-export function getNewScene(project: Project): EditorScene {
+export function getNewEditorScene(project: Project): EditorScene {
   const mappings = {
     'game.js': `data:application/javascript;base64,${btoa(script)}`,
     'scene.json': 'Qm' // stub required by the client
   }
 
   return {
-    baseUrl: `${CONTENT_SERVER}/` as string,
+    ...getSceneDefinition(project, { x: 0, y: 0 }, 'east'),
+    baseUrl: `${ASSETS_CONTENT_URL}/` as string,
     display: {
       title: project.title
     },
@@ -26,11 +24,6 @@ export function getNewScene(project: Project): EditorScene {
     contact: {
       name: 'Decentraland',
       email: 'support@decentraland.org'
-    },
-    scene: {
-      // TODO: This should be received as param
-      parcels: project.parcels ? project.parcels.map(({ x, y }) => `${x},${y}`) : ['0,0'],
-      base: project.parcels ? `${project.parcels[0].x}, ${project.parcels[0].y}` : '0,0'
     },
     communications: {
       type: 'webrtc',
@@ -42,12 +35,9 @@ export function getNewScene(project: Project): EditorScene {
       blacklist: [],
       teleportPosition: '0,0,0'
     },
-    tracking: {
-      origin: 'builder'
-    },
     main: 'game.js',
     _mappings: mappings
-  }
+  } as EditorScene
 }
 
 // Screenshots
@@ -90,21 +80,4 @@ export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight
     }
     img.src = screenshot
   })
-}
-
-export function dataURLtoBlob(dataUrl: string): Blob | null {
-  const arr = dataUrl.split(',')
-  const boxedMime = arr[0].match(/:(.*?);/)
-  if (boxedMime) {
-    const bstr = atob(arr[1])
-    let n = bstr.length
-    const u8arr = new Uint8Array(n)
-
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n)
-    }
-
-    return new Blob([u8arr], { type: boxedMime[1] })
-  }
-  return null
 }

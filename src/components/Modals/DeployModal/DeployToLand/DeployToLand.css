@@ -1,0 +1,104 @@
+.DeployToLand {
+  margin: 64px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 560px;
+}
+
+.DeployToLand.connect {
+  margin: 0px 24px 24px 24px;
+}
+
+.DeployToLand.connect .ui.button.connect {
+  margin-top: 24px;
+  font-weight: 400;
+}
+
+.DeployToLand.progress {
+  width: 480px;
+  margin: 48px;
+}
+
+.DeployToLand.progress .progress-bar-container {
+  margin-top: 32px;
+}
+
+.DeployToLand.atlas {
+  width: 640px;
+  margin: 0px;
+}
+
+.DeployToLand.atlas .modal-header {
+  padding: 12px 24px;
+}
+
+.DeployToLand.confirmation {
+  width: 560px;
+  margin: 0px 24px 24px 24px;
+}
+
+.DeployToLand.confirmation .details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 24px 64px;
+  margin-bottom: 32px;
+  margin-top: 32px;
+}
+
+.DeployToLand.confirmation .details img {
+  border: 2px solid white;
+  border-radius: 5px;
+  width: 213px;
+  height: 120px;
+}
+
+.DeployToLand.confirmation .details .details-row {
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+}
+
+.DeployToLand.confirmation .details .detail {
+  display: flex;
+  flex-direction: column;
+  margin-right: 48px;
+}
+
+.DeployToLand.confirmation .details .detail .label {
+  text-transform: uppercase;
+  color: #736e7d;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.DeployToLand.confirmation .details .detail .value {
+  color: white;
+  font-weight: 400;
+  font-size: 17px;
+}
+
+.DeployToLand.success {
+  margin: 0px 24px 24px 24px;
+}
+
+.DeployToLand.success .actions {
+  margin: 24px 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.DeployToLand.success .ui.button {
+  width: 240px;
+  margin-bottom: 12px;
+}
+
+.DeployToLand.success .ui.button.hollow {
+  margin-left: 0px;
+}

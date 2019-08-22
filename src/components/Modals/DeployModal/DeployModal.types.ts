@@ -1,29 +1,14 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { Project } from 'modules/project/types'
-import { setUserProfile } from 'modules/user/actions'
-import { deployToPoolRequest } from 'modules/deployment/actions'
-import { editProjectRequest } from 'modules/project/actions'
-import { DeploymentStage } from 'modules/deployment/reducer'
+import { Deployment } from 'modules/deployment/types'
 
 export type Props = ModalProps & {
-  currentProject: Project | null
-  userEmail: string
-  error: string | null
-  isLoading: boolean
-  progress: number
-  stage: DeploymentStage
-  deploymentThumbnail: string | null
-  onDeployToPool: typeof deployToPoolRequest
-  onSaveProject: typeof editProjectRequest
-  onSaveUser: typeof setUserProfile
+  deployment: Deployment | null
+  metadata: DeployModalMetadata
 }
 
 export type State = {
-  email: string
-  ethAddress: string
-  project: Project
-  isSubmitting: boolean
-  isSuccess: boolean
+  view: DeployModalView
+  projectId: string | null
 }
 
 export type Step = {
@@ -31,8 +16,18 @@ export type Step = {
   description: string
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'currentProject' | 'userEmail' | 'error' | 'deploymentThumbnail' | 'isLoading' | 'progress' | 'stage'
->
-export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onSaveUser' | 'onSaveProject'>
+export type OwnProps = Pick<Props, 'metadata'>
+export type MapStateProps = Pick<Props, 'deployment'>
+export type MapDispatchProps = {}
+
+export enum DeployModalView {
+  NONE = 'NONE',
+  CLEAR_DEPLOYMENT = 'CLEAR_DEPLOYMENT',
+  DEPLOY_TO_LAND = 'DEPLOY_TO_LAND',
+  DEPLOY_TO_POOL = 'DEPLOY_TO_POOL'
+}
+
+export type DeployModalMetadata = {
+  view: DeployModalView
+  projectId: string
+}

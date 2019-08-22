@@ -1,9 +1,9 @@
 import { action } from 'typesafe-actions'
 
-import { Project, SaveFile } from 'modules/project/types'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { Project, Manifest } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'
-import { Asset } from 'modules/asset/types'
 
 // Create project from template
 
@@ -16,7 +16,7 @@ type CreateProjectFromTemplateMeta = { onSuccess?: (project: Project, scene: Sce
 
 export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFromTemplate>
 
-// Create project
+// Create project (like SET_PROJECT but only called on creation)
 
 export const CREATE_PROJECT = 'Create project'
 
@@ -24,20 +24,21 @@ export const createProject = (project: Project) => action(CREATE_PROJECT, { proj
 
 export type CreateProjectAction = ReturnType<typeof createProject>
 
+// Set project
+
+export const SET_PROJECT = 'Set project'
+
+export const setProject = (project: Project) => action(SET_PROJECT, { project })
+
+export type SetProjectAction = ReturnType<typeof setProject>
+
 // Edit project
 
-export const EDIT_PROJECT_REQUEST = '[Request] Edit project'
-export const EDIT_PROJECT_SUCCESS = '[Success] Edit project'
-export const EDIT_PROJECT_FAILURE = '[Failure] Edit project'
+export const EDIT_PROJECT = 'Edit project'
 
-export const editProjectRequest = (id: string, project: Partial<Project>, ground?: Asset) =>
-  action(EDIT_PROJECT_REQUEST, { id, project, ground })
-export const editProjectSuccess = (id: string, project: Partial<Project>) => action(EDIT_PROJECT_SUCCESS, { id, project })
-export const editProjectFailure = (error: string) => action(EDIT_PROJECT_FAILURE, { error })
+export const editProject = (id: string, project: Partial<Project>) => action(EDIT_PROJECT, { id, project })
 
-export type EditProjectRequestAction = ReturnType<typeof editProjectRequest>
-export type EditProjectSuccessAction = ReturnType<typeof editProjectSuccess>
-export type EditProjectFailureAction = ReturnType<typeof editProjectFailure>
+export type EditProjectAction = ReturnType<typeof editProject>
 
 // Edit project thumbnail
 
@@ -65,16 +66,47 @@ export type DuplicateProjectAction = ReturnType<typeof duplicateProject>
 
 // Export project
 
-export const EXPORT_PROJECT = 'Export project'
+export const EXPORT_PROJECT_REQUEST = '[Request] Export project'
+export const EXPORT_PROJECT_SUCCESS = '[Success] Export project'
 
-export const exportProject = (project: Project) => action(EXPORT_PROJECT, { project })
+export const exportProjectRequest = (project: Project) => action(EXPORT_PROJECT_REQUEST, { project })
+export const exportProjectSuccess = () => action(EXPORT_PROJECT_SUCCESS, {})
 
-export type ExportProjectAction = ReturnType<typeof exportProject>
+export type ExportProjectRequestAction = ReturnType<typeof exportProjectRequest>
+export type ExportProjectSuccessAction = ReturnType<typeof exportProjectSuccess>
 
 // Import project
 
 export const IMPORT_PROJECT = 'Import project'
 
-export const importProject = (projects: SaveFile[]) => action(IMPORT_PROJECT, { projects })
+export const importProject = (projects: Manifest[]) => action(IMPORT_PROJECT, { projects })
 
 export type ImportProjectAction = ReturnType<typeof importProject>
+
+// Loud cloud projects
+
+export const LOAD_PROJECTS_REQUEST = '[Request] Load projects'
+export const LOAD_PROJECTS_SUCCESS = '[Success] Load projects'
+export const LOAD_PROJECTS_FAILURE = '[Failure] Load projects'
+
+export const loadProjectsRequest = () => action(LOAD_PROJECTS_REQUEST, {})
+export const loadProjectsSuccess = (projects: ModelById<Project>) => action(LOAD_PROJECTS_SUCCESS, { projects })
+export const loadProjectsFailure = (error: string) => action(LOAD_PROJECTS_FAILURE, { error })
+
+export type LoadProjectsRequestAction = ReturnType<typeof loadProjectsRequest>
+export type LoadProjectsSuccessAction = ReturnType<typeof loadProjectsSuccess>
+export type LoadProjectsFailureAction = ReturnType<typeof loadProjectsFailure>
+
+// Load project manifest
+
+export const LOAD_MANIFEST_REQUEST = '[Request] Load manifest'
+export const LOAD_MANIFEST_SUCCESS = '[Success] Load manifest'
+export const LOAD_MANIFEST_FAILURE = '[Failure] Load manifest'
+
+export const loadManifestRequest = (id: string) => action(LOAD_MANIFEST_REQUEST, { id })
+export const loadManifestSuccess = (manifest: Manifest) => action(LOAD_MANIFEST_SUCCESS, { manifest })
+export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILURE, { error })
+
+export type LoadManifestRequestAction = ReturnType<typeof loadManifestRequest>
+export type LoadManifestSuccessAction = ReturnType<typeof loadManifestSuccess>
+export type LoadManifestFailureAction = ReturnType<typeof loadManifestFailure>

@@ -5,11 +5,14 @@ import uuidv4 from 'uuid/v4'
 
 import Dropzone, { DropzoneState } from 'react-dropzone'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { migrations } from 'modules/migrations/import'
-import { SaveFile } from 'modules/project/types'
-import { EXPORT_PATH, BUILDER_FILE_VERSION } from 'modules/project/export'
+import { migrations } from 'modules/migrations/manifest'
+import { Manifest } from 'modules/project/types'
+import { EXPORT_PATH } from 'modules/project/export'
+import { runMigrations } from 'modules/migrations/utils'
 import Icon from 'components/Icon'
+
 import { Props, State, ImportedFile } from './ImportModal.types'
 
 import './ImportModal.css'
@@ -20,8 +23,12 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     canImport: false
   }
 
+  analytics = getAnalytics()
+
   renderProject = (saved: ImportedFile) => {
-    if (!saved.project || !saved.scene) {
+    if (!saved.manifest) return null
+
+    if (!saved.manifest.project || !saved.manifest.scene) {
       if (saved.fileName) {
         const key = `${saved.fileName}-${Math.random()}`.replace(/\s/g, '_')
         return (
@@ -44,13 +51,13 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className="project-card" key={saved.project.id}>
+      <div className="project-card" key={saved.manifest.project.id}>
         <div className="close-button" onClick={() => this.handleRemoveProject(saved.id)}>
           <Icon name="close" />
         </div>
-        <img src={saved.project.thumbnail} />
-        <span className="title" title={saved.project.title}>
-          {saved.project.title}
+        <img src={saved.manifest.project.thumbnail} />
+        <span className="title" title={saved.manifest.project.title}>
+          {saved.manifest.project.title}
         </span>
       </div>
     )
@@ -102,38 +109,44 @@ export default class ImportModal extends React.PureComponent<Props, State> {
     for (let file of acceptedFiles) {
       try {
         const zip: JSZip = await JSZip.loadAsync(file)
-        const contentRaw = zip.file(EXPORT_PATH.BUILDER_FILE)
+        const contentRaw = zip.file(EXPORT_PATH.MANIFEST_FILE)
         const content = await contentRaw.async('text')
-        let parsed: ImportedFile = JSON.parse(content)
+        const req = new Response(content)
+        const parsed: Manifest = await req.json()
 
-        // run migrations
-        let version = parsed.version || 1
-        while (version < BUILDER_FILE_VERSION) {
-          version++
-          if (version in migrations) {
-            parsed = migrations[version](parsed)
-          }
-        }
-
-        if (!parsed.project || !parsed.scene) {
+        if (!parsed || !parsed.scene) {
           throw new Error('Invalid project')
         }
 
-        parsed.id = uuidv4()
-        parsed.project.id = uuidv4()
-        parsed.scene.id = uuidv4()
-        parsed.project.sceneId = parsed.scene.id
+        const migrated = runMigrations<Manifest>(parsed, migrations)
 
-        projects.push(parsed)
+        if (!migrated.project || !migrated.scene) {
+          throw new Error('Invalid project')
+        }
+
+        let importedFile: ImportedFile = {
+          id: uuidv4(),
+          fileName: file.name,
+          manifest: {
+            ...migrated
+          }
+        }
+
+        importedFile.manifest!.project.id = uuidv4()
+        importedFile.manifest!.scene.id = uuidv4()
+        importedFile.manifest!.project.sceneId = parsed.scene.id
+
+        projects.push(importedFile)
       } catch (e) {
+        this.analytics.track('Import project failure', {
+          fileName: file.name
+        })
+
         projects.push({
           id: uuidv4(),
-          version: BUILDER_FILE_VERSION,
-          project: null,
-          scene: null,
           fileName: file.name,
           isCorrupted: true
-        })
+        } as ImportedFile)
       }
     }
 
@@ -146,7 +159,8 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
   handleImport = () => {
     // At this point we are sure that the accepted projects are all valid
-    this.props.onImport(this.state.acceptedProjects as SaveFile[])
+    const manifests = this.state.acceptedProjects.map(p => p.manifest!)
+    this.props.onImport(manifests)
     this.props.onClose()
   }
 

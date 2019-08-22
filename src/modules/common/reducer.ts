@@ -12,16 +12,19 @@ import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { editorReducer as editor } from 'modules/editor/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
-import { userReducer as user } from 'modules/user/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
+import { mediaReducer as media } from 'modules/media/reducer'
+import { authReducer as auth } from 'modules/auth/reducer'
+import { syncReducer as sync } from 'modules/sync/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
     combineReducers<RootState>({
       storage,
       location,
+      auth,
       editor,
       translation,
       wallet,
@@ -29,10 +32,11 @@ export function createRootReducer(history: History) {
       assetPack,
       asset,
       ui,
-      user,
       project,
       scene,
       deployment,
+      media,
+      sync,
       router: connectRouter(history)
     })
   )

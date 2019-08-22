@@ -1,228 +1,128 @@
 import * as React from 'react'
-import { Field, Form, Button } from 'decentraland-ui'
-import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { Button, Header } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import ProjectFields from 'components/ProjectFields'
-
-import { EMAIL_INTEREST, api } from 'lib/api'
-import { Props, State } from './DeployModal.types'
+import Modal from 'decentraland-dapps/dist/containers/Modal'
+import Icon from 'components/Icon'
+import DeployToLand from './DeployToLand'
+import DeployToPool from './DeployToPool'
+import ClearDeployment from './ClearDeployment'
+import { Props, State, DeployModalView } from './DeployModal.types'
 import './DeployModal.css'
 
-const ethereum = (window as any)['ethereum']
-
 export default class DeployModal extends React.PureComponent<Props, State> {
-  state = this.getBaseState()
+  state: State = {
+    view: DeployModalView.NONE,
+    projectId: null
+  }
 
-  componentWillReceiveProps(nextProps: Props) {
-    const { isLoading, error } = nextProps
-
-    if (this.state.isSubmitting && !isLoading && !error) {
+  componentDidMount() {
+    const { metadata } = this.props
+    if (metadata) {
       this.setState({
-        isSubmitting: false,
-        isSuccess: true
+        view: metadata.view || DeployModalView.NONE,
+        projectId: metadata.projectId || null
       })
     }
   }
 
-  componentWillUnmount() {
+  handleDeployToLand = () => {
     this.setState({
-      ...this.getBaseState(),
-      isSubmitting: false,
-      isSuccess: false
+      view: DeployModalView.DEPLOY_TO_LAND
     })
   }
 
-  getBaseState(): State {
-    const { currentProject, userEmail } = this.props
-    return {
-      email: userEmail,
-      ethAddress: (ethereum && ethereum.selected) || '',
-      project: { ...currentProject! },
-      isSubmitting: false,
-      isSuccess: false
-    }
+  handleDeployToPool = () => {
+    this.setState({
+      view: DeployModalView.DEPLOY_TO_POOL
+    })
   }
 
-  handleTitleChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const { project } = this.state
-    const title = event.currentTarget.value
-    this.setState({ project: { ...project, title } })
+  handleClearDeployment = (projectId: string) => {
+    this.setState({
+      view: DeployModalView.CLEAR_DEPLOYMENT,
+      projectId
+    })
   }
 
-  handleDescriptionChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const { project } = this.state
-    const description = event.currentTarget.value
-    this.setState({ project: { ...project, description } })
-  }
-
-  handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const email = event.currentTarget.value
-    this.setState({ email })
-  }
-
-  handleEthAddressChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const ethAddress = event.currentTarget.value
-    this.setState({ ethAddress })
-  }
-
-  handleSubmit = async () => {
-    const { currentProject, onDeployToPool, onSaveProject, onSaveUser } = this.props
-    const { email, project, ethAddress } = this.state
-    const projectId = currentProject!.id
-    const analytics = getAnalytics()
-
-    this.setState({ isSubmitting: true })
-
-    analytics.identify({ email })
-    api.reportEmail(email, EMAIL_INTEREST.PUBLISH_POOL).catch(() => console.error('Unable to submit email, something went wrong!'))
-
-    onSaveUser({ email })
-    onSaveProject(projectId, project)
-    onDeployToPool(projectId, ethAddress)
-  }
-
-  handleClose = () => {
-    if (!this.props.isLoading) {
+  handleClickOutside = () => {
+    if (this.state.view === DeployModalView.NONE) {
       this.props.onClose()
     }
   }
 
-  renderForm() {
-    const { error, isLoading } = this.props
-    const { project, email, ethAddress } = this.state
-    const { title, description } = project
+  handleClose = () => {
+    this.setState({
+      view: DeployModalView.NONE
+    })
+    this.props.onClose()
+  }
+
+  handleBack = () => {
+    this.setState({
+      view: DeployModalView.NONE
+    })
+  }
+
+  renderChoiceForm = () => {
+    const { name } = this.props
 
     return (
-      <>
-        <div className="subtitle">{t('deployment_modal.pool.subtitle')}</div>
-        <div className="details">
-          <div className="category">{t('global.project')}</div>
-          <ProjectFields.Title value={title} onChange={this.handleTitleChange} required disabled={isLoading} />
-          <ProjectFields.Description value={description} onChange={this.handleDescriptionChange} disabled={isLoading} />
-        </div>
-        <div className="details">
-          <div className="category">{t('deployment_modal.pool.contact_information')}</div>
-          <Field
-            type="email"
-            label={t('global.email')}
-            icon="asterisk"
-            placeholder="mail@domain.com"
-            value={email}
-            onChange={this.handleEmailChange}
-            disabled={isLoading}
-            required
-          />
-          <Field
-            label={`${t('global.eth_address')} (${t('global.optional')})`}
-            placeholder="0x"
-            value={ethAddress}
-            onChange={this.handleEthAddressChange}
-            disabled={isLoading}
-          />
-          <div className="terms">
-            <span>{t('deployment_modal.pool.i_accept_the')}</span>
+      <Modal name={name} onClose={this.handleClickOutside}>
+        <div className="choice-form">
+          <div className="modal-header">
+            <Icon name="modal-close" onClick={this.handleClose} />
           </div>
-          {error ? (
-            <div className="error">
-              {t('deployment_modal.pool.error_ocurred')} "{error}"
+          <Header size="large" className="modal-title">
+            {t('deployment_modal.title')}
+          </Header>
+          <p className="modal-subtitle">{t('deployment_modal.description')}</p>
+          <div className="options">
+            <div className="card">
+              <div className="thumbnail deploy-to-pool" />
+              <span className="title">{t('deployment_modal.option_pool.title')}</span>
+              <span className="description">{t('deployment_modal.option_pool.description')}</span>
+              <Button primary size="small" onClick={this.handleDeployToPool}>
+                {t('deployment_modal.option_pool.action')}
+              </Button>
             </div>
-          ) : null}
-        </div>
-      </>
-    )
-  }
-
-  renderSuccess() {
-    const { name, deploymentThumbnail, onClose } = this.props
-
-    return (
-      <Modal name={name}>
-        <img src={deploymentThumbnail || ''} className="preview" />
-        <Modal.Header>{t('deployment_modal.pool.success.title')}</Modal.Header>
-        <Modal.Content>
-          <div className="success">{t('deployment_modal.pool.success.body')}</div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button primary onClick={onClose}>
-            {t('global.done')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
-    )
-  }
-
-  renderProgress() {
-    const { name, stage, progress } = this.props
-
-    let classes = 'progress-bar'
-    if (progress === 100) {
-      classes += ' active'
-    }
-
-    let title
-    switch (stage) {
-      case 'record': {
-        title = (
-          <>
-            {t('deployment_modal.pool.progress')}&hellip;&nbsp;{progress}%
-          </>
-        )
-        break
-      }
-      case 'upload': {
-        title = (
-          <>
-            {t('deployment_modal.pool.uploading')}&hellip;&nbsp;{progress}%
-          </>
-        )
-        break
-      }
-
-      default:
-        title = t('global.loading')
-    }
-
-    return (
-      <Modal name={name} onClose={this.handleClose}>
-        <Modal.Header>{title}</Modal.Header>
-        <Modal.Content>
-          <div className="progress-bar-container">
-            <div className={classes} style={{ width: `${progress}%` }} />
+            <div className="card">
+              <div className="thumbnail deploy-to-land" />
+              <span className="title">{t('deployment_modal.option_land.title')}</span>
+              <span className="description">{t('deployment_modal.option_land.description')}</span>
+              <Button primary size="small" onClick={this.handleDeployToLand}>
+                {t('deployment_modal.option_land.action')}
+              </Button>
+            </div>
           </div>
-        </Modal.Content>
+        </div>
       </Modal>
     )
   }
 
   render() {
-    const { name, onClose, isLoading } = this.props
-    const { email } = this.state
-    const isSubmitDisabled = !email
+    const { view, projectId } = this.state
+    const { name } = this.props
 
-    if (this.state.isSuccess) {
-      return this.renderSuccess()
+    if (view === DeployModalView.CLEAR_DEPLOYMENT && projectId) {
+      return <ClearDeployment projectId={projectId} name={name} onClose={this.handleClose} />
     }
 
-    if (isLoading) {
-      return this.renderProgress()
+    if (view === DeployModalView.DEPLOY_TO_LAND) {
+      return (
+        <DeployToLand
+          name={name}
+          onDeployToPool={this.handleDeployToPool}
+          onClearDeployment={this.handleClearDeployment}
+          onBack={this.handleBack}
+          onClose={this.handleClose}
+        />
+      )
     }
 
-    return (
-      <Modal name={name} onClose={this.handleClose}>
-        <Form onSubmit={this.handleSubmit}>
-          <Modal.Header>{t('deployment_modal.pool.title')}</Modal.Header>
-          <Modal.Content>{this.renderForm()}</Modal.Content>
-          <Modal.Actions>
-            <Button primary disabled={isSubmitDisabled}>
-              {t('global.submit')}
-            </Button>
-            <Button secondary onClick={onClose}>
-              {t('global.cancel')}
-            </Button>
-          </Modal.Actions>
-        </Form>
-      </Modal>
-    )
+    if (view === DeployModalView.DEPLOY_TO_POOL) {
+      return <DeployToPool name={name} onClose={this.handleClose} />
+    }
+
+    return this.renderChoiceForm()
   }
 }

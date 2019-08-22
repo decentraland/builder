@@ -1,10 +1,10 @@
-import { takeLatest, select } from 'redux-saga/effects'
+import { LOCATION_CHANGE } from 'react-router-redux'
+import { takeLatest, select, fork, takeEvery } from 'redux-saga/effects'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ConnectWalletSuccessAction, CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 import { OPEN_EDITOR, OpenEditorAction, TOGGLE_SNAP_TO_GRID, ToggleSnapToGridAction } from 'modules/editor/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getState as getUserState } from 'modules/user/selectors'
 import {
   ADD_ITEM,
   DUPLICATE_ITEM,
@@ -17,12 +17,27 @@ import {
   UPDATE_TRANSFORM,
   UpdateTransfromAction
 } from 'modules/scene/actions'
-import { DeployToPoolSuccessAction, DEPLOY_TO_POOL_SUCCESS } from 'modules/deployment/actions'
+import {
+  DeployToPoolSuccessAction,
+  DEPLOY_TO_POOL_SUCCESS,
+  DEPLOY_TO_LAND_SUCCESS,
+  CLEAR_DEPLOYMENT_SUCCESS,
+  DeployToLandSuccessAction,
+  ClearDeploymentSuccessAction
+} from 'modules/deployment/actions'
 import { SEARCH_ASSETS, SearchAssetsAction } from 'modules/ui/sidebar/actions'
 import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
+import { Project } from 'modules/project/types'
 import { trimAsset } from './track'
+import { handleDelighted } from './delighted'
+import { getSub } from 'modules/auth/selectors'
+import { SyncAction, SYNC } from 'modules/sync/actions'
+import { getLocalProjectIds } from 'modules/sync/selectors'
+import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-export function* segmentSaga() {
+export function* analyticsSaga() {
+  yield fork(handleDelighted)
   yield takeLatest(OPEN_EDITOR, handleOpenEditor)
   yield takeLatest(ADD_ITEM, handleNewItem)
   yield takeLatest(DUPLICATE_ITEM, handleNewItem)
@@ -32,7 +47,13 @@ export function* segmentSaga() {
   yield takeLatest(UPDATE_TRANSFORM, handleUpdateTransfrom)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeLatest(DEPLOY_TO_POOL_SUCCESS, handleDeployToPoolSuccess)
+  yield takeLatest(DEPLOY_TO_LAND_SUCCESS, handleDeployToLandSuccess)
+  yield takeLatest(CLEAR_DEPLOYMENT_SUCCESS, handleClearDeploymentSuccess)
   yield takeLatest(SEARCH_ASSETS, handleSearchAssets)
+  yield takeLatest(SYNC, handleSync)
+  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
+  yield takeEvery(LOCATION_CHANGE, handleLocationChange)
+  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -105,14 +126,72 @@ function handleConnectWallet(action: ConnectWalletSuccessAction) {
 }
 
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
-  const project = yield select(getCurrentProject)
-  const user = yield select(getUserState)
+  const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  track('Deploy to pool', { project_id: project.id, user })
+  const userId = yield select(getSub)
+  // Do not change this event name format
+  track('[Success] Deploy to LAND pool', { project_id: project.id, user_id: userId })
+}
+
+function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
+  const project: Project | null = yield select(getCurrentProject)
+  if (!project) return
+  const userId = yield select(getSub)
+  // Do not change this event name format
+  track('[Success] Deploy to LAND', { project_id: project.id, user_id: userId })
+}
+
+function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
+  const project: Project | null = yield select(getCurrentProject)
+  if (!project) return
+  const userId = yield select(getSub)
+  // Do not change this event name format
+  track('[Success] Clear Deployment', { project_id: project.id, user_id: userId })
 }
 
 function* handleSearchAssets(action: SearchAssetsAction) {
   const categories: ReturnType<typeof getSideBarCategories> = yield select(getSideBarCategories)
   const hits = categories.reduce<number>((hits, category) => hits + category.assets.length, 0)
-  track(SEARCH_ASSETS, { ...action.payload, hits })
+  track('Search assets', { ...action.payload, hits })
+}
+
+function* handleSync(_: SyncAction) {
+  const localProjectIds: string[] = yield select(getLocalProjectIds)
+  if (localProjectIds.length > 0) {
+    track('Sync projects', { count: localProjectIds.length })
+  }
+}
+
+function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
+  const { wallet } = action.payload
+  const analytics = getAnalytics()
+
+  if (analytics) {
+    const userId: string = yield select(getSub)
+
+    if (userId) {
+      analytics.identify(userId, { ethAddress: wallet.address })
+    } else {
+      analytics.identify({ ethAddress: wallet.address })
+    }
+  }
+}
+
+function handleLocationChange() {
+  const analytics = getAnalytics()
+
+  if (analytics) {
+    analytics.page()
+  }
+}
+
+function* handleAuthSuccess(action: AuthSuccessAction) {
+  const userId = action.payload.data.sub
+  const ethAddress: string | undefined = yield select(getAddress)
+
+  if (!ethAddress) {
+    analytics.identify(userId)
+  } else {
+    analytics.identify(userId, { ethAddress: ethAddress })
+  }
 }

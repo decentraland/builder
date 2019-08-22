@@ -1,5 +1,15 @@
 import { Vector3 } from 'modules/common/types'
 import { Scene, SceneMetrics } from './types'
+import { select, put, race, take } from 'redux-saga/effects'
+import {
+  loadManifestRequest,
+  LoadManifestFailureAction,
+  LoadManifestSuccessAction,
+  LOAD_MANIFEST_SUCCESS,
+  LOAD_MANIFEST_FAILURE
+} from 'modules/project/actions'
+import { getData as getProjects } from 'modules/project/selectors'
+import { getData as getScenes } from 'modules/scene/selectors'
 
 /**
  * Returns a new random position bound to y: 0
@@ -84,4 +94,25 @@ export function areEqualMappings(mappingsA: Record<string, string> = {}, mapping
     }
   }
   return true
+}
+
+export function* getSceneByProjectId(projectId: string) {
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  let project = projects[projectId]
+  let scene = project && scenes[project.sceneId]
+
+  if (!scene) {
+    yield put(loadManifestRequest(project.id))
+    const result: { success?: LoadManifestSuccessAction; failure?: LoadManifestFailureAction } = yield race({
+      success: take(LOAD_MANIFEST_SUCCESS),
+      failure: take(LOAD_MANIFEST_FAILURE)
+    })
+    if (result.success) {
+      scene = result.success.payload.manifest.scene
+    } else if (result.failure) {
+      throw new Error(result.failure.payload.error)
+    }
+  }
+  return scene
 }

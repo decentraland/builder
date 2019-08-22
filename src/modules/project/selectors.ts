@@ -1,30 +1,28 @@
 import { createSelector } from 'reselect'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/selectors'
-import { Project, Layout } from 'modules/project/types'
+import { getLoading as getAuthLoading } from 'modules/auth/selectors'
+import { AUTH_REQUEST } from 'modules/auth/actions'
+import { Project } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
+import { LOAD_PROJECTS_REQUEST } from './actions'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
 
 export const getData: (state: RootState) => ProjectState['data'] = state => getState(state).data
 
-export const isLoading: (state: RootState) => boolean = state => getState(state).loading.length > 0
-
 export const getError: (state: RootState) => ProjectState['error'] = state => getState(state).error
 
-export const getProject = (state: RootState, projectId: string): Project | null => getData(state)[projectId] || null
+export const getLoading = (state: RootState) => getState(state).loading
 
 export const getCurrentProject = createSelector<RootState, string | undefined, ProjectState['data'], Project | null>(
   getProjectId,
   getData,
   (projectId, projects) => projects[projectId!] || null
-)
-
-export const getCurrentLayout = createSelector<RootState, Project | null, Layout | null>(
-  getCurrentProject,
-  project => (project ? project.layout : null)
 )
 
 export const getCurrentBounds = createSelector<RootState, Project | null, Vector3 | null>(
@@ -38,4 +36,10 @@ export const getCurrentBounds = createSelector<RootState, Project | null, Vector
       z: cols * PARCEL_SIZE
     }
   }
+)
+
+export const isFetching = createSelector<RootState, LoadingState, LoadingState, boolean>(
+  getLoading,
+  getAuthLoading,
+  (projectLoading, authLoading) => isLoadingType(authLoading, AUTH_REQUEST) || isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST)
 )

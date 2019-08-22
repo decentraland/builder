@@ -16,7 +16,7 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   (project, scenes) => (project ? scenes[project.sceneId] : null)
 )
 
-export const getSceneById = (sceneId: string) =>
+export const getScene = (sceneId: string) =>
   createSelector<RootState, SceneState['data'], Scene | null>(
     getData,
     scenes => scenes[sceneId]
@@ -31,8 +31,6 @@ export const getCurrentLimits = createSelector<RootState, Scene | null, SceneMet
   getCurrentScene,
   scene => (scene ? scene.limits : EMPTY_SCENE_METRICS)
 )
-
-export const getScene = (state: RootState, sceneId: string): Scene | null => getData(state)[sceneId] || null
 
 export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(
   getCurrentScene,
@@ -116,32 +114,55 @@ export const getComponentsByType = <T extends ComponentType>(type: T) =>
     }
   )
 
-export const getGLTFId = (src: string) => (state: RootState) => {
-  const scene = getCurrentScene(state)
-  if (!scene) return null
+export const getGLTFsBySrc = createSelector<RootState, Scene | null, Record<string, ComponentDefinition<ComponentType.GLTFShape>>>(
+  getCurrentScene,
+  scene => {
+    if (!scene) return {}
 
-  const componentData = scene.components
+    const componentData = scene.components
+    let res: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
 
-  for (let key in componentData) {
-    const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
-    if (comp.type === ComponentType.GLTFShape && comp.data.src === src) return key
+    for (let key in componentData) {
+      const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
+      if (comp.type === ComponentType.GLTFShape) {
+        res[comp.data.src] = comp
+      }
+    }
+
+    return res
   }
+)
 
-  return null
-}
+export const getCollectiblesByURL = createSelector<RootState, Scene | null, Record<string, ComponentDefinition<ComponentType.NFTShape>>>(
+  getCurrentScene,
+  scene => {
+    if (!scene) return {}
 
-export const getCollectibleId = (url: string) => (state: RootState) => {
-  const scene = getCurrentScene(state)
-  if (!scene) return null
+    const componentData = scene.components
+    let res: Record<string, ComponentDefinition<ComponentType.NFTShape>> = {}
 
-  const componentData = scene.components
+    for (let key in componentData) {
+      const comp = componentData[key] as ComponentDefinition<ComponentType.NFTShape>
+      if (comp.type === ComponentType.NFTShape) {
+        res[comp.data.url] = comp
+      }
+    }
 
-  for (let key in componentData) {
-    const comp = componentData[key] as ComponentDefinition<ComponentType.NFTShape>
-    if (comp.type === ComponentType.NFTShape && comp.data.url === url) return key
+    return res
   }
-
-  return null
-}
+)
 
 export const hasHistory = (state: RootState) => state.scene.past.length > 0
+export const numItems = createSelector<RootState, Project | null, Scene | null, number>(
+  getCurrentProject,
+  getCurrentScene,
+  (project, scene) => {
+    if (!project || !scene) return 0
+    const numTransforms = Object.values(scene.components).reduce<number>(
+      (total, component) => (component.type === ComponentType.Transform ? total + 1 : total),
+      0
+    )
+    const numGrounds = project.layout.cols * project.layout.rows
+    return numTransforms - numGrounds
+  }
+)

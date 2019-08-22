@@ -8,11 +8,10 @@ import {
   TogglePreviewAction,
   CloseEditorAction
 } from 'modules/editor/actions'
-import { Layout } from 'modules/project/types'
+import { dropItem, DropItemAction } from 'modules/scene/actions'
+import { Project } from 'modules/project/types'
 
 declare type Gizmo = any
-
-import { dropItem, DropItemAction } from 'modules/scene/actions'
 
 export type Editor = {
   initEngine: (container: HTMLElement, x: number, y: number) => Promise<void>
@@ -47,11 +46,11 @@ export type Props = {
   isLoading: boolean
   onOpenEditor: typeof openEditor
   onDropItem: typeof dropItem
-  layout: Layout
+  project: Project
 }
 
 export type State = {}
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'layout'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'project'>
 export type MapDispatchProps = Pick<Props, 'onOpenEditor' | 'onDropItem'>
 export type MapDispatch = Dispatch<SetEditorReadyAction | OpenEditorAction | DropItemAction>
