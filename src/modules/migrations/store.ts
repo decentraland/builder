@@ -23,7 +23,6 @@ export const migrations = {
     return state
   },
   '4': (state: RootState) => {
-    debugger
     const shouldMigrateProjects = !!state.project && !!state.project.data
     const shouldMigrateDeployments = !!state.deployment && !!state.deployment.data
     return {
