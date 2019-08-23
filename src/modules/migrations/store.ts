@@ -25,6 +25,7 @@ export const migrations = {
   '4': (state: RootState) => {
     const shouldMigrateProjects = !!state.project && !!state.project.data
     const shouldMigrateDeployments = !!state.deployment && !!state.deployment.data
+    /* tslint:disable */
     return {
       ...state,
       project: shouldMigrateProjects
@@ -46,5 +47,6 @@ export const migrations = {
           }
         : state.deployment
     }
+    /* tslint:enable */
   }
 }
