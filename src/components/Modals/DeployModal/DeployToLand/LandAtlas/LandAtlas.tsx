@@ -8,6 +8,7 @@ import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
+import { Coord } from 'lib/api/marketplace'
 
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
@@ -62,18 +63,32 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   fetchAuthorizedParcels = async (ethAddress: string) => {
     const { landTarget } = this.state
     try {
-      const authorizedParcels = await api.fetchAuthorizedParcels(ethAddress)
+      const [authorizedParcels, authorizedEstates] = await Promise.all([
+        api.fetchAuthorizedParcels(ethAddress),
+        api.fetchAuthorizedEstates(ethAddress)
+      ])
+
       if (this.mounted) {
-        const parcels = authorizedParcels.reduce(
-          (parcels: any, parcel: any) => ({
-            ...parcels,
-            [parcel.id]: {
+        const parcels: Record<string, Coord> = {}
+
+        authorizedParcels.reduce((parcels, parcel) => {
+          parcels[parcel.id] = {
+            x: parcel.x,
+            y: parcel.y
+          }
+          return parcels
+        }, parcels)
+
+        authorizedEstates.reduce((parcels, estate) => {
+          for (const parcel of estate.data.parcels) {
+            const id = `${parcel.x},${parcel.y}`
+            parcels[id] = {
               x: parcel.x,
               y: parcel.y
             }
-          }),
-          {}
-        )
+          }
+          return parcels
+        }, parcels)
 
         this.analytics.track('LAND authorized for publish', { count: authorizedParcels.length })
 

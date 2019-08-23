@@ -40,5 +40,6 @@ export const api = {
   fetchCollectibleAssets: (registry: string, ownerAddress: string) => dar.fetchCollectibleAssets(registry, ownerAddress),
   fetchCollectibleRegistries: () => dar.fetchCollectibleRegistries(),
   reportEmail: (_email: string, interest: EMAIL_INTEREST) => email.reportEmail(_email, interest),
-  fetchAuthorizedParcels: (address: string) => marketplace.fetchAuthorizedParcels(address)
+  fetchAuthorizedParcels: (address: string) => marketplace.fetchAuthorizedParcels(address),
+  fetchAuthorizedEstates: (address: string) => marketplace.fetchAuthorizedEstates(address)
 }
