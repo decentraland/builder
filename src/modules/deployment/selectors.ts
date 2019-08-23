@@ -26,15 +26,6 @@ export const getCurrentDeployment = createSelector<RootState, DeploymentState['d
   }
 )
 
-export const getDeployment = (projectId: string) =>
-  createSelector<RootState, DeploymentState['data'], Deployment | null>(
-    getData,
-    data => {
-      if (Object.keys(data).length === 0) return null
-      return data[projectId]
-    }
-  )
-
 export const getDeploymentStatus = createSelector<
   RootState,
   DeploymentState['data'],

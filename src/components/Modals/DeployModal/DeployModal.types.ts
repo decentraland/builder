@@ -2,7 +2,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { Deployment } from 'modules/deployment/types'
 
 export type Props = ModalProps & {
-  deployment: Deployment | null
+  deployment: Deployment
   metadata: DeployModalMetadata
 }
 

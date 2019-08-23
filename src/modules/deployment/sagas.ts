@@ -38,7 +38,7 @@ import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } fr
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
-import { getCurrentDeployment, getDeployment } from './selectors'
+import { getCurrentDeployment, getData as getDeployments } from './selectors'
 import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
@@ -167,7 +167,8 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
 
 function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
   const { projectId } = action.payload
-  const deployment: Deployment | null = yield select(getDeployment(projectId))
+  const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
+  const deployment = deployments[projectId]
   if (!deployment) return
   const { x, y } = deployment.placement.point
   try {
@@ -189,7 +190,8 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   const { projectId } = action.payload
   const ethAddress = yield select(getAddress)
   const userId = yield select(getSub)
-  const deployment: Deployment | null = yield select(getDeployment(projectId))
+  const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
+  const deployment = deployments[projectId]
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
 
