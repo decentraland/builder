@@ -184,7 +184,8 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
   if (!scene) return
 
-  const transform = getEntityComponentByType(args.entityId, ComponentType.Transform)(store.getState() as RootState)
+  const entityComponents = getEntityComponentByType(store.getState() as RootState)
+  const transform = entityComponents[args.entityId][ComponentType.Transform]
   if (!transform) return
 
   if (bounds) {

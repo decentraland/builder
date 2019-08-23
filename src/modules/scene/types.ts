@@ -31,6 +31,8 @@ export type ComponentData = {
 
 export type AnyComponent = ComponentDefinition<ComponentType>
 
+export type ShapeComponent = ComponentDefinition<ComponentType.GLTFShape | ComponentType.NFTShape>
+
 export type ComponentDefinition<T extends ComponentType> = {
   id: string
   type: T

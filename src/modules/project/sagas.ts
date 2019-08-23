@@ -32,7 +32,7 @@ import { api } from 'lib/api'
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
-import { getScene } from 'modules/scene/selectors'
+import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
@@ -136,7 +136,8 @@ function* handleEditProject(action: EditProjectAction) {
 
   if (!targetProject || !project) return
 
-  const scene: Scene | null = yield select(getScene(targetProject.sceneId))
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[targetProject.sceneId]
 
   if (!scene) return
 
