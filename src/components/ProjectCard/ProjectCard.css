@@ -30,6 +30,7 @@
 .ProjectCard .title {
   margin-bottom: 14px;
   font-size: 20px;
+  line-height: 24px;
   font-weight: 500;
   max-width: 175px;
   overflow: hidden;
