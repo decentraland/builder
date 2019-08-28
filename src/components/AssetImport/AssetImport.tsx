@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { basename } from 'path'
 import * as crypto from 'crypto'
 import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
@@ -7,11 +8,12 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Icon from 'components/Icon'
 import FileImport from 'components/FileImport'
 import { Asset } from 'modules/asset/types'
+import { EXPORT_PATH } from 'modules/project/export'
+import { getModelData } from 'lib/getModelData'
+import { cleanFileName, getExtension } from './utils'
 
 import { Props, State, ImportedFile } from './AssetImport.types'
 import './AssetImport.css'
-import { cleanFileName, getExtension } from './utils'
-import { getModelData } from 'lib/getModelData'
 
 export const getSHA256 = (data: string) => {
   return crypto
@@ -97,24 +99,35 @@ export default class AssetImport extends React.Component<Props, State> {
       throw new Error('Invalid project')
     }
 
-    const assetModel = zip.file(/\.(glb|gltf)$/g).pop()
     const fileNames: string[] = []
 
     zip.forEach(fileName => {
-      if (fileName !== ASSET_MANIFEST) {
+      if (fileName === EXPORT_PATH.MANIFEST_FILE) {
+        throw new Error('Invalid project')
+      }
+
+      if (fileName !== ASSET_MANIFEST || !basename(fileName).startsWith('.')) {
         fileNames.push(fileName)
       }
     })
 
+    const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
+
+    if (!assetModel) {
+      throw new Error('Invalid project')
+    }
+
     const files = await Promise.all(
-      fileNames.map(async fileName => {
-        const file = zip.file(fileName)
-        const blob = await file.async('blob')
-        return {
-          name: fileName,
-          blob
-        }
-      })
+      fileNames
+        .map(fileName => zip.file(fileName))
+        .filter(file => !!file)
+        .map(async file => {
+          const blob = await file.async('blob')
+          return {
+            name: file.name,
+            blob
+          }
+        })
     )
 
     const contents = files.reduce<Record<string, Blob>>((contents, file) => {
@@ -133,7 +146,7 @@ export default class AssetImport extends React.Component<Props, State> {
         name: manifestParsed ? manifestParsed.name : cleanFileName(file.name, extension),
         tags: manifestParsed ? manifestParsed.tags : [],
         category: manifestParsed ? manifestParsed.category : 'decorations',
-        url: assetModel!.name || '',
+        url: assetModel,
         contents
       }
     } as ImportedFile
@@ -188,7 +201,6 @@ export default class AssetImport extends React.Component<Props, State> {
           outFile.asset.thumbnail = image
         }
       } catch (e) {
-        console.log(e)
         // TODO: analytics
 
         outFile = {
@@ -198,7 +210,7 @@ export default class AssetImport extends React.Component<Props, State> {
         } as ImportedFile
       }
 
-      if (outFile && !outFile.isCorrupted) {
+      if (outFile) {
         newFiles[outFile!.id] = outFile
       }
     }

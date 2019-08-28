@@ -65,6 +65,7 @@
 
 .AssetImport img {
   background-color: rgba(var(--bluish-steel-raw), 0.1);
+  padding: 10px;
 }
 
 .AssetImport .single-project {
@@ -99,7 +100,7 @@
   height: 100px;
 }
 
-.AssetImport .multiple-projects .project-card:not(:nth-child(3n)) {
+.AssetImport .multiple-projects .project-card:not(:nth-child(5n)) {
   margin-bottom: 32px;
   margin-right: 24px;
 }

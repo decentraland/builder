@@ -2,7 +2,6 @@ import {
   Vector3,
   WebGLRenderer,
   LoadingManager,
-  LoaderUtils,
   Mesh,
   Scene,
   Box3,
@@ -45,10 +44,10 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   if (mappings) {
     manager = new LoadingManager()
     manager.setURLModifier(url => {
-      const base = LoaderUtils.extractUrlBase(url)
-      const path = url.replace(base, '').replace(/^(\.?\/)/, '')
-      if (path in mappings) {
-        return mappings[path]
+      const path = new URL(url.replace('blob:', '')).pathname.slice(1)
+      const key = Object.keys(mappings).find(key => key.endsWith(path))
+      if (key) {
+        return mappings[key]
       }
 
       return url
