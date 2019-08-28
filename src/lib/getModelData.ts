@@ -49,6 +49,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       if (path in mappings) {
         return mappings[path]
       }
+
       return url
     })
   }

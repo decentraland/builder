@@ -11,6 +11,7 @@ import { Asset } from 'modules/asset/types'
 import { Props, State, ImportedFile } from './AssetImport.types'
 import './AssetImport.css'
 import { cleanFileName, getExtension } from './utils'
+import { getModelData } from 'lib/getModelData'
 
 export const getSHA256 = (data: string) => {
   return crypto
@@ -73,7 +74,7 @@ export default class AssetImport extends React.Component<Props, State> {
         <div className="close-button" onClick={() => this.handleRemoveProject(file.id)}>
           <Icon name="close" />
         </div>
-        <img src="" />
+        <img src={file.asset.thumbnail} />
         <span className="title" title={file.asset.name}>
           {file.asset.name}
         </span>
@@ -85,26 +86,36 @@ export default class AssetImport extends React.Component<Props, State> {
     const { assetPackId } = this.state
     const zip: JSZip = await JSZip.loadAsync(file)
     const manifestRaw = zip.file(ASSET_MANIFEST)
-    const content = await manifestRaw.async('text')
-    const parsed: Asset = JSON.parse(content)
+    let manifestParsed: Asset | null = null
 
-    if (!parsed || !parsed.name) {
+    if (manifestRaw) {
+      const content = await manifestRaw.async('text')
+      manifestParsed = JSON.parse(content)
+    }
+
+    if (manifestParsed && !manifestParsed.name) {
       throw new Error('Invalid project')
     }
 
+    const assetModel = zip.file(/\.(glb|gltf)$/g).pop()
+    const fileNames: string[] = []
+
+    zip.forEach(fileName => {
+      if (fileName !== ASSET_MANIFEST) {
+        fileNames.push(fileName)
+      }
+    })
+
     const files = await Promise.all(
-      zip
-        .file(/.*/g)
-        .filter(file => file.name !== ASSET_MANIFEST)
-        .map(async file => {
-          const blob = await file.async('blob')
-          return {
-            name: file.name,
-            blob
-          }
-        })
+      fileNames.map(async fileName => {
+        const file = zip.file(fileName)
+        const blob = await file.async('blob')
+        return {
+          name: fileName,
+          blob
+        }
+      })
     )
-    console.log('zip fiies', files)
 
     const contents = files.reduce<Record<string, Blob>>((contents, file) => {
       contents[file.name] = file.blob
@@ -119,10 +130,10 @@ export default class AssetImport extends React.Component<Props, State> {
       asset: {
         id,
         assetPackId,
-        name: parsed.name || cleanFileName(file.name, extension),
-        tags: parsed.tags || [],
-        category: parsed.category || 'decorations',
-        url: file.name,
+        name: manifestParsed ? manifestParsed.name : cleanFileName(file.name, extension),
+        tags: manifestParsed ? manifestParsed.tags : [],
+        category: manifestParsed ? manifestParsed.category : 'decorations',
+        url: assetModel!.name || '',
         contents
       }
     } as ImportedFile
@@ -151,7 +162,7 @@ export default class AssetImport extends React.Component<Props, State> {
     let newFiles: Record<string, ImportedFile> = {}
 
     for (let file of acceptedFiles) {
-      let outFile: ImportedFile
+      let outFile: ImportedFile | null = null
       const extension = getExtension(file.name)
 
       try {
@@ -165,7 +176,17 @@ export default class AssetImport extends React.Component<Props, State> {
           outFile = this.handleModelFile(file, extension)
         }
 
-        // TODO validate(asset)
+        if (outFile) {
+          let mappings: Record<string, string> = {}
+
+          Object.keys(outFile.asset.contents).map(key => {
+            mappings[key] = URL.createObjectURL(outFile!.asset.contents[key])
+          })
+
+          const { image } = await getModelData(mappings[outFile.asset.url], { mappings })
+
+          outFile.asset.thumbnail = image
+        }
       } catch (e) {
         console.log(e)
         // TODO: analytics
@@ -177,7 +198,9 @@ export default class AssetImport extends React.Component<Props, State> {
         } as ImportedFile
       }
 
-      newFiles[outFile!.id] = outFile!
+      if (outFile && !outFile.isCorrupted) {
+        newFiles[outFile!.id] = outFile
+      }
     }
 
     const fileRecord = { ...files, ...newFiles }
