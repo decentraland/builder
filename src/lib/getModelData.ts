@@ -36,7 +36,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   // setup renderer
   const renderer = new WebGLRenderer({ alpha: true })
   renderer.setSize(width, height, false)
-  // renderer.domElement.style.visibility = 'hidden'
+  renderer.domElement.style.visibility = 'hidden'
   document.body.prepend(renderer.domElement)
 
   // configure mappings
@@ -105,6 +105,9 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   // render scenes
   renderer.render(scene, camera)
 
+  // remove dom element
+  document.body.removeChild(renderer.domElement)
+
   // return data
   const info: SceneMetrics = {
     triangles: renderer.info.render.triangles + colliderTriangles,
@@ -115,6 +118,6 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     entities: 1
   }
   const image = renderer.domElement.toDataURL()
-  // document.body.removeChild(renderer.domElement)
+
   return { info, image }
 }
