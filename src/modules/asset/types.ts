@@ -9,7 +9,6 @@ export type BaseAsset = AssetResource & {
   id: string
   tags: string[]
   category: string // name of the category
-  variations: AssetResource[]
   contents: Record<string, string>
 }
 

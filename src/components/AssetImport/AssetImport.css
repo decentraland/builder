@@ -1,13 +1,4 @@
-.ui.small.modal.ImportModal {
-  width: 560px;
-}
-
-.ImportModal .details {
-  display: block;
-  margin-bottom: 24px;
-}
-
-.ImportModal .project-card {
+.AssetImport .project-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +6,7 @@
   position: relative;
 }
 
-.ImportModal .project-card .close-button {
+.AssetImport .project-card .close-button {
   visibility: hidden;
   width: 18px;
   height: 18px;
@@ -30,52 +21,53 @@
   cursor: pointer;
 }
 
-.ImportModal .project-card:hover .close-button {
+.AssetImport .project-card:hover .close-button {
   visibility: visible;
 }
 
-.ImportModal .project-card .Icon.close {
+.AssetImport .project-card .Icon.close {
   transform: scale(0.6);
 }
 
-.ImportModal .project-card img {
+.AssetImport .project-card img {
   border-radius: 6px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
   object-fit: cover;
 }
 
-.ImportModal .project-card .title {
+.AssetImport .project-card .title {
   margin-top: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
   text-align: center;
+  font-size: 14px;
 }
 
-.ImportModal .project-card.error .error {
+.AssetImport .project-card.error .error {
   color: red;
   font-size: 13px;
   margin-top: 0px;
 }
 
-.ImportModal .project-card.error .error-icon {
-  width: 180px;
-  height: 135px;
+.AssetImport .project-card.error .error-icon {
+  width: 100px;
+  height: 100px;
   border: 2px solid rgba(115, 110, 125, 0.24);
   border-radius: 6px;
-  background: url('../../../images/import-invalid-file.svg') no-repeat;
+  background: url('../../images/import-invalid-file.svg') no-repeat;
   display: flex;
   background-position: 50% 50%;
   background-size: 30%;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
 }
 
-.ImportModal img {
+.AssetImport img {
   background-color: rgba(var(--bluish-steel-raw), 0.1);
 }
 
-.ImportModal .single-project {
+.AssetImport .single-project {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,16 +75,17 @@
   height: 100%;
 }
 
-.ImportModal .single-project .project-card,
-.ImportModal .single-project .project-card img {
-  width: 180px;
+.AssetImport .single-project .project-card,
+.AssetImport .single-project .project-card img {
+  width: 100px;
 }
 
-.ImportModal .single-project .project-card img {
-  height: 135px;
+.AssetImport .single-project .project-card img {
+  width: 100px;
+  height: 100px;
 }
 
-.ImportModal .multiple-projects {
+.AssetImport .multiple-projects {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -101,26 +94,26 @@
   padding: 24px;
 }
 
-.ImportModal .multiple-projects .project-card .error-icon {
-  width: 128px;
-  height: 96px;
+.AssetImport .multiple-projects .project-card .error-icon {
+  width: 100px;
+  height: 100px;
 }
 
-.ImportModal .multiple-projects .project-card:not(:nth-child(3n)) {
+.AssetImport .multiple-projects .project-card:not(:nth-child(3n)) {
   margin-bottom: 32px;
   margin-right: 24px;
 }
 
-.ImportModal .multiple-projects .project-card span {
+.AssetImport .multiple-projects .project-card span {
   font-size: 15px;
   text-align: center;
 }
 
-.ImportModal .multiple-projects .project-card,
-.ImportModal .multiple-projects .project-card img {
-  width: 128px;
+.AssetImport .multiple-projects .project-card,
+.AssetImport .multiple-projects .project-card img {
+  width: 100px;
 }
 
-.ImportModal .multiple-projects .project-card img {
-  height: 96px;
+.AssetImport .multiple-projects .project-card img {
+  height: 100px;
 }

@@ -3,18 +3,17 @@ import { Button } from 'decentraland-ui'
 import JSZip from 'jszip'
 import uuidv4 from 'uuid/v4'
 
-import Dropzone, { DropzoneState } from 'react-dropzone'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { migrations } from 'modules/migrations/manifest'
 import { Manifest } from 'modules/project/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { runMigrations } from 'modules/migrations/utils'
+import FileImport from 'components/FileImport'
 import Icon from 'components/Icon'
 
 import { Props, State, ImportedFile } from './ImportModal.types'
-
 import './ImportModal.css'
 
 export default class ImportModal extends React.PureComponent<Props, State> {
@@ -25,79 +24,51 @@ export default class ImportModal extends React.PureComponent<Props, State> {
 
   analytics = getAnalytics()
 
-  renderProject = (saved: ImportedFile) => {
-    if (!saved.manifest) return null
-
-    if (!saved.manifest.project || !saved.manifest.scene) {
-      if (saved.fileName) {
-        const key = `${saved.fileName}-${Math.random()}`.replace(/\s/g, '_')
+  renderProject = (file: ImportedFile) => {
+    if (file.isCorrupted || !file.manifest || !file.manifest.project || !file.manifest.scene) {
+      if (file.fileName) {
+        const key = `${file.fileName}-${Math.random()}`.replace(/\s/g, '_')
         return (
           <div className="project-card error" key={key}>
-            <div className="close-button" onClick={() => this.handleRemoveProject(saved.id)}>
+            <div className="close-button" onClick={() => this.handleRemoveProject(file.id)}>
               <Icon name="close" />
             </div>
             <div className="error-icon" />
-            <span className="title" title={saved.fileName}>
-              {saved.fileName}
+            <span className="title" title={file.fileName}>
+              {file.fileName}
             </span>
             <span className="error">{t('import_modal.invalid_file')}</span>
           </div>
         )
       } else {
         // Hide any weird cases where no fileName is available
-        this.handleRemoveProject(saved.id)
+        this.handleRemoveProject(file.id)
         return null
       }
     }
 
     return (
-      <div className="project-card" key={saved.manifest.project.id}>
-        <div className="close-button" onClick={() => this.handleRemoveProject(saved.id)}>
+      <div className="project-card" key={file.manifest.project.id}>
+        <div className="close-button" onClick={() => this.handleRemoveProject(file.id)}>
           <Icon name="close" />
         </div>
-        <img src={saved.manifest.project.thumbnail} />
-        <span className="title" title={saved.manifest.project.title}>
-          {saved.manifest.project.title}
+        <img src={file.manifest.project.thumbnail} />
+        <span className="title" title={file.manifest.project.title}>
+          {file.manifest.project.title}
         </span>
       </div>
     )
   }
 
-  renderDropZone = (props: DropzoneState) => {
-    const { open, isDragActive, getRootProps, getInputProps } = props
+  renderProjects = () => {
     const { acceptedProjects } = this.state
-    let classes = 'dropzone'
-
-    if (isDragActive) {
-      classes += ' active'
-    }
-
     return (
-      <div {...getRootProps()} className={classes}>
-        <input {...getInputProps()} />
-
+      <>
         {acceptedProjects.length === 1 && <div className="single-project">{this.renderProject(acceptedProjects[0])}</div>}
-
         {acceptedProjects.length > 1 && (
           <div className="multiple-projects">{(acceptedProjects as ImportedFile[]).map(saved => this.renderProject(saved))} </div>
         )}
-
-        {acceptedProjects.length === 0 && (
-          <span className="cta">
-            <div className="image" />
-            <T
-              id="import_modal.cta"
-              values={{
-                action: (
-                  <span className="action" onClick={open}>
-                    {t('import_modal.upload_manually')}
-                  </span>
-                )
-              }}
-            />
-          </span>
-        )}
-      </div>
+      </>
     )
   }
 
@@ -113,7 +84,6 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         const content = await contentRaw.async('text')
         const req = new Response(content)
         const parsed: Manifest = await req.json()
-
         if (!parsed || !parsed.scene) {
           throw new Error('Invalid project')
         }
@@ -181,12 +151,12 @@ export default class ImportModal extends React.PureComponent<Props, State> {
         <Modal.Header>{t('import_modal.title')}</Modal.Header>
         <Modal.Content>
           <div className="details">{t('import_modal.description')}</div>
-          <Dropzone
-            children={this.renderDropZone}
-            onDropAccepted={this.handleDropAccepted}
-            onDropRejected={this.handleDropRejected}
+          <FileImport<ImportedFile>
             accept=".zip"
-            noClick
+            items={acceptedProjects}
+            renderFiles={this.renderProjects}
+            onAcceptedFiles={this.handleDropAccepted}
+            onRejectedFiles={this.handleDropRejected}
           />
         </Modal.Content>
         <Modal.Actions>

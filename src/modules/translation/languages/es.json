@@ -179,7 +179,7 @@
   "import_modal": {
     "action": "Cargar",
     "action_many": "Cargar {count} Escenas",
-    "cta": "Arrastra un .zip archivo o {action}",
+    "cta": "Arrastra un archivo .zip o {action}",
     "description": "¡Puedes cargar Escenas exportadas desde otras instancias del Builder!",
     "invalid_file": "Archivo inválido",
     "title": "Importar Escena",
