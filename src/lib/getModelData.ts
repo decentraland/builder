@@ -96,8 +96,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   camera.updateProjectionMatrix()
 
   // light
-  const ambient = new AmbientLight(0xffffff, 1)
-  const directional = new DirectionalLight(0xffffff, 1)
+  const ambient = new AmbientLight(0xffffff, 1.2)
+  const directional = new DirectionalLight(0xffffff, 0.8)
   directional.position.set(1, 1, -1)
   directional.lookAt(center)
   const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
