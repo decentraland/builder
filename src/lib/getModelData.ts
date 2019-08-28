@@ -10,7 +10,8 @@ import {
   Geometry,
   BufferGeometry,
   DirectionalLight,
-  AmbientLight
+  AmbientLight,
+  RectAreaLight
 } from 'three'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { SceneMetrics } from 'modules/scene/types'
@@ -37,7 +38,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   const renderer = new WebGLRenderer({ alpha: true })
   renderer.setSize(width, height, false)
   renderer.domElement.style.visibility = 'hidden'
-  document.body.prepend(renderer.domElement)
+  document.body.appendChild(renderer.domElement)
 
   // configure mappings
   let manager
@@ -96,12 +97,16 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   camera.updateProjectionMatrix()
 
   // light
-  const ambient = new AmbientLight(0xffffff, 0.75)
-  const directional = new DirectionalLight(0xffffff, 3)
+  const ambient = new AmbientLight(0xffffff, 1)
+  const directional = new DirectionalLight(0xffffff, 1)
   directional.position.set(1, 1, -1)
   directional.lookAt(center)
+  const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
+  rectarea.position.set(-3, 0, 0)
+  rectarea.lookAt(center)
   scene.add(ambient)
   scene.add(directional)
+  scene.add(rectarea)
 
   // render scenes
   renderer.render(scene, camera)
