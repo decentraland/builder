@@ -7,7 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Icon from 'components/Icon'
 import FileImport from 'components/FileImport'
-import { Asset } from 'modules/asset/types'
+import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { getModelData } from 'lib/getModelData'
 import { cleanFileName, getExtension } from './utils'
@@ -135,7 +135,7 @@ export default class AssetImport extends React.Component<Props, State> {
       return contents
     }, {})
 
-    const id = getSHA256(file.name)
+    const id = getSHA256(`${assetPackId}/${file.name}`)
 
     return {
       id,
@@ -154,7 +154,7 @@ export default class AssetImport extends React.Component<Props, State> {
 
   handleModelFile = (file: File, extension: string) => {
     const { assetPackId } = this.state
-    const id = getSHA256(file.name)
+    const id = getSHA256(`${assetPackId}/${file.name}`)
     return {
       id,
       fileName: file.name,
@@ -196,7 +196,10 @@ export default class AssetImport extends React.Component<Props, State> {
             mappings[key] = URL.createObjectURL(outFile!.asset.contents[key])
           })
 
-          const { image } = await getModelData(mappings[outFile.asset.url], { mappings })
+          const { image } = await getModelData(mappings[outFile.asset.url], {
+            mappings,
+            thumbnailType: outFile.asset.category === GROUND_CATEGORY ? '2d' : '3d'
+          })
 
           outFile.asset.thumbnail = image
         }
