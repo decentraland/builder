@@ -92,10 +92,24 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
         this.analytics.track('LAND authorized for publish', { count: authorizedParcels.length })
 
+        let newTarget = landTarget
+
+        if (landTarget === '0,0') {
+          // Only point to the first authorized parcel if no initialPoint was provided
+          if (authorizedParcels.length) {
+            newTarget = authorizedParcels[0].id
+          } else if (authorizedEstates.length) {
+            const estate = authorizedEstates.find(estate => !!estate.data.parcels.length)
+            if (estate) {
+              const land = estate.data.parcels[0]
+              newTarget = `${land.x},${land.y}`
+            }
+          }
+        }
+
         this.setState({
           parcels,
-          // Only point to the first authorized parcel if no initialPoint was provided
-          landTarget: landTarget === '0,0' && authorizedParcels.length ? authorizedParcels[0].id : landTarget,
+          landTarget: newTarget,
           isLoadingMap: false
         })
       }
