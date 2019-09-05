@@ -10,12 +10,13 @@ import './Preview.css'
 
 const editorWindow = window as EditorWindow
 let canvas: HTMLCanvasElement | null = null
+let isDCLInitialized: boolean = false
 
 class Preview extends React.Component<Props & CollectedProps, State> {
   canvasContainer = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
-    if (!editorWindow.isDCLInitialized) {
+    if (!isDCLInitialized) {
       this.startEditor().catch(error => console.error('Failed to start editor', error))
     } else {
       this.moveCanvas()
@@ -41,13 +42,14 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     if (!this.canvasContainer.current) {
       throw new Error('Missing canvas container')
     }
-    await editorWindow.editor.initEngine(this.canvasContainer.current, rows, cols)
     try {
+      await editorWindow.editor.initEngine(this.canvasContainer.current, rows, cols)
       canvas = await editorWindow.editor.getDCLCanvas()
       canvas.classList.add('dcl-canvas')
 
       this.moveCanvas()
       this.props.onOpenEditor()
+      isDCLInitialized = true
     } catch (error) {
       console.error('Failed to load Preview', error)
     }

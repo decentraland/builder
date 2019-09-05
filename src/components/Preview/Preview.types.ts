@@ -37,7 +37,6 @@ export type Editor = {
 }
 
 export type EditorWindow = typeof window & {
-  isDCLInitialized: boolean
   initDCL: () => void
   editor: Editor
 }
