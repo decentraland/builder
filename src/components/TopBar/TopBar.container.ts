@@ -22,7 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
     isPreviewing: isPreviewing(state),
     isUploading: isSavingCurrentProject(state),
     isSidebarOpen: isSidebarOpen(state),
-    enabledTools: getEnabledTools(selectedEntityId)(state)
+    enabledTools: getEnabledTools(state)
   }
 }
 

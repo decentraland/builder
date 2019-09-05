@@ -24,11 +24,11 @@ import {
   getCurrentScene,
   getEntityComponentByType,
   getEntityComponents,
-  getScene,
+  getData as getScenes,
   getCollectiblesByURL,
   getEntityShape
 } from 'modules/scene/selectors'
-import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
+import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
@@ -158,9 +158,8 @@ function* handleResetItem(_: ResetItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const transform: ComponentDefinition<ComponentType.Transform> | null = yield select(
-    getEntityComponentByType(selectedEntityId, ComponentType.Transform)
-  )
+  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
   if (!transform) return
 
   const newComponents = {
@@ -187,12 +186,11 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   const newComponents = { ...scene.components }
 
-  const shape: ComponentDefinition<ComponentType.GLTFShape> | ComponentDefinition<ComponentType.NFTShape> | null = yield select(
-    getEntityShape(selectedEntityId)
-  )
-  const transform: ComponentDefinition<ComponentType.Transform> | null = yield select(
-    getEntityComponentByType(selectedEntityId, ComponentType.Transform)
-  )
+  const shapes: Record<string, ShapeComponent> = yield select(getEntityShape)
+  const shape = shapes[selectedEntityId]
+
+  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
 
   if (shape && shape.type === ComponentType.NFTShape) return
 
@@ -232,10 +230,8 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const entityComponents: Record<string, ComponentDefinition<ComponentType>> = yield select(getEntityComponents(selectedEntityId))
-  const idsToDelete = Object.values(entityComponents)
-    .filter(component => !!component)
-    .map(component => component.id)
+  const entityComponents: Record<string, AnyComponent[]> = yield select(getEntityComponents)
+  const idsToDelete = entityComponents[selectedEntityId].filter(component => !!component).map(component => component.id)
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
@@ -259,7 +255,8 @@ function* handleSetGround(action: SetGroundAction) {
   const currentProject = projects[projectId]
   if (!currentProject) return
 
-  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[currentProject.sceneId]
   if (!scene) return
 
   const { rows, cols } = currentProject.layout
@@ -320,7 +317,8 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
 function* handleApplyLayout(action: ApplyLayoutAction) {
   const { project } = action.payload
   const { rows, cols } = project.layout
-  const scene: Scene | null = yield select(getScene(project.sceneId))
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[project.sceneId]
 
   if (scene && scene.ground) {
     const groundId = scene.ground.assetId
