@@ -4,17 +4,9 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import AssetImport from 'components/AssetImporter'
 import { RawAssetPack } from 'modules/assetPack/types'
+import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
 
 import './CreateAssetPackModal.css'
-
-export enum CreateAssetPackStep {
-  IMPORT
-}
-
-export type State = {
-  view: CreateAssetPackStep
-  assetPack: RawAssetPack | null
-}
 
 export default class CreateAssetPackModal extends React.PureComponent<ModalProps, State> {
   state: State = {

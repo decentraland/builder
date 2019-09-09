@@ -97,7 +97,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
     }
 
     if (manifestParsed && !manifestParsed.name) {
-      throw new Error('Invalid project')
+      throw new Error(t('asset_pack.import.invalid'))
     }
 
     const fileNames: string[] = []
@@ -107,7 +107,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
         throw new Error(t('asset_pack.import.invalid'))
       }
 
-      if (fileName !== ASSET_MANIFEST || !basename(fileName).startsWith('.')) {
+      if (fileName !== ASSET_MANIFEST && !basename(fileName).startsWith('.')) {
         fileNames.push(fileName)
       }
     })
@@ -233,16 +233,16 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
 
   render() {
     const { files } = this.state
-    const fileKeys = Object.keys(files)
-    const buttonText = fileKeys.length > 1 ? t('asset_pack.import.action_many', { count: fileKeys.length }) : t('asset_pack.import.action')
-    const hasCorrupted = fileKeys.find(key => !!files[key].isCorrupted)
-    const canImport = fileKeys.length > 0 && !hasCorrupted
+    const items = Object.values(files)
+    const buttonText = items.length > 1 ? t('asset_pack.import.action_many', { count: items.length }) : t('asset_pack.import.action')
+    const hasCorrupted = items.find(item => !!item.isCorrupted)
+    const canImport = items.length > 0 && !hasCorrupted
 
     return (
       <div className="AssetImporter">
         <FileImport<ImportedFile>
           accept={['.zip', '.gltf', '.glb']}
-          items={Object.values(files)}
+          items={items}
           renderFiles={this.renderFiles}
           onAcceptedFiles={this.handleDropAccepted}
           onRejectedFiles={this.handleDropRejected}
