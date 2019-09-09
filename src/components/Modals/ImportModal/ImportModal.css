@@ -7,42 +7,6 @@
   margin-bottom: 24px;
 }
 
-.ImportModal .dropzone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: 6px;
-  height: 276px;
-  width: 100%;
-  border: 2px solid rgba(115, 110, 125, 0.24);
-  outline: none;
-  user-select: none;
-  overflow: auto;
-}
-
-.ImportModal .image {
-  width: 64px;
-  height: 64px;
-  background: url('../../../images/import.svg') no-repeat;
-  background-size: cover;
-  margin-bottom: 32px;
-}
-
-.ImportModal .cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.ImportModal .dropzone .action {
-  display: block;
-  color: var(--primary);
-  cursor: pointer;
-  text-align: center;
-}
-
 .ImportModal .project-card {
   display: flex;
   flex-direction: column;

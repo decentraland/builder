@@ -35,7 +35,6 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         id: asset.token_id,
         tags: [],
         category: result.registry.name,
-        variations: [],
         contents: {},
         name: asset.name,
         url: asset.uri,
