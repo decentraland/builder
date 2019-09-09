@@ -382,6 +382,15 @@
       },
       "action": "Continue",
       "action_skip": "Skip step"
+    },
+    "edit_assetpack": {
+      "name": {
+        "label": "name",
+        "placeholder": "My new Asset Pack"
+      },
+      "items": {
+        "label": "{count} {count, plural, one {item} other {items}}"
+      }
     }
   }
 }

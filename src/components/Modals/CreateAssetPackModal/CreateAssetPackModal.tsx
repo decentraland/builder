@@ -4,6 +4,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import AssetImport from 'components/AssetImporter'
+import AssetPackEditor from 'components/AssetPackEditor'
 import AssetPackAssetsEditor from 'components/AssetPackAssetsEditor'
 import { RawAssetPack } from 'modules/assetPack/types'
 
@@ -34,6 +35,10 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     this.setState({ view: CreateAssetPackStep.EDIT_ASSETS })
   }
 
+  handleEditAssetPack = () => {
+    this.setState({ view: CreateAssetPackStep.EDIT_ASSETPACK })
+  }
+
   renderAssetImport = () => {
     const { assetPack } = this.state
     const buttonText =
@@ -59,13 +64,21 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     const { assetPack: pack } = this.state
     return (
       <>
-        <AssetPackAssetsEditor
-          assetPack={pack as any}
-          onChange={this.handleAssetPackChange}
-          onSubmit={() => {
-            /* */
-          }}
-        />
+        <AssetPackAssetsEditor assetPack={pack as any} onChange={this.handleAssetPackChange} onSubmit={this.handleEditAssetPack} />
+      </>
+    )
+  }
+
+  renderAssetpackEditor = () => {
+    const { assetPack: pack } = this.state
+    return (
+      <>
+        <AssetPackEditor assetPack={pack as any} onChange={this.handleAssetPackChange} />
+        <div className="actions">
+          <Button onClick={() => console.log(pack)} primary>
+            Create Asset Pack
+          </Button>
+        </div>
       </>
     )
   }
@@ -80,6 +93,7 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
         <Modal.Content>
           {view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}
           {view === CreateAssetPackStep.EDIT_ASSETS && this.renderAssetEditor()}
+          {view === CreateAssetPackStep.EDIT_ASSETPACK && this.renderAssetpackEditor()}
         </Modal.Content>
       </Modal>
     )
