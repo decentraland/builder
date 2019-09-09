@@ -54,15 +54,15 @@
   font-size: 14px;
 }
 
-.AssetThumbnail .error .error {
+.AssetThumbnail.error .error {
   color: red;
   font-size: 13px;
   margin-top: 0px;
 }
 
 .AssetThumbnail.error .error-icon {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border: 2px solid rgba(115, 110, 125, 0.24);
   border-radius: 6px;
   background: url('../../images/import-invalid-file.svg') no-repeat;

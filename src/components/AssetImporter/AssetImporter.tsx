@@ -56,11 +56,12 @@ export default class AssetImport extends React.PureComponent<Props, State> {
       return null
     }
 
+    const id = !file.isCorrupted ? file.asset.id : file.id
     return (
       <AssetThumbnail
-        key={file.asset.id}
+        key={id}
         asset={{
-          id: !file.isCorrupted ? file.asset.id : uuidv4(),
+          id,
           name: !file.isCorrupted ? file.asset.name : file.fileName,
           thumbnail: !file.isCorrupted ? file.asset.thumbnail! : ''
         }}
