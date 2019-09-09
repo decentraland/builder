@@ -357,5 +357,13 @@
   "wallet": {
     "signature_error": "签名消息失败",
     "title": "连接钱包用加密收藏品装饰你的场景。"
+  },
+  "asset_pack": {
+    "import": {
+      "cta": "将Asset的.zip文件拖到此处，或{action}",
+      "invalid": "Asset无效",
+      "action_many": "导入{count} Asset",
+      "action": "导入{资产}"
+    }
   }
 }
