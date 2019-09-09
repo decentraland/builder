@@ -3,15 +3,15 @@ import { basename } from 'path'
 import * as crypto from 'crypto'
 import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
+import { Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
-import { CategoryName } from 'modules/ui/sidebar/utils'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
-import { getExtension } from './utils'
+import { getExtension, createDefaultImportedFile, getDefaultMetadata } from './utils'
 
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
@@ -25,11 +25,10 @@ export const getSHA256 = (data: string) => {
 
 const ASSET_MANIFEST = 'asset.json'
 
-export default class AssetImport extends React.PureComponent<Props, State> {
+export default class AssetImporter extends React.PureComponent<Props, State> {
   state: State = {
     assetPackId: uuidv4(),
-    files: {},
-    canImport: false
+    files: {}
   }
 
   componentDidMount() {
@@ -61,9 +60,9 @@ export default class AssetImport extends React.PureComponent<Props, State> {
       <AssetThumbnail
         key={id}
         asset={{
+          ...file.asset,
           id,
-          name: !file.isCorrupted ? file.asset.name : file.fileName,
-          thumbnail: !file.isCorrupted ? file.asset.thumbnail! : ''
+          name: !file.isCorrupted ? file.asset.name : file.fileName
         }}
         error={!!file.isCorrupted}
         onRemove={this.handleRemoveProject}
@@ -98,7 +97,7 @@ export default class AssetImport extends React.PureComponent<Props, State> {
     }
 
     if (manifestParsed && !manifestParsed.name) {
-      throw new Error('Invalid project')
+      throw new Error(t('asset_pack.import.invalid'))
     }
 
     const fileNames: string[] = []
@@ -108,7 +107,7 @@ export default class AssetImport extends React.PureComponent<Props, State> {
         throw new Error(t('asset_pack.import.invalid'))
       }
 
-      if (fileName !== ASSET_MANIFEST || !basename(fileName).startsWith('.')) {
+      if (fileName !== ASSET_MANIFEST && !basename(fileName).startsWith('.')) {
         fileNames.push(fileName)
       }
     })
@@ -150,16 +149,7 @@ export default class AssetImport extends React.PureComponent<Props, State> {
         category: manifestParsed ? manifestParsed.category : 'decorations',
         url: assetModel,
         contents,
-        metadata: {
-          metrics: {
-            triangles: 0,
-            materials: 0,
-            geometries: 0,
-            bodies: 0,
-            entities: 0,
-            textures: 0
-          }
-        }
+        metadata: getDefaultMetadata()
       }
     } as ImportedFile
   }
@@ -167,35 +157,11 @@ export default class AssetImport extends React.PureComponent<Props, State> {
   handleModelFile = (file: File) => {
     const { assetPackId } = this.state
     const id = getSHA256(`${assetPackId}/${file.name}`)
-    return {
-      id,
-      fileName: file.name,
-      asset: {
-        id,
-        assetPackId,
-        thumbnail: '',
-        name: cleanAssetName(file.name),
-        category: CategoryName.DECORATIONS_CATEGORY,
-        url: file.name,
-        contents: {
-          [file.name]: file
-        },
-        metadata: {
-          metrics: {
-            triangles: 0,
-            materials: 0,
-            geometries: 0,
-            bodies: 0,
-            entities: 0,
-            textures: 0
-          }
-        }
-      }
-    } as ImportedFile
+    return createDefaultImportedFile(id, assetPackId, file)
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
-    const { files, assetPackId } = this.state
+    const { files } = this.state
     let newFiles: Record<string, ImportedFile> = {}
 
     for (let file of acceptedFiles) {
@@ -226,7 +192,6 @@ export default class AssetImport extends React.PureComponent<Props, State> {
         }
       } catch (e) {
         // TODO: analytics
-
         outFile = {
           id: getSHA256(file.name),
           fileName: file.name,
@@ -240,12 +205,23 @@ export default class AssetImport extends React.PureComponent<Props, State> {
     }
 
     const fileRecord = { ...files, ...newFiles }
+    this.setState({ files: fileRecord })
+  }
 
-    this.setState({ files: fileRecord, canImport: true })
+  handleDropRejected = (rejectedFiles: File[]) => {
+    console.log('rejected', rejectedFiles)
+  }
 
-    const assets = Object.values(fileRecord).map(file => file.asset)
+  handleRemoveProject = (id: string) => {
+    const { [id]: _, ...files } = this.state.files
+    this.setState({ files })
+  }
 
-    this.props.onAssetPack({
+  handleSubmit = () => {
+    const { assetPackId, files } = this.state
+    const assets = Object.values(files).map(file => file.asset)
+
+    this.props.onSubmit({
       id: assetPackId,
       title: '',
       thumbnail: '',
@@ -255,27 +231,26 @@ export default class AssetImport extends React.PureComponent<Props, State> {
     })
   }
 
-  handleDropRejected = (rejectedFiles: File[]) => {
-    console.log('rejected', rejectedFiles)
-  }
-
-  handleRemoveProject = (id: string) => {
-    const { [id]: _, ...files } = this.state.files
-    this.setState({ files, canImport: Object.keys(files).length > 0 })
-  }
-
   render() {
     const { files } = this.state
+    const items = Object.values(files)
+    const buttonText = items.length > 1 ? t('asset_pack.import.action_many', { count: items.length }) : t('asset_pack.import.action')
+    const hasCorrupted = items.find(item => !!item.isCorrupted)
+    const canImport = items.length > 0 && !hasCorrupted
+
     return (
       <div className="AssetImporter">
         <FileImport<ImportedFile>
           accept={['.zip', '.gltf', '.glb']}
-          items={Object.values(files)}
+          items={items}
           renderFiles={this.renderFiles}
           onAcceptedFiles={this.handleDropAccepted}
           onRejectedFiles={this.handleDropRejected}
           renderAction={this.renderDropzoneCTA}
         />
+        <Button className="submit" disabled={!canImport} primary={canImport} onClick={this.handleSubmit}>
+          {buttonText}
+        </Button>
       </div>
     )
   }

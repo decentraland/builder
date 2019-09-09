@@ -2,13 +2,14 @@ import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import AssetEditor from 'components/AssetEditor'
+import { RawAsset } from 'modules/asset/types'
 import { Props, State } from './AssetPackAssetsEditor.types'
 import './AssetPackAssetsEditor.css'
-import { RawAsset } from 'modules/asset/types'
 
 export default class AssetPackAssetsEditor extends React.PureComponent<Props, State> {
   state: State = {
-    currentAsset: 0
+    currentAsset: 0,
+    errors: {}
   }
 
   handlePrev = () => {
@@ -27,9 +28,24 @@ export default class AssetPackAssetsEditor extends React.PureComponent<Props, St
     this.props.onSubmit(this.props.assetPack)
   }
 
+  handleErrors = (asset: RawAsset) => {
+    const errors: Record<string, string> = {}
+
+    if (asset.tags && asset.tags.length > 5) {
+      errors.tags = 'You can only specify a maximum of 5 tags'
+    }
+
+    if (asset.name.length > 20) {
+      errors.tags = 'Asset names can only be up to 20 characters long'
+    }
+    this.setState({ errors })
+  }
+
   handleChange = (asset: RawAsset) => {
     const { assetPack } = this.props
     const { currentAsset } = this.state
+
+    this.handleErrors(asset)
 
     if (assetPack) {
       const assets = [...assetPack.assets]

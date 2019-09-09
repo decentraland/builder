@@ -8,4 +8,5 @@ export type Props = {
 
 export type State = {
   currentAsset: number
+  errors: Record<string, string>
 }

@@ -1,24 +1,13 @@
 import * as React from 'react'
-import { Close, Button } from 'decentraland-ui'
+import { Close } from 'decentraland-ui'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import AssetImport from 'components/AssetImporter'
-import AssetPackAssetsEditor from 'components/AssetPackAssetsEditor'
 import { RawAssetPack } from 'modules/assetPack/types'
+import AssetPackAssetsEditor from 'components/AssetPackAssetsEditor'
 
+import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
-
-export enum CreateAssetPackStep {
-  IMPORT,
-  EDIT_ASSETS,
-  EDIT_ASSETPACK
-}
-
-export type State = {
-  view: CreateAssetPackStep
-  assetPack: RawAssetPack | null
-}
 
 export default class CreateAssetPackModal extends React.PureComponent<ModalProps, State> {
   state: State = {
@@ -30,44 +19,17 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     this.setState({ assetPack })
   }
 
-  handleEditAssets = () => {
-    this.setState({ view: CreateAssetPackStep.EDIT_ASSETS })
+  handleAssetImportSubmit = (assetPack: RawAssetPack) => {
+    this.setState({ assetPack, view: CreateAssetPackStep.EDIT_ASSETS })
   }
 
   renderAssetImport = () => {
-    const { assetPack } = this.state
-    const buttonText =
-      assetPack && assetPack.assets && assetPack.assets.length > 1
-        ? t('asset_pack.import.action_many', { count: assetPack.assets.length })
-        : t('asset_pack.import.action')
-
-    const buttonDisabled = !assetPack || !assetPack.assets.length
-
-    return (
-      <>
-        <AssetImport onAssetPack={this.handleAssetPackChange} />
-        <div className="actions">
-          <Button onClick={this.handleEditAssets} disabled={buttonDisabled} primary={!buttonDisabled}>
-            {buttonText}
-          </Button>
-        </div>
-      </>
-    )
+    return <AssetImport onSubmit={this.handleAssetImportSubmit} />
   }
 
   renderAssetEditor = () => {
-    const { assetPack: pack } = this.state
-    return (
-      <>
-        <AssetPackAssetsEditor
-          assetPack={pack as any}
-          onChange={this.handleAssetPackChange}
-          onSubmit={() => {
-            /* */
-          }}
-        />
-      </>
-    )
+    const { assetPack } = this.state
+    return <AssetPackAssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetPackChange} />
   }
 
   render() {

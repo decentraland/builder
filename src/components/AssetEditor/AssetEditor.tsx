@@ -31,7 +31,7 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
   handleTagChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { asset } = this.props
     const tags = data.value as string[]
-
+    debugger
     this.props.onChange({
       ...asset,
       tags
@@ -86,7 +86,7 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
         { key: CATEGORY_OPTIONS.length + 1, text: CategoryName.GROUND_CATEGORY, value: CategoryName.GROUND_CATEGORY }
       ]
     }
-
+    debugger
     return (
       <div className="EditAsset">
         <div className="left-column">

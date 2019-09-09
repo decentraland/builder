@@ -5,6 +5,6 @@ export type DefaultProps = {
 }
 
 export type Props = DefaultProps & {
-  asset: Partial<RawAsset> & Pick<Asset, 'id' | 'name' | 'thumbnail'>
+  asset: RawAsset | Asset
   onRemove: (id: string) => void
 }

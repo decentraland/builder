@@ -357,5 +357,13 @@
   "wallet": {
     "signature_error": "Error al firmar el mensaje",
     "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
+  },
+  "asset_pack": {
+    "import": {
+      "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
+      "invalid": "Asset inválido",
+      "action_many": "Importar {count} Assets",
+      "action": "Importar Asset"
+    }
   }
 }
