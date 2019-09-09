@@ -4,12 +4,15 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import AssetImport from 'components/AssetImporter'
+import AssetPackAssetsEditor from 'components/AssetPackAssetsEditor'
 import { RawAssetPack } from 'modules/assetPack/types'
 
 import './CreateAssetPackModal.css'
 
 export enum CreateAssetPackStep {
-  IMPORT
+  IMPORT,
+  EDIT_ASSETS,
+  EDIT_ASSETPACK
 }
 
 export type State = {
@@ -27,6 +30,10 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     this.setState({ assetPack })
   }
 
+  handleEditAssets = () => {
+    this.setState({ view: CreateAssetPackStep.EDIT_ASSETS })
+  }
+
   renderAssetImport = () => {
     const { assetPack } = this.state
     const buttonText =
@@ -40,10 +47,25 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
       <>
         <AssetImport onAssetPack={this.handleAssetPackChange} />
         <div className="actions">
-          <Button disabled={buttonDisabled} primary={!buttonDisabled}>
+          <Button onClick={this.handleEditAssets} disabled={buttonDisabled} primary={!buttonDisabled}>
             {buttonText}
           </Button>
         </div>
+      </>
+    )
+  }
+
+  renderAssetEditor = () => {
+    const { assetPack: pack } = this.state
+    return (
+      <>
+        <AssetPackAssetsEditor
+          assetPack={pack as any}
+          onChange={this.handleAssetPackChange}
+          onSubmit={() => {
+            /* */
+          }}
+        />
       </>
     )
   }
@@ -55,7 +77,10 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     return (
       <Modal name={name} closeIcon={<Close onClick={onClose} />}>
         <Modal.Header>Alto asset pack</Modal.Header>
-        <Modal.Content>{view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}</Modal.Content>
+        <Modal.Content>
+          {view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}
+          {view === CreateAssetPackStep.EDIT_ASSETS && this.renderAssetEditor()}
+        </Modal.Content>
       </Modal>
     )
   }

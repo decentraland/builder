@@ -364,6 +364,24 @@
       "invalid": "Invalid asset",
       "action_many": "Import {count} assets",
       "action": "Import asset"
+    },
+    "edit_asset": {
+      "name": {
+        "label": "name",
+        "placeholder": "Asset Name"
+      },
+      "category": {
+        "label": "category"
+      },
+      "ground": {
+        "label": "use as ground"
+      },
+      "tags": {
+        "label": "tags",
+        "placeholder": "e.g. (outdoors furniture floor)"
+      },
+      "action": "Continue",
+      "action_skip": "Skip step"
     }
   }
 }
