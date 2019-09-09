@@ -60,9 +60,9 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
       <AssetThumbnail
         key={id}
         asset={{
+          ...file.asset,
           id,
-          name: !file.isCorrupted ? file.asset.name : file.fileName,
-          thumbnail: !file.isCorrupted ? file.asset.thumbnail! : ''
+          name: !file.isCorrupted ? file.asset.name : file.fileName
         }}
         error={!!file.isCorrupted}
         onRemove={this.handleRemoveProject}
