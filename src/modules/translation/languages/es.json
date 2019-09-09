@@ -364,6 +364,14 @@
       "invalid": "Asset inválido",
       "action_many": "Importar {count} Assets",
       "action": "Importar Asset"
+    },
+    "edit_asset": {
+      "name": { "label": "nombre", "placeholder": "Nombre del Asset" },
+      "category": { "label": "categoría" },
+      "ground": { "label": "utilizar como suelo" },
+      "tags": { "label": "etiquetas", "placeholder": "p.ej. (exterior mueble piso)" },
+      "action": "Continuar",
+      "action_skip": "Saltar paso"
     }
   }
 }

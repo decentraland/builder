@@ -364,6 +364,14 @@
       "invalid": "Asset无效",
       "action_many": "导入{count} Asset",
       "action": "导入{资产}"
+    },
+    "edit_asset": {
+      "name": { "label": "名称", "placeholder": "Asset名称" },
+      "category": { "{label}": "类别" },
+      "ground": { "label": "用作地面" },
+      "tags": { "label": "标签", "placeholder": "例如 （户外家具楼）" },
+      "action": "继续",
+      "action_skip": "跳过步骤"
     }
   }
 }
