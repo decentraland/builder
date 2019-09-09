@@ -1,3 +1,9 @@
 .ui.small.modal.CreateAssetPackModal {
   width: 730px;
 }
+
+.CreateAssetPackModal > .content > .actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}

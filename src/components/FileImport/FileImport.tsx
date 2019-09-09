@@ -1,13 +1,12 @@
 import * as React from 'react'
 import Dropzone, { DropzoneState } from 'react-dropzone'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './FileImport.types'
 import './FileImport.css'
 
 export default class FileImport<T> extends React.Component<Props<T>> {
   renderDropZone = (props: DropzoneState) => {
     const { open, isDragActive, getRootProps, getInputProps } = props
-    const { items, renderFiles } = this.props
+    const { items, renderFiles, renderAction } = this.props
     let classes = 'dropzone'
 
     if (isDragActive) {
@@ -23,16 +22,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
         {items.length === 0 && (
           <span className="cta">
             <div className="image" />
-            <T
-              id="import_modal.cta"
-              values={{
-                action: (
-                  <span className="action" onClick={open}>
-                    {t('import_modal.upload_manually')}
-                  </span>
-                )
-              }}
-            />
+            {renderAction(open)}
           </span>
         )}
       </div>

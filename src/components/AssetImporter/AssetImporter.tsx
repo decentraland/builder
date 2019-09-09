@@ -3,17 +3,18 @@ import { basename } from 'path'
 import * as crypto from 'crypto'
 import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
-import Icon from 'components/Icon'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
+import AssetThumbnail from 'components/AssetThumbnail'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
+import { CategoryName } from 'modules/ui/sidebar/utils'
+import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
-import { cleanFileName, getExtension } from './utils'
+import { getExtension } from './utils'
 
-import { Props, State, ImportedFile } from './AssetImport.types'
-import './AssetImport.css'
+import { Props, State, ImportedFile } from './AssetImporter.types'
+import './AssetImporter.css'
 
 export const getSHA256 = (data: string) => {
   return crypto
@@ -24,7 +25,7 @@ export const getSHA256 = (data: string) => {
 
 const ASSET_MANIFEST = 'asset.json'
 
-export default class AssetImport extends React.Component<Props, State> {
+export default class AssetImport extends React.PureComponent<Props, State> {
   state: State = {
     assetPackId: uuidv4(),
     files: {},
@@ -49,42 +50,42 @@ export default class AssetImport extends React.Component<Props, State> {
   }
 
   renderFile = (file: ImportedFile) => {
-    if (file.isCorrupted || !file.asset) {
-      if (file.fileName) {
-        const key = `${file.fileName}-${Math.random()}`.replace(/\s/g, '_')
-        return (
-          <div className="project-card error" key={key}>
-            <div className="close-button" onClick={() => this.handleRemoveProject(file.id)}>
-              <Icon name="close" />
-            </div>
-            <div className="error-icon" />
-            <span className="title" title={file.fileName}>
-              {file.fileName}
-            </span>
-            <span className="error">{t('import_modal.invalid_file')}</span>
-          </div>
-        )
-      } else {
-        // Hide any weird cases where no fileName is available
-        this.handleRemoveProject(file.id)
-        return null
-      }
+    if (!file.fileName) {
+      // Hide any weird cases where no fileName is available
+      this.handleRemoveProject(file.id)
+      return null
     }
 
     return (
-      <div className="project-card" key={file.id}>
-        <div className="close-button" onClick={() => this.handleRemoveProject(file.id)}>
-          <Icon name="close" />
-        </div>
-        <img src={file.asset.thumbnail} />
-        <span className="title" title={file.asset.name}>
-          {file.asset.name}
-        </span>
-      </div>
+      <AssetThumbnail
+        key={file.asset.id}
+        asset={{
+          id: !file.isCorrupted ? file.asset.id : uuidv4(),
+          name: !file.isCorrupted ? file.asset.name : file.fileName,
+          thumbnail: !file.isCorrupted ? file.asset.thumbnail! : ''
+        }}
+        error={!!file.isCorrupted}
+        onRemove={this.handleRemoveProject}
+      />
     )
   }
 
-  handleZipFile = async (file: File, extension: string) => {
+  renderDropzoneCTA = (open: () => void) => {
+    return (
+      <T
+        id="asset_pack.import.cta"
+        values={{
+          action: (
+            <span className="action" onClick={open}>
+              {t('import_modal.upload_manually')}
+            </span>
+          )
+        }}
+      />
+    )
+  }
+
+  handleZipFile = async (file: File) => {
     const { assetPackId } = this.state
     const zip: JSZip = await JSZip.loadAsync(file)
     const manifestRaw = zip.file(ASSET_MANIFEST)
@@ -103,7 +104,7 @@ export default class AssetImport extends React.Component<Props, State> {
 
     zip.forEach(fileName => {
       if (fileName === EXPORT_PATH.MANIFEST_FILE) {
-        throw new Error('Invalid project')
+        throw new Error(t('asset_pack.import.invalid'))
       }
 
       if (fileName !== ASSET_MANIFEST || !basename(fileName).startsWith('.')) {
@@ -114,7 +115,7 @@ export default class AssetImport extends React.Component<Props, State> {
     const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
 
     if (!assetModel) {
-      throw new Error('Invalid project')
+      throw new Error(t('asset_pack.import.invalid'))
     }
 
     const files = await Promise.all(
@@ -143,16 +144,26 @@ export default class AssetImport extends React.Component<Props, State> {
       asset: {
         id,
         assetPackId,
-        name: manifestParsed ? manifestParsed.name : cleanFileName(file.name, extension),
+        name: manifestParsed ? manifestParsed.name : cleanAssetName(file.name),
         tags: manifestParsed ? manifestParsed.tags : [],
         category: manifestParsed ? manifestParsed.category : 'decorations',
         url: assetModel,
-        contents
+        contents,
+        metadata: {
+          metrics: {
+            triangles: 0,
+            materials: 0,
+            geometries: 0,
+            bodies: 0,
+            entities: 0,
+            textures: 0
+          }
+        }
       }
     } as ImportedFile
   }
 
-  handleModelFile = (file: File, extension: string) => {
+  handleModelFile = (file: File) => {
     const { assetPackId } = this.state
     const id = getSHA256(`${assetPackId}/${file.name}`)
     return {
@@ -161,10 +172,22 @@ export default class AssetImport extends React.Component<Props, State> {
       asset: {
         id,
         assetPackId,
-        name: cleanFileName(file.name, extension),
+        thumbnail: '',
+        name: cleanAssetName(file.name),
+        category: CategoryName.DECORATIONS_CATEGORY,
         url: file.name,
         contents: {
           [file.name]: file
+        },
+        metadata: {
+          metrics: {
+            triangles: 0,
+            materials: 0,
+            geometries: 0,
+            bodies: 0,
+            entities: 0,
+            textures: 0
+          }
         }
       }
     } as ImportedFile
@@ -180,28 +203,25 @@ export default class AssetImport extends React.Component<Props, State> {
 
       try {
         if (!extension) {
-          throw new Error('Invalid project')
+          throw new Error(t('asset_pack.import.invalid'))
         }
 
         if (extension === '.zip') {
-          outFile = await this.handleZipFile(file, extension)
+          outFile = await this.handleZipFile(file)
         } else if (extension === '.gltf' || extension === '.glb') {
-          outFile = this.handleModelFile(file, extension)
+          outFile = this.handleModelFile(file)
         }
 
         if (outFile) {
-          let mappings: Record<string, string> = {}
-
-          Object.keys(outFile.asset.contents).map(key => {
-            mappings[key] = URL.createObjectURL(outFile!.asset.contents[key])
-          })
-
-          const { image } = await getModelData(mappings[outFile.asset.url], {
+          let mappings = rawMappingsToObjectURL(outFile.asset.contents)
+          const { image, info } = await getModelData(mappings[outFile.asset.url], {
             mappings,
             thumbnailType: outFile.asset.category === GROUND_CATEGORY ? '2d' : '3d'
           })
+          revokeMappingsObjectURL(mappings)
 
           outFile.asset.thumbnail = image
+          outFile.asset.metadata.metrics = info
         }
       } catch (e) {
         // TODO: analytics
@@ -222,13 +242,15 @@ export default class AssetImport extends React.Component<Props, State> {
 
     this.setState({ files: fileRecord, canImport: true })
 
+    const assets = Object.values(fileRecord).map(file => file.asset)
+
     this.props.onAssetPack({
       id: assetPackId,
       title: '',
       thumbnail: '',
       url: '',
       isLoaded: false,
-      assets: Object.values(fileRecord).map(file => (file.asset as unknown) as Asset)
+      assets
     })
   }
 
@@ -244,13 +266,14 @@ export default class AssetImport extends React.Component<Props, State> {
   render() {
     const { files } = this.state
     return (
-      <div className="AssetImport">
+      <div className="AssetImporter">
         <FileImport<ImportedFile>
           accept={['.zip', '.gltf', '.glb']}
           items={Object.values(files)}
           renderFiles={this.renderFiles}
           onAcceptedFiles={this.handleDropAccepted}
           onRejectedFiles={this.handleDropRejected}
+          renderAction={this.renderDropzoneCTA}
         />
       </div>
     )

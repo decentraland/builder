@@ -3,7 +3,7 @@ import { Button } from 'decentraland-ui'
 import JSZip from 'jszip'
 import uuidv4 from 'uuid/v4'
 
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { migrations } from 'modules/migrations/manifest'
@@ -69,6 +69,21 @@ export default class ImportModal extends React.PureComponent<Props, State> {
           <div className="multiple-projects">{(acceptedProjects as ImportedFile[]).map(saved => this.renderProject(saved))} </div>
         )}
       </>
+    )
+  }
+
+  renderDropzoneCTA = (open: () => void) => {
+    return (
+      <T
+        id="import_modal.cta"
+        values={{
+          action: (
+            <span className="action" onClick={open}>
+              {t('import_modal.upload_manually')}
+            </span>
+          )
+        }}
+      />
     )
   }
 
@@ -157,6 +172,7 @@ export default class ImportModal extends React.PureComponent<Props, State> {
             renderFiles={this.renderProjects}
             onAcceptedFiles={this.handleDropAccepted}
             onRejectedFiles={this.handleDropRejected}
+            renderAction={this.renderDropzoneCTA}
           />
         </Modal.Content>
         <Modal.Actions>

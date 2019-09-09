@@ -1,4 +1,4 @@
-import { Asset } from 'modules/asset/types'
+import { Asset, RawAsset } from 'modules/asset/types'
 
 export type BaseAssetPack = {
   id: string
@@ -14,4 +14,8 @@ export type FullAssetPack = BaseAssetPack & {
 
 export type AssetPack = BaseAssetPack & {
   assets: string[] // asset ids
+}
+
+export type RawAssetPack = BaseAssetPack & {
+  assets: RawAsset[]
 }

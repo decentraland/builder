@@ -357,5 +357,13 @@
   "wallet": {
     "signature_error": "Failed to sign message",
     "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
+  },
+  "asset_pack": {
+    "import": {
+      "cta": "Drag your Asset's .zip file here, or {action}",
+      "invalid": "Invalid asset",
+      "action_many": "Import {count} assets",
+      "action": "Import asset"
+    }
   }
 }

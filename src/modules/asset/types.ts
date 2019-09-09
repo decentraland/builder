@@ -1,3 +1,5 @@
+import { SceneMetrics } from 'modules/scene/types'
+
 export const GROUND_CATEGORY = 'ground'
 
 export type Asset = BaseAsset & {
@@ -57,4 +59,16 @@ export type DARAssetTrait = {
   id: string
   name: string
   type: string
+}
+
+export type RawAsset = Partial<Pick<Asset, 'tags' | 'category'>> & {
+  id: string
+  name: string
+  url: string
+  assetPackId: string
+  thumbnail: string
+  contents: Record<string, Blob>
+  metadata: {
+    metrics: SceneMetrics
+  }
 }
