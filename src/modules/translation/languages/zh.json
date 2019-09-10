@@ -371,7 +371,11 @@
       "ground": { "label": "用作地面" },
       "tags": { "label": "标签", "placeholder": "例如 （户外家具楼）" },
       "action": "继续",
-      "action_skip": "跳过步骤"
+      "action_skip": "跳过步骤",
+      "errors": {
+        "name_length": "Asset名称长度最多只能为{count}个字符",
+        "tag_count": "您最多只能指定{count}个标签"
+      }
     }
   }
 }

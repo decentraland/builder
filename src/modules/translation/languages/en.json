@@ -380,6 +380,10 @@
         "label": "tags",
         "placeholder": "e.g. (outdoors furniture floor)"
       },
+      "errors": {
+        "name_length": "Asset names can only be up to {count} characters long",
+        "tag_count": "You can only specify a maximum of {count} tags"
+      },
       "action": "Continue",
       "action_skip": "Skip step"
     }

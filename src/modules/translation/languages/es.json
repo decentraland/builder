@@ -371,7 +371,11 @@
       "ground": { "label": "utilizar como suelo" },
       "tags": { "label": "etiquetas", "placeholder": "p.ej. (exterior mueble piso)" },
       "action": "Continuar",
-      "action_skip": "Saltar paso"
+      "action_skip": "Saltar paso",
+      "errors": {
+        "name_length": "El nombre del Asset solo puede contener un máximo de {count} caracteres",
+        "tag_count": "Sólo puedes especificar un máximo de {count} etiquetas"
+      }
     }
   }
 }

@@ -40,11 +40,15 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     const newErrors: Record<string, string> = {}
 
     if (asset.tags && asset.tags.length > MAX_TAGS) {
-      newErrors.tags = 'You can only specify a maximum of 5 tags'
+      newErrors.tags = t('asset_pack.edit_asset.errors.tag_count', {
+        count: MAX_TAGS
+      })
     }
 
     if (asset.name.length > MAX_NAME_LENGTH) {
-      newErrors.name = 'Asset names can only be up to 20 characters long'
+      newErrors.name = t('asset_pack.edit_asset.errors.name_length', {
+        count: MAX_NAME_LENGTH
+      })
     }
 
     const hasErrors = Object.keys(newErrors).length > 0
