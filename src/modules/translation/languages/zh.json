@@ -357,5 +357,34 @@
   "wallet": {
     "signature_error": "签名消息失败",
     "title": "连接钱包用加密收藏品装饰你的场景。"
+  },
+  "asset_pack": {
+    "import": {
+      "cta": "将Asset的.zip文件拖到此处，或{action}",
+      "invalid": "Asset无效",
+      "action_many": "导入{count} Asset",
+      "action": "导入{资产}"
+    },
+    "edit_asset": {
+      "name": { "label": "名称", "placeholder": "Asset名称" },
+      "category": { "{label}": "类别" },
+      "ground": { "label": "用作地面" },
+      "tags": { "label": "标签", "placeholder": "例如 （户外家具楼）" },
+      "action": "继续",
+      "action_skip": "跳过步骤",
+      "errors": {
+        "name_length": "Asset名称长度最多只能为{count}个字符",
+        "tag_count": "您最多只能指定{count}个标签"
+      }
+    },
+    "edit_assetpack": {
+      "name": {
+        "label": "名称",
+        "placeholder": "我的新AssetPack"
+      },
+      "items": {
+        "label": "{count} {count，plural，one {item}其他{items}}"
+      }
+    }
   }
 }

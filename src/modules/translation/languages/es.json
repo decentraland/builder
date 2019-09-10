@@ -357,5 +357,34 @@
   "wallet": {
     "signature_error": "Error al firmar el mensaje",
     "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
+  },
+  "asset_pack": {
+    "import": {
+      "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
+      "invalid": "Asset inválido",
+      "action_many": "Importar {count} Assets",
+      "action": "Importar Asset"
+    },
+    "edit_asset": {
+      "name": { "label": "nombre", "placeholder": "Nombre del Asset" },
+      "category": { "label": "categoría" },
+      "ground": { "label": "utilizar como suelo" },
+      "tags": { "label": "etiquetas", "placeholder": "p.ej. (exterior mueble piso)" },
+      "action": "Continuar",
+      "action_skip": "Saltar paso",
+      "errors": {
+        "name_length": "El nombre del Asset solo puede contener un máximo de {count} caracteres",
+        "tag_count": "Sólo puedes especificar un máximo de {count} etiquetas"
+      }
+    },
+    "edit_assetpack": {
+      "name": {
+        "label": "nombre",
+        "placeholder": "Mi nuevo AssetPack"
+      },
+      "items": {
+        "label": "{count} {count, plural, one {item} other {items}}"
+      }
+    }
   }
 }
