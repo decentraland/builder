@@ -1,21 +1,25 @@
-.AssetPackAssetsEditor .actions {
+.AssetsEditor > .actions {
   display: flex;
   justify-content: space-between;
 }
 
-.AssetPackAssetsEditor .pagination {
+.AssetsEditor > .actions > button.ui.button.submit {
+  margin-left: auto;
+}
+
+.AssetsEditor .pagination {
   display: flex;
   align-items: center;
 }
 
-.AssetPackAssetsEditor .pagination .current {
+.AssetsEditor .pagination .current {
   font-size: 12px;
   display: block;
   width: 80px;
   text-align: center;
 }
 
-.AssetPackAssetsEditor .pagination > button {
+.AssetsEditor .pagination > button {
   padding: 0px;
   width: 36px;
   height: 36px;
@@ -26,7 +30,7 @@
   margin: 0px;
 }
 
-.AssetPackAssetsEditor .pagination > .ui.icon.button > .icon {
+.AssetsEditor .pagination > .ui.icon.button > .icon {
   margin-top: -5px !important;
   transform: scale(1.4);
   color: var(--secondary-text);

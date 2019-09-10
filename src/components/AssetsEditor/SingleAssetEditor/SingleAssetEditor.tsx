@@ -6,8 +6,8 @@ import { CategoryName } from 'modules/ui/sidebar/utils'
 import { RawAsset } from 'modules/asset/types'
 import { getModelData } from 'lib/getModelData'
 import Icon from 'components/Icon'
-import { Props, State } from './AssetEditor.types'
-import './AssetEditor.css'
+import { Props, State } from './SingleAssetEditor.types'
+import './SingleAssetEditor.css'
 
 const CATEGORY_OPTIONS = [
   { key: 1, text: CategoryName.DECORATIONS_CATEGORY, value: CategoryName.DECORATIONS_CATEGORY },
@@ -17,7 +17,7 @@ const CATEGORY_OPTIONS = [
   { key: 5, text: CategoryName.TILES_CATEGORY, value: CategoryName.TILES_CATEGORY }
 ]
 
-export default class AssetEditor<T extends RawAsset> extends React.PureComponent<Props<T>, State> {
+export default class SingleAssetEditor<T extends RawAsset> extends React.PureComponent<Props<T>, State> {
   handleCategoryChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { asset } = this.props
 
@@ -31,7 +31,7 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
   handleTagChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { asset } = this.props
     const tags = data.value as string[]
-    debugger
+
     this.props.onChange({
       ...asset,
       tags
@@ -75,7 +75,7 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
   }
 
   render() {
-    const { asset } = this.props
+    const { asset, errors } = this.props
     const hasGroundCategory = isGround(asset)
 
     let categoryOptions = CATEGORY_OPTIONS
@@ -86,9 +86,9 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
         { key: CATEGORY_OPTIONS.length + 1, text: CategoryName.GROUND_CATEGORY, value: CategoryName.GROUND_CATEGORY }
       ]
     }
-    debugger
+
     return (
-      <div className="EditAsset">
+      <div className="SingleAssetEditor">
         <div className="left-column">
           <img src={asset.thumbnail} className={hasGroundCategory ? 'ground' : ''} />
           <span className="metric triangles">
@@ -110,6 +110,8 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
             placeholder={t('asset_pack.edit_asset.name.placeholder')}
             value={asset.name}
             onChange={this.handleChangeName}
+            error={!!errors.name}
+            message={errors.name}
           />
           <SelectField
             label={t('asset_pack.edit_asset.category.label')}
@@ -125,6 +127,8 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
             placeholder={t('asset_pack.edit_asset.tags.placeholder')}
             onChange={this.handleTagChange}
             value={asset.tags || []}
+            error={!!errors.tags}
+            message={errors.tags}
           />
         </div>
       </div>

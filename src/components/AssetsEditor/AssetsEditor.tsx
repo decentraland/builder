@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import AssetEditor from 'components/AssetEditor'
+import SingleAssetEditor from 'components/AssetsEditor/SingleAssetEditor'
 import { RawAsset } from 'modules/asset/types'
-import { Props, State } from './AssetPackAssetsEditor.types'
-import './AssetPackAssetsEditor.css'
+import { Props, State } from './AssetsEditor.types'
+import './AssetsEditor.css'
 
-export default class AssetPackAssetsEditor extends React.PureComponent<Props, State> {
+export default class AssetsEditor extends React.PureComponent<Props, State> {
   state: State = {
     currentAsset: 0,
     errors: {}
@@ -36,8 +36,9 @@ export default class AssetPackAssetsEditor extends React.PureComponent<Props, St
     }
 
     if (asset.name.length > 20) {
-      errors.tags = 'Asset names can only be up to 20 characters long'
+      errors.name = 'Asset names can only be up to 20 characters long'
     }
+
     this.setState({ errors })
   }
 
@@ -60,24 +61,26 @@ export default class AssetPackAssetsEditor extends React.PureComponent<Props, St
 
   render() {
     const { assetPack } = this.props
-    const { currentAsset } = this.state
+    const { currentAsset, errors } = this.state
     const isFirst = currentAsset === 0
     const isLast = currentAsset === assetPack.assets.length - 1
 
     return (
-      <div className="AssetPackAssetsEditor">
-        <AssetEditor asset={assetPack.assets[currentAsset]} onChange={this.handleChange} />
+      <div className="AssetsEditor">
+        <SingleAssetEditor asset={assetPack.assets[currentAsset]} onChange={this.handleChange} errors={errors} />
 
         <div className="actions">
-          <div className="pagination">
-            <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
-            <span className="current">
-              {currentAsset + 1}/{assetPack.assets.length}
-            </span>
-            <Button onClick={this.handleNext} icon="angle right" disabled={isLast} />
-          </div>
+          {assetPack.assets.length > 1 && (
+            <div className="pagination">
+              <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
+              <span className="current">
+                {currentAsset + 1}/{assetPack.assets.length}
+              </span>
+              <Button onClick={this.handleNext} icon="angle right" disabled={isLast} />
+            </div>
+          )}
 
-          <Button primary={isLast} onClick={this.handleSubmit}>
+          <Button className="submit" primary={isLast} onClick={this.handleSubmit}>
             {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
           </Button>
         </div>

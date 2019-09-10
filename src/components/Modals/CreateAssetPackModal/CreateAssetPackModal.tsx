@@ -4,7 +4,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import AssetImport from 'components/AssetImporter'
 import { RawAssetPack } from 'modules/assetPack/types'
-import AssetPackAssetsEditor from 'components/AssetPackAssetsEditor'
+import AssetsEditor from 'components/AssetsEditor'
 
 import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
@@ -29,7 +29,7 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
 
   renderAssetEditor = () => {
     const { assetPack } = this.state
-    return <AssetPackAssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetPackChange} />
+    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetPackChange} />
   }
 
   render() {
