@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SingleAssetEditor from 'components/AssetsEditor/SingleAssetEditor'
+import { MAX_TAGS, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { RawAsset } from 'modules/asset/types'
 import { Props, State } from './AssetsEditor.types'
 import './AssetsEditor.css'
@@ -38,11 +39,11 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     const { errors } = this.state
     const newErrors: Record<string, string> = {}
 
-    if (asset.tags && asset.tags.length > 5) {
+    if (asset.tags && asset.tags.length > MAX_TAGS) {
       newErrors.tags = 'You can only specify a maximum of 5 tags'
     }
 
-    if (asset.name.length > 20) {
+    if (asset.name.length > MAX_NAME_LENGTH) {
       newErrors.name = 'Asset names can only be up to 20 characters long'
     }
 
@@ -81,19 +82,20 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     const isLast = currentAsset === assetPack.assets.length - 1
     const asset = assetPack.assets[currentAsset]
     const hasErrors = Object.keys(errors).length
+    const currentAssetError = errors[asset.id]
 
     return (
       <div className="AssetsEditor">
-        <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={errors[asset.id]} />
+        <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={currentAssetError} />
 
         <div className="actions">
           {assetPack.assets.length > 1 && (
             <div className="pagination">
-              <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
+              <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst || !!currentAssetError} />
               <span className="current">
                 {currentAsset + 1}/{assetPack.assets.length}
               </span>
-              <Button onClick={this.handleNext} icon="angle right" disabled={isLast} />
+              <Button onClick={this.handleNext} icon="angle right" disabled={isLast || !!currentAssetError} />
             </div>
           )}
 

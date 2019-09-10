@@ -9,7 +9,7 @@ import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
-import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL } from 'modules/asset/utils'
+import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
 import { getExtension, createDefaultImportedFile, getDefaultMetadata } from './utils'
 
@@ -144,7 +144,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
       asset: {
         id,
         assetPackId,
-        name: manifestParsed ? manifestParsed.name : cleanAssetName(file.name),
+        name: manifestParsed ? manifestParsed.name.slice(0, MAX_NAME_LENGTH) : cleanAssetName(file.name),
         tags: manifestParsed ? manifestParsed.tags : [],
         category: manifestParsed ? manifestParsed.category : 'decorations',
         url: assetModel,
