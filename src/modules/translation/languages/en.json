@@ -364,6 +364,28 @@
       "invalid": "Invalid asset",
       "action_many": "Import {count} assets",
       "action": "Import asset"
+    },
+    "edit_asset": {
+      "name": {
+        "label": "name",
+        "placeholder": "Asset Name"
+      },
+      "category": {
+        "label": "category"
+      },
+      "ground": {
+        "label": "use as ground"
+      },
+      "tags": {
+        "label": "tags",
+        "placeholder": "e.g. (outdoors furniture floor)"
+      },
+      "errors": {
+        "name_length": "Asset names can only be up to {count} characters long",
+        "tag_count": "You can only specify a maximum of {count} tags"
+      },
+      "action": "Continue",
+      "action_skip": "Skip step"
     }
   }
 }

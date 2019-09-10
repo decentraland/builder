@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
-import { Props, DefaultProps } from './AssetThumbnail.types'
 import Icon from 'components/Icon'
 
+import { Props, DefaultProps } from './AssetThumbnail.types'
 import './AssetThumbnail.css'
 
 export default class AssetThumbnail extends React.PureComponent<Props> {

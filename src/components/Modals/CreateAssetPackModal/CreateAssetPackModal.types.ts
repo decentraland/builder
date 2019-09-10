@@ -1,7 +1,8 @@
 import { RawAssetPack } from 'modules/assetPack/types'
 
 export enum CreateAssetPackStep {
-  IMPORT
+  IMPORT,
+  EDIT_ASSETS
 }
 
 export type State = {

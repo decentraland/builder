@@ -1,6 +1,9 @@
 import { Asset, RawAsset } from 'modules/asset/types'
 import { COLLECTIBLE_ASSET_PACK_ID, CategoryName } from 'modules/ui/sidebar/utils'
 
+export const MAX_TAGS = 15
+export const MAX_NAME_LENGTH = 20
+
 export function getMappings(asset: Asset) {
   const mappings: Record<string, string> = {}
   for (const path of Object.keys(asset.contents)) {
@@ -29,7 +32,7 @@ export function cleanAssetName(fileName: string) {
     out = matched.replace(/[\.\-\_]/g, ' ')
   }
 
-  return out.charAt(0).toUpperCase() + out.slice(1)
+  return (out.charAt(0).toUpperCase() + out.slice(1)).slice(0, MAX_NAME_LENGTH)
 }
 
 export function rawMappingsToObjectURL(mappings: Record<string, Blob>) {

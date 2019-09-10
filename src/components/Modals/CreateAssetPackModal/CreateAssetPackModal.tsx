@@ -4,8 +4,9 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import AssetImport from 'components/AssetImporter'
 import { RawAssetPack } from 'modules/assetPack/types'
-import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
+import AssetsEditor from 'components/AssetsEditor'
 
+import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
 
 export default class CreateAssetPackModal extends React.PureComponent<ModalProps, State> {
@@ -18,8 +19,17 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     this.setState({ assetPack })
   }
 
+  handleAssetImportSubmit = (assetPack: RawAssetPack) => {
+    this.setState({ assetPack, view: CreateAssetPackStep.EDIT_ASSETS })
+  }
+
   renderAssetImport = () => {
-    return <AssetImport onSubmit={this.handleAssetPackChange} />
+    return <AssetImport onSubmit={this.handleAssetImportSubmit} />
+  }
+
+  renderAssetEditor = () => {
+    const { assetPack } = this.state
+    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetPackChange} />
   }
 
   render() {
@@ -29,7 +39,10 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     return (
       <Modal name={name} closeIcon={<Close onClick={onClose} />}>
         <Modal.Header>Alto asset pack</Modal.Header>
-        <Modal.Content>{view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}</Modal.Content>
+        <Modal.Content>
+          {view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}
+          {view === CreateAssetPackStep.EDIT_ASSETS && this.renderAssetEditor()}
+        </Modal.Content>
       </Modal>
     )
   }
