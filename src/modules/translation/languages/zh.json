@@ -380,11 +380,16 @@
     "edit_assetpack": {
       "name": {
         "label": "名称",
-        "placeholder": "我的新AssetPack"
+        "placeholder": "我的新Asset Pack"
       },
       "items": {
         "label": "{count} {count，plural，one {item}其他{items}}"
-      }
+      },
+      "errors": {
+        "title_length": "Asset Pack 标题最多只能包含{count}个字符",
+        "thumbnail_size": "图像文件大小必须小于$ {MAX_THUMBNAIL_SIZE}个字节"
+      },
+      "action": "创建Asset Pack"
     }
   }
 }

@@ -390,11 +390,16 @@
     "edit_assetpack": {
       "name": {
         "label": "name",
-        "placeholder": "My new AssetPack"
+        "placeholder": "My new Asset Pack"
       },
       "items": {
         "label": "{count} {count, plural, one {item} other {items}}"
-      }
+      },
+      "errors": {
+        "title_length": "Asset Pack titles can only be up to {count} characters long",
+        "thumbnail_size": "Image file size must be less than ${MAX_THUMBNAIL_SIZE} bytes"
+      },
+      "action": "Create Asset Pack"
     }
   }
 }

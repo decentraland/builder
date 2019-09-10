@@ -373,18 +373,23 @@
       "action": "Continuar",
       "action_skip": "Saltar paso",
       "errors": {
-        "name_length": "El nombre del Asset solo puede contener un máximo de {count} caracteres",
+        "name_length": "El nombre del Asset sólo puede contener un máximo de {count} caracteres",
         "tag_count": "Sólo puedes especificar un máximo de {count} etiquetas"
       }
     },
     "edit_assetpack": {
       "name": {
         "label": "nombre",
-        "placeholder": "Mi nuevo AssetPack"
+        "placeholder": "Mi nuevo Asse tPack"
       },
       "items": {
         "label": "{count} {count, plural, one {item} other {items}}"
-      }
+      },
+      "errors": {
+        "title_length": "El nombre del Asset Pack sólo puede contener un máximo de {count} caracteres",
+        "thumbnail_size": "El tamaño de la imagen debe ser menor a ${MAX_THUMBNAIL_SIZE} bytes"
+      },
+      "action": "Crear Asset Pack"
     }
   }
 }

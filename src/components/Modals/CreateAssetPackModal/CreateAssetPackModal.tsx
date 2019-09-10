@@ -39,7 +39,7 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
 
   renderAssetpackEditor = () => {
     const { assetPack } = this.state
-    return <AssetPackEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} />
+    return <AssetPackEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={pack => console.log(pack)} />
   }
 
   render() {

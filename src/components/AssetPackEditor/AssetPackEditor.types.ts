@@ -2,7 +2,10 @@ import { RawAssetPack } from 'modules/assetPack/types'
 
 export type Props<T extends RawAssetPack> = {
   assetPack: T
-  onChange: (assetPack: T) => void
+  onChange: (assetPack: RawAssetPack) => void
+  onSubmit: (assetPack: RawAssetPack) => void
 }
 
-export type State = {}
+export type State = {
+  errors: Record<string, string>
+}
