@@ -75,7 +75,7 @@ export default class SingleAssetEditor<T extends RawAsset> extends React.PureCom
   }
 
   render() {
-    const { asset, errors } = this.props
+    const { asset, errors = {} } = this.props
     const hasGroundCategory = isGround(asset)
 
     let categoryOptions = CATEGORY_OPTIONS

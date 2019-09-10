@@ -12,6 +12,12 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     errors: {}
   }
 
+  componentDidMount() {
+    const { assetPack } = this.props
+    const { currentAsset } = this.state
+    this.handleErrors(assetPack.assets[currentAsset])
+  }
+
   handlePrev = () => {
     this.setState({
       currentAsset: Math.max(this.state.currentAsset - 1, 0)
@@ -29,17 +35,26 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
   }
 
   handleErrors = (asset: RawAsset) => {
-    const errors: Record<string, string> = {}
+    const { errors } = this.state
+    const newErrors: Record<string, string> = {}
 
     if (asset.tags && asset.tags.length > 5) {
-      errors.tags = 'You can only specify a maximum of 5 tags'
+      newErrors.tags = 'You can only specify a maximum of 5 tags'
     }
 
     if (asset.name.length > 20) {
-      errors.name = 'Asset names can only be up to 20 characters long'
+      newErrors.name = 'Asset names can only be up to 20 characters long'
     }
 
-    this.setState({ errors })
+    const hasErrors = Object.keys(newErrors).length > 0
+
+    if (hasErrors) {
+      this.setState({ errors: { ...errors, [asset.id]: newErrors } })
+    } else if (errors[asset.id] && !hasErrors) {
+      // Remove key from dictionary if all errors are fixed
+      const { [asset.id]: _, ...newState } = errors
+      this.setState({ errors: newState })
+    }
   }
 
   handleChange = (asset: RawAsset) => {
@@ -64,10 +79,12 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     const { currentAsset, errors } = this.state
     const isFirst = currentAsset === 0
     const isLast = currentAsset === assetPack.assets.length - 1
+    const asset = assetPack.assets[currentAsset]
+    const hasErrors = Object.keys(errors).length
 
     return (
       <div className="AssetsEditor">
-        <SingleAssetEditor asset={assetPack.assets[currentAsset]} onChange={this.handleChange} errors={errors} />
+        <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={errors[asset.id]} />
 
         <div className="actions">
           {assetPack.assets.length > 1 && (
@@ -80,7 +97,7 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
             </div>
           )}
 
-          <Button className="submit" primary={isLast} onClick={this.handleSubmit}>
+          <Button className="submit" primary={isLast} disabled={!!hasErrors} onClick={this.handleSubmit}>
             {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
           </Button>
         </div>
