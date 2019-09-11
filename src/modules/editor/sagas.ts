@@ -376,7 +376,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
     }
 
     // rendering leeway
-    yield delay(500)
+    yield delay(2000)
 
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return

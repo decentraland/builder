@@ -205,7 +205,8 @@
     "materials": "materials",
     "textures": "textures",
     "too_many": "Too many {metric}",
-    "triangles": "triangles"
+    "triangles": "triangles",
+    "meshes": "meshes"
   },
   "mobile_page": {
     "gallery_title": "Check out work from Builder users!",
