@@ -373,7 +373,8 @@
       "action": "Continuar",
       "action_skip": "Saltar paso",
       "errors": {
-        "name_length": "El nombre del Asset sólo puede contener un máximo de {count} caracteres",
+        "max_name_length": "El nombre del Asset sólo puede contener un máximo de {count} caracteres",
+        "min_name_length": "El nombre del Asset debe contener al menos {count} caracteres",
         "tag_count": "Sólo puedes especificar un máximo de {count} etiquetas"
       }
     },
@@ -386,7 +387,8 @@
         "label": "{count} {count, plural, one {item} other {items}}"
       },
       "errors": {
-        "title_length": "El nombre del Asset Pack sólo puede contener un máximo de {count} caracteres",
+        "title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
+        "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
         "thumbnail_size": "El tamaño de la imagen debe ser menor a ${MAX_THUMBNAIL_SIZE} bytes"
       },
       "action": "Crear Asset Pack"

@@ -373,7 +373,8 @@
       "action": "继续",
       "action_skip": "跳过步骤",
       "errors": {
-        "name_length": "Asset名称长度最多只能为{count}个字符",
+        "max_name_length": "Asset名称长度最多只能为{count}个字符",
+        "min_name_length": "资产名称长度必须至少为{count}个字符",
         "tag_count": "您最多只能指定{count}个标签"
       }
     },
@@ -386,7 +387,8 @@
         "label": "{count} {count，plural，one {item}其他{items}}"
       },
       "errors": {
-        "title_length": "Asset Pack 标题最多只能包含{count}个字符",
+        "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
+        "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
         "thumbnail_size": "图像文件大小必须小于$ {MAX_THUMBNAIL_SIZE}个字节"
       },
       "action": "创建Asset Pack"

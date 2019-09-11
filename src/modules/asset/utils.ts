@@ -3,6 +3,7 @@ import { COLLECTIBLE_ASSET_PACK_ID, CategoryName } from 'modules/ui/sidebar/util
 
 export const MAX_TAGS = 15
 export const MAX_NAME_LENGTH = 20
+export const MIN_NAME_LENGTH = 3
 
 export function getMappings(asset: Asset) {
   const mappings: Record<string, string> = {}

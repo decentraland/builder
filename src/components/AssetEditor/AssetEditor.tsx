@@ -61,13 +61,13 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
     })
   }
 
-  handleGetThumbnail = async (ground: boolean = false) => {
+  handleGetThumbnail = async (isGround: boolean = false) => {
     const { asset } = this.props
 
     const mappings = rawMappingsToObjectURL(asset.contents)
     const { image } = await getModelData(mappings[asset.url], {
       mappings,
-      thumbnailType: ground ? '2d' : '3d'
+      thumbnailType: isGround ? '2d' : '3d'
     })
     revokeMappingsObjectURL(mappings)
 

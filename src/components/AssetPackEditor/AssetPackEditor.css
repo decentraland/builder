@@ -9,7 +9,6 @@
 .AssetPackEditor .assetpack .thumbnail {
   width: 80px;
   height: 80px;
-  padding: 5px;
   border-radius: 6px;
   border: 2px solid var(--divider);
   margin-right: 24px;

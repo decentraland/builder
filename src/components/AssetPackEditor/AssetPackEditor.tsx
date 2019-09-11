@@ -1,14 +1,15 @@
 import * as React from 'react'
 import { Field, Header, Button } from 'decentraland-ui'
-import AssetThumbnail from 'components/AssetThumbnail'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
 import { RawAssetPack } from 'modules/assetPack/types'
+import { RawAsset } from 'modules/asset/types'
 import { isGround } from 'modules/asset/utils'
+import AssetThumbnail from 'components/AssetThumbnail'
 import Icon from 'components/Icon'
 
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { MAX_NAME_LENGTH, MAX_THUMBNAIL_SIZE } from 'modules/assetPack/utils'
 
 export default class AseetPackEditor<T extends RawAssetPack> extends React.PureComponent<Props<T>, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
@@ -21,7 +22,17 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     const { assetPack, onChange } = this.props
 
     if (!assetPack.thumbnail) {
-      const asset = assetPack.assets.length ? assetPack.assets.find(asset => !isGround(asset)) : null
+      let asset: RawAsset | null = null
+
+      if (assetPack.assets.length) {
+        const foundAsset = assetPack.assets.find(asset => !isGround(asset))
+        if (foundAsset) {
+          asset = foundAsset
+        } else {
+          asset = assetPack.assets[0]
+        }
+      }
+
       onChange({
         ...assetPack,
         thumbnail: asset ? asset.thumbnail : ''
@@ -48,7 +59,7 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     const { assetPack, onChange } = this.props
     const { files } = e.target
 
-    if (files) {
+    if (files && files.length > 0) {
       const file = files[0]
       if (file.size > MAX_THUMBNAIL_SIZE) {
         alert(
@@ -81,9 +92,15 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
   handleErrors = (assetPack: RawAssetPack) => {
     const newErrors: Record<string, string> = {}
 
-    if (assetPack.title.length > MAX_NAME_LENGTH) {
-      newErrors.title = t('asset_pack.edit_assetpack.errors.title_length', {
-        count: MAX_NAME_LENGTH
+    if (assetPack.title.length > MAX_TITLE_LENGTH) {
+      newErrors.title = t('asset_pack.edit_assetpack.errors.max_title_length', {
+        count: MAX_TITLE_LENGTH
+      })
+    }
+
+    if (assetPack.title.length < MIN_TITLE_LENGTH) {
+      newErrors.title = t('asset_pack.edit_assetpack.errors.min_title_length', {
+        count: MIN_TITLE_LENGTH
       })
     }
 

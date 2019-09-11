@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SingleAssetEditor from 'components/AssetsEditor/SingleAssetEditor'
-import { MAX_TAGS, MAX_NAME_LENGTH } from 'modules/asset/utils'
+import { MAX_TAGS, MAX_NAME_LENGTH, MIN_NAME_LENGTH } from 'modules/asset/utils'
 import { RawAsset } from 'modules/asset/types'
 import { Props, State } from './AssetsEditor.types'
 import './AssetsEditor.css'
@@ -46,8 +46,14 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     }
 
     if (asset.name.length > MAX_NAME_LENGTH) {
-      newErrors.name = t('asset_pack.edit_asset.errors.name_length', {
+      newErrors.name = t('asset_pack.edit_asset.errors.max_name_length', {
         count: MAX_NAME_LENGTH
+      })
+    }
+
+    if (asset.name.length < MIN_NAME_LENGTH) {
+      newErrors.name = t('asset_pack.edit_asset.errors.min_name_length', {
+        count: MIN_NAME_LENGTH
       })
     }
 
