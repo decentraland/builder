@@ -399,7 +399,7 @@
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
-        "thumbnail_size": "Image file size must be less than ${MAX_THUMBNAIL_SIZE} bytes"
+        "thumbnail_size": "Image file size must be less than {count} bytes"
       },
       "action": "Create Asset Pack"
     }

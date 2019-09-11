@@ -389,7 +389,7 @@
       "errors": {
         "title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
         "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
-        "thumbnail_size": "El tamaño de la imagen debe ser menor a ${MAX_THUMBNAIL_SIZE} bytes"
+        "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
       },
       "action": "Crear Asset Pack"
     }
