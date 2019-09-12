@@ -2,8 +2,9 @@ import * as React from 'react'
 import { Close } from 'decentraland-ui'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import AssetImport from 'components/AssetImporter'
 import { RawAssetPack } from 'modules/assetPack/types'
+import AssetPackEditor from 'components/AssetPackEditor'
+import AssetImport from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
 
 import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
@@ -23,13 +24,22 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
     this.setState({ assetPack, view: CreateAssetPackStep.EDIT_ASSETS })
   }
 
+  handleAssetEditSubmit = (assetPack: RawAssetPack) => {
+    this.setState({ assetPack, view: CreateAssetPackStep.EDIT_ASSET_PACK })
+  }
+
   renderAssetImport = () => {
     return <AssetImport onSubmit={this.handleAssetImportSubmit} />
   }
 
   renderAssetEditor = () => {
     const { assetPack } = this.state
-    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetPackChange} />
+    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditSubmit} />
+  }
+
+  renderAssetpackEditor = () => {
+    const { assetPack } = this.state
+    return <AssetPackEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={pack => console.log(pack)} />
   }
 
   render() {
@@ -42,6 +52,7 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
         <Modal.Content>
           {view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}
           {view === CreateAssetPackStep.EDIT_ASSETS && this.renderAssetEditor()}
+          {view === CreateAssetPackStep.EDIT_ASSET_PACK && this.renderAssetpackEditor()}
         </Modal.Content>
       </Modal>
     )

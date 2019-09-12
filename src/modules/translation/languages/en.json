@@ -381,11 +381,27 @@
         "placeholder": "e.g. (outdoors furniture floor)"
       },
       "errors": {
-        "name_length": "Asset names can only be up to {count} characters long",
+        "max_name_length": "Asset names can only be up to {count} characters long",
+        "min_name_length": "Asset names must be at least {count} characters long",
         "tag_count": "You can only specify a maximum of {count} tags"
       },
       "action": "Continue",
       "action_skip": "Skip step"
+    },
+    "edit_assetpack": {
+      "name": {
+        "label": "name",
+        "placeholder": "My new Asset Pack"
+      },
+      "items": {
+        "label": "{count} {count, plural, one {item} other {items}}"
+      },
+      "errors": {
+        "max_title_length": "Asset Pack titles can only be up to {count} characters long",
+        "min_title_length": "Asset Pack titles must be at least {count} characters long",
+        "thumbnail_size": "Image file size must be less than {count} bytes"
+      },
+      "action": "Create Asset Pack"
     }
   }
 }

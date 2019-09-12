@@ -88,10 +88,11 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
   handleZipFile = async (file: File) => {
     const { assetPackId } = this.state
     const zip: JSZip = await JSZip.loadAsync(file)
-    const manifestRaw = zip.file(ASSET_MANIFEST)
+    const manifestPath = Object.keys(zip.files).find(path => basename(path) === ASSET_MANIFEST)
     let manifestParsed: Asset | null = null
 
-    if (manifestRaw) {
+    if (manifestPath) {
+      const manifestRaw = zip.file(manifestPath)
       const content = await manifestRaw.async('text')
       manifestParsed = JSON.parse(content)
     }
@@ -107,7 +108,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
         throw new Error(t('asset_pack.import.invalid'))
       }
 
-      if (fileName !== ASSET_MANIFEST && !basename(fileName).startsWith('.')) {
+      if (basename(fileName) !== ASSET_MANIFEST && !basename(fileName).startsWith('.')) {
         fileNames.push(fileName)
       }
     })
