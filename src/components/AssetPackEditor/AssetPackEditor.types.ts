@@ -8,4 +8,5 @@ export type Props<T extends RawAssetPack> = {
 
 export type State = {
   errors: Record<string, string>
+  isDirty: boolean
 }

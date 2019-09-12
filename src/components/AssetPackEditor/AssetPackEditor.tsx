@@ -15,7 +15,8 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
   thumbnailInput = React.createRef<HTMLInputElement>()
 
   state: State = {
-    errors: {}
+    errors: {},
+    isDirty: false
   }
 
   componentDidMount() {
@@ -40,6 +41,26 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     }
   }
 
+  getErrors = (assetPack: RawAssetPack) => {
+    const newErrors: Record<string, string> = {}
+
+    if (assetPack.title.length > MAX_TITLE_LENGTH) {
+      newErrors.title = t('asset_pack.edit_assetpack.errors.max_title_length', {
+        count: MAX_TITLE_LENGTH
+      })
+    }
+
+    if (assetPack.title.length < MIN_TITLE_LENGTH) {
+      newErrors.title = t('asset_pack.edit_assetpack.errors.min_title_length', {
+        count: MIN_TITLE_LENGTH
+      })
+    }
+
+    const hasErrors = Object.keys(newErrors).length > 0
+
+    return hasErrors ? newErrors : {}
+  }
+
   handleRemove = (id: string) => {
     const { assetPack, onChange } = this.props
 
@@ -53,6 +74,13 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     if (this.thumbnailInput.current) {
       this.thumbnailInput.current.click()
     }
+  }
+
+  handleSetDirty = () => {
+    this.setState({
+      isDirty: true,
+      errors: this.getErrors(this.props.assetPack)
+    })
   }
 
   handleThumbnail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,45 +108,40 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
 
   handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { assetPack, onChange } = this.props
+    const { isDirty } = this.state
 
     const title = e.target.value
     const newPack = { ...assetPack, title }
 
-    this.handleErrors(newPack)
+    if (isDirty) {
+      this.setState({
+        errors: this.getErrors(newPack)
+      })
+    }
 
     onChange(newPack)
   }
 
-  handleErrors = (assetPack: RawAssetPack) => {
-    const newErrors: Record<string, string> = {}
-
-    if (assetPack.title.length > MAX_TITLE_LENGTH) {
-      newErrors.title = t('asset_pack.edit_assetpack.errors.max_title_length', {
-        count: MAX_TITLE_LENGTH
-      })
-    }
-
-    if (assetPack.title.length < MIN_TITLE_LENGTH) {
-      newErrors.title = t('asset_pack.edit_assetpack.errors.min_title_length', {
-        count: MIN_TITLE_LENGTH
-      })
-    }
-
-    const hasErrors = Object.keys(newErrors).length > 0
-
-    this.setState({ errors: hasErrors ? newErrors : {} })
-  }
-
   handleSubmit = () => {
-    this.props.onSubmit(this.props.assetPack)
+    const errors = this.getErrors(this.props.assetPack)
+    const hasErrors = Object.keys(errors).length > 0
+
+    this.setState({
+      isDirty: true,
+      errors
+    })
+
+    if (!hasErrors) {
+      this.props.onSubmit(this.props.assetPack)
+    }
   }
 
   render() {
     const { assetPack } = this.props
-    const { errors } = this.state
+    const { errors, isDirty } = this.state
     const items = assetPack ? assetPack.assets.length : 0
     const hasErrors = Object.keys(errors).length > 0
-    const isSubmitDisabled = hasErrors || items === 0 || assetPack.title.trim().length === 0
+    const isSubmitDisabled = isDirty ? hasErrors || items === 0 : false
 
     return (
       <div className="AssetPackEditor">
