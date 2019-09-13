@@ -27,7 +27,7 @@ import {
   MARK_DIRTY,
   MarkDirtyAction
 } from 'modules/deployment/actions'
-import { api } from 'lib/api'
+
 import {
   SAVE_PROJECT_REQUEST,
   saveProjectRequest,
@@ -59,6 +59,7 @@ import {
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds, getFailedDeploymentIds, getLocalDeploymentIds } from './selectors'
 import { forEach, saveProject, saveThumbnail } from './utils'
+import { builder } from 'lib/api/builder'
 
 export function* syncSaga() {
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
@@ -149,7 +150,7 @@ function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
 function* handleDeleteProjectRequest(action: DeleteProjectRequestAction) {
   const { id } = action.payload
   try {
-    yield call(() => api.deleteProject(id))
+    yield call(() => builder.deleteProject(id))
     yield put(deleteProjectSuccess(id))
   } catch (e) {
     yield put(deleteProjectFailure(id, e))
@@ -159,7 +160,7 @@ function* handleDeleteProjectRequest(action: DeleteProjectRequestAction) {
 function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
   const { deployment } = action.payload
   try {
-    yield call(() => api.saveDeployment(deployment))
+    yield call(() => builder.saveDeployment(deployment))
     yield put(saveDeploymentSuccess(deployment))
   } catch (e) {
     yield put(saveDeploymentFailure(deployment, e.message))
@@ -169,7 +170,7 @@ function* handleSaveDeploymentRequest(action: SaveDeploymentRequestAction) {
 function* handleDeleteDeploymentRequest(action: DeleteDeploymentRequestAction) {
   const { id } = action.payload
   try {
-    yield call(() => api.deleteDeployment(id))
+    yield call(() => builder.deleteDeployment(id))
     yield put(deleteDeploymentSuccess(id))
   } catch (e) {
     yield put(deleteDeploymentFailure(id, e))

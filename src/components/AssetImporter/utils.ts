@@ -16,6 +16,7 @@ export function createDefaultImportedFile(id: string, assetPackId: string, file:
       id,
       assetPackId,
       thumbnail: '',
+      tags: [],
       name: cleanAssetName(file.name),
       category: CategoryName.DECORATIONS_CATEGORY,
       url: file.name,

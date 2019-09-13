@@ -1,3 +1,3 @@
-import CreateAssetPackModal from './CreateAssetPackModal'
+import CreateAssetPackModal from './CreateAssetPackModal.container'
 
 export default CreateAssetPackModal

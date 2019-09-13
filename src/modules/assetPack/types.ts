@@ -6,6 +6,9 @@ export type BaseAssetPack = {
   thumbnail: string
   url: string
   isLoaded: boolean
+  userId?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type FullAssetPack = BaseAssetPack & {
@@ -16,6 +19,6 @@ export type AssetPack = BaseAssetPack & {
   assets: string[] // asset ids
 }
 
-export type RawAssetPack = BaseAssetPack & {
+export type RawAssetPack = Exclude<BaseAssetPack, 'userId'> & {
   assets: RawAsset[]
 }

@@ -4,22 +4,27 @@ import {
   LOAD_ASSET_PACKS_REQUEST,
   loadAssetPacksSuccess,
   loadAssetPacksFailure,
-  LoadAssetPacksRequestAction
+  LoadAssetPacksRequestAction,
+  SaveAssetPackRequestAction,
+  SAVE_ASSET_PACK_REQUEST
 } from 'modules/assetPack/actions'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { getAvailableAssetPackIds } from 'modules/ui/sidebar/selectors'
 import { BaseAssetPack, FullAssetPack } from 'modules/assetPack/types'
 import { setAvailableAssetPacks, setNewAssetPacks } from 'modules/ui/sidebar/actions'
-import { api } from 'lib/api'
+import { builder } from 'lib/api/builder'
+import { assets } from 'lib/api/assets'
+import { getAssetPackFileCount } from './utils'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
+  yield takeLatest(SAVE_ASSET_PACK_REQUEST, handleSaveAssetPack)
 }
 
 function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
-    const remoteAssetPacks: BaseAssetPack[] = yield call(() => api.fetchAssetPacks())
+    const remoteAssetPacks: BaseAssetPack[] = yield call(() => assets.fetchAssetPacks())
 
     // Asset pack ids available last time the user visited
     const previousAvailableAssetPackIds: ReturnType<typeof getAvailableAssetPackIds> = yield select(getAvailableAssetPackIds)
@@ -48,7 +53,7 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
       const assetPackInState = assetPacksInState[remoteAssetPack.id]
       // Check if the asset pack not in the state or is not loaded and if so, fetch it
       if (!assetPackInState || !assetPackInState.isLoaded) {
-        const assetPack: FullAssetPack = yield call(() => api.fetchAssetPack(remoteAssetPack.id))
+        const assetPack: FullAssetPack = yield call(() => assets.fetchAssetPack(remoteAssetPack.id))
         assetPacks.push({
           // Add the fetched asset pack and mark it as loaded
           ...remoteAssetPack,
@@ -73,5 +78,18 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
     yield put(loadAssetPacksSuccess(assetPacks))
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))
+  }
+}
+
+function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
+  const { assetPack, contents } = action.payload
+  const total = getAssetPackFileCount(assetPack)
+  console.log(total)
+
+  yield call(() => builder.saveAssetPack(assetPack))
+  yield call(() => builder.saveAssetPackThumbnail(assetPack))
+
+  for (let asset of assetPack.assets) {
+    yield call(() => builder.saveAssetContents(asset, contents[asset.id]))
   }
 }

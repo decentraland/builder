@@ -28,7 +28,7 @@ import {
   loadProjectsFailure,
   loadProjectsRequest
 } from 'modules/project/actions'
-import { api } from 'lib/api'
+
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
@@ -44,6 +44,7 @@ import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
+import { builder } from 'lib/api/builder'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -197,7 +198,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
 function* handleLoadProjectsRequest() {
   try {
-    const projects: Project[] = yield call(() => api.fetchProjects())
+    const projects: Project[] = yield call(() => builder.fetchProjects())
     const record: ModelById<Project> = {}
 
     for (let project of projects) {
@@ -212,7 +213,7 @@ function* handleLoadProjectsRequest() {
 
 function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
   try {
-    const manifest = yield call(() => api.fetchManifest(action.payload.id))
+    const manifest = yield call(() => builder.fetchManifest(action.payload.id))
     yield put(loadManifestSuccess(manifest))
   } catch (e) {
     yield put(loadManifestFailure(e.message))
