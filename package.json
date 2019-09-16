@@ -30,6 +30,7 @@
     "decentraland-dapps": "^5.5.0",
     "decentraland-eth": "^8.16.0",
     "decentraland-ui": "^2.10.1",
+    "decentraland-experiments": "^1.0.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
     "eslint": "5.6.0",
