@@ -22,3 +22,9 @@ export type AssetPack = BaseAssetPack & {
 export type RawAssetPack = Exclude<BaseAssetPack, 'userId'> & {
   assets: RawAsset[]
 }
+
+export enum ProgressStage {
+  NONE,
+  CREATE_ASSET_PACK,
+  UPLOAD_CONTENTS
+}

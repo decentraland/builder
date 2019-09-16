@@ -136,6 +136,23 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     }
   }
 
+  renderAssets = () => {
+    const { assetPack } = this.props
+    return assetPack.assets.map(asset => <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} />)
+  }
+
+  renderEmptyState = () => {
+    const { onReset } = this.props
+    return (
+      <div className="no-items">
+        {t('asset_pack.edit_assetpack.items.empty')}
+        <Button basic onClick={onReset}>
+          {t('asset_pack.edit_assetpack.reset')}
+        </Button>
+      </div>
+    )
+  }
+
   render() {
     const { assetPack } = this.props
     const { errors, isDirty } = this.state
@@ -162,12 +179,8 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
         </div>
 
         <div className="assets">
-          <div className="header">
-            <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>
-          </div>
-          <div className="content">
-            {assetPack && assetPack.assets.map(asset => <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} />)}
-          </div>
+          <div className="header">{items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}</div>
+          <div className="content">{assetPack && items > 0 ? this.renderAssets() : this.renderEmptyState()}</div>
         </div>
 
         <div className="actions">

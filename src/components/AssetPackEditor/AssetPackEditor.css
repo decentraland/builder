@@ -70,3 +70,19 @@
 .AssetPackEditor > .actions > button.ui.button.submit {
   margin-left: auto;
 }
+
+.AssetPackEditor .no-items {
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+  user-select: none;
+  text-align: center;
+  line-height: 28px;
+  margin-bottom: 48px;
+  flex-direction: column;
+}

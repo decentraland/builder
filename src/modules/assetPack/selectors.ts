@@ -23,3 +23,4 @@ export const getData = createSelector<RootState, AssetPackState, AssetPackState[
 
 export const getError = (state: RootState) => getState(state).error
 export const isLoading = (state: RootState) => getState(state).loading.length > 0
+export const getProgress = (state: RootState) => getState(state).progress

@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { RawAssetContents } from 'modules/asset/types'
-import { FullAssetPack } from './types'
+import { FullAssetPack, ProgressStage } from './types'
 
 // Load Asset Packs
 
@@ -30,3 +30,9 @@ export const saveAssetPackFailure = (assetPack: FullAssetPack, error: string) =>
 export type SaveAssetPackRequestAction = ReturnType<typeof saveAssetPackRequest>
 export type SaveAssetPackSuccessAction = ReturnType<typeof saveAssetPackSuccess>
 export type SaveAssetPackFailureAction = ReturnType<typeof saveAssetPackFailure>
+
+// Set AssetPack upload progress
+
+export const SET_PROGRESS = 'Set AssetPack progress'
+export const setProgress = (stage: ProgressStage, value: number) => action(SET_PROGRESS, { stage, value })
+export type SetProgressAction = ReturnType<typeof setProgress>

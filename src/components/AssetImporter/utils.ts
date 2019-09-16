@@ -1,6 +1,9 @@
-import { cleanAssetName } from 'modules/asset/utils'
+import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { ImportedFile } from './AssetImporter.types'
+
+export const ASSET_MANIFEST = 'asset.json'
+export const MAX_FILE_SIZE = 5000000
 
 export function getExtension(fileName: string) {
   const matches = fileName.match(/\.[0-9a-z]+$/i)
@@ -39,4 +42,11 @@ export function getDefaultMetadata() {
       textures: 0
     }
   }
+}
+
+export function truncateFileName(name: string) {
+  if (name.length <= MAX_NAME_LENGTH) return name
+  const firstPart = name.substr(0, 4)
+  const secondPart = name.substr(name.length - 5, name.length)
+  return `${firstPart}...${secondPart}`
 }

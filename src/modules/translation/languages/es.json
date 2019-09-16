@@ -362,9 +362,15 @@
   "asset_pack": {
     "import": {
       "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
-      "invalid": "Asset inválido",
       "action_many": "Importar {count} Assets",
-      "action": "Importar Asset"
+      "action": "Importar Asset",
+      "errors": {
+        "invalid": "Asset inválido",
+        "missing_extension": "{name}: Extensión de archivo no encontrada",
+        "missing_model": "{name}: Modelo 3D (.gltf or .glb) no encontrado",
+        "scene_file": "{name}: Escenas exportadas del Builder no estan permitidas",
+        "max_file_size": "{name}: El tamaño del archivo excede el límite de {max}mb"
+      }
     },
     "edit_asset": {
       "name": { "label": "nombre", "placeholder": "Nombre del Asset" },
@@ -385,14 +391,25 @@
         "placeholder": "Mi nuevo Asse tPack"
       },
       "items": {
-        "label": "{count} {count, plural, one {item} other {items}}"
+        "label": "{count} {count, plural, one {Asset} other {Assets}}",
+        "empty": "No hay Assets en este Asset Pack"
       },
       "errors": {
         "title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
         "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
         "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
       },
-      "action": "Crear Asset Pack"
+      "action": "Crear Asset Pack",
+      "reset": "Agregar nuevos Assets"
+    },
+    "progress": {
+      "creating_asset_pack": "Creando Asset Pack",
+      "uploading_contents": "Subiendo contenidos del Asset Pack"
+    },
+    "success": {
+      "continue": "Continuar trabajando",
+      "description": "Tu Asset Pack fue subido exitosamente. Visita el Listado de objetos para comenzar a usarlo.",
+      "title": "¡Todo listo!"
     }
   }
 }

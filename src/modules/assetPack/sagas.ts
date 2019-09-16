@@ -6,16 +6,17 @@ import {
   loadAssetPacksFailure,
   LoadAssetPacksRequestAction,
   SaveAssetPackRequestAction,
-  SAVE_ASSET_PACK_REQUEST
+  SAVE_ASSET_PACK_REQUEST,
+  setProgress
 } from 'modules/assetPack/actions'
-import { getData as getAssetPacks } from 'modules/assetPack/selectors'
+import { store } from 'modules/common/store'
+import { getData as getAssetPacks, getProgress } from 'modules/assetPack/selectors'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { getAvailableAssetPackIds } from 'modules/ui/sidebar/selectors'
-import { BaseAssetPack, FullAssetPack } from 'modules/assetPack/types'
+import { BaseAssetPack, FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { setAvailableAssetPacks, setNewAssetPacks } from 'modules/ui/sidebar/actions'
 import { builder } from 'lib/api/builder'
 import { assets } from 'lib/api/assets'
-import { getAssetPackFileCount } from './utils'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -83,13 +84,24 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
 
 function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   const { assetPack, contents } = action.payload
-  const total = getAssetPackFileCount(assetPack)
-  console.log(total)
+  const total = assetPack.assets.length
 
+  yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
   yield call(() => builder.saveAssetPack(assetPack))
+  yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
   yield call(() => builder.saveAssetPackThumbnail(assetPack))
+  yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
+  yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
   for (let asset of assetPack.assets) {
-    yield call(() => builder.saveAssetContents(asset, contents[asset.id]))
+    yield call(() => builder.saveAssetContents(asset, contents[asset.id], handleAssetContentsUploadProgress(total)))
   }
+}
+
+const handleAssetContentsUploadProgress = (total: number) => () => {
+  // Set to 100 when the last asset is loaded (otherwise we can end with a 99/100 situation)
+  const existingProgress = getProgress(store.getState() as any)
+  const isLast = existingProgress.value === ((((total - 1) / total) * 100) | 0)
+  const progress = !isLast ? (existingProgress.value + (1 / total) * 100) | 0 : 100
+  store.dispatch(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
 }

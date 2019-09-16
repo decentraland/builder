@@ -11,7 +11,7 @@ import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
-import { getExtension, createDefaultImportedFile, getDefaultMetadata } from './utils'
+import { getExtension, createDefaultImportedFile, getDefaultMetadata, ASSET_MANIFEST, MAX_FILE_SIZE, truncateFileName } from './utils'
 
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
@@ -22,8 +22,6 @@ export const getSHA256 = (data: string) => {
     .update(data)
     .digest('hex')
 }
-
-const ASSET_MANIFEST = 'asset.json'
 
 export default class AssetImporter extends React.PureComponent<Props, State> {
   state: State = {
@@ -55,16 +53,16 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
       return null
     }
 
-    const id = !file.isCorrupted ? file.asset.id : file.id
+    const id = !file.error ? file.asset.id : file.id
     return (
       <AssetThumbnail
         key={id}
         asset={{
           ...file.asset,
           id,
-          name: !file.isCorrupted ? file.asset.name : file.fileName
+          name: !file.error ? file.asset.name : file.fileName
         }}
-        error={!!file.isCorrupted}
+        error={file.error}
         onRemove={this.handleRemoveProject}
       />
     )
@@ -97,15 +95,15 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
       manifestParsed = JSON.parse(content)
     }
 
-    if (manifestParsed && !manifestParsed.name) {
-      throw new Error(t('asset_pack.import.invalid'))
-    }
-
     const fileNames: string[] = []
 
     zip.forEach(fileName => {
       if (fileName === EXPORT_PATH.MANIFEST_FILE) {
-        throw new Error(t('asset_pack.import.invalid'))
+        throw new Error(
+          t('asset_pack.import.errors.scene_file', {
+            name: fileName
+          })
+        )
       }
 
       if (basename(fileName) !== ASSET_MANIFEST && !basename(fileName).startsWith('.')) {
@@ -116,7 +114,11 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
     const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
 
     if (!assetModel) {
-      throw new Error(t('asset_pack.import.invalid'))
+      throw new Error(
+        t('asset_pack.import.errors.missing_model', {
+          name: truncateFileName(file.name)
+        })
+      )
     }
 
     const files = await Promise.all(
@@ -125,6 +127,16 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
         .filter(file => !!file)
         .map(async file => {
           const blob = await file.async('blob')
+
+          if (blob.size > MAX_FILE_SIZE) {
+            throw new Error(
+              t('asset_pack.import.errors.max_file_size', {
+                name: truncateFileName(file.name),
+                max: MAX_FILE_SIZE / 1000000
+              })
+            )
+          }
+
           return {
             name: file.name,
             blob
@@ -158,6 +170,16 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
   handleModelFile = (file: File) => {
     const { assetPackId } = this.state
     const id = getSHA256(`${assetPackId}/${file.name}`)
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(
+        t('asset_pack.import.errors.max_file_size', {
+          name: truncateFileName(file.name),
+          max: MAX_FILE_SIZE / 1000000
+        })
+      )
+    }
+
     return createDefaultImportedFile(id, assetPackId, file)
   }
 
@@ -171,11 +193,16 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
 
       try {
         if (!extension) {
-          throw new Error(t('asset_pack.import.invalid'))
+          throw new Error(
+            t('asset_pack.import.errors.missing_extension', {
+              name: truncateFileName(file.name)
+            })
+          )
         }
 
         if (extension === '.zip') {
           outFile = await this.handleZipFile(file)
+          debugger
         } else if (extension === '.gltf' || extension === '.glb') {
           outFile = this.handleModelFile(file)
         }
@@ -196,7 +223,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
         outFile = {
           id: getSHA256(file.name),
           fileName: file.name,
-          isCorrupted: true
+          error: e.message || t('asset_pack.import.errors.invalid')
         } as ImportedFile
       }
 
@@ -236,7 +263,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
     const { files } = this.state
     const items = Object.values(files)
     const buttonText = items.length > 1 ? t('asset_pack.import.action_many', { count: items.length }) : t('asset_pack.import.action')
-    const hasCorrupted = items.find(item => !!item.isCorrupted)
+    const hasCorrupted = items.find(item => !!item.error)
     const canImport = items.length > 0 && !hasCorrupted
 
     return (

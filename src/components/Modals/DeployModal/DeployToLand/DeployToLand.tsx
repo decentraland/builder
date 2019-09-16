@@ -12,7 +12,6 @@ import './DeployToLand.css'
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
     placement: null,
-    hasError: false,
     needsConfirmation: false,
     view: DeployToLandView.NONE
   }

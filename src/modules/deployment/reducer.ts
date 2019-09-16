@@ -134,14 +134,14 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       }
     }
     case SET_PROGRESS: {
-      const { stage, progress } = action.payload
+      const { stage, value } = action.payload
 
       return {
         ...state,
         progress: {
           ...state.progress,
           stage,
-          value: progress
+          value
         }
       }
     }

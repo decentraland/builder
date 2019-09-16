@@ -58,8 +58,8 @@ export type ClearDeploymentFailureAction = ReturnType<typeof clearDeploymentFail
 
 // Set progress
 
-export const SET_PROGRESS = 'Set progress'
-export const setProgress = (stage: ProgressStage, progress: number) => action(SET_PROGRESS, { stage, progress })
+export const SET_PROGRESS = 'Set Deployment progress'
+export const setProgress = (stage: ProgressStage, value: number) => action(SET_PROGRESS, { stage, value })
 export type SetProgressAction = ReturnType<typeof setProgress>
 
 // Mark Dirty

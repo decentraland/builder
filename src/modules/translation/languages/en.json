@@ -362,7 +362,13 @@
   "asset_pack": {
     "import": {
       "cta": "Drag your Asset's .zip file here, or {action}",
-      "invalid": "Invalid asset",
+      "errors": {
+        "invalid": "Invalid asset",
+        "missing_extension": "{name}: Missing file extension",
+        "missing_model": "{name}: Missing 3D model (.gltf or .glb)",
+        "scene_file": "{name}: Exported scenes are not allowed",
+        "max_file_size": "{name}: File size exceeds {max}mb limit"
+      },
       "action_many": "Import {count} assets",
       "action": "Import asset"
     },
@@ -395,14 +401,25 @@
         "placeholder": "My new Asset Pack"
       },
       "items": {
-        "label": "{count} {count, plural, one {item} other {items}}"
+        "label": "{count} {count, plural, one {Asset} other {Assets}}",
+        "empty": "There are not Assets in this Asset Pack"
       },
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
         "thumbnail_size": "Image file size must be less than {count} bytes"
       },
-      "action": "Create Asset Pack"
+      "action": "Create Asset Pack",
+      "reset": "Add new Assets"
+    },
+    "progress": {
+      "creating_asset_pack": "Creating Asset Pack",
+      "uploading_contents": "Uploading Asset Pack contents"
+    },
+    "success": {
+      "continue": "Keep working",
+      "description": "Your Asset Pack was successfully uploaded. Check out the Item Drawer to start using it. ",
+      "title": "All done!"
     }
   }
 }
