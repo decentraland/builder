@@ -12,11 +12,17 @@ export async function rawAssetPackToFullAssetPack(rawAssetPack: RawAssetPack): P
 
   for (let asset of rawAssetPack.assets) {
     const { contents } = asset
-    rawContents[asset.id] = contents
-    fullAssetPack.assets.push({
+    rawContents[asset.id] = {}
+    const newAsset = {
       ...asset,
       contents: await getContentsCID(asset)
-    })
+    }
+    // save rawContents as "cid": Blob
+    for (const path of Object.keys(newAsset.contents)) {
+      const cid = newAsset.contents[path]
+      rawContents[asset.id][cid] = contents[path]
+    }
+    fullAssetPack.assets.push(newAsset)
   }
 
   return [fullAssetPack, rawContents]
