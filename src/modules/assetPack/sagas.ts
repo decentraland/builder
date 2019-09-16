@@ -23,6 +23,14 @@ export function* assetPackSaga() {
   yield takeLatest(SAVE_ASSET_PACK_REQUEST, handleSaveAssetPack)
 }
 
+const handleAssetContentsUploadProgress = (total: number) => () => {
+  // Set to 100 when the last asset is loaded (otherwise we can end with a 99/100 situation)
+  const existingProgress = getProgress(store.getState() as any)
+  const isLast = existingProgress.value === ((((total - 1) / total) * 100) | 0)
+  const progress = !isLast ? (existingProgress.value + (1 / total) * 100) | 0 : 100
+  store.dispatch(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
+}
+
 function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
     const remoteAssetPacks: BaseAssetPack[] = yield call(() => assets.fetchAssetPacks())
@@ -96,12 +104,4 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   for (let asset of assetPack.assets) {
     yield call(() => builder.saveAssetContents(asset, contents[asset.id], handleAssetContentsUploadProgress(total)))
   }
-}
-
-const handleAssetContentsUploadProgress = (total: number) => () => {
-  // Set to 100 when the last asset is loaded (otherwise we can end with a 99/100 situation)
-  const existingProgress = getProgress(store.getState() as any)
-  const isLast = existingProgress.value === ((((total - 1) / total) * 100) | 0)
-  const progress = !isLast ? (existingProgress.value + (1 / total) * 100) | 0 : 100
-  store.dispatch(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
 }
