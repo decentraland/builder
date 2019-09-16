@@ -23,6 +23,7 @@ export type ComponentData = {
   [ComponentType.Transform]: {
     position: Vector3
     rotation: Quaternion
+    scale: Vector3
   }
   [ComponentType.NFTShape]: {
     url: string

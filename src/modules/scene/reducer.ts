@@ -8,7 +8,6 @@ import {
   PROVISION_SCENE,
   UpdateMetricsAction,
   UPDATE_METRICS,
-  UpdateTransfromAction,
   CREATE_SCENE,
   CreateSceneAction
 } from 'modules/scene/actions'
@@ -24,7 +23,6 @@ export type UndoableSceneState = StateWithHistory<SceneState>
 export type SceneReducerAction =
   | ProvisionSceneAction
   | UpdateMetricsAction
-  | UpdateTransfromAction
   | CreateSceneAction
   | DeleteProjectAction
   | LoadManifestSuccessAction

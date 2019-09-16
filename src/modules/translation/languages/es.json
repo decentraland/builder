@@ -258,6 +258,7 @@
     "export": "Descargar Escena",
     "hold": "Sostener",
     "move": "Alternar flechas",
+    "scale": "Alternar escalado",
     "move_camera": "Mover cámara",
     "precision": "Ignorar ajustado a la grilla",
     "preview": "Avance",

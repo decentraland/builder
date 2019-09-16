@@ -31,7 +31,7 @@ export type Editor = {
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>
   takeScreenshot: (mime?: string) => Promise<string>
-  setGridResolution: (position: number, rotation: number, scale: number) => void
+  setGridResolution: (position: number, scale: number, rotation: number) => void
   getLoadingEntity: () => any | null
 }
 

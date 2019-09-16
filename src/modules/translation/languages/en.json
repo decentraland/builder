@@ -258,6 +258,7 @@
     "export": "Download Scene",
     "hold": "Hold",
     "move": "Toggle arrows",
+    "scale": "Toggle scaling",
     "move_camera": "Move camera",
     "precision": "Ignore snap-to-grid",
     "preview": "Preview",
