@@ -96,6 +96,7 @@ export function isTokenExpired(expiresAt: number) {
 }
 
 export function createHeaders(idToken: string) {
+  if (!idToken) return {}
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${idToken}`

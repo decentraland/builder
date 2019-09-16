@@ -111,12 +111,11 @@ function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
     id: remoteAssetPack.id,
     title: remoteAssetPack.title,
     url: remoteAssetPack.url!,
-    thumbnail: remoteAssetPack.thumbnail!,
+    thumbnail: `${BUILDER_SERVER_URL}/storage/assetPacks/${remoteAssetPack.thumbnail!}`,
     userId: remoteAssetPack.user_id,
     assets: remoteAssetPack.assets.map(asset => fromRemoteAsset(asset)),
     createdAt: remoteAssetPack.created_at,
-    updatedAt: remoteAssetPack.updated_at,
-    isLoaded: false
+    updatedAt: remoteAssetPack.updated_at
   }
 }
 
@@ -125,8 +124,8 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     id: remoteAsset.id,
     assetPackId: remoteAsset.asset_pack_id,
     name: remoteAsset.name,
-    url: remoteAsset.url,
-    thumbnail: remoteAsset.thumbnail,
+    url: `${remoteAsset.asset_pack_id}/${remoteAsset.url}`,
+    thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${remoteAsset.thumbnail}`,
     tags: remoteAsset.tags,
     category: remoteAsset.category,
     contents: remoteAsset.contents

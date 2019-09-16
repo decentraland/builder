@@ -67,9 +67,9 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
-import { ASSETS_CONTENT_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
 
@@ -418,7 +418,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
     for (let [file, hash] of contentEntries) {
       if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${ASSETS_CONTENT_URL}/${hash}`)
+        editorWindow.editor.preloadFile(`${BUILDER_SERVER_URL}/storage/assets/${hash}`)
       }
     }
   })

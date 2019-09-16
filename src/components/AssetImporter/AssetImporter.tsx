@@ -254,7 +254,6 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
       title: '',
       thumbnail: '',
       url: `${assetPackId}.json`,
-      isLoaded: false,
       assets
     })
   }

@@ -1,25 +1,22 @@
 import { Asset, RawAsset } from 'modules/asset/types'
+import { Omit } from 'decentraland-dapps/dist/lib/types'
 
-export type BaseAssetPack = {
+export type AssetPack = {
   id: string
   title: string
   thumbnail: string
   url: string
-  isLoaded: boolean
   userId?: string
   createdAt?: string
   updatedAt?: string
+  assets: string[]
 }
 
-export type FullAssetPack = BaseAssetPack & {
-  assets: Asset[]
+export type FullAssetPack = Omit<AssetPack, 'assets'> & {
+  assets: Asset[] // asset ids
 }
 
-export type AssetPack = BaseAssetPack & {
-  assets: string[] // asset ids
-}
-
-export type RawAssetPack = Exclude<BaseAssetPack, 'userId'> & {
+export type RawAssetPack = Omit<FullAssetPack, 'userId' | 'assets'> & {
   assets: RawAsset[]
 }
 

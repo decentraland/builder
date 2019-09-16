@@ -1,7 +1,7 @@
 import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
-import { ASSETS_CONTENT_URL } from 'lib/api/content'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -16,7 +16,7 @@ export function getNewEditorScene(project: Project): EditorScene {
 
   return {
     ...getSceneDefinition(project, { x: 0, y: 0 }, 'east'),
-    baseUrl: `${ASSETS_CONTENT_URL}/` as string,
+    baseUrl: `${BUILDER_SERVER_URL}/storage/assets/` as string,
     display: {
       title: project.title
     },
