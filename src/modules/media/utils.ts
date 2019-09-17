@@ -1,3 +1,5 @@
+import { makeContentFile, getCID } from 'modules/deployment/utils'
+
 export function dataURLToBlob(dataUrl: string): Blob | null {
   const arr = dataUrl.split(',')
   const boxedMime = arr[0].match(/:(.*?);/)
@@ -17,4 +19,10 @@ export function dataURLToBlob(dataUrl: string): Blob | null {
 
 export async function objectURLToBlob(objectURL: string): Promise<Blob> {
   return fetch(objectURL).then(r => r.blob())
+}
+
+export async function blobToCID(blob: Blob, path: string) {
+  const file = await makeContentFile(path, blob)
+  const cid = await getCID([file], false)
+  return cid
 }
