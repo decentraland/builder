@@ -22,18 +22,45 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.moveCanvas()
       this.props.onOpenEditor()
     }
+    editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
   }
 
   componentWillUnmount() {
     if (canvas) {
       document.getElementsByTagName('body')[0].appendChild(canvas)
     }
+    editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
   }
 
   moveCanvas = () => {
     if (this.canvasContainer.current && canvas) {
       this.canvasContainer.current.appendChild(canvas)
       editorWindow.editor.resize()
+    }
+  }
+
+  handleKeyDownEvent(event: KeyboardEvent) {
+    let key = ''
+    switch (event.key) {
+      case "Down":
+      case "ArrowDown":
+        key = 'DownArrow'
+        break
+      case "Up":
+      case "ArrowUp":
+        key = 'UpArrow'
+        break
+      case "Left":
+      case "ArrowLeft":
+        key = 'LeftArrow'
+        break
+      case "Right":
+      case "ArrowRight":
+        key = 'RightArrow'
+        break
+    }
+    if (key !== '') {
+      editorWindow.editor.setArrowKeyDown(key)
     }
   }
 

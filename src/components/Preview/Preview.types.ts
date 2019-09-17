@@ -34,6 +34,7 @@ export type Editor = {
   takeScreenshot: (mime?: string) => Promise<string>
   setGridResolution: (position: number, rotation: number, scale: number) => void
   getLoadingEntity: () => any | null
+  setArrowKeyDown: (key: string) => void
 }
 
 export type EditorWindow = typeof window & {
