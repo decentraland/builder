@@ -4,7 +4,7 @@ import { getContentsCID } from 'modules/asset/utils'
 
 export const MAX_TITLE_LENGTH = 20
 export const MIN_TITLE_LENGTH = 3
-export const MAX_THUMBNAIL_SIZE = 200000 // bytes
+export const MAX_THUMBNAIL_SIZE = 5000000
 
 export async function rawAssetPackToFullAssetPack(rawAssetPack: RawAssetPack): Promise<[FullAssetPack, RawAssetContents]> {
   const fullAssetPack: FullAssetPack = { ...rawAssetPack, assets: [] }
