@@ -3,7 +3,7 @@ import { RootState } from 'modules/common/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
-import { toProjectCloudSchema, toDeploymentCloudSchema } from './utils'
+import { toProjectCloudSchema, toDeploymentCloudSchema, addScale } from './utils'
 
 export const migrations = {
   '2': (state: RootState) => {
@@ -48,5 +48,12 @@ export const migrations = {
         : state.deployment
     }
     /* tslint:enable */
+  },
+  '5': (state: RootState) => {
+    for (const scene of Object.values(state.scene.present.data)) {
+      // mutation ahead
+      addScale(scene)
+    }
+    return state
   }
 }

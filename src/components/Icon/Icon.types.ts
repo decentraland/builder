@@ -43,6 +43,7 @@ export type IconName =
   | 'geometries'
   | 'textures'
   | 'camera'
+  | 'scale'
 
 export type DefaultProps = {
   isActive: boolean

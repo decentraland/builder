@@ -60,6 +60,7 @@ export const getEnabledTools = createSelector<
     return {
       move: !!selectedEntityId,
       rotate: !!selectedEntityId,
+      scale: !!selectedEntityId,
       duplicate: !!selectedEntityId && !isNFT,
       reset: !!selectedEntityId,
       delete: !!selectedEntityId

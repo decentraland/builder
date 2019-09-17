@@ -258,6 +258,7 @@
     "export": "场景导出",
     "hold": "按住",
     "move": "坐标轴",
+    "scale": "切换缩放",
     "move_camera": "移动摄相机",
     "precision": "精确度",
     "preview": "预览",

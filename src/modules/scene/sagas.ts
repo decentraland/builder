@@ -121,7 +121,8 @@ function* handleAddItem(action: AddItemAction) {
     type: ComponentType.Transform,
     data: {
       position,
-      rotation: { x: 0, y: 0, z: 0, w: 1 }
+      rotation: { x: 0, y: 0, z: 0, w: 1 },
+      scale: { x: 1, y: 1, z: 1 }
     }
   }
 
@@ -144,7 +145,17 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
     const newComponents: Scene['components'] = { ...scene.components }
     newComponents[componentId] = {
       ...newComponents[componentId],
-      data
+      data: {
+        position: {
+          ...data.position
+        },
+        rotation: {
+          ...data.rotation
+        },
+        scale: {
+          ...data.scale
+        }
+      }
     }
 
     yield put(provisionScene({ ...scene, components: newComponents }))
@@ -169,7 +180,8 @@ function* handleResetItem(_: ResetItemAction) {
       data: {
         ...transform.data,
         position: snapToGrid(transform.data.position),
-        rotation: { x: 0, y: 0, z: 0, w: 1 }
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        scale: { x: 1, y: 1, z: 1 }
       }
     }
   }
@@ -197,7 +209,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   if (!shape || !transform) return
 
   const {
-    data: { position, rotation }
+    data: { position, rotation, scale }
   } = transform
 
   const transformId = uuidv4()
@@ -205,12 +217,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     id: transformId,
     type: ComponentType.Transform,
     data: {
-      position: {
-        x: position.x,
-        y: position.y,
-        z: position.z
-      },
-      rotation: { ...rotation }
+      position: { ...position },
+      rotation: { ...rotation },
+      scale: { ...scale }
     }
   }
 
@@ -366,7 +375,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           type: ComponentType.Transform,
           data: {
             position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-            rotation: { x: 0, y: 0, z: 0, w: 1 }
+            rotation: { x: 0, y: 0, z: 0, w: 1 },
+            scale: { x: 1, y: 1, z: 1 }
           }
         }
 

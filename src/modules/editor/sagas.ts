@@ -193,7 +193,7 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   }
 
   if (transform) {
-    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation }))
+    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale: args.transform.scale }))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
@@ -405,7 +405,7 @@ function* handleSelectEntity(action: SelectEntityAction) {
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   yield call(() => {
     if (action.payload.enabled) {
-      editorWindow.editor.setGridResolution(0.5, 0, Math.PI / 16)
+      editorWindow.editor.setGridResolution(0.5, 0.5, Math.PI / 16)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
     }

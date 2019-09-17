@@ -14,7 +14,7 @@ const staticEntity = new StaticEntity()
 const gizmo = new Gizmos()
 gizmo.position = true
 gizmo.rotation = true
-gizmo.scale = false
+gizmo.scale = true
 gizmo.cycle = false
 
 let gizmoEvent = new OnGizmoEvent((_: any) => {
@@ -97,6 +97,7 @@ function createComponents(components: Record<string, AnyComponent>) {
         const transformData = data as ComponentData[ComponentType.Transform]
         transform.position.copyFrom(transformData.position)
         transform.rotation.set(transformData.rotation.x, transformData.rotation.y, transformData.rotation.z, transformData.rotation.w)
+        transform.scale.copyFrom(transformData.scale)
         transform.data['nonce'] = Math.random()
         transform.dirty = true
       }

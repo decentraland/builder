@@ -27,6 +27,11 @@ export default class TopBar extends React.PureComponent<Props> {
     onSetGizmo(gizmo === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE)
   }
 
+  handleScaleMode = () => {
+    const { gizmo, onSetGizmo } = this.props
+    onSetGizmo(gizmo === Gizmo.SCALE ? Gizmo.NONE : Gizmo.SCALE)
+  }
+
   handleTogglePreview = () => {
     const { onTogglePreview, isPreviewing } = this.props
     widget.unmount()
@@ -113,6 +118,14 @@ export default class TopBar extends React.PureComponent<Props> {
                     isActive={gizmo === Gizmo.ROTATE && !!selectedEntityId}
                     isDisabled={!enabledTools.rotate}
                     onClick={this.handleRotateMode}
+                  />
+                </ShortcutTooltip>
+                <ShortcutTooltip shortcut={Shortcut.SCALE} position="bottom center" className="tool" popupClassName="top-bar-popup">
+                  <Chip
+                    icon="scale"
+                    isActive={gizmo === Gizmo.SCALE && !!selectedEntityId}
+                    isDisabled={!enabledTools.scale}
+                    onClick={this.handleScaleMode}
                   />
                 </ShortcutTooltip>
               </span>

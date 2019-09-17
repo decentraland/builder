@@ -11,7 +11,7 @@ import { ASSETS_CONTENT_URL } from 'lib/api/content'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
 import { getParcelOrientation } from './utils'
 
-export const MANIFEST_FILE_VERSION = 3
+export const MANIFEST_FILE_VERSION = 4
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
