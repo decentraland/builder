@@ -9,8 +9,7 @@ export enum CategoryName {
   NATURE_CATEGORY = 'nature',
   STRUCTURES_CATEGORY = 'structures',
   DECORATIONS_CATEGORY = 'decorations',
-  FURNITURE = 'furniture',
-  CRYPTOKITTIES = 'CryptoKitties'
+  FURNITURE = 'furniture'
 }
 
 export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
@@ -42,11 +41,6 @@ export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
   [CategoryName.FURNITURE]: {
     name: CategoryName.FURNITURE,
     thumbnail: `${BUILDER_SERVER_URL}/storage/assets/Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
-    assets: []
-  },
-  [CategoryName.CRYPTOKITTIES]: {
-    name: CategoryName.CRYPTOKITTIES,
-    thumbnail: 'https:/www.cryptokitties.co/icons/logo.svg',
     assets: []
   }
 }

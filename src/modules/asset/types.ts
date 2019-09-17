@@ -75,4 +75,7 @@ export type RawAsset = {
   }
 }
 
-export type RawAssetContents = Record<string, RawAsset['contents']>
+/**
+ * A Record that maps `assetId` to a Record of `{ [cid: string]: Blob }`
+ */
+export type RawAssetContents = Record<string, Record<string, Blob>>
