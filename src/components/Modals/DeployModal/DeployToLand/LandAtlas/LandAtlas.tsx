@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { api } from 'lib/api'
+
 import { Layer, Button, Atlas, Popup, Loader } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -8,7 +8,7 @@ import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
-import { Coord } from 'lib/api/marketplace'
+import { Coord, marketplace } from 'lib/api/marketplace'
 
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
@@ -64,8 +64,8 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { landTarget } = this.state
     try {
       const [authorizedParcels, authorizedEstates] = await Promise.all([
-        api.fetchAuthorizedParcels(ethAddress),
-        api.fetchAuthorizedEstates(ethAddress)
+        marketplace.fetchAuthorizedParcels(ethAddress),
+        marketplace.fetchAuthorizedEstates(ethAddress)
       ])
 
       if (this.mounted) {

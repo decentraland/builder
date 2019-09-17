@@ -114,6 +114,10 @@ export const getComponentsByType = createSelector<RootState, Scene | null, Recor
   scene => {
     const out: Record<ComponentType, AnyComponent[]> = {} as Record<ComponentType, AnyComponent[]>
 
+    for (const key of Object.keys(ComponentType)) {
+      out[key as ComponentType] = []
+    }
+
     if (scene) {
       const components = scene.components
       for (let component of Object.values(components)) {

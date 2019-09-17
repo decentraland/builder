@@ -1,5 +1,7 @@
+import path from 'path'
 import { Asset, RawAsset } from 'modules/asset/types'
 import { COLLECTIBLE_ASSET_PACK_ID, CategoryName } from 'modules/ui/sidebar/utils'
+import { makeContentFile, getCID } from 'modules/deployment/utils'
 
 export const MAX_TAGS = 15
 export const MAX_NAME_LENGTH = 20
@@ -52,4 +54,16 @@ export function revokeMappingsObjectURL(mappings: Record<string, string>) {
     const item = mappings[key]
     URL.revokeObjectURL(item)
   }
+}
+
+export async function getContentsCID(asset: RawAsset): Promise<Record<string, string>> {
+  const { contents } = asset
+  const out: Record<string, string> = {}
+
+  for (let filePath of Object.keys(contents)) {
+    const file = await makeContentFile(filePath, contents[filePath])
+    const fileCID: string = await getCID([{ path: path.basename(file.path), content: file.content, size: file.size }], false)
+    out[filePath] = fileCID
+  }
+  return out
 }

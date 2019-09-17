@@ -136,8 +136,25 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     }
   }
 
-  render() {
+  renderAssets = () => {
     const { assetPack } = this.props
+    return assetPack.assets.map(asset => <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} />)
+  }
+
+  renderEmptyState = () => {
+    const { onReset } = this.props
+    return (
+      <div className="no-items">
+        {t('asset_pack.edit_assetpack.items.empty')}
+        <Button basic onClick={onReset}>
+          {t('asset_pack.edit_assetpack.reset')}
+        </Button>
+      </div>
+    )
+  }
+
+  render() {
+    const { assetPack, error } = this.props
     const { errors, isDirty } = this.state
     const items = assetPack ? assetPack.assets.length : 0
     const hasErrors = Object.keys(errors).length > 0
@@ -162,13 +179,15 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
         </div>
 
         <div className="assets">
-          <div className="header">
-            <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>
-          </div>
-          <div className="content">
-            {assetPack && assetPack.assets.map(asset => <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} />)}
-          </div>
+          <div className="header">{items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}</div>
+          <div className="content">{assetPack && items > 0 ? this.renderAssets() : this.renderEmptyState()}</div>
         </div>
+
+        {error ? (
+          <div className="error">
+            {t('global.error_ocurred')} "{error}"
+          </div>
+        ) : null}
 
         <div className="actions">
           <Button className="submit" disabled={isSubmitDisabled} onClick={this.handleSubmit} primary>

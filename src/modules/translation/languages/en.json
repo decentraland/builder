@@ -1,4 +1,67 @@
 {
+  "asset_pack": {
+    "edit_asset": {
+      "action": "Continue",
+      "action_skip": "Skip step",
+      "category": {
+        "label": "category"
+      },
+      "errors": {
+        "max_name_length": "Asset names can only be up to {count} characters long",
+        "min_name_length": "Asset names must be at least {count} characters long",
+        "tag_count": "You can only specify a maximum of {count} tags"
+      },
+      "ground": {
+        "label": "use as ground"
+      },
+      "name": {
+        "label": "name",
+        "placeholder": "Asset Name"
+      },
+      "tags": {
+        "label": "tags",
+        "placeholder": "e.g. (outdoors furniture floor)"
+      }
+    },
+    "edit_assetpack": {
+      "action": "Create Asset Pack",
+      "errors": {
+        "max_title_length": "Asset Pack titles can only be up to {count} characters long",
+        "min_title_length": "Asset Pack titles must be at least {count} characters long",
+        "thumbnail_size": "Image file size must be less than {count} bytes"
+      },
+      "items": {
+        "empty": "There are not Assets in this Asset Pack",
+        "label": "{count} {count, plural, one {Asset} other {Assets}}"
+      },
+      "name": {
+        "label": "name",
+        "placeholder": "My new Asset Pack"
+      },
+      "reset": "Add new Assets"
+    },
+    "import": {
+      "action": "Import asset",
+      "action_many": "Import {count} assets",
+      "cta": "Drag your Asset's .zip file here, or {action}",
+      "errors": {
+        "invalid": "Invalid asset",
+        "max_file_size": "{name}: File size exceeds {max}mb limit",
+        "missing_extension": "{name}: Missing file extension",
+        "missing_model": "{name}: Missing 3D model (.gltf or .glb)",
+        "scene_file": "{name}: Exported scenes are not allowed"
+      }
+    },
+    "progress": {
+      "creating_asset_pack": "Creating Asset Pack",
+      "uploading_contents": "Uploading Asset Pack contents"
+    },
+    "success": {
+      "continue": "Keep working",
+      "description": "Your Asset Pack was successfully uploaded. Check out the Item Drawer to start using it. ",
+      "title": "All done!"
+    }
+  },
   "banners": {
     "promo_assetpack_banner": "The Fantasy Asset Pack allows you to conjure all manner of dazzling creations!",
     "promo_body": "Get the Fantasy Asset Pack and conjure all manner of dazzling creations!",
@@ -92,7 +155,6 @@
     "pool": {
       "action": "Submit",
       "contact_information": "Contact information",
-      "error_ocurred": "An error ocurred",
       "i_accept_the": "By clicking \"submit\" you agree to receive news from Decentraland",
       "progress": "Processing",
       "sign_in": {
@@ -138,6 +200,7 @@
     "dismiss": "Dismiss",
     "done": "done",
     "email": "email",
+    "error_ocurred": "An error ocurred",
     "eth_address": "ETH address",
     "here": "here",
     "items": "items",
@@ -358,51 +421,5 @@
   "wallet": {
     "signature_error": "Failed to sign message",
     "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
-  },
-  "asset_pack": {
-    "import": {
-      "cta": "Drag your Asset's .zip file here, or {action}",
-      "invalid": "Invalid asset",
-      "action_many": "Import {count} assets",
-      "action": "Import asset"
-    },
-    "edit_asset": {
-      "name": {
-        "label": "name",
-        "placeholder": "Asset Name"
-      },
-      "category": {
-        "label": "category"
-      },
-      "ground": {
-        "label": "use as ground"
-      },
-      "tags": {
-        "label": "tags",
-        "placeholder": "e.g. (outdoors furniture floor)"
-      },
-      "errors": {
-        "max_name_length": "Asset names can only be up to {count} characters long",
-        "min_name_length": "Asset names must be at least {count} characters long",
-        "tag_count": "You can only specify a maximum of {count} tags"
-      },
-      "action": "Continue",
-      "action_skip": "Skip step"
-    },
-    "edit_assetpack": {
-      "name": {
-        "label": "name",
-        "placeholder": "My new Asset Pack"
-      },
-      "items": {
-        "label": "{count} {count, plural, one {item} other {items}}"
-      },
-      "errors": {
-        "max_title_length": "Asset Pack titles can only be up to {count} characters long",
-        "min_title_length": "Asset Pack titles must be at least {count} characters long",
-        "thumbnail_size": "Image file size must be less than {count} bytes"
-      },
-      "action": "Create Asset Pack"
-    }
   }
 }

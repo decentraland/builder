@@ -1,19 +1,35 @@
 import * as React from 'react'
-import { Close } from 'decentraland-ui'
-import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { Close, Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { RawAssetPack } from 'modules/assetPack/types'
+import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
 import AssetPackEditor from 'components/AssetPackEditor'
+import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImport from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
 
-import { State, CreateAssetPackStep } from './CreateAssetPackModal.types'
+import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
 
-export default class CreateAssetPackModal extends React.PureComponent<ModalProps, State> {
+export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
-    view: CreateAssetPackStep.IMPORT,
+    view: CreateAssetPackView.IMPORT,
     assetPack: null
+  }
+
+  componentDidUpdate() {
+    const { progress, error } = this.props
+    let view: CreateAssetPackView = this.state.view
+
+    if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error) {
+      view = CreateAssetPackView.SUCCESS
+    } else if (progress.stage !== ProgressStage.NONE && !error) {
+      view = CreateAssetPackView.PROGRESS
+    } else if (error) {
+      view = CreateAssetPackView.EDIT_ASSET_PACK
+    }
+
+    this.setState({ view })
   }
 
   handleAssetPackChange = (assetPack: RawAssetPack) => {
@@ -21,11 +37,23 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
   }
 
   handleAssetImportSubmit = (assetPack: RawAssetPack) => {
-    this.setState({ assetPack, view: CreateAssetPackStep.EDIT_ASSETS })
+    this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSETS })
   }
 
-  handleAssetEditSubmit = (assetPack: RawAssetPack) => {
-    this.setState({ assetPack, view: CreateAssetPackStep.EDIT_ASSET_PACK })
+  handleAssetEditorSubmit = (assetPack: RawAssetPack) => {
+    this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSET_PACK })
+  }
+
+  handleAssetPackEditorSubmit = async (assetPack: RawAssetPack) => {
+    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack)
+    this.props.onCreateAssetPack(fullAssetPack, contents)
+  }
+
+  handleReset = () => {
+    this.setState({
+      view: CreateAssetPackView.IMPORT,
+      assetPack: null
+    })
   }
 
   renderAssetImport = () => {
@@ -34,12 +62,53 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
 
   renderAssetEditor = () => {
     const { assetPack } = this.state
-    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditSubmit} />
+    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
   }
 
   renderAssetpackEditor = () => {
     const { assetPack } = this.state
-    return <AssetPackEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={pack => console.log(pack)} />
+    const { error } = this.props
+
+    return (
+      <AssetPackEditor
+        assetPack={assetPack!}
+        onChange={this.handleAssetPackChange}
+        onSubmit={this.handleAssetPackEditorSubmit}
+        onReset={this.handleReset}
+        error={error}
+      />
+    )
+  }
+
+  renderProgress = () => {
+    const { progress } = this.props
+    let className = 'progress-bar'
+
+    if (progress.value === 0) {
+      className += ' active'
+    }
+
+    return (
+      <>
+        {progress.stage === ProgressStage.CREATE_ASSET_PACK && t('asset_pack.progress.creating_asset_pack')}
+        {progress.stage === ProgressStage.UPLOAD_CONTENTS && t('asset_pack.progress.uploading_contents')}
+        <div className="progress-bar-container">
+          <div className={className} style={{ width: `${progress.value}%` }} />
+        </div>
+      </>
+    )
+  }
+
+  renderSuccess = () => {
+    return (
+      <>
+        {t('asset_pack.success.title')}
+        {t('asset_pack.success.description')}
+        <Button primary onClick={this.props.onClose}>
+          {t('asset_pack.success.continue')}
+        </Button>
+      </>
+    )
   }
 
   render() {
@@ -50,9 +119,11 @@ export default class CreateAssetPackModal extends React.PureComponent<ModalProps
       <Modal name={name} closeIcon={<Close onClick={onClose} />}>
         <Modal.Header>Alto asset pack</Modal.Header>
         <Modal.Content>
-          {view === CreateAssetPackStep.IMPORT && this.renderAssetImport()}
-          {view === CreateAssetPackStep.EDIT_ASSETS && this.renderAssetEditor()}
-          {view === CreateAssetPackStep.EDIT_ASSET_PACK && this.renderAssetpackEditor()}
+          {view === CreateAssetPackView.IMPORT && this.renderAssetImport()}
+          {view === CreateAssetPackView.EDIT_ASSETS && this.renderAssetEditor()}
+          {view === CreateAssetPackView.EDIT_ASSET_PACK && this.renderAssetpackEditor()}
+          {view === CreateAssetPackView.PROGRESS && this.renderProgress()}
+          {view === CreateAssetPackView.SUCCESS && this.renderSuccess()}
         </Modal.Content>
       </Modal>
     )

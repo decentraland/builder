@@ -44,7 +44,6 @@ export type State = {
     point: Coordinate
     rotation: Rotation
   } | null
-  hasError: boolean
   needsConfirmation: boolean
   view: DeployToLandView
 }

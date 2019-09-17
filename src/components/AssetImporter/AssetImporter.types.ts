@@ -14,5 +14,5 @@ export type ImportedFile = {
   id: string
   fileName: string
   asset: RawAsset
-  isCorrupted?: boolean
+  error?: string
 }

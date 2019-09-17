@@ -29,7 +29,7 @@
   margin-right: 24px;
 }
 
-.AssetImporter .multiple-projects .AssetThumbnail span {
+.AssetImporter .multiple-projects .AssetThumbnail .title {
   font-size: 15px;
 }
 

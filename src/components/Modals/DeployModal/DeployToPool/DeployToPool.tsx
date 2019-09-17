@@ -72,7 +72,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
         <p className="modal-subtitle">{t('deployment_modal.pool.subtitle')}</p>
         {error ? (
           <div className="error">
-            {t('deployment_modal.pool.error_ocurred')} "{error}"
+            {t('global.error_ocurred')} "{error}"
           </div>
         ) : null}
         <Button className="submit" primary size="small" onClick={this.handleSubmit}>

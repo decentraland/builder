@@ -1,4 +1,64 @@
 {
+  "asset_pack": {
+    "edit_asset": {
+      "action": "继续",
+      "action_skip": "跳过步骤",
+      "category": {
+        "label": "类别"
+      },
+      "errors": {
+        "max_name_length": "Asset名称长度最多只能为{count}个字符",
+        "min_name_length": "资产名称长度必须至少为{count}个字符",
+        "tag_count": "您最多只能指定{count}个标签"
+      },
+      "ground": {
+        "label": "用作地面"
+      },
+      "name": {
+        "label": "名称",
+        "placeholder": "Asset名称"
+      },
+      "tags": {
+        "label": "标签",
+        "placeholder": "例如 （户外家具楼）"
+      }
+    },
+    "edit_assetpack": {
+      "action": "创建Asset Pack",
+      "errors": {
+        "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
+        "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
+        "thumbnail_size": "图像文件大小必须小于 {count}个字节"
+      },
+      "items": {
+        "empty": "There are not Assets in this Asset Pack",
+        "label": "{count} {count, plural, one {Asset} other {Assets}}"
+      },
+      "name": {
+        "label": "名称",
+        "placeholder": "我的新Asset Pack"
+      },
+      "reset": "添加新Assets"
+    },
+    "import": {
+      "action": "导入{资产}",
+      "action_many": "导入{count} Asset",
+      "cta": "将Asset的.zip文件拖到此处，或{action}",
+      "errors": {
+        "invalid": "Asset无效",
+        "max_file_size": "{name}: 文件大小超过{max}mb的限制"
+      }
+    },
+    "progress": {
+      "creating_asset_pack": "创建Asset Pack",
+      "uploading_contents": "正在上传Asset Pack内容"
+    },
+    "success": {
+      "continue": "继续工作",
+      "description": "您的Asset Pack已成功上传。 查看项目抽屉以开始使用它。",
+      "title": "全部做完！"
+    }
+  },
   "banners": {
     "promo_assetpack_banner": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
     "promo_body": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
@@ -92,7 +152,6 @@
     "pool": {
       "action": "提交",
       "contact_information": "联系信息",
-      "error_ocurred": "出错了",
       "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
       "progress": "正在处理",
       "sign_in": {
@@ -138,6 +197,7 @@
     "dismiss": "解散",
     "done": "完成",
     "email": "email",
+    "error_ocurred": "出错了",
     "eth_address": "ETH 地址",
     "here": "这里",
     "items": "模型",
@@ -358,41 +418,5 @@
   "wallet": {
     "signature_error": "签名消息失败",
     "title": "连接钱包用加密收藏品装饰你的场景。"
-  },
-  "asset_pack": {
-    "import": {
-      "cta": "将Asset的.zip文件拖到此处，或{action}",
-      "invalid": "Asset无效",
-      "action_many": "导入{count} Asset",
-      "action": "导入{资产}"
-    },
-    "edit_asset": {
-      "name": { "label": "名称", "placeholder": "Asset名称" },
-      "category": { "{label}": "类别" },
-      "ground": { "label": "用作地面" },
-      "tags": { "label": "标签", "placeholder": "例如 （户外家具楼）" },
-      "action": "继续",
-      "action_skip": "跳过步骤",
-      "errors": {
-        "max_name_length": "Asset名称长度最多只能为{count}个字符",
-        "min_name_length": "资产名称长度必须至少为{count}个字符",
-        "tag_count": "您最多只能指定{count}个标签"
-      }
-    },
-    "edit_assetpack": {
-      "name": {
-        "label": "名称",
-        "placeholder": "我的新Asset Pack"
-      },
-      "items": {
-        "label": "{count} {count，plural，one {item}其他{items}}"
-      },
-      "errors": {
-        "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
-        "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
-        "thumbnail_size": "图像文件大小必须小于 {count}个字节"
-      },
-      "action": "创建Asset Pack"
-    }
   }
 }

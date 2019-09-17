@@ -41,10 +41,6 @@ const isSearchResult = (asset: Asset, search: string) => {
 
 export const isList = (state: RootState) => getSidebarView(state) === SidebarView.LIST
 
-export const getAvailableAssetPackIds = (state: RootState) => getState(state).availableAssetPackIds
-
-export const getNewAssetPackIds = (state: RootState) => getState(state).newAssetPackIds
-
 export const getSelectedAssetPack = createSelector<RootState, string | null, AssetPackState['data'], AssetPack | null>(
   getSelectedAssetPackId,
   getAssetPacks,

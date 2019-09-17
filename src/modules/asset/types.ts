@@ -3,7 +3,7 @@ import { SceneMetrics } from 'modules/scene/types'
 export const GROUND_CATEGORY = 'ground'
 
 export type Asset = BaseAsset & {
-  assetPackId: string | null // collectibles and custom gltfs wouldn't have asset
+  assetPackId: string
   isDisabled?: boolean
 }
 
@@ -61,10 +61,12 @@ export type DARAssetTrait = {
   type: string
 }
 
-export type RawAsset = Partial<Pick<Asset, 'tags' | 'category'>> & {
+export type RawAsset = {
   id: string
   name: string
   url: string
+  tags: string[]
+  category: string // name of the category
   assetPackId: string
   thumbnail: string
   contents: Record<string, Blob>
@@ -72,3 +74,8 @@ export type RawAsset = Partial<Pick<Asset, 'tags' | 'category'>> & {
     metrics: SceneMetrics
   }
 }
+
+/**
+ * A Record that maps `assetId` to a Record of `{ [cid: string]: Blob }`
+ */
+export type RawAssetContents = Record<string, Record<string, Blob>>
