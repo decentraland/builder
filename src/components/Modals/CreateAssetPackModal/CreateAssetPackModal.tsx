@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Close, Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
 import AssetPackEditor from 'components/AssetPackEditor'
@@ -9,7 +10,6 @@ import AssetsEditor from 'components/AssetsEditor'
 
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {

@@ -13,7 +13,7 @@ export type AssetPack = {
 }
 
 export type FullAssetPack = Omit<AssetPack, 'assets'> & {
-  assets: Asset[] // asset ids
+  assets: Asset[]
 }
 
 export type RawAssetPack = Omit<FullAssetPack, 'userId' | 'assets'> & {

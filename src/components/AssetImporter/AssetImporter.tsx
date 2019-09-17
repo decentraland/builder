@@ -202,7 +202,6 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
 
         if (extension === '.zip') {
           outFile = await this.handleZipFile(file)
-          debugger
         } else if (extension === '.gltf' || extension === '.glb') {
           outFile = this.handleModelFile(file)
         }
