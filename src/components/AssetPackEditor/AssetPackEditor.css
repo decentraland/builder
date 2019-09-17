@@ -86,3 +86,13 @@
   margin-bottom: 48px;
   flex-direction: column;
 }
+
+.AssetPackEditor .error {
+  margin-bottom: 24px;
+  color: red;
+  text-align: center;
+  font-size: 13px;
+  background: var(--background);
+  border-radius: 6px;
+  padding: 12px;
+}

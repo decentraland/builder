@@ -19,9 +19,10 @@ export type State = {
 
 export type Props = ModalProps & {
   progress: AssetPackState['progress']
+  error: AssetPackState['error']
   onCreateAssetPack: typeof saveAssetPackRequest
 }
 
-export type MapStateProps = Pick<Props, 'progress'>
+export type MapStateProps = Pick<Props, 'progress' | 'error'>
 export type MapDispatchProps = Pick<Props, 'onCreateAssetPack'>
 export type MapDispatch = Dispatch<SaveAssetPackRequestAction>

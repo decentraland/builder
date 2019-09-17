@@ -7,7 +7,8 @@ import {
   LoadAssetPacksRequestAction,
   SaveAssetPackRequestAction,
   SAVE_ASSET_PACK_REQUEST,
-  setProgress
+  setProgress,
+  saveAssetPackFailure
 } from 'modules/assetPack/actions'
 import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
@@ -40,14 +41,19 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   const { assetPack, contents } = action.payload
   const total = assetPack.assets.length
 
-  yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
-  yield call(() => builder.saveAssetPack(assetPack))
-  yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
-  yield call(() => builder.saveAssetPackThumbnail(assetPack))
-  yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
+  try {
+    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
+    yield call(() => builder.saveAssetPack(assetPack))
+    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
+    yield call(() => builder.saveAssetPackThumbnail(assetPack))
+    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
-  yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
-  for (let asset of assetPack.assets) {
-    yield call(() => builder.saveAssetContents(asset, contents[asset.id], handleAssetContentsUploadProgress(total)))
+    yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
+
+    for (let asset of assetPack.assets) {
+      yield call(() => builder.saveAssetContents(asset, contents[asset.id], handleAssetContentsUploadProgress(total)))
+    }
+  } catch (e) {
+    yield put(saveAssetPackFailure(assetPack, e.message))
   }
 }

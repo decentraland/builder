@@ -18,8 +18,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   componentDidUpdate() {
-    const { progress } = this.props
-    const error = null
+    const { progress, error } = this.props
     let view: CreateAssetPackView = this.state.view
 
     if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error) {
@@ -68,12 +67,15 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
 
   renderAssetpackEditor = () => {
     const { assetPack } = this.state
+    const { error } = this.props
+
     return (
       <AssetPackEditor
         assetPack={assetPack!}
         onChange={this.handleAssetPackChange}
         onSubmit={this.handleAssetPackEditorSubmit}
         onReset={this.handleReset}
+        error={error}
       />
     )
   }
