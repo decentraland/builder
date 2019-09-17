@@ -145,7 +145,17 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
     const newComponents: Scene['components'] = { ...scene.components }
     newComponents[componentId] = {
       ...newComponents[componentId],
-      data
+      data: {
+        position: {
+          ...data.position
+        },
+        rotation: {
+          ...data.rotation
+        },
+        scale: {
+          ...data.scale
+        }
+      }
     }
 
     yield put(provisionScene({ ...scene, components: newComponents }))
