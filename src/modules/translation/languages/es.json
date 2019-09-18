@@ -102,7 +102,10 @@
     "promo_assetpack_banner": "Tus Asset Pack personales ahora disponibles en Decentraland!",
     "promo_body": "Tus Asset Pack personales ahora disponibles en Decentraland!",
     "promo_subtitle": "Personaliza tu mundo",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "top_banner_left": "Regístrate para nuestro próximo",
+    "top_banner_action": "Hackathon!",
+    "top_banner_right": "Más de $ 250,000 USD en premios en MANA y LAND."
   },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",

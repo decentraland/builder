@@ -104,7 +104,10 @@
     "promo_assetpack_banner": "Custom Asset Packs now available in Decentraland!",
     "promo_body": "Custom Asset Packs now available in Decentraland!",
     "promo_subtitle": "Personalise your world",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "top_banner_left": "Sign up for our upcoming",
+    "top_banner_action": "Hackathon!",
+    "top_banner_right": "Over $250,000 USD in prizes in MANA and LAND."
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",

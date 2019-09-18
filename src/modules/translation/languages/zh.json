@@ -99,7 +99,10 @@
     "promo_assetpack_banner": "自定义资产包现在在Decentraland中可用！",
     "promo_body": "自定义资产包现在在Decentraland中可用！",
     "promo_subtitle": "个性化您的世界",
-    "promo_title": "Decentraland"
+    "promo_title": "Decentraland",
+    "top_banner_left": "",
+    "top_banner_action": "报名参加即将到来的黑客马拉松大赛！",
+    "top_banner_right": "奖金为总额超过 25 万美元的 MANA 和 LAND 。"
   },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
