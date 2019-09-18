@@ -11,7 +11,9 @@ import AssetsEditor from 'components/AssetsEditor'
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
 
-const preventClose = () => {}
+const preventClose = () => {
+  // make linter happy
+}
 
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
