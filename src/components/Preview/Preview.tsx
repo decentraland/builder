@@ -22,7 +22,6 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.moveCanvas()
       this.props.onOpenEditor()
     }
-    editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
   }
 
   componentWillUnmount() {
@@ -76,6 +75,9 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
       this.moveCanvas()
       this.props.onOpenEditor()
+
+      editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
+
       isDCLInitialized = true
     } catch (error) {
       console.error('Failed to load Preview', error)
