@@ -51,6 +51,9 @@
   width: 100%;
   min-height: 100%;
   align-items: flex-start;
+  overflow-y: auto;
+  max-height: 332px;
+  padding: 15px 0px;
 }
 
 .AssetPackEditor .assets .content .AssetThumbnail:not(:nth-child(6n)) {
@@ -65,6 +68,7 @@
 .AssetPackEditor > .actions {
   display: flex;
   justify-content: space-between;
+  margin-top: 32px;
 }
 
 .AssetPackEditor > .actions > button.ui.button.submit {
@@ -87,8 +91,7 @@
   flex-direction: column;
 }
 
-.AssetPackEditor .error {
-  margin-bottom: 24px;
+.AssetPackEditor > .error {
   color: red;
   text-align: center;
   font-size: 13px;

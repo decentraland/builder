@@ -98,8 +98,8 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
     id: asset.id,
     asset_pack_id: asset.assetPackId,
     name: asset.name,
-    url: asset.url,
-    thumbnail: asset.thumbnail,
+    url: asset.url.replace(`${asset.assetPackId}/`, ''),
+    thumbnail: asset.thumbnail.replace(`${BUILDER_SERVER_URL}/storage/assets/`, ''),
     tags: asset.tags,
     category: asset.category,
     contents: asset.contents
