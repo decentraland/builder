@@ -70,7 +70,10 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
         error: null,
         data: {
           ...state.data,
-          ...assetPack.assets.reduce((accum, asset) => ({ ...accum, [asset.id]: asset }), {})
+          ...assetPack.assets.reduce<AssetState['data']>((acc, asset) => {
+            acc[asset.id] = asset
+            return acc
+          }, {})
         }
       }
     }
