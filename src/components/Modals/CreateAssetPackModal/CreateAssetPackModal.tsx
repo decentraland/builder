@@ -116,7 +116,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { progress } = this.props
     let className = 'progress-bar'
 
-    if (progress.value === 0) {
+    if (progress.value === 100) {
       className += ' active'
     }
 
@@ -156,7 +156,8 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   render() {
-    let { view } = this.state
+    const { name } = this.props
+    const { view } = this.state
 
     let content
     switch (view) {
