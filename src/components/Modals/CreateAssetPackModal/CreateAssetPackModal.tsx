@@ -11,10 +11,6 @@ import AssetsEditor from 'components/AssetsEditor'
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
 
-const preventClose = () => {
-  // make linter happy
-}
-
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
     view: CreateAssetPackView.IMPORT,
@@ -61,9 +57,9 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   renderAssetImport = () => {
-    const { name, onClose } = this.props
+    const { onClose } = this.props
     return (
-      <Modal name={name} onClose={onClose}>
+      <>
         <ModalNavigation
           title={t('asset_pack.import.title_create')}
           subtitle={t('asset_pack.import.description_create')}
@@ -72,15 +68,15 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
         <Modal.Content>
           <AssetImport onSubmit={this.handleAssetImportSubmit} />
         </Modal.Content>
-      </Modal>
+      </>
     )
   }
 
   renderAssetEditor = () => {
-    const { name, onClose } = this.props
+    const { onClose } = this.props
     const { assetPack } = this.state
     return (
-      <Modal name={name} onClose={onClose}>
+      <>
         <ModalNavigation
           title={t('asset_pack.edit_asset.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
@@ -89,15 +85,15 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
         <Modal.Content>
           <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
         </Modal.Content>
-      </Modal>
+      </>
     )
   }
 
   renderAssetpackEditor = () => {
-    const { name, onClose, error } = this.props
+    const { onClose, error } = this.props
     const { assetPack } = this.state
     return (
-      <Modal name={name} onClose={onClose}>
+      <>
         <ModalNavigation
           title={t('asset_pack.edit_asset.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
@@ -112,12 +108,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
             error={error}
           />
         </Modal.Content>
-      </Modal>
+      </>
     )
   }
 
   renderProgress = () => {
-    const { name, progress } = this.props
+    const { progress } = this.props
     let className = 'progress-bar'
 
     if (progress.value === 0) {
@@ -125,21 +121,20 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     }
 
     return (
-      <Modal name={name} onClose={preventClose}>
+      <>
         <ModalNavigation title={t('asset_pack.progress.creating_asset_pack')} subtitle={t('asset_pack.progress.uploading_contents')} />
         <Modal.Content>
           <div className="progress-bar-container">
             <div className={className} style={{ width: `${progress.value}%` }} />
           </div>
         </Modal.Content>
-      </Modal>
+      </>
     )
   }
 
   renderSuccess = () => {
-    const { name, onClose } = this.props
     return (
-      <Modal name={name} onClose={onClose}>
+      <>
         <ModalNavigation title={t('asset_pack.success.title')} subtitle={t('asset_pack.success.description')} />
         <Modal.Content>
           <Row center>
@@ -148,30 +143,46 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
             </Button>
           </Row>
         </Modal.Content>
-      </Modal>
+      </>
     )
   }
 
-  preventDismiss = () => {
-    // do nothing, prevent dismiss
+  handleClose = () => {
+    let { view } = this.state
+    const { onClose } = this.props
+    if (view !== CreateAssetPackView.PROGRESS) {
+      onClose()
+    }
   }
 
   render() {
     let { view } = this.state
 
+    let content
     switch (view) {
       case CreateAssetPackView.IMPORT:
-        return this.renderAssetImport()
+        content = this.renderAssetImport()
+        break
       case CreateAssetPackView.EDIT_ASSETS:
-        return this.renderAssetEditor()
+        content = this.renderAssetEditor()
+        break
       case CreateAssetPackView.EDIT_ASSET_PACK:
-        return this.renderAssetpackEditor()
+        content = this.renderAssetpackEditor()
+        break
       case CreateAssetPackView.PROGRESS:
-        return this.renderProgress()
+        content = this.renderProgress()
+        break
       case CreateAssetPackView.SUCCESS:
-        return this.renderSuccess()
+        content = this.renderSuccess()
+        break
       default:
-        return null
+        content = null
     }
+
+    return (
+      <Modal name={name} onClose={this.handleClose}>
+        {content}
+      </Modal>
+    )
   }
 }
