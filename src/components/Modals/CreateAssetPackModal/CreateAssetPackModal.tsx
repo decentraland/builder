@@ -148,7 +148,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   handleClose = () => {
-    let { view } = this.state
+    const { view } = this.state
     const { onClose } = this.props
     if (view !== CreateAssetPackView.PROGRESS) {
       onClose()
