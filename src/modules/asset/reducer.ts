@@ -1,7 +1,13 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Asset } from 'modules/asset/types'
-import { LOAD_ASSET_PACKS_REQUEST, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_FAILURE } from 'modules/assetPack/actions'
+import {
+  LOAD_ASSET_PACKS_REQUEST,
+  LOAD_ASSET_PACKS_SUCCESS,
+  LOAD_ASSET_PACKS_FAILURE,
+  SAVE_ASSET_PACK_SUCCESS,
+  SaveAssetPackSuccessAction
+} from 'modules/assetPack/actions'
 import { AssetPackReducerAction } from 'modules/assetPack/reducer'
 import {
   LOAD_COLLECTIBLES_SUCCESS,
@@ -22,7 +28,11 @@ const INITIAL_STATE: AssetState = {
   error: null
 }
 
-export type AssetReducerAction = AssetPackReducerAction | LoadCollectiblesSuccessAction | LoadCollectiblesRequestAction
+export type AssetReducerAction =
+  | AssetPackReducerAction
+  | LoadCollectiblesSuccessAction
+  | LoadCollectiblesRequestAction
+  | SaveAssetPackSuccessAction
 
 export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction): AssetState => {
   switch (action.type) {
@@ -49,6 +59,18 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
         data: {
           ...state.data,
           ...assets
+        }
+      }
+    }
+    case SAVE_ASSET_PACK_SUCCESS: {
+      const { assetPack } = action.payload
+
+      return {
+        loading: loadingReducer(state.loading, action),
+        error: null,
+        data: {
+          ...state.data,
+          ...assetPack.assets.reduce((accum, asset) => ({ ...accum, [asset.id]: asset }), {})
         }
       }
     }

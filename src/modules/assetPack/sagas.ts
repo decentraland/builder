@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, takeLatest, all } from 'redux-saga/effects'
 
 import {
   LOAD_ASSET_PACKS_REQUEST,
@@ -8,12 +8,13 @@ import {
   SaveAssetPackRequestAction,
   SAVE_ASSET_PACK_REQUEST,
   setProgress,
-  saveAssetPackFailure
+  saveAssetPackFailure,
+  saveAssetPackSuccess
 } from 'modules/assetPack/actions'
 import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
-import { builder } from 'lib/api/builder'
+import { builder, BUILDER_SERVER_URL } from 'lib/api/builder'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -21,10 +22,17 @@ export function* assetPackSaga() {
 }
 
 const handleAssetContentsUploadProgress = (total: number) => () => {
-  // Set to 100 when the last asset is loaded (otherwise we can end with a 99/100 situation)
+  // Calculate the increment step, it will be truncated
+  const increment = ((1 / total) * 100) | 0
+  // Get the existing progress
   const existingProgress = getProgress(store.getState() as any)
-  const isLast = existingProgress.value === ((((total - 1) / total) * 100) | 0)
-  const progress = !isLast ? (existingProgress.value + (1 / total) * 100) | 0 : 100
+  // Calculate the current file based on the existing progress
+  const currentFile = existingProgress.value / increment + 1
+  // Calculate the new value based on the existing progress and the increment
+  const newValue = existingProgress.value + increment
+  // If this is the last file, just map it to 100
+  const progress = currentFile !== total ? newValue : 100
+
   store.dispatch(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
 }
 
@@ -49,11 +57,24 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
-
-    for (let asset of assetPack.assets) {
-      yield call(() => builder.saveAssetContents(asset, contents[asset.id], handleAssetContentsUploadProgress(total)))
-    }
+    yield all(
+      assetPack.assets.flatMap(asset => [
+        call(() => builder.saveAssetContents(asset, contents[asset.id])),
+        call(handleAssetContentsUploadProgress(total))
+      ])
+    )
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))
   }
+
+  yield put(
+    saveAssetPackSuccess({
+      ...assetPack,
+      assets: assetPack.assets.map(asset => ({
+        ...asset,
+        thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${asset.thumbnail}`,
+        url: `${assetPack.id}/${asset.url}`
+      }))
+    })
+  )
 }
