@@ -14,7 +14,7 @@ import {
 import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
-import { builder, BUILDER_SERVER_URL } from 'lib/api/builder'
+import { builder } from 'lib/api/builder'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -67,14 +67,5 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
     yield put(saveAssetPackFailure(assetPack, e.message))
   }
 
-  yield put(
-    saveAssetPackSuccess({
-      ...assetPack,
-      assets: assetPack.assets.map(asset => ({
-        ...asset,
-        thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${asset.thumbnail}`,
-        url: `${assetPack.id}/${asset.url}`
-      }))
-    })
-  )
+  yield put(saveAssetPackSuccess(assetPack))
 }
