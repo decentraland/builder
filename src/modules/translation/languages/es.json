@@ -1,6 +1,8 @@
 {
   "asset_pack": {
     "edit_asset": {
+      "title_create": "Crear Asset Pack",
+      "description_create": "Revisa tus modelos, agrega tags y otras cosas.",
       "action": "Continuar",
       "action_skip": "Saltar paso",
       "category": {
@@ -24,6 +26,8 @@
       }
     },
     "edit_assetpack": {
+      "title_create": "Crear Asset Pack",
+      "description_create": "Genial! Ponle un nombre único a tu Asset Pack.",
       "action": "Crear Asset Pack",
       "errors": {
         "max_title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
@@ -41,6 +45,8 @@
       "reset": "Agregar nuevos Assets"
     },
     "import": {
+      "title_create": "Crear Asset Pack",
+      "description_create": "Comienza añadiendo tus modelos.",
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
       "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",

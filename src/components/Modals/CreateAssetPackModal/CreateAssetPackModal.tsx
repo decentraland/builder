@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Close, Button } from 'decentraland-ui'
+import { Button, ModalNavigation, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
@@ -57,26 +57,58 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   renderAssetImport = () => {
-    return <AssetImport onSubmit={this.handleAssetImportSubmit} />
+    const { onClose } = this.props
+    return (
+      <>
+        <ModalNavigation
+          title={t('asset_pack.import.title_create')}
+          subtitle={t('asset_pack.import.description_create')}
+          onClose={onClose}
+        />
+        <Modal.Content>
+          <AssetImport onSubmit={this.handleAssetImportSubmit} />
+        </Modal.Content>
+      </>
+    )
   }
 
   renderAssetEditor = () => {
+    const { onClose } = this.props
     const { assetPack } = this.state
-    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
+    return (
+      <>
+        <ModalNavigation
+          title={t('asset_pack.edit_asset.title_create')}
+          subtitle={t('asset_pack.edit_asset.description_create')}
+          onClose={onClose}
+        />
+        <Modal.Content>
+          <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
+        </Modal.Content>
+      </>
+    )
   }
 
   renderAssetpackEditor = () => {
+    const { onClose, error } = this.props
     const { assetPack } = this.state
-    const { error } = this.props
-
     return (
-      <AssetPackEditor
-        assetPack={assetPack!}
-        onChange={this.handleAssetPackChange}
-        onSubmit={this.handleAssetPackEditorSubmit}
-        onReset={this.handleReset}
-        error={error}
-      />
+      <>
+        <ModalNavigation
+          title={t('asset_pack.edit_asset.title_create')}
+          subtitle={t('asset_pack.edit_asset.description_create')}
+          onClose={onClose}
+        />
+        <Modal.Content>
+          <AssetPackEditor
+            assetPack={assetPack!}
+            onChange={this.handleAssetPackChange}
+            onSubmit={this.handleAssetPackEditorSubmit}
+            onReset={this.handleReset}
+            error={error}
+          />
+        </Modal.Content>
+      </>
     )
   }
 
@@ -84,17 +116,18 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { progress } = this.props
     let className = 'progress-bar'
 
-    if (progress.value === 0) {
+    if (progress.value === 100) {
       className += ' active'
     }
 
     return (
       <>
-        {progress.stage === ProgressStage.CREATE_ASSET_PACK && t('asset_pack.progress.creating_asset_pack')}
-        {progress.stage === ProgressStage.UPLOAD_CONTENTS && t('asset_pack.progress.uploading_contents')}
-        <div className="progress-bar-container">
-          <div className={className} style={{ width: `${progress.value}%` }} />
-        </div>
+        <ModalNavigation title={t('asset_pack.progress.creating_asset_pack')} subtitle={t('asset_pack.progress.uploading_contents')} />
+        <Modal.Content>
+          <div className="progress-bar-container">
+            <div className={className} style={{ width: `${progress.value}%` }} />
+          </div>
+        </Modal.Content>
       </>
     )
   }
@@ -102,29 +135,54 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   renderSuccess = () => {
     return (
       <>
-        {t('asset_pack.success.title')}
-        {t('asset_pack.success.description')}
-        <Button primary onClick={this.props.onClose}>
-          {t('asset_pack.success.continue')}
-        </Button>
+        <ModalNavigation title={t('asset_pack.success.title')} subtitle={t('asset_pack.success.description')} />
+        <Modal.Content>
+          <Row center>
+            <Button primary onClick={this.props.onClose}>
+              {t('asset_pack.success.continue')}
+            </Button>
+          </Row>
+        </Modal.Content>
       </>
     )
   }
 
+  handleClose = () => {
+    const { view } = this.state
+    const { onClose } = this.props
+    if (view !== CreateAssetPackView.PROGRESS) {
+      onClose()
+    }
+  }
+
   render() {
-    const { name, onClose } = this.props
+    const { name } = this.props
     const { view } = this.state
 
+    let content
+    switch (view) {
+      case CreateAssetPackView.IMPORT:
+        content = this.renderAssetImport()
+        break
+      case CreateAssetPackView.EDIT_ASSETS:
+        content = this.renderAssetEditor()
+        break
+      case CreateAssetPackView.EDIT_ASSET_PACK:
+        content = this.renderAssetpackEditor()
+        break
+      case CreateAssetPackView.PROGRESS:
+        content = this.renderProgress()
+        break
+      case CreateAssetPackView.SUCCESS:
+        content = this.renderSuccess()
+        break
+      default:
+        content = null
+    }
+
     return (
-      <Modal name={name} closeIcon={<Close onClick={onClose} />}>
-        <Modal.Header>Alto asset pack</Modal.Header>
-        <Modal.Content>
-          {view === CreateAssetPackView.IMPORT && this.renderAssetImport()}
-          {view === CreateAssetPackView.EDIT_ASSETS && this.renderAssetEditor()}
-          {view === CreateAssetPackView.EDIT_ASSET_PACK && this.renderAssetpackEditor()}
-          {view === CreateAssetPackView.PROGRESS && this.renderProgress()}
-          {view === CreateAssetPackView.SUCCESS && this.renderSuccess()}
-        </Modal.Content>
+      <Modal name={name} onClose={this.handleClose}>
+        {content}
       </Modal>
     )
   }

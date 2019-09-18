@@ -5,7 +5,16 @@
 .SingleAssetEditor .left-column {
   display: flex;
   flex-direction: column;
-  margin-right: 24px;
+  background-color: rgba(var(--dark-raw), 0.48);
+  padding: 24px 24px 0px 24px;
+  border-radius: 8px 0px 0px 8px;
+}
+
+.SingleAssetEditor .right-column {
+  background-color: rgba(var(--dark-raw), 0.48);
+  padding: 24px 24px 0px 0px;
+  border-radius: 0px 8px 8px 0px;
+  width: 441px;
 }
 
 .SingleAssetEditor .metric {
@@ -44,7 +53,7 @@
 
 .SingleAssetEditor .dcl.tag-field .container {
   overflow-x: auto;
-  width: 465px;
+  width: 415px;
 }
 
 .SingleAssetEditor .dcl.tag-field .ui.dropdown {
