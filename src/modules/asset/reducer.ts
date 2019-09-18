@@ -64,16 +64,18 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
     }
     case SAVE_ASSET_PACK_SUCCESS: {
       const { assetPack } = action.payload
+      const assets: AssetState['data'] = {}
+
+      for (const asset of assetPack.assets) {
+        assets[asset.id] = { ...asset }
+      }
 
       return {
         loading: loadingReducer(state.loading, action),
         error: null,
         data: {
           ...state.data,
-          ...assetPack.assets.reduce<AssetState['data']>((acc, asset) => {
-            acc[asset.id] = asset
-            return acc
-          }, {})
+          ...assets
         }
       }
     }
