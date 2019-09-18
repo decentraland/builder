@@ -28,13 +28,14 @@
 
 .SidebarHeader .selected-scope {
   position: relative;
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   text-align: center;
   text-transform: capitalize;
   cursor: pointer;
 }
 
 .SidebarHeader .selected-scope .icon {
-  position: absolute;
-  left: 0px;
+  height: 1.3em;
 }

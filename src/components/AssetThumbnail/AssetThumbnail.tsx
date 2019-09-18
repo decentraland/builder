@@ -14,7 +14,7 @@ export default class AssetThumbnail extends React.PureComponent<Props> {
   }
 
   render() {
-    const { asset, error } = this.props
+    const { asset, error, hideLabel } = this.props
     let classes = 'AssetThumbnail'
 
     if (error) {
@@ -37,9 +37,11 @@ export default class AssetThumbnail extends React.PureComponent<Props> {
               <Icon name="close" />
             </div>
             {error ? <div className="error-icon" /> : <img src={asset.thumbnail} />}
-            <span className="title" title={asset.name}>
-              {asset.name}
-            </span>
+            {!hideLabel && (
+              <span className="title" title={asset.name}>
+                {asset.name}
+              </span>
+            )}
             {error && <span className="error">{t('asset_pack.import.errors.invalid')}</span>}
           </div>
         }

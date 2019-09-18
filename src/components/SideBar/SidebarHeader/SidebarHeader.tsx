@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Icon } from 'decentraland-ui'
+import { Header, Icon, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { SidebarView } from 'modules/ui/sidebar/types'
@@ -28,6 +28,13 @@ export default class SidebarHeader extends React.PureComponent<Props> {
     this.props.onSetSidebarView(SidebarView.LIST)
   }
 
+  handleEditAssetPack = () => {
+    const { selectedAssetPack, onEditAssetPack } = this.props
+    if (selectedAssetPack) {
+      onEditAssetPack(selectedAssetPack.id)
+    }
+  }
+
   render() {
     const { selectedAssetPack, selectedCategory, isList, search } = this.props
 
@@ -37,16 +44,19 @@ export default class SidebarHeader extends React.PureComponent<Props> {
     return (
       <Header className="SidebarHeader" size="medium">
         {isSearch ? (
-          <span className="selected-scope" onClick={this.handleGoBack}>
-            <Icon name="chevron left" />
-            {t('itemdrawer.results')}
+          <span className="selected-scope">
+            <Icon name="chevron left" onClick={this.handleGoBack} />
+            <span>{t('itemdrawer.results')}</span>
           </span>
         ) : isRoot ? (
           t('itemdrawer.title')
         ) : (
-          <span className="selected-scope" onClick={this.handleGoBack}>
-            <Icon name="chevron left" />
-            {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
+          <span className="selected-scope">
+            <Icon name="chevron left" onClick={this.handleGoBack} />
+            <span>{selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}</span>
+            <Button basic onClick={this.handleEditAssetPack}>
+              Edit
+            </Button>
           </span>
         )}
         {isRoot && !isSearch ? (
