@@ -5,7 +5,7 @@ import { authorize } from './auth'
 import { Rotation, Deployment } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Asset } from 'modules/asset/types'
-import { Scene } from 'modules/scene/types'
+import { Scene, SceneMetrics } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { createManifest } from 'modules/project/export'
 import { dataURLToBlob } from 'modules/media/utils'
@@ -47,6 +47,7 @@ export type RemoteAsset = {
   tags: string[]
   category: string
   contents: Record<string, string>
+  metrics: SceneMetrics
 }
 
 /**
@@ -102,7 +103,8 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
     thumbnail: asset.thumbnail.replace(`${BUILDER_SERVER_URL}/storage/assets/`, ''),
     tags: asset.tags,
     category: asset.category,
-    contents: asset.contents
+    contents: asset.contents,
+    metrics: asset.metrics
   }
 }
 
@@ -128,7 +130,8 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${remoteAsset.thumbnail}`,
     tags: remoteAsset.tags,
     category: remoteAsset.category,
-    contents: remoteAsset.contents
+    contents: remoteAsset.contents,
+    metrics: remoteAsset.metrics
   }
 }
 

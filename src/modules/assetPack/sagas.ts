@@ -63,9 +63,8 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
         call(handleAssetContentsUploadProgress(total))
       ])
     )
+    yield put(saveAssetPackSuccess(assetPack))
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))
   }
-
-  yield put(saveAssetPackSuccess(assetPack))
 }

@@ -38,7 +38,15 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         contents: {},
         name: asset.name,
         url: asset.uri,
-        thumbnail: asset.image
+        thumbnail: asset.image,
+        metrics: {
+          triangles: 0,
+          materials: 0,
+          meshes: 0,
+          bodies: 0,
+          entities: 0,
+          textures: 0
+        }
       })
     }
   }

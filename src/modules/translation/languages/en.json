@@ -269,7 +269,7 @@
   "metrics": {
     "bodies": "bodies",
     "entities": "entities",
-    "geometries": "geometries",
+    "meshes": "meshes",
     "height": "height",
     "materials": "materials",
     "textures": "textures",
