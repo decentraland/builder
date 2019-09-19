@@ -2,6 +2,7 @@ import { RawAssetPack, FullAssetPack } from './types'
 import { RawAssetContents } from 'modules/asset/types'
 import { getContentsCID } from 'modules/asset/utils'
 import { dataURLToBlob, blobToCID } from 'modules/media/utils'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
 
 export const MAX_TITLE_LENGTH = 20
 export const MIN_TITLE_LENGTH = 3
@@ -31,7 +32,8 @@ export async function rawAssetPackToFullAssetPack(rawAssetPack: RawAssetPack): P
     // add thumbnail (it's not needed in asset.contents, but added to asset.thumbnail instead)
     const blob = dataURLToBlob(thumbnail)!
     const cid = await blobToCID(blob, THUMBNAIL_PATH)
-    newAsset.thumbnail = cid
+    newAsset.thumbnail = `${BUILDER_SERVER_URL}/storage/assets/${cid}`
+    newAsset.url = `${asset.assetPackId}/${asset.url}`
     rawContents[asset.id][cid] = blob
 
     // add asset
