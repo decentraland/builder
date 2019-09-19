@@ -134,7 +134,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     triangles: renderer.info.render.triangles + colliderTriangles,
     materials,
     textures: renderer.info.memory.textures,
-    geometries: renderer.info.memory.geometries,
+    meshes: renderer.info.memory.geometries,
     bodies,
     entities: 1
   }

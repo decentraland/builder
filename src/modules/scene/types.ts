@@ -43,7 +43,7 @@ export type ComponentDefinition<T extends ComponentType> = {
 export type SceneMetrics = {
   triangles: number
   materials: number
-  geometries: number
+  meshes: number
   bodies: number
   entities: number
   textures: number

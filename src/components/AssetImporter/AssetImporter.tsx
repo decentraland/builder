@@ -11,7 +11,7 @@ import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
-import { getExtension, createDefaultImportedFile, getDefaultMetadata, ASSET_MANIFEST, MAX_FILE_SIZE, truncateFileName } from './utils'
+import { getExtension, createDefaultImportedFile, getMetrics, ASSET_MANIFEST, MAX_FILE_SIZE, truncateFileName } from './utils'
 
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
@@ -162,7 +162,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
         category: manifestParsed ? manifestParsed.category : 'decorations',
         url: assetModel,
         contents,
-        metadata: getDefaultMetadata()
+        metrics: getMetrics()
       }
     } as ImportedFile
   }
@@ -215,7 +215,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
           revokeMappingsObjectURL(mappings)
 
           outFile.asset.thumbnail = image
-          outFile.asset.metadata.metrics = info
+          outFile.asset.metrics = info
         }
       } catch (e) {
         // TODO: analytics

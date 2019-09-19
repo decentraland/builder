@@ -12,6 +12,7 @@ export type BaseAsset = AssetResource & {
   tags: string[]
   category: string // name of the category
   contents: Record<string, string>
+  metrics: SceneMetrics
 }
 
 export type AssetResource = {
@@ -66,13 +67,11 @@ export type RawAsset = {
   name: string
   url: string
   tags: string[]
-  category: string // name of the category
+  category: string
   assetPackId: string
   thumbnail: string
   contents: Record<string, Blob>
-  metadata: {
-    metrics: SceneMetrics
-  }
+  metrics: SceneMetrics
 }
 
 /**
