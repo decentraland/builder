@@ -202,6 +202,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
       case CreateAssetPackView.EDIT_ASSETS:
       case CreateAssetPackView.EDIT_ASSET_PACK:
         this.setState({ view: CreateAssetPackView.EXIT, back: view })
+        break
       case CreateAssetPackView.EXIT:
       case CreateAssetPackView.PROGRESS:
         // can't close here
