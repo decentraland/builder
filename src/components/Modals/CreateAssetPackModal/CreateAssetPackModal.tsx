@@ -7,10 +7,10 @@ import AssetPackEditor from 'components/AssetPackEditor'
 import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImport from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
+import { locations } from 'routing/locations'
 
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
-import { locations } from 'routing/locations'
 
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
