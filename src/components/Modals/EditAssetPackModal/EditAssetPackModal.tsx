@@ -15,7 +15,8 @@ import './EditAssetPackModal.css'
 export default class EditAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
     view: EditAssetPackView.EDIT_ASSET_PACK,
-    assetPack: this.getRawAssetPack()
+    assetPack: this.getRawAssetPack(),
+    editingAsset: null
   }
 
   getRawAssetPack(): RawAssetPack | null {
@@ -55,7 +56,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleAssetEditorSubmit = (assetPack: RawAssetPack) => {
-    this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK })
+    this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null })
   }
 
   handleAssetPackEditorSubmit = async (assetPack: RawAssetPack) => {
@@ -71,12 +72,20 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   renderAssetImport = () => {
-    return <AssetImport onSubmit={this.handleAssetImportSubmit} />
+    const { assetPack } = this.state
+    return <AssetImport assetPack={assetPack || undefined} onSubmit={this.handleAssetImportSubmit} />
   }
 
   renderAssetEditor = () => {
-    const { assetPack } = this.state
-    return <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
+    const { assetPack, editingAsset } = this.state
+    return (
+      <AssetsEditor
+        assetPack={assetPack!}
+        onChange={this.handleAssetPackChange}
+        onSubmit={this.handleAssetEditorSubmit}
+        isEditing={!!editingAsset}
+      />
+    )
   }
 
   renderAssetpackEditor = () => {
@@ -89,8 +98,16 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
         onChange={this.handleAssetPackChange}
         onSubmit={this.handleAssetPackEditorSubmit}
         onReset={this.handleReset}
-        onAddItems={() => {
-          /*a */
+        onAddAssets={() => {
+          this.setState({
+            view: EditAssetPackView.IMPORT
+          })
+        }}
+        onEditAsset={asset => {
+          this.setState({
+            view: EditAssetPackView.EDIT_ASSETS,
+            editingAsset: asset.id
+          })
         }}
         onDeleteAssetPack={() => {
           /*a */

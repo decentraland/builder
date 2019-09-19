@@ -36,6 +36,16 @@
   cursor: pointer;
 }
 
+.SidebarHeader .selected-scope .title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.SidebarHeader .selected-scope .spacer {
+  width: 45px;
+}
+
 .SidebarHeader .selected-scope .icon {
   height: 1.3em;
+  margin-right: 10px;
 }

@@ -136,9 +136,25 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     }
   }
 
+  handleAddItems = () => {
+    const { onAddAssets: onAddItems } = this.props
+    if (onAddItems) {
+      onAddItems()
+    }
+  }
+
+  handleEditAsset = (asset: RawAsset) => {
+    const { onEditAsset } = this.props
+    if (onEditAsset) {
+      onEditAsset(asset)
+    }
+  }
+
   renderAssets = () => {
     const { assetPack } = this.props
-    return assetPack.assets.map(asset => <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} hideLabel />)
+    return assetPack.assets.map(asset => (
+      <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} onClick={this.handleEditAsset} hideLabel />
+    ))
   }
 
   renderEmptyState = () => {
@@ -154,7 +170,7 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
   }
 
   render() {
-    const { assetPack, error, onAddItems: onAddItems, onDeleteAssetPack } = this.props
+    const { assetPack, error, onAddAssets: onAddItems, onDeleteAssetPack } = this.props
     const { errors, isDirty } = this.state
     const items = assetPack ? assetPack.assets.length : 0
     const hasErrors = Object.keys(errors).length > 0
@@ -181,7 +197,11 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
         <div className="assets">
           <div className="header">
             {items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}
-            {onAddItems && <Button basic>Add Items</Button>}
+            {onAddItems && (
+              <Button basic onClick={this.handleAddItems}>
+                Add Items
+              </Button>
+            )}
           </div>
           <div className="content">{assetPack && items > 0 ? this.renderAssets() : this.renderEmptyState()}</div>
         </div>

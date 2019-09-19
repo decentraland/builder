@@ -13,12 +13,23 @@ export default class AssetThumbnail extends React.PureComponent<Props> {
     this.props.onRemove(asset.id)
   }
 
+  handleClick = () => {
+    const { asset, onClick } = this.props
+    if (onClick) {
+      onClick(asset)
+    }
+  }
+
   render() {
-    const { asset, error, hideLabel } = this.props
+    const { asset, error, hideLabel, onClick } = this.props
     let classes = 'AssetThumbnail'
 
     if (error) {
       classes += ' error'
+    }
+
+    if (onClick) {
+      classes += ' clickable'
     }
 
     if (asset && asset.category === CategoryName.GROUND_CATEGORY) {
@@ -36,13 +47,15 @@ export default class AssetThumbnail extends React.PureComponent<Props> {
             <div className="close-button" onClick={this.handleRemove}>
               <Icon name="close" />
             </div>
-            {error ? <div className="error-icon" /> : <img src={asset.thumbnail} />}
-            {!hideLabel && (
-              <span className="title" title={asset.name}>
-                {asset.name}
-              </span>
-            )}
-            {error && <span className="error">{t('asset_pack.import.errors.invalid')}</span>}
+            <div onClick={this.handleClick}>
+              {error ? <div className="error-icon" /> : <img src={asset.thumbnail} />}
+              {!hideLabel && (
+                <span className="title" title={asset.name}>
+                  {asset.name}
+                </span>
+              )}
+              {error && <span className="error">{t('asset_pack.import.errors.invalid')}</span>}
+            </div>
           </div>
         }
         hideOnScroll={true}

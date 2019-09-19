@@ -119,22 +119,36 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     }
   }
 
+  getAssets() {
+    const { assetPack, isEditing } = this.props
+    let assets = []
+
+    for (let asset of assetPack.assets) {
+      if (isEditing || (!isEditing && asset.metadata)) {
+        assets.push(asset)
+      }
+    }
+
+    return assets
+  }
+
   render() {
     const { assetPack } = this.props
     const { currentAsset, errors, isDirty } = this.state
     const isFirst = currentAsset === 0
     const isLast = currentAsset === assetPack.assets.length - 1
-    const asset = assetPack.assets[currentAsset]
     const hasErrors = Object.keys(errors).length > 0
-    const currentAssetError = errors[asset.id]
     const isSubmitDisabled = isDirty ? hasErrors : false
-
+    const assets = this.getAssets()
+    const asset = assets[currentAsset]
+    debugger
+    const currentAssetError = errors[asset.id]
     return (
       <div className="AssetsEditor">
         <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={currentAssetError} />
 
         <div className="actions">
-          {assetPack.assets.length > 1 && (
+          {assets.length > 1 && (
             <div className="pagination">
               <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
               <span className="current">

@@ -18,6 +18,7 @@ export type Props = {
   selectedCategory: string | null
   isList: boolean
   search: string
+  userId: string | null
   onSetSidebarView: typeof setSidebarView
   onSelectAssetPack: typeof selectAssetPack
   onSelectCategory: typeof selectCategory
@@ -25,7 +26,7 @@ export type Props = {
   onEditAssetPack: (assetPackId: string) => void
 }
 
-export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'isList' | 'search'>
+export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'isList' | 'search' | 'userId'>
 export type MapDispatchProps = Pick<Props, 'onSetSidebarView' | 'onSelectAssetPack' | 'onSelectCategory' | 'onSearch' | 'onEditAssetPack'>
 export type MapDispatch = Dispatch<
   SetSidebarViewAction | SelectAssetPackAction | SelectCategoryAction | SearchAssetsAction | OpenModalAction

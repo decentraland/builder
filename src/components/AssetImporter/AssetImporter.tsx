@@ -15,6 +15,7 @@ import { getExtension, createDefaultImportedFile, getDefaultMetadata, ASSET_MANI
 
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
+import { RawAssetPack } from 'modules/assetPack/types'
 
 export const getSHA256 = (data: string) => {
   return crypto
@@ -25,7 +26,7 @@ export const getSHA256 = (data: string) => {
 
 export default class AssetImporter extends React.PureComponent<Props, State> {
   state: State = {
-    assetPackId: uuidv4(),
+    assetPackId: this.props.assetPack ? this.props.assetPack.id : uuidv4(),
     files: {}
   }
 
@@ -245,15 +246,20 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = () => {
+    const { assetPack } = this.props
     const { assetPackId, files } = this.state
     const assets = Object.values(files).map(file => file.asset)
-
-    this.props.onSubmit({
+    const basePack: RawAssetPack = assetPack || {
       id: assetPackId,
       title: '',
       thumbnail: '',
       url: `${assetPackId}.json`,
-      assets
+      assets: []
+    }
+
+    this.props.onSubmit({
+      ...basePack,
+      assets: assetPack ? [...assetPack.assets, ...assets] : assets
     })
   }
 

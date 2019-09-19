@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 
+import { getSub } from 'modules/auth/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { getSelectedCategory, getSelectedAssetPack, isList, getSearch } from 'modules/ui/sidebar/selectors'
@@ -11,7 +12,8 @@ const mapState = (state: RootState): MapStateProps => ({
   selectedAssetPack: getSelectedAssetPack(state),
   selectedCategory: getSelectedCategory(state),
   isList: isList(state),
-  search: getSearch(state)
+  search: getSearch(state),
+  userId: getSub(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

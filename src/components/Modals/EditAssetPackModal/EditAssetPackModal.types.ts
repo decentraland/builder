@@ -15,6 +15,7 @@ export enum EditAssetPackView {
 export type State = {
   view: EditAssetPackView
   assetPack: RawAssetPack | null
+  editingAsset: string | null
 }
 
 export type Props = ModalProps & {

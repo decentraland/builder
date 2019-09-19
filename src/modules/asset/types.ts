@@ -66,7 +66,7 @@ export type RawAsset = {
   name: string
   url: string
   tags: string[]
-  category: string // name of the category
+  category: string
   assetPackId: string
   thumbnail: string
   contents: Record<string, Blob>
