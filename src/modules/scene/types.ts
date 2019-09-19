@@ -1,4 +1,5 @@
 import { Vector3, Quaternion } from 'modules/common/types'
+import { Omit } from 'decentraland-dapps/dist/lib/types'
 
 export type EntityDefinition = {
   id: string
@@ -47,6 +48,10 @@ export type SceneMetrics = {
   bodies: number
   entities: number
   textures: number
+}
+
+export type BabylonSceneMetrics = Omit<SceneMetrics, 'meshes'> & {
+  geometries: number
 }
 
 export type Scene = {
