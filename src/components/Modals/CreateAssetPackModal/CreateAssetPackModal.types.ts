@@ -1,10 +1,13 @@
 import { Dispatch } from 'redux'
-import { RawAssetPack } from 'modules/assetPack/types'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { RawAssetPack } from 'modules/assetPack/types'
+import { LoginAction } from 'modules/auth/actions'
 import { saveAssetPackRequest, SaveAssetPackRequestAction } from 'modules/assetPack/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
+import { Project } from 'modules/project/types'
 
 export enum CreateAssetPackView {
+  LOGIN,
   IMPORT,
   EDIT_ASSETS,
   EDIT_ASSET_PACK,
@@ -18,11 +21,14 @@ export type State = {
 }
 
 export type Props = ModalProps & {
+  project: Project | null
   progress: AssetPackState['progress']
   error: AssetPackState['error']
+  isLoggedIn: boolean
   onCreateAssetPack: typeof saveAssetPackRequest
+  onLogin: (projectId: string) => void
 }
 
-export type MapStateProps = Pick<Props, 'progress' | 'error'>
-export type MapDispatchProps = Pick<Props, 'onCreateAssetPack'>
-export type MapDispatch = Dispatch<SaveAssetPackRequestAction>
+export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'isLoggedIn'>
+export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onLogin'>
+export type MapDispatch = Dispatch<SaveAssetPackRequestAction | LoginAction>

@@ -66,6 +66,11 @@
       "continue": "Keep working",
       "description": "Your Asset Pack was successfully uploaded. Check out the Item Drawer to start using it. ",
       "title": "All done!"
+    },
+    "login": {
+      "title": "Sign In",
+      "description": "You need to sign in before you create an Asset Pack",
+      "action": "Sign In"
     }
   },
   "banners": {

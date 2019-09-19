@@ -28,3 +28,7 @@
   -webkit-animation: progress-active 2s ease infinite;
   animation: progress-active 2s ease infinite;
 }
+
+.CreateAssetPackModal.ui.small.modal.login {
+  width: 540px;
+}

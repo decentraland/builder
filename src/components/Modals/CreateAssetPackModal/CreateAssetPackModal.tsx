@@ -13,7 +13,7 @@ import './CreateAssetPackModal.css'
 
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
-    view: CreateAssetPackView.IMPORT,
+    view: this.props.isLoggedIn ? CreateAssetPackView.IMPORT : CreateAssetPackView.LOGIN,
     assetPack: null
   }
 
@@ -147,6 +147,28 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     )
   }
 
+  renderLogin() {
+    return (
+      <>
+        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description')} />
+        <Modal.Content>
+          <Row center>
+            <Button primary onClick={this.handleLogin}>
+              {t('asset_pack.login.action')}
+            </Button>
+          </Row>
+        </Modal.Content>
+      </>
+    )
+  }
+
+  handleLogin = () => {
+    const { project, onLogin } = this.props
+    if (project) {
+      onLogin(project.id)
+    }
+  }
+
   handleClose = () => {
     const { view } = this.state
     const { onClose } = this.props
@@ -156,11 +178,14 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { name } = this.props
+    const { name, isLoggedIn } = this.props
     const { view } = this.state
 
     let content
     switch (view) {
+      case CreateAssetPackView.LOGIN:
+        content = this.renderLogin()
+        break
       case CreateAssetPackView.IMPORT:
         content = this.renderAssetImport()
         break
@@ -180,8 +205,13 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
         content = null
     }
 
+    let className = name
+    if (!isLoggedIn) {
+      className += ' login'
+    }
+
     return (
-      <Modal name={name} onClose={this.handleClose}>
+      <Modal name={name} className={className} onClose={this.handleClose}>
         {content}
       </Modal>
     )
