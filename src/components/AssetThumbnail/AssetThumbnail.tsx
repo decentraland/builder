@@ -47,7 +47,7 @@ export default class AssetThumbnail extends React.PureComponent<Props> {
             <div className="close-button" onClick={this.handleRemove}>
               <Icon name="close" />
             </div>
-            <div onClick={this.handleClick}>
+            <div className="wrapper" onClick={this.handleClick}>
               {error ? <div className="error-icon" /> : <img src={asset.thumbnail} />}
               {!hideLabel && (
                 <span className="title" title={asset.name}>

@@ -124,7 +124,8 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     let assets = []
 
     for (let asset of assetPack.assets) {
-      if (isEditing || (!isEditing && asset.metadata)) {
+      // todo find something useful here
+      if (isEditing || (!isEditing && true)) {
         assets.push(asset)
       }
     }

@@ -1,6 +1,7 @@
 import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { ImportedFile } from './AssetImporter.types'
+import { SceneMetrics } from 'modules/scene/types'
 
 export const ASSET_MANIFEST = 'asset.json'
 export const MAX_FILE_SIZE = 5000000
@@ -26,21 +27,19 @@ export function createDefaultImportedFile(id: string, assetPackId: string, file:
       contents: {
         [file.name]: file
       },
-      metadata: getDefaultMetadata()
+      metrics: getMetrics()
     }
   }
 }
 
-export function getDefaultMetadata() {
+export function getMetrics(): SceneMetrics {
   return {
-    metrics: {
-      triangles: 0,
-      materials: 0,
-      geometries: 0,
-      bodies: 0,
-      entities: 0,
-      textures: 0
-    }
+    triangles: 0,
+    materials: 0,
+    meshes: 0,
+    bodies: 0,
+    entities: 0,
+    textures: 0
   }
 }
 

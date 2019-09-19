@@ -93,15 +93,15 @@ export default class AssetEditor<T extends RawAsset> extends React.PureComponent
           <img src={asset.thumbnail} className={hasGroundCategory ? 'ground' : ''} />
           <span className="metric triangles">
             <Icon name="triangles" />
-            {asset.metadata.metrics.triangles} {t('metrics.triangles')}
+            {asset.metrics.triangles} {t('metrics.triangles')}
           </span>
           <span className="metric textures">
             <Icon name="textures" />
-            {asset.metadata.metrics.textures} {t('metrics.textures')}
+            {asset.metrics.textures} {t('metrics.textures')}
           </span>
           <span className="metric materials">
             <Icon name="geometries" />
-            {asset.metadata.metrics.materials} {t('metrics.materials')}
+            {asset.metrics.materials} {t('metrics.materials')}
           </span>
         </div>
         <div className="right-column">

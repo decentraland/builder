@@ -266,7 +266,7 @@
   "metrics": {
     "bodies": "物体",
     "entities": "实体",
-    "geometries": "几何体",
+    "meshes": "网格",
     "height": "高度",
     "materials": "材质",
     "textures": "纹理",

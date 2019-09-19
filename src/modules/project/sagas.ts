@@ -58,7 +58,15 @@ const DEFAULT_GROUND_ASSET: Asset = {
     'FloorBaseGrass_01/Floor_Grass01.png.png': 'QmT1WfQPMBVhgwyxV5SfcfWivZ6hqMCT74nxdKXwyZBiXb',
     'FloorBaseGrass_01/thumbnail.png': 'QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'
   },
-  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a'
+  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a',
+  metrics: {
+    triangles: 0,
+    materials: 0,
+    meshes: 0,
+    bodies: 0,
+    entities: 0,
+    textures: 0
+  }
 }
 
 export function* projectSaga() {
