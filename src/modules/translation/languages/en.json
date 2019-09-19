@@ -71,6 +71,12 @@
       "title": "Sign In",
       "description": "You need to sign in before you create an Asset Pack",
       "action": "Sign In"
+    },
+    "exit": {
+      "title": "Are you sure?",
+      "description": "You are about to exit the Asset Pack creation, do you want to proceed?",
+      "action": "Exit",
+      "back": "Go Back"
     }
   },
   "banners": {

@@ -12,11 +12,13 @@ export enum CreateAssetPackView {
   EDIT_ASSETS,
   EDIT_ASSET_PACK,
   PROGRESS,
-  SUCCESS
+  SUCCESS,
+  EXIT
 }
 
 export type State = {
   view: CreateAssetPackView
+  back: CreateAssetPackView
   assetPack: RawAssetPack | null
 }
 

@@ -63,6 +63,17 @@
       "continue": "继续工作",
       "description": "您的Asset Pack已成功上传。 查看项目抽屉以开始使用它。",
       "title": "全部做完！"
+    },
+    "login": {
+      "title": "登入",
+      "description": "您需要先登录，然后再创建Asset Pack",
+      "action": "登入"
+    },
+    "exit": {
+      "title": "你确定吗？",
+      "description": "您即将退出Asset Pack创建，是否要继续？",
+      "action": "出口",
+      "back": "回去"
     }
   },
   "banners": {
