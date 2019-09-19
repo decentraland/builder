@@ -2,7 +2,7 @@ import auth0 from 'auth0-js'
 import { env } from 'decentraland-commons'
 import uuid from 'uuid'
 
-import { AuthData } from './types'
+import { AuthData, LoginOptions } from './types'
 
 export const webAuth = new auth0.WebAuth({
   clientID: env.get('REACT_APP_AUTH0_CLIENT_ID'),
@@ -13,7 +13,7 @@ export const webAuth = new auth0.WebAuth({
   scope: 'openid email'
 })
 
-export type CallbackResult = { data: AuthData; redirectUrl: string | null }
+export type CallbackResult = { data: AuthData; options: LoginOptions }
 
 export function handleCallback(): Promise<CallbackResult> {
   return new Promise((resolve, reject) => {
@@ -29,10 +29,17 @@ export function handleCallback(): Promise<CallbackResult> {
             return
           }
 
-          let redirectUrl = null
+          let loginOptions: LoginOptions = {}
           if (auth.state) {
-            redirectUrl = localStorage.getItem(auth.state)
-            if (redirectUrl) {
+            const data = localStorage.getItem(auth.state)
+            if (data) {
+              try {
+                loginOptions = JSON.parse(data)
+              } catch (e) {
+                // ..
+              }
+            }
+            if (loginOptions) {
               localStorage.removeItem(auth.state)
             }
           }
@@ -44,7 +51,7 @@ export function handleCallback(): Promise<CallbackResult> {
             accessToken: auth.accessToken!,
             idToken: auth.idToken!
           }
-          resolve({ data, redirectUrl })
+          resolve({ data, options: loginOptions })
         })
       } else {
         reject(new Error('No access token found in the url hash'))
@@ -53,14 +60,14 @@ export function handleCallback(): Promise<CallbackResult> {
   })
 }
 
-export function login(redirectUrl?: string) {
-  let options: auth0.AuthorizeOptions = {}
-  if (redirectUrl) {
+export function login(loginOptions: LoginOptions) {
+  let authorizeOptions: auth0.AuthorizeOptions = {}
+  if (loginOptions) {
     const nonce = uuid.v4()
-    localStorage.setItem(nonce, redirectUrl)
-    options.state = nonce
+    localStorage.setItem(nonce, JSON.stringify(loginOptions))
+    authorizeOptions.state = nonce
   }
-  webAuth.authorize(options)
+  webAuth.authorize(authorizeOptions)
 }
 
 export function restoreSession(): Promise<AuthData> {

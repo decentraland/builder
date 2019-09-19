@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { RawAssetPack } from 'modules/assetPack/types'
-import { LoginAction } from 'modules/auth/actions'
+import { LoginAction, login } from 'modules/auth/actions'
 import { saveAssetPackRequest, SaveAssetPackRequestAction } from 'modules/assetPack/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Project } from 'modules/project/types'
@@ -26,7 +26,7 @@ export type Props = ModalProps & {
   error: AssetPackState['error']
   isLoggedIn: boolean
   onCreateAssetPack: typeof saveAssetPackRequest
-  onLogin: (projectId: string) => void
+  onLogin: typeof login
 }
 
 export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'isLoggedIn'>

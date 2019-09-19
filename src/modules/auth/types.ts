@@ -43,3 +43,11 @@ export type Color = {
   g: number
   b: number
 }
+
+export type LoginOptions = {
+  returnUrl?: string
+  openModal?: {
+    name: string
+    metadata?: any
+  }
+}

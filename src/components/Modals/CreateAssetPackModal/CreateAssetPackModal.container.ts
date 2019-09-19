@@ -6,7 +6,6 @@ import { isLoggedIn } from 'modules/auth/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CreateAssetPackModal.types'
 import CustomLayoutModal from './CreateAssetPackModal'
 import { login } from 'modules/auth/actions'
-import { locations } from 'routing/locations'
 import { getCurrentProject } from 'modules/project/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
@@ -18,7 +17,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCreateAssetPack: (assetPack, contents) => dispatch(saveAssetPackRequest(assetPack, contents)),
-  onLogin: (projectId: string) => dispatch(login(locations.editor(projectId)))
+  onLogin: options => dispatch(login(options))
 })
 
 export default connect(

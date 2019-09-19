@@ -10,6 +10,7 @@ import AssetsEditor from 'components/AssetsEditor'
 
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
+import { locations } from 'routing/locations'
 
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -165,7 +166,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   handleLogin = () => {
     const { project, onLogin } = this.props
     if (project) {
-      onLogin(project.id)
+      onLogin({
+        returnUrl: locations.editor(project.id),
+        openModal: {
+          name: 'CreateAssetPackModal'
+        }
+      })
     }
   }
 
