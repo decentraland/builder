@@ -154,12 +154,4 @@ window.onbeforeunload = function() {
   return syncCount > 0 || null
 }
 
-store.dispatch({
-  type: 'Open modal',
-  payload: {
-    name: 'CreateAssetPackModal',
-    metadata: null
-  }
-})
-
 export { store, history }

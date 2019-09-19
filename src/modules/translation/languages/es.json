@@ -66,6 +66,17 @@
       "continue": "Continuar trabajando",
       "description": "Tu Asset Pack fue subido exitosamente. Visita el Listado de objetos para comenzar a usarlo.",
       "title": "¡Todo listo!"
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "description": "Necesitas iniciar sesión para crear un Asset Pack",
+      "action": "Iniciar Sesión"
+    },
+    "exit": {
+      "title": "Estas seguro?",
+      "description": "Estas a punto de salir de la creación de tu Asset Pack, deseas continuar?",
+      "action": "Salir",
+      "back": "Volver"
     }
   },
   "banners": {

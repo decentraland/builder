@@ -5,24 +5,24 @@ import {
   setSidebarView,
   selectCategory,
   selectAssetPack,
-  SetSidebarViewAction,
   SelectAssetPackAction,
   SelectCategoryAction,
   searchAssets,
   SearchAssetsAction
 } from 'modules/ui/sidebar/actions'
+import { OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
   selectedAssetPack: AssetPack | null
   selectedCategory: string | null
-  isList: boolean
   search: string
   onSetSidebarView: typeof setSidebarView
   onSelectAssetPack: typeof selectAssetPack
   onSelectCategory: typeof selectCategory
   onSearch: typeof searchAssets
+  onCreateAssetPack: () => void
 }
 
-export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'isList' | 'search'>
-export type MapDispatchProps = Pick<Props, 'onSetSidebarView' | 'onSelectAssetPack' | 'onSelectCategory' | 'onSearch'>
-export type MapDispatch = Dispatch<SetSidebarViewAction | SelectAssetPackAction | SelectCategoryAction | SearchAssetsAction>
+export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'search'>
+export type MapDispatchProps = Pick<Props, 'onSelectAssetPack' | 'onSelectCategory' | 'onSearch' | 'onCreateAssetPack'>
+export type MapDispatch = Dispatch<SelectAssetPackAction | SelectCategoryAction | SearchAssetsAction | OpenModalAction>

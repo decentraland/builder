@@ -7,13 +7,15 @@ import AssetPackEditor from 'components/AssetPackEditor'
 import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImport from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
+import { locations } from 'routing/locations'
 
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
 
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
-    view: CreateAssetPackView.IMPORT,
+    view: this.props.isLoggedIn ? CreateAssetPackView.IMPORT : CreateAssetPackView.LOGIN,
+    back: CreateAssetPackView.IMPORT,
     assetPack: null
   }
 
@@ -73,14 +75,13 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   renderAssetEditor = () => {
-    const { onClose } = this.props
     const { assetPack } = this.state
     return (
       <>
         <ModalNavigation
           title={t('asset_pack.edit_asset.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
-          onClose={onClose}
+          onClose={this.handleClose}
         />
         <Modal.Content>
           <AssetsEditor assetPack={assetPack!} onChange={this.handleAssetPackChange} onSubmit={this.handleAssetEditorSubmit} />
@@ -90,14 +91,14 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   renderAssetpackEditor = () => {
-    const { onClose, error } = this.props
+    const { error } = this.props
     const { assetPack } = this.state
     return (
       <>
         <ModalNavigation
           title={t('asset_pack.edit_asset.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
-          onClose={onClose}
+          onClose={this.handleClose}
         />
         <Modal.Content>
           <AssetPackEditor
@@ -147,12 +148,70 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     )
   }
 
+  renderLogin() {
+    return (
+      <>
+        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description')} />
+        <Modal.Content>
+          <Row center>
+            <Button primary onClick={this.handleLogin}>
+              {t('asset_pack.login.action')}
+            </Button>
+          </Row>
+        </Modal.Content>
+      </>
+    )
+  }
+
+  renderExit() {
+    const { onClose } = this.props
+    return (
+      <>
+        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.exit.description')} />
+        <Modal.Actions className="exit-actions">
+          <Button primary onClick={onClose}>
+            {t('asset_pack.exit.action')}
+          </Button>
+          <Button onClick={this.handleBack}>{t('asset_pack.exit.back')}</Button>
+        </Modal.Actions>
+      </>
+    )
+  }
+
+  handleLogin = () => {
+    const { project, onLogin } = this.props
+    if (project) {
+      onLogin({
+        returnUrl: locations.editor(project.id),
+        openModal: {
+          name: 'CreateAssetPackModal'
+        }
+      })
+    }
+  }
+
   handleClose = () => {
     const { view } = this.state
     const { onClose } = this.props
-    if (view !== CreateAssetPackView.PROGRESS) {
-      onClose()
+    switch (view) {
+      case CreateAssetPackView.LOGIN:
+      case CreateAssetPackView.SUCCESS:
+      case CreateAssetPackView.IMPORT:
+        onClose()
+        break
+      case CreateAssetPackView.EDIT_ASSETS:
+      case CreateAssetPackView.EDIT_ASSET_PACK:
+        this.setState({ view: CreateAssetPackView.EXIT, back: view })
+        break
+      case CreateAssetPackView.EXIT:
+      case CreateAssetPackView.PROGRESS:
+        // can't close here
+        break
     }
+  }
+
+  handleBack = () => {
+    this.setState({ view: this.state.back })
   }
 
   render() {
@@ -160,7 +219,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { view } = this.state
 
     let content
+    let className = name
     switch (view) {
+      case CreateAssetPackView.LOGIN:
+        content = this.renderLogin()
+        className += ' narrow'
+        break
       case CreateAssetPackView.IMPORT:
         content = this.renderAssetImport()
         break
@@ -176,12 +240,16 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
       case CreateAssetPackView.SUCCESS:
         content = this.renderSuccess()
         break
+      case CreateAssetPackView.EXIT:
+        content = this.renderExit()
+        className += ' narrow'
+        break
       default:
         content = null
     }
 
     return (
-      <Modal name={name} onClose={this.handleClose}>
+      <Modal name={name} className={className} onClose={this.handleClose}>
         {content}
       </Modal>
     )
