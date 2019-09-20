@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Header } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Icon from 'components/Icon'
 import { Props } from './SidebarCard.types'
@@ -12,12 +13,13 @@ export default class SidebarCard extends React.PureComponent<Props> {
   }
 
   render() {
-    const { title, thumbnail, isVisible } = this.props
+    const { title, thumbnail, isVisible, isNew } = this.props
 
     if (!isVisible) return null
 
     return (
       <div className="SidebarCard" onClick={this.handleClick}>
+        {isNew ? <div className="new-badge">{t('global.new')}</div> : null}
         <img className="thumbnail" src={thumbnail} alt="" />
         <Header size="small" className="title">
           {title}
