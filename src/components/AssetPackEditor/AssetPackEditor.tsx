@@ -222,7 +222,7 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
 
         <div className="actions">
           {onDeleteAssetPack && (
-            <Button basic onClick={this.handleDeleteAssetPack}>
+            <Button primary inverted onClick={this.handleDeleteAssetPack}>
               Delete AssetPack
             </Button>
           )}
