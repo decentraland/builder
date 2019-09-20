@@ -1,7 +1,7 @@
 {
   "asset_pack": {
+    "title_create": "Create Asset Pack",
     "edit_asset": {
-      "title_create": "Create Asset Pack",
       "description_create": "Review your items, add tags and more stuff.",
       "action": "Continue",
       "action_skip": "Skip step",
@@ -26,7 +26,6 @@
       }
     },
     "edit_assetpack": {
-      "title_create": "Create Asset Pack",
       "description_create": "Awesome! Enter a unique name for your Asset Pack.",
       "action": "Create Asset Pack",
       "errors": {
@@ -45,7 +44,6 @@
       "reset": "Add new Assets"
     },
     "import": {
-      "title_create": "Create Asset Pack",
       "description_create": "Start by adding items to your pack.",
       "action": "Import asset",
       "action_many": "Import {count} assets",

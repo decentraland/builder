@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Icon } from 'decentraland-ui'
+import { Header, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { SidebarView } from 'modules/ui/sidebar/types'
@@ -50,7 +50,17 @@ export default class SidebarHeader extends React.PureComponent<Props> {
             </span>
           )}
         </div>
-        {isRoot && !isSearch ? <div className="create-asset-pack-button" onClick={onCreateAssetPack} /> : null}
+        {isRoot && !isSearch ? (
+          <Popup
+            className="create-asset-pack-popup"
+            content={t('asset_pack.title_create')}
+            position="top right"
+            on="hover"
+            basic
+            inverted
+            trigger={<div className="create-asset-pack-button" onClick={onCreateAssetPack} />}
+          />
+        ) : null}
       </Header>
     )
   }
