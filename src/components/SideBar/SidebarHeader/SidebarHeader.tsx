@@ -50,7 +50,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
               <div className="spacer">
                 {selectedAssetPack && selectedAssetPack.userId === userId && (
                   <Button basic onClick={this.handleEditAssetPack}>
-                    Edit
+                    {t('itemdrawer.edit_asset_pack')}
                   </Button>
                 )}
               </div>

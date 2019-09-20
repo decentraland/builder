@@ -3,6 +3,8 @@
     "edit_asset": {
       "title_create": "Create Asset Pack",
       "description_create": "Review your items, add tags and more stuff.",
+      "title_edit": "Edit Asset Pack",
+      "description_edit": "Review your items, add tags and more stuff.",
       "action": "Continue",
       "action_skip": "Skip step",
       "category": {
@@ -28,7 +30,12 @@
     "edit_assetpack": {
       "title_create": "Create Asset Pack",
       "description_create": "Awesome! Enter a unique name for your Asset Pack.",
-      "action": "Create Asset Pack",
+      "action_create": "Create Asset Pack",
+      "title_edit": "Edit Asset Pack",
+      "description_edit": "Awesome! Enter a unique name for your Asset Pack.",
+      "action_edit": "Edit Asset Pack",
+      "action_delete": "Delete Asset Pack",
+      "action_add_items": "Add items",
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
@@ -47,6 +54,8 @@
     "import": {
       "title_create": "Create Asset Pack",
       "description_create": "Start by adding items to your pack.",
+      "title_edit": "Create Asset Pack",
+      "description_edit": "Start by adding items to your pack.",
       "action": "Import asset",
       "action_many": "Import {count} assets",
       "cta": "Drag your Asset's .zip file here, or {action}",
@@ -62,6 +71,7 @@
     },
     "progress": {
       "creating_asset_pack": "Creating Asset Pack",
+      "updating_asset_pack": "Updating Asset Pack",
       "uploading_contents": "Uploading Asset Pack contents"
     },
     "success": {
@@ -71,14 +81,20 @@
     },
     "login": {
       "title": "Sign In",
-      "description": "You need to sign in before you create an Asset Pack",
+      "description_create": "You need to sign in before you create an Asset Pack",
+      "description_edit": "You need to sign in before you edit an Asset Pack",
       "action": "Sign In"
     },
     "exit": {
-      "title": "Are you sure?",
-      "description": "You are about to exit the Asset Pack creation, do you want to proceed?",
+      "title_create": "Are you sure?",
+      "description_create": "You are about to exit the Asset Pack creation, do you want to proceed?",
+      "title_edit": "Are you sure?",
+      "description_edit": "You are about to exit the Asset Pack update, do you want to proceed?",
       "action": "Exit",
       "back": "Go Back"
+    },
+    "confirm_delete": {
+      "description": "You are about to delete this Asset Pack. This action cannot be undone."
     }
   },
   "banners": {
@@ -273,7 +289,8 @@
     "no_results": "No results",
     "results": "Results",
     "search": "Search items",
-    "title": "Item Catalog"
+    "title": "Item Catalog",
+    "edit_asset_pack": "Edit"
   },
   "layout_picker": {
     "columns": "columns",

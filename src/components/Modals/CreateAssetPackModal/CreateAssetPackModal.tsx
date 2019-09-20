@@ -200,7 +200,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   renderLogin() {
     return (
       <>
-        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description')} />
+        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description_create')} />
         <Modal.Content>
           <Row center>
             <Button primary onClick={this.handleLogin}>
@@ -216,7 +216,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { onClose } = this.props
     return (
       <>
-        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.exit.description')} />
+        <ModalNavigation title={t('asset_pack.exit.title_create')} subtitle={t('asset_pack.exit.description_create')} />
         <Modal.Actions className="exit-actions">
           <Button primary onClick={onClose}>
             {t('asset_pack.exit.action')}

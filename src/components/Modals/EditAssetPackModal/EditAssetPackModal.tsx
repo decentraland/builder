@@ -178,8 +178,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     return (
       <>
         <ModalNavigation
-          title={t('asset_pack.import.title_create')}
-          subtitle={t('asset_pack.import.description_create')}
+          title={t('asset_pack.import.title_edit')}
+          subtitle={t('asset_pack.import.description_edit')}
           onClose={onClose}
           onBack={this.handleBackToStart}
         />
@@ -196,8 +196,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     return (
       <>
         <ModalNavigation
-          title={t('asset_pack.edit_asset.title_create')}
-          subtitle={t('asset_pack.edit_asset.description_create')}
+          title={t('asset_pack.edit_asset.title_edit')}
+          subtitle={t('asset_pack.edit_asset.description_edit')}
           onClose={this.handleClose}
           onBack={editingAsset ? this.handleBackToStart : undefined}
         />
@@ -222,8 +222,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     return (
       <>
         <ModalNavigation
-          title={t('asset_pack.edit_asset.title_create')}
-          subtitle={t('asset_pack.edit_asset.description_create')}
+          title={t('asset_pack.edit_asset.title_edit')}
+          subtitle={t('asset_pack.edit_asset.description_edit')}
           onClose={this.handleClose}
         />
         <Modal.Content>
@@ -253,7 +253,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
 
     return (
       <>
-        <ModalNavigation title={t('asset_pack.progress.creating_asset_pack')} subtitle={t('asset_pack.progress.uploading_contents')} />
+        <ModalNavigation title={t('asset_pack.progress.updating_asset_pack')} subtitle={t('asset_pack.progress.uploading_contents')} />
         <Modal.Content>
           <div className="progress-bar-container">
             <div className={className} style={{ width: `${progress.value}%` }} />
@@ -281,7 +281,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   renderLogin() {
     return (
       <>
-        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description')} />
+        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description_edit')} />
         <Modal.Content>
           <Row center>
             <Button primary onClick={this.handleLogin}>
@@ -297,7 +297,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     const { onClose } = this.props
     return (
       <>
-        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.exit.description')} />
+        <ModalNavigation title={t('asset_pack.exit.title_edit')} subtitle={t('asset_pack.exit.description_edit')} />
         <Modal.Actions className="exit-actions">
           <Button primary onClick={onClose}>
             {t('asset_pack.exit.action')}

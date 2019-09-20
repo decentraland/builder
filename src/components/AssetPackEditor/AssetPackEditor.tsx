@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Field, Header, Button } from 'decentraland-ui'
+import { Field, Header, Button, Icon as SemanticIcon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
 import { RawAssetPack } from 'modules/assetPack/types'
@@ -207,7 +207,7 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
             {items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}
             {onAddItems && items > 0 && (
               <Button basic onClick={this.handleAddItems}>
-                Add Items
+                {t('asset_pack.edit_assetpack.action_add_items')}
               </Button>
             )}
           </div>
@@ -223,11 +223,12 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
         <div className="actions">
           {onDeleteAssetPack && (
             <Button primary inverted onClick={this.handleDeleteAssetPack}>
-              Delete AssetPack
+              <SemanticIcon name="trash" />
+              {t('asset_pack.edit_assetpack.action_delete')}
             </Button>
           )}
           <Button className="submit" disabled={isSubmitDisabled} onClick={this.handleSubmit} primary>
-            {t('asset_pack.edit_assetpack.action')}
+            {onDeleteAssetPack ? t('asset_pack.edit_assetpack.action_edit') : t('asset_pack.edit_assetpack.action_create')}
           </Button>
         </div>
       </div>
