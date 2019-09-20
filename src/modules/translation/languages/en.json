@@ -2,7 +2,7 @@
   "asset_pack": {
     "title_create": "Create Asset Pack",
     "edit_asset": {
-      "description_create": "Review your items, add tags and more stuff.",
+      "description_create": "Review your assets.",
       "action": "Continue",
       "action_skip": "Skip step",
       "category": {
@@ -44,7 +44,7 @@
       "reset": "Add new Assets"
     },
     "import": {
-      "description_create": "Start by adding items to your pack.",
+      "description_create": "Start by adding assets to your pack.",
       "action": "Import asset",
       "action_many": "Import {count} assets",
       "cta": "Drag your Asset's .zip file here, or {action}",
@@ -62,7 +62,7 @@
     },
     "success": {
       "continue": "Keep working",
-      "description": "Your Asset Pack was successfully uploaded. Check out the Item Drawer to start using it. ",
+      "description": "Your Asset Pack was successfully uploaded. Check out the Asset Packs list to start using it. ",
       "title": "All done!"
     },
     "login": {
@@ -268,8 +268,8 @@
     "empty_ground": "No Ground",
     "no_results": "No results",
     "results": "Results",
-    "search": "Search items",
-    "title": "Item Catalog"
+    "search": "Search assets",
+    "title": "Asset Packs"
   },
   "layout_picker": {
     "columns": "columns",
