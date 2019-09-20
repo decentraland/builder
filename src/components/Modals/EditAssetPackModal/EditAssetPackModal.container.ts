@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { getSub, isLoggedIn } from 'modules/auth/selectors'
-import { saveAssetPackRequest } from 'modules/assetPack/actions'
+import { saveAssetPackRequest, deleteAssetPackRequest } from 'modules/assetPack/actions'
 import { getProgress, getError, getFullAssetPacks } from 'modules/assetPack/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './EditAssetPackModal.types'
 import CustomLayoutModal from './EditAssetPackModal'
@@ -19,6 +19,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCreateAssetPack: (assetPack, contents) => dispatch(saveAssetPackRequest(assetPack, contents)),
+  onDeleteAssetPack: assetPack => dispatch(deleteAssetPackRequest(assetPack)),
   onLogin: options => dispatch(login(options))
 })
 

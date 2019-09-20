@@ -86,6 +86,32 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     this.props.onCreateAssetPack(fullAssetPack, contents)
   }
 
+  handleAddAssets = () => {
+    this.setState({
+      view: EditAssetPackView.IMPORT
+    })
+  }
+
+  handleEditAsset = (asset: RawAsset) => {
+    this.setState({
+      view: EditAssetPackView.EDIT_ASSETS,
+      editingAsset: asset.id
+    })
+  }
+
+  handleDeleteAssetPack = async () => {
+    const { ignoredAssets, assetPack } = this.state
+    const [fullAssetPack] = await rawAssetPackToFullAssetPack(assetPack, ignoredAssets)
+    this.props.onDeleteAssetPack(fullAssetPack)
+    this.props.onClose()
+  }
+
+  handleConfirmDeleteAssetPack = async () => {
+    this.setState({
+      view: EditAssetPackView.CONFIRM_DELETE
+    })
+  }
+
   handleReset = () => {
     this.setState({
       view: EditAssetPackView.IMPORT,
@@ -188,20 +214,9 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
             onChange={this.handleAssetPackChange}
             onSubmit={this.handleAssetPackEditorSubmit}
             onReset={this.handleReset}
-            onAddAssets={() => {
-              this.setState({
-                view: EditAssetPackView.IMPORT
-              })
-            }}
-            onEditAsset={asset => {
-              this.setState({
-                view: EditAssetPackView.EDIT_ASSETS,
-                editingAsset: asset.id
-              })
-            }}
-            onDeleteAssetPack={() => {
-              /*a */
-            }}
+            onAddAssets={this.handleAddAssets}
+            onEditAsset={this.handleEditAsset}
+            onDeleteAssetPack={this.handleConfirmDeleteAssetPack}
             error={error}
           />
         </Modal.Content>
@@ -274,6 +289,20 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     )
   }
 
+  renderDeleteConfirmation() {
+    return (
+      <>
+        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.confirm_delete.description')} />
+        <Modal.Actions className="exit-actions">
+          <Button primary onClick={this.handleDeleteAssetPack}>
+            {t('asset_pack.confirm_delete.action')}
+          </Button>
+          <Button onClick={this.handleBack}>{t('asset_pack.confirm_delete.back')}</Button>
+        </Modal.Actions>
+      </>
+    )
+  }
+
   render() {
     const { name } = this.props
     const { view } = this.state
@@ -302,6 +331,10 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
         break
       case EditAssetPackView.EXIT:
         content = this.renderExit()
+        className += ' narrow'
+        break
+      case EditAssetPackView.CONFIRM_DELETE:
+        content = this.renderDeleteConfirmation()
         className += ' narrow'
         break
       default:

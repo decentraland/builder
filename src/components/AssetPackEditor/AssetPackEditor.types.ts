@@ -10,7 +10,7 @@ export type Props = {
   onReset: () => void
   onAddAssets?: () => void
   onEditAsset?: (asset: RawAsset) => void
-  onDeleteAssetPack?: () => void
+  onDeleteAssetPack?: (assetPack: RawAssetPack) => Promise<void>
 }
 
 export type State = {

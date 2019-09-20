@@ -6,11 +6,13 @@ import {
   LoadAssetPacksSuccessAction,
   LoadAssetPacksFailureAction,
   SaveAssetPackFailureAction,
+  DeleteAssetPackSuccessAction,
   SetProgressAction,
   LOAD_ASSET_PACKS_REQUEST,
   LOAD_ASSET_PACKS_SUCCESS,
   LOAD_ASSET_PACKS_FAILURE,
   SAVE_ASSET_PACK_FAILURE,
+  DELETE_ASSET_PACK_SUCCESS,
   SET_PROGRESS
 } from 'modules/assetPack/actions'
 
@@ -39,6 +41,7 @@ export type AssetPackReducerAction =
   | LoadAssetPacksSuccessAction
   | LoadAssetPacksFailureAction
   | SaveAssetPackFailureAction
+  | DeleteAssetPackSuccessAction
   | SetProgressAction
 
 export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetPackState => {
@@ -82,6 +85,17 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
         ...state,
         error: action.payload.error
       }
+    }
+    case DELETE_ASSET_PACK_SUCCESS: {
+      const { assetPack } = action.payload
+      const newState = {
+        ...state,
+        data: {
+          ...state.data
+        }
+      }
+      delete newState.data[assetPack.id]
+      return newState
     }
     case SET_PROGRESS: {
       const { stage, value } = action.payload

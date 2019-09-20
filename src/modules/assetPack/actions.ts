@@ -36,3 +36,17 @@ export type SaveAssetPackFailureAction = ReturnType<typeof saveAssetPackFailure>
 export const SET_PROGRESS = 'Set AssetPack progress'
 export const setProgress = (stage: ProgressStage, value: number) => action(SET_PROGRESS, { stage, value })
 export type SetProgressAction = ReturnType<typeof setProgress>
+
+// Delete AssetPack
+
+export const DELETE_ASSET_PACK_REQUEST = '[Request] Delete AssetPack'
+export const DELETE_ASSET_PACK_SUCCESS = '[Success] Delete AssetPack'
+export const DELETE_ASSET_PACK_FAILURE = '[Failure] Delete AssetPack'
+
+export const deleteAssetPackRequest = (assetPack: FullAssetPack) => action(DELETE_ASSET_PACK_REQUEST, { assetPack })
+export const deleteAssetPackSuccess = (assetPack: FullAssetPack) => action(DELETE_ASSET_PACK_SUCCESS, { assetPack })
+export const deleteAssetPackFailure = (assetPack: FullAssetPack, error: string) => action(DELETE_ASSET_PACK_FAILURE, { assetPack, error })
+
+export type DeleteAssetPackRequestAction = ReturnType<typeof deleteAssetPackRequest>
+export type DeleteAssetPackSuccessAction = ReturnType<typeof deleteAssetPackSuccess>
+export type DeleteAssetPackFailureAction = ReturnType<typeof deleteAssetPackFailure>

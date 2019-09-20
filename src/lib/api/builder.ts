@@ -296,6 +296,10 @@ export class BuilderAPI extends BaseAPI {
     const remotePacks: RemoteAssetPack[] = await this.request('get', `/assetPacks`, null, authorize())
     return remotePacks.map(fromRemoteAssetPack)
   }
+
+  async deleteAssetPack(assetPack: FullAssetPack) {
+    await this.request('delete', `/assetPacks/${assetPack.id}`, null, authorize())
+  }
 }
 
 export const builder = new BuilderAPI(BUILDER_SERVER_URL)

@@ -150,6 +150,14 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
     }
   }
 
+  handleDeleteAssetPack = () => {
+    const { assetPack, onDeleteAssetPack } = this.props
+
+    if (onDeleteAssetPack) {
+      onDeleteAssetPack(assetPack)
+    }
+  }
+
   renderAssets = () => {
     const { assetPack } = this.props
     return assetPack.assets.map(asset => (
@@ -197,7 +205,7 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
         <div className="assets">
           <div className="header">
             {items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}
-            {onAddItems && (
+            {onAddItems && items > 0 && (
               <Button basic onClick={this.handleAddItems}>
                 Add Items
               </Button>
@@ -213,7 +221,11 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
         ) : null}
 
         <div className="actions">
-          {onDeleteAssetPack && <Button basic>Delete AssetPack</Button>}
+          {onDeleteAssetPack && (
+            <Button basic onClick={this.handleDeleteAssetPack}>
+              Delete AssetPack
+            </Button>
+          )}
           <Button className="submit" disabled={isSubmitDisabled} onClick={this.handleSubmit} primary>
             {t('asset_pack.edit_assetpack.action')}
           </Button>
