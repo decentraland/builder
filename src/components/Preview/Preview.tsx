@@ -21,6 +21,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     } else {
       this.moveCanvas()
       this.props.onOpenEditor()
+      this.subscribeKeyDownEvent()
     }
   }
 
@@ -28,7 +29,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     if (canvas) {
       document.getElementsByTagName('body')[0].appendChild(canvas)
     }
-    editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
+    this.unsubscribeKeyDownEvent()
   }
 
   moveCanvas = () => {
@@ -36,6 +37,14 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.canvasContainer.current.appendChild(canvas)
       editorWindow.editor.resize()
     }
+  }
+
+  subscribeKeyDownEvent = () => {
+    editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
+  }
+
+  unsubscribeKeyDownEvent = () => {
+    editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
   }
 
   handleKeyDownEvent(event: KeyboardEvent) {
@@ -76,7 +85,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.moveCanvas()
       this.props.onOpenEditor()
 
-      editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
+      this.subscribeKeyDownEvent()
 
       isDCLInitialized = true
     } catch (error) {
