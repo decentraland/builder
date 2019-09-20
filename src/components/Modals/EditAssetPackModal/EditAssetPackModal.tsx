@@ -113,10 +113,19 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleReset = () => {
-    this.setState({
-      view: EditAssetPackView.IMPORT,
-      assetPack: this.getRawAssetPack()
-    })
+    const { assetPack } = this.props
+    if (assetPack) {
+      this.setState({
+        view: EditAssetPackView.IMPORT,
+        assetPack: {
+          id: assetPack.id,
+          title: assetPack.title,
+          thumbnail: assetPack.thumbnail,
+          userId: assetPack.userId,
+          assets: []
+        }
+      })
+    }
   }
 
   handleLogin = () => {
