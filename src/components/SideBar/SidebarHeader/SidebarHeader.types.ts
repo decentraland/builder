@@ -2,10 +2,8 @@ import { Dispatch } from 'redux'
 
 import { AssetPack } from 'modules/assetPack/types'
 import {
-  setSidebarView,
   selectCategory,
   selectAssetPack,
-  SetSidebarViewAction,
   SelectAssetPackAction,
   SelectCategoryAction,
   searchAssets,
@@ -16,18 +14,17 @@ import { OpenModalAction } from 'modules/modal/actions'
 export type Props = {
   selectedAssetPack: AssetPack | null
   selectedCategory: string | null
-  isList: boolean
   search: string
   userId: string | null
-  onSetSidebarView: typeof setSidebarView
+
   onSelectAssetPack: typeof selectAssetPack
   onSelectCategory: typeof selectCategory
   onSearch: typeof searchAssets
+
   onEditAssetPack: (assetPackId: string) => void
+  onCreateAssetPack: () => void
 }
 
-export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'isList' | 'search' | 'userId'>
-export type MapDispatchProps = Pick<Props, 'onSetSidebarView' | 'onSelectAssetPack' | 'onSelectCategory' | 'onSearch' | 'onEditAssetPack'>
-export type MapDispatch = Dispatch<
-  SetSidebarViewAction | SelectAssetPackAction | SelectCategoryAction | SearchAssetsAction | OpenModalAction
->
+export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'search' | 'userId'>
+export type MapDispatchProps = Pick<Props, 'onSelectAssetPack' | 'onSelectCategory' | 'onSearch' | 'onEditAssetPack' | 'onCreateAssetPack'>
+export type MapDispatch = Dispatch<SelectAssetPackAction | SelectCategoryAction | SearchAssetsAction | OpenModalAction>

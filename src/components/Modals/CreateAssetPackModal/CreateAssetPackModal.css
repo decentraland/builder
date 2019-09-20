@@ -28,3 +28,16 @@
   -webkit-animation: progress-active 2s ease infinite;
   animation: progress-active 2s ease infinite;
 }
+
+.CreateAssetPackModal.ui.small.modal.narrow {
+  width: 540px;
+}
+
+.CreateAssetPackModal .exit-actions {
+  flex-direction: column;
+}
+
+.CreateAssetPackModal.ui.modal .actions.exit-actions .ui.button + .ui.button {
+  margin-left: 0px;
+  margin-top: 16px;
+}
