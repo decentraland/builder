@@ -9,12 +9,15 @@ import {
   SAVE_ASSET_PACK_REQUEST,
   setProgress,
   saveAssetPackFailure,
-  saveAssetPackSuccess
+  saveAssetPackSuccess,
+  loadAssetPacksRequest
 } from 'modules/assetPack/actions'
 import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
+import { fixAssetMappings } from 'modules/scene/actions'
+import { isDataUrl } from 'modules/media/utils'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -40,6 +43,7 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
     const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
     yield put(loadAssetPacksSuccess(assetPacks))
+    yield put(fixAssetMappings())
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))
   }
@@ -49,17 +53,16 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   const { assetPack, contents } = action.payload
   const total = assetPack.assets.length
 
-  debugger
-
   try {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
     yield call(() => builder.saveAssetPack(assetPack))
-    debugger
+
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
-    if (assetPack.thumbnail.startsWith('data:')) {
+
+    if (isDataUrl(assetPack.thumbnail)) {
       yield call(() => builder.saveAssetPackThumbnail(assetPack))
     }
-    debugger
+
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
@@ -69,8 +72,8 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
         call(handleAssetContentsUploadProgress(total))
       ])
     )
-    debugger
     yield put(saveAssetPackSuccess(assetPack))
+    yield put(loadAssetPacksRequest())
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))
   }

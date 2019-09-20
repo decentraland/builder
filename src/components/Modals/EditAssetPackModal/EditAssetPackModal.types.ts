@@ -3,29 +3,40 @@ import { RawAssetPack, FullAssetPack } from 'modules/assetPack/types'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { saveAssetPackRequest, SaveAssetPackRequestAction } from 'modules/assetPack/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
+import { Project } from 'modules/project/types'
+import { login, LoginAction } from 'modules/auth/actions'
 
 export enum EditAssetPackView {
+  LOGIN,
   IMPORT,
   EDIT_ASSETS,
   EDIT_ASSET_PACK,
   PROGRESS,
-  SUCCESS
+  SUCCESS,
+  EXIT
 }
 
 export type State = {
   view: EditAssetPackView
-  assetPack: RawAssetPack | null
+  back: EditAssetPackView
+  assetPack: RawAssetPack
   editingAsset: string | null
+  ignoredAssets: string[]
 }
 
 export type Props = ModalProps & {
+  project: Project | null
   progress: AssetPackState['progress']
   error: AssetPackState['error']
-  onCreateAssetPack: typeof saveAssetPackRequest
   assetPack: FullAssetPack | undefined
+  userId: string | null
+  isLoggedIn: boolean
+  onCreateAssetPack: typeof saveAssetPackRequest
+
+  onLogin: typeof login
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'progress' | 'error' | 'assetPack'>
-export type MapDispatchProps = Pick<Props, 'onCreateAssetPack'>
-export type MapDispatch = Dispatch<SaveAssetPackRequestAction>
+export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'assetPack' | 'userId' | 'isLoggedIn'>
+export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onLogin'>
+export type MapDispatch = Dispatch<SaveAssetPackRequestAction | LoginAction>

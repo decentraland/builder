@@ -51,7 +51,9 @@
       "action_many": "Import {count} assets",
       "cta": "Drag your Asset's .zip file here, or {action}",
       "errors": {
-        "invalid": "Invalid asset",
+        "invalid": "Invalid Asset",
+        "duplicated": "Duplicated Asset",
+        "duplicated_asset": "{name}: The asset \"{asset}\" already contains a file named \"{model}\"",
         "max_file_size": "{name}: File size exceeds {max}mb limit",
         "missing_extension": "{name}: Missing file extension",
         "missing_model": "{name}: Missing 3D model (.gltf or .glb)",

@@ -65,6 +65,7 @@
   color: red;
   font-size: 13px;
   margin-top: 0px;
+  text-align: center;
 }
 
 .AssetThumbnail.error .error-icon {

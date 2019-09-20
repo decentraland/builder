@@ -16,7 +16,6 @@ export const getData = createSelector<RootState, AssetPackState, AssetPackState[
       id: COLLECTIBLE_ASSET_PACK_ID,
       title: 'Collectibles',
       thumbnail: `${env.get('PUBLIC_URL')}/images/nft-icon.png`,
-      url: '',
       assets: []
     }
     return assetPacks

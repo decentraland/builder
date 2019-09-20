@@ -7,7 +7,6 @@ import { Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
-import { RawAssetPack } from 'modules/assetPack/types'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
@@ -54,6 +53,8 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
     }
 
     const id = !file.error ? file.asset.id : file.id
+    const isDuplicated = file.error && file.asset
+
     return (
       <AssetThumbnail
         key={id}
@@ -63,6 +64,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
           name: !file.error ? file.asset.name : file.fileName
         }}
         error={file.error}
+        errorLabel={isDuplicated ? t('asset_pack.import.errors.duplicated') : t('asset_pack.import.errors.invalid')}
         onRemove={this.handleRemoveProject}
       />
     )
@@ -149,7 +151,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
       return contents
     }, {})
 
-    const id = getSHA256(`${assetPackId}/${file.name}`)
+    const id = getSHA256(`${assetPackId}/${basename(assetModel)}`)
 
     return {
       id,
@@ -184,6 +186,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
+    const { assetPack } = this.props
     const { files } = this.state
     let newFiles: Record<string, ImportedFile> = {}
 
@@ -216,10 +219,23 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
 
           outFile.asset.thumbnail = image
           outFile.asset.metrics = info
+
+          const existingAsset = assetPack.assets.find(asset => asset.id === outFile!.asset.id)
+
+          if (existingAsset) {
+            throw new Error(
+              t('asset_pack.import.errors.duplicated_asset', {
+                name: truncateFileName(file.name),
+                model: outFile.asset.url,
+                asset: existingAsset.name
+              })
+            )
+          }
         }
       } catch (e) {
         // TODO: analytics
         outFile = {
+          asset: outFile ? outFile!.asset : null,
           id: getSHA256(file.name),
           fileName: file.name,
           error: e.message || t('asset_pack.import.errors.invalid')
@@ -246,18 +262,11 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
 
   handleSubmit = () => {
     const { assetPack } = this.props
-    const { assetPackId, files } = this.state
+    const { files } = this.state
     const assets = Object.values(files).map(file => file.asset)
-    const basePack: RawAssetPack = assetPack || {
-      id: assetPackId,
-      title: '',
-      thumbnail: '',
-      url: `${assetPackId}.json`,
-      assets: []
-    }
 
     this.props.onSubmit({
-      ...basePack,
+      ...assetPack,
       assets: assetPack ? [...assetPack.assets, ...assets] : assets
     })
   }

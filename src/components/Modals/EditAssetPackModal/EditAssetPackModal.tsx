@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { Close, Button } from 'decentraland-ui'
+import uuidv4 from 'uuid/v4'
+import { Button, ModalNavigation, Row } from 'decentraland-ui'
 import { RawAsset } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
 import AssetPackEditor from 'components/AssetPackEditor'
 import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
-import AssetImport from 'components/AssetImporter'
+import AssetImporter from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
+import { locations } from 'routing/locations'
 
 import { Props, State, EditAssetPackView } from './EditAssetPackModal.types'
 import './EditAssetPackModal.css'
@@ -15,21 +17,39 @@ import './EditAssetPackModal.css'
 export default class EditAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
     view: EditAssetPackView.EDIT_ASSET_PACK,
+    back: EditAssetPackView.EDIT_ASSET_PACK,
     assetPack: this.getRawAssetPack(),
-    editingAsset: null
+    editingAsset: null,
+    ignoredAssets: this.getRemoteAssetIds()
   }
 
-  getRawAssetPack(): RawAssetPack | null {
-    const { assetPack } = this.props
-    if (!assetPack) return null
+  getRawAssetPack(): RawAssetPack {
+    const { assetPack, userId } = this.props
+
+    if (!assetPack) {
+      const id = uuidv4()
+      return {
+        id,
+        title: '',
+        thumbnail: '',
+        userId: userId || undefined,
+        assets: []
+      }
+    }
 
     return {
       id: assetPack.id,
       title: assetPack.title,
       thumbnail: assetPack.thumbnail,
-      url: '',
+      userId: assetPack.userId,
       assets: assetPack.assets.map(asset => ({ ...asset, contents: {} } as RawAsset))
     }
+  }
+
+  getRemoteAssetIds() {
+    const remotePack = this.props.assetPack
+    if (!remotePack) return []
+    return remotePack.assets.map(asset => asset.id)
   }
 
   componentDidUpdate() {
@@ -47,14 +67,9 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     this.setState({ view })
   }
 
-  getRemoteAssetIds = () => {
-    const { assetPack } = this.props
-    if (!assetPack) return []
-    return assetPack.assets.map(asset => asset.id)
-  }
-
   handleAssetPackChange = (assetPack: RawAssetPack) => {
-    this.setState({ assetPack })
+    const { ignoredAssets } = this.state
+    this.setState({ assetPack, ignoredAssets: ignoredAssets.filter(id => assetPack.assets.some(asset => asset.id === id)) })
   }
 
   handleAssetImportSubmit = (assetPack: RawAssetPack) => {
@@ -66,62 +81,131 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleAssetPackEditorSubmit = async (assetPack: RawAssetPack) => {
-    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack, this.getRemoteAssetIds())
+    const { ignoredAssets } = this.state
+    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack, ignoredAssets)
     this.props.onCreateAssetPack(fullAssetPack, contents)
   }
 
   handleReset = () => {
     this.setState({
       view: EditAssetPackView.IMPORT,
-      assetPack: null
+      assetPack: this.getRawAssetPack()
     })
+  }
+
+  handleLogin = () => {
+    const { project, onLogin } = this.props
+    if (project) {
+      onLogin({
+        returnUrl: locations.editor(project.id),
+        openModal: {
+          name: 'CreateAssetPackModal'
+        }
+      })
+    }
+  }
+
+  handleClose = () => {
+    const { view } = this.state
+    const { onClose } = this.props
+    switch (view) {
+      case EditAssetPackView.LOGIN:
+      case EditAssetPackView.SUCCESS:
+      case EditAssetPackView.IMPORT:
+        onClose()
+        break
+      case EditAssetPackView.EDIT_ASSETS:
+      case EditAssetPackView.EDIT_ASSET_PACK:
+        this.setState({ view: EditAssetPackView.EXIT, back: view })
+        break
+      case EditAssetPackView.EXIT:
+      case EditAssetPackView.PROGRESS:
+        // can't close here
+        break
+    }
+  }
+
+  handleBack = () => {
+    this.setState({ view: this.state.back })
   }
 
   renderAssetImport = () => {
     const { assetPack } = this.state
-    return <AssetImport assetPack={assetPack || undefined} onSubmit={this.handleAssetImportSubmit} />
+    const { onClose } = this.props
+
+    return (
+      <>
+        <ModalNavigation
+          title={t('asset_pack.import.title_create')}
+          subtitle={t('asset_pack.import.description_create')}
+          onClose={onClose}
+        />
+        <Modal.Content>
+          <AssetImporter assetPack={assetPack} onSubmit={this.handleAssetImportSubmit} />
+        </Modal.Content>
+      </>
+    )
   }
 
   renderAssetEditor = () => {
-    const { assetPack, editingAsset } = this.state
+    const { assetPack, editingAsset, ignoredAssets } = this.state
+
     return (
-      <AssetsEditor
-        assetPack={assetPack!}
-        onChange={this.handleAssetPackChange}
-        onSubmit={this.handleAssetEditorSubmit}
-        startingAsset={editingAsset || undefined}
-        ignoredAssets={!editingAsset ? this.getRemoteAssetIds() : []}
-      />
+      <>
+        <ModalNavigation
+          title={t('asset_pack.edit_asset.title_create')}
+          subtitle={t('asset_pack.edit_asset.description_create')}
+          onClose={this.handleClose}
+        />
+        <Modal.Content>
+          <AssetsEditor
+            assetPack={assetPack}
+            onChange={this.handleAssetPackChange}
+            onSubmit={this.handleAssetEditorSubmit}
+            startingAsset={editingAsset || undefined}
+            ignoredAssets={!editingAsset ? ignoredAssets : []}
+          />
+        </Modal.Content>
+      </>
     )
   }
 
   renderAssetpackEditor = () => {
-    const { assetPack } = this.state
+    const { assetPack, ignoredAssets } = this.state
     const { error } = this.props
 
     return (
-      <AssetPackEditor
-        assetPack={assetPack!}
-        remoteAssets={this.getRemoteAssetIds()}
-        onChange={this.handleAssetPackChange}
-        onSubmit={this.handleAssetPackEditorSubmit}
-        onReset={this.handleReset}
-        onAddAssets={() => {
-          this.setState({
-            view: EditAssetPackView.IMPORT
-          })
-        }}
-        onEditAsset={asset => {
-          this.setState({
-            view: EditAssetPackView.EDIT_ASSETS,
-            editingAsset: asset.id
-          })
-        }}
-        onDeleteAssetPack={() => {
-          /*a */
-        }}
-        error={error}
-      />
+      <>
+        <ModalNavigation
+          title={t('asset_pack.edit_asset.title_create')}
+          subtitle={t('asset_pack.edit_asset.description_create')}
+          onClose={this.handleClose}
+        />
+        <Modal.Content>
+          <AssetPackEditor
+            assetPack={assetPack!}
+            remoteAssets={ignoredAssets}
+            onChange={this.handleAssetPackChange}
+            onSubmit={this.handleAssetPackEditorSubmit}
+            onReset={this.handleReset}
+            onAddAssets={() => {
+              this.setState({
+                view: EditAssetPackView.IMPORT
+              })
+            }}
+            onEditAsset={asset => {
+              this.setState({
+                view: EditAssetPackView.EDIT_ASSETS,
+                editingAsset: asset.id
+              })
+            }}
+            onDeleteAssetPack={() => {
+              /*a */
+            }}
+            error={error}
+          />
+        </Modal.Content>
+      </>
     )
   }
 
@@ -135,11 +219,12 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
 
     return (
       <>
-        {progress.stage === ProgressStage.CREATE_ASSET_PACK && t('asset_pack.progress.creating_asset_pack')}
-        {progress.stage === ProgressStage.UPLOAD_CONTENTS && t('asset_pack.progress.uploading_contents')}
-        <div className="progress-bar-container">
-          <div className={className} style={{ width: `${progress.value}%` }} />
-        </div>
+        <ModalNavigation title={t('asset_pack.progress.creating_asset_pack')} subtitle={t('asset_pack.progress.uploading_contents')} />
+        <Modal.Content>
+          <div className="progress-bar-container">
+            <div className={className} style={{ width: `${progress.value}%` }} />
+          </div>
+        </Modal.Content>
       </>
     )
   }
@@ -147,29 +232,85 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   renderSuccess = () => {
     return (
       <>
-        {t('asset_pack.success.title')}
-        {t('asset_pack.success.description')}
-        <Button primary onClick={this.props.onClose}>
-          {t('asset_pack.success.continue')}
-        </Button>
+        <ModalNavigation title={t('asset_pack.success.title')} subtitle={t('asset_pack.success.description')} />
+        <Modal.Content>
+          <Row center>
+            <Button primary onClick={this.props.onClose}>
+              {t('asset_pack.success.continue')}
+            </Button>
+          </Row>
+        </Modal.Content>
+      </>
+    )
+  }
+
+  renderLogin() {
+    return (
+      <>
+        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description')} />
+        <Modal.Content>
+          <Row center>
+            <Button primary onClick={this.handleLogin}>
+              {t('asset_pack.login.action')}
+            </Button>
+          </Row>
+        </Modal.Content>
+      </>
+    )
+  }
+
+  renderExit() {
+    const { onClose } = this.props
+    return (
+      <>
+        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.exit.description')} />
+        <Modal.Actions className="exit-actions">
+          <Button primary onClick={onClose}>
+            {t('asset_pack.exit.action')}
+          </Button>
+          <Button onClick={this.handleBack}>{t('asset_pack.exit.back')}</Button>
+        </Modal.Actions>
       </>
     )
   }
 
   render() {
-    const { name, onClose } = this.props
+    const { name } = this.props
     const { view } = this.state
 
+    let content
+    let className = name
+    switch (view) {
+      case EditAssetPackView.LOGIN:
+        content = this.renderLogin()
+        className += ' narrow'
+        break
+      case EditAssetPackView.IMPORT:
+        content = this.renderAssetImport()
+        break
+      case EditAssetPackView.EDIT_ASSETS:
+        content = this.renderAssetEditor()
+        break
+      case EditAssetPackView.EDIT_ASSET_PACK:
+        content = this.renderAssetpackEditor()
+        break
+      case EditAssetPackView.PROGRESS:
+        content = this.renderProgress()
+        break
+      case EditAssetPackView.SUCCESS:
+        content = this.renderSuccess()
+        break
+      case EditAssetPackView.EXIT:
+        content = this.renderExit()
+        className += ' narrow'
+        break
+      default:
+        content = null
+    }
+
     return (
-      <Modal name={name} closeIcon={<Close onClick={onClose} />}>
-        <Modal.Header>Alto asset pack</Modal.Header>
-        <Modal.Content>
-          {view === EditAssetPackView.IMPORT && this.renderAssetImport()}
-          {view === EditAssetPackView.EDIT_ASSETS && this.renderAssetEditor()}
-          {view === EditAssetPackView.EDIT_ASSET_PACK && this.renderAssetpackEditor()}
-          {view === EditAssetPackView.PROGRESS && this.renderProgress()}
-          {view === EditAssetPackView.SUCCESS && this.renderSuccess()}
-        </Modal.Content>
+      <Modal name={name} className={className} onClose={this.handleClose}>
+        {content}
       </Modal>
     )
   }

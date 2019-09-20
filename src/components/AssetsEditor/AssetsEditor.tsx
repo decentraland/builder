@@ -18,7 +18,6 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
   getAssets() {
     const { assetPack, ignoredAssets } = this.props
     let assets = []
-
     for (let asset of assetPack.assets) {
       if (ignoredAssets && ignoredAssets.length > 0 && ignoredAssets.includes(asset.id)) {
         continue
@@ -96,7 +95,7 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
 
   handleChange = (asset: RawAsset) => {
     const { assetPack } = this.props
-    const { currentAsset, isDirty } = this.state
+    const { isDirty } = this.state
 
     if (isDirty) {
       const errors = this.getErrors(asset)
@@ -105,7 +104,8 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
 
     if (assetPack) {
       const assets = [...assetPack.assets]
-      assets[currentAsset] = asset
+      const index = assets.findIndex(a => a.id === asset.id)
+      assets[index] = asset
 
       this.props.onChange({
         ...assetPack,
@@ -163,7 +163,7 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
             <div className="pagination">
               <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
               <span className="current">
-                {currentAsset + 1}/{assetPack.assets.length}
+                {currentAsset + 1}/{assets.length}
               </span>
               <Button onClick={this.handleNext} icon="angle right" disabled={isLast} />
             </div>

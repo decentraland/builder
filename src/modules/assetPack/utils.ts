@@ -1,7 +1,7 @@
 import { RawAssetPack, FullAssetPack } from './types'
 import { RawAssetContents } from 'modules/asset/types'
 import { getContentsCID } from 'modules/asset/utils'
-import { dataURLToBlob, blobToCID } from 'modules/media/utils'
+import { dataURLToBlob, blobToCID, isDataUrl } from 'modules/media/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 
 export const MAX_TITLE_LENGTH = 20
@@ -35,7 +35,7 @@ export async function rawAssetPackToFullAssetPack(
     }
 
     // add thumbnail (it's not needed in asset.contents, but added to asset.thumbnail instead)
-    if (thumbnail.startsWith('data:')) {
+    if (isDataUrl(thumbnail)) {
       const blob = dataURLToBlob(thumbnail)!
       const cid = await blobToCID(blob, THUMBNAIL_PATH)
       newAsset.thumbnail = `${BUILDER_SERVER_URL}/storage/assets/${cid}`

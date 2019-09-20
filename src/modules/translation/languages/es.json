@@ -52,6 +52,8 @@
       "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
       "errors": {
         "invalid": "Asset inválido",
+        "duplicated": "Asset duplicado",
+        "duplicated_asset": "{name}: Este Asset Pack ya contiene un asset \"{asset}\" con un archivo \"{model}\"",
         "max_file_size": "{name}: El tamaño del archivo excede el límite de {max}mb",
         "missing_extension": "{name}: Extensión de archivo no encontrada",
         "missing_model": "{name}: Modelo 3D (.gltf or .glb) no encontrado",

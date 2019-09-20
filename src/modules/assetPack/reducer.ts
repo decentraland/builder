@@ -5,14 +5,12 @@ import {
   LoadAssetPacksRequestAction,
   LoadAssetPacksSuccessAction,
   LoadAssetPacksFailureAction,
-  SaveAssetPackSuccessAction,
   SaveAssetPackFailureAction,
   SetProgressAction,
   LOAD_ASSET_PACKS_REQUEST,
   LOAD_ASSET_PACKS_SUCCESS,
   LOAD_ASSET_PACKS_FAILURE,
   SAVE_ASSET_PACK_FAILURE,
-  SAVE_ASSET_PACK_SUCCESS,
   SET_PROGRESS
 } from 'modules/assetPack/actions'
 
@@ -41,7 +39,6 @@ export type AssetPackReducerAction =
   | LoadAssetPacksSuccessAction
   | LoadAssetPacksFailureAction
   | SaveAssetPackFailureAction
-  | SaveAssetPackSuccessAction
   | SetProgressAction
 
 export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetPackState => {
@@ -78,21 +75,6 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
-      }
-    }
-    case SAVE_ASSET_PACK_SUCCESS: {
-      const { assetPack } = action.payload
-      return {
-        loading: loadingReducer(state.loading, action),
-        error: null,
-        progress: { stage: ProgressStage.NONE, value: 0 },
-        data: {
-          ...state.data,
-          [assetPack.id]: {
-            ...assetPack,
-            assets: assetPack.assets.map(asset => asset.id)
-          }
-        }
       }
     }
     case SAVE_ASSET_PACK_FAILURE: {
