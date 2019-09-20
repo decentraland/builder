@@ -140,6 +140,13 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     }
   }
 
+  handleBackToStart = () => {
+    this.setState({
+      view: EditAssetPackView.EDIT_ASSET_PACK,
+      editingAsset: null
+    })
+  }
+
   handleClose = () => {
     const { view } = this.state
     const { onClose } = this.props
@@ -174,6 +181,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
           title={t('asset_pack.import.title_create')}
           subtitle={t('asset_pack.import.description_create')}
           onClose={onClose}
+          onBack={this.handleBackToStart}
         />
         <Modal.Content>
           <AssetImporter assetPack={assetPack} onSubmit={this.handleAssetImportSubmit} />
@@ -191,6 +199,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
           title={t('asset_pack.edit_asset.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
           onClose={this.handleClose}
+          onBack={editingAsset ? this.handleBackToStart : undefined}
         />
         <Modal.Content>
           <AssetsEditor
@@ -199,6 +208,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
             onSubmit={this.handleAssetEditorSubmit}
             startingAsset={editingAsset || undefined}
             ignoredAssets={!editingAsset ? ignoredAssets : []}
+            isEditing={!!editingAsset}
           />
         </Modal.Content>
       </>

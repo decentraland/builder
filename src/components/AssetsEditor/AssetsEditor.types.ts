@@ -4,6 +4,7 @@ export type Props = {
   assetPack: RawAssetPack
   startingAsset?: string
   ignoredAssets?: string[] // Ignored Asset IDs
+  isEditing?: boolean
   onChange: (assetPack: RawAssetPack) => void
   onSubmit: (assetPack: RawAssetPack) => void
 }

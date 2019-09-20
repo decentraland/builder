@@ -144,23 +144,29 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { assetPack } = this.props
+    const { isEditing } = this.props
     const { currentAsset, errors, isDirty } = this.state
-    const isFirst = currentAsset === 0
-    const isLast = currentAsset === assetPack.assets.length - 1
     const hasErrors = Object.keys(errors).length > 0
     const isSubmitDisabled = isDirty ? hasErrors : false
     const assets = this.getAssets()
+    const isFirst = currentAsset === 0
+    const isLast = currentAsset === assets.length - 1
     const asset = assets[currentAsset]
-
     const currentAssetError = errors[asset.id]
+
+    let paginationClasses = 'pagination'
+
+    if (isEditing) {
+      paginationClasses += ' expanded'
+    }
+
     return (
       <div className="AssetsEditor">
         <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={currentAssetError} />
 
         <div className="actions">
           {assets.length > 1 && (
-            <div className="pagination">
+            <div className={paginationClasses}>
               <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
               <span className="current">
                 {currentAsset + 1}/{assets.length}
@@ -169,9 +175,11 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
             </div>
           )}
 
-          <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
-            {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
-          </Button>
+          {!isEditing && (
+            <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
+              {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
+            </Button>
+          )}
         </div>
       </div>
     )
