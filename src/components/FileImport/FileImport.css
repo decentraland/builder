@@ -10,6 +10,7 @@
   outline: none;
   user-select: none;
   overflow: auto;
+  position: relative;
 }
 
 .FileImport .dropzone .action {
