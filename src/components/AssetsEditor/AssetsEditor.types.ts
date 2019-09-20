@@ -2,7 +2,8 @@ import { RawAssetPack } from 'modules/assetPack/types'
 
 export type Props = {
   assetPack: RawAssetPack
-  isEditing?: boolean
+  startingAsset?: string
+  ignoredAssets?: string[] // Ignored Asset IDs
   onChange: (assetPack: RawAssetPack) => void
   onSubmit: (assetPack: RawAssetPack) => void
 }

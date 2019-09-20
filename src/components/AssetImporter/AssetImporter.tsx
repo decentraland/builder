@@ -7,6 +7,7 @@ import { Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
+import { RawAssetPack } from 'modules/assetPack/types'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
@@ -15,7 +16,6 @@ import { getExtension, createDefaultImportedFile, getMetrics, ASSET_MANIFEST, MA
 
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
-import { RawAssetPack } from 'modules/assetPack/types'
 
 export const getSHA256 = (data: string) => {
   return crypto
@@ -26,14 +26,13 @@ export const getSHA256 = (data: string) => {
 
 export default class AssetImporter extends React.PureComponent<Props, State> {
   state: State = {
-    assetPackId: this.props.assetPack ? this.props.assetPack.id : uuidv4(),
+    assetPackId: this.getAssetPackId(),
     files: {}
   }
 
-  componentDidMount() {
-    this.setState({
-      assetPackId: uuidv4()
-    })
+  getAssetPackId() {
+    const { assetPack } = this.props
+    return assetPack ? assetPack.id : uuidv4()
   }
 
   renderFiles = () => {

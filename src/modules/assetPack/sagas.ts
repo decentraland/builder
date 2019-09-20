@@ -49,11 +49,17 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   const { assetPack, contents } = action.payload
   const total = assetPack.assets.length
 
+  debugger
+
   try {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
     yield call(() => builder.saveAssetPack(assetPack))
+    debugger
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
-    yield call(() => builder.saveAssetPackThumbnail(assetPack))
+    if (assetPack.thumbnail.startsWith('data:')) {
+      yield call(() => builder.saveAssetPackThumbnail(assetPack))
+    }
+    debugger
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
@@ -63,6 +69,7 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
         call(handleAssetContentsUploadProgress(total))
       ])
     )
+    debugger
     yield put(saveAssetPackSuccess(assetPack))
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))

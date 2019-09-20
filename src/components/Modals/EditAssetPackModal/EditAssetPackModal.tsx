@@ -47,6 +47,12 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     this.setState({ view })
   }
 
+  getRemoteAssetIds = () => {
+    const { assetPack } = this.props
+    if (!assetPack) return []
+    return assetPack.assets.map(asset => asset.id)
+  }
+
   handleAssetPackChange = (assetPack: RawAssetPack) => {
     this.setState({ assetPack })
   }
@@ -60,7 +66,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleAssetPackEditorSubmit = async (assetPack: RawAssetPack) => {
-    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack)
+    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack, this.getRemoteAssetIds())
     this.props.onCreateAssetPack(fullAssetPack, contents)
   }
 
@@ -83,7 +89,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
         assetPack={assetPack!}
         onChange={this.handleAssetPackChange}
         onSubmit={this.handleAssetEditorSubmit}
-        isEditing={!!editingAsset}
+        startingAsset={editingAsset || undefined}
+        ignoredAssets={!editingAsset ? this.getRemoteAssetIds() : []}
       />
     )
   }
@@ -95,6 +102,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     return (
       <AssetPackEditor
         assetPack={assetPack!}
+        remoteAssets={this.getRemoteAssetIds()}
         onChange={this.handleAssetPackChange}
         onSubmit={this.handleAssetPackEditorSubmit}
         onReset={this.handleReset}

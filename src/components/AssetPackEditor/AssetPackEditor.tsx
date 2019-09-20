@@ -11,7 +11,7 @@ import Icon from 'components/Icon'
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
 
-export default class AseetPackEditor<T extends RawAssetPack> extends React.PureComponent<Props<T>, State> {
+export default class AseetPackEditor extends React.PureComponent<Props, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
 
   state: State = {
