@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
 
 import {
   ADD_ITEM,
@@ -16,7 +16,9 @@ import {
   SET_GROUND,
   SetGroundAction,
   ApplyLayoutAction,
-  APPLY_LAYOUT
+  APPLY_LAYOUT,
+  FIX_ASSET_MAPPINGS,
+  FixAssetMappingsAction
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import {
@@ -30,16 +32,17 @@ import {
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity } from 'modules/editor/actions'
-import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
-import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
+import { selectEntity, deselectEntity, setEditorReady, createEditorScene, SET_EDITOR_READY } from 'modules/editor/actions'
+import { getCurrentBounds, getData as getProjects, getCurrentProject } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings, getSceneByProjectId } from './utils'
 import { getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
+import { getFullAssetPacks } from 'modules/assetPack/selectors'
+import { Project } from 'modules/project/types'
 
 const editorWindow = window as EditorWindow
 
@@ -50,7 +53,7 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
+  yield takeLatest(FIX_ASSET_MAPPINGS, handleFixAssetMappings)
   yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
 }
@@ -275,11 +278,18 @@ function* handleSetGround(action: SetGroundAction) {
   }
 }
 
-function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
-  // load current scene (if any)
-  const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-  if (!scene) return
+function* handleFixAssetMappings(_: FixAssetMappingsAction) {
+  const assetPacksRecord: ReturnType<typeof getFullAssetPacks> = yield select(getFullAssetPacks)
+  const assetPacks = Object.values(assetPacksRecord)
+  const project: Project | null = yield select(getCurrentProject)
 
+  if (!project) return
+
+  // load current scene (if any)
+  // const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
+  const scene: Scene | null = yield getSceneByProjectId(project.id)
+
+  if (!scene) return
   // keep track of the updated components
   const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
 
@@ -296,7 +306,7 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
   }
 
   // loop over each loaded asset and update the mappings of the components using it
-  for (const assetPack of action.payload.assetPacks) {
+  for (const assetPack of assetPacks) {
     for (const asset of assetPack.assets) {
       if (asset.url in gltfShapes) {
         for (const component of gltfShapes[asset.url]) {
@@ -319,6 +329,9 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
   const hasUpdates = Object.keys(updatedComponents).length > 0
   if (hasUpdates) {
     const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
+    yield put(setEditorReady(false))
+    yield put(createEditorScene(project))
+    yield take(SET_EDITOR_READY)
     yield put(provisionScene(newScene))
   }
 }

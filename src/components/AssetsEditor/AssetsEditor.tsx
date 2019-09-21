@@ -10,9 +10,32 @@ import './AssetsEditor.css'
 
 export default class AssetsEditor extends React.PureComponent<Props, State> {
   state: State = {
-    currentAsset: 0,
+    currentAsset: this.getStartingAsset(),
     errors: {},
     isDirty: false
+  }
+
+  getAssets() {
+    const { assetPack, ignoredAssets } = this.props
+    let assets = []
+    for (let asset of assetPack.assets) {
+      if (ignoredAssets && ignoredAssets.length > 0 && ignoredAssets.includes(asset.id)) {
+        continue
+      }
+      assets.push(asset)
+    }
+
+    return assets
+  }
+
+  getStartingAsset() {
+    const { startingAsset } = this.props
+    if (!startingAsset) return 0
+
+    const assets = this.getAssets()
+    const found = assets.findIndex(asset => asset.id === startingAsset)
+
+    return found === -1 ? 0 : found
   }
 
   handlePrev = () => {
@@ -72,7 +95,7 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
 
   handleChange = (asset: RawAsset) => {
     const { assetPack } = this.props
-    const { currentAsset, isDirty } = this.state
+    const { isDirty } = this.state
 
     if (isDirty) {
       const errors = this.getErrors(asset)
@@ -81,7 +104,8 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
 
     if (assetPack) {
       const assets = [...assetPack.assets]
-      assets[currentAsset] = asset
+      const index = assets.findIndex(a => a.id === asset.id)
+      assets[index] = asset
 
       this.props.onChange({
         ...assetPack,
@@ -120,33 +144,42 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { assetPack } = this.props
+    const { isEditing } = this.props
     const { currentAsset, errors, isDirty } = this.state
-    const isFirst = currentAsset === 0
-    const isLast = currentAsset === assetPack.assets.length - 1
-    const asset = assetPack.assets[currentAsset]
     const hasErrors = Object.keys(errors).length > 0
-    const currentAssetError = errors[asset.id]
     const isSubmitDisabled = isDirty ? hasErrors : false
+    const assets = this.getAssets()
+    const isFirst = currentAsset === 0
+    const isLast = currentAsset === assets.length - 1
+    const asset = assets[currentAsset]
+    const currentAssetError = errors[asset.id]
+
+    let paginationClasses = 'pagination'
+
+    if (isEditing) {
+      paginationClasses += ' expanded'
+    }
 
     return (
       <div className="AssetsEditor">
         <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={currentAssetError} />
 
         <div className="actions">
-          {assetPack.assets.length > 1 && (
-            <div className="pagination">
+          {assets.length > 1 && (
+            <div className={paginationClasses}>
               <Button onClick={this.handlePrev} icon="angle left" disabled={isFirst} />
               <span className="current">
-                {currentAsset + 1}/{assetPack.assets.length}
+                {currentAsset + 1}/{assets.length}
               </span>
               <Button onClick={this.handleNext} icon="angle right" disabled={isLast} />
             </div>
           )}
 
-          <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
-            {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
-          </Button>
+          {!isEditing && (
+            <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
+              {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
+            </Button>
+          )}
         </div>
       </div>
     )

@@ -1,10 +1,7 @@
 import React from 'react'
-import { Header, Icon, Popup } from 'decentraland-ui'
+import { Header, Icon, Button, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
-import { SidebarView } from 'modules/ui/sidebar/types'
 import { Props } from './SidebarHeader.types'
-
 import './SidebarHeader.css'
 
 export default class SidebarHeader extends React.PureComponent<Props> {
@@ -19,16 +16,15 @@ export default class SidebarHeader extends React.PureComponent<Props> {
     }
   }
 
-  handleSetGridView = () => {
-    this.props.onSetSidebarView(SidebarView.GRID)
-  }
-
-  handleSetListView = () => {
-    this.props.onSetSidebarView(SidebarView.LIST)
+  handleEditAssetPack = () => {
+    const { selectedAssetPack, onEditAssetPack } = this.props
+    if (selectedAssetPack) {
+      onEditAssetPack(selectedAssetPack.id)
+    }
   }
 
   render() {
-    const { selectedAssetPack, selectedCategory, search, onCreateAssetPack } = this.props
+    const { selectedAssetPack, selectedCategory, search, onCreateAssetPack, userId } = this.props
 
     const isRoot = selectedAssetPack === null && selectedCategory === null
     const isSearch = search.length > 0
@@ -44,9 +40,18 @@ export default class SidebarHeader extends React.PureComponent<Props> {
           ) : isRoot ? (
             t('itemdrawer.title')
           ) : (
-            <span className="selected-scope" onClick={this.handleGoBack}>
-              <Icon name="chevron left" />
-              {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
+            <span className="selected-scope">
+              <Icon name="chevron left" onClick={this.handleGoBack} />
+              <span className="title">
+                {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
+              </span>
+              <div className="spacer">
+                {selectedAssetPack && selectedAssetPack.userId === userId && (
+                  <Button basic onClick={this.handleEditAssetPack}>
+                    {t('itemdrawer.edit_asset_pack')}
+                  </Button>
+                )}
+              </div>
             </span>
           )}
         </div>

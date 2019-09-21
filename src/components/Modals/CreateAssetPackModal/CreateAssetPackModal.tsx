@@ -1,11 +1,12 @@
 import * as React from 'react'
+import uuidv4 from 'uuid/v4'
 import { Button, ModalNavigation, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
 import AssetPackEditor from 'components/AssetPackEditor'
 import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
-import AssetImport from 'components/AssetImporter'
+import AssetImporter from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
 import { locations } from 'routing/locations'
 
@@ -16,7 +17,18 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   state: State = {
     view: this.props.isLoggedIn ? CreateAssetPackView.IMPORT : CreateAssetPackView.LOGIN,
     back: CreateAssetPackView.IMPORT,
-    assetPack: null
+    assetPack: this.getAssetPack()
+  }
+
+  getAssetPack() {
+    const id = uuidv4()
+    return {
+      id,
+      title: '',
+      thumbnail: '',
+      url: `${id}.json`,
+      assets: []
+    }
   }
 
   componentDidUpdate() {
@@ -54,17 +66,54 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   handleReset = () => {
     this.setState({
       view: CreateAssetPackView.IMPORT,
-      assetPack: null
+      assetPack: this.getAssetPack()
     })
   }
 
+  handleLogin = () => {
+    const { project, onLogin } = this.props
+    if (project) {
+      onLogin({
+        returnUrl: locations.editor(project.id),
+        openModal: {
+          name: 'CreateAssetPackModal'
+        }
+      })
+    }
+  }
+
+  handleClose = () => {
+    const { view } = this.state
+    const { onClose } = this.props
+    switch (view) {
+      case CreateAssetPackView.LOGIN:
+      case CreateAssetPackView.SUCCESS:
+      case CreateAssetPackView.IMPORT:
+        onClose()
+        break
+      case CreateAssetPackView.EDIT_ASSETS:
+      case CreateAssetPackView.EDIT_ASSET_PACK:
+        this.setState({ view: CreateAssetPackView.EXIT, back: view })
+        break
+      case CreateAssetPackView.EXIT:
+      case CreateAssetPackView.PROGRESS:
+        // can't close here
+        break
+    }
+  }
+
+  handleBack = () => {
+    this.setState({ view: this.state.back })
+  }
+
   renderAssetImport = () => {
+    const { assetPack } = this.state
     const { onClose } = this.props
     return (
       <>
         <ModalNavigation title={t('asset_pack.title_create')} subtitle={t('asset_pack.import.description_create')} onClose={onClose} />
         <Modal.Content>
-          <AssetImport onSubmit={this.handleAssetImportSubmit} />
+          <AssetImporter assetPack={assetPack} onSubmit={this.handleAssetImportSubmit} />
         </Modal.Content>
       </>
     )
@@ -147,7 +196,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   renderLogin() {
     return (
       <>
-        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description')} />
+        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description_create')} />
         <Modal.Content>
           <Row center>
             <Button primary onClick={this.handleLogin}>
@@ -163,7 +212,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { onClose } = this.props
     return (
       <>
-        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.exit.description')} />
+        <ModalNavigation title={t('asset_pack.exit.title_create')} subtitle={t('asset_pack.exit.description_create')} />
         <Modal.Actions className="exit-actions">
           <Button primary onClick={onClose}>
             {t('asset_pack.exit.action')}
@@ -172,42 +221,6 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
         </Modal.Actions>
       </>
     )
-  }
-
-  handleLogin = () => {
-    const { project, onLogin } = this.props
-    if (project) {
-      onLogin({
-        returnUrl: locations.editor(project.id),
-        openModal: {
-          name: 'CreateAssetPackModal'
-        }
-      })
-    }
-  }
-
-  handleClose = () => {
-    const { view } = this.state
-    const { onClose } = this.props
-    switch (view) {
-      case CreateAssetPackView.LOGIN:
-      case CreateAssetPackView.SUCCESS:
-      case CreateAssetPackView.IMPORT:
-        onClose()
-        break
-      case CreateAssetPackView.EDIT_ASSETS:
-      case CreateAssetPackView.EDIT_ASSET_PACK:
-        this.setState({ view: CreateAssetPackView.EXIT, back: view })
-        break
-      case CreateAssetPackView.EXIT:
-      case CreateAssetPackView.PROGRESS:
-        // can't close here
-        break
-    }
-  }
-
-  handleBack = () => {
-    this.setState({ view: this.state.back })
   }
 
   render() {

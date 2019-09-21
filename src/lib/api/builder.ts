@@ -8,7 +8,7 @@ import { Asset } from 'modules/asset/types'
 import { Scene, SceneMetrics } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { createManifest } from 'modules/project/export'
-import { dataURLToBlob } from 'modules/media/utils'
+import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 
@@ -94,6 +94,18 @@ function toRemoteAssetPack(assetPack: FullAssetPack): RemoteAssetPack {
   }
 }
 
+function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
+  return {
+    id: remoteAssetPack.id,
+    title: remoteAssetPack.title,
+    thumbnail: `${BUILDER_SERVER_URL}/storage/assetPacks/${remoteAssetPack.thumbnail!}`,
+    userId: remoteAssetPack.user_id,
+    assets: remoteAssetPack.assets.map(asset => fromRemoteAsset(asset)),
+    createdAt: remoteAssetPack.created_at,
+    updatedAt: remoteAssetPack.updated_at
+  }
+}
+
 function toRemoteAsset(asset: Asset): RemoteAsset {
   return {
     id: asset.id,
@@ -105,19 +117,6 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
     category: asset.category,
     contents: asset.contents,
     metrics: asset.metrics
-  }
-}
-
-function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
-  return {
-    id: remoteAssetPack.id,
-    title: remoteAssetPack.title,
-    url: remoteAssetPack.url!,
-    thumbnail: `${BUILDER_SERVER_URL}/storage/assetPacks/${remoteAssetPack.thumbnail!}`,
-    userId: remoteAssetPack.user_id,
-    assets: remoteAssetPack.assets.map(asset => fromRemoteAsset(asset)),
-    createdAt: remoteAssetPack.created_at,
-    updatedAt: remoteAssetPack.updated_at
   }
 }
 
@@ -276,7 +275,16 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async saveAssetPackThumbnail(assetPack: FullAssetPack) {
-    const blob = dataURLToBlob(assetPack.thumbnail)
+    let blob: Blob | null = null
+
+    if (isDataUrl(assetPack.thumbnail)) {
+      blob = dataURLToBlob(assetPack.thumbnail)
+    } else {
+      blob = await objectURLToBlob(assetPack.thumbnail)
+    }
+
+    if (!blob) throw new Error('Invalid thumbnail')
+
     const formData = new FormData()
     if (blob) {
       formData.append('thumbnail', blob)
@@ -287,6 +295,10 @@ export class BuilderAPI extends BaseAPI {
   async fetchAssetPacks() {
     const remotePacks: RemoteAssetPack[] = await this.request('get', `/assetPacks`, null, authorize())
     return remotePacks.map(fromRemoteAssetPack)
+  }
+
+  async deleteAssetPack(assetPack: FullAssetPack) {
+    await this.request('delete', `/assetPacks/${assetPack.id}`, null, authorize())
   }
 }
 

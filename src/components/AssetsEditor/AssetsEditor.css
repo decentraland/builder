@@ -11,6 +11,12 @@
 .AssetsEditor .pagination {
   display: flex;
   align-items: center;
+  user-select: none;
+}
+
+.AssetsEditor .pagination.expanded {
+  width: 100%;
+  justify-content: space-between;
 }
 
 .AssetsEditor .pagination .current {

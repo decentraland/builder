@@ -1,7 +1,10 @@
-import { Asset, RawAsset } from 'modules/asset/types'
+import { RawAsset } from 'modules/asset/types'
 
 export type Props = {
+  asset: RawAsset
   error?: string
-  asset: RawAsset | Asset
+  errorLabel?: string
+  hideLabel?: boolean
   onRemove: (id: string) => void
+  onClick?: (asset: RawAsset) => void
 }

@@ -5,7 +5,6 @@ export type AssetPack = {
   id: string
   title: string
   thumbnail: string
-  url: string
   userId?: string
   createdAt?: string
   updatedAt?: string
@@ -16,7 +15,7 @@ export type FullAssetPack = Omit<AssetPack, 'assets'> & {
   assets: Asset[]
 }
 
-export type RawAssetPack = Omit<FullAssetPack, 'userId' | 'assets'> & {
+export type RawAssetPack = Omit<FullAssetPack, 'assets'> & {
   assets: RawAsset[]
 }
 

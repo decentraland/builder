@@ -1,10 +1,17 @@
 .AssetThumbnail {
+  position: relative;
+  width: 80px;
+}
+
+.AssetThumbnail .wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
-  width: 80px;
+}
+
+.AssetThumbnail .clickable {
+  cursor: pointer;
 }
 
 .AssetThumbnail .close-button {
@@ -58,6 +65,7 @@
   color: red;
   font-size: 13px;
   margin-top: 0px;
+  text-align: center;
 }
 
 .AssetThumbnail.error .error-icon {

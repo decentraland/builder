@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Field, Header, Button } from 'decentraland-ui'
+import { Field, Header, Button, Icon as SemanticIcon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
 import { RawAssetPack } from 'modules/assetPack/types'
@@ -11,7 +11,7 @@ import Icon from 'components/Icon'
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
 
-export default class AseetPackEditor<T extends RawAssetPack> extends React.PureComponent<Props<T>, State> {
+export default class AseetPackEditor extends React.PureComponent<Props, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
 
   state: State = {
@@ -136,9 +136,33 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
     }
   }
 
+  handleAddItems = () => {
+    const { onAddAssets: onAddItems } = this.props
+    if (onAddItems) {
+      onAddItems()
+    }
+  }
+
+  handleEditAsset = (asset: RawAsset) => {
+    const { onEditAsset } = this.props
+    if (onEditAsset) {
+      onEditAsset(asset)
+    }
+  }
+
+  handleDeleteAssetPack = () => {
+    const { assetPack, onDeleteAssetPack } = this.props
+
+    if (onDeleteAssetPack) {
+      onDeleteAssetPack(assetPack)
+    }
+  }
+
   renderAssets = () => {
     const { assetPack } = this.props
-    return assetPack.assets.map(asset => <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} />)
+    return assetPack.assets.map(asset => (
+      <AssetThumbnail key={asset.id} asset={asset} onRemove={this.handleRemove} onClick={this.handleEditAsset} hideLabel />
+    ))
   }
 
   renderEmptyState = () => {
@@ -154,7 +178,7 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
   }
 
   render() {
-    const { assetPack, error } = this.props
+    const { assetPack, error, onAddAssets: onAddItems, onDeleteAssetPack } = this.props
     const { errors, isDirty } = this.state
     const items = assetPack ? assetPack.assets.length : 0
     const hasErrors = Object.keys(errors).length > 0
@@ -179,7 +203,14 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
         </div>
 
         <div className="assets">
-          <div className="header">{items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}</div>
+          <div className="header">
+            {items > 0 && <Header sub>{t('asset_pack.edit_assetpack.items.label', { count: items })}</Header>}
+            {onAddItems && items > 0 && (
+              <Button basic onClick={this.handleAddItems}>
+                {t('asset_pack.edit_assetpack.action_add_items')}
+              </Button>
+            )}
+          </div>
           <div className="content">{assetPack && items > 0 ? this.renderAssets() : this.renderEmptyState()}</div>
         </div>
 
@@ -190,8 +221,14 @@ export default class AseetPackEditor<T extends RawAssetPack> extends React.PureC
         ) : null}
 
         <div className="actions">
+          {onDeleteAssetPack && (
+            <Button primary inverted onClick={this.handleDeleteAssetPack}>
+              <SemanticIcon name="trash" />
+              {t('asset_pack.edit_assetpack.action_delete')}
+            </Button>
+          )}
           <Button className="submit" disabled={isSubmitDisabled} onClick={this.handleSubmit} primary>
-            {t('asset_pack.edit_assetpack.action')}
+            {onDeleteAssetPack ? t('asset_pack.edit_assetpack.action_edit') : t('asset_pack.edit_assetpack.action_create')}
           </Button>
         </div>
       </div>

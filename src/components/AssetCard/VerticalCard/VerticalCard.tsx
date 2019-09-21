@@ -27,6 +27,6 @@ export default class VerticalCard extends React.PureComponent<Props> {
       </div>
     )
 
-    return name ? <Popup content={name} position="top center" trigger={content} hideOnScroll={true} on="hover" inverted /> : content
+    return name ? <Popup content={name} position="top center" trigger={content} hideOnScroll={true} on="hover" inverted basic /> : content
   }
 }

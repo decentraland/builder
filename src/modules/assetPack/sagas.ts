@@ -9,16 +9,25 @@ import {
   SAVE_ASSET_PACK_REQUEST,
   setProgress,
   saveAssetPackFailure,
-  saveAssetPackSuccess
+  saveAssetPackSuccess,
+  loadAssetPacksRequest,
+  DELETE_ASSET_PACK_REQUEST,
+  DeleteAssetPackRequestAction,
+  deleteAssetPackFailure,
+  deleteAssetPackSuccess
 } from 'modules/assetPack/actions'
 import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
+import { fixAssetMappings } from 'modules/scene/actions'
+import { isDataUrl } from 'modules/media/utils'
+import { selectAssetPack } from 'modules/ui/sidebar/actions'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
   yield takeLatest(SAVE_ASSET_PACK_REQUEST, handleSaveAssetPack)
+  yield takeLatest(DELETE_ASSET_PACK_REQUEST, handleDeleteAssetPack)
 }
 
 const handleAssetContentsUploadProgress = (total: number) => () => {
@@ -40,6 +49,7 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
     const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
     yield put(loadAssetPacksSuccess(assetPacks))
+    yield put(fixAssetMappings())
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))
   }
@@ -52,8 +62,13 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   try {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
     yield call(() => builder.saveAssetPack(assetPack))
+
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
-    yield call(() => builder.saveAssetPackThumbnail(assetPack))
+
+    if (isDataUrl(assetPack.thumbnail)) {
+      yield call(() => builder.saveAssetPackThumbnail(assetPack))
+    }
+
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
@@ -64,7 +79,20 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
       ])
     )
     yield put(saveAssetPackSuccess(assetPack))
+    yield put(loadAssetPacksRequest())
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))
+  }
+}
+
+function* handleDeleteAssetPack(action: DeleteAssetPackRequestAction) {
+  const { assetPack } = action.payload
+
+  try {
+    yield call(() => builder.deleteAssetPack(assetPack))
+    yield put(deleteAssetPackSuccess(assetPack))
+    yield put(selectAssetPack(null))
+  } catch (e) {
+    yield put(deleteAssetPackFailure(assetPack, e.message))
   }
 }
