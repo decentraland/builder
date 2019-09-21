@@ -64,7 +64,10 @@ export default class SingleAssetEditor<T extends RawAsset> extends React.PureCom
   handleGetThumbnail = async (ground: boolean = false) => {
     const { asset } = this.props
 
-    const mappings = rawMappingsToObjectURL(asset.contents)
+    const mappings = !asset.thumbnail.startsWith('http')
+      ? rawMappingsToObjectURL(asset.contents)
+      : ((asset.contents as any) as Record<string, string>)
+
     const { image } = await getModelData(mappings[asset.url], {
       mappings,
       thumbnailType: ground ? '2d' : '3d'

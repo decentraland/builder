@@ -1,5 +1,6 @@
 import * as React from 'react'
 import uuidv4 from 'uuid/v4'
+import { basename } from 'path'
 import { Button, ModalNavigation, Row } from 'decentraland-ui'
 import { RawAsset } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -42,7 +43,16 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
       title: assetPack.title,
       thumbnail: assetPack.thumbnail,
       userId: assetPack.userId,
-      assets: assetPack.assets.map(asset => ({ ...asset, contents: {} } as RawAsset))
+      assets: assetPack.assets.map(asset => {
+        return {
+          ...asset,
+          url: basename(asset.url),
+          contents: Object.keys(asset.contents).reduce<Record<string, Blob>>((acc, path) => {
+            acc[path] = ('https://builder-api.decentraland.zone/v1/storage/assets/' + asset.contents[path]) as any
+            return acc
+          }, {})
+        }
+      })
     }
   }
 
