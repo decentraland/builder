@@ -3,7 +3,7 @@ import { basename } from 'path'
 import * as crypto from 'crypto'
 import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
-import { Button } from 'decentraland-ui'
+import { Button, Loader } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
@@ -26,7 +26,8 @@ export const getSHA256 = (data: string) => {
 export default class AssetImporter extends React.PureComponent<Props, State> {
   state: State = {
     assetPackId: uuidv4(),
-    files: {}
+    files: {},
+    isLoading: false
   }
 
   componentDidMount() {
@@ -69,17 +70,25 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
   }
 
   renderDropzoneCTA = (open: () => void) => {
+    const { isLoading } = this.state
     return (
-      <T
-        id="asset_pack.import.cta"
-        values={{
-          action: (
-            <span className="action" onClick={open}>
-              {t('import_modal.upload_manually')}
-            </span>
-          )
-        }}
-      />
+      <>
+        {isLoading ? (
+          <div className="overlay">
+            <Loader active size="big" />
+          </div>
+        ) : null}
+        <T
+          id="asset_pack.import.cta"
+          values={{
+            action: (
+              <span className="action" onClick={open}>
+                {t('import_modal.upload_manually')}
+              </span>
+            )
+          }}
+        />
+      </>
     )
   }
 
@@ -184,6 +193,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
+    this.setState({ isLoading: true })
     const { files } = this.state
     let newFiles: Record<string, ImportedFile> = {}
 
@@ -232,7 +242,7 @@ export default class AssetImporter extends React.PureComponent<Props, State> {
     }
 
     const fileRecord = { ...files, ...newFiles }
-    this.setState({ files: fileRecord })
+    this.setState({ files: fileRecord, isLoading: false })
   }
 
   handleDropRejected = (rejectedFiles: File[]) => {
