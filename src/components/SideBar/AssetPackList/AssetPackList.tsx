@@ -2,6 +2,7 @@ import React from 'react'
 import { env } from 'decentraland-commons'
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
@@ -26,7 +27,6 @@ export default class AssetPackList extends React.PureComponent<Props> {
             <T id="banners.promo_assetpack_banner" />
           </div>
         }
-
         {assetPacks.map(assetPack => (
           <SidebarCard
             key={assetPack.id}
@@ -35,6 +35,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
             thumbnail={assetPack.thumbnail}
             onClick={onSelectAssetPack}
             isVisible
+            isNew={NEW_ASSET_PACK_IDS.includes(assetPack.id)}
           />
         ))}
       </div>
