@@ -2,8 +2,7 @@ import * as React from 'react'
 import { Field, Header, Button, Icon as SemanticIcon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
-import { RawAssetPack } from 'modules/assetPack/types'
-import { RawAsset } from 'modules/asset/types'
+import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { isGround } from 'modules/asset/utils'
 import AssetThumbnail from 'components/AssetThumbnail'
 import Icon from 'components/Icon'
@@ -11,7 +10,7 @@ import Icon from 'components/Icon'
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
 
-export default class AseetPackEditor extends React.PureComponent<Props, State> {
+export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
 
   state: State = {
@@ -23,25 +22,25 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
     const { assetPack, onChange } = this.props
 
     if (!assetPack.thumbnail) {
-      let asset: RawAsset | null = null
+      let thumb: string | null = null
 
       if (assetPack.assets.length) {
         const foundAsset = assetPack.assets.find(asset => !isGround(asset))
         if (foundAsset) {
-          asset = foundAsset
+          thumb = foundAsset.thumbnail
         } else {
-          asset = assetPack.assets[0]
+          thumb = assetPack.assets[0].thumbnail
         }
       }
 
       onChange({
         ...assetPack,
-        thumbnail: asset ? asset.thumbnail : ''
+        thumbnail: thumb || ''
       })
     }
   }
 
-  getErrors = (assetPack: RawAssetPack) => {
+  getErrors = (assetPack: T) => {
     const newErrors: Record<string, string> = {}
 
     if (assetPack.title.length > MAX_TITLE_LENGTH) {
@@ -143,7 +142,7 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
     }
   }
 
-  handleEditAsset = (asset: RawAsset) => {
+  handleEditAsset = (asset: T['assets'][number]) => {
     const { onEditAsset } = this.props
     if (onEditAsset) {
       onEditAsset(asset)

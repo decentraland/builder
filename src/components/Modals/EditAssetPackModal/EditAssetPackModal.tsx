@@ -2,15 +2,14 @@ import * as React from 'react'
 import uuidv4 from 'uuid/v4'
 import { basename } from 'path'
 import { Button, ModalNavigation, Row } from 'decentraland-ui'
-import { RawAsset } from 'modules/asset/types'
+import { RawAsset, Asset } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
+import { ProgressStage, MixedAssetPack } from 'modules/assetPack/types'
 import AssetPackEditor from 'components/AssetPackEditor'
-import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
+import { convertToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImporter from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
-import { locations } from 'routing/locations'
 
 import { Props, State, EditAssetPackView } from './EditAssetPackModal.types'
 import './EditAssetPackModal.css'
@@ -24,7 +23,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     ignoredAssets: this.getRemoteAssetIds()
   }
 
-  getRawAssetPack(): RawAssetPack {
+  getRawAssetPack(): MixedAssetPack {
     const { assetPack, userId } = this.props
 
     if (!assetPack) {
@@ -43,16 +42,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
       title: assetPack.title,
       thumbnail: assetPack.thumbnail,
       userId: assetPack.userId,
-      assets: assetPack.assets.map(asset => {
-        return {
-          ...asset,
-          url: basename(asset.url),
-          contents: Object.keys(asset.contents).reduce<Record<string, Blob>>((acc, path) => {
-            acc[path] = ('https://builder-api.decentraland.zone/v1/storage/assets/' + asset.contents[path]) as any
-            return acc
-          }, {})
-        }
-      })
+      assets: assetPack.assets.map(asset => ({ ...asset, url: basename(asset.url) }))
     }
   }
 
@@ -63,10 +53,10 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   componentDidUpdate() {
-    const { progress, error } = this.props
+    const { progress, error, isLoading } = this.props
     let view: EditAssetPackView = this.state.view
 
-    if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error) {
+    if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error && !isLoading) {
       view = EditAssetPackView.SUCCESS
     } else if (progress.stage !== ProgressStage.NONE && !error) {
       view = EditAssetPackView.PROGRESS
@@ -77,22 +67,23 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     this.setState({ view })
   }
 
-  handleAssetPackChange = (assetPack: RawAssetPack) => {
+  handleAssetPackChange = (assetPack: MixedAssetPack) => {
     const { ignoredAssets } = this.state
     this.setState({ assetPack, ignoredAssets: ignoredAssets.filter(id => assetPack.assets.some(asset => asset.id === id)) })
   }
 
-  handleAssetImportSubmit = (assetPack: RawAssetPack) => {
+  handleAssetImportSubmit = (assetPack: MixedAssetPack) => {
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSETS })
   }
 
-  handleAssetEditorSubmit = (assetPack: RawAssetPack) => {
+  handleAssetEditorSubmit = (assetPack: MixedAssetPack) => {
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null })
   }
 
-  handleAssetPackEditorSubmit = async (assetPack: RawAssetPack) => {
+  handleAssetPackEditorSubmit = async (assetPack: MixedAssetPack) => {
     const { ignoredAssets } = this.state
-    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack, ignoredAssets)
+    // Convert to FullAssetPack but ignore all the original remote Assets
+    const [fullAssetPack, contents] = await convertToFullAssetPack(assetPack, ignoredAssets)
     this.props.onCreateAssetPack(fullAssetPack, contents)
   }
 
@@ -102,7 +93,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     })
   }
 
-  handleEditAsset = (asset: RawAsset) => {
+  handleEditAsset = (asset: RawAsset | Asset) => {
     this.setState({
       view: EditAssetPackView.EDIT_ASSETS,
       editingAsset: asset.id
@@ -111,7 +102,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
 
   handleDeleteAssetPack = async () => {
     const { ignoredAssets, assetPack } = this.state
-    const [fullAssetPack] = await rawAssetPackToFullAssetPack(assetPack, ignoredAssets)
+    const [fullAssetPack] = await convertToFullAssetPack(assetPack, ignoredAssets)
     this.props.onDeleteAssetPack(fullAssetPack)
     this.props.onClose()
   }
@@ -138,18 +129,6 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     }
   }
 
-  handleLogin = () => {
-    const { project, onLogin } = this.props
-    if (project) {
-      onLogin({
-        returnUrl: locations.editor(project.id),
-        openModal: {
-          name: 'CreateAssetPackModal'
-        }
-      })
-    }
-  }
-
   handleBackToStart = () => {
     this.setState({
       view: EditAssetPackView.EDIT_ASSET_PACK,
@@ -161,7 +140,6 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     const { view } = this.state
     const { onClose } = this.props
     switch (view) {
-      case EditAssetPackView.LOGIN:
       case EditAssetPackView.SUCCESS:
       case EditAssetPackView.IMPORT:
         onClose()
@@ -288,21 +266,6 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     )
   }
 
-  renderLogin() {
-    return (
-      <>
-        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description_edit')} />
-        <Modal.Content>
-          <Row center>
-            <Button primary onClick={this.handleLogin}>
-              {t('asset_pack.login.action')}
-            </Button>
-          </Row>
-        </Modal.Content>
-      </>
-    )
-  }
-
   renderExit() {
     const { onClose } = this.props
     return (
@@ -339,10 +302,6 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     let content
     let className = name
     switch (view) {
-      case EditAssetPackView.LOGIN:
-        content = this.renderLogin()
-        className += ' narrow'
-        break
       case EditAssetPackView.IMPORT:
         content = this.renderAssetImport()
         break

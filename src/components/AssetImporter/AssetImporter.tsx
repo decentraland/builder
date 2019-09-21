@@ -9,6 +9,7 @@ import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
+import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
 import { getExtension, createDefaultImportedFile, getMetrics, ASSET_MANIFEST, MAX_FILE_SIZE, truncateFileName } from './utils'
@@ -23,7 +24,7 @@ export const getSHA256 = (data: string) => {
     .digest('hex')
 }
 
-export default class AssetImporter extends React.PureComponent<Props, State> {
+export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   state: State = {
     assetPackId: this.getAssetPackId(),
     files: {},

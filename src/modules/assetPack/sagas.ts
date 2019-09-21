@@ -57,7 +57,6 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
 
 function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   const { assetPack, contents } = action.payload
-  const total = assetPack.assets.length
 
   try {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
@@ -72,15 +71,21 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
-    const uploadEffects = assetPack.assets
-      .filter(asset => Object.keys(contents[asset.id]).length > 0)
-      .flatMap(asset => [call(() => builder.saveAssetContents(asset, contents[asset.id])), call(handleAssetContentsUploadProgress(total))])
+
+    const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
+    const uploadEffects = updatableAssets.flatMap(asset => [
+      call(() => builder.saveAssetContents(asset, contents[asset.id])),
+      call(handleAssetContentsUploadProgress(updatableAssets.length))
+    ])
 
     if (uploadEffects.length > 0) {
       yield all(uploadEffects)
+    } else {
+      yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 100))
     }
 
     yield put(saveAssetPackSuccess(assetPack))
+    yield put(setProgress(ProgressStage.NONE, 0))
     yield put(loadAssetPacksRequest())
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))

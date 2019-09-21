@@ -5,7 +5,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
 import AssetPackEditor from 'components/AssetPackEditor'
-import { rawAssetPackToFullAssetPack } from 'modules/assetPack/utils'
+import { convertToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImporter from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
 import { locations } from 'routing/locations'
@@ -32,10 +32,10 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   componentDidUpdate() {
-    const { progress, error } = this.props
+    const { progress, error, isLoading } = this.props
     let view: CreateAssetPackView = this.state.view
 
-    if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error) {
+    if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error && !isLoading) {
       view = CreateAssetPackView.SUCCESS
     } else if (progress.stage !== ProgressStage.NONE && !error) {
       view = CreateAssetPackView.PROGRESS
@@ -59,7 +59,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   handleAssetPackEditorSubmit = async (assetPack: RawAssetPack) => {
-    const [fullAssetPack, contents] = await rawAssetPackToFullAssetPack(assetPack)
+    const [fullAssetPack, contents] = await convertToFullAssetPack(assetPack)
     this.props.onCreateAssetPack(fullAssetPack, contents)
   }
 

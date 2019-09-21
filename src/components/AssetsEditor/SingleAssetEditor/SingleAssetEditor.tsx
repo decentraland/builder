@@ -1,9 +1,10 @@
 import * as React from 'react'
+import { basename } from 'path'
 import { Field, TagField, SelectField, DropdownProps, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { rawMappingsToObjectURL, revokeMappingsObjectURL, isGround } from 'modules/asset/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
-import { RawAsset } from 'modules/asset/types'
+import { RawAsset, Asset } from 'modules/asset/types'
 import { getModelData } from 'lib/getModelData'
 import Icon from 'components/Icon'
 import { Props, State } from './SingleAssetEditor.types'
@@ -17,7 +18,7 @@ const CATEGORY_OPTIONS = [
   { key: 5, text: CategoryName.TILES_CATEGORY, value: CategoryName.TILES_CATEGORY }
 ]
 
-export default class SingleAssetEditor<T extends RawAsset> extends React.PureComponent<Props<T>, State> {
+export default class SingleAssetEditor<T extends RawAsset | Asset> extends React.PureComponent<Props<T>, State> {
   handleCategoryChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { asset } = this.props
 
@@ -64,11 +65,18 @@ export default class SingleAssetEditor<T extends RawAsset> extends React.PureCom
   handleGetThumbnail = async (ground: boolean = false) => {
     const { asset } = this.props
 
-    const mappings = !asset.thumbnail.startsWith('http')
-      ? rawMappingsToObjectURL(asset.contents)
-      : ((asset.contents as any) as Record<string, string>)
+    let mappings: Asset['contents'] | RawAsset['contents']
 
-    const { image } = await getModelData(mappings[asset.url], {
+    if (!asset.thumbnail.startsWith('http')) {
+      mappings = rawMappingsToObjectURL((asset as RawAsset).contents)
+    } else {
+      mappings = Object.keys((asset as Asset).contents).reduce<Asset['contents']>((acc, path) => {
+        acc[path] = ('https://builder-api.decentraland.zone/v1/storage/assets/' + asset.contents[path]) as any
+        return acc
+      }, {})
+    }
+
+    const { image } = await getModelData(mappings[basename(asset.url)], {
       mappings,
       thumbnailType: ground ? '2d' : '3d'
     })
