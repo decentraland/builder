@@ -54,7 +54,7 @@
     "import": {
       "title_create": "Create Asset Pack",
       "description_create": "Start by adding items to your pack.",
-      "title_edit": "Create Asset Pack",
+      "title_edit": "Edit Asset Pack",
       "description_edit": "Start by adding items to your pack.",
       "action": "Import asset",
       "action_many": "Import {count} assets",

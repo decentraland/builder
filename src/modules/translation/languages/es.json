@@ -3,6 +3,8 @@
     "edit_asset": {
       "title_create": "Crear Asset Pack",
       "description_create": "Revisa tus modelos, agrega tags y otras cosas.",
+      "title_edit": "Editar Asset Pack",
+      "description_edit": "Revise sus artículos, agregue etiquetas y más cosas.",
       "action": "Continuar",
       "action_skip": "Saltar paso",
       "category": {
@@ -28,7 +30,12 @@
     "edit_assetpack": {
       "title_create": "Crear Asset Pack",
       "description_create": "Genial! Ponle un nombre único a tu Asset Pack.",
-      "action": "Crear Asset Pack",
+      "action_create": "Crear Asset Pack",
+      "title_edit": "Editar Asset Pack",
+      "description_edit": "¡Increíble! Elige un nombre para tu Asset Pack.",
+      "action_edit": "Editar Asset Pack",
+      "action_delete": "Eliminar Asset Pack",
+      "action_add_items": "Agregar items",
       "errors": {
         "max_title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
         "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
@@ -47,6 +54,8 @@
     "import": {
       "title_create": "Crear Asset Pack",
       "description_create": "Comienza añadiendo tus modelos.",
+      "title_edit": "Editar Asset Pack",
+      "description_edit": "Start by adding items to your pack.",
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
       "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
@@ -62,6 +71,7 @@
     },
     "progress": {
       "creating_asset_pack": "Creando Asset Pack",
+      "updating_asset_pack": "Actualizando Asset Pack",
       "uploading_contents": "Subiendo contenidos del Asset Pack"
     },
     "success": {
@@ -71,14 +81,23 @@
     },
     "login": {
       "title": "Iniciar Sesión",
-      "description": "Necesitas iniciar sesión para crear un Asset Pack",
+      "description_create": "Necesitas iniciar sesión para crear un Asset Pack",
+      "description_edit": "Necesitas iniciar sesión para editar un Asset Pack",
       "action": "Iniciar Sesión"
     },
     "exit": {
-      "title": "Estas seguro?",
-      "description": "Estas a punto de salir de la creación de tu Asset Pack, deseas continuar?",
+      "title_create": "¿Estás seguro?",
+      "description_create": "Estas a punto de salir de la creación de tu Asset Pack ¿Quieres continuar?",
+      "title_edit": "¿Estás seguro?",
+      "description_edit": "Estas a punto de salir de la edición de tu Asset Pack ¿Quieres continuar?",
       "action": "Salir",
       "back": "Volver"
+    },
+    "confirm_delete": {
+      "title": "¿Estás seguro?",
+      "action": "Eliminar Asset Pack",
+      "back": "Volver",
+      "description": "Estas a punto de eliminar este Asset Pack. Esta acción no se puede deshacer."
     }
   },
   "banners": {
@@ -273,7 +292,8 @@
     "no_results": "Sin resultados",
     "results": "Resultados",
     "search": "Buscar objetos",
-    "title": "Listado de objetos"
+    "title": "Listado de objetos",
+    "edit_asset_pack": "Editar"
   },
   "layout_picker": {
     "columns": "columnas",

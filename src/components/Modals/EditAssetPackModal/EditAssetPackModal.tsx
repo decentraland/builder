@@ -311,7 +311,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   renderDeleteConfirmation() {
     return (
       <>
-        <ModalNavigation title={t('asset_pack.exit.title')} subtitle={t('asset_pack.confirm_delete.description')} />
+        <ModalNavigation title={t('asset_pack.confirm_delete.title')} subtitle={t('asset_pack.confirm_delete.description')} />
         <Modal.Actions className="exit-actions">
           <Button primary onClick={this.handleDeleteAssetPack}>
             {t('asset_pack.confirm_delete.action')}
