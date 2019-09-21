@@ -1,7 +1,7 @@
 {
   "asset_pack": {
+    "title_create": "创造Asset Pack",
     "edit_asset": {
-      "title_create": "创造Asset Pack",
       "description_create": "查看您的商品，添加标签和更多内容。",
       "action": "继续",
       "action_skip": "跳过步骤",
@@ -26,7 +26,6 @@
       }
     },
     "edit_assetpack": {
-      "title_create": "创造Asset Pack",
       "description_create": "真棒！输入Asset Pack的唯一名称",
       "action": "创建Asset Pack",
       "errors": {
@@ -45,7 +44,6 @@
       "reset": "添加新Assets"
     },
     "import": {
-      "title_create": "创造Asset Pack",
       "description_create": "首先将模型添加到Asset Pack",
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",

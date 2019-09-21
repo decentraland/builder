@@ -37,6 +37,7 @@
   border-radius: 10px;
   padding: 10px;
   border: 2px solid #302e37;
+  background-color: #302e37;
 }
 
 .SingleAssetEditor .left-column img.ground {
