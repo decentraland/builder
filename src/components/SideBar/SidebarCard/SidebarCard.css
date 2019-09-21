@@ -9,6 +9,19 @@
   cursor: pointer;
   margin-bottom: 8px;
   user-select: none;
+  position: relative;
+}
+
+.SidebarCard .new-badge {
+  text-transform: uppercase;
+  background-color: var(--primary);
+  position: absolute;
+  font-size: 9px;
+  line-height: 14px;
+  padding: 0px 4px;
+  border-radius: 3px;
+  top: 14px;
+  right: 271px;
 }
 
 .SidebarCard:last-child {

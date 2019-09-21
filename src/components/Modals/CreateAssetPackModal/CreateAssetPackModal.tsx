@@ -111,11 +111,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { onClose } = this.props
     return (
       <>
-        <ModalNavigation
-          title={t('asset_pack.import.title_create')}
-          subtitle={t('asset_pack.import.description_create')}
-          onClose={onClose}
-        />
+        <ModalNavigation title={t('asset_pack.title_create')} subtitle={t('asset_pack.import.description_create')} onClose={onClose} />
         <Modal.Content>
           <AssetImporter assetPack={assetPack} onSubmit={this.handleAssetImportSubmit} />
         </Modal.Content>
@@ -128,7 +124,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     return (
       <>
         <ModalNavigation
-          title={t('asset_pack.edit_asset.title_create')}
+          title={t('asset_pack.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
           onClose={this.handleClose}
         />
@@ -145,7 +141,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     return (
       <>
         <ModalNavigation
-          title={t('asset_pack.edit_asset.title_create')}
+          title={t('asset_pack.title_create')}
           subtitle={t('asset_pack.edit_asset.description_create')}
           onClose={this.handleClose}
         />

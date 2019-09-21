@@ -3,5 +3,6 @@ export type Props = {
   title: string
   thumbnail: string
   isVisible: boolean
+  isNew?: boolean
   onClick: (id: string) => void
 }

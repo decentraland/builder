@@ -1,7 +1,7 @@
 {
   "asset_pack": {
+    "title_create": "创造Asset Pack",
     "edit_asset": {
-      "title_create": "创造Asset Pack",
       "description_create": "查看您的商品，添加标签和更多内容。",
       "title_edit": "修改Asset Pack",
       "description_edit": "查看您的商品，添加标签和更多内容。",
@@ -28,7 +28,6 @@
       }
     },
     "edit_assetpack": {
-      "title_create": "创造Asset Pack",
       "description_create": "真棒！输入Asset Pack的唯一名称",
       "action_create": "创造Asset Pack",
       "title_edit": "修改Asset Pack",
@@ -52,7 +51,6 @@
       "reset": "添加新Assets"
     },
     "import": {
-      "title_create": "创造Asset Pack",
       "description_create": "首先将模型添加到Asset Pack",
       "title_edit": "创造Asset Pack",
       "description_edit": "首先将项目添加到您的包中。",
@@ -98,9 +96,9 @@
     }
   },
   "banners": {
-    "promo_assetpack_banner": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
-    "promo_body": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
-    "promo_subtitle": "奇迹发生的地方!",
+    "promo_assetpack_banner": "使用科幻包开始你的宇宙探索！",
+    "promo_body": "获取科幻包并开始您的宇宙探索！",
+    "promo_subtitle": "未来的发展方向！",
     "promo_title": "Decentraland"
   },
   "custom_layout_modal": {
@@ -242,6 +240,7 @@
     "learn_more": "更多",
     "loading": "装载",
     "next": "下一个",
+    "new": "新",
     "optional": "可选",
     "or": "或",
     "project": "场景",

@@ -3,6 +3,11 @@ import { Category } from './types'
 
 export const COLLECTIBLE_ASSET_PACK_ID = 'collectibles'
 
+// Tehese asset packs will be shown on top, with a `new` badge
+export const NEW_ASSET_PACK_IDS = ['c4b073ab-92e0-49d9-9316-89044fc20858']
+// These asset packs will be pushed to the bottom, like for old promotions
+export const OLD_ASSET_PACK_IDS = ['173c9b1a-b730-4065-a7a9-3e7e40da7b52']
+
 export enum CategoryName {
   GROUND_CATEGORY = 'ground',
   TILES_CATEGORY = 'tiles',

@@ -1,7 +1,7 @@
 {
   "asset_pack": {
+    "title_create": "Crear Asset Pack",
     "edit_asset": {
-      "title_create": "Crear Asset Pack",
       "description_create": "Revisa tus modelos, agrega tags y otras cosas.",
       "title_edit": "Editar Asset Pack",
       "description_edit": "Revise sus artículos, agregue etiquetas y más cosas.",
@@ -28,7 +28,6 @@
       }
     },
     "edit_assetpack": {
-      "title_create": "Crear Asset Pack",
       "description_create": "Genial! Ponle un nombre único a tu Asset Pack.",
       "action_create": "Crear Asset Pack",
       "title_edit": "Editar Asset Pack",
@@ -52,7 +51,6 @@
       "reset": "Agregar nuevos Assets"
     },
     "import": {
-      "title_create": "Crear Asset Pack",
       "description_create": "Comienza añadiendo tus modelos.",
       "title_edit": "Editar Asset Pack",
       "description_edit": "Start by adding items to your pack.",
@@ -101,9 +99,9 @@
     }
   },
   "banners": {
-    "promo_assetpack_banner": "Con el Fantasy Asset Pack conjura todo tipo de creaciones deslumbrantes!",
-    "promo_body": "Con el Fantasy Asset Pack podrás conjurar todo tipo de creaciones deslumbrantes!",
-    "promo_subtitle": "Donde la magia ocurre!",
+    "promo_assetpack_banner": "Con el Sci-fi Pack comienza tu exploración cósmica!",
+    "promo_body": "Con el Sci-fi Pack podrás comenzar tu exploración cósmica!",
+    "promo_subtitle": "Donde se construye el futuro!",
     "promo_title": "Decentraland"
   },
   "custom_layout_modal": {
@@ -245,6 +243,7 @@
     "learn_more": "Más información",
     "loading": "Cargando",
     "next": "siguiente",
+    "new": "Nuevo",
     "optional": "opcional",
     "or": "o",
     "project": "Escena",

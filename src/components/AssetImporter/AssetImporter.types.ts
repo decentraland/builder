@@ -9,6 +9,7 @@ export type Props = {
 export type State = {
   assetPackId: string
   files: Record<string, ImportedFile>
+  isLoading: boolean
 }
 
 export type ImportedFile = {
