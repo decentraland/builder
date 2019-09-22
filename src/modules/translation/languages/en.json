@@ -3,11 +3,11 @@
     "title_create": "Create Asset Pack",
     "edit_asset": {
       "title_create": "Create Asset Pack",
-      "description_create": "Review your items, add tags and more stuff.",
+      "description_create": "Review your assets, add tags and more",
       "title_edit": "Edit Asset Pack",
-      "description_edit": "Review your items, add tags and more stuff.",
+      "description_edit": "Review your assets, add tags and more",
       "action": "Continue",
-      "action_skip": "Skip step",
+      "action_skip": "Skip review",
       "category": {
         "label": "category"
       },
@@ -29,11 +29,7 @@
       }
     },
     "edit_assetpack": {
-      "description_create": "Awesome! Enter a unique name for your Asset Pack.",
-      "action_create": "Create Asset Pack",
-      "title_edit": "Edit Asset Pack",
-      "description_edit": "Awesome! Enter a unique name for your Asset Pack.",
-      "action_edit": "Edit Asset Pack",
+      "action_edit": "Save Asset Pack",
       "action_delete": "Delete Asset Pack",
       "action_add_items": "Add items",
       "errors": {
@@ -53,12 +49,12 @@
     },
     "import": {
       "title_create": "Create Asset Pack",
-      "description_create": "Start by adding items to your pack.",
+      "description_create": "Start by adding some items to your pack",
       "title_edit": "Edit Asset Pack",
-      "description_edit": "Start by adding items to your pack.",
+      "description_edit": "Add some more items to your pack",
       "action": "Import asset",
       "action_many": "Import {count} assets",
-      "cta": "Drag your Asset's .zip file here, or {action}",
+      "cta": "Drag your Asset file here in GLB, GLTF or ZIP format, or {action}",
       "errors": {
         "invalid": "Invalid Asset",
         "duplicated": "Duplicated Asset",
