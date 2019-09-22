@@ -76,6 +76,7 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
     }
     case SAVE_ASSET_PACK_SUCCESS: {
       const { assetPack } = action.payload
+
       const newState = {
         ...state,
         data: {
@@ -83,9 +84,11 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
         }
       }
 
-      for (let asset of assetPack.assets) {
-        // Todo this doesn't seem to impact the reducer
-        delete newState.data[asset.id]
+      for (let assetId of Object.keys(state.data)) {
+        const asset = newState.data[assetId]
+        if (asset.assetPackId === assetPack.id) {
+          delete newState.data[asset.id]
+        }
       }
 
       return newState

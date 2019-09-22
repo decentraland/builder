@@ -94,6 +94,9 @@
       "back": "Go Back"
     },
     "confirm_delete": {
+      "title": "Are you sure?",
+      "action": "Delete Asset Pack",
+      "back": "Go Back",
       "description": "You are about to delete this Asset Pack. This action cannot be undone."
     }
   },
