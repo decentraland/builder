@@ -12,7 +12,6 @@ import {
   AmbientLight,
   RectAreaLight
 } from 'three'
-import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { SceneMetrics } from 'modules/scene/types'
 
@@ -47,7 +46,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
   if (mappings) {
     manager = new LoadingManager()
     manager.setURLModifier(url => {
-      const path = basename(new URL(url.replace('blob:', '')).pathname.slice(1))
+      const path = new URL(url.replace('blob:', '')).pathname.slice(1)
       const key = Object.keys(mappings).find(key => key.endsWith(path))
       if (key) {
         return mappings[key]

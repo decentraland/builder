@@ -55,7 +55,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     }
 
     const id = !file.error ? file.asset.id : file.id
-    const isDuplicated = file.error && file.asset
+    const isDuplicated = file.error && file.asset.thumbnail
 
     return (
       <AssetThumbnail
