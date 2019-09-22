@@ -3,6 +3,7 @@ import { basename } from 'path'
 import { Field, TagField, SelectField, DropdownProps, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { rawMappingsToObjectURL, revokeMappingsObjectURL, isGround } from 'modules/asset/utils'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { RawAsset, Asset } from 'modules/asset/types'
 import { getModelData } from 'lib/getModelData'
@@ -71,7 +72,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
       mappings = rawMappingsToObjectURL((asset as RawAsset).contents)
     } else {
       mappings = Object.keys((asset as Asset).contents).reduce<Asset['contents']>((acc, path) => {
-        acc[path] = ('https://builder-api.decentraland.zone/v1/storage/assets/' + asset.contents[path]) as any
+        acc[path] = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[path]}` as any
         return acc
       }, {})
     }
