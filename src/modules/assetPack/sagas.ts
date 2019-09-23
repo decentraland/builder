@@ -21,7 +21,7 @@ import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
 import { fixAssetMappings } from 'modules/scene/actions'
-import { isDataUrl } from 'modules/media/utils'
+import { isRemoteURL } from 'modules/media/utils'
 import { selectAssetPack } from 'modules/ui/sidebar/actions'
 
 export function* assetPackSaga() {
@@ -64,7 +64,7 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
 
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
 
-    if (isDataUrl(assetPack.thumbnail)) {
+    if (!isRemoteURL(assetPack.thumbnail)) {
       yield call(() => builder.saveAssetPackThumbnail(assetPack))
     }
 

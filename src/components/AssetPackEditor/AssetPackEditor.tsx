@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { isGround } from 'modules/asset/utils'
+import { isRemoteURL } from 'modules/media/utils'
 import AssetThumbnail from 'components/AssetThumbnail'
 import Icon from 'components/Icon'
 
@@ -183,11 +184,17 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
     const hasErrors = Object.keys(errors).length > 0
     const isSubmitDisabled = isDirty ? hasErrors || items === 0 : false
 
+    let thumbnail = assetPack.thumbnail
+
+    if (thumbnail && isRemoteURL(thumbnail)) {
+      thumbnail = `${assetPack.thumbnail}?updated_at=${assetPack.updatedAt || +Date.now()}`
+    }
+
     return (
       <div className="AssetPackEditor">
         <div className="assetpack">
           <div className="thumbnail">
-            {assetPack.thumbnail && <img src={assetPack.thumbnail} />}
+            {assetPack.thumbnail && <img src={thumbnail} />}
             <Icon name="camera" onClick={this.handleOpenFileDialog} />
             <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnail} accept="image/png, image/jpeg" />
           </div>
