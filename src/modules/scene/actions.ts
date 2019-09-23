@@ -93,3 +93,11 @@ export const APPLY_LAYOUT = 'Apply Layout'
 export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project })
 
 export type ApplyLayoutAction = ReturnType<typeof applyLayout>
+
+// Fix Asset Mappings
+
+export const FIX_ASSET_MAPPINGS = 'Fix Asset Mappings'
+
+export const fixAssetMappings = () => action(FIX_ASSET_MAPPINGS, {})
+
+export type FixAssetMappingsAction = ReturnType<typeof fixAssetMappings>

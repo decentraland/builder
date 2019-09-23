@@ -6,7 +6,6 @@ import { getCurrentProject, getData as getProjects } from 'modules/project/selec
 import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
-import { api } from 'lib/api'
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -38,13 +37,15 @@ import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } fr
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
 import { ContentServiceFile, ProgressStage } from './types'
-import { getCurrentDeployment, getDeployment } from './selectors'
+import { getCurrentDeployment, getData as getDeployments } from './selectors'
 import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getSub, isLoggedIn } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
+import { content } from 'lib/api/content'
+import { builder } from 'lib/api/builder'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -95,9 +96,9 @@ function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
       }
 
       yield call(() =>
-        api.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+        builder.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
       )
-      yield call(() => api.deployToPool(project.id))
+      yield call(() => builder.deployToPool(project.id))
 
       yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
     } catch (e) {
@@ -135,14 +136,14 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
           const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
 
           yield call(() =>
-            api.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+            builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
           )
         } else {
           console.warn('Failed to upload scene preview')
         }
       }
 
-      yield call(() => api.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
+      yield call(() => content.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
 
       // generate new deployment
       const deployment: Deployment = {
@@ -167,11 +168,12 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
 
 function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
   const { projectId } = action.payload
-  const deployment: Deployment | null = yield select(getDeployment(projectId))
+  const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
+  const deployment = deployments[projectId]
   if (!deployment) return
   const { x, y } = deployment.placement.point
   try {
-    const res: ContentServiceValidation = yield call(() => api.fetchValidation(x, y))
+    const res: ContentServiceValidation = yield call(() => content.fetchValidation(x, y))
     const lastPublishedCID: string | null = deployment.lastPublishedCID
     const remoteCID = res.root_cid
 
@@ -189,7 +191,8 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   const { projectId } = action.payload
   const ethAddress = yield select(getAddress)
   const userId = yield select(getSub)
-  const deployment: Deployment | null = yield select(getDeployment(projectId))
+  const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
+  const deployment = deployments[projectId]
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
 
@@ -203,7 +206,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
       const signature = yield signMessage(`${rootCID}.${timestamp}`)
       const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, userId)
 
-      yield call(() => api.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
+      yield call(() => content.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
       yield put(clearDeploymentSuccess(projectId))
     } catch (e) {
       yield put(clearDeploymentFailure(e.message))
@@ -244,7 +247,7 @@ function* getContentServiceFiles(project: Project, point: Coordinate, rotation: 
 
 function* handleFetchDeploymentsRequest(_action: LoadDeploymentsRequestAction) {
   try {
-    const deployments: Deployment[] = yield call(() => api.fetchDeployments())
+    const deployments: Deployment[] = yield call(() => builder.fetchDeployments())
     yield put(loadDeploymentsSuccess(deployments))
   } catch (e) {
     yield put(loadDeploymentsFailure(e.message))

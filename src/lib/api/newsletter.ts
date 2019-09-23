@@ -10,10 +10,10 @@ export enum EMAIL_INTEREST {
 
 export const EMAIL_SERVER_URL = env.get('REACT_APP_EMAIL_SERVER_URL', '')
 
-export class EmailAPI extends BaseAPI {
+export class NewsletterAPI extends BaseAPI {
   reportEmail = async (email: string, interest: EMAIL_INTEREST) => {
     await this.request('post', `/`, { email, interest })
   }
 }
 
-export const email = new EmailAPI(EMAIL_SERVER_URL)
+export const newsletter = new NewsletterAPI(EMAIL_SERVER_URL)

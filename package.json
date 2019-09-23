@@ -1,6 +1,6 @@
 {
   "name": "builder",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
@@ -29,8 +29,8 @@
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^5.5.0",
     "decentraland-eth": "^8.16.0",
-    "decentraland-ui": "^2.6.4",
     "decentraland-ecs": "^6.2.0",
+    "decentraland-ui": "^2.10.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
     "eslint": "5.6.0",
@@ -83,6 +83,7 @@
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
+    "three": "^0.107.0",
     "typesafe-actions": "^4.4.2",
     "typescript": "3.2.2",
     "url-loader": "1.1.1",

@@ -21,19 +21,12 @@ export default class VerticalCard extends React.PureComponent<Props> {
       classes += ' disabled'
     }
 
-    return (
-      <Popup
-        content={name}
-        position="top center"
-        trigger={
-          <div className={classes}>
-            <img className="thumbnail" src={thumbnail} alt="" draggable={false} />
-          </div>
-        }
-        hideOnScroll={true}
-        on="hover"
-        inverted
-      />
+    const content = (
+      <div className={classes}>
+        <img className="thumbnail" src={thumbnail} alt="" draggable={false} />
+      </div>
     )
+
+    return name ? <Popup content={name} position="top center" trigger={content} hideOnScroll={true} on="hover" inverted basic /> : content
   }
 }

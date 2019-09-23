@@ -1,6 +1,20 @@
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { Migration, Versionable } from './types'
+import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
+
+export function addScale(scene: Scene) {
+  if (scene) {
+    for (const component of Object.values(scene.components)) {
+      if (component.type === ComponentType.Transform) {
+        const transform = component as ComponentDefinition<ComponentType.Transform>
+        if (!transform.data.scale) {
+          transform.data.scale = { x: 1, y: 1, z: 1 }
+        }
+      }
+    }
+  }
+}
 
 export function toProjectCloudSchema(project: Project): Project {
   const newProject = {

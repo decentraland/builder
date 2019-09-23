@@ -46,6 +46,7 @@ export const SpecialKeys = {
 export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.MOVE]: { type: 'simple', value: 'w', title: t('shortcuts.move') },
   [Shortcut.ROTATE]: { type: 'simple', value: 'e', title: t('shortcuts.rotate') },
+  [Shortcut.SCALE]: { type: 'simple', value: 'r', title: t('shortcuts.scale') },
   [Shortcut.RESET_ITEM]: { type: 'simple', value: 's', title: t('shortcuts.reset') },
   [Shortcut.DUPLICATE_ITEM]: { type: 'simple', value: 'd', title: t('shortcuts.duplicate') },
   [Shortcut.PREVIEW]: { type: 'simple', value: 'i', title: t('shortcuts.preview') },
@@ -119,6 +120,11 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.ROTATE]),
       callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.ROTATE ? Gizmo.NONE : Gizmo.ROTATE)),
+      action: 'keyup'
+    },
+    {
+      combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.SCALE]),
+      callback: () => store.dispatch(setGizmo(getGizmo(store.getState()) === Gizmo.SCALE ? Gizmo.NONE : Gizmo.SCALE)),
       action: 'keyup'
     },
     {

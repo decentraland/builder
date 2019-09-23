@@ -33,7 +33,7 @@ export default class UserMenu extends React.Component<Props, State> {
   }
 
   render() {
-    const { face, name, email, isLoggedIn, isLoggingIn, onLogout } = this.props
+    const { user, isLoggedIn, isLoggingIn, onLogout } = this.props
     const { isOpen } = this.state
 
     let classes = 'UserMenu'
@@ -41,17 +41,24 @@ export default class UserMenu extends React.Component<Props, State> {
       classes += ' authed'
     }
 
+    let name = null
+    let email = null
+    if (user) {
+      name = user.profile.name
+      email = user.email
+    }
+
     return (
       <div className={classes} onBlur={this.handleClose} tabIndex={0}>
         {isLoggedIn && (
           <>
             <div className="toggle" onClick={this.handleToggle}>
-              <AvatarFace size="medium" face={face} />
+              <AvatarFace size="medium" user={user} />
             </div>
             <div className={`menu ${isOpen ? 'open' : ''}`}>
               <div className="info" onClick={this.handleProfileClick}>
                 <div className="image">
-                  <AvatarFace size="small" face={face} />
+                  <AvatarFace size="small" user={user} />
                 </div>
                 <div>
                   <div className="name">{name || t('user_menu.guest')}</div>

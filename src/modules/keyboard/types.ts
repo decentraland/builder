@@ -10,6 +10,7 @@ export type BaseKeyboardShortcut = {
 export enum Shortcut {
   MOVE = 'MOVE',
   ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
   RESET_ITEM = 'RESET_ITEM',
   DUPLICATE_ITEM = 'DUPLICATE_ITEM',
   PREVIEW = 'PREVIEW',

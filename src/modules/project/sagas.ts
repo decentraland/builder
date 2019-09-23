@@ -28,11 +28,11 @@ import {
   loadProjectsFailure,
   loadProjectsRequest
 } from 'modules/project/actions'
-import { api } from 'lib/api'
+
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
-import { getScene } from 'modules/scene/selectors'
+import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
@@ -44,6 +44,7 @@ import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
+import { builder } from 'lib/api/builder'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -52,13 +53,20 @@ const DEFAULT_GROUND_ASSET: Asset = {
   url: 'e6fa9601-3e47-4dff-9a84-e8e017add15a/FloorBaseGrass_01/FloorBaseGrass_01.glb',
   tags: ['ground'],
   category: 'ground',
-  variations: [],
   contents: {
     'FloorBaseGrass_01/FloorBaseGrass_01.glb': 'QmSyvWnb5nKCaGHw9oHLSkwywvS5NYpj6vgb8L121kWveS',
     'FloorBaseGrass_01/Floor_Grass01.png.png': 'QmT1WfQPMBVhgwyxV5SfcfWivZ6hqMCT74nxdKXwyZBiXb',
     'FloorBaseGrass_01/thumbnail.png': 'QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'
   },
-  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a'
+  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a',
+  metrics: {
+    triangles: 0,
+    materials: 0,
+    meshes: 0,
+    bodies: 0,
+    entities: 0,
+    textures: 0
+  }
 }
 
 export function* projectSaga() {
@@ -136,7 +144,8 @@ function* handleEditProject(action: EditProjectAction) {
 
   if (!targetProject || !project) return
 
-  const scene: Scene | null = yield select(getScene(targetProject.sceneId))
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[targetProject.sceneId]
 
   if (!scene) return
 
@@ -197,7 +206,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
 function* handleLoadProjectsRequest() {
   try {
-    const projects: Project[] = yield call(() => api.fetchProjects())
+    const projects: Project[] = yield call(() => builder.fetchProjects())
     const record: ModelById<Project> = {}
 
     for (let project of projects) {
@@ -212,7 +221,7 @@ function* handleLoadProjectsRequest() {
 
 function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
   try {
-    const manifest = yield call(() => api.fetchManifest(action.payload.id))
+    const manifest = yield call(() => builder.fetchManifest(action.payload.id))
     yield put(loadManifestSuccess(manifest))
   } catch (e) {
     yield put(loadManifestFailure(e.message))

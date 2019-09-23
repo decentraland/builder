@@ -1,0 +1,90 @@
+.SingleAssetEditor {
+  display: flex;
+}
+
+.SingleAssetEditor .left-column {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(var(--dark-raw), 0.48);
+  padding: 24px 24px 0px 24px;
+  border-radius: 8px 0px 0px 8px;
+}
+
+.SingleAssetEditor .right-column {
+  background-color: rgba(var(--dark-raw), 0.48);
+  padding: 24px 24px 0px 0px;
+  border-radius: 0px 8px 8px 0px;
+  width: 441px;
+}
+
+.SingleAssetEditor .metric {
+  text-transform: uppercase;
+  color: var(--secondary-text);
+  font-size: 12px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.SingleAssetEditor .metric .Icon {
+  margin-right: 8px;
+  margin-left: 4px;
+}
+
+.SingleAssetEditor .left-column img {
+  width: 175px;
+  height: 175px;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid #302e37;
+  background-color: #302e37;
+}
+
+.SingleAssetEditor .left-column img.ground {
+  padding: 0px;
+}
+
+.SingleAssetEditor .dcl.field {
+  margin-bottom: 10px;
+}
+
+.SingleAssetEditor .dcl.tag-field {
+  height: 120px;
+}
+
+.SingleAssetEditor .dcl.tag-field .container {
+  overflow-x: auto;
+  width: 415px;
+}
+
+.SingleAssetEditor .dcl.tag-field .ui.dropdown {
+  width: max-content;
+  min-width: 100%;
+}
+
+.SingleAssetEditor .ui.radio.checkbox {
+  margin-bottom: 20px;
+}
+
+.SingleAssetEditor .ui.radio.checkbox label {
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: normal;
+  text-transform: uppercase;
+  padding-left: 30px;
+}
+
+.SingleAssetEditor .ui.radio.checkbox label:before {
+  width: 16px;
+  height: 16px;
+}
+
+.SingleAssetEditor .ui.radio.checkbox label:after {
+  width: 19px;
+  height: 20px;
+}
+
+.SingleAssetEditor .dcl.select-field .ui.dropdown .text {
+  text-transform: capitalize;
+}

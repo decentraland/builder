@@ -1,11 +1,7 @@
 import React from 'react'
-import { Header, Icon } from 'decentraland-ui'
+import { Header, Icon, Button, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-
-import { SidebarView } from 'modules/ui/sidebar/types'
-import Chip from 'components/Chip'
 import { Props } from './SidebarHeader.types'
-
 import './SidebarHeader.css'
 
 export default class SidebarHeader extends React.PureComponent<Props> {
@@ -20,40 +16,55 @@ export default class SidebarHeader extends React.PureComponent<Props> {
     }
   }
 
-  handleSetGridView = () => {
-    this.props.onSetSidebarView(SidebarView.GRID)
-  }
-
-  handleSetListView = () => {
-    this.props.onSetSidebarView(SidebarView.LIST)
+  handleEditAssetPack = () => {
+    const { selectedAssetPack, onEditAssetPack } = this.props
+    if (selectedAssetPack) {
+      onEditAssetPack(selectedAssetPack.id)
+    }
   }
 
   render() {
-    const { selectedAssetPack, selectedCategory, isList, search } = this.props
+    const { selectedAssetPack, selectedCategory, search, onCreateAssetPack, userId } = this.props
 
     const isRoot = selectedAssetPack === null && selectedCategory === null
     const isSearch = search.length > 0
 
     return (
       <Header className="SidebarHeader" size="medium">
-        {isSearch ? (
-          <span className="selected-scope" onClick={this.handleGoBack}>
-            <Icon name="chevron left" />
-            {t('itemdrawer.results')}
-          </span>
-        ) : isRoot ? (
-          t('itemdrawer.title')
-        ) : (
-          <span className="selected-scope" onClick={this.handleGoBack}>
-            <Icon name="chevron left" />
-            {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
-          </span>
-        )}
+        <div className="title">
+          {isSearch ? (
+            <span className="selected-scope" onClick={this.handleGoBack}>
+              <Icon name="chevron left" />
+              {t('itemdrawer.results')}
+            </span>
+          ) : isRoot ? (
+            t('itemdrawer.title')
+          ) : (
+            <span className="selected-scope">
+              <Icon name="chevron left" onClick={this.handleGoBack} />
+              <span className="title">
+                {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
+              </span>
+              <div className="spacer">
+                {selectedAssetPack && selectedAssetPack.userId === userId && (
+                  <Button basic onClick={this.handleEditAssetPack}>
+                    {t('itemdrawer.edit_asset_pack')}
+                  </Button>
+                )}
+              </div>
+            </span>
+          )}
+        </div>
         {isRoot && !isSearch ? (
-          <div className="item-drawer-type-buttons">
-            <Chip icon="grid" isActive={!isList} onClick={this.handleSetGridView} />
-            <Chip icon="list" isActive={isList} onClick={this.handleSetListView} />
-          </div>
+          <Popup
+            className="create-asset-pack-popup"
+            content={t('asset_pack.title_create')}
+            position="top right"
+            on="hover"
+            basic
+            inverted
+            trigger={<div className="create-asset-pack-button" onClick={onCreateAssetPack} />}
+          />
         ) : null}
       </Header>
     )

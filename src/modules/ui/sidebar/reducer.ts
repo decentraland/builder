@@ -6,8 +6,6 @@ import {
   SET_SIDEBAR_VIEW,
   SELECT_CATEGORY,
   SelectCategoryAction,
-  SET_AVAILABLE_ASSET_PACKS,
-  setAvailableAssetPacksAction,
   SelectAssetPackAction,
   SELECT_ASSET_PACK
 } from './actions'
@@ -15,8 +13,6 @@ import { SidebarView } from './types'
 
 export type SidebarState = {
   selectedAssetPackId: string | null
-  availableAssetPackIds: string[]
-  newAssetPackIds: string[]
   selectedCategory: string | null
   search: string
   view: SidebarView
@@ -24,8 +20,6 @@ export type SidebarState = {
 
 const INITIAL_STATE: SidebarState = {
   selectedAssetPackId: null,
-  availableAssetPackIds: [],
-  newAssetPackIds: [],
   selectedCategory: null,
   search: '',
   view: SidebarView.GRID
@@ -37,7 +31,6 @@ export type SidebarReducerAction =
   | SetSidebarViewAction
   | SelectCategoryAction
   | SelectAssetPackAction
-  | setAvailableAssetPacksAction
 
 export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerAction): SidebarState => {
   switch (action.type) {
@@ -70,15 +63,7 @@ export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerActi
     }
     case OPEN_EDITOR: {
       return {
-        ...INITIAL_STATE,
-        availableAssetPackIds: state.availableAssetPackIds
-      }
-    }
-
-    case SET_AVAILABLE_ASSET_PACKS: {
-      return {
-        ...state,
-        availableAssetPackIds: action.payload.assetPackIds
+        ...INITIAL_STATE
       }
     }
 

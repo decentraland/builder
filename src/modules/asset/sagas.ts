@@ -1,6 +1,6 @@
 import { call, put, takeLatest, select } from 'redux-saga/effects'
-import { api } from 'lib/api'
 import { LoadCollectiblesRequestAction, LOAD_COLLECTIBLES_REQUEST, loadCollectiblesSuccess, loadCollectiblesRequest } from './actions'
+import { dar } from 'lib/api/dar'
 import { Asset, AssetRegistry, DARAsset } from './types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
@@ -16,14 +16,14 @@ function* handleConnectWallet() {
 }
 
 function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
-  const darRegistries: AssetRegistry[] = yield call(() => api.fetchCollectibleRegistries())
+  const darRegistries: AssetRegistry[] = yield call(() => dar.fetchCollectibleRegistries())
 
   const assets: Asset[] = []
   const address = yield select(getAddress)
   const promises: Promise<{ assets: DARAsset[]; registry: AssetRegistry }>[] = []
 
   for (const registry of darRegistries) {
-    promises.push(api.fetchCollectibleAssets(registry.common_name, address).then(assets => ({ assets, registry })))
+    promises.push(dar.fetchCollectibleAssets(registry.common_name, address).then(assets => ({ assets, registry })))
   }
 
   const results: { assets: DARAsset[]; registry: AssetRegistry }[] = yield call(() => Promise.all(promises))
@@ -35,11 +35,18 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         id: asset.token_id,
         tags: [],
         category: result.registry.name,
-        variations: [],
         contents: {},
         name: asset.name,
         url: asset.uri,
-        thumbnail: asset.image
+        thumbnail: asset.image,
+        metrics: {
+          triangles: 0,
+          materials: 0,
+          meshes: 0,
+          bodies: 0,
+          entities: 0,
+          textures: 0
+        }
       })
     }
   }

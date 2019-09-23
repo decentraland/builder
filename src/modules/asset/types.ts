@@ -1,7 +1,9 @@
+import { SceneMetrics } from 'modules/scene/types'
+
 export const GROUND_CATEGORY = 'ground'
 
 export type Asset = BaseAsset & {
-  assetPackId: string | null // collectibles and custom gltfs wouldn't have asset
+  assetPackId: string
   isDisabled?: boolean
 }
 
@@ -9,8 +11,8 @@ export type BaseAsset = AssetResource & {
   id: string
   tags: string[]
   category: string // name of the category
-  variations: AssetResource[]
   contents: Record<string, string>
+  metrics: SceneMetrics
 }
 
 export type AssetResource = {
@@ -59,3 +61,20 @@ export type DARAssetTrait = {
   name: string
   type: string
 }
+
+export type RawAsset = {
+  id: string
+  name: string
+  url: string
+  tags: string[]
+  category: string
+  assetPackId: string
+  thumbnail: string
+  contents: Record<string, Blob>
+  metrics: SceneMetrics
+}
+
+/**
+ * A Record that maps `assetId` to a Record of `{ [cid: string]: Blob }`
+ */
+export type RawAssetContents = Record<string, Record<string, Blob>>

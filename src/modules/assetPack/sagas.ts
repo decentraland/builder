@@ -1,77 +1,98 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects'
+import { call, put, takeLatest, all } from 'redux-saga/effects'
 
 import {
   LOAD_ASSET_PACKS_REQUEST,
   loadAssetPacksSuccess,
   loadAssetPacksFailure,
-  LoadAssetPacksRequestAction
+  LoadAssetPacksRequestAction,
+  SaveAssetPackRequestAction,
+  SAVE_ASSET_PACK_REQUEST,
+  setProgress,
+  saveAssetPackFailure,
+  saveAssetPackSuccess,
+  loadAssetPacksRequest,
+  DELETE_ASSET_PACK_REQUEST,
+  DeleteAssetPackRequestAction,
+  deleteAssetPackFailure,
+  deleteAssetPackSuccess
 } from 'modules/assetPack/actions'
-import { getData as getAssetPacks } from 'modules/assetPack/selectors'
-import { getData as getAssets } from 'modules/asset/selectors'
-import { getAvailableAssetPackIds } from 'modules/ui/sidebar/selectors'
-import { BaseAssetPack, FullAssetPack } from 'modules/assetPack/types'
-import { setAvailableAssetPacks, setNewAssetPacks } from 'modules/ui/sidebar/actions'
-import { api } from 'lib/api'
+import { store } from 'modules/common/store'
+import { getProgress } from 'modules/assetPack/selectors'
+import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
+import { builder } from 'lib/api/builder'
+import { fixAssetMappings } from 'modules/scene/actions'
+import { isDataUrl } from 'modules/media/utils'
+import { selectAssetPack } from 'modules/ui/sidebar/actions'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
+  yield takeLatest(SAVE_ASSET_PACK_REQUEST, handleSaveAssetPack)
+  yield takeLatest(DELETE_ASSET_PACK_REQUEST, handleDeleteAssetPack)
+}
+
+const handleAssetContentsUploadProgress = (total: number) => () => {
+  // Calculate the increment step, it will be truncated
+  const increment = ((1 / total) * 100) | 0
+  // Get the existing progress
+  const existingProgress = getProgress(store.getState() as any)
+  // Calculate the current file based on the existing progress
+  const currentFile = existingProgress.value / increment + 1
+  // Calculate the new value based on the existing progress and the increment
+  const newValue = existingProgress.value + increment
+  // If this is the last file, just map it to 100
+  const progress = currentFile !== total ? newValue : 100
+
+  store.dispatch(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
 }
 
 function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
-    const remoteAssetPacks: BaseAssetPack[] = yield call(() => api.fetchAssetPacks())
-
-    // Asset pack ids available last time the user visited
-    const previousAvailableAssetPackIds: ReturnType<typeof getAvailableAssetPackIds> = yield select(getAvailableAssetPackIds)
-
-    // Current available asset packs
-    const currentAvailableAssetPackIds = remoteAssetPacks.map(assetPack => assetPack.id)
-
-    // New asset packs since last visit
-    const newAssetPackIds = []
-    for (const assetPackId of currentAvailableAssetPackIds) {
-      if (!previousAvailableAssetPackIds.includes(assetPackId)) {
-        newAssetPackIds.push(assetPackId)
-      }
-    }
-
-    // Update the available asset packs in state
-    yield put(setAvailableAssetPacks(currentAvailableAssetPackIds))
-
-    // Update the new asset packs in state
-    yield put(setNewAssetPacks(newAssetPackIds))
-
-    // Get asset pack list
-    const assetPacks: FullAssetPack[] = []
-    for (const remoteAssetPack of remoteAssetPacks) {
-      const assetPacksInState: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
-      const assetPackInState = assetPacksInState[remoteAssetPack.id]
-      // Check if the asset pack not in the state or is not loaded and if so, fetch it
-      if (!assetPackInState || !assetPackInState.isLoaded) {
-        const assetPack: FullAssetPack = yield call(() => api.fetchAssetPack(remoteAssetPack.id))
-        assetPacks.push({
-          // Add the fetched asset pack and mark it as loaded
-          ...remoteAssetPack,
-          isLoaded: true,
-          assets: assetPack.assets.map(asset => ({
-            ...asset,
-            url: `${remoteAssetPack.id}/${asset.url}`,
-            assetPackId: remoteAssetPack.id,
-            id: asset.id
-          }))
-        })
-      } else {
-        // If the asset pack is already loaded use the data from state
-        const assetsInState: ReturnType<typeof getAssets> = yield select(getAssets)
-        assetPacks.push({
-          ...assetPackInState,
-          assets: assetPackInState.assets.map(assetId => assetsInState[assetId])
-        })
-      }
-    }
-    // Success
+    const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
     yield put(loadAssetPacksSuccess(assetPacks))
+    yield put(fixAssetMappings())
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))
+  }
+}
+
+function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
+  const { assetPack, contents } = action.payload
+  const total = assetPack.assets.length
+
+  try {
+    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
+    yield call(() => builder.saveAssetPack(assetPack))
+
+    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
+
+    if (isDataUrl(assetPack.thumbnail)) {
+      yield call(() => builder.saveAssetPackThumbnail(assetPack))
+    }
+
+    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
+
+    yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
+    yield all(
+      assetPack.assets.flatMap(asset => [
+        call(() => builder.saveAssetContents(asset, contents[asset.id])),
+        call(handleAssetContentsUploadProgress(total))
+      ])
+    )
+    yield put(saveAssetPackSuccess(assetPack))
+    yield put(loadAssetPacksRequest())
+  } catch (e) {
+    yield put(saveAssetPackFailure(assetPack, e.message))
+  }
+}
+
+function* handleDeleteAssetPack(action: DeleteAssetPackRequestAction) {
+  const { assetPack } = action.payload
+
+  try {
+    yield call(() => builder.deleteAssetPack(assetPack))
+    yield put(deleteAssetPackSuccess(assetPack))
+    yield put(selectAssetPack(null))
+  } catch (e) {
+    yield put(deleteAssetPackFailure(assetPack, e.message))
   }
 }

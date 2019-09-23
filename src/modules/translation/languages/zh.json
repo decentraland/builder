@@ -1,8 +1,104 @@
 {
+  "asset_pack": {
+    "title_create": "创造Asset Pack",
+    "edit_asset": {
+      "description_create": "查看您的商品，添加标签和更多内容。",
+      "title_edit": "修改Asset Pack",
+      "description_edit": "查看您的商品，添加标签和更多内容。",
+      "action": "继续",
+      "action_skip": "跳过步骤",
+      "category": {
+        "label": "类别"
+      },
+      "errors": {
+        "max_name_length": "Asset名称长度最多只能为{count}个字符",
+        "min_name_length": "资产名称长度必须至少为{count}个字符",
+        "tag_count": "您最多只能指定{count}个标签"
+      },
+      "ground": {
+        "label": "用作地面"
+      },
+      "name": {
+        "label": "名称",
+        "placeholder": "Asset名称"
+      },
+      "tags": {
+        "label": "标签",
+        "placeholder": "例如 （户外家具楼）"
+      }
+    },
+    "edit_assetpack": {
+      "description_create": "真棒！输入Asset Pack的唯一名称",
+      "action_create": "创造Asset Pack",
+      "title_edit": "修改Asset Pack",
+      "description_edit": "真棒！ 输入您的唯一名称Asset Pack.",
+      "action_edit": "修改Asset Pack",
+      "action_delete": "删除Asset Pack",
+      "action_add_items": "添加项目",
+      "errors": {
+        "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
+        "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
+        "thumbnail_size": "图像文件大小必须小于 {count}个字节"
+      },
+      "items": {
+        "empty": "There are not Assets in this Asset Pack",
+        "label": "{count} {count, plural, one {Asset} other {Assets}}"
+      },
+      "name": {
+        "label": "名称",
+        "placeholder": "我的新Asset Pack"
+      },
+      "reset": "添加新Assets"
+    },
+    "import": {
+      "description_create": "首先将模型添加到Asset Pack",
+      "title_edit": "创造Asset Pack",
+      "description_edit": "首先将项目添加到您的包中。",
+      "action": "导入{资产}",
+      "action_many": "导入{count} Asset",
+      "cta": "将Asset的.zip文件拖到此处，或{action}",
+      "errors": {
+        "invalid": "无效资产",
+        "duplicated": "重复资产",
+        "duplicated_asset": "{name}: 资产 \"{asset}\" 已经包含一个名为 \"{model}\"",
+        "max_file_size": "{name}: 文件大小超过{max}mb的限制"
+      }
+    },
+    "progress": {
+      "creating_asset_pack": "创建Asset Pack",
+      "updating_asset_pack": "更新Asset Pack",
+      "uploading_contents": "正在上传Asset Pack内容"
+    },
+    "success": {
+      "continue": "继续工作",
+      "description": "您的Asset Pack已成功上传。 查看项目抽屉以开始使用它。",
+      "title": "全部做完！"
+    },
+    "login": {
+      "title": "登入",
+      "description_create": "您需要先登录，然后才能创建Asset Pack",
+      "description_edit": "您需要先登录，然后才能编辑Asset Pack",
+      "action": "登入"
+    },
+    "exit": {
+      "title_create": "你确定吗？",
+      "description_create": "您即将退出Asset Pack创建，您要继续吗",
+      "title_edit": "你确定吗？",
+      "description_edit": "您即将退出Asset Pack更新，您要继续吗？",
+      "action": "出口",
+      "back": "回去"
+    },
+    "confirm_delete": {
+      "title": "你确定吗？",
+      "action": "清除Asset Pack",
+      "back": "御宇",
+      "description": "您将要删除它Asset Pack。此操作无法撤消。"
+    }
+  },
   "banners": {
-    "promo_assetpack_banner": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
-    "promo_body": "使用 Fantasy 资源包创建各种令人眼花缭乱的作品！",
-    "promo_subtitle": "奇迹发生的地方!",
+    "promo_assetpack_banner": "使用科幻包开始你的宇宙探索！",
+    "promo_body": "获取科幻包并开始您的宇宙探索！",
+    "promo_subtitle": "未来的发展方向！",
     "promo_title": "Decentraland"
   },
   "custom_layout_modal": {
@@ -92,7 +188,6 @@
     "pool": {
       "action": "提交",
       "contact_information": "联系信息",
-      "error_ocurred": "出错了",
       "i_accept_the": "点击 \"提交\" 同意接受来自 Decentraland 的新闻",
       "progress": "正在处理",
       "sign_in": {
@@ -138,12 +233,14 @@
     "dismiss": "解散",
     "done": "完成",
     "email": "email",
+    "error_ocurred": "出错了",
     "eth_address": "ETH 地址",
     "here": "这里",
     "items": "模型",
     "learn_more": "更多",
     "loading": "装载",
     "next": "下一个",
+    "new": "新",
     "optional": "可选",
     "or": "或",
     "project": "场景",
@@ -191,7 +288,8 @@
     "no_results": "没找到",
     "results": "结果",
     "search": "搜索",
-    "title": "抽屉"
+    "title": "物品目录",
+    "edit_asset_pack": "编辑"
   },
   "layout_picker": {
     "columns": "列",
@@ -200,7 +298,7 @@
   "metrics": {
     "bodies": "物体",
     "entities": "实体",
-    "geometries": "几何体",
+    "meshes": "网格",
     "height": "高度",
     "materials": "材质",
     "textures": "纹理",
@@ -258,6 +356,7 @@
     "export": "场景导出",
     "hold": "按住",
     "move": "坐标轴",
+    "scale": "切换缩放",
     "move_camera": "移动摄相机",
     "precision": "精确度",
     "preview": "预览",

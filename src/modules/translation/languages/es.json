@@ -1,8 +1,107 @@
 {
+  "asset_pack": {
+    "title_create": "Crear Asset Pack",
+    "edit_asset": {
+      "description_create": "Revisa tus modelos, agrega tags y otras cosas.",
+      "title_edit": "Editar Asset Pack",
+      "description_edit": "Revise sus artículos, agregue etiquetas y más cosas.",
+      "action": "Continuar",
+      "action_skip": "Saltar paso",
+      "category": {
+        "label": "categoría"
+      },
+      "errors": {
+        "max_name_length": "El nombre del Asset sólo puede contener un máximo de {count} caracteres",
+        "min_name_length": "El nombre del Asset debe contener al menos {count} caracteres",
+        "tag_count": "Sólo puedes especificar un máximo de {count} etiquetas"
+      },
+      "ground": {
+        "label": "utilizar como suelo"
+      },
+      "name": {
+        "label": "nombre",
+        "placeholder": "Nombre del Asset"
+      },
+      "tags": {
+        "label": "etiquetas",
+        "placeholder": "p.ej. (exterior mueble piso)"
+      }
+    },
+    "edit_assetpack": {
+      "description_create": "Genial! Ponle un nombre único a tu Asset Pack.",
+      "action_create": "Crear Asset Pack",
+      "title_edit": "Editar Asset Pack",
+      "description_edit": "¡Increíble! Elige un nombre para tu Asset Pack.",
+      "action_edit": "Editar Asset Pack",
+      "action_delete": "Eliminar Asset Pack",
+      "action_add_items": "Agregar items",
+      "errors": {
+        "max_title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
+        "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
+        "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
+      },
+      "items": {
+        "empty": "No hay Assets en este Asset Pack",
+        "label": "{count} {count, plural, one {Asset} other {Assets}}"
+      },
+      "name": {
+        "label": "nombre",
+        "placeholder": "Mi nuevo Asset Pack"
+      },
+      "reset": "Agregar nuevos Assets"
+    },
+    "import": {
+      "description_create": "Comienza añadiendo tus modelos.",
+      "title_edit": "Editar Asset Pack",
+      "description_edit": "Start by adding items to your pack.",
+      "action": "Importar Asset",
+      "action_many": "Importar {count} Assets",
+      "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
+      "errors": {
+        "invalid": "Asset inválido",
+        "duplicated": "Asset duplicado",
+        "duplicated_asset": "{name}: Este Asset Pack ya contiene un asset \"{asset}\" con un archivo \"{model}\"",
+        "max_file_size": "{name}: El tamaño del archivo excede el límite de {max}mb",
+        "missing_extension": "{name}: Extensión de archivo no encontrada",
+        "missing_model": "{name}: Modelo 3D (.gltf or .glb) no encontrado",
+        "scene_file": "{name}: Escenas exportadas del Builder no estan permitidas"
+      }
+    },
+    "progress": {
+      "creating_asset_pack": "Creando Asset Pack",
+      "updating_asset_pack": "Actualizando Asset Pack",
+      "uploading_contents": "Subiendo contenidos del Asset Pack"
+    },
+    "success": {
+      "continue": "Continuar trabajando",
+      "description": "Tu Asset Pack fue subido exitosamente. Visita el Listado de objetos para comenzar a usarlo.",
+      "title": "¡Todo listo!"
+    },
+    "login": {
+      "title": "Iniciar Sesión",
+      "description_create": "Necesitas iniciar sesión para crear un Asset Pack",
+      "description_edit": "Necesitas iniciar sesión para editar un Asset Pack",
+      "action": "Iniciar Sesión"
+    },
+    "exit": {
+      "title_create": "¿Estás seguro?",
+      "description_create": "Estas a punto de salir de la creación de tu Asset Pack ¿Quieres continuar?",
+      "title_edit": "¿Estás seguro?",
+      "description_edit": "Estas a punto de salir de la edición de tu Asset Pack ¿Quieres continuar?",
+      "action": "Salir",
+      "back": "Volver"
+    },
+    "confirm_delete": {
+      "title": "¿Estás seguro?",
+      "action": "Eliminar Asset Pack",
+      "back": "Volver",
+      "description": "Estas a punto de eliminar este Asset Pack. Esta acción no se puede deshacer."
+    }
+  },
   "banners": {
-    "promo_assetpack_banner": "Con el Fantasy Asset Pack conjura todo tipo de creaciones deslumbrantes!",
-    "promo_body": "Con el Fantasy Asset Pack podrás conjurar todo tipo de creaciones deslumbrantes!",
-    "promo_subtitle": "Donde la magia ocurre!",
+    "promo_assetpack_banner": "Con el Sci-fi Pack comienza tu exploración cósmica!",
+    "promo_body": "Con el Sci-fi Pack podrás comenzar tu exploración cósmica!",
+    "promo_subtitle": "Donde se construye el futuro!",
     "promo_title": "Decentraland"
   },
   "custom_layout_modal": {
@@ -92,21 +191,20 @@
     "pool": {
       "action": "Enviar",
       "contact_information": "Información de contacto",
-      "error_ocurred": "Un error ha ocurrido",
       "i_accept_the": "Al clikear sobre \"enviar\" aceptas recibir noticias de Decentraland",
       "progress": "Procesando",
+      "sign_in": {
+        "action": "Iniciar Sesión",
+        "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
+        "title": "Iniciar Sesión"
+      },
       "subtitle": "Envía tu trabajo a nuestro pool de Escenas para obtener la chance de que esta sea publicada.",
       "success": {
         "body": "Recibirás una notificación por email si tu Escena es elegida para ser publicada.",
         "title": "¡Gracias por subir tu Escena!"
       },
       "title": "Publica tu Escena",
-      "uploading": "Subiendo...",
-      "sign_in": {
-        "title": "Iniciar Sesión",
-        "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
-        "action": "Iniciar Sesión"
-      }
+      "uploading": "Subiendo..."
     },
     "title": "Publica tu Escena"
   },
@@ -138,12 +236,14 @@
     "dismiss": "Descartar",
     "done": "OK",
     "email": "email",
+    "error_ocurred": "Ha ocurrido un error",
     "eth_address": "ETH address",
     "here": "aquí",
     "items": "objetos",
     "learn_more": "Más información",
     "loading": "Cargando",
     "next": "siguiente",
+    "new": "Nuevo",
     "optional": "opcional",
     "or": "o",
     "project": "Escena",
@@ -157,11 +257,8 @@
   },
   "home_page": {
     "import_scene": "Cargar Escena",
-    "sort": {
-      "newest": "Más Nuevas",
-      "name": "Nombre",
-      "size": "Tamaño"
-    },
+    "no_projects": "No tienes ninguna Escena aún.{br}Elige una opción abajo para continuar.",
+    "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
     "project_actions": {
       "delete_project": "Borrar Escena",
       "duplicate_project": "Duplicar Escena",
@@ -169,17 +266,20 @@
       "unpublish": "Despublicar"
     },
     "projects_title": "Mis Escenas",
+    "sort": {
+      "name": "Nombre",
+      "newest": "Más Nuevas",
+      "size": "Tamaño"
+    },
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamaño de tu Escena para comenzar",
-    "title": "¡Construye algo genial!",
-    "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
-    "no_projects": "No tienes ninguna Escena aún.{br}Elige una opción abajo para continuar."
+    "title": "¡Construye algo genial!"
   },
   "import_modal": {
     "action": "Cargar",
     "action_many": "Cargar {count} Escenas",
-    "cta": "Arrastra un .zip archivo o {action}",
+    "cta": "Arrastra un archivo .zip o {action}",
     "description": "¡Puedes cargar Escenas exportadas desde otras instancias del Builder!",
     "invalid_file": "Archivo inválido",
     "title": "Importar Escena",
@@ -191,7 +291,8 @@
     "no_results": "Sin resultados",
     "results": "Resultados",
     "search": "Buscar objetos",
-    "title": "Listado de objetos"
+    "title": "Listado de objetos",
+    "edit_asset_pack": "Editar"
   },
   "layout_picker": {
     "columns": "columnas",
@@ -200,7 +301,7 @@
   "metrics": {
     "bodies": "cuerpos",
     "entities": "entidades",
-    "geometries": "geometrias",
+    "meshes": "meshes",
     "height": "altura",
     "materials": "materiales",
     "textures": "texturas",
@@ -258,6 +359,7 @@
     "export": "Descargar Escena",
     "hold": "Sostener",
     "move": "Alternar flechas",
+    "scale": "Alternar escalado",
     "move_camera": "Mover cámara",
     "precision": "Ignorar ajustado a la grilla",
     "preview": "Avance",
@@ -282,8 +384,8 @@
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
     "loading": "Guardando...",
     "retry": "Reintentar",
-    "success": "Escenas guardadas exitosamente!",
-    "sign_in": "Inicia sesión para guardar tus Escenas en la nube"
+    "sign_in": "Inicia sesión para guardar tus Escenas en la nube",
+    "success": "Escenas guardadas exitosamente!"
   },
   "templates": {
     "big": "Grande (2x3)",
@@ -295,16 +397,16 @@
     "medium": "Estándar (2x2)",
     "small": "Mini (1x1)"
   },
+  "toasts": {
+    "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la Nube!",
+    "localstorage_sign_in": "Inicia sesión"
+  },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
     "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
     "publish": "Publicar",
     "up_to_date": "Al día!{br}Todos los cambios están actualizados",
     "update_scene": "Actualizar Escena"
-  },
-  "toasts": {
-    "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la Nube!",
-    "localstorage_sign_in": "Inicia sesión"
   },
   "tutorial_modal": {
     "slide0": {

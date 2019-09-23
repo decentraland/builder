@@ -1,17 +1,27 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { AssetPack } from 'modules/assetPack/types'
+import { AssetPack, ProgressStage } from 'modules/assetPack/types'
 import {
   LoadAssetPacksRequestAction,
   LoadAssetPacksSuccessAction,
   LoadAssetPacksFailureAction,
+  SaveAssetPackFailureAction,
+  DeleteAssetPackSuccessAction,
+  SetProgressAction,
   LOAD_ASSET_PACKS_REQUEST,
   LOAD_ASSET_PACKS_SUCCESS,
-  LOAD_ASSET_PACKS_FAILURE
+  LOAD_ASSET_PACKS_FAILURE,
+  SAVE_ASSET_PACK_FAILURE,
+  DELETE_ASSET_PACK_SUCCESS,
+  SET_PROGRESS
 } from 'modules/assetPack/actions'
 
 export type AssetPackState = {
   data: ModelById<AssetPack>
+  progress: {
+    stage: ProgressStage
+    value: number
+  }
   loading: LoadingState
   error: string | null
 }
@@ -19,10 +29,20 @@ export type AssetPackState = {
 const INITIAL_STATE: AssetPackState = {
   data: {},
   loading: [],
+  progress: {
+    stage: ProgressStage.NONE,
+    value: 0
+  },
   error: null
 }
 
-export type AssetPackReducerAction = LoadAssetPacksRequestAction | LoadAssetPacksSuccessAction | LoadAssetPacksFailureAction
+export type AssetPackReducerAction =
+  | LoadAssetPacksRequestAction
+  | LoadAssetPacksSuccessAction
+  | LoadAssetPacksFailureAction
+  | SaveAssetPackFailureAction
+  | DeleteAssetPackSuccessAction
+  | SetProgressAction
 
 export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetPackState => {
   switch (action.type) {
@@ -37,6 +57,7 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
       return {
         loading: loadingReducer(state.loading, action),
         error: null,
+        progress: { stage: ProgressStage.NONE, value: 0 },
         data: {
           ...state.data,
           ...assetPacks.reduce(
@@ -57,6 +78,33 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case SAVE_ASSET_PACK_FAILURE: {
+      return {
+        ...state,
+        error: action.payload.error
+      }
+    }
+    case DELETE_ASSET_PACK_SUCCESS: {
+      const { assetPack } = action.payload
+      const newState = {
+        ...state,
+        data: {
+          ...state.data
+        }
+      }
+      delete newState.data[assetPack.id]
+      return newState
+    }
+    case SET_PROGRESS: {
+      const { stage, value } = action.payload
+      return {
+        ...state,
+        progress: {
+          stage,
+          value
+        }
       }
     }
     default:

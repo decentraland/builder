@@ -76,6 +76,7 @@ export default class DeployButton extends React.PureComponent<Props> {
           }
           on="hover"
           inverted
+          basic
         />
       </span>
     )

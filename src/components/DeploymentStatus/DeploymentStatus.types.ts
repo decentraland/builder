@@ -5,7 +5,7 @@ import { queryRemoteCID, QueryRemoteCIDAction } from 'modules/deployment/actions
 export type Props = {
   className?: string
   status: DeploymentStatus
-  deployment: Deployment | null
+  deployment: Deployment
   projectId: string
   onQueryRemoteCID: typeof queryRemoteCID
 }

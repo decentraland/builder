@@ -57,7 +57,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, SceneMetrics, ComponentType } from 'modules/scene/types'
+import { Scene, ComponentType, BabylonSceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -67,9 +67,9 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
-import { ASSETS_CONTENT_URL } from 'lib/api/content'
 
 const editorWindow = window as EditorWindow
 
@@ -166,11 +166,11 @@ function* renderScene() {
   }
 }
 
-function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
+function handleMetricsChange(args: { metrics: BabylonSceneMetrics; limits: BabylonSceneMetrics }) {
   const { metrics, limits } = args
   const scene = getCurrentScene(store.getState() as RootState)
   if (scene) {
-    store.dispatch(updateMetrics(scene.id, metrics, limits))
+    store.dispatch(updateMetrics(scene.id, { ...metrics, meshes: metrics['geometries'] }, { ...limits, meshes: limits['geometries'] }))
   }
 }
 
@@ -184,7 +184,8 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
   if (!scene) return
 
-  const transform = getEntityComponentByType(args.entityId, ComponentType.Transform)(store.getState() as RootState)
+  const entityComponents = getEntityComponentByType(store.getState() as RootState)
+  const transform = entityComponents[args.entityId][ComponentType.Transform]
   if (!transform) return
 
   if (bounds) {
@@ -192,7 +193,7 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   }
 
   if (transform) {
-    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation }))
+    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale: args.transform.scale }))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
@@ -404,7 +405,7 @@ function* handleSelectEntity(action: SelectEntityAction) {
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   yield call(() => {
     if (action.payload.enabled) {
-      editorWindow.editor.setGridResolution(0.5, 0, Math.PI / 16)
+      editorWindow.editor.setGridResolution(0.5, 0.5, Math.PI / 16)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
     }
@@ -417,7 +418,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
     for (let [file, hash] of contentEntries) {
       if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${ASSETS_CONTENT_URL}/${hash}`)
+        editorWindow.editor.preloadFile(`${BUILDER_SERVER_URL}/storage/assets/${hash}`)
       }
     }
   })

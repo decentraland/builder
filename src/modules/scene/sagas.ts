@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
 
 import {
   ADD_ITEM,
@@ -16,7 +16,9 @@ import {
   SET_GROUND,
   SetGroundAction,
   ApplyLayoutAction,
-  APPLY_LAYOUT
+  APPLY_LAYOUT,
+  FIX_ASSET_MAPPINGS,
+  FixAssetMappingsAction
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import {
@@ -24,22 +26,23 @@ import {
   getCurrentScene,
   getEntityComponentByType,
   getEntityComponents,
-  getScene,
+  getData as getScenes,
   getCollectiblesByURL,
   getEntityShape
 } from 'modules/scene/selectors'
-import { ComponentType, Scene, ComponentDefinition } from 'modules/scene/types'
+import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity } from 'modules/editor/actions'
-import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
-import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
+import { selectEntity, deselectEntity, setEditorReady, createEditorScene, SET_EDITOR_READY } from 'modules/editor/actions'
+import { getCurrentBounds, getData as getProjects, getCurrentProject } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings } from './utils'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings, getSceneByProjectId } from './utils'
 import { getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
+import { getFullAssetPacks } from 'modules/assetPack/selectors'
+import { Project } from 'modules/project/types'
 
 const editorWindow = window as EditorWindow
 
@@ -50,7 +53,7 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(LOAD_ASSET_PACKS_SUCCESS, handleLoadAssetPacks)
+  yield takeLatest(FIX_ASSET_MAPPINGS, handleFixAssetMappings)
   yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
 }
@@ -122,7 +125,8 @@ function* handleAddItem(action: AddItemAction) {
     type: ComponentType.Transform,
     data: {
       position,
-      rotation: { x: 0, y: 0, z: 0, w: 1 }
+      rotation: { x: 0, y: 0, z: 0, w: 1 },
+      scale: { x: 1, y: 1, z: 1 }
     }
   }
 
@@ -145,7 +149,17 @@ function* handleUpdateTransfrom(action: UpdateTransfromAction) {
     const newComponents: Scene['components'] = { ...scene.components }
     newComponents[componentId] = {
       ...newComponents[componentId],
-      data
+      data: {
+        position: {
+          ...data.position
+        },
+        rotation: {
+          ...data.rotation
+        },
+        scale: {
+          ...data.scale
+        }
+      }
     }
 
     yield put(provisionScene({ ...scene, components: newComponents }))
@@ -159,9 +173,8 @@ function* handleResetItem(_: ResetItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const transform: ComponentDefinition<ComponentType.Transform> | null = yield select(
-    getEntityComponentByType(selectedEntityId, ComponentType.Transform)
-  )
+  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
   if (!transform) return
 
   const newComponents = {
@@ -171,7 +184,8 @@ function* handleResetItem(_: ResetItemAction) {
       data: {
         ...transform.data,
         position: snapToGrid(transform.data.position),
-        rotation: { x: 0, y: 0, z: 0, w: 1 }
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        scale: { x: 1, y: 1, z: 1 }
       }
     }
   }
@@ -188,19 +202,18 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   const newComponents = { ...scene.components }
 
-  const shape: ComponentDefinition<ComponentType.GLTFShape> | ComponentDefinition<ComponentType.NFTShape> | null = yield select(
-    getEntityShape(selectedEntityId)
-  )
-  const transform: ComponentDefinition<ComponentType.Transform> | null = yield select(
-    getEntityComponentByType(selectedEntityId, ComponentType.Transform)
-  )
+  const shapes: Record<string, ShapeComponent> = yield select(getEntityShape)
+  const shape = shapes[selectedEntityId]
+
+  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
 
   if (shape && shape.type === ComponentType.NFTShape) return
 
   if (!shape || !transform) return
 
   const {
-    data: { position, rotation }
+    data: { position, rotation, scale }
   } = transform
 
   const transformId = uuidv4()
@@ -208,12 +221,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     id: transformId,
     type: ComponentType.Transform,
     data: {
-      position: {
-        x: position.x,
-        y: position.y,
-        z: position.z
-      },
-      rotation: { ...rotation }
+      position: { ...position },
+      rotation: { ...rotation },
+      scale: { ...scale }
     }
   }
 
@@ -233,10 +243,8 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const entityComponents: Record<string, ComponentDefinition<ComponentType>> = yield select(getEntityComponents(selectedEntityId))
-  const idsToDelete = Object.values(entityComponents)
-    .filter(component => !!component)
-    .map(component => component.id)
+  const entityComponents: Record<string, AnyComponent[]> = yield select(getEntityComponents)
+  const idsToDelete = entityComponents[selectedEntityId].filter(component => !!component).map(component => component.id)
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
@@ -260,7 +268,8 @@ function* handleSetGround(action: SetGroundAction) {
   const currentProject = projects[projectId]
   if (!currentProject) return
 
-  const scene: Scene | null = yield select(getScene(currentProject.sceneId))
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[currentProject.sceneId]
   if (!scene) return
 
   const { rows, cols } = currentProject.layout
@@ -270,11 +279,18 @@ function* handleSetGround(action: SetGroundAction) {
   }
 }
 
-function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
-  // load current scene (if any)
-  const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-  if (!scene) return
+function* handleFixAssetMappings(_: FixAssetMappingsAction) {
+  const assetPacksRecord: ReturnType<typeof getFullAssetPacks> = yield select(getFullAssetPacks)
+  const assetPacks = Object.values(assetPacksRecord)
+  const project: Project | null = yield select(getCurrentProject)
 
+  if (!project) return
+
+  // load current scene (if any)
+  // const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
+  const scene: Scene | null = yield getSceneByProjectId(project.id)
+
+  if (!scene) return
   // keep track of the updated components
   const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
 
@@ -291,7 +307,7 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
   }
 
   // loop over each loaded asset and update the mappings of the components using it
-  for (const assetPack of action.payload.assetPacks) {
+  for (const assetPack of assetPacks) {
     for (const asset of assetPack.assets) {
       if (asset.url in gltfShapes) {
         for (const component of gltfShapes[asset.url]) {
@@ -314,6 +330,9 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
   const hasUpdates = Object.keys(updatedComponents).length > 0
   if (hasUpdates) {
     const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
+    yield put(setEditorReady(false))
+    yield put(createEditorScene(project))
+    yield take(SET_EDITOR_READY)
     yield put(provisionScene(newScene))
   }
 }
@@ -321,7 +340,8 @@ function* handleLoadAssetPacks(action: LoadAssetPacksSuccessAction) {
 function* handleApplyLayout(action: ApplyLayoutAction) {
   const { project } = action.payload
   const { rows, cols } = project.layout
-  const scene: Scene | null = yield select(getScene(project.sceneId))
+  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+  const scene = scenes[project.sceneId]
 
   if (scene && scene.ground) {
     const groundId = scene.ground.assetId
@@ -369,7 +389,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           type: ComponentType.Transform,
           data: {
             position: { x: i * PARCEL_SIZE + PARCEL_SIZE / 2, y: 0, z: j * PARCEL_SIZE + PARCEL_SIZE / 2 },
-            rotation: { x: 0, y: 0, z: 0, w: 1 }
+            rotation: { x: 0, y: 0, z: 0, w: 1 },
+            scale: { x: 1, y: 1, z: 1 }
           }
         }
 

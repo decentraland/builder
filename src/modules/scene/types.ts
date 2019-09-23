@@ -1,4 +1,5 @@
 import { Vector3, Quaternion } from 'modules/common/types'
+import { Omit } from 'decentraland-dapps/dist/lib/types'
 
 export type EntityDefinition = {
   id: string
@@ -23,6 +24,7 @@ export type ComponentData = {
   [ComponentType.Transform]: {
     position: Vector3
     rotation: Quaternion
+    scale: Vector3
   }
   [ComponentType.NFTShape]: {
     url: string
@@ -30,6 +32,8 @@ export type ComponentData = {
 }
 
 export type AnyComponent = ComponentDefinition<ComponentType>
+
+export type ShapeComponent = ComponentDefinition<ComponentType.GLTFShape | ComponentType.NFTShape>
 
 export type ComponentDefinition<T extends ComponentType> = {
   id: string
@@ -40,10 +44,14 @@ export type ComponentDefinition<T extends ComponentType> = {
 export type SceneMetrics = {
   triangles: number
   materials: number
-  geometries: number
+  meshes: number
   bodies: number
   entities: number
   textures: number
+}
+
+export type BabylonSceneMetrics = Omit<SceneMetrics, 'meshes'> & {
+  geometries: number
 }
 
 export type Scene = {

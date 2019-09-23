@@ -6,8 +6,7 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import MobilePageHero from 'components/MobilePageHero/MobilePageHero'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
-import { EMAIL_INTEREST } from 'lib/api/email'
-import { api } from 'lib/api'
+import { newsletter, EMAIL_INTEREST } from 'lib/api/newsletter'
 
 import { Props, State } from './MobilePage.types'
 import './MobilePage.css'
@@ -46,7 +45,7 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
 
     analytics.identify({ email }, () => {
-      api.reportEmail(email, EMAIL_INTEREST.MOBILE).catch(() => console.error('Unable to submit email, something went wrong!'))
+      newsletter.reportEmail(email, EMAIL_INTEREST.MOBILE).catch(() => console.error('Unable to submit email, something went wrong!'))
       localStorage.setItem('mobile-email', email)
       this.setState({ isLoading: false })
     })

@@ -4,7 +4,7 @@ import { AssetState } from 'modules/asset/reducer'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { ComponentDefinition, ComponentType } from 'modules/scene/types'
+import { ComponentDefinition, ComponentType, AnyComponent } from 'modules/scene/types'
 import { getComponentsByType } from 'modules/scene/selectors'
 import { isNFT, isGround } from './utils'
 
@@ -48,18 +48,13 @@ export const getCollectibleAssets = createSelector<RootState, AssetState['data']
   }
 )
 
-export const getDisabledAssets = createSelector<
-  RootState,
-  ComponentDefinition<ComponentType.NFTShape>[],
-  ComponentDefinition<ComponentType.GLTFShape>[],
-  ModelById<Asset>,
-  string[]
->(
-  getComponentsByType(ComponentType.NFTShape),
-  getComponentsByType(ComponentType.GLTFShape),
+export const getDisabledAssets = createSelector<RootState, Record<ComponentType, AnyComponent[]>, ModelById<Asset>, string[]>(
+  getComponentsByType,
   getData,
-  (nfts, gltfs, assets) => {
+  (components, assets) => {
     let result: string[] = []
+    const nfts = components[ComponentType.NFTShape] as ComponentDefinition<ComponentType.NFTShape>[]
+    const gltfs = components[ComponentType.GLTFShape] as ComponentDefinition<ComponentType.GLTFShape>[]
 
     for (let assetId in assets) {
       const asset = assets[assetId]

@@ -1,0 +1,43 @@
+.ui.small.modal.EditAssetPackModal {
+  width: 730px;
+}
+
+.EditAssetPackModal .progress-bar-container {
+  width: 100%;
+  background: var(--secondary-on-modal);
+  border-radius: 16px;
+}
+
+.EditAssetPackModal .progress-bar {
+  background: var(--primary);
+  height: 16px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.EditAssetPackModal .progress-bar.active:after {
+  content: '';
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 16px;
+  -webkit-animation: progress-active 2s ease infinite;
+  animation: progress-active 2s ease infinite;
+}
+
+.EditAssetPackModal.ui.small.modal.narrow {
+  width: 540px;
+}
+
+.EditAssetPackModal .exit-actions {
+  flex-direction: column;
+}
+
+.EditAssetPackModal.ui.modal .actions.exit-actions .ui.button + .ui.button {
+  margin-left: 0px;
+  margin-top: 16px;
+}

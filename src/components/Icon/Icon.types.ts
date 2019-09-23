@@ -39,6 +39,11 @@ export type IconName =
   | 'rotate-right'
   | 'modal-back'
   | 'modal-close'
+  | 'triangles'
+  | 'geometries'
+  | 'textures'
+  | 'camera'
+  | 'scale'
 
 export type DefaultProps = {
   isActive: boolean

@@ -1,12 +1,13 @@
 import * as React from 'react'
+import { Close } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Close } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
+import { locations } from 'routing/locations'
 import { Props, State } from './LocalStorageToast.types'
 
 import './LocalStorageToast.css'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 export const LOCAL_STORAGE_SIGN_IN_EVENT = 'Sign in from editor toast'
 export const LOCALSTORAGE_TOAST_KEY = 'builder-localstorage-signin-toast'
@@ -33,7 +34,9 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
     if (project) {
       const analytics = getAnalytics()
       analytics.track(LOCAL_STORAGE_SIGN_IN_EVENT)
-      onLogin(project.id)
+      onLogin({
+        returnUrl: locations.editor(project.id)
+      })
     }
   }
 

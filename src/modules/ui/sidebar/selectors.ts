@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/common/types'
 import { SidebarState } from 'modules/ui/sidebar/reducer'
@@ -9,8 +10,8 @@ import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
-import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, CategoryName } from './utils'
-import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getSub } from 'modules/auth/selectors'
+import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, NEW_ASSET_PACK_IDS, OLD_ASSET_PACK_IDS } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -40,10 +41,6 @@ const isSearchResult = (asset: Asset, search: string) => {
 }
 
 export const isList = (state: RootState) => getSidebarView(state) === SidebarView.LIST
-
-export const getAvailableAssetPackIds = (state: RootState) => getState(state).availableAssetPackIds
-
-export const getNewAssetPackIds = (state: RootState) => getState(state).newAssetPackIds
 
 export const getSelectedAssetPack = createSelector<RootState, string | null, AssetPackState['data'], AssetPack | null>(
   getSelectedAssetPackId,
@@ -106,16 +103,8 @@ export const getSideBarCategories = createSelector<
     }
 
     let categoryArray = Object.values(categories).map<Category>(({ name }) => {
-      const knownCategory = SIDEBAR_CATEGORIES[name as CategoryName]
       const category = categories[name]
-      let thumbnail = category.thumbnail
-
-      if (knownCategory) {
-        thumbnail = knownCategory.thumbnail
-      } else if (!thumbnail) {
-        thumbnail = category.assets[0].thumbnail
-      }
-
+      const thumbnail = category.assets[0].thumbnail
       return {
         ...categories[name],
         thumbnail
@@ -150,16 +139,31 @@ export const getSideBarCategories = createSelector<
   }
 )
 
-export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['data'], AssetPack[]>(
+export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['data'], string | null, AssetPack[]>(
   getAssetPacks,
-  assetPacks => {
-    let array = Object.values(assetPacks)
-    const collectibles = array.findIndex(pack => pack.id === COLLECTIBLE_ASSET_PACK_ID)
-    if (collectibles > -1) {
-      const pack = array.splice(collectibles, 1)
-      array = array.concat(pack)
+  getSub,
+  (assetPacks, userId) => {
+    const newAssetPacks: AssetPack[] = []
+    const defaultAssetPacks: AssetPack[] = []
+    const oldAssetPacks: AssetPack[] = []
+    const userAssetPacks: AssetPack[] = []
+    const collectibles: AssetPack[] = []
+
+    for (const assetPack of Object.values(assetPacks)) {
+      if (NEW_ASSET_PACK_IDS.includes(assetPack.id)) {
+        newAssetPacks.push(assetPack)
+      } else if (OLD_ASSET_PACK_IDS.includes(assetPack.id)) {
+        oldAssetPacks.push(assetPack)
+      } else if (assetPack.userId === userId) {
+        userAssetPacks.push(assetPack)
+      } else if (assetPack.id === COLLECTIBLE_ASSET_PACK_ID) {
+        collectibles.push(assetPack)
+      } else {
+        defaultAssetPacks.push(assetPack)
+      }
     }
-    return array
+
+    return [...newAssetPacks, ...defaultAssetPacks, ...oldAssetPacks, ...userAssetPacks, ...collectibles]
   }
 )
 

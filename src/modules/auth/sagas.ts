@@ -1,10 +1,10 @@
 import { fork, call, all, takeLatest, put, select } from 'redux-saga/effects'
 
-import { api } from 'lib/api'
+import { avatars } from 'lib/api/avatars'
 import { AUTH_REQUEST, LOGIN, LOGOUT, authRequest, authSuccess, authFailure, LoginAction } from './actions'
 import { login, logout, handleCallback, restoreSession, CallbackResult } from './utils'
 import { isExpired } from './selectors'
-import { AuthData } from './types'
+import { AuthData, LoginOptions } from './types'
 
 export function* authSaga() {
   yield fork(handleRestoreSession)
@@ -12,7 +12,7 @@ export function* authSaga() {
 }
 
 export function* handleLogin(action: LoginAction) {
-  yield call(login, action.payload.redirectUrl)
+  yield call(login, action.payload)
 }
 
 function* handleLogout() {
@@ -32,11 +32,11 @@ export function* checkExpiredSession() {
 
 export function* handleAuthRequest() {
   let data: AuthData
-  let redirectUrl: string | null = null
+  let options: LoginOptions = {}
   try {
     const result: CallbackResult = yield call(handleCallback)
     data = result.data
-    redirectUrl = result.redirectUrl
+    options = result.options
   } catch (error) {
     try {
       data = yield call(restoreSession)
@@ -46,10 +46,10 @@ export function* handleAuthRequest() {
     }
   }
   try {
-    data.user = yield call(() => api.fetchUser(data.accessToken))
+    data.user = yield call(() => avatars.fetchUser(data.accessToken))
   } catch (e) {
     // user doesn't have a profile created via avatars.decentraland.{env}
   }
 
-  yield put(authSuccess(data, redirectUrl))
+  yield put(authSuccess(data, options))
 }

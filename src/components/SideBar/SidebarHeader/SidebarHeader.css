@@ -6,6 +6,9 @@
 
 .SidebarHeader.ui.header.medium {
   padding-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .SidebarHeader .item-drawer-type-buttons .Chip:first-child {
@@ -28,13 +31,42 @@
 
 .SidebarHeader .selected-scope {
   position: relative;
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   text-align: center;
   text-transform: capitalize;
   cursor: pointer;
 }
 
+.SidebarHeader .selected-scope .title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.SidebarHeader .selected-scope .spacer {
+  width: 45px;
+}
+
 .SidebarHeader .selected-scope .icon {
-  position: absolute;
-  left: 0px;
+  height: 1.3em;
+  margin-right: 10px;
+}
+
+.SidebarHeader.ui.header.medium .title {
+  font-size: 17px;
+  flex: 1 0 auto;
+}
+
+.SidebarHeader .create-asset-pack-button {
+  background-image: url(../../../images/add.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 16px;
+  height: 16px;
+  filter: brightness(100);
+  display: inline-block;
+  margin-right: 4px;
+  cursor: pointer;
 }

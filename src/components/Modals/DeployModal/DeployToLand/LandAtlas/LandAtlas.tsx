@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { api } from 'lib/api'
+
 import { Layer, Button, Atlas, Popup, Loader } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -8,6 +8,7 @@ import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
+import { Coord, marketplace } from 'lib/api/marketplace'
 
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
@@ -62,25 +63,53 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   fetchAuthorizedParcels = async (ethAddress: string) => {
     const { landTarget } = this.state
     try {
-      const authorizedParcels = await api.fetchAuthorizedParcels(ethAddress)
+      const [authorizedParcels, authorizedEstates] = await Promise.all([
+        marketplace.fetchAuthorizedParcels(ethAddress),
+        marketplace.fetchAuthorizedEstates(ethAddress)
+      ])
+
       if (this.mounted) {
-        const parcels = authorizedParcels.reduce(
-          (parcels: any, parcel: any) => ({
-            ...parcels,
-            [parcel.id]: {
+        const parcels: Record<string, Coord> = {}
+
+        authorizedParcels.reduce((parcels, parcel) => {
+          parcels[parcel.id] = {
+            x: parcel.x,
+            y: parcel.y
+          }
+          return parcels
+        }, parcels)
+
+        authorizedEstates.reduce((parcels, estate) => {
+          for (const parcel of estate.data.parcels) {
+            const id = `${parcel.x},${parcel.y}`
+            parcels[id] = {
               x: parcel.x,
               y: parcel.y
             }
-          }),
-          {}
-        )
+          }
+          return parcels
+        }, parcels)
 
         this.analytics.track('LAND authorized for publish', { count: authorizedParcels.length })
 
+        let newTarget = landTarget
+
+        if (landTarget === '0,0') {
+          // Only point to the first authorized parcel if no initialPoint was provided
+          if (authorizedParcels.length) {
+            newTarget = authorizedParcels[0].id
+          } else if (authorizedEstates.length) {
+            const estate = authorizedEstates.find(estate => !!estate.data.parcels.length)
+            if (estate) {
+              const land = estate.data.parcels[0]
+              newTarget = `${land.x},${land.y}`
+            }
+          }
+        }
+
         this.setState({
           parcels,
-          // Only point to the first authorized parcel if no initialPoint was provided
-          landTarget: landTarget === '0,0' && authorizedParcels.length ? authorizedParcels[0].id : landTarget,
+          landTarget: newTarget,
           isLoadingMap: false
         })
       }

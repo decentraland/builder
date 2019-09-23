@@ -1,6 +1,6 @@
 import { Manifest } from 'modules/project/types'
 import { addMappings } from './ISSUE-485'
-import { toProjectCloudSchema } from './utils'
+import { toProjectCloudSchema, addScale } from './utils'
 import { Migration } from './types'
 
 export const migrations: Migration<Manifest> = {
@@ -12,6 +12,10 @@ export const migrations: Migration<Manifest> = {
     if (input.project) {
       input.project = toProjectCloudSchema(input.project)
     }
+    return input
+  },
+  '4': input => {
+    addScale(input.scene)
     return input
   }
 }
