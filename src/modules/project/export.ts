@@ -111,10 +111,11 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         break
       }
       case ComponentType.Transform: {
-        const { position, rotation } = (component as ComponentDefinition<ComponentType.Transform>).data
+        const { position, rotation, scale } = (component as ComponentDefinition<ComponentType.Transform>).data
         components[component.id] = new ECS.Transform({
           position: new ECS.Vector3(position.x, position.y, position.z),
-          rotation: new ECS.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w)
+          rotation: new ECS.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w),
+          scale: new ECS.Vector3(scale.x, scale.y, scale.z)
         })
         break
       }
