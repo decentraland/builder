@@ -19,7 +19,7 @@
 }
 
 .PromoBanner .subtitle {
-  color: var(--bluish-steel);
+  color: var(--void);
   position: absolute;
   font-size: 17px;
   font-weight: bold;
