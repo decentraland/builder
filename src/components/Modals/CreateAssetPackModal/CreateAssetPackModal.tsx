@@ -1,6 +1,7 @@
 import * as React from 'react'
 import uuidv4 from 'uuid/v4'
 import { Button, ModalNavigation, Row } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { RawAssetPack, ProgressStage } from 'modules/assetPack/types'
@@ -19,6 +20,8 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     back: CreateAssetPackView.IMPORT,
     assetPack: this.getAssetPack()
   }
+
+  analytics = getAnalytics()
 
   getAssetPack() {
     const id = uuidv4()
@@ -51,10 +54,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   handleAssetImportSubmit = (assetPack: RawAssetPack) => {
+    this.analytics.track('Create Asset Pack Assets Review')
     this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSETS })
   }
 
   handleAssetEditorSubmit = (assetPack: RawAssetPack) => {
+    this.analytics.track('Create Asset Pack Review')
     this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSET_PACK })
   }
 

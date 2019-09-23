@@ -96,9 +96,9 @@
     }
   },
   "banners": {
-    "promo_assetpack_banner": "使用科幻包开始你的宇宙探索！",
-    "promo_body": "获取科幻包并开始您的宇宙探索！",
-    "promo_subtitle": "未来的发展方向！",
+    "promo_assetpack_banner": "自定义资产包现在在Decentraland中可用！",
+    "promo_body": "自定义资产包现在在Decentraland中可用！",
+    "promo_subtitle": "个性化您的世界",
     "promo_title": "Decentraland"
   },
   "custom_layout_modal": {

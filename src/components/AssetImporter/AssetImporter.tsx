@@ -5,6 +5,8 @@ import uuidv4 from 'uuid/v4'
 import JSZip from 'jszip'
 import { Button, Loader } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
@@ -30,6 +32,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     files: {},
     isLoading: false
   }
+
+  analytics = getAnalytics()
 
   getAssetPackId() {
     const { assetPack } = this.props
@@ -111,6 +115,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
     zip.forEach(fileName => {
       if (fileName === EXPORT_PATH.MANIFEST_FILE) {
+        this.analytics.track('Asset Importer Error Scene File')
         throw new Error(
           t('asset_pack.import.errors.scene_file', {
             name: fileName
@@ -126,6 +131,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
 
     if (!assetModel) {
+      this.analytics.track('Asset Importer Error Missing Model>')
       throw new Error(
         t('asset_pack.import.errors.missing_model', {
           name: truncateFileName(file.name)
@@ -141,6 +147,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           const blob = await file.async('blob')
 
           if (blob.size > MAX_FILE_SIZE) {
+            this.analytics.track('Asset Importer Error Max File Size')
             throw new Error(
               t('asset_pack.import.errors.max_file_size', {
                 name: truncateFileName(file.name),
@@ -163,6 +170,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
     const id = getSHA256(`${assetPackId}/${basename(assetModel)}`)
 
+    this.analytics.track('Asset Importer File Success')
+
     return {
       id,
       fileName: file.name,
@@ -184,6 +193,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const id = getSHA256(`${assetPackId}/${file.name}`)
 
     if (file.size > MAX_FILE_SIZE) {
+      this.analytics.track('Asset Importer Error Max File Size')
       throw new Error(
         t('asset_pack.import.errors.max_file_size', {
           name: truncateFileName(file.name),
@@ -208,6 +218,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
       try {
         if (!extension) {
+          this.analytics.track('Asset Importer Error Missing Extension')
           throw new Error(
             t('asset_pack.import.errors.missing_extension', {
               name: truncateFileName(file.name)
@@ -235,6 +246,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           const existingAsset = assetPack.assets.find(asset => asset.id === outFile!.asset.id)
 
           if (existingAsset) {
+            this.analytics.track('Asset Importer Error Duplicated Asset')
             throw new Error(
               t('asset_pack.import.errors.duplicated_asset', {
                 name: truncateFileName(file.name),
@@ -245,7 +257,6 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           }
         }
       } catch (e) {
-        // TODO: analytics
         outFile = {
           asset: outFile ? outFile!.asset : null,
           id: getSHA256(file.name),

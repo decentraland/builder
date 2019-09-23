@@ -1,6 +1,7 @@
 import * as React from 'react'
 import uuidv4 from 'uuid/v4'
 import { Button, ModalNavigation, Row } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { RawAsset, Asset } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -21,6 +22,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     editingAsset: null,
     ignoredAssets: this.getRemoteAssetIds()
   }
+
+  analytics = getAnalytics()
 
   getRawAssetPack(): MixedAssetPack {
     const { assetPack, userId } = this.props
@@ -72,10 +75,12 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleAssetImportSubmit = (assetPack: MixedAssetPack) => {
+    this.analytics.track('Edit Asset Pack Assets Review')
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSETS })
   }
 
   handleAssetEditorSubmit = (assetPack: MixedAssetPack) => {
+    this.analytics.track('Edit Asset Pack Review')
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null })
   }
 
