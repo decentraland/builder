@@ -1,19 +1,22 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SingleAssetEditor from 'components/AssetsEditor/SingleAssetEditor'
 import { MAX_TAGS, MAX_NAME_LENGTH, MIN_NAME_LENGTH } from 'modules/asset/utils'
-import { RawAssetPack } from 'modules/assetPack/types'
+import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { RawAsset } from 'modules/asset/types'
 import { Props, State } from './AssetsEditor.types'
 import './AssetsEditor.css'
 
-export default class AssetsEditor extends React.PureComponent<Props, State> {
+export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   state: State = {
     currentAsset: this.getStartingAsset(),
     errors: {},
     isDirty: false
   }
+
+  analytics = getAnalytics()
 
   getAssets() {
     const { assetPack, ignoredAssets } = this.props
@@ -34,7 +37,6 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
 
     const assets = this.getAssets()
     const found = assets.findIndex(asset => asset.id === startingAsset)
-
     return found === -1 ? 0 : found
   }
 
@@ -50,7 +52,7 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     })
   }
 
-  getErrors = (asset: RawAsset) => {
+  getErrors = (asset: T['assets'][number]) => {
     const { errors } = this.state
     const newErrors: Record<string, string> = {}
 
@@ -85,7 +87,7 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     return errors
   }
 
-  getAssetPackErrors = (assetPack: RawAssetPack) => {
+  getAssetPackErrors = (assetPack: T) => {
     let errors: Record<string, Record<string, string>> = {}
     for (let asset of assetPack.assets) {
       errors = { ...errors, ...this.getErrors(asset) }
@@ -115,9 +117,9 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
   }
 
   getAssetIndex = (assetId: string) => {
-    const { assetPack } = this.props
-    for (let i = 0; i < assetPack.assets.length; i++) {
-      const asset = assetPack.assets[i]
+    const assets = this.getAssets()
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i]
       if (asset.id === assetId) {
         return i
       }
@@ -131,6 +133,12 @@ export default class AssetsEditor extends React.PureComponent<Props, State> {
     const errors = this.getAssetPackErrors(assetPack)
     const errorKeys = Object.keys(errors)
     const hasErrors = errorKeys.length > 0
+    const assets = this.getAssets()
+    const isLast = currentAsset === assets.length - 1
+
+    if (!isLast) {
+      this.analytics.track('Asset Review Skip')
+    }
 
     this.setState({
       isDirty: true,

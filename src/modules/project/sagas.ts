@@ -40,6 +40,7 @@ import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
+import { isRemoteURL } from 'modules/media/utils'
 import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
@@ -126,7 +127,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
   let thumbnail = project.thumbnail
 
-  if (thumbnail && thumbnail.startsWith('http')) {
+  if (thumbnail && isRemoteURL(thumbnail)) {
     thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
   }
 

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { getSub, isLoggedIn } from 'modules/auth/selectors'
+import { getSub } from 'modules/auth/selectors'
 import { saveAssetPackRequest, deleteAssetPackRequest } from 'modules/assetPack/actions'
-import { getProgress, getError, getFullAssetPacks } from 'modules/assetPack/selectors'
+import { getProgress, getError, getFullAssetPacks, isLoading } from 'modules/assetPack/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { login } from 'modules/auth/actions'
 import CustomLayoutModal from './EditAssetPackModal'
@@ -10,7 +10,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './EditAs
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   project: getCurrentProject(state),
-  isLoggedIn: isLoggedIn(state),
+  isLoading: isLoading(state),
   progress: getProgress(state),
   error: getError(state),
   userId: getSub(state),

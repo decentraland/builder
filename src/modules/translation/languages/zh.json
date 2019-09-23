@@ -2,11 +2,11 @@
   "asset_pack": {
     "title_create": "创造Asset Pack",
     "edit_asset": {
-      "description_create": "查看您的商品，添加标签和更多内容。",
+      "description_create": "查看您的assets，添加标签等",
       "title_edit": "修改Asset Pack",
-      "description_edit": "查看您的商品，添加标签和更多内容。",
+      "description_edit": "查看您的assets，添加标签等",
       "action": "继续",
-      "action_skip": "跳过步骤",
+      "action_skip": "跳过评论",
       "category": {
         "label": "类别"
       },
@@ -32,7 +32,7 @@
       "action_create": "创造Asset Pack",
       "title_edit": "修改Asset Pack",
       "description_edit": "真棒！ 输入您的唯一名称Asset Pack.",
-      "action_edit": "修改Asset Pack",
+      "action_edit": "救Asset Pack",
       "action_delete": "删除Asset Pack",
       "action_add_items": "添加项目",
       "errors": {
@@ -53,10 +53,10 @@
     "import": {
       "description_create": "首先将模型添加到Asset Pack",
       "title_edit": "创造Asset Pack",
-      "description_edit": "首先将项目添加到您的包中。",
+      "description_edit": "向您添加更多项目Asset Pack",
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
-      "cta": "将Asset的.zip文件拖到此处，或{action}",
+      "cta": "将Asset的GLB，GLTF或ZIP文件拖到此处，或{action}",
       "errors": {
         "invalid": "无效资产",
         "duplicated": "重复资产",
@@ -96,9 +96,9 @@
     }
   },
   "banners": {
-    "promo_assetpack_banner": "使用科幻包开始你的宇宙探索！",
-    "promo_body": "获取科幻包并开始您的宇宙探索！",
-    "promo_subtitle": "未来的发展方向！",
+    "promo_assetpack_banner": "自定义资产包现在在Decentraland中可用！",
+    "promo_body": "自定义资产包现在在Decentraland中可用！",
+    "promo_subtitle": "个性化您的世界",
     "promo_title": "Decentraland"
   },
   "custom_layout_modal": {

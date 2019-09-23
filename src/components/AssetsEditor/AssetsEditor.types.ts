@@ -1,12 +1,10 @@
-import { RawAssetPack } from 'modules/assetPack/types'
-
-export type Props = {
-  assetPack: RawAssetPack
+export type Props<T> = {
+  assetPack: T
   startingAsset?: string
   ignoredAssets?: string[] // Ignored Asset IDs
   isEditing?: boolean
-  onChange: (assetPack: RawAssetPack) => void
-  onSubmit: (assetPack: RawAssetPack) => void
+  onChange: (assetPack: T) => void
+  onSubmit: (assetPack: T) => void
 }
 
 export type State = {

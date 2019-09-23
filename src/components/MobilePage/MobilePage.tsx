@@ -19,6 +19,8 @@ export default class MobilePage extends React.PureComponent<Props, State> {
     isLoading: false
   }
 
+  analytics = getAnalytics()
+
   componentDidMount() {
     document.body.classList.add('mobile-body')
   }
@@ -40,11 +42,10 @@ export default class MobilePage extends React.PureComponent<Props, State> {
 
   handleSubmit = () => {
     const { email } = this.state
-    const analytics = getAnalytics()
 
     this.setState({ isLoading: true })
 
-    analytics.identify({ email }, () => {
+    this.analytics.identify({ email }, () => {
       newsletter.reportEmail(email, EMAIL_INTEREST.MOBILE).catch(() => console.error('Unable to submit email, something went wrong!'))
       localStorage.setItem('mobile-email', email)
       this.setState({ isLoading: false })

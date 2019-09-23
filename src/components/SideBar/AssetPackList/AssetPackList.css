@@ -23,9 +23,10 @@
   background-image: url('../../../images/promo-assets.png');
   background-repeat: no-repeat;
   background-size: contain;
-  width: 208px;
+  width: 215px;
   height: 100px;
-  margin-right: -100px;
+  margin-left: 10px;
+  margin-right: -130px;
   background-position: center;
   flex: none;
 }

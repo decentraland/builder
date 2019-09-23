@@ -27,10 +27,11 @@ export type Props = ModalProps & {
   progress: AssetPackState['progress']
   error: AssetPackState['error']
   isLoggedIn: boolean
+  isLoading: boolean
   onCreateAssetPack: typeof saveAssetPackRequest
   onLogin: typeof login
 }
 
-export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'isLoggedIn'>
+export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'isLoggedIn' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onLogin'>
 export type MapDispatch = Dispatch<SaveAssetPackRequestAction | LoginAction>

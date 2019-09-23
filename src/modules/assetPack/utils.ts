@@ -1,5 +1,5 @@
-import { RawAssetPack, FullAssetPack } from './types'
-import { RawAssetContents } from 'modules/asset/types'
+import { FullAssetPack, MixedAssetPack } from './types'
+import { RawAssetContents, Asset, RawAsset } from 'modules/asset/types'
 import { getContentsCID } from 'modules/asset/utils'
 import { dataURLToBlob, blobToCID, isDataUrl } from 'modules/media/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
@@ -9,8 +9,8 @@ export const MIN_TITLE_LENGTH = 3
 export const MAX_THUMBNAIL_SIZE = 5000000
 export const THUMBNAIL_PATH = 'thumbnail.png'
 
-export async function rawAssetPackToFullAssetPack(
-  rawAssetPack: RawAssetPack,
+export async function convertToFullAssetPack(
+  rawAssetPack: MixedAssetPack,
   ignoredAssets: string[] = []
 ): Promise<[FullAssetPack, RawAssetContents]> {
   const fullAssetPack: FullAssetPack = { ...rawAssetPack, assets: [] }
@@ -18,19 +18,26 @@ export async function rawAssetPackToFullAssetPack(
 
   for (let asset of rawAssetPack.assets) {
     const { contents, thumbnail } = asset
+    const isIgnored = ignoredAssets.includes(asset.id)
     rawContents[asset.id] = {}
 
     // generate { [path]: "cid" } mappings
-    const newAsset = {
+    const newAsset: Asset = {
       ...asset,
-      contents: await getContentsCID(asset)
+      contents: {}
+    }
+
+    if (!isIgnored) {
+      newAsset.contents = await getContentsCID(asset as RawAsset)
+    } else {
+      newAsset.contents = (asset as Asset).contents
     }
 
     // save rawContents as { [cid]: Blob }
     for (const path of Object.keys(newAsset.contents)) {
       const cid = newAsset.contents[path]
-      if (!ignoredAssets.includes(asset.id)) {
-        rawContents[asset.id][cid] = contents[path]
+      if (!isIgnored) {
+        rawContents[asset.id][cid] = (contents as RawAsset['contents'])[path]
       }
     }
 

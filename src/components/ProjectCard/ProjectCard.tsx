@@ -6,6 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { DeployModalMetadata, DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
+import { isRemoteURL } from 'modules/media/utils'
 import { getProjectDimensions } from 'modules/project/utils'
 import { DeploymentStatus as Status } from 'modules/deployment/types'
 import DeploymentStatus from 'components/DeploymentStatus'
@@ -69,7 +70,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     if (project.thumbnail) {
       // prevent caching remote images when they are updated
       let url = project.thumbnail
-      if (url && url.startsWith('http')) {
+      if (url && isRemoteURL(url)) {
         url += `?updated_at=${+new Date(project.updatedAt)}`
       }
       style = { backgroundImage: `url(${url})` }
