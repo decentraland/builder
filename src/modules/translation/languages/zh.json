@@ -41,7 +41,7 @@
         "thumbnail_size": "图像文件大小必须小于 {count}个字节"
       },
       "items": {
-        "empty": "There are not Assets in this Asset Pack",
+        "empty": "这Asset Pack个西是空的",
         "label": "{count} {count, plural, one {Asset} other {Assets}}"
       },
       "name": {

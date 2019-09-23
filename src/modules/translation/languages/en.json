@@ -42,7 +42,7 @@
         "thumbnail_size": "Image file size must be less than {count} bytes"
       },
       "items": {
-        "empty": "There are not Assets in this Asset Pack",
+        "empty": "This Asset Pack is empty",
         "label": "{count} {count, plural, one {Asset} other {Assets}}"
       },
       "name": {

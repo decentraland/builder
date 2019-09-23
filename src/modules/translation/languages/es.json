@@ -41,7 +41,7 @@
         "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
       },
       "items": {
-        "empty": "No hay Assets en este Asset Pack",
+        "empty": "Este Asset Pack se encuentra vacío",
         "label": "{count} {count, plural, one {Asset} other {Assets}}"
       },
       "name": {
