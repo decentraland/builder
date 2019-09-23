@@ -14,14 +14,14 @@ import { locations } from 'routing/locations'
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
 
-const analytics = getAnalytics()
-
 export default class CreateAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
     view: this.props.isLoggedIn ? CreateAssetPackView.IMPORT : CreateAssetPackView.LOGIN,
     back: CreateAssetPackView.IMPORT,
     assetPack: this.getAssetPack()
   }
+
+  analytics = getAnalytics()
 
   getAssetPack() {
     const id = uuidv4()
@@ -39,7 +39,6 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     let view: CreateAssetPackView = this.state.view
 
     if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error && !isLoading) {
-      analytics.track('Create Asset Pack Success')
       view = CreateAssetPackView.SUCCESS
     } else if (progress.stage !== ProgressStage.NONE && !error) {
       view = CreateAssetPackView.PROGRESS
@@ -55,12 +54,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   handleAssetImportSubmit = (assetPack: RawAssetPack) => {
-    analytics.track('Create Asset Pack Assets Review')
+    this.analytics.track('Create Asset Pack Assets Review')
     this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSETS })
   }
 
   handleAssetEditorSubmit = (assetPack: RawAssetPack) => {
-    analytics.track('Create Asset Pack Review')
+    this.analytics.track('Create Asset Pack Review')
     this.setState({ assetPack, view: CreateAssetPackView.EDIT_ASSET_PACK })
   }
 

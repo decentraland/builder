@@ -7,10 +7,11 @@ import { Props } from './UnsupportedBrowserPage.types'
 import './UnsupportedBrowserPage.css'
 
 export default class UnsupportedBrowserPage extends React.PureComponent<Props> {
+  analytics = getAnalytics()
+
   componentDidMount() {
-    const analytics = getAnalytics()
     document.body.classList.add('notfound-body')
-    analytics.track('Not found page', {})
+    this.analytics.track('Not found page', {})
   }
 
   componentWillUnmount() {

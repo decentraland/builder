@@ -19,10 +19,11 @@ export default class NotFoundPage extends React.PureComponent<Props, State> {
 
   mounted = false
 
+  analytics = getAnalytics()
+
   componentWillMount() {
-    const analytics = getAnalytics()
     document.body.classList.add('notfound-body')
-    analytics.track('Not found page', {})
+    this.analytics.track('Not found page', {})
     this.mounted = true
     this.setState({ isLoading: true })
     setTimeout(() => {

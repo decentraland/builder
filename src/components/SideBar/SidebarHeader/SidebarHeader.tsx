@@ -5,9 +5,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './SidebarHeader.types'
 import './SidebarHeader.css'
 
-const analytics = getAnalytics()
-
 export default class SidebarHeader extends React.PureComponent<Props> {
+  analytics = getAnalytics()
+
   handleGoBack = () => {
     const { selectedAssetPack, selectedCategory, onSelectAssetPack, onSelectCategory, search, onSearch } = this.props
     if (search) {
@@ -22,14 +22,14 @@ export default class SidebarHeader extends React.PureComponent<Props> {
   handleEditAssetPack = () => {
     const { selectedAssetPack, onEditAssetPack } = this.props
     if (selectedAssetPack) {
-      analytics.track('Edit Asset Pack Sidebar Header')
+      this.analytics.track('Edit Asset Pack Sidebar Header')
       onEditAssetPack(selectedAssetPack.id)
     }
   }
 
   handleCreateAssetPack = () => {
     const { onCreateAssetPack } = this.props
-    analytics.track('Create Asset Pack Sidebar Header')
+    this.analytics.track('Create Asset Pack Sidebar Header')
     onCreateAssetPack()
   }
 

@@ -39,7 +39,11 @@ import {
   SaveAssetPackSuccessAction,
   SAVE_ASSET_PACK_SUCCESS,
   DeleteAssetPackSuccessAction,
-  DELETE_ASSET_PACK_SUCCESS
+  DELETE_ASSET_PACK_SUCCESS,
+  SAVE_ASSET_PACK_FAILURE,
+  DELETE_ASSET_PACK_FAILURE,
+  SaveAssetPackFailureAction,
+  DeleteAssetPackFailureAction
 } from 'modules/assetPack/actions'
 
 export function* analyticsSaga() {
@@ -62,6 +66,8 @@ export function* analyticsSaga() {
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
   yield takeLatest(SAVE_ASSET_PACK_SUCCESS, handleSaveAssetPackSuccess)
   yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
+  yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
+  yield takeLatest(DELETE_ASSET_PACK_FAILURE, handleDeleteAssetPackFailure)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -218,4 +224,20 @@ function* handleDeleteAssetPackSuccess(action: DeleteAssetPackSuccessAction) {
   if (!project) return
   const userId = yield select(getSub)
   track('[Success] Delete AssetPack', { project_id: project.id, user_id: userId, assetPack })
+}
+
+function* handleSaveAssetPackFailure(action: SaveAssetPackFailureAction) {
+  const { assetPack } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  if (!project) return
+  const userId = yield select(getSub)
+  track('[Failure] Save AssetPack', { project_id: project.id, user_id: userId, assetPack })
+}
+
+function* handleDeleteAssetPackFailure(action: DeleteAssetPackFailureAction) {
+  const { assetPack } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  if (!project) return
+  const userId = yield select(getSub)
+  track('[Failure] Delete AssetPack', { project_id: project.id, user_id: userId, assetPack })
 }

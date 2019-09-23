@@ -9,14 +9,14 @@ import { RawAsset } from 'modules/asset/types'
 import { Props, State } from './AssetsEditor.types'
 import './AssetsEditor.css'
 
-const analytics = getAnalytics()
-
 export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   state: State = {
     currentAsset: this.getStartingAsset(),
     errors: {},
     isDirty: false
   }
+
+  analytics = getAnalytics()
 
   getAssets() {
     const { assetPack, ignoredAssets } = this.props
@@ -137,7 +137,7 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
     const isLast = currentAsset === assets.length - 1
 
     if (!isLast) {
-      analytics.track('Asset Review Skip')
+      this.analytics.track('Asset Review Skip')
     }
 
     this.setState({

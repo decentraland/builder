@@ -14,8 +14,6 @@ import AssetsEditor from 'components/AssetsEditor'
 import { Props, State, EditAssetPackView } from './EditAssetPackModal.types'
 import './EditAssetPackModal.css'
 
-const analytics = getAnalytics()
-
 export default class EditAssetPackModal extends React.PureComponent<Props, State> {
   state: State = {
     view: EditAssetPackView.EDIT_ASSET_PACK,
@@ -24,6 +22,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     editingAsset: null,
     ignoredAssets: this.getRemoteAssetIds()
   }
+
+  analytics = getAnalytics()
 
   getRawAssetPack(): MixedAssetPack {
     const { assetPack, userId } = this.props
@@ -59,7 +59,6 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     let view: EditAssetPackView = this.state.view
 
     if (progress.stage === ProgressStage.UPLOAD_CONTENTS && progress.value === 100 && !error && !isLoading) {
-      analytics.track('Edit Asset Pack Success')
       view = EditAssetPackView.SUCCESS
     } else if (progress.stage !== ProgressStage.NONE && !error) {
       view = EditAssetPackView.PROGRESS
@@ -76,12 +75,12 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleAssetImportSubmit = (assetPack: MixedAssetPack) => {
-    analytics.track('Edit Asset Pack Assets Review')
+    this.analytics.track('Edit Asset Pack Assets Review')
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSETS })
   }
 
   handleAssetEditorSubmit = (assetPack: MixedAssetPack) => {
-    analytics.track('Edit Asset Pack Review')
+    this.analytics.track('Edit Asset Pack Review')
     this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null })
   }
 
