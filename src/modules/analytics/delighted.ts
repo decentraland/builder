@@ -31,7 +31,7 @@ export function* handleDelighted() {
     const payload = {
       recurringPeriod: false,
       properties: {
-        anonymous_id: analytics ? analytics.user().anonymousId() : null
+        anonymous_id: analytics && analytics.user ? analytics.user().anonymousId() : null
       }
     }
     delighted.survey(email ? { email, ...payload } : payload)
