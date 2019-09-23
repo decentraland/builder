@@ -35,7 +35,7 @@
       "description_edit": "Awesome! Enter a unique name for your Asset Pack.",
       "action_edit": "Save Asset Pack",
       "action_delete": "Delete Asset Pack",
-      "action_add_items": "Add items",
+      "action_add_items": "Add Assets",
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
@@ -53,7 +53,7 @@
     },
     "import": {
       "title_create": "Create Asset Pack",
-      "description_create": "Start by adding some items to your pack",
+      "description_create": "Start by adding some assets to your pack",
       "title_edit": "Edit Asset Pack",
       "description_edit": "Add some more items to your pack",
       "action": "Import asset",

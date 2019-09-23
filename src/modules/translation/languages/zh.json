@@ -34,7 +34,7 @@
       "description_edit": "真棒！ 输入您的唯一名称Asset Pack.",
       "action_edit": "救Asset Pack",
       "action_delete": "删除Asset Pack",
-      "action_add_items": "添加项目",
+      "action_add_items": "加Assets",
       "errors": {
         "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
         "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
