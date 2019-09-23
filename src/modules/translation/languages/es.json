@@ -34,14 +34,14 @@
       "description_edit": "¡Increíble! Elige un nombre para tu Asset Pack.",
       "action_edit": "Guardar Asset Pack",
       "action_delete": "Eliminar Asset Pack",
-      "action_add_items": "Agregar items",
+      "action_add_items": "Agregar Assets",
       "errors": {
         "max_title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
         "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
         "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
       },
       "items": {
-        "empty": "No hay Assets en este Asset Pack",
+        "empty": "Este Asset Pack se encuentra vacío",
         "label": "{count} {count, plural, one {Asset} other {Assets}}"
       },
       "name": {
@@ -51,7 +51,7 @@
       "reset": "Agregar nuevos Assets"
     },
     "import": {
-      "description_create": "Comienza añadiendo algunos assets",
+      "description_create": "Comienza añadiendo algunos assets a tu pack",
       "title_edit": "Editar Asset Pack",
       "description_edit": "Añade algunos assets más a tu pack",
       "action": "Importar Asset",
