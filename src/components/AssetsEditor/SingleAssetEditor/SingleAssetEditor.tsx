@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { basename } from 'path'
 import { Field, TagField, SelectField, DropdownProps, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { rawMappingsToObjectURL, revokeMappingsObjectURL, isGround } from 'modules/asset/utils'
@@ -77,7 +76,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
       }, {})
     }
 
-    const { image } = await getModelData(mappings[basename(asset.url)], {
+    const { image } = await getModelData(mappings[asset.url], {
       mappings,
       thumbnailType: ground ? '2d' : '3d'
     })

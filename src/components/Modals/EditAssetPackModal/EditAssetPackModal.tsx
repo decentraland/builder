@@ -1,6 +1,5 @@
 import * as React from 'react'
 import uuidv4 from 'uuid/v4'
-import { basename } from 'path'
 import { Button, ModalNavigation, Row } from 'decentraland-ui'
 import { RawAsset, Asset } from 'modules/asset/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -42,7 +41,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
       title: assetPack.title,
       thumbnail: assetPack.thumbnail,
       userId: assetPack.userId,
-      assets: assetPack.assets.map(asset => ({ ...asset, url: basename(asset.url) }))
+      assets: assetPack.assets.map(asset => ({ ...asset, url: asset.url.replace(`${assetPack.id}/`, '') }))
     }
   }
 
@@ -235,7 +234,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     const { progress } = this.props
     let className = 'progress-bar'
 
-    if (progress.value === 0) {
+    if (progress.value === 100) {
       className += ' active'
     }
 
