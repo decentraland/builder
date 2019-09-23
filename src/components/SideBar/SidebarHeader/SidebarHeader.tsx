@@ -46,6 +46,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
             <span className="selected-scope" onClick={this.handleGoBack}>
               <Icon name="chevron left" />
               {t('itemdrawer.results')}
+              <div className="spacer" />
             </span>
           ) : isRoot ? (
             t('itemdrawer.title')
