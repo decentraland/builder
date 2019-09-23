@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SingleAssetEditor from 'components/AssetsEditor/SingleAssetEditor'
 import { MAX_TAGS, MAX_NAME_LENGTH, MIN_NAME_LENGTH } from 'modules/asset/utils'
@@ -7,6 +8,8 @@ import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { RawAsset } from 'modules/asset/types'
 import { Props, State } from './AssetsEditor.types'
 import './AssetsEditor.css'
+
+const analytics = getAnalytics()
 
 export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   state: State = {
@@ -130,6 +133,12 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
     const errors = this.getAssetPackErrors(assetPack)
     const errorKeys = Object.keys(errors)
     const hasErrors = errorKeys.length > 0
+    const assets = this.getAssets()
+    const isLast = currentAsset === assets.length - 1
+
+    if (isLast) {
+      analytics.track('Asset Review Skip')
+    }
 
     this.setState({
       isDirty: true,

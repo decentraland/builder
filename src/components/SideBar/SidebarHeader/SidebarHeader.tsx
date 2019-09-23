@@ -1,8 +1,11 @@
 import React from 'react'
 import { Header, Icon, Button, Popup } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props } from './SidebarHeader.types'
 import './SidebarHeader.css'
+
+const analytics = getAnalytics()
 
 export default class SidebarHeader extends React.PureComponent<Props> {
   handleGoBack = () => {
@@ -19,12 +22,19 @@ export default class SidebarHeader extends React.PureComponent<Props> {
   handleEditAssetPack = () => {
     const { selectedAssetPack, onEditAssetPack } = this.props
     if (selectedAssetPack) {
+      analytics.track('Edit Asset Pack Sidebar Header')
       onEditAssetPack(selectedAssetPack.id)
     }
   }
 
+  handleCreateAssetPack = () => {
+    const { onCreateAssetPack } = this.props
+    analytics.track('Create Asset Pack Sidebar Header')
+    onCreateAssetPack()
+  }
+
   render() {
-    const { selectedAssetPack, selectedCategory, search, onCreateAssetPack, userId } = this.props
+    const { selectedAssetPack, selectedCategory, search, userId } = this.props
 
     const isRoot = selectedAssetPack === null && selectedCategory === null
     const isSearch = search.length > 0
@@ -63,7 +73,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
             on="hover"
             basic
             inverted
-            trigger={<div className="create-asset-pack-button" onClick={onCreateAssetPack} />}
+            trigger={<div className="create-asset-pack-button" onClick={this.handleCreateAssetPack} />}
           />
         ) : null}
       </Header>

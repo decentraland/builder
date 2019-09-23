@@ -35,6 +35,12 @@ import { SyncAction, SYNC } from 'modules/sync/actions'
 import { getLocalProjectIds } from 'modules/sync/selectors'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import {
+  SaveAssetPackSuccessAction,
+  SAVE_ASSET_PACK_SUCCESS,
+  DeleteAssetPackSuccessAction,
+  DELETE_ASSET_PACK_SUCCESS
+} from 'modules/assetPack/actions'
 
 export function* analyticsSaga() {
   yield fork(handleDelighted)
@@ -54,6 +60,8 @@ export function* analyticsSaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
   yield takeEvery(LOCATION_CHANGE, handleLocationChange)
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
+  yield takeLatest(SAVE_ASSET_PACK_SUCCESS, handleSaveAssetPackSuccess)
+  yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
 }
 
 const track = (event: string, params: any) => getAnalytics().track(event, params)
@@ -194,4 +202,20 @@ function* handleAuthSuccess(action: AuthSuccessAction) {
   } else {
     analytics.identify(userId, { ethAddress: ethAddress })
   }
+}
+
+function* handleSaveAssetPackSuccess(action: SaveAssetPackSuccessAction) {
+  const { assetPack } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  if (!project) return
+  const userId = yield select(getSub)
+  track('[Success] Save AssetPack', { project_id: project.id, user_id: userId, assetPack })
+}
+
+function* handleDeleteAssetPackSuccess(action: DeleteAssetPackSuccessAction) {
+  const { assetPack } = action.payload
+  const project: Project | null = yield select(getCurrentProject)
+  if (!project) return
+  const userId = yield select(getSub)
+  track('[Success] Delete AssetPack', { project_id: project.id, user_id: userId, assetPack })
 }

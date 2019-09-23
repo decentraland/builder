@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Field, Header, Button, Icon as SemanticIcon } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
@@ -10,6 +11,8 @@ import Icon from 'components/Icon'
 
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
+
+const analytics = getAnalytics()
 
 export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
@@ -64,6 +67,10 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
   handleRemove = (id: string) => {
     const { assetPack, onChange } = this.props
 
+    analytics.track('Asset Pack Editor Remove Asset', {
+      assetId: id
+    })
+
     onChange({
       ...assetPack,
       assets: assetPack.assets.filter(asset => asset.id !== id)
@@ -98,6 +105,8 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
         return
       }
       const url = URL.createObjectURL(file)
+
+      analytics.track('Asset Pack Editor Change Thumbnail')
 
       onChange({
         ...assetPack,
@@ -146,6 +155,9 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
   handleEditAsset = (asset: T['assets'][number]) => {
     const { onEditAsset } = this.props
     if (onEditAsset) {
+      analytics.track('Asset Pack Editor Edit Asset', {
+        asset
+      })
       onEditAsset(asset)
     }
   }
