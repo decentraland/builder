@@ -1,15 +1,14 @@
 .PromoBanner {
-  color: var(--promo-banner-text);
   position: relative;
   width: 100%;
   height: 150px;
   border-radius: 12px;
   overflow: hidden;
   margin-top: 32px;
-  box-shadow: inset 300px 0px 50px 0px rgba(0, 0, 0, 0.4);
 }
 
 .PromoBanner .title {
+  color: var(--void);
   position: absolute;
   font-size: 28px;
   font-weight: bold;
@@ -20,6 +19,7 @@
 }
 
 .PromoBanner .subtitle {
+  color: var(--bluish-steel);
   position: absolute;
   font-size: 17px;
   font-weight: bold;
@@ -31,6 +31,7 @@
 }
 
 .PromoBanner .body {
+  color: var(--void);
   position: absolute;
   top: 90px;
   left: 28px;
@@ -45,5 +46,5 @@
   height: 184px;
   background-size: contain;
   z-index: -1;
-  top: -25px;
+  top: -15px;
 }
