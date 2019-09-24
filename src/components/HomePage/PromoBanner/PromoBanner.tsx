@@ -15,7 +15,6 @@ export default class PromoBanner extends React.PureComponent<Props> {
       <div className="PromoBanner" onClick={this.handleCTAClick}>
         <div className="title">{t('banners.promo_title')}</div>
         <div className="subtitle">{t('banners.promo_subtitle')}</div>
-        <div className="body">{t('banners.promo_body')}</div>
         <div className="promo-image" />
       </div>
     )
