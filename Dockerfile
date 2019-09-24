@@ -10,7 +10,7 @@ ENV REACT_APP_DAR_URL https://schema-api-staging.now.sh/dar
 
 ENV REACT_APP_BUILDER_SERVER_URL https://builder-api.decentraland.today/v1
 ENV REACT_APP_MARKETPLACE_URL https://api.decentraland.today/v1
-ENV REACT_APP_AVATARS_API_URL https://avatars-api.decentraland.today/api
+ENV REACT_APP_PROFILE_API_URL https://profile.decentraland.zone/api/v1
 
 ENV REACT_APP_INTERCOM_APP_ID z0h94kay
 ENV REACT_APP_LOCAL_STORAGE_KEY builder

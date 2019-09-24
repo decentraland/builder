@@ -1,6 +1,6 @@
 import { fork, call, all, takeLatest, put, select } from 'redux-saga/effects'
 
-import { avatars } from 'lib/api/avatars'
+import { profile } from 'lib/api/profile'
 import { AUTH_REQUEST, LOGIN, LOGOUT, authRequest, authSuccess, authFailure, LoginAction } from './actions'
 import { login, logout, handleCallback, restoreSession, CallbackResult } from './utils'
 import { isExpired } from './selectors'
@@ -46,7 +46,7 @@ export function* handleAuthRequest() {
     }
   }
   try {
-    data.user = yield call(() => avatars.fetchUser(data.accessToken))
+    data.user = yield call(() => profile.fetchUser(data.sub, data.accessToken))
   } catch (e) {
     // user doesn't have a profile created via avatars.decentraland.{env}
   }

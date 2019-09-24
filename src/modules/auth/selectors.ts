@@ -39,10 +39,10 @@ export const getUser = createSelector<RootState, AuthState['data'], User | null>
 
 export const getName = createSelector<RootState, ReturnType<typeof getUser>, string | null>(
   getUser,
-  user => (user ? user.profile.name : null)
+  user => (user ? user.name : null)
 )
 
 export const getFace = createSelector<RootState, ReturnType<typeof getUser>, string | null>(
   getUser,
-  user => (user ? user.snapshots.face : null)
+  user => (user ? user.avatar.snapshots.face : null)
 )

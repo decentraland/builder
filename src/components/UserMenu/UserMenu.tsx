@@ -33,7 +33,7 @@ export default class UserMenu extends React.Component<Props, State> {
   }
 
   render() {
-    const { user, isLoggedIn, isLoggingIn, onLogout } = this.props
+    const { user, isLoggedIn, isLoggingIn, onLogout, email } = this.props
     const { isOpen } = this.state
 
     let classes = 'UserMenu'
@@ -42,10 +42,8 @@ export default class UserMenu extends React.Component<Props, State> {
     }
 
     let name = null
-    let email = null
     if (user) {
-      name = user.profile.name
-      email = user.email
+      name = user.name
     }
 
     return (
