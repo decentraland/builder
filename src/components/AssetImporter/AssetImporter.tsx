@@ -131,7 +131,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
 
     if (!assetModel) {
-      this.analytics.track('Asset Importer Error Missing Model>')
+      this.analytics.track('Asset Importer Error Missing Model')
       throw new Error(
         t('asset_pack.import.errors.missing_model', {
           name: truncateFileName(file.name)
