@@ -1,5 +1,6 @@
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Category } from './types'
+import { AssetPack } from 'modules/assetPack/types'
 
 export const COLLECTIBLE_ASSET_PACK_ID = 'collectibles'
 
@@ -48,4 +49,8 @@ export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
     thumbnail: `${BUILDER_SERVER_URL}/storage/assets/Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN`,
     assets: []
   }
+}
+
+export const sortByName = (a: AssetPack, b: AssetPack) => {
+  return new Date(a.createdAt!) > new Date(b.createdAt!) ? 1 : -1
 }
