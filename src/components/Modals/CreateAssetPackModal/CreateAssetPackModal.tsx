@@ -24,11 +24,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   analytics = getAnalytics()
 
   getAssetPack() {
+    const existingAssetPack = this.state ? this.state.assetPack : null
     const id = uuidv4()
     return {
       id,
-      title: '',
-      thumbnail: '',
+      title: existingAssetPack ? existingAssetPack.title : '',
+      thumbnail: existingAssetPack ? existingAssetPack.thumbnail : '',
       url: `${id}.json`,
       assets: []
     }
