@@ -1,6 +1,7 @@
 {
   "asset_pack": {
     "title_create": "Crear Asset Pack",
+    "new_asset_pack": "Nuevo Asset Pack",
     "edit_asset": {
       "description_create": "Revisa tus assets, agrega etiquetas y más",
       "title_edit": "Editar Asset Pack",
