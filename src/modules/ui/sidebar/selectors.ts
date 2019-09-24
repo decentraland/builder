@@ -11,7 +11,7 @@ import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
 import { getSub } from 'modules/auth/selectors'
-import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, NEW_ASSET_PACK_IDS, OLD_ASSET_PACK_IDS } from './utils'
+import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, NEW_ASSET_PACK_IDS, OLD_ASSET_PACK_IDS, sortByName } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -163,7 +163,13 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
       }
     }
 
-    return [...newAssetPacks, ...defaultAssetPacks, ...oldAssetPacks, ...userAssetPacks, ...collectibles]
+    return [
+      ...newAssetPacks.sort(sortByName),
+      ...defaultAssetPacks.sort(sortByName),
+      ...oldAssetPacks.sort(sortByName),
+      ...userAssetPacks.sort(sortByName),
+      ...collectibles
+    ]
   }
 )
 
