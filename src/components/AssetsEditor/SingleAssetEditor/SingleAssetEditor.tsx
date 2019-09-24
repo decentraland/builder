@@ -72,7 +72,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
       mappings = rawMappingsToObjectURL((asset as RawAsset).contents)
     } else {
       mappings = Object.keys((asset as Asset).contents).reduce<Asset['contents']>((acc, path) => {
-        acc[path] = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[path]}` as any
+        acc[path] = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[path]}`
         return acc
       }, {})
     }
