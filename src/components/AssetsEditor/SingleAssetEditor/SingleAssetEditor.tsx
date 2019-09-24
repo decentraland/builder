@@ -3,7 +3,6 @@ import { Field, TagField, SelectField, DropdownProps, Radio } from 'decentraland
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { rawMappingsToObjectURL, revokeMappingsObjectURL, isGround } from 'modules/asset/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
-import { isRemoteURL } from 'modules/media/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { RawAsset, Asset } from 'modules/asset/types'
 import { getModelData } from 'lib/getModelData'
@@ -67,8 +66,9 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
     const { asset } = this.props
 
     let mappings: Asset['contents'] | RawAsset['contents']
+    const contentValues = Object.values(asset.contents)
 
-    if (!isRemoteURL(asset.thumbnail)) {
+    if (typeof contentValues[0] !== 'string') {
       mappings = rawMappingsToObjectURL((asset as RawAsset).contents)
     } else {
       mappings = Object.keys((asset as Asset).contents).reduce<Asset['contents']>((acc, path) => {
