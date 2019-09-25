@@ -91,7 +91,7 @@ As you can see, the assets themselves are pointers to a location on the [content
 The Builder is capable of using multiple asset packs at the same time. A JSON file is used for easy discovery
 of the supported ones to be loaded by the application.
 Each of the asset-pack entries points to the corresponding asset-pack definition file and supports and
-thumbnail for display in the asset drawer.
+thumbnail for display in the asset drawer
 
 ```javascript
 {
