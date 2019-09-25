@@ -10,7 +10,7 @@ export default class AvatarFace extends React.PureComponent<Props> {
 
     let face
     if (user) {
-      const url = user.snapshots.face + '?updated_at=' + user.updatedAt
+      const url = user.avatar.snapshots.face + '?updated_at=' + user.updatedAt
       face = <img src={url} alt="" />
     } else {
       face = <div className="guest-face" />
