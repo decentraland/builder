@@ -1,12 +1,12 @@
 import React from 'react'
 import { env } from 'decentraland-commons'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
-import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
