@@ -1,6 +1,7 @@
 import React from 'react'
 import { env } from 'decentraland-commons'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
 import SidebarCard from '../SidebarCard'
@@ -10,10 +11,18 @@ import './AssetPackList.css'
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
 export default class AssetPackList extends React.PureComponent<Props> {
+  analytics = getAnalytics()
+
   handlePromoClick = () => {
     if (PROMO_URL) {
       window.open(`${PROMO_URL}?utm_source=builder&utm_campaign=catalog`)
     }
+  }
+
+  handleCreateAssetPack = () => {
+    const { onOpenModal } = this.props
+    this.analytics.track('Create Asset Pack Sidebar Bottom')
+    onOpenModal('CreateAssetPackModal')
   }
 
   render() {
@@ -21,12 +30,6 @@ export default class AssetPackList extends React.PureComponent<Props> {
 
     return (
       <div className="AssetPackList">
-        {
-          <div className="promo" onClick={this.handlePromoClick}>
-            <div className="icon" />
-            <T id="banners.promo_assetpack_banner" />
-          </div>
-        }
         {assetPacks.map(assetPack => (
           <SidebarCard
             key={assetPack.id}
@@ -38,6 +41,9 @@ export default class AssetPackList extends React.PureComponent<Props> {
             isNew={NEW_ASSET_PACK_IDS.includes(assetPack.id)}
           />
         ))}
+        <div className="create-asset-pack" onClick={this.handleCreateAssetPack}>
+          {t('asset_pack.new_asset_pack')}
+        </div>
       </div>
     )
   }

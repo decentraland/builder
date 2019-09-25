@@ -1,32 +1,30 @@
-.AssetPackList .promo {
-  background-color: var(--promo-banner-bg);
-  color: var(--promo-banner-text);
-  width: calc(var(--sidebar-width) - 32px);
-  height: 80px;
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  border-radius: 8px;
+.AssetPackList .create-asset-pack {
+  background-color: var(--modal);
+  padding: 13px;
+  text-align: center;
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  padding: 16px 20px 16px 0;
-  line-height: 20px;
-  user-select: none;
+  justify-content: center;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
 }
 
-.AssetPackList .promo .highlight {
-  color: white;
-  text-decoration: underline;
-}
-
-.AssetPackList .promo .icon {
-  background-image: url('../../../images/promo-assets.png');
+.AssetPackList .create-asset-pack:before {
+  content: '';
+  background: url(../../../images/add.svg);
   background-repeat: no-repeat;
-  background-size: contain;
-  width: 215px;
-  height: 100px;
-  margin-left: 10px;
-  margin-right: -130px;
   background-position: center;
-  flex: none;
+  background-size: cover;
+  width: 14px;
+  height: 14px;
+  filter: brightness(2);
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.AssetPackList .create-asset-pack:hover {
+  cursor: pointer;
+  background-color: rgba(var(--bluish-steel-raw), 0.72);
 }

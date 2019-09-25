@@ -1,5 +1,6 @@
 {
   "asset_pack": {
+    "new_asset_pack": "New Asset Pack",
     "title_create": "Create Asset Pack",
     "edit_asset": {
       "title_create": "Create Asset Pack",
@@ -101,7 +102,6 @@
     }
   },
   "banners": {
-    "promo_assetpack_banner": "Custom Asset Packs now available in Decentraland!",
     "promo_subtitle": "Custom Asset Packs now available in Decentraland!",
     "promo_title": "Personalise your world",
     "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
