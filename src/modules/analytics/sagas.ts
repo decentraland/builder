@@ -202,6 +202,7 @@ function handleLocationChange() {
 function* handleAuthSuccess(action: AuthSuccessAction) {
   const userId = action.payload.data.sub
   const ethAddress: string | undefined = yield select(getAddress)
+  const analytics = getAnalytics()
 
   if (!ethAddress) {
     analytics.identify(userId)

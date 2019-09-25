@@ -15,6 +15,7 @@ import Routes from 'routing'
 
 import './modules/analytics/track'
 import './modules/analytics/rollbar'
+import './modules/analytics/hotjar'
 import './themes'
 import './index.css'
 
