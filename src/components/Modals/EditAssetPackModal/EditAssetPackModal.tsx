@@ -20,7 +20,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     back: EditAssetPackView.EDIT_ASSET_PACK,
     assetPack: this.getRawAssetPack(),
     editingAsset: null,
-    ignoredAssets: this.getRemoteAssetIds()
+    ignoredAssets: this.getRemoteAssetIds(),
+    isDirty: false
   }
 
   analytics = getAnalytics()
@@ -71,17 +72,17 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
 
   handleAssetPackChange = (assetPack: MixedAssetPack) => {
     const { ignoredAssets } = this.state
-    this.setState({ assetPack, ignoredAssets: ignoredAssets.filter(id => assetPack.assets.some(asset => asset.id === id)) })
+    this.setState({ assetPack, ignoredAssets: ignoredAssets.filter(id => assetPack.assets.some(asset => asset.id === id)), isDirty: true })
   }
 
   handleAssetImportSubmit = (assetPack: MixedAssetPack) => {
     this.analytics.track('Edit Asset Pack Assets Review')
-    this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSETS })
+    this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSETS, isDirty: true })
   }
 
   handleAssetEditorSubmit = (assetPack: MixedAssetPack) => {
     this.analytics.track('Edit Asset Pack Review')
-    this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null })
+    this.setState({ assetPack, view: EditAssetPackView.EDIT_ASSET_PACK, editingAsset: null, isDirty: true })
   }
 
   handleAssetPackEditorSubmit = async (assetPack: MixedAssetPack) => {
@@ -128,7 +129,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
           thumbnail: assetPack.thumbnail,
           userId: assetPack.userId,
           assets: []
-        }
+        },
+        isDirty: true
       })
     }
   }
@@ -141,7 +143,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   }
 
   handleClose = () => {
-    const { view } = this.state
+    const { view, isDirty } = this.state
     const { onClose } = this.props
     switch (view) {
       case EditAssetPackView.SUCCESS:
@@ -150,7 +152,11 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
         break
       case EditAssetPackView.EDIT_ASSETS:
       case EditAssetPackView.EDIT_ASSET_PACK:
-        this.setState({ view: EditAssetPackView.EXIT, back: view })
+        if (isDirty) {
+          this.setState({ view: EditAssetPackView.EXIT, back: view })
+        } else {
+          onClose()
+        }
         break
       case EditAssetPackView.EXIT:
       case EditAssetPackView.PROGRESS:
