@@ -1,6 +1,6 @@
 import { env } from 'decentraland-commons'
 
-const HOTJAR_ID = env.get('REACT_APP_HOTJAR_ID')
+const HOTJAR_ID = parseInt(env.get('REACT_APP_HOTJAR_ID', ''), 10)
 
 if (!env.isDevelopment() && HOTJAR_ID) {
   const hotjarWindow = window as any
