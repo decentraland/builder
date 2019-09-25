@@ -27,6 +27,7 @@ export type State = {
   assetPack: MixedAssetPack
   editingAsset: string | null
   ignoredAssets: string[]
+  isDirty: boolean
 }
 
 export type Props = ModalProps & {
