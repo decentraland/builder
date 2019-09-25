@@ -1,5 +1,6 @@
 {
   "asset_pack": {
+    "default_name": "我的Asset Pack",
     "title_create": "创造Asset Pack",
     "new_asset_pack": "新的Asset Pack",
     "edit_asset": {
