@@ -34,7 +34,7 @@
       "description_create": "¡Genial! Ponle un nombre único a tu Asset Pack.",
       "action_create": "Crear Asset Pack",
       "title_edit": "Editar Asset Pack",
-      "description_edit": "¡Increíble! Elige un nombre para tu Asset Pack.",
+      "description_edit": "Elige un nombre para tu Asset Pack. Haz click en un Asset para editarlo.",
       "action_edit": "Guardar Asset Pack",
       "action_delete": "Eliminar Asset Pack",
       "action_add_items": "Agregar Assets",

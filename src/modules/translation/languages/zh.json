@@ -34,7 +34,7 @@
       "description_create": "真棒！输入Asset Pack的唯一名称",
       "action_create": "创造Asset Pack",
       "title_edit": "修改Asset Pack",
-      "description_edit": "真棒！ 输入您的唯一名称Asset Pack.",
+      "description_edit": "真棒！ 输入您的唯一名称Asset Pack. 单击资产进行编辑。",
       "action_edit": "救Asset Pack",
       "action_delete": "删除Asset Pack",
       "action_add_items": "加Assets",

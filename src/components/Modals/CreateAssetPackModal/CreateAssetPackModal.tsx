@@ -160,7 +160,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
       <>
         <ModalNavigation
           title={t('asset_pack.title_create')}
-          subtitle={t('asset_pack.edit_asset.description_create')}
+          subtitle={t('asset_pack.edit_assetpack.description_create')}
           onClose={this.handleClose}
         />
         <Modal.Content>

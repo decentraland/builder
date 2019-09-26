@@ -183,11 +183,10 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
             </div>
           )}
 
-          {!isEditing && (
-            <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
-              {isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip')}
-            </Button>
-          )}
+          <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
+            {isEditing && t('global.save')}
+            {!isEditing && (isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip'))}
+          </Button>
         </div>
       </div>
     )
