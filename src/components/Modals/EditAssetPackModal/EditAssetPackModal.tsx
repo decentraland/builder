@@ -214,8 +214,8 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
     return (
       <>
         <ModalNavigation
-          title={t('asset_pack.edit_asset.title_edit')}
-          subtitle={t('asset_pack.edit_asset.description_edit')}
+          title={t('asset_pack.edit_assetpack.title_edit')}
+          subtitle={t('asset_pack.edit_assetpack.description_edit')}
           onClose={this.handleClose}
         />
         <Modal.Content>

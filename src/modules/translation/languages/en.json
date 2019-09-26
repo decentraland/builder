@@ -33,7 +33,7 @@
       "description_create": "Awesome! Enter a unique name for your Asset Pack.",
       "action_create": "Create Asset Pack",
       "title_edit": "Edit Asset Pack",
-      "description_edit": "Awesome! Enter a unique name for your Asset Pack.",
+      "description_edit": "Enter a unique name for your Asset Pack. Click on an Asset to edit it.",
       "action_edit": "Save Asset Pack",
       "action_delete": "Delete Asset Pack",
       "action_add_items": "Add Assets",

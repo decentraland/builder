@@ -3,15 +3,15 @@
   width: 80px;
 }
 
+.AssetThumbnail.clickable {
+  cursor: pointer;
+}
+
 .AssetThumbnail .wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.AssetThumbnail .clickable {
-  cursor: pointer;
 }
 
 .AssetThumbnail .close-button {
