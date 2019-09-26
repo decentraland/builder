@@ -259,7 +259,8 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions"
+    "terms_and_conditions": "Terms & Conditions",
+    "new_scene": "New scene"
   },
   "home_page": {
     "import_scene": "Import Scene",

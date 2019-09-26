@@ -254,7 +254,8 @@
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
-    "terms_and_conditions": "使用条款"
+    "terms_and_conditions": "使用条款",
+    "new_scene": "新场景"
   },
   "home_page": {
     "import_scene": "上传场景",
