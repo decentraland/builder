@@ -29,7 +29,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     let name = defaultName
     let suffix = 2
     while (assetPacks.some(assetPack => assetPack.title === name)) {
-      name = `${defaultName} (${suffix})`
+      name = t('asset_pack.default_name_suffix', { suffix })
       suffix++
     }
     return name
