@@ -1,5 +1,7 @@
 {
   "asset_pack": {
+    "default_name": "My Asset Pack",
+    "default_name_suffix": "My Asset Pack ({suffix})",
     "new_asset_pack": "New Asset Pack",
     "title_create": "Create Asset Pack",
     "edit_asset": {

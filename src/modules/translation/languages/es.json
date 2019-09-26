@@ -1,5 +1,7 @@
 {
   "asset_pack": {
+    "default_name": "Mi Asset Pack",
+    "default_name_suffix": "Mi Asset Pack ({suffix})",
     "title_create": "Crear Asset Pack",
     "new_asset_pack": "Nuevo Asset Pack",
     "edit_asset": {
