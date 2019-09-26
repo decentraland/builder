@@ -16,6 +16,12 @@ import './ItemDrawer.css'
 export default class ItemDrawer extends React.PureComponent<Props, State> {
   drawerContainer: HTMLElement | null = null
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.selectedAssetPack !== nextProps.selectedAssetPack && !nextProps.isConnected) {
+      this.props.onConnect()
+    }
+  }
+
   handleResetScroll() {
     if (this.drawerContainer) {
       this.drawerContainer.scrollTop = 0
@@ -49,21 +55,25 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
+  isViewingCollectibles(props = this.props) {
+    const { search, selectedAssetPack, isLoadingAssets } = props
+    return selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID && !isLoadingAssets && !search
+  }
+
   render() {
-    const { search, selectedAssetPack, isLoadingAssets, isConnected } = this.props
-    const isViewingCollectibles =
-      selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID && isConnected && !isLoadingAssets && !search
+    const { isConnected } = this.props
     return (
       <div className="ItemDrawer">
         <SidebarHeader />
         <SidebarSearch onResetScroll={this.handleResetScroll} />
         <div ref={this.setDrawerContainer} className="overflow-container">
           {this.renderList()}
-          {isViewingCollectibles && (
-            <span className="disclaimer">
-              <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
-            </span>
-          )}
+          {this.isViewingCollectibles() &&
+            isConnected && (
+              <span className="disclaimer">
+                <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
+              </span>
+            )}
         </div>
       </div>
     )

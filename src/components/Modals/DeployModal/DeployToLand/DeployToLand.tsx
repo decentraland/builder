@@ -20,6 +20,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.props.onRecord()
+    this.props.onConnect()
   }
 
   componentWillReceiveProps(props: Props) {
@@ -102,7 +103,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   handleConnect = () => {
-    this.props.onConnect!()
+    this.props.onConnect()
   }
 
   handleConfirmPlacement = (placement: State['placement']) => {
