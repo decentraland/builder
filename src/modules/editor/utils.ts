@@ -2,6 +2,7 @@ import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { Vector3 } from 'modules/common/types'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -80,4 +81,22 @@ export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight
     }
     img.src = screenshot
   })
+}
+
+export function snapScale(scale: Vector3): Vector3 {
+  const newScale = { x: 0, y: 0, z: 0 }
+
+  if (scale.x === 0) {
+    newScale.x = 0.001
+  }
+
+  if (scale.y === 0) {
+    newScale.y = 0.001
+  }
+
+  if (scale.z === 0) {
+    newScale.z = 0.001
+  }
+
+  return newScale
 }

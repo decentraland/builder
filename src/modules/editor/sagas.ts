@@ -68,7 +68,7 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
-import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
+import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, snapScale } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
 
 const editorWindow = window as EditorWindow
@@ -192,8 +192,10 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
     position = snapToBounds(args.transform.position, bounds)
   }
 
+  const scale = snapScale(args.transform.scale)
+
   if (transform) {
-    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale: args.transform.scale }))
+    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale }))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
