@@ -74,7 +74,7 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
 
     const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
     const onProgress = handleAssetContentsUploadProgress(updatableAssets.length)
-    const uploadEffects = updatableAssets.map(asset => call(() => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress)))
+    const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress))
 
     if (uploadEffects.length > 0) {
       yield all(uploadEffects)
