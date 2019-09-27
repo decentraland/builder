@@ -164,10 +164,6 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
 
     let paginationClasses = 'pagination'
 
-    if (isEditing) {
-      paginationClasses += ' expanded'
-    }
-
     return (
       <div className="AssetsEditor">
         <SingleAssetEditor asset={asset} onChange={this.handleChange} errors={currentAssetError} />
@@ -183,7 +179,7 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
             </div>
           )}
 
-          <Button className="submit" primary={isLast} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
+          <Button className="submit" primary={isLast || isEditing} disabled={isSubmitDisabled} onClick={this.handleSubmit}>
             {isEditing && t('global.save')}
             {!isEditing && (isLast ? t('asset_pack.edit_asset.action') : t('asset_pack.edit_asset.action_skip'))}
           </Button>

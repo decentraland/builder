@@ -14,11 +14,6 @@
   user-select: none;
 }
 
-.AssetsEditor .pagination.expanded {
-  width: 100%;
-  justify-content: space-between;
-}
-
 .AssetsEditor .pagination .current {
   font-size: 12px;
   display: block;

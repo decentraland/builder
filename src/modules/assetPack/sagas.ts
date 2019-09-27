@@ -22,7 +22,7 @@ import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
 import { fixAssetMappings } from 'modules/scene/actions'
 import { isRemoteURL } from 'modules/media/utils'
-import { selectAssetPack } from 'modules/ui/sidebar/actions'
+import { selectAssetPack, selectCategory } from 'modules/ui/sidebar/actions'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -73,10 +73,8 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
 
     const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
-    const uploadEffects = updatableAssets.flatMap(asset => [
-      call(() => builder.saveAssetContents(asset, contents[asset.id])),
-      call(handleAssetContentsUploadProgress(updatableAssets.length))
-    ])
+    const onProgress = handleAssetContentsUploadProgress(updatableAssets.length)
+    const uploadEffects = updatableAssets.map(asset => call(() => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress)))
 
     if (uploadEffects.length > 0) {
       yield all(uploadEffects)
@@ -99,6 +97,7 @@ function* handleDeleteAssetPack(action: DeleteAssetPackRequestAction) {
     yield call(() => builder.deleteAssetPack(assetPack))
     yield put(deleteAssetPackSuccess(assetPack))
     yield put(selectAssetPack(null))
+    yield put(selectCategory(null))
   } catch (e) {
     yield put(deleteAssetPackFailure(assetPack, e.message))
   }
