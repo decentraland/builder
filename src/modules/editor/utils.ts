@@ -84,19 +84,9 @@ export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight
 }
 
 export function snapScale(scale: Vector3): Vector3 {
-  const newScale = { ...scale }
-
-  if (scale.x === 0) {
-    newScale.x = 0.001
+  return {
+    x: scale.x === 0 ? 0.001 : scale.x,
+    y: scale.y === 0 ? 0.001 : scale.y,
+    z: scale.z === 0 ? 0.001 : scale.z
   }
-
-  if (scale.y === 0) {
-    newScale.y = 0.001
-  }
-
-  if (scale.z === 0) {
-    newScale.z = 0.001
-  }
-
-  return newScale
 }
