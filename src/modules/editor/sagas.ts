@@ -68,8 +68,17 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
-import { getNewEditorScene, resizeScreenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from './utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
+import {
+  getNewEditorScene,
+  resizeScreenshot,
+  THUMBNAIL_WIDTH,
+  THUMBNAIL_HEIGHT,
+  snapScale,
+  POSITION_GRID_RESOLUTION,
+  SCALE_GRID_RESOLUTION,
+  ROTATION_GRID_RESOLUTION
+} from './utils'
 
 const editorWindow = window as EditorWindow
 
@@ -192,8 +201,10 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
     position = snapToBounds(args.transform.position, bounds)
   }
 
+  const scale = snapScale(args.transform.scale)
+
   if (transform) {
-    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale: args.transform.scale }))
+    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale }))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
@@ -405,7 +416,7 @@ function* handleSelectEntity(action: SelectEntityAction) {
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   yield call(() => {
     if (action.payload.enabled) {
-      editorWindow.editor.setGridResolution(0.5, 0.5, Math.PI / 16)
+      editorWindow.editor.setGridResolution(POSITION_GRID_RESOLUTION, SCALE_GRID_RESOLUTION, ROTATION_GRID_RESOLUTION)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
     }

@@ -2,11 +2,16 @@ import { EditorScene } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { Vector3 } from 'modules/common/types'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
 export const THUMBNAIL_WIDTH = 984
 export const THUMBNAIL_HEIGHT = 728
+export const POSITION_GRID_RESOLUTION = 0.5
+export const ROTATION_GRID_RESOLUTION = Math.PI / 16
+export const SCALE_GRID_RESOLUTION = 0.5
+export const SCALE_MIN_LIMIT = 0.001
 
 export function getNewEditorScene(project: Project): EditorScene {
   const mappings = {
@@ -80,4 +85,12 @@ export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight
     }
     img.src = screenshot
   })
+}
+
+export function snapScale(scale: Vector3): Vector3 {
+  return {
+    x: scale.x === 0 ? SCALE_MIN_LIMIT : scale.x,
+    y: scale.y === 0 ? SCALE_MIN_LIMIT : scale.y,
+    z: scale.z === 0 ? SCALE_MIN_LIMIT : scale.z
+  }
 }
