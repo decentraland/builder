@@ -176,11 +176,11 @@ export default class ImportModal extends React.PureComponent<Props, State> {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={this.handleImport} disabled={!canImport || this.hasCorruptedProjects()}>
-            {acceptedProjects.length > 1 ? t('import_modal.action_many', { count: acceptedProjects.length }) : t('import_modal.action')}
-          </Button>
           <Button secondary onClick={onClose}>
             {t('global.cancel')}
+          </Button>
+          <Button primary onClick={this.handleImport} disabled={!canImport || this.hasCorruptedProjects()}>
+            {acceptedProjects.length > 1 ? t('import_modal.action_many', { count: acceptedProjects.length }) : t('import_modal.action')}
           </Button>
         </Modal.Actions>
       </Modal>

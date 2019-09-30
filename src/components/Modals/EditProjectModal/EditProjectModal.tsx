@@ -88,11 +88,11 @@ export default class EditProjectModal extends React.PureComponent<Props, State> 
             <div className="error">{deploymentStatus !== DeploymentStatus.UNPUBLISHED && t('edit_project_modal.unpublish_needed')}</div>
           </Modal.Content>
           <Modal.Actions>
-            <Button primary disabled={isSubmitDisabled}>
-              {t('global.save')}
-            </Button>
             <Button secondary onClick={onClose}>
               {t('global.cancel')}
+            </Button>
+            <Button primary disabled={isSubmitDisabled}>
+              {t('global.save')}
             </Button>
           </Modal.Actions>
         </Form>

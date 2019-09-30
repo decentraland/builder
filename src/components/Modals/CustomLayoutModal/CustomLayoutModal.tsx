@@ -41,11 +41,11 @@ export default class CustomLayoutModal extends React.PureComponent<Props, State>
           <ProjectLayoutPicker rows={rows} cols={cols} onChange={this.handleLayoutChange} showGrid />
         </Modal.Content>
         <Modal.Actions>
-          <Button primary disabled={hasError} onClick={this.handleCreate}>
-            {t('global.create')}
-          </Button>
           <Button secondary onClick={onClose}>
             {t('global.cancel')}
+          </Button>
+          <Button primary disabled={hasError} onClick={this.handleCreate}>
+            {t('global.create')}
           </Button>
         </Modal.Actions>
       </Modal>
