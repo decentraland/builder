@@ -59,7 +59,7 @@
       "description_edit": "向您添加更多项目Asset Pack",
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
-      "cta": "将Asset的GLB，GLTF或ZIP文件拖到此处，或{action}",
+      "cta": "将Asset的{models_link}文件拖到此处，或{action}",
       "errors": {
         "invalid": "无效资产",
         "duplicated": "重复资产",

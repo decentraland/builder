@@ -59,7 +59,7 @@
       "description_edit": "Añade algunos assets más a tu pack",
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
-      "cta": "Arrastra el archivo GLB, GLTF o ZIP de tu Asset aquí, o {action}",
+      "cta": "Arrastra el archivo {models_link} de tu Asset aquí, o {action}",
       "errors": {
         "invalid": "Asset inválido",
         "duplicated": "Asset duplicado",
