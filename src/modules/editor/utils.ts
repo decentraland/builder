@@ -8,6 +8,10 @@ const script = require('raw-loader!../../ecsScene/scene.js')
 
 export const THUMBNAIL_WIDTH = 984
 export const THUMBNAIL_HEIGHT = 728
+export const POSITION_GRID_RESOLUTION = 0.5
+export const ROTATION_GRID_RESOLUTION = Math.PI / 16
+export const SCALE_GRID_RESOLUTION = 0.5
+export const SCALE_MIN_LIMIT = 0.001
 
 export function getNewEditorScene(project: Project): EditorScene {
   const mappings = {
@@ -85,8 +89,8 @@ export function resizeScreenshot(screenshot: string, maxWidth: number, maxHeight
 
 export function snapScale(scale: Vector3): Vector3 {
   return {
-    x: scale.x === 0 ? 0.001 : scale.x,
-    y: scale.y === 0 ? 0.001 : scale.y,
-    z: scale.z === 0 ? 0.001 : scale.z
+    x: scale.x === 0 ? SCALE_MIN_LIMIT : scale.x,
+    y: scale.y === 0 ? SCALE_MIN_LIMIT : scale.y,
+    z: scale.z === 0 ? SCALE_MIN_LIMIT : scale.z
   }
 }
