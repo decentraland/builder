@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { ConnectWalletRequestAction, connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Category } from 'modules/ui/sidebar/types'
 import { AssetPack } from 'modules/assetPack/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
@@ -13,14 +14,15 @@ export type Props = {
   isConnected: boolean
   collectibles: DataByKey<Asset>
   isLoadingAssets: boolean
+  onConnect: typeof connectWalletRequest
 }
 
 export type MapStateProps = Pick<
   Props,
   'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList' | 'isConnected' | 'isLoadingAssets' | 'collectibles'
 >
-export type MapDispatchProps = {}
-export type MapDispatch = Dispatch
+export type MapDispatchProps = Pick<Props, 'onConnect'>
+export type MapDispatch = Dispatch<ConnectWalletRequestAction>
 
 export type State = {
   search: string
