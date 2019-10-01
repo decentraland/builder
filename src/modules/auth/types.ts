@@ -16,26 +16,23 @@ export type AuthData = {
 }
 
 export type User = {
-  email: string
-  profile: {
-    avatar: {
-      bodyShape: string
-      eyes: { color: Color }
-      hair: { color: Color }
-      skin: { color: Color }
-      version: number
-      wearables: string[]
+  avatar: {
+    bodyShape: string
+    eyes: { color: Color }
+    hair: { color: Color }
+    skin: { color: Color }
+    version: number
+    wearables: string[]
+    snapshots: {
+      body: string
+      face: string
     }
-    created_at: number
-    description: string
-    name: string
   }
-  snapshots: {
-    body: string
-    face: string
-  }
+  name: string
+  description: string
+  createdAt: number
   updatedAt: number
-  userId: string
+  version: number
 }
 
 export type Color = {

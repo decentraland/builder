@@ -1,9 +1,8 @@
-import { RawAssetPack } from 'modules/assetPack/types'
 import { RawAsset } from 'modules/asset/types'
 
-export type Props = {
-  assetPack: RawAssetPack
-  onSubmit(assetPack: RawAssetPack): void
+export type Props<T> = {
+  assetPack: T
+  onSubmit(assetPack: T): void
 }
 
 export type State = {

@@ -1,18 +1,21 @@
 {
   "asset_pack": {
+    "default_name": "Mi Asset Pack",
+    "default_name_suffix": "Mi Asset Pack ({suffix})",
     "title_create": "Crear Asset Pack",
+    "new_asset_pack": "Nuevo Asset Pack",
     "edit_asset": {
-      "description_create": "Revisa tus modelos, agrega tags y otras cosas.",
+      "description_create": "Revisa tus assets, agrega etiquetas y más",
       "title_edit": "Editar Asset Pack",
-      "description_edit": "Revise sus artículos, agregue etiquetas y más cosas.",
+      "description_edit": "Revisa tus assets, agrega etiquetas y más",
       "action": "Continuar",
-      "action_skip": "Saltar paso",
+      "action_skip": "Saltar revisión",
       "category": {
         "label": "categoría"
       },
       "errors": {
-        "max_name_length": "El nombre del Asset sólo puede contener un máximo de {count} caracteres",
-        "min_name_length": "El nombre del Asset debe contener al menos {count} caracteres",
+        "max_name_length": "El nombre del asset sólo puede contener un máximo de {count} caracteres",
+        "min_name_length": "El nombre del asset debe contener al menos {count} caracteres",
         "tag_count": "Sólo puedes especificar un máximo de {count} etiquetas"
       },
       "ground": {
@@ -28,20 +31,20 @@
       }
     },
     "edit_assetpack": {
-      "description_create": "Genial! Ponle un nombre único a tu Asset Pack.",
+      "description_create": "¡Genial! Ponle un nombre único a tu Asset Pack.",
       "action_create": "Crear Asset Pack",
       "title_edit": "Editar Asset Pack",
-      "description_edit": "¡Increíble! Elige un nombre para tu Asset Pack.",
-      "action_edit": "Editar Asset Pack",
+      "description_edit": "Elige un nombre para tu Asset Pack. Haz click en un Asset para editarlo.",
+      "action_edit": "Guardar Asset Pack",
       "action_delete": "Eliminar Asset Pack",
-      "action_add_items": "Agregar items",
+      "action_add_items": "Agregar Assets",
       "errors": {
         "max_title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
         "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
         "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
       },
       "items": {
-        "empty": "No hay Assets en este Asset Pack",
+        "empty": "Este Asset Pack se encuentra vacío",
         "label": "{count} {count, plural, one {Asset} other {Assets}}"
       },
       "name": {
@@ -51,12 +54,12 @@
       "reset": "Agregar nuevos Assets"
     },
     "import": {
-      "description_create": "Comienza añadiendo tus modelos.",
+      "description_create": "Comienza añadiendo algunos assets a tu pack",
       "title_edit": "Editar Asset Pack",
-      "description_edit": "Start by adding items to your pack.",
+      "description_edit": "Añade algunos assets más a tu pack",
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
-      "cta": "Arrastra el archivo .zip de tu Asset aquí, o {action}",
+      "cta": "Arrastra el archivo GLB, GLTF o ZIP de tu Asset aquí, o {action}",
       "errors": {
         "invalid": "Asset inválido",
         "duplicated": "Asset duplicado",
@@ -74,7 +77,7 @@
     },
     "success": {
       "continue": "Continuar trabajando",
-      "description": "Tu Asset Pack fue subido exitosamente. Visita el Listado de objetos para comenzar a usarlo.",
+      "description": "Tu Asset Pack fue subido exitosamente. Visita el listado de Asset Packs para comenzar a usarlo.",
       "title": "¡Todo listo!"
     },
     "login": {
@@ -99,10 +102,11 @@
     }
   },
   "banners": {
-    "promo_assetpack_banner": "Con el Sci-fi Pack comienza tu exploración cósmica!",
-    "promo_body": "Con el Sci-fi Pack podrás comenzar tu exploración cósmica!",
-    "promo_subtitle": "Donde se construye el futuro!",
-    "promo_title": "Decentraland"
+    "promo_subtitle": "¡Tus Asset Packs personales ahora disponibles en Decentraland!",
+    "promo_title": "Personaliza tu mundo",
+    "top_banner_left": "Septiembre 16-30 - Súmate a la creación con más de $250k USD en premios para compartir.",
+    "top_banner_action": "Descubre más.",
+    "top_banner_right": " "
   },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
@@ -121,11 +125,11 @@
       },
       "success": {
         "continue": "OK",
-        "description": "La LAND ya esta despejada y lista para publicar una nueva Escena!",
-        "title": "¡Todo despejado!"
+        "description": "¡La LAND ya esta despejada y lista para publicar una nueva Escena!",
+        "title": "¡Todo listo!"
       }
     },
-    "description": "Sube to Escena a tu LAND o aplica por un permiso para que los Landowners lo hagan por tí.",
+    "description": "Sube to Escena a tu LAND o aplica por un permiso para que dueños de LAND lo hagan por tí.",
     "land": {
       "confirmation": {
         "action": "Publicar",
@@ -173,14 +177,14 @@
       "success": {
         "back_home": "Volver al Dashboard",
         "continue": "Continuar trabajando",
-        "description": "Tu Escena ahora esta publicada!",
+        "description": "¡Tu Escena ha sido publicada!",
         "title": "¡Listo!"
       },
       "title": "Publicar Escena"
     },
     "option_land": {
       "action": "Publicar a LAND",
-      "description": "Publica tu Escena en tu Land o Estate.",
+      "description": "Publica tu Escena en tu LAND o Estate.",
       "title": "Mi LAND"
     },
     "option_pool": {
@@ -191,7 +195,7 @@
     "pool": {
       "action": "Enviar",
       "contact_information": "Información de contacto",
-      "i_accept_the": "Al clikear sobre \"enviar\" aceptas recibir noticias de Decentraland",
+      "i_accept_the": "Al hacer click sobre \"enviar\" aceptas recibir noticias de Decentraland",
       "progress": "Procesando",
       "sign_in": {
         "action": "Iniciar Sesión",
@@ -211,7 +215,7 @@
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la Escena",
-    "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la esta"
+    "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
   "error_page": {
     "or": "o intentar",
@@ -253,7 +257,8 @@
     "sign_up": "Suscribirse",
     "submit": "Enviar",
     "subscribe": "Subscribirse",
-    "terms_and_conditions": "Términos y Condiciones"
+    "terms_and_conditions": "Términos y Condiciones",
+    "new_scene": "Nueva escena"
   },
   "home_page": {
     "import_scene": "Cargar Escena",
@@ -291,7 +296,7 @@
     "no_results": "Sin resultados",
     "results": "Resultados",
     "search": "Buscar objetos",
-    "title": "Listado de objetos",
+    "title": "Asset Packs",
     "edit_asset_pack": "Editar"
   },
   "layout_picker": {
@@ -312,7 +317,7 @@
     "gallery_title": "Esto es lo que se está costruyendo",
     "learn_more": "Aprende más acerca del Builder",
     "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
-    "reminder_body": "Ey!\n\nAl parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland",
+    "reminder_body": "¡Ey!\n\n¡Al parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland",
     "reminder_subject": "Recordatorio: Probar el Builder de Decentraland",
     "secondary_hero": {
       "action": "Enviar recordatorio",
@@ -346,7 +351,7 @@
   "quota_exceeded_modal": {
     "retry": {
       "description": "No hemos podido guardar tu trabajo",
-      "title": "On no!"
+      "title": "¡Oh no!"
     },
     "sign_in": {
       "description": "Te has quedado sin espacio de almacenamiento local, inicia sesion para continuar",
@@ -385,7 +390,7 @@
     "loading": "Guardando...",
     "retry": "Reintentar",
     "sign_in": "Inicia sesión para guardar tus Escenas en la nube",
-    "success": "Escenas guardadas exitosamente!"
+    "success": "¡Escenas guardadas exitosamente!"
   },
   "templates": {
     "big": "Grande (2x3)",
@@ -398,14 +403,14 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la Nube!",
+    "localstorage": "Las Escenas se guardan en tu navegador. ¡{sign_in} para subirlas a la nube!",
     "localstorage_sign_in": "Inicia sesión"
   },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
     "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
     "publish": "Publicar",
-    "up_to_date": "Al día!{br}Todos los cambios están actualizados",
+    "up_to_date": "¡Al día!{br}Todos los cambios están actualizados",
     "update_scene": "Actualizar Escena"
   },
   "tutorial_modal": {
@@ -435,7 +440,7 @@
   "unsupported_browser_page": {
     "back": "Volver a tus Escenas",
     "subtitle": "El Builder no es compatible con tu navegador.{br}Visita esta página usando {chrome} o {firefox}",
-    "title": "Oops!"
+    "title": "¡Oops!"
   },
   "user_menu": {
     "guest": "Invitado",

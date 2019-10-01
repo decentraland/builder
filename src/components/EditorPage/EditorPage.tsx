@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
+import experiments, { EXPERIMENT_TUTORIAL_OPEN } from 'experiments'
 
 import NotFoundPage from 'components/NotFoundPage'
 import LoadingPage from 'components/LoadingPage'
@@ -25,10 +26,11 @@ const localStorage = getLocalStorage()
 export default class EditorPage extends React.PureComponent<Props, State> {
   componentWillMount() {
     const { currentProject, onLoadAssetPacks, onOpenModal } = this.props
+    const showTutorial = experiments.getCurrentValueFor(EXPERIMENT_TUTORIAL_OPEN, true)
 
     onLoadAssetPacks()
 
-    if (currentProject && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
+    if (currentProject && showTutorial && !localStorage.getItem(LOCALSTORAGE_TUTORIAL_KEY)) {
       onOpenModal('TutorialModal')
     }
 

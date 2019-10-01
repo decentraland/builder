@@ -21,8 +21,8 @@ import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
 import { fixAssetMappings } from 'modules/scene/actions'
-import { isDataUrl } from 'modules/media/utils'
-import { selectAssetPack } from 'modules/ui/sidebar/actions'
+import { isRemoteURL } from 'modules/media/utils'
+import { selectAssetPack, selectCategory } from 'modules/ui/sidebar/actions'
 
 export function* assetPackSaga() {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
@@ -57,7 +57,6 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
 
 function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
   const { assetPack, contents } = action.payload
-  const total = assetPack.assets.length
 
   try {
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
@@ -65,20 +64,26 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
 
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
 
-    if (isDataUrl(assetPack.thumbnail)) {
+    if (!isRemoteURL(assetPack.thumbnail)) {
       yield call(() => builder.saveAssetPackThumbnail(assetPack))
     }
 
     yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
 
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
-    yield all(
-      assetPack.assets.flatMap(asset => [
-        call(() => builder.saveAssetContents(asset, contents[asset.id])),
-        call(handleAssetContentsUploadProgress(total))
-      ])
-    )
+
+    const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
+    const onProgress = handleAssetContentsUploadProgress(updatableAssets.length)
+    const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress))
+
+    if (uploadEffects.length > 0) {
+      yield all(uploadEffects)
+    } else {
+      yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 100))
+    }
+
     yield put(saveAssetPackSuccess(assetPack))
+    yield put(setProgress(ProgressStage.NONE, 0))
     yield put(loadAssetPacksRequest())
   } catch (e) {
     yield put(saveAssetPackFailure(assetPack, e.message))
@@ -92,6 +97,7 @@ function* handleDeleteAssetPack(action: DeleteAssetPackRequestAction) {
     yield call(() => builder.deleteAssetPack(assetPack))
     yield put(deleteAssetPackSuccess(assetPack))
     yield put(selectAssetPack(null))
+    yield put(selectCategory(null))
   } catch (e) {
     yield put(deleteAssetPackFailure(assetPack, e.message))
   }

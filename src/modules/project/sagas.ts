@@ -40,11 +40,13 @@ import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
+import { isRemoteURL } from 'modules/media/utils'
 import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 import { builder } from 'lib/api/builder'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -97,7 +99,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   const project: Project = {
     id: uuidv4(),
-    title: 'New scene', // TODO translate this into different languages
+    title: t('global.new_scene'),
     description: '',
     thumbnail: '',
     layout: {
@@ -126,7 +128,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
   let thumbnail = project.thumbnail
 
-  if (thumbnail && thumbnail.startsWith('http')) {
+  if (thumbnail && isRemoteURL(thumbnail)) {
     thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
   }
 

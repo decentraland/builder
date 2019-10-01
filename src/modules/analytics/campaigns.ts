@@ -1,3 +1,3 @@
 export const Campaign = {
-  AVATARS: 'avatars'
+  profile: 'avatars'
 }

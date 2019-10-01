@@ -44,22 +44,6 @@
     </style>
 
     <title>Builder | Decentraland</title>
-    <!-- Hotjar Tracking Code for https://builder.decentraland.org -->
-    <script>
-      ;(function(h, o, t, j, a, r) {
-        h.hj =
-          h.hj ||
-          function() {
-            ;(h.hj.q = h.hj.q || []).push(arguments)
-          }
-        h._hjSettings = { hjid: 1466496, hjsv: 6 }
-        a = o.getElementsByTagName('head')[0]
-        r = o.createElement('script')
-        r.async = 1
-        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv
-        a.appendChild(r)
-      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=')
-    </script>
   </head>
   <body class="dcl-loading">
     <div id="overlay"></div>
@@ -68,43 +52,11 @@
     </div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <!-- Segment -->
     <script>
       // prettier-ignore
       !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";}}();
-    </script>
-    <script type="text/javascript">
-      window.initDelighted = function(e, t, r, n, a) {
-        if (!e[a]) {
-          for (var i = (e[a] = []), s = 0; s < r.length; s++) {
-            var c = r[s]
-            i[c] =
-              i[c] ||
-              (function(e) {
-                return function() {
-                  var t = Array.prototype.slice.call(arguments)
-                  i.push([e, t])
-                }
-              })(c)
-          }
-          i.SNIPPET_VERSION = '1.0.1'
-          var o = t.createElement('script')
-          ;(o.type = 'text/javascript'),
-            (o.async = !0),
-            (o.src = 'https://d2yyd1h5u9mauk.cloudfront.net/integrations/web/v1/library/' + n + '/' + a + '.js')
-          var p = t.getElementsByTagName('script')[0]
-          p.parentNode.insertBefore(o, p)
-        }
-      }
     </script>
     <script src="%PUBLIC_URL%/editor.js"></script>
     <script src="%PUBLIC_URL%/UnityLoader.js"></script>

@@ -1,18 +1,21 @@
 import * as React from 'react'
 import { Field, Header, Button, Icon as SemanticIcon } from 'decentraland-ui'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { MAX_TITLE_LENGTH, MAX_THUMBNAIL_SIZE, MIN_TITLE_LENGTH } from 'modules/assetPack/utils'
-import { RawAssetPack } from 'modules/assetPack/types'
-import { RawAsset } from 'modules/asset/types'
+import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { isGround } from 'modules/asset/utils'
+import { isRemoteURL } from 'modules/media/utils'
 import AssetThumbnail from 'components/AssetThumbnail'
 import Icon from 'components/Icon'
 
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
 
-export default class AseetPackEditor extends React.PureComponent<Props, State> {
+export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
+
+  analytics = getAnalytics()
 
   state: State = {
     errors: {},
@@ -23,25 +26,25 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
     const { assetPack, onChange } = this.props
 
     if (!assetPack.thumbnail) {
-      let asset: RawAsset | null = null
+      let thumb: string | null = null
 
       if (assetPack.assets.length) {
         const foundAsset = assetPack.assets.find(asset => !isGround(asset))
         if (foundAsset) {
-          asset = foundAsset
+          thumb = foundAsset.thumbnail
         } else {
-          asset = assetPack.assets[0]
+          thumb = assetPack.assets[0].thumbnail
         }
       }
 
       onChange({
         ...assetPack,
-        thumbnail: asset ? asset.thumbnail : ''
+        thumbnail: thumb || ''
       })
     }
   }
 
-  getErrors = (assetPack: RawAssetPack) => {
+  getErrors = (assetPack: T) => {
     const newErrors: Record<string, string> = {}
 
     if (assetPack.title.length > MAX_TITLE_LENGTH) {
@@ -63,6 +66,10 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
 
   handleRemove = (id: string) => {
     const { assetPack, onChange } = this.props
+
+    this.analytics.track('Asset Pack Editor Remove Asset', {
+      assetId: id
+    })
 
     onChange({
       ...assetPack,
@@ -98,6 +105,8 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
         return
       }
       const url = URL.createObjectURL(file)
+
+      this.analytics.track('Asset Pack Editor Change Thumbnail')
 
       onChange({
         ...assetPack,
@@ -143,9 +152,12 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
     }
   }
 
-  handleEditAsset = (asset: RawAsset) => {
+  handleEditAsset = (asset: T['assets'][number]) => {
     const { onEditAsset } = this.props
     if (onEditAsset) {
+      this.analytics.track('Asset Pack Editor Edit Asset', {
+        asset
+      })
       onEditAsset(asset)
     }
   }
@@ -184,11 +196,17 @@ export default class AseetPackEditor extends React.PureComponent<Props, State> {
     const hasErrors = Object.keys(errors).length > 0
     const isSubmitDisabled = isDirty ? hasErrors || items === 0 : false
 
+    let thumbnail = assetPack.thumbnail
+
+    if (thumbnail && isRemoteURL(thumbnail)) {
+      thumbnail = `${assetPack.thumbnail}?updated_at=${assetPack.updatedAt || +Date.now()}`
+    }
+
     return (
       <div className="AssetPackEditor">
         <div className="assetpack">
           <div className="thumbnail">
-            {assetPack.thumbnail && <img src={assetPack.thumbnail} />}
+            {assetPack.thumbnail && <img src={thumbnail} />}
             <Icon name="camera" onClick={this.handleOpenFileDialog} />
             <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnail} accept="image/png, image/jpeg" />
           </div>

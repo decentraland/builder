@@ -1,13 +1,16 @@
 {
   "asset_pack": {
+    "default_name": "My Asset Pack",
+    "default_name_suffix": "My Asset Pack ({suffix})",
+    "new_asset_pack": "New Asset Pack",
     "title_create": "Create Asset Pack",
     "edit_asset": {
       "title_create": "Create Asset Pack",
-      "description_create": "Review your items, add tags and more stuff.",
+      "description_create": "Review your assets, add tags and more",
       "title_edit": "Edit Asset Pack",
-      "description_edit": "Review your items, add tags and more stuff.",
+      "description_edit": "Review your assets, add tags and more",
       "action": "Continue",
-      "action_skip": "Skip step",
+      "action_skip": "Skip review",
       "category": {
         "label": "category"
       },
@@ -32,17 +35,17 @@
       "description_create": "Awesome! Enter a unique name for your Asset Pack.",
       "action_create": "Create Asset Pack",
       "title_edit": "Edit Asset Pack",
-      "description_edit": "Awesome! Enter a unique name for your Asset Pack.",
-      "action_edit": "Edit Asset Pack",
+      "description_edit": "Enter a unique name for your Asset Pack. Click on an Asset to edit it.",
+      "action_edit": "Save Asset Pack",
       "action_delete": "Delete Asset Pack",
-      "action_add_items": "Add items",
+      "action_add_items": "Add Assets",
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
         "thumbnail_size": "Image file size must be less than {count} bytes"
       },
       "items": {
-        "empty": "There are not Assets in this Asset Pack",
+        "empty": "This Asset Pack is empty",
         "label": "{count} {count, plural, one {Asset} other {Assets}}"
       },
       "name": {
@@ -53,12 +56,12 @@
     },
     "import": {
       "title_create": "Create Asset Pack",
-      "description_create": "Start by adding items to your pack.",
+      "description_create": "Start by adding some assets to your pack",
       "title_edit": "Edit Asset Pack",
-      "description_edit": "Start by adding items to your pack.",
+      "description_edit": "Add some more items to your pack",
       "action": "Import asset",
       "action_many": "Import {count} assets",
-      "cta": "Drag your Asset's .zip file here, or {action}",
+      "cta": "Drag your Asset file here in GLB, GLTF or ZIP format, or {action}",
       "errors": {
         "invalid": "Invalid Asset",
         "duplicated": "Duplicated Asset",
@@ -94,14 +97,18 @@
       "back": "Go Back"
     },
     "confirm_delete": {
+      "title": "Are you sure?",
+      "action": "Delete Asset Pack",
+      "back": "Go Back",
       "description": "You are about to delete this Asset Pack. This action cannot be undone."
     }
   },
   "banners": {
-    "promo_assetpack_banner": "Use the Sci-fi Pack and start your cosmic exploration!",
-    "promo_body": "Get the Sci-fi Pack and start your cosmic exploration!",
-    "promo_subtitle": "Where the future is built!",
-    "promo_title": "Decentraland"
+    "promo_subtitle": "Custom Asset Packs now available in Decentraland!",
+    "promo_title": "Personalise your world",
+    "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
+    "top_banner_action": "Learn more.",
+    "top_banner_right": " "
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -252,7 +259,8 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions"
+    "terms_and_conditions": "Terms & Conditions",
+    "new_scene": "New scene"
   },
   "home_page": {
     "import_scene": "Import Scene",

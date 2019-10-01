@@ -18,6 +18,8 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
     isVisible: !localStorage.getItem(LOCALSTORAGE_TOAST_KEY) && this.props.isVisible
   }
 
+  analytics = getAnalytics()
+
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.isVisible && !localStorage.getItem(LOCALSTORAGE_TOAST_KEY)) {
       this.setState({ isVisible: true })
@@ -32,8 +34,7 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
   handleLogin = () => {
     const { project, onLogin } = this.props
     if (project) {
-      const analytics = getAnalytics()
-      analytics.track(LOCAL_STORAGE_SIGN_IN_EVENT)
+      this.analytics.track(LOCAL_STORAGE_SIGN_IN_EVENT)
       onLogin({
         returnUrl: locations.editor(project.id)
       })

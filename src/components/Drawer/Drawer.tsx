@@ -9,6 +9,12 @@ export default class Drawer extends React.PureComponent<Props, State> {
     isOpen: true
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (!nextProps.hasLabel) {
+      this.setState({ isOpen: true })
+    }
+  }
+
   handleClick = () => {
     this.setState({
       isOpen: !this.state.isOpen

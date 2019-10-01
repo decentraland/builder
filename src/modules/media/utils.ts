@@ -30,3 +30,7 @@ export async function blobToCID(blob: Blob, path: string) {
   const cid = await getCID([file], false)
   return cid
 }
+
+export function isRemoteURL(url: string) {
+  return url.startsWith('http')
+}

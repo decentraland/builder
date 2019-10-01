@@ -12,10 +12,11 @@ import './ErrorPage.css'
 const widget = IntercomWidget.getInstance()
 
 export default class ErrorPage extends React.PureComponent<Props> {
+  analytics = getAnalytics()
+
   componentDidMount() {
-    const analytics = getAnalytics()
     document.body.classList.add('error-body')
-    analytics.track('Error page', {})
+    this.analytics.track('Error page', {})
   }
 
   componentWillUnmount() {
