@@ -226,7 +226,7 @@
   },
   "export_modal": {
     "action": "Descargar",
-    "description": "Puedes guardar tu Escena para usarla con el SDK de Decentraland, o en el Builder. ¡Esta es la manera de compartir tus Escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
+    "description": "Puedes guardar tu Escena para usarla con el {sdk_link}, o en el Builder. ¡Esta es la manera de compartir tus Escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
     "loading": "Descargando...",
     "title": "Descargar Escena"
   },
