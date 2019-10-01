@@ -1,4 +1,5 @@
 import * as React from 'react'
+import isMobile from 'ismobilejs'
 import { Button, Hero, Header, Page } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
@@ -81,17 +82,20 @@ export default class MobilePage extends React.PureComponent<Props, State> {
                 <div className="thumbnail thumb-4" />
               </div>
             </div>
-            <Hero className="secondary-hero" centered>
-              <Hero.Header>{t('mobile_page.secondary_hero.title')}</Hero.Header>
-              <Hero.Actions>
-                <Button primary size="medium" disabled={isLoading} onClick={this.handleSecondaryAction}>
-                  {t('mobile_page.secondary_hero.action')}
-                </Button>
-              </Hero.Actions>
-              <Hero.Content>
-                <div className="background" />
-              </Hero.Content>
-            </Hero>
+
+            {isMobile().any ? (
+              <Hero className="secondary-hero" centered>
+                <Hero.Header>{t('mobile_page.secondary_hero.title')}</Hero.Header>
+                <Hero.Actions>
+                  <Button primary size="medium" disabled={isLoading} onClick={this.handleSecondaryAction}>
+                    {t('mobile_page.secondary_hero.action')}
+                  </Button>
+                </Hero.Actions>
+                <Hero.Content>
+                  <div className="background" />
+                </Hero.Content>
+              </Hero>
+            ) : null}
           </div>
         </Page>
         <Footer />

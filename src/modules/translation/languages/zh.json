@@ -316,6 +316,7 @@
     "message": "内容编辑器目前只支持桌面版，注册以接收更新并在电脑上查看。",
     "reminder_body": "您好！\n看来您试图在移动设备上使用内容编辑器\n目前内容编辑器只能运行在台式机和笔记本电脑上。拿起你最近的笔记本电脑或台式电脑，使用 https://builder.decentraland.org\n\n快乐的建筑！再试 !\n\n祝开发快乐！\n\nThe Decentraland Team",
     "reminder_subject": "提醒：试试Decentraland的Builder",
+    "desktop_too_narrow": "生成器不适用于此分辨率！ 如果可以，请尝试扩大此窗口。",
     "secondary_hero": {
       "action": "发送提醒",
       "title": "当回到电脑前就创作场景?"
