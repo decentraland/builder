@@ -59,7 +59,7 @@
       "description_edit": "向您添加更多项目Asset Pack",
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
-      "cta": "将Asset的GLB，GLTF或ZIP文件拖到此处，或{action}",
+      "cta": "将Asset的{models_link}文件拖到此处，或{action}",
       "errors": {
         "invalid": "无效资产",
         "duplicated": "重复资产",
@@ -223,7 +223,7 @@
   },
   "export_modal": {
     "action": "下载",
-    "description": "导出场景，用于 Decentraland SDK 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
+    "description": "导出场景，用于 {sdk_link} 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
     "loading": "下载...",
     "title": "下载场景"
   },

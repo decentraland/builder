@@ -61,7 +61,7 @@
       "description_edit": "Add some more items to your pack",
       "action": "Import asset",
       "action_many": "Import {count} assets",
-      "cta": "Drag your Asset file here in GLB, GLTF or ZIP format, or {action}",
+      "cta": "Drag your Asset file here in {models_link} format, or {action}",
       "errors": {
         "invalid": "Invalid Asset",
         "duplicated": "Duplicated Asset",
@@ -228,7 +228,7 @@
   },
   "export_modal": {
     "action": "Download",
-    "description": "You can export your Scene for use in the Decentraland SDK, or the Builder. This is a great way to share Scenes and collaborate with friends! Any changes made to your Scene using the SDK will not be reflected in the Builder.",
+    "description": "You can export your Scene for use in the {sdk_link}, or the Builder. This is a great way to share Scenes and collaborate with friends! Any changes made to your Scene using the SDK will not be reflected in the Builder.",
     "loading": "Downloading...",
     "title": "Download Scene"
   },
