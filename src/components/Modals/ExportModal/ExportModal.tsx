@@ -19,7 +19,7 @@ export default class ExportModal extends React.PureComponent<Props> {
 
     let action = t('export_modal.action')
     if (total > 0) {
-      action = `${t('export_modal.loading')} ${((progress / total) * 100).toFixed(0)}%`
+      action = `${t('export_modal.loading')} ${(progress / total * 100).toFixed(0)}%`
     }
 
     return (
@@ -29,11 +29,11 @@ export default class ExportModal extends React.PureComponent<Props> {
           <div className="details">{t('export_modal.description')}</div>
         </Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={this.handleExport} disabled={isLoading}>
-            {action}
-          </Button>
           <Button secondary onClick={onClose} disabled={isLoading}>
             {t('global.cancel')}
+          </Button>
+          <Button primary onClick={this.handleExport} disabled={isLoading}>
+            {action}
           </Button>
         </Modal.Actions>
       </Modal>
