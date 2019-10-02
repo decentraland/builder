@@ -319,6 +319,7 @@
     "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
     "reminder_body": "¡Ey!\n\n¡Al parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland",
     "reminder_subject": "Recordatorio: Probar el Builder de Decentraland",
+    "desktop_too_narrow": "¡El Builder no funciona con esta resolución! Intenta agrandando la ventana si puedes.",
     "secondary_hero": {
       "action": "Enviar recordatorio",
       "title": "¿Quieres comenzar a construir cuando estes en tu PC?"
