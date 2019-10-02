@@ -258,7 +258,8 @@
     "submit": "Enviar",
     "subscribe": "Subscribirse",
     "terms_and_conditions": "Términos y Condiciones",
-    "new_scene": "Nueva escena"
+    "new_scene": "Nueva escena",
+    "sign_in": "Inicia sesión"
   },
   "home_page": {
     "import_scene": "Cargar Escena",
@@ -390,7 +391,7 @@
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
     "loading": "Guardando...",
     "retry": "Reintentar",
-    "sign_in": "Inicia sesión para guardar tus Escenas en la nube",
+    "sign_in": "{sign_in} para guardar tus Escenas en la nube",
     "success": "¡Escenas guardadas exitosamente!"
   },
   "templates": {
@@ -404,8 +405,7 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Las Escenas se guardan en tu navegador. ¡{sign_in} para subirlas a la nube!",
-    "localstorage_sign_in": "Inicia sesión"
+    "localstorage": "Las Escenas se guardan en tu navegador. ¡{sign_in} para subirlas a la nube!"
   },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",

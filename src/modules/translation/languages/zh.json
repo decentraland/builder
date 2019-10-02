@@ -255,7 +255,8 @@
     "submit": "提交",
     "subscribe": "订阅",
     "terms_and_conditions": "使用条款",
-    "new_scene": "新场景"
+    "new_scene": "新场景",
+    "sign_in": "登录"
   },
   "home_page": {
     "import_scene": "上传场景",
@@ -387,7 +388,7 @@
     "error": "{errorCount} {errorCount, plural, one {场景} other {场景}} 无法上传",
     "loading": "上传中...",
     "retry": "重试",
-    "sign_in": "登录以将您的场景保存在云端",
+    "sign_in": "{sign_in}以将您的场景保存在云端",
     "success": "所有场景成功保存！"
   },
   "templates": {
@@ -401,8 +402,7 @@
     "small": "小 (1x1)"
   },
   "toasts": {
-    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！",
-    "localstorage_sign_in": "登录"
+    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
   },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",

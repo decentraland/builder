@@ -1,15 +1,21 @@
 import * as React from 'react'
 
 import { Close, Button } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { locations } from 'routing/locations'
 
 import { Props, State } from './SyncToast.types'
 import './SyncToast.css'
+
+export const SYNC_SIGN_IN_EVENT = 'Sign in from sync toast'
 
 export default class SyncToast extends React.PureComponent<Props, State> {
   state: State = {
     isSynced: false
   }
+
+  analytics = getAnalytics()
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.syncCount > 0 && this.props.syncCount === 0) {
@@ -22,6 +28,14 @@ export default class SyncToast extends React.PureComponent<Props, State> {
   handleRetry = () => {
     const { onRetry } = this.props
     onRetry()
+  }
+
+  handleLogin = () => {
+    const { onLogin } = this.props
+    this.analytics.track(SYNC_SIGN_IN_EVENT)
+    onLogin({
+      returnUrl: locations.root()
+    })
   }
 
   render() {
@@ -71,7 +85,16 @@ export default class SyncToast extends React.PureComponent<Props, State> {
       return (
         <div className="SyncToast">
           <div className="message">
-            {t('sync.sign_in')}
+            <T
+              id="sync.sign_in"
+              values={{
+                sign_in: (
+                  <span className="sign-in" onClick={this.handleLogin}>
+                    {t('global.sign_in')}
+                  </span>
+                )
+              }}
+            />
             <Close small onClick={onDismissSignInToast} />
           </div>
         </div>
