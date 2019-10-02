@@ -13,7 +13,6 @@ import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import PromoBanner from './PromoBanner'
-import TopBanner from './TopBanner'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/locations'
@@ -147,7 +146,6 @@ export default class HomePage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <TopBanner />
         <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen>
           {!showDashboard ? (
