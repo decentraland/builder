@@ -28,7 +28,8 @@ import {
   getEntityComponents,
   getData as getScenes,
   getCollectiblesByURL,
-  getEntityShape
+  getEntityShape,
+  getScriptsBySrc
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
@@ -43,6 +44,7 @@ import { getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { getFullAssetPacks } from 'modules/assetPack/selectors'
 import { Project } from 'modules/project/types'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
 
 const editorWindow = window as EditorWindow
 
@@ -67,6 +69,7 @@ function* handleAddItem(action: AddItemAction) {
   if (!scene) return
 
   let shapeId: string | null
+  let scriptId: string | null = null
   let { position } = action.payload
   const { asset } = action.payload
   const transformId = uuidv4()
@@ -108,7 +111,7 @@ function* handleAddItem(action: AddItemAction) {
           src: asset.url,
           mappings: getMappings(asset)
         }
-      }
+      } as ComponentDefinition<ComponentType.GLTFShape>
     }
   }
 
@@ -127,11 +130,36 @@ function* handleAddItem(action: AddItemAction) {
       rotation: { x: 0, y: 0, z: 0, w: 1 },
       scale: { x: 1, y: 1, z: 1 }
     }
+  } as ComponentDefinition<ComponentType.Transform>
+
+  const scriptPath = Object.keys(asset.contents).find(path => path.endsWith('.js'))
+  if (scriptPath) {
+    const scriptSrc = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[scriptPath]}`
+    const scripts: ReturnType<typeof getScriptsBySrc> = yield select(getScriptsBySrc)
+    const script = scripts[scriptSrc]
+    scriptId = script ? script.id : null
+
+    if (!scriptId) {
+      scriptId = uuidv4()
+      newComponents[scriptId] = {
+        id: scriptId,
+        type: ComponentType.Script,
+        data: {
+          assetId: asset.id,
+          src: scriptSrc,
+          mappings: getMappings(asset)
+        }
+      } as ComponentDefinition<ComponentType.Script>
+    }
   }
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: [shapeId, transformId] }
+  const entityComponents = [transformId, shapeId]
+  if (scriptId) {
+    entityComponents.push(scriptId)
+  }
+  newEntities[entityId] = { id: entityId, components: entityComponents }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action

@@ -125,7 +125,7 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     id: remoteAsset.id,
     assetPackId: remoteAsset.asset_pack_id,
     name: remoteAsset.name,
-    url: `${remoteAsset.asset_pack_id}/${remoteAsset.url}`,
+    url: `${remoteAsset.id}/${remoteAsset.url}`,
     thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${remoteAsset.thumbnail}`,
     tags: remoteAsset.tags,
     category: remoteAsset.category,

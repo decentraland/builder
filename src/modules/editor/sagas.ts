@@ -290,8 +290,9 @@ function* handleTogglePreview(action: TogglePreviewAction) {
 
   if (!isEnabled) {
     yield handleResetCamera()
+    yield renderScene()
   } else {
-    editor.setCameraPosition({ x, y: 1, z })
+    editor.setCameraPosition({ x, y: 1.5, z })
   }
 
   yield changeEditorState(!isEnabled)
