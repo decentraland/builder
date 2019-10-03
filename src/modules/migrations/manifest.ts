@@ -12,6 +12,7 @@ export const migrations: Migration<Manifest> = {
     if (input.project) {
       input.project = toProjectCloudSchema(input.project)
     }
+    addMappings(input.scene)
     return input
   },
   '4': input => {
