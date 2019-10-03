@@ -11,7 +11,8 @@ export type EntityDefinition = {
 export enum ComponentType {
   GLTFShape = 'GLTFShape',
   Transform = 'Transform',
-  NFTShape = 'NFTShape'
+  NFTShape = 'NFTShape',
+  Script = 'Script'
 }
 
 export type ComponentData = {
@@ -27,6 +28,11 @@ export type ComponentData = {
   }
   [ComponentType.NFTShape]: {
     url: string
+  }
+  [ComponentType.Script]: {
+    assetId: string
+    src: string
+    mappings: Record<string, string>
   }
 }
 

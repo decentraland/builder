@@ -1,12 +1,31 @@
 import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import * as ECS from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
+// BEGIN DRAGONS
+declare var provide: (name: string, value: any) => void
+declare var load: (id: string) => Promise<any>
+eval(require('raw-loader!./amd-loader.js.raw'))
+eval(`self.provide = function(name, value) { self[name] = value }`)
+eval(`self.load = function(id) { return new Promise(resolve => define('load', [id + '/item'], item => resolve(item.default))) }`)
+Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
+// END DRAGONS
+
+let scripts: Record<string, string> = {}
+let fetched: Record<string, boolean> = {}
+
 @Component('staticEntity')
 // @ts-ignore
 export class StaticEntity {}
+
+@Component('script')
+// @ts-ignore
+export class Script {
+  constructor(public assetId: string, public src: string) {}
+}
 
 const editorComponents: Record<string, any> = {}
 const staticEntity = new StaticEntity()
@@ -48,6 +67,25 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
         const entity = engine.entities[entityId]
         if (message.payload.isEnabled) {
           entity.removeComponent(gizmo)
+          const scriptEntities = engine.getComponentGroup(Script)
+          if (scriptEntities.hasEntity(entity)) {
+            entity.removeComponent(GLTFShape)
+            const transform = entity.getComponent(Transform)
+            const script = entity.getComponent(Script)
+            const hostEntity = new Entity()
+            engine.addEntity(hostEntity)
+            hostEntity.addComponent(transform)
+            let waitForFetch = Promise.resolve()
+            if (!fetched[script.assetId]) {
+              waitForFetch = fetch(script.src)
+                .then(resp => resp.text())
+                .then(code => eval(code))
+                .then(() => {
+                  fetched[script.assetId] = true
+                })
+            }
+            waitForFetch.then(() => load(script.assetId).then(item => item(hostEntity, { isLocked: false })))
+          }
         } else {
           const staticEntities = engine.getComponentGroup(StaticEntity)
           if (!staticEntities.hasEntity(entity)) {
@@ -72,7 +110,6 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
 function createComponents(components: Record<string, AnyComponent>) {
   for (let id in components) {
     const { type, data } = components[id]
-
     if (!getComponentById(id)) {
       switch (type) {
         case ComponentType.GLTFShape:
@@ -86,6 +123,12 @@ function createComponents(components: Record<string, AnyComponent>) {
           editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
           editorComponents[id].isPickable = true
           break
+        case ComponentType.Script: {
+          const { assetId, src } = data as ComponentData[ComponentType.Script]
+          editorComponents[id] = new Script(assetId, src)
+          scripts[assetId] = src
+          break
+        }
       }
     }
 

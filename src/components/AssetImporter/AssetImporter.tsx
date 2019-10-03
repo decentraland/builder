@@ -14,7 +14,15 @@ import { EXPORT_PATH } from 'modules/project/export'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { getModelData } from 'lib/getModelData'
-import { getExtension, createDefaultImportedFile, getMetrics, ASSET_MANIFEST, MAX_FILE_SIZE, truncateFileName } from './utils'
+import {
+  getExtension,
+  createDefaultImportedFile,
+  getMetrics,
+  ASSET_MANIFEST,
+  MAX_FILE_SIZE,
+  truncateFileName,
+  prepareScript
+} from './utils'
 
 import { Props, State, ImportedFile } from './AssetImporter.types'
 import './AssetImporter.css'
@@ -135,15 +143,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     })
 
     const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
-
-    if (!assetModel) {
-      this.analytics.track('Asset Importer Error Missing Model')
-      throw new Error(
-        t('asset_pack.import.errors.missing_model', {
-          name: truncateFileName(file.name)
-        })
-      )
-    }
+    const assetScript = fileNames.find(fileName => fileName.endsWith('.js'))
 
     const files = await Promise.all(
       fileNames
@@ -169,12 +169,30 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         })
     )
 
-    const contents = files.reduce<Record<string, Blob>>((contents, file) => {
+    let contents = files.reduce<Record<string, Blob>>((contents, file) => {
       contents[file.name] = file.blob
       return contents
     }, {})
 
-    const id = getSHA256(`${assetPackId}/${basename(assetModel)}`)
+    let id: string
+    if (manifestParsed && manifestParsed.id) {
+      id = manifestParsed.id
+    } else if (assetScript) {
+      id = uuidv4()
+    } else if (assetModel) {
+      id = getSHA256(`${assetPackId}/${basename(assetModel)}`)
+    } else {
+      this.analytics.track('Asset Importer Error Missing Model')
+      throw new Error(
+        t('asset_pack.import.errors.missing_model', {
+          name: truncateFileName(file.name)
+        })
+      )
+    }
+
+    if (assetScript) {
+      contents = await prepareScript(assetScript, id, contents)
+    }
 
     this.analytics.track('Asset Importer File Success')
 
