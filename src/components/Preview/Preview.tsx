@@ -50,20 +50,20 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   handleKeyDownEvent(event: KeyboardEvent) {
     let key = ''
     switch (event.key) {
-      case "Down":
-      case "ArrowDown":
+      case 'Down':
+      case 'ArrowDown':
         key = 'DownArrow'
         break
-      case "Up":
-      case "ArrowUp":
+      case 'Up':
+      case 'ArrowUp':
         key = 'UpArrow'
         break
-      case "Left":
-      case "ArrowLeft":
+      case 'Left':
+      case 'ArrowLeft':
         key = 'LeftArrow'
         break
-      case "Right":
-      case "ArrowRight":
+      case 'Right':
+      case 'ArrowRight':
         key = 'RightArrow'
         break
     }
