@@ -17,6 +17,15 @@ const ROTATION_ORDER: Rotation[] = ['north', 'east', 'south', 'west']
 const CLOCKWISE_ROTATION = 1
 const ANTICLOCKWISE_ROTATION = -1
 
+export const COLORS = Object.freeze({
+  occupiedParcel: '#774642',
+  freeParcel: '#ff9990',
+  selected: '#ff9990',
+  selectedStroke: '#ff0044',
+  indicator: '#716b7a',
+  indicatorStroke: '#3a3541'
+})
+
 export default class LandAtlas extends React.PureComponent<Props, State> {
   state: State = this.getBaseState()
 
@@ -151,7 +160,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const placed = this.isPlaced(x, y)
     if (this.isHighlighted(x, y) || placed) {
       return {
-        color: this.isValid() || placed ? '#ff0044' : '#3a3541',
+        color: this.isValid() || placed ? COLORS.selectedStroke : COLORS.indicatorStroke,
         scale: 1.5
       }
     }
@@ -163,9 +172,9 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { parcels } = this.state
 
     if (occupiedParcels[x + ',' + y]) {
-      return { color: '#965853', scale: 1 }
+      return { color: COLORS.occupiedParcel, scale: 1 }
     } else if (parcels[x + ',' + y]) {
-      return { color: '#00d3ff', scale: 1 }
+      return { color: COLORS.freeParcel, scale: 1 }
     }
 
     return null
@@ -174,7 +183,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   highlightLayer: Layer = (x: number, y: number) => {
     const placed = this.isPlaced(x, y)
     if (this.isHighlighted(x, y) || placed) {
-      return { color: this.isValid() || placed ? '#ff9990' : '#716b7a', scale: 1.2 }
+      return { color: this.isValid() || placed ? COLORS.selected : COLORS.indicator, scale: 1.2 }
     }
     return null
   }
@@ -205,7 +214,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { rotation, placement } = this.state
     if (placement) return
     const newRotation =
-      (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
+      ((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length + ROTATION_ORDER.length) % ROTATION_ORDER.length
 
     this.analytics.track('Publish to LAND atlas rotate', { direction })
 
@@ -216,7 +225,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { landTarget, parcels } = this.state
     const parcelKeys = Object.keys(parcels)
     const index = landTarget ? parcelKeys.indexOf(landTarget) : 0
-    const nextIndex = (((index + 1) % parcelKeys.length) + parcelKeys.length) % parcelKeys.length
+    const nextIndex = ((index + 1) % parcelKeys.length + parcelKeys.length) % parcelKeys.length
 
     this.analytics.track('Publish to LAND atlas locate')
 
