@@ -1,4 +1,4 @@
-import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, ISystem } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
@@ -28,6 +28,7 @@ export class Script {
 }
 
 const editorComponents: Record<string, any> = {}
+const editorSystems: Set<ISystem> = new Set()
 const staticEntity = new StaticEntity()
 
 const gizmo = new Gizmos()
@@ -48,7 +49,7 @@ function getComponentById(id: string) {
   return null
 }
 
-function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
+async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
   switch (message.type) {
     case 'Update editor': {
       const {
@@ -63,36 +64,62 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
       break
     }
     case 'Toggle preview': {
-      for (const entityId in engine.entities) {
-        const entity = engine.entities[entityId]
-        if (message.payload.isEnabled) {
+      if (message.payload.isEnabled) {
+        // fetch scripts
+        const scriptEntities = engine.getComponentGroup(Script)
+        for (const scriptEntity of scriptEntities.entities) {
+          const script = scriptEntity.getComponent(Script)
+          const promises = []
+          if (!fetched[script.assetId]) {
+            const promise = fetch(script.src)
+              .then(resp => resp.text())
+              .then(code => eval(code))
+              .then(() => {
+                fetched[script.assetId] = true
+              })
+            promises.push(promise)
+          }
+          await Promise.all(promises)
+        }
+
+        // save editor systems references (these systems will not be turned off later when all the scripts are stopped)
+        for (const system of (engine as any).addedSystems) {
+          editorSystems.add(system)
+        }
+
+        for (const entityId in engine.entities) {
+          const entity = engine.entities[entityId]
+
+          // remove gizmos
           entity.removeComponent(gizmo)
-          const scriptEntities = engine.getComponentGroup(Script)
           if (scriptEntities.hasEntity(entity)) {
+            // if entity has script, remove the placeholder
             entity.removeComponent(GLTFShape)
+            // and execute the script
             const transform = entity.getComponent(Transform)
             const script = entity.getComponent(Script)
             const hostEntity = new Entity()
             engine.addEntity(hostEntity)
             hostEntity.addComponent(transform)
-            let waitForFetch = Promise.resolve()
-            if (!fetched[script.assetId]) {
-              waitForFetch = fetch(script.src)
-                .then(resp => resp.text())
-                .then(code => eval(code))
-                .then(() => {
-                  fetched[script.assetId] = true
-                })
-            }
-            waitForFetch.then(() => load(script.assetId).then(item => item(hostEntity, { isLocked: false })))
+            load(script.assetId).then(item => item(hostEntity, { isLocked: false }))
           }
-        } else {
+        }
+      } else {
+        for (const entityId in engine.entities) {
+          const entity = engine.entities[entityId]
           const staticEntities = engine.getComponentGroup(StaticEntity)
           if (!staticEntities.hasEntity(entity)) {
             entity.addComponentOrReplace(gizmo)
           }
         }
+        // Removes all the systems added by scripts
+        for (const system of (engine as any).addedSystems) {
+          if (!editorSystems.has(system)) {
+            engine.removeSystem(system)
+          }
+        }
       }
+
       break
     }
     case 'Close editor': {
