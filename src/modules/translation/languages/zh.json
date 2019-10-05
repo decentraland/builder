@@ -388,7 +388,7 @@
     "error": "{errorCount} {errorCount, plural, one {场景} other {场景}} 无法上传",
     "loading": "上传中...",
     "retry": "重试",
-    "sign_in": "{sign_in}以将您的场景保存在云端",
+    "sign_in": "请{sign_in}以将您的场景保存在云端",
     "success": "所有场景成功保存！"
   },
   "templates": {
