@@ -45,7 +45,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
       title: assetPack.title,
       thumbnail: assetPack.thumbnail,
       userId: assetPack.userId,
-      assets: assetPack.assets.map(asset => ({ ...asset, url: asset.url.replace(`${assetPack.id}/`, '') }))
+      assets: assetPack.assets.map(asset => ({ ...asset, url: asset.url.replace(`${asset.id}/`, '') }))
     }
   }
 
