@@ -147,6 +147,7 @@ function* handleAddItem(action: AddItemAction) {
         data: {
           assetId: asset.id,
           src: scriptSrc,
+          props: {}, // TODO: we need to plug this into the UI
           mappings: getMappings(asset)
         }
       } as ComponentDefinition<ComponentType.Script>

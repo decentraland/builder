@@ -14,17 +14,22 @@ eval(`self.load = function(id) { return new Promise(resolve => define('load', [i
 Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
 // END DRAGONS
 
-let scripts: Record<string, string> = {}
-let fetched: Record<string, boolean> = {}
+export interface IScript<T extends {}> {
+  init(): void
+  spawn(host: Entity, props: T): void
+}
 
-@Component('staticEntity')
+const scriptPromises = new Map<string, Promise<string>>()
+const scriptInstances = new Map<string, IScript<any>>()
+
+@Component('org.decentraland.staticEntity')
 // @ts-ignore
 export class StaticEntity {}
 
-@Component('script')
+@Component('org.decentraland.script')
 // @ts-ignore
 export class Script {
-  constructor(public assetId: string, public src: string) {}
+  constructor(public assetId: string, public src: string, public props: Record<string, string | number>) {}
 }
 
 const editorComponents: Record<string, any> = {}
@@ -49,6 +54,21 @@ function getComponentById(id: string) {
   return null
 }
 
+function getScriptInstance(assetId: string) {
+  const instance = scriptInstances.get(assetId)
+  return instance
+    ? Promise.resolve(instance)
+    : scriptPromises
+        .get(assetId)!
+        .then(code => eval(code))
+        .then(() => load(assetId))
+        .then(Item => {
+          const instance = new Item()
+          scriptInstances.set(assetId, instance)
+          return instance
+        })
+}
+
 async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
   switch (message.type) {
     case 'Update editor': {
@@ -65,43 +85,40 @@ async function handleExternalAction(message: { type: string; payload: Record<str
     }
     case 'Toggle preview': {
       if (message.payload.isEnabled) {
-        // fetch scripts
-        const scriptEntities = engine.getComponentGroup(Script)
-        for (const scriptEntity of scriptEntities.entities) {
-          const script = scriptEntity.getComponent(Script)
-          const promises = []
-          if (!fetched[script.assetId]) {
-            const promise = fetch(script.src)
-              .then(resp => resp.text())
-              .then(code => eval(code))
-              .then(() => {
-                fetched[script.assetId] = true
-              })
-            promises.push(promise)
-          }
-          await Promise.all(promises)
-        }
-
-        // save editor systems references (these systems will not be turned off later when all the scripts are stopped)
-        for (const system of (engine as any).addedSystems) {
+        // save editor system references (these systems will not be turned off later when all the scripts are stopped)
+        const systems = (engine as any).addedSystems
+        for (const system of systems) {
           editorSystems.add(system)
         }
+
+        // init scripts
+        const scriptGroup = engine.getComponentGroup(Script)
+        const assetIds = scriptGroup.entities.reduce((ids, entity) => {
+          const script = entity.getComponent(Script)
+          return ids.add(script.assetId)
+        }, new Set<string>())
+        const scripts = await Promise.all(Array.from(assetIds).map(getScriptInstance))
+        scripts.forEach(script => script.init())
 
         for (const entityId in engine.entities) {
           const entity = engine.entities[entityId]
 
           // remove gizmos
           entity.removeComponent(gizmo)
-          if (scriptEntities.hasEntity(entity)) {
-            // if entity has script, remove the placeholder
+
+          // if entity has script...
+          if (scriptGroup.hasEntity(entity)) {
+            // ...remove the placeholder
             entity.removeComponent(GLTFShape)
-            // and execute the script
+            // ...create the host entity
             const transform = entity.getComponent(Transform)
-            const script = entity.getComponent(Script)
-            const hostEntity = new Entity()
-            engine.addEntity(hostEntity)
-            hostEntity.addComponent(transform)
-            load(script.assetId).then(item => item(hostEntity, { isLocked: false }))
+            const host = new Entity()
+            engine.addEntity(host)
+            host.addComponent(transform)
+            // ...and execute the script on the host entity
+            const { assetId, props } = entity.getComponent(Script)
+            const script = scriptInstances.get(assetId)!
+            script.spawn(host, props)
           }
         }
       } else {
@@ -112,8 +129,10 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             entity.addComponentOrReplace(gizmo)
           }
         }
+
         // Removes all the systems added by scripts
-        for (const system of (engine as any).addedSystems) {
+        const systems = (engine as any).addedSystems
+        for (const system of systems) {
           if (!editorSystems.has(system)) {
             engine.removeSystem(system)
           }
@@ -151,9 +170,12 @@ function createComponents(components: Record<string, AnyComponent>) {
           editorComponents[id].isPickable = true
           break
         case ComponentType.Script: {
-          const { assetId, src } = data as ComponentData[ComponentType.Script]
-          editorComponents[id] = new Script(assetId, src)
-          scripts[assetId] = src
+          const { assetId, src, props } = data as ComponentData[ComponentType.Script]
+          editorComponents[id] = new Script(assetId, src, props)
+          if (!scriptPromises.has(assetId)) {
+            const promise = fetch(src).then(resp => resp.text())
+            scriptPromises.set(assetId, promise)
+          }
           break
         }
       }
