@@ -86,7 +86,7 @@ export default class SyncToast extends React.PureComponent<Props, State> {
         <div className="SyncToast">
           <div className="message">
             <T
-              id="sync.sign_in"
+              id="toasts.localstorage"
               values={{
                 sign_in: (
                   <span className="sign-in" onClick={this.handleLogin}>

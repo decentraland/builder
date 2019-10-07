@@ -393,7 +393,6 @@
     "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
     "loading": "Uploading...",
     "retry": "Retry",
-    "sign_in": "Please {sign_in} to save your Scenes in the Cloud",
     "success": "All Scenes saved successfully!"
   },
   "templates": {

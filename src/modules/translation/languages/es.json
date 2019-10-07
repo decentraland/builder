@@ -391,7 +391,6 @@
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
     "loading": "Guardando...",
     "retry": "Reintentar",
-    "sign_in": "Por favor {sign_in} para guardar tus Escenas en la nube",
     "success": "¡Escenas guardadas exitosamente!"
   },
   "templates": {
