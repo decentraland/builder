@@ -5,6 +5,11 @@
   justify-content: center;
 }
 
+.SyncToast .sign-in {
+  color: var(--primary);
+  cursor: pointer;
+}
+
 .SyncToast .message {
   display: flex;
   background: rgba(var(--bluish-steel-raw), 0.24);

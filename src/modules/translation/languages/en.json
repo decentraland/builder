@@ -260,7 +260,8 @@
     "submit": "Submit",
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",
-    "new_scene": "New scene"
+    "new_scene": "New scene",
+    "sign_in": "Sign in"
   },
   "home_page": {
     "import_scene": "Import Scene",
@@ -392,7 +393,6 @@
     "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
     "loading": "Uploading...",
     "retry": "Retry",
-    "sign_in": "Sign in to save your Scenes in the Cloud",
     "success": "All Scenes saved successfully!"
   },
   "templates": {
@@ -406,8 +406,7 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
-    "localstorage_sign_in": "Sign in"
+    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!"
   },
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
