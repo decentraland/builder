@@ -104,7 +104,9 @@ async function handleExternalAction(message: { type: string; payload: Record<str
           const entity = engine.entities[entityId]
 
           // remove gizmos
-          entity.removeComponent(gizmo)
+          if (entity.hasComponent(gizmo)) {
+            entity.removeComponent(gizmo)
+          }
 
           // if entity has script...
           if (scriptGroup.hasEntity(entity)) {
