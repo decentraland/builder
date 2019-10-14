@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events'
 import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, ISystem } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
@@ -12,6 +13,7 @@ eval(require('raw-loader!./amd-loader.js.raw'))
 eval(`self.provide = function(name, value) { self[name] = value }`)
 eval(`self.load = function(id) { return new Promise(resolve => define('load', [id + '/item'], item => resolve(item.default))) }`)
 Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
+provide('MessageBus', EventEmitter) // We mock the regular MessageBus (which wouldn't work in the Builder) with an EventEmitter
 // END DRAGONS
 
 export interface IScript<T extends {}> {
