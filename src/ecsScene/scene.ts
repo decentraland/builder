@@ -134,10 +134,14 @@ async function handleExternalAction(message: { type: string; payload: Record<str
 
         // Removes all the systems added by scripts
         const systems = (engine as any).addedSystems
+        const toRemove = []
         for (const system of systems) {
           if (!editorSystems.has(system)) {
-            engine.removeSystem(system)
+            toRemove.push(system) // we collect the systems to remove first, because removing them here would break the loop
           }
+        }
+        for (const system of toRemove) {
+          engine.removeSystem(system)
         }
       }
 
