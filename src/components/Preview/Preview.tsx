@@ -3,11 +3,10 @@ import { Loader } from 'decentraland-ui'
 import { DropTarget } from 'react-dnd'
 
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
+import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
-
 import './Preview.css'
-import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 
 const editorWindow = window as EditorWindow
 let canvas: HTMLCanvasElement | null = null
