@@ -1,12 +1,5 @@
 import { Dispatch } from 'redux'
 
-import { Project } from 'modules/project/types'
-enum Gizmo {
-  MOVE = 'MOVE',
-  ROTATE = 'ROTATE',
-  SCALE = 'SCALE',
-  NONE = 'NONE'
-}
 import {
   setGizmo,
   togglePreview,
@@ -19,6 +12,8 @@ import {
 import { resetItem, duplicateItem, deleteItem, ResetItemAction, DuplicateItemAction, DeleteItemAction } from 'modules/scene/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { SceneMetrics } from 'modules/scene/types'
+import { Project } from 'modules/project/types'
+import { Gizmo } from 'modules/editor/types'
 
 export type Props = {
   gizmo: Gizmo

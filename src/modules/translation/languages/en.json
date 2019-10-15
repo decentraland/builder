@@ -1,19 +1,21 @@
 {
   "asset_pack": {
+    "confirm_delete": {
+      "action": "Delete Asset Pack",
+      "back": "Go Back",
+      "description": "You are about to delete this Asset Pack. This action cannot be undone.",
+      "title": "Are you sure?"
+    },
     "default_name": "My Asset Pack",
     "default_name_suffix": "My Asset Pack ({suffix})",
-    "new_asset_pack": "New Asset Pack",
-    "title_create": "Create Asset Pack",
     "edit_asset": {
-      "title_create": "Create Asset Pack",
-      "description_create": "Review your assets, add tags and more",
-      "title_edit": "Edit Asset Pack",
-      "description_edit": "Review your assets, add tags and more",
       "action": "Continue",
       "action_skip": "Skip review",
       "category": {
         "label": "category"
       },
+      "description_create": "Review your assets, add tags and more",
+      "description_edit": "Review your assets, add tags and more",
       "errors": {
         "max_name_length": "Asset names can only be up to {count} characters long",
         "min_name_length": "Asset names must be at least {count} characters long",
@@ -29,16 +31,17 @@
       "tags": {
         "label": "tags",
         "placeholder": "e.g. (outdoors furniture floor)"
-      }
+      },
+      "title_create": "Create Asset Pack",
+      "title_edit": "Edit Asset Pack"
     },
     "edit_assetpack": {
-      "description_create": "Awesome! Enter a unique name for your Asset Pack.",
-      "action_create": "Create Asset Pack",
-      "title_edit": "Edit Asset Pack",
-      "description_edit": "Enter a unique name for your Asset Pack. Click on an Asset to edit it.",
-      "action_edit": "Save Asset Pack",
-      "action_delete": "Delete Asset Pack",
       "action_add_items": "Add Assets",
+      "action_create": "Create Asset Pack",
+      "action_delete": "Delete Asset Pack",
+      "action_edit": "Save Asset Pack",
+      "description_create": "Awesome! Enter a unique name for your Asset Pack.",
+      "description_edit": "Enter a unique name for your Asset Pack. Click on an Asset to edit it.",
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
@@ -52,26 +55,42 @@
         "label": "name",
         "placeholder": "My new Asset Pack"
       },
-      "reset": "Add new Assets"
+      "reset": "Add new Assets",
+      "title_edit": "Edit Asset Pack"
+    },
+    "exit": {
+      "action": "Exit",
+      "back": "Go Back",
+      "description_create": "You are about to exit the Asset Pack creation, do you want to proceed?",
+      "description_edit": "You are about to exit the Asset Pack update, do you want to proceed?",
+      "title_create": "Are you sure?",
+      "title_edit": "Are you sure?"
     },
     "import": {
-      "title_create": "Create Asset Pack",
-      "description_create": "Start by adding some assets to your pack",
-      "title_edit": "Edit Asset Pack",
-      "description_edit": "Add some more items to your pack",
       "action": "Import asset",
       "action_many": "Import {count} assets",
       "cta": "Drag your Asset file here in {models_link} format, or {action}",
+      "description_create": "Start by adding some assets to your pack",
+      "description_edit": "Add some more items to your pack",
       "errors": {
-        "invalid": "Invalid Asset",
         "duplicated": "Duplicated Asset",
         "duplicated_asset": "{name}: The asset \"{asset}\" already contains a file named \"{model}\"",
+        "invalid": "Invalid Asset",
         "max_file_size": "{name}: File size exceeds {max}mb limit",
         "missing_extension": "{name}: Missing file extension",
         "missing_model": "{name}: Missing 3D model (.gltf or .glb)",
         "scene_file": "{name}: Exported scenes are not allowed"
-      }
+      },
+      "title_create": "Create Asset Pack",
+      "title_edit": "Edit Asset Pack"
     },
+    "login": {
+      "action": "Sign In",
+      "description_create": "You need to sign in before you create an Asset Pack",
+      "description_edit": "You need to sign in before you edit an Asset Pack",
+      "title": "Sign In"
+    },
+    "new_asset_pack": "New Asset Pack",
     "progress": {
       "creating_asset_pack": "Creating Asset Pack",
       "updating_asset_pack": "Updating Asset Pack",
@@ -82,32 +101,13 @@
       "description": "Your Asset Pack was successfully uploaded. Check out the Asset Packs list to start using it. ",
       "title": "All done!"
     },
-    "login": {
-      "title": "Sign In",
-      "description_create": "You need to sign in before you create an Asset Pack",
-      "description_edit": "You need to sign in before you edit an Asset Pack",
-      "action": "Sign In"
-    },
-    "exit": {
-      "title_create": "Are you sure?",
-      "description_create": "You are about to exit the Asset Pack creation, do you want to proceed?",
-      "title_edit": "Are you sure?",
-      "description_edit": "You are about to exit the Asset Pack update, do you want to proceed?",
-      "action": "Exit",
-      "back": "Go Back"
-    },
-    "confirm_delete": {
-      "title": "Are you sure?",
-      "action": "Delete Asset Pack",
-      "back": "Go Back",
-      "description": "You are about to delete this Asset Pack. This action cannot be undone."
-    }
+    "title_create": "Create Asset Pack"
   },
   "banners": {
     "promo_subtitle": "Custom Asset Packs now available in Decentraland!",
     "promo_title": "Personalise your world",
-    "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
     "top_banner_action": "Learn more.",
+    "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
     "top_banner_right": " "
   },
   "custom_layout_modal": {
@@ -248,20 +248,20 @@
     "items": "items",
     "learn_more": "Learn more",
     "loading": "Loading",
-    "next": "next",
     "new": "New",
+    "new_scene": "New scene",
+    "next": "next",
     "optional": "optional",
     "or": "or",
     "project": "Scene",
     "read_more": "Read more",
     "save": "Save",
     "send": "Send",
+    "sign_in": "Sign in",
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions",
-    "new_scene": "New scene",
-    "sign_in": "Sign in"
+    "terms_and_conditions": "Terms & Conditions"
   },
   "home_page": {
     "import_scene": "Import Scene",
@@ -295,12 +295,12 @@
   },
   "itemdrawer": {
     "collectible_disclaimer": "Don’t see all of your crypto-collectibles?{br}We are adding support for more soon!",
+    "edit_asset_pack": "Edit",
     "empty_ground": "No Ground",
     "no_results": "No results",
     "results": "Results",
     "search": "Search assets",
-    "title": "Asset Packs",
-    "edit_asset_pack": "Edit"
+    "title": "Asset Packs"
   },
   "layout_picker": {
     "columns": "columns",
@@ -309,21 +309,20 @@
   "metrics": {
     "bodies": "bodies",
     "entities": "entities",
-    "meshes": "meshes",
     "height": "height",
     "materials": "materials",
+    "meshes": "meshes",
     "textures": "textures",
     "too_many": "Too many {metric}",
-    "triangles": "triangles",
-    "meshes": "meshes"
+    "triangles": "triangles"
   },
   "mobile_page": {
+    "desktop_too_narrow": "The Builder doesn't work on this resolution! Try making this window wider if you can.",
     "gallery_title": "Check out work from Builder users!",
     "learn_more": "Learn more about the Builder",
     "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
     "reminder_body": "Hey there!\n\nWhoops! It looks like you tried to use the Builder from a mobile device!\nThe Builder only runs on desktop and laptop computers. Grab your nearest computer, and try again at https://builder.decentraland.org\n\nHappy building!\n\nThe Decentraland Team",
     "reminder_subject": "Reminder: Try out Decentraland's Builder",
-    "desktop_too_narrow": "The Builder doesn't work on this resolution! Try making this window wider if you can.",
     "secondary_hero": {
       "action": "Send yourself a reminder",
       "title": "Want to build something when you get to your computer?"
@@ -369,7 +368,6 @@
     "export": "Download Scene",
     "hold": "Hold",
     "move": "Toggle arrows",
-    "scale": "Toggle scaling",
     "move_camera": "Move camera",
     "precision": "Ignore snap-to-grid",
     "preview": "Preview",
@@ -377,6 +375,7 @@
     "reset": "Reset item",
     "reset_camera": "Reset camera",
     "rotate": "Toggle orbits",
+    "scale": "Toggle scaling",
     "shortcut_reference": "Shortcut reference",
     "toggle_colliders": "Show colliders",
     "toggle_sidebar": "Toggle sidebar",

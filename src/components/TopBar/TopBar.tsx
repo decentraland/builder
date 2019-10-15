@@ -10,18 +10,12 @@ import OwnIcon from 'components/Icon'
 import DeployButton from 'components/DeployButton'
 import { locations } from 'routing/locations'
 
+import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
 import { Props } from './TopBar.types'
 import './TopBar.css'
 
 const widget = IntercomWidget.getInstance()
-
-enum Gizmo {
-  MOVE = 'MOVE',
-  ROTATE = 'ROTATE',
-  SCALE = 'SCALE',
-  NONE = 'NONE'
-}
 
 export default class TopBar extends React.PureComponent<Props> {
   handleMoveMode = () => {

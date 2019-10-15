@@ -8,6 +8,7 @@ import {
   TogglePreviewAction,
   CloseEditorAction
 } from 'modules/editor/actions'
+import { UnityKeyboardEvent } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 import { Project } from 'modules/project/types'
 
@@ -34,7 +35,7 @@ export type Editor = {
   takeScreenshot: (mime?: string) => Promise<string>
   setGridResolution: (position: number, scale: number, rotation: number) => void
   getLoadingEntity: () => any | null
-  setArrowKeyDown: (key: string) => void
+  onKeyDown: (key: UnityKeyboardEvent) => void
 }
 
 export type EditorWindow = typeof window & {

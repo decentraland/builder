@@ -7,6 +7,7 @@ import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
 
 import './Preview.css'
+import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 
 const editorWindow = window as EditorWindow
 let canvas: HTMLCanvasElement | null = null
@@ -47,28 +48,10 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
   }
 
-  handleKeyDownEvent(event: KeyboardEvent) {
-    let key = ''
-    switch (event.key) {
-      case 'Down':
-      case 'ArrowDown':
-        key = 'DownArrow'
-        break
-      case 'Up':
-      case 'ArrowUp':
-        key = 'UpArrow'
-        break
-      case 'Left':
-      case 'ArrowLeft':
-        key = 'LeftArrow'
-        break
-      case 'Right':
-      case 'ArrowRight':
-        key = 'RightArrow'
-        break
-    }
-    if (key !== '') {
-      editorWindow.editor.setArrowKeyDown(key)
+  handleKeyDownEvent(e: KeyboardEvent) {
+    const unityEvt = convertToUnityKeyboardEvent(e)
+    if (unityEvt) {
+      editorWindow.editor.onKeyDown(unityEvt)
     }
   }
 

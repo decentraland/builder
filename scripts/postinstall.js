@@ -7,8 +7,3 @@ const targetPath = path.resolve(__dirname, '../public/editor.js')
 console.log(`> Copying file ${editorPath} into ${targetPath}`)
 
 fs.copyFileSync(editorPath, targetPath)
-
-//const unityLoaderPath = path.resolve(__dirname, require.resolve('decentraland-ecs/artifacts/unity/Build/DCLUnityBuilder'))
-//const targetUnityLoaderPath = path.resolve(__dirname, '../public/UnityBuilder.js')
-//console.log(`> Copying file ${unityLoaderPath} into ${targetUnityLoaderPath}`)
-//fs.copyFileSync(unityLoaderPath, targetUnityLoaderPath)
