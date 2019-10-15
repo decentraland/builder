@@ -88,6 +88,12 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         <T
           id="asset_pack.import.cta"
           values={{
+            models_link: <span
+              className="link"
+              onClick={this.handleOpenDocs}
+            >
+              GLB, GLTF, ZIP
+            </span>,
             action: (
               <span className="action" onClick={open}>
                 {t('import_modal.upload_manually')}
@@ -292,6 +298,10 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
       ...assetPack,
       assets: assetPack ? [...assetPack.assets, ...assets] : assets
     })
+  }
+
+  handleOpenDocs = () => {
+    window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
   }
 
   render() {

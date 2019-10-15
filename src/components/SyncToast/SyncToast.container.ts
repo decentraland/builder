@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
+import { login } from 'modules/auth/actions'
 import { retrySync } from 'modules/sync/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { didDismissSignInToast, didDismissSyncedToast, getProjects } from 'modules/ui/dashboard/selectors'
@@ -20,6 +21,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onRetry: () => dispatch(retrySync()),
+  onLogin: options => dispatch(login(options)),
   onDismissSignInToast: () => dispatch(dismissSignInToast()),
   onDismissSyncedToast: () => dispatch(dismissSyncedToast())
 })

@@ -61,7 +61,7 @@
       "description_edit": "Add some more items to your pack",
       "action": "Import asset",
       "action_many": "Import {count} assets",
-      "cta": "Drag your Asset file here in GLB, GLTF or ZIP format, or {action}",
+      "cta": "Drag your Asset file here in {models_link} format, or {action}",
       "errors": {
         "invalid": "Invalid Asset",
         "duplicated": "Duplicated Asset",
@@ -228,7 +228,7 @@
   },
   "export_modal": {
     "action": "Download",
-    "description": "You can export your Scene for use in the Decentraland SDK, or the Builder. This is a great way to share Scenes and collaborate with friends! Any changes made to your Scene using the SDK will not be reflected in the Builder.",
+    "description": "You can export your Scene for use in the {sdk_link}, or the Builder. This is a great way to share Scenes and collaborate with friends! Any changes made to your Scene using the SDK will not be reflected in the Builder.",
     "loading": "Downloading...",
     "title": "Download Scene"
   },
@@ -260,7 +260,8 @@
     "submit": "Submit",
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",
-    "new_scene": "New scene"
+    "new_scene": "New scene",
+    "sign_in": "Sign in"
   },
   "home_page": {
     "import_scene": "Import Scene",
@@ -322,6 +323,7 @@
     "message": "The Builder is only available on desktop right now. Sign up to receive updates and check it out on your computer.",
     "reminder_body": "Hey there!\n\nWhoops! It looks like you tried to use the Builder from a mobile device!\nThe Builder only runs on desktop and laptop computers. Grab your nearest computer, and try again at https://builder.decentraland.org\n\nHappy building!\n\nThe Decentraland Team",
     "reminder_subject": "Reminder: Try out Decentraland's Builder",
+    "desktop_too_narrow": "The Builder doesn't work on this resolution! Try making this window wider if you can.",
     "secondary_hero": {
       "action": "Send yourself a reminder",
       "title": "Want to build something when you get to your computer?"
@@ -392,7 +394,6 @@
     "error": "{errorCount} {errorCount, plural, one {scene} other {scenes}} failed to be uploaded",
     "loading": "Uploading...",
     "retry": "Retry",
-    "sign_in": "Sign in to save your Scenes in the Cloud",
     "success": "All Scenes saved successfully!"
   },
   "templates": {
@@ -406,8 +407,7 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!",
-    "localstorage_sign_in": "Sign in"
+    "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!"
   },
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",

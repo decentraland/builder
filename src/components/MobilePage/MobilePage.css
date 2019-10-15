@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 32px 0px;
+  margin-top: 32px;
   padding: 24px 0px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -48,6 +48,10 @@
   padding-bottom: 10px;
   padding-left: 10px;
   height: 44px;
+}
+
+.MobilePage .hero-actions .hollow {
+  margin-top: 32px;
 }
 
 .MobilePage .success {

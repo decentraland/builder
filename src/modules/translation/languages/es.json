@@ -59,7 +59,7 @@
       "description_edit": "Añade algunos assets más a tu pack",
       "action": "Importar Asset",
       "action_many": "Importar {count} Assets",
-      "cta": "Arrastra el archivo GLB, GLTF o ZIP de tu Asset aquí, o {action}",
+      "cta": "Arrastra el archivo {models_link} de tu Asset aquí, o {action}",
       "errors": {
         "invalid": "Asset inválido",
         "duplicated": "Asset duplicado",
@@ -226,7 +226,7 @@
   },
   "export_modal": {
     "action": "Descargar",
-    "description": "Puedes guardar tu Escena para usarla con el SDK de Decentraland, o en el Builder. ¡Esta es la manera de compartir tus Escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
+    "description": "Puedes guardar tu Escena para usarla con el {sdk_link}, o en el Builder. ¡Esta es la manera de compartir tus Escenas y colaborar con amigos! Cambios realizados con el SDK no se veran reflejados en el Builder.",
     "loading": "Descargando...",
     "title": "Descargar Escena"
   },
@@ -258,7 +258,8 @@
     "submit": "Enviar",
     "subscribe": "Subscribirse",
     "terms_and_conditions": "Términos y Condiciones",
-    "new_scene": "Nueva escena"
+    "new_scene": "Nueva escena",
+    "sign_in": "Inicia sesión"
   },
   "home_page": {
     "import_scene": "Cargar Escena",
@@ -319,6 +320,7 @@
     "message": "El Builder aún no funciona en dispositivos móviles. Suscribete para recibir actualizaciones y pruebalo en tu PC.",
     "reminder_body": "¡Ey!\n\n¡Al parecer has intentado utilizar el Builder desde un dispositivo movil!\nEl Builder solo funciona en computadoras de escritorio y notebooks. Cuando estes listo ingresa a https://builder.decentraland.org\n\n¡Que lo disfrutes!\n\nEl equipo de Decentraland",
     "reminder_subject": "Recordatorio: Probar el Builder de Decentraland",
+    "desktop_too_narrow": "¡El Builder no funciona con esta resolución! Intenta agrandando la ventana si puedes.",
     "secondary_hero": {
       "action": "Enviar recordatorio",
       "title": "¿Quieres comenzar a construir cuando estes en tu PC?"
@@ -389,7 +391,6 @@
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
     "loading": "Guardando...",
     "retry": "Reintentar",
-    "sign_in": "Inicia sesión para guardar tus Escenas en la nube",
     "success": "¡Escenas guardadas exitosamente!"
   },
   "templates": {
@@ -403,8 +404,7 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Las Escenas se guardan en tu navegador. ¡{sign_in} para subirlas a la nube!",
-    "localstorage_sign_in": "Inicia sesión"
+    "localstorage": "Las Escenas se guardan en tu navegador. ¡{sign_in} para subirlas a la nube!"
   },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",

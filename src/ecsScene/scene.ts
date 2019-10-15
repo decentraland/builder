@@ -75,14 +75,14 @@ function createComponents(components: Record<string, AnyComponent>) {
 
     if (!getComponentById(id)) {
       switch (type) {
-        case 'GLTFShape':
+        case ComponentType.GLTFShape:
           editorComponents[id] = new GLTFShape((data as ComponentData[ComponentType.GLTFShape]).src)
           editorComponents[id].isPickable = true
           break
-        case 'Transform':
+        case ComponentType.Transform:
           editorComponents[id] = new Transform()
           break
-        case 'NFTShape':
+        case ComponentType.NFTShape:
           editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
           editorComponents[id].isPickable = true
           break

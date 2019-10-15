@@ -59,7 +59,7 @@
       "description_edit": "向您添加更多项目Asset Pack",
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
-      "cta": "将Asset的GLB，GLTF或ZIP文件拖到此处，或{action}",
+      "cta": "将Asset的{models_link}文件拖到此处，或{action}",
       "errors": {
         "invalid": "无效资产",
         "duplicated": "重复资产",
@@ -223,7 +223,7 @@
   },
   "export_modal": {
     "action": "下载",
-    "description": "导出场景，用于 Decentraland SDK 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
+    "description": "导出场景，用于 {sdk_link} 或导入到编辑器的其他实例中。这是一个分享场景和与朋友合作的好方法！使用 SDK 对场景所做的任何更改都不会影响到编辑器中的场景。",
     "loading": "下载...",
     "title": "下载场景"
   },
@@ -255,7 +255,8 @@
     "submit": "提交",
     "subscribe": "订阅",
     "terms_and_conditions": "使用条款",
-    "new_scene": "新场景"
+    "new_scene": "新场景",
+    "sign_in": "登录"
   },
   "home_page": {
     "import_scene": "上传场景",
@@ -316,6 +317,7 @@
     "message": "内容编辑器目前只支持桌面版，注册以接收更新并在电脑上查看。",
     "reminder_body": "您好！\n看来您试图在移动设备上使用内容编辑器\n目前内容编辑器只能运行在台式机和笔记本电脑上。拿起你最近的笔记本电脑或台式电脑，使用 https://builder.decentraland.org\n\n快乐的建筑！再试 !\n\n祝开发快乐！\n\nThe Decentraland Team",
     "reminder_subject": "提醒：试试Decentraland的Builder",
+    "desktop_too_narrow": "生成器不适用于此分辨率！ 如果可以，请尝试扩大此窗口。",
     "secondary_hero": {
       "action": "发送提醒",
       "title": "当回到电脑前就创作场景?"
@@ -386,7 +388,6 @@
     "error": "{errorCount} {errorCount, plural, one {场景} other {场景}} 无法上传",
     "loading": "上传中...",
     "retry": "重试",
-    "sign_in": "登录以将您的场景保存在云端",
     "success": "所有场景成功保存！"
   },
   "templates": {
@@ -400,8 +401,7 @@
     "small": "小 (1x1)"
   },
   "toasts": {
-    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！",
-    "localstorage_sign_in": "登录"
+    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
   },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",

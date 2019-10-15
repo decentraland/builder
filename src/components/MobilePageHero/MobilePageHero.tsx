@@ -1,4 +1,5 @@
 import * as React from 'react'
+import isMobile from 'ismobilejs'
 import { Hero, Button, Form, Field } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
@@ -33,28 +34,32 @@ export default class MobilePageHero extends React.PureComponent<Props> {
           </span>
         </Hero.Description>
         <Hero.Actions>
-          <Form onSubmit={this.handleSubmit}>
-            <p className="message">{t('mobile_page.message')}</p>
+          {isMobile().any ? (
+            <Form onSubmit={this.handleSubmit}>
+              <p className="message">{t('mobile_page.message')}</p>
 
-            {!hasMobileEmail ? (
-              <div className="form-container">
-                <Field
-                  type="email"
-                  icon="asterisk"
-                  placeholder="name@email.com"
-                  value={email}
-                  onChange={this.handleEmailChange}
-                  disabled={isLoading}
-                  required
-                />
-                <Button primary size="medium" disabled={isLoading}>
-                  {t('global.sign_up')}
-                </Button>
-              </div>
-            ) : (
-              <div className="success">{t('mobile_page.success')}</div>
-            )}
-          </Form>
+              {!hasMobileEmail ? (
+                <div className="form-container">
+                  <Field
+                    type="email"
+                    icon="asterisk"
+                    placeholder="name@email.com"
+                    value={email}
+                    onChange={this.handleEmailChange}
+                    disabled={isLoading}
+                    required
+                  />
+                  <Button primary size="medium" disabled={isLoading}>
+                    {t('global.sign_up')}
+                  </Button>
+                </div>
+              ) : (
+                <div className="success">{t('mobile_page.success')}</div>
+              )}
+            </Form>
+          ) : (
+            <p className="message">{t('mobile_page.desktop_too_narrow')}</p>
+          )}
           <Button className="hollow" onClick={this.handleWatchVideo}>
             {t('mobile_page.learn_more')}
           </Button>

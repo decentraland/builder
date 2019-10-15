@@ -1,6 +1,6 @@
 {
   "name": "builder",
-  "version": "1.3.5",
+  "version": "1.3.8",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
@@ -30,8 +30,8 @@
     "decentraland-dapps": "^5.5.0",
     "decentraland-eth": "^8.16.0",
     "decentraland-ecs": "^6.2.0",
+    "decentraland-experiments": "^1.0.2",
     "decentraland-ui": "^2.10.1",
-    "decentraland-experiments": "^1.0.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
     "eslint": "5.6.0",
@@ -50,6 +50,7 @@
     "identity-obj-proxy": "3.0.0",
     "interface-datastore": "^0.7.0",
     "ipfs-unixfs-engine": "^0.35.4",
+    "ismobilejs": "^1.0.3",
     "jest": "^24.1.0",
     "jest-pnp-resolver": "1.0.1",
     "jest-resolve": "23.6.0",
