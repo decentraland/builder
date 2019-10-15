@@ -1,14 +1,13 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { DropTarget } from 'react-dnd'
+import { env } from 'decentraland-commons'
 
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
+import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
-
 import './Preview.css'
-import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
-import { env } from 'decentraland-commons'
 
 const editorWindow = window as EditorWindow
 const unityDebugParams = env.get('REACT_APP_UNITY_DEBUG_PARAMS')
