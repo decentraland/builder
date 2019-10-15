@@ -8,8 +8,11 @@ import { EditorWindow, Props, State } from './Preview.types'
 
 import './Preview.css'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
+import { env } from 'decentraland-commons'
 
 const editorWindow = window as EditorWindow
+const unityDebugParams = env.get('REACT_APP_UNITY_DEBUG_PARAMS')
+
 let canvas: HTMLCanvasElement | null = null
 let isDCLInitialized: boolean = false
 
@@ -17,6 +20,10 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   canvasContainer = React.createRef<HTMLDivElement>()
 
   componentDidMount() {
+    if (unityDebugParams) {
+      history.replaceState('', 'Unity Debug', `?${unityDebugParams}`)
+    }
+
     if (!isDCLInitialized) {
       this.startEditor().catch(error => console.error('Failed to start editor', error))
     } else {
@@ -62,8 +69,10 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
     try {
       await editorWindow.editor.initEngine(this.canvasContainer.current, rows, cols)
-      canvas = await editorWindow.editor.getDCLCanvas()
-      canvas.classList.add('dcl-canvas')
+      if (!unityDebugParams) {
+        canvas = await editorWindow.editor.getDCLCanvas()
+        canvas.classList.add('dcl-canvas')
+      }
 
       this.moveCanvas()
       this.props.onOpenEditor()
