@@ -9,6 +9,7 @@
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
+  width: calc(var(--sidebar-width) - 32px);
 }
 
 .AssetPackList .create-asset-pack:before {
