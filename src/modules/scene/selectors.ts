@@ -151,25 +151,6 @@ export const getGLTFsBySrc = createSelector<RootState, Scene | null, Record<stri
   }
 )
 
-export const getScriptsBySrc = createSelector<RootState, Scene | null, Record<string, ComponentDefinition<ComponentType.GLTFShape>>>(
-  getCurrentScene,
-  scene => {
-    if (!scene) return {}
-
-    const componentData = scene.components
-    let res: Record<string, ComponentDefinition<ComponentType.Script>> = {}
-
-    for (let key in componentData) {
-      const comp = componentData[key] as ComponentDefinition<ComponentType.Script>
-      if (comp.type === ComponentType.Script) {
-        res[comp.data.src] = comp
-      }
-    }
-
-    return res
-  }
-)
-
 export const getCollectiblesByURL = createSelector<RootState, Scene | null, Record<string, ComponentDefinition<ComponentType.NFTShape>>>(
   getCurrentScene,
   scene => {
