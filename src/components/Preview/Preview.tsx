@@ -42,7 +42,6 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   moveCanvas = () => {
     if (this.canvasContainer.current && canvas) {
       this.canvasContainer.current.appendChild(canvas)
-      editorWindow.editor.resize()
     }
   }
 
