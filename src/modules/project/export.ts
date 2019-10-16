@@ -1,7 +1,7 @@
 // @ts-ignore
 import Dockerfile from '!raw-loader!decentraland/dist/samples/ecs/Dockerfile'
 import * as ECS from 'decentraland-ecs'
-import Writer from 'dcl-scene-writer'
+import { LightweightWriter as Writer } from 'dcl-scene-writer'
 import packageJson from 'decentraland/dist/samples/ecs/package.json'
 import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
@@ -149,8 +149,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
 }
 
 export function createGameFileBundle(gameFile: string): string {
-  const ecs = require('raw-loader!decentraland-ecs/dist/src/index.js')
-  return ecs + '\n// Builder generated code below\n' + gameFile + '\n'
+  return gameFile
 }
 
 export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames: Set<string>) {
