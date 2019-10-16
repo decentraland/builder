@@ -39,7 +39,8 @@ import {
   CREATE_EDITOR_SCENE,
   CreateEditorSceneAction,
   SET_EDITOR_LOADING,
-  SetEditorLoadingAction
+  SetEditorLoadingAction,
+  setScriptUrl
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -237,6 +238,7 @@ function* handleOpenEditor() {
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
 
+  // The client will report when an entity goes out of bounds
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
@@ -244,6 +246,9 @@ function* handleOpenEditor() {
 
   if (project) {
     yield createNewEditorScene(project)
+
+    // Set the remote url for scripts
+    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
 
     // Spawns the assets
     yield renderScene()

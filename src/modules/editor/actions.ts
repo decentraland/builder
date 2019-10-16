@@ -46,6 +46,13 @@ export const updateEditor = (sceneId: string, scene: Scene, mappings: Record<str
 
 export type UpdateEditorAction = ReturnType<typeof updateEditor>
 
+// Set Script URL
+export const SET_SCRIPT_URL = 'Set script url'
+
+export const setScriptUrl = (url: string) => action(SET_SCRIPT_URL, { url })
+
+export type SetScriptUrlAction = ReturnType<typeof setScriptUrl>
+
 // Undo/Redo
 
 export const EDITOR_UNDO = 'Editor undo'

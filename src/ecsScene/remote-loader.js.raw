@@ -1,0 +1,23 @@
+// This helper is used to load external scripts within a deployed Builder scene.
+const scriptInstances = new Map()
+function getScriptInstance(assetId, src) {
+  const instance = scriptInstances.get(assetId)
+  return instance
+    ? Promise.resolve(instance)
+    : fetch('https://content.decentraland.org/contents/' + src)
+        .then(resp => resp.text())
+        .then(code => eval(code))
+        .then(() => new Promise(resolve => define(assetId + '/load', [assetId + '/item'], item => resolve(item.default))))
+        .then(Item => {
+          const instance = new Item()
+          scriptInstances.set(assetId, instance)
+          return instance
+        })
+        .catch(() => {
+          console.warn(`Failed to load script "${assetId}"`)
+          return {
+            init() {},
+            spawn() {}
+          }
+        })
+}

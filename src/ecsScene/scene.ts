@@ -21,6 +21,7 @@ export interface IScript<T extends {}> {
   spawn(host: Entity, props: T): void
 }
 
+let scriptBaseUrl: string | null = null
 const scriptPromises = new Map<string, Promise<string>>()
 const scriptInstances = new Map<string, IScript<any>>()
 
@@ -69,10 +70,23 @@ function getScriptInstance(assetId: string) {
           scriptInstances.set(assetId, instance)
           return instance
         })
+        .catch(() => {
+          // if something fails, return a dummy script
+          console.warn(`Failed to load script for asset id ${assetId}`)
+          return {
+            init() {},
+            spawn() {}
+          }
+        })
 }
 
 async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
   switch (message.type) {
+    case 'Set script url': {
+      const { url } = message.payload
+      scriptBaseUrl = url
+      break
+    }
     case 'Update editor': {
       const {
         scene: { components, entities }
@@ -178,10 +192,11 @@ function createComponents(components: Record<string, AnyComponent>) {
           editorComponents[id].isPickable = true
           break
         case ComponentType.Script: {
-          const { assetId, src, props } = data as ComponentData[ComponentType.Script]
-          editorComponents[id] = new Script(assetId, src, props)
+          const { assetId, src, parameters } = data as ComponentData[ComponentType.Script]
+          editorComponents[id] = new Script(assetId, src, parameters)
           if (!scriptPromises.has(assetId)) {
-            const promise = fetch(src).then(resp => resp.text())
+            const url = `${scriptBaseUrl}/${src}`
+            const promise = fetch(url).then(resp => resp.text())
             scriptPromises.set(assetId, promise)
           }
           break

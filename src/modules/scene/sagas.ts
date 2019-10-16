@@ -28,8 +28,7 @@ import {
   getEntityComponents,
   getData as getScenes,
   getCollectiblesByURL,
-  getEntityShape,
-  getScriptsBySrc
+  getEntityShape
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
@@ -44,7 +43,6 @@ import { getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { getFullAssetPacks } from 'modules/assetPack/selectors'
 import { Project } from 'modules/project/types'
-import { BUILDER_SERVER_URL } from 'lib/api/builder'
 
 const editorWindow = window as EditorWindow
 
@@ -134,24 +132,17 @@ function* handleAddItem(action: AddItemAction) {
 
   const scriptPath = Object.keys(asset.contents).find(path => path.endsWith('.js'))
   if (scriptPath) {
-    const scriptSrc = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[scriptPath]}`
-    const scripts: ReturnType<typeof getScriptsBySrc> = yield select(getScriptsBySrc)
-    const script = scripts[scriptSrc]
-    scriptId = script ? script.id : null
-
-    if (!scriptId) {
-      scriptId = uuidv4()
-      newComponents[scriptId] = {
-        id: scriptId,
-        type: ComponentType.Script,
-        data: {
-          assetId: asset.id,
-          src: scriptSrc,
-          props: {}, // TODO: we need to plug this into the UI
-          mappings: getMappings(asset)
-        }
-      } as ComponentDefinition<ComponentType.Script>
-    }
+    scriptId = uuidv4()
+    newComponents[scriptId] = {
+      id: scriptId,
+      type: ComponentType.Script,
+      data: {
+        assetId: asset.id,
+        src: asset.contents[scriptPath],
+        parameters: {}, // TODO: we need to get default values here
+        mappings: getMappings(asset)
+      }
+    } as ComponentDefinition<ComponentType.Script>
   }
 
   const newEntities = { ...scene.entities }
