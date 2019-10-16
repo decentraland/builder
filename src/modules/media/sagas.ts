@@ -42,7 +42,6 @@ export function* handleTakePictures() {
 
   // Prepare the canvas for recording
   canvas.classList.add('recording')
-  yield call(() => editorWindow.editor.resize())
   editorWindow.editor.resetCameraZoom()
   yield delay(200) // big scenes need some extra time to reset the camera
 
@@ -65,7 +64,6 @@ export function* handleTakePictures() {
 
   // Cleanup
   canvas.classList.remove('recording')
-  yield call(() => editorWindow.editor.resize())
 
   yield put(recordMediaSuccess({ ...shots, preview }))
 }
