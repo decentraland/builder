@@ -22,7 +22,6 @@ import {
   SET_EDITOR_LOADING,
   SetEditorLoadingAction
 } from './actions'
-import { Gizmo } from './types'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 import {
   EXPORT_PROJECT_SUCCESS,
@@ -30,6 +29,7 @@ import {
   ExportProjectRequestAction,
   ExportProjectSuccessAction
 } from 'modules/project/actions'
+import { Gizmo } from './types'
 
 export type EditorState = {
   gizmo: Gizmo

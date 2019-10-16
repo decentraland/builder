@@ -1,4 +1,4 @@
-import { EditorScene } from 'modules/editor/types'
+import { EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
@@ -93,4 +93,23 @@ export function snapScale(scale: Vector3): Vector3 {
     y: scale.y === 0 ? SCALE_MIN_LIMIT : scale.y,
     z: scale.z === 0 ? SCALE_MIN_LIMIT : scale.z
   }
+}
+
+export function convertToUnityKeyboardEvent(e: KeyboardEvent): UnityKeyboardEvent | null {
+  switch (e.key) {
+    case 'Down':
+    case 'ArrowDown':
+      return 'DownArrow'
+    case 'Up':
+    case 'ArrowUp':
+      return 'UpArrow'
+    case 'Left':
+    case 'ArrowLeft':
+      return 'LeftArrow'
+    case 'Right':
+    case 'ArrowRight':
+      return 'RightArrow'
+  }
+
+  return null
 }

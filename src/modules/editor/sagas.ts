@@ -10,8 +10,6 @@ import {
   SetGizmoAction,
   TogglePreviewAction,
   TOGGLE_PREVIEW,
-  TOGGLE_SIDEBAR,
-  ToggleSidebarAction,
   ZOOM_IN,
   ZOOM_OUT,
   RESET_CAMERA,
@@ -92,7 +90,6 @@ export function* editorSaga() {
   yield takeLatest(EDITOR_UNDO, handleHistory)
   yield takeLatest(SET_GIZMO, handleSetGizmo)
   yield takeLatest(TOGGLE_PREVIEW, handleTogglePreview)
-  yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
   yield takeLatest(ZOOM_IN, handleZoomIn)
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
@@ -275,11 +272,6 @@ function* handleSetGizmo(action: SetGizmoAction) {
   yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
 }
 
-function resizeEditor() {
-  const { editor } = editorWindow
-  window.requestAnimationFrame(() => editor.resize())
-}
-
 function* handleTogglePreview(action: TogglePreviewAction) {
   const { editor } = editorWindow
   const { isEnabled } = action.payload
@@ -294,7 +286,6 @@ function* handleTogglePreview(action: TogglePreviewAction) {
     editor.setPlayMode(isEnabled)
     editor.sendExternalAction(action)
     editor.selectGizmo(isEnabled ? Gizmo.NONE : gizmo)
-    resizeEditor()
   })
 
   if (!isEnabled) {
@@ -304,10 +295,6 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   }
 
   yield changeEditorState(!isEnabled)
-}
-
-function* handleToggleSidebar(_: ToggleSidebarAction) {
-  yield call(() => resizeEditor())
 }
 
 function handleZoomIn() {
@@ -388,7 +375,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
     }
 
     // rendering leeway
-    yield delay(500)
+    yield delay(2000)
 
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return

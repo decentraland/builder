@@ -8,13 +8,14 @@ import {
   TogglePreviewAction,
   CloseEditorAction
 } from 'modules/editor/actions'
-import { Gizmo } from 'modules/editor/types'
+import { UnityKeyboardEvent } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 import { Project } from 'modules/project/types'
 
+declare type Gizmo = any
+
 export type Editor = {
-  initEngine: (x: number, y: number) => Promise<void>
-  resize: () => void
+  initEngine: (container: HTMLElement, x: number, y: number) => Promise<void>
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
@@ -33,10 +34,10 @@ export type Editor = {
   takeScreenshot: (mime?: string) => Promise<string>
   setGridResolution: (position: number, scale: number, rotation: number) => void
   getLoadingEntity: () => any | null
+  onKeyDown: (key: UnityKeyboardEvent) => void
 }
 
 export type EditorWindow = typeof window & {
-  isDCLInitialized: boolean
   initDCL: () => void
   editor: Editor
 }

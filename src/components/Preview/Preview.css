@@ -4,10 +4,21 @@
   flex: 1;
 }
 
+.Preview-wrapper .ui.loader:before {
+  border: none;
+}
+
+.Preview-wrapper .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--preview-background);
+  z-index: var(--preview-z-index);
+}
+
 .Preview {
   flex: 1;
   height: 100%;
-  background-color: var(--preview-background);
   position: relative;
 }
 
@@ -24,16 +35,4 @@
 
 .Preview.loading > canvas {
   position: absolute !important;
-}
-
-.Preview .ui.loader:before {
-  border: none;
-}
-
-.Preview > .overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: var(--preview-background);
-  z-index: var(--preview-z-index);
 }

@@ -29,6 +29,7 @@
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^5.5.0",
     "decentraland-eth": "^8.16.0",
+    "decentraland-ecs": "6.4.3-20191016192222.commit-d326e1e",
     "decentraland-experiments": "^1.0.2",
     "decentraland-ui": "^2.10.1",
     "dotenv": "6.0.0",
@@ -134,7 +135,6 @@
     "concurrently": "^4.1.0",
     "dcl-tslint-config-standard": "^1.1.0",
     "decentraland": "^3.0.0",
-    "decentraland-ecs": "^6.0.5-20190529143042.commit-d3d1809",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
     "tslint-plugin-prettier": "^2.0.1"

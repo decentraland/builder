@@ -1,7 +1,7 @@
-import { engine, GLTFShape, Transform, Entity, Gizmos, OnGizmoEvent, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
-
+const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 @Component('staticEntity')
