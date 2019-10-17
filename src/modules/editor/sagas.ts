@@ -403,7 +403,7 @@ function* handleSelectEntity(action: SelectEntityAction) {
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   yield call(() => {
     if (action.payload.enabled) {
-      editorWindow.editor.setGridResolution(POSITION_GRID_RESOLUTION, SCALE_GRID_RESOLUTION, ROTATION_GRID_RESOLUTION)
+      editorWindow.editor.setGridResolution(POSITION_GRID_RESOLUTION, ROTATION_GRID_RESOLUTION, SCALE_GRID_RESOLUTION)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
     }
