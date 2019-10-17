@@ -55,7 +55,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, BabylonSceneMetrics } from 'modules/scene/types'
+import { Scene, ComponentType, SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -172,11 +172,11 @@ function* renderScene() {
   }
 }
 
-function handleMetricsChange(args: { metrics: BabylonSceneMetrics; limits: BabylonSceneMetrics }) {
+function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
   const { metrics, limits } = args
   const scene = getCurrentScene(store.getState() as RootState)
   if (scene) {
-    store.dispatch(updateMetrics(scene.id, { ...metrics, meshes: metrics['geometries'] }, { ...limits, meshes: limits['geometries'] }))
+    store.dispatch(updateMetrics(scene.id, metrics, limits))
   }
 }
 
