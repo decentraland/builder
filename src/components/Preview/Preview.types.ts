@@ -32,7 +32,7 @@ export type Editor = {
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>
   takeScreenshot: (mime?: string) => Promise<string>
-  setGridResolution: (position: number, scale: number, rotation: number) => void
+  setGridResolution: (position: number, rotation: number, scale: number) => void
   getLoadingEntity: () => any | null
   onKeyDown: (key: UnityKeyboardEvent) => void
 }
