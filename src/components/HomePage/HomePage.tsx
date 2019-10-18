@@ -39,11 +39,8 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   handleStart = () => {
-    this.setState({ isAnimationPlaying: true })
-    document.getElementById('template-cards')!.scrollIntoView()
-    setTimeout(() => {
-      this.setState({ isAnimationPlaying: false })
-    }, 2000)
+    const templates = getTemplates()
+    this.props.onCreateProject(templates[0])
   }
 
   handleWatchVideo = () => {
