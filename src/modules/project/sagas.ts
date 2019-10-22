@@ -179,6 +179,7 @@ function* handleExportProject(action: ExportProjectRequestAction) {
       scene,
       point: { x: 0, y: 0 },
       rotation: 'east',
+      isDeploy: false,
       onProgress: progress => store.dispatch(setExportProgress(progress))
     })
   )

@@ -225,6 +225,7 @@ function* getContentServiceFiles(project: Project, point: Coordinate, rotation: 
       scene,
       point,
       rotation,
+      isDeploy: true,
       onProgress: handleProgress(ProgressStage.CREATE_FILES)
     })
   )
