@@ -149,7 +149,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
 }
 
 export function createGameFileBundle(gameFile: string): string {
-  const ecs = require('raw-loader!decentraland-ecs/dist/src/index.js')
+  const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw')
   return ecs + '\n// Builder generated code below\n' + gameFile + '\n'
 }
 
