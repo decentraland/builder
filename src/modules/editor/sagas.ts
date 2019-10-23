@@ -65,6 +65,7 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
+import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
 import {
   getNewEditorScene,
@@ -76,7 +77,6 @@ import {
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION
 } from './utils'
-import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 
 const editorWindow = window as EditorWindow
 
