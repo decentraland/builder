@@ -76,6 +76,7 @@ import {
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION
 } from './utils'
+import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -413,7 +414,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
   yield call(() => {
     const contentEntries = Object.entries(action.payload.asset.contents)
     for (let [file, hash] of contentEntries) {
-      if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith("thumbnail.png")) {
+      if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith(THUMBNAIL_PATH)) {
         editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.assetPackId}/${file}`)
       }
     }
