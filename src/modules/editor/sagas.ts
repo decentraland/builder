@@ -65,7 +65,7 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
 import {
   getNewEditorScene,
@@ -413,10 +413,9 @@ function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
 function* handlePrefetchAsset(action: PrefetchAssetAction) {
   yield call(() => {
     const contentEntries = Object.entries(action.payload.asset.contents)
-
     for (let [file, hash] of contentEntries) {
-      if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${BUILDER_SERVER_URL}/storage/assets/${hash}`)
+      if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith(THUMBNAIL_PATH)) {
+        editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.assetPackId}/${file}`)
       }
     }
   })
