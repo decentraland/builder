@@ -23,7 +23,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  // onOpenModal: name => dispatch(openModal(name)),
   onPreview: () => dispatch(togglePreview(true)),
   onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type))
 })
