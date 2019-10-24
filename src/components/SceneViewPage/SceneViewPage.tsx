@@ -113,6 +113,9 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
         <Page>
           <div className="SceneViewPage">
+            <div className="thumbnail">
+              <ViewPort />
+            </div>
             <div className="scene-action-list">
               <div style={{ flex: 1 }}/>
               <div className="scene">
@@ -120,9 +123,6 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
                   <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
                 </ShortcutTooltip>
               </div>
-            </div>
-            <div className="thumbnail">
-              <ViewPort />
             </div>
             <div className="detail">
               <div className="title">

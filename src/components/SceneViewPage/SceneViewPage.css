@@ -13,9 +13,9 @@
   top: 0;
   left: 0;
   display: flex;
-  z-index: 9999;
   padding: 12px;
   width: 100%;
+  z-index: 0;
 }
 
 .SceneViewPage .thumbnail,
@@ -24,6 +24,7 @@
   border-radius: 12px 12px 0 0;
   position: relative;
   height: fit-content;
+  z-index: 0;
 }
 
 .SceneViewPage .thumbnail {

@@ -53,8 +53,8 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.editor()} component={EditorPage} />
-            <Route exact path={locations.view()} component={SceneViewPage} />
-            <Route exact path={locations.pool()} component={SceneViewPage} />
+            <Route exact path={locations.sceneView()} component={SceneViewPage} />
+            <Route exact path={locations.poolView()} component={SceneViewPage} />
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Redirect to={locations.root()} />
           </Switch>
