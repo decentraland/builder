@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect'
 
 import { RootState } from 'modules/common/types'
+import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { ProfileState } from './reducer'
-import { getCurrentProject } from 'modules/project/selectors'
 import { Profile } from './types'
 
 export const getState: (state: RootState) => ProfileState = state => state.profile

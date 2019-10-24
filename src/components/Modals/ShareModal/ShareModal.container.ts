@@ -9,7 +9,7 @@ import { isReady } from 'modules/editor/selectors'
 import { editProject } from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { login } from 'modules/auth/actions'
-import { share } from 'modules/ui/share/actions'
+import { shareScene } from 'modules/ui/share/actions'
 import { ShareTarget } from 'modules/ui/share/types'
 
 const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
@@ -21,7 +21,7 @@ const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onSave: (id: string, project: any) => dispatch(editProject(id, project)),
   onLogin: () => dispatch(login()),
-  onShare: (target: ShareTarget) => dispatch(share(target))
+  onShare: (target: ShareTarget) => dispatch(shareScene(target))
 })
 
 export default connect(

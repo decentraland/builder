@@ -2,7 +2,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { Project } from 'modules/project/types'
 import { editProject } from 'modules/project/actions'
 import { login } from 'modules/auth/actions'
-import { share } from 'modules/ui/share/actions'
+import { shareScene } from 'modules/ui/share/actions'
 
 export type Props = ModalProps & {
   metadata: ShareModalMetadata
@@ -11,7 +11,7 @@ export type Props = ModalProps & {
   isLoggedIn: boolean
   onSave: typeof editProject
   onLogin: typeof login
-  onShare: typeof share
+  onShare: typeof shareScene
 }
 
 export type State = {
