@@ -220,21 +220,24 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   if (!selectedEntityId) return
 
   const newComponents = { ...scene.components }
+  const entityComponents = []
 
   const shapes: Record<string, ShapeComponent> = yield select(getEntityShape)
   const shape = shapes[selectedEntityId]
-
-  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
-  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+  entityComponents.push(shape.id)
 
   if (shape && shape.type === ComponentType.NFTShape) return
 
+  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+  const script = components[selectedEntityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
+
   if (!shape || !transform) return
 
+  // copy transform
   const {
     data: { position, rotation, scale }
   } = transform
-
   const transformId = uuidv4()
   newComponents[transformId] = {
     id: transformId,
@@ -245,10 +248,29 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
       scale: { ...scale }
     }
   }
+  entityComponents.push(transformId)
+
+  // copy script
+  if (script) {
+    const {
+      data: { parameters, src, assetId }
+    } = script
+    const scriptId = uuidv4()
+    newComponents[scriptId] = {
+      id: scriptId,
+      type: ComponentType.Script,
+      data: {
+        parameters: { ...parameters },
+        src,
+        assetId
+      }
+    } as ComponentDefinition<ComponentType.Script>
+    entityComponents.push(scriptId)
+  }
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: [shape.id, transformId] }
+  newEntities[entityId] = { id: entityId, components: entityComponents }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
