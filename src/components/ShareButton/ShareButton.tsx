@@ -1,8 +1,8 @@
 import * as React from 'react'
 
-import { Popup } from 'decentraland-ui'
 import Chip from 'components/Chip'
 import { ShareModalMetadata, ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
+
 import { Props, DefaultProps } from './ShareButton.types'
 import './ShareButton.css'
 
@@ -27,19 +27,9 @@ export default class ShareButton extends React.PureComponent<Props> {
 
     return (
       <span className="ShareButton tool">
-        <Popup
-          className="publish-disabled"
-          position="bottom center"
-          disabled={isLoading}
-          trigger={
-            <span>
-              <Chip icon="share" onClick={this.handleClick} isDisabled={isLoading} />
-            </span>
-          }
-          on="hover"
-          inverted
-          basic
-        />
+        <span>
+          <Chip icon="share" onClick={this.handleClick} isDisabled={isLoading} />
+        </span>
       </span>
     )
   }

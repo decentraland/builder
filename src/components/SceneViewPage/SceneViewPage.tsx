@@ -7,10 +7,8 @@ import Footer from 'components/Footer'
 import Icon from 'components/Icon'
 import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
-import ShortcutTooltip from 'components/ShortcutTooltip'
 import ViewPort from 'components/ViewPort'
 
-import { Shortcut } from 'modules/keyboard/types'
 import { Project } from 'modules/project/types'
 import { ComponentType } from 'modules/scene/types'
 
@@ -117,11 +115,9 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
               <ViewPort />
             </div>
             <div className="scene-action-list">
-              <div style={{ flex: 1 }}/>
+              <div style={{ flex: 1 }} />
               <div className="scene">
-                <ShortcutTooltip shortcut={Shortcut.PREVIEW} position="bottom center" className="tool" popupClassName="top-bar-popup">
-                  <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
-                </ShortcutTooltip>
+                <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
               </div>
             </div>
             <div className="detail">
@@ -130,7 +126,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
               </div>
               {author && (
                 <div className="author">
-                  {t('public_page.made_by')} {' '} <span className="author-name">{author.name}</span>
+                  {t('public_page.made_by')} <span className="author-name"> {author.name}</span>
                 </div>
               )}
               {author && (
