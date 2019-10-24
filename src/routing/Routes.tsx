@@ -6,16 +6,16 @@ import Intercom from 'decentraland-dapps/dist/components/Intercom'
 
 import { locations } from 'routing/locations'
 
-import HomePage from 'components/HomePage'
-import ErrorPage from 'components/ErrorPage'
-import MobilePage from 'components/MobilePage'
 import EditorPage from 'components/EditorPage'
+import ErrorPage from 'components/ErrorPage'
+import HomePage from 'components/HomePage'
+import LoadingPage from 'components/LoadingPage'
+import MobilePage from 'components/MobilePage'
 import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
-import LoadingPage from 'components/LoadingPage'
+import ViewPage from 'components/ViewPage'
 
 import { Props, State } from './Routes.types'
-import ViewPage from 'components/ViewPage'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
