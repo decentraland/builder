@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Button } from 'decentraland-ui'
+
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Props, State } from './ViewMenu.types'
 import UserMenu from 'components/UserMenu'
+import { Props, State } from './ViewMenu.types'
 
 import "./ViewMenu.css"
 

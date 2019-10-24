@@ -1,11 +1,14 @@
 import * as React from 'react'
-import { Header, Loader, Button } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Button, Header, Loader } from 'decentraland-ui'
+
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { Props, State, ShareModalType } from './ShareModal.types'
-import './ShareModal.css'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
+import { Props, ShareModalType, State } from './ShareModal.types'
+
+import './ShareModal.css'
 
 export default class ShareModal extends React.PureComponent<Props, State> {
   state: State = {

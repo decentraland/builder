@@ -1,11 +1,13 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
+import { isLoading, isReady } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
-import { MapStateProps, MapDispatch, MapDispatchProps } from './ShareButton.types'
-import ShareButton from './ShareButton'
-import { isReady, isLoading } from 'modules/editor/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
+
+import ShareButton from './ShareButton'
+import { MapDispatch, MapDispatchProps, MapStateProps } from './ShareButton.types'
+
 
 const mapState = (state: RootState): MapStateProps => ({
   project: getCurrentProject(state)!,

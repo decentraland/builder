@@ -18,7 +18,6 @@ export type Props = {
   isFetching: boolean
   isLoggedIn: boolean
   isReady: boolean
-  // onOpenModal: typeof openModal
   onLoadProject: typeof loadPublicProjectRequest
   onPreview: () => ReturnType<typeof togglePreview>
 }

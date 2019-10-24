@@ -1,20 +1,24 @@
 import * as React from 'react'
-import { Props, State } from './ViewPage.types'
-import { Page, Loader } from 'decentraland-ui'
-import NotFoundPage from 'components/NotFoundPage'
+import { Loader, Page } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
+import Chip from 'components/Chip'
 import Footer from 'components/Footer'
+import Icon from 'components/Icon'
 import Navbar from 'components/Navbar'
+import NotFoundPage from 'components/NotFoundPage'
+import ShortcutTooltip from 'components/ShortcutTooltip'
+import ViewPort from 'components/ViewPort'
+
+import { Shortcut } from 'modules/keyboard/types'
 import { Project } from 'modules/project/types'
+import { ComponentType } from 'modules/scene/types'
+
+import ViewMenu from './ViewMenu'
+import { Props, State } from './ViewPage.types'
 
 import './ViewPage.css'
-import ViewMenu from './ViewMenu'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import Icon from 'components/Icon'
-import { ComponentType } from 'modules/scene/types'
-import ViewPort from 'components/ViewPort'
-import ShortcutTooltip from 'components/ShortcutTooltip'
-import { Shortcut } from 'modules/keyboard/types'
-import Chip from 'components/Chip'
+
 
 export default class ViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -53,7 +57,7 @@ export default class ViewPage extends React.PureComponent<Props, State> {
       switch (component.type) {
         case ComponentType.GLTFShape:
         case ComponentType.NFTShape:
-          ++componentCount
+          componentCount++
           break
         default:
         // ignore
@@ -120,8 +124,6 @@ export default class ViewPage extends React.PureComponent<Props, State> {
             </div>
             <div className="thumbnail">
               <ViewPort />
-              {/* <Loader active size="large" /> */}
-              {/* <img src={project.thumbnail} /> */}
             </div>
             <div className="detail">
               <div className="title">
