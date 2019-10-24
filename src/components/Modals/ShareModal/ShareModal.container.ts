@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 // import { getData as getDeployments } from 'modules/deployment/selectors'
 import { MapStateProps, MapDispatchProps, OwnProps } from './ShareModal.types'
-import DeployModal from './ShareModal'
+import ShareModal from './ShareModal'
 import { getCurrentProject } from 'modules/project/selectors'
 import { isLoading } from 'modules/assetPack/selectors'
 import { isReady } from 'modules/editor/selectors'
@@ -28,4 +28,4 @@ const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
 export default connect(
   mapState,
   mapDispatch
-)(DeployModal)
+)(ShareModal)
