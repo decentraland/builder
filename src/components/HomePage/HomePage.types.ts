@@ -26,10 +26,6 @@ export type Props = DefaultProps & {
   onLogin: typeof login
 }
 
-export type State = {
-  isAnimationPlaying: boolean
-}
-
 export type MapStateProps = Pick<
   Props,
   'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'didCreate' | 'isLoggedIn'

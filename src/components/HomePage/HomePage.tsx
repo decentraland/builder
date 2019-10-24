@@ -16,18 +16,14 @@ import PromoBanner from './PromoBanner'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/locations'
-import { Props, State, DefaultProps } from './HomePage.types'
+import { Props, DefaultProps } from './HomePage.types'
 import './HomePage.css'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
-export default class HomePage extends React.PureComponent<Props, State> {
+export default class HomePage extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
     projects: []
-  }
-
-  state = {
-    isAnimationPlaying: false
   }
 
   handleTemplateClick = (template: Template) => {
@@ -136,7 +132,6 @@ export default class HomePage extends React.PureComponent<Props, State> {
     if (isFetching) {
       return <LoadingPage />
     }
-    const { isAnimationPlaying } = this.state
     const templates = getTemplates()
     const showDashboard = isLoggedIn || didCreate || didSync || projects.length > 0
     const hasPagination = totalPages > 1
@@ -174,7 +169,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
                   ) : null}
                 </div>
               )}
-              <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
+              <div id="template-cards" className={'template-cards'}>
                 <div className="subtitle">
                   {t('home_page.templates_title')}
                   {!showDashboard && this.renderImportButton()}
