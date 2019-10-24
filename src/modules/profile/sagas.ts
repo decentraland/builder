@@ -14,7 +14,6 @@ function* handleLoadProfileRequest(action: LoadProfileRequestAction) {
     const p: Profile = yield call(() => profile.fetchProfileById(id))
     yield put(loadProfileSuccess(p))
   } catch (e) {
-    console.log(e)
     yield put(loadProfileFailure(e.message))
   }
 }
