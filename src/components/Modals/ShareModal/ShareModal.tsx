@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { env } from 'decentraland-commons'
 import { Button, Header, Loader } from 'decentraland-ui'
 
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -9,6 +10,8 @@ import { ShareTarget } from 'modules/ui/share/types'
 import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
+
+const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', window.location.origin + '/view')
 
 export default class ShareModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -90,7 +93,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
 
   getShareLink = () => {
     const { project } = this.props
-    return 'https://share.decentraland.org/scene/' + project.id
+    return SHARE_SCENE_URL + '/' + project.id
   }
 
   renderLogin () {
