@@ -10,10 +10,7 @@ import "./SceneViewMenu.css"
 export default class SceneViewMenu extends React.PureComponent<Props, State> {
 
   handleTryItOut = () => {
-    const { onTryItOut } = this.props
-    if (onTryItOut) {
-      onTryItOut()
-    }
+    this.props.onTryItOut()
   }
 
   render () {
@@ -25,7 +22,7 @@ export default class SceneViewMenu extends React.PureComponent<Props, State> {
 
     return <div className="SceneViewMenu">
       <span className="made-with">{t("public_page.made_with")}</span>
-      <Button primary>{t("public_page.try_it_out")}</Button>
+      <Button primary onClick={this.handleTryItOut}>{t("public_page.try_it_out")}</Button>
     </div>
   }
 }
