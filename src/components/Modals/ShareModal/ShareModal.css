@@ -63,7 +63,7 @@
   text-align: center;
   font-size: 12px;
   line-height: 24px;
-  color: --innocence;
+  color: var(--innocence);
   cursor: pointer;
   text-transform: uppercase;
 }
