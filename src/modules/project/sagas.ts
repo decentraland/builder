@@ -26,7 +26,11 @@ import {
   LoadManifestRequestAction,
   loadManifestFailure,
   loadProjectsFailure,
-  loadProjectsRequest
+  loadProjectsRequest,
+  loadPublicProjectSuccess,
+  loadPublicProjectFailure,
+  LoadPublicProjectRequestAction,
+  LOAD_PUBLIC_PROJECT_REQUEST
 } from 'modules/project/actions'
 
 import { Project } from 'modules/project/types'
@@ -47,6 +51,7 @@ import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 import { builder } from 'lib/api/builder'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { loadProfileRequest } from 'modules/profile/actions'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -77,6 +82,7 @@ export function* projectSaga() {
   yield takeLatest(EDIT_PROJECT, handleEditProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
+  yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
@@ -102,6 +108,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     title: t('global.new_scene'),
     description: '',
     thumbnail: '',
+    isPublic: false,
     layout: {
       rows,
       cols
@@ -206,6 +213,22 @@ function* handleImportProject(action: ImportProjectAction) {
   }
 }
 
+function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
+  const { id, type } = action.payload
+  try {
+    const project: Project = yield call(() => builder.fetchPublicProject(id, type))
+    yield put(loadPublicProjectSuccess(project))
+    if (project) {
+      yield getSceneByProjectId(id, type)
+      if (project.userId) {
+        yield put(loadProfileRequest(project.userId))
+      }
+    }
+  } catch (e) {
+    yield put(loadPublicProjectFailure(e.message))
+  }
+}
+
 function* handleLoadProjectsRequest() {
   try {
     const projects: Project[] = yield call(() => builder.fetchProjects())
@@ -222,8 +245,9 @@ function* handleLoadProjectsRequest() {
 }
 
 function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
+  const { id, type } = action.payload
   try {
-    const manifest = yield call(() => builder.fetchManifest(action.payload.id))
+    const manifest = yield call(() => builder.fetchManifest(id, type))
     yield put(loadManifestSuccess(manifest))
   } catch (e) {
     yield put(loadManifestFailure(e.message))

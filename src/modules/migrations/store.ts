@@ -16,7 +16,7 @@ export const migrations = {
     }
   },
   '3': (state: RootState) => {
-    for (const scene of Object.values(state.scene.present.data)) {
+    for (const scene of Object.values(state && state.scene && state.scene.present && state.scene.present.data || {})) {
       // mutation ahead
       addMappings(scene)
     }
@@ -50,7 +50,7 @@ export const migrations = {
     /* tslint:enable */
   },
   '5': (state: RootState) => {
-    for (const scene of Object.values(state.scene.present.data)) {
+    for (const scene of Object.values(state && state.scene && state.scene.present && state.scene.present.data || {})) {
       // mutation ahead
       addScale(scene)
     }

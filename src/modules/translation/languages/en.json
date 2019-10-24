@@ -114,6 +114,22 @@
     "subtitle_one": "You can create custom layouts for your Scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
+  "share_modal": {
+    "title": "Share your Scene",
+    "description": "Share your Scene with your friends",
+    "share": "share",
+    "copy": "copy link",
+    "copied": "copied",
+    "uri": {
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u=https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978?description=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name!",
+      "twitter": "https://twitter.com/intent/tweet?text=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name! https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978&hashtags=avatars,virtualworld,gaming"
+    },
+    "sign_in": {
+      "action": "Sign In",
+      "subtitle": "You need to sign in before share your scene",
+      "title": "Sign In"
+    }
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -327,6 +343,13 @@
       "title": "Want to build something when you get to your computer?"
     },
     "success": "Thanks, we will keep you posted!"
+  },
+  "public_page": {
+    "made_with": "Scene made with Builder",
+    "made_by": "Scene by",
+    "try_it_out": "try it out",
+    "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
+    "object_count": "{objects} {objects, plural, one {object} other {objects}}"
   },
   "not_found_page": {
     "back": "Back to your Scenes",

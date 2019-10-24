@@ -112,6 +112,22 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
+  "share_modal": {
+    "title": "Share your Scene",
+    "description": "Share your Scene with your friends",
+    "share": "share",
+    "copy": "copy link",
+    "copied": "copied",
+    "uri": {
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u=https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978?description=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name!",
+      "twitter": "https://twitter.com/intent/tweet?text=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name! https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978&hashtags=avatars,virtualworld,gaming"
+    },
+    "sign_in": {
+      "action": "Iniciar Sesión",
+      "subtitle": "Necesitas iniciar sesión para publicar tu Escena",
+      "title": "Iniciar Sesión"
+    }
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -330,6 +346,13 @@
     "back": "Volver a tus Escenas",
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
+  },
+  "public_page": {
+    "made_with": "Scene made with Builder",
+    "made_by": "Scene by",
+    "try_it_out": "try it out",
+    "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
+    "object_count": "{objects} {objects, plural, one {object} other {objects}}"
   },
   "popups": {
     "metrics_help": "¡Ver métricas aquí!",

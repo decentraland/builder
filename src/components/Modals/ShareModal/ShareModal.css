@@ -1,0 +1,122 @@
+.ui.small.modal.ShareModal {
+  width: auto;
+  border-radius: 12px;
+}
+
+.ShareModal .login-modal,
+.ShareModal .share-modal {
+  width: 480px;
+  padding: 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ShareModal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  width: 100%;
+  flex-direction: row-reverse;
+}
+
+.ShareModal .modal-header .ui.header.modal-title {
+  margin-bottom: 0px;
+}
+
+.ShareModal .ui.header.modal-title {
+  font-size: 21px;
+  margin-bottom: 8px;
+  text-align: center;
+  margin-top: 0px;
+}
+
+.ShareModal .modal-subtitle {
+  font-size: 17px;
+  font-weight: 100;
+  text-align: center;
+  width: 100%;
+}
+
+.ShareModal .share-modal .thumbnail,
+.ShareModal .share-modal .button {
+  border-radius: 8px;
+  display: block;
+  background: #393440;
+}
+
+.ShareModal .share-modal .thumbnail {
+  width: calc(480px - 48px - 48px);
+  height: calc(360px - 48px - 48px);
+  background-size: contain;
+  background-position: center center;
+  background: #393440;
+  margin-bottom: 12px;
+}
+
+.ShareModal .share-modal .button {
+  height: 48px;
+  padding: 12px 24px;
+  font-weight: 600;
+  width: calc(50% - 6px);
+  text-align: center;
+  font-size: 12px;
+  line-height: 24px;
+  color: white;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.ShareModal .share-modal .button.facebook {
+  background: #4267b2;
+}
+.ShareModal .share-modal .button.twitter {
+  background: #1da1f2;
+}
+
+.ShareModal .share-modal .button .Icon {
+  vertical-align: middle;
+  margin-right: .5rem;
+}
+
+.ShareModal .share-modal .button-group,
+.ShareModal .share-modal .copy-group {
+  display: flex;
+  width: calc(480px - 48px - 48px);
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.ShareModal .share-modal .copy-group .copy-input {
+  background: #fff;
+  border-radius: 8px 0 0 8px;
+  flex: 1 0;
+  border: 0;
+  font-size: 15px;
+  padding: 12px 0 12px 12px;
+}
+
+.ShareModal .share-modal .copy-group .copy-button {
+  background: #fff;
+  border-radius: 0 8px 8px 0;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 12px 0;
+  line-height: 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100px;
+}
+
+.ShareModal .error {
+  visibility: hidden;
+  user-select: none;
+  color: var(--primary);
+  margin-top: 20px;
+}
+
+.ShareModal .error.visible {
+  visibility: visible;
+}

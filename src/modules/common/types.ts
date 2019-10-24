@@ -13,6 +13,7 @@ import { AssetPackState } from 'modules/assetPack/reducer'
 import { AssetState } from 'modules/asset/reducer'
 import { UIState } from 'modules/ui/reducer'
 import { ProjectState } from 'modules/project/reducer'
+import { ProfileState } from 'modules/profile/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
 import { DeploymentState } from 'modules/deployment/reducer'
@@ -38,6 +39,7 @@ export type RootState = {
   asset: AssetState
   ui: UIState
   project: ProjectState
+  profile: ProfileState
   scene: UndoableSceneState
   router: RouterState
   editor: EditorState

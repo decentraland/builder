@@ -109,6 +109,22 @@
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
+  "share_modal": {
+    "title": "Share your Scene",
+    "description": "Share your Scene with your friends",
+    "share": "share",
+    "copy": "copy link",
+    "copied": "copied",
+    "uri": {
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u=https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978?description=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name!",
+      "twitter": "https://twitter.com/intent/tweet?text=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name! https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978&hashtags=avatars,virtualworld,gaming"
+    },
+    "sign_in": {
+      "action": "Sign In",
+      "subtitle": "You need to sign in before share your scene",
+      "title": "Sign In"
+    }
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -322,6 +338,13 @@
       "title": "当回到电脑前就创作场景?"
     },
     "success": "谢谢，我们会与您联系!"
+  },
+  "public_page": {
+    "made_with": "Scene made with Builder",
+    "made_by": "Scene by",
+    "try_it_out": "try it out",
+    "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
+    "object_count": "{objects} {objects, plural, one {object} other {objects}}"
   },
   "not_found_page": {
     "back": "返回场景",

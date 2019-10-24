@@ -97,13 +97,27 @@ export type LoadProjectsRequestAction = ReturnType<typeof loadProjectsRequest>
 export type LoadProjectsSuccessAction = ReturnType<typeof loadProjectsSuccess>
 export type LoadProjectsFailureAction = ReturnType<typeof loadProjectsFailure>
 
+// Load public cloud project
+
+export const LOAD_PUBLIC_PROJECT_REQUEST = '[Request] Load public project'
+export const LOAD_PUBLIC_PROJECT_SUCCESS = '[Success] Load public project'
+export const LOAD_PUBLIC_PROJECT_FAILURE = '[Failure] Load public project'
+
+export const loadPublicProjectRequest = (id: string, type: 'public' | 'pool') => action(LOAD_PUBLIC_PROJECT_REQUEST, { id, type })
+export const loadPublicProjectSuccess = (project: Project) => action(LOAD_PUBLIC_PROJECT_SUCCESS, { project })
+export const loadPublicProjectFailure = (error: string) => action(LOAD_PUBLIC_PROJECT_FAILURE, { error })
+
+export type LoadPublicProjectRequestAction = ReturnType<typeof loadPublicProjectRequest>
+export type LoadPublicProjectSuccessAction = ReturnType<typeof loadPublicProjectSuccess>
+export type LoadPublicProjectFailureAction = ReturnType<typeof loadPublicProjectFailure>
+
 // Load project manifest
 
 export const LOAD_MANIFEST_REQUEST = '[Request] Load manifest'
 export const LOAD_MANIFEST_SUCCESS = '[Success] Load manifest'
 export const LOAD_MANIFEST_FAILURE = '[Failure] Load manifest'
 
-export const loadManifestRequest = (id: string) => action(LOAD_MANIFEST_REQUEST, { id })
+export const loadManifestRequest = (id: string, type: 'project' | 'public' | 'pool' = 'project') => action(LOAD_MANIFEST_REQUEST, { id, type })
 export const loadManifestSuccess = (manifest: Manifest) => action(LOAD_MANIFEST_SUCCESS, { manifest })
 export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILURE, { error })
 

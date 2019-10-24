@@ -22,7 +22,13 @@ import {
   LoadManifestSuccessAction,
   LoadManifestFailureAction,
   LOAD_MANIFEST_SUCCESS,
-  LOAD_MANIFEST_FAILURE
+  LOAD_MANIFEST_FAILURE,
+  LoadPublicProjectRequestAction,
+  LoadPublicProjectSuccessAction,
+  LoadPublicProjectFailureAction,
+  LOAD_PUBLIC_PROJECT_REQUEST,
+  LOAD_PUBLIC_PROJECT_SUCCESS,
+  LOAD_PUBLIC_PROJECT_FAILURE
 } from 'modules/project/actions'
 
 export type ProjectState = {
@@ -43,6 +49,9 @@ export type ProjectReducerAction =
   | EditProjectAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
+  | LoadPublicProjectRequestAction
+  | LoadPublicProjectSuccessAction
+  | LoadPublicProjectFailureAction
   | LoadProjectsRequestAction
   | LoadProjectsSuccessAction
   | LoadProjectsFailureAction
@@ -107,6 +116,23 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
+      }
+    }
+    case LOAD_PUBLIC_PROJECT_REQUEST:
+    case LOAD_PUBLIC_PROJECT_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case LOAD_PUBLIC_PROJECT_SUCCESS: {
+      const { project } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [project.id]: project
+        }
       }
     }
     case LOAD_MANIFEST_SUCCESS: {

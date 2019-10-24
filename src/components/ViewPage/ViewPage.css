@@ -1,0 +1,121 @@
+.ViewPage {
+  display: block;
+  position: relative;
+  background: #242129;
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto;
+  border-radius: 8px;
+}
+
+.ViewPage .scene-action-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  z-index: 9999;
+  padding: 12px;
+  width: 100%;
+}
+
+.ViewPage .thumbnail,
+.ViewPage .thumbnail img {
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+  height: fit-content;
+}
+
+.ViewPage .thumbnail {
+  height: 600px;
+  background: #393440;
+  display: flex;
+  align-items: center;
+}
+
+.ViewPage .thumbnail .ui.loader {
+  z-index: 0;
+}
+
+.ViewPage .thumbnail .Preview-wrapper,
+.ViewPage .thumbnail .Preview-wrapper .Preview,
+.ViewPage .thumbnail .Preview-wrapper .Preview canvas {
+  border-radius: 12px 12px 0 0;
+}
+
+.ViewPage .detail {
+  overflow: auto;
+  padding: 32px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ViewPage .detail .title {
+  flex: 1;
+}
+.ViewPage .detail .title h1 {
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 30px;
+  margin: 0;
+}
+
+.ViewPage .detail .author {
+  color: #736e7d;
+  font-size: 15px;
+  line-height: 24px;
+  margin: 0;
+}
+
+.ViewPage .detail .author .author-name {
+  color: #ff2d55;
+}
+
+.ViewPage .detail .avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;  
+  margin-left: 12px;
+  background: #fff;
+}
+
+.ViewPage .detail .avatar img {
+  border-radius: 12px; 
+  width: 24px;
+  height: 24px;
+}
+
+.ViewPage .detail .description {
+  font-size: 17px;
+  line-height: 24px;
+  margin: 8px 0;
+  opacity: 0.8;
+  letter-spacing: -0.2px;
+  flex: 0 0 100%;
+}
+
+.ViewPage .detail .component-list {
+  color: #736e7d;
+  font-weight: 600;
+  display: flex;
+  font-size: 13px;
+  line-height: 16px;
+  text-transform: uppercase;
+  margin-top: 24px;
+  flex: 0 0 100%
+}
+
+.ViewPage .detail .component-list .component {
+  margin-right: 24px;
+}
+
+.ViewPage .detail .component-list .component .Icon {
+  margin-right: .5em;
+  vertical-align: top;
+}
+
+@media  only screen and (max-width: 900px) {
+  .ViewPage .thumbnail {
+    min-height: 60wv;
+  }
+}

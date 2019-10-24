@@ -19,6 +19,7 @@ export type RemoteProject = {
   title: string
   description: string
   thumbnail: string
+  is_public: boolean
   scene_id: string
   user_id: string | null
   rows: number
@@ -59,6 +60,7 @@ function toRemoteProject(project: Project): Omit<RemoteProject, 'thumbnail'> {
     id: project.id,
     title: project.title,
     description: project.description,
+    is_public: project.isPublic,
     scene_id: project.sceneId,
     user_id: project.userId,
     rows: project.layout.rows,
@@ -74,6 +76,7 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     title: remoteProject.title,
     description: remoteProject.description,
     thumbnail: `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/thumbnail.png`,
+    isPublic: !!remoteProject.is_public,
     sceneId: remoteProject.scene_id,
     userId: remoteProject.user_id,
     layout: {
@@ -226,6 +229,11 @@ export class BuilderAPI extends BaseAPI {
     return items.map(fromRemoteProject)
   }
 
+  async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
+    const project: RemoteProject = await this.request('get', `/projects/${projectId}/${type}`)
+    return fromRemoteProject(project)
+  }
+
   async saveProject(project: Project, scene: Scene) {
     const manifest = createManifest(toRemoteProject(project), scene)
     await this.request('put', `/projects/${project.id}/manifest`, { manifest }, authorize())
@@ -245,8 +253,9 @@ export class BuilderAPI extends BaseAPI {
     return
   }
 
-  async fetchManifest(id: string) {
-    const remoteManifest = await this.request('get', `/projects/${id}/manifest`, null, authorize())
+  async fetchManifest(id: string, type: 'project' | 'public' | 'pool' = 'project') {
+    const axiosRequestConfig = type === 'project' ? authorize() : {}
+    const remoteManifest = await this.request('get', `/${type}s/${id}/manifest`, null, axiosRequestConfig)
     const manifest = {
       ...remoteManifest,
       project: fromRemoteProject(remoteManifest.project)
