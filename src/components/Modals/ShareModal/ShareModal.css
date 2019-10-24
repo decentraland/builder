@@ -43,7 +43,7 @@
 .ShareModal .share-modal .button {
   border-radius: 8px;
   display: block;
-  background: #393440;
+  background: var(--preview-background);
 }
 
 .ShareModal .share-modal .thumbnail {
@@ -51,7 +51,7 @@
   height: calc(360px - 48px - 48px);
   background-size: contain;
   background-position: center center;
-  background: #393440;
+  background: rgba(var(--bluish-steel-raw), 0.16);
   margin-bottom: 12px;
 }
 
@@ -63,16 +63,16 @@
   text-align: center;
   font-size: 12px;
   line-height: 24px;
-  color: white;
+  color: --primary-text;
   cursor: pointer;
   text-transform: uppercase;
 }
 
 .ShareModal .share-modal .button.facebook {
-  background: #4267b2;
+  background: var(--facebook)
 }
 .ShareModal .share-modal .button.twitter {
-  background: #1da1f2;
+  background: var(--twitter);
 }
 
 .ShareModal .share-modal .button .Icon {
@@ -89,7 +89,7 @@
 }
 
 .ShareModal .share-modal .copy-group .copy-input {
-  background: #fff;
+  background: var(--innocence);
   border-radius: 8px 0 0 8px;
   flex: 1 0;
   border: 0;
@@ -98,7 +98,7 @@
 }
 
 .ShareModal .share-modal .copy-group .copy-button {
-  background: #fff;
+  background: var(--innocence);
   border-radius: 0 8px 8px 0;
   font-weight: 600;
   font-size: 12px;

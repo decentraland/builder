@@ -1,7 +1,7 @@
 .ViewPage {
   display: block;
   position: relative;
-  background: #242129;
+  background: rgba(var(--bluish-steel-raw), 0.16);
   width: 100%;
   max-width: 900px;
   margin: 40px auto;
@@ -28,7 +28,7 @@
 
 .ViewPage .thumbnail {
   height: 600px;
-  background: #393440;
+  background: rgba(var(--bluish-steel-raw), 0.4);
   display: flex;
   align-items: center;
 }
@@ -61,14 +61,14 @@
 }
 
 .ViewPage .detail .author {
-  color: #736e7d;
+  color: var(--share-detail-text);
   font-size: 15px;
   line-height: 24px;
   margin: 0;
 }
 
 .ViewPage .detail .author .author-name {
-  color: #ff2d55;
+  color: var(--summer-red);
 }
 
 .ViewPage .detail .avatar {
@@ -76,7 +76,7 @@
   height: 24px;
   border-radius: 12px;  
   margin-left: 12px;
-  background: #fff;
+  background: var(--innocence);
 }
 
 .ViewPage .detail .avatar img {
@@ -89,13 +89,13 @@
   font-size: 17px;
   line-height: 24px;
   margin: 8px 0;
-  opacity: 0.8;
+  color: rgba(var(--innocence-raw), .8);
   letter-spacing: -0.2px;
   flex: 0 0 100%;
 }
 
 .ViewPage .detail .component-list {
-  color: #736e7d;
+  color: var(--share-detail-text);
   font-weight: 600;
   display: flex;
   font-size: 13px;
