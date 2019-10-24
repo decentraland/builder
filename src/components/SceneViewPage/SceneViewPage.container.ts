@@ -9,8 +9,8 @@ import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview } from 'modules/editor/actions'
 
-import { MapStateProps, MapDispatch, MapDispatchProps } from './ViewPage.types'
-import ViewPage from './ViewPage'
+import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
+import SceneViewPage from './SceneViewPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
@@ -28,4 +28,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type))
 })
 
-export default connect(mapState, mapDispatch)(ViewPage)
+export default connect(mapState, mapDispatch)(SceneViewPage)

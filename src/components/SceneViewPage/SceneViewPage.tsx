@@ -14,13 +14,12 @@ import { Shortcut } from 'modules/keyboard/types'
 import { Project } from 'modules/project/types'
 import { ComponentType } from 'modules/scene/types'
 
-import ViewMenu from './ViewMenu'
-import { Props, State } from './ViewPage.types'
+import SceneViewMenu from './SceneViewMenu'
+import { Props, State } from './SceneViewPage.types'
 
-import './ViewPage.css'
+import './SceneViewPage.css'
 
-
-export default class ViewPage extends React.PureComponent<Props, State> {
+export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
     const { currentProject, match, onLoadProject } = this.props
     if (!currentProject && match.params.projectId) {
@@ -82,7 +81,7 @@ export default class ViewPage extends React.PureComponent<Props, State> {
   renderLoading() {
     return (
       <>
-        <Navbar isFullscreen rightMenu={<ViewMenu />} />
+        <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
         <Page isFullscreen>
           <Loader active size="huge" />
         </Page>
@@ -111,9 +110,9 @@ export default class ViewPage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <Navbar isFullscreen rightMenu={<ViewMenu />} />
+        <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
         <Page>
-          <div className="ViewPage">
+          <div className="SceneViewPage">
             <div className="scene-action-list">
               <div style={{ flex: 1 }}/>
               <div className="scene">

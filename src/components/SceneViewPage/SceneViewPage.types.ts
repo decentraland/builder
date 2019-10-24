@@ -30,7 +30,6 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview'>
 export type MapDispatch = Dispatch<
-  // | OpenModalAction
   | LoadPublicProjectRequestAction
   | TogglePreviewAction
 >

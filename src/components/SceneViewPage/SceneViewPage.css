@@ -1,4 +1,4 @@
-.ViewPage {
+.SceneViewPage {
   display: block;
   position: relative;
   background: rgba(var(--bluish-steel-raw), 0.16);
@@ -8,7 +8,7 @@
   border-radius: 8px;
 }
 
-.ViewPage .scene-action-list {
+.SceneViewPage .scene-action-list {
   position: absolute;
   top: 0;
   left: 0;
@@ -18,60 +18,60 @@
   width: 100%;
 }
 
-.ViewPage .thumbnail,
-.ViewPage .thumbnail img {
+.SceneViewPage .thumbnail,
+.SceneViewPage .thumbnail img {
   width: 100%;
   border-radius: 12px 12px 0 0;
   position: relative;
   height: fit-content;
 }
 
-.ViewPage .thumbnail {
+.SceneViewPage .thumbnail {
   height: 600px;
   background: rgba(var(--bluish-steel-raw), 0.4);
   display: flex;
   align-items: center;
 }
 
-.ViewPage .thumbnail .ui.loader {
+.SceneViewPage .thumbnail .ui.loader {
   z-index: 0;
 }
 
-.ViewPage .thumbnail .Preview-wrapper,
-.ViewPage .thumbnail .Preview-wrapper .Preview,
-.ViewPage .thumbnail .Preview-wrapper .Preview canvas {
+.SceneViewPage .thumbnail .Preview-wrapper,
+.SceneViewPage .thumbnail .Preview-wrapper .Preview,
+.SceneViewPage .thumbnail .Preview-wrapper .Preview canvas {
   border-radius: 12px 12px 0 0;
 }
 
-.ViewPage .detail {
+.SceneViewPage .detail {
   overflow: auto;
   padding: 32px;
   display: flex;
   flex-wrap: wrap;
 }
 
-.ViewPage .detail .title {
+.SceneViewPage .detail .title {
   flex: 1;
 }
-.ViewPage .detail .title h1 {
+.SceneViewPage .detail .title h1 {
   font-size: 21px;
   font-weight: 500;
   line-height: 30px;
   margin: 0;
 }
 
-.ViewPage .detail .author {
+.SceneViewPage .detail .author {
   color: var(--share-detail-text);
   font-size: 15px;
   line-height: 24px;
   margin: 0;
 }
 
-.ViewPage .detail .author .author-name {
+.SceneViewPage .detail .author .author-name {
   color: var(--summer-red);
 }
 
-.ViewPage .detail .avatar {
+.SceneViewPage .detail .avatar {
   width: 24px;
   height: 24px;
   border-radius: 12px;  
@@ -79,13 +79,13 @@
   background: var(--innocence);
 }
 
-.ViewPage .detail .avatar img {
+.SceneViewPage .detail .avatar img {
   border-radius: 12px; 
   width: 24px;
   height: 24px;
 }
 
-.ViewPage .detail .description {
+.SceneViewPage .detail .description {
   font-size: 17px;
   line-height: 24px;
   margin: 8px 0;
@@ -94,7 +94,7 @@
   flex: 0 0 100%;
 }
 
-.ViewPage .detail .component-list {
+.SceneViewPage .detail .component-list {
   color: var(--share-detail-text);
   font-weight: 600;
   display: flex;
@@ -105,17 +105,17 @@
   flex: 0 0 100%
 }
 
-.ViewPage .detail .component-list .component {
+.SceneViewPage .detail .component-list .component {
   margin-right: 24px;
 }
 
-.ViewPage .detail .component-list .component .Icon {
+.SceneViewPage .detail .component-list .component .Icon {
   margin-right: .5em;
   vertical-align: top;
 }
 
 @media  only screen and (max-width: 900px) {
-  .ViewPage .thumbnail {
+  .SceneViewPage .thumbnail {
     min-height: 60wv;
   }
 }

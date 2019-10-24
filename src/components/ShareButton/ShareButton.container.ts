@@ -8,7 +8,6 @@ import { getCurrentProject } from 'modules/project/selectors'
 import ShareButton from './ShareButton'
 import { MapDispatch, MapDispatchProps, MapStateProps } from './ShareButton.types'
 
-
 const mapState = (state: RootState): MapStateProps => ({
   project: getCurrentProject(state)!,
   isLoading: !isReady(state) || isLoading(state)

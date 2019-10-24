@@ -13,7 +13,7 @@ import LoadingPage from 'components/LoadingPage'
 import MobilePage from 'components/MobilePage'
 import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
-import ViewPage from 'components/ViewPage'
+import SceneViewPage from 'components/SceneViewPage'
 
 import { Props, State } from './Routes.types'
 
@@ -53,8 +53,8 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.editor()} component={EditorPage} />
-            <Route exact path={locations.view()} component={ViewPage} />
-            <Route exact path={locations.pool()} component={ViewPage} />
+            <Route exact path={locations.view()} component={SceneViewPage} />
+            <Route exact path={locations.pool()} component={SceneViewPage} />
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Redirect to={locations.root()} />
           </Switch>
