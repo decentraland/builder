@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import { Popup } from 'decentraland-ui'
-// import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Chip from 'components/Chip'
 import { ShareModalMetadata, ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 import { Props, DefaultProps } from './ShareButton.types'

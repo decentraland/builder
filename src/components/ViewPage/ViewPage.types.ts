@@ -1,7 +1,6 @@
 import { Dispatch } from 'redux'
 import { match } from 'react-router'
 
-// import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Project } from 'modules/project/types'
 import { loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'modules/project/actions'
 import { Scene } from 'modules/scene/types'

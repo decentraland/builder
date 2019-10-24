@@ -1,7 +1,6 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-// import { getData as getDeployments } from 'modules/deployment/selectors'
 import { MapStateProps, MapDispatchProps, OwnProps } from './ShareModal.types'
 import ShareModal from './ShareModal'
 import { getCurrentProject } from 'modules/project/selectors'

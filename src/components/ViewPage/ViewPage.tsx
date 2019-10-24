@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Props, State } from './ViewPage.types'
 import { Page, Loader } from 'decentraland-ui'
-// import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import NotFoundPage from 'components/NotFoundPage'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
