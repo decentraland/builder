@@ -96,12 +96,11 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         <T
           id="asset_pack.import.cta"
           values={{
-            models_link: <span
-              className="link"
-              onClick={this.handleOpenDocs}
-            >
-              GLB, GLTF, ZIP
-            </span>,
+            models_link: (
+              <span className="link" onClick={this.handleOpenDocs}>
+                GLB, GLTF, ZIP
+              </span>
+            ),
             action: (
               <span className="action" onClick={open}>
                 {t('import_modal.upload_manually')}
@@ -128,7 +127,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const fileNames: string[] = []
 
     zip.forEach(fileName => {
-      if (fileName === EXPORT_PATH.MANIFEST_FILE) {
+      if (fileName === EXPORT_PATH.MANIFEST_FILE || fileName === EXPORT_PATH.GAME_FILE) {
         this.analytics.track('Asset Importer Error Scene File')
         throw new Error(
           t('asset_pack.import.errors.scene_file', {
