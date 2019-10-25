@@ -145,7 +145,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
             {t('share_modal.title')}
           </Header>
           <p className="modal-subtitle">{t('share_modal.description')}</p>
-          <div className="thumbnail" style={{ backgroundImage: `url("./image.png")` }} />
+          <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }} />
           <div className="button-group">
             <a className="button facebook" onClick={this.handleShareWithFacebook} href={this.getFacebookLink()}>
               <Icon name="facebook" /> {t(`share_modal.share`)}
