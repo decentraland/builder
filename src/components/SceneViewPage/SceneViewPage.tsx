@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Page } from 'decentraland-ui'
+import { Loader, Page, Responsive } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
@@ -68,10 +68,6 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
     return componentCount - parcelCount
   }
 
-  renderPreview() {
-    return <ViewPort />
-  }
-
   renderNotFount() {
     return <NotFoundPage />
   }
@@ -99,26 +95,25 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
       return this.renderNotFount()
     }
 
-    if (isPreviewing) {
-      return this.renderPreview()
-    }
-
     const project = currentProject as Project
     const { currentAuthor: author } = this.props
 
     return (
       <>
-        <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
-        <Page>
-          <div className="SceneViewPage">
-            <div className="thumbnail">
-              <ViewPort />
+        {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
+          <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '') }>
+            <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }}>
+            <Responsive minWidth={1025} as={React.Fragment}>
+              <ViewPort key="SceneView" />
+            </Responsive>
             </div>
             <div className="scene-action-list">
               <div style={{ flex: 1 }} />
-              <div className="scene">
-                <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
-              </div>
+              <Responsive minWidth={1025} as={React.Fragment}>
+                <div className="scene-action">
+                  <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
+                </div>
+              </Responsive>
             </div>
             <div className="detail">
               <div className="title">
@@ -126,12 +121,11 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
               </div>
               {author && (
                 <div className="author">
-                  {t('public_page.made_by')} <span className="author-name"> {author.name}</span>
-                </div>
-              )}
-              {author && (
-                <div className="avatar">
-                  <img width="24" height="24" src={author.avatar.snapshots.face} />
+                  {t('public_page.made_by')}
+                  <span className="author-name"> {author.name}</span>
+                  <div className="avatar">
+                    <img width="24" height="24" src={author.avatar.snapshots.face} />
+                  </div>
                 </div>
               )}
               {project.description && (
@@ -149,8 +143,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
               </div>
             </div>
           </div>
-        </Page>
-        <Footer isFullscreen />
+        {!isPreviewing && <Footer isFullscreen />}
       </>
     )
   }

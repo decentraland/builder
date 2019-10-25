@@ -18,30 +18,52 @@
   z-index: 0;
 }
 
-.SceneViewPage .thumbnail,
-.SceneViewPage .thumbnail img {
-  width: 100%;
-  border-radius: 12px 12px 0 0;
-  position: relative;
-  height: fit-content;
-  z-index: 0;
+.SceneViewPage.preview .scene-action-list {
+  display: none
 }
 
 .SceneViewPage .thumbnail {
+  width: 100%;
+  position: relative;
+  height: fit-content;
+  z-index: 0;
   height: 600px;
   background: rgba(var(--bluish-steel-raw), 0.4);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
   display: flex;
   align-items: center;
+  pointer-events: none;
+}
+
+
+.SceneViewPage.preview,
+.SceneViewPage.preview .thumbnail {
+  max-width: 100%;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  pointer-events: all;
 }
 
 .SceneViewPage .thumbnail .ui.loader {
   z-index: 0;
 }
 
+.SceneViewPage .thumbnail,
 .SceneViewPage .thumbnail .Preview-wrapper,
 .SceneViewPage .thumbnail .Preview-wrapper .Preview,
 .SceneViewPage .thumbnail .Preview-wrapper .Preview canvas {
   border-radius: 12px 12px 0 0;
+}
+
+.SceneViewPage.preview .thumbnail,
+.SceneViewPage.preview .thumbnail .Preview-wrapper,
+.SceneViewPage.preview .thumbnail .Preview-wrapper .Preview,
+.SceneViewPage.preview .thumbnail .Preview-wrapper .Preview canvas {
+  border-radius: 0;
 }
 
 .SceneViewPage .detail {
@@ -51,9 +73,14 @@
   flex-wrap: wrap;
 }
 
+.SceneViewPage.preview .detail {
+  display: none
+}
+
 .SceneViewPage .detail .title {
   flex: 1;
 }
+
 .SceneViewPage .detail .title h1 {
   font-size: 21px;
   font-weight: 500;
@@ -78,6 +105,8 @@
   border-radius: 12px;  
   margin-left: 12px;
   background: var(--innocence);
+  display: inline-block;
+  vertical-align: bottom;
 }
 
 .SceneViewPage .detail .avatar img {
@@ -115,8 +144,15 @@
   vertical-align: top;
 }
 
-@media  only screen and (max-width: 900px) {
+@media only screen and (max-width: 900px) {
   .SceneViewPage .thumbnail {
-    min-height: 60wv;
+    height: 90vw;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .SceneViewPage .detail .title,
+  .SceneViewPage .detail .author {
+    flex: 0 0 100%;
   }
 }
