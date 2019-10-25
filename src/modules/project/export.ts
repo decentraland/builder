@@ -284,6 +284,7 @@ export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames
         .shift() // "ModelName"
       if (!modelName) throw Error('Invalid name')
       modelName = modelName[0].toLowerCase() + modelName.slice(1) // PascalCase to camelCase
+      modelName = modelName.replace(/\s/g, '_') // replace spaces with underscores
     } else {
       const nft = Object.values(scene.components).find(
         component => component.type === ComponentType.NFTShape && entity.components.includes(component.id)
