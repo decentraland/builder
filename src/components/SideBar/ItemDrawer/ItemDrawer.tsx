@@ -10,6 +10,7 @@ import CategoryList from '../CategoryList'
 import AssetList from '../AssetList'
 import NoResults from '../NoResults'
 import WalletSignIn from '../WalletSignIn'
+import EntityEditor from '../EntityEditor'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
@@ -35,12 +36,24 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   renderList() {
-    const { search, isList, selectedAssetPack, selectedCategory, categories, isConnected, isLoadingAssets } = this.props
+    const {
+      search,
+      isList,
+      selectedAssetPack,
+      selectedCategory,
+      categories,
+      isConnected,
+      isLoadingAssets,
+      hasScript,
+      selectedEntityId
+    } = this.props
 
     const isSearch = search.length > 0
     const isCollectibleAssetPackSelected = selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID
 
-    if (isCollectibleAssetPackSelected && isLoadingAssets) {
+    if (hasScript) {
+      return <EntityEditor entityId={selectedEntityId!} />
+    } else if (isCollectibleAssetPackSelected && isLoadingAssets) {
       return <Loader active size="massive" />
     } else if (isCollectibleAssetPackSelected && !isConnected) {
       return <WalletSignIn />
@@ -61,19 +74,23 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isConnected } = this.props
+    const { isConnected, hasScript } = this.props
     return (
       <div className="ItemDrawer">
-        <SidebarHeader />
-        <SidebarSearch onResetScroll={this.handleResetScroll} />
+        {!hasScript && (
+          <>
+            <SidebarHeader />
+            <SidebarSearch onResetScroll={this.handleResetScroll} />
+          </>
+        )}
+
         <div ref={this.setDrawerContainer} className="overflow-container">
           {this.renderList()}
-          {this.isViewingCollectibles() &&
-            isConnected && (
-              <span className="disclaimer">
-                <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
-              </span>
-            )}
+          {this.isViewingCollectibles() && isConnected && (
+            <span className="disclaimer">
+              <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
+            </span>
+          )}
         </div>
       </div>
     )

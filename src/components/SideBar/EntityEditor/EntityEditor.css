@@ -1,0 +1,31 @@
+.EntityEditor .thumbnail {
+  width: 328px;
+  height: 328px;
+  background: rgba(var(--bluish-steel-raw), 0.4);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.EntityEditor .thumbnail img {
+  width: 100%;
+  height: 100%;
+}
+
+.EntityEditor .field {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.4);
+  border-radius: 6px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.EntityEditor .field .label {
+  color: rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.EntityEditor .header {
+  color: var(--sidebar-heading);
+  font-size: 17px;
+  user-select: none;
+}

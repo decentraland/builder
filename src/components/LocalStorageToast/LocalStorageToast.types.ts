@@ -12,7 +12,7 @@ export type State = {
   isVisible: boolean
 }
 
-export type MapStateProps = {}
+export type MapStateProps = Pick<Props, 'project'>
 
 export type MapDispatchProps = Pick<Props, 'onLogin'>
 

@@ -1,10 +1,10 @@
 // @ts-ignore
-import Dockerfile from '!raw-loader!decentraland/dist/samples/ecs/Dockerfile'
+import Dockerfile from '!raw-loader!decentraland/samples/ecs/Dockerfile'
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
-import packageJson from 'decentraland/dist/samples/ecs/package.json'
-import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
-import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
+import packageJson from 'decentraland/samples/ecs/package.json'
+import sceneJson from 'decentraland/samples/ecs/scene.json'
+import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
@@ -117,7 +117,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   const components: Record<string, object> = {}
   const scripts = new Map<string, string>()
   const hosts = new Set<string>()
-  const instances: { entityId: string; assetId: string; parameters: Record<string, string | number> }[] = []
+  const instances: { entityId: string; assetId: string; parameters: Record<string, string | number | boolean> }[] = []
   for (const component of Object.values(scene.components)) {
     switch (component.type) {
       case ComponentType.GLTFShape: {

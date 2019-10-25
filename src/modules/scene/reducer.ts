@@ -9,7 +9,8 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS,
   CREATE_SCENE,
-  CreateSceneAction
+  CreateSceneAction,
+  SetScriptParametersAction
 } from 'modules/scene/actions'
 import { DeleteProjectAction, DELETE_PROJECT, LoadManifestSuccessAction } from 'modules/project/actions'
 
@@ -26,6 +27,7 @@ export type SceneReducerAction =
   | CreateSceneAction
   | DeleteProjectAction
   | LoadManifestSuccessAction
+  | SetScriptParametersAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -78,6 +80,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       delete newState.data[project.sceneId]
       return newState
     }
+
     default:
       return state
   }
