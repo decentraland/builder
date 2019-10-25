@@ -45,14 +45,12 @@ export async function createFiles(args: {
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
   const { project, scene, point, rotation, isDeploy, onProgress } = args
-  const models = await downloadFiles({ scene, onProgress })
-  const sceneHasScripts = hasScripts(scene)
-  const useLightweight = isDeploy && !sceneHasScripts
-  const gameFile = createGameFile({ project, scene, rotation }, useLightweight)
+  const models = await downloadFiles({ scene, onProgress, isDeploy })
+  const gameFile = createGameFile({ project, scene, rotation }, isDeploy)
   return {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
-    [EXPORT_PATH.BUNDLED_GAME_FILE]: sceneHasScripts ? createGameFileBundle(gameFile) : gameFile,
+    [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
     ...createDynamicFiles({ project, scene, point, rotation }),
     ...createStaticFiles(),
     ...models
@@ -63,9 +61,10 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
   return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 
-export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, useLightweight = false) {
+export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
   const takenNames = new Set<string>()
+  const useLightweight = isDeploy && !hasScripts(scene)
   const Writer = useLightweight ? LightweightWriter : SceneWriter
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
   const { cols, rows } = project.layout
@@ -188,34 +187,71 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
 
   // SCRIPTS SECTION
   if (scripts.size > 0) {
-    const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw')
+    if (isDeploy) {
+      const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw')
 
-    // create executeScripts function
-    let executeScripts = 'async function executeScripts() {'
-    const assetIdToScriptName = new Map<string, string>()
-    let currentScript = 1
-    // instantiate all the scripts
-    for (const [assetId, src] of Array.from(scripts)) {
-      const scriptName = 'script_' + currentScript++
-      assetIdToScriptName.set(assetId, scriptName)
-      executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${src}")`
-    }
-    // initialize all the scripts
-    for (const [assetId] of Array.from(scripts)) {
-      const script = assetIdToScriptName.get(assetId)
-      executeScripts += `\n\t${script}.init()`
-    }
-    // spawn all the instances
-    for (const { entityId, assetId, parameters } of instances) {
-      const script = assetIdToScriptName.get(assetId)
-      const host = entityIdToName.get(entityId)
-      const params = JSON.stringify(parameters)
-      executeScripts += `\n\t${script}.spawn(${host}, ${params})`
-    }
-    // call function
-    executeScripts += '\n}\nexecuteScripts()'
+      // create executeScripts function
+      let executeScripts = 'async function executeScripts() {'
+      const assetIdToScriptName = new Map<string, string>()
+      let currentScript = 1
+      // instantiate all the scripts
+      for (const [assetId, src] of Array.from(scripts)) {
+        const scriptName = 'script_' + currentScript++
+        assetIdToScriptName.set(assetId, scriptName)
+        executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${src}")`
+      }
+      // initialize all the scripts
+      for (const [assetId] of Array.from(scripts)) {
+        const script = assetIdToScriptName.get(assetId)
+        executeScripts += `\n\t${script}.init()`
+      }
+      // spawn all the instances
+      for (const { entityId, assetId, parameters } of instances) {
+        const script = assetIdToScriptName.get(assetId)
+        const host = entityIdToName.get(entityId)
+        const params = JSON.stringify(parameters)
+        executeScripts += `\n\t${script}.spawn(${host}, ${params})`
+      }
+      // call function
+      executeScripts += '\n}\nexecuteScripts()'
 
-    code = code + '\n\n' + scriptLoader + '\n\n' + executeScripts
+      code = code + '\n\n' + scriptLoader + '\n\n' + executeScripts
+    } else {
+      // import all the scripts
+      let importScripts = ''
+      let currentImport = 1
+      const assetIdToConstructorName = new Map<string, string>()
+      for (const [assetId] of Array.from(scripts)) {
+        const constructorName = 'constructor_' + currentImport++
+        assetIdToConstructorName.set(assetId, constructorName)
+        importScripts += `import ${constructorName} from "../${assetId}/src/item"\n`
+      }
+
+      // execute all the scripts
+      let executeScripts = ''
+      let currentInstance = 1
+      const assetIdToScriptName = new Map<string, string>()
+      // instantiate all the scripts
+      for (const [assetId] of Array.from(scripts)) {
+        const scriptName = 'script_' + currentInstance++
+        assetIdToScriptName.set(assetId, scriptName)
+        executeScripts += `\nconst ${scriptName} = new ${assetIdToConstructorName.get(assetId)}()`
+      }
+      // initialize all the scripts
+      for (const [assetId] of Array.from(scripts)) {
+        const script = assetIdToScriptName.get(assetId)
+        executeScripts += `\n${script}.init()`
+      }
+      // spawn all the instances
+      for (const { entityId, assetId, parameters } of instances) {
+        const script = assetIdToScriptName.get(assetId)
+        const host = entityIdToName.get(entityId)
+        const params = JSON.stringify(parameters)
+        executeScripts += `\n${script}.spawn(${host}, ${params})`
+      }
+
+      code = importScripts + code + executeScripts
+    }
   }
 
   return code
@@ -292,11 +328,15 @@ export function createStaticFiles() {
   }
 }
 
-export async function downloadFiles(args: { scene: Scene; onProgress: (args: { loaded: number; total: number }) => void }) {
-  const { scene, onProgress } = args
+export async function downloadFiles(args: {
+  scene: Scene
+  onProgress: (args: { loaded: number; total: number }) => void
+  isDeploy: boolean
+}) {
+  const { scene, onProgress, isDeploy } = args
   const mappings: Record<string, DownloadableFile> = {}
 
-  let models = {}
+  let files: Record<string, Blob> = {}
   let shouldDownloadFrame = false
 
   // Track progress
@@ -338,20 +378,22 @@ export async function downloadFiles(args: { scene: Scene; onProgress: (args: { l
   total += Object.keys(mappings).length
   onProgress({ loaded: progress, total })
 
-  const promises = Object.keys(mappings).map(path => {
-    const { url, type } = mappings[path]
-    return fetch(url)
-      .then(resp => resp.blob())
-      .then(blob => {
-        progress++
-        onProgress({ loaded: progress, total })
-        return { path, blob, type }
-      })
-  })
+  const promises = Object.keys(mappings)
+    .filter(path => (isDeploy ? !path.endsWith('.ts') : !path.endsWith('.js')))
+    .map(path => {
+      const { url, type } = mappings[path]
+      return fetch(url)
+        .then(resp => resp.blob())
+        .then(blob => {
+          progress++
+          onProgress({ loaded: progress, total })
+          return { path, blob, type }
+        })
+    })
 
   // Reduce results into a record of blobs
   const results = await Promise.all(promises)
-  models = results.reduce<Record<string, Blob>>((obj, file) => {
+  files = results.reduce<Record<string, Blob>>((obj, file) => {
     const path = file.type === DownloadableFileType.MODEL ? `${EXPORT_PATH.MODELS_FOLDER}/${file.path}` : file.path // script files are already namespaced
     return { ...obj, [path]: file.blob }
   }, {})
@@ -362,13 +404,44 @@ export async function downloadFiles(args: { scene: Scene; onProgress: (args: { l
     const blob = await resp.blob()
     progress++
     onProgress({ loaded: progress, total })
-    models = {
-      ...models,
+    files = {
+      ...files,
       [EXPORT_PATH.NFT_BASIC_FRAME_FILE]: blob
     }
   }
 
-  return models
+  // namespace paths in source files
+  for (const sourceFile of Object.keys(files).filter(path => path.endsWith('.ts'))) {
+    // 1. Find the namespace (this is a uuid)
+    const namespace = sourceFile.split('/')[0]
+    if (!namespace) {
+      console.warn(`Namespace not found in source file "${sourceFile}"`)
+      continue
+    }
+
+    // 2. Find all the mappings under that namespace, and remove the namespace
+    const nestedPaths = []
+    for (const path of Object.keys(files)) {
+      if (path.startsWith(namespace + '/')) {
+        const relativePath = path.split(namespace + '/').pop()!
+        nestedPaths.push(relativePath)
+      }
+    }
+
+    // 3. Convert the blob to text
+    const blob = files[sourceFile]
+    let text = await new Response(blob).text()
+
+    // 4. Replace all paths with their namespaced path
+    for (const path of nestedPaths) {
+      text = text.replace(new RegExp(path, 'g'), `${namespace}/${path}`)
+    }
+
+    // 5. Convert text to blob
+    files[sourceFile] = new Blob([text], { type: 'text/plain' })
+  }
+
+  return files
 }
 
 export function createDynamicFiles(args: { project: Project; scene: Scene; point: Coordinate; rotation: Rotation }) {
