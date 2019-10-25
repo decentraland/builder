@@ -67,7 +67,9 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
-import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isPreviewing } from './selectors'
+
 import {
   getNewEditorScene,
   resizeScreenshot,
@@ -427,7 +429,10 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
   })
 }
 
-function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
+function* handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
-  store.dispatch(setEntitiesOutOfBoundaries(entities))
+  const previewMode: boolean = yield select(isPreviewing)
+  if (!previewMode) {
+    store.dispatch(setEntitiesOutOfBoundaries(entities))
+  }
 }

@@ -18,7 +18,9 @@ import {
   ApplyLayoutAction,
   APPLY_LAYOUT,
   FIX_ASSET_MAPPINGS,
-  FixAssetMappingsAction
+  FixAssetMappingsAction,
+  SET_SCRIPT_PARAMETERS,
+  SetScriptParametersAction
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import {
@@ -56,6 +58,7 @@ export function* sceneSaga() {
   yield takeLatest(FIX_ASSET_MAPPINGS, handleFixAssetMappings)
   yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
+  yield takeLatest(SET_SCRIPT_PARAMETERS, handleSetScriptParameters)
 }
 
 function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
@@ -452,4 +455,34 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   }
 
   yield put(provisionScene({ ...scene, components, entities, ground }))
+}
+
+function* handleSetScriptParameters(action: SetScriptParametersAction) {
+  const { entityId, parameters } = action.payload
+  const scene: Scene | null = yield select(getCurrentScene)
+
+  if (scene) {
+    const components = scene.entities[entityId].components
+    const componentId = components.find(id => scene.components[id].type === ComponentType.Script)
+
+    if (componentId) {
+      const newScene = {
+        ...scene,
+        components: {
+          ...scene.components,
+          [componentId]: {
+            ...scene.components[componentId],
+            data: {
+              ...scene.components[componentId].data,
+              parameters: {
+                ...(scene.components[componentId] as ComponentDefinition<ComponentType.Script>).data.parameters,
+                ...parameters
+              }
+            }
+          }
+        }
+      }
+      yield put(provisionScene(newScene))
+    }
+  }
 }

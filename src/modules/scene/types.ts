@@ -32,7 +32,7 @@ export type ComponentData = {
   [ComponentType.Script]: {
     assetId: string
     src: string
-    parameters: Record<string, string | number>
+    parameters: Record<string, string | number | boolean>
     mappings: Record<string, string>
   }
 }

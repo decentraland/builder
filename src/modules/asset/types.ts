@@ -5,6 +5,21 @@ export const GROUND_CATEGORY = 'ground'
 export type Asset = BaseAsset & {
   assetPackId: string
   isDisabled?: boolean
+  parameters?: Record<string, AssetParameter>
+}
+
+export type AssetParameter = {
+  id: string
+  type: AssetParameterType
+  label: string
+  default: any
+}
+
+export enum AssetParameterType {
+  BOOLEAN = 'boolean',
+  STRING = 'string',
+  FLOAT = 'float',
+  INTEGER = 'integer'
 }
 
 export type BaseAsset = AssetResource & {

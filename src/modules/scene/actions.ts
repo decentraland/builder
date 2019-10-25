@@ -101,3 +101,12 @@ export const FIX_ASSET_MAPPINGS = 'Fix Asset Mappings'
 export const fixAssetMappings = () => action(FIX_ASSET_MAPPINGS, {})
 
 export type FixAssetMappingsAction = ReturnType<typeof fixAssetMappings>
+
+// Set Script Parameters
+
+export const SET_SCRIPT_PARAMETERS = 'Set Script Parameters'
+
+export const setScriptParameters = (entityId: string, parameters: Record<string, any>) =>
+  action(SET_SCRIPT_PARAMETERS, { entityId, parameters })
+
+export type SetScriptParametersAction = ReturnType<typeof setScriptParameters>

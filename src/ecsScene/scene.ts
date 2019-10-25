@@ -1,3 +1,4 @@
+// tslint:disable
 import { EventEmitter } from 'events'
 import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, ISystem } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
@@ -32,7 +33,7 @@ export class StaticEntity {}
 @Component('org.decentraland.script')
 // @ts-ignore
 export class Script {
-  constructor(public assetId: string, public src: string, public props: Record<string, string | number>) {}
+  constructor(public assetId: string, public src: string, public props: Record<string, string | number | boolean>) {}
 }
 
 const editorComponents: Record<string, any> = {}
@@ -92,7 +93,11 @@ async function handleExternalAction(message: { type: string; payload: Record<str
         scene: { components, entities }
       } = message.payload
 
-      createComponents(components)
+      for (let id in components) {
+        createComponent(components[id])
+        updateComponent(components[id])
+      }
+
       createEntities(entities)
       removeUnusedComponents(components)
       removeUnusedEntities(entities)
@@ -175,48 +180,51 @@ async function handleExternalAction(message: { type: string; payload: Record<str
   }
 }
 
-function createComponents(components: Record<string, AnyComponent>) {
-  for (let id in components) {
-    const { type, data } = components[id]
-    if (!getComponentById(id)) {
-      switch (type) {
-        case ComponentType.GLTFShape:
-          editorComponents[id] = new GLTFShape((data as ComponentData[ComponentType.GLTFShape]).src)
-          editorComponents[id].isPickable = true
-          break
-        case ComponentType.Transform:
-          editorComponents[id] = new Transform()
-          break
-        case ComponentType.NFTShape:
-          editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
-          editorComponents[id].isPickable = true
-          break
-        case ComponentType.Script: {
-          const { assetId, src, parameters } = data as ComponentData[ComponentType.Script]
-          editorComponents[id] = new Script(assetId, src, parameters)
-          if (!scriptPromises.has(assetId)) {
-            const url = `${scriptBaseUrl}/${src}`
-            const promise = fetch(url).then(resp => resp.text())
-            scriptPromises.set(assetId, promise)
-          }
-          break
+function createComponent(component: AnyComponent) {
+  const { id, type, data } = component
+
+  if (!getComponentById(id)) {
+    switch (type) {
+      case ComponentType.GLTFShape:
+        editorComponents[id] = new GLTFShape((data as ComponentData[ComponentType.GLTFShape]).src)
+        editorComponents[id].isPickable = true
+        break
+      case ComponentType.Transform:
+        editorComponents[id] = new Transform()
+        break
+      case ComponentType.NFTShape:
+        editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
+        editorComponents[id].isPickable = true
+        break
+      case ComponentType.Script: {
+        const { assetId, src, parameters } = data as ComponentData[ComponentType.Script]
+        editorComponents[id] = new Script(assetId, src, parameters)
+        if (!scriptPromises.has(assetId)) {
+          const url = `${scriptBaseUrl}/${src}`
+          const promise = fetch(url).then(resp => resp.text())
+          scriptPromises.set(assetId, promise)
         }
+        break
       }
     }
+  }
+}
 
-    const component = editorComponents[id]
+function updateComponent(component: AnyComponent) {
+  const { id, type, data } = component
 
-    if (component) {
-      if (type === 'Transform') {
-        const transform = component as Transform
-        const transformData = data as ComponentData[ComponentType.Transform]
-        transform.position.copyFrom(transformData.position)
-        transform.rotation.set(transformData.rotation.x, transformData.rotation.y, transformData.rotation.z, transformData.rotation.w)
-        transform.scale.copyFrom(transformData.scale)
-        transform.data['nonce'] = Math.random()
-        transform.dirty = true
-      }
-    }
+  if (type === ComponentType.Transform) {
+    const transform = editorComponents[id] as Transform
+    const transformData = data as ComponentData[ComponentType.Transform]
+    transform.position.copyFrom(transformData.position)
+    transform.rotation.set(transformData.rotation.x, transformData.rotation.y, transformData.rotation.z, transformData.rotation.w)
+    transform.scale.copyFrom(transformData.scale)
+    transform.data['nonce'] = Math.random()
+    transform.dirty = true
+  } else if (type === ComponentType.Script) {
+    const script = editorComponents[id] as Script
+    const scriptData = data as ComponentData[ComponentType.Script]
+    script.props = { ...scriptData.parameters }
   }
 }
 
