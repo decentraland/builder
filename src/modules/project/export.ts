@@ -1,7 +1,7 @@
 // @ts-ignore
 import Dockerfile from '!raw-loader!decentraland/dist/samples/ecs/Dockerfile'
 import * as ECS from 'decentraland-ecs'
-import Writer from 'dcl-scene-writer'
+import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/dist/samples/ecs/package.json'
 import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
 import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
@@ -30,16 +30,17 @@ export async function createFiles(args: {
   project: Project
   scene: Scene
   point: Coordinate
+  isDeploy: boolean
   rotation: Rotation
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
-  const { project, scene, point, rotation, onProgress } = args
+  const { project, scene, point, rotation, isDeploy, onProgress } = args
   const models = await createModels({ scene, onProgress })
-  const gameFile = createGameFile({ project, scene, rotation })
+  const gameFile = createGameFile({ project, scene, rotation }, isDeploy)
   return {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
-    [EXPORT_PATH.BUNDLED_GAME_FILE]: createGameFileBundle(gameFile),
+    [EXPORT_PATH.BUNDLED_GAME_FILE]: createGameFileBundle(gameFile, isDeploy),
     ...createDynamicFiles({ project, scene, point, rotation }),
     ...createStaticFiles(),
     ...models
@@ -50,9 +51,10 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
   return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 
-export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }) {
+export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, useLightweight = false) {
   const { scene, project, rotation } = args
   const takenNames = new Set<string>()
+  const Writer = useLightweight ? LightweightWriter : SceneWriter
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
   const { cols, rows } = project.layout
   const sceneEntity = new ECS.Entity()
@@ -103,6 +105,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
           .slice(1)
           .join('/')
         components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${modelName}`)
+        ;(components[component.id] as any).withCollisions = true
         break
       }
       case ComponentType.NFTShape: {
@@ -148,7 +151,10 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   return writer.emitCode()
 }
 
-export function createGameFileBundle(gameFile: string): string {
+export function createGameFileBundle(gameFile: string, useLightweight: boolean = false): string {
+  if (useLightweight) {
+    return gameFile
+  }
   const ecs = require('raw-loader!decentraland-ecs/dist/src/index.js')
   return ecs + '\n// Builder generated code below\n' + gameFile + '\n'
 }
