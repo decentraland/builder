@@ -111,18 +111,18 @@
   },
   "share_modal": {
     "title": "Share your Scene",
-    "description": "Share your Scene with your friends",
+    "description": "Let your friends and co-creators see your work",
     "share": "share",
     "copy": "copy link",
     "copied": "copied",
     "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u=https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978?description=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name!",
-      "twitter": "https://twitter.com/intent/tweet?text=Hello my name is 2fd. I've created my Avatar in @decentraland. Build your own avatar and claim your unique name! https://share.decentraland.org/avatars/email|5d6721da12d56e6b55a57978&hashtags=avatars,virtualworld,gaming"
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}description=Introducing my latest creation, now live in Decentraland! View it below and then help me build the Metaverse by adding one of your own",
+      "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
     },
     "sign_in": {
-      "action": "Sign In",
-      "subtitle": "You need to sign in before share your scene",
-      "title": "Sign In"
+      "action": "Sign in",
+      "subtitle": "You need to sign in before you share your scene",
+      "title": "Sign in"
     }
   },
   "deployment_modal": {

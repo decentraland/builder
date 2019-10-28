@@ -70,9 +70,13 @@ export default class ShareModal extends React.PureComponent<Props, State> {
     e.preventDefault()
     const width = 600
     const height = 250
-    const top = Math.ceil((window.outerHeight / 2) - (height / 2))
-    const left = Math.ceil((window.outerWidth / 2) - (width / 2))
-    window.open(e.currentTarget.href,'targetWindow',`toolbar=no,location=0,status=no,menubar=no,scrollbars=yes,resizable=yes,width=${width},height=${height},top=${top},left=${left}`)
+    const top = Math.ceil(window.outerHeight / 2 - height / 2)
+    const left = Math.ceil(window.outerWidth / 2 - width / 2)
+    window.open(
+      e.currentTarget.href,
+      'targetWindow',
+      `toolbar=no,location=0,status=no,menubar=no,scrollbars=yes,resizable=yes,width=${width},height=${height},top=${top},left=${left}`
+    )
     this.props.onShare(target)
   }
 
@@ -84,11 +88,15 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   }
 
   getFacebookLink = () => {
-    return encodeURI(t('share_modal.uri.facebook'))
+    const { project } = this.props
+    const url = this.getShareLink()
+    return encodeURI(t('share_modal.uri.facebook', { ...project, url }))
   }
 
   getTwitterLink = () => {
-    return encodeURI(t('share_modal.uri.twitter'))
+    const { project } = this.props
+    const url = this.getShareLink()
+    return encodeURI(t('share_modal.uri.twitter', { ...project, url }))
   }
 
   getShareLink = () => {
@@ -96,9 +104,10 @@ export default class ShareModal extends React.PureComponent<Props, State> {
     return SHARE_SCENE_URL + '/' + project.id
   }
 
-  renderLogin () {
+  renderLogin() {
     const { name } = this.props
-    return <Modal name={name} onClose={this.handleClickOutside}>
+    return (
+      <Modal name={name} onClose={this.handleClickOutside}>
         <div className="login-modal">
           <div className="modal-header">
             <Icon name="modal-close" onClick={this.handleClose} />
@@ -108,10 +117,13 @@ export default class ShareModal extends React.PureComponent<Props, State> {
           </Header>
           <p className="modal-subtitle">{t('share_modal.sign_in.subtitle')}</p>
           <div className="modal-action">
-            <Button primary size="small" onClick={this.handleLogin}>{t('share_modal.sign_in.action')}</Button>
+            <Button primary size="small" onClick={this.handleLogin}>
+              {t('share_modal.sign_in.action')}
+            </Button>
           </div>
         </div>
       </Modal>
+    )
   }
 
   renderLoading() {
@@ -145,7 +157,10 @@ export default class ShareModal extends React.PureComponent<Props, State> {
             {t('share_modal.title')}
           </Header>
           <p className="modal-subtitle">{t('share_modal.description')}</p>
-          <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }} />
+          <div
+            className="thumbnail"
+            style={{ backgroundImage: `url("${project.thumbnail}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          />
           <div className="button-group">
             <a className="button facebook" onClick={this.handleShareWithFacebook} href={this.getFacebookLink()}>
               <Icon name="facebook" /> {t(`share_modal.share`)}
@@ -156,7 +171,9 @@ export default class ShareModal extends React.PureComponent<Props, State> {
           </div>
           <div className="copy-group">
             <input ref={this.input} className="copy-input" readOnly={true} value={this.getShareLink()} onFocus={this.handleFocusLink} />
-            <a className="copy-button" onClick={this.handleCopyLink} href={this.getShareLink()}>{copied ? t(`share_modal.copied`) : t(`share_modal.copy`)}</a>
+            <a className="copy-button" onClick={this.handleCopyLink} href={this.getShareLink()}>
+              {copied ? t(`share_modal.copied`) : t(`share_modal.copy`)}
+            </a>
           </div>
         </div>
       </Modal>
