@@ -3,6 +3,7 @@ import { Button, Header, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { ShareModalType, ShareModalMetadata } from 'components/Modals/ShareModal/ShareModal.types'
 import Icon from 'components/Icon'
 
 import { Props, State } from './DeployToPool.types'
@@ -58,6 +59,16 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     this.props.onLogin()
   }
 
+  handleShare = () => {
+    const { project, onOpenModal } = this.props
+    const projectId = project!.id
+
+    onOpenModal('ShareModal', {
+      type: ShareModalType.POOL,
+      id: projectId
+    } as ShareModalMetadata)
+  }
+
   renderSubmit() {
     const { error } = this.props
 
@@ -92,9 +103,14 @@ export default class DeployModal extends React.PureComponent<Props, State> {
           {t('deployment_modal.pool.success.title')}
         </Header>
         <p className="modal-subtitle">{t('deployment_modal.pool.success.body')}</p>
-        <Button className="submit" size="small" primary onClick={onClose}>
-          {t('global.done')}
-        </Button>
+        <div>
+          <Button className="submit" size="small" primary onClick={this.handleShare}>
+            {t('share_modal.share')}
+          </Button>
+          <Button className="submit" size="small" primary onClick={onClose}>
+            {t('global.done')}
+          </Button>
+          </div>
       </div>
     )
   }

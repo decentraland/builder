@@ -101,7 +101,15 @@ export default class ShareModal extends React.PureComponent<Props, State> {
 
   getShareLink = () => {
     const { project } = this.props
-    return SHARE_SCENE_URL + '/' + project.id
+    const { type } = this.state
+
+    switch (type) {
+      case ShareModalType.PROJECT:
+        return SHARE_SCENE_URL + `/scene/${project.id}`
+
+      default:
+        return SHARE_SCENE_URL + `/${type}/${project.id}`
+    }
   }
 
   renderLogin() {
