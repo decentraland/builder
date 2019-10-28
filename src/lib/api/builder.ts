@@ -130,15 +130,7 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     tags: remoteAsset.tags,
     category: remoteAsset.category,
     contents: remoteAsset.contents,
-    metrics: remoteAsset.metrics,
-    parameters: {
-      value: {
-        id: 'value',
-        type: AssetParameterType.STRING,
-        label: 'Value',
-        default: ''
-      }
-    }
+    metrics: remoteAsset.metrics
   }
 }
 
