@@ -153,6 +153,8 @@ async function handleExternalAction(message: { type: string; payload: Record<str
           }
         }
 
+        // Clear Onscreen UI
+
         // Removes all the systems added by scripts
         const systems = (engine as any).addedSystems
         const toRemove = []

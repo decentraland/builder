@@ -10,7 +10,6 @@ export default class NumberField extends React.PureComponent<Props, State> {
   handleChange = (_: any, props: InputOnChangeData) => {
     const { id, allowFloat, onChange } = this.props
     const value = allowFloat ? props.value : props.value.replace(/,|\./g, '')
-    console.log(value)
     this.setState({ value })
 
     onChange(id, allowFloat ? parseFloat(value) : parseInt(value, 10))
@@ -22,7 +21,7 @@ export default class NumberField extends React.PureComponent<Props, State> {
     return (
       <div className={`NumberField ${className}`}>
         <span className="label">{label}</span>
-        <Field id={id} value={value} onChange={this.handleChange} type="number" autofill="off" />
+        <Field id={id} value={value} onChange={this.handleChange} type="number" />
       </div>
     )
   }

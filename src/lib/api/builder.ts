@@ -4,7 +4,7 @@ import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { authorize } from './auth'
 import { Rotation, Deployment } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Asset } from 'modules/asset/types'
+import { Asset, AssetParameterType } from 'modules/asset/types'
 import { Scene, SceneMetrics } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { createManifest } from 'modules/project/export'
@@ -130,7 +130,15 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     tags: remoteAsset.tags,
     category: remoteAsset.category,
     contents: remoteAsset.contents,
-    metrics: remoteAsset.metrics
+    metrics: remoteAsset.metrics,
+    parameters: {
+      value: {
+        id: 'value',
+        type: AssetParameterType.STRING,
+        label: 'Value',
+        default: ''
+      }
+    }
   }
 }
 
