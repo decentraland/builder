@@ -2,10 +2,11 @@ import * as React from 'react'
 import { Header } from 'decentraland-ui'
 import { debounce } from 'lib/debounce'
 import { AssetParameter, AssetParameterType } from 'modules/asset/types'
+import TextField from './TextField'
 import NumberField from './NumberField'
+import BooleanField from './BooleanField'
 import { Props, State } from './EntityEditor.types'
 import './EntityEditor.css'
-import BooleanField from './BooleanField'
 
 export default class EntityEditor extends React.PureComponent<Props, State> {
   state: State = {
@@ -36,6 +37,9 @@ export default class EntityEditor extends React.PureComponent<Props, State> {
     const { parameters } = this.state
 
     switch (param.type) {
+      case AssetParameterType.STRING: {
+        return <TextField id={param.id} label={param.label} value={parameters[param.id] as string} onChange={this.handleFieldChange} />
+      }
       case AssetParameterType.BOOLEAN: {
         return <BooleanField id={param.id} label={param.label} value={parameters[param.id] as boolean} onChange={this.handleFieldChange} />
       }
