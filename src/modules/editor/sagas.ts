@@ -296,6 +296,8 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   })
 
   if (!isEnabled) {
+    yield createNewEditorScene(project)
+    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
     yield handleResetCamera()
     yield renderScene()
   } else {
