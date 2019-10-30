@@ -52,7 +52,8 @@ const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
   thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
-  url: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf/FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  model: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf/FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  script: null,
   tags: ['ground'],
   category: 'ground',
   contents: {
@@ -68,7 +69,9 @@ const DEFAULT_GROUND_ASSET: Asset = {
     bodies: 0,
     entities: 0,
     textures: 0
-  }
+  },
+  parameters: [],
+  actions: []
 }
 
 export function* projectSaga() {

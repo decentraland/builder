@@ -9,7 +9,7 @@ import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import FileImport from 'components/FileImport'
 import AssetThumbnail from 'components/AssetThumbnail'
-import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
+import { Asset, GROUND_CATEGORY, RawAsset } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
@@ -141,9 +141,6 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
       }
     })
 
-    const assetModel = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
-    const assetScript = fileNames.find(fileName => fileName.endsWith('.js'))
-
     const files = await Promise.all(
       fileNames
         .map(fileName => zip.file(fileName))
@@ -168,6 +165,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         })
     )
 
+    let model = fileNames.find(fileName => fileName.endsWith('.gltf') || fileName.endsWith('.glb'))
+    let script = fileNames.find(fileName => fileName.endsWith('.js')) || null
     let contents = files.reduce<Record<string, Blob>>((contents, file) => {
       contents[file.name] = file.blob
       return contents
@@ -176,10 +175,10 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     let id: string
     if (manifestParsed && manifestParsed.id) {
       id = manifestParsed.id
-    } else if (assetScript) {
+    } else if (script) {
       id = uuidv4()
-    } else if (assetModel) {
-      id = getSHA256(`${assetPackId}/${basename(assetModel)}`)
+    } else if (model) {
+      id = getSHA256(`${assetPackId}/${basename(model)}`)
     } else {
       this.analytics.track('Asset Importer Error Missing Model')
       throw new Error(
@@ -189,25 +188,43 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
       )
     }
 
-    if (assetScript) {
-      contents = await prepareScript(assetScript, id, contents)
+    if (script) {
+      contents = await prepareScript(script, id, contents)
     }
 
     this.analytics.track('Asset Importer File Success')
 
+    let asset: RawAsset = {
+      id,
+      name: cleanAssetName(file.name),
+      assetPackId,
+      model: model!,
+      script,
+      contents,
+      tags: [],
+      category: 'decorations',
+      metrics: getMetrics(),
+      thumbnail: '',
+      parameters: [],
+      actions: []
+    }
+
+    // apply manifest data
+    if (manifestParsed) {
+      if (manifestParsed.name) {
+        manifestParsed.name = manifestParsed.name.slice(0, MAX_NAME_LENGTH)
+      }
+      const { contents: _, ...rest } = manifestParsed
+      asset = {
+        ...asset,
+        ...rest
+      }
+    }
+
     return {
       id,
       fileName: file.name,
-      asset: {
-        id,
-        assetPackId,
-        name: manifestParsed ? manifestParsed.name.slice(0, MAX_NAME_LENGTH) : cleanAssetName(file.name),
-        tags: manifestParsed ? manifestParsed.tags : [],
-        category: manifestParsed ? manifestParsed.category : 'decorations',
-        url: assetModel,
-        contents,
-        metrics: getMetrics()
-      }
+      asset
     } as ImportedFile
   }
 
@@ -257,7 +274,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
         if (outFile) {
           let mappings = rawMappingsToObjectURL(outFile.asset.contents)
-          const { image, info } = await getModelData(mappings[outFile.asset.url], {
+          const { image, info } = await getModelData(mappings[outFile.asset.model], {
             mappings,
             thumbnailType: outFile.asset.category === GROUND_CATEGORY ? '2d' : '3d'
           })
@@ -273,7 +290,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
             throw new Error(
               t('asset_pack.import.errors.duplicated_asset', {
                 name: truncateFileName(file.name),
-                model: outFile.asset.url,
+                model: outFile.asset.model,
                 asset: existingAsset.name
               })
             )

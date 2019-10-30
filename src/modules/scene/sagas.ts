@@ -83,8 +83,8 @@ function* handleAddItem(action: AddItemAction) {
 
   if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
     const collectibles: ReturnType<typeof getCollectiblesByURL> = yield select(getCollectiblesByURL)
-    const collectible = collectibles[asset.url]
-    shapeId = collectible ? collectibles[asset.url].id : null
+    const collectible = collectibles[asset.model]
+    shapeId = collectible ? collectibles[asset.model].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -92,7 +92,7 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.NFTShape,
         data: {
-          url: asset.url
+          url: asset.model
         }
       }
     }
@@ -100,8 +100,8 @@ function* handleAddItem(action: AddItemAction) {
     position = { ...position!, y: 1.72 }
   } else {
     const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.url]
-    shapeId = gltf ? gltfs[asset.url].id : null
+    const gltf = gltfs[asset.model]
+    shapeId = gltf ? gltfs[asset.model].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -109,7 +109,7 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.url,
+          src: asset.model,
           mappings: getMappings(asset)
         }
       } as ComponentDefinition<ComponentType.GLTFShape>
@@ -353,8 +353,8 @@ function* handleFixAssetMappings(_: FixAssetMappingsAction) {
   // loop over each loaded asset and update the mappings of the components using it
   for (const assetPack of assetPacks) {
     for (const asset of assetPack.assets) {
-      if (asset.url in gltfShapes) {
-        for (const component of gltfShapes[asset.url]) {
+      if (asset.model in gltfShapes) {
+        for (const component of gltfShapes[asset.model]) {
           const mappings = getMappings(asset)
           if (!areEqualMappings(component.data.mappings, mappings)) {
             updatedComponents[component.id] = {
@@ -402,8 +402,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
 
   if (asset) {
     const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.url]
-    const foundId = gltf ? gltfs[asset.url].id : null
+    const gltf = gltfs[asset.model]
+    const foundId = gltf ? gltfs[asset.model].id : null
 
     // Create the Shape component if necessary
     if (!foundId) {
@@ -411,7 +411,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.url,
+          src: asset.model,
           mappings: getMappings(asset)
         }
       }

@@ -26,11 +26,14 @@ export function createDefaultImportedFile(id: string, assetPackId: string, file:
       tags: [],
       name: cleanAssetName(file.name),
       category: CategoryName.DECORATIONS_CATEGORY,
-      url: file.name,
+      model: file.name,
+      script: null,
       contents: {
         [file.name]: file
       },
-      metrics: getMetrics()
+      metrics: getMetrics(),
+      parameters: [],
+      actions: []
     }
   }
 }
