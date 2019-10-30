@@ -40,7 +40,15 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings, getSceneByProjectId } from './utils'
+import {
+  snapToGrid,
+  snapToBounds,
+  cloneEntities,
+  filterEntitiesWithComponent,
+  areEqualMappings,
+  getSceneByProjectId,
+  getEntityName
+} from './utils'
 import { getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { getFullAssetPacks } from 'modules/assetPack/selectors'
@@ -154,7 +162,7 @@ function* handleAddItem(action: AddItemAction) {
   if (scriptId) {
     entityComponents.push(scriptId)
   }
-  newEntities[entityId] = { id: entityId, components: entityComponents }
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(scene, entityComponents) }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
@@ -273,7 +281,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: entityComponents }
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(scene, entityComponents) }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
@@ -438,7 +446,14 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           }
         }
 
-        entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
+        const newComponents = [gltfId, transformId]
+
+        entities[entityId] = {
+          id: entityId,
+          components: newComponents,
+          disableGizmos: true,
+          name: getEntityName(scene, newComponents)
+        }
       }
     }
   } else if (scene.ground) {
