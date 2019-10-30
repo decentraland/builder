@@ -74,7 +74,7 @@ export default class EntityEditor extends React.PureComponent<Props, State> {
         <div className="thumbnail">
           <img src={asset.thumbnail} alt={asset.name} />
         </div>
-        {Object.values(asset.parameters!).map(param => this.renderField(param))}
+        {asset.parameters.map(param => this.renderField(param))}
       </div>
     )
   }

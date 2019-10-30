@@ -5,14 +5,22 @@ export const GROUND_CATEGORY = 'ground'
 export type Asset = BaseAsset & {
   assetPackId: string
   isDisabled?: boolean
-  parameters?: Record<string, AssetParameter>
+}
+
+export type AssetAction = {
+  id: string
+  label: string
+  parameters: AssetParameter[]
+  description?: string
 }
 
 export type AssetParameter = {
   id: string
   type: AssetParameterType
   label: string
-  default: any
+  description?: string
+  default?: boolean | string | boolean
+  options?: string[]
 }
 
 export enum AssetParameterType {
@@ -22,18 +30,18 @@ export enum AssetParameterType {
   INTEGER = 'integer'
 }
 
-export type BaseAsset = AssetResource & {
+export type BaseAsset = {
   id: string
+  name: string
+  model: string
+  script: string | null
+  thumbnail: string
   tags: string[]
   category: string // name of the category
   contents: Record<string, string>
   metrics: SceneMetrics
-}
-
-export type AssetResource = {
-  name: string
-  url: string
-  thumbnail: string
+  parameters: AssetParameter[]
+  actions: AssetAction[]
 }
 
 export type AssetRegistryResponse = {
@@ -80,13 +88,16 @@ export type DARAssetTrait = {
 export type RawAsset = {
   id: string
   name: string
-  url: string
+  model: string
+  script: null | string
   tags: string[]
   category: string
   assetPackId: string
   thumbnail: string
   contents: Record<string, Blob>
   metrics: SceneMetrics
+  parameters: AssetParameter[]
+  actions: AssetAction[]
 }
 
 /**

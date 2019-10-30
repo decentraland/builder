@@ -77,7 +77,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
       }, {})
     }
 
-    const { image } = await getModelData(mappings[asset.url], {
+    const { image } = await getModelData(mappings[asset.model], {
       mappings,
       thumbnailType: ground ? '2d' : '3d'
     })
