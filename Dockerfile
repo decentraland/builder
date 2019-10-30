@@ -33,7 +33,7 @@ ADD . /tmp
 RUN mkdir -p /app
 RUN cd /tmp && npm install && cp /tmp/node_modules/decentraland-ecs/artifacts/editor.js /tmp/public
 RUN cp -a /tmp/node_modules /app/
-RUN cp -a /tmp/public /app/
+RUN cp -r /tmp/public /app/
 ADD . /app
 ADD package.json /app/package.json
 WORKDIR /app
