@@ -54,7 +54,7 @@ import {
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
-import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
+import { getCurrentScene, getEntityComponentByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
@@ -295,8 +295,15 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   })
 
   if (!isEnabled) {
-    yield createNewEditorScene(project)
-    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
+    const components: Scene['components'] = yield select(getComponents)
+    const hasScript = Object.values(components).some(component => component.type === ComponentType.Script)
+
+    if (hasScript) {
+      // Reset scene
+      yield createNewEditorScene(project)
+      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
+    }
+
     yield handleResetCamera()
     yield renderScene()
   } else {

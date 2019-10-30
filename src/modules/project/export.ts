@@ -7,7 +7,7 @@ import sceneJson from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
+import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
 
@@ -36,6 +36,9 @@ export type DownloadableFile = {
   url: string
 }
 
+export const SCRIPT_CONSTRUCTOR_NAME = 'Script'
+export const SCRIPT_INSTANCE_NAME = 'script'
+
 export async function createFiles(args: {
   project: Project
   scene: Scene
@@ -63,7 +66,6 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
 
 export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
-  const takenNames = new Set<string>()
   const useLightweight = isDeploy && !hasScripts(scene)
   const Writer = useLightweight ? LightweightWriter : SceneWriter
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
@@ -165,7 +167,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       const ecsEntity = new ECS.Entity()
       ecsEntity.setParent(sceneEntity)
 
-      const name = getUniqueName(entity, scene, takenNames)
+      const { name } = entity
       entityIdToName.set(entity.id, name)
 
       for (const componentId of entity.components) {
@@ -196,7 +198,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       let currentScript = 1
       // instantiate all the scripts
       for (const [assetId, src] of Array.from(scripts)) {
-        const scriptName = 'script_' + currentScript++
+        const scriptName = SCRIPT_INSTANCE_NAME + currentScript++
         assetIdToScriptName.set(assetId, scriptName)
         executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${src}")`
       }
@@ -222,7 +224,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       let currentImport = 1
       const assetIdToConstructorName = new Map<string, string>()
       for (const [assetId] of Array.from(scripts)) {
-        const constructorName = 'constructor_' + currentImport++
+        const constructorName = SCRIPT_CONSTRUCTOR_NAME + currentImport++
         assetIdToConstructorName.set(assetId, constructorName)
         importScripts += `import ${constructorName} from "../${assetId}/src/item"\n`
       }
@@ -233,7 +235,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       const assetIdToScriptName = new Map<string, string>()
       // instantiate all the scripts
       for (const [assetId] of Array.from(scripts)) {
-        const scriptName = 'script_' + currentInstance++
+        const scriptName = SCRIPT_INSTANCE_NAME + currentInstance++
         assetIdToScriptName.set(assetId, scriptName)
         executeScripts += `\nconst ${scriptName} = new ${assetIdToConstructorName.get(assetId)}()`
       }
@@ -267,44 +269,6 @@ ${amd}
 // Builder generated code below
 ${gameFile}`
   return code
-}
-
-export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames: Set<string>) {
-  let modelName
-  try {
-    const gltf = Object.values(scene.components).find(
-      component => component.type === ComponentType.GLTFShape && entity.components.includes(component.id)
-    )
-    if (gltf) {
-      const data = gltf.data as ComponentData[ComponentType.GLTFShape]
-      modelName = data.src // path/to/ModelName.glb
-        .split('/') // ["path", "to", "ModelName.glb"]
-        .pop()! // "ModelName.glb"
-        .split('.') // ["ModelName", "glb"]
-        .shift() // "ModelName"
-      if (!modelName) throw Error('Invalid name')
-      modelName = modelName[0].toLowerCase() + modelName.slice(1) // PascalCase to camelCase
-      modelName = modelName.replace(/\s/g, '_') // replace spaces with underscores
-    } else {
-      const nft = Object.values(scene.components).find(
-        component => component.type === ComponentType.NFTShape && entity.components.includes(component.id)
-      )
-      if (nft) {
-        modelName = 'nft'
-      } else {
-        throw new Error("Can't generate a name")
-      }
-    }
-  } catch (e) {
-    modelName = 'entity'
-  }
-  let name = modelName
-  let attempts = 1
-  while (takenNames.has(name)) {
-    name = `${modelName}_${++attempts}`
-  }
-  takenNames.add(name)
-  return name
 }
 
 export function createStaticFiles() {

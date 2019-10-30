@@ -14,8 +14,6 @@ import { ComponentType } from 'modules/scene/types'
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntityId = getSelectedEntityId(state)
   const components = selectedEntityId ? getEntityComponentByType(state)[selectedEntityId] : null
-  // const scriptComponent = components ? (components[ComponentType.Script] as ComponentDefinition<ComponentType.Script>) : null
-  // const selectedAsset = scriptComponent ? getAssets(state)[scriptComponent.data.assetId] : null
 
   return {
     categories: getSideBarCategories(state),

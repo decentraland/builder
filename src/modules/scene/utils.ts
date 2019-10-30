@@ -1,5 +1,5 @@
 import { Vector3 } from 'modules/common/types'
-import { Scene, SceneMetrics } from './types'
+import { Scene, SceneMetrics, ComponentType, ComponentDefinition, AnyComponent, ComponentData, EntityDefinition } from './types'
 import { select, put, race, take } from 'redux-saga/effects'
 import {
   loadManifestRequest,
@@ -10,6 +10,7 @@ import {
 } from 'modules/project/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
+import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
 
 /**
  * Returns a new random position bound to y: 0
@@ -115,4 +116,81 @@ export function* getSceneByProjectId(projectId: string) {
     }
   }
   return scene
+}
+
+export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components']) {
+  const takenNames = new Set()
+  const components = entityComponents.map(id => scene.components[id])
+
+  for (let entityId in scene.entities) {
+    if (entityId !== entityId) {
+      const entity = scene.entities[entityId]
+      takenNames.add(entity.name)
+    }
+  }
+  return getUniqueName(components, takenNames)
+}
+
+export function getUniqueName(components: AnyComponent[], takenNames: Readonly<Set<string>>) {
+  let attempts = 1
+  let rawName = 'entity'
+
+  for (let component of components) {
+    try {
+      if (component.type === ComponentType.GLTFShape) {
+        rawName = getGLTFShapeName(component as ComponentDefinition<ComponentType.GLTFShape>)
+      } else if (component.type === ComponentType.NFTShape) {
+        rawName = 'nft'
+      }
+    } catch (e) {
+      // swallow
+    }
+  }
+
+  let name = rawName
+  while (takenNames.has(name)) {
+    name = `${rawName}${attempts++}`
+  }
+
+  return name
+}
+
+export function convertToCamelCase(name: string) {
+  return name
+    .replace(/\s/g, '_')
+    .split('_')
+    .map((part, i) => {
+      if (part.length === 0) return ''
+
+      if (i === 0) {
+        if (part.length === 1) {
+          return part.toLowerCase()
+        }
+        return part.charAt(0).toLowerCase() + part.slice(1)
+      } else {
+        if (part.length === 1) {
+          return part.toUpperCase()
+        }
+        return part.charAt(0).toUpperCase() + part.slice(1)
+      }
+    })
+    .join('')
+}
+
+export function getGLTFShapeName(component: ComponentDefinition<ComponentType.GLTFShape>) {
+  const data = component.data as ComponentData[ComponentType.GLTFShape]
+  const name = convertToCamelCase(
+    data.src // path/to/ModelName.glb
+      .split('/') // ["path", "to", "ModelName.glb"]
+      .pop()! // "ModelName.glb"
+      .split('.') // ["ModelName", "glb"]
+      .shift()! // "ModelName"
+      .replace(/\d*$/, '')
+  )
+
+  if (!name || name === SCRIPT_INSTANCE_NAME) {
+    throw Error('Invalid name')
+  }
+
+  return name
 }
