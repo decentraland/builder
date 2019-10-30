@@ -121,7 +121,6 @@ function* pollEditor(scene: Scene) {
 }
 
 function* handleEditorReady(scene: Scene) {
-  yield handleResetCamera()
   yield pollEditor(scene)
   yield put(setEditorLoading(false))
 }
@@ -335,7 +334,6 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
 function* changeEditorState(isReady: boolean) {
   if (isReady) {
     yield put(bindEditorKeyboardShortcuts())
-    yield handleResetCamera()
   } else {
     yield put(unbindEditorKeyboardShortcuts())
   }
