@@ -1,2 +1,2 @@
-import NumberField from './TextField'
-export default NumberField
+import TextField from './TextField'
+export default TextField

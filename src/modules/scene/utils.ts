@@ -149,7 +149,7 @@ export function getUniqueName(components: AnyComponent[], takenNames: Readonly<S
 
   let name = rawName
   while (takenNames.has(name)) {
-    name = `${rawName}${attempts++}`
+    name = `${rawName}${++attempts}`
   }
 
   return name
@@ -163,10 +163,7 @@ export function convertToCamelCase(name: string) {
       if (part.length === 0) return ''
 
       if (i === 0) {
-        if (part.length === 1) {
-          return part.toLowerCase()
-        }
-        return part.charAt(0).toLowerCase() + part.slice(1)
+        return part.toLowerCase()
       } else {
         if (part.length === 1) {
           return part.toUpperCase()

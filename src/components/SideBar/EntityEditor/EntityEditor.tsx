@@ -1,69 +1,39 @@
 import * as React from 'react'
 import { Header } from 'decentraland-ui'
 import { debounce } from 'lib/debounce'
-import { AssetParameter, AssetParameterType } from 'modules/asset/types'
-import TextField from './TextField'
-import NumberField from './NumberField'
-import BooleanField from './BooleanField'
+import EntityParameters from './EntityParameters'
 import { Props, State } from './EntityEditor.types'
 import './EntityEditor.css'
 
 export default class EntityEditor extends React.PureComponent<Props, State> {
   state: State = {
-    parameters: {}
+    values: {}
   }
 
   handleChangeDebounced = debounce(() => {
     const { entityId, onSetScriptParameters } = this.props
-    const { parameters } = this.state
+    const { values: parameters } = this.state
     onSetScriptParameters(entityId, parameters)
   }, 200)
 
   componentWillMount() {
     this.setState({
-      parameters: { ...this.props.script.data.parameters }
+      values: { ...this.props.script.data.parameters }
     })
   }
 
   handleFieldChange = (id: string, value: any) => {
     this.setState({
-      parameters: { ...this.state.parameters, [id]: value }
+      values: { ...this.state.values, [id]: value }
     })
 
     this.handleChangeDebounced()
   }
 
-  renderField = (param: AssetParameter) => {
-    const { parameters } = this.state
-
-    switch (param.type) {
-      case AssetParameterType.STRING: {
-        return <TextField id={param.id} label={param.label} value={parameters[param.id] as string} onChange={this.handleFieldChange} />
-      }
-      case AssetParameterType.BOOLEAN: {
-        return <BooleanField id={param.id} label={param.label} value={parameters[param.id] as boolean} onChange={this.handleFieldChange} />
-      }
-      case AssetParameterType.INTEGER: {
-        return <NumberField id={param.id} label={param.label} value={parameters[param.id] as number} onChange={this.handleFieldChange} />
-      }
-      case AssetParameterType.FLOAT: {
-        return (
-          <NumberField
-            id={param.id}
-            label={param.label}
-            value={parameters[param.id] as number}
-            onChange={this.handleFieldChange}
-            allowFloat
-          />
-        )
-      }
-      default:
-        return null
-    }
-  }
-
   render() {
     const { asset } = this.props
+    const { values } = this.state
+
     if (!asset) return null
 
     return (
@@ -74,7 +44,7 @@ export default class EntityEditor extends React.PureComponent<Props, State> {
         <div className="thumbnail">
           <img src={asset.thumbnail} alt={asset.name} />
         </div>
-        {asset.parameters.map(param => this.renderField(param))}
+        <EntityParameters parameters={asset.parameters} values={values} onChange={this.handleFieldChange} />
       </div>
     )
   }

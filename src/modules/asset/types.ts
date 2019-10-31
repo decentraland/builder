@@ -27,7 +27,8 @@ export enum AssetParameterType {
   BOOLEAN = 'boolean',
   STRING = 'string',
   FLOAT = 'float',
-  INTEGER = 'integer'
+  INTEGER = 'integer',
+  ENTITY = 'entity'
 }
 
 export type BaseAsset = {

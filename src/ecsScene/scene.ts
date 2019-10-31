@@ -1,6 +1,6 @@
 // tslint:disable
 import { EventEmitter } from 'events'
-import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, ISystem } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
@@ -37,7 +37,6 @@ export class Script {
 }
 
 const editorComponents: Record<string, any> = {}
-const editorSystems: Set<ISystem> = new Set()
 const staticEntity = new StaticEntity()
 
 const gizmo = new Gizmos()
@@ -106,12 +105,6 @@ async function handleExternalAction(message: { type: string; payload: Record<str
     }
     case 'Toggle preview': {
       if (message.payload.isEnabled) {
-        // save editor system references (these systems will not be turned off later when all the scripts are stopped)
-        const systems = (engine as any).addedSystems
-        for (const system of systems) {
-          editorSystems.add(system)
-        }
-
         // init scripts
         const scriptGroup = engine.getComponentGroup(Script)
         const assetIds = scriptGroup.entities.reduce((ids, entity) => {
@@ -151,18 +144,6 @@ async function handleExternalAction(message: { type: string; payload: Record<str
           if (!staticEntities.hasEntity(entity)) {
             entity.addComponentOrReplace(gizmo)
           }
-        }
-
-        // Removes all the systems added by scripts
-        const systems = (engine as any).addedSystems
-        const toRemove = []
-        for (const system of systems) {
-          if (!editorSystems.has(system)) {
-            toRemove.push(system) // we collect the systems to remove first, because removing them here would break the loop
-          }
-        }
-        for (const system of toRemove) {
-          engine.removeSystem(system)
         }
       }
 
