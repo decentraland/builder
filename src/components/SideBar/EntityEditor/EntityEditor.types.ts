@@ -11,7 +11,7 @@ export type Props = {
 }
 
 export type State = {
-  parameters: Record<string, any>
+  values: Record<string, any>
 }
 
 export type OwnProps = Pick<Props, 'entityId'>

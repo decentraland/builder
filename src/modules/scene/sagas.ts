@@ -162,9 +162,10 @@ function* handleAddItem(action: AddItemAction) {
   if (scriptId) {
     entityComponents.push(scriptId)
   }
-  newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(scene, entityComponents) }
+  const newScene = { ...scene, components: newComponents, entities: newEntities }
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(newScene, entityComponents) }
 
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield put(provisionScene(newScene))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
   yield put(selectEntity(entityId))
 }
