@@ -110,19 +110,19 @@
     "subtitle_two": "在下面的输入框中输入所需的大小值."
   },
   "share_modal": {
-    "title": "Share your Scene",
-    "description": "Let your friends and co-creators see your work",
+    "title": "分享您的场景",
+    "description": "让你的朋友和合作者欣赏您的作品",
     "share": "share",
     "copy": "copy link",
     "copied": "copied",
     "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}description=Introducing my latest creation, now live in Decentraland! View it below and then help me build the Metaverse by adding one of your own",
-      "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}description=我的最新作品已经在 Decentraland 中安家了！ 敬请查看，并且添加自己的场景共建虚拟世界。",
+      "twitter": "https://twitter.com/intent/tweet?text=刚刚通过 Builder 在 Decentraland 中部署了我的新设计。 敬请查看，也请您创建您自己的场景。 因为虚拟世界也不会凭空而建! {url}&hashtags=builder,virtualworld,gaming"
     },
     "sign_in": {
-      "action": "Sign in",
-      "subtitle": "You need to sign in before you share your scene",
-      "title": "Sign in"
+      "action": "登录",
+      "subtitle": "分享场景前请登录",
+      "title": "登录"
     }
   },
   "deployment_modal": {
