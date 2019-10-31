@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { env } from 'decentraland-commons'
-import { Button, Header, Loader } from 'decentraland-ui'
+import { Button, Loader, ModalNavigation } from 'decentraland-ui'
 
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -116,14 +116,8 @@ export default class ShareModal extends React.PureComponent<Props, State> {
     const { name } = this.props
     return (
       <Modal name={name} onClose={this.handleClickOutside}>
+        <ModalNavigation title={t('share_modal.sign_in.title')} subtitle={t('share_modal.sign_in.subtitle')} onClose={this.handleClose} />
         <div className="login-modal">
-          <div className="modal-header">
-            <Icon name="modal-close" onClick={this.handleClose} />
-          </div>
-          <Header size="large" className="modal-title">
-            {t('share_modal.sign_in.title')}
-          </Header>
-          <p className="modal-subtitle">{t('share_modal.sign_in.subtitle')}</p>
           <div className="modal-action">
             <Button primary size="small" onClick={this.handleLogin}>
               {t('share_modal.sign_in.action')}
@@ -157,14 +151,8 @@ export default class ShareModal extends React.PureComponent<Props, State> {
 
     return (
       <Modal name={name} onClose={this.handleClickOutside}>
+        <ModalNavigation title={t('share_modal.title')} subtitle={t('share_modal.description')} onClose={this.handleClose} />
         <div className="share-modal">
-          <div className="modal-header">
-            <Icon name="modal-close" onClick={this.handleClose} />
-          </div>
-          <Header size="large" className="modal-title">
-            {t('share_modal.title')}
-          </Header>
-          <p className="modal-subtitle">{t('share_modal.description')}</p>
           <div
             className="thumbnail"
             style={{ backgroundImage: `url("${project.thumbnail}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}
