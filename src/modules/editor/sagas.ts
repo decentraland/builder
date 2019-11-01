@@ -355,7 +355,7 @@ function* handleResetCamera() {
 
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })
-  editorWindow.editor.setCameraRotation(-Math.PI / 4, Math.PI / 3)
+  editorWindow.editor.setCameraRotation(-Math.PI / 4, Math.PI / 6)
 }
 
 function* handleDropItem(action: DropItemAction) {

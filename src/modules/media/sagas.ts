@@ -47,7 +47,7 @@ export function* handleTakePictures() {
 
   // Prepare the camera to fit the scene
   editorWindow.editor.setCameraZoomDelta(zoom)
-  editorWindow.editor.setCameraRotation(0, Math.PI / 3)
+  editorWindow.editor.setCameraRotation(0, Math.PI / 6)
   editorWindow.editor.setCameraPosition({ x: (rows * PARCEL_SIZE) / 2, y: 2, z: (cols * PARCEL_SIZE) / 2 })
 
   yield put(recordMediaProgress(0))
@@ -69,7 +69,7 @@ export function* handleTakePictures() {
 }
 
 function* takeEditorScreenshot(angle: number) {
-  editorWindow.editor.setCameraRotation(angle, Math.PI / 3)
+  editorWindow.editor.setCameraRotation(angle, Math.PI / 6)
   const shot = yield call(() => editorWindow.editor.takeScreenshot())
   return dataURLToBlob(shot)
 }
