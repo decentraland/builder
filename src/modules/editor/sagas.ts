@@ -54,7 +54,7 @@ import {
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
-import { getCurrentScene, getEntityComponentByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
+import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
@@ -192,7 +192,7 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
   if (!scene) return
 
-  const entityComponents = getEntityComponentByType(store.getState() as RootState)
+  const entityComponents = getEntityComponentsByType(store.getState() as RootState)
   const transform = entityComponents[args.entityId][ComponentType.Transform]
   if (!transform) return
 

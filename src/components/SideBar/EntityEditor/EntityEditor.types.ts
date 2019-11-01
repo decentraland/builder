@@ -10,10 +10,6 @@ export type Props = {
   onSetScriptParameters: typeof setScriptParameters
 }
 
-export type State = {
-  values: Record<string, any>
-}
-
 export type OwnProps = Pick<Props, 'entityId'>
 
 export type MapStateProps = Pick<Props, 'asset' | 'script'>

@@ -1,12 +1,12 @@
 import { Scene } from 'modules/scene/types'
 
 export type Props = {
-  id: string
   label: string
   value: string
   entities: Scene['entities']
+  filter?: string[]
   className?: string
-  onChange(id: string, value: string): void
+  onChange(value: string): void
 }
 
 export type MapStateProps = Pick<Props, 'entities'>

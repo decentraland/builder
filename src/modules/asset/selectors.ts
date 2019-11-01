@@ -49,7 +49,7 @@ export const getCollectibleAssets = createSelector<RootState, AssetState['data']
 )
 
 export const getDisabledAssets = createSelector<RootState, Record<ComponentType, AnyComponent[]>, ModelById<Asset>, string[]>(
-  getComponentsByType,
+  (state: RootState) => getComponentsByType(state),
   getData,
   (components, assets) => {
     let result: string[] = []

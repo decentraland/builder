@@ -26,11 +26,11 @@ import { getMappings } from 'modules/asset/utils'
 import {
   getGLTFsBySrc,
   getCurrentScene,
-  getEntityComponentByType,
-  getEntityComponents,
+  getEntityComponentsByType,
+  getComponentsByEntityId,
   getData as getScenes,
   getCollectiblesByURL,
-  getEntityShape
+  getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
@@ -204,7 +204,7 @@ function* handleResetItem(_: ResetItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
   const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
   if (!transform) return
 
@@ -234,13 +234,13 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const newComponents = { ...scene.components }
   const entityComponents = []
 
-  const shapes: Record<string, ShapeComponent> = yield select(getEntityShape)
+  const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
   const shape = shapes[selectedEntityId]
   entityComponents.push(shape.id)
 
   if (shape && shape.type === ComponentType.NFTShape) return
 
-  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
   const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
   const script = components[selectedEntityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
 
@@ -296,7 +296,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const entityComponents: Record<string, AnyComponent[]> = yield select(getEntityComponents)
+  const entityComponents: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
   const idsToDelete = entityComponents[selectedEntityId].filter(component => !!component).map(component => component.id)
 
   const newComponents = { ...scene.components }

@@ -8,19 +8,20 @@ export default class TextField extends React.PureComponent<Props, State> {
   }
 
   handleChange = (_: any, props: InputOnChangeData) => {
-    const { id, onChange } = this.props
+    const { onChange } = this.props
     const { value } = props
     this.setState({ value })
-    onChange(id, value)
+    onChange(value)
   }
 
   render() {
-    const { id, label, className = '' } = this.props
+    const { label, className = '' } = this.props
     const { value } = this.state
+
     return (
       <div className={`TextField ${className}`}>
         <span className="label">{label}</span>
-        <Field id={id} value={value} onChange={this.handleChange} />
+        <Field value={value} onChange={this.handleChange} />
       </div>
     )
   }

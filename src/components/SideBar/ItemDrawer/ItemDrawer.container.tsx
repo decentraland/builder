@@ -8,12 +8,12 @@ import { getCollectibleAssets, isLoading as isLoadingAssets } from 'modules/asse
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { getEntityComponentByType } from 'modules/scene/selectors'
+import { getEntityComponentsByType } from 'modules/scene/selectors'
 import { ComponentType } from 'modules/scene/types'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntityId = getSelectedEntityId(state)
-  const components = selectedEntityId ? getEntityComponentByType(state)[selectedEntityId] : null
+  const components = selectedEntityId ? getEntityComponentsByType(state)[selectedEntityId] : null
 
   return {
     categories: getSideBarCategories(state),

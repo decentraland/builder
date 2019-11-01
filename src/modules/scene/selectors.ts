@@ -3,8 +3,11 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
+import { getData as getAssets } from 'modules/asset/selectors'
 import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics, ShapeComponent } from './types'
 import { EMPTY_SCENE_METRICS, ShapeComponents } from './constants'
+import { Asset } from 'modules/asset/types'
+import { AssetState } from 'modules/asset/reducer'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
@@ -36,7 +39,7 @@ export const getEntities = createSelector<RootState, Scene | null, Scene['entiti
   scene => (scene ? scene.entities : {})
 )
 
-export const getEntityComponents = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent[]>>(
+export const getComponentsByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent[]>>(
   getEntities,
   getComponents,
   (entities, components) => {
@@ -60,7 +63,7 @@ export const getEntityComponents = createSelector<RootState, Scene['entities'], 
   }
 )
 
-export const getEntityComponentByType = createSelector<
+export const getEntityComponentsByType = createSelector<
   RootState,
   Scene['entities'],
   Scene['components'],
@@ -88,7 +91,7 @@ export const getEntityComponentByType = createSelector<
   }
 )
 
-export const getEntityShape = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, ShapeComponent>>(
+export const getShapesByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, ShapeComponent>>(
   getEntities,
   getComponents,
   (entities, components) => {
@@ -182,5 +185,30 @@ export const numItems = createSelector<RootState, Project | null, Scene | null, 
     )
     const numGrounds = project.layout.cols * project.layout.rows
     return numTransforms - numGrounds
+  }
+)
+
+export const getAssetsWithScriptByEntityId = createSelector<
+  RootState,
+  Record<string, AnyComponent[]>,
+  AssetState['data'],
+  Record<string, Asset>
+>(
+  getComponentsByEntityId,
+  getAssets,
+  (componentsByEntity, assets) => {
+    const out: Record<string, Asset> = {}
+    for (let entityId in componentsByEntity) {
+      const components = componentsByEntity[entityId]
+      for (let component of components) {
+        if (component.type === ComponentType.Script) {
+          const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
+          if (asset.actions.length > 0) {
+            out[entityId] = asset
+          }
+        }
+      }
+    }
+    return out
   }
 )

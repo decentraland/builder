@@ -1,38 +1,19 @@
 import * as React from 'react'
 import { Header } from 'decentraland-ui'
 import { debounce } from 'lib/debounce'
+import { AssetParameterValues } from 'modules/asset/types'
 import EntityParameters from './EntityParameters'
-import { Props, State } from './EntityEditor.types'
+import { Props } from './EntityEditor.types'
 import './EntityEditor.css'
 
-export default class EntityEditor extends React.PureComponent<Props, State> {
-  state: State = {
-    values: {}
-  }
-
-  handleChangeDebounced = debounce(() => {
+export default class EntityEditor extends React.PureComponent<Props> {
+  handleChangeDebounced = debounce((parameters: AssetParameterValues) => {
     const { entityId, onSetScriptParameters } = this.props
-    const { values: parameters } = this.state
     onSetScriptParameters(entityId, parameters)
   }, 200)
 
-  componentWillMount() {
-    this.setState({
-      values: { ...this.props.script.data.parameters }
-    })
-  }
-
-  handleFieldChange = (id: string, value: any) => {
-    this.setState({
-      values: { ...this.state.values, [id]: value }
-    })
-
-    this.handleChangeDebounced()
-  }
-
   render() {
-    const { asset } = this.props
-    const { values } = this.state
+    const { asset, script } = this.props
 
     if (!asset) return null
 
@@ -44,7 +25,7 @@ export default class EntityEditor extends React.PureComponent<Props, State> {
         <div className="thumbnail">
           <img src={asset.thumbnail} alt={asset.name} />
         </div>
-        <EntityParameters parameters={asset.parameters} values={values} onChange={this.handleFieldChange} />
+        <EntityParameters parameters={asset.parameters} values={script.data!.parameters} onChange={this.handleChangeDebounced} />
       </div>
     )
   }

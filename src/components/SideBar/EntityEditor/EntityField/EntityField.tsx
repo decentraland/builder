@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { InputOnChangeData, SelectField } from 'decentraland-ui'
+import { SelectField, DropdownProps } from 'decentraland-ui'
 import { Props, State } from './EntityField.types'
 
 export default class EntityField extends React.PureComponent<Props, State> {
@@ -7,22 +7,26 @@ export default class EntityField extends React.PureComponent<Props, State> {
     value: this.props.value || ''
   }
 
-  handleChange = (_: any, props: InputOnChangeData) => {
-    const { id, onChange } = this.props
-    const { value } = props
+  handleChange = (_: any, props: DropdownProps) => {
+    const { onChange } = this.props
+    const value = props.value as string
     this.setState({ value })
-    onChange(id, value)
+    onChange(value)
   }
 
   render() {
-    const { id, label, entities, className = '' } = this.props
+    const { label, entities, filter, className = '' } = this.props
     const { value } = this.state
-    const options = Object.values(entities).map(entity => ({ key: entity.id, text: entity.name, value: entity.id }))
+    let options = Object.values(entities).map(entity => ({ key: entity.id, text: entity.name, value: entity.id }))
+
+    if (filter) {
+      options = options.filter(option => filter.includes(option.key))
+    }
 
     return (
       <div className={`TextField ${className}`}>
         <span className="label">{label}</span>
-        <SelectField id={id} label={label} value={value} options={options} onChange={(_, a) => console.log(a)} />
+        <SelectField label={label} value={value} options={options} onChange={this.handleChange} />
       </div>
     )
   }

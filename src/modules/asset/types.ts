@@ -19,8 +19,18 @@ export type AssetParameter = {
   type: AssetParameterType
   label: string
   description?: string
-  default?: boolean | string | boolean
+  default?: Exclude<AssetParameterValue, AssetActionValue>
   options?: string[]
+}
+
+export type AssetParameterValue = string | number | boolean | AssetActionValue
+
+export type AssetParameterValues = Record<string, AssetParameterValue>
+
+export type AssetActionValue = {
+  entityId: string
+  actionId: string
+  values: AssetParameterValues
 }
 
 export enum AssetParameterType {
@@ -28,7 +38,8 @@ export enum AssetParameterType {
   STRING = 'string',
   FLOAT = 'float',
   INTEGER = 'integer',
-  ENTITY = 'entity'
+  ENTITY = 'entity',
+  ACTION = 'action'
 }
 
 export type BaseAsset = {
