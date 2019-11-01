@@ -29,6 +29,7 @@ export type Editor = {
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
   selectEntity: (entityId: string) => void
+  deselectEntity: () => void
   getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>

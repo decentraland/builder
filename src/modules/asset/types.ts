@@ -28,7 +28,7 @@ export type AssetParameterValue = string | number | boolean | AssetActionValue
 export type AssetParameterValues = Record<string, AssetParameterValue>
 
 export type AssetActionValue = {
-  entityId: string
+  entityName: string
   actionId: string
   values: AssetParameterValues
 }

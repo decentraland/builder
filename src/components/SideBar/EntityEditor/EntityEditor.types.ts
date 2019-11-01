@@ -8,6 +8,7 @@ export type Props = {
   asset: Asset
   script: ComponentDefinition<ComponentType.Script>
   onSetScriptParameters: typeof setScriptValues
+  onClose: () => void
 }
 
 export type OwnProps = Pick<Props, 'entityId'>

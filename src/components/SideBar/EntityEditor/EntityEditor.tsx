@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Header } from 'decentraland-ui'
 import { debounce } from 'lib/debounce'
+import Icon from 'components/Icon'
 import { AssetParameterValues } from 'modules/asset/types'
 import EntityParameters from './EntityParameters'
 import { Props } from './EntityEditor.types'
@@ -20,7 +21,9 @@ export default class EntityEditor extends React.PureComponent<Props> {
     return (
       <div className="EntityEditor">
         <Header className="header" size="medium">
+          <div className="spacer" />
           {asset.name}
+          <Icon name="modal-close" onClick={this.props.onClose} />
         </Header>
         <div className="thumbnail">
           <img src={asset.thumbnail} alt={asset.name} />

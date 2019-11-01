@@ -23,10 +23,14 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  handleResetScroll() {
+  handleResetScroll = () => {
     if (this.drawerContainer) {
       this.drawerContainer.scrollTop = 0
     }
+  }
+
+  handleDeselect = () => {
+    this.props.onDeselect()
   }
 
   setDrawerContainer = (ref: HTMLElement | null) => {
@@ -35,7 +39,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  renderList() {
+  renderView() {
     const {
       search,
       isList,
@@ -52,7 +56,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     const isCollectibleAssetPackSelected = selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID
 
     if (hasScript) {
-      return <EntityEditor entityId={selectedEntityId!} />
+      return <EntityEditor entityId={selectedEntityId!} onClose={this.handleDeselect} />
     } else if (isCollectibleAssetPackSelected && isLoadingAssets) {
       return <Loader active size="massive" />
     } else if (isCollectibleAssetPackSelected && !isConnected) {
@@ -85,7 +89,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         )}
 
         <div ref={this.setDrawerContainer} className="overflow-container">
-          {this.renderList()}
+          {this.renderView()}
           {this.isViewingCollectibles() && isConnected && (
             <span className="disclaimer">
               <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />

@@ -7,26 +7,34 @@ import EntityField from '../EntityField'
 
 export default class ActionField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value || { entityId: '', actionId: '', values: {} }
+    value: this.props.value || { entityName: '', actionId: '', values: {} }
   }
 
-  handleEntityChange = (entityId: string) => {
+  handleEntityChange = (entityName: string) => {
+    const actions = this.getActionOptions(entityName)
+
     const value = {
-      entityId,
-      actionId: '',
+      entityName,
+      actionId: actions.length > 0 ? actions[0].value : '',
       values: {}
     }
 
     this.setState({ value })
+
+    this.props.onChange(value)
   }
 
   handleActionChange = (_: any, data: DropdownProps) => {
+    const value = {
+      ...this.state.value,
+      actionId: data.value as string
+    }
+
     this.setState({
-      value: {
-        ...this.state.value,
-        actionId: data.value as string
-      }
+      value
     })
+
+    this.props.onChange(value)
   }
 
   handleParametersChange = (values: AssetParameterValues) => {
@@ -36,12 +44,11 @@ export default class ActionField extends React.PureComponent<Props, State> {
     this.props.onChange(value)
   }
 
-  getActionOptions = () => {
+  getActionOptions = (entityName: string) => {
     const { entityAssets } = this.props
-    const { value } = this.state
 
-    if (entityAssets[value.entityId] && entityAssets[value.entityId].actions) {
-      return entityAssets[value.entityId].actions.map(action => ({ key: action.id, text: action.label, value: action.id }))
+    if (entityAssets[entityName] && entityAssets[entityName].actions) {
+      return entityAssets[entityName].actions.map(action => ({ key: action.id, text: action.label, value: action.id }))
     }
 
     return []
@@ -51,7 +58,7 @@ export default class ActionField extends React.PureComponent<Props, State> {
     const { value } = this.state
     const { entityAssets } = this.props
 
-    const action = entityAssets[value.entityId] && entityAssets[value.entityId].actions.find(a => a.id === value.actionId)
+    const action = entityAssets[value.entityName] && entityAssets[value.entityName].actions.find(a => a.id === value.actionId)
     if (action) {
       return action.parameters
     }
@@ -62,19 +69,20 @@ export default class ActionField extends React.PureComponent<Props, State> {
   render() {
     const { label, entityAssets, className = '', value: actionValue } = this.props
     const { value } = this.state
-    const options = this.getActionOptions()
+    const options = this.getActionOptions(value.entityName)
     const parameters = this.getParameters()
+    const parameterValues = actionValue ? actionValue.values : {}
 
     return (
       <div className={`TextField ${className}`}>
         <EntityField
           label={label}
-          value={value ? value.entityId : ''}
+          value={value ? value.entityName : ''}
           onChange={this.handleEntityChange}
           filter={Object.keys(entityAssets)}
         />
-        {value.entityId && <SelectField label={label} value={value.actionId} options={options} onChange={this.handleActionChange} />}
-        {parameters && <EntityParameters parameters={parameters} values={actionValue.values} onChange={this.handleParametersChange} />}
+        {value.entityName && <SelectField value={value.actionId} options={options} onChange={this.handleActionChange} />}
+        {parameters && <EntityParameters parameters={parameters} values={parameterValues} onChange={this.handleParametersChange} />}
       </div>
     )
   }

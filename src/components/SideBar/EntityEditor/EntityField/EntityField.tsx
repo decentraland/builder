@@ -17,7 +17,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
   render() {
     const { label, entities, filter, className = '' } = this.props
     const { value } = this.state
-    let options = Object.values(entities).map(entity => ({ key: entity.id, text: entity.name, value: entity.id }))
+    let options = Object.values(entities).map(entity => ({ key: entity.name, text: entity.name, value: entity.name }))
 
     if (filter) {
       options = options.filter(option => filter.includes(option.key))
@@ -26,7 +26,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
     return (
       <div className={`TextField ${className}`}>
         <span className="label">{label}</span>
-        <SelectField label={label} value={value} options={options} onChange={this.handleChange} />
+        <SelectField value={value} options={options} onChange={this.handleChange} />
       </div>
     )
   }

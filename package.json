@@ -25,7 +25,7 @@
     "cids": "0.5.7",
     "connected-react-router": "^6.1.0",
     "css-loader": "1.0.0",
-    "dcl-scene-writer": "^1.0.0",
+    "dcl-scene-writer": "^1.1.1",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^5.5.0",
     "decentraland-eth": "^8.16.0",
