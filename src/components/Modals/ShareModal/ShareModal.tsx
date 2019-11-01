@@ -23,15 +23,15 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   input = React.createRef<HTMLInputElement>()
 
   componentDidMount() {
-    const { metadata, project, onSave, isLoggedIn } = this.props
+    const { metadata, onUpdate, isLoggedIn } = this.props
     if (metadata) {
       this.setState({
         type: metadata.type,
         id: metadata.id
       })
 
-      if (isLoggedIn && !project.isPublic) {
-        onSave(metadata.id, { ...project, isPublic: true })
+      if (isLoggedIn) {
+        onUpdate(metadata.id)
       }
     }
   }
@@ -138,7 +138,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { name, project, isLoading, isLoggedIn } = this.props
+    const { name, project, isLoading, isLoggedIn, isScreenshotReady } = this.props
     const { copied } = this.state
 
     if (!isLoggedIn) {
@@ -155,8 +155,10 @@ export default class ShareModal extends React.PureComponent<Props, State> {
         <div className="share-modal">
           <div
             className="thumbnail"
-            style={{ backgroundImage: `url("${project.thumbnail}")`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-          />
+            style={{ backgroundImage: isScreenshotReady ? `url("${project.thumbnail}")` : '', backgroundSize: 'cover', backgroundPosition: 'center' }}
+          >
+            {!isScreenshotReady && <Loader size="small" />}
+          </div>
           <div className="button-group">
             <a className="button facebook" onClick={this.handleShareWithFacebook} href={this.getFacebookLink()}>
               <Icon name="facebook" /> {t(`share_modal.share`)}

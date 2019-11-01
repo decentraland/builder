@@ -4,9 +4,8 @@ import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps, OwnProps } from './ShareModal.types'
 import ShareModal from './ShareModal'
 import { getCurrentProject } from 'modules/project/selectors'
-import { isLoading } from 'modules/assetPack/selectors'
-import { isReady } from 'modules/editor/selectors'
-import { editProject } from 'modules/project/actions'
+import { isReady, isLoading, isScreenshotReady } from 'modules/editor/selectors'
+import { shareProject } from 'modules/project/actions'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { login } from 'modules/auth/actions'
 import { shareScene } from 'modules/ui/share/actions'
@@ -15,11 +14,12 @@ import { ShareTarget } from 'modules/ui/share/types'
 const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
   project: getCurrentProject(state)!,
   isLoading: !isReady(state) || isLoading(state),
+  isScreenshotReady: isScreenshotReady(state),
   isLoggedIn: isLoggedIn(state)
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onSave: (id: string, project: any) => dispatch(editProject(id, project)),
+  onUpdate: (id: string) => dispatch(shareProject(id)),
   onLogin: () => dispatch(login()),
   onShare: (target: ShareTarget) => dispatch(shareScene(target))
 })

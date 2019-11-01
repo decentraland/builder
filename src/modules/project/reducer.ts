@@ -28,7 +28,8 @@ import {
   LoadPublicProjectFailureAction,
   LOAD_PUBLIC_PROJECT_REQUEST,
   LOAD_PUBLIC_PROJECT_SUCCESS,
-  LOAD_PUBLIC_PROJECT_FAILURE
+  LOAD_PUBLIC_PROJECT_FAILURE,
+  ShareProjectAction
 } from 'modules/project/actions'
 
 export type ProjectState = {
@@ -47,6 +48,7 @@ export type ProjectReducerAction =
   | SetProjectAction
   | CreateProjectAction
   | EditProjectAction
+  | ShareProjectAction
   | EditProjectThumbnailAction
   | DeleteProjectAction
   | LoadPublicProjectRequestAction

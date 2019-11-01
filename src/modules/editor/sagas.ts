@@ -41,7 +41,8 @@ import {
   CREATE_EDITOR_SCENE,
   CreateEditorSceneAction,
   SET_EDITOR_LOADING,
-  SetEditorLoadingAction
+  SetEditorLoadingAction,
+  setScreenshotReady
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -369,6 +370,7 @@ function* handleDropItem(action: DropItemAction) {
 }
 
 function* handleScreenshot(_: TakeScreenshotAction) {
+  yield put(setScreenshotReady(false))
   try {
     const currentProject: Project | null = yield select(getCurrentProject)
     if (!currentProject) return
@@ -400,6 +402,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   } catch (e) {
     // skip screenshot
   }
+  yield put(setScreenshotReady(true))
 }
 
 function* handleSelectEntity(action: SelectEntityAction) {

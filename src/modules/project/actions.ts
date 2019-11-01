@@ -40,6 +40,14 @@ export const editProject = (id: string, project: Partial<Project>) => action(EDI
 
 export type EditProjectAction = ReturnType<typeof editProject>
 
+// Share project
+
+export const SHARE_PROJECT = 'Share project'
+
+export const shareProject = (id: string) => action(SHARE_PROJECT, { id })
+
+export type ShareProjectAction = ReturnType<typeof shareProject>
+
 // Edit project thumbnail
 
 export const EDIT_PROJECT_THUMBNAIL = 'Edit project thumbnail'

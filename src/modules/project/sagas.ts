@@ -3,7 +3,7 @@ import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { takeLatest, put, select, take, call, all } from 'redux-saga/effects'
+import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -30,7 +30,10 @@ import {
   loadPublicProjectSuccess,
   loadPublicProjectFailure,
   LoadPublicProjectRequestAction,
-  LOAD_PUBLIC_PROJECT_REQUEST
+  LOAD_PUBLIC_PROJECT_REQUEST,
+  ShareProjectAction,
+  SHARE_PROJECT,
+  EDIT_PROJECT_THUMBNAIL
 } from 'modules/project/actions'
 
 import { Project } from 'modules/project/types'
@@ -80,6 +83,7 @@ export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT, handleEditProject)
+  yield takeLatest(SHARE_PROJECT, handleShareProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
@@ -171,6 +175,25 @@ function* handleEditProject(action: EditProjectAction) {
     yield put(ActionCreators.clearHistory())
     yield put(takeScreenshot())
   }
+}
+
+function* handleShareProject(action: ShareProjectAction) {
+  const { id } = action.payload
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const project = projects[id]
+
+  if (!project) return
+
+  if (!project.isPublic) {
+    const newProject = { ...project, isPublic: true }
+    yield put(setProject(newProject))
+  }
+
+  yield put(takeScreenshot())
+  yield race([
+    take(EDIT_PROJECT_THUMBNAIL),
+    delay(1000)
+  ])
 }
 
 function* handleExportProject(action: ExportProjectRequestAction) {
