@@ -5,7 +5,7 @@ import { Project } from 'modules/project/types'
 import { loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'modules/project/actions'
 import { Scene } from 'modules/scene/types'
 import { Profile } from 'modules/profile/types'
-import { togglePreview, TogglePreviewAction } from 'modules/editor/actions'
+import { togglePreview, TogglePreviewAction, setEditorReadOnly, SetEditorReadOnlyAction } from 'modules/editor/actions'
 
 export type Props = {
   match: match<{ projectId: string, type: 'public' | 'pool' }>
@@ -19,6 +19,7 @@ export type Props = {
   isLoggedIn: boolean
   isReady: boolean
   onLoadProject: typeof loadPublicProjectRequest
+  onReadOnly: typeof setEditorReadOnly
   onPreview: () => ReturnType<typeof togglePreview>
 }
 
@@ -28,8 +29,9 @@ export type MapStateProps = Pick<
   Props,
   'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentScene' | 'currentAuthor'
 >
-export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview'>
+export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onReadOnly'>
 export type MapDispatch = Dispatch<
   | LoadPublicProjectRequestAction
+  | SetEditorReadOnlyAction
   | TogglePreviewAction
 >

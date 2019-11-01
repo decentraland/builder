@@ -34,7 +34,6 @@
   background-position: center center;
   display: flex;
   align-items: center;
-  pointer-events: none;
 }
 
 
@@ -45,7 +44,6 @@
   height: 100vh;
   padding: 0;
   margin: 0;
-  pointer-events: all;
 }
 
 .SceneViewPage .thumbnail .ui.loader {

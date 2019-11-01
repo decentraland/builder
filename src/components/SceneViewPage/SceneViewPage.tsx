@@ -19,10 +19,15 @@ import './SceneViewPage.css'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
-    const { currentProject, match, onLoadProject } = this.props
+    const { currentProject, match, onLoadProject, onReadOnly } = this.props
+    onReadOnly(true)
     if (!currentProject && match.params.projectId) {
       onLoadProject(match.params.projectId, match.params.type || 'public')
     }
+  }
+
+  componentWillUnmount() {
+    this.props.onReadOnly(false)
   }
 
   handlePreview = () => {

@@ -135,6 +135,14 @@ export const setEditorLoading = (isLoading: boolean) => action(SET_EDITOR_LOADIN
 
 export type SetEditorLoadingAction = ReturnType<typeof setEditorLoading>
 
+// Set editor read only
+
+export const SET_EDITOR_READ_ONLY = 'Set editor read only'
+
+export const setEditorReadOnly = (isReadOnly: boolean) => action(SET_EDITOR_READ_ONLY, { isReadOnly })
+
+export type SetEditorReadOnlyAction = ReturnType<typeof setEditorReadOnly>
+
 // Screenshot
 
 export const TAKE_SCREENSHOT = 'Take screenshot'

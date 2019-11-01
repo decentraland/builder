@@ -7,7 +7,7 @@ import { isLoggedIn } from 'modules/auth/selectors'
 import { loadPublicProjectRequest } from 'modules/project/actions'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
-import { togglePreview } from 'modules/editor/actions'
+import { togglePreview, setEditorReadOnly } from 'modules/editor/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
@@ -24,6 +24,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPreview: () => dispatch(togglePreview(true)),
+  onReadOnly: (isReadOnly: boolean) => dispatch(setEditorReadOnly(isReadOnly)),
   onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type))
 })
 
