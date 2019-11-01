@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
-import { Asset } from 'modules/asset/types'
+import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
 import { Project } from 'modules/project/types'
 
@@ -104,9 +104,8 @@ export type FixAssetMappingsAction = ReturnType<typeof fixAssetMappings>
 
 // Set Script Parameters
 
-export const SET_SCRIPT_PARAMETERS = 'Set Script Parameters'
+export const SET_SCRIPT_VALUES = 'Set Script Values'
 
-export const setScriptParameters = (entityId: string, parameters: Record<string, any>) =>
-  action(SET_SCRIPT_PARAMETERS, { entityId, parameters })
+export const setScriptValues = (entityId: string, values: AssetParameterValues) => action(SET_SCRIPT_VALUES, { entityId, values })
 
-export type SetScriptParametersAction = ReturnType<typeof setScriptParameters>
+export type SetScriptValuesAction = ReturnType<typeof setScriptValues>

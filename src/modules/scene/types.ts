@@ -1,4 +1,5 @@
 import { Vector3, Quaternion } from 'modules/common/types'
+import { AssetParameterValues } from 'modules/asset/types'
 
 export type EntityDefinition = {
   id: string
@@ -31,7 +32,7 @@ export type ComponentData = {
   [ComponentType.Script]: {
     assetId: string
     src: string
-    parameters: Record<string, string | number | boolean>
+    values: AssetParameterValues
     mappings: Record<string, string>
   }
 }

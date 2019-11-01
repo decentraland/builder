@@ -19,8 +19,8 @@ import {
   APPLY_LAYOUT,
   FIX_ASSET_MAPPINGS,
   FixAssetMappingsAction,
-  SET_SCRIPT_PARAMETERS,
-  SetScriptParametersAction
+  SET_SCRIPT_VALUES,
+  SetScriptValuesAction
 } from 'modules/scene/actions'
 import { getMappings } from 'modules/asset/utils'
 import {
@@ -66,7 +66,7 @@ export function* sceneSaga() {
   yield takeLatest(FIX_ASSET_MAPPINGS, handleFixAssetMappings)
   yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
-  yield takeLatest(SET_SCRIPT_PARAMETERS, handleSetScriptParameters)
+  yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
 }
 
 function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
@@ -150,7 +150,7 @@ function* handleAddItem(action: AddItemAction) {
       data: {
         assetId: asset.id,
         src: asset.contents[scriptPath],
-        parameters: {}, // TODO: we need to get default values here
+        values: {}, // TODO: we need to get default values here
         mappings: getMappings(asset)
       }
     } as ComponentDefinition<ComponentType.Script>
@@ -265,14 +265,14 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   // copy script
   if (script) {
     const {
-      data: { parameters, src, assetId }
+      data: { values: parameters, src, assetId }
     } = script
     const scriptId = uuidv4()
     newComponents[scriptId] = {
       id: scriptId,
       type: ComponentType.Script,
       data: {
-        parameters: { ...parameters },
+        values: { ...parameters },
         src,
         assetId
       }
@@ -473,8 +473,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   yield put(provisionScene({ ...scene, components, entities, ground }))
 }
 
-function* handleSetScriptParameters(action: SetScriptParametersAction) {
-  const { entityId, parameters } = action.payload
+function* handleSetScriptParameters(action: SetScriptValuesAction) {
+  const { entityId, values } = action.payload
   const scene: Scene | null = yield select(getCurrentScene)
 
   if (scene) {
@@ -482,7 +482,7 @@ function* handleSetScriptParameters(action: SetScriptParametersAction) {
     const componentId = components.find(id => scene.components[id].type === ComponentType.Script)
 
     if (componentId) {
-      const newScene = {
+      const newScene: Scene = {
         ...scene,
         components: {
           ...scene.components,
@@ -490,9 +490,9 @@ function* handleSetScriptParameters(action: SetScriptParametersAction) {
             ...scene.components[componentId],
             data: {
               ...scene.components[componentId].data,
-              parameters: {
-                ...(scene.components[componentId] as ComponentDefinition<ComponentType.Script>).data.parameters,
-                ...parameters
+              values: {
+                ...(scene.components[componentId] as ComponentDefinition<ComponentType.Script>).data.values,
+                ...values
               }
             }
           }

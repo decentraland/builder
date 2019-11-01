@@ -25,7 +25,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
         <div className="thumbnail">
           <img src={asset.thumbnail} alt={asset.name} />
         </div>
-        <EntityParameters parameters={asset.parameters} values={script.data!.parameters} onChange={this.handleChangeDebounced} />
+        <EntityParameters parameters={asset.parameters} values={script.data!.values} onChange={this.handleChangeDebounced} />
       </div>
     )
   }

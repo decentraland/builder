@@ -4,6 +4,7 @@ import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } fr
 import * as ECS from 'decentraland-ecs'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
+import { AssetParameterValues } from 'modules/asset/types'
 const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
@@ -33,7 +34,7 @@ export class StaticEntity {}
 @Component('org.decentraland.script')
 // @ts-ignore
 export class Script {
-  constructor(public assetId: string, public src: string, public props: Record<string, string | number | boolean>) {}
+  constructor(public assetId: string, public src: string, public values: AssetParameterValues) {}
 }
 
 const editorComponents: Record<string, any> = {}
@@ -132,9 +133,9 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             engine.addEntity(host)
             host.addComponent(transform)
             // ...and execute the script on the host entity
-            const { assetId, props } = entity.getComponent(Script)
+            const { assetId, values } = entity.getComponent(Script)
             const script = scriptInstances.get(assetId)!
-            script.spawn(host, props)
+            script.spawn(host, values)
           }
         }
       } else {
@@ -178,8 +179,8 @@ function createComponent(component: AnyComponent) {
         editorComponents[id].isPickable = true
         break
       case ComponentType.Script: {
-        const { assetId, src, parameters } = data as ComponentData[ComponentType.Script]
-        editorComponents[id] = new Script(assetId, src, parameters)
+        const { assetId, src, values } = data as ComponentData[ComponentType.Script]
+        editorComponents[id] = new Script(assetId, src, values)
         if (!scriptPromises.has(assetId)) {
           const url = `${scriptBaseUrl}/${src}`
           const promise = fetch(url).then(resp => resp.text())
@@ -205,7 +206,7 @@ function updateComponent(component: AnyComponent) {
   } else if (type === ComponentType.Script) {
     const script = editorComponents[id] as Script
     const scriptData = data as ComponentData[ComponentType.Script]
-    script.props = { ...scriptData.parameters }
+    script.values = { ...scriptData.values }
   }
 }
 

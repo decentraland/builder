@@ -10,6 +10,7 @@ import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
+import { AssetParameterValues } from 'modules/asset/types'
 
 export const MANIFEST_FILE_VERSION = 5
 
@@ -119,7 +120,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   const components: Record<string, object> = {}
   const scripts = new Map<string, string>()
   const hosts = new Set<string>()
-  const instances: { entityId: string; assetId: string; parameters: Record<string, string | number | boolean> }[] = []
+  const instances: { entityId: string; assetId: string; values: AssetParameterValues }[] = []
   for (const component of Object.values(scene.components)) {
     switch (component.type) {
       case ComponentType.GLTFShape: {
@@ -146,11 +147,11 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         break
       }
       case ComponentType.Script: {
-        const { assetId, src, parameters } = (component as ComponentDefinition<ComponentType.Script>).data
+        const { assetId, src, values } = (component as ComponentDefinition<ComponentType.Script>).data
         scripts.set(assetId, src)
         const entityId = componentToEntity.get(component.id)!
         hosts.add(entityId)
-        instances.push({ entityId, assetId, parameters })
+        instances.push({ entityId, assetId, values })
         break
       }
       default: {
@@ -208,10 +209,10 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         executeScripts += `\n\t${script}.init()`
       }
       // spawn all the instances
-      for (const { entityId, assetId, parameters } of instances) {
+      for (const { entityId, assetId, values } of instances) {
         const script = assetIdToScriptName.get(assetId)
         const host = entityIdToName.get(entityId)
-        const params = JSON.stringify(parameters)
+        const params = JSON.stringify(values)
         executeScripts += `\n\t${script}.spawn(${host}, ${params})`
       }
       // call function
@@ -245,10 +246,10 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         executeScripts += `\n${script}.init()`
       }
       // spawn all the instances
-      for (const { entityId, assetId, parameters } of instances) {
+      for (const { entityId, assetId, values } of instances) {
         const script = assetIdToScriptName.get(assetId)
         const host = entityIdToName.get(entityId)
-        const params = JSON.stringify(parameters)
+        const params = JSON.stringify(values)
         executeScripts += `\n${script}.spawn(${host}, ${params})`
       }
 

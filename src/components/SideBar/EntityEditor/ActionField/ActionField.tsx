@@ -30,14 +30,10 @@ export default class ActionField extends React.PureComponent<Props, State> {
   }
 
   handleParametersChange = (values: AssetParameterValues) => {
-    this.setState({
-      value: {
-        ...this.state.value,
-        values
-      }
-    })
+    const value = { ...this.state.value, values }
+    this.setState({ value })
 
-    this.props.onChange(this.state.value)
+    this.props.onChange(value)
   }
 
   getActionOptions = () => {
@@ -64,7 +60,7 @@ export default class ActionField extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, entityAssets, className = '' } = this.props
+    const { label, entityAssets, className = '', value: actionValue } = this.props
     const { value } = this.state
     const options = this.getActionOptions()
     const parameters = this.getParameters()
@@ -78,7 +74,7 @@ export default class ActionField extends React.PureComponent<Props, State> {
           filter={Object.keys(entityAssets)}
         />
         {value.entityId && <SelectField label={label} value={value.actionId} options={options} onChange={this.handleActionChange} />}
-        {parameters && <EntityParameters parameters={parameters} values={{}} onChange={this.handleParametersChange} />}
+        {parameters && <EntityParameters parameters={parameters} values={actionValue.values} onChange={this.handleParametersChange} />}
       </div>
     )
   }
