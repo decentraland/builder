@@ -41,4 +41,4 @@ class AssetCard extends React.PureComponent<Props & CollectedProps> {
   }
 }
 
-export default DragSource(ASSET_TYPE, assetSource, collect)(AssetCard)
+export default DragSource<Props, CollectedProps>(ASSET_TYPE, assetSource, collect)(AssetCard)
