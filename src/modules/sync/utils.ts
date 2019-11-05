@@ -11,7 +11,15 @@ export const SAVE_DEBOUNCE = 4000
 
 export const THUMBNAIL_THROTTLE = 30000
 
-export const saveProject = debounceByKey((project: Project, scene: Scene) => builder.saveProject(project, scene), SAVE_DEBOUNCE)
+export const saveProjectDebounce = debounceByKey((project: Project, scene: Scene) => builder.saveProject(project, scene), SAVE_DEBOUNCE)
+
+export function saveProject (key: string, project: Project, scene: Scene, debounce: boolean = true) {
+  if (debounce) {
+    return saveProjectDebounce(key, project, scene)
+  } else {
+    return builder.saveProject(project, scene)
+  }
+}
 
 export const saveThumbnail = throttle((project: Project) => builder.saveProjectThumbnail(project), THUMBNAIL_THROTTLE)
 

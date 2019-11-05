@@ -17,7 +17,7 @@ export const SAVE_PROJECT_REQUEST = '[Request] Save project'
 export const SAVE_PROJECT_SUCCESS = '[Success] Save project'
 export const SAVE_PROJECT_FAILURE = '[Failure] Save project'
 
-export const saveProjectRequest = (project: Project) => action(SAVE_PROJECT_REQUEST, { project })
+export const saveProjectRequest = (project: Project, debounce: boolean = true) => action(SAVE_PROJECT_REQUEST, { project, debounce })
 export const saveProjectSuccess = (project: Project) => action(SAVE_PROJECT_SUCCESS, { project })
 export const saveProjectFailure = (project: Project, error: string) => action(SAVE_PROJECT_FAILURE, { project, error })
 
