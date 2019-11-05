@@ -287,8 +287,9 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const entityComponents: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
-  const idsToDelete = entityComponents[selectedEntityId].filter(component => !!component).map(component => component.id)
+  const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
+  const entityComponents = componentsByEntityId[selectedEntityId]
+  const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }

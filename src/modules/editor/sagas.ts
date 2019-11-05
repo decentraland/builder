@@ -170,7 +170,7 @@ function* renderScene() {
   const scene: Scene = yield select(getCurrentScene)
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
-    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, mappings)))
+    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, { ...scene }, mappings)))
   }
 }
 
