@@ -41,7 +41,8 @@ import {
   CREATE_EDITOR_SCENE,
   CreateEditorSceneAction,
   SET_EDITOR_LOADING,
-  SetEditorLoadingAction
+  SetEditorLoadingAction,
+  setScreenshotReady
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -68,7 +69,7 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
-import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady } from './selectors'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isReadOnly } from './selectors'
 import {
   getNewEditorScene,
   resizeScreenshot,
@@ -77,7 +78,8 @@ import {
   snapScale,
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION
+  ROTATION_GRID_RESOLUTION,
+  createReadyOnlyScene
 } from './utils'
 
 const editorWindow = window as EditorWindow
@@ -168,9 +170,12 @@ function* handleHistory() {
 }
 
 function* renderScene() {
-  const scene: Scene = yield select(getCurrentScene)
+  let scene: Scene = yield select(getCurrentScene)
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
+    if (yield select(isReadOnly)) {
+      scene = createReadyOnlyScene(scene)
+    }
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, mappings)))
   }
 }
@@ -369,6 +374,7 @@ function* handleDropItem(action: DropItemAction) {
 }
 
 function* handleScreenshot(_: TakeScreenshotAction) {
+  yield put(setScreenshotReady(false))
   try {
     const currentProject: Project | null = yield select(getCurrentProject)
     if (!currentProject) return
@@ -400,6 +406,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   } catch (e) {
     // skip screenshot
   }
+  yield put(setScreenshotReady(true))
 }
 
 function* handleSelectEntity(action: SelectEntityAction) {

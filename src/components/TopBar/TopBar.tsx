@@ -8,6 +8,7 @@ import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import DeployButton from 'components/DeployButton'
+import ShareButton from 'components/ShareButton'
 import { locations } from 'routing/locations'
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
@@ -153,6 +154,7 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
             <span className="contest-button-wrapper">
+              <ShareButton />
               <DeployButton />
             </span>
           </Grid.Row>

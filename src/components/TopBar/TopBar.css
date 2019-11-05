@@ -36,6 +36,11 @@
   margin-left: 8px;
 }
 
+.TopBar .contest-button-wrapper {
+  display: flex;
+  margin-left: 24px;
+}
+
 .TopBar .project-title-header {
   display: flex;
   align-items: center;
@@ -79,6 +84,5 @@
 }
 
 .TopBar .DeployButton {
-  margin-left: 24px;
   height: 100%;
 }

@@ -6,13 +6,14 @@ import Intercom from 'decentraland-dapps/dist/components/Intercom'
 
 import { locations } from 'routing/locations'
 
-import HomePage from 'components/HomePage'
-import ErrorPage from 'components/ErrorPage'
-import MobilePage from 'components/MobilePage'
 import EditorPage from 'components/EditorPage'
+import ErrorPage from 'components/ErrorPage'
+import HomePage from 'components/HomePage'
+import LoadingPage from 'components/LoadingPage'
+import MobilePage from 'components/MobilePage'
 import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
-import LoadingPage from 'components/LoadingPage'
+import SceneViewPage from 'components/SceneViewPage'
 
 import { Props, State } from './Routes.types'
 
@@ -45,13 +46,19 @@ export default class Routes extends React.Component<Props, State> {
     return (
       <>
         <Responsive maxWidth={1024} as={React.Fragment}>
-          <Route component={MobilePage} />
+          <Switch>
+            <Route exact path={locations.sceneView()} component={SceneViewPage} />
+            <Route exact path={locations.poolView()} component={SceneViewPage} />
+            <Route component={MobilePage} />
+          </Switch>
         </Responsive>
         <Responsive minWidth={1025} as={React.Fragment}>
           <Switch>
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.editor()} component={EditorPage} />
+            <Route exact path={locations.sceneView()} component={SceneViewPage} />
+            <Route exact path={locations.poolView()} component={SceneViewPage} />
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Redirect to={locations.root()} />
           </Switch>
