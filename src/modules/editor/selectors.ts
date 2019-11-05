@@ -33,7 +33,6 @@ export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Reco
       }
       return mappings
     }, {})
-    console.log(mappings)
     return mappings
   }
 )
