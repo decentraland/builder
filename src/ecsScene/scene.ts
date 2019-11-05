@@ -14,7 +14,6 @@ class MockMessageBus {
     MockMessageBus.emitter.on(message, callback)
   }
   emit(message: string, payload: Record<any, any>) {
-    debugger
     MockMessageBus.emitter.emit(message, payload)
   }
 }
