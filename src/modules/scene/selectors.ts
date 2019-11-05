@@ -4,7 +4,7 @@ import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { getData as getAssets } from 'modules/asset/selectors'
-import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics, ShapeComponent } from './types'
+import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics, ShapeComponent, EntityDefinition } from './types'
 import { EMPTY_SCENE_METRICS, ShapeComponents } from './constants'
 import { Asset } from 'modules/asset/types'
 import { AssetState } from 'modules/asset/reducer'
@@ -188,15 +188,17 @@ export const numItems = createSelector<RootState, Project | null, Scene | null, 
   }
 )
 
-export const getAssetsWithScriptByEntityId = createSelector<
+export const getAssetsWithScriptByEntityName = createSelector<
   RootState,
+  Record<string, EntityDefinition>,
   Record<string, AnyComponent[]>,
   AssetState['data'],
   Record<string, Asset>
 >(
+  getEntities,
   getComponentsByEntityId,
   getAssets,
-  (componentsByEntity, assets) => {
+  (entities, componentsByEntity, assets) => {
     const out: Record<string, Asset> = {}
     for (let entityId in componentsByEntity) {
       const components = componentsByEntity[entityId]
@@ -204,7 +206,7 @@ export const getAssetsWithScriptByEntityId = createSelector<
         if (component.type === ComponentType.Script) {
           const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
           if (asset.actions.length > 0) {
-            out[entityId] = asset
+            out[entities[entityId].name] = asset
           }
         }
       }

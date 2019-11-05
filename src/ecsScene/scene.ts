@@ -8,6 +8,17 @@ import { AssetParameterValues } from 'modules/asset/types'
 const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
+class MockMessageBus {
+  static emitter = new EventEmitter()
+  on(message: string, callback: (value: any, sender: string) => void) {
+    MockMessageBus.emitter.on(message, callback)
+  }
+  emit(message: string, payload: Record<any, any>) {
+    debugger
+    MockMessageBus.emitter.emit(message, payload)
+  }
+}
+
 // BEGIN DRAGONS
 declare var provide: (name: string, value: any) => void
 declare var load: (id: string) => Promise<any>
@@ -15,7 +26,7 @@ eval(require('raw-loader!./amd-loader.js.raw'))
 eval(`self.provide = function(name, value) { self[name] = value }`)
 eval(`self.load = function(id) { return new Promise(resolve => define('load', [id + '/item'], item => resolve(item.default))) }`)
 Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
-provide('MessageBus', EventEmitter) // We mock the regular MessageBus (which wouldn't work in the Builder) with an EventEmitter
+provide('MessageBus', MockMessageBus)
 // END DRAGONS
 
 export interface IScript<T extends {}> {
@@ -129,9 +140,13 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             entity.removeComponent(GLTFShape)
             // ...create the host entity
             const transform = entity.getComponent(Transform)
-            const host = new Entity()
+            const hostTransform = new Transform()
+            hostTransform.position.copyFrom(transform.position)
+            hostTransform.rotation.copyFrom(transform.rotation)
+            hostTransform.scale.copyFrom(transform.scale)
+            const host = new Entity((entity as any).name) // TODO fix this on the kernel's side
             engine.addEntity(host)
-            host.addComponent(transform)
+            host.addComponent(hostTransform)
             // ...and execute the script on the host entity
             const { assetId, values } = entity.getComponent(Script)
             const script = scriptInstances.get(assetId)!
@@ -219,7 +234,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
     let entity: IEntity = engine.entities[id]
 
     if (!entity) {
-      entity = new Entity()
+      entity = new Entity(builderEntity.name)
       ;(entity as any).uuid = id
 
       if (!builderEntity.disableGizmos) {

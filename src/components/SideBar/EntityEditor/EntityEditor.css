@@ -1,6 +1,11 @@
+.EntityEditor {
+  height: 100%;
+  width: calc(100% - 16px);
+}
+
 .EntityEditor .thumbnail {
-  width: 328px;
-  height: 328px;
+  width: 100%;
+  height: auto;
   background: rgba(var(--bluish-steel-raw), 0.4);
   border-radius: 8px;
   padding: 24px;
@@ -28,4 +33,8 @@
   color: var(--sidebar-heading);
   font-size: 17px;
   user-select: none;
+  padding-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
