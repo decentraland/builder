@@ -15,7 +15,7 @@ import { Project } from 'modules/project/types'
 declare type Gizmo = any
 
 export type Editor = {
-  initEngine: (container: HTMLElement, x: number, y: number) => Promise<void>
+  initEngine: (container: HTMLElement, buildConfigPath: string) => Promise<void>
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
