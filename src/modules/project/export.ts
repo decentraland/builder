@@ -11,8 +11,9 @@ import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
 import { AssetParameterValues } from 'modules/asset/types'
+import { migrations } from 'modules/migrations/manifest'
 
-export const MANIFEST_FILE_VERSION = 5
+export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version)))
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
@@ -27,14 +28,9 @@ export enum EXPORT_PATH {
   BUNDLED_GAME_FILE = 'bin/game.js'
 }
 
-export enum DownloadableFileType {
-  MODEL = 'model',
-  SCRIPT = 'script'
-}
-
-export type DownloadableFile = {
-  type: DownloadableFileType
-  url: string
+export type Mapping = {
+  localPath: string
+  remotePath: string
 }
 
 export const SCRIPT_CONSTRUCTOR_NAME = 'Script'
@@ -125,11 +121,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
     switch (component.type) {
       case ComponentType.GLTFShape: {
         const { src } = (component as ComponentDefinition<ComponentType.GLTFShape>).data
-        const modelName = src // remove assetPackId
-          .split('/')
-          .slice(1)
-          .join('/')
-        components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${modelName}`)
+        components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${src}`)
         break
       }
       case ComponentType.NFTShape: {
@@ -300,43 +292,22 @@ export async function downloadFiles(args: {
   isDeploy: boolean
 }) {
   const { scene, onProgress, isDeploy } = args
-  const mappings: Record<string, DownloadableFile> = {}
+  const mappings: Record<string, string> = {}
 
   let files: Record<string, Blob> = {}
-  let shouldDownloadFrame = false
+  const shouldDownloadFrame = Object.values(scene.components).some(component => component.type === ComponentType.NFTShape)
 
   // Track progress
   let progress = 0
   let total = 0
 
   // Gather mappings
-  for (const component of Object.values(scene.components)) {
-    if (component.type === ComponentType.GLTFShape) {
-      // placeholder gltf components are skipped
-      if (!isPlaceholder(component.id, scene)) {
-        const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-        for (const key of Object.keys(gltfShape.data.mappings)) {
-          const path = key
-            .split('/')
-            .slice(1)
-            .join('/') // drop the asset id namespace
-          mappings[path] = {
-            type: DownloadableFileType.MODEL,
-            url: `${BUILDER_SERVER_URL}/storage/assets/${gltfShape.data.mappings[key]}`
-          }
-        }
-      }
-    } else if (component.type === ComponentType.Script) {
-      const script = component as ComponentDefinition<ComponentType.Script>
-      for (const key of Object.keys(script.data.mappings)) {
-        const path = key // use the namespaced path
-        mappings[path] = {
-          type: DownloadableFileType.SCRIPT,
-          url: `${BUILDER_SERVER_URL}/storage/assets/${script.data.mappings[key]}`
-        }
-      }
-    } else if (component.type === ComponentType.NFTShape) {
-      shouldDownloadFrame = true
+  for (const asset of Object.values(scene.assets)) {
+    for (const path of Object.keys(asset.contents)) {
+      const isScript = asset.script !== null
+      const localPath = isScript ? `${asset.id}/${path}` : `${EXPORT_PATH.MODELS_FOLDER}/${path}`
+      const remotePath = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[path]}`
+      mappings[localPath] = remotePath
     }
   }
 
@@ -347,21 +318,21 @@ export async function downloadFiles(args: {
   const promises = Object.keys(mappings)
     .filter(path => (isDeploy ? !path.endsWith('.ts') : !path.endsWith('.js')))
     .map(path => {
-      const { url, type } = mappings[path]
+      const url = mappings[path]
       return fetch(url)
         .then(resp => resp.blob())
         .then(blob => {
           progress++
           onProgress({ loaded: progress, total })
-          return { path, blob, type }
+          return { path, blob }
         })
     })
 
   // Reduce results into a record of blobs
   const results = await Promise.all(promises)
-  files = results.reduce<Record<string, Blob>>((obj, file) => {
-    const path = file.type === DownloadableFileType.MODEL ? `${EXPORT_PATH.MODELS_FOLDER}/${file.path}` : file.path // script files are already namespaced
-    return { ...obj, [path]: file.blob }
+  files = results.reduce<Record<string, Blob>>((files, file) => {
+    files[file.path] = file.blob
+    return files
   }, {})
 
   if (shouldDownloadFrame) {
@@ -377,7 +348,8 @@ export async function downloadFiles(args: {
   }
 
   // namespace paths in source files
-  for (const sourceFile of Object.keys(files).filter(path => path.endsWith('.ts'))) {
+  const sourceFiles = Object.keys(files).filter(path => path.endsWith('.ts'))
+  for (const sourceFile of sourceFiles) {
     // 1. Find the namespace (this is a uuid)
     const namespace = sourceFile.split('/')[0]
     if (!namespace) {

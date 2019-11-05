@@ -1,6 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
-
+import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -17,12 +16,14 @@ import {
   SetGroundAction,
   ApplyLayoutAction,
   APPLY_LAYOUT,
-  FIX_ASSET_MAPPINGS,
-  FixAssetMappingsAction,
   SET_SCRIPT_VALUES,
-  SetScriptValuesAction
+  SetScriptValuesAction,
+  SYNC_SCENE_ASSETS,
+  SyncSceneAssetsAction,
+  FIX_LEGACY_NAMESPACES,
+  FixLegacyNamespacesAction,
+  syncSceneAssets
 } from 'modules/scene/actions'
-import { getMappings } from 'modules/asset/utils'
 import {
   getGLTFsBySrc,
   getCurrentScene,
@@ -34,25 +35,19 @@ import {
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity, setEditorReady, createEditorScene, SET_EDITOR_READY } from 'modules/editor/actions'
-import { getCurrentBounds, getData as getProjects, getCurrentProject } from 'modules/project/selectors'
+import { selectEntity, deselectEntity } from 'modules/editor/actions'
+import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
-import {
-  snapToGrid,
-  snapToBounds,
-  cloneEntities,
-  filterEntitiesWithComponent,
-  areEqualMappings,
-  getSceneByProjectId,
-  getEntityName
-} from './utils'
-import { getGroundAssets } from 'modules/asset/selectors'
+// import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
+import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, getSceneByProjectId, getEntityName } from './utils'
+import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
-import { getFullAssetPacks } from 'modules/assetPack/selectors'
-import { Project } from 'modules/project/types'
+import { loadSceneAssets } from 'modules/asset/actions'
+import { getProjectId } from 'modules/location/selectors'
+import { getData as getAssetPacks } from 'modules/assetPack/selectors'
+import { getMetrics } from 'components/AssetImporter/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -63,14 +58,10 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(FIX_ASSET_MAPPINGS, handleFixAssetMappings)
-  yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
+  yield takeLatest(FIX_LEGACY_NAMESPACES, handleFixLegacyNamespaces)
+  yield takeLatest(SYNC_SCENE_ASSETS, handleSyncSceneAssetsAction)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
-}
-
-function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
-  yield put(provisionScene(action.payload.manifest.scene, true))
 }
 
 function* handleAddItem(action: AddItemAction) {
@@ -117,8 +108,8 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.model,
-          mappings: getMappings(asset)
+          assetId: asset.id,
+          src: asset.model
         }
       } as ComponentDefinition<ComponentType.GLTFShape>
     }
@@ -150,8 +141,7 @@ function* handleAddItem(action: AddItemAction) {
       data: {
         assetId: asset.id,
         src: asset.contents[scriptPath],
-        values: {}, // TODO: we need to get default values here
-        mappings: getMappings(asset)
+        values: {} // TODO: we need to get default values here
       }
     } as ComponentDefinition<ComponentType.Script>
   }
@@ -164,6 +154,7 @@ function* handleAddItem(action: AddItemAction) {
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
   newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(newScene, entityComponents) }
+  newScene.assets[asset.id] = asset
 
   yield put(provisionScene(newScene))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
@@ -301,6 +292,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
+  const newAssets = { ...scene.assets }
   delete newEntities[selectedEntityId]
 
   for (const componentId of idsToDelete) {
@@ -311,8 +303,25 @@ function* handleDeleteItem(_: DeleteItemAction) {
     delete newComponents[componentId]
   }
 
+  // gather all the models used by gltf shapes
+  const models = Object.values(newComponents).reduce((set, component) => {
+    if (component.type === ComponentType.GLTFShape) {
+      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+      set.add(gltfShape.data.src)
+    }
+    return set
+  }, new Set<string>())
+
+  // remove assets that are not in the set
+  for (const asset of Object.values(newAssets)) {
+    if (models.has(asset.model)) {
+      continue
+    }
+    delete newAssets[asset.id]
+  }
+
   yield put(deselectEntity())
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities, assets: newAssets }))
 }
 
 function* handleSetGround(action: SetGroundAction) {
@@ -332,62 +341,135 @@ function* handleSetGround(action: SetGroundAction) {
   }
 }
 
-function* handleFixAssetMappings(_: FixAssetMappingsAction) {
-  const assetPacksRecord: ReturnType<typeof getFullAssetPacks> = yield select(getFullAssetPacks)
-  const assetPacks = Object.values(assetPacksRecord)
-  const project: Project | null = yield select(getCurrentProject)
+function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
+  /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids, 
+      and change them for the asset id instead.
+      
+      For gltf shapes that don't have a corresponding asset, a dummy one will be created
+  */
+  const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
+  const newAssets: Record<string, Asset> = {}
 
-  if (!project) return
+  // get current project id
+  const projectId: string = yield select(getProjectId)
+  if (!projectId) return
 
-  // load current scene (if any)
-  // const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-  const scene: Scene | null = yield getSceneByProjectId(project.id)
-
+  // get current scene
+  const scene: Scene | null = yield getSceneByProjectId(projectId)
   if (!scene) return
-  // keep track of the updated components
-  const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
 
-  // generate map of GLTFShape components by source
-  const gltfShapes: Record<string, ComponentDefinition<ComponentType.GLTFShape>[]> = {}
+  // get asset packs
+  const assetPacks: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
+
+  // get assets
+  const assets: ReturnType<typeof getAssets> = yield select(getAssets)
+
+  // gather all gltf shapes
+  const gltfShapes = Object.values(scene.components).filter(component => component.type === ComponentType.GLTFShape) as ComponentDefinition<
+    ComponentType.GLTFShape
+  >[]
+  for (const gltfShape of gltfShapes) {
+    const { src } = gltfShape.data
+
+    // if the src looks like <uuid>/<model-url> then it's legacy
+    const legacyRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/ // check if the path starts with a UUID
+    const isLegacy = legacyRegex.test(src.split('/')[0])
+    if (isLegacy) {
+      const [assetPackId, ...rest] = src.split('/')
+      const model = rest.join('/')
+      const assetPack = assetPacks[assetPackId]
+      // if there's an asset pack, we look for the asset and fix the legacy componment
+      if (assetPack) {
+        const asset = assetPack.assets.map(assetId => assets[assetId]).find(asset => asset.model === model)
+        if (asset) {
+          const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
+            ...gltfShape,
+            data: { assetId: asset.id, src: asset.model }
+          }
+          newComponents[newGltfShape.id] = newGltfShape
+          continue
+        }
+      }
+      // if there's no asset pack but there are mappings, we generate a dummy asset from the mappings
+      if ('mappings' in gltfShape.data) {
+        const contents: Record<string, string> = {}
+        const mappings = gltfShape.data['mappings'] as Record<string, string>
+        for (const namespacedPath of Object.keys(mappings)) {
+          const path = namespacedPath // remove the namespace
+            .split('/') // ['<uuid>', 'folder', 'Model.gltf']
+            .slice(1) // ['folder', 'Model.gltf']
+            .join('/') // 'folder/Model.gltf'
+          contents[path] = mappings[namespacedPath]
+        }
+        const id = uuidv4()
+        const newAsset: Asset = {
+          id,
+          model,
+          assetPackId,
+          contents,
+          name: 'Dummy',
+          script: null,
+          thumbnail: '',
+          tags: [],
+          category: 'decorations',
+          metrics: getMetrics(),
+          parameters: [],
+          actions: []
+        }
+        newAssets[id] = newAsset
+
+        const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
+          ...gltfShape,
+          data: {
+            ...gltfShape.data!,
+            assetId: newAsset.id,
+            src: newAsset.model
+          }
+        }
+        newComponents[newGltfShape.id] = newGltfShape
+      } else {
+      }
+    }
+  }
+
+  const hasUpdates = Object.keys(newComponents).length > 0
+  if (hasUpdates) {
+    const newScene = {
+      ...scene,
+      assets: { ...scene.assets, ...newAssets },
+      components: { ...scene.components, ...newComponents }
+    }
+    yield put(syncSceneAssets(newScene))
+  } else {
+    yield put(syncSceneAssets(scene))
+  }
+}
+
+function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
+  const { scene } = action.payload
+
+  // gather assets by model from the gltf components
+  const updatedSceneAssets: Record<string, Asset> = {}
+  const assets: ReturnType<typeof getAssets> = yield select(getAssets)
   for (const component of Object.values(scene.components)) {
     if (component.type === ComponentType.GLTFShape) {
       const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      if (!gltfShapes[gltfShape.data.src]) {
-        gltfShapes[gltfShape.data.src] = []
-      }
-      gltfShapes[gltfShape.data.src].push(gltfShape)
-    }
-  }
-
-  // loop over each loaded asset and update the mappings of the components using it
-  for (const assetPack of assetPacks) {
-    for (const asset of assetPack.assets) {
-      if (asset.model in gltfShapes) {
-        for (const component of gltfShapes[asset.model]) {
-          const mappings = getMappings(asset)
-          if (!areEqualMappings(component.data.mappings, mappings)) {
-            updatedComponents[component.id] = {
-              ...component,
-              data: {
-                ...component.data,
-                mappings
-              }
-            }
-          }
-        }
+      const { assetId } = gltfShape.data
+      const asset = assets[assetId]
+      if (asset) {
+        updatedSceneAssets[asset.id] = asset
       }
     }
   }
 
-  // if there are any components that need to be updated, provision a new scene
-  const hasUpdates = Object.keys(updatedComponents).length > 0
-  if (hasUpdates) {
-    const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
-    yield put(setEditorReady(false))
-    yield put(createEditorScene(project))
-    yield take(SET_EDITOR_READY)
-    yield put(provisionScene(newScene))
-  }
+  // generate new scene
+  const newScene = { ...scene, assets: { ...scene.assets, ...updatedSceneAssets } }
+
+  // load scene assets into redux store
+  yield put(loadSceneAssets(newScene))
+
+  // update the scene assets
+  yield put(provisionScene(newScene))
 }
 
 function* handleApplyLayout(action: ApplyLayoutAction) {
@@ -420,8 +502,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.model,
-          mappings: getMappings(asset)
+          assetId: asset.id,
+          src: asset.model
         }
       }
     } else {

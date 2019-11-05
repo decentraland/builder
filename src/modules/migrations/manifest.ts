@@ -1,6 +1,6 @@
 import { Manifest } from 'modules/project/types'
 import { addMappings } from './ISSUE-485'
-import { toProjectCloudSchema, addScale, addEntityName } from './utils'
+import { toProjectCloudSchema, addScale, addEntityName, addAssets } from './utils'
 import { Migration } from './types'
 
 export const migrations: Migration<Manifest> = {
@@ -21,6 +21,10 @@ export const migrations: Migration<Manifest> = {
   },
   '5': input => {
     addEntityName(input.scene)
+    return input
+  },
+  '6': input => {
+    addAssets(input.scene)
     return input
   }
 }

@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
 import { RootState } from 'modules/common/types'
-import { ComponentDefinition, ComponentType, AnyComponent, Scene } from 'modules/scene/types'
-import { getComponentsByType, getEntities, getComponents } from 'modules/scene/selectors'
+import { ComponentType, Scene } from 'modules/scene/types'
+import { getEntities, getComponents } from 'modules/scene/selectors'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { getCurrentProject, getLoading as getLoadingProject } from 'modules/project/selectors'
 import { getLoading as getLoadingAuth } from 'modules/auth/selectors'
@@ -10,6 +10,9 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { LOAD_MANIFEST_REQUEST } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
 import { AUTH_REQUEST } from 'modules/auth/actions'
+import { getData as getAssets } from 'modules/asset/selectors'
+import { Asset } from 'modules/asset/types'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 export const getState = (state: RootState) => state.editor
 export const getGizmo = (state: RootState) => getState(state).gizmo
@@ -21,17 +24,17 @@ export const isReady = (state: RootState) => getState(state).isReady
 export const isLoading = (state: RootState) => getState(state).isLoading
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
-export const getSceneMappings = createSelector<RootState, Record<ComponentType, AnyComponent[]>, Record<string, string>>(
-  getComponentsByType,
-  components => {
-    const gltfs = components[ComponentType.GLTFShape] as ComponentDefinition<ComponentType.GLTFShape>[]
-    return gltfs.reduce<Record<string, string>>(
-      (mappings, component) => ({
-        ...mappings,
-        ...component.data.mappings
-      }),
-      {}
-    )
+export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(
+  getAssets,
+  assets => {
+    const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
+      for (const path of Object.keys(asset.contents)) {
+        mappings[`${asset.id}/${path}`] = asset.contents[path]
+      }
+      return mappings
+    }, {})
+    console.log(mappings)
+    return mappings
   }
 )
 

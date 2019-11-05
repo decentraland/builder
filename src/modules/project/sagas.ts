@@ -52,7 +52,7 @@ const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
   thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
-  model: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf/FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
   script: null,
   tags: ['ground'],
   category: 'ground',
@@ -93,6 +93,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     id: uuidv4(),
     entities: {},
     components: {},
+    assets: {},
     metrics: EMPTY_SCENE_METRICS,
     limits: EMPTY_SCENE_METRICS,
     ground: null

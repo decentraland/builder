@@ -82,3 +82,15 @@ export const getDisabledAssets = createSelector<RootState, Record<ComponentType,
     return result
   }
 )
+
+export const getAssetsByModel = createSelector<RootState, AssetState['data'], Record<string, Asset>>(
+  getData,
+  assets => {
+    const out: Record<string, Asset> = {}
+    for (var id in assets) {
+      const asset = assets[id]
+      out[asset.model] = asset
+    }
+    return out
+  }
+)

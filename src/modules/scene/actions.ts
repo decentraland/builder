@@ -94,13 +94,21 @@ export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project 
 
 export type ApplyLayoutAction = ReturnType<typeof applyLayout>
 
-// Fix Asset Mappings
+// Fix Lagacy Namespaces
 
-export const FIX_ASSET_MAPPINGS = 'Fix Asset Mappings'
+export const FIX_LEGACY_NAMESPACES = 'Fix Legacy Namespaces'
 
-export const fixAssetMappings = () => action(FIX_ASSET_MAPPINGS, {})
+export const fixLegacyNamespaces = () => action(FIX_LEGACY_NAMESPACES)
 
-export type FixAssetMappingsAction = ReturnType<typeof fixAssetMappings>
+export type FixLegacyNamespacesAction = ReturnType<typeof fixLegacyNamespaces>
+
+// Sync Scene Assets
+
+export const SYNC_SCENE_ASSETS = 'Sync Scene Assets'
+
+export const syncSceneAssets = (scene: Scene) => action(SYNC_SCENE_ASSETS, { scene })
+
+export type SyncSceneAssetsAction = ReturnType<typeof syncSceneAssets>
 
 // Set Script Parameters
 

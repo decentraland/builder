@@ -430,7 +430,7 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
     const contentEntries = Object.entries(action.payload.asset.contents)
     for (let [file, hash] of contentEntries) {
       if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith(THUMBNAIL_PATH)) {
-        editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.assetPackId}/${file}`)
+        editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.id}/${file}`)
       }
     }
   })

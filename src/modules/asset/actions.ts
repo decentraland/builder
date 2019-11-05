@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Asset } from './types'
+import { Scene } from 'modules/scene/types'
 
 // Load collectibles
 
@@ -14,3 +15,8 @@ export const loadCollectiblesFailure = (error: string) => action(LOAD_COLLECTIBL
 export type LoadCollectiblesRequestAction = ReturnType<typeof loadCollectiblesRequest>
 export type LoadCollectiblesSuccessAction = ReturnType<typeof loadCollectiblesSuccess>
 export type LoadCollectiblesFailureAction = ReturnType<typeof loadCollectiblesFailure>
+
+// Load assets
+export const LOAD_SCENE_ASSETS = 'Load scene assets'
+export const loadSceneAssets = (scene: Scene) => action(LOAD_SCENE_ASSETS, { scene })
+export type LoadSceneAssetsAction = ReturnType<typeof loadSceneAssets>

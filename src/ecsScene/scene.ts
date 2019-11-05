@@ -167,10 +167,13 @@ function createComponent(component: AnyComponent) {
 
   if (!getComponentById(id)) {
     switch (type) {
-      case ComponentType.GLTFShape:
-        editorComponents[id] = new GLTFShape((data as ComponentData[ComponentType.GLTFShape]).src)
+      case ComponentType.GLTFShape: {
+        const { assetId, src } = data as ComponentData[ComponentType.GLTFShape]
+        const url = `${assetId}/${src}`
+        editorComponents[id] = new GLTFShape(url)
         editorComponents[id].isPickable = true
         break
+      }
       case ComponentType.Transform:
         editorComponents[id] = new Transform()
         break

@@ -1,5 +1,6 @@
 import { Vector3, Quaternion } from 'modules/common/types'
 import { AssetParameterValues } from 'modules/asset/types'
+import { Asset } from 'modules/asset/types'
 
 export type EntityDefinition = {
   id: string
@@ -17,8 +18,8 @@ export enum ComponentType {
 
 export type ComponentData = {
   [ComponentType.GLTFShape]: {
+    assetId: string
     src: string
-    mappings: Record<string, string>
   }
 
   [ComponentType.Transform]: {
@@ -33,7 +34,6 @@ export type ComponentData = {
     assetId: string
     src: string
     values: AssetParameterValues
-    mappings: Record<string, string>
   }
 }
 
@@ -62,6 +62,7 @@ export type Scene = {
   limits: SceneMetrics
   entities: Record<string, EntityDefinition>
   components: Record<string, AnyComponent>
+  assets: Record<string, Asset>
   ground: {
     // id references
     assetId: string

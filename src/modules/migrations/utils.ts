@@ -65,3 +65,9 @@ export function addEntityName(scene: Scene) {
     entity.name = name
   }
 }
+
+export function addAssets(scene: Scene) {
+  if (!scene.assets) {
+    scene.assets = {}
+  }
+}

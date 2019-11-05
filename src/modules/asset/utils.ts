@@ -7,14 +7,6 @@ export const MAX_TAGS = 15
 export const MAX_NAME_LENGTH = 20
 export const MIN_NAME_LENGTH = 3
 
-export function getMappings(asset: Asset) {
-  const mappings: Record<string, string> = {}
-  for (const path of Object.keys(asset.contents)) {
-    mappings[`${asset.id}/${path}`] = asset.contents[path]
-  }
-  return mappings
-}
-
 export function isNFT(asset: Asset) {
   return asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID
 }
