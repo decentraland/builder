@@ -61,12 +61,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   }
 
   async startEditor() {
-    const { rows, cols } = this.props.project.layout
     if (!this.canvasContainer.current) {
       throw new Error('Missing canvas container')
     }
     try {
-      await editorWindow.editor.initEngine(this.canvasContainer.current, rows, cols)
+      await editorWindow.editor.initEngine(this.canvasContainer.current, '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
         canvas.classList.add('dcl-canvas')
@@ -99,4 +98,4 @@ class Preview extends React.Component<Props & CollectedProps, State> {
   }
 }
 
-export default DropTarget(ASSET_TYPE, previewTarget, collect)(Preview)
+export default DropTarget<Props, CollectedProps>(ASSET_TYPE, previewTarget, collect)(Preview)
