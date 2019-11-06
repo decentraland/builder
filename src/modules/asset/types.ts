@@ -20,10 +20,15 @@ export type AssetParameter = {
   label: string
   description?: string
   default?: Exclude<AssetParameterValue, AssetActionValue>
-  options?: string[]
+  options?: AssetParameterOption[]
 }
 
-export type AssetParameterValue = string | number | boolean | AssetActionValue
+export type AssetParameterOption = {
+  label: string
+  value: string
+}
+
+export type AssetParameterValue = string | number | boolean | AssetActionValue[]
 
 export type AssetParameterValues = Record<string, AssetParameterValue>
 
@@ -39,7 +44,8 @@ export enum AssetParameterType {
   FLOAT = 'float',
   INTEGER = 'integer',
   ENTITY = 'entity',
-  ACTION = 'action'
+  ACTIONS = 'actions',
+  OPTIONS = 'options'
 }
 
 export type BaseAsset = {

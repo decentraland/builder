@@ -123,10 +123,8 @@ export function getEntityName(scene: Scene, entityComponents: EntityDefinition['
   const components = entityComponents.map(id => scene.components[id])
 
   for (let entityId in scene.entities) {
-    if (entityId !== entityId) {
-      const entity = scene.entities[entityId]
-      takenNames.add(entity.name)
-    }
+    const entity = scene.entities[entityId]
+    takenNames.add(entity.name)
   }
   return getUniqueName(components, takenNames)
 }

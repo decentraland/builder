@@ -1,34 +1,53 @@
 import * as React from 'react'
-import { SelectField, DropdownProps } from 'decentraland-ui'
-import { AssetParameterValues } from 'modules/asset/types'
+import { SelectField, DropdownProps, Button } from 'decentraland-ui'
+import { AssetParameterValues, AssetActionValue } from 'modules/asset/types'
 import { Props, State } from './ActionField.types'
 import EntityParameters from '../EntityParameters'
 import EntityField from '../EntityField'
 
 export default class ActionField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value || { entityName: '', actionId: '', values: {} }
+    value: this.props.value || [{ entityName: '', actionId: '', values: {} }]
   }
 
-  handleEntityChange = (entityName: string) => {
+  handleEntityChange = (entityName: string, index: number) => {
     const actions = this.getActionOptions(entityName)
 
-    const value = {
-      entityName,
-      actionId: actions.length > 0 ? actions[0].value : '',
-      values: {}
-    }
+    const value = Object.assign([], this.state.value, {
+      [index]: {
+        entityName,
+        actionId: actions.length > 0 ? actions[0].value : '',
+        values: {}
+      }
+    })
 
     this.setState({ value })
 
     this.props.onChange(value)
   }
 
-  handleActionChange = (_: any, data: DropdownProps) => {
-    const value = {
-      ...this.state.value,
-      actionId: data.value as string
-    }
+  handleAddAction = () => {
+    const index = this.state.value.length
+    const value = Object.assign([], this.state.value, {
+      [index]: {
+        entityName: '',
+        actionId: '',
+        values: {}
+      }
+    })
+
+    this.setState({ value })
+
+    this.props.onChange(value)
+  }
+
+  handleActionChange = (data: DropdownProps, index: number) => {
+    const value = Object.assign([], this.state.value, {
+      [index]: {
+        ...this.state.value[index],
+        actionId: data.value as string
+      }
+    })
 
     this.setState({
       value
@@ -37,8 +56,14 @@ export default class ActionField extends React.PureComponent<Props, State> {
     this.props.onChange(value)
   }
 
-  handleParametersChange = (values: AssetParameterValues) => {
-    const value = { ...this.state.value, values }
+  handleParametersChange = (values: AssetParameterValues, index: number) => {
+    const value = Object.assign([], this.state.value, {
+      [index]: {
+        ...this.state.value[index],
+        values
+      }
+    })
+
     this.setState({ value })
 
     this.props.onChange(value)
@@ -54,8 +79,7 @@ export default class ActionField extends React.PureComponent<Props, State> {
     return []
   }
 
-  getParameters = () => {
-    const { value } = this.state
+  getParameters = (value: AssetActionValue) => {
     const { entityAssets } = this.props
 
     const action = entityAssets[value.entityName] && entityAssets[value.entityName].actions.find(a => a.id === value.actionId)
@@ -69,21 +93,39 @@ export default class ActionField extends React.PureComponent<Props, State> {
   render() {
     const { label, entityAssets, className = '', value: actionValue } = this.props
     const { value } = this.state
-    const options = this.getActionOptions(value.entityName)
-    const parameters = this.getParameters()
-    const parameterValues = actionValue ? actionValue.values : {}
 
     return (
-      <div className={`TextField ${className}`}>
-        <EntityField
-          label={label}
-          value={value ? value.entityName : ''}
-          onChange={this.handleEntityChange}
-          filter={Object.keys(entityAssets)}
-        />
-        {value.entityName && <SelectField value={value.actionId} options={options} onChange={this.handleActionChange} />}
-        {parameters && <EntityParameters parameters={parameters} values={parameterValues} onChange={this.handleParametersChange} />}
-      </div>
+      <>
+        {value.map((action, i) => {
+          const options = this.getActionOptions(action.entityName)
+          const parameters = this.getParameters(action)
+          const parameterValues = actionValue && actionValue[i] ? actionValue[i].values : {}
+
+          return (
+            <>
+              <div className={`TextField ${className}`}>
+                <EntityField
+                  label={label}
+                  value={value ? action.entityName : ''}
+                  onChange={name => this.handleEntityChange(name, i)}
+                  filter={Object.keys(entityAssets)}
+                />
+                {action.entityName && (
+                  <SelectField value={action.actionId} options={options} onChange={(_, data) => this.handleActionChange(data, i)} />
+                )}
+                {parameters && (
+                  <EntityParameters
+                    parameters={parameters}
+                    values={parameterValues}
+                    onChange={values => this.handleParametersChange(values, i)}
+                  />
+                )}
+              </div>
+            </>
+          )
+        })}
+        <Button onClick={this.handleAddAction}>Add action</Button>
+      </>
     )
   }
 }

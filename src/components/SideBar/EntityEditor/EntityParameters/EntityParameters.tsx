@@ -5,6 +5,7 @@ import NumberField from '../NumberField'
 import BooleanField from '../BooleanField'
 import EntityField from '../EntityField'
 import ActionField from '../ActionField'
+import OptionsField from '../OptionsField'
 
 import { Props, State } from './EntityParameters.types'
 
@@ -29,11 +30,11 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
     const { values } = this.state
 
     switch (param.type) {
-      case AssetParameterType.ACTION: {
+      case AssetParameterType.ACTIONS: {
         return (
           <ActionField
             label={param.label}
-            value={values[param.id] as AssetActionValue}
+            value={values[param.id] as AssetActionValue[]}
             onChange={val => this.handleFieldChange(param.id, val)}
           />
         )
@@ -54,6 +55,16 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
       case AssetParameterType.INTEGER: {
         return (
           <NumberField label={param.label} value={values[param.id] as number} onChange={val => this.handleFieldChange(param.id, val)} />
+        )
+      }
+      case AssetParameterType.OPTIONS: {
+        return (
+          <OptionsField
+            label={param.label}
+            value={values[param.id] as string}
+            options={param.options!}
+            onChange={val => this.handleFieldChange(param.id, val)}
+          />
         )
       }
       case AssetParameterType.FLOAT: {

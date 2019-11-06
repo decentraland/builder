@@ -2,14 +2,14 @@ import { AssetActionValue, Asset } from 'modules/asset/types'
 
 export type Props = {
   label: string
-  value: AssetActionValue
+  value: AssetActionValue[]
   entityAssets: Record<string, Asset>
   className?: string
-  onChange(value: AssetActionValue): void
+  onChange(value: AssetActionValue[]): void
 }
 
 export type State = {
-  value: AssetActionValue
+  value: AssetActionValue[]
 }
 
 export type MapStateProps = Pick<Props, 'entityAssets'>
