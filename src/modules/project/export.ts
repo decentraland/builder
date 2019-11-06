@@ -13,7 +13,7 @@ import { getParcelOrientation } from './utils'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
 
-export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version)))
+export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
