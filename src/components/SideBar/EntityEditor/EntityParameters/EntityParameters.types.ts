@@ -3,9 +3,12 @@ import { AssetParameter, AssetParameterValues } from 'modules/asset/types'
 export type Props = {
   parameters: AssetParameter[]
   values: AssetParameterValues
+  entityNames: string[]
   onChange(values: AssetParameterValues): void
 }
 
 export type State = {
   values: AssetParameterValues
 }
+
+export type MapStateProps = Pick<Props, 'entityNames'>

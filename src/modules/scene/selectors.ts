@@ -39,6 +39,11 @@ export const getEntities = createSelector<RootState, Scene | null, Scene['entiti
   scene => (scene ? scene.entities : {})
 )
 
+export const getEntityNames = createSelector<RootState, Scene | null, string[]>(
+  getCurrentScene,
+  scene => (scene ? Object.values(scene.entities).map(entity => entity.name) : [])
+)
+
 export const getComponentsByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent[]>>(
   getEntities,
   getComponents,

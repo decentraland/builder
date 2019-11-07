@@ -24,7 +24,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className={`TextField ${className}`}>
+      <div className={`EntityField ${className}`}>
         <span className="label">{label}</span>
         <SelectField value={value} options={options} onChange={this.handleChange} />
       </div>

@@ -1,2 +1,2 @@
-import EntityParameters from './EntityParameters'
+import EntityParameters from './EntityParameters.container'
 export default EntityParameters

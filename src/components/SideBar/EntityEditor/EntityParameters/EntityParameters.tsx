@@ -11,13 +11,17 @@ import { Props, State } from './EntityParameters.types'
 
 export default class EntityParameters extends React.PureComponent<Props, State> {
   state: State = {
-    values: {}
+    values: { ...this.props.values }
   }
 
-  componentWillMount() {
-    this.setState({
-      values: { ...this.props.values }
-    })
+  static getDerivedStateFromProps(props: Props) {
+    if (props.values) {
+      return {
+        values: { ...props.values }
+      }
+    }
+
+    return null
   }
 
   handleFieldChange = (id: string, value: any) => {
@@ -28,21 +32,22 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
 
   renderField = (param: AssetParameter) => {
     const { values } = this.state
+    const { entityNames } = this.props
 
     switch (param.type) {
       case AssetParameterType.ACTIONS: {
-        return (
-          <ActionField
-            label={param.label}
-            value={values[param.id] as AssetActionValue[]}
-            onChange={val => this.handleFieldChange(param.id, val)}
-          />
-        )
+        let actions = values[param.id] as AssetActionValue[]
+
+        if (actions) {
+          actions = actions.filter(action => entityNames.includes(action.entityName))
+        }
+
+        return <ActionField label={param.label} value={actions} onChange={val => this.handleFieldChange(param.id, val)} />
       }
       case AssetParameterType.ENTITY: {
-        return (
-          <EntityField label={param.label} value={values[param.id] as string} onChange={val => this.handleFieldChange(param.id, val)} />
-        )
+        const entityName = values[param.id] as string
+        if (!entityNames.includes(entityName)) return null
+        return <EntityField label={param.label} value={entityName} onChange={val => this.handleFieldChange(param.id, val)} />
       }
       case AssetParameterType.STRING: {
         return <TextField label={param.label} value={values[param.id] as string} onChange={val => this.handleFieldChange(param.id, val)} />

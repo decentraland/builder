@@ -15,7 +15,7 @@ export default class BooleanField extends React.PureComponent<Props, State> {
   render() {
     const { label, value, className = '' } = this.props
     return (
-      <div className={`NumericField ${className}`}>
+      <div className={`BooleanField ${className}`}>
         <span className="label">{label}</span>
         <Radio checked={value} onClick={this.handleChange} toggle />
       </div>
