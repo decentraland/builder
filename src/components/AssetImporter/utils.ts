@@ -6,7 +6,7 @@ import { SceneMetrics } from 'modules/scene/types'
 export const ASSET_MANIFEST = 'asset.json'
 export const MAX_FILE_SIZE = 5000000
 
-export const CODE_SEPARATOR = '/*! code */;'
+export const CODE_SEPARATOR = 'global.dclamd=loader;'
 export const SOURCE_MAPS_SEPARATOR = '//# sourceMappingURL'
 
 export function getExtension(fileName: string) {
@@ -68,7 +68,13 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
 
     // remove source maps
     if (text.includes(SOURCE_MAPS_SEPARATOR)) {
-      text = text.split(SOURCE_MAPS_SEPARATOR).shift()! + '")'
+      const padding = text.trim().endsWith(';') ? 3 : 2
+      text =
+        text
+          .trim()
+          .slice(0, -padding)
+          .split(SOURCE_MAPS_SEPARATOR)
+          .shift()! + text.slice(-padding)
     }
 
     /** Namespace module definitions
@@ -77,7 +83,7 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * Into this:
      * define("namespace/myModule")
      */
-    text = text.replace(/define\(\\\"([\w]*)/g, (match, moduleName) => {
+    text = text.replace(/define\(\\?\"([\w]*)/g, (match, moduleName) => {
       let code = match.slice(0, -moduleName.length) // remove previous module name
       code += `${namespace}/${moduleName}` // add namespaced module name
       return code
@@ -89,9 +95,9 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * Into this:
      * ["require", "exports", "namespace/myDependency"]
      */
-    text = text.replace(/\[\\\"require\\\", \\\"exports\\\", ([\w|\\|\"|,|\s]*)/g, (match, dependencies) => {
+    text = text.replace(/\[\\?\"require\\?\", \\?\"exports\\?\", ([\w|\\|\/|\"|,|\s]*)/g, (match, dependencies) => {
       let code = match.slice(0, -dependencies.length) // remove previous dependencies
-      const newDependencies = dependencies.replace(/\\\"(.*?)\\\"/g, `\\\"${namespace}/$1\\\"`) // adds the namespace to each dependency
+      const newDependencies = dependencies.replace(/\\?\"(.*?)\\?\"/g, `\\\"${namespace}/$1\\\"`) // adds the namespace to each dependency
       return code + newDependencies
     })
 
@@ -104,6 +110,9 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
     for (const path of Object.keys(contents)) {
       text = text.replace(new RegExp(path, 'g'), `${namespace}/${path}`)
     }
+
+    // Remove extra /src
+    text = text.replace(/src\//g, '')
 
     contents[scriptPath] = new Blob([text], {
       type: 'text/plain'
