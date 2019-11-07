@@ -4,7 +4,7 @@ import { Props, State } from './OptionsField.types'
 
 export default class OptionsField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value || this.props.options.length > 0 ? this.props.options[0].value : ''
+    value: this.props.value || (this.props.options.length > 0 ? this.props.options[0].value : '')
   }
 
   handleChange = (_: any, props: DropdownProps) => {

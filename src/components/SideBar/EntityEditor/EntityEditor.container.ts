@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { getEntityComponentsByType } from 'modules/scene/selectors'
+import { getEntityComponentsByType, getEntities } from 'modules/scene/selectors'
 import { ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { setScriptValues } from 'modules/scene/actions'
@@ -13,11 +13,14 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   // The presence of both the entity and the script component are guranteed by the ItemDrawer container
   const components = getEntityComponentsByType(state)[ownProps.entityId]
   const script = components![ComponentType.Script] as ComponentDefinition<ComponentType.Script>
+  const entity = getEntities(state)[ownProps.entityId]
+
   // TODO: There may not be an Asset if the scene is imported from another account
   const asset = getAssets(state)[script.data.assetId]
   return {
     asset,
-    script
+    script,
+    entity
   }
 }
 
