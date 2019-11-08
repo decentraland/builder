@@ -7,7 +7,7 @@ import EntityField from '../EntityField'
 
 export default class ActionField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value || [{ entityName: '', actionId: '', values: {} }]
+    value: this.props.value || []
   }
 
   handleEntityChange = (entityName: string, index: number) => {

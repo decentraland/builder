@@ -39,6 +39,7 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
         let actions = values[param.id] as AssetActionValue[]
 
         if (actions) {
+          // Hide actions that correspond to inexistent entity references
           actions = actions.filter(action => entityNames.includes(action.entityName))
         }
 

@@ -40,7 +40,8 @@ import {
   CreateEditorSceneAction,
   SET_EDITOR_LOADING,
   SetEditorLoadingAction,
-  setScriptUrl
+  setScriptUrl,
+  DESELECT_ENTITY
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -103,6 +104,7 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
+  yield takeLatest(DESELECT_ENTITY, handleDeselectEntity)
 }
 
 function* pollEditor(scene: Scene) {
@@ -442,4 +444,8 @@ function* handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
+}
+
+function handleDeselectEntity() {
+  editorWindow.editor.deselectEntity()
 }

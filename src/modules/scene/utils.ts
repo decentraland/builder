@@ -11,6 +11,7 @@ import {
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
+import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue } from 'modules/asset/types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -188,4 +189,26 @@ export function getGLTFShapeName(component: ComponentDefinition<ComponentType.GL
   }
 
   return name
+}
+
+export function getDefaultValues(entityName: string, parameters: AssetParameter[]) {
+  const out: AssetParameterValues = {}
+
+  for (let parameter of parameters) {
+    if (parameter.default) {
+      if (parameter.type === AssetParameterType.ACTIONS) {
+        out[parameter.id] = [
+          {
+            entityName,
+            actionId: parameter.default,
+            values: {}
+          }
+        ] as AssetActionValue[]
+      } else {
+        out[parameter.id] = parameter.default
+      }
+    }
+  }
+
+  return out
 }

@@ -41,7 +41,15 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 // import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, getSceneByProjectId, getEntityName } from './utils'
+import {
+  snapToGrid,
+  snapToBounds,
+  cloneEntities,
+  filterEntitiesWithComponent,
+  getSceneByProjectId,
+  getEntityName,
+  getDefaultValues
+} from './utils'
 import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { loadSceneAssets } from 'modules/asset/actions'
@@ -135,13 +143,14 @@ function* handleAddItem(action: AddItemAction) {
   const scriptPath = Object.keys(asset.contents).find(path => path.endsWith('.js'))
   if (scriptPath) {
     scriptId = uuidv4()
+
     newComponents[scriptId] = {
       id: scriptId,
       type: ComponentType.Script,
       data: {
         assetId: asset.id,
         src: asset.contents[scriptPath],
-        values: {} // TODO: we need to get default values here
+        values: {}
       }
     } as ComponentDefinition<ComponentType.Script>
   }
@@ -153,8 +162,14 @@ function* handleAddItem(action: AddItemAction) {
     entityComponents.push(scriptId)
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
-  newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(newScene, entityComponents) }
+  const entityName = getEntityName(newScene, entityComponents)
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
   newScene.assets[asset.id] = asset
+
+  if (scriptId) {
+    const comp = newScene.components[scriptId] as ComponentDefinition<ComponentType.Script>
+    comp.data.values = getDefaultValues(entityName, asset.parameters)
+  }
 
   yield put(provisionScene(newScene))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
@@ -343,9 +358,9 @@ function* handleSetGround(action: SetGroundAction) {
 }
 
 function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
-  /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids, 
+  /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
       and change them for the asset id instead.
-      
+
       For gltf shapes that don't have a corresponding asset, a dummy one will be created
   */
   const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
@@ -429,6 +444,7 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
         }
         newComponents[newGltfShape.id] = newGltfShape
       } else {
+        // noop
       }
     }
   }
