@@ -89,6 +89,9 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       <div className="Preview-wrapper">
         {isLoading && (
           <div className="overlay">
+            <div id="progress-bar" className="progress ingame">
+              <div className="full"></div>
+            </div>
             <Loader active size="massive" />
           </div>
         )}
