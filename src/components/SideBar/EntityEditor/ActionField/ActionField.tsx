@@ -69,6 +69,12 @@ export default class ActionField extends React.PureComponent<Props, State> {
     this.props.onChange(value)
   }
 
+  handleRemove = (index: number) => {
+    const value = this.state.value.filter((_, i) => i !== index)
+    this.setState({ value })
+    this.props.onChange(value)
+  }
+
   getActionOptions = (entityName: string) => {
     const { entityAssets } = this.props
 
@@ -120,6 +126,9 @@ export default class ActionField extends React.PureComponent<Props, State> {
                   onChange={values => this.handleParametersChange(values, i)}
                 />
               )}
+              <Button size="tiny" onClick={() => this.handleRemove(i)}>
+                Remove
+              </Button>
             </>
           )
         })}
