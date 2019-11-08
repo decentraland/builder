@@ -1,5 +1,7 @@
 // @ts-ignore
 import Dockerfile from '!raw-loader!decentraland/samples/ecs/Dockerfile'
+// @ts-ignore
+import builderScriptsRaw from 'raw-loader!decentraland-builder-scripts/lib/channel'
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
@@ -189,6 +191,12 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       let executeScripts = 'async function executeScripts() {'
       const assetIdToScriptName = new Map<string, string>()
       let currentScript = 1
+
+      // setup channel
+      executeScripts += `\n\tconst channelId = Math.random().toString(16).slice(2)`
+      executeScripts += `\n\tconst channelBus = new MessageBus()`
+      executeScripts += `\n`
+
       // instantiate all the scripts
       for (const [assetId, src] of Array.from(scripts)) {
         const scriptName = SCRIPT_INSTANCE_NAME + currentScript++
@@ -205,12 +213,14 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         const script = assetIdToScriptName.get(assetId)
         const host = entityIdToName.get(entityId)
         const params = JSON.stringify(values)
-        executeScripts += `\n\t${script}.spawn(${host}, ${params})`
+        executeScripts += `\n\t${script}.spawn(${host}, ${params}, createChannel(channelId, ${host}, channelBus))`
       }
       // call function
       executeScripts += '\n}\nexecuteScripts()'
 
-      code = code + '\n\n' + scriptLoader + '\n\n' + executeScripts
+      const builderScripts = `var exports = {}\n` + builderScriptsRaw.replace(`'use strict'`, `''`)
+
+      code = builderScripts + '\n\n' + code + '\n\n' + scriptLoader + '\n\n' + executeScripts
     } else {
       // import all the scripts
       let importScripts = ''

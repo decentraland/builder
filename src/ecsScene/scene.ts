@@ -2,6 +2,8 @@
 import { EventEmitter } from 'events'
 import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
+import { createChannel } from 'decentraland-builder-scripts/channel'
+
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
@@ -27,11 +29,6 @@ eval(`self.load = function(id) { return new Promise(resolve => define('load', [i
 Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
 provide('MessageBus', MockMessageBus)
 // END DRAGONS
-
-export interface IScript<T extends {}> {
-  init(): void
-  spawn(host: Entity, props: T): void
-}
 
 let scriptBaseUrl: string | null = null
 const scriptPromises = new Map<string, Promise<string>>()
@@ -149,7 +146,8 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             // ...and execute the script on the host entity
             const { assetId, values } = entity.getComponent(Script)
             const script = scriptInstances.get(assetId)!
-            script.spawn(host, values)
+            const channel = createChannel('channel-id', host as any, MockMessageBus.emitter)
+            script.spawn(host, values, channel)
           }
         }
       } else {
