@@ -95,7 +95,8 @@ export default class ActionField extends React.PureComponent<Props, State> {
     const { value } = this.state
 
     return (
-      <>
+      <div className={`ActionField ${className}`}>
+        <span className="label">{label}</span>
         {value.map((action, i) => {
           const options = this.getActionOptions(action.entityName)
           const parameters = this.getParameters(action)
@@ -103,29 +104,27 @@ export default class ActionField extends React.PureComponent<Props, State> {
 
           return (
             <>
-              <div className={`TextField ${className}`}>
-                <EntityField
-                  label={label}
-                  value={value ? action.entityName : ''}
-                  onChange={name => this.handleEntityChange(name, i)}
-                  filter={Object.keys(entityAssets)}
+              <EntityField
+                label={''}
+                value={value ? action.entityName : ''}
+                onChange={name => this.handleEntityChange(name, i)}
+                filter={Object.keys(entityAssets)}
+              />
+              {action.entityName && (
+                <SelectField value={action.actionId} options={options} onChange={(_, data) => this.handleActionChange(data, i)} />
+              )}
+              {parameters && (
+                <EntityParameters
+                  parameters={parameters}
+                  values={parameterValues}
+                  onChange={values => this.handleParametersChange(values, i)}
                 />
-                {action.entityName && (
-                  <SelectField value={action.actionId} options={options} onChange={(_, data) => this.handleActionChange(data, i)} />
-                )}
-                {parameters && (
-                  <EntityParameters
-                    parameters={parameters}
-                    values={parameterValues}
-                    onChange={values => this.handleParametersChange(values, i)}
-                  />
-                )}
-              </div>
+              )}
             </>
           )
         })}
         <Button onClick={this.handleAddAction}>Add action</Button>
-      </>
+      </div>
     )
   }
 }

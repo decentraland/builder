@@ -14,7 +14,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
   }, 200)
 
   render() {
-    const { asset, script } = this.props
+    const { asset, script, entity } = this.props
 
     if (!asset) return null
 
@@ -22,7 +22,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
       <div className="EntityEditor">
         <Header className="header" size="medium">
           <div className="spacer" />
-          {asset.name}
+          {asset.name} ({entity.name})
           <Icon name="modal-close" onClick={this.props.onClose} />
         </Header>
         <div className="thumbnail">
