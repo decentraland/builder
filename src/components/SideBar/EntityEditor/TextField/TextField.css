@@ -1,18 +1,3 @@
-.TextField {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border: 1px solid var(--preview-background);
-  border-radius: 8px;
-  color: var(--bluish-steel);
-}
-
-.TextField .label {
-  font-size: 15px;
-  text-transform: capitalize;
-}
-
 .TextField .dcl.field {
   border: 0px;
   min-width: 0px;

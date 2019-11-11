@@ -38,3 +38,18 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.EntityEditor .ParameterField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.4);
+  border-radius: 8px;
+}
+
+.EntityEditor .ParameterField .label {
+  font-size: 15px;
+  text-transform: capitalize;
+  color: rgb(var(--purplish-grey-raw));
+}

@@ -15,9 +15,17 @@ export default class EntityField extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, entities, filter, className = '' } = this.props
+    const { label, entities, filter, assetsByEntityName, className = '' } = this.props
     const { value } = this.state
-    let options = Object.values(entities).map(entity => ({ key: entity.name, text: entity.name, value: entity.name }))
+
+    let options = Object.values(entities)
+      .filter(entity => !entity.disableGizmos)
+      .map(entity => ({
+        key: entity.name,
+        text: entity.name,
+        value: entity.name,
+        image: { avatar: false, src: assetsByEntityName[entity.name].thumbnail }
+      }))
 
     if (filter) {
       options = options.filter(option => filter.includes(option.key))

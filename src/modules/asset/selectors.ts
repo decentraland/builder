@@ -87,7 +87,7 @@ export const getAssetsByModel = createSelector<RootState, AssetState['data'], Re
   getData,
   assets => {
     const out: Record<string, Asset> = {}
-    for (var id in assets) {
+    for (let id in assets) {
       const asset = assets[id]
       out[asset.model] = asset
     }

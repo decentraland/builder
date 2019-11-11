@@ -4,7 +4,3 @@ export type Props = {
   className?: string
   onChange(value: boolean): void
 }
-
-export type State = {
-  value: boolean
-}

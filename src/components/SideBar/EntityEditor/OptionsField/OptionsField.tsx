@@ -15,7 +15,7 @@ export default class OptionsField extends React.PureComponent<Props> {
     let selectOptions = options.map(opt => ({ key: opt.value, text: opt.label, value: opt.value }))
 
     return (
-      <div className={`OptionsField ${className}`}>
+      <div className={`OptionsField ParameterField ${className}`}>
         <span className="label">{label}</span>
         <SelectField value={value} options={selectOptions} onChange={this.handleChange} />
       </div>

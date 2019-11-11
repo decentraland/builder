@@ -20,7 +20,7 @@ export default class NumberField extends React.PureComponent<Props, State> {
     const { label, className = '' } = this.props
     const { value } = this.state
     return (
-      <div className={`NumberField ${className}`}>
+      <div className={`NumberField ParameterField ${className}`}>
         <span className="label">{label}</span>
         <Field value={value} onChange={this.handleChange} type="number" />
       </div>

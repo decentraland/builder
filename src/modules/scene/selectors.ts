@@ -193,6 +193,32 @@ export const numItems = createSelector<RootState, Project | null, Scene | null, 
   }
 )
 
+export const getAssetsByEntityName = createSelector<
+  RootState,
+  Record<string, EntityDefinition>,
+  Record<string, AnyComponent[]>,
+  AssetState['data'],
+  Record<string, Asset>
+>(
+  getEntities,
+  getComponentsByEntityId,
+  getAssets,
+  (entities, componentsByEntity, assets) => {
+    const out: Record<string, Asset> = {}
+    for (let entityId in componentsByEntity) {
+      const entity = entities[entityId]
+      const components = componentsByEntity[entityId]
+      for (let component of components) {
+        if (component.type === ComponentType.Script || component.type === ComponentType.GLTFShape) {
+          const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
+          out[entity.name] = asset
+        }
+      }
+    }
+    return out
+  }
+)
+
 export const getAssetsWithScriptByEntityName = createSelector<
   RootState,
   Record<string, EntityDefinition>,

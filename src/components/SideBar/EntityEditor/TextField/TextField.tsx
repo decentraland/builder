@@ -20,7 +20,7 @@ export default class TextField extends React.PureComponent<Props, State> {
     const { value } = this.state
 
     return (
-      <div className={`TextField ${className}`}>
+      <div className={`TextField ParameterField ${className}`}>
         <span className="label">{label}</span>
         <Field value={value} onChange={this.handleChange} />
       </div>

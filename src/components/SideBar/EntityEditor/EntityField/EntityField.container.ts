@@ -1,13 +1,14 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { getEntities } from 'modules/scene/selectors'
+import { getEntities, getAssetsByEntityName } from 'modules/scene/selectors'
 
 import { MapStateProps } from './EntityField.types'
 import EntityField from './EntityField'
 
 const mapState = (state: RootState): MapStateProps => ({
-  entities: getEntities(state)
+  entities: getEntities(state),
+  assetsByEntityName: getAssetsByEntityName(state)
 })
 
 const mapDispatch = () => ({})
