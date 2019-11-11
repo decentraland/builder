@@ -1,0 +1,43 @@
+.NumberField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid var(--preview-background);
+  border-radius: 8px;
+  color: var(--bluish-steel);
+}
+
+.NumberField .label {
+  font-size: 15px;
+  text-transform: capitalize;
+}
+
+.NumberField .dcl.field {
+  border: 0px;
+  min-width: 0px;
+  padding: 0px;
+}
+
+.NumberField .dcl.field .ui.input {
+  border: 0px;
+  min-width: 0px;
+  padding: 0px;
+}
+
+.NumberField .dcl.field .ui.input input {
+  font-weight: normal;
+  font-size: 15px;
+  padding: 0px;
+  line-height: 0px;
+  border-bottom: 0px;
+  text-align: right;
+}
+.NumberField .dcl.field .ui.input input:focus,
+.NumberField .dcl.field .ui.input input:active {
+  border-bottom: none;
+}
+
+.NumberField .dcl.field .message {
+  display: none;
+}

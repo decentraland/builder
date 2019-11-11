@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Field, InputOnChangeData } from 'decentraland-ui'
 import { Props, State } from './TextField.types'
+import './TextField.css'
 
 export default class TextField extends React.PureComponent<Props, State> {
   state: State = {
@@ -11,7 +12,7 @@ export default class TextField extends React.PureComponent<Props, State> {
     const { onChange } = this.props
     const { value } = props
     this.setState({ value })
-    onChange(value)
+    setTimeout(() => onChange(value), 0)
   }
 
   render() {

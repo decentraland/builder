@@ -7,7 +7,3 @@ export type Props = {
   className?: string
   onChange(value: string): void
 }
-
-export type State = {
-  value: string
-}

@@ -1,0 +1,52 @@
+.OptionsField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid var(--preview-background);
+  border-radius: 8px;
+  color: var(--bluish-steel);
+}
+
+.OptionsField .label {
+  font-size: 15px;
+  text-transform: capitalize;
+}
+
+.OptionsField .dcl.select-field {
+  min-width: 0px;
+  min-height: 0px;
+}
+
+.OptionsField .dcl.select-field .message {
+  display: none;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown {
+  border: 0px;
+  padding: 0px;
+  min-height: 0px;
+  margin-top: 0px;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown .menu {
+  padding: 0px;
+  background-color: #242129;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown .item {
+  font-weight: normal;
+}
+.OptionsField .dcl.select-field .ui.dropdown .item:hover {
+  background-color: rgba(var(--bluish-steel-raw), 0.1);
+}
+
+.OptionsField .dcl.select-field .ui.selection.active.dropdown,
+.OptionsField .dcl.select-field .ui.selection.active.dropdown:hover {
+  border-bottom: 0px;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown > div.text {
+  font-size: 15px;
+  font-weight: normal;
+}

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Field, InputOnChangeData } from 'decentraland-ui'
 import { Props, State } from './NumberField.types'
+import './NumberField.css'
 
 export default class NumberField extends React.PureComponent<Props, State> {
   state: State = {

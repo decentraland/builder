@@ -11,7 +11,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
   handleChangeDebounced = debounce((parameters: AssetParameterValues) => {
     const { entityId, onSetScriptParameters } = this.props
     onSetScriptParameters(entityId, parameters)
-  }, 200)
+  }, 100)
 
   render() {
     const { asset, script, entity } = this.props
