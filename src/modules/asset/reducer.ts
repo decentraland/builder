@@ -14,8 +14,8 @@ import {
   LoadCollectiblesSuccessAction,
   LOAD_COLLECTIBLES_REQUEST,
   LoadCollectiblesRequestAction,
-  LOAD_SCENE_ASSETS,
-  LoadSceneAssetsAction
+  LOAD_ASSETS,
+  LoadAssetsAction
 } from './actions'
 
 export type AssetState = {
@@ -35,7 +35,7 @@ export type AssetReducerAction =
   | LoadCollectiblesSuccessAction
   | LoadCollectiblesRequestAction
   | SaveAssetPackSuccessAction
-  | LoadSceneAssetsAction
+  | LoadAssetsAction
 
 export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction): AssetState => {
   switch (action.type) {
@@ -96,12 +96,12 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
 
       return newState
     }
-    case LOAD_SCENE_ASSETS: {
+    case LOAD_ASSETS: {
       return {
         ...state,
         data: {
           ...state.data,
-          ...action.payload.scene.assets
+          ...action.payload.assets
         }
       }
     }

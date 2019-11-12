@@ -1,6 +1,5 @@
 import { action } from 'typesafe-actions'
 import { Asset } from './types'
-import { Scene } from 'modules/scene/types'
 
 // Load collectibles
 
@@ -17,6 +16,6 @@ export type LoadCollectiblesSuccessAction = ReturnType<typeof loadCollectiblesSu
 export type LoadCollectiblesFailureAction = ReturnType<typeof loadCollectiblesFailure>
 
 // Load assets
-export const LOAD_SCENE_ASSETS = 'Load scene assets'
-export const loadSceneAssets = (scene: Scene) => action(LOAD_SCENE_ASSETS, { scene })
-export type LoadSceneAssetsAction = ReturnType<typeof loadSceneAssets>
+export const LOAD_ASSETS = 'Load assets'
+export const loadAssets = (assets: Record<string, Asset>) => action(LOAD_ASSETS, { assets })
+export type LoadAssetsAction = ReturnType<typeof loadAssets>

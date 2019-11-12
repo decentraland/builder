@@ -52,7 +52,7 @@ import {
 } from './utils'
 import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
-import { loadSceneAssets } from 'modules/asset/actions'
+import { loadAssets } from 'modules/asset/actions'
 import { getProjectId } from 'modules/location/selectors'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
@@ -465,16 +465,28 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
 function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
   const { scene } = action.payload
 
-  // gather assets by model from the gltf components
+  // assets that need to be updated in the scene
   const updatedSceneAssets: Record<string, Asset> = {}
+  // assets that are present in the scene but not in the store
+  const missingSceneAssets: Record<string, Asset> = {}
+  // all assets in the store
   const assets: ReturnType<typeof getAssets> = yield select(getAssets)
+
   for (const component of Object.values(scene.components)) {
     if (component.type === ComponentType.GLTFShape) {
       const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
       const { assetId } = gltfShape.data
-      const asset = assets[assetId]
-      if (asset) {
-        updatedSceneAssets[asset.id] = asset
+      const storeAsset = assets[assetId]
+      if (storeAsset) {
+        updatedSceneAssets[storeAsset.id] = storeAsset
+      } else {
+        const sceneAsset = scene.assets[assetId]
+        if (sceneAsset) {
+          missingSceneAssets[sceneAsset.id] = {
+            ...sceneAsset,
+            assetPackId: 'dummy-asset-pack-id' // we change this so it won't show up in the sidebar
+          }
+        }
       }
     }
   }
@@ -483,7 +495,7 @@ function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
   const newScene = { ...scene, assets: { ...scene.assets, ...updatedSceneAssets } }
 
   // load scene assets into redux store
-  yield put(loadSceneAssets(newScene))
+  yield put(loadAssets(missingSceneAssets))
 
   // update the scene assets
   yield put(provisionScene(newScene))
