@@ -1,0 +1,53 @@
+div.ActionField.ParameterField {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border: none;
+  padding: 0px;
+  margin-top: 16px;
+}
+
+.ActionField .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.ActionField .signature {
+  display: flex;
+  align-items: center;
+}
+
+.ActionField .signature:not(:only-child) {
+  margin-bottom: 16px;
+}
+
+.ActionField .container {
+  background-color: rgba(var(--bluish-steel-raw), 0.3);
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.ActionField .signature > .EntityField {
+  margin-right: 16px;
+}
+
+.ActionField .signature > .EntityField,
+.ActionField .signature > .OptionsField {
+  border: 0px;
+  padding: 0px;
+  flex: 1;
+}
+
+.ActionField .signature > .EntityField .ui.dropdown,
+.ActionField .signature > .OptionsField .ui.dropdown {
+  min-width: 0px;
+}
+
+.ActionField .signature > .EntityField .dcl.select-field,
+.ActionField .signature > .OptionsField .dcl.select-field {
+  width: 100%;
+}

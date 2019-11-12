@@ -22,6 +22,7 @@
 .OptionsField .dcl.select-field .ui.dropdown .item {
   font-weight: normal;
 }
+
 .OptionsField .dcl.select-field .ui.dropdown .item:hover {
   background-color: rgba(var(--bluish-steel-raw), 0.1);
 }

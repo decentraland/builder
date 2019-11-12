@@ -1,0 +1,61 @@
+.EntityField {
+  user-select: none;
+}
+
+.EntityField .trigger {
+  color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.EntityField .trigger img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.EntityField .dcl.select-field {
+  min-width: 0px;
+  min-height: 0px;
+}
+
+.EntityField .dcl.select-field .message {
+  display: none;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .dropdown.icon {
+  padding-top: 10px;
+}
+
+.EntityField .dcl.select-field .ui.dropdown {
+  border: 0px;
+  padding: 0px;
+  min-height: 0px;
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .menu {
+  padding: 0px;
+  background-color: #242129;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .item {
+  font-weight: normal;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .item:hover {
+  background-color: rgba(var(--bluish-steel-raw), 0.1);
+}
+
+.EntityField .dcl.select-field .ui.selection.active.dropdown,
+.EntityField .dcl.select-field .ui.selection.active.dropdown:hover {
+  border-bottom: 0px;
+}
+
+.EntityField .dcl.select-field .ui.dropdown > div.text {
+  font-size: 15px;
+  font-weight: normal;
+}

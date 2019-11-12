@@ -8,8 +8,4 @@ export type Props = {
   onChange(value: AssetActionValue[]): void
 }
 
-export type State = {
-  value: AssetActionValue[]
-}
-
 export type MapStateProps = Pick<Props, 'entityAssets'>

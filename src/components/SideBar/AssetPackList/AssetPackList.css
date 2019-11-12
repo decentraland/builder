@@ -12,19 +12,6 @@
   width: calc(var(--sidebar-width) - 32px);
 }
 
-.AssetPackList .create-asset-pack:before {
-  content: '';
-  background: url(../../../images/add.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 14px;
-  height: 14px;
-  filter: brightness(2);
-  display: inline-block;
-  margin-right: 8px;
-}
-
 .AssetPackList .create-asset-pack:hover {
   cursor: pointer;
   background-color: rgba(var(--bluish-steel-raw), 0.72);

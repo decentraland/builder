@@ -2,6 +2,7 @@ import React from 'react'
 import { Header, Icon, Button, Popup } from 'decentraland-ui'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import OwnIcon from 'components/Icon'
 import { Props } from './SidebarHeader.types'
 import './SidebarHeader.css'
 
@@ -74,7 +75,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
             on="hover"
             basic
             inverted
-            trigger={<div className="create-asset-pack-button" onClick={this.handleCreateAssetPack} />}
+            trigger={<OwnIcon name="add" onClick={this.handleCreateAssetPack} />}
           />
         ) : null}
       </Header>
