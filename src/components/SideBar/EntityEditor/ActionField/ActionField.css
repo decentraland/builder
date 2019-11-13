@@ -32,7 +32,7 @@ div.ActionField.ParameterField {
 }
 
 .ActionField .signature > .EntityField {
-  margin-right: 16px;
+  margin-right: 8px;
 }
 
 .ActionField .signature > .EntityField,
@@ -45,9 +45,25 @@ div.ActionField.ParameterField {
 .ActionField .signature > .EntityField .ui.dropdown,
 .ActionField .signature > .OptionsField .ui.dropdown {
   min-width: 0px;
+  background: #4a4650;
+  padding: 4px 24px 4px 8px;
+  border-radius: 8px;
 }
 
 .ActionField .signature > .EntityField .dcl.select-field,
 .ActionField .signature > .OptionsField .dcl.select-field {
   width: 100%;
+}
+
+.ActionField .signature > .OptionsField .trigger {
+  height: 30px;
+}
+
+.ActionField .signature > .OptionsField .dcl.select-field .ui.dropdown .dropdown.icon {
+  padding: 12px;
+}
+
+.ActionField .signature > .EntityField .dcl.select-field .ui.dropdown .dropdown.icon {
+  padding-top: 12px;
+  padding-right: 12px;
 }

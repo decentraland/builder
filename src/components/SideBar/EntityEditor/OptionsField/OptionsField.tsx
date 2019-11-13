@@ -10,6 +10,21 @@ export default class OptionsField extends React.PureComponent<Props> {
     onChange(value)
   }
 
+  renderTrigger = () => {
+    const { value, options } = this.props
+    const option = options.find(opt => opt.value === value)
+
+    if (!option) return null
+
+    return (
+      <span className="trigger">
+        <span title={option.label} className="text">
+          {option.label}
+        </span>
+      </span>
+    )
+  }
+
   render() {
     const { label, options, className = '', value } = this.props
     let selectOptions = options.map(opt => ({ key: opt.value, text: opt.label, value: opt.value }))
@@ -17,7 +32,7 @@ export default class OptionsField extends React.PureComponent<Props> {
     return (
       <div className={`OptionsField ParameterField ${className}`}>
         {label && <span className="label">{label}</span>}
-        <SelectField value={value} options={selectOptions} onChange={this.handleChange} />
+        <SelectField value={value} options={selectOptions} onChange={this.handleChange} trigger={this.renderTrigger()} search={false} />
       </div>
     )
   }

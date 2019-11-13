@@ -9,7 +9,7 @@ import OptionsField from '../OptionsField'
 
 import { Props, State } from './EntityParameters.types'
 
-export default class EntityParameters extends React.PureComponent<Props, State> {
+export default class EntityParameters extends React.Component<Props, State> {
   state: State = {
     values: { ...this.props.values }
   }

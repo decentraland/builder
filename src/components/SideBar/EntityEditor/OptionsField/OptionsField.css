@@ -23,6 +23,10 @@
   font-weight: normal;
 }
 
+.OptionsField .dcl.select-field .ui.dropdown .icon {
+  padding-top: 0px;
+}
+
 .OptionsField .dcl.select-field .ui.dropdown .item:hover {
   background-color: rgba(var(--bluish-steel-raw), 0.1);
 }
@@ -32,7 +36,17 @@
   border-bottom: 0px;
 }
 
-.OptionsField .dcl.select-field .ui.dropdown > div.text {
-  font-size: 15px;
-  font-weight: normal;
+.OptionsField .trigger {
+  color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100px;
+}
+
+.OptionsField .trigger .text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
 }

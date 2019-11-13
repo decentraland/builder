@@ -11,12 +11,22 @@ import './ActionField.css'
 export default class ActionField extends React.PureComponent<Props> {
   handleEntityChange = (entityName: string, index: number) => {
     const actions = this.getActionOptions(entityName)
+    const actionId = actions.length > 0 ? actions[0].value : ''
+    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    let values: Record<string, any> = {}
+
+    if (action) {
+      values = action.parameters.reduce<any>((acc, val) => {
+        acc[val.id] = val.options![0].value
+        return acc
+      }, {})
+    }
 
     const value = Object.assign([], this.props.value, {
       [index]: {
         entityName,
-        actionId: actions.length > 0 ? actions[0].value : '',
-        values: {}
+        actionId,
+        values
       }
     })
 
@@ -104,7 +114,6 @@ export default class ActionField extends React.PureComponent<Props> {
             const options = this.getActionOptions(action.entityName)
             const parameters = this.getParameters(action)
             const parameterValues = value && value[i] ? value[i].values : {}
-
             return (
               <>
                 <div className="container">

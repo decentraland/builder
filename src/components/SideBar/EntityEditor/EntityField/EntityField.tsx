@@ -22,7 +22,9 @@ export default class EntityField extends React.PureComponent<Props, State> {
     return (
       <span className="trigger">
         <img src={asset.thumbnail} />
-        {value}
+        <span title={value} className="text">
+          {value}
+        </span>
       </span>
     )
   }
