@@ -63,8 +63,22 @@ export default class TutorialModal extends React.PureComponent<Props, State> {
         <Modal.Header>{slide.title}</Modal.Header>
         <Modal.Description>{slide.description}</Modal.Description>
         <Modal.Content>
-          <div key={`slide-${step}`} className="slide" onContextMenu={this.preventVideoContextMenu}>
-            <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop />
+          <div className="slide" onContextMenu={this.preventVideoContextMenu}>
+            {this.slides.map((slide, i) => {
+              const isCurrentStep = i === step
+              return (
+                <video
+                  key={i}
+                  src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`}
+                  style={{ display: isCurrentStep ? '' : 'none' }}
+                  preload="auto"
+                  autoPlay
+                  muted
+                  loop
+                />
+              )
+            })}
+            {/* <video src={`${PUBLIC_URL}/videos/${slide.thumbnail}.mp4`} autoPlay muted loop /> */}
           </div>
         </Modal.Content>
       </>
