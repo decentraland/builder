@@ -7,6 +7,7 @@ import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
+import Icon from 'components/Icon'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
@@ -41,8 +42,8 @@ export default class AssetPackList extends React.PureComponent<Props> {
             isNew={NEW_ASSET_PACK_IDS.includes(assetPack.id)}
           />
         ))}
-        <div className="create-asset-pack" onClick={this.handleCreateAssetPack}>
-          {t('asset_pack.new_asset_pack')}
+        <div onClick={this.handleCreateAssetPack}>
+          <Icon name="add" /> {t('asset_pack.new_asset_pack')}
         </div>
       </div>
     )

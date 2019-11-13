@@ -1,19 +1,18 @@
 import * as React from 'react'
-import { SelectField, DropdownProps, Button } from 'decentraland-ui'
+import { Button } from 'decentraland-ui'
 import { AssetParameterValues, AssetActionValue } from 'modules/asset/types'
-import { Props, State } from './ActionField.types'
+import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
+import OptionsField from '../OptionsField'
 import EntityField from '../EntityField'
+import { Props } from './ActionField.types'
+import './ActionField.css'
 
-export default class ActionField extends React.PureComponent<Props, State> {
-  state: State = {
-    value: this.props.value || []
-  }
-
+export default class ActionField extends React.PureComponent<Props> {
   handleEntityChange = (entityName: string, index: number) => {
     const actions = this.getActionOptions(entityName)
 
-    const value = Object.assign([], this.state.value, {
+    const value = Object.assign([], this.props.value, {
       [index]: {
         entityName,
         actionId: actions.length > 0 ? actions[0].value : '',
@@ -21,56 +20,50 @@ export default class ActionField extends React.PureComponent<Props, State> {
       }
     })
 
-    this.setState({ value })
-
     this.props.onChange(value)
   }
 
   handleAddAction = () => {
-    const index = this.state.value.length
-    const value = Object.assign([], this.state.value, {
+    const { value, entityAssets } = this.props
+    const index = this.props.value ? this.props.value.length : 0
+    const entityName = Object.keys(entityAssets)[0]
+    const actions = this.getActionOptions(entityName)
+
+    const val = Object.assign([], value, {
       [index]: {
-        entityName: '',
-        actionId: '',
+        entityName,
+        actionId: actions.length > 0 ? actions[0].value : '',
         values: {}
       }
     })
 
-    this.setState({ value })
-
-    this.props.onChange(value)
+    this.props.onChange(val)
   }
 
-  handleActionChange = (data: DropdownProps, index: number) => {
-    const value = Object.assign([], this.state.value, {
+  handleActionChange = (actionId: string, index: number) => {
+    const value = Object.assign([], this.props.value, {
       [index]: {
-        ...this.state.value[index],
-        actionId: data.value as string
+        ...this.props.value[index],
+        actionId
       }
-    })
-
-    this.setState({
-      value
     })
 
     this.props.onChange(value)
   }
 
   handleParametersChange = (values: AssetParameterValues, index: number) => {
-    const value = Object.assign([], this.state.value, {
+    const value = Object.assign([], this.props.value, {
       [index]: {
-        ...this.state.value[index],
+        ...this.props.value[index],
         values
       }
     })
-
-    this.setState({ value })
 
     this.props.onChange(value)
   }
 
   handleRemove = (index: number) => {
-    const value = this.state.value.filter((_, i) => i !== index)
+    const value = this.props.value.filter((_, i) => i !== index)
     this.setState({ value })
     this.props.onChange(value)
   }
@@ -79,7 +72,7 @@ export default class ActionField extends React.PureComponent<Props, State> {
     const { entityAssets } = this.props
 
     if (entityAssets[entityName] && entityAssets[entityName].actions) {
-      return entityAssets[entityName].actions.map(action => ({ key: action.id, text: action.label, value: action.id }))
+      return entityAssets[entityName].actions.map(action => ({ label: action.label, value: action.id }))
     }
 
     return []
@@ -97,42 +90,55 @@ export default class ActionField extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, entityAssets, className = '', value: actionValue } = this.props
-    const { value } = this.state
+    const { label, entityAssets, className = '', value } = this.props
 
     return (
-      <div className={`ActionField ${className}`}>
-        <span className="label">{label}</span>
-        {value.map((action, i) => {
-          const options = this.getActionOptions(action.entityName)
-          const parameters = this.getParameters(action)
-          const parameterValues = actionValue && actionValue[i] ? actionValue[i].values : {}
+      <div className={`ActionField ParameterField ${className}`}>
+        <div className="header">
+          <span className="label">{label}</span>
+          <Icon name="add-active" onClick={this.handleAddAction} />
+        </div>
 
-          return (
-            <>
-              <EntityField
-                label={''}
-                value={value ? action.entityName : ''}
-                onChange={name => this.handleEntityChange(name, i)}
-                filter={Object.keys(entityAssets)}
-              />
-              {action.entityName && (
-                <SelectField value={action.actionId} options={options} onChange={(_, data) => this.handleActionChange(data, i)} />
-              )}
-              {parameters && (
-                <EntityParameters
-                  parameters={parameters}
-                  values={parameterValues}
-                  onChange={values => this.handleParametersChange(values, i)}
-                />
-              )}
-              <Button size="tiny" onClick={() => this.handleRemove(i)}>
-                Remove
-              </Button>
-            </>
-          )
-        })}
-        <Button onClick={this.handleAddAction}>Add action</Button>
+        {value &&
+          value.map((action, i) => {
+            const options = this.getActionOptions(action.entityName)
+            const parameters = this.getParameters(action)
+            const parameterValues = value && value[i] ? value[i].values : {}
+
+            return (
+              <>
+                <div className="container">
+                  <div className="signature">
+                    <EntityField
+                      value={value ? action.entityName : ''}
+                      onChange={name => this.handleEntityChange(name, i)}
+                      filter={Object.keys(entityAssets)}
+                      className={'action'}
+                    />
+                    {action.entityName && (
+                      <OptionsField
+                        value={action.actionId}
+                        options={options}
+                        onChange={actionid => this.handleActionChange(actionid, i)}
+                        className={'action'}
+                      />
+                    )}
+                  </div>
+                  {parameters && (
+                    <EntityParameters
+                      parameters={parameters}
+                      values={parameterValues}
+                      onChange={values => this.handleParametersChange(values, i)}
+                    />
+                  )}
+                </div>
+
+                <Button size="tiny" onClick={() => this.handleRemove(i)}>
+                  Remove
+                </Button>
+              </>
+            )
+          })}
       </div>
     )
   }

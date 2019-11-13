@@ -44,6 +44,8 @@ export type IconName =
   | 'textures'
   | 'camera'
   | 'scale'
+  | 'add'
+  | 'add-active'
 
 export type DefaultProps = {
   isActive: boolean

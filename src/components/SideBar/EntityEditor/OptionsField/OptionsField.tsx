@@ -16,7 +16,7 @@ export default class OptionsField extends React.PureComponent<Props> {
 
     return (
       <div className={`OptionsField ParameterField ${className}`}>
-        <span className="label">{label}</span>
+        {label && <span className="label">{label}</span>}
         <SelectField value={value} options={selectOptions} onChange={this.handleChange} />
       </div>
     )

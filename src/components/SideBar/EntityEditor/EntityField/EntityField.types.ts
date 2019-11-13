@@ -2,7 +2,7 @@ import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 
 export type Props = {
-  label: string
+  label?: string
   value: string
   entities: Scene['entities']
   assetsByEntityName: Record<string, Asset>
