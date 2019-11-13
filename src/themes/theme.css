@@ -29,6 +29,11 @@
   /* Preview */
   --preview-background: #38333f;
   --preview-z-index: 1100;
+
+  /* Share */
+  --facebook: #4267b2;
+  --twitter: #1da1f2;
+  --share-detail-text: #736e7d
 }
 
 .dcl.navbar .ui.menu .item {

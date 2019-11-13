@@ -36,7 +36,10 @@ export default class HomePageHero extends React.PureComponent<Props> {
         </Hero.Actions>
 
         <Hero.Content>
-          <video src={`${PUBLIC_URL}/videos/hero.mp4`} autoPlay muted loop />
+          <video autoPlay muted loop>
+            <source src={`${PUBLIC_URL}/videos/hero.webm`} type="video/webm; codecs=vp9,vorbis" />
+            <source src={`${PUBLIC_URL}/videos/hero.mp4`} type="video/mp4" />
+          </video>
           <div className="overlay" />
         </Hero.Content>
       </Hero>

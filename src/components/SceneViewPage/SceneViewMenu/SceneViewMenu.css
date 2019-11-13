@@ -1,0 +1,10 @@
+.SceneViewMenu .made-with {
+  margin: 1em;
+}
+
+.SceneViewMenu .ui.button {
+  font-size: 12px;
+  line-height: 18px;
+  padding: 9px 14px;
+  min-width: 0;
+}

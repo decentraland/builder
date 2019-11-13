@@ -7,6 +7,7 @@ import { assetPackSaga } from 'modules/assetPack/sagas'
 import { modalSaga } from 'modules/modal/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
 import { projectSaga } from 'modules/project/sagas'
+import { profileSaga } from 'modules/profile/sagas'
 import { editorSaga } from 'modules/editor/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 import { analyticsSaga } from 'modules/analytics/sagas'
@@ -28,6 +29,7 @@ export function* rootSaga() {
     modalSaga(),
     sceneSaga(),
     projectSaga(),
+    profileSaga(),
     editorSaga(),
     keyboardSaga(),
     assetSaga(),

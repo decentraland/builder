@@ -20,7 +20,11 @@ import {
   SetExportProgressAction,
   SET_EXPORT_PROGRESS,
   SET_EDITOR_LOADING,
-  SetEditorLoadingAction
+  SetEditorLoadingAction,
+  SetScreenshotReadyAction,
+  SET_SCREENSHOT_READY,
+  SetEditorReadOnlyAction,
+  SET_EDITOR_READ_ONLY
 } from './actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 import {
@@ -40,6 +44,8 @@ export type EditorState = {
   entitiesOutOfBoundaries: string[]
   isReady: boolean // editor is ready to be interacted with via API
   isLoading: boolean // models are done loading
+  isScreenshotReady: boolean
+  isReadOnly: boolean
   export: {
     isLoading: boolean
     progress: number
@@ -56,6 +62,8 @@ const INITIAL_STATE: EditorState = {
   entitiesOutOfBoundaries: [],
   isReady: false,
   isLoading: false,
+  isScreenshotReady: false,
+  isReadOnly: false,
   export: {
     isLoading: false,
     progress: 0,
@@ -65,6 +73,7 @@ const INITIAL_STATE: EditorState = {
 
 export type EditorReducerAction =
   | SetGizmoAction
+  | SetScreenshotReadyAction
   | TogglePreviewAction
   | ToggleSidebarAction
   | SelectEntityAction
@@ -76,6 +85,7 @@ export type EditorReducerAction =
   | DeleteItemAction
   | SetExportProgressAction
   | SetEditorLoadingAction
+  | SetEditorReadOnlyAction
   | ExportProjectRequestAction
   | ExportProjectSuccessAction
 
@@ -181,6 +191,18 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         isLoading: action.payload.isLoading
+      }
+    }
+    case SET_EDITOR_READ_ONLY: {
+      return {
+        ...state,
+        isReadOnly: action.payload.isReadOnly
+      }
+    }
+    case SET_SCREENSHOT_READY: {
+      return {
+        ...state,
+        isScreenshotReady: action.payload.isScreenshotReady
       }
     }
     default:

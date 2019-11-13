@@ -41,7 +41,8 @@ import {
   SET_EDITOR_LOADING,
   SetEditorLoadingAction,
   setScriptUrl,
-  DESELECT_ENTITY
+  DESELECT_ENTITY,
+  setScreenshotReady
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -69,7 +70,7 @@ import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
-import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isPreviewing } from './selectors'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isPreviewing, isReadOnly } from './selectors'
 
 import {
   getNewEditorScene,
@@ -79,7 +80,8 @@ import {
   snapScale,
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION
+  ROTATION_GRID_RESOLUTION,
+  createReadyOnlyScene
 } from './utils'
 
 const editorWindow = window as EditorWindow
@@ -169,9 +171,12 @@ function* handleHistory() {
 }
 
 function* renderScene() {
-  const scene: Scene = yield select(getCurrentScene)
+  let scene: Scene = yield select(getCurrentScene)
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
+    if (yield select(isReadOnly)) {
+      scene = createReadyOnlyScene(scene)
+    }
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, { ...scene }, mappings)))
   }
 }
@@ -277,7 +282,9 @@ function* handleCloseEditor() {
 }
 
 function* handleSetGizmo(action: SetGizmoAction) {
-  yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
+  if (yield select(isReady)) {
+    yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
+  }
 }
 
 function* handleTogglePreview(action: TogglePreviewAction) {
@@ -373,6 +380,7 @@ function* handleDropItem(action: DropItemAction) {
 }
 
 function* handleScreenshot(_: TakeScreenshotAction) {
+  yield put(setScreenshotReady(false))
   try {
     const currentProject: Project | null = yield select(getCurrentProject)
     if (!currentProject) return
@@ -404,6 +412,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   } catch (e) {
     // skip screenshot
   }
+  yield put(setScreenshotReady(true))
 }
 
 function* handleSelectEntity(action: SelectEntityAction) {

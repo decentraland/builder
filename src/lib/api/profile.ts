@@ -1,5 +1,5 @@
 import { env } from 'decentraland-commons'
-import { User } from 'modules/auth/types'
+import { User, RemoteUser } from 'modules/auth/types'
 import { authorize } from './auth'
 
 export const PROFILE_API_URL = env.get('REACT_APP_PROFILE_API_URL', '')
@@ -25,9 +25,19 @@ export class ProfileAPI {
     return `${this.url}${path}`
   }
 
-  fetchUser = async (userId: string, accessToken?: string) => {
-    const user: User = await this.request('get', `/profile/${userId}`, null, authorize(accessToken))
-    return user
+  fetchUser = async (userId: string, accessToken?: string): Promise<User> => {
+    const user: RemoteUser = await this.request('get', `/profile/${userId}`, null, authorize(accessToken))
+    const createdAt = new Date(Date.parse(user.createdAt))
+    const updatedAt = new Date(Date.parse(user.updatedAt))
+    return { ...user, id: userId, createdAt, updatedAt }
+  }
+
+  fetchProfileById = async (userId: string): Promise<User | null> => {
+    try {
+      return this.fetchUser(userId)
+    } catch (e) {
+      return null
+    }
   }
 }
 
