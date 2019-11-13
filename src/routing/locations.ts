@@ -17,6 +17,8 @@ export const locations = {
     return location
   },
   editor: (projectId = ':projectId') => `/editor/${projectId}`,
+  poolView: (projectId = ':projectId', type = ':type(pool)') => `/view/${type}/${projectId}`,
+  sceneView: (projectId = ':projectId') => `/view/${projectId}`,
   signIn: () => '/sign-in',
   mobile: () => '/mobile',
   notFound: () => '/404',

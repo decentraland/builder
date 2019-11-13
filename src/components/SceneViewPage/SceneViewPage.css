@@ -1,0 +1,156 @@
+.SceneViewPage {
+  display: block;
+  position: relative;
+  background: rgba(var(--bluish-steel-raw), 0.16);
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto;
+  border-radius: 8px;
+}
+
+.SceneViewPage .scene-action-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  padding: 12px;
+  width: 100%;
+  z-index: 0;
+}
+
+.SceneViewPage.preview .scene-action-list {
+  display: none
+}
+
+.SceneViewPage .thumbnail {
+  width: 100%;
+  position: relative;
+  height: fit-content;
+  z-index: 0;
+  height: 600px;
+  background: rgba(var(--bluish-steel-raw), 0.4);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: flex;
+  align-items: center;
+}
+
+
+.SceneViewPage.preview,
+.SceneViewPage.preview .thumbnail {
+  max-width: 100%;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.SceneViewPage .thumbnail .ui.loader {
+  z-index: 0;
+}
+
+.SceneViewPage .thumbnail,
+.SceneViewPage .thumbnail .Preview-wrapper,
+.SceneViewPage .thumbnail .Preview-wrapper .Preview,
+.SceneViewPage .thumbnail .Preview-wrapper .Preview canvas {
+  border-radius: 12px 12px 0 0;
+}
+
+.SceneViewPage.preview .thumbnail,
+.SceneViewPage.preview .thumbnail .Preview-wrapper,
+.SceneViewPage.preview .thumbnail .Preview-wrapper .Preview,
+.SceneViewPage.preview .thumbnail .Preview-wrapper .Preview canvas {
+  border-radius: 0;
+}
+
+.SceneViewPage .detail {
+  overflow: auto;
+  padding: 32px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.SceneViewPage.preview .detail {
+  display: none
+}
+
+.SceneViewPage .detail .title {
+  flex: 1;
+}
+
+.SceneViewPage .detail .title h1 {
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 30px;
+  margin: 0;
+}
+
+.SceneViewPage .detail .author {
+  color: var(--share-detail-text);
+  font-size: 15px;
+  line-height: 24px;
+  margin: 0;
+}
+
+.SceneViewPage .detail .author .author-name {
+  color: var(--summer-red);
+}
+
+.SceneViewPage .detail .avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;  
+  margin-left: 12px;
+  background: var(--innocence);
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.SceneViewPage .detail .avatar img {
+  border-radius: 12px; 
+  width: 24px;
+  height: 24px;
+}
+
+.SceneViewPage .detail .description {
+  font-size: 17px;
+  line-height: 24px;
+  margin: 8px 0;
+  color: rgba(var(--innocence-raw), .8);
+  letter-spacing: -0.2px;
+  flex: 0 0 100%;
+}
+
+.SceneViewPage .detail .component-list {
+  color: var(--share-detail-text);
+  font-weight: 600;
+  display: flex;
+  font-size: 13px;
+  line-height: 16px;
+  text-transform: uppercase;
+  margin-top: 24px;
+  flex: 0 0 100%
+}
+
+.SceneViewPage .detail .component-list .component {
+  margin-right: 24px;
+}
+
+.SceneViewPage .detail .component-list .component .Icon {
+  margin-right: .5em;
+  vertical-align: top;
+}
+
+@media only screen and (max-width: 900px) {
+  .SceneViewPage .thumbnail {
+    height: 90vw;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .SceneViewPage .detail .title,
+  .SceneViewPage .detail .author {
+    flex: 0 0 100%;
+  }
+}

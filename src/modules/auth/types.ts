@@ -16,29 +16,49 @@ export type AuthData = {
 }
 
 export type User = {
-  avatar: {
-    bodyShape: string
-    eyes: { color: Color }
-    hair: { color: Color }
-    skin: { color: Color }
-    version: number
-    wearables: string[]
-    snapshots: {
-      body: string
-      face: string
-    }
-  }
-  name: string
-  description: string
-  createdAt: number
-  updatedAt: number
-  version: number
+  id: string,
+  name: string,
+  description: string,
+  ethAddress: string,
+  avatar: Avatar
+  version: number,
+  createdAt: Date,
+  updatedAt: Date
+}
+
+export type RemoteUser = {
+  name: string,
+  description: string,
+  ethAddress: string,
+  avatar: Avatar
+  version: number,
+  createdAt: string,
+  updatedAt: string
 }
 
 export type Color = {
   r: number
   g: number
   b: number
+}
+
+export type Avatar = {
+  bodyShape: string
+  eyes: {
+    color: Color
+  }
+  hair: {
+    color: Color
+  }
+  skin: {
+    color: Color
+  }
+  snapshots: {
+    body: string
+    face: string
+  }
+  version: number
+  wearables: string[]
 }
 
 export type LoginOptions = {

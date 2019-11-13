@@ -3,7 +3,7 @@ import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { takeLatest, put, select, take, call, all } from 'redux-saga/effects'
+import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -26,7 +26,14 @@ import {
   LoadManifestRequestAction,
   loadManifestFailure,
   loadProjectsFailure,
-  loadProjectsRequest
+  loadProjectsRequest,
+  loadPublicProjectSuccess,
+  loadPublicProjectFailure,
+  LoadPublicProjectRequestAction,
+  LOAD_PUBLIC_PROJECT_REQUEST,
+  ShareProjectAction,
+  SHARE_PROJECT,
+  EDIT_PROJECT_THUMBNAIL
 } from 'modules/project/actions'
 
 import { Project } from 'modules/project/types'
@@ -35,7 +42,7 @@ import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
-import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
+import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
 import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
@@ -47,6 +54,9 @@ import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 import { builder } from 'lib/api/builder'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { loadProfileRequest } from 'modules/profile/actions'
+import { saveProjectRequest } from 'modules/sync/actions'
+import { Gizmo } from 'modules/editor/types'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -75,8 +85,10 @@ export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT, handleEditProject)
+  yield takeLatest(SHARE_PROJECT, handleShareProject)
   yield takeLatest(EXPORT_PROJECT_REQUEST, handleExportProject)
   yield takeLatest(IMPORT_PROJECT, handleImportProject)
+  yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
   yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
@@ -102,6 +114,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     title: t('global.new_scene'),
     description: '',
     thumbnail: '',
+    isPublic: false,
     layout: {
       rows,
       cols
@@ -166,6 +179,27 @@ function* handleEditProject(action: EditProjectAction) {
   }
 }
 
+function* handleShareProject(action: ShareProjectAction) {
+  const { id } = action.payload
+
+  const scene: Scene = yield getSceneByProjectId(id)
+  if (!scene) return
+
+  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+  const project = projects[id]
+  if (!project) return
+
+  if (!project.isPublic) {
+    const newProject = { ...project, isPublic: true }
+    yield put(setProject(newProject))
+  }
+  yield put(setGizmo(Gizmo.NONE))
+  yield put(takeScreenshot())
+  yield race([take(EDIT_PROJECT_THUMBNAIL), delay(1000)])
+
+  yield put(saveProjectRequest(project, false))
+}
+
 function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
   const scene = yield getSceneByProjectId(project.id)
@@ -206,6 +240,22 @@ function* handleImportProject(action: ImportProjectAction) {
   }
 }
 
+function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
+  const { id, type } = action.payload
+  try {
+    const project: Project = yield call(() => builder.fetchPublicProject(id, type))
+    yield put(loadPublicProjectSuccess(project))
+    if (project) {
+      yield getSceneByProjectId(id, type)
+      if (project.userId) {
+        yield put(loadProfileRequest(project.userId))
+      }
+    }
+  } catch (e) {
+    yield put(loadPublicProjectFailure(e.message))
+  }
+}
+
 function* handleLoadProjectsRequest() {
   try {
     const projects: Project[] = yield call(() => builder.fetchProjects())
@@ -222,8 +272,9 @@ function* handleLoadProjectsRequest() {
 }
 
 function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
+  const { id, type } = action.payload
   try {
-    const manifest = yield call(() => builder.fetchManifest(action.payload.id))
+    const manifest = yield call(() => builder.fetchManifest(id, type))
     yield put(loadManifestSuccess(manifest))
   } catch (e) {
     yield put(loadManifestFailure(e.message))

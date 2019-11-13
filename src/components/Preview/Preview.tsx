@@ -65,6 +65,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       throw new Error('Missing canvas container')
     }
     try {
+      isDCLInitialized = true
       await editorWindow.editor.initEngine(this.canvasContainer.current, '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
@@ -75,9 +76,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.props.onOpenEditor()
 
       this.subscribeKeyDownEvent()
-
-      isDCLInitialized = true
     } catch (error) {
+      isDCLInitialized = false
       console.error('Failed to load Preview', error)
     }
   }
