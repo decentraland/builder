@@ -69,7 +69,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       if (node.material) {
         materials++
       }
-      if (node.name.endsWith('_collider')) {
+      if (node.name.includes('_collider')) {
         if (node.geometry instanceof Geometry) {
           colliderTriangles += node.geometry.faces.length
         } else if (node.geometry instanceof BufferGeometry) {
