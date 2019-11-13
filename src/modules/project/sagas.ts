@@ -42,7 +42,7 @@ import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
-import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene } from 'modules/editor/actions'
+import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
 import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
@@ -56,6 +56,7 @@ import { builder } from 'lib/api/builder'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { loadProfileRequest } from 'modules/profile/actions'
 import { saveProjectRequest } from 'modules/sync/actions'
+import { Gizmo } from 'modules/editor/types'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -189,12 +190,9 @@ function* handleShareProject(action: ShareProjectAction) {
     const newProject = { ...project, isPublic: true }
     yield put(setProject(newProject))
   }
-
+  yield put(setGizmo(Gizmo.NONE))
   yield put(takeScreenshot())
-  yield race([
-    take(EDIT_PROJECT_THUMBNAIL),
-    delay(1000)
-  ])
+  yield race([take(EDIT_PROJECT_THUMBNAIL), delay(1000)])
 
   yield put(saveProjectRequest(project, false))
 }
