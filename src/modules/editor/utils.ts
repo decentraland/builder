@@ -3,6 +3,7 @@ import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Vector3 } from 'modules/common/types'
+import { Scene, EntityDefinition } from 'modules/scene/types'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -92,5 +93,19 @@ export function snapScale(scale: Vector3): Vector3 {
     x: scale.x === 0 ? SCALE_MIN_LIMIT : scale.x,
     y: scale.y === 0 ? SCALE_MIN_LIMIT : scale.y,
     z: scale.z === 0 ? SCALE_MIN_LIMIT : scale.z
+  }
+}
+
+export function createReadyOnlyScene(scene: Scene): Scene {
+
+  const readOnlyEntities = Object.values(scene.entities)
+    .reduce((newEntities, entity) => {
+      newEntities[entity.id] = { ...entity, disableGizmos: true }
+      return newEntities
+    }, {} as Record<string, EntityDefinition>)
+
+  return {
+    ...scene,
+    entities: readOnlyEntities
   }
 }

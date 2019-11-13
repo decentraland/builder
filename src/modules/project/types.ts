@@ -5,6 +5,7 @@ export type Project = {
   title: string
   description: string
   thumbnail: string
+  isPublic: boolean
   sceneId: string
   userId: string | null
   createdAt: string

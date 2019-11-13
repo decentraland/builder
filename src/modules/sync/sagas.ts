@@ -119,11 +119,12 @@ function* handleRetrySync(_action: RetrySyncAction) {
 
 function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
   const project = action.payload.project
+  const debounce = action.payload.debounce
   const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
   const scene = scenes[project.sceneId]
 
   try {
-    yield call(() => saveProject(project.id, project, scene))
+    yield call(() => saveProject(project.id, project, scene, debounce))
     yield put(saveProjectSuccess(project))
   } catch (e) {
     yield put(saveProjectFailure(project, e))

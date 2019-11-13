@@ -9,6 +9,7 @@ import { isLoggedIn } from 'modules/auth/selectors'
 import { login } from 'modules/auth/actions'
 import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
+import { openModal } from 'modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   error: getError(state),
@@ -23,6 +24,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onDeployToPool: (projectId: string) => dispatch(deployToPoolRequest(projectId)),
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onLogin: () => dispatch(login())
 })
 
