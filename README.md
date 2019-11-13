@@ -116,3 +116,5 @@ thumbnail for display in the asset drawer.
 ## Content server
 
 As noted above, the content server holds the actual assets, which might be comprised of `.glb` and `.png` files. This server is found on the `REACT_APP_CONTENT_SERVER_URL` environment variable.
+
+s
