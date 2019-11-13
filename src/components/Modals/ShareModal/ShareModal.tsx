@@ -11,7 +11,7 @@ import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
 
-const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', window.location.origin + '/view')
+const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', '')
 
 export default class ShareModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -155,7 +155,11 @@ export default class ShareModal extends React.PureComponent<Props, State> {
         <div className="share-modal">
           <div
             className="thumbnail"
-            style={{ backgroundImage: isScreenshotReady ? `url("${project.thumbnail}")` : '', backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{
+              backgroundImage: isScreenshotReady ? `url("${project.thumbnail}")` : '',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
           >
             {!isScreenshotReady && <Loader size="small" />}
           </div>
