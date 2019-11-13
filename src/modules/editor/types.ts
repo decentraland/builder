@@ -1,4 +1,9 @@
-export { Gizmo } from 'decentraland-ecs'
+export enum Gizmo {
+  MOVE = 'MOVE',
+  ROTATE = 'ROTATE',
+  SCALE = 'SCALE',
+  NONE = 'NONE'
+}
 
 export type EditorScene = {
   baseUrl: string
@@ -30,3 +35,5 @@ export type EditorScene = {
   main: string
   _mappings: Record<string, string>
 }
+
+export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightArrow'

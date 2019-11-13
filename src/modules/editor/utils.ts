@@ -1,4 +1,4 @@
-import { EditorScene } from 'modules/editor/types'
+import { EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
@@ -97,15 +97,35 @@ export function snapScale(scale: Vector3): Vector3 {
 }
 
 export function createReadyOnlyScene(scene: Scene): Scene {
-
-  const readOnlyEntities = Object.values(scene.entities)
-    .reduce((newEntities, entity) => {
+  const readOnlyEntities = Object.values(scene.entities).reduce(
+    (newEntities, entity) => {
       newEntities[entity.id] = { ...entity, disableGizmos: true }
       return newEntities
-    }, {} as Record<string, EntityDefinition>)
+    },
+    {} as Record<string, EntityDefinition>
+  )
 
   return {
     ...scene,
     entities: readOnlyEntities
   }
+}
+
+export function convertToUnityKeyboardEvent(e: KeyboardEvent): UnityKeyboardEvent | null {
+  switch (e.key) {
+    case 'Down':
+    case 'ArrowDown':
+      return 'DownArrow'
+    case 'Up':
+    case 'ArrowUp':
+      return 'UpArrow'
+    case 'Left':
+    case 'ArrowLeft':
+      return 'LeftArrow'
+    case 'Right':
+    case 'ArrowRight':
+      return 'RightArrow'
+  }
+
+  return null
 }

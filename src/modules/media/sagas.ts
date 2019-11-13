@@ -42,13 +42,12 @@ export function* handleTakePictures() {
 
   // Prepare the canvas for recording
   canvas.classList.add('recording')
-  yield call(() => editorWindow.editor.resize())
   editorWindow.editor.resetCameraZoom()
   yield delay(200) // big scenes need some extra time to reset the camera
 
   // Prepare the camera to fit the scene
   editorWindow.editor.setCameraZoomDelta(zoom)
-  editorWindow.editor.setCameraRotation(0, Math.PI / 3)
+  editorWindow.editor.setCameraRotation(0, Math.PI / 6)
   editorWindow.editor.setCameraPosition({ x: (rows * PARCEL_SIZE) / 2, y: 2, z: (cols * PARCEL_SIZE) / 2 })
 
   yield put(recordMediaProgress(0))
@@ -65,13 +64,12 @@ export function* handleTakePictures() {
 
   // Cleanup
   canvas.classList.remove('recording')
-  yield call(() => editorWindow.editor.resize())
 
   yield put(recordMediaSuccess({ ...shots, preview }))
 }
 
 function* takeEditorScreenshot(angle: number) {
-  editorWindow.editor.setCameraRotation(angle, Math.PI / 3)
+  editorWindow.editor.setCameraRotation(angle, Math.PI / 6)
   const shot = yield call(() => editorWindow.editor.takeScreenshot())
   return dataURLToBlob(shot)
 }

@@ -10,6 +10,7 @@ import OwnIcon from 'components/Icon'
 import DeployButton from 'components/DeployButton'
 import ShareButton from 'components/ShareButton'
 import { locations } from 'routing/locations'
+
 import { Gizmo } from 'modules/editor/types'
 import { Shortcut } from 'modules/keyboard/types'
 import { Props } from './TopBar.types'

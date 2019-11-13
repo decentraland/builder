@@ -8,13 +8,14 @@ import {
   TogglePreviewAction,
   CloseEditorAction
 } from 'modules/editor/actions'
-import { Gizmo } from 'modules/editor/types'
+import { UnityKeyboardEvent } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 import { Project } from 'modules/project/types'
 
+declare type Gizmo = any
+
 export type Editor = {
-  initEngine: (x: number, y: number) => Promise<void>
-  resize: () => void
+  initEngine: (container: HTMLElement, buildConfigPath: string) => Promise<void>
   getDCLCanvas: () => Promise<HTMLCanvasElement>
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
@@ -27,16 +28,17 @@ export type Editor = {
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
   selectEntity: (entityId: string) => void
+  deselectEntity: (entityId: string) => void
   getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>
   takeScreenshot: (mime?: string) => Promise<string>
-  setGridResolution: (position: number, scale: number, rotation: number) => void
+  setGridResolution: (position: number, rotation: number, scale: number) => void
   getLoadingEntity: () => any | null
+  onKeyDown: (key: UnityKeyboardEvent) => void
 }
 
 export type EditorWindow = typeof window & {
-  isDCLInitialized: boolean
   initDCL: () => void
   editor: Editor
 }

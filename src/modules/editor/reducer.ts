@@ -26,7 +26,6 @@ import {
   SetEditorReadOnlyAction,
   SET_EDITOR_READ_ONLY
 } from './actions'
-import { Gizmo } from './types'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 import {
   EXPORT_PROJECT_SUCCESS,
@@ -34,6 +33,7 @@ import {
   ExportProjectRequestAction,
   ExportProjectSuccessAction
 } from 'modules/project/actions'
+import { Gizmo } from './types'
 
 export type EditorState = {
   gizmo: Gizmo

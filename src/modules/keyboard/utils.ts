@@ -16,7 +16,6 @@ import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen, getGizmo } from 'modules/editor/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
 import { toggleModal, openModal } from 'modules/modal/actions'
-import { Gizmo } from 'modules/editor/types'
 import {
   ShortcutDefinition,
   Shortcut,
@@ -26,6 +25,7 @@ import {
   ShortcutAlternative,
   KeyboardShortcut
 } from './types'
+import { Gizmo } from 'modules/editor/types'
 
 const COMMAND_KEY = 'command'
 const CONTROL_KEY = 'ctrl'

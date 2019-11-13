@@ -4,10 +4,26 @@
   flex: 1;
 }
 
+.Preview-wrapper .ui.loader:before {
+  border: none;
+  font-size: 12px;
+  top: 22px;
+}
+
+.Preview-wrapper .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--preview-background);
+  z-index: var(--preview-z-index);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .Preview {
   flex: 1;
   height: 100%;
-  background-color: var(--preview-background);
   position: relative;
 }
 
@@ -26,14 +42,77 @@
   position: absolute !important;
 }
 
-.Preview .ui.loader:before {
-  border: none;
+.Preview-wrapper .overlay .progress {
+  height: 10px;
+  width: 30%;
+  background: black;
+  margin-top: 256px;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.Preview > .overlay {
-  position: absolute;
-  width: 100%;
+.Preview-wrapper .overlay .full {
+  float: left;
+  width: 0%;
   height: 100%;
-  background: var(--preview-background);
-  z-index: var(--preview-z-index);
+  display: inline-flex;
+  background-color: #eb455a;
+  background-color: var(--primary);
+}
+
+.Preview-wrapper .overlay .progress.loaded {
+  z-index: 1;
+}
+
+.Preview-wrapper .overlay .progress.ingame .full {
+  animation: progress 10s forwards;
+}
+
+.Preview-wrapper .ui.loader:before {
+  animation: progress_spinner 10s forwards;
+}
+
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes progress_spinner {
+  0% {
+    content: '0%';
+  }
+  10% {
+    content: '10%';
+  }
+  20% {
+    content: '20%';
+  }
+  30% {
+    content: '30%';
+  }
+  40% {
+    content: '40%';
+  }
+  50% {
+    content: '50%';
+  }
+  60% {
+    content: '60%';
+  }
+  70% {
+    content: '70%';
+  }
+  80% {
+    content: '80%';
+  }
+  90% {
+    content: '90%';
+  }
+  100% {
+    content: '100%';
+  }
 }

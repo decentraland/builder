@@ -1,18 +1,21 @@
 {
   "asset_pack": {
+    "confirm_delete": {
+      "action": "清除Asset Pack",
+      "back": "御宇",
+      "description": "您将要删除它Asset Pack。此操作无法撤消。",
+      "title": "你确定吗？"
+    },
     "default_name": "我的Asset Pack",
     "default_name_suffix": "我的Asset Pack ({suffix})",
-    "title_create": "创造Asset Pack",
-    "new_asset_pack": "新的Asset Pack",
     "edit_asset": {
-      "description_create": "查看您的assets，添加标签等",
-      "title_edit": "修改Asset Pack",
-      "description_edit": "查看您的assets，添加标签等",
       "action": "继续",
       "action_skip": "跳过评论",
       "category": {
         "label": "类别"
       },
+      "description_create": "查看您的assets，添加标签等",
+      "description_edit": "查看您的assets，添加标签等",
       "errors": {
         "max_name_length": "Asset名称长度最多只能为{count}个字符",
         "min_name_length": "资产名称长度必须至少为{count}个字符",
@@ -28,16 +31,16 @@
       "tags": {
         "label": "标签",
         "placeholder": "例如 （户外家具楼）"
-      }
+      },
+      "title_edit": "修改Asset Pack"
     },
     "edit_assetpack": {
-      "description_create": "真棒！输入Asset Pack的唯一名称",
-      "action_create": "创造Asset Pack",
-      "title_edit": "修改Asset Pack",
-      "description_edit": "真棒！ 输入您的唯一名称Asset Pack. 单击资产进行编辑。",
-      "action_edit": "救Asset Pack",
-      "action_delete": "删除Asset Pack",
       "action_add_items": "加Assets",
+      "action_create": "创造Asset Pack",
+      "action_delete": "删除Asset Pack",
+      "action_edit": "救Asset Pack",
+      "description_create": "真棒！输入Asset Pack的唯一名称",
+      "description_edit": "真棒！ 输入您的唯一名称Asset Pack. 单击资产进行编辑。",
       "errors": {
         "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
         "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
@@ -51,22 +54,38 @@
         "label": "名称",
         "placeholder": "我的新Asset Pack"
       },
-      "reset": "添加新Assets"
+      "reset": "添加新Assets",
+      "title_edit": "修改Asset Pack"
+    },
+    "exit": {
+      "action": "出口",
+      "back": "回去",
+      "description_create": "您即将退出Asset Pack创建，您要继续吗",
+      "description_edit": "您即将退出Asset Pack更新，您要继续吗？",
+      "title_create": "你确定吗？",
+      "title_edit": "你确定吗？"
     },
     "import": {
-      "description_create": "首先将模型添加到Asset Pack",
-      "title_edit": "创造Asset Pack",
-      "description_edit": "向您添加更多项目Asset Pack",
       "action": "导入{资产}",
       "action_many": "导入{count} Asset",
       "cta": "将Asset的{models_link}文件拖到此处，或{action}",
+      "description_create": "首先将模型添加到Asset Pack",
+      "description_edit": "向您添加更多项目Asset Pack",
       "errors": {
-        "invalid": "无效资产",
         "duplicated": "重复资产",
         "duplicated_asset": "{name}: 资产 \"{asset}\" 已经包含一个名为 \"{model}\"",
+        "invalid": "无效资产",
         "max_file_size": "{name}: 文件大小超过{max}mb的限制"
-      }
+      },
+      "title_edit": "创造Asset Pack"
     },
+    "login": {
+      "action": "登入",
+      "description_create": "您需要先登录，然后才能创建Asset Pack",
+      "description_edit": "您需要先登录，然后才能编辑Asset Pack",
+      "title": "登入"
+    },
+    "new_asset_pack": "新的Asset Pack",
     "progress": {
       "creating_asset_pack": "创建Asset Pack",
       "updating_asset_pack": "更新Asset Pack",
@@ -77,32 +96,13 @@
       "description": "您的Asset Pack已成功上传。 查看项目抽屉以开始使用它。",
       "title": "全部做完！"
     },
-    "login": {
-      "title": "登入",
-      "description_create": "您需要先登录，然后才能创建Asset Pack",
-      "description_edit": "您需要先登录，然后才能编辑Asset Pack",
-      "action": "登入"
-    },
-    "exit": {
-      "title_create": "你确定吗？",
-      "description_create": "您即将退出Asset Pack创建，您要继续吗",
-      "title_edit": "你确定吗？",
-      "description_edit": "您即将退出Asset Pack更新，您要继续吗？",
-      "action": "出口",
-      "back": "回去"
-    },
-    "confirm_delete": {
-      "title": "你确定吗？",
-      "action": "清除Asset Pack",
-      "back": "御宇",
-      "description": "您将要删除它Asset Pack。此操作无法撤消。"
-    }
+    "title_create": "创造Asset Pack"
   },
   "banners": {
     "promo_subtitle": "自定义资产包现在在Decentraland中可用！",
     "promo_title": "个性化您的世界",
-    "top_banner_left": "9月16日至30日-激烈的在线创作，分享了超过25万美元的奖品。",
     "top_banner_action": "学到更多。",
+    "top_banner_left": "9月16日至30日-激烈的在线创作，分享了超过25万美元的奖品。",
     "top_banner_right": " "
   },
   "custom_layout_modal": {
@@ -259,19 +259,20 @@
     "items": "模型",
     "learn_more": "更多",
     "loading": "装载",
-    "next": "下一个",
     "new": "新",
+    "new_scene": "新场景",
+    "next": "下一个",
     "optional": "可选",
     "or": "或",
     "project": "场景",
     "read_more": "阅读更多",
     "save": "保存",
     "send": "发送",
+    "sign_in": "登录",
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
-    "terms_and_conditions": "使用条款",
-    "new_scene": "新场景"
+    "terms_and_conditions": "使用条款"
   },
   "home_page": {
     "import_scene": "上传场景",
@@ -305,12 +306,12 @@
   },
   "itemdrawer": {
     "collectible_disclaimer": "没看到你所有的加密收藏品？{br}我们很快就会加入支持！",
+    "edit_asset_pack": "编辑",
     "empty_ground": "末设置地面",
     "no_results": "没找到",
     "results": "结果",
     "search": "搜索",
-    "title": "物品目录",
-    "edit_asset_pack": "编辑"
+    "title": "物品目录"
   },
   "layout_picker": {
     "columns": "列",
@@ -319,20 +320,20 @@
   "metrics": {
     "bodies": "物体",
     "entities": "实体",
-    "meshes": "网格",
     "height": "高度",
     "materials": "材质",
+    "meshes": "网格",
     "textures": "纹理",
     "too_many": "{metric} 过多",
     "triangles": "三角形"
   },
   "mobile_page": {
+    "desktop_too_narrow": "生成器不适用于此分辨率！ 如果可以，请尝试扩大此窗口。",
     "gallery_title": "查看内容编辑用户的作品!",
     "learn_more": "了解有关Builder的更多信息",
     "message": "内容编辑器目前只支持桌面版，注册以接收更新并在电脑上查看。",
     "reminder_body": "您好！\n看来您试图在移动设备上使用内容编辑器\n目前内容编辑器只能运行在台式机和笔记本电脑上。拿起你最近的笔记本电脑或台式电脑，使用 https://builder.decentraland.org\n\n快乐的建筑！再试 !\n\n祝开发快乐！\n\nThe Decentraland Team",
     "reminder_subject": "提醒：试试Decentraland的Builder",
-    "desktop_too_narrow": "生成器不适用于此分辨率！ 如果可以，请尝试扩大此窗口。",
     "secondary_hero": {
       "action": "发送提醒",
       "title": "当回到电脑前就创作场景?"
@@ -385,7 +386,6 @@
     "export": "场景导出",
     "hold": "按住",
     "move": "坐标轴",
-    "scale": "切换缩放",
     "move_camera": "移动摄相机",
     "precision": "精确度",
     "preview": "预览",
@@ -393,6 +393,7 @@
     "reset": "重置",
     "reset_camera": "重置摄相机",
     "rotate": "旋转轴",
+    "scale": "切换缩放",
     "shortcut_reference": "快捷方式",
     "toggle_colliders": "碰撞器",
     "toggle_sidebar": "侧边栏",
@@ -410,7 +411,6 @@
     "error": "{errorCount} {errorCount, plural, one {场景} other {场景}} 无法上传",
     "loading": "上传中...",
     "retry": "重试",
-    "sign_in": "登录以将您的场景保存在云端",
     "success": "所有场景成功保存！"
   },
   "templates": {
@@ -424,8 +424,7 @@
     "small": "小 (1x1)"
   },
   "toasts": {
-    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！",
-    "localstorage_sign_in": "登录"
+    "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
   },
   "topbar": {
     "bounds_exceeded": "物体超过边界{br}请将物品移动到边界内！",

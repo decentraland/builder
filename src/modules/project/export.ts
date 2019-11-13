@@ -1,10 +1,10 @@
 // @ts-ignore
-import Dockerfile from '!raw-loader!decentraland/dist/samples/ecs/Dockerfile'
+import Dockerfile from '!raw-loader!decentraland/samples/ecs/Dockerfile'
 import * as ECS from 'decentraland-ecs'
 import Writer from 'dcl-scene-writer'
-import packageJson from 'decentraland/dist/samples/ecs/package.json'
-import sceneJson from 'decentraland/dist/samples/ecs/scene.json'
-import tsconfig from 'decentraland/dist/samples/ecs/tsconfig.json'
+import packageJson from 'decentraland/samples/ecs/package.json'
+import sceneJson from 'decentraland/samples/ecs/scene.json'
+import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
@@ -149,7 +149,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
 }
 
 export function createGameFileBundle(gameFile: string): string {
-  const ecs = require('raw-loader!decentraland-ecs/dist/src/index.js')
+  const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw')
   return ecs + '\n// Builder generated code below\n' + gameFile + '\n'
 }
 

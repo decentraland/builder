@@ -10,8 +10,6 @@ import {
   SetGizmoAction,
   TogglePreviewAction,
   TOGGLE_PREVIEW,
-  TOGGLE_SIDEBAR,
-  ToggleSidebarAction,
   ZOOM_IN,
   ZOOM_OUT,
   RESET_CAMERA,
@@ -58,7 +56,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, BabylonSceneMetrics } from 'modules/scene/types'
+import { Scene, ComponentType, SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -68,7 +66,7 @@ import { store } from 'modules/common/store'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
-import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isReadOnly } from './selectors'
 import {
   getNewEditorScene,
@@ -94,7 +92,6 @@ export function* editorSaga() {
   yield takeLatest(EDITOR_UNDO, handleHistory)
   yield takeLatest(SET_GIZMO, handleSetGizmo)
   yield takeLatest(TOGGLE_PREVIEW, handleTogglePreview)
-  yield takeLatest(TOGGLE_SIDEBAR, handleToggleSidebar)
   yield takeLatest(ZOOM_IN, handleZoomIn)
   yield takeLatest(ZOOM_OUT, handleZoomOut)
   yield takeLatest(RESET_CAMERA, handleResetCamera)
@@ -180,11 +177,11 @@ function* renderScene() {
   }
 }
 
-function handleMetricsChange(args: { metrics: BabylonSceneMetrics; limits: BabylonSceneMetrics }) {
+function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
   const { metrics, limits } = args
   const scene = getCurrentScene(store.getState() as RootState)
   if (scene) {
-    store.dispatch(updateMetrics(scene.id, { ...metrics, meshes: metrics['geometries'] }, { ...limits, meshes: limits['geometries'] }))
+    store.dispatch(updateMetrics(scene.id, metrics, limits))
   }
 }
 
@@ -280,11 +277,6 @@ function* handleSetGizmo(action: SetGizmoAction) {
   yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
 }
 
-function resizeEditor() {
-  const { editor } = editorWindow
-  window.requestAnimationFrame(() => editor.resize())
-}
-
 function* handleTogglePreview(action: TogglePreviewAction) {
   const { editor } = editorWindow
   const { isEnabled } = action.payload
@@ -299,7 +291,6 @@ function* handleTogglePreview(action: TogglePreviewAction) {
     editor.setPlayMode(isEnabled)
     editor.sendExternalAction(action)
     editor.selectGizmo(isEnabled ? Gizmo.NONE : gizmo)
-    resizeEditor()
   })
 
   if (!isEnabled) {
@@ -309,10 +300,6 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   }
 
   yield changeEditorState(!isEnabled)
-}
-
-function* handleToggleSidebar(_: ToggleSidebarAction) {
-  yield call(() => resizeEditor())
 }
 
 function handleZoomIn() {
@@ -358,7 +345,7 @@ function* handleResetCamera() {
 
   editorWindow.editor.resetCameraZoom()
   editorWindow.editor.setCameraPosition({ x, y: 0, z })
-  editorWindow.editor.setCameraRotation(-Math.PI / 4, Math.PI / 3)
+  editorWindow.editor.setCameraRotation(-Math.PI / 4, Math.PI / 6)
 }
 
 function* handleDropItem(action: DropItemAction) {
@@ -394,7 +381,7 @@ function* handleScreenshot(_: TakeScreenshotAction) {
     }
 
     // rendering leeway
-    yield delay(500)
+    yield delay(2000)
 
     const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return
@@ -423,7 +410,7 @@ function* handleSelectEntity(action: SelectEntityAction) {
 function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
   yield call(() => {
     if (action.payload.enabled) {
-      editorWindow.editor.setGridResolution(POSITION_GRID_RESOLUTION, SCALE_GRID_RESOLUTION, ROTATION_GRID_RESOLUTION)
+      editorWindow.editor.setGridResolution(POSITION_GRID_RESOLUTION, ROTATION_GRID_RESOLUTION, SCALE_GRID_RESOLUTION)
     } else {
       editorWindow.editor.setGridResolution(0, 0, 0)
     }
@@ -433,10 +420,9 @@ function* handleToggleSnapToGrid(action: ToggleSnapToGridAction) {
 function* handlePrefetchAsset(action: PrefetchAssetAction) {
   yield call(() => {
     const contentEntries = Object.entries(action.payload.asset.contents)
-
     for (let [file, hash] of contentEntries) {
-      if (file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) {
-        editorWindow.editor.preloadFile(`${BUILDER_SERVER_URL}/storage/assets/${hash}`)
+      if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith(THUMBNAIL_PATH)) {
+        editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.assetPackId}/${file}`)
       }
     }
   })
