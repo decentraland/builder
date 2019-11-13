@@ -9,6 +9,7 @@ export type Props = {
   project: Project | null
   error: string | null
   isLoading: boolean
+  isReady: boolean
   progress: number
   isRecording: boolean
   isLoggedIn: boolean
@@ -32,6 +33,6 @@ export type Step = {
 
 export type MapStateProps = Pick<
   Props,
-  'project' | 'isRecording' | 'isLoading' | 'isUploadingRecording' | 'error' | 'media' | 'progress' | 'isLoggedIn'
+  'project' | 'isRecording' | 'isLoading' | 'isReady' | 'isUploadingRecording' | 'error' | 'media' | 'progress' | 'isLoggedIn'
 >
 export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onLogin' | 'onOpenModal'>

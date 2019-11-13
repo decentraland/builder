@@ -181,9 +181,12 @@ function* handleEditProject(action: EditProjectAction) {
 
 function* handleShareProject(action: ShareProjectAction) {
   const { id } = action.payload
+
+  const scene: Scene = yield getSceneByProjectId(id)
+  if (!scene) return
+
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[id]
-
   if (!project) return
 
   if (!project.isPublic) {

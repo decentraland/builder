@@ -5,8 +5,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ShareModalType, ShareModalMetadata } from 'components/Modals/ShareModal/ShareModal.types'
 import Icon from 'components/Icon'
+import { locations } from 'routing/locations'
 
 import { Props, State } from './DeployToPool.types'
+import { DeployModalView } from '../DeployModal.types'
 import './DeployToPool.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
@@ -56,7 +58,20 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   handleLogin = () => {
-    this.props.onLogin()
+    const { name, project, onLogin } = this.props
+    const projectId = project!.id
+    const returnUrl = locations.editor(projectId)
+    const metadata = {
+      projectId,
+      view: DeployModalView.DEPLOY_TO_POOL
+    }
+    onLogin({
+      returnUrl,
+      openModal: {
+        name,
+        metadata
+      }
+    })
   }
 
   handleShare = () => {
@@ -70,7 +85,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderSubmit() {
-    const { error } = this.props
+    const { error, isReady } = this.props
 
     return (
       <div className="DeployToPool">
@@ -86,7 +101,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
             {t('global.error_ocurred')} "{error}"
           </div>
         ) : null}
-        <Button className="submit" primary size="small" onClick={this.handleSubmit}>
+        <Button className="submit" primary size="small" onClick={this.handleSubmit} loading={!isReady} disabled={!isReady}>
           {t('deployment_modal.pool.action')}
         </Button>
       </div>
@@ -107,10 +122,10 @@ export default class DeployModal extends React.PureComponent<Props, State> {
           <Button className="submit" size="small" primary onClick={this.handleShare}>
             {t('share_modal.share')}
           </Button>
-          <Button className="submit" size="small" primary onClick={onClose}>
+          <Button className="submit" size="small" secondary onClick={onClose}>
             {t('global.done')}
           </Button>
-          </div>
+        </div>
       </div>
     )
   }

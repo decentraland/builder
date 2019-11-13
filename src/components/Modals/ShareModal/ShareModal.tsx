@@ -5,6 +5,7 @@ import { Button, Loader, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { locations } from 'routing/locations'
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
 import { Props, ShareModalType, State } from './ShareModal.types'
@@ -84,7 +85,14 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   handleShareWithTwitter = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.TWITTER)
 
   handleLogin = () => {
-    this.props.onLogin()
+    const { project, name, metadata, onLogin } = this.props
+    onLogin({
+      returnUrl: locations.editor(project.id),
+      openModal: {
+        name,
+        metadata
+      }
+    })
   }
 
   getFacebookLink = () => {

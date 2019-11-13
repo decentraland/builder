@@ -274,7 +274,9 @@ function* handleCloseEditor() {
 }
 
 function* handleSetGizmo(action: SetGizmoAction) {
-  yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
+  if (yield select(isReady)) {
+    yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
+  }
 }
 
 function* handleTogglePreview(action: TogglePreviewAction) {

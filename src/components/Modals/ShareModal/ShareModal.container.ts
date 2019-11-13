@@ -20,7 +20,7 @@ const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
   onUpdate: (id: string) => dispatch(shareProject(id)),
-  onLogin: () => dispatch(login()),
+  onLogin: options => dispatch(login(options)),
   onShare: (target: ShareTarget) => dispatch(shareScene(target))
 })
 
