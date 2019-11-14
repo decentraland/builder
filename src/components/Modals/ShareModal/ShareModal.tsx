@@ -4,9 +4,11 @@ import { Button, Loader, ModalNavigation } from 'decentraland-ui'
 
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
+import { SHARE_SCENE } from 'modules/ui/share/actions'
 import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
@@ -21,6 +23,8 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   }
 
   input = React.createRef<HTMLInputElement>()
+
+  analytics = getAnalytics()
 
   componentDidMount() {
     const { metadata, onUpdate, isLoggedIn } = this.props
@@ -62,7 +66,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
         input.blur()
         this.setState({ copied: true })
       }
-      this.props.onShare(ShareTarget.LINK)
+      this.analytics.track(SHARE_SCENE, { target: ShareTarget.LINK })
     }
   }
 
@@ -77,7 +81,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
       'targetWindow',
       `toolbar=no,location=0,status=no,menubar=no,scrollbars=yes,resizable=yes,width=${width},height=${height},top=${top},left=${left}`
     )
-    this.props.onShare(target)
+    this.analytics.track(SHARE_SCENE, { target })
   }
 
   handleShareWithFacebook = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.FACEBOOK)

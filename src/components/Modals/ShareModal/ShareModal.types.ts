@@ -2,7 +2,6 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { Project } from 'modules/project/types'
 import { shareProject } from 'modules/project/actions'
 import { login } from 'modules/auth/actions'
-import { shareScene } from 'modules/ui/share/actions'
 
 export type Props = ModalProps & {
   metadata: ShareModalMetadata
@@ -12,7 +11,6 @@ export type Props = ModalProps & {
   isScreenshotReady: boolean
   onUpdate: typeof shareProject
   onLogin: typeof login
-  onShare: typeof shareScene
 }
 
 export type State = {
@@ -23,7 +21,7 @@ export type State = {
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'project' | 'isLoading' | 'isLoggedIn' | 'isScreenshotReady'>
-export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin' | 'onShare'>
+export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin'>
 
 export enum ShareModalType {
   PROJECT = 'project',
