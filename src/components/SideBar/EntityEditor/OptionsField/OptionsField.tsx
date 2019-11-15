@@ -26,13 +26,24 @@ export default class OptionsField extends React.PureComponent<Props> {
   }
 
   render() {
-    const { label, options, className = '', value } = this.props
+    const { id, label, options, className = '', value } = this.props
     let selectOptions = options.map(opt => ({ key: opt.value, text: opt.label, value: opt.value }))
 
     return (
       <div className={`OptionsField ParameterField ${className}`}>
-        {label && <span className="label">{label}</span>}
-        <SelectField value={value} options={selectOptions} onChange={this.handleChange} trigger={this.renderTrigger()} search={false} />
+        {label && (
+          <label htmlFor={id} className="label">
+            {label}
+          </label>
+        )}
+        <SelectField
+          id={id}
+          value={value}
+          options={selectOptions}
+          onChange={this.handleChange}
+          trigger={this.renderTrigger()}
+          search={false}
+        />
       </div>
     )
   }

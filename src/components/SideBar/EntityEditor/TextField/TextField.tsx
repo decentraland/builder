@@ -5,13 +5,15 @@ import './TextField.css'
 
 export default class TextField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value || ''
+    value: this.props.value || '',
+    id: this.props.id || ''
   }
 
-  static getDerivedStateFromProps(props: Props) {
-    if (props.value) {
+  static getDerivedStateFromProps(props: Props, prevState: State) {
+    if (props.value && props.id !== prevState.id) {
       return {
-        value: props.value
+        value: props.value,
+        entityName: props.id
       }
     }
 
@@ -22,17 +24,19 @@ export default class TextField extends React.PureComponent<Props, State> {
     const { onChange } = this.props
     const { value } = props
     this.setState({ value })
-    setTimeout(() => onChange(value), 0)
+    onChange(value)
   }
 
   render() {
-    const { label, className = '' } = this.props
+    const { id, label, className = '' } = this.props
     const { value } = this.state
 
     return (
       <div className={`TextField ParameterField ${className}`}>
-        <span className="label">{label}</span>
-        <Field value={value} onChange={this.handleChange} />
+        <label htmlFor={id} className="label">
+          {label}
+        </label>
+        <Field id={id} value={value} onChange={this.handleChange} />
       </div>
     )
   }

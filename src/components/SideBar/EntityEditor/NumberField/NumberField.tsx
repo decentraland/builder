@@ -5,13 +5,15 @@ import './NumberField.css'
 
 export default class NumberField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value ? this.props.value.toString() : ''
+    value: this.props.value ? this.props.value.toString() : '',
+    id: this.props.id || ''
   }
 
-  static getDerivedStateFromProps(props: Props) {
-    if (props.value) {
+  static getDerivedStateFromProps(props: Props, prevState: State) {
+    if (props.value && props.id !== prevState.id) {
       return {
-        value: props.value
+        value: props.value,
+        entityName: props.id
       }
     }
 
@@ -27,12 +29,14 @@ export default class NumberField extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, className = '' } = this.props
+    const { id, label, className = '' } = this.props
     const { value } = this.state
     return (
       <div className={`NumberField ParameterField ${className}`}>
-        <span className="label">{label}</span>
-        <Field value={value} onChange={this.handleChange} type="number" />
+        <label htmlFor={id} className="label">
+          {label}
+        </label>
+        <Field id={id} value={value} onChange={this.handleChange} type="number" />
       </div>
     )
   }

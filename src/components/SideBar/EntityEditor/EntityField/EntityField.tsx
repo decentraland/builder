@@ -40,7 +40,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, entities, filter, assetsByEntityName, className = '' } = this.props
+    const { id, label, entities, filter, assetsByEntityName, className = '' } = this.props
     const { value } = this.state
 
     let options = Object.values(entities)
@@ -58,8 +58,12 @@ export default class EntityField extends React.PureComponent<Props, State> {
 
     return (
       <div className={`EntityField ParameterField ${className}`}>
-        {label && <span className="label">{label}</span>}
-        <SelectField value={value} options={options} onChange={this.handleChange} trigger={this.renderTrigger()} search={false} />
+        {label && (
+          <label htmlFor={id} className="label">
+            {label}
+          </label>
+        )}
+        <SelectField id={id} value={value} options={options} onChange={this.handleChange} trigger={this.renderTrigger()} search={false} />
       </div>
     )
   }

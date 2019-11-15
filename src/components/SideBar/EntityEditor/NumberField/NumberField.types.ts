@@ -1,4 +1,5 @@
 export type Props = {
+  id: string
   label: string
   value: number
   className?: string
@@ -8,4 +9,5 @@ export type Props = {
 
 export type State = {
   value: string
+  id: string
 }

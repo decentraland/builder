@@ -100,12 +100,14 @@ export default class ActionField extends React.PureComponent<Props> {
   }
 
   render() {
-    const { label, entityAssets, className = '', value } = this.props
+    const { id, label, entityAssets, className = '', value } = this.props
 
     return (
       <section className={`ActionField ParameterField ${className}`}>
         <div className="header">
-          <span className="label">{label}</span>
+          <label htmlFor={id} className="label">
+            {label}
+          </label>
           <Icon name="add-active" onClick={this.handleAddAction} />
         </div>
 
@@ -119,6 +121,7 @@ export default class ActionField extends React.PureComponent<Props> {
                 <div className="container">
                   <div className="signature">
                     <EntityField
+                      id={id}
                       value={value ? action.entityName : ''}
                       onChange={name => this.handleEntityChange(name, i)}
                       filter={Object.keys(entityAssets)}
@@ -126,6 +129,7 @@ export default class ActionField extends React.PureComponent<Props> {
                     />
                     {action.entityName && (
                       <OptionsField
+                        id={`${id}-actions`}
                         value={action.actionId}
                         options={options}
                         onChange={actionid => this.handleActionChange(actionid, i)}
@@ -140,6 +144,7 @@ export default class ActionField extends React.PureComponent<Props> {
                   </div>
                   {parameters && (
                     <EntityParameters
+                      entityName={action.entityName}
                       parameters={parameters}
                       values={parameterValues}
                       onChange={values => this.handleParametersChange(values, i)}

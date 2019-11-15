@@ -11,11 +11,13 @@ export default class BooleanField extends React.PureComponent<Props> {
   }
 
   render() {
-    const { label, value, className = '' } = this.props
+    const { id, label, value, className = '' } = this.props
     return (
       <div className={`BooleanField ParameterField ${className}`}>
-        <span className="label">{label}</span>
-        <Radio checked={value} onClick={this.handleChange} toggle />
+        <label htmlFor={id} className="label">
+          {label}
+        </label>
+        <Radio id={id} checked={value} onClick={this.handleChange} toggle />
       </div>
     )
   }

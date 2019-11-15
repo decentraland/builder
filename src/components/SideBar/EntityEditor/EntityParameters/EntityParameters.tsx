@@ -32,7 +32,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
 
   renderField = (param: AssetParameter) => {
     const { values } = this.state
-    const { entityNames, className = '' } = this.props
+    const { entityNames, entityName, className = '' } = this.props
+    const id = `${entityName}-${param.id}`
 
     switch (param.type) {
       case AssetParameterType.ACTIONS: {
@@ -44,7 +45,14 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
         }
 
         return (
-          <ActionField label={param.label} value={actions} onChange={val => this.handleFieldChange(param.id, val)} className={className} />
+          <ActionField
+            id={id}
+            key={id}
+            label={param.label}
+            value={actions}
+            onChange={val => this.handleFieldChange(param.id, val)}
+            className={className}
+          />
         )
       }
       case AssetParameterType.ENTITY: {
@@ -52,6 +60,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
         if (!entityNames.includes(entityName)) return null
         return (
           <EntityField
+            id={id}
+            key={id}
             label={param.label}
             value={entityName}
             onChange={val => this.handleFieldChange(param.id, val)}
@@ -62,6 +72,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
       case AssetParameterType.STRING: {
         return (
           <TextField
+            id={id}
+            key={id}
             label={param.label}
             value={values[param.id] as string}
             onChange={val => this.handleFieldChange(param.id, val)}
@@ -72,6 +84,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
       case AssetParameterType.BOOLEAN: {
         return (
           <BooleanField
+            id={id}
+            key={id}
             label={param.label}
             value={values[param.id] as boolean}
             onChange={val => this.handleFieldChange(param.id, val)}
@@ -82,6 +96,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
       case AssetParameterType.INTEGER: {
         return (
           <NumberField
+            id={id}
+            key={id}
             label={param.label}
             value={values[param.id] as number}
             onChange={val => this.handleFieldChange(param.id, val)}
@@ -92,6 +108,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
       case AssetParameterType.OPTIONS: {
         return (
           <OptionsField
+            id={id}
+            key={id}
             label={param.label}
             value={values[param.id] as string}
             options={param.options!}
@@ -103,6 +121,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
       case AssetParameterType.FLOAT: {
         return (
           <NumberField
+            id={id}
+            key={id}
             label={param.label}
             value={values[param.id] as number}
             onChange={val => this.handleFieldChange(param.id, val)}

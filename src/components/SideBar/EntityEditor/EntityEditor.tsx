@@ -11,7 +11,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
   handleChangeDebounced = debounce((parameters: AssetParameterValues) => {
     const { entityId, onSetScriptParameters } = this.props
     onSetScriptParameters(entityId, parameters)
-  }, 100)
+  }, 150)
 
   render() {
     const { asset, script, entity } = this.props
@@ -33,7 +33,12 @@ export default class EntityEditor extends React.PureComponent<Props> {
             <img src={asset.thumbnail} alt={asset.name} />
           </div>
           <div className="parameters">
-            <EntityParameters parameters={asset.parameters} values={script.data!.values} onChange={this.handleChangeDebounced} />
+            <EntityParameters
+              entityName={entity.name}
+              parameters={asset.parameters}
+              values={script.data!.values}
+              onChange={this.handleChangeDebounced}
+            />
           </div>
         </div>
       </div>
