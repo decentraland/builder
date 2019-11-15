@@ -48,7 +48,8 @@ import {
   filterEntitiesWithComponent,
   getSceneByProjectId,
   getEntityName,
-  getDefaultValues
+  getDefaultValues,
+  renameEntity
 } from './utils'
 import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
@@ -268,27 +269,33 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   }
   entityComponents.push(transformId)
 
+  const newEntities = { ...scene.entities }
+  const entityId = uuidv4()
+  // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
+  // This means that we use components before we are done creating all of them.
+  const entityName = getEntityName(scene, entityComponents)
+
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
+
   // copy script
   if (script) {
     const {
       data: { values: parameters, src, assetId }
     } = script
     const scriptId = uuidv4()
+    const values = JSON.parse(JSON.stringify(parameters))
+    renameEntity(values, scene.entities[selectedEntityId].name, entityName)
     newComponents[scriptId] = {
       id: scriptId,
       type: ComponentType.Script,
       data: {
-        values: { ...parameters },
+        values,
         src,
         assetId
       }
     } as ComponentDefinition<ComponentType.Script>
     entityComponents.push(scriptId)
   }
-
-  const newEntities = { ...scene.entities }
-  const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: entityComponents, name: getEntityName(scene, entityComponents) }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action

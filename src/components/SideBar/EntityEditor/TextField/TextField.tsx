@@ -8,6 +8,16 @@ export default class TextField extends React.PureComponent<Props, State> {
     value: this.props.value || ''
   }
 
+  static getDerivedStateFromProps(props: Props) {
+    if (props.value) {
+      return {
+        value: props.value
+      }
+    }
+
+    return null
+  }
+
   handleChange = (_: any, props: InputOnChangeData) => {
     const { onChange } = this.props
     const { value } = props

@@ -8,6 +8,16 @@ export default class NumberField extends React.PureComponent<Props, State> {
     value: this.props.value ? this.props.value.toString() : ''
   }
 
+  static getDerivedStateFromProps(props: Props) {
+    if (props.value) {
+      return {
+        value: props.value
+      }
+    }
+
+    return null
+  }
+
   handleChange = (_: any, props: InputOnChangeData) => {
     const { allowFloat, onChange } = this.props
     const value = allowFloat ? props.value : props.value.replace(/,|\./g, '')

@@ -6,15 +6,11 @@ import { RootState } from 'modules/common/types'
 import { getSideBarCategories, getSelectedCategory, getSearch, getSelectedAssetPack, isList } from 'modules/ui/sidebar/selectors'
 import { getCollectibleAssets, isLoading as isLoadingAssets } from 'modules/asset/selectors'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { getEntityComponentsByType } from 'modules/scene/selectors'
-import { ComponentType } from 'modules/scene/types'
-import { deselectEntity } from 'modules/editor/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntityId = getSelectedEntityId(state)
-  const components = selectedEntityId ? getEntityComponentsByType(state)[selectedEntityId] : null
 
   return {
     categories: getSideBarCategories(state),
@@ -25,14 +21,12 @@ const mapState = (state: RootState): MapStateProps => {
     search: getSearch(state),
     isList: isList(state),
     isConnected: isConnected(state),
-    hasScript: components ? !!components[ComponentType.Script] : false,
     selectedEntityId
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(connectWalletRequest()),
-  onDeselect: () => dispatch(deselectEntity())
+  onConnect: () => dispatch(connectWalletRequest())
 })
 
 export default connect(

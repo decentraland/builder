@@ -22,13 +22,20 @@ export default class EntityEditor extends React.PureComponent<Props> {
       <div className="EntityEditor">
         <Header className="header" size="medium">
           <div className="spacer" />
-          {asset.name} ({entity.name})
-          <Icon name="modal-close" onClick={this.props.onClose} />
+          <div className="title">
+            <span className="asset">{asset.name}</span>
+            <span className="entity">{entity.name}</span>
+          </div>
+          <Icon name="modal-close" onClick={this.props.onDeselect} />
         </Header>
-        <div className="thumbnail">
-          <img src={asset.thumbnail} alt={asset.name} />
+        <div className="overflow-container">
+          <div className="thumbnail">
+            <img src={asset.thumbnail} alt={asset.name} />
+          </div>
+          <div className="parameters">
+            <EntityParameters parameters={asset.parameters} values={script.data!.values} onChange={this.handleChangeDebounced} />
+          </div>
         </div>
-        <EntityParameters parameters={asset.parameters} values={script.data!.values} onChange={this.handleChangeDebounced} />
       </div>
     )
   }

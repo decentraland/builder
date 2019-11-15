@@ -16,15 +16,20 @@
 
 .OptionsField .dcl.select-field .ui.dropdown .menu {
   padding: 0px;
-  background-color: #242129;
+  user-select: none;
+  background: var(--smart-grey);
+}
+
+.OptionsField .dcl.select-field .ui.dropdown .menu .selected.item {
+  background-color: rgba(var(--purplish-grey-raw), 0.2);
 }
 
 .OptionsField .dcl.select-field .ui.dropdown .item {
   font-weight: normal;
 }
 
-.OptionsField .dcl.select-field .ui.dropdown .icon {
-  padding-top: 0px;
+.OptionsField .dcl.select-field div.ui.dropdown .icon {
+  padding-top: 2px;
 }
 
 .OptionsField .dcl.select-field .ui.dropdown .item:hover {
@@ -42,6 +47,7 @@
   align-items: center;
   cursor: pointer;
   width: 100px;
+  user-select: none;
 }
 
 .OptionsField .trigger .text {

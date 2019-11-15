@@ -48,8 +48,12 @@
 
 .EntityField .dcl.select-field .ui.dropdown .menu {
   padding: 0px;
-  background-color: #242129;
+  background-color: var(--smart-grey);
   width: 250px;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .menu .selected.item {
+  background-color: rgba(var(--purplish-grey-raw), 0.2);
 }
 
 .EntityField .dcl.select-field .ui.dropdown .item {

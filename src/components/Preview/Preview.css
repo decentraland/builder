@@ -19,6 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .Preview {
@@ -43,10 +44,9 @@
 }
 
 .Preview-wrapper .overlay .progress {
-  height: 10px;
-  width: 30%;
-  background: black;
-  margin-top: 256px;
+  height: 5px;
+  width: 20%;
+  margin-top: 64px;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -57,7 +57,7 @@
   height: 100%;
   display: inline-flex;
   background-color: #eb455a;
-  background-color: var(--primary);
+  background-color: rgba(var(--purplish-grey-raw), 0.5);
 }
 
 .Preview-wrapper .overlay .progress.loaded {

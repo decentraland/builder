@@ -10,7 +10,6 @@ import CategoryList from '../CategoryList'
 import AssetList from '../AssetList'
 import NoResults from '../NoResults'
 import WalletSignIn from '../WalletSignIn'
-import EntityEditor from '../EntityEditor'
 import { Props, State } from './ItemDrawer.types'
 import './ItemDrawer.css'
 
@@ -29,10 +28,6 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  handleDeselect = () => {
-    this.props.onDeselect()
-  }
-
   setDrawerContainer = (ref: HTMLElement | null) => {
     if (!this.drawerContainer) {
       this.drawerContainer = ref
@@ -40,24 +35,12 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   renderView() {
-    const {
-      search,
-      isList,
-      selectedAssetPack,
-      selectedCategory,
-      categories,
-      isConnected,
-      isLoadingAssets,
-      hasScript,
-      selectedEntityId
-    } = this.props
+    const { search, isList, selectedAssetPack, selectedCategory, categories, isConnected, isLoadingAssets } = this.props
 
     const isSearch = search.length > 0
     const isCollectibleAssetPackSelected = selectedAssetPack && selectedAssetPack.id === COLLECTIBLE_ASSET_PACK_ID
 
-    if (hasScript) {
-      return <EntityEditor entityId={selectedEntityId!} onClose={this.handleDeselect} />
-    } else if (isCollectibleAssetPackSelected && isLoadingAssets) {
+    if (isCollectibleAssetPackSelected && isLoadingAssets) {
       return <Loader active size="massive" />
     } else if (isCollectibleAssetPackSelected && !isConnected) {
       return <WalletSignIn />
@@ -78,15 +61,11 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isConnected, hasScript } = this.props
+    const { isConnected } = this.props
     return (
       <div className="ItemDrawer">
-        {!hasScript && (
-          <>
-            <SidebarHeader />
-            <SidebarSearch onResetScroll={this.handleResetScroll} />
-          </>
-        )}
+        <SidebarHeader />
+        <SidebarSearch onResetScroll={this.handleResetScroll} />
 
         <div ref={this.setDrawerContainer} className="overflow-container">
           {this.renderView()}

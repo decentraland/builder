@@ -4,6 +4,7 @@ export type Props = {
   parameters: AssetParameter[]
   values: AssetParameterValues
   entityNames: string[]
+  className?: string
   onChange(values: AssetParameterValues): void
 }
 

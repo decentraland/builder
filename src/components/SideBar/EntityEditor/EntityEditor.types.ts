@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { Asset } from 'modules/asset/types'
 import { ComponentDefinition, ComponentType, EntityDefinition } from 'modules/scene/types'
 import { setScriptValues, SetScriptValuesAction } from 'modules/scene/actions'
+import { DeselectEntityAction } from 'modules/editor/actions'
 
 export type Props = {
   entityId: string
@@ -9,13 +10,11 @@ export type Props = {
   entity: EntityDefinition
   script: ComponentDefinition<ComponentType.Script>
   onSetScriptParameters: typeof setScriptValues
-  onClose: () => void
+  onDeselect: () => void
 }
 
-export type OwnProps = Pick<Props, 'entityId'>
+export type MapStateProps = Pick<Props, 'asset' | 'script' | 'entity' | 'entityId'>
 
-export type MapStateProps = Pick<Props, 'asset' | 'script' | 'entity'>
+export type MapDispatchProps = Pick<Props, 'onSetScriptParameters' | 'onDeselect'>
 
-export type MapDispatchProps = Pick<Props, 'onSetScriptParameters'>
-
-export type MapDispatch = Dispatch<SetScriptValuesAction>
+export type MapDispatch = Dispatch<SetScriptValuesAction | DeselectEntityAction>

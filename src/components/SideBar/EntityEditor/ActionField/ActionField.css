@@ -1,4 +1,4 @@
-div.ActionField.ParameterField {
+section.ActionField.ParameterField {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -25,7 +25,7 @@ div.ActionField.ParameterField {
 }
 
 .ActionField .container {
-  background-color: rgba(var(--bluish-steel-raw), 0.3);
+  background-color: var(--dark-two);
   padding: 10px;
   border-radius: 8px;
   width: 100%;
@@ -43,11 +43,17 @@ div.ActionField.ParameterField {
 }
 
 .ActionField .signature > .EntityField .ui.dropdown,
-.ActionField .signature > .OptionsField .ui.dropdown {
+.ActionField .signature > .OptionsField .ui.dropdown,
+.ActionField .signature > .EntityField .ui.dropdown.upward,
+.ActionField .signature > .OptionsField .ui.dropdown.upward,
+.ActionField .signature > .OptionsField .ui.dropdown:hover,
+.ActionField .signature > .EntityField .ui.dropdown:hover {
   min-width: 0px;
-  background: #4a4650;
+  background: var(--smart-grey);
   padding: 4px 24px 4px 8px;
-  border-radius: 8px;
+  border-radius: 8px !important; /* Overwrites semantic !important */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .ActionField .signature > .EntityField .dcl.select-field,

@@ -103,7 +103,7 @@ export default class ActionField extends React.PureComponent<Props> {
     const { label, entityAssets, className = '', value } = this.props
 
     return (
-      <div className={`ActionField ParameterField ${className}`}>
+      <section className={`ActionField ParameterField ${className}`}>
         <div className="header">
           <span className="label">{label}</span>
           <Icon name="add-active" onClick={this.handleAddAction} />
@@ -138,17 +138,18 @@ export default class ActionField extends React.PureComponent<Props> {
                       parameters={parameters}
                       values={parameterValues}
                       onChange={values => this.handleParametersChange(values, i)}
+                      className="action"
                     />
                   )}
                 </div>
 
-                <Button size="tiny" onClick={() => this.handleRemove(i)}>
+                <Button size="tiny" onClick={() => this.handleRemove(i)} basic>
                   Remove
                 </Button>
               </>
             )
           })}
-      </div>
+      </section>
     )
   }
 }
