@@ -3,11 +3,8 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { getData as getAssets } from 'modules/asset/selectors'
-import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics, ShapeComponent, EntityDefinition } from './types'
+import { ComponentDefinition, ComponentType, Scene, AnyComponent, SceneMetrics, ShapeComponent } from './types'
 import { EMPTY_SCENE_METRICS, ShapeComponents } from './constants'
-import { Asset } from 'modules/asset/types'
-import { AssetState } from 'modules/asset/reducer'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
 
@@ -117,6 +114,32 @@ export const getShapesByEntityId = createSelector<RootState, Scene['entities'], 
   }
 )
 
+// export const getScriptsByEntityId = createSelector<
+//   RootState,
+//   Scene['entities'],
+//   Scene['components'],
+//   Record<string, ComponentDefinition<ComponentType.Script>>
+// >(
+//   getEntities,
+//   getComponents,
+//   (entities, components) => {
+//     const out: Record<string, ComponentDefinition<ComponentType.Script>> = {}
+
+//     for (let entityId in entities) {
+//       if (entityId && entities && entityId in entities) {
+//         const componentReferences = entities[entityId].components
+//         for (const componentId of componentReferences) {
+//           if (components && componentId in components && components[componentId].type === ComponentType.Script) {
+//             out[entityId] = components[componentId] as ComponentDefinition<ComponentType.Script>
+//           }
+//         }
+//       }
+//     }
+
+//     return out
+//   }
+// )
+
 export const getComponentsByType = createSelector<RootState, Scene | null, Record<ComponentType, AnyComponent[]>>(
   getCurrentScene,
   scene => {
@@ -190,58 +213,5 @@ export const numItems = createSelector<RootState, Project | null, Scene | null, 
     )
     const numGrounds = project.layout.cols * project.layout.rows
     return numTransforms - numGrounds
-  }
-)
-
-export const getAssetsByEntityName = createSelector<
-  RootState,
-  Record<string, EntityDefinition>,
-  Record<string, AnyComponent[]>,
-  AssetState['data'],
-  Record<string, Asset>
->(
-  getEntities,
-  getComponentsByEntityId,
-  getAssets,
-  (entities, componentsByEntity, assets) => {
-    const out: Record<string, Asset> = {}
-    for (let entityId in componentsByEntity) {
-      const entity = entities[entityId]
-      const components = componentsByEntity[entityId]
-      for (let component of components) {
-        if (component.type === ComponentType.Script || component.type === ComponentType.GLTFShape) {
-          const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
-          out[entity.name] = asset
-        }
-      }
-    }
-    return out
-  }
-)
-
-export const getAssetsWithScriptByEntityName = createSelector<
-  RootState,
-  Record<string, EntityDefinition>,
-  Record<string, AnyComponent[]>,
-  AssetState['data'],
-  Record<string, Asset>
->(
-  getEntities,
-  getComponentsByEntityId,
-  getAssets,
-  (entities, componentsByEntity, assets) => {
-    const out: Record<string, Asset> = {}
-    for (let entityId in componentsByEntity) {
-      const components = componentsByEntity[entityId]
-      for (let component of components) {
-        if (component.type === ComponentType.Script) {
-          const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
-          if (asset.actions.length > 0) {
-            out[entities[entityId].name] = asset
-          }
-        }
-      }
-    }
-    return out
   }
 )

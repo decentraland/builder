@@ -235,3 +235,27 @@ export function renameEntity(values: AssetParameterValues, oldName: string, newN
     }
   }
 }
+
+/**
+ * Removes all actions that depend on the provided entity name
+ *
+ * Mutates the object.
+ * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
+ * @param oldName The entity name
+ */
+export function removeEntityReferences(values: AssetParameterValues, entityName: string) {
+  for (let key in values) {
+    const value = values[key]
+    if (Array.isArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        const action = value[i]
+        if (action.entityName === entityName) {
+          value.splice(i, 1)
+          return
+        }
+
+        removeEntityReferences(action.values, entityName)
+      }
+    }
+  }
+}

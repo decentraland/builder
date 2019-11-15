@@ -4,8 +4,8 @@ import { AssetState } from 'modules/asset/reducer'
 import { Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { ComponentDefinition, ComponentType, AnyComponent } from 'modules/scene/types'
-import { getComponentsByType } from 'modules/scene/selectors'
+import { ComponentDefinition, ComponentType, AnyComponent, EntityDefinition } from 'modules/scene/types'
+import { getComponentsByType, getEntities, getComponentsByEntityId } from 'modules/scene/selectors'
 import { isNFT, isGround } from './utils'
 
 export const getState: (state: RootState) => AssetState = state => state.asset
@@ -90,6 +90,59 @@ export const getAssetsByModel = createSelector<RootState, AssetState['data'], Re
     for (let id in assets) {
       const asset = assets[id]
       out[asset.model] = asset
+    }
+    return out
+  }
+)
+
+export const getAssetsByEntityName = createSelector<
+  RootState,
+  Record<string, EntityDefinition>,
+  Record<string, AnyComponent[]>,
+  AssetState['data'],
+  Record<string, Asset>
+>(
+  getEntities,
+  getComponentsByEntityId,
+  getData,
+  (entities, componentsByEntity, assets) => {
+    const out: Record<string, Asset> = {}
+    for (let entityId in componentsByEntity) {
+      const entity = entities[entityId]
+      const components = componentsByEntity[entityId]
+      for (let component of components) {
+        if (component.type === ComponentType.Script || component.type === ComponentType.GLTFShape) {
+          const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
+          out[entity.name] = asset
+        }
+      }
+    }
+    return out
+  }
+)
+
+export const getAssetsWithScriptByEntityName = createSelector<
+  RootState,
+  Record<string, EntityDefinition>,
+  Record<string, AnyComponent[]>,
+  AssetState['data'],
+  Record<string, Asset>
+>(
+  getEntities,
+  getComponentsByEntityId,
+  getData,
+  (entities, componentsByEntity, assets) => {
+    const out: Record<string, Asset> = {}
+    for (let entityId in componentsByEntity) {
+      const components = componentsByEntity[entityId]
+      for (let component of components) {
+        if (component.type === ComponentType.Script) {
+          const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
+          if (asset.actions.length > 0) {
+            out[entities[entityId].name] = asset
+          }
+        }
+      }
     }
     return out
   }

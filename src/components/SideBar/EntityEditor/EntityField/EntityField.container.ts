@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { getEntities, getAssetsByEntityName } from 'modules/scene/selectors'
+import { getEntities } from 'modules/scene/selectors'
+import { getAssetsByEntityName } from 'modules/asset/selectors'
 
 import { MapStateProps } from './EntityField.types'
 import EntityField from './EntityField'

@@ -1,6 +1,5 @@
 import { Vector3, Quaternion } from 'modules/common/types'
-import { AssetParameterValues } from 'modules/asset/types'
-import { Asset } from 'modules/asset/types'
+import { Asset, AssetParameterValues } from 'modules/asset/types'
 
 export type EntityDefinition = {
   id: string

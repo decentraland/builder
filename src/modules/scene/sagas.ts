@@ -49,7 +49,8 @@ import {
   getSceneByProjectId,
   getEntityName,
   getDefaultValues,
-  renameEntity
+  renameEntity,
+  removeEntityReferences
 } from './utils'
 import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
@@ -326,6 +327,14 @@ function* handleDeleteItem(_: DeleteItemAction) {
     delete newComponents[componentId]
   }
 
+  for (let componentId in newComponents) {
+    const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
+    if (component.type === ComponentType.Script) {
+      removeEntityReferences(component.data.values, scene.entities[selectedEntityId].name)
+    }
+  }
+
+  // TODO: refactor
   // gather all the models used by gltf shapes
   const models = Object.values(newComponents).reduce((set, component) => {
     if (component.type === ComponentType.GLTFShape) {

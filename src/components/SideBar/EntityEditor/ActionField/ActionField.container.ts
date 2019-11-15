@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { getAssetsWithScriptByEntityName } from 'modules/scene/selectors'
+import { getAssetsWithScriptByEntityName } from 'modules/asset/selectors'
 
 import { MapStateProps } from './ActionField.types'
 import ActionField from './ActionField'
