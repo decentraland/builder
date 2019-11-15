@@ -116,7 +116,7 @@
     "copy": "复制链接",
     "copied": "已复制",
     "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}description=我的最新作品已经在 Decentraland 中安家了！ 敬请查看，并且添加自己的场景共建虚拟世界。",
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=我的最新作品已经在 Decentraland 中安家了！ 敬请查看，并且添加自己的场景共建虚拟世界。",
       "twitter": "https://twitter.com/intent/tweet?text=刚刚通过 Builder 在 Decentraland 中部署了我的新设计。 敬请查看，也请您创建您自己的场景。 因为虚拟世界也不会凭空而建! {url}&hashtags=builder,virtualworld,gaming"
     },
     "sign_in": {
