@@ -138,7 +138,7 @@ export const getAssetsWithScriptByEntityName = createSelector<
       for (let component of components) {
         if (component.type === ComponentType.Script) {
           const asset = assets[(component as ComponentDefinition<ComponentType.Script>).data.assetId]
-          if (asset.actions.length > 0) {
+          if (asset && asset.actions.length > 0) {
             out[entities[entityId].name] = asset
           }
         }

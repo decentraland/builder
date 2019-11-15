@@ -44,7 +44,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
     const { value } = this.state
 
     let options = Object.values(entities)
-      .filter(entity => !entity.disableGizmos)
+      .filter(entity => !entity.disableGizmos && !!assetsByEntityName[entity.name])
       .map(entity => ({
         key: entity.name,
         text: entity.name,
