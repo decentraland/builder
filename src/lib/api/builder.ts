@@ -4,7 +4,7 @@ import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { authorize } from './auth'
 import { Rotation, Deployment } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Asset } from 'modules/asset/types'
+import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
 import { Scene, SceneMetrics } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { createManifest } from 'modules/project/export'
@@ -43,12 +43,15 @@ export type RemoteAsset = {
   id: string
   asset_pack_id: string
   name: string
-  url: string
+  model: string
+  script: string | null
   thumbnail: string
   tags: string[]
   category: string
   contents: Record<string, string>
   metrics: SceneMetrics
+  parameters: AssetParameter[]
+  actions: AssetAction[]
 }
 
 /**
@@ -114,12 +117,15 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
     id: asset.id,
     asset_pack_id: asset.assetPackId,
     name: asset.name,
-    url: asset.url.replace(`${asset.assetPackId}/`, ''),
+    model: asset.model.replace(`${asset.assetPackId}/`, ''),
+    script: asset.script,
     thumbnail: asset.thumbnail.replace(`${BUILDER_SERVER_URL}/storage/assets/`, ''),
     tags: asset.tags,
     category: asset.category,
     contents: asset.contents,
-    metrics: asset.metrics
+    metrics: asset.metrics,
+    parameters: asset.parameters,
+    actions: asset.actions
   }
 }
 
@@ -128,12 +134,15 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     id: remoteAsset.id,
     assetPackId: remoteAsset.asset_pack_id,
     name: remoteAsset.name,
-    url: `${remoteAsset.asset_pack_id}/${remoteAsset.url}`,
+    model: remoteAsset.model,
+    script: remoteAsset.script,
     thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${remoteAsset.thumbnail}`,
     tags: remoteAsset.tags,
     category: remoteAsset.category,
     contents: remoteAsset.contents,
-    metrics: remoteAsset.metrics
+    metrics: remoteAsset.metrics,
+    parameters: remoteAsset.parameters,
+    actions: remoteAsset.actions
   }
 }
 

@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
+import Icon from 'components/Icon'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
@@ -42,7 +43,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
           />
         ))}
         <div className="create-asset-pack" onClick={this.handleCreateAssetPack}>
-          {t('asset_pack.new_asset_pack')}
+          <Icon name="add" /> {t('asset_pack.new_asset_pack')}
         </div>
       </div>
     )

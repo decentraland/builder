@@ -6,7 +6,8 @@ import {
   OpenEditorAction,
   openEditor,
   TogglePreviewAction,
-  CloseEditorAction
+  CloseEditorAction,
+  SetScriptUrlAction
 } from 'modules/editor/actions'
 import { UnityKeyboardEvent } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
@@ -20,7 +21,7 @@ export type Editor = {
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
   handleMessage: (msg: { type: 'update'; payload: any }) => void
-  sendExternalAction: (action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction) => void
+  sendExternalAction: (action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction | SetScriptUrlAction) => void
   setPlayMode: (enabled: boolean) => void
   setCameraZoomDelta: (delta: number) => void
   setCameraRotation: (alpha: number, beta: number) => void
@@ -28,7 +29,7 @@ export type Editor = {
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
   selectEntity: (entityId: string) => void
-  deselectEntity: (entityId: string) => void
+  deselectEntity: () => void
   getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>

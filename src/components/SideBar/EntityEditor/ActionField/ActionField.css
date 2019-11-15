@@ -1,0 +1,84 @@
+section.ActionField.ParameterField {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border: none;
+  padding: 0px;
+  margin-top: 16px;
+}
+
+.ActionField .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.ActionField .signature {
+  display: flex;
+  align-items: center;
+}
+
+.ActionField .signature:not(:only-child) {
+  margin-bottom: 16px;
+}
+
+.ActionField .container {
+  background-color: var(--dark-two);
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.ActionField .signature > .EntityField {
+  margin-right: 8px;
+}
+
+.ActionField .signature > .EntityField,
+.ActionField .signature > .OptionsField {
+  border: 0px;
+  padding: 0px;
+  flex: 1;
+}
+
+.ActionField .signature > .EntityField .ui.dropdown,
+.ActionField .signature > .OptionsField .ui.dropdown,
+.ActionField .signature > .EntityField .ui.dropdown.upward,
+.ActionField .signature > .OptionsField .ui.dropdown.upward,
+.ActionField .signature > .OptionsField .ui.dropdown:hover,
+.ActionField .signature > .EntityField .ui.dropdown:hover {
+  min-width: 0px;
+  background: var(--smart-grey);
+  padding: 4px 24px 4px 8px;
+  border-radius: 8px !important; /* Overwrites semantic !important */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ActionField .signature > .EntityField .dcl.select-field,
+.ActionField .signature > .OptionsField .dcl.select-field {
+  width: 100%;
+}
+
+.ActionField .signature > .OptionsField .trigger {
+  height: 30px;
+}
+
+.ActionField .signature > .OptionsField .dcl.select-field .ui.dropdown .dropdown.icon {
+  padding: 12px;
+}
+
+.ActionField .signature > .EntityField .dcl.select-field .ui.dropdown .dropdown.icon {
+  padding-top: 12px;
+  padding-right: 12px;
+}
+
+.ActionField .signature .action-options {
+  margin: 10px 8px 8px 16px;
+}
+
+.ActionField .signature > .ui.dropdown > .dropdown.icon {
+  display: none;
+}

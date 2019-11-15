@@ -78,6 +78,7 @@ const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReduce
       delete newState.data[project.sceneId]
       return newState
     }
+
     default:
       return state
   }

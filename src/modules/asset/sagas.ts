@@ -37,7 +37,8 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         category: result.registry.name,
         contents: {},
         name: asset.name,
-        url: asset.uri,
+        model: asset.uri,
+        script: null,
         thumbnail: asset.image,
         metrics: {
           triangles: 0,
@@ -46,7 +47,9 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
           bodies: 0,
           entities: 0,
           textures: 0
-        }
+        },
+        parameters: [],
+        actions: []
       })
     }
   }

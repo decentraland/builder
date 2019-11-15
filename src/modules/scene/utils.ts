@@ -1,5 +1,5 @@
 import { Vector3 } from 'modules/common/types'
-import { Scene, SceneMetrics } from './types'
+import { Scene, SceneMetrics, ComponentType, ComponentDefinition, AnyComponent, ComponentData, EntityDefinition } from './types'
 import { select, put, race, take } from 'redux-saga/effects'
 import {
   loadManifestRequest,
@@ -10,6 +10,8 @@ import {
 } from 'modules/project/actions'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
+import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
+import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue } from 'modules/asset/types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -103,7 +105,7 @@ export function* getSceneByProjectId(projectId: string, type: 'project' | 'publi
   let scene = project && scenes[project.sceneId]
 
   if (!scene) {
-    yield put(loadManifestRequest(project.id, type))
+    yield put(loadManifestRequest(projectId, type))
     const result: { success?: LoadManifestSuccessAction; failure?: LoadManifestFailureAction } = yield race({
       success: take(LOAD_MANIFEST_SUCCESS),
       failure: take(LOAD_MANIFEST_FAILURE)
@@ -115,4 +117,145 @@ export function* getSceneByProjectId(projectId: string, type: 'project' | 'publi
     }
   }
   return scene
+}
+
+export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components']) {
+  const takenNames = new Set()
+  const components = entityComponents.map(id => scene.components[id])
+
+  for (let entityId in scene.entities) {
+    const entity = scene.entities[entityId]
+    takenNames.add(entity.name)
+  }
+  return getUniqueName(components, takenNames)
+}
+
+export function getUniqueName(components: AnyComponent[], takenNames: Readonly<Set<string>>) {
+  let attempts = 1
+  let rawName = 'entity'
+
+  for (let component of components) {
+    try {
+      if (component.type === ComponentType.GLTFShape) {
+        rawName = getGLTFShapeName(component as ComponentDefinition<ComponentType.GLTFShape>)
+      } else if (component.type === ComponentType.NFTShape) {
+        rawName = 'nft'
+      }
+    } catch (e) {
+      // swallow
+    }
+  }
+
+  let name = rawName
+  while (takenNames.has(name)) {
+    name = `${rawName}${++attempts}`
+  }
+
+  return name
+}
+
+export function convertToCamelCase(name: string) {
+  return name
+    .replace(/\s/g, '_')
+    .split('_')
+    .map((part, i) => {
+      if (part.length === 0) return ''
+
+      if (i === 0) {
+        return part.toLowerCase()
+      } else {
+        if (part.length === 1) {
+          return part.toUpperCase()
+        }
+        return part.charAt(0).toUpperCase() + part.slice(1)
+      }
+    })
+    .join('')
+}
+
+export function getGLTFShapeName(component: ComponentDefinition<ComponentType.GLTFShape>) {
+  const data = component.data as ComponentData[ComponentType.GLTFShape]
+  const name = convertToCamelCase(
+    data.src // path/to/ModelName.glb
+      .split('/') // ["path", "to", "ModelName.glb"]
+      .pop()! // "ModelName.glb"
+      .split('.') // ["ModelName", "glb"]
+      .shift()! // "ModelName"
+      .replace(/\d*$/, '')
+  )
+
+  if (!name || name === SCRIPT_INSTANCE_NAME) {
+    throw Error('Invalid name')
+  }
+
+  return name
+}
+
+export function getDefaultValues(entityName: string, parameters: AssetParameter[]) {
+  const out: AssetParameterValues = {}
+
+  for (let parameter of parameters) {
+    if (parameter.default) {
+      if (parameter.type === AssetParameterType.ACTIONS) {
+        out[parameter.id] = [
+          {
+            entityName,
+            actionId: parameter.default,
+            values: {}
+          }
+        ] as AssetActionValue[]
+      } else {
+        out[parameter.id] = parameter.default
+      }
+    }
+  }
+
+  return out
+}
+
+/**
+ * Swaps all references to `oldName` for `newName` inside a script's actions.
+ *
+ * Mutates the object.
+ * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
+ * @param oldName The entity name to be changed
+ * @param newName The entity name that will replace `oldName`
+ */
+export function renameEntity(values: AssetParameterValues, oldName: string, newName: string) {
+  for (let key in values) {
+    const value = values[key]
+    if (Array.isArray(value)) {
+      for (let action of value) {
+        if (action.entityName === oldName) {
+          action.entityName = newName
+        }
+
+        renameEntity(action.values, oldName, newName)
+      }
+    }
+  }
+}
+
+/**
+ * Removes all actions that depend on the provided entity name
+ *
+ * Mutates the object.
+ * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
+ * @param oldName The entity name
+ */
+export function removeEntityReferences(values: AssetParameterValues, entityName: string) {
+  for (let key in values) {
+    const value = values[key]
+    if (Array.isArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        const action = value[i]
+        if (action.entityName === entityName) {
+          value.splice(i, 1)
+          return
+        }
+
+        removeEntityReferences(action.values, entityName)
+      }
+    }
+  }
 }

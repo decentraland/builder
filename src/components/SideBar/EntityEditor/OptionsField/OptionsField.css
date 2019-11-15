@@ -1,0 +1,40 @@
+.OptionsField .dcl.select-field {
+  min-width: 0px;
+  min-height: 0px;
+}
+
+.OptionsField .dcl.select-field .message {
+  display: none;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown {
+  border: 0px;
+  padding: 0px;
+  min-height: 0px;
+  margin-top: 0px;
+}
+
+.OptionsField .dcl.select-field div.ui.dropdown .icon {
+  padding-top: 2px;
+}
+
+.OptionsField .dcl.select-field .ui.selection.active.dropdown,
+.OptionsField .dcl.select-field .ui.selection.active.dropdown:hover {
+  border-bottom: 0px;
+}
+
+.OptionsField .trigger {
+  color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100px;
+  user-select: none;
+}
+
+.OptionsField .trigger .text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+}

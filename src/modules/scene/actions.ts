@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
-import { Asset } from 'modules/asset/types'
+import { Asset, AssetParameterValues } from 'modules/asset/types'
 import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
 import { Project } from 'modules/project/types'
 
@@ -94,10 +94,26 @@ export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project 
 
 export type ApplyLayoutAction = ReturnType<typeof applyLayout>
 
-// Fix Asset Mappings
+// Fix Lagacy Namespaces
 
-export const FIX_ASSET_MAPPINGS = 'Fix Asset Mappings'
+export const FIX_LEGACY_NAMESPACES = 'Fix Legacy Namespaces'
 
-export const fixAssetMappings = () => action(FIX_ASSET_MAPPINGS, {})
+export const fixLegacyNamespaces = () => action(FIX_LEGACY_NAMESPACES)
 
-export type FixAssetMappingsAction = ReturnType<typeof fixAssetMappings>
+export type FixLegacyNamespacesAction = ReturnType<typeof fixLegacyNamespaces>
+
+// Sync Scene Assets
+
+export const SYNC_SCENE_ASSETS = 'Sync Scene Assets'
+
+export const syncSceneAssets = (scene: Scene) => action(SYNC_SCENE_ASSETS, { scene })
+
+export type SyncSceneAssetsAction = ReturnType<typeof syncSceneAssets>
+
+// Set Script Parameters
+
+export const SET_SCRIPT_VALUES = 'Set Script Values'
+
+export const setScriptValues = (entityId: string, values: AssetParameterValues) => action(SET_SCRIPT_VALUES, { entityId, values })
+
+export type SetScriptValuesAction = ReturnType<typeof setScriptValues>

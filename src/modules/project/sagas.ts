@@ -62,7 +62,8 @@ const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
   thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
-  url: 'e6fa9601-3e47-4dff-9a84-e8e017add15a/FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  script: null,
   tags: ['ground'],
   category: 'ground',
   contents: {
@@ -78,7 +79,9 @@ const DEFAULT_GROUND_ASSET: Asset = {
     bodies: 0,
     entities: 0,
     textures: 0
-  }
+  },
+  parameters: [],
+  actions: []
 }
 
 export function* projectSaga() {
@@ -102,6 +105,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
     id: uuidv4(),
     entities: {},
     components: {},
+    assets: {},
     metrics: EMPTY_SCENE_METRICS,
     limits: EMPTY_SCENE_METRICS,
     ground: null
@@ -213,6 +217,7 @@ function* handleExportProject(action: ExportProjectRequestAction) {
       scene,
       point: { x: 0, y: 0 },
       rotation: 'east',
+      isDeploy: false,
       onProgress: progress => store.dispatch(setExportProgress(progress))
     })
   )

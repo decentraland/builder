@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { Loader } from 'decentraland-ui'
 import { DropTarget } from 'react-dnd'
+import Lottie from 'react-lottie'
 import { env } from 'decentraland-commons'
+
+import animationData from './loader.json'
 
 import { ASSET_TYPE } from 'components/AssetCard/AssetCard.dnd'
 import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
@@ -89,10 +91,21 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       <div className="Preview-wrapper">
         {isLoading && (
           <div className="overlay">
+            <Lottie
+              height={100}
+              width={100}
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: animationData,
+                rendererSettings: {
+                  preserveAspectRatio: 'xMidYMid slice'
+                }
+              }}
+            />
             <div id="progress-bar" className="progress ingame">
               <div className="full"></div>
             </div>
-            <Loader active size="massive" />
           </div>
         )}
         <div className={`Preview ${isLoading ? 'loading' : ''}`} id="preview-viewport" ref={this.canvasContainer} />

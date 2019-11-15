@@ -60,9 +60,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   migrations,
   storageKey: env.get('REACT_APP_LOCAL_STORAGE_KEY'),
   paths: [
-    'project',
+    ['project', 'data'],
     ['scene', 'present'],
-    'user',
     ['ui', 'dashboard'],
     ['deployment', 'data'],
     ['auth', 'data'],

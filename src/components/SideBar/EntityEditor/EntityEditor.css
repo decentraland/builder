@@ -1,0 +1,125 @@
+.EntityEditor {
+  height: 100%;
+  width: 100%;
+}
+
+.EntityEditor .ui.header {
+  padding-right: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.EntityEditor .ui.header .title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.EntityEditor .ui.header .entity {
+  font-size: 13px;
+  font-weight: lighter;
+  color: rgba(var(--purplish-grey-raw), 1);
+  line-height: 18px;
+}
+
+.EntityEditor .thumbnail {
+  width: 100%;
+  height: 342px;
+  background: rgba(var(--bluish-steel-raw), 0.4);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.EntityEditor .thumbnail img {
+  width: 100%;
+  height: 100%;
+}
+
+.EntityEditor .overflow-container {
+  height: calc(100% - 62px);
+  overflow-y: auto;
+  overflow-y: overlay;
+  position: relative;
+  padding-right: 16px;
+  flex-direction: column;
+}
+
+.EntityEditor .field {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.4);
+  border-radius: 6px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.EntityEditor .field .label {
+  color: rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.EntityEditor .header {
+  color: var(--sidebar-heading);
+  font-size: 17px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.EntityEditor div.ParameterField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.EntityEditor .parameters {
+  margin-bottom: 96px;
+}
+
+.EntityEditor .parameters > div.ParameterField {
+  border-top: none;
+}
+
+.EntityEditor .parameters > div.ParameterField:first-of-type {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-top: 1px solid rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.EntityEditor .parameters > div.ParameterField:last-of-type {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.EntityEditor .ParameterField .label {
+  font-size: 15px;
+  text-transform: capitalize;
+  user-select: none;
+  color: rgb(var(--purplish-grey-raw));
+}
+
+.EntityEditor .ui.dropdown .menu,
+.EntityEditor .ui.dropdown.visible .menu {
+  padding: 0px;
+  user-select: none;
+  background: var(--smart-grey);
+}
+
+.EntityEditor .ui.dropdown .menu .selected.item,
+.EntityEditor .ui.dropdown.visible .menu .selected.item {
+  background-color: rgba(var(--purplish-grey-raw), 0.2);
+}
+
+.EntityEditor .ui.dropdown .item,
+.EntityEditor .ui.dropdown.visible .item {
+  font-weight: normal;
+}
+
+.EntityEditor .ui.dropdown .item:hover,
+.EntityEditor .ui.dropdown.visible .item:hover {
+  background-color: rgba(var(--bluish-steel-raw), 0.1);
+}

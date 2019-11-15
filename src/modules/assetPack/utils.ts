@@ -46,7 +46,7 @@ export async function convertToFullAssetPack(
       const blob = dataURLToBlob(thumbnail)!
       const cid = await blobToCID(blob, THUMBNAIL_PATH)
       newAsset.thumbnail = `${BUILDER_SERVER_URL}/storage/assets/${cid}`
-      newAsset.url = `${asset.assetPackId}/${asset.url}`
+      newAsset.model = `${asset.assetPackId}/${asset.model}`
       rawContents[asset.id][cid] = blob
     }
 

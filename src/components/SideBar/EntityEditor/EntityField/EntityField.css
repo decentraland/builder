@@ -1,0 +1,61 @@
+.EntityField {
+  user-select: none;
+}
+
+.EntityField .trigger {
+  color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100px;
+}
+
+.EntityField .trigger .text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
+}
+
+.EntityField .trigger img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  flex: unset;
+}
+
+.EntityField .dcl.select-field {
+  min-width: 0px;
+  min-height: 0px;
+}
+
+.EntityField .dcl.select-field .message {
+  display: none;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .dropdown.icon {
+  padding-top: 10px;
+}
+
+.EntityField .dcl.select-field .ui.dropdown {
+  border: 0px;
+  padding: 0px;
+  min-height: 0px;
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.EntityField .dcl.select-field .ui.dropdown .menu {
+  width: 250px;
+}
+
+.EntityField .dcl.select-field .ui.selection.active.dropdown,
+.EntityField .dcl.select-field .ui.selection.active.dropdown:hover {
+  border-bottom: 0px;
+}
+
+.EntityField .dcl.select-field .ui.dropdown > div.text {
+  font-size: 15px;
+  font-weight: normal;
+}

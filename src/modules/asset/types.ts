@@ -7,18 +7,59 @@ export type Asset = BaseAsset & {
   isDisabled?: boolean
 }
 
-export type BaseAsset = AssetResource & {
+export type AssetAction = {
   id: string
+  label: string
+  parameters: AssetParameter[]
+  description?: string
+}
+
+export type AssetParameter = {
+  id: string
+  type: AssetParameterType
+  label: string
+  description?: string
+  default?: Exclude<AssetParameterValue, AssetActionValue>
+  options?: AssetParameterOption[]
+}
+
+export type AssetParameterOption = {
+  label: string
+  value: string
+}
+
+export type AssetParameterValue = string | number | boolean | AssetActionValue[]
+
+export type AssetParameterValues = Record<string, AssetParameterValue>
+
+export type AssetActionValue = {
+  entityName: string
+  actionId: string
+  values: AssetParameterValues
+}
+
+export enum AssetParameterType {
+  BOOLEAN = 'boolean',
+  STRING = 'string',
+  FLOAT = 'float',
+  INTEGER = 'integer',
+  ENTITY = 'entity',
+  ACTIONS = 'actions',
+  OPTIONS = 'options'
+}
+
+export type BaseAsset = {
+  id: string
+  name: string
+  model: string
+  script: string | null
+  thumbnail: string
   tags: string[]
   category: string // name of the category
   contents: Record<string, string>
   metrics: SceneMetrics
-}
-
-export type AssetResource = {
-  name: string
-  url: string
-  thumbnail: string
+  parameters: AssetParameter[]
+  actions: AssetAction[]
 }
 
 export type AssetRegistryResponse = {
@@ -65,13 +106,16 @@ export type DARAssetTrait = {
 export type RawAsset = {
   id: string
   name: string
-  url: string
+  model: string
+  script: null | string
   tags: string[]
   category: string
   assetPackId: string
   thumbnail: string
   contents: Record<string, Blob>
   metrics: SceneMetrics
+  parameters: AssetParameter[]
+  actions: AssetAction[]
 }
 
 /**

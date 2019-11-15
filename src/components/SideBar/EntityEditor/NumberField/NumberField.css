@@ -1,0 +1,28 @@
+.NumberField .dcl.field {
+  border: 0px;
+  min-width: 0px;
+  padding: 0px;
+}
+
+.NumberField .dcl.field .ui.input {
+  border: 0px;
+  min-width: 0px;
+  padding: 0px;
+}
+
+.NumberField .dcl.field .ui.input input {
+  font-weight: normal;
+  font-size: 15px;
+  padding: 0px;
+  line-height: 0px;
+  border-bottom: 0px;
+  text-align: right;
+}
+.NumberField .dcl.field .ui.input input:focus,
+.NumberField .dcl.field .ui.input input:active {
+  border-bottom: none;
+}
+
+.NumberField .dcl.field .message {
+  display: none;
+}

@@ -1,12 +1,48 @@
+// tslint:disable
+import { EventEmitter } from 'events'
 import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import * as ECS from 'decentraland-ecs'
+import { createChannel } from 'decentraland-builder-scripts/channel'
+
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
+import { AssetParameterValues } from 'modules/asset/types'
 const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
-@Component('staticEntity')
+class MockMessageBus {
+  static emitter = new EventEmitter()
+  on(message: string, callback: (value: any, sender: string) => void) {
+    MockMessageBus.emitter.on(message, callback)
+  }
+  emit(message: string, payload: Record<any, any>) {
+    MockMessageBus.emitter.emit(message, payload)
+  }
+}
+
+// BEGIN DRAGONS
+declare var provide: (name: string, value: any) => void
+declare var load: (id: string) => Promise<any>
+eval(require('raw-loader!./amd-loader.js.raw'))
+eval(`self.provide = function(name, value) { self[name] = value }`)
+eval(`self.load = function(id) { return new Promise(resolve => define('load', [id + '/item'], item => resolve(item.default))) }`)
+Object.keys(ECS).forEach(key => provide(key, (ECS as any)[key]))
+provide('MessageBus', MockMessageBus)
+// END DRAGONS
+
+let scriptBaseUrl: string | null = null
+const scriptPromises = new Map<string, Promise<string>>()
+const scriptInstances = new Map<string, IScript<any>>()
+
+@Component('org.decentraland.staticEntity')
 // @ts-ignore
 export class StaticEntity {}
+
+@Component('org.decentraland.script')
+// @ts-ignore
+export class Script {
+  constructor(public assetId: string, public src: string, public values: AssetParameterValues) {}
+}
 
 const editorComponents: Record<string, any> = {}
 const staticEntity = new StaticEntity()
@@ -29,14 +65,46 @@ function getComponentById(id: string) {
   return null
 }
 
-function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
+function getScriptInstance(assetId: string) {
+  const instance = scriptInstances.get(assetId)
+  return instance
+    ? Promise.resolve(instance)
+    : scriptPromises
+        .get(assetId)!
+        .then(code => eval(code))
+        .then(() => load(assetId))
+        .then(Item => {
+          const instance = new Item()
+          scriptInstances.set(assetId, instance)
+          return instance
+        })
+        .catch(() => {
+          // if something fails, return a dummy script
+          console.warn(`Failed to load script for asset id ${assetId}`)
+          return {
+            init() {},
+            spawn() {}
+          }
+        })
+}
+
+async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
   switch (message.type) {
+    case 'Set script url': {
+      const { url } = message.payload
+      scriptBaseUrl = url
+      break
+    }
     case 'Update editor': {
       const {
         scene: { components, entities }
       } = message.payload
 
-      createComponents(components)
+      for (let id in components) {
+        createComponent(components[id])
+        updateComponent(components[id])
+      }
+
       createEntities(entities)
       removeUnusedComponents(components)
       removeUnusedEntities(entities)
@@ -44,17 +112,54 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
       break
     }
     case 'Toggle preview': {
-      for (const entityId in engine.entities) {
-        const entity = engine.entities[entityId]
-        if (message.payload.isEnabled) {
-          entity.removeComponent(gizmo)
-        } else {
+      if (message.payload.isEnabled) {
+        // init scripts
+        const scriptGroup = engine.getComponentGroup(Script)
+        const assetIds = scriptGroup.entities.reduce((ids, entity) => {
+          const script = entity.getComponent(Script)
+          return ids.add(script.assetId)
+        }, new Set<string>())
+        const scripts = await Promise.all(Array.from(assetIds).map(getScriptInstance))
+        scripts.forEach(script => script.init())
+
+        for (const entityId in engine.entities) {
+          const entity = engine.entities[entityId]
+
+          // remove gizmos
+          if (entity.hasComponent(gizmo)) {
+            entity.removeComponent(gizmo)
+          }
+
+          // if entity has script...
+          if (scriptGroup.hasEntity(entity)) {
+            // ...remove the placeholder
+            entity.removeComponent(GLTFShape)
+            // ...create the host entity
+            const transform = entity.getComponent(Transform)
+            const hostTransform = new Transform()
+            hostTransform.position.copyFrom(transform.position)
+            hostTransform.rotation.copyFrom(transform.rotation)
+            hostTransform.scale.copyFrom(transform.scale)
+            const host = new Entity((entity as any).name) // TODO fix this on the kernel's side
+            engine.addEntity(host)
+            host.addComponent(hostTransform)
+            // ...and execute the script on the host entity
+            const { assetId, values } = entity.getComponent(Script)
+            const script = scriptInstances.get(assetId)!
+            const channel = createChannel('channel-id', host as any, MockMessageBus.emitter)
+            script.spawn(host, values, channel)
+          }
+        }
+      } else {
+        for (const entityId in engine.entities) {
+          const entity = engine.entities[entityId]
           const staticEntities = engine.getComponentGroup(StaticEntity)
           if (!staticEntities.hasEntity(entity)) {
             entity.addComponentOrReplace(gizmo)
           }
         }
       }
+
       break
     }
     case 'Close editor': {
@@ -69,39 +174,54 @@ function handleExternalAction(message: { type: string; payload: Record<string, a
   }
 }
 
-function createComponents(components: Record<string, AnyComponent>) {
-  for (let id in components) {
-    const { type, data } = components[id]
+function createComponent(component: AnyComponent) {
+  const { id, type, data } = component
 
-    if (!getComponentById(id)) {
-      switch (type) {
-        case ComponentType.GLTFShape:
-          editorComponents[id] = new GLTFShape((data as ComponentData[ComponentType.GLTFShape]).src)
-          editorComponents[id].isPickable = true
-          break
-        case ComponentType.Transform:
-          editorComponents[id] = new Transform()
-          break
-        case ComponentType.NFTShape:
-          editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
-          editorComponents[id].isPickable = true
-          break
+  if (!getComponentById(id)) {
+    switch (type) {
+      case ComponentType.GLTFShape: {
+        const { assetId, src } = data as ComponentData[ComponentType.GLTFShape]
+        const url = `${assetId}/${src}`
+        editorComponents[id] = new GLTFShape(url)
+        editorComponents[id].isPickable = true
+        break
+      }
+      case ComponentType.Transform:
+        editorComponents[id] = new Transform()
+        break
+      case ComponentType.NFTShape:
+        editorComponents[id] = new NFTShape((data as ComponentData[ComponentType.NFTShape]).url)
+        editorComponents[id].isPickable = true
+        break
+      case ComponentType.Script: {
+        const { assetId, src, values } = data as ComponentData[ComponentType.Script]
+        editorComponents[id] = new Script(assetId, src, values)
+        if (!scriptPromises.has(assetId)) {
+          const url = `${scriptBaseUrl}/${src}`
+          const promise = fetch(url).then(resp => resp.text())
+          scriptPromises.set(assetId, promise)
+        }
+        break
       }
     }
+  }
+}
 
-    const component = editorComponents[id]
+function updateComponent(component: AnyComponent) {
+  const { id, type, data } = component
 
-    if (component) {
-      if (type === 'Transform') {
-        const transform = component as Transform
-        const transformData = data as ComponentData[ComponentType.Transform]
-        transform.position.copyFrom(transformData.position)
-        transform.rotation.set(transformData.rotation.x, transformData.rotation.y, transformData.rotation.z, transformData.rotation.w)
-        transform.scale.copyFrom(transformData.scale)
-        transform.data['nonce'] = Math.random()
-        transform.dirty = true
-      }
-    }
+  if (type === ComponentType.Transform) {
+    const transform = editorComponents[id] as Transform
+    const transformData = data as ComponentData[ComponentType.Transform]
+    transform.position.copyFrom(transformData.position)
+    transform.rotation.set(transformData.rotation.x, transformData.rotation.y, transformData.rotation.z, transformData.rotation.w)
+    transform.scale.copyFrom(transformData.scale)
+    transform.data['nonce'] = Math.random()
+    transform.dirty = true
+  } else if (type === ComponentType.Script) {
+    const script = editorComponents[id] as Script
+    const scriptData = data as ComponentData[ComponentType.Script]
+    script.values = { ...scriptData.values }
   }
 }
 
@@ -111,7 +231,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
     let entity: IEntity = engine.entities[id]
 
     if (!entity) {
-      entity = new Entity()
+      entity = new Entity(builderEntity.name)
       ;(entity as any).uuid = id
 
       if (!builderEntity.disableGizmos) {

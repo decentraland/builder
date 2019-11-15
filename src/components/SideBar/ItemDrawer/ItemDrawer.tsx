@@ -22,7 +22,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  handleResetScroll() {
+  handleResetScroll = () => {
     if (this.drawerContainer) {
       this.drawerContainer.scrollTop = 0
     }
@@ -34,7 +34,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
     }
   }
 
-  renderList() {
+  renderView() {
     const { search, isList, selectedAssetPack, selectedCategory, categories, isConnected, isLoadingAssets } = this.props
 
     const isSearch = search.length > 0
@@ -66,14 +66,14 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
       <div className="ItemDrawer">
         <SidebarHeader />
         <SidebarSearch onResetScroll={this.handleResetScroll} />
+
         <div ref={this.setDrawerContainer} className="overflow-container">
-          {this.renderList()}
-          {this.isViewingCollectibles() &&
-            isConnected && (
-              <span className="disclaimer">
-                <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
-              </span>
-            )}
+          {this.renderView()}
+          {this.isViewingCollectibles() && isConnected && (
+            <span className="disclaimer">
+              <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
+            </span>
+          )}
         </div>
       </div>
     )

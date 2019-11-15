@@ -13,7 +13,9 @@ import {
   LOAD_COLLECTIBLES_SUCCESS,
   LoadCollectiblesSuccessAction,
   LOAD_COLLECTIBLES_REQUEST,
-  LoadCollectiblesRequestAction
+  LoadCollectiblesRequestAction,
+  LOAD_ASSETS,
+  LoadAssetsAction
 } from './actions'
 
 export type AssetState = {
@@ -33,6 +35,7 @@ export type AssetReducerAction =
   | LoadCollectiblesSuccessAction
   | LoadCollectiblesRequestAction
   | SaveAssetPackSuccessAction
+  | LoadAssetsAction
 
 export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction): AssetState => {
   switch (action.type) {
@@ -92,6 +95,15 @@ export const assetReducer = (state = INITIAL_STATE, action: AssetReducerAction):
       }
 
       return newState
+    }
+    case LOAD_ASSETS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...action.payload.assets
+        }
+      }
     }
     default:
       return state

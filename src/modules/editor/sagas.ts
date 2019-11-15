@@ -40,6 +40,8 @@ import {
   CreateEditorSceneAction,
   SET_EDITOR_LOADING,
   SetEditorLoadingAction,
+  setScriptUrl,
+  DESELECT_ENTITY,
   setScreenshotReady
 } from 'modules/editor/actions'
 import {
@@ -54,7 +56,7 @@ import {
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
-import { getCurrentScene, getEntityComponentByType, getCurrentMetrics } from 'modules/scene/selectors'
+import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
@@ -67,7 +69,9 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
-import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isReadOnly } from './selectors'
+import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isPreviewing, isReadOnly } from './selectors'
+
 import {
   getNewEditorScene,
   resizeScreenshot,
@@ -102,6 +106,7 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
+  yield takeLatest(DESELECT_ENTITY, handleDeselectEntity)
 }
 
 function* pollEditor(scene: Scene) {
@@ -120,7 +125,6 @@ function* pollEditor(scene: Scene) {
 }
 
 function* handleEditorReady(scene: Scene) {
-  yield handleResetCamera()
   yield pollEditor(scene)
   yield put(setEditorLoading(false))
 }
@@ -173,7 +177,7 @@ function* renderScene() {
     if (yield select(isReadOnly)) {
       scene = createReadyOnlyScene(scene)
     }
-    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, scene, mappings)))
+    yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, { ...scene }, mappings)))
   }
 }
 
@@ -195,7 +199,7 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   const scene: ReturnType<typeof getCurrentScene> = getCurrentScene(store.getState() as RootState)
   if (!scene) return
 
-  const entityComponents = getEntityComponentByType(store.getState() as RootState)
+  const entityComponents = getEntityComponentsByType(store.getState() as RootState)
   const transform = entityComponents[args.entityId][ComponentType.Transform]
   if (!transform) return
 
@@ -242,6 +246,7 @@ function* handleOpenEditor() {
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
 
+  // The client will report when an entity goes out of bounds
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
@@ -249,6 +254,9 @@ function* handleOpenEditor() {
 
   if (project) {
     yield createNewEditorScene(project)
+
+    // Set the remote url for scripts
+    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
 
     // Spawns the assets
     yield renderScene()
@@ -296,9 +304,19 @@ function* handleTogglePreview(action: TogglePreviewAction) {
   })
 
   if (!isEnabled) {
+    const components: Scene['components'] = yield select(getComponents)
+    const hasScript = Object.values(components).some(component => component.type === ComponentType.Script)
+
+    if (hasScript) {
+      // Reset scene
+      yield createNewEditorScene(project)
+      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
+    }
+
     yield handleResetCamera()
+    yield renderScene()
   } else {
-    editor.setCameraPosition({ x, y: 1, z })
+    editor.setCameraPosition({ x, y: 1.5, z })
   }
 
   yield changeEditorState(!isEnabled)
@@ -332,7 +350,6 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
 function* changeEditorState(isReady: boolean) {
   if (isReady) {
     yield put(bindEditorKeyboardShortcuts())
-    yield handleResetCamera()
   } else {
     yield put(unbindEditorKeyboardShortcuts())
   }
@@ -424,13 +441,20 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
     const contentEntries = Object.entries(action.payload.asset.contents)
     for (let [file, hash] of contentEntries) {
       if ((file.endsWith('.png') || file.endsWith('.glb') || file.endsWith('.gltf')) && !file.endsWith(THUMBNAIL_PATH)) {
-        editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.assetPackId}/${file}`)
+        editorWindow.editor.preloadFile(`${hash}\t${action.payload.asset.id}/${file}`)
       }
     }
   })
 }
 
-function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
+function* handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
-  store.dispatch(setEntitiesOutOfBoundaries(entities))
+  const previewMode: boolean = yield select(isPreviewing)
+  if (!previewMode) {
+    store.dispatch(setEntitiesOutOfBoundaries(entities))
+  }
+}
+
+function handleDeselectEntity() {
+  editorWindow.editor.deselectEntity()
 }

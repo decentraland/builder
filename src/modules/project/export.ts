@@ -1,17 +1,21 @@
 // @ts-ignore
 import Dockerfile from '!raw-loader!decentraland/samples/ecs/Dockerfile'
+// @ts-ignore
+import builderScriptsRaw from 'raw-loader!decentraland-builder-scripts/lib/channel'
 import * as ECS from 'decentraland-ecs'
-import Writer from 'dcl-scene-writer'
+import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
 import sceneJson from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
-import { Scene, ComponentData, ComponentType, ComponentDefinition, EntityDefinition } from 'modules/scene/types'
+import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
+import { AssetParameterValues } from 'modules/asset/types'
+import { migrations } from 'modules/migrations/manifest'
 
-export const MANIFEST_FILE_VERSION = 4
+export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
 export enum EXPORT_PATH {
   MANIFEST_FILE = 'builder.json',
@@ -26,20 +30,29 @@ export enum EXPORT_PATH {
   BUNDLED_GAME_FILE = 'bin/game.js'
 }
 
+export type Mapping = {
+  localPath: string
+  remotePath: string
+}
+
+export const SCRIPT_CONSTRUCTOR_NAME = 'Script'
+export const SCRIPT_INSTANCE_NAME = 'script'
+
 export async function createFiles(args: {
   project: Project
   scene: Scene
   point: Coordinate
   rotation: Rotation
+  isDeploy: boolean
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
-  const { project, scene, point, rotation, onProgress } = args
-  const models = await createModels({ scene, onProgress })
-  const gameFile = createGameFile({ project, scene, rotation })
+  const { project, scene, point, rotation, isDeploy, onProgress } = args
+  const models = await downloadFiles({ scene, onProgress, isDeploy })
+  const gameFile = createGameFile({ project, scene, rotation }, isDeploy)
   return {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
-    [EXPORT_PATH.BUNDLED_GAME_FILE]: createGameFileBundle(gameFile),
+    [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
     ...createDynamicFiles({ project, scene, point, rotation }),
     ...createStaticFiles(),
     ...models
@@ -50,9 +63,10 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
   return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 
-export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }) {
+export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
-  const takenNames = new Set<string>()
+  const useLightweight = isDeploy && !hasScripts(scene)
+  const Writer = useLightweight ? LightweightWriter : SceneWriter
   const writer = new Writer(ECS, require('decentraland-ecs/types/dcl/decentraland-ecs.api'))
   const { cols, rows } = project.layout
   const sceneEntity = new ECS.Entity()
@@ -92,17 +106,24 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   sceneEntity.addComponent(transform)
   writer.addEntity('scene', sceneEntity as any)
 
-  // 1. Create all components
+  // Map component ids to entity ids
+  const componentToEntity = new Map<string, string>()
+  for (const entity of Object.values(scene.entities)) {
+    for (const componentId of entity.components) {
+      componentToEntity.set(componentId, entity.id)
+    }
+  }
+
+  // 1. Create all components ands scripts
   const components: Record<string, object> = {}
+  const scripts = new Map<string, string>()
+  const hosts = new Set<string>()
+  const instances: { entityId: string; assetId: string; values: AssetParameterValues }[] = []
   for (const component of Object.values(scene.components)) {
     switch (component.type) {
       case ComponentType.GLTFShape: {
         const { src } = (component as ComponentDefinition<ComponentType.GLTFShape>).data
-        const modelName = src // remove assetPackId
-          .split('/')
-          .slice(1)
-          .join('/')
-        components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${modelName}`)
+        components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${src}`)
         break
       }
       case ComponentType.NFTShape: {
@@ -119,6 +140,14 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         })
         break
       }
+      case ComponentType.Script: {
+        const { assetId, src, values } = (component as ComponentDefinition<ComponentType.Script>).data
+        scripts.set(assetId, src)
+        const entityId = componentToEntity.get(component.id)!
+        hosts.add(entityId)
+        instances.push({ entityId, assetId, values })
+        break
+      }
       default: {
         console.warn(`Could not compile component with id "${component.id}": Unknown type "${component.type}"`)
         break
@@ -127,16 +156,22 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   }
 
   // 2. Create all entities
+  const entityIdToName = new Map<string, string>()
   for (const entity of Object.values(scene.entities)) {
     try {
       const ecsEntity = new ECS.Entity()
       ecsEntity.setParent(sceneEntity)
 
-      for (const componentId of entity.components) {
-        ecsEntity.addComponent(components[componentId])
-      }
+      const { name } = entity
+      entityIdToName.set(entity.id, name)
 
-      const name = getUniqueName(entity, scene, takenNames)
+      for (const componentId of entity.components) {
+        const component = components[componentId]
+        // placeholder gltfs and scripts are skipped
+        if (!isScript(componentId, scene) && !isPlaceholder(componentId, scene)) {
+          ecsEntity.addComponent(component)
+        }
+      }
 
       writer.addEntity(name, ecsEntity as any)
     } catch (e) {
@@ -145,49 +180,98 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
     }
   }
 
-  return writer.emitCode()
+  let code = writer.emitCode()
+
+  // SCRIPTS SECTION
+  if (scripts.size > 0) {
+    if (isDeploy) {
+      const scriptLoader: string = require('!raw-loader!../../ecsScene/remote-loader.js.raw')
+
+      // create executeScripts function
+      let executeScripts = 'async function executeScripts() {'
+      const assetIdToScriptName = new Map<string, string>()
+      let currentScript = 1
+
+      // setup channel
+      executeScripts += `\n\tconst channelId = Math.random().toString(16).slice(2)`
+      executeScripts += `\n\tconst channelBus = new MessageBus()`
+      executeScripts += `\n`
+
+      // instantiate all the scripts
+      for (const [assetId, src] of Array.from(scripts)) {
+        const scriptName = SCRIPT_INSTANCE_NAME + currentScript++
+        assetIdToScriptName.set(assetId, scriptName)
+        executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${src}")`
+      }
+      // initialize all the scripts
+      for (const [assetId] of Array.from(scripts)) {
+        const script = assetIdToScriptName.get(assetId)
+        executeScripts += `\n\t${script}.init()`
+      }
+      // spawn all the instances
+      for (const { entityId, assetId, values } of instances) {
+        const script = assetIdToScriptName.get(assetId)
+        const host = entityIdToName.get(entityId)
+        const params = JSON.stringify(values)
+        executeScripts += `\n\t${script}.spawn(${host}, ${params}, createChannel(channelId, ${host}, channelBus))`
+      }
+      // call function
+      executeScripts += '\n}\nexecuteScripts()'
+
+      const builderScripts = `var exports = {}\n` + builderScriptsRaw.replace(`'use strict'`, `''`)
+
+      code = builderScripts + '\n\n' + code + '\n\n' + scriptLoader + '\n\n' + executeScripts
+    } else {
+      // import all the scripts
+      let importScripts = ''
+      let currentImport = 1
+      const assetIdToConstructorName = new Map<string, string>()
+      for (const [assetId] of Array.from(scripts)) {
+        const constructorName = SCRIPT_CONSTRUCTOR_NAME + currentImport++
+        assetIdToConstructorName.set(assetId, constructorName)
+        importScripts += `import ${constructorName} from "../${assetId}/src/item"\n`
+      }
+
+      // execute all the scripts
+      let executeScripts = ''
+      let currentInstance = 1
+      const assetIdToScriptName = new Map<string, string>()
+      // instantiate all the scripts
+      for (const [assetId] of Array.from(scripts)) {
+        const scriptName = SCRIPT_INSTANCE_NAME + currentInstance++
+        assetIdToScriptName.set(assetId, scriptName)
+        executeScripts += `\nconst ${scriptName} = new ${assetIdToConstructorName.get(assetId)}()`
+      }
+      // initialize all the scripts
+      for (const [assetId] of Array.from(scripts)) {
+        const script = assetIdToScriptName.get(assetId)
+        executeScripts += `\n${script}.init()`
+      }
+      // spawn all the instances
+      for (const { entityId, assetId, values } of instances) {
+        const script = assetIdToScriptName.get(assetId)
+        const host = entityIdToName.get(entityId)
+        const params = JSON.stringify(values)
+        executeScripts += `\n${script}.spawn(${host}, ${params})`
+      }
+
+      code = importScripts + code + executeScripts
+    }
+  }
+
+  return code
 }
 
 export function createGameFileBundle(gameFile: string): string {
   const ecs = require('!raw-loader!../../ecsScene/ecs.js.raw')
-  return ecs + '\n// Builder generated code below\n' + gameFile + '\n'
-}
-
-export function getUniqueName(entity: EntityDefinition, scene: Scene, takenNames: Set<string>) {
-  let modelName
-  try {
-    const gltf = Object.values(scene.components).find(
-      component => component.type === ComponentType.GLTFShape && entity.components.includes(component.id)
-    )
-    if (gltf) {
-      const data = gltf.data as ComponentData[ComponentType.GLTFShape]
-      modelName = data.src // path/to/ModelName.glb
-        .split('/') // ["path", "to", "ModelName.glb"]
-        .pop()! // "ModelName.glb"
-        .split('.') // ["ModelName", "glb"]
-        .shift() // "ModelName"
-      if (!modelName) throw Error('Invalid name')
-      modelName = modelName[0].toLowerCase() + modelName.slice(1) // PascalCase to camelCase
-    } else {
-      const nft = Object.values(scene.components).find(
-        component => component.type === ComponentType.NFTShape && entity.components.includes(component.id)
-      )
-      if (nft) {
-        modelName = 'nft'
-      } else {
-        throw new Error("Can't generate a name")
-      }
-    }
-  } catch (e) {
-    modelName = 'entity'
-  }
-  let name = modelName
-  let attempts = 1
-  while (takenNames.has(name)) {
-    name = `${modelName}_${++attempts}`
-  }
-  takenNames.add(name)
-  return name
+  const amd = require('!raw-loader!../../ecsScene/amd-loader.js.raw')
+  const code = `// ECS
+${ecs}
+// AMD
+${amd}
+// Builder generated code below
+${gameFile}`
+  return code
 }
 
 export function createStaticFiles() {
@@ -212,54 +296,53 @@ export function createStaticFiles() {
   }
 }
 
-export async function createModels(args: { scene: Scene; onProgress: (args: { loaded: number; total: number }) => void }) {
-  const { scene, onProgress } = args
+export async function downloadFiles(args: {
+  scene: Scene
+  onProgress: (args: { loaded: number; total: number }) => void
+  isDeploy: boolean
+}) {
+  const { scene, onProgress, isDeploy } = args
   const mappings: Record<string, string> = {}
 
-  let models = {}
-  let shouldDownloadFrame = false
+  let files: Record<string, Blob> = {}
+  const shouldDownloadFrame = Object.values(scene.components).some(component => component.type === ComponentType.NFTShape)
 
   // Track progress
   let progress = 0
   let total = 0
 
   // Gather mappings
-  for (const component of Object.values(scene.components)) {
-    if (component.type === ComponentType.GLTFShape) {
-      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      for (const key of Object.keys(gltfShape.data.mappings)) {
-        const path = key
-          .split('/')
-          .slice(1)
-          .join('/') // drop the asset pack id namespace
-        mappings[path] = `${BUILDER_SERVER_URL}/storage/assets/${gltfShape.data.mappings[key]}`
-      }
-    } else if (component.type === ComponentType.NFTShape) {
-      shouldDownloadFrame = true
+  for (const asset of Object.values(scene.assets)) {
+    for (const path of Object.keys(asset.contents)) {
+      const isScript = asset.script !== null
+      const localPath = isScript ? `${asset.id}/${path}` : `${EXPORT_PATH.MODELS_FOLDER}/${path}`
+      const remotePath = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[path]}`
+      mappings[localPath] = remotePath
     }
   }
 
   // Download models
-  const promises = []
   total += Object.keys(mappings).length
   onProgress({ loaded: progress, total })
 
-  for (const path of Object.keys(mappings)) {
-    const promise = fetch(mappings[path])
-      .then(resp => resp.blob())
-      .then(blob => {
-        progress++
-        onProgress({ loaded: progress, total })
-        return { path, blob }
-      })
-    promises.push(promise)
-  }
+  const promises = Object.keys(mappings)
+    .filter(path => (isDeploy ? !path.endsWith('.ts') : !path.endsWith('.js')))
+    .map(path => {
+      const url = mappings[path]
+      return fetch(url)
+        .then(resp => resp.blob())
+        .then(blob => {
+          progress++
+          onProgress({ loaded: progress, total })
+          return { path, blob }
+        })
+    })
 
   // Reduce results into a record of blobs
-  const results = await Promise.all<{ path: string; blob: Blob }>(promises)
-  models = results.reduce<Record<string, Blob>>((obj, item) => {
-    const path = `${EXPORT_PATH.MODELS_FOLDER}/${item.path}`
-    return { ...obj, [path]: item.blob }
+  const results = await Promise.all(promises)
+  files = results.reduce<Record<string, Blob>>((files, file) => {
+    files[file.path] = file.blob
+    return files
   }, {})
 
   if (shouldDownloadFrame) {
@@ -268,13 +351,45 @@ export async function createModels(args: { scene: Scene; onProgress: (args: { lo
     const blob = await resp.blob()
     progress++
     onProgress({ loaded: progress, total })
-    models = {
-      ...models,
+    files = {
+      ...files,
       [EXPORT_PATH.NFT_BASIC_FRAME_FILE]: blob
     }
   }
 
-  return models
+  // namespace paths in source files
+  const sourceFiles = Object.keys(files).filter(path => path.endsWith('.ts'))
+  for (const sourceFile of sourceFiles) {
+    // 1. Find the namespace (this is a uuid)
+    const namespace = sourceFile.split('/')[0]
+    if (!namespace) {
+      console.warn(`Namespace not found in source file "${sourceFile}"`)
+      continue
+    }
+
+    // 2. Find all the mappings under that namespace, and remove the namespace
+    const nestedPaths = []
+    for (const path of Object.keys(files)) {
+      if (path.startsWith(namespace + '/')) {
+        const relativePath = path.split(namespace + '/').pop()!
+        nestedPaths.push(relativePath)
+      }
+    }
+
+    // 3. Convert the blob to text
+    const blob = files[sourceFile]
+    let text = await new Response(blob).text()
+
+    // 4. Replace all paths with their namespaced path
+    for (const path of nestedPaths) {
+      text = text.replace(new RegExp(path, 'g'), `${namespace}/${path}`)
+    }
+
+    // 5. Convert text to blob
+    files[sourceFile] = new Blob([text], { type: 'text/plain' })
+  }
+
+  return files
 }
 
 export function createDynamicFiles(args: { project: Project; scene: Scene; point: Coordinate; rotation: Rotation }) {
@@ -320,4 +435,25 @@ export function getSceneDefinition(project: Project, point: Coordinate, rotation
 
 export function parcelToString({ x, y }: { x: number; y: number }) {
   return x + ',' + y
+}
+
+export function isPlaceholder(componentId: string, scene: Scene) {
+  const component = scene.components[componentId]
+  if (component && component.type === ComponentType.GLTFShape) {
+    const entity = Object.values(scene.entities).find(entity => entity.components.some(id => id === componentId))
+    if (entity) {
+      const isHost = entity.components.some(id => scene.components[id].type === ComponentType.Script)
+      return isHost
+    }
+  }
+  return false
+}
+
+export function isScript(componentId: string, scene: Scene) {
+  const component = scene.components[componentId]
+  return component && component.type === ComponentType.Script
+}
+
+export function hasScripts(scene: Scene) {
+  return Object.values(scene.components).some(component => component.type === ComponentType.Script)
 }

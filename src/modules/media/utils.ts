@@ -34,3 +34,13 @@ export async function blobToCID(blob: Blob, path: string) {
 export function isRemoteURL(url: string) {
   return url.startsWith('http')
 }
+
+export async function blobToDataURL(blob: Blob): Promise<string> {
+  return new Promise(resolve => {
+    const reader = new FileReader()
+    reader.onload = function(e) {
+      resolve((e!.target as any).result! as string)
+    }
+    reader.readAsDataURL(blob)
+  })
+}

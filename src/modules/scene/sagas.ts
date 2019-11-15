@@ -1,6 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
-
+import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -17,32 +16,48 @@ import {
   SetGroundAction,
   ApplyLayoutAction,
   APPLY_LAYOUT,
-  FIX_ASSET_MAPPINGS,
-  FixAssetMappingsAction
+  SET_SCRIPT_VALUES,
+  SetScriptValuesAction,
+  SYNC_SCENE_ASSETS,
+  SyncSceneAssetsAction,
+  FIX_LEGACY_NAMESPACES,
+  FixLegacyNamespacesAction,
+  syncSceneAssets
 } from 'modules/scene/actions'
-import { getMappings } from 'modules/asset/utils'
 import {
   getGLTFsBySrc,
   getCurrentScene,
-  getEntityComponentByType,
-  getEntityComponents,
+  getEntityComponentsByType,
+  getComponentsByEntityId,
   getData as getScenes,
   getCollectiblesByURL,
-  getEntityShape
+  getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
 import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity, setEditorReady, createEditorScene, SET_EDITOR_READY } from 'modules/editor/actions'
-import { getCurrentBounds, getData as getProjects, getCurrentProject } from 'modules/project/selectors'
+import { selectEntity, deselectEntity } from 'modules/editor/actions'
+import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
-import { snapToGrid, snapToBounds, cloneEntities, filterEntitiesWithComponent, areEqualMappings, getSceneByProjectId } from './utils'
-import { getGroundAssets } from 'modules/asset/selectors'
+// import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
+import {
+  snapToGrid,
+  snapToBounds,
+  cloneEntities,
+  filterEntitiesWithComponent,
+  getSceneByProjectId,
+  getEntityName,
+  getDefaultValues,
+  renameEntity,
+  removeEntityReferences
+} from './utils'
+import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
-import { getFullAssetPacks } from 'modules/assetPack/selectors'
-import { Project } from 'modules/project/types'
+import { loadAssets } from 'modules/asset/actions'
+import { getProjectId } from 'modules/location/selectors'
+import { getData as getAssetPacks } from 'modules/assetPack/selectors'
+import { getMetrics } from 'components/AssetImporter/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -53,13 +68,10 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(FIX_ASSET_MAPPINGS, handleFixAssetMappings)
-  yield takeLatest(LOAD_MANIFEST_SUCCESS, handleLoadProjectSuccess)
+  yield takeLatest(FIX_LEGACY_NAMESPACES, handleFixLegacyNamespaces)
+  yield takeLatest(SYNC_SCENE_ASSETS, handleSyncSceneAssetsAction)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
-}
-
-function* handleLoadProjectSuccess(action: LoadManifestSuccessAction) {
-  yield put(provisionScene(action.payload.manifest.scene, true))
+  yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
 }
 
 function* handleAddItem(action: AddItemAction) {
@@ -67,6 +79,7 @@ function* handleAddItem(action: AddItemAction) {
   if (!scene) return
 
   let shapeId: string | null
+  let scriptId: string | null = null
   let { position } = action.payload
   const { asset } = action.payload
   const transformId = uuidv4()
@@ -79,8 +92,8 @@ function* handleAddItem(action: AddItemAction) {
 
   if (asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID) {
     const collectibles: ReturnType<typeof getCollectiblesByURL> = yield select(getCollectiblesByURL)
-    const collectible = collectibles[asset.url]
-    shapeId = collectible ? collectibles[asset.url].id : null
+    const collectible = collectibles[asset.model]
+    shapeId = collectible ? collectibles[asset.model].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -88,7 +101,7 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.NFTShape,
         data: {
-          url: asset.url
+          url: asset.model
         }
       }
     }
@@ -96,8 +109,8 @@ function* handleAddItem(action: AddItemAction) {
     position = { ...position!, y: 1.72 }
   } else {
     const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.url]
-    shapeId = gltf ? gltfs[asset.url].id : null
+    const gltf = gltfs[asset.model]
+    shapeId = gltf ? gltfs[asset.model].id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -105,10 +118,10 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.url,
-          mappings: getMappings(asset)
+          assetId: asset.id,
+          src: asset.model
         }
-      }
+      } as ComponentDefinition<ComponentType.GLTFShape>
     }
   }
 
@@ -127,13 +140,40 @@ function* handleAddItem(action: AddItemAction) {
       rotation: { x: 0, y: 0, z: 0, w: 1 },
       scale: { x: 1, y: 1, z: 1 }
     }
+  } as ComponentDefinition<ComponentType.Transform>
+
+  const scriptPath = Object.keys(asset.contents).find(path => path.endsWith('.js'))
+  if (scriptPath) {
+    scriptId = uuidv4()
+
+    newComponents[scriptId] = {
+      id: scriptId,
+      type: ComponentType.Script,
+      data: {
+        assetId: asset.id,
+        src: asset.contents[scriptPath],
+        values: {}
+      }
+    } as ComponentDefinition<ComponentType.Script>
   }
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: [shapeId, transformId] }
+  const entityComponents = [transformId, shapeId]
+  if (scriptId) {
+    entityComponents.push(scriptId)
+  }
+  const newScene = { ...scene, components: newComponents, entities: newEntities }
+  const entityName = getEntityName(newScene, entityComponents)
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
+  newScene.assets[asset.id] = asset
 
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  if (scriptId) {
+    const comp = newScene.components[scriptId] as ComponentDefinition<ComponentType.Script>
+    comp.data.values = getDefaultValues(entityName, asset.parameters)
+  }
+
+  yield put(provisionScene(newScene))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
   yield put(selectEntity(entityId))
 }
@@ -172,7 +212,7 @@ function* handleResetItem(_: ResetItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
+  const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
   const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
   if (!transform) return
 
@@ -200,21 +240,24 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   if (!selectedEntityId) return
 
   const newComponents = { ...scene.components }
+  const entityComponents = []
 
-  const shapes: Record<string, ShapeComponent> = yield select(getEntityShape)
+  const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
   const shape = shapes[selectedEntityId]
-
-  const components: ReturnType<typeof getEntityComponentByType> = yield select(getEntityComponentByType)
-  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+  entityComponents.push(shape.id)
 
   if (shape && shape.type === ComponentType.NFTShape) return
 
+  const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
+  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+  const script = components[selectedEntityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
+
   if (!shape || !transform) return
 
+  // copy transform
   const {
     data: { position, rotation, scale }
   } = transform
-
   const transformId = uuidv4()
   newComponents[transformId] = {
     id: transformId,
@@ -225,10 +268,35 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
       scale: { ...scale }
     }
   }
+  entityComponents.push(transformId)
 
   const newEntities = { ...scene.entities }
   const entityId = uuidv4()
-  newEntities[entityId] = { id: entityId, components: [shape.id, transformId] }
+  // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
+  // This means that we use components before we are done creating all of them.
+  const entityName = getEntityName(scene, entityComponents)
+
+  newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
+
+  // copy script
+  if (script) {
+    const {
+      data: { values: parameters, src, assetId }
+    } = script
+    const scriptId = uuidv4()
+    const values = JSON.parse(JSON.stringify(parameters))
+    renameEntity(values, scene.entities[selectedEntityId].name, entityName)
+    newComponents[scriptId] = {
+      id: scriptId,
+      type: ComponentType.Script,
+      data: {
+        values,
+        src,
+        assetId
+      }
+    } as ComponentDefinition<ComponentType.Script>
+    entityComponents.push(scriptId)
+  }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
@@ -242,11 +310,13 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const selectedEntityId: string | null = yield select(getSelectedEntityId)
   if (!selectedEntityId) return
 
-  const entityComponents: Record<string, AnyComponent[]> = yield select(getEntityComponents)
-  const idsToDelete = entityComponents[selectedEntityId].filter(component => !!component).map(component => component.id)
+  const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
+  const entityComponents = componentsByEntityId[selectedEntityId]
+  const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
+  const newAssets = { ...scene.assets }
   delete newEntities[selectedEntityId]
 
   for (const componentId of idsToDelete) {
@@ -257,8 +327,33 @@ function* handleDeleteItem(_: DeleteItemAction) {
     delete newComponents[componentId]
   }
 
+  for (let componentId in newComponents) {
+    const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
+    if (component.type === ComponentType.Script) {
+      removeEntityReferences(component.data.values, scene.entities[selectedEntityId].name)
+    }
+  }
+
+  // TODO: refactor
+  // gather all the models used by gltf shapes
+  const models = Object.values(newComponents).reduce((set, component) => {
+    if (component.type === ComponentType.GLTFShape) {
+      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+      set.add(gltfShape.data.src)
+    }
+    return set
+  }, new Set<string>())
+
+  // remove assets that are not in the set
+  for (const asset of Object.values(newAssets)) {
+    if (models.has(asset.model)) {
+      continue
+    }
+    delete newAssets[asset.id]
+  }
+
   yield put(deselectEntity())
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities, assets: newAssets }))
 }
 
 function* handleSetGround(action: SetGroundAction) {
@@ -278,62 +373,148 @@ function* handleSetGround(action: SetGroundAction) {
   }
 }
 
-function* handleFixAssetMappings(_: FixAssetMappingsAction) {
-  const assetPacksRecord: ReturnType<typeof getFullAssetPacks> = yield select(getFullAssetPacks)
-  const assetPacks = Object.values(assetPacksRecord)
-  const project: Project | null = yield select(getCurrentProject)
+function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
+  /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
+      and change them for the asset id instead.
 
-  if (!project) return
+      For gltf shapes that don't have a corresponding asset, a dummy one will be created
+  */
+  const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
+  const newAssets: Record<string, Asset> = {}
 
-  // load current scene (if any)
-  // const scene: ReturnType<typeof getCurrentScene> = yield select(getCurrentScene)
-  const scene: Scene | null = yield getSceneByProjectId(project.id)
+  // get current project id
+  const projectId: string = yield select(getProjectId)
+  if (!projectId) return
 
+  // get current scene
+  const scene: Scene | null = yield getSceneByProjectId(projectId)
   if (!scene) return
-  // keep track of the updated components
-  const updatedComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
 
-  // generate map of GLTFShape components by source
-  const gltfShapes: Record<string, ComponentDefinition<ComponentType.GLTFShape>[]> = {}
-  for (const component of Object.values(scene.components)) {
-    if (component.type === ComponentType.GLTFShape) {
-      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      if (!gltfShapes[gltfShape.data.src]) {
-        gltfShapes[gltfShape.data.src] = []
+  // get asset packs
+  const assetPacks: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
+
+  // get assets
+  const assets: ReturnType<typeof getAssets> = yield select(getAssets)
+
+  // gather all gltf shapes
+  const gltfShapes = Object.values(scene.components).filter(component => component.type === ComponentType.GLTFShape) as ComponentDefinition<
+    ComponentType.GLTFShape
+  >[]
+  for (const gltfShape of gltfShapes) {
+    const { src } = gltfShape.data
+
+    // if the src looks like <uuid>/<model-url> then it's legacy
+    const legacyRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/ // check if the path starts with a UUID
+    const isLegacy = legacyRegex.test(src.split('/')[0])
+    if (isLegacy) {
+      const [assetPackId, ...rest] = src.split('/')
+      const model = rest.join('/')
+      const assetPack = assetPacks[assetPackId]
+      // if there's an asset pack, we look for the asset and fix the legacy componment
+      if (assetPack) {
+        const asset = assetPack.assets.map(assetId => assets[assetId]).find(asset => asset.model === model)
+        if (asset) {
+          const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
+            ...gltfShape,
+            data: { assetId: asset.id, src: asset.model }
+          }
+          newComponents[newGltfShape.id] = newGltfShape
+          continue
+        }
       }
-      gltfShapes[gltfShape.data.src].push(gltfShape)
+      // if there's no asset pack but there are mappings, we generate a dummy asset from the mappings
+      if ('mappings' in gltfShape.data) {
+        const contents: Record<string, string> = {}
+        const mappings = gltfShape.data['mappings'] as Record<string, string>
+        for (const namespacedPath of Object.keys(mappings)) {
+          const path = namespacedPath // remove the namespace
+            .split('/') // ['<uuid>', 'folder', 'Model.gltf']
+            .slice(1) // ['folder', 'Model.gltf']
+            .join('/') // 'folder/Model.gltf'
+          contents[path] = mappings[namespacedPath]
+        }
+        const id = uuidv4()
+        const newAsset: Asset = {
+          id,
+          model,
+          assetPackId,
+          contents,
+          name: 'Dummy',
+          script: null,
+          thumbnail: '',
+          tags: [],
+          category: 'decorations',
+          metrics: getMetrics(),
+          parameters: [],
+          actions: []
+        }
+        newAssets[id] = newAsset
+
+        const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
+          ...gltfShape,
+          data: {
+            ...gltfShape.data!,
+            assetId: newAsset.id,
+            src: newAsset.model
+          }
+        }
+        newComponents[newGltfShape.id] = newGltfShape
+      } else {
+        // noop
+      }
     }
   }
 
-  // loop over each loaded asset and update the mappings of the components using it
-  for (const assetPack of assetPacks) {
-    for (const asset of assetPack.assets) {
-      if (asset.url in gltfShapes) {
-        for (const component of gltfShapes[asset.url]) {
-          const mappings = getMappings(asset)
-          if (!areEqualMappings(component.data.mappings, mappings)) {
-            updatedComponents[component.id] = {
-              ...component,
-              data: {
-                ...component.data,
-                mappings
-              }
-            }
+  const hasUpdates = Object.keys(newComponents).length > 0
+  if (hasUpdates) {
+    const newScene = {
+      ...scene,
+      assets: { ...scene.assets, ...newAssets },
+      components: { ...scene.components, ...newComponents }
+    }
+    yield put(syncSceneAssets(newScene))
+  } else {
+    yield put(syncSceneAssets(scene))
+  }
+}
+
+function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
+  const { scene } = action.payload
+
+  // assets that need to be updated in the scene
+  const updatedSceneAssets: Record<string, Asset> = {}
+  // assets that are present in the scene but not in the store
+  const missingSceneAssets: Record<string, Asset> = {}
+  // all assets in the store
+  const assets: ReturnType<typeof getAssets> = yield select(getAssets)
+
+  for (const component of Object.values(scene.components)) {
+    if (component.type === ComponentType.GLTFShape) {
+      const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
+      const { assetId } = gltfShape.data
+      const storeAsset = assets[assetId]
+      if (storeAsset) {
+        updatedSceneAssets[storeAsset.id] = storeAsset
+      } else {
+        const sceneAsset = scene.assets[assetId]
+        if (sceneAsset) {
+          missingSceneAssets[sceneAsset.id] = {
+            ...sceneAsset,
+            assetPackId: 'dummy-asset-pack-id' // we change this so it won't show up in the sidebar
           }
         }
       }
     }
   }
 
-  // if there are any components that need to be updated, provision a new scene
-  const hasUpdates = Object.keys(updatedComponents).length > 0
-  if (hasUpdates) {
-    const newScene = { ...scene, components: { ...scene.components, ...updatedComponents } }
-    yield put(setEditorReady(false))
-    yield put(createEditorScene(project))
-    yield take(SET_EDITOR_READY)
-    yield put(provisionScene(newScene))
-  }
+  // generate new scene
+  const newScene = { ...scene, assets: { ...scene.assets, ...updatedSceneAssets } }
+
+  // load scene assets into redux store
+  yield put(loadAssets(missingSceneAssets))
+
+  // update the scene assets
+  yield put(provisionScene(newScene))
 }
 
 function* handleApplyLayout(action: ApplyLayoutAction) {
@@ -357,8 +538,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
 
   if (asset) {
     const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.url]
-    const foundId = gltf ? gltfs[asset.url].id : null
+    const gltf = gltfs[asset.model]
+    const foundId = gltf ? gltfs[asset.model].id : null
 
     // Create the Shape component if necessary
     if (!foundId) {
@@ -366,8 +547,8 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
-          src: asset.url,
-          mappings: getMappings(asset)
+          assetId: asset.id,
+          src: asset.model
         }
       }
     } else {
@@ -393,7 +574,14 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           }
         }
 
-        entities[entityId] = { id: entityId, components: [gltfId, transformId], disableGizmos: true }
+        const newComponents = [gltfId, transformId]
+
+        entities[entityId] = {
+          id: entityId,
+          components: newComponents,
+          disableGizmos: true,
+          name: getEntityName(scene, newComponents)
+        }
       }
     }
   } else if (scene.ground) {
@@ -410,4 +598,34 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   }
 
   yield put(provisionScene({ ...scene, components, entities, ground }))
+}
+
+function* handleSetScriptParameters(action: SetScriptValuesAction) {
+  const { entityId, values } = action.payload
+  const scene: Scene | null = yield select(getCurrentScene)
+
+  if (scene) {
+    const components = scene.entities[entityId].components
+    const componentId = components.find(id => scene.components[id].type === ComponentType.Script)
+
+    if (componentId) {
+      const newScene: Scene = {
+        ...scene,
+        components: {
+          ...scene.components,
+          [componentId]: {
+            ...scene.components[componentId],
+            data: {
+              ...scene.components[componentId].data,
+              values: {
+                ...(scene.components[componentId] as ComponentDefinition<ComponentType.Script>).data.values,
+                ...values
+              }
+            }
+          }
+        }
+      }
+      yield put(provisionScene(newScene))
+    }
+  }
 }

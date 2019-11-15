@@ -4,6 +4,6 @@
     "experimentalDecorators": true,
     "outDir": "."
   },
-  "includes": "*.ts",
+  "includes": ["../../node_modules/decentraland-builder-scripts/types.d.ts", "*.ts"],
   "exclude": []
 }

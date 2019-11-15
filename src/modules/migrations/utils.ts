@@ -2,6 +2,7 @@ import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { Migration, Versionable } from './types'
 import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
+import { getUniqueName } from 'modules/scene/utils'
 
 export function addScale(scene: Scene) {
   if (scene) {
@@ -51,4 +52,22 @@ export function runMigrations<T extends Versionable>(input: T, migrations: Migra
   }
 
   return out
+}
+
+export function addEntityName(scene: Scene) {
+  const takenNames = new Set()
+
+  for (let entityId in scene.entities) {
+    const entity = scene.entities[entityId]
+    const components = entity.components.map(id => scene.components[id])
+    const name = getUniqueName(components, takenNames)
+    takenNames.add(name)
+    entity.name = name
+  }
+}
+
+export function addAssets(scene: Scene) {
+  if (!scene.assets) {
+    scene.assets = {}
+  }
 }

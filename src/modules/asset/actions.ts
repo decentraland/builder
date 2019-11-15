@@ -14,3 +14,8 @@ export const loadCollectiblesFailure = (error: string) => action(LOAD_COLLECTIBL
 export type LoadCollectiblesRequestAction = ReturnType<typeof loadCollectiblesRequest>
 export type LoadCollectiblesSuccessAction = ReturnType<typeof loadCollectiblesSuccess>
 export type LoadCollectiblesFailureAction = ReturnType<typeof loadCollectiblesFailure>
+
+// Load assets
+export const LOAD_ASSETS = 'Load assets'
+export const loadAssets = (assets: Record<string, Asset>) => action(LOAD_ASSETS, { assets })
+export type LoadAssetsAction = ReturnType<typeof loadAssets>

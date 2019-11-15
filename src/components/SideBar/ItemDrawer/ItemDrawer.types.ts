@@ -15,15 +15,22 @@ export type Props = {
   collectibles: DataByKey<Asset>
   isLoadingAssets: boolean
   onConnect: typeof connectWalletRequest
+  selectedEntityId: string | null
 }
 
 export type MapStateProps = Pick<
   Props,
-  'categories' | 'selectedAssetPack' | 'selectedCategory' | 'search' | 'isList' | 'isConnected' | 'isLoadingAssets' | 'collectibles'
+  | 'categories'
+  | 'selectedAssetPack'
+  | 'selectedCategory'
+  | 'search'
+  | 'isList'
+  | 'isConnected'
+  | 'isLoadingAssets'
+  | 'collectibles'
+  | 'selectedEntityId'
 >
 export type MapDispatchProps = Pick<Props, 'onConnect'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction>
 
-export type State = {
-  search: string
-}
+export type State = {}

@@ -36,7 +36,12 @@ export const getEntities = createSelector<RootState, Scene | null, Scene['entiti
   scene => (scene ? scene.entities : {})
 )
 
-export const getEntityComponents = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent[]>>(
+export const getEntityNames = createSelector<RootState, Scene | null, string[]>(
+  getCurrentScene,
+  scene => (scene ? Object.values(scene.entities).map(entity => entity.name) : [])
+)
+
+export const getComponentsByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent[]>>(
   getEntities,
   getComponents,
   (entities, components) => {
@@ -60,7 +65,7 @@ export const getEntityComponents = createSelector<RootState, Scene['entities'], 
   }
 )
 
-export const getEntityComponentByType = createSelector<
+export const getEntityComponentsByType = createSelector<
   RootState,
   Scene['entities'],
   Scene['components'],
@@ -88,7 +93,7 @@ export const getEntityComponentByType = createSelector<
   }
 )
 
-export const getEntityShape = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, ShapeComponent>>(
+export const getShapesByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, ShapeComponent>>(
   getEntities,
   getComponents,
   (entities, components) => {
@@ -108,6 +113,32 @@ export const getEntityShape = createSelector<RootState, Scene['entities'], Scene
     return out
   }
 )
+
+// export const getScriptsByEntityId = createSelector<
+//   RootState,
+//   Scene['entities'],
+//   Scene['components'],
+//   Record<string, ComponentDefinition<ComponentType.Script>>
+// >(
+//   getEntities,
+//   getComponents,
+//   (entities, components) => {
+//     const out: Record<string, ComponentDefinition<ComponentType.Script>> = {}
+
+//     for (let entityId in entities) {
+//       if (entityId && entities && entityId in entities) {
+//         const componentReferences = entities[entityId].components
+//         for (const componentId of componentReferences) {
+//           if (components && componentId in components && components[componentId].type === ComponentType.Script) {
+//             out[entityId] = components[componentId] as ComponentDefinition<ComponentType.Script>
+//           }
+//         }
+//       }
+//     }
+
+//     return out
+//   }
+// )
 
 export const getComponentsByType = createSelector<RootState, Scene | null, Record<ComponentType, AnyComponent[]>>(
   getCurrentScene,

@@ -1,0 +1,18 @@
+.BooleanField .ui.fitted.toggle.checkbox {
+  width: 28px;
+}
+
+.BooleanField .ui.toggle label {
+  margin-right: 60px;
+}
+
+.BooleanField .ui.toggle.checkbox input:checked ~ label:before {
+  opacity: 1;
+  background-color: rgba(255, 45, 85, 0.5) !important;
+  transition: border 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease, -webkit-transform 0.1s ease;
+}
+
+.BooleanField .ui.toggle.checkbox input:checked ~ label:after {
+  opacity: 1;
+  background-color: var(--primary);
+}
