@@ -89,7 +89,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
     return connectDropTarget(
       <div className="Preview-wrapper">
-        {true && (
+        {isLoading && (
           <div className="overlay">
             <Lottie
               height={100}
