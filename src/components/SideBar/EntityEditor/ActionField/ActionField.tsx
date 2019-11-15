@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button } from 'decentraland-ui'
+import { Dropdown } from 'decentraland-ui'
 import { AssetParameterValues, AssetActionValue } from 'modules/asset/types'
 import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
@@ -132,6 +132,11 @@ export default class ActionField extends React.PureComponent<Props> {
                         className={'action'}
                       />
                     )}
+                    <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left">
+                      <Dropdown.Menu>
+                        <Dropdown.Item text="Remove" onClick={() => this.handleRemove(i)} />
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </div>
                   {parameters && (
                     <EntityParameters
@@ -142,10 +147,6 @@ export default class ActionField extends React.PureComponent<Props> {
                     />
                   )}
                 </div>
-
-                <Button size="tiny" onClick={() => this.handleRemove(i)} basic>
-                  Remove
-                </Button>
               </>
             )
           })}

@@ -4,10 +4,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
 import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
+import Icon from 'components/Icon'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
 import './AssetPackList.css'
-import Icon from 'components/Icon'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
 
@@ -42,7 +42,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
             isNew={NEW_ASSET_PACK_IDS.includes(assetPack.id)}
           />
         ))}
-        <div onClick={this.handleCreateAssetPack}>
+        <div className="create-asset-pack" onClick={this.handleCreateAssetPack}>
           <Icon name="add" /> {t('asset_pack.new_asset_pack')}
         </div>
       </div>

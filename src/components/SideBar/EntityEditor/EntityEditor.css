@@ -39,6 +39,7 @@
 .EntityEditor .overflow-container {
   height: calc(100% - 62px);
   overflow-y: auto;
+  overflow-y: overlay;
   position: relative;
   padding-right: 16px;
   flex-direction: column;
@@ -75,7 +76,7 @@
 }
 
 .EntityEditor .parameters {
-  margin-bottom: 16px;
+  margin-bottom: 48px;
 }
 
 .EntityEditor .parameters > div.ParameterField {
@@ -98,4 +99,26 @@
   font-size: 15px;
   text-transform: capitalize;
   color: rgb(var(--purplish-grey-raw));
+}
+
+.EntityEditor .ui.dropdown .menu,
+.EntityEditor .ui.dropdown.visible .menu {
+  padding: 0px;
+  user-select: none;
+  background: var(--smart-grey);
+}
+
+.EntityEditor .ui.dropdown .menu .selected.item,
+.EntityEditor .ui.dropdown.visible .menu .selected.item {
+  background-color: rgba(var(--purplish-grey-raw), 0.2);
+}
+
+.EntityEditor .ui.dropdown .item,
+.EntityEditor .ui.dropdown.visible .item {
+  font-weight: normal;
+}
+
+.EntityEditor .ui.dropdown .item:hover,
+.EntityEditor .ui.dropdown.visible .item:hover {
+  background-color: rgba(var(--bluish-steel-raw), 0.1);
 }

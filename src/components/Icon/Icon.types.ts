@@ -72,6 +72,7 @@ export type IconName =
   | 'scale'
   | 'add'
   | 'add-active'
+  | 'ellipsis'
 
 export type DefaultProps = {
   isActive: boolean

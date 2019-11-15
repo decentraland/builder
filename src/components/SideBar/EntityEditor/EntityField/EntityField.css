@@ -47,21 +47,7 @@
 }
 
 .EntityField .dcl.select-field .ui.dropdown .menu {
-  padding: 0px;
-  background-color: var(--smart-grey);
   width: 250px;
-}
-
-.EntityField .dcl.select-field .ui.dropdown .menu .selected.item {
-  background-color: rgba(var(--purplish-grey-raw), 0.2);
-}
-
-.EntityField .dcl.select-field .ui.dropdown .item {
-  font-weight: normal;
-}
-
-.EntityField .dcl.select-field .ui.dropdown .item:hover {
-  background-color: rgba(var(--bluish-steel-raw), 0.1);
 }
 
 .EntityField .dcl.select-field .ui.selection.active.dropdown,

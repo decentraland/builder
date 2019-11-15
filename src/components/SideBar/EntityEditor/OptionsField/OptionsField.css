@@ -14,26 +14,8 @@
   margin-top: 0px;
 }
 
-.OptionsField .dcl.select-field .ui.dropdown .menu {
-  padding: 0px;
-  user-select: none;
-  background: var(--smart-grey);
-}
-
-.OptionsField .dcl.select-field .ui.dropdown .menu .selected.item {
-  background-color: rgba(var(--purplish-grey-raw), 0.2);
-}
-
-.OptionsField .dcl.select-field .ui.dropdown .item {
-  font-weight: normal;
-}
-
 .OptionsField .dcl.select-field div.ui.dropdown .icon {
   padding-top: 2px;
-}
-
-.OptionsField .dcl.select-field .ui.dropdown .item:hover {
-  background-color: rgba(var(--bluish-steel-raw), 0.1);
 }
 
 .OptionsField .dcl.select-field .ui.selection.active.dropdown,
