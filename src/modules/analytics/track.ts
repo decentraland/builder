@@ -16,6 +16,7 @@ import { SET_PROJECT, EXPORT_PROJECT_REQUEST, IMPORT_PROJECT, CREATE_PROJECT } f
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { OPEN_MODAL } from 'modules/modal/actions'
 import { LOGOUT } from 'modules/auth/actions'
+import { SHARE_SCENE } from 'modules/ui/share/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -82,3 +83,6 @@ addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
 
 // auth
 addPayload(LOGOUT, 'Logout')
+
+// Share
+addPayload(SHARE_SCENE, 'Share Scene')
