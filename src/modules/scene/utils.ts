@@ -105,7 +105,7 @@ export function* getSceneByProjectId(projectId: string, type: 'project' | 'publi
   let scene = project && scenes[project.sceneId]
 
   if (!scene) {
-    yield put(loadManifestRequest(project.id, type))
+    yield put(loadManifestRequest(projectId, type))
     const result: { success?: LoadManifestSuccessAction; failure?: LoadManifestFailureAction } = yield race({
       success: take(LOAD_MANIFEST_SUCCESS),
       failure: take(LOAD_MANIFEST_FAILURE)
