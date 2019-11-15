@@ -119,7 +119,7 @@
     "copy": "Copiar enlace",
     "copied": "Copiado",
     "uri": {
-      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}description=¡Presentando mi última creación, ahora vivo en Decentraland! Mírala a continuación y luego ayúdame a construir el Metaverso agregando las tuyas.",
+      "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=¡Presentando mi última creación, ahora vivo en Decentraland! Mírala a continuación y luego ayúdame a construir el Metaverso agregando las tuyas.",
       "twitter": "https://twitter.com/intent/tweet?text=Acabo de agregar un nuevo diseño a Decentraland a través del Builder. Mírala a continuación y luego crea el tuyo propio. ¡El mundo virtual no se va a construir solo! {url}&hashtags=builder,virtualworld,gaming"
     },
     "sign_in": {
