@@ -66,6 +66,7 @@
 .TopBar .cloud-upload-indicator {
   margin-left: 6px;
   margin-top: 6px;
+  cursor: default;
 }
 
 .TopBar .project-title:hover .edit-project-icon {

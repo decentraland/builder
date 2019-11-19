@@ -58,6 +58,7 @@ import { loadAssets } from 'modules/asset/actions'
 import { getProjectId } from 'modules/location/selectors'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
+import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
 const editorWindow = window as EditorWindow
 
@@ -233,6 +234,7 @@ function* handleResetItem(_: ResetItemAction) {
 }
 
 function* handleDuplicateItem(_: DuplicateItemAction) {
+  const assets: DataByKey<Asset> = yield select(getAssets)
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
@@ -285,7 +287,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     } = script
     const scriptId = uuidv4()
     const values = JSON.parse(JSON.stringify(parameters))
-    renameEntity(values, scene.entities[selectedEntityId].name, entityName)
+
+    renameEntity(assets[assetId].parameters, values, scene.entities[selectedEntityId].name, entityName)
+
     newComponents[scriptId] = {
       id: scriptId,
       type: ComponentType.Script,
@@ -330,7 +334,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
   for (let componentId in newComponents) {
     const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
     if (component.type === ComponentType.Script) {
-      removeEntityReferences(component.data.values, scene.entities[selectedEntityId].name)
+      removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.entities[selectedEntityId].name)
     }
   }
 
