@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Popup } from 'decentraland-ui'
 
+import Icon from 'components/Icon'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { Props } from './VerticalCard.types'
 import './VerticalCard.css'
@@ -9,8 +10,12 @@ export default class VerticalCard extends React.PureComponent<Props> {
   render() {
     const { asset, isDragging } = this.props
     const { thumbnail, name } = asset
+    const hasScript = !!asset.script
 
     let classes = 'AssetCard vertical'
+    if (hasScript) {
+      classes += ' smart'
+    }
     if (isDragging) {
       classes += ' is-dragging'
     }
@@ -24,6 +29,11 @@ export default class VerticalCard extends React.PureComponent<Props> {
     const content = (
       <div className={classes}>
         <img className="thumbnail" src={thumbnail} alt="" draggable={false} />
+        {hasScript && (
+          <div className="badge">
+            <Icon name="smart" />
+          </div>
+        )}
       </div>
     )
 

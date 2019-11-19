@@ -10,3 +10,11 @@
   opacity: 0.2;
   cursor: not-allowed;
 }
+
+.AssetCard.smart {
+  background: #472550;
+}
+
+.AssetCard.smart:hover {
+  background: #5f326a;
+}
