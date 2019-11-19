@@ -11,6 +11,7 @@
   border-radius: 4px;
   height: 100%;
   min-width: 80px;
+  background: rgba(var(--bluish-steel-raw), 0.64);
 }
 
 .ShareButton .ui.button.mini,
