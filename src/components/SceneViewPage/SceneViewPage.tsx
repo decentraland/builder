@@ -10,7 +10,6 @@ import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 
 import { Project } from 'modules/project/types'
-import { ComponentType } from 'modules/scene/types'
 
 import SceneViewMenu from './SceneViewMenu'
 import { Props, State } from './SceneViewPage.types'
@@ -54,23 +53,12 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
       return 0
     }
 
-    let componentCount = 0
-    for (let component of Object.values(currentScene.components)) {
-      switch (component.type) {
-        case ComponentType.GLTFShape:
-        case ComponentType.NFTShape:
-          componentCount++
-          break
-        default:
-        // ignore
-      }
-    }
-
-    if (componentCount < parcelCount) {
+    const entitiesCount = Object.keys(currentScene.entities).length
+    if (entitiesCount < parcelCount) {
       return 0
     }
 
-    return componentCount - parcelCount
+    return entitiesCount - parcelCount
   }
 
   renderNotFount() {
