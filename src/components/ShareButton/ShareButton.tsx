@@ -1,6 +1,8 @@
 import * as React from 'react'
 
-import Chip from 'components/Chip'
+import { Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
 import { ShareModalMetadata, ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 import { Props, DefaultProps } from './ShareButton.types'
@@ -28,7 +30,9 @@ export default class ShareButton extends React.PureComponent<Props> {
     return (
       <span className="ShareButton tool">
         <span>
-          <Chip icon="share" onClick={this.handleClick} isDisabled={isLoading} />
+          <Button size="mini" onClick={this.handleClick} disabled={isLoading}>
+            {t('share_modal.share')}
+          </Button>
         </span>
       </span>
     )
