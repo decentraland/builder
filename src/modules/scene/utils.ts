@@ -218,7 +218,7 @@ export function getDefaultValues(entityName: string, parameters: AssetParameter[
  *
  * Mutates the object.
  *
- * @param paraneters The Asset parameters
+ * @param parameters The Asset parameters
  * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
  * @param oldName The entity name to be changed
  * @param newName The entity name that will replace `oldName`
@@ -247,7 +247,7 @@ export function renameEntity(parameters: AssetParameter[], values: AssetParamete
  *
  * Mutates the object.
  *
- * @param paraneters The Asset parameters
+ * @param parameters The Asset parameters
  * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
  * @param oldName The entity name
  */
