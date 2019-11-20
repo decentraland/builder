@@ -8,7 +8,7 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
-const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
+const { Gizmos } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
@@ -55,11 +55,6 @@ gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = true
 gizmo.cycle = false
-
-let gizmoEvent = new OnGizmoEvent((_: any) => {
-  /* */
-})
-gizmoEvent.data.uuid = 'gizmoEvent-editor'
 
 function getComponentById(id: string) {
   if (id in editorComponents) {
@@ -109,8 +104,8 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       }
 
       createEntities(entities)
-      removeUnusedComponents(components)
       removeUnusedEntities(entities)
+      removeUnusedComponents(components)
 
       break
     }
@@ -238,7 +233,6 @@ function createEntities(entities: Record<string, EntityDefinition>) {
       ;(entity as any).uuid = id
 
       if (!builderEntity.disableGizmos) {
-        entity.addComponentOrReplace(gizmoEvent)
         entity.addComponentOrReplace(gizmo)
       } else {
         entity.addComponentOrReplace(staticEntity)
