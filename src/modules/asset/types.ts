@@ -40,7 +40,8 @@ export type AssetActionValue = {
 
 export enum AssetParameterType {
   BOOLEAN = 'boolean',
-  STRING = 'string',
+  TEXT = 'text',
+  TEXTAREA = 'textarea',
   FLOAT = 'float',
   INTEGER = 'integer',
   ENTITY = 'entity',

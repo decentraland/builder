@@ -226,13 +226,15 @@ export function getDefaultValues(entityName: string, parameters: AssetParameter[
 export function renameEntity(parameters: AssetParameter[], values: AssetParameterValues, oldName: string, newName: string) {
   for (let parameter of parameters) {
     if (parameter.type === AssetParameterType.ACTIONS) {
-      const value = values[parameter.id] as AssetActionValue[]
-      for (let i = 0; i < value.length; i++) {
-        const action = value[i]
-        if (action.entityName === oldName) {
-          action.entityName = newName
+      const value = values[parameter.id] as AssetActionValue[] | undefined
+      if (value) {
+        for (let i = 0; i < value.length; i++) {
+          const action = value[i]
+          if (action.entityName === oldName) {
+            action.entityName = newName
+          }
+          renameEntity(parameters, action.values, oldName, newName)
         }
-        renameEntity(parameters, action.values, oldName, newName)
       }
     } else if (parameter.type === AssetParameterType.ENTITY) {
       if (values[parameter.id] === oldName) {
@@ -254,18 +256,21 @@ export function renameEntity(parameters: AssetParameter[], values: AssetParamete
 export function removeEntityReferences(parameters: AssetParameter[], values: AssetParameterValues, entityName: string) {
   for (let parameter of parameters) {
     if (parameter.type === AssetParameterType.ACTIONS) {
-      const value = values[parameter.id] as AssetActionValue[]
-      for (let i = 0; i < value.length; i++) {
-        const action = value[i]
-        if (action.entityName === entityName) {
-          value.splice(i, 1)
-          return
+      const value = values[parameter.id] as AssetActionValue[] | undefined
+      if (value) {
+        for (let i = 0; i < value.length; i++) {
+          const action = value[i]
+          if (action.entityName === entityName) {
+            value.splice(i, 1)
+            continue
+          }
+          removeEntityReferences(parameters, action.values, entityName)
         }
-        removeEntityReferences(parameters, action.values, entityName)
       }
     } else if (parameter.type === AssetParameterType.ENTITY) {
-      delete values[parameter.id]
-      return
+      if (values[parameter.id]) {
+        delete values[parameter.id]
+      }
     }
   }
 }
