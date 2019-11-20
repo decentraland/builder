@@ -2,6 +2,7 @@ import * as React from 'react'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps } from 'decentraland-ui'
+import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import HomePageHero from 'components/HomePageHero'
 import ProjectCard from 'components/ProjectCard'
@@ -12,7 +13,6 @@ import Icon from 'components/Icon'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
-import PromoBanner from './PromoBanner'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/locations'
@@ -151,7 +151,11 @@ export default class HomePage extends React.PureComponent<Props, State> {
           {!showDashboard ? (
             <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
           ) : (
-            <Container>{<PromoBanner onClick={this.handlePromoCTA} />}</Container>
+            <Container>
+              <div className="HomePageAd">
+                <Ad slot="BUILDER_HOME_PAGE" />
+              </div>
+            </Container>
           )}
           <Container>
             <div className="HomePage">
