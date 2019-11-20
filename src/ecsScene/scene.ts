@@ -3,12 +3,15 @@ import { EventEmitter } from 'events'
 import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
+import { createInventory } from 'decentraland-builder-scripts/inventory'
 
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
 const { Gizmos, OnGizmoEvent } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
+
+const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
 
 class MockMessageBus {
   static emitter = new EventEmitter()
@@ -120,7 +123,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
           return ids.add(script.assetId)
         }, new Set<string>())
         const scripts = await Promise.all(Array.from(assetIds).map(getScriptInstance))
-        scripts.forEach(script => script.init())
+        scripts.forEach(script => script.init({ inventory }))
 
         for (const entityId in engine.entities) {
           const entity = engine.entities[entityId]

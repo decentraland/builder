@@ -1,7 +1,9 @@
 // @ts-ignore
 import Dockerfile from '!raw-loader!decentraland/samples/ecs/Dockerfile'
 // @ts-ignore
-import builderScriptsRaw from 'raw-loader!decentraland-builder-scripts/lib/channel'
+import builderChannelRaw from 'raw-loader!decentraland-builder-scripts/lib/channel'
+// @ts-ignore
+import builderInventoryRaw from 'raw-loader!decentraland-builder-scripts/lib/inventory'
 import * as ECS from 'decentraland-ecs'
 import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
@@ -196,6 +198,9 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       executeScripts += `\n\tconst channelId = Math.random().toString(16).slice(2)`
       executeScripts += `\n\tconst channelBus = new MessageBus()`
       executeScripts += `\n`
+      executeScripts += `\n\tconst inventory = createInventory(UICanvas, UIContainerStack, UIImage)`
+      executeScripts += `\n\tconst options = { inventory }`
+      executeScripts += `\n`
 
       // instantiate all the scripts
       for (const [assetId, src] of Array.from(scripts)) {
@@ -206,7 +211,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       // initialize all the scripts
       for (const [assetId] of Array.from(scripts)) {
         const script = assetIdToScriptName.get(assetId)
-        executeScripts += `\n\t${script}.init()`
+        executeScripts += `\n\t${script}.init(options)`
       }
       // spawn all the instances
       for (const { entityId, assetId, values } of instances) {
@@ -218,7 +223,8 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       // call function
       executeScripts += '\n}\nexecuteScripts()'
 
-      const builderScripts = `var exports = {}\n` + builderScriptsRaw.replace(`'use strict'`, `''`)
+      const builderScripts =
+        `var exports = {}\n` + builderChannelRaw.replace(`'use strict'`, `''`) + `\n` + builderInventoryRaw.replace(`'use strict'`, `''`)
 
       code = builderScripts + '\n\n' + code + '\n\n' + scriptLoader + '\n\n' + executeScripts
     } else {
