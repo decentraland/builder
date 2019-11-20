@@ -12,7 +12,7 @@
 
 .TextField .dcl.field .ui.input input {
   font-weight: normal;
-  font-size: 15px;
+  font-size: var(--parameter-font-size);
   padding: 0px;
   line-height: 0px;
   border-bottom: 0px;

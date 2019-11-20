@@ -96,7 +96,7 @@
 }
 
 .EntityEditor .ParameterField .label {
-  font-size: 15px;
+  font-size: var(--parameter-font-size);
   text-transform: capitalize;
   user-select: none;
   color: rgb(var(--purplish-grey-raw));

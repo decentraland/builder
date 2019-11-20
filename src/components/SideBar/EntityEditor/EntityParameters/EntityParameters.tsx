@@ -6,6 +6,7 @@ import BooleanField from '../BooleanField'
 import EntityField from '../EntityField'
 import ActionField from '../ActionField'
 import OptionsField from '../OptionsField'
+import TextAreaField from '../TextAreaField'
 
 import { Props, State } from './EntityParameters.types'
 
@@ -69,7 +70,7 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
           />
         )
       }
-      case AssetParameterType.STRING: {
+      case AssetParameterType.TEXT: {
         return (
           <TextField
             id={id}
@@ -128,6 +129,18 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
             onChange={val => this.handleFieldChange(param.id, val)}
             className={className}
             allowFloat
+          />
+        )
+      }
+      case AssetParameterType.TEXTAREA: {
+        return (
+          <TextAreaField
+            id={id}
+            key={id}
+            label={param.label}
+            value={values[param.id] as string}
+            onChange={val => this.handleFieldChange(param.id, val)}
+            className={className}
           />
         )
       }

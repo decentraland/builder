@@ -56,6 +56,6 @@
 }
 
 .EntityField .dcl.select-field .ui.dropdown > div.text {
-  font-size: 15px;
+  font-size: var(--parameter-font-size);
   font-weight: normal;
 }
