@@ -217,20 +217,26 @@ export function getDefaultValues(entityName: string, parameters: AssetParameter[
  * Swaps all references to `oldName` for `newName` inside a script's actions.
  *
  * Mutates the object.
+ *
+ * @param parameters The Asset parameters
  * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
  * @param oldName The entity name to be changed
  * @param newName The entity name that will replace `oldName`
  */
-export function renameEntity(values: AssetParameterValues, oldName: string, newName: string) {
-  for (let key in values) {
-    const value = values[key]
-    if (Array.isArray(value)) {
-      for (let action of value) {
+export function renameEntity(parameters: AssetParameter[], values: AssetParameterValues, oldName: string, newName: string) {
+  for (let parameter of parameters) {
+    if (parameter.type === AssetParameterType.ACTIONS) {
+      const value = values[parameter.id] as AssetActionValue[]
+      for (let i = 0; i < value.length; i++) {
+        const action = value[i]
         if (action.entityName === oldName) {
           action.entityName = newName
         }
-
-        renameEntity(action.values, oldName, newName)
+        renameEntity(parameters, action.values, oldName, newName)
+      }
+    } else if (parameter.type === AssetParameterType.ENTITY) {
+      if (values[parameter.id] === oldName) {
+        values[parameter.id] = newName
       }
     }
   }
@@ -240,22 +246,26 @@ export function renameEntity(values: AssetParameterValues, oldName: string, newN
  * Removes all actions that depend on the provided entity name
  *
  * Mutates the object.
+ *
+ * @param parameters The Asset parameters
  * @param values The AssetParameterValues corresponding to the script component data or any of the child action values
  * @param oldName The entity name
  */
-export function removeEntityReferences(values: AssetParameterValues, entityName: string) {
-  for (let key in values) {
-    const value = values[key]
-    if (Array.isArray(value)) {
+export function removeEntityReferences(parameters: AssetParameter[], values: AssetParameterValues, entityName: string) {
+  for (let parameter of parameters) {
+    if (parameter.type === AssetParameterType.ACTIONS) {
+      const value = values[parameter.id] as AssetActionValue[]
       for (let i = 0; i < value.length; i++) {
         const action = value[i]
         if (action.entityName === entityName) {
           value.splice(i, 1)
           return
         }
-
-        removeEntityReferences(action.values, entityName)
+        removeEntityReferences(parameters, action.values, entityName)
       }
+    } else if (parameter.type === AssetParameterType.ENTITY) {
+      delete values[parameter.id]
+      return
     }
   }
 }

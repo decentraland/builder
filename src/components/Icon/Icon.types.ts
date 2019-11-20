@@ -73,15 +73,16 @@ export type IconName =
   | 'add'
   | 'add-active'
   | 'ellipsis'
+  | 'smart'
 
 export type DefaultProps = {
   isActive: boolean
   className: string
-  onClick: (event: React.MouseEvent<HTMLElement>) => any
 }
 
 export type Props = DefaultProps & {
   name: IconName
+  onClick?: (event: React.MouseEvent<HTMLElement>) => any
 }
 
 export type MapStateProps = Pick<Props, 'name'>

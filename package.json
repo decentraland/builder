@@ -21,6 +21,7 @@
     "css-loader": "1.0.0",
     "dcl-scene-writer": "^1.1.1",
     "decentraland-builder-scripts": "^0.24.0",
+    "decentraland-ad": "^1.1.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^5.5.0",
     "decentraland-ecs": "6.4.3-20191108174143.commit-e6a97b3",
