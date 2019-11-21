@@ -1,0 +1,77 @@
+div.SliderField.ParameterField {
+  flex-direction: column;
+}
+
+.SliderField .container {
+  width: 100%;
+  display: flex;
+  margin-bottom: 12px;
+  justify-content: space-between;
+}
+
+.SliderField .container .value {
+  font-size: 15px;
+}
+
+.SliderField .rc-slider {
+  position: relative;
+  height: 14px;
+  padding: 5px 0;
+  width: 100%;
+  border-radius: 6px;
+  touch-action: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.SliderField .rc-slider-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  cursor: -webkit-grab;
+  margin-top: -5px;
+  cursor: grab;
+  border-radius: 50%;
+  border: solid 2px #ff2d55;
+  background-color: #ff2d55;
+  touch-action: pan-x;
+  outline: none;
+}
+
+.SliderField .rc-slider-handle:focus,
+.SliderField .rc-slider-handle:hover {
+  box-shadow: none;
+  border: none;
+}
+
+.SliderField .rc-slider-step {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+}
+
+.SliderField .rc-slider-track {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  border-radius: 6px;
+  background-color: #ff2d55;
+}
+
+.SliderField .rc-slider-rail {
+  position: absolute;
+  width: 100%;
+  background-color: #36333c;
+  height: 4px;
+  border-radius: 6px;
+}
+
+.SliderField .rc-slider-mark {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  width: 100%;
+  font-size: 12px;
+}

@@ -7,6 +7,7 @@ import EntityField from '../EntityField'
 import ActionField from '../ActionField'
 import OptionsField from '../OptionsField'
 import TextAreaField from '../TextAreaField'
+import SliderField from '../SliderField'
 
 import { Props, State } from './EntityParameters.types'
 
@@ -139,6 +140,21 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
             key={id}
             label={param.label}
             value={values[param.id] as string}
+            onChange={val => this.handleFieldChange(param.id, val)}
+            className={className}
+          />
+        )
+      }
+      case AssetParameterType.SLIDER: {
+        return (
+          <SliderField
+            id={id}
+            key={id}
+            label={param.label}
+            min={param.min as number}
+            max={param.max as number}
+            step={param.step as number}
+            value={values[param.id] as number}
             onChange={val => this.handleFieldChange(param.id, val)}
             className={className}
           />
