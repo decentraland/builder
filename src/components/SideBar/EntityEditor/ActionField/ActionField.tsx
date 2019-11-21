@@ -125,7 +125,9 @@ export default class ActionField extends React.PureComponent<Props> {
           <label htmlFor={id} className="label">
             {label}
           </label>
-          <Icon name="add-active" onClick={this.handleAddAction} />
+          <div title="Add Action">
+            <Icon name="add-active" onClick={this.handleAddAction} />
+          </div>
         </div>
 
         {value &&
@@ -153,7 +155,7 @@ export default class ActionField extends React.PureComponent<Props> {
                         className={'action'}
                       />
                     )}
-                    <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left">
+                    <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left" title="More Options">
                       <Dropdown.Menu>
                         <Dropdown.Item text="Reset Action" onClick={() => this.handleReset(i)} />
                         <Dropdown.Item text="Remove Action" onClick={() => this.handleRemove(i)} />
