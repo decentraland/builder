@@ -51,6 +51,8 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
             id={id}
             key={id}
             label={param.label}
+            parameter={param}
+            entityName={entityName}
             value={actions}
             onChange={val => this.handleFieldChange(param.id, val)}
             className={className}

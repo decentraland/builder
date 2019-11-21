@@ -78,6 +78,23 @@ export default class ActionField extends React.PureComponent<Props> {
     this.props.onChange(value)
   }
 
+  handleReset = (index: number) => {
+    const { value, entityAssets, parameter, entityName } = this.props
+    const newEntityName = parameter.default ? entityName : Object.keys(entityAssets)[0]
+    const actions = this.getActionOptions(newEntityName)
+    const actionId = parameter.default || (actions.length > 0 ? actions[0].value : '')
+
+    const val = Object.assign([], value, {
+      [index]: {
+        entityName: newEntityName,
+        actionId,
+        values: {}
+      }
+    })
+
+    this.props.onChange(val)
+  }
+
   getActionOptions = (entityName: string) => {
     const { entityAssets } = this.props
 
@@ -138,7 +155,8 @@ export default class ActionField extends React.PureComponent<Props> {
                     )}
                     <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left">
                       <Dropdown.Menu>
-                        <Dropdown.Item text="Remove" onClick={() => this.handleRemove(i)} />
+                        <Dropdown.Item text="Reset Action" onClick={() => this.handleReset(i)} />
+                        <Dropdown.Item text="Remove Action" onClick={() => this.handleRemove(i)} />
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
