@@ -11,6 +11,7 @@ import { MapStateProps, MapDispatchProps } from './DeployToPool.types'
 import DeployModal from './DeployToPool'
 import { openModal } from 'modules/modal/actions'
 import { isReady } from 'modules/editor/selectors'
+import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
 
 const mapState = (state: RootState): MapStateProps => ({
   error: getError(state),
@@ -25,7 +26,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onDeployToPool: (projectId: string) => dispatch(deployToPoolRequest(projectId)),
+  onDeployToPool: (projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) =>
+    dispatch(deployToPoolRequest(projectId, additionalInfo)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onLogin: options => dispatch(login(options))
 })

@@ -192,11 +192,28 @@ export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deploy
   }
 }
 
+export type PoolDeploymentAdditionalFields = {
+  group?: number,
+  authorDetail?: {
+    ethAddress?: string
+  }
+}
+
+export type Pagination = {
+  limit?: number,
+  offset?: number
+}
+
+export type PoolFilters = {
+  group?: number,
+  user_id?: number
+}
+
 // API
 
 export class BuilderAPI extends BaseAPI {
-  async deployToPool(projectId: string) {
-    await this.request('put', `/projects/${projectId}/pool`, null, authorize())
+  async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
+    await this.request('put', `/projects/${projectId}/pool`, additionalInfo, authorize())
     return
   }
 
@@ -241,6 +258,14 @@ export class BuilderAPI extends BaseAPI {
   async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
     const project: RemoteProject = await this.request('get', `/projects/${projectId}/${type}`)
     return fromRemoteProject(project)
+  }
+
+  async fetchPools(filters: PoolFilters & Pagination) {
+    return this.request('get', '/pools', filters)
+  }
+
+  async fetchPoolGroups(activeOnly: boolean = false) {
+    return this.request('get', '/pools/groups', { activeOnly })
   }
 
   async saveProject(project: Project, scene: Scene) {
