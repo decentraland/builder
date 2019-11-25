@@ -60,8 +60,7 @@ export default class EntityParameters extends React.PureComponent<Props, State> 
         )
       }
       case AssetParameterType.ENTITY: {
-        const entityName = values[param.id] as string
-        if (!entityNames.includes(entityName)) return null
+        let entityName = values[param.id] as string
         return (
           <EntityField
             id={id}

@@ -11,7 +11,7 @@ import {
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
-import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue } from 'modules/asset/types'
+import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue, Asset, GROUND_CATEGORY } from 'modules/asset/types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -191,12 +191,14 @@ export function getGLTFShapeName(component: ComponentDefinition<ComponentType.GL
   return name
 }
 
-export function getDefaultValues(entityName: string, parameters: AssetParameter[]) {
+export function getDefaultValues(entityName: string, parameters: AssetParameter[], assetsByEntityName: Record<string, Asset>) {
   const out: AssetParameterValues = {}
 
   for (let parameter of parameters) {
-    if (parameter.default) {
-      if (parameter.type === AssetParameterType.ACTIONS) {
+    const hasDefault = parameter.default !== undefined && parameter.default !== ''
+
+    if (parameter.type === AssetParameterType.ACTIONS) {
+      if (hasDefault) {
         out[parameter.id] = [
           {
             entityName,
@@ -204,8 +206,18 @@ export function getDefaultValues(entityName: string, parameters: AssetParameter[
             values: {}
           }
         ] as AssetActionValue[]
-      } else {
-        out[parameter.id] = parameter.default
+      }
+    } else if (parameter.type === AssetParameterType.ENTITY) {
+      const name = Object.keys(assetsByEntityName).find(entity => {
+        if (assetsByEntityName[entity]) {
+          return entity !== entityName && assetsByEntityName[entity].category !== GROUND_CATEGORY
+        }
+        return false
+      })!
+      out[parameter.id] = name || entityName
+    } else {
+      if (hasDefault) {
+        out[parameter.id] = parameter.default!
       }
     }
   }
