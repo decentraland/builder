@@ -23,6 +23,8 @@ class MockMessageBus {
   }
 }
 
+MockMessageBus.emitter.setMaxListeners(1000)
+
 // BEGIN DRAGONS
 declare var provide: (name: string, value: any) => void
 declare var load: (id: string) => Promise<any>
