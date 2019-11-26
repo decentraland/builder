@@ -84,7 +84,6 @@
     "terser-webpack-plugin": "1.1.0",
     "three": "^0.107.0",
     "typesafe-actions": "^4.4.2",
-    "typescript": "3.2.2",
     "url-loader": "1.1.1",
     "uuid": "^3.3.2",
     "webpack": "4.19.1",
@@ -121,18 +120,18 @@
     "printWidth": 140
   },
   "devDependencies": {
+    "@types/auth0-js": "^9.10.2",
     "@types/file-saver": "^2.0.0",
     "@types/jest": "23.3.10",
     "@types/jszip": "^3.1.5",
+    "@types/mousetrap": "^1.6.0",
     "@types/node": "^9.6.41",
+    "@types/query-string": "^6.2.0",
     "@types/react": "16.7.18",
     "@types/react-dom": "16.0.11",
     "@types/react-lottie": "^1.2.3",
     "@types/react-redux": "^7.1.1",
     "@types/react-router-dom": "^4.3.1",
-    "@types/auth0-js": "^9.10.2",
-    "@types/mousetrap": "^1.6.0",
-    "@types/query-string": "^6.2.0",
     "@types/redux-logger": "^3.0.6",
     "@types/reselect": "^2.2.0",
     "@types/uuid": "^3.4.4",
@@ -141,7 +140,9 @@
     "decentraland": "^3.0.0",
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.15.3",
-    "tslint-plugin-prettier": "^2.0.1"
+    "ts-loader": "^6.2.1",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.2.2"
   },
   "jest": {
     "collectCoverageFrom": [
