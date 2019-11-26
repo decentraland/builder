@@ -67,7 +67,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className={`EntityField ParameterField ${className}`}>
+      <div className={`EntityField ParameterField ${className}`} title="Item">
         {label && (
           <label htmlFor={id} className="label">
             {label}
