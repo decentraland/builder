@@ -5,7 +5,7 @@ import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/selectors'
-import { getLoading as getAuthLoading, getUser } from 'modules/auth/selectors'
+import { getLoading as getAuthLoading, getSub } from 'modules/auth/selectors'
 import { AUTH_REQUEST } from 'modules/auth/actions'
 import { Project } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
@@ -20,13 +20,13 @@ export const getError: (state: RootState) => ProjectState['error'] = state => ge
 export const getLoading = (state: RootState) => getState(state).loading
 
 export const getUserProjects = createSelector(
-  getUser,
+  getSub,
   getData,
-  (user, projects) => {
+  (userId, projects) => {
     return Object.keys(projects).reduce(
       (record, projectId) => {
         const project = projects[projectId]
-        if (!project.userId || (user && project.userId === user.id)) {
+        if (project.userId === userId || project.userId === null) {
           record[projectId] = project
         }
         return record
