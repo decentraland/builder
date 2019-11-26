@@ -34,6 +34,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
           </div>
           <div className="parameters">
             <EntityParameters
+              id="root"
               entityName={entity.name}
               parameters={asset.parameters}
               values={script.data!.values}

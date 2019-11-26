@@ -1,6 +1,7 @@
 import { AssetParameter, AssetParameterValues } from 'modules/asset/types'
 
 export type Props = {
+  id: string
   parameters: AssetParameter[]
   entityName: string
   values: AssetParameterValues

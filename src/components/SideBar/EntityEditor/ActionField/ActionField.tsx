@@ -162,6 +162,7 @@ export default class ActionField extends React.PureComponent<Props> {
                   </div>
                   {parameters && (
                     <EntityParameters
+                      id={id + '-parameters'}
                       entityName={action.entityName}
                       parameters={parameters}
                       values={parameterValues}
