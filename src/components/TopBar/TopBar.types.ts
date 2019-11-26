@@ -14,11 +14,13 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { SceneMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { Gizmo } from 'modules/editor/types'
+import { PoolGroup } from 'modules/poolGroup/types'
 
 export type Props = {
   gizmo: Gizmo
   metrics: SceneMetrics
   currentProject: Project | null
+  currentPoolGroup: PoolGroup | null
   selectedEntityId: string | null
   isLoading: boolean
   isPreviewing: boolean
@@ -38,6 +40,7 @@ export type MapStateProps = Pick<
   Props,
   | 'gizmo'
   | 'currentProject'
+  | 'currentPoolGroup'
   | 'metrics'
   | 'isLoading'
   | 'isPreviewing'

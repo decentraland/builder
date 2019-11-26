@@ -1,5 +1,6 @@
-import { RootState } from "modules/common/types"
-import { PoolGroupState } from "./reducer"
+import { RootState } from 'modules/common/types'
+import { PoolGroupState } from './reducer'
+import { PoolGroup } from './types'
 
 export const getState: (state: RootState) => PoolGroupState = state => state.poolGroup
 
@@ -9,7 +10,15 @@ export const getError: (state: RootState) => PoolGroupState['error'] = state => 
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getCurrentActive = (state: RootState) => {
+export const getActivePoolGroup = (state: RootState) => {
   const poolGroups = getData(state)
-  return Object.values(poolGroups).filter(poolGroup => poolGroup.isActive)
+  return Object.values(poolGroups).reduce<PoolGroup | null>((current, poolGroup) => {
+    if (poolGroup.isActive) {
+      if (!current || current.activeFrom.getTime() > poolGroup.activeFrom.getTime()) {
+        return poolGroup
+      }
+    }
+
+    return current
+  }, null)
 }

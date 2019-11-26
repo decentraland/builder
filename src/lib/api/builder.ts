@@ -164,7 +164,7 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
     activeUntil: new Date(Date.parse(poolGroup.active_until))
   }
 }
- 
+
 // Remote deployment
 
 export type RemoteDeployment = {
