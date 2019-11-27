@@ -140,7 +140,12 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             hostTransform.position.copyFrom(transform.position)
             hostTransform.rotation.copyFrom(transform.rotation)
             hostTransform.scale.copyFrom(transform.scale)
-            const host = new Entity((entity as any).name) // TODO fix this on the kernel's side
+            const name = (entity as any).name // TODO fix this on the kernel's side
+            const placeholder = Object.values(engine.entities).find(entity => (entity as Entity).name === name)
+            if (placeholder) {
+              engine.removeEntity(placeholder)
+            }
+            const host = new Entity(name)
             engine.addEntity(host)
             host.addComponent(hostTransform)
             // ...and execute the script on the host entity
