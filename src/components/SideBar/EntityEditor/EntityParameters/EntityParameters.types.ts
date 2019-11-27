@@ -7,7 +7,7 @@ export type Props = {
   values: AssetParameterValues
   entityNames: string[]
   className?: string
-  onChange(values: AssetParameterValues): void
+  onChange(values: AssetParameterValues, debounce: boolean): void
 }
 
 export type State = {

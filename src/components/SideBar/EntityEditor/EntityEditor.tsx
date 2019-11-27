@@ -8,10 +8,22 @@ import { Props } from './EntityEditor.types'
 import './EntityEditor.css'
 
 export default class EntityEditor extends React.PureComponent<Props> {
-  handleChangeDebounced = debounce((parameters: AssetParameterValues) => {
+  handleSetParametersDebounced = debounce((parameters: AssetParameterValues) => {
+    this.handleSetParameters(parameters)
+  }, 150)
+
+  handleSetParameters = (parameters: AssetParameterValues) => {
     const { entityId, onSetScriptParameters } = this.props
     onSetScriptParameters(entityId, parameters)
-  }, 150)
+  }
+
+  handleChange = (parameters: AssetParameterValues, debounce: boolean) => {
+    if (debounce) {
+      this.handleSetParametersDebounced(parameters)
+    } else {
+      this.handleSetParameters(parameters)
+    }
+  }
 
   render() {
     const { asset, script, entity } = this.props
@@ -38,7 +50,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
               entityName={entity.name}
               parameters={asset.parameters}
               values={script.data!.values}
-              onChange={this.handleChangeDebounced}
+              onChange={this.handleChange}
             />
           </div>
         </div>

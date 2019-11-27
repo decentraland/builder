@@ -30,7 +30,7 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(value)
+    this.props.onChange(value, false)
   }
 
   handleAddAction = () => {
@@ -47,7 +47,7 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(val)
+    this.props.onChange(val, false)
   }
 
   handleActionChange = (actionId: string, index: number) => {
@@ -58,10 +58,10 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(value)
+    this.props.onChange(value, false)
   }
 
-  handleParametersChange = (values: AssetParameterValues, index: number) => {
+  handleParametersChange = (values: AssetParameterValues, index: number, debounce: boolean) => {
     const value = Object.assign([], this.props.value, {
       [index]: {
         ...this.props.value[index],
@@ -69,13 +69,13 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(value)
+    this.props.onChange(value, debounce)
   }
 
   handleRemove = (index: number) => {
     const value = this.props.value.filter((_, i) => i !== index)
     this.setState({ value })
-    this.props.onChange(value)
+    this.props.onChange(value, false)
   }
 
   handleReset = (index: number) => {
@@ -92,7 +92,7 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(val)
+    this.props.onChange(val, false)
   }
 
   getActionOptions = (entityName: string) => {
@@ -168,7 +168,7 @@ export default class ActionField extends React.PureComponent<Props> {
                       entityName={action.entityName}
                       parameters={parameters}
                       values={parameterValues}
-                      onChange={values => this.handleParametersChange(values, i)}
+                      onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
                       className="action"
                     />
                   )}

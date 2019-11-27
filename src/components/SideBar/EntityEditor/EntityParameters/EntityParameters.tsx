@@ -12,9 +12,9 @@ import SliderField from '../SliderField'
 import { Props } from './EntityParameters.types'
 
 export default class EntityParameters extends React.PureComponent<Props> {
-  handleFieldChange = (id: string, value: any) => {
+  handleFieldChange = (id: string, value: any, debounce: boolean = false) => {
     const values = { ...this.props.values, [id]: value }
-    this.props.onChange(values)
+    this.props.onChange(values, debounce)
   }
 
   renderField = (param: AssetParameter) => {
@@ -64,7 +64,7 @@ export default class EntityParameters extends React.PureComponent<Props> {
             key={parameterId}
             label={param.label}
             value={values[param.id] as string}
-            onChange={val => this.handleFieldChange(param.id, val)}
+            onChange={val => this.handleFieldChange(param.id, val, true)}
             className={className}
           />
         )
@@ -88,7 +88,7 @@ export default class EntityParameters extends React.PureComponent<Props> {
             key={parameterId}
             label={param.label}
             value={values[param.id] as number}
-            onChange={val => this.handleFieldChange(param.id, val)}
+            onChange={val => this.handleFieldChange(param.id, val, true)}
             className={className}
           />
         )
@@ -113,7 +113,7 @@ export default class EntityParameters extends React.PureComponent<Props> {
             key={parameterId}
             label={param.label}
             value={values[param.id] as number}
-            onChange={val => this.handleFieldChange(param.id, val)}
+            onChange={val => this.handleFieldChange(param.id, val, true)}
             className={className}
             allowFloat
           />
