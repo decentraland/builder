@@ -16,9 +16,9 @@ export default class ActionField extends React.PureComponent<Props> {
     let values: Record<string, any> = {}
 
     if (action) {
-      values = action.parameters.reduce<any>((acc, val) => {
-        acc[val.id] = val.options![0].value
-        return acc
+      values = action.parameters.reduce<any>((values, parameter) => {
+        values[parameter.id] = parameter.default
+        return values
       }, {})
     }
 

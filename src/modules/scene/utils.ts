@@ -199,11 +199,13 @@ export function getDefaultValues(entityName: string, parameters: AssetParameter[
 
     if (parameter.type === AssetParameterType.ACTIONS) {
       if (hasDefault) {
+        const asset = assetsByEntityName[entityName]
+        const action = asset && asset.actions.find(action => action.id === parameter.id)
         out[parameter.id] = [
           {
             entityName,
             actionId: parameter.default,
-            values: {}
+            values: action ? getDefaultValues(entityName, action.parameters, assetsByEntityName) : {}
           }
         ] as AssetActionValue[]
       }
