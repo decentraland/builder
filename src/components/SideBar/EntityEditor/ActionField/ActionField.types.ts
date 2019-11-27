@@ -8,7 +8,7 @@ export type Props = {
   parameter: AssetParameter
   entityName: string
   className?: string
-  onChange(value: AssetActionValue[]): void
+  onChange(value: AssetActionValue[], debounce: boolean): void
 }
 
 export type MapStateProps = Pick<Props, 'entityAssets'>
