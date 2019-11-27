@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Dropdown } from 'decentraland-ui'
-import { AssetParameterValues, AssetActionValue } from 'modules/asset/types'
+import { AssetParameterValues, AssetActionValue, AssetAction } from 'modules/asset/types'
 import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
 import OptionsField from '../OptionsField'
@@ -13,14 +13,7 @@ export default class ActionField extends React.PureComponent<Props> {
     const actions = this.getActionOptions(entityName)
     const actionId = actions.length > 0 ? actions[0].value : ''
     const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
-    let values: Record<string, any> = {}
-
-    if (action) {
-      values = action.parameters.reduce<any>((values, parameter) => {
-        values[parameter.id] = parameter.default
-        return values
-      }, {})
-    }
+    const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
       [index]: {
@@ -51,10 +44,15 @@ export default class ActionField extends React.PureComponent<Props> {
   }
 
   handleActionChange = (actionId: string, index: number) => {
+    const { entityName } = this.props.value[index]
+    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const values: Record<string, any> = this.getActionValues(action)
+
     const value = Object.assign([], this.props.value, {
       [index]: {
         ...this.props.value[index],
-        actionId
+        actionId,
+        values
       }
     })
 
@@ -114,6 +112,19 @@ export default class ActionField extends React.PureComponent<Props> {
     }
 
     return null
+  }
+
+  getActionValues = (action: AssetAction | undefined) => {
+    let values: Record<string, any> = {}
+
+    if (action) {
+      values = action.parameters.reduce<any>((values, parameter) => {
+        values[parameter.id] = parameter.default
+        return values
+      }, {})
+    }
+
+    return values
   }
 
   render() {
