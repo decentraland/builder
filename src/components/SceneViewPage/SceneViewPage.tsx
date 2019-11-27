@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Loader, Page, Responsive } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Chip from 'components/Chip'
 import Footer from 'components/Footer'
@@ -93,6 +94,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
     return (
       <>
+        {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />}
         {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
           <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '') }>
             <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }}>

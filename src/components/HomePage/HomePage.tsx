@@ -146,6 +146,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
 
     return (
       <>
+        <Ad slot="BUILDER_TOP_BANNER" type="full" />
         <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen>
           {!showDashboard ? (
