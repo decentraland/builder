@@ -241,15 +241,13 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       }
 
       // execute all the scripts
-      let executeScripts = ''
+      let executeScripts = '\n'
 
       // setup channel
-      executeScripts += `const channelId = Math.random().toString(16).slice(2)`
-      executeScripts += `const channelBus = new MessageBus()`
-      executeScripts += `\n`
-      executeScripts += `const inventory = createInventory(UICanvas, UIContainerStack, UIImage)`
-      executeScripts += `const options = { inventory }`
-      executeScripts += `\n`
+      executeScripts += `const channelId = Math.random().toString(16).slice(2)\n`
+      executeScripts += `const channelBus = new MessageBus()\n`
+      executeScripts += `const inventory = createInventory(UICanvas, UIContainerStack, UIImage)\n`
+      executeScripts += `const options = { inventory }\n`
 
       let currentInstance = 1
       const assetIdToScriptName = new Map<string, string>()
@@ -293,7 +291,6 @@ ${gameFile}`
 
 export function createStaticFiles() {
   return {
-    [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(tsconfig),
     [EXPORT_PATH.DOCKER_FILE]: Dockerfile,
     [EXPORT_PATH.DCLIGNORE_FILE]: [
       '.*',
@@ -430,7 +427,15 @@ export function createDynamicFiles(args: { project: Project; scene: Scene; point
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation), null, 2)
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation), null, 2),
+    [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(
+      {
+        ...tsconfig,
+        include: tsconfig.include.concat(['./node_modules/decentraland-builder-scripts/types.d.ts'])
+      },
+      null,
+      2
+    )
   }
 
   return files
