@@ -23,7 +23,7 @@ export default class Countdown extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State){
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
     const currentUntil = this.props.until && this.props.until.getTime()
     const nextUntil = nextProps.until && nextProps.until.getTime()
     return currentUntil !== nextUntil || this.state !== nextState
