@@ -2,6 +2,7 @@ import * as React from 'react'
 import { SelectField, DropdownProps } from 'decentraland-ui'
 import { Props, State } from './EntityField.types'
 import './EntityField.css'
+import { Asset } from 'modules/asset/types'
 
 export default class EntityField extends React.PureComponent<Props, State> {
   state: State = {
@@ -28,7 +29,16 @@ export default class EntityField extends React.PureComponent<Props, State> {
   renderTrigger = () => {
     const { assetsByEntityName } = this.props
     const { value } = this.state
-    const asset = assetsByEntityName[value]
+    const asset = assetsByEntityName[value] as Asset | undefined
+
+    if (!asset) {
+      return (
+        <span className="trigger">
+          <span className="text">Select item...</span>
+        </span>
+      )
+    }
+
     return (
       <span className="trigger">
         <img src={asset.thumbnail} />
@@ -57,7 +67,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className={`EntityField ParameterField ${className}`}>
+      <div className={`EntityField ParameterField ${className}`} title="Item">
         {label && (
           <label htmlFor={id} className="label">
             {label}

@@ -7,7 +7,7 @@ export default class BooleanField extends React.PureComponent<Props> {
   handleChange = (_: any, props: RadioProps) => {
     const { onChange } = this.props
     const value = !!props.checked
-    setTimeout(() => onChange(value), 0)
+    onChange(value)
   }
 
   render() {

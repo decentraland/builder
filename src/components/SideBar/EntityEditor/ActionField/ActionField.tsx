@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Dropdown } from 'decentraland-ui'
-import { AssetParameterValues, AssetActionValue } from 'modules/asset/types'
+import { AssetParameterValues, AssetActionValue, AssetAction } from 'modules/asset/types'
 import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
 import OptionsField from '../OptionsField'
@@ -13,14 +13,7 @@ export default class ActionField extends React.PureComponent<Props> {
     const actions = this.getActionOptions(entityName)
     const actionId = actions.length > 0 ? actions[0].value : ''
     const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
-    let values: Record<string, any> = {}
-
-    if (action) {
-      values = action.parameters.reduce<any>((acc, val) => {
-        acc[val.id] = val.options![0].value
-        return acc
-      }, {})
-    }
+    const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
       [index]: {
@@ -30,7 +23,7 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(value)
+    this.props.onChange(value, false)
   }
 
   handleAddAction = () => {
@@ -47,21 +40,26 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(val)
+    this.props.onChange(val, false)
   }
 
   handleActionChange = (actionId: string, index: number) => {
+    const { entityName } = this.props.value[index]
+    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const values: Record<string, any> = this.getActionValues(action)
+
     const value = Object.assign([], this.props.value, {
       [index]: {
         ...this.props.value[index],
-        actionId
+        actionId,
+        values
       }
     })
 
-    this.props.onChange(value)
+    this.props.onChange(value, false)
   }
 
-  handleParametersChange = (values: AssetParameterValues, index: number) => {
+  handleParametersChange = (values: AssetParameterValues, index: number, debounce: boolean) => {
     const value = Object.assign([], this.props.value, {
       [index]: {
         ...this.props.value[index],
@@ -69,13 +67,30 @@ export default class ActionField extends React.PureComponent<Props> {
       }
     })
 
-    this.props.onChange(value)
+    this.props.onChange(value, debounce)
   }
 
   handleRemove = (index: number) => {
     const value = this.props.value.filter((_, i) => i !== index)
     this.setState({ value })
-    this.props.onChange(value)
+    this.props.onChange(value, false)
+  }
+
+  handleReset = (index: number) => {
+    const { value, entityAssets, parameter, entityName } = this.props
+    const newEntityName = parameter.default ? entityName : Object.keys(entityAssets)[0]
+    const actions = this.getActionOptions(newEntityName)
+    const actionId = parameter.default || (actions.length > 0 ? actions[0].value : '')
+
+    const val = Object.assign([], value, {
+      [index]: {
+        entityName: newEntityName,
+        actionId,
+        values: {}
+      }
+    })
+
+    this.props.onChange(val, false)
   }
 
   getActionOptions = (entityName: string) => {
@@ -99,6 +114,19 @@ export default class ActionField extends React.PureComponent<Props> {
     return null
   }
 
+  getActionValues = (action: AssetAction | undefined) => {
+    let values: Record<string, any> = {}
+
+    if (action) {
+      values = action.parameters.reduce<any>((values, parameter) => {
+        values[parameter.id] = parameter.default
+        return values
+      }, {})
+    }
+
+    return values
+  }
+
   render() {
     const { id, label, entityAssets, className = '', value } = this.props
 
@@ -108,7 +136,9 @@ export default class ActionField extends React.PureComponent<Props> {
           <label htmlFor={id} className="label">
             {label}
           </label>
-          <Icon name="add-active" onClick={this.handleAddAction} />
+          <div title="Add Action">
+            <Icon name="add-active" onClick={this.handleAddAction} />
+          </div>
         </div>
 
         {value &&
@@ -136,18 +166,20 @@ export default class ActionField extends React.PureComponent<Props> {
                         className={'action'}
                       />
                     )}
-                    <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left">
+                    <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left" title="More Options">
                       <Dropdown.Menu>
-                        <Dropdown.Item text="Remove" onClick={() => this.handleRemove(i)} />
+                        <Dropdown.Item text="Reset Action" onClick={() => this.handleReset(i)} />
+                        <Dropdown.Item text="Remove Action" onClick={() => this.handleRemove(i)} />
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
                   {parameters && (
                     <EntityParameters
+                      id={id + '-parameters'}
                       entityName={action.entityName}
                       parameters={parameters}
                       values={parameterValues}
-                      onChange={values => this.handleParametersChange(values, i)}
+                      onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
                       className="action"
                     />
                   )}

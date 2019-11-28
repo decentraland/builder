@@ -5,7 +5,7 @@ import './NumberField.css'
 
 export default class NumberField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value ? this.props.value.toString() : '',
+    value: this.props.value !== undefined ? this.props.value.toString() : '0',
     id: this.props.id || ''
   }
 

@@ -251,7 +251,10 @@ function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
     const project: Project = yield call(() => builder.fetchPublicProject(id, type))
     yield put(loadPublicProjectSuccess(project))
     if (project) {
-      yield getSceneByProjectId(id, type)
+      const scene = yield getSceneByProjectId(id, type)
+      if (scene) {
+        yield put(createScene(scene))
+      }
       if (project.userId) {
         yield put(loadProfileRequest(project.userId))
       }

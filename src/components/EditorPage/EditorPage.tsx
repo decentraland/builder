@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Grid } from 'decentraland-ui'
 import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
+import Ad from 'decentraland-ad/lib/Ad/Ad'
 import experiments, { EXPERIMENT_TUTORIAL_OPEN } from 'experiments'
 
 import NotFoundPage from 'components/NotFoundPage'
@@ -93,6 +94,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
     return (
       <div className="EditorPage">
+        {isPreviewing ? null : <Ad slot="BUILDER_TOP_BANNER" type="full" />}
         {isPreviewing ? null : <TopBar />}
         <Grid className={gridClasses}>
           <Grid.Row className={wrapperClasses}>

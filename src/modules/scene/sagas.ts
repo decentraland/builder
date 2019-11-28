@@ -52,7 +52,7 @@ import {
   renameEntity,
   removeEntityReferences
 } from './utils'
-import { getData as getAssets, getGroundAssets } from 'modules/asset/selectors'
+import { getData as getAssets, getGroundAssets, getAssetsByEntityName } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { loadAssets } from 'modules/asset/actions'
 import { getProjectId } from 'modules/location/selectors'
@@ -165,13 +165,15 @@ function* handleAddItem(action: AddItemAction) {
     entityComponents.push(scriptId)
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
+  // TODO: get entity name from asset name rather than GLTFShape
   const entityName = getEntityName(newScene, entityComponents)
   newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
   newScene.assets[asset.id] = asset
 
   if (scriptId) {
+    const assets: Record<string, Asset> = yield select(getAssetsByEntityName)
     const comp = newScene.components[scriptId] as ComponentDefinition<ComponentType.Script>
-    comp.data.values = getDefaultValues(entityName, asset.parameters)
+    comp.data.values = getDefaultValues(entityName, asset.parameters, assets)
   }
 
   yield put(provisionScene(newScene))

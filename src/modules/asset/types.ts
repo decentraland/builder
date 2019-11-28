@@ -21,6 +21,9 @@ export type AssetParameter = {
   description?: string
   default?: Exclude<AssetParameterValue, AssetActionValue>
   options?: AssetParameterOption[]
+  min?: number
+  max?: number
+  step?: number
 }
 
 export type AssetParameterOption = {
@@ -46,7 +49,8 @@ export enum AssetParameterType {
   INTEGER = 'integer',
   ENTITY = 'entity',
   ACTIONS = 'actions',
-  OPTIONS = 'options'
+  OPTIONS = 'options',
+  SLIDER = 'slider'
 }
 
 export type BaseAsset = {

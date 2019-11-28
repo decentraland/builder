@@ -53,6 +53,9 @@
   align-items: center;
   justify-content: space-between;
 }
+.EntityEditor .field * {
+  font-family: var(--font-family) !important;
+}
 
 .EntityEditor .field .label {
   color: rgba(var(--bluish-steel-raw), 0.4);
