@@ -37,4 +37,5 @@
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
+  margin-left: 4px;
 }
