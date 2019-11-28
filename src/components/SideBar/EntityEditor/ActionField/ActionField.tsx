@@ -143,6 +143,7 @@ export default class ActionField extends React.PureComponent<Props> {
 
         {value &&
           value.map((action, i) => {
+            const actionId = `${id}-${i}`
             const options = this.getActionOptions(action.entityName)
             const parameters = this.getParameters(action)
             const parameterValues = value && value[i] ? value[i].values : {}
@@ -151,7 +152,7 @@ export default class ActionField extends React.PureComponent<Props> {
                 <div className="container">
                   <div className="signature">
                     <EntityField
-                      id={id}
+                      id={actionId}
                       value={value ? action.entityName : ''}
                       onChange={name => this.handleEntityChange(name, i)}
                       filter={Object.keys(entityAssets)}
@@ -159,7 +160,7 @@ export default class ActionField extends React.PureComponent<Props> {
                     />
                     {action.entityName && (
                       <OptionsField
-                        id={`${id}-actions`}
+                        id={`${actionId}-actions`}
                         value={action.actionId}
                         options={options}
                         onChange={actionid => this.handleActionChange(actionid, i)}
@@ -175,7 +176,7 @@ export default class ActionField extends React.PureComponent<Props> {
                   </div>
                   {parameters && (
                     <EntityParameters
-                      id={id + '-parameters'}
+                      id={`${actionId}-parameters`}
                       entityName={action.entityName}
                       parameters={parameters}
                       values={parameterValues}
