@@ -1,23 +1,46 @@
 // This helper is used to load external scripts within a deployed Builder scene.
 const scriptInstances = new Map()
+
+const contentServer = initContext()
+
+function initContext() {
+  return new Promise(resolve => {
+    define('node_modules/decentraland-builder-scripts/channel', [], () => {
+      /* */
+    })
+    define('node_modules/decentraland-builder-scripts/inventory', [], () => {
+      /* */
+    })
+
+    define('🍉', ['require', 'exports', '@decentraland/EnvironmentAPI'], (require, exports, EnvironmentAPI) => {
+      // Object.defineProperty(exports, '__esModule', { value: true })
+      EnvironmentAPI.getBootstrapData().then(({ baseUrl }) => {
+        resolve(baseUrl)
+      })
+    })
+  })
+}
+
 function getScriptInstance(assetId, src) {
   const instance = scriptInstances.get(assetId)
   return instance
     ? Promise.resolve(instance)
-    : fetch('https://content.decentraland.org/contents/' + src)
-        .then(resp => resp.text())
-        .then(code => eval(code))
-        .then(() => new Promise(resolve => define(assetId + '/load', [assetId + '/item'], item => resolve(item.default))))
-        .then(Item => {
-          const instance = new Item()
-          scriptInstances.set(assetId, instance)
-          return instance
-        })
-        .catch(() => {
-          console.warn(`Failed to load script "${assetId}"`)
-          return {
-            init() {},
-            spawn() {}
-          }
-        })
+    : contentServer.then(baseUrl =>
+        fetch(baseUrl + src)
+          .then(resp => resp.text())
+          .then(code => eval(code))
+          .then(() => new Promise(resolve => define(assetId + '/load', [assetId + '/item'], item => resolve(item.default))))
+          .then(Item => {
+            const instance = new Item()
+            scriptInstances.set(assetId, instance)
+            return instance
+          })
+          .catch(() => {
+            console.warn(`Failed to load script "${assetId}"`)
+            return {
+              init() {},
+              spawn() {}
+            }
+          })
+      )
 }
