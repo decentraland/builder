@@ -8,7 +8,7 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
-const { Gizmos } = require('decentraland-ecs') as any
+const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
@@ -41,12 +41,12 @@ const scriptInstances = new Map<string, IScript<any>>()
 
 @Component('org.decentraland.staticEntity')
 // @ts-ignore
-export class StaticEntity {}
+export class StaticEntity { }
 
 @Component('org.decentraland.script')
 // @ts-ignore
 export class Script {
-  constructor(public assetId: string, public src: string, public values: AssetParameterValues) {}
+  constructor(public assetId: string, public src: string, public values: AssetParameterValues) { }
 }
 
 const editorComponents: Record<string, any> = {}
@@ -57,6 +57,8 @@ gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = true
 gizmo.cycle = false
+
+const smartItemComponent = new SmartItem()
 
 function getComponentById(id: string) {
   if (id in editorComponents) {
@@ -70,22 +72,22 @@ function getScriptInstance(assetId: string) {
   return instance
     ? Promise.resolve(instance)
     : scriptPromises
-        .get(assetId)!
-        .then(code => eval(code))
-        .then(() => load(assetId))
-        .then(Item => {
-          const instance = new Item()
-          scriptInstances.set(assetId, instance)
-          return instance
-        })
-        .catch(() => {
-          // if something fails, return a dummy script
-          console.warn(`Failed to load script for asset id ${assetId}`)
-          return {
-            init() {},
-            spawn() {}
-          }
-        })
+      .get(assetId)!
+      .then(code => eval(code))
+      .then(() => load(assetId))
+      .then(Item => {
+        const instance = new Item()
+        scriptInstances.set(assetId, instance)
+        return instance
+      })
+      .catch(() => {
+        // if something fails, return a dummy script
+        console.warn(`Failed to load script for asset id ${assetId}`)
+        return {
+          init() { },
+          spawn() { }
+        }
+      })
 }
 
 async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
@@ -237,7 +239,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
 
     if (!entity) {
       entity = new Entity(builderEntity.name)
-      ;(entity as any).uuid = id
+        ; (entity as any).uuid = id
 
       if (!builderEntity.disableGizmos) {
         entity.addComponentOrReplace(gizmo)
@@ -252,6 +254,9 @@ function createEntities(entities: Record<string, EntityDefinition>) {
       const component = getComponentById(componentId)
       if (component) {
         entity.addComponentOrReplace(component)
+        if (component instanceof Script) {
+          entity.addComponentOrReplace(smartItemComponent)
+        }
       }
     }
   }
