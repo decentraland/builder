@@ -8,6 +8,7 @@ import ShortcutTooltip from 'components/ShortcutTooltip'
 import Chip from 'components/Chip'
 import OwnIcon from 'components/Icon'
 import DeployButton from 'components/DeployButton'
+import DeployContestButton from 'components/DeployContestButton'
 import ShareButton from 'components/ShareButton'
 import { locations } from 'routing/locations'
 
@@ -65,6 +66,7 @@ export default class TopBar extends React.PureComponent<Props> {
     const {
       gizmo,
       currentProject,
+      currentPoolGroup,
       isPreviewing,
       isUploading,
       isSidebarOpen,
@@ -155,8 +157,9 @@ export default class TopBar extends React.PureComponent<Props> {
               <Chip icon="sidebar" isActive={isSidebarOpen} onClick={this.handleToggleSidebar} />
             </ShortcutTooltip>
             <span className="contest-button-wrapper">
-              <ShareButton />
+              {!currentPoolGroup && <ShareButton />}
               <DeployButton />
+              {currentPoolGroup && <DeployContestButton />}
             </span>
           </Grid.Row>
         </Grid.Column>

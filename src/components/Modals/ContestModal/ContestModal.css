@@ -1,0 +1,95 @@
+.ui.small.modal.ContestModal {
+  width: auto;
+  border-radius: 12px;
+}
+
+.ContestModal .dcl.modal-navigation-title {
+  font-size: 21px;
+  margin-bottom: 8px;
+  text-align: center;
+  margin-top: 0px;
+  color: var(--text);
+}
+
+.ContestModal .dcl.modal-navigation-subtitle {
+  font-size: 17px;
+  font-weight: 100;
+  text-align: center;
+  width: 400px;
+  color: var(--text);
+}
+
+.ContestModal .login-modal,
+.ContestModal .contest-modal {
+  width: 480px;
+  padding: 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ContestModal .thumbnail {
+  display: block;
+  width: 350px;
+  height: 350px;
+  background-size: cover;
+  background-position: center center;
+}
+
+.ContestModal .progress-bar-container {
+  width: 100%;
+  background: var(--secondary-on-modal);
+  border-radius: 16px;
+}
+
+.ContestModal .progress-bar-container .progress-bar {
+  background-color: var(--contest-background);
+  height: 16px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.ContestModal .ui.input {
+  width: 320px
+}
+
+.ContestModal .ui.input input,
+.ContestModal .ui.input input:focus {
+  background: rgba(var(--bluish-steel-raw), 0.2);
+  color: var(--text);
+}
+
+.ContestModal label p {
+  margin-bottom: .5em;
+  font-size: 16px;
+  font-weight: 100;
+}
+
+.ContestModal label p.note {
+  font-size: 14px;
+}
+
+.ContestModal label.error p.note {
+  color: var(--summer-red);
+}
+
+.ContestModal label.error .ui.input input {
+  border-color: var(--summer-red);
+}
+
+.ContestModal .ui.button,
+.ContestModal .ui.button.primary {
+  width: 240px;
+}
+
+.ContestModal .button-group .ui.button,
+.ContestModal .button-group .ui.button.primary {
+  width: 170px;
+}
+
+.ContestModal .ui.button.primary,
+.ContestModal .ui.button.primary:hover,
+.ContestModal .ui.button.primary:active,
+.ContestModal .ui.button.primary:focus {
+  background: var(--contest-background);
+}

@@ -117,7 +117,6 @@
   "share_modal": {
     "title": "Share your Scene",
     "description": "Let your friends and co-creators see your work",
-    "share": "share",
     "copy": "copy link",
     "copied": "copied",
     "uri": {
@@ -125,7 +124,6 @@
       "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
     },
     "sign_in": {
-      "action": "Sign in",
       "subtitle": "You need to sign in before you share your scene",
       "title": "Sign in"
     }
@@ -230,6 +228,31 @@
     },
     "title": "Publish your Scene"
   },
+  "deployment_contest_modal": {
+    "action": "Contest",
+    "submit": {
+      "title": "Creator Contest",
+      "subtitle": "Send your scene to the Creator Contest",
+      "eth_address": "ETH addres (optional)",
+      "invalid_eth_address": "Invalid ETH address"
+    },
+    "recording": {
+      "title": "Preparing your scene",
+      "subtitle": "We are prepering your scene for the Contest, please wait."
+    },
+    "updating": {
+      "title": "Preparing your scene",
+      "subtitle": "We are prepering your scene for the Contest, please wait."
+    },
+    "success": {
+      "title": "Thanks for uploading your Scene!",
+      "subtitle": "You will receive an email notification."
+    },
+    "sign_in": {
+      "subtitle": "You need to sign in before you send your scene to the contest",
+      "title": "Sign in"
+    }
+  },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
     "title": "Scene details",
@@ -273,6 +296,7 @@
     "read_more": "Read more",
     "save": "Save",
     "send": "Send",
+    "share": "Share",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
     "submit": "Submit",

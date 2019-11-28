@@ -31,7 +31,7 @@ export default class ShareButton extends React.PureComponent<Props> {
       <span className="ShareButton tool">
         <span>
           <Button size="mini" onClick={this.handleClick} disabled={isLoading}>
-            {t('share_modal.share')}
+            {t('global.share')}
           </Button>
         </span>
       </span>

@@ -1,3 +1,3 @@
-import DeployModal from './ShareModal.container'
+import ShareModal from './ShareModal.container'
 
-export default DeployModal
+export default ShareModal

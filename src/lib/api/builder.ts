@@ -212,10 +212,7 @@ export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deploy
 }
 
 export type PoolDeploymentAdditionalFields = {
-  groups?: string[],
-  authorDetail?: {
-    ethAddress?: string
-  }
+  groups?: string[]
 }
 
 export type Pagination = {
