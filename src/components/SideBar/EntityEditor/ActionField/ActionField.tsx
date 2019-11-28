@@ -157,6 +157,7 @@ export default class ActionField extends React.PureComponent<Props> {
                       onChange={name => this.handleEntityChange(name, i)}
                       filter={Object.keys(entityAssets)}
                       className={'action'}
+                      direction={null}
                     />
                     {action.entityName && (
                       <OptionsField
@@ -174,15 +175,18 @@ export default class ActionField extends React.PureComponent<Props> {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
-                  {parameters && (
-                    <EntityParameters
-                      id={`${actionId}-parameters`}
-                      entityName={action.entityName}
-                      parameters={parameters}
-                      values={parameterValues}
-                      onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
-                      className="action"
-                    />
+
+                  {parameters && parameters.length > 0 && (
+                    <aside>
+                      <EntityParameters
+                        id={`${actionId}-parameters`}
+                        entityName={action.entityName}
+                        parameters={parameters}
+                        values={parameterValues}
+                        onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
+                        className="action"
+                      />
+                    </aside>
                   )}
                 </div>
               </>

@@ -24,9 +24,8 @@ section.ActionField.ParameterField {
   margin-bottom: 16px;
 }
 
-.ActionField .container {
+.ActionField > .container {
   background-color: var(--dark-two);
-  padding: 10px;
   border-radius: 8px;
   width: 100%;
   margin-top: 12px;
@@ -57,6 +56,12 @@ section.ActionField.ParameterField {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.ActionField .signature > .EntityField .ui.dropdown,
+.ActionField .signature > .EntityField .ui.dropdown.upward,
+.ActionField .signature > .EntityField .ui.dropdown:hover {
+  padding: 4px 8px 4px 8px;
+}
+
 .ActionField .signature > .EntityField .dcl.select-field,
 .ActionField .signature > .OptionsField .dcl.select-field {
   width: 100%;
@@ -70,15 +75,30 @@ section.ActionField.ParameterField {
   padding: 12px;
 }
 
-.ActionField .signature > .EntityField .dcl.select-field .ui.dropdown .dropdown.icon {
-  padding-top: 12px;
-  padding-right: 12px;
-}
-
 .ActionField .signature .action-options {
   margin: 10px 8px 8px 16px;
 }
 
 .ActionField .signature > .ui.dropdown > .dropdown.icon {
   display: none;
+}
+
+.ActionField aside div.ParameterField {
+  border-top: none;
+}
+
+.ActionField aside div.ParameterField:first-of-type {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-top: 1px solid rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.ActionField aside div.ParameterField:last-of-type {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.ActionField aside .dcl.dcl.select-field {
+  width: 100%;
 }

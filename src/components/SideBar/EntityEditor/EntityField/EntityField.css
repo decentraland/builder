@@ -8,6 +8,9 @@
   align-items: center;
   cursor: pointer;
   width: 100px;
+  height: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .EntityField .trigger .text {
@@ -34,7 +37,12 @@
 }
 
 .EntityField .dcl.select-field .ui.dropdown .dropdown.icon {
-  padding-top: 10px;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  top: 0;
+  left: 0;
+  padding: 8px;
 }
 
 .EntityField .dcl.select-field .ui.dropdown {
@@ -44,6 +52,7 @@
   margin-top: 0px;
   display: flex;
   align-items: center;
+  justify-content: space-around;
 }
 
 .EntityField .dcl.select-field .ui.dropdown .menu {
