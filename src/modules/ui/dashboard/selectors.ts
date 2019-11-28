@@ -3,7 +3,7 @@ import { Location } from 'history'
 import { getLocation } from 'connected-react-router'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { RootState } from 'modules/common/types'
-import { getData } from 'modules/project/selectors'
+import { getUserProjects } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { SortBy } from './types'
 
@@ -20,7 +20,7 @@ export const didDismissSyncedToast = (state: RootState) => getState(state).didDi
 export const didDismissSignInToast = (state: RootState) => getState(state).didDismissSignInToast
 
 export const getTotalPages = createSelector<RootState, DataByKey<Project>, number>(
-  getData,
+  getUserProjects,
   projects => Math.max(Math.ceil(Object.keys(projects).length / PAGE_SIZE), 1)
 )
 
@@ -62,7 +62,7 @@ export const getSortBy = createSelector<RootState, Location, SortBy>(
 export const getProjects = createSelector<RootState, number, SortBy, DataByKey<Project>, Project[]>(
   getPage,
   getSortBy,
-  getData,
+  getUserProjects,
   (page, sortBy, projects) => {
     const limit = PAGE_SIZE
     const offset = (page - 1) * PAGE_SIZE

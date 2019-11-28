@@ -1,5 +1,6 @@
 .BooleanField .ui.fitted.toggle.checkbox {
   width: 28px;
+  padding-top: 2px;
 }
 
 .BooleanField .ui.toggle label {

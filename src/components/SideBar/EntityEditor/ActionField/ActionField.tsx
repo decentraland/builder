@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Dropdown } from 'decentraland-ui'
-import { AssetParameterValues, AssetActionValue } from 'modules/asset/types'
+import { AssetParameterValues, AssetActionValue, AssetAction } from 'modules/asset/types'
 import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
 import OptionsField from '../OptionsField'
@@ -13,14 +13,7 @@ export default class ActionField extends React.PureComponent<Props> {
     const actions = this.getActionOptions(entityName)
     const actionId = actions.length > 0 ? actions[0].value : ''
     const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
-    let values: Record<string, any> = {}
-
-    if (action) {
-      values = action.parameters.reduce<any>((acc, val) => {
-        acc[val.id] = val.default
-        return acc
-      }, {})
-    }
+    const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
       [index]: {
@@ -51,10 +44,15 @@ export default class ActionField extends React.PureComponent<Props> {
   }
 
   handleActionChange = (actionId: string, index: number) => {
+    const { entityName } = this.props.value[index]
+    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const values: Record<string, any> = this.getActionValues(action)
+
     const value = Object.assign([], this.props.value, {
       [index]: {
         ...this.props.value[index],
-        actionId
+        actionId,
+        values
       }
     })
 
@@ -116,6 +114,19 @@ export default class ActionField extends React.PureComponent<Props> {
     return null
   }
 
+  getActionValues = (action: AssetAction | undefined) => {
+    let values: Record<string, any> = {}
+
+    if (action) {
+      values = action.parameters.reduce<any>((values, parameter) => {
+        values[parameter.id] = parameter.default
+        return values
+      }, {})
+    }
+
+    return values
+  }
+
   render() {
     const { id, label, entityAssets, className = '', value } = this.props
 
@@ -132,6 +143,7 @@ export default class ActionField extends React.PureComponent<Props> {
 
         {value &&
           value.map((action, i) => {
+            const actionId = `${id}-${i}`
             const options = this.getActionOptions(action.entityName)
             const parameters = this.getParameters(action)
             const parameterValues = value && value[i] ? value[i].values : {}
@@ -140,15 +152,16 @@ export default class ActionField extends React.PureComponent<Props> {
                 <div className="container">
                   <div className="signature">
                     <EntityField
-                      id={id}
+                      id={actionId}
                       value={value ? action.entityName : ''}
                       onChange={name => this.handleEntityChange(name, i)}
                       filter={Object.keys(entityAssets)}
                       className={'action'}
+                      direction={null}
                     />
                     {action.entityName && (
                       <OptionsField
-                        id={`${id}-actions`}
+                        id={`${actionId}-actions`}
                         value={action.actionId}
                         options={options}
                         onChange={actionid => this.handleActionChange(actionid, i)}
@@ -162,15 +175,18 @@ export default class ActionField extends React.PureComponent<Props> {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
-                  {parameters && (
-                    <EntityParameters
-                      id={id + '-parameters'}
-                      entityName={action.entityName}
-                      parameters={parameters}
-                      values={parameterValues}
-                      onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
-                      className="action"
-                    />
+
+                  {parameters && parameters.length > 0 && (
+                    <aside>
+                      <EntityParameters
+                        id={`${actionId}-parameters`}
+                        entityName={action.entityName}
+                        parameters={parameters}
+                        values={parameterValues}
+                        onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
+                        className="action"
+                      />
+                    </aside>
                   )}
                 </div>
               </>

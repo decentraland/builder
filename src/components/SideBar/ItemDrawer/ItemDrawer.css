@@ -6,11 +6,6 @@
 .ItemDrawer .overflow-container {
   height: calc(100% - 96px);
   overflow-y: auto;
-  overflow-y: overlay;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding-right: 16px;
 }
 
 .ItemDrawer .disclaimer {
