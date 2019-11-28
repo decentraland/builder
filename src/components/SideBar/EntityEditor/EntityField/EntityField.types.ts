@@ -7,6 +7,7 @@ export type Props = {
   value: string
   entities: Scene['entities']
   assetsByEntityName: Record<string, Asset>
+  direction?: 'left' | 'right' | null
   filter?: string[]
   className?: string
   onChange(value: string): void

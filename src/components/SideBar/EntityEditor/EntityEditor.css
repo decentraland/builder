@@ -98,11 +98,17 @@
   margin-bottom: 24px;
 }
 
-.EntityEditor .ParameterField .label {
+.EntityEditor .ParameterField > .label,
+.EntityEditor .ParameterField > .header > .label,
+.EntityEditor .ParameterField > .container > .label {
   font-size: var(--parameter-font-size);
   text-transform: capitalize;
   user-select: none;
   color: rgb(var(--purplish-grey-raw));
+  width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .EntityEditor .ui.dropdown .menu,
@@ -125,4 +131,8 @@
 .EntityEditor .ui.dropdown .item:hover,
 .EntityEditor .ui.dropdown.visible .item:hover {
   background-color: rgba(var(--bluish-steel-raw), 0.1);
+}
+
+.EntityEditor > .overflow-container > .parameters > .ActionField > .container {
+  padding: 10px;
 }
