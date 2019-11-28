@@ -230,6 +230,8 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
     } else {
       // import all the scripts
       let importScripts = ''
+      importScripts += `import { createChannel } from '../node_modules/decentraland-builder-scripts/channel'\n`
+      importScripts += `import { createInventory } from '../node_modules/decentraland-builder-scripts/inventory'\n`
       let currentImport = 1
       const assetIdToConstructorName = new Map<string, string>()
       for (const [assetId] of Array.from(scripts)) {
@@ -240,6 +242,15 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
 
       // execute all the scripts
       let executeScripts = ''
+
+      // setup channel
+      executeScripts += `const channelId = Math.random().toString(16).slice(2)`
+      executeScripts += `const channelBus = new MessageBus()`
+      executeScripts += `\n`
+      executeScripts += `const inventory = createInventory(UICanvas, UIContainerStack, UIImage)`
+      executeScripts += `const options = { inventory }`
+      executeScripts += `\n`
+
       let currentInstance = 1
       const assetIdToScriptName = new Map<string, string>()
       // instantiate all the scripts
@@ -251,14 +262,14 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       // initialize all the scripts
       for (const [assetId] of Array.from(scripts)) {
         const script = assetIdToScriptName.get(assetId)
-        executeScripts += `\n${script}.init()`
+        executeScripts += `\n${script}.init(options)`
       }
       // spawn all the instances
       for (const { entityId, assetId, values } of instances) {
         const script = assetIdToScriptName.get(assetId)
         const host = entityIdToName.get(entityId)
         const params = JSON.stringify(values)
-        executeScripts += `\n${script}.spawn(${host}, ${params})`
+        executeScripts += `\n${script}.spawn(${host}, ${params}, createChannel(channelId, ${host}, channelBus))`
       }
 
       code = importScripts + code + executeScripts
@@ -410,7 +421,11 @@ export function createDynamicFiles(args: { project: Project; scene: Scene; point
     [EXPORT_PATH.PACKAGE_FILE]: JSON.stringify(
       {
         ...packageJson,
-        name: project.id
+        name: project.id,
+        dependencies: {
+          ...packageJson.devDependencies,
+          'decentraland-builder-scripts': 'latest'
+        }
       },
       null,
       2
