@@ -8,7 +8,7 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
-const { Gizmos } = require('decentraland-ecs') as any
+const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
@@ -57,6 +57,8 @@ gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = true
 gizmo.cycle = false
+
+const smartItemComponent = new SmartItem()
 
 function getComponentById(id: string) {
   if (id in editorComponents) {
@@ -252,6 +254,9 @@ function createEntities(entities: Record<string, EntityDefinition>) {
       const component = getComponentById(componentId)
       if (component) {
         entity.addComponentOrReplace(component)
+        if (component instanceof Script) {
+          entity.addComponentOrReplace(smartItemComponent)
+        }
       }
     }
   }

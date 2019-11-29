@@ -162,7 +162,7 @@ function* handleAddItem(action: AddItemAction) {
   const entityId = uuidv4()
   const entityComponents = [transformId, shapeId]
   if (scriptId) {
-    entityComponents.push(scriptId)
+    entityComponents.unshift(scriptId)
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
   // TODO: get entity name from asset name rather than GLTFShape
