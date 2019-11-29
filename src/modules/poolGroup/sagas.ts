@@ -1,13 +1,12 @@
-import { takeLatest, put, call } from 'redux-saga/effects'
+import { takeLatest, put, call, fork } from 'redux-saga/effects'
 import { builder } from 'lib/api/builder'
 import { LOAD_POOL_GROUPS_REQUEST, LoadPoolGroupsRequestAction, loadPoolGroupsFailure, loadPoolGroupsSuccess, loadPoolGroupsRequest } from './actions'
 import { PoolGroup } from './types'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 
 export function* poolGroupSaga() {
+  yield fork(handlePoolGroups)
   yield takeLatest(LOAD_POOL_GROUPS_REQUEST, handleLoadPoolGroups)
-  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
 }
 
 function* handleLoadPoolGroups(_action: LoadPoolGroupsRequestAction) {
@@ -25,6 +24,6 @@ function* handleLoadPoolGroups(_action: LoadPoolGroupsRequestAction) {
   }
 }
 
-function* handleAuthSuccess(_action: AuthSuccessAction) {
+function* handlePoolGroups() {
   yield put(loadPoolGroupsRequest())
 }
