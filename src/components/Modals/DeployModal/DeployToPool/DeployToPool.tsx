@@ -166,7 +166,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
         </Header>
         <p className="modal-subtitle">{t('deployment_modal.pool.sign_in.subtitle')}</p>
         <Button className="submit" primary size="small" onClick={this.handleLogin}>
-          {t('deployment_modal.pool.sign_in.action')}
+          {t('global.sign_in')}
         </Button>
       </div>
     )
