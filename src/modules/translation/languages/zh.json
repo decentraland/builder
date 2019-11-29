@@ -224,28 +224,28 @@
     "title": "正在发布场景"
   },
   "deployment_contest_modal": {
-    "action": "Join the Contest",
+    "action": "参加比赛",
     "submit": {
-      "title": "Creator Contest",
-      "subtitle": "Send your scene to the Creator Contest",
-      "eth_address": "ETH addres (optional)",
-      "invalid_eth_address": "Invalid ETH address"
+      "title": "创建大赛",
+      "subtitle": "将场景发送到创建大赛。",
+      "eth_address": "ETH地址 (可选)",
+      "invalid_eth_address": "无效的ETH地址"
     },
     "recording": {
-      "title": "Preparing your scene",
-      "subtitle": "We are prepering your scene for the Contest, please wait."
+      "title": "准备场景",
+      "subtitle": "我们正在准备您参赛的场景，请稍侯。"
     },
     "updating": {
-      "title": "Preparing your scene",
-      "subtitle": "We are prepering your scene for the Contest, please wait."
+      "title": "准备场景",
+      "subtitle": "我们正在准备您参赛的场景，请稍侯。"
     },
     "success": {
-      "title": "Thanks for uploading your Scene!",
-      "subtitle": "You will receive an email notification."
+      "title": "感谢您上传场景！",
+      "subtitle": "若您的场景入选了，您将接获电邮通知。"
     },
     "sign_in": {
-      "subtitle": "You need to sign in before you send your scene to the contest",
-      "title": "Sign in"
+      "subtitle": "将场景发送参赛以前，请先登陆。",
+      "title": "登陆"
     }
   },
   "edit_project_modal": {
