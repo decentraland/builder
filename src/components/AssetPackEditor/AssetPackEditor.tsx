@@ -19,7 +19,8 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
 
   state: State = {
     errors: {},
-    isDirty: false
+    isDirty: false,
+    isLoading: false
   }
 
   componentDidMount() {
@@ -137,6 +138,7 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
 
     this.setState({
       isDirty: true,
+      isLoading: true,
       errors
     })
 
@@ -191,7 +193,7 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
 
   render() {
     const { assetPack, error, onAddAssets: onAddItems, onDeleteAssetPack } = this.props
-    const { errors, isDirty } = this.state
+    const { errors, isDirty, isLoading } = this.state
     const items = assetPack ? assetPack.assets.length : 0
     const hasErrors = Object.keys(errors).length > 0
     const isSubmitDisabled = isDirty ? hasErrors || items === 0 : false
@@ -245,7 +247,7 @@ export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> ex
               {t('asset_pack.edit_assetpack.action_delete')}
             </Button>
           )}
-          <Button className="submit" disabled={isSubmitDisabled} onClick={this.handleSubmit} primary>
+          <Button className="submit" disabled={isSubmitDisabled || isLoading} onClick={this.handleSubmit} primary>
             {onDeleteAssetPack ? t('asset_pack.edit_assetpack.action_edit') : t('asset_pack.edit_assetpack.action_create')}
           </Button>
         </div>
