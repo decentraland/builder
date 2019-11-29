@@ -227,28 +227,28 @@
     "title": "Publica tu Escena"
   },
   "deployment_contest_modal": {
-    "action": "Contest",
+    "action": "Únete al Contest",
     "submit": {
       "title": "Creator Contest",
-      "subtitle": "Send your scene to the Creator Contest",
-      "eth_address": "ETH addres (optional)",
-      "invalid_eth_address": "Invalid ETH address"
+      "subtitle": "Envía tu escena al Creator Contest.",
+      "eth_address": "Dirección ETH (optional)",
+      "invalid_eth_address": "Dirección ETH inválida"
     },
     "recording": {
-      "title": "Preparing your scene",
-      "subtitle": "We are prepering your scene for the Contest, please wait."
+      "title": "Preparando tu escena",
+      "subtitle": "Estamos preparando su escena para el concurso, por favor espere."
     },
     "updating": {
-      "title": "Preparing your scene",
-      "subtitle": "We are prepering your scene for the Contest, please wait."
+      "title": "Preparando tu escena",
+      "subtitle": "Estamos preparando su escena para el concurso, por favor espere."
     },
     "success": {
-      "title": "Thanks for uploading your Scene!",
-      "subtitle": "You will receive an email notification."
+      "title": "¡Gracias por subir tu escena!",
+      "subtitle": "Recibiras una notificación por correo electrónico si se selecciona tu escena."
     },
     "sign_in": {
-      "subtitle": "You need to sign in before you send your scene to the contest",
-      "title": "Sign in"
+      "title": "Inicia sesión",
+      "subtitle": "Debes iniciar sesión antes de enviar tu escena al concurso."
     }
   },
   "edit_project_modal": {
