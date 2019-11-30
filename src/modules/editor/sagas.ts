@@ -448,9 +448,9 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
   })
 }
 
-function* handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
+function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
-  const previewMode: boolean = yield select(isPreviewing)
+  const previewMode: boolean = isPreviewing(store.getState() as RootState)
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
