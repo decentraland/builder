@@ -8,11 +8,10 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
-const { Gizmos } = require('decentraland-ecs') as any
+const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
-
 class MockMessageBus {
   static emitter = new EventEmitter()
   on(message: string, callback: (value: any, sender: string) => void) {
@@ -57,6 +56,8 @@ gizmo.position = true
 gizmo.rotation = true
 gizmo.scale = true
 gizmo.cycle = false
+
+const smartItemComponent = new SmartItem()
 
 function getComponentById(id: string) {
   if (id in editorComponents) {
@@ -151,7 +152,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             // ...and execute the script on the host entity
             const { assetId, values } = entity.getComponent(Script)
             const script = scriptInstances.get(assetId)!
-            const channel = createChannel('channel-id', host as any, MockMessageBus.emitter)
+            const channel = createChannel('channel-id', host as any, new MockMessageBus())
             script.spawn(host, values, channel)
           }
         }
@@ -252,6 +253,9 @@ function createEntities(entities: Record<string, EntityDefinition>) {
       const component = getComponentById(componentId)
       if (component) {
         entity.addComponentOrReplace(component)
+        if (component instanceof Script) {
+          entity.addComponentOrReplace(smartItemComponent)
+        }
       }
     }
   }

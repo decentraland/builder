@@ -39,7 +39,7 @@ export default class EntityParameters extends React.PureComponent<Props> {
             parameter={param}
             entityName={entityName}
             value={actions}
-            onChange={val => this.handleFieldChange(param.id, val)}
+            onChange={(val, debounce) => this.handleFieldChange(param.id, val, debounce)}
             className={className}
           />
         )
@@ -141,7 +141,7 @@ export default class EntityParameters extends React.PureComponent<Props> {
             max={param.max as number}
             step={param.step as number}
             value={values[param.id] as number}
-            onChange={val => this.handleFieldChange(param.id, val)}
+            onChange={val => this.handleFieldChange(param.id, val, true)}
             className={className}
           />
         )
