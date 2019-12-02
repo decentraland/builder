@@ -240,7 +240,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield all([put(createScene(saved.scene)), put(createProject(saved.project))])
+      yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, userId: null }))])
     }
   }
 }

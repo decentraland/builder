@@ -120,7 +120,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
         <p className="modal-subtitle">{t('deployment_modal.pool.success.body')}</p>
         <div>
           <Button className="submit" size="small" primary onClick={this.handleShare}>
-            {t('share_modal.share')}
+            {t('global.share')}
           </Button>
           <Button className="submit" size="small" secondary onClick={onClose}>
             {t('global.done')}
@@ -166,7 +166,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
         </Header>
         <p className="modal-subtitle">{t('deployment_modal.pool.sign_in.subtitle')}</p>
         <Button className="submit" primary size="small" onClick={this.handleLogin}>
-          {t('deployment_modal.pool.sign_in.action')}
+          {t('global.sign_in')}
         </Button>
       </div>
     )

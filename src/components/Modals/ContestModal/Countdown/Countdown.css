@@ -1,0 +1,23 @@
+.Countdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+}
+
+.Countdown .secondary {
+  color: var(--secondary-text);
+  padding-top: 6px;
+}
+
+.Countdown .CountdownDigit {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 64px;
+  align-items: center;
+}
+
+.Countdown .CountdownDigit .secondary {
+  font-size: 12px;
+  padding-top: 0;
+}

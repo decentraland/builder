@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
+import { getActivePoolGroup } from 'modules/poolGroup/selectors'
 import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityId, isLoading, isReady, getEnabledTools } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
@@ -16,6 +17,7 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     gizmo: getGizmo(state),
     currentProject: getCurrentProject(state),
+    currentPoolGroup: getActivePoolGroup(state),
     metrics: getCurrentMetrics(state),
     selectedEntityId,
     isLoading: !isReady(state) || isLoading(state),

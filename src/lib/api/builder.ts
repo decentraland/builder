@@ -11,6 +11,7 @@ import { createManifest } from 'modules/project/export'
 import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
+import { PoolGroup } from 'modules/poolGroup/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -26,6 +27,14 @@ export type RemoteProject = {
   cols: number
   created_at: string
   updated_at: string
+}
+
+export type RemotePoolGroup = {
+  id: string,
+  name: string,
+  is_active: boolean,
+  active_from: string,
+  active_until: string
 }
 
 export type RemoteAssetPack = {
@@ -146,6 +155,16 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
   }
 }
 
+function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
+  return {
+    id: poolGroup.id,
+    name: poolGroup.name,
+    isActive: poolGroup.is_active,
+    activeFrom: new Date(Date.parse(poolGroup.active_from)),
+    activeUntil: new Date(Date.parse(poolGroup.active_until))
+  }
+}
+
 // Remote deployment
 
 export type RemoteDeployment = {
@@ -192,11 +211,25 @@ export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deploy
   }
 }
 
+export type PoolDeploymentAdditionalFields = {
+  groups?: string[]
+}
+
+export type Pagination = {
+  limit?: number,
+  offset?: number
+}
+
+export type PoolFilters = {
+  group?: number,
+  user_id?: number
+}
+
 // API
 
 export class BuilderAPI extends BaseAPI {
-  async deployToPool(projectId: string) {
-    await this.request('put', `/projects/${projectId}/pool`, null, authorize())
+  async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
+    await this.request('put', `/projects/${projectId}/pool`, additionalInfo, authorize())
     return
   }
 
@@ -241,6 +274,15 @@ export class BuilderAPI extends BaseAPI {
   async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
     const project: RemoteProject = await this.request('get', `/projects/${projectId}/${type}`)
     return fromRemoteProject(project)
+  }
+
+  async fetchPools(filters: PoolFilters & Pagination) {
+    return this.request('get', '/pools', filters)
+  }
+
+  async fetchPoolGroups(activeOnly: boolean = false) {
+    const items: RemotePoolGroup[] = await this.request('get', '/pools/groups', { activeOnly })
+    return items.map(fromPoolGroup)
   }
 
   async saveProject(project: Project, scene: Scene) {

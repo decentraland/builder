@@ -1,0 +1,29 @@
+.DeployContestButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.DeployContestButton .ui.button.mini {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  height: 100%;
+  min-width: 80px;
+  background: var(--contest-background);
+}
+
+.DeployContestButton .ui.button.mini,
+.DeployContestButton .ui.button.mini:active,
+.DeployContestButton .ui.button.mini:focus,
+.DeployContestButton .ui.button.mini:hover {
+  transform: translateY(0px);
+}
+
+.DeployContestButton .dropdown.icon {
+  background: var(--contest-background);
+  border-radius: 4px;
+  padding: 8px 10px 16px 10px;
+  color: white !important;
+}

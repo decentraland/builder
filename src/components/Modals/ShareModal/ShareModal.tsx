@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { env } from 'decentraland-commons'
-import { Button, Loader, ModalNavigation } from 'decentraland-ui'
+import { Loader, ModalNavigation } from 'decentraland-ui'
 
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -11,6 +11,7 @@ import { ShareTarget } from 'modules/ui/share/types'
 import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
+import { LoginModal } from '..'
 
 const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', '')
 
@@ -35,10 +36,6 @@ export default class ShareModal extends React.PureComponent<Props, State> {
         onUpdate(metadata.id)
       }
     }
-  }
-
-  handleClickOutside = () => {
-    this.props.onClose()
   }
 
   handleClose = () => {
@@ -121,25 +118,22 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   }
 
   renderLogin() {
-    const { name } = this.props
     return (
-      <Modal name={name} onClose={this.handleClickOutside}>
-        <ModalNavigation title={t('share_modal.sign_in.title')} subtitle={t('share_modal.sign_in.subtitle')} onClose={this.handleClose} />
-        <div className="login-modal">
-          <div className="modal-action">
-            <Button primary size="small" onClick={this.handleLogin}>
-              {t('share_modal.sign_in.action')}
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <LoginModal
+        name={this.props.name}
+        onClose={this.props.onClose}
+        onLogin={this.handleLogin}
+        title={t('share_modal.sign_in.title')}
+        subtitle={t('share_modal.sign_in.subtitle')}
+        callToAction={t('global.sign_in')}
+      />
     )
   }
 
   renderLoading() {
     const { name } = this.props
     return (
-      <Modal name={name} onClose={this.handleClickOutside}>
+      <Modal name={name} onClose={this.handleClose}>
         <Loader size="large" />
       </Modal>
     )
@@ -158,7 +152,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Modal name={name} onClose={this.handleClickOutside}>
+      <Modal name={name} onClose={this.handleClose}>
         <ModalNavigation title={t('share_modal.title')} subtitle={t('share_modal.description')} onClose={this.handleClose} />
         <div className="share-modal">
           <div
@@ -173,10 +167,10 @@ export default class ShareModal extends React.PureComponent<Props, State> {
           </div>
           <div className="button-group">
             <a className="button facebook" onClick={this.handleShareWithFacebook} href={this.getFacebookLink()}>
-              <Icon name="facebook" /> {t(`share_modal.share`)}
+              <Icon name="facebook" /> {t(`global.share`)}
             </a>
             <a className="button twitter" onClick={this.handleShareWithTwitter} href={this.getTwitterLink()}>
-              <Icon name="twitter" /> {t(`share_modal.share`)}
+              <Icon name="twitter" /> {t(`global.share`)}
             </a>
           </div>
           <div className="copy-group">
