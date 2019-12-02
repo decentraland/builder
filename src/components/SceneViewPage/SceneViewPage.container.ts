@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { getCurrentProject, isFetching } from 'modules/project/selectors'
+import { isFetching, getCurrentPublicProject, getCurrentPool } from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
 import { isPreviewing , isReady } from 'modules/editor/selectors'
 import { isLoggedIn } from 'modules/auth/selectors'
@@ -11,18 +11,21 @@ import { togglePreview, setEditorReadOnly } from 'modules/editor/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
+import { likePoolRequest } from 'modules/pool/actions';
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isReady: isReady(state),
   isFetching: isFetching(state) && !isReady(state),
   isLoggedIn: isLoggedIn(state),
-  currentProject: getCurrentProject(state),
+  currentProject: getCurrentPublicProject(state),
+  currentPool: getCurrentPool(state),
   currentScene: getCurrentScene(state),
   currentAuthor: getCurrentAuthor(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onLikePool: (id: string, like: boolean = true) => dispatch(likePoolRequest(id, like)),
   onPreview: () => dispatch(togglePreview(true)),
   onReadOnly: (isReadOnly: boolean) => dispatch(setEditorReadOnly(isReadOnly)),
   onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type))

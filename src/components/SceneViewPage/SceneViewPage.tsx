@@ -10,8 +10,6 @@ import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 
-import { Project } from 'modules/project/types'
-
 import SceneViewMenu from './SceneViewMenu'
 import { Props, State } from './SceneViewPage.types'
 
@@ -22,7 +20,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
     const { currentProject, match, onLoadProject, onReadOnly } = this.props
     onReadOnly(true)
     if (!currentProject && match.params.projectId) {
-      onLoadProject(match.params.projectId, match.params.type || 'public')
+      onLoadProject(match.params.projectId, this.getType())
     }
   }
 
@@ -32,6 +30,40 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
   handlePreview = () => {
     this.props.onPreview()
+  }
+
+  handleLike = () => {
+    const { currentPool, isLoggedIn } = this.props
+    console.log(this.props)
+    if (currentPool && isLoggedIn) {
+      this.props.onLikePool(currentPool.id, !currentPool.like)
+    }
+  }
+
+  getType() {
+    return this.props.match && this.props.match.params && this.props.match.params.type || 'public'
+  }
+
+  getCurrentProject() {
+    const { currentProject, currentPool } = this.props
+
+    switch (this.getType()) {
+      case 'pool':
+        return currentPool
+      default:
+        return currentProject
+    }
+  }
+
+  getCurrentPool() {
+    const { currentPool } = this.props
+
+    switch (this.getType()) {
+      case 'pool':
+        return currentPool
+      default:
+        return null
+    }
   }
 
   getParcelCount() {
@@ -79,65 +111,69 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentProject, isFetching, isPreviewing } = this.props
+    const { isFetching, isPreviewing } = this.props
 
     if (isFetching) {
       return this.renderLoading()
     }
 
+    const currentProject = this.getCurrentProject()
     if (!currentProject) {
       return this.renderNotFount()
     }
 
-    const project = currentProject as Project
+    const currentPool = this.getCurrentPool()
     const { currentAuthor: author } = this.props
 
     return (
       <>
         {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />}
         {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
-          <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '') }>
-            <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }}>
+        <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '')}>
+          <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
               <ViewPort key="SceneView" />
             </Responsive>
-            </div>
-            <div className="scene-action-list">
-              <div style={{ flex: 1 }} />
-              <Responsive minWidth={1025} as={React.Fragment}>
-                <div className="scene-action">
-                  <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
-                </div>
-              </Responsive>
-            </div>
-            <div className="detail">
-              <div className="title">
-                <h1>{project.title}</h1>
+          </div>
+          <div className="scene-action-list">
+            {currentPool && <div className="scene-action">
+              <Chip icon={currentPool.like ? "heart-full" : "heart"} type="circle" onClick={this.handleLike} />
+            </div>}
+            <div style={{ flex: 1 }} />
+            <Responsive minWidth={1025} as={React.Fragment}>
+              <div className="scene-action">
+                <Chip icon="view" type="circle" isActive={isPreviewing} onClick={this.handlePreview} />
               </div>
-              {author && (
-                <div className="author">
-                  {t('public_page.made_by')}
-                  <span className="author-name"> {author.name}</span>
-                  <div className="avatar">
-                    <img width="24" height="24" src={author.avatar.snapshots.face} />
-                  </div>
+            </Responsive>
+          </div>
+          <div className="detail">
+            <div className="title">
+              <h1>{currentProject.title}</h1>
+            </div>
+            {author && (
+              <div className="author">
+                {t('public_page.made_by')}
+                <span className="author-name"> {author.name}</span>
+                <div className="avatar">
+                  <img width="24" height="24" src={author.avatar.snapshots.face} />
                 </div>
-              )}
-              {project.description && (
-                <div className="description">
-                  <p>{project.description}</p>
-                </div>
-              )}
-              <div className="component-list">
-                <div className="component">
-                  <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels: this.getParcelCount() })}
-                </div>
-                <div className="component">
-                  <Icon name="scene-object" /> {t('public_page.object_count', { objects: this.getObjectCount() })}
-                </div>
+              </div>
+            )}
+            {currentProject.description && (
+              <div className="description">
+                <p>{currentProject.description}</p>
+              </div>
+            )}
+            <div className="component-list">
+              <div className="component">
+                <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels: this.getParcelCount() })}
+              </div>
+              <div className="component">
+                <Icon name="scene-object" /> {t('public_page.object_count', { objects: this.getObjectCount() })}
               </div>
             </div>
           </div>
+        </div>
         {!isPreviewing && <Footer isFullscreen />}
       </>
     )

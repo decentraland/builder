@@ -377,7 +377,8 @@
     "made_by": "Scene by",
     "try_it_out": "try it out",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
-    "object_count": "{objects} {objects, plural, one {object} other {objects}}"
+    "object_count": "{objects} {objects, plural, one {object} other {objects}}",
+    "likes": "{likes} {likes, plural, one {like} other {likes}}"
   },
   "popups": {
     "metrics_help": "¡Ver métricas aquí!",

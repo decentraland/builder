@@ -4,6 +4,7 @@ import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Template } from 'modules/template/types'
 import { Scene } from 'modules/scene/types'
+import { Pool } from 'modules/pool/types'
 
 // Create project from template
 
@@ -112,7 +113,8 @@ export const LOAD_PUBLIC_PROJECT_SUCCESS = '[Success] Load public project'
 export const LOAD_PUBLIC_PROJECT_FAILURE = '[Failure] Load public project'
 
 export const loadPublicProjectRequest = (id: string, type: 'public' | 'pool') => action(LOAD_PUBLIC_PROJECT_REQUEST, { id, type })
-export const loadPublicProjectSuccess = (project: Project) => action(LOAD_PUBLIC_PROJECT_SUCCESS, { project })
+export const loadPublicProjectSuccess = (project: Project | Pool, type: 'public' | 'pool') =>
+  action(LOAD_PUBLIC_PROJECT_SUCCESS, { project, type })
 export const loadPublicProjectFailure = (error: string) => action(LOAD_PUBLIC_PROJECT_FAILURE, { error })
 
 export type LoadPublicProjectRequestAction = ReturnType<typeof loadPublicProjectRequest>
@@ -125,7 +127,8 @@ export const LOAD_MANIFEST_REQUEST = '[Request] Load manifest'
 export const LOAD_MANIFEST_SUCCESS = '[Success] Load manifest'
 export const LOAD_MANIFEST_FAILURE = '[Failure] Load manifest'
 
-export const loadManifestRequest = (id: string, type: 'project' | 'public' | 'pool' = 'project') => action(LOAD_MANIFEST_REQUEST, { id, type })
+export const loadManifestRequest = (id: string, type: 'project' | 'public' | 'pool' = 'project') =>
+  action(LOAD_MANIFEST_REQUEST, { id, type })
 export const loadManifestSuccess = (manifest: Manifest) => action(LOAD_MANIFEST_SUCCESS, { manifest })
 export const loadManifestFailure = (error: string) => action(LOAD_MANIFEST_FAILURE, { error })
 

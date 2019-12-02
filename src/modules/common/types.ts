@@ -21,6 +21,7 @@ import { DeploymentState } from 'modules/deployment/reducer'
 import { MediaState } from 'modules/media/reducer'
 import { AuthState } from 'modules/auth/types'
 import { SyncState } from 'modules/sync/types'
+import { PoolState } from 'modules/pool/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -41,6 +42,7 @@ export type RootState = {
   ui: UIState
   project: ProjectState
   poolGroup: PoolGroupState
+  pool: PoolState
   profile: ProfileState
   scene: UndoableSceneState
   router: RouterState
