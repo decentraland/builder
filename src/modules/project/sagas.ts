@@ -57,6 +57,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { loadProfileRequest } from 'modules/profile/actions'
 import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo } from 'modules/editor/types'
+import { loadAssets } from 'modules/asset/actions'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -251,9 +252,10 @@ function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
     const project: Project = yield call(() => builder.fetchPublicProject(id, type))
     yield put(loadPublicProjectSuccess(project))
     if (project) {
-      const scene = yield getSceneByProjectId(id, type)
+      const scene: Scene = yield getSceneByProjectId(id, type)
       if (scene) {
         yield put(createScene(scene))
+        yield put(loadAssets(scene.assets))
       }
       if (project.userId) {
         yield put(loadProfileRequest(project.userId))

@@ -96,48 +96,48 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
       <>
         {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />}
         {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
-          <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '') }>
-            <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }}>
+        <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '')}>
+          <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
               <ViewPort key="SceneView" />
             </Responsive>
-            </div>
-            <div className="scene-action-list">
-              <div style={{ flex: 1 }} />
-              <Responsive minWidth={1025} as={React.Fragment}>
-                <div className="scene-action">
-                  <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
-                </div>
-              </Responsive>
-            </div>
-            <div className="detail">
-              <div className="title">
-                <h1>{project.title}</h1>
+          </div>
+          <div className="scene-action-list">
+            <div style={{ flex: 1 }} />
+            <Responsive minWidth={1025} as={React.Fragment}>
+              <div className="scene-action">
+                <Chip icon="preview" isActive={isPreviewing} onClick={this.handlePreview} />
               </div>
-              {author && (
-                <div className="author">
-                  {t('public_page.made_by')}
-                  <span className="author-name"> {author.name}</span>
-                  <div className="avatar">
-                    <img width="24" height="24" src={author.avatar.snapshots.face} />
-                  </div>
+            </Responsive>
+          </div>
+          <div className="detail">
+            <div className="title">
+              <h1>{project.title}</h1>
+            </div>
+            {author && (
+              <div className="author">
+                {t('public_page.made_by')}
+                <span className="author-name"> {author.name}</span>
+                <div className="avatar">
+                  <img width="24" height="24" src={author.avatar.snapshots.face} />
                 </div>
-              )}
-              {project.description && (
-                <div className="description">
-                  <p>{project.description}</p>
-                </div>
-              )}
-              <div className="component-list">
-                <div className="component">
-                  <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels: this.getParcelCount() })}
-                </div>
-                <div className="component">
-                  <Icon name="scene-object" /> {t('public_page.object_count', { objects: this.getObjectCount() })}
-                </div>
+              </div>
+            )}
+            {project.description && (
+              <div className="description">
+                <p>{project.description}</p>
+              </div>
+            )}
+            <div className="component-list">
+              <div className="component">
+                <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels: this.getParcelCount() })}
+              </div>
+              <div className="component">
+                <Icon name="scene-object" /> {t('public_page.object_count', { objects: this.getObjectCount() })}
               </div>
             </div>
           </div>
+        </div>
         {!isPreviewing && <Footer isFullscreen />}
       </>
     )
