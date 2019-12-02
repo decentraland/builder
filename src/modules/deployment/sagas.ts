@@ -80,10 +80,11 @@ function* handleMarkDirty() {
   }
 }
 
-function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
+function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
+  const { projectId, additionalInfo } = action.payload
   const rawProject: Project | null = yield select(getCurrentProject)
 
-  if (rawProject) {
+  if (rawProject && rawProject.id === projectId) {
     const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
 
     try {
@@ -98,12 +99,14 @@ function* handleDeployToPoolRequest(_: DeployToPoolRequestAction) {
       yield call(() =>
         builder.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
       )
-      yield call(() => builder.deployToPool(project.id))
+      yield call(() => builder.deployToPool(project.id, additionalInfo))
 
       yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
     } catch (e) {
       yield put(deployToPoolFailure(e.message))
     }
+  } else if (rawProject) {
+    yield put(deployToPoolFailure('Unable to Publish: Not current project'))
   } else {
     yield put(deployToPoolFailure('Unable to Publish: Invalid project'))
   }

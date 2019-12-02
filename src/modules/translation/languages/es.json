@@ -115,7 +115,6 @@
   "share_modal": {
     "title": "Comparte tu Escena",
     "description": "Deja que tus amigos y co-creadores vean tu trabajo",
-    "share": "Compartir",
     "copy": "Copiar enlace",
     "copied": "Copiado",
     "uri": {
@@ -123,7 +122,6 @@
       "twitter": "https://twitter.com/intent/tweet?text=Acabo de agregar un nuevo diseño a Decentraland a través del Builder. Mírala a continuación y luego crea el tuyo propio. ¡El mundo virtual no se va a construir solo! {url}&hashtags=builder,virtualworld,gaming"
     },
     "sign_in": {
-      "action": "Iniciar sesión",
       "subtitle": "Necesitas iniciar sesión para compartir tu Escena",
       "title": "Iniciar sesión"
     }
@@ -228,6 +226,31 @@
     },
     "title": "Publica tu Escena"
   },
+  "deployment_contest_modal": {
+    "action": "Únete al Contest",
+    "submit": {
+      "title": "Creator Contest",
+      "subtitle": "Envía tu escena al Creator Contest.",
+      "eth_address": "Dirección ETH (optional)",
+      "invalid_eth_address": "Dirección ETH inválida"
+    },
+    "recording": {
+      "title": "Preparando tu escena",
+      "subtitle": "Estamos preparando su escena para el concurso, por favor espere."
+    },
+    "updating": {
+      "title": "Preparando tu escena",
+      "subtitle": "Estamos preparando su escena para el concurso, por favor espere."
+    },
+    "success": {
+      "title": "¡Gracias por subir tu escena!",
+      "subtitle": "Recibiras una notificación por correo electrónico si se selecciona tu escena."
+    },
+    "sign_in": {
+      "title": "Inicia sesión",
+      "subtitle": "Debes iniciar sesión antes de enviar tu escena al concurso."
+    }
+  },
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la Escena",
@@ -271,6 +294,7 @@
     "read_more": "Leer más",
     "save": "Salvar",
     "send": "Enviar",
+    "share": "Compartir",
     "sign_in": "Inicia sesión",
     "sign_up": "Suscribirse",
     "submit": "Enviar",

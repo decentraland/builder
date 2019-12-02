@@ -7,6 +7,9 @@
   --promo-banner-text: white;
   --promo-banner-bg: #171717;
 
+  --contest-color: white;
+  --contest-background: #691ea9;
+
   /**
   * Component variables
   */
@@ -20,7 +23,7 @@
   --topbar-height: 48px;
 
   /* Editor page Banner */
-  --incentive-banner-height: 40px;
+  --incentive-banner-height: 47px;
 
   /* SideBar */
   --sidebar-width: 370px;

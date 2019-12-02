@@ -1,6 +1,7 @@
 import { action } from 'typesafe-actions'
 import { Placement, Deployment } from 'modules/deployment/types'
 import { ProgressStage } from './types'
+import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
 
 // Fetch deployments
 export const LOAD_DEPLOYMENTS_REQUEST = '[Request] Load deployments'
@@ -20,7 +21,7 @@ export const DEPLOY_TO_POOL_REQUEST = '[Request] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_SUCCESS = '[Success] Deploy to LAND pool'
 export const DEPLOY_TO_POOL_FAILURE = '[Failure] Deploy to LAND pool'
 
-export const deployToPoolRequest = (projectId: string) => action(DEPLOY_TO_POOL_REQUEST, { projectId })
+export const deployToPoolRequest = (projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) => action(DEPLOY_TO_POOL_REQUEST, { projectId, additionalInfo })
 export const deployToPoolSuccess = (images: string) => action(DEPLOY_TO_POOL_SUCCESS, { images })
 export const deployToPoolFailure = (error: string) => action(DEPLOY_TO_POOL_FAILURE, { error })
 

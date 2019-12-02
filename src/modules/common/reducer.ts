@@ -13,6 +13,7 @@ import { editorReducer as editor } from 'modules/editor/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
 import { projectReducer as project } from 'modules/project/reducer'
+import { poolGroupReducer as poolGroup } from 'modules/poolGroup/reducer'
 import { profileReducer as profile } from 'modules/profile/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
@@ -34,6 +35,7 @@ export function createRootReducer(history: History) {
       asset,
       ui,
       project,
+      poolGroup,
       profile,
       scene,
       deployment,

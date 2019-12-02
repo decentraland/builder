@@ -12,7 +12,6 @@ const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
 const inventory = createInventory(ECS.UICanvas, ECS.UIContainerStack, ECS.UIImage)
-
 class MockMessageBus {
   static emitter = new EventEmitter()
   on(message: string, callback: (value: any, sender: string) => void) {
@@ -153,7 +152,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
             // ...and execute the script on the host entity
             const { assetId, values } = entity.getComponent(Script)
             const script = scriptInstances.get(assetId)!
-            const channel = createChannel('channel-id', host as any, MockMessageBus.emitter)
+            const channel = createChannel('channel-id', host as any, new MockMessageBus())
             script.spawn(host, values, channel)
           }
         }

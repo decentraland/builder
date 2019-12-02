@@ -35,6 +35,10 @@ section.ActionField.ParameterField {
   margin-right: 8px;
 }
 
+.ActionField .signature > .EntityField > .select-field > .dropdown > .trigger {
+  max-width: 90px;
+}
+
 .ActionField .signature > .EntityField,
 .ActionField .signature > .OptionsField {
   border: 0px;

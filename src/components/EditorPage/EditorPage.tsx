@@ -25,6 +25,11 @@ const TOAST_ITEMS_THRESHOLD = 5 // local storage toast will show when a user has
 const localStorage = getLocalStorage()
 
 export default class EditorPage extends React.PureComponent<Props, State> {
+
+  state = {
+    isIncentiveBannerOpen: false
+  }
+
   componentWillMount() {
     const { currentProject, onLoadAssetPacks, onOpenModal } = this.props
 
@@ -74,7 +79,15 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     }
   }
 
+  handleBannerShow = () => {
+    this.setState({ isIncentiveBannerOpen: true })
+  }
+  handleBannerClose = () => {
+    this.setState({ isIncentiveBannerOpen: false })
+  }
+
   render() {
+    const { isIncentiveBannerOpen } = this.state
     const { currentProject, isPreviewing, isSidebarOpen, isLoading, isFetching, isLoggedIn, numItems } = this.props
     const gridClasses = isPreviewing ? 'fullscreen' : 'horizontal-layout'
     const toolbarClasses = isSidebarOpen ? 'toolbar open' : 'toolbar'
@@ -82,6 +95,9 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
     if (isPreviewing) {
       wrapperClasses += ' fullscreen'
+    }
+    if (isIncentiveBannerOpen) {
+      wrapperClasses += ' with-banner'
     }
     if (isFetching) {
       return <LoadingPage />
@@ -94,7 +110,9 @@ export default class EditorPage extends React.PureComponent<Props, State> {
 
     return (
       <div className="EditorPage">
-        {isPreviewing ? null : <Ad slot="BUILDER_TOP_BANNER" type="full" />}
+        {isPreviewing ? null : (
+          <Ad slot="BUILDER_TOP_BANNER" type="full" advertisingDidMount={this.handleBannerShow} onClose={this.handleBannerClose} />
+        )}
         {isPreviewing ? null : <TopBar />}
         <Grid className={gridClasses}>
           <Grid.Row className={wrapperClasses}>

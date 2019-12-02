@@ -99,7 +99,6 @@
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
-  z-index: 1000;
 }
 
 .HomePage .project-cards .subtitle > .menu .ui.dropdown {

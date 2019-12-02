@@ -15,4 +15,5 @@ export type Props<T> = {
 export type State = {
   errors: Record<string, string>
   isDirty: boolean
+  isLoading: boolean
 }
