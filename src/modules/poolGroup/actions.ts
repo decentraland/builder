@@ -3,9 +3,9 @@ import { ModelById } from 'decentraland-dapps/dist/lib/types'
 
 import { PoolGroup } from './types'
 
-export const LOAD_POOL_GROUPS_REQUEST = '[Request] Load projects'
-export const LOAD_POOL_GROUPS_SUCCESS = '[Success] Load projects'
-export const LOAD_POOL_GROUPS_FAILURE = '[Failure] Load projects'
+export const LOAD_POOL_GROUPS_REQUEST = '[Request] Load pool groups'
+export const LOAD_POOL_GROUPS_SUCCESS = '[Success] Load pool groups'
+export const LOAD_POOL_GROUPS_FAILURE = '[Failure] Load pool groups'
 
 export const loadPoolGroupsRequest = () => action(LOAD_POOL_GROUPS_REQUEST, {})
 export const loadPoolGroupsSuccess = (poolGroups: ModelById<PoolGroup>) => action(LOAD_POOL_GROUPS_SUCCESS, { poolGroups })
