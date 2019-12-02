@@ -31,12 +31,14 @@ export default class ActionField extends React.PureComponent<Props> {
     const index = this.props.value ? this.props.value.length : 0
     const entityName = Object.keys(entityAssets)[0]
     const actions = this.getActionOptions(entityName)
+    const actionId = actions.length > 0 ? actions[0].value : ''
+    const action = actionId ? this.props.entityAssets[entityName].actions.find(a => a.id === actionId) : null
 
     const val = Object.assign([], value, {
       [index]: {
         entityName,
-        actionId: actions.length > 0 ? actions[0].value : '',
-        values: {}
+        actionId,
+        values: action ? this.getActionValues(action) : {}
       }
     })
 
@@ -149,7 +151,7 @@ export default class ActionField extends React.PureComponent<Props> {
             const parameterValues = value && value[i] ? value[i].values : {}
             return (
               <>
-                <div className="container">
+                <div className="container" key={actionId}>
                   <div className="signature">
                     <EntityField
                       id={actionId}
