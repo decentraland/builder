@@ -12,7 +12,7 @@ export default class ActionField extends React.PureComponent<Props> {
   handleEntityChange = (entityName: string, index: number) => {
     const actions = this.getActionOptions(entityName)
     const actionId = actions.length > 0 ? actions[0].value : ''
-    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const action = this.findAction(entityName, actionId)
     const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
@@ -32,7 +32,7 @@ export default class ActionField extends React.PureComponent<Props> {
     const entityName = Object.keys(entityAssets)[0]
     const actions = this.getActionOptions(entityName)
     const actionId = actions.length > 0 ? actions[0].value : ''
-    const action = actionId ? this.props.entityAssets[entityName].actions.find(a => a.id === actionId) : null
+    const action = actionId ? this.findAction(entityName, actionId) : null
 
     const val = Object.assign([], value, {
       [index]: {
@@ -47,7 +47,7 @@ export default class ActionField extends React.PureComponent<Props> {
 
   handleActionChange = (actionId: string, index: number) => {
     const { entityName } = this.props.value[index]
-    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const action = this.findAction(entityName, actionId)
     const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
@@ -95,6 +95,10 @@ export default class ActionField extends React.PureComponent<Props> {
     this.props.onChange(val, false)
   }
 
+  findAction(entityName: string, actionId: string) {
+    return this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+  }
+
   getActionOptions = (entityName: string) => {
     const { entityAssets } = this.props
 
@@ -106,9 +110,9 @@ export default class ActionField extends React.PureComponent<Props> {
   }
 
   getParameters = (value: AssetActionValue) => {
-    const { entityAssets } = this.props
+    const { entityName, actionId } = value
 
-    const action = entityAssets[value.entityName] && entityAssets[value.entityName].actions.find(a => a.id === value.actionId)
+    const action = this.findAction(entityName, actionId)
     if (action) {
       return action.parameters
     }
