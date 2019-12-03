@@ -17,7 +17,6 @@ export type LoadPoolsRequestAction = ReturnType<typeof loadPoolsRequest>
 export type LoadPoolsSuccessAction = ReturnType<typeof loadPoolsSuccess>
 export type LoadPoolsFailureAction = ReturnType<typeof loadPoolsFailure>
 
-
 // Like pool
 
 export const LIKE_POOL_REQUEST = '[Request] Like pool'

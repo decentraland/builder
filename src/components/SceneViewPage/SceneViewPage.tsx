@@ -14,8 +14,8 @@ import SceneViewMenu from './SceneViewMenu'
 import { Props, State } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
-import { locations } from 'routing/locations';
-import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types';
+import { locations } from 'routing/locations'
+import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {

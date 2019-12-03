@@ -84,14 +84,14 @@ export const poolReducer = (state = INITIAL_STATE, action: PoolReducerAction): P
       const addition = like ? 1 : -1
       const currentPool = state.data[pool]
 
-      return  {
+      return {
         ...state,
         data: {
           ...state.data,
           [pool]: {
             ...currentPool,
             likes: (currentPool.likes || 0) + addition,
-            like,
+            like
           }
         }
       }

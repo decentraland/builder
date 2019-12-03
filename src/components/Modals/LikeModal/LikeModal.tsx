@@ -6,7 +6,6 @@ import { Props, State } from './LikeModal.types'
 
 import './LikeModal.css'
 
-
 export default class LikeModal extends React.PureComponent<Props, State> {
   state: State = {}
 

@@ -1,6 +1,4 @@
 
-
-
 export function stackHandle<A, T>(
   handleFunction: (action: A) => IterableIterator<T>,
   mergeFunction: (currentAction: A, nextAction: A | null, newAction: A) => A | null,
@@ -12,15 +10,15 @@ export function stackHandle<A, T>(
 
     const id = identifyFunction(action)
     if (stack.has(id)) {
-      const [ currentAction, nextAction ] = stack.get(id) as [A, A | null]
-      stack.set(id, [ currentAction, mergeFunction(currentAction, nextAction, action) ])
+      const [currentAction, nextAction] = stack.get(id) as [A, A | null]
+      stack.set(id, [currentAction, mergeFunction(currentAction, nextAction, action)])
       return
     } else {
-      stack.set(id, [ action, null ])
+      stack.set(id, [action, null])
     }
 
     yield* handleFunction(action)
-    const [ , nextAction ] = stack.get(id) as [A, A | null]
+    const [, nextAction] = stack.get(id) as [A, A | null]
     stack.delete(id)
     if (nextAction) {
       yield* selfHandle(nextAction)

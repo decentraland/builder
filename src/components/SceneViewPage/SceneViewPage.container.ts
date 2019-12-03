@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import { isFetching, getCurrentPublicProject, getCurrentPool } from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
-import { isPreviewing , isReady } from 'modules/editor/selectors'
+import { isPreviewing, isReady } from 'modules/editor/selectors'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { loadPublicProjectRequest } from 'modules/project/actions'
 import { getCurrentScene } from 'modules/scene/selectors'
@@ -12,7 +12,7 @@ import { openModal } from 'modules/modal/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
-import { likePoolRequest } from 'modules/pool/actions';
+import { likePoolRequest } from 'modules/pool/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),

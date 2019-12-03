@@ -1,11 +1,7 @@
 import { put, call, takeLatest } from 'redux-saga/effects'
-import { LikePoolRequestAction, likePoolFailure, likePoolSuccess, LIKE_POOL_REQUEST } from './actions';
-import { builder } from 'lib/api/builder';
-import { stackHandle } from './utils';
-
-export function* poolSaga() {
-  yield takeLatest(LIKE_POOL_REQUEST, handlePoolLike)
-}
+import { LikePoolRequestAction, likePoolFailure, likePoolSuccess, LIKE_POOL_REQUEST } from './actions'
+import { builder } from 'lib/api/builder'
+import { stackHandle } from './utils'
 
 // export const handlePoolLike = stackPoolLike()
 export const handlePoolLike = stackHandle(
@@ -31,3 +27,7 @@ export const handlePoolLike = stackHandle(
     return action.payload.pool
   }
 )
+
+export function* poolSaga() {
+  yield takeLatest(LIKE_POOL_REQUEST, handlePoolLike)
+}
