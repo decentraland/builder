@@ -138,7 +138,8 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
         data: {
           ...state.data,
           [project.id]: project
-        }
+        },
+        loading: loadingReducer(state.loading, action)
       }
     }
     case LOAD_MANIFEST_SUCCESS: {
