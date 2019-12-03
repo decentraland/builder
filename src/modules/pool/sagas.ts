@@ -17,7 +17,7 @@ export const handlePoolLike = stackHandle(
   function mergeLikeAction(currentAction: LikePoolRequestAction, nextAction: LikePoolRequestAction | null, newAction: LikePoolRequestAction) {
     if (nextAction === null && currentAction.payload.like !== newAction.payload.like) {
       return newAction
-    } else if (nextAction && nextAction.payload.like !== nextAction.payload.like) {
+    } else if (nextAction && nextAction.payload.like !== newAction.payload.like) {
       return null
     } else {
       return nextAction
