@@ -128,8 +128,8 @@
   },
   "like_modal": {
     "sign_in": {
-      "subtitle": "You have to sign in to give a like",
-      "title": "Do you like this scene?"
+      "subtitle": "Inicia sesión para demostrar tu aprecio",
+      "title": "¿Te gusta esta escena?"
     }
   },
   "deployment_modal": {
