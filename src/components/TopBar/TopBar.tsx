@@ -158,7 +158,7 @@ export default class TopBar extends React.PureComponent<Props> {
             </ShortcutTooltip>
             <span className="contest-button-wrapper">
               {!currentPoolGroup && <ShareButton />}
-              <DeployButton />
+              {!currentPoolGroup && <DeployButton />}
               {currentPoolGroup && <DeployContestButton />}
             </span>
           </Grid.Row>

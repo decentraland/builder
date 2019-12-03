@@ -30,19 +30,18 @@ export type RemoteProject = {
   updated_at: string
 }
 
-<<<<<<< HEAD
 export type RemotePoolGroup = {
   id: string,
   name: string,
   is_active: boolean,
   active_from: string,
   active_until: string
-=======
+}
+
 export type RemotePool = RemoteProject & {
   groups: string[]
   likes: number
   like: boolean
->>>>>>> feat: add like button
 }
 
 export type RemoteAssetPack = {

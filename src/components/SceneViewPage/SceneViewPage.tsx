@@ -14,6 +14,8 @@ import SceneViewMenu from './SceneViewMenu'
 import { Props, State } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
+import { locations } from 'routing/locations';
+import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types';
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -33,10 +35,14 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   handleLike = () => {
-    const { currentPool, isLoggedIn } = this.props
-    console.log(this.props)
-    if (currentPool && isLoggedIn) {
-      this.props.onLikePool(currentPool.id, !currentPool.like)
+    const { currentPool, isLoggedIn, onOpenModal } = this.props
+
+    if (currentPool) {
+      if (isLoggedIn) {
+        this.props.onLikePool(currentPool.id, !currentPool.like)
+      } else {
+        onOpenModal('LikeModal', { currentUrl: locations.poolView(currentPool.id, ShareModalType.POOL) })
+      }
     }
   }
 

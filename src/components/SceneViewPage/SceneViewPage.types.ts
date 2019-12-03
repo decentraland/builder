@@ -7,7 +7,8 @@ import { loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'module
 import { Scene } from 'modules/scene/types'
 import { Profile } from 'modules/profile/types'
 import { togglePreview, TogglePreviewAction, setEditorReadOnly, SetEditorReadOnlyAction } from 'modules/editor/actions'
-import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions';
+import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
   match: match<{ projectId: string; type: 'public' | 'pool' }>
@@ -25,6 +26,7 @@ export type Props = {
   onReadOnly: typeof setEditorReadOnly
   onPreview: () => ReturnType<typeof togglePreview>
   onLikePool: typeof likePoolRequest
+  onOpenModal: typeof openModal
 }
 
 export type State = {}
@@ -33,5 +35,5 @@ export type MapStateProps = Pick<
   Props,
   'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentPool' | 'currentScene' | 'currentAuthor'
 >
-export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onReadOnly' | 'onLikePool'>
-export type MapDispatch = Dispatch<LoadPublicProjectRequestAction | SetEditorReadOnlyAction | TogglePreviewAction | LikePoolRequestAction>
+export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onReadOnly' | 'onLikePool' | 'onOpenModal'>
+export type MapDispatch = Dispatch<LoadPublicProjectRequestAction | SetEditorReadOnlyAction | TogglePreviewAction | LikePoolRequestAction | OpenModalAction>

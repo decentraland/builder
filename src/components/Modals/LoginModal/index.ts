@@ -1,3 +1,3 @@
-import DeployModal from './LoginModal'
+import LoginModal from './LoginModal'
 
-export default DeployModal
+export default LoginModal

@@ -126,6 +126,12 @@
       "title": "Iniciar sesión"
     }
   },
+  "like_modal": {
+    "sign_in": {
+      "subtitle": "You have to sign in to give a like",
+      "title": "Do you like this scene?"
+    }
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
