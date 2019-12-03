@@ -539,9 +539,9 @@ function* handleApplyLayout(action: ApplyLayoutAction) {
 
 function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   let components = { ...scene.components }
+  let assets = { ...scene.assets }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
-
   if (asset) {
     const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
     const gltf = gltfs[asset.model]
@@ -586,7 +586,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           id: entityId,
           components: newComponents,
           disableGizmos: true,
-          name: getEntityName(scene, newComponents)
+          name: getEntityName({ ...scene, entities }, newComponents)
         }
       }
     }
@@ -603,7 +603,15 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
     }
   }
 
-  yield put(provisionScene({ ...scene, components, entities, ground }))
+  // update assets removing the old ground and adding the new one
+  if (scene.ground) {
+    delete assets[scene.ground.assetId]
+  }
+  if (ground) {
+    assets[ground.assetId] = asset
+  }
+
+  yield put(provisionScene({ ...scene, components, entities, ground, assets }))
 }
 
 function* handleSetScriptParameters(action: SetScriptValuesAction) {
