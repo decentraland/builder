@@ -19,7 +19,7 @@
 }
 
 .SceneViewPage.preview .scene-action-list {
-  display: none
+  display: none;
 }
 
 .SceneViewPage .thumbnail {
@@ -36,6 +36,13 @@
   align-items: center;
 }
 
+.SceneViewPage.mini canvas.dcl-canvas {
+  cursor: grab !important;
+}
+
+.SceneViewPage.mini canvas.dcl-canvas:active {
+  cursor: grabbing !important;
+}
 
 .SceneViewPage.preview,
 .SceneViewPage.preview .thumbnail {
@@ -72,7 +79,7 @@
 }
 
 .SceneViewPage.preview .detail {
-  display: none
+  display: none;
 }
 
 .SceneViewPage .detail .title {
@@ -100,7 +107,7 @@
 .SceneViewPage .detail .avatar {
   width: 24px;
   height: 24px;
-  border-radius: 12px;  
+  border-radius: 12px;
   margin-left: 12px;
   background: var(--innocence);
   display: inline-block;
@@ -108,7 +115,7 @@
 }
 
 .SceneViewPage .detail .avatar img {
-  border-radius: 12px; 
+  border-radius: 12px;
   width: 24px;
   height: 24px;
 }
@@ -117,7 +124,7 @@
   font-size: 17px;
   line-height: 24px;
   margin: 8px 0;
-  color: rgba(var(--innocence-raw), .8);
+  color: rgba(var(--innocence-raw), 0.8);
   letter-spacing: -0.2px;
   flex: 0 0 100%;
 }
@@ -130,7 +137,7 @@
   line-height: 16px;
   text-transform: uppercase;
   margin-top: 24px;
-  flex: 0 0 100%
+  flex: 0 0 100%;
 }
 
 .SceneViewPage .detail .component-list .component {
@@ -138,7 +145,7 @@
 }
 
 .SceneViewPage .detail .component-list .component .Icon {
-  margin-right: .5em;
+  margin-right: 0.5em;
   vertical-align: top;
 }
 

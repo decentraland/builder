@@ -135,7 +135,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
       <>
         {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />}
         {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
-        <div className={'SceneViewPage' + (isPreviewing ? ' preview' : '')}>
+        <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
               <ViewPort key="SceneView" />
