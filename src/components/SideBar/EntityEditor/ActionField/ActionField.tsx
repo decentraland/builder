@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Dropdown } from 'decentraland-ui'
-import { AssetParameterValues, AssetActionValue, AssetAction } from 'modules/asset/types'
+import { AssetParameterValues, AssetActionValue, AssetAction, AssetParameterType } from 'modules/asset/types'
 import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
 import OptionsField from '../OptionsField'
@@ -121,7 +121,7 @@ export default class ActionField extends React.PureComponent<Props> {
 
     if (action) {
       values = action.parameters.reduce<any>((values, parameter) => {
-        values[parameter.id] = parameter.default
+        values[parameter.id] = parameter.type === AssetParameterType.ACTIONS ? [] : parameter.default
         return values
       }, {})
     }
