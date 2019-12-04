@@ -40,6 +40,7 @@ import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getData as getDeployments } from './selectors'
 import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
+import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getSub, isLoggedIn } from 'modules/auth/selectors'
@@ -99,6 +100,7 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
       yield call(() =>
         builder.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
       )
+      yield put(takeScreenshot())
       yield call(() => builder.deployToPool(project.id, additionalInfo))
 
       yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
