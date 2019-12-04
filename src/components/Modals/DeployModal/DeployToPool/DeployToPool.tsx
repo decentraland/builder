@@ -131,7 +131,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderProgress() {
-    const { isRecording, isUploadingRecording, progress } = this.props
+    const { isRecording, progress } = this.props
 
     let classes = 'progress-bar'
     if (progress === 100) {
