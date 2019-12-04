@@ -10,6 +10,7 @@ export type Props = {
   selectedAssetPack: AssetPack | null
   selectedCategory: string | null
   search: string
+  showOnlyAssetsWithScripts: boolean
   isList: boolean
   isConnected: boolean
   collectibles: DataByKey<Asset>
@@ -29,6 +30,7 @@ export type MapStateProps = Pick<
   | 'isLoadingAssets'
   | 'collectibles'
   | 'selectedEntityId'
+  | 'showOnlyAssetsWithScripts'
 >
 export type MapDispatchProps = Pick<Props, 'onConnect'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction>

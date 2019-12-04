@@ -32,3 +32,11 @@ export const SET_SIDEBAR_VIEW = 'Set sidebar view'
 export const setSidebarView = (view: SidebarView) => action(SET_SIDEBAR_VIEW, { view })
 
 export type SetSidebarViewAction = ReturnType<typeof setSidebarView>
+
+// Toogle scripts
+
+export const TOGGLE_SCRIPTS = 'Toggle scripts'
+
+export const toggleScripts = (value: boolean) => action(TOGGLE_SCRIPTS, { value })
+
+export type ToggleScriptsAction = ReturnType<typeof toggleScripts>

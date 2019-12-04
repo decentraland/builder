@@ -3,7 +3,14 @@ import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 import { RootState } from 'modules/common/types'
-import { getSideBarCategories, getSelectedCategory, getSearch, getSelectedAssetPack, isList } from 'modules/ui/sidebar/selectors'
+import {
+  getSideBarCategories,
+  getSelectedCategory,
+  getSearch,
+  getSelectedAssetPack,
+  isList,
+  showOnlyAssetsWithScripts
+} from 'modules/ui/sidebar/selectors'
 import { getCollectibleAssets, isLoading as isLoadingAssets } from 'modules/asset/selectors'
 import { getSelectedEntityId } from 'modules/editor/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
@@ -21,6 +28,7 @@ const mapState = (state: RootState): MapStateProps => {
     search: getSearch(state),
     isList: isList(state),
     isConnected: isConnected(state),
+    showOnlyAssetsWithScripts: showOnlyAssetsWithScripts(state),
     selectedEntityId
   }
 }
@@ -29,7 +37,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(connectWalletRequest())
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ItemDrawer)
+export default connect(mapState, mapDispatch)(ItemDrawer)
