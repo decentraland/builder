@@ -15,9 +15,8 @@ export type Props = ModalProps & {
   isLoading: boolean
   isLoggedIn: boolean
   isReady: boolean
+  isSubmitting: boolean
   progress: number
-  isRecording: boolean
-  isUploadingRecording: boolean
   onOpenModal: typeof openModal
   onUpdate: typeof shareProject
   onLogin: typeof login
@@ -26,12 +25,11 @@ export type Props = ModalProps & {
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'error' | 'project' | 'poolGroup' | 'isLoading' | 'isLoggedIn' | 'isReady' | 'progress' | 'isRecording' | 'isUploadingRecording'>
+export type MapStateProps = Pick<Props, 'error' | 'project' | 'poolGroup' | 'isLoading' | 'isLoggedIn' | 'isReady' | 'progress' | 'isSubmitting'>
 export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin' | 'onShare' | 'onOpenModal' | 'onDeployToPool'>
 
 export type State = {
   isSuccess: boolean
-  isSubmitting: boolean
   ethAddress?: string
   hasEthAddressError: boolean
 }
