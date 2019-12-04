@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -34,13 +34,12 @@ import {
   getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
-import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity } from 'modules/editor/actions'
+import { getSelectedEntityId, isReady } from 'modules/editor/selectors'
+import { selectEntity, deselectEntity, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-// import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
 import {
   snapToGrid,
   snapToBounds,
@@ -76,6 +75,12 @@ export function* sceneSaga() {
 }
 
 function* handleAddItem(action: AddItemAction) {
+  const isEditorReady: boolean = yield select(isReady)
+
+  if (!isEditorReady) {
+    yield take(SET_EDITOR_READY)
+  }
+
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
