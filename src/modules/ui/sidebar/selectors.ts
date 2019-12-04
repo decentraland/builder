@@ -23,6 +23,8 @@ export const getSelectedAssetPackId = (state: RootState) => getState(state).sele
 
 export const getSidebarView = (state: RootState) => getState(state).view
 
+export const showOnlyAssetsWithScripts = (state: RootState) => getState(state).scripts
+
 const isSearchResult = (asset: Asset, search: string) => {
   // search by name
   if (asset.name.toLowerCase().includes(search)) {
@@ -58,6 +60,7 @@ export const getSideBarCategories = createSelector<
   SidebarView,
   string[],
   AssetState['data'],
+  boolean,
   Category[]
 >(
   getSelectedAssetPack,
@@ -66,7 +69,8 @@ export const getSideBarCategories = createSelector<
   getSidebarView,
   getDisabledAssets,
   getAssets,
-  (selectedAssetPack, search, selectedCategory, view, disabledAssets, assets) => {
+  showOnlyAssetsWithScripts,
+  (selectedAssetPack, search, selectedCategory, view, disabledAssets, assets, onlyAssetsWithScripts) => {
     const categories: { [categoryName: string]: Category } = {}
 
     let results = Object.values(assets)
@@ -81,6 +85,11 @@ export const getSideBarCategories = createSelector<
       if (selectedCategory) {
         results = results.filter(asset => asset.category === selectedCategory)
       }
+    }
+
+    // filter assets with scripts
+    if (onlyAssetsWithScripts) {
+      results = results.filter(asset => !!asset.script)
     }
 
     // build categories
@@ -123,15 +132,12 @@ export const getSideBarCategories = createSelector<
     // move selected asset pack up
     for (const category of categoryArray) {
       category.assets.sort((a, b) => {
-        if (selectedAssetPack) {
-          if (a.assetPackId === selectedAssetPack.id && b.assetPackId !== selectedAssetPack.id) {
-            return -1
-          }
-          if (a.assetPackId !== selectedAssetPack.id && b.assetPackId === selectedAssetPack.id) {
-            return 1
-          }
+        if (a.script && !b.script) {
+          return -1
+        } else if (!a.script && b.script) {
+          return 1
         }
-        return 0
+        return a.name > b.name ? 1 : -1
       })
     }
 

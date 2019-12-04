@@ -4,7 +4,7 @@
 }
 
 .SidebarSearch .ui.search-input {
-  width: 100%;
+  width: calc(100% - 44px);
   margin-bottom: 12px;
 }
 
@@ -35,4 +35,25 @@
 
 .SidebarSearch.disabled {
   opacity: 0.7;
+}
+
+.SidebarSearch .scripts-toggle {
+  width: 32px;
+  height: 32px;
+  background-color: var(--smart-grey);
+  display: inline-block;
+  border-radius: 12px;
+  position: absolute;
+  top: 0px;
+  right: 16px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.SidebarSearch .scripts-toggle:hover {
+  background: var(--bluish-steel);
+}
+
+.SidebarSearch .scripts-toggle.active {
+  background-color: #c640cd;
 }

@@ -7,7 +7,9 @@ import {
   SELECT_CATEGORY,
   SelectCategoryAction,
   SelectAssetPackAction,
-  SELECT_ASSET_PACK
+  SELECT_ASSET_PACK,
+  ToggleScriptsAction,
+  TOGGLE_SCRIPTS
 } from './actions'
 import { SidebarView } from './types'
 
@@ -15,6 +17,7 @@ export type SidebarState = {
   selectedAssetPackId: string | null
   selectedCategory: string | null
   search: string
+  scripts: boolean
   view: SidebarView
 }
 
@@ -22,6 +25,7 @@ const INITIAL_STATE: SidebarState = {
   selectedAssetPackId: null,
   selectedCategory: null,
   search: '',
+  scripts: false,
   view: SidebarView.GRID
 }
 
@@ -31,6 +35,7 @@ export type SidebarReducerAction =
   | SetSidebarViewAction
   | SelectCategoryAction
   | SelectAssetPackAction
+  | ToggleScriptsAction
 
 export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerAction): SidebarState => {
   switch (action.type) {
@@ -64,6 +69,12 @@ export const sidebarReducer = (state = INITIAL_STATE, action: SidebarReducerActi
     case OPEN_EDITOR: {
       return {
         ...INITIAL_STATE
+      }
+    }
+    case TOGGLE_SCRIPTS: {
+      return {
+        ...state,
+        scripts: action.payload.value
       }
     }
 
