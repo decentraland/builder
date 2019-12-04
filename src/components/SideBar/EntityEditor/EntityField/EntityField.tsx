@@ -86,11 +86,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
           </label>
         )}
 
-        {value.length > MAX_LENGTH ? (
-          <Popup content={value} position="top center" trigger={content} hideOnScroll={true} on="hover" inverted basic />
-        ) : (
-          content
-        )}
+        {value.length > MAX_LENGTH ? <Popup content={value} position="top center" trigger={content} on="hover" inverted basic /> : content}
       </div>
     )
   }

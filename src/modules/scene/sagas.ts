@@ -162,6 +162,7 @@ function* handleAddItem(action: AddItemAction) {
   const entityId = uuidv4()
   const entityComponents = [transformId, shapeId]
   if (scriptId) {
+    // Scripts components must go first
     entityComponents.unshift(scriptId)
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
@@ -301,7 +302,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
         assetId
       }
     } as ComponentDefinition<ComponentType.Script>
-    entityComponents.push(scriptId)
+
+    // Scripts components must go first
+    entityComponents.unshift(scriptId)
   }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
