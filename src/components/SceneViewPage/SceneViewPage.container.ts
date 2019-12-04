@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import { isFetching, getCurrentPublicProject, getCurrentPool } from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
-import { isPreviewing, isReady } from 'modules/editor/selectors'
+import { isPreviewing, isReady, isLoading } from 'modules/editor/selectors'
 import { isLoggedIn } from 'modules/auth/selectors'
 import { loadPublicProjectRequest } from 'modules/project/actions'
 import { getCurrentScene } from 'modules/scene/selectors'
@@ -16,7 +16,7 @@ import { likePoolRequest } from 'modules/pool/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
-  isReady: isReady(state),
+  isReady: !isLoading(state) && isReady(state),
   isFetching: isFetching(state) && !isReady(state),
   isLoggedIn: isLoggedIn(state),
   currentProject: getCurrentPublicProject(state),

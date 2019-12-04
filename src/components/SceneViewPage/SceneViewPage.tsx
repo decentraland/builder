@@ -117,7 +117,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isFetching, isPreviewing } = this.props
+    const { isFetching, isPreviewing, isReady } = this.props
 
     if (isFetching) {
       return this.renderLoading()
@@ -148,7 +148,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             <div style={{ flex: 1 }} />
             <Responsive minWidth={1025} as={React.Fragment}>
               <div className="scene-action">
-                <Chip icon="view" type="circle" isActive={isPreviewing} onClick={this.handlePreview} />
+                <Chip icon="view" type="circle" isActive={isPreviewing} isDisabled={!isReady} onClick={this.handlePreview} />
               </div>
             </Responsive>
           </div>
