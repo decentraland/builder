@@ -119,7 +119,7 @@ export function* getSceneByProjectId(projectId: string, type: 'project' | 'publi
   return scene
 }
 
-export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components']) {
+export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components'], assets: Record<string, Asset>) {
   const takenNames = new Set()
   const components = entityComponents.map(id => scene.components[id])
 
@@ -127,7 +127,7 @@ export function getEntityName(scene: Scene, entityComponents: EntityDefinition['
     const entity = scene.entities[entityId]
     takenNames.add(entity.name)
   }
-  return getUniqueName(components, takenNames, scene.assets)
+  return getUniqueName(components, takenNames, assets)
 }
 
 export function getUniqueName(components: AnyComponent[], takenNames: Readonly<Set<string>>, assets: Record<string, Asset>) {
