@@ -42,7 +42,7 @@
   height: 32px;
   background-color: var(--smart-grey);
   display: inline-block;
-  border-radius: 12px;
+  border-radius: 8px;
   position: absolute;
   top: 0px;
   right: 16px;
