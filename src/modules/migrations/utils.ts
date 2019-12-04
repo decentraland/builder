@@ -1,8 +1,8 @@
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { Migration, Versionable } from './types'
-import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
-import { getUniqueName } from 'modules/scene/utils'
+import { Scene, ComponentType, ComponentDefinition, AnyComponent } from 'modules/scene/types'
+import { getGLTFShapeName } from 'modules/scene/utils'
 
 export function addScale(scene: Scene) {
   if (scene) {
@@ -54,13 +54,37 @@ export function runMigrations<T extends Versionable>(input: T, migrations: Migra
   return out
 }
 
+export function getUniqueNameLegacy(components: AnyComponent[], takenNames: Readonly<Set<string>>) {
+  let attempts = 1
+  let rawName = 'entity'
+
+  for (let component of components) {
+    try {
+      if (component.type === ComponentType.GLTFShape) {
+        rawName = getGLTFShapeName(component as ComponentDefinition<ComponentType.GLTFShape>)
+      } else if (component.type === ComponentType.NFTShape) {
+        rawName = 'nft'
+      }
+    } catch (e) {
+      // swallow
+    }
+  }
+
+  let name = rawName
+  while (takenNames.has(name)) {
+    name = `${rawName}${++attempts}`
+  }
+
+  return name
+}
+
 export function addEntityName(scene: Scene) {
   const takenNames = new Set()
 
   for (let entityId in scene.entities) {
     const entity = scene.entities[entityId]
     const components = entity.components.map(id => scene.components[id])
-    const name = getUniqueName(components, takenNames)
+    const name = getUniqueNameLegacy(components, takenNames)
     takenNames.add(name)
     entity.name = name
   }
