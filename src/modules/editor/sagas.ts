@@ -70,7 +70,16 @@ import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
-import { getGizmo, getSelectedEntityId, getSceneMappings, isLoading, isReady, isPreviewing, isReadOnly } from './selectors'
+import {
+  getGizmo,
+  getSelectedEntityId,
+  getSceneMappings,
+  isLoading,
+  isReady,
+  isPreviewing,
+  isReadOnly,
+  getEntitiesOutOfBoundaries
+} from './selectors'
 
 import {
   getNewEditorScene,
@@ -450,7 +459,12 @@ function* handlePrefetchAsset(action: PrefetchAssetAction) {
 
 function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   const { entities } = args
-  const previewMode: boolean = isPreviewing(store.getState() as RootState)
+  const state = store.getState() as RootState
+  const entitiesInState: string[] = getEntitiesOutOfBoundaries(state)
+  if (entities.length === 0 && entitiesInState.length === 0) {
+    return
+  }
+  const previewMode: boolean = isPreviewing(state)
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
