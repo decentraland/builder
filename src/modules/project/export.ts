@@ -106,7 +106,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
     rotation: ECS.Quaternion.Euler(0, y, 0)
   })
   sceneEntity.addComponent(transform)
-  writer.addEntity('scene', sceneEntity as any)
+  writer.addEntity('_scene', sceneEntity as any)
 
   // Map component ids to entity ids
   const componentToEntity = new Map<string, string>()

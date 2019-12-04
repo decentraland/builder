@@ -139,7 +139,7 @@ export function getUniqueName(components: AnyComponent[], takenNames: Readonly<S
       if (component.type === ComponentType.GLTFShape) {
         const asset = assets[(component as ComponentDefinition<ComponentType.GLTFShape>).data.assetId]
         if (asset) {
-          rawName = asset.name
+          rawName = convertToCamelCase(asset.name.replace(/\s/g, '_'))
         }
       } else if (component.type === ComponentType.NFTShape) {
         rawName = 'nft'
