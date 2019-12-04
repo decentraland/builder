@@ -166,8 +166,8 @@ function* handleAddItem(action: AddItemAction) {
     entityComponents.unshift(scriptId)
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
-  // TODO: get entity name from asset name rather than GLTFShape
-  const entityName = getEntityName(newScene, entityComponents)
+  const assets: DataByKey<Asset> = yield select(getAssets)
+  const entityName = getEntityName(newScene, entityComponents, assets)
   newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
   newScene.assets[asset.id] = asset
 
@@ -279,7 +279,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const entityId = uuidv4()
   // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
   // This means that we use components before we are done creating all of them.
-  const entityName = getEntityName(scene, entityComponents)
+  const entityName = getEntityName(scene, entityComponents, assets)
 
   newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
 
@@ -541,8 +541,9 @@ function* handleApplyLayout(action: ApplyLayoutAction) {
 }
 
 function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
-  let components = { ...scene.components }
-  let assets = { ...scene.assets }
+  const assets: DataByKey<Asset> = yield select(getAssets)
+  let sceneComponents = { ...scene.components }
+  let sceneAssets = { ...scene.assets }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
   if (asset) {
@@ -552,7 +553,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
 
     // Create the Shape component if necessary
     if (!foundId) {
-      components[gltfId] = {
+      sceneComponents[gltfId] = {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
@@ -573,7 +574,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         const entityId = uuidv4()
         const transformId = uuidv4()
 
-        components[transformId] = {
+        sceneComponents[transformId] = {
           id: transformId,
           type: ComponentType.Transform,
           data: {
@@ -589,7 +590,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           id: entityId,
           components: newComponents,
           disableGizmos: true,
-          name: getEntityName({ ...scene, entities }, newComponents)
+          name: getEntityName({ ...scene, entities }, newComponents, assets)
         }
       }
     }
@@ -600,21 +601,21 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
 
   // remove unused components
-  for (const component of Object.values(components)) {
+  for (const component of Object.values(sceneComponents)) {
     if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
-      delete components[component.id]
+      delete sceneComponents[component.id]
     }
   }
 
   // update assets removing the old ground and adding the new one
   if (scene.ground) {
-    delete assets[scene.ground.assetId]
+    delete sceneAssets[scene.ground.assetId]
   }
   if (ground) {
-    assets[ground.assetId] = asset
+    sceneAssets[ground.assetId] = asset
   }
 
-  yield put(provisionScene({ ...scene, components, entities, ground, assets }))
+  yield put(provisionScene({ ...scene, components: sceneComponents, entities, ground, assets: sceneAssets }))
 }
 
 function* handleSetScriptParameters(action: SetScriptValuesAction) {
