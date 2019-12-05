@@ -11,11 +11,20 @@
   border: 0px;
   padding: 0px;
   min-height: 0px;
+  min-width: 0px;
   margin-top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .OptionsField .dcl.select-field div.ui.dropdown .icon {
-  padding-top: 2px;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  top: 0;
+  left: 0;
+  padding: 8px;
 }
 
 .OptionsField .dcl.select-field .ui.selection.active.dropdown,
@@ -38,4 +47,16 @@
   overflow: hidden;
   flex: 1;
   margin-left: 4px;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown .menu {
+  width: 250px;
+}
+
+.OptionsField .dcl.select-field .ui.dropdown .menu > .item {
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  flex: 1;
 }

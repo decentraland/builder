@@ -1,6 +1,7 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Icon, Input } from 'decentraland-ui'
+import { default as BuilderIcon } from 'components/Icon'
 import { debounce } from 'lib/debounce'
 
 import { Props, State } from './SidebarSearch.types'
@@ -71,8 +72,13 @@ export default class SidebarSearch extends React.PureComponent<Props, State> {
     this.handleSearchDebounced('')
   }
 
+  handleToggle = () => {
+    const { scripts, onToggleScripts } = this.props
+    onToggleScripts(!scripts)
+  }
+
   render() {
-    const { search, isDisabled } = this.props
+    const { search, scripts, isDisabled } = this.props
     let classes = 'SidebarSearch'
     if (isDisabled) {
       classes += ' disabled'
@@ -88,6 +94,9 @@ export default class SidebarSearch extends React.PureComponent<Props, State> {
           onChange={this.handleSearch}
           disabled={isDisabled}
         />
+        <div className={`scripts-toggle ${scripts ? 'active' : ''}`} onClick={this.handleToggle}>
+          <BuilderIcon name="smart" />
+        </div>
       </div>
     )
   }

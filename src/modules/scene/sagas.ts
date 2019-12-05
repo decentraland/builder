@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { takeLatest, put, select, call, delay } from 'redux-saga/effects'
+import { takeLatest, put, select, call, delay, take } from 'redux-saga/effects'
 import {
   ADD_ITEM,
   AddItemAction,
@@ -34,13 +34,12 @@ import {
   getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
-import { getSelectedEntityId } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity } from 'modules/editor/actions'
+import { getSelectedEntityId, isReady } from 'modules/editor/selectors'
+import { selectEntity, deselectEntity, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
-// import { LOAD_MANIFEST_SUCCESS, LoadManifestSuccessAction } from 'modules/project/actions'
 import {
   snapToGrid,
   snapToBounds,
@@ -76,6 +75,12 @@ export function* sceneSaga() {
 }
 
 function* handleAddItem(action: AddItemAction) {
+  const isEditorReady: boolean = yield select(isReady)
+
+  if (!isEditorReady) {
+    yield take(SET_EDITOR_READY)
+  }
+
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
@@ -162,11 +167,12 @@ function* handleAddItem(action: AddItemAction) {
   const entityId = uuidv4()
   const entityComponents = [transformId, shapeId]
   if (scriptId) {
+    // Scripts components must go first
     entityComponents.unshift(scriptId)
   }
   const newScene = { ...scene, components: newComponents, entities: newEntities }
-  // TODO: get entity name from asset name rather than GLTFShape
-  const entityName = getEntityName(newScene, entityComponents)
+  const assets: DataByKey<Asset> = yield select(getAssets)
+  const entityName = getEntityName(newScene, entityComponents, assets)
   newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
   newScene.assets[asset.id] = asset
 
@@ -278,7 +284,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const entityId = uuidv4()
   // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
   // This means that we use components before we are done creating all of them.
-  const entityName = getEntityName(scene, entityComponents)
+  const entityName = getEntityName(scene, entityComponents, assets)
 
   newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
 
@@ -301,7 +307,9 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
         assetId
       }
     } as ComponentDefinition<ComponentType.Script>
-    entityComponents.push(scriptId)
+
+    // Scripts components must go first
+    entityComponents.unshift(scriptId)
   }
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
@@ -538,10 +546,11 @@ function* handleApplyLayout(action: ApplyLayoutAction) {
 }
 
 function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
-  let components = { ...scene.components }
+  const assets: DataByKey<Asset> = yield select(getAssets)
+  let sceneComponents = { ...scene.components }
+  let sceneAssets = { ...scene.assets }
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
-
   if (asset) {
     const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
     const gltf = gltfs[asset.model]
@@ -549,7 +558,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
 
     // Create the Shape component if necessary
     if (!foundId) {
-      components[gltfId] = {
+      sceneComponents[gltfId] = {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
@@ -570,7 +579,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         const entityId = uuidv4()
         const transformId = uuidv4()
 
-        components[transformId] = {
+        sceneComponents[transformId] = {
           id: transformId,
           type: ComponentType.Transform,
           data: {
@@ -586,7 +595,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
           id: entityId,
           components: newComponents,
           disableGizmos: true,
-          name: getEntityName(scene, newComponents)
+          name: getEntityName({ ...scene, entities }, newComponents, assets)
         }
       }
     }
@@ -597,13 +606,21 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   const ground = asset ? { assetId: asset.id, componentId: gltfId } : null
 
   // remove unused components
-  for (const component of Object.values(components)) {
+  for (const component of Object.values(sceneComponents)) {
     if (!Object.values(entities).some(entity => entity.components.some(componentId => componentId === component.id))) {
-      delete components[component.id]
+      delete sceneComponents[component.id]
     }
   }
 
-  yield put(provisionScene({ ...scene, components, entities, ground }))
+  // update assets removing the old ground and adding the new one
+  if (scene.ground) {
+    delete sceneAssets[scene.ground.assetId]
+  }
+  if (ground) {
+    sceneAssets[ground.assetId] = asset
+  }
+
+  yield put(provisionScene({ ...scene, components: sceneComponents, entities, ground, assets: sceneAssets }))
 }
 
 function* handleSetScriptParameters(action: SetScriptValuesAction) {

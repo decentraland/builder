@@ -23,7 +23,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCreateAssetPack: () => dispatch(openModal('CreateAssetPackModal'))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(SidebarHeader)
+export default connect(mapState, mapDispatch)(SidebarHeader)

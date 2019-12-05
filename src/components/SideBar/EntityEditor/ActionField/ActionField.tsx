@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Dropdown } from 'decentraland-ui'
-import { AssetParameterValues, AssetActionValue, AssetAction } from 'modules/asset/types'
+import { AssetParameterValues, AssetActionValue, AssetAction, AssetParameterType } from 'modules/asset/types'
 import Icon from 'components/Icon'
 import EntityParameters from '../EntityParameters'
 import OptionsField from '../OptionsField'
@@ -12,7 +12,7 @@ export default class ActionField extends React.PureComponent<Props> {
   handleEntityChange = (entityName: string, index: number) => {
     const actions = this.getActionOptions(entityName)
     const actionId = actions.length > 0 ? actions[0].value : ''
-    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const action = this.findAction(entityName, actionId)
     const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
@@ -31,12 +31,14 @@ export default class ActionField extends React.PureComponent<Props> {
     const index = this.props.value ? this.props.value.length : 0
     const entityName = Object.keys(entityAssets)[0]
     const actions = this.getActionOptions(entityName)
+    const actionId = actions.length > 0 ? actions[0].value : ''
+    const action = actionId ? this.findAction(entityName, actionId) : null
 
     const val = Object.assign([], value, {
       [index]: {
         entityName,
-        actionId: actions.length > 0 ? actions[0].value : '',
-        values: {}
+        actionId,
+        values: action ? this.getActionValues(action) : {}
       }
     })
 
@@ -45,7 +47,7 @@ export default class ActionField extends React.PureComponent<Props> {
 
   handleActionChange = (actionId: string, index: number) => {
     const { entityName } = this.props.value[index]
-    const action = this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+    const action = this.findAction(entityName, actionId)
     const values: Record<string, any> = this.getActionValues(action)
 
     const value = Object.assign([], this.props.value, {
@@ -93,6 +95,10 @@ export default class ActionField extends React.PureComponent<Props> {
     this.props.onChange(val, false)
   }
 
+  findAction(entityName: string, actionId: string) {
+    return this.props.entityAssets[entityName].actions.find(a => a.id === actionId)
+  }
+
   getActionOptions = (entityName: string) => {
     const { entityAssets } = this.props
 
@@ -104,9 +110,9 @@ export default class ActionField extends React.PureComponent<Props> {
   }
 
   getParameters = (value: AssetActionValue) => {
-    const { entityAssets } = this.props
+    const { entityName, actionId } = value
 
-    const action = entityAssets[value.entityName] && entityAssets[value.entityName].actions.find(a => a.id === value.actionId)
+    const action = this.findAction(entityName, actionId)
     if (action) {
       return action.parameters
     }
@@ -119,7 +125,7 @@ export default class ActionField extends React.PureComponent<Props> {
 
     if (action) {
       values = action.parameters.reduce<any>((values, parameter) => {
-        values[parameter.id] = parameter.default
+        values[parameter.id] = parameter.type === AssetParameterType.ACTIONS ? [] : parameter.default
         return values
       }, {})
     }
@@ -149,7 +155,7 @@ export default class ActionField extends React.PureComponent<Props> {
             const parameterValues = value && value[i] ? value[i].values : {}
             return (
               <>
-                <div className="container">
+                <div className="container" key={actionId}>
                   <div className="signature">
                     <EntityField
                       id={actionId}

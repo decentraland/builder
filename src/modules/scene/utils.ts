@@ -119,7 +119,7 @@ export function* getSceneByProjectId(projectId: string, type: 'project' | 'publi
   return scene
 }
 
-export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components']) {
+export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components'], assets: Record<string, Asset>) {
   const takenNames = new Set()
   const components = entityComponents.map(id => scene.components[id])
 
@@ -127,17 +127,20 @@ export function getEntityName(scene: Scene, entityComponents: EntityDefinition['
     const entity = scene.entities[entityId]
     takenNames.add(entity.name)
   }
-  return getUniqueName(components, takenNames)
+  return getUniqueName(components, takenNames, assets)
 }
 
-export function getUniqueName(components: AnyComponent[], takenNames: Readonly<Set<string>>) {
+export function getUniqueName(components: AnyComponent[], takenNames: Readonly<Set<string>>, assets: Record<string, Asset>) {
   let attempts = 1
   let rawName = 'entity'
 
   for (let component of components) {
     try {
       if (component.type === ComponentType.GLTFShape) {
-        rawName = getGLTFShapeName(component as ComponentDefinition<ComponentType.GLTFShape>)
+        const asset = assets[(component as ComponentDefinition<ComponentType.GLTFShape>).data.assetId]
+        if (asset) {
+          rawName = convertToCamelCase(asset.name.replace(/\s/g, '_'))
+        }
       } else if (component.type === ComponentType.NFTShape) {
         rawName = 'nft'
       }

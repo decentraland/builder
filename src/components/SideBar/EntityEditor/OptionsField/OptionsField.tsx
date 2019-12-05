@@ -43,6 +43,7 @@ export default class OptionsField extends React.PureComponent<Props> {
           onChange={this.handleChange}
           trigger={this.renderTrigger()}
           search={false}
+          direction="left"
         />
       </div>
     )

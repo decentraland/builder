@@ -1,8 +1,10 @@
 import * as React from 'react'
-import { SelectField, DropdownProps } from 'decentraland-ui'
+import { SelectField, DropdownProps, Popup } from 'decentraland-ui'
 import { Props, State } from './EntityField.types'
-import './EntityField.css'
 import { Asset } from 'modules/asset/types'
+import './EntityField.css'
+
+const MAX_LENGTH = 6
 
 export default class EntityField extends React.PureComponent<Props, State> {
   state: State = {
@@ -42,9 +44,7 @@ export default class EntityField extends React.PureComponent<Props, State> {
     return (
       <span className="trigger">
         <img src={asset.thumbnail} />
-        <span title={value} className="text">
-          {value}
-        </span>
+        <span className="text">{value}</span>
       </span>
     )
   }
@@ -66,6 +66,18 @@ export default class EntityField extends React.PureComponent<Props, State> {
       options = options.filter(option => filter.includes(option.key))
     }
 
+    const content = (
+      <SelectField
+        id={id}
+        value={value}
+        options={options}
+        onChange={this.handleChange}
+        trigger={this.renderTrigger()}
+        search={false}
+        direction={direction === null ? undefined : direction}
+      />
+    )
+
     return (
       <div className={`EntityField ParameterField ${className}`} title="Item">
         {label && (
@@ -73,15 +85,8 @@ export default class EntityField extends React.PureComponent<Props, State> {
             {label}
           </label>
         )}
-        <SelectField
-          id={id}
-          value={value}
-          options={options}
-          onChange={this.handleChange}
-          trigger={this.renderTrigger()}
-          search={false}
-          direction={direction === null ? undefined : direction}
-        />
+
+        {value.length > MAX_LENGTH ? <Popup content={value} position="top center" trigger={content} on="hover" inverted basic /> : content}
       </div>
     )
   }
