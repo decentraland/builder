@@ -1,7 +1,7 @@
 import { Props as IconProps } from 'components/Icon/Icon.types'
 
 export type DefaultProps = {
-  text: string
+  text: React.ReactNode
   icon: IconProps['name'] | ''
   type: 'square' | 'rectangle' | 'circle'
   isActive: boolean
