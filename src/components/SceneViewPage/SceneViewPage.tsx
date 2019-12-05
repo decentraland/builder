@@ -73,7 +73,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   getParcelCount() {
-    const { currentProject } = this.props
+    const currentProject = this.getCurrentProject()
     if (!currentProject) {
       return 0
     }
