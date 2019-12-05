@@ -18,6 +18,8 @@
     "noImplicitReturns": true,
     "resolveJsonModule": true,
     "noUnusedParameters": true,
+    "downlevelIteration": true,
+    "importHelpers": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "plugins": [

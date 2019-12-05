@@ -12,6 +12,7 @@ import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
+import { Pool } from 'modules/pool/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -35,6 +36,12 @@ export type RemotePoolGroup = {
   is_active: boolean,
   active_from: string,
   active_until: string
+}
+
+export type RemotePool = RemoteProject & {
+  groups: string[]
+  likes: number
+  like: boolean
 }
 
 export type RemoteAssetPack = {
@@ -97,6 +104,16 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     },
     createdAt: remoteProject.created_at,
     updatedAt: remoteProject.updated_at
+  }
+}
+
+function fromRemotePool(remotePool: RemotePool): Pool {
+  return {
+    ...fromRemoteProject(remotePool),
+    isPublic: true,
+    groups: remotePool.groups || [],
+    likes: remotePool.likes || 0,
+    like: !!remotePool.like
   }
 }
 
@@ -272,8 +289,8 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
-    const project: RemoteProject = await this.request('get', `/projects/${projectId}/${type}`)
-    return fromRemoteProject(project)
+    const project: RemotePool = await this.request('get', `/projects/${projectId}/${type}`, null, authorize())
+    return type === 'pool' ? fromRemotePool(project) : fromRemoteProject(project)
   }
 
   async fetchPools(filters: PoolFilters & Pagination) {
@@ -359,6 +376,11 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteAssetPack(assetPack: FullAssetPack) {
     await this.request('delete', `/assetPacks/${assetPack.id}`, null, authorize())
+  }
+
+  async likePool(pool: string, like: boolean = true) {
+    const method = like ? 'put' : 'delete'
+    return this.request(method, `/pools/${pool}/likes`, null, authorize())
   }
 }
 

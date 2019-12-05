@@ -40,6 +40,7 @@ import { ContentServiceFile, ProgressStage } from './types'
 import { getCurrentDeployment, getData as getDeployments } from './selectors'
 import { SET_PROJECT } from 'modules/project/actions'
 import { signMessage } from 'modules/wallet/sagas'
+import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getSub, isLoggedIn } from 'modules/auth/selectors'
@@ -88,6 +89,7 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
     const project: Omit<Project, 'thumbnail'> = utils.omit(rawProject, ['thumbnail'])
 
     try {
+      yield put(setProgress(ProgressStage.NONE, 1))
       yield put(recordMediaRequest())
       const successAction: RecordMediaSuccessAction = yield take(RECORD_MEDIA_SUCCESS)
       const { north, east, south, west, preview } = successAction.payload.media
@@ -96,11 +98,18 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
         throw new Error('Failed to capture scene preview')
       }
 
+      yield put(setProgress(ProgressStage.NONE, 30))
       yield call(() =>
-        builder.uploadMedia(rawProject.id, preview, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+        builder.uploadMedia(rawProject.id, preview, { north, east, south, west })
       )
+
+      yield put(setProgress(ProgressStage.NONE, 60))
+      yield put(takeScreenshot())
+
+      yield put(setProgress(ProgressStage.NONE, 90))
       yield call(() => builder.deployToPool(project.id, additionalInfo))
 
+      yield put(setProgress(ProgressStage.NONE, 100))
       yield put(deployToPoolSuccess(window.URL.createObjectURL(preview)))
     } catch (e) {
       yield put(deployToPoolFailure(e.message))

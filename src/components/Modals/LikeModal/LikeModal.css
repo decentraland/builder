@@ -1,0 +1,13 @@
+.ui.small.modal.LikeModal {
+  width: auto;
+  border-radius: 12px;
+}
+
+.LikeModal .login-modal,
+.LikeModal .like-modal {
+  width: 480px;
+  padding: 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

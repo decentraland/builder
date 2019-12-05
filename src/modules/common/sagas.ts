@@ -19,6 +19,7 @@ import { locationSaga } from 'modules/location/sagas'
 import { syncSaga } from 'modules/sync/sagas'
 import { uiSaga } from 'modules/ui/sagas'
 import { poolGroupSaga } from 'modules/poolGroup/sagas'
+import { poolSaga } from 'modules/pool/sagas'
 
 export function* rootSaga() {
   yield all([
@@ -31,6 +32,7 @@ export function* rootSaga() {
     sceneSaga(),
     projectSaga(),
     poolGroupSaga(),
+    poolSaga(),
     profileSaga(),
     editorSaga(),
     keyboardSaga(),

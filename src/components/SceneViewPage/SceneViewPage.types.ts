@@ -2,16 +2,20 @@ import { Dispatch } from 'redux'
 import { match } from 'react-router'
 
 import { Project } from 'modules/project/types'
+import { Pool } from 'modules/pool/types'
 import { loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'modules/project/actions'
 import { Scene } from 'modules/scene/types'
 import { Profile } from 'modules/profile/types'
 import { togglePreview, TogglePreviewAction, setEditorReadOnly, SetEditorReadOnlyAction } from 'modules/editor/actions'
+import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
-  match: match<{ projectId: string, type: 'public' | 'pool' }>
-  projectId: string,
-  type: 'public' | 'pool',
+  match: match<{ projectId: string; type: 'public' | 'pool' }>
+  projectId: string
+  type: 'public' | 'pool'
   currentProject: Project | null
+  currentPool: Pool | null
   currentScene: Scene | null
   currentAuthor: Profile | null
   isPreviewing: boolean
@@ -21,17 +25,15 @@ export type Props = {
   onLoadProject: typeof loadPublicProjectRequest
   onReadOnly: typeof setEditorReadOnly
   onPreview: () => ReturnType<typeof togglePreview>
+  onLikePool: typeof likePoolRequest
+  onOpenModal: typeof openModal
 }
 
 export type State = {}
 
 export type MapStateProps = Pick<
   Props,
-  'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentScene' | 'currentAuthor'
+  'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentPool' | 'currentScene' | 'currentAuthor'
 >
-export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onReadOnly'>
-export type MapDispatch = Dispatch<
-  | LoadPublicProjectRequestAction
-  | SetEditorReadOnlyAction
-  | TogglePreviewAction
->
+export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onReadOnly' | 'onLikePool' | 'onOpenModal'>
+export type MapDispatch = Dispatch<LoadPublicProjectRequestAction | SetEditorReadOnlyAction | TogglePreviewAction | LikePoolRequestAction | OpenModalAction>

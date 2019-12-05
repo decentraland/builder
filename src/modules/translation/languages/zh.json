@@ -123,6 +123,12 @@
       "title": "登录"
     }
   },
+  "like_modal": {
+    "sign_in": {
+      "subtitle": "登录以表示赞赏。",
+      "title": "喜欢这个场景吗？"
+    }
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -235,7 +241,7 @@
       "title": "准备场景",
       "subtitle": "我们正在准备您参赛的场景，请稍侯。"
     },
-    "updating": {
+    "uploading": {
       "title": "准备场景",
       "subtitle": "我们正在准备您参赛的场景，请稍侯。"
     },
@@ -369,7 +375,8 @@
     "made_by": "Scene by",
     "try_it_out": "try it out",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
-    "object_count": "{objects} {objects, plural, one {object} other {objects}}"
+    "object_count": "{objects} {objects, plural, one {object} other {objects}}",
+    "likes": "{likes} {likes, plural, one {like} other {likes}}"
   },
   "not_found_page": {
     "back": "返回场景",

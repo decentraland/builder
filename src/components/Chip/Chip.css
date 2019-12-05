@@ -10,6 +10,14 @@
   min-height: 24px;
 }
 
+.Chip.circle {
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 20px;
+  padding: 11px 11px;
+  background: var(--dark-two);
+}
+
 .Chip {
   font-size: 0.5em;
   border-radius: 4px;

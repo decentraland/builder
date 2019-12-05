@@ -12,8 +12,7 @@ import { login } from 'modules/auth/actions'
 import { shareScene } from 'modules/ui/share/actions'
 import { ShareTarget } from 'modules/ui/share/types'
 import { openModal } from 'modules/modal/actions'
-import { isRecording, getProgress } from 'modules/media/selectors'
-import { isUploadingRecording, getError } from 'modules/deployment/selectors'
+import { getError, getProgress, isLoading as isSubmitting } from 'modules/deployment/selectors'
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
 
@@ -24,9 +23,8 @@ const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
   isReady: isReady(state),
   isLoading: !isReady(state) || isLoading(state),
   isLoggedIn: isLoggedIn(state),
-  progress: getProgress(state),
-  isRecording: isRecording(state),
-  isUploadingRecording: isUploadingRecording(state)
+  progress: getProgress(state).value,
+  isSubmitting: isSubmitting(state)
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({

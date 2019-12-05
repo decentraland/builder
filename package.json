@@ -20,7 +20,7 @@
     "connected-react-router": "^6.1.0",
     "css-loader": "1.0.0",
     "dcl-scene-writer": "^1.1.1",
-    "decentraland-ad": "^1.2.0",
+    "decentraland-ad": "^1.3.2",
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^5.5.0",

@@ -128,6 +128,12 @@
       "title": "Sign in"
     }
   },
+  "like_modal": {
+    "sign_in": {
+      "subtitle": "Sign in to show your appreciation.",
+      "title": "Like this scene?"
+    }
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -240,7 +246,7 @@
       "title": "Preparing your scene",
       "subtitle": "We are prepering your scene for the Contest, please wait."
     },
-    "updating": {
+    "uploading": {
       "title": "Preparing your scene",
       "subtitle": "We are prepering your scene for the Contest, please wait."
     },
@@ -374,7 +380,8 @@
     "made_by": "Scene by",
     "try_it_out": "try it out",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
-    "object_count": "{objects} {objects, plural, one {object} other {objects}}"
+    "object_count": "{objects} {objects, plural, one {object} other {objects}}",
+    "likes": "{likes} {likes, plural, one {like} other {likes}}"
   },
   "not_found_page": {
     "back": "Back to your Scenes",

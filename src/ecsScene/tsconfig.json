@@ -5,6 +5,8 @@
     "jsx": "react",
     "baseUrl": "../",
     "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "importHelpers": true,
     "outDir": "."
   },
   "includes": ["../../node_modules/decentraland-builder-scripts/types.d.ts", "*.ts"],

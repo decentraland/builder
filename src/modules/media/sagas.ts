@@ -30,7 +30,7 @@ export function* handleTakePictures() {
   const side = Math.max(cols, rows)
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
-  const initialAngle = Math.PI / 1.5
+  const previewAngle = Math.PI / 1.5
   const shots: Omit<RawMedia, 'preview'> = {
     north: null,
     east: null,
@@ -51,15 +51,15 @@ export function* handleTakePictures() {
   editorWindow.editor.setCameraPosition({ x: (rows * PARCEL_SIZE) / 2, y: 2, z: (cols * PARCEL_SIZE) / 2 })
 
   yield put(recordMediaProgress(0))
-  preview = yield takeEditorScreenshot(initialAngle)
-  yield put(recordMediaProgress(20))
   shots.north = yield takeEditorScreenshot(Rotation.NORTH)
-  yield put(recordMediaProgress(40))
+  yield put(recordMediaProgress(20))
   shots.east = yield takeEditorScreenshot(Rotation.EAST)
-  yield put(recordMediaProgress(60))
+  yield put(recordMediaProgress(40))
   shots.south = yield takeEditorScreenshot(Rotation.SOUTH)
-  yield put(recordMediaProgress(80))
+  yield put(recordMediaProgress(60))
   shots.west = yield takeEditorScreenshot(Rotation.WEST)
+  yield put(recordMediaProgress(80))
+  preview = yield takeEditorScreenshot(previewAngle)
   yield put(recordMediaProgress(100))
 
   // Cleanup

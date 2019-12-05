@@ -57,6 +57,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { loadProfileRequest } from 'modules/profile/actions'
 import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo } from 'modules/editor/types'
+import { Pool } from 'modules/pool/types'
 import { loadAssets } from 'modules/asset/actions'
 
 const DEFAULT_GROUND_ASSET: Asset = {
@@ -249,8 +250,8 @@ function* handleImportProject(action: ImportProjectAction) {
 function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
   const { id, type } = action.payload
   try {
-    const project: Project = yield call(() => builder.fetchPublicProject(id, type))
-    yield put(loadPublicProjectSuccess(project))
+    const project: Project | Pool = yield call(() => builder.fetchPublicProject(id, type))
+    yield put(loadPublicProjectSuccess(project, type))
     if (project) {
       const scene: Scene = yield getSceneByProjectId(id, type)
       if (scene) {

@@ -8,10 +8,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
+import LoginModal from '../LoginModal'
 import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
-import { LoginModal } from '..'
 
 const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', '')
 
