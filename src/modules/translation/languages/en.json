@@ -238,8 +238,8 @@
     "action": "Join the Contest",
     "submit": {
       "title": "Creator Contest",
-      "subtitle": "Send your scene to the Creator Contest.",
-      "eth_address": "ETH addres (optional)",
+      "subtitle": "Earn 200 MANA (  ̴$5 USD) for each qualifying scene that you submit to the Contest, up to a maximum of 20 scenes.",
+      "eth_address": "ETH address (optional)",
       "invalid_eth_address": "Invalid ETH address"
     },
     "recording": {
