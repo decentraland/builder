@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="18px" viewBox="0 0 20 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>Path Copy</title>
+    <desc>Created with Sketch.</desc>
+    <g id="smart-item" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="landing" transform="translate(-306.000000, -154.000000)" fill="#FF79D5" fill-rule="nonzero">
+            <g id="Group-2" transform="translate(294.000000, 140.000000)">
+                <g id="view" transform="translate(6.000000, 6.000000)">
+                    <path d="M25.9669417,13.3674217 C25.6750002,10.2570276 23.4006255,8.00037232 20.5542915,8.00037232 C18.6580177,8.00037232 16.921754,8.98814769 15.9447691,10.571269 C14.9766309,8.96766987 13.3115255,8 11.4456382,8 C8.59968886,8 6.32492952,10.2566553 6.03337261,13.3670493 C6.01029423,13.5044369 5.91567285,14.2274899 6.20338337,15.4066398 C6.61802499,17.1074155 7.57577791,18.6544213 8.97240475,19.879367 L15.9401534,26 L23.027525,19.8797394 C24.4241518,18.6544213 25.3819047,17.1077878 25.7965463,15.4066398 C26.0842568,14.2278622 25.9896355,13.5048092 25.9669417,13.3674217 Z" id="Path-Copy"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -19,7 +19,6 @@ const ETH_ADDRESS_KEY = 'dcl-buillder-eth-address'
 export default class ContestModal extends React.PureComponent<Props, State> {
   state: State = {
     isSuccess: false,
-    isSubmitting: false,
     ethAddress: localStorage.getItem(ETH_ADDRESS_KEY) || '',
     hasEthAddressError: false
   }
@@ -27,11 +26,9 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
 
   componentWillReceiveProps(nextProps: Props) {
-    const { isLoading, error, progress } = nextProps
-
-    if (this.state.isSubmitting && !isLoading && !error && progress === 100) {
+    const { error, isSubmitting } = nextProps
+    if (this.props.isSubmitting === true && isSubmitting === false && !error) {
       this.setState({
-        isSubmitting: false,
         isSuccess: true
       })
     }
@@ -39,7 +36,6 @@ export default class ContestModal extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     this.setState({
-      isSubmitting: false,
       isSuccess: false
     })
   }
@@ -79,7 +75,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
         localStorage.setItem(ETH_ADDRESS_KEY, ethAddress)
       }
 
-      this.setState({ isSubmitting: true, hasEthAddressError: false })
+      this.setState({ hasEthAddressError: false })
       onDeployToPool(projectId, { groups: [poolGroupId] })
     }
 
@@ -120,27 +116,27 @@ export default class ContestModal extends React.PureComponent<Props, State> {
           onClose={this.props.onClose}
         />
         <div className="contest-modal">
-          <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }}/>
+          <div className="thumbnail" style={{ backgroundImage: `url("${project.thumbnail}")` }} />
         </div>
         <div className="contest-modal">
           <div className="button-group">
-          <Button className="submit" size="small" primary onClick={this.handleShare}>
-            {t('global.share')}
-          </Button>
-          <Button className="submit" size="small" secondary onClick={this.props.onClose}>
-            {t('global.done')}
-          </Button>
-        </div>
+            <Button className="submit" size="small" primary onClick={this.handleShare}>
+              {t('global.share')}
+            </Button>
+            <Button className="submit" size="small" secondary onClick={this.props.onClose}>
+              {t('global.done')}
+            </Button>
+          </div>
         </div>
       </Modal>
     )
   }
 
   renderProgress() {
-    const { isRecording, progress } = this.props
+    const { progress } = this.props
 
-    const title = isRecording ? t('deployment_contest_modal.recording.title') : t('deployment_contest_modal.uploading.title')
-    const subtitle = isRecording ? t('deployment_contest_modal.recording.subtitle') : t('deployment_contest_modal.uploading.subtitle')
+    const title = progress < 50 ? t('deployment_contest_modal.recording.title') : t('deployment_contest_modal.uploading.title')
+    const subtitle = progress < 50 ? t('deployment_contest_modal.recording.subtitle') : t('deployment_contest_modal.uploading.subtitle')
 
     return (
       <Modal name={this.props.name} onClose={this.props.onClose}>
@@ -171,7 +167,7 @@ export default class ContestModal extends React.PureComponent<Props, State> {
         <div className="contest-modal">
           <label className={hasEthAddressError ? "error" : ""}>
             <p className="label">{t('deployment_contest_modal.submit.eth_address')}</p>
-            <Input defaultValue={this.state.ethAddress} placeholder="0x0000000000000000000000000000000000000000" onChange={this.handleEthAddressChange} size="small"/>
+            <Input defaultValue={this.state.ethAddress} placeholder="0x0000000000000000000000000000000000000000" onChange={this.handleEthAddressChange} size="small" />
             {hasEthAddressError && <p className="note">{t('deployment_contest_modal.submit.invalid_eth_address')}</p>}
           </label>
         </div>
@@ -185,9 +181,8 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isSubmitting, isSuccess } = this.state
-    const { isLoggedIn, isLoading, isRecording, isUploadingRecording } = this.props
-    const hasProgress = isSubmitting && (isRecording || isUploadingRecording)
+    const { isSuccess } = this.state
+    const { isLoggedIn, isLoading, isSubmitting } = this.props
 
     if (isLoading) {
       return this.renderLoading()
@@ -197,12 +192,12 @@ export default class ContestModal extends React.PureComponent<Props, State> {
       return this.renderLogin()
     }
 
-    if (isSuccess) {
-      return this.renderSuccess()
+    if (isSubmitting) {
+      return this.renderProgress()
     }
 
-    if (hasProgress) {
-      return this.renderProgress()
+    if (isSuccess) {
+      return this.renderSuccess()
     }
 
     return this.renderSubmit()

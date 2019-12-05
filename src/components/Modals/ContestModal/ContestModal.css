@@ -47,10 +47,11 @@
   height: 16px;
   border-radius: 16px;
   position: relative;
+  transition: width 3s ease;
 }
 
 .ContestModal .ui.input {
-  width: 320px
+  width: 320px;
 }
 
 .ContestModal .ui.input input,
@@ -60,7 +61,7 @@
 }
 
 .ContestModal label p {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
   font-size: 16px;
   font-weight: 100;
 }

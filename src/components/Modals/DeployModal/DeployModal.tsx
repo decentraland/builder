@@ -101,13 +101,13 @@ export default class DeployModal extends React.PureComponent<Props, State> {
 
   render() {
     const { view, projectId } = this.state
-    const { name } = this.props
+    const { name, currentPoolGroup } = this.props
 
     if (view === DeployModalView.CLEAR_DEPLOYMENT && projectId) {
       return <ClearDeployment projectId={projectId} name={name} onClose={this.handleClose} />
     }
 
-    if (view === DeployModalView.DEPLOY_TO_LAND) {
+    if (view === DeployModalView.DEPLOY_TO_LAND || currentPoolGroup) {
       return (
         <DeployToLand
           name={name}

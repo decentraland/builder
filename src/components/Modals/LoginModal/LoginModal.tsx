@@ -15,7 +15,11 @@ export default class LoginModal extends React.PureComponent<Props, {}> {
 
   handleLogin = () => {
     if (this.props.onLogin) {
-      this.props.onLogin()
+      const { returnUrl, name, metadata } = this.props
+      this.props.onLogin({
+        returnUrl: returnUrl || '',
+        openModal: { name, metadata }
+      })
     }
   }
 

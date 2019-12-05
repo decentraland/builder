@@ -131,7 +131,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   renderProgress() {
-    const { isRecording, isUploadingRecording, progress } = this.props
+    const { isRecording, progress } = this.props
 
     let classes = 'progress-bar'
     if (progress === 100) {
@@ -141,12 +141,10 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     return (
       <div className="DeployToPool progress">
         <Header size="large" className="modal-title">
-          {isRecording && t('deployment_modal.land.progress.recording.title')}
-          {isUploadingRecording && t('deployment_modal.land.progress.uploading_recording.title')}
+          {isRecording ? t('deployment_modal.land.progress.recording.title') : t('deployment_modal.land.progress.uploading_recording.title')}
         </Header>
         <p className="modal-subtitle">
-          {isRecording && t('deployment_modal.land.progress.creating_files.description')}
-          {isUploadingRecording && t('deployment_modal.land.progress.uploading_recording.description')}
+          {isRecording ? t('deployment_modal.land.progress.creating_files.description') : t('deployment_modal.land.progress.uploading_recording.description')}
         </p>
         <div className="progress-bar-container">
           <div className={classes} style={{ width: `${progress}%` }} />

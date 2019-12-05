@@ -98,8 +98,8 @@ export default class TopBar extends React.PureComponent<Props> {
                 {isUploading ? (
                   <OwnIcon name="cloud-upload" className="cloud-upload-indicator is-uploading" />
                 ) : (
-                  <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
-                )}
+                    <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+                  )}
               </>
             ) : null}
           </Header>
