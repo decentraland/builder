@@ -109,6 +109,9 @@ export default class ImportModal extends React.PureComponent<Props, State> {
           throw new Error('Invalid project')
         }
 
+        migrated.project.createdAt = new Date().toISOString()
+        migrated.project.updatedAt = new Date().toISOString()
+
         let importedFile: ImportedFile = {
           id: uuidv4(),
           fileName: file.name,
