@@ -73,7 +73,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   getParcelCount() {
-    const { currentProject } = this.props
+    const currentProject = this.getCurrentProject()
     if (!currentProject) {
       return 0
     }
@@ -143,7 +143,10 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
           </div>
           <div className="scene-action-list">
             {currentPool && <div className="scene-action">
-              <Chip icon={currentPool.like ? "heart-full" : "heart"} type="circle" onClick={this.handleLike} />
+              <Chip text={<>
+                <Icon name={currentPool.like ? "heart-full" : "heart"} />
+                {currentPool.likes > 0 && <span className="LikeCount">{currentPool.likes}</span>}
+              </>} type="circle" onClick={this.handleLike} />
             </div>}
             <div style={{ flex: 1 }} />
             <Responsive minWidth={1025} as={React.Fragment}>

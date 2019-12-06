@@ -149,6 +149,16 @@
   vertical-align: top;
 }
 
+.SceneViewPage .Chip.circle .Icon {
+  display: inline-block;
+  vertical-align: text-top;
+}
+
+.SceneViewPage .Chip.circle .LikeCount {
+  margin: 0 0.5em;
+  font-size: 18px;
+}
+
 @media only screen and (max-width: 900px) {
   .SceneViewPage .thumbnail {
     height: 90vw;
