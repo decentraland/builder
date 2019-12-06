@@ -25,7 +25,6 @@ const TOAST_ITEMS_THRESHOLD = 5 // local storage toast will show when a user has
 const localStorage = getLocalStorage()
 
 export default class EditorPage extends React.PureComponent<Props, State> {
-
   state = {
     isIncentiveBannerOpen: false
   }
@@ -96,7 +95,7 @@ export default class EditorPage extends React.PureComponent<Props, State> {
     if (isPreviewing) {
       wrapperClasses += ' fullscreen'
     }
-    if (isIncentiveBannerOpen) {
+    if (isIncentiveBannerOpen && !isPreviewing) {
       wrapperClasses += ' with-banner'
     }
     if (isFetching) {
