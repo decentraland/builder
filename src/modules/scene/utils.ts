@@ -287,7 +287,7 @@ export function removeEntityReferences(parameters: AssetParameter[], values: Ass
         }
       }
     } else if (parameter.type === AssetParameterType.ENTITY) {
-      if (values[parameter.id]) {
+      if (values[parameter.id] === entityName) {
         delete values[parameter.id]
       }
     }
