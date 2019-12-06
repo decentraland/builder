@@ -99,9 +99,7 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
       }
 
       yield put(setProgress(ProgressStage.NONE, 30))
-      yield call(() =>
-        builder.uploadMedia(rawProject.id, preview, { north, east, south, west })
-      )
+      yield call(() => builder.uploadMedia(rawProject.id, preview, { north, east, south, west }))
 
       yield put(setProgress(ProgressStage.NONE, 60))
       yield put(takeScreenshot())
@@ -189,10 +187,12 @@ function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
     const lastPublishedCID: string | null = deployment.lastPublishedCID
     const remoteCID = res.root_cid
 
-    const isSynced = remoteCID === lastPublishedCID
-    const isDirty = !isSynced
-    if (isDirty !== deployment.isDirty) {
-      yield put(markDirty(projectId, isDirty))
+    // Check for external changes: e.g. CLI
+    const isUnsynced = remoteCID !== lastPublishedCID
+
+    // Once dirty, always dirty until deployed
+    if (!deployment.isDirty && isUnsynced) {
+      yield put(markDirty(projectId, isUnsynced))
     }
   } catch (e) {
     // error handling
