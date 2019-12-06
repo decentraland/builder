@@ -286,7 +286,9 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
   yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
-  yield call(() => editorWindow.editor.sendExternalAction(closeEditor()))
+  if (yield select(isReady)) {
+    yield call(() => editorWindow.editor.sendExternalAction(closeEditor()))
+  }
   yield put(unbindEditorKeyboardShortcuts())
 }
 

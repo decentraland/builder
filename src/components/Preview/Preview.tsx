@@ -71,7 +71,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       await editorWindow.editor.initEngine(this.canvasContainer.current, '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
-        canvas.classList.add('dcl-canvas')
+        canvas && canvas.classList.add('dcl-canvas')
       }
 
       this.moveCanvas()
