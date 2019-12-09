@@ -3,7 +3,7 @@ import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Vector3 } from 'modules/common/types'
-import { Scene, EntityDefinition } from 'modules/scene/types'
+import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -97,13 +97,10 @@ export function snapScale(scale: Vector3): Vector3 {
 }
 
 export function createReadyOnlyScene(scene: Scene): Scene {
-  const readOnlyEntities = Object.values(scene.entities).reduce(
-    (newEntities, entity) => {
-      newEntities[entity.id] = { ...entity, disableGizmos: true }
-      return newEntities
-    },
-    {} as Record<string, EntityDefinition>
-  )
+  const readOnlyEntities = Object.values(scene.entities).reduce((newEntities, entity) => {
+    newEntities[entity.id] = { ...entity, disableGizmos: true }
+    return newEntities
+  }, {} as Record<string, EntityDefinition>)
 
   return {
     ...scene,
@@ -128,4 +125,22 @@ export function convertToUnityKeyboardEvent(e: KeyboardEvent): UnityKeyboardEven
   }
 
   return null
+}
+
+export function areEqualTransforms(
+  a: ComponentDefinition<ComponentType.Transform>['data'],
+  b: ComponentDefinition<ComponentType.Transform>['data']
+) {
+  return (
+    a.position.x === b.position.x &&
+    a.position.y === b.position.y &&
+    a.position.z === b.position.z &&
+    a.rotation.x === b.rotation.x &&
+    a.rotation.y === b.rotation.y &&
+    a.rotation.z === b.rotation.z &&
+    a.rotation.w === b.rotation.w &&
+    a.scale.x === b.scale.x &&
+    a.scale.y === b.scale.y &&
+    a.scale.z === b.scale.z
+  )
 }
