@@ -14,9 +14,9 @@ import MobilePage from 'components/MobilePage'
 import NotFoundPage from 'components/NotFoundPage'
 import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import SceneViewPage from 'components/SceneViewPage'
+import SceneListPage from 'components/SceneListPage'
 
 import { Props, State } from './Routes.types'
-import SceneListPage from 'components/SceneListPage';
 
 export default class Routes extends React.Component<Props, State> {
   state = {
