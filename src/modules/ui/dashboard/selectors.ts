@@ -7,7 +7,7 @@ import { getUserProjects } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
 import { SortBy } from './types'
 
-export const PAGE_SIZE = 12
+export const PAGE_SIZE = 4
 
 export const getState = (state: RootState) => state.ui.dashboard
 

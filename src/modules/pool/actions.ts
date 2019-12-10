@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { Pool } from 'modules/pool/types'
+import { Pool, PoolsRequestFilters } from 'modules/pool/types'
 
 // Load cloud pools
 
@@ -9,8 +9,8 @@ export const LOAD_POOLS_REQUEST = '[Request] Load pools'
 export const LOAD_POOLS_SUCCESS = '[Success] Load pools'
 export const LOAD_POOLS_FAILURE = '[Failure] Load pools'
 
-export const loadPoolsRequest = () => action(LOAD_POOLS_REQUEST, {})
-export const loadPoolsSuccess = (pool: ModelById<Pool>) => action(LOAD_POOLS_SUCCESS, { projects: pool })
+export const loadPoolsRequest = (filters: PoolsRequestFilters) => action(LOAD_POOLS_REQUEST, filters)
+export const loadPoolsSuccess = (pools: ModelById<Pool>, total: number = 0) => action(LOAD_POOLS_SUCCESS, { pools, total })
 export const loadPoolsFailure = (error: string) => action(LOAD_POOLS_FAILURE, { error })
 
 export type LoadPoolsRequestAction = ReturnType<typeof loadPoolsRequest>

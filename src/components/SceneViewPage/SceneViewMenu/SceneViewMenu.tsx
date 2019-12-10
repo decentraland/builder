@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button } from 'decentraland-ui'
+import { Button, Responsive } from 'decentraland-ui'
 
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import UserMenu from 'components/UserMenu'
@@ -13,7 +13,7 @@ export default class SceneViewMenu extends React.PureComponent<Props, State> {
     this.props.onTryItOut()
   }
 
-  render () {
+  render() {
     const { isLoggedIn } = this.props
 
     if (isLoggedIn) {
@@ -21,7 +21,9 @@ export default class SceneViewMenu extends React.PureComponent<Props, State> {
     }
 
     return <div className="SceneViewMenu">
-      <span className="made-with">{t("public_page.made_with")}</span>
+      <Responsive minWidth={1025} as={React.Fragment}>
+        <span className="made-with">{t("public_page.made_with")}</span>
+      </Responsive>
       <Button primary onClick={this.handleTryItOut}>{t("public_page.try_it_out")}</Button>
     </div>
   }

@@ -1,7 +1,9 @@
 import { put, call, takeLatest } from 'redux-saga/effects'
-import { LikePoolRequestAction, likePoolFailure, likePoolSuccess, LIKE_POOL_REQUEST } from './actions'
+import { ModelById } from 'decentraland-dapps/dist/lib/types'
+import { LikePoolRequestAction, likePoolFailure, likePoolSuccess, LIKE_POOL_REQUEST, LoadPoolsRequestAction, loadPoolsFailure, loadPoolsSuccess, LOAD_POOLS_REQUEST } from './actions'
 import { builder } from 'lib/api/builder'
-import { stackHandle } from './utils'
+import { stackHandle, getPagination } from './utils'
+import { Pool, RECORDS_PER_PAGE } from './types'
 
 // export const handlePoolLike = stackPoolLike()
 export const handlePoolLike = stackHandle(
@@ -30,4 +32,21 @@ export const handlePoolLike = stackHandle(
 
 export function* poolSaga() {
   yield takeLatest(LIKE_POOL_REQUEST, handlePoolLike)
+  yield takeLatest(LOAD_POOLS_REQUEST, handleLoadPools)
+}
+
+function* handleLoadPools(action: LoadPoolsRequestAction) {
+  const { group, page, sortBy, sortOrder, userId } = action.payload
+
+  try {
+    const { offset, limit } = getPagination(page || 1, RECORDS_PER_PAGE)
+    const { items, total }: { items: Pool[], total: number } = yield call(() => builder.fetchPoolsPage({ offset, limit, group, user_id: userId, sort_by: sortBy, sort_order: sortOrder }))
+    const records: ModelById<Pool> = {}
+    for (const item of items) {
+      records[item.id] = item
+    }
+    yield put(loadPoolsSuccess(records, total))
+  } catch (e) {
+    yield put(loadPoolsFailure(e.message))
+  }
 }

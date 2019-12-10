@@ -40,6 +40,12 @@ export type RemotePoolGroup = {
 
 export type RemotePool = RemoteProject & {
   groups: string[]
+  parcels: number | null
+  transforms: number | null
+  gltf_shapes: number | null
+  nft_shapes: number | null
+  scripts: number | null
+  entities: number | null
   likes: number
   like: boolean
 }
@@ -108,13 +114,27 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
 }
 
 function fromRemotePool(remotePool: RemotePool): Pool {
-  return {
-    ...fromRemoteProject(remotePool),
-    isPublic: true,
-    groups: remotePool.groups || [],
-    likes: remotePool.likes || 0,
-    like: !!remotePool.like
+
+  const pool = fromRemoteProject(remotePool) as Pool
+
+  pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
+  pool.isPublic = true
+  pool.groups = remotePool.groups || [],
+    pool.likes = remotePool.likes || 0,
+    pool.like = !!remotePool.like
+
+  if (remotePool.parcels) {
+    pool.statistics = {
+      parcels: remotePool.parcels as number,
+      transforms: remotePool.transforms as number,
+      gltf_shapes: remotePool.gltf_shapes as number,
+      nft_shapes: remotePool.nft_shapes as number,
+      scripts: remotePool.scripts as number,
+      entities: remotePool.entities as number
+    }
   }
+
+  return pool
 }
 
 function toRemoteAssetPack(assetPack: FullAssetPack): RemoteAssetPack {
@@ -232,14 +252,19 @@ export type PoolDeploymentAdditionalFields = {
   groups?: string[]
 }
 
+export type Sort = {
+  sort_by?: string,
+  sort_order?: 'asc' | 'desc'
+}
+
 export type Pagination = {
   limit?: number,
   offset?: number
 }
 
 export type PoolFilters = {
-  group?: number,
-  user_id?: number
+  group?: string
+  user_id?: string
 }
 
 // API
@@ -293,8 +318,9 @@ export class BuilderAPI extends BaseAPI {
     return type === 'pool' ? fromRemotePool(project) : fromRemoteProject(project)
   }
 
-  async fetchPools(filters: PoolFilters & Pagination) {
-    return this.request('get', '/pools', filters)
+  async fetchPoolsPage(filters: PoolFilters & Pagination & Sort) {
+    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', filters)
+    return { items: items.map(fromRemotePool), total }
   }
 
   async fetchPoolGroups(activeOnly: boolean = false) {

@@ -10,6 +10,11 @@ export const getError: (state: RootState) => PoolGroupState['error'] = state => 
 
 export const getLoading = (state: RootState) => getState(state).loading
 
+export const getAllPoolGroups = (state: RootState) => {
+  const poolGroups = getData(state)
+  return Object.values(poolGroups)
+}
+
 export const getActivePoolGroup = (state: RootState) => {
   const poolGroups = getData(state)
   return Object.values(poolGroups).reduce<PoolGroup | null>((current, poolGroup) => {

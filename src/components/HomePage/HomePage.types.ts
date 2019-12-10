@@ -5,7 +5,7 @@ import { createProjectFromTemplate, CreateProjectFromTemplateAction } from 'modu
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Project } from 'modules/project/types'
 import { SortBy } from 'modules/ui/dashboard/types'
-import { PaginationOptions } from 'routing/locations'
+import { PaginationOptions } from 'routing/utils'
 import { login, LoginAction } from 'modules/auth/actions'
 
 export type DefaultProps = {
@@ -23,6 +23,7 @@ export type Props = DefaultProps & {
   onCreateProject: typeof createProjectFromTemplate
   onOpenModal: typeof openModal
   onPageChange: (options: PaginationOptions) => void
+  onNavigateToShowcase: () => void
   onLogin: typeof login
 }
 
@@ -34,5 +35,5 @@ export type MapStateProps = Pick<
   Props,
   'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'didCreate' | 'isLoggedIn'
 >
-export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin'>
+export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin' | 'onNavigateToShowcase'>
 export type MapDispatch = Dispatch<NavigateToAction | CreateProjectFromTemplateAction | OpenModalAction | LoginAction>
