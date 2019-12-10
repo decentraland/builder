@@ -37,6 +37,7 @@ export type Editor = {
   setGridResolution: (position: number, rotation: number, scale: number) => void
   getLoadingEntity: () => any | null
   onKeyDown: (key: UnityKeyboardEvent) => void
+  onKeyUp: (key: UnityKeyboardEvent) => void
 }
 
 export type EditorWindow = typeof window & {
