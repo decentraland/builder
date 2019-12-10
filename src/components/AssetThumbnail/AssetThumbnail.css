@@ -3,6 +3,10 @@
   width: 80px;
 }
 
+.AssetThumbnail.smart img {
+  background: var(--smart-item);
+}
+
 .AssetThumbnail.clickable {
   cursor: pointer;
 }
