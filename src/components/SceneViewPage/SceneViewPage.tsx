@@ -18,6 +18,11 @@ import { locations } from 'routing/locations'
 import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
+
+  state: State = {
+    isInteractive: false
+  }
+
   componentDidMount() {
     const { currentProject, match, onLoadProject, onReadOnly } = this.props
     onReadOnly(true)
@@ -44,6 +49,10 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         onOpenModal('LikeModal', { currentUrl: locations.poolView(currentPool.id, ShareModalType.POOL) })
       }
     }
+  }
+
+  handleLoadInteractive = () => {
+    this.setState({ isInteractive: true })
   }
 
   getType() {
@@ -118,6 +127,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
   render() {
     const { isFetching, isPreviewing, isReady } = this.props
+    const isInteractive = this.props.isInteractive || this.state.isInteractive
 
     if (isFetching) {
       return this.renderLoading()
@@ -130,18 +140,27 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
     const currentPool = this.getCurrentPool()
     const { currentAuthor: author } = this.props
+    const classes = ['SceneViewPage']
+    classes.push(isPreviewing ? 'preview' : 'mini')
+
+    if (isInteractive) {
+      classes.push('interactive')
+      if (!isReady) {
+        classes.push('loading')
+      }
+    }
 
     return (
       <>
         {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />}
         {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
-        <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
+        <div className={classes.join(' ')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
-              <ViewPort key="SceneView" />
+              {isInteractive && <ViewPort key="SceneView" />}
             </Responsive>
           </div>
-          <div className="scene-action-list">
+          <div className="scene-top-action-list">
             {currentPool && <div className="scene-action">
               <Chip text={<>
                 <Icon name={currentPool.like ? "heart-full" : "heart"} />
@@ -151,8 +170,18 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             <div style={{ flex: 1 }} />
             <Responsive minWidth={1025} as={React.Fragment}>
               <div className="scene-action">
-                <Chip icon="view" type="circle" isActive={isPreviewing} isDisabled={!isReady} onClick={this.handlePreview} />
+                {isInteractive && <Chip icon="view" type="circle" isActive={isPreviewing} isDisabled={!isReady} onClick={this.handlePreview} />}
               </div>
+            </Responsive>
+          </div>
+          <div className="scene-bottom-action-list">
+            <Responsive minWidth={1025} as={React.Fragment}>
+              {!isInteractive && <div className="scene-action">
+                <Chip text={<>
+                  <Icon name="cube" />
+                  <span className="LoadView">{" "}{t('public_page.load_3d')}</span>
+                </>} type="circle" onClick={this.handleLoadInteractive} />
+              </div>}
             </Responsive>
           </div>
           <div className="detail">

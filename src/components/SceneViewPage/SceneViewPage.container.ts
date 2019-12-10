@@ -9,16 +9,18 @@ import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview, setEditorReadOnly } from 'modules/editor/actions'
 import { openModal } from 'modules/modal/actions'
+import { likePoolRequest } from 'modules/pool/actions'
+import { isInteractive } from 'modules/ui/share/selectors'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
-import { likePoolRequest } from 'modules/pool/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
   isReady: !isLoading(state) && isReady(state),
   isFetching: isFetching(state) && !isReady(state),
   isLoggedIn: isLoggedIn(state),
+  isInteractive: isInteractive(state),
   currentProject: getCurrentPublicProject(state),
   currentPool: getCurrentPool(state),
   currentScene: getCurrentScene(state),

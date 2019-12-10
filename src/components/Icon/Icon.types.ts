@@ -23,6 +23,7 @@ export type IconName =
   | 'chevron-right'
   | 'close'
   | 'cloud-upload'
+  | 'cube'
   | 'delete'
   | 'duplicate'
   | 'edit-active'

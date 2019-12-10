@@ -8,9 +8,9 @@
   border-radius: 8px;
 }
 
-.SceneViewPage .scene-action-list {
+.SceneViewPage .scene-bottom-action-list,
+.SceneViewPage .scene-top-action-list {
   position: absolute;
-  top: 0;
   left: 0;
   display: flex;
   padding: 20px;
@@ -18,7 +18,17 @@
   z-index: 0;
 }
 
-.SceneViewPage.preview .scene-action-list {
+.SceneViewPage .scene-top-action-list {
+  top: 0;
+}
+
+.SceneViewPage .scene-bottom-action-list {
+  top: 517px;
+  justify-content: center;
+}
+
+.SceneViewPage.preview .scene-top-action-list,
+.SceneViewPage.preview .scene-bottom-action-list {
   display: none;
 }
 
@@ -157,6 +167,11 @@
 .SceneViewPage .Chip.circle .LikeCount {
   margin: 0 0.5em;
   font-size: 18px;
+}
+
+.SceneViewPage .Chip.circle .LoadView {
+  margin: 0 1em;
+  font-size: 14px;
 }
 
 @media only screen and (max-width: 900px) {

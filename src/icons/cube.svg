@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="21px" viewBox="0 0 18 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>view copy</title>
+    <desc>Created with Sketch.</desc>
+    <g id="smart-item" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="landing" transform="translate(-676.000000, -659.000000)">
+            <g id="Group-2" transform="translate(657.000000, 648.000000)">
+                <g id="view-copy" transform="translate(12.000000, 6.000000)">
+                    <rect id="Rectangle" x="0" y="0" width="32" height="32"></rect>
+                    <path d="M16,5 L7,10.25 L7,20.75 L16,26 L25,20.75 L25,10.25 L16,5 Z M23.1656213,10.6048813 L16,14.7849502 L8.83437874,10.6048813 L16,6.42497255 L23.1656213,10.6048813 Z M8.22133345,11.6724091 L15.3893333,15.8535996 L15.3893333,24.2188645 L8.22133345,20.0375137 L8.22133345,11.6724091 Z M16.6106667,24.2188645 L16.6106667,15.8535996 L23.7786666,11.6724091 L23.7786666,20.0375137 L16.6106667,24.2188645 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
