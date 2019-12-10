@@ -31,7 +31,6 @@ export type ComponentData = {
   }
   [ComponentType.Script]: {
     assetId: string
-    src: string
     values: AssetParameterValues
   }
 }

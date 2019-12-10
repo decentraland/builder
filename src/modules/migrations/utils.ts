@@ -95,3 +95,10 @@ export function addAssets(scene: Scene) {
     scene.assets = {}
   }
 }
+
+export function removeScriptSrc(scene: Scene) {
+  const scripts = Object.values(scene.components).filter(component => component.type === ComponentType.Script)
+  for (const script of scripts) {
+    delete (script.data as any).src
+  }
+}
