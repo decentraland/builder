@@ -16,6 +16,7 @@ import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import SceneViewPage from 'components/SceneViewPage'
 
 import { Props, State } from './Routes.types'
+import SceneListPage from 'components/SceneListPage';
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -57,6 +58,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.editor()} component={EditorPage} />
+            <Route exact path={locations.poolSearch()} component={SceneListPage} />
             <Route exact path={locations.sceneView()} component={SceneViewPage} />
             <Route exact path={locations.poolView()} component={SceneViewPage} />
             <Route exact path={locations.callback()} component={LoadingPage} />

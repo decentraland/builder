@@ -19,6 +19,11 @@
   --homepage-card-height: 182px;
   --homepage-card-margin: 20px;
 
+  /* HomePage */
+  --list-page-card-width: 328px;
+  --list-page-card-height: 364px;
+  --list-page-card-margin: 20px;
+
   /* TopBar */
   --topbar-height: 48px;
 

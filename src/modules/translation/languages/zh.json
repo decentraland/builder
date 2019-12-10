@@ -370,6 +370,20 @@
     },
     "success": "谢谢，我们会与您联系!"
   },
+  "scene_list_page": {
+    "projects_title": "Showcase",
+    "no_projects": "It looks like we don't have any Scenes",
+    "filters": {
+      "creator-contest-2019-12": "Creator Contest",
+      "all_groups": "All collections",
+      "all_users": "All users",
+      "only_me": "Only me",
+      "newest": "Newest",
+      "likes": "Likes",
+      "size": "Size",
+      "name": "Name"
+    }
+  },
   "public_page": {
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",
