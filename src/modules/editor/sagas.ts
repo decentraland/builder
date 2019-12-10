@@ -58,7 +58,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, SceneMetrics } from 'modules/scene/types'
+import { Scene, ComponentType, SceneMetrics, ComponentDefinition } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -90,7 +90,8 @@ import {
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
-  createReadyOnlyScene
+  createReadyOnlyScene,
+  areEqualTransforms
 } from './utils'
 
 const editorWindow = window as EditorWindow
@@ -209,7 +210,7 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   if (!scene) return
 
   const entityComponents = getEntityComponentsByType(store.getState() as RootState)
-  const transform = entityComponents[args.entityId][ComponentType.Transform]
+  const transform = entityComponents[args.entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform> | undefined
   if (!transform) return
 
   if (bounds) {
@@ -219,7 +220,9 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   const scale = snapScale(args.transform.scale)
 
   if (transform) {
-    store.dispatch(updateTransform(scene.id, transform.id, { position, rotation: args.transform.rotation, scale }))
+    const newTransformData = { position, rotation: args.transform.rotation, scale }
+    if (areEqualTransforms(transform.data, newTransformData)) return
+    store.dispatch(updateTransform(scene.id, transform.id, newTransformData))
   } else {
     console.warn(`Unable to find Transform component for ${args.entityId}`)
   }
