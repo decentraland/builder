@@ -12,9 +12,9 @@
 }
 
 .AssetCard.smart {
-  background: #472550;
+  background: var(--smart-item);
 }
 
 .AssetCard.smart:hover {
-  background: #5f326a;
+  background: var(--smart-item-hover);
 }

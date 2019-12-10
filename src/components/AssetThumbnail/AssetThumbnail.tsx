@@ -36,6 +36,10 @@ export default class AssetThumbnail extends React.PureComponent<Props> {
       classes += ' ground'
     }
 
+    if (asset && asset.script) {
+      classes += ' smart'
+    }
+
     return (
       <Popup
         className="modal-tooltip"
