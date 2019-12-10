@@ -291,7 +291,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   // copy script
   if (script) {
     const {
-      data: { values: parameters, src, assetId }
+      data: { values: parameters, assetId }
     } = script
     const scriptId = uuidv4()
     const values = JSON.parse(JSON.stringify(parameters))
@@ -303,7 +303,6 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
       type: ComponentType.Script,
       data: {
         values,
-        src,
         assetId
       }
     } as ComponentDefinition<ComponentType.Script>
