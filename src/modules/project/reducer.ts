@@ -130,7 +130,10 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     case LOAD_PUBLIC_PROJECT_SUCCESS: {
       const { project, type } = action.payload
       if (type !== 'public') {
-        return state
+        return {
+          ...state,
+          loading: loadingReducer(state.loading, action)
+        }
       }
 
       return {

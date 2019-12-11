@@ -21,12 +21,16 @@ export type PoolState = {
   data: ModelById<Pool>
   loading: LoadingState
   error: Record<string, string>
+  list: string[] | null
+  total: number | null
 }
 
 const INITIAL_STATE: PoolState = {
   data: {},
   loading: [],
-  error: {}
+  error: {},
+  list: null,
+  total: null
 }
 
 export type PoolReducerAction =
@@ -46,24 +50,35 @@ export const poolReducer = (state = INITIAL_STATE, action: PoolReducerAction): P
     case LOAD_POOLS_FAILURE: {
       return {
         ...state,
+        list: null,
+        total: null,
         loading: loadingReducer(state.loading, action)
       }
     }
     case LOAD_POOLS_SUCCESS: {
-      const { projects } = action.payload
+      const { pools, total } = action.payload
+      const list = Object.keys(pools)
       return {
         ...state,
-        data: {
-          ...state.data,
-          ...projects
-        },
+        total,
+        list,
+        data: Object.keys(pools).reduce((data, id) => {
+          data[id] = {
+            ...state.data[id],
+            ...pools[id]
+          }
+          return data
+        }, state.data),
         loading: loadingReducer(state.loading, action)
       }
     }
     case LOAD_PUBLIC_PROJECT_SUCCESS: {
       const { project, type } = action.payload
       if (type !== 'pool') {
-        return state
+        return {
+          ...state,
+          loading: loadingReducer(state.loading, action)
+        }
       }
 
       return {

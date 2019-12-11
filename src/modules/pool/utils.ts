@@ -25,3 +25,10 @@ export function stackHandle<A, T>(
     }
   }
 }
+
+export function getPagination(page: number, recordsPerPage: number) {
+  page = !Number.isFinite(page) || page <= 0 ? 1 : page
+  recordsPerPage = !Number.isFinite(page) || page <= 0 ? 1 : recordsPerPage
+
+  return { limit: recordsPerPage, offset: (page * recordsPerPage) - recordsPerPage }
+}

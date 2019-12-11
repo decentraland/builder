@@ -1,7 +1,8 @@
 import { Dispatch } from 'redux'
 import { TogglePreviewAction, togglePreview } from 'modules/editor/actions'
+import { OpenEditorOptions } from 'modules/editor/types'
 
-export type Props = {
+export type Props = Partial<OpenEditorOptions> & {
   isPreviewing: boolean
   onClosePreview: () => ReturnType<typeof togglePreview>
 }

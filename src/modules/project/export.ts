@@ -143,7 +143,9 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
         break
       }
       case ComponentType.Script: {
-        const { assetId, src, values } = (component as ComponentDefinition<ComponentType.Script>).data
+        const { assetId, values } = (component as ComponentDefinition<ComponentType.Script>).data
+        const asset = scene.assets[assetId]
+        const src = asset.contents[asset.script!]
         scripts.set(assetId, src)
         const entityId = componentToEntity.get(component.id)!
         hosts.add(entityId)

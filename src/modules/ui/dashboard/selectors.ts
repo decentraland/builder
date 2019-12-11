@@ -19,9 +19,8 @@ export const didDismissSyncedToast = (state: RootState) => getState(state).didDi
 
 export const didDismissSignInToast = (state: RootState) => getState(state).didDismissSignInToast
 
-export const getTotalPages = createSelector<RootState, DataByKey<Project>, number>(
-  getUserProjects,
-  projects => Math.max(Math.ceil(Object.keys(projects).length / PAGE_SIZE), 1)
+export const getTotalPages = createSelector<RootState, DataByKey<Project>, number>(getUserProjects, projects =>
+  Math.max(Math.ceil(Object.keys(projects).length / PAGE_SIZE), 1)
 )
 
 export const getPage = createSelector<RootState, Location, number, number>(

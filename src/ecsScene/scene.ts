@@ -6,7 +6,7 @@ import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
 
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
-import { EntityDefinition, AnyComponent, ComponentData, ComponentType } from 'modules/scene/types'
+import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
 const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
@@ -97,12 +97,11 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       break
     }
     case 'Update editor': {
-      const {
-        scene: { components, entities }
-      } = message.payload
+      const { scene } = message.payload
+      const { components, entities } = scene
 
       for (let id in components) {
-        createComponent(components[id])
+        createComponent(components[id], scene)
         updateComponent(components[id])
       }
 
@@ -180,7 +179,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
   }
 }
 
-function createComponent(component: AnyComponent) {
+function createComponent(component: AnyComponent, scene: Scene) {
   const { id, type, data } = component
 
   if (!getComponentById(id)) {
@@ -200,7 +199,9 @@ function createComponent(component: AnyComponent) {
         editorComponents[id].isPickable = true
         break
       case ComponentType.Script: {
-        const { assetId, src, values } = data as ComponentData[ComponentType.Script]
+        const { assetId, values } = data as ComponentData[ComponentType.Script]
+        const asset = scene.assets[assetId]
+        const src = asset.contents[asset.script!]
         editorComponents[id] = new Script(assetId, src, values)
         if (!scriptPromises.has(assetId)) {
           const url = `${scriptBaseUrl}/${src}`
