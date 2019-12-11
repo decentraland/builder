@@ -319,7 +319,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchPoolsPage(filters: PoolFilters & Pagination & Sort) {
-    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', filters)
+    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', filters, authorize())
     return { items: items.map(fromRemotePool), total }
   }
 
