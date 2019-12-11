@@ -75,9 +75,9 @@ export const getCurrentPool = createSelector(
 )
 
 export const isFetching = createSelector(
-  getLoading,
   getAuthLoading,
-  (projectLoading, authLoading) =>
+  getLoading,
+  (authLoading, projectLoading) =>
     isLoadingType(authLoading, AUTH_REQUEST) ||
     isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST) ||
     isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST) ||

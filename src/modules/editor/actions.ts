@@ -25,7 +25,7 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 
 export const OPEN_EDITOR = 'Open editor'
 
-export const openEditor = (options: Partial<OpenEditorOptions> = {}) => action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options })
+export const openEditor = (options: Partial<OpenEditorOptions> = {}) => action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
 
 export type OpenEditorAction = ReturnType<typeof openEditor>
 

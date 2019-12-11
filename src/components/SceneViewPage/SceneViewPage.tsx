@@ -117,7 +117,6 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
   render() {
     const { isFetching, isPreviewing, isReady } = this.props
-    const type = this.getType() === 'pool' ? 'pool' : 'project'
 
     if (isFetching) {
       return this.renderLoading()
@@ -138,7 +137,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
-              <ViewPort key={currentProject.id} isReadOnly={true} type={type} />
+              <ViewPort key={currentProject.id} isReadOnly={true} type={this.getType()} />
             </Responsive>
           </div>
           <div className="scene-action-list">

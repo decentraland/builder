@@ -40,5 +40,5 @@ export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightA
 
 export type OpenEditorOptions = {
   isReadOnly: boolean
-  type: 'project' | 'pool'
+  type: 'project' | 'public' | 'pool'
 }

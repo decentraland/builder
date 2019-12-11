@@ -267,6 +267,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
   const project: Project | Pool | null = yield (type === 'pool' ? select(getCurrentPool) : select(getCurrentProject))
 
   if (project) {
+    yield getSceneByProjectId(project.id, type)
     yield put(setEditorReadOnly(isReadOnly))
     yield createNewEditorScene(project)
 
