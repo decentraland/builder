@@ -93,8 +93,18 @@
   transform: translateY(-4px);
 }
 
+.HomePage .project-cards .subtitle > .dcl.tabs {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.HomePage .project-cards .subtitle > .dcl.tabs > .ui.container {
+  width: auto;
+}
+
 .HomePage .project-cards .subtitle > .menu {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   font-size: 13px;
   line-height: 18px;

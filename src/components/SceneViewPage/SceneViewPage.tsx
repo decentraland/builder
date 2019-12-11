@@ -24,15 +24,14 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    const { currentProject, match, onLoadProject, onReadOnly } = this.props
-    onReadOnly(true)
+    const { currentProject, match, onLoadProject } = this.props
     if (!currentProject && match.params.projectId) {
       onLoadProject(match.params.projectId, this.getType())
     }
   }
 
   componentWillUnmount() {
-    this.props.onReadOnly(false)
+    this.props.onCloseEditor()
   }
 
   handlePreview = () => {
@@ -157,7 +156,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         <div className={classes.join(' ')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
-              {isInteractive && <ViewPort key="SceneView" />}
+              {isInteractive && <ViewPort key={currentProject.id} isReadOnly={true} type={this.getType()} />
             </Responsive>
           </div>
           <div className="scene-top-action-list">

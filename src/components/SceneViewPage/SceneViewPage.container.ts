@@ -7,7 +7,7 @@ import { isLoggedIn } from 'modules/auth/selectors'
 import { loadPublicProjectRequest } from 'modules/project/actions'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
-import { togglePreview, setEditorReadOnly } from 'modules/editor/actions'
+import { togglePreview, closeEditor } from 'modules/editor/actions'
 import { openModal } from 'modules/modal/actions'
 import { likePoolRequest } from 'modules/pool/actions'
 import { isInteractive } from 'modules/ui/share/selectors'
@@ -30,7 +30,7 @@ const mapState = (state: RootState): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLikePool: (id: string, like: boolean = true) => dispatch(likePoolRequest(id, like)),
   onPreview: () => dispatch(togglePreview(true)),
-  onReadOnly: (isReadOnly: boolean) => dispatch(setEditorReadOnly(isReadOnly)),
+  onCloseEditor: () => dispatch(closeEditor()),
   onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })

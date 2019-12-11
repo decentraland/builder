@@ -42,7 +42,9 @@ import {
   SetEditorLoadingAction,
   setScriptUrl,
   DESELECT_ENTITY,
-  setScreenshotReady
+  setScreenshotReady,
+  OpenEditorAction,
+  setEditorReadOnly
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -52,7 +54,8 @@ import {
   DropItemAction,
   addItem,
   setGround,
-  ProvisionSceneAction
+  ProvisionSceneAction,
+  createScene
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
@@ -93,6 +96,9 @@ import {
   createReadyOnlyScene,
   areEqualTransforms
 } from './utils'
+import { getCurrentPool } from 'modules/pool/selectors'
+import { Pool } from 'modules/pool/types'
+import { loadAssets } from 'modules/asset/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -245,7 +251,8 @@ function handleEditorReadyChange() {
   store.dispatch(setEditorReady(true))
 }
 
-function* handleOpenEditor() {
+function* handleOpenEditor(action: OpenEditorAction) {
+  const { isReadOnly, type } = action.payload
   // Handles subscriptions to metrics
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
@@ -262,9 +269,18 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
-  const project: Project | null = yield select(getCurrentProject)
+  const project: Project | Pool | null = yield (type === 'pool' ? select(getCurrentPool) : select(getCurrentProject))
 
   if (project) {
+    if (type !== 'project') {
+      const scene: Scene = yield getSceneByProjectId(project.id, type)
+      if (scene) {
+        yield put(createScene(scene))
+        yield put(loadAssets(scene.assets))
+      }
+    }
+
+    yield put(setEditorReadOnly(isReadOnly))
     yield createNewEditorScene(project)
 
     // Set the remote url for scripts
@@ -279,7 +295,7 @@ function* handleOpenEditor() {
     // Select gizmo
     yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
   } else {
-    console.error('Unable to Open Editor: Invalid project')
+    console.error(`Unable to Open Editor: Invalid ${type}`)
   }
 }
 

@@ -35,7 +35,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
       })
     ),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onPageChange: options => dispatch(navigateTo(locations.root(options)))
+  onPageChange: options => dispatch(navigateTo(locations.root(options))),
+  onNavigateToShowcase: () => dispatch(navigateTo(locations.poolSearch()))
 })
 
 export default connect(

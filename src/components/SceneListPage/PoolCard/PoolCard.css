@@ -1,0 +1,86 @@
+.PoolCard {
+  position: relative;
+  width: var(--list-page-card-width);
+  height: var(--list-page-card-height);
+  border-radius: 12px;
+  margin-top: var(--list-page-card-margin);
+  margin-right: var(--list-page-card-margin);
+  background: rgba(var(--bluish-steel-raw), 0.16);
+  cursor: pointer;
+}
+
+.PoolCard .deployment-status {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 10px;
+  height: 10px;
+}
+
+.PoolCard .project-data {
+  width: 100%;
+  margin: 20px;
+  color: var(--text);
+  z-index: 1;
+}
+
+.PoolCard .title {
+  margin-bottom: 14px;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 500;
+  max-width: 175px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.PoolCard .description {
+  font-size: 17px;
+  font-weight: 200;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+.PoolCard:hover {
+  z-index: 999;
+}
+
+.PoolCard .thumbnail {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px 12px 0 0;
+  width: var(--list-page-card-width);
+  height: calc(var(--list-page-card-width) * 0.75);
+}
+
+.PoolCard .title-wrapper {
+  display: flex;
+}
+
+.PoolCard .Icon.is-uploading {
+  margin-left: 4px;
+  margin-top: 2px;
+}
+
+.PoolCard .component-list {
+  color: var(--share-detail-text);
+  font-weight: 600;
+  display: flex;
+  font-size: 13px;
+  line-height: 16px;
+  text-transform: uppercase;
+  margin-top: 24px;
+  flex: 0 0 100%;
+}
+
+.PoolCard .component-list .component {
+  margin-right: 24px;
+}
+
+.PoolCard .component-list .component .Icon {
+  margin-right: 0.5em;
+  vertical-align: top;
+}

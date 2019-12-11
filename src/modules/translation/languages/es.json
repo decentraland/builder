@@ -378,6 +378,20 @@
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
   },
+  "scene_list_page": {
+    "projects_title": "Scene Pool",
+    "no_projects": "It looks like we don't have any Scenes",
+    "filters": {
+      "creator-contest-2019-12": "Creator Contest",
+      "all_groups": "All collections",
+      "all_users": "All users",
+      "only_me": "Only me",
+      "newest": "Newest",
+      "likes": "Likes",
+      "size": "Size",
+      "name": "Name"
+    }
+  },
   "public_page": {
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",

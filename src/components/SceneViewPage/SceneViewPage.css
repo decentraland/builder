@@ -2,7 +2,7 @@
   display: block;
   position: relative;
   background: rgba(var(--bluish-steel-raw), 0.16);
-  width: 100%;
+  width: 90%;
   max-width: 900px;
   margin: 40px auto;
   border-radius: 8px;
