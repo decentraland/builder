@@ -42,7 +42,9 @@ import {
   SetEditorLoadingAction,
   setScriptUrl,
   DESELECT_ENTITY,
-  setScreenshotReady
+  setScreenshotReady,
+  OpenEditorAction,
+  setEditorReadOnly
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -92,6 +94,8 @@ import {
   ROTATION_GRID_RESOLUTION,
   createReadyOnlyScene
 } from './utils'
+import { getCurrentPool } from 'modules/pool/selectors'
+import { Pool } from 'modules/pool/types'
 
 const editorWindow = window as EditorWindow
 
@@ -242,7 +246,8 @@ function handleEditorReadyChange() {
   store.dispatch(setEditorReady(true))
 }
 
-function* handleOpenEditor() {
+function* handleOpenEditor(action: OpenEditorAction) {
+  const { isReadOnly, type } = action.payload
   // Handles subscriptions to metrics
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
@@ -259,9 +264,10 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
-  const project: Project | null = yield select(getCurrentProject)
+  const project: Project | Pool | null = yield (type === 'pool' ? select(getCurrentPool) : select(getCurrentProject))
 
   if (project) {
+    yield put(setEditorReadOnly(isReadOnly))
     yield createNewEditorScene(project)
 
     // Set the remote url for scripts
@@ -276,7 +282,7 @@ function* handleOpenEditor() {
     // Select gizmo
     yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
   } else {
-    console.error('Unable to Open Editor: Invalid project')
+    console.error(`Unable to Open Editor: Invalid ${type}`)
   }
 }
 

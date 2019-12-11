@@ -75,7 +75,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       }
 
       this.moveCanvas()
-      this.props.onOpenEditor()
+      const { isReadOnly, type } = this.props
+      this.props.onOpenEditor({ isReadOnly: isReadOnly === true, type: type || 'project' })
 
       this.subscribeKeyDownEvent()
     } catch (error) {

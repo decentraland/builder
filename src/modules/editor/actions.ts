@@ -3,7 +3,7 @@ import { action } from 'typesafe-actions'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { Gizmo } from './types'
+import { Gizmo, OpenEditorOptions } from './types'
 
 // Bind keyboard shortcuts
 
@@ -25,7 +25,7 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 
 export const OPEN_EDITOR = 'Open editor'
 
-export const openEditor = () => action(OPEN_EDITOR, {})
+export const openEditor = (options: Partial<OpenEditorOptions> = {}) => action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options })
 
 export type OpenEditorAction = ReturnType<typeof openEditor>
 

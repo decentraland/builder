@@ -7,6 +7,7 @@ import { getCurrentProject } from 'modules/project/selectors'
 import { dropItem } from 'modules/scene/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './Preview.types'
 import Preview from './Preview'
+import { OpenEditorOptions } from 'modules/editor/types'
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoading: !isReady(state),
@@ -14,7 +15,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onOpenEditor: () => dispatch(openEditor()),
+  onOpenEditor: (options: Partial<OpenEditorOptions> = {}) => dispatch(openEditor(options)),
   onDropItem: (asset, x, y) => dispatch(dropItem(asset, x, y))
 })
 

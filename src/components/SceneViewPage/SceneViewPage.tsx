@@ -19,15 +19,14 @@ import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
-    const { currentProject, match, onLoadProject, onReadOnly } = this.props
-    onReadOnly(true)
+    const { currentProject, match, onLoadProject } = this.props
     if (!currentProject && match.params.projectId) {
       onLoadProject(match.params.projectId, this.getType())
     }
   }
 
   componentWillUnmount() {
-    this.props.onReadOnly(false)
+    this.props.onCloseEditor()
   }
 
   handlePreview = () => {
@@ -118,6 +117,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
   render() {
     const { isFetching, isPreviewing, isReady } = this.props
+    const type = this.getType() === 'pool' ? 'pool' : 'project'
 
     if (isFetching) {
       return this.renderLoading()
@@ -138,7 +138,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
-              <ViewPort key="SceneView" />
+              <ViewPort key={currentProject.id} isReadOnly={true} type={type} />
             </Responsive>
           </div>
           <div className="scene-action-list">

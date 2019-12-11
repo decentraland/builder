@@ -37,3 +37,8 @@ export type EditorScene = {
 }
 
 export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightArrow'
+
+export type OpenEditorOptions = {
+  isReadOnly: boolean
+  type: 'project' | 'pool'
+}
