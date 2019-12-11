@@ -14,7 +14,6 @@ import PoolCard from './PoolCard'
 import './SceneListPage.css'
 
 export default class SceneListPage extends React.PureComponent<Props, State> {
-
   componentDidMount() {
     const { onLoadPools } = this.props
     const filters = this.getFilters()
@@ -75,70 +74,84 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
     const { pools, poolGroups, total, totalPages, isLoggedIn } = this.props
     const filters = this.getFilters()
 
-    return <>
-      <Ad slot="BUILDER_TOP_BANNER" type="full" />
-      <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
-      <Page isFullscreen>
-        <Container>
-          <div className="HomePageAd">
-            <Ad slot="BUILDER_HOME_PAGE" />
-          </div>
-        </Container>
-        <div className="SceneListPage">
+    return (
+      <>
+        <Ad slot="BUILDER_TOP_BANNER" type="full" />
+        <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
+        <Page isFullscreen>
           <Container>
-            <div className="subtitle">
-              <Tabs isFullscreen>
-                <Tabs.Tab onClick={this.handleNavigateToHome}>{t('home_page.projects_title')}</Tabs.Tab>
-                <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
-              </Tabs>
-              <div className="menu">
-                <Dropdown
-                  direction="left"
-                  value={filters.group || 'all'}
-                  options={[
-                    { value: 'all', text: t('scene_list_page.filters.all_groups') },
-                    ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
-                  ]}
-                  onChange={this.handleChangeGroup}
-                />
-                {isLoggedIn && <Dropdown
-                  direction="left"
-                  value={filters.userId || 'all'}
-                  options={[
-                    { value: 'all', text: t('scene_list_page.filters.all_users') },
-                    { value: 'me', text: t('scene_list_page.filters.only_me') }
-                  ]}
-                  onChange={this.handleChangeUser}
-                />}
-                <Dropdown
-                  direction="left"
-                  value={filters.sortBy}
-                  options={[
-                    { value: SortBy.NEWEST, text: t('scene_list_page.filters.newest') },
-                    { value: SortBy.NAME, text: t('scene_list_page.filters.name') },
-                    { value: SortBy.LIKES, text: t('scene_list_page.filters.likes') },
-                    { value: SortBy.SIZE, text: t('scene_list_page.filters.size') }
-                  ]}
-                  onChange={this.handleChangeSort}
-                />
+            <div className="HomePageAd">
+              <Ad slot="BUILDER_HOME_PAGE" />
+            </div>
+          </Container>
+          <div className="SceneListPage">
+            <Container>
+              <div className="subtitle">
+                <Tabs isFullscreen>
+                  <Tabs.Tab onClick={this.handleNavigateToHome}>{t('home_page.projects_title')}</Tabs.Tab>
+                  <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
+                </Tabs>
+                <div className="menu">
+                  <Dropdown
+                    direction="left"
+                    value={filters.group || 'all'}
+                    options={[
+                      { value: 'all', text: t('scene_list_page.filters.all_groups') },
+                      ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
+                    ]}
+                    onChange={this.handleChangeGroup}
+                  />
+                  {isLoggedIn && (
+                    <Dropdown
+                      direction="left"
+                      value={filters.userId || 'all'}
+                      options={[
+                        { value: 'all', text: t('scene_list_page.filters.all_users') },
+                        { value: 'me', text: t('scene_list_page.filters.only_me') }
+                      ]}
+                      onChange={this.handleChangeUser}
+                    />
+                  )}
+                  <Dropdown
+                    direction="left"
+                    value={filters.sortBy}
+                    options={[
+                      { value: SortBy.NEWEST, text: t('scene_list_page.filters.newest') },
+                      { value: SortBy.NAME, text: t('scene_list_page.filters.name') },
+                      { value: SortBy.LIKES, text: t('scene_list_page.filters.likes') },
+                      { value: SortBy.SIZE, text: t('scene_list_page.filters.size') }
+                    ]}
+                    onChange={this.handleChangeSort}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="PoolCardList">
-              {pools === null && <Loader active size="huge" />}
-              {Array.isArray(pools) && total === 0 && <div className="empty-projects">
-                {t('scene_list_page.no_projects')}
-              </div>}
-              {Array.isArray(pools) && total !== 0 && <>
-                {pools.map((pool) => <PoolCard key={pool.id} pool={pool} />)}
-              </>}
-            </div>
-          </Container>
-          <Container>
-            {total !== null && totalPages !== null && <Pagination firstItem={null} lastItem={null} totalPages={totalPages} activePage={filters.page} onPageChange={this.handlePageChange} />}
-          </Container>
-        </div>
-      </Page>
-      <Footer isFullscreen />
-    </>
+              <div className="PoolCardList">
+                {pools === null && <Loader active size="huge" />}
+                {Array.isArray(pools) && total === 0 && <div className="empty-projects">{t('scene_list_page.no_projects')}</div>}
+                {Array.isArray(pools) && total !== 0 && (
+                  <>
+                    {pools.map(pool => (
+                      <PoolCard key={pool.id} pool={pool} />
+                    ))}
+                  </>
+                )}
+              </div>
+            </Container>
+            <Container>
+              {total !== null && totalPages !== null && (
+                <Pagination
+                  firstItem={null}
+                  lastItem={null}
+                  totalPages={totalPages}
+                  activePage={filters.page}
+                  onPageChange={this.handlePageChange}
+                />
+              )}
+            </Container>
+          </div>
+        </Page>
+        <Footer />
+      </>
+    )
   }
 }
