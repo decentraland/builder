@@ -29,7 +29,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.startEditor().catch(error => console.error('Failed to start editor', error))
     } else {
       this.moveCanvas()
-      this.props.onOpenEditor()
+      this.openEditor()
       this.subscribeKeyDownEvent()
     }
   }
@@ -62,6 +62,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
   }
 
+  openEditor = () => {
+    const { isReadOnly, type } = this.props
+    this.props.onOpenEditor({ isReadOnly: isReadOnly === true, type: type || 'project' })
+  }
+
   async startEditor() {
     if (!this.canvasContainer.current) {
       throw new Error('Missing canvas container')
@@ -75,8 +80,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       }
 
       this.moveCanvas()
-      const { isReadOnly, type } = this.props
-      this.props.onOpenEditor({ isReadOnly: isReadOnly === true, type: type || 'project' })
+      this.openEditor()
 
       this.subscribeKeyDownEvent()
     } catch (error) {
