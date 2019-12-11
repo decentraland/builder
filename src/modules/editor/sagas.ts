@@ -54,7 +54,8 @@ import {
   DropItemAction,
   addItem,
   setGround,
-  ProvisionSceneAction
+  ProvisionSceneAction,
+  createScene
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
@@ -96,6 +97,7 @@ import {
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
+import { loadAssets } from 'modules/asset/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -267,7 +269,14 @@ function* handleOpenEditor(action: OpenEditorAction) {
   const project: Project | Pool | null = yield (type === 'pool' ? select(getCurrentPool) : select(getCurrentProject))
 
   if (project) {
-    yield getSceneByProjectId(project.id, type)
+    if (type !== 'project') {
+      const scene: Scene = yield getSceneByProjectId(project.id, type)
+      if (scene) {
+        yield put(createScene(scene))
+        yield put(loadAssets(scene.assets))
+      }
+    }
+
     yield put(setEditorReadOnly(isReadOnly))
     yield createNewEditorScene(project)
 
