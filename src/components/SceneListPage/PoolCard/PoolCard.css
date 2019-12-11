@@ -32,6 +32,7 @@
   max-width: 175px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .PoolCard .description {
