@@ -156,7 +156,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         <div className={classes.join(' ')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
-              {isInteractive && <ViewPort key={currentProject.id} isReadOnly={true} type={this.getType()} />
+              {isInteractive && <ViewPort key={currentProject.id} isReadOnly={true} type={this.getType()} />}
             </Responsive>
           </div>
           <div className="scene-top-action-list">
