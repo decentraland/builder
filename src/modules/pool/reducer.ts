@@ -75,7 +75,10 @@ export const poolReducer = (state = INITIAL_STATE, action: PoolReducerAction): P
     case LOAD_PUBLIC_PROJECT_SUCCESS: {
       const { project, type } = action.payload
       if (type !== 'pool') {
-        return state
+        return {
+          ...state,
+          loading: loadingReducer(state.loading, action)
+        }
       }
 
       return {
