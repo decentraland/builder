@@ -343,8 +343,9 @@
     "empty_ground": "Sin piso",
     "no_results": "Sin resultados",
     "results": "Resultados",
-    "search": "Buscar objetos",
-    "title": "Asset Packs"
+    "search": "Buscar Assets",
+    "title": "Asset Packs",
+    "search_items": "Buscar objetos"
   },
   "layout_picker": {
     "columns": "columnas",

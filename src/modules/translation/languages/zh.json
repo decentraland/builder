@@ -341,7 +341,8 @@
     "no_results": "没找到",
     "results": "结果",
     "search": "搜索",
-    "title": "物品目录"
+    "title": "物品目录",
+    "search_items": "搜索"
   },
   "layout_picker": {
     "columns": "列",
