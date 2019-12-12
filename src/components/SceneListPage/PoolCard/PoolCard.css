@@ -4,7 +4,8 @@
   height: var(--list-page-card-height);
   border-radius: 12px;
   margin-top: var(--list-page-card-margin);
-  margin-right: var(--list-page-card-margin);
+  margin-right: calc(var(--list-page-card-margin) / 2);
+  margin-left: calc(var(--list-page-card-margin) / 2);
   background: rgba(var(--bluish-steel-raw), 0.16);
   cursor: pointer;
 }

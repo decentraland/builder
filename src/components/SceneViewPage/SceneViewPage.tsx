@@ -19,8 +19,8 @@ import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
-    const { currentProject, match, onLoadProject } = this.props
-    if (!currentProject && match.params.projectId) {
+    const { match, onLoadProject } = this.props
+    if (match.params.projectId) {
       onLoadProject(match.params.projectId, this.getType())
     }
   }
@@ -177,7 +177,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
                 <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels: this.getParcelCount() })}
               </div>
               <div className="component">
-                <Icon name="scene-object" /> {t('public_page.object_count', { objects: this.getObjectCount() })}
+                <Icon name="scene-object" /> {t('public_page.item_count', { items: this.getObjectCount() })}
               </div>
             </div>
           </div>

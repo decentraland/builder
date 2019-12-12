@@ -385,6 +385,8 @@
       "only_me": "Only me",
       "newest": "Newest",
       "likes": "Likes",
+      "items": "Items",
+      "smart_items": "Smart items",
       "size": "Size",
       "name": "Name"
     }
@@ -394,7 +396,7 @@
     "made_by": "Scene by",
     "try_it_out": "try it out",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
-    "object_count": "{objects} {objects, plural, one {object} other {objects}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "likes": "{likes} {likes, plural, one {like} other {likes}}"
   },
   "not_found_page": {
