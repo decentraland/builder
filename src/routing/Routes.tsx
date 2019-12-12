@@ -48,6 +48,7 @@ export default class Routes extends React.Component<Props, State> {
       <>
         <Responsive maxWidth={1024} as={React.Fragment}>
           <Switch>
+            <Route exact path={locations.poolSearch()} component={SceneListPage} />
             <Route exact path={locations.sceneView()} component={SceneViewPage} />
             <Route exact path={locations.poolView()} component={SceneViewPage} />
             <Route component={MobilePage} />

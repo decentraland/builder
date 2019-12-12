@@ -381,6 +381,8 @@
       "newest": "Newest",
       "likes": "Likes",
       "size": "Size",
+      "items": "Objects",
+      "smart_items": "Smart items",
       "name": "Name"
     }
   },

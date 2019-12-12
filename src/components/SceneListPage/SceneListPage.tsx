@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Page, Container, Pagination, Tabs, Dropdown, DropdownProps, PaginationProps } from 'decentraland-ui'
+import { Loader, Page, Container, Pagination, Tabs, Dropdown, DropdownProps, PaginationProps, Responsive } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Ad from 'decentraland-ad/lib/Ad/Ad'
 
@@ -85,39 +85,51 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
         <Ad slot="BUILDER_TOP_BANNER" type="full" />
         <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
         <Page isFullscreen>
-          <Container>
-            <div className="HomePageAd">
-              <Ad slot="BUILDER_HOME_PAGE" />
-            </div>
-          </Container>
+          <Responsive minWidth={1025} as={React.Fragment}>
+            <Container>
+              <div className="HomePageAd">
+                <Ad slot="BUILDER_HOME_PAGE" />
+              </div>
+            </Container>
+          </Responsive>
           <div className="SceneListPage">
             <Container>
               <div className="subtitle">
-                <Tabs isFullscreen>
-                  <Tabs.Tab onClick={this.handleNavigateToHome}>{t('home_page.projects_title')}</Tabs.Tab>
-                  <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
-                </Tabs>
+                <Responsive minWidth={1025} as={React.Fragment}>
+                  <Tabs isFullscreen>
+                    <Tabs.Tab onClick={this.handleNavigateToHome}>{t('home_page.projects_title')}</Tabs.Tab>
+                    <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
+                  </Tabs>
+                </Responsive>
+                <Responsive maxWidth={1024} as={React.Fragment}>
+                  <Tabs isFullscreen>
+                    <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
+                  </Tabs>
+                </Responsive>
                 <div className="menu">
-                  <Dropdown
-                    direction="left"
-                    value={filters.group || 'all'}
-                    options={[
-                      { value: 'all', text: t('scene_list_page.filters.all_groups') },
-                      ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
-                    ]}
-                    onChange={this.handleChangeGroup}
-                  />
-                  {isLoggedIn && (
+
+                  <Responsive minWidth={1025} as={React.Fragment}>
                     <Dropdown
                       direction="left"
-                      value={filters.userId || 'all'}
+                      value={filters.group || 'all'}
                       options={[
-                        { value: 'all', text: t('scene_list_page.filters.all_users') },
-                        { value: 'me', text: t('scene_list_page.filters.only_me') }
+                        { value: 'all', text: t('scene_list_page.filters.all_groups') },
+                        ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
                       ]}
-                      onChange={this.handleChangeUser}
+                      onChange={this.handleChangeGroup}
                     />
-                  )}
+                    {isLoggedIn && (
+                      <Dropdown
+                        direction="left"
+                        value={filters.userId || 'all'}
+                        options={[
+                          { value: 'all', text: t('scene_list_page.filters.all_users') },
+                          { value: 'me', text: t('scene_list_page.filters.only_me') }
+                        ]}
+                        onChange={this.handleChangeUser}
+                      />
+                    )}
+                  </Responsive>
                   <Dropdown
                     direction="left"
                     value={filters.sortBy}
@@ -125,6 +137,8 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
                       { value: SortBy.NEWEST, text: t('scene_list_page.filters.newest') },
                       { value: SortBy.NAME, text: t('scene_list_page.filters.name') },
                       { value: SortBy.LIKES, text: t('scene_list_page.filters.likes') },
+                      { value: SortBy.ITEMS, text: t('scene_list_page.filters.items') },
+                      { value: SortBy.SMART_ITEMS, text: t('scene_list_page.filters.smart_items') },
                       { value: SortBy.SIZE, text: t('scene_list_page.filters.size') }
                     ]}
                     onChange={this.handleChangeSort}
