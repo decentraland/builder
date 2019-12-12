@@ -346,7 +346,8 @@
     "no_results": "No results",
     "results": "Results",
     "search": "Search assets",
-    "title": "Asset Packs"
+    "title": "Asset Packs",
+    "search_items": "Search items"
   },
   "layout_picker": {
     "columns": "columns",

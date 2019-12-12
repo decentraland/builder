@@ -2,6 +2,48 @@
   user-select: none;
 }
 
+.EntityField .search-field {
+  opacity: 1 !important; /* Overwrite disabled */
+}
+
+.EntityField .search-field .results {
+  display: none !important;
+}
+
+.EntityField .search-field i.icon {
+  color: rgb(var(--purplish-grey-raw));
+  margin-left: 4px;
+}
+
+.EntityField .search-field .ui.input {
+  width: 100%;
+  padding: 0px 6px;
+  margin-bottom: 2px;
+}
+
+.EntityField .ui.search input.prompt::placeholder {
+  color: rgb(var(--purplish-grey-raw));
+}
+
+.EntityField .ui.search input.prompt,
+.EntityField .ui.search.focus input.prompt {
+  background: var(--dark-two);
+  color: rgb(var(--purplish-grey-raw));
+  line-height: 37px;
+  height: 36px;
+  border-radius: 4px;
+}
+
+.EntityField .no-results {
+  text-align: center !important;
+  cursor: default !important;
+  opacity: 0.4;
+}
+
+.EntityField .no-results:hover {
+  background: transparent !important;
+}
+
 .EntityField .trigger {
   color: white;
   display: flex;
@@ -67,6 +109,8 @@
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .EntityField .dcl.select-field .ui.selection.active.dropdown,
