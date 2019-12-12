@@ -56,14 +56,20 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
   handleChangeSort = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const filters = this.getFilters()
     if (data.value && filters.sortBy !== data.value) {
-      this.handleChangeFilters({ ...filters, sortBy: data.value as string })
+      switch (data.value) {
+        case SortBy.NAME:
+          this.handleChangeFilters({ ...filters, sortBy: data.value as string, sortOrder: 'asc' })
+          break
+        default:
+          this.handleChangeFilters({ ...filters, sortBy: data.value as string, sortOrder: 'desc' })
+      }
     }
   }
 
   handlePageChange = (_event: React.SyntheticEvent<any>, data: PaginationProps) => {
     const filters = this.getFilters()
     const newPage = Number(data.activePage)
-    if (Number.isNaN(newPage) && newPage > 0) {
+    if (!Number.isNaN(newPage) && newPage > 0) {
       this.handleChangeFilters({ ...filters, page: newPage })
     }
   }
