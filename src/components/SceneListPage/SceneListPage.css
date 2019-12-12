@@ -53,6 +53,7 @@
   display: flex;
   flex-wrap: wrap;
   min-height: 400px;
+  justify-content: space-around;
 }
 
 .SceneListPage .ui.pagination.menu {

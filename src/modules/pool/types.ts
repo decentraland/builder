@@ -28,7 +28,7 @@ export enum SortBy {
   LIKES = 'likes',
   NAME = 'title',
   SIZE = 'parcels',
-  ITEMS = 'entities',
+  ITEMS = 'transforms',
   SMART_ITEMS = 'scripts'
 }
 
