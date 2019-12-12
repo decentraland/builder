@@ -5,7 +5,7 @@ import './NumberField.css'
 
 export default class NumberField extends React.PureComponent<Props, State> {
   state: State = {
-    value: this.props.value !== undefined ? this.props.value.toString() : '0',
+    value: this.props.value !== undefined && this.props.value !== null ? this.props.value.toString() : '0',
     id: this.props.id || ''
   }
 
@@ -24,8 +24,10 @@ export default class NumberField extends React.PureComponent<Props, State> {
     const { allowFloat, onChange } = this.props
     const value = allowFloat ? props.value : props.value.replace(/,|\./g, '')
     this.setState({ value })
-
-    onChange(allowFloat ? parseFloat(value) : parseInt(value, 10))
+    const number = allowFloat ? parseFloat(value) : parseInt(value, 10)
+    if (!Number.isNaN(number)) {
+      onChange(number)
+    }
   }
 
   render() {
