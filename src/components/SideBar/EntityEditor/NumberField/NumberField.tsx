@@ -24,9 +24,9 @@ export default class NumberField extends React.PureComponent<Props, State> {
     const { allowFloat, onChange } = this.props
     const value = allowFloat ? props.value : props.value.replace(/,|\./g, '')
     this.setState({ value })
-    const number = allowFloat ? parseFloat(value) : parseInt(value, 10)
-    if (!Number.isNaN(number)) {
-      onChange(number)
+    const numericValue = allowFloat ? parseFloat(value) : parseInt(value, 10)
+    if (!Number.isNaN(numericValue)) {
+      onChange(numericValue)
     }
   }
 
