@@ -146,6 +146,8 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
       classes.push('interactive')
       if (!isReady) {
         classes.push('loading')
+      } else {
+        classes.push('ready')
       }
     }
 
@@ -175,12 +177,12 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
           </div>
           <div className="scene-bottom-action-list">
             <Responsive minWidth={1025} as={React.Fragment}>
-              {!isInteractive && <div className="scene-action">
-                <Chip text={<>
+              <div className="scene-action">
+                {!isReady && <Chip text={<>
                   <Icon name="cube" />
                   <span className="LoadView">{" "}{t('public_page.load_3d')}</span>
-                </>} type="circle" onClick={this.handleLoadInteractive} />
-              </div>}
+                </>} type="circle" onClick={this.handleLoadInteractive} />}
+              </div>
             </Responsive>
           </div>
           <div className="detail">

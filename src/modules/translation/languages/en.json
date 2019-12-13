@@ -393,7 +393,7 @@
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",
     "try_it_out": "try it out",
-    "load_3d": "LOAD 3D VIEW",
+    "load_3d": "LOADING 3D VIEW",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
     "object_count": "{objects} {objects, plural, one {object} other {objects}}",
     "likes": "{likes} {likes, plural, one {like} other {likes}}"

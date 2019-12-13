@@ -6,6 +6,6 @@ export const isInteractive = createSelector(
   (state: RootState) => getLocation(state),
   (location) => {
     const params = new URLSearchParams(location.search)
-    return params.has('interactive')
+    return !params.has('interactive') || ['0', 'false'].includes(params.get('interactive') || 'true')
   }
 )
