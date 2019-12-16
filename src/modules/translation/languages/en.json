@@ -346,7 +346,8 @@
     "no_results": "No results",
     "results": "Results",
     "search": "Search assets",
-    "title": "Asset Packs"
+    "title": "Asset Packs",
+    "search_items": "Search items"
   },
   "layout_picker": {
     "columns": "columns",
@@ -379,12 +380,15 @@
     "projects_title": "Scene Pool",
     "no_projects": "It looks like we don't have any Scenes",
     "filters": {
-      "creator-contest-2019-12": "Creator Contest",
+      "creator-contest-2019-12": "Creator Contest (Submission)",
+      "qualified-creator-contest-2019-12": "Creator Contest",
       "all_groups": "All collections",
       "all_users": "All users",
       "only_me": "Only me",
       "newest": "Newest",
       "likes": "Likes",
+      "items": "Items",
+      "smart_items": "Smart items",
       "size": "Size",
       "name": "Name"
     }
@@ -394,7 +398,7 @@
     "made_by": "Scene by",
     "try_it_out": "try it out",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
-    "object_count": "{objects} {objects, plural, one {object} other {objects}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "likes": "{likes} {likes, plural, one {like} other {likes}}"
   },
   "not_found_page": {

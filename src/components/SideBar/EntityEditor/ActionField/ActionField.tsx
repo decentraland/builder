@@ -154,48 +154,46 @@ export default class ActionField extends React.PureComponent<Props> {
             const parameters = this.getParameters(action)
             const parameterValues = value && value[i] ? value[i].values : {}
             return (
-              <>
-                <div className="container" key={actionId}>
-                  <div className="signature">
-                    <EntityField
-                      id={actionId}
-                      value={value ? action.entityName : ''}
-                      onChange={name => this.handleEntityChange(name, i)}
-                      filter={Object.keys(entityAssets)}
+              <div className="container" key={actionId}>
+                <div className="signature">
+                  <EntityField
+                    id={actionId}
+                    value={value ? action.entityName : ''}
+                    onChange={name => this.handleEntityChange(name, i)}
+                    filter={Object.keys(entityAssets)}
+                    className={'action'}
+                    direction={null}
+                  />
+                  {action.entityName && (
+                    <OptionsField
+                      id={`${actionId}-actions`}
+                      value={action.actionId}
+                      options={options}
+                      onChange={actionid => this.handleActionChange(actionid, i)}
                       className={'action'}
-                      direction={null}
                     />
-                    {action.entityName && (
-                      <OptionsField
-                        id={`${actionId}-actions`}
-                        value={action.actionId}
-                        options={options}
-                        onChange={actionid => this.handleActionChange(actionid, i)}
-                        className={'action'}
-                      />
-                    )}
-                    <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left" title="More Options">
-                      <Dropdown.Menu>
-                        <Dropdown.Item text="Reset Action" onClick={() => this.handleReset(i)} />
-                        <Dropdown.Item text="Remove Action" onClick={() => this.handleRemove(i)} />
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </div>
-
-                  {parameters && parameters.length > 0 && (
-                    <aside>
-                      <EntityParameters
-                        id={`${actionId}-parameters`}
-                        entityName={action.entityName}
-                        parameters={parameters}
-                        values={parameterValues}
-                        onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
-                        className="action"
-                      />
-                    </aside>
                   )}
+                  <Dropdown trigger={<Icon className="action-options" name="ellipsis" />} direction="left" title="More Options">
+                    <Dropdown.Menu>
+                      <Dropdown.Item text="Reset Action" onClick={() => this.handleReset(i)} />
+                      <Dropdown.Item text="Remove Action" onClick={() => this.handleRemove(i)} />
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </div>
-              </>
+
+                {parameters && parameters.length > 0 && (
+                  <aside>
+                    <EntityParameters
+                      id={`${actionId}-parameters`}
+                      entityName={action.entityName}
+                      parameters={parameters}
+                      values={parameterValues}
+                      onChange={(values, debounce) => this.handleParametersChange(values, i, debounce)}
+                      className="action"
+                    />
+                  </aside>
+                )}
+              </div>
             )
           })}
       </section>

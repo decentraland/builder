@@ -45,7 +45,7 @@ export default class PoolCard extends React.PureComponent<Props, State> {
     return (
       <Link to={locations.poolView(pool.id, 'pool')} className="PoolCard">
         <div className="thumbnail" style={{ backgroundImage: `url(${pool.thumbnail})` }} />
-        <DeploymentStatus projectId={pool.id} className="deployment-status" />
+        <DeploymentStatus projectId={pool.id} className="deployment-status" type="pool" />
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{pool.title}</div>
@@ -56,7 +56,7 @@ export default class PoolCard extends React.PureComponent<Props, State> {
                 <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels })}
               </div>
               {pool.statistics && <div className="component">
-                <Icon name="scene-object" /> {t('public_page.object_count', { objects: pool.statistics.transforms })}
+                <Icon name="scene-object" /> {t('public_page.item_count', { items: pool.statistics.transforms })}
               </div>}
             </div>
           </div>

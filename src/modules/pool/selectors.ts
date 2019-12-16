@@ -112,7 +112,7 @@ export const getSortBy = createSelector(
   (state: RootState) => getLocation(state),
   location => {
     const params = new URLSearchParams(location.search)
-    return routing.getSortBy(params.get('sort_by'), [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE], SortBy.NEWEST)
+    return routing.getSortBy(params.get('sort_by'), [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE, SortBy.ITEMS, SortBy.SMART_ITEMS], SortBy.NEWEST)
   }
 )
 

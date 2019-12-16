@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Loader, Page, Container, Pagination, Tabs, Dropdown, DropdownProps, PaginationProps } from 'decentraland-ui'
+import { Loader, Page, Container, Pagination, Tabs, Dropdown, DropdownProps, PaginationProps, Responsive } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
-import { PoolsRequestFilters, SortBy } from 'modules/pool/types'
+import { PoolsRequestFilters, SortBy, DEFAULT_POOL_GROUP } from 'modules/pool/types'
 
 import SceneViewMenu from '../SceneViewPage/SceneViewMenu'
 import { Props, State, filterAttributes } from './SceneListPage.types'
@@ -15,9 +15,15 @@ import './SceneListPage.css'
 
 export default class SceneListPage extends React.PureComponent<Props, State> {
   componentDidMount() {
-    const { onLoadPools } = this.props
+    const { location } = this.props
     const filters = this.getFilters()
-    onLoadPools(filters)
+    if (location.search === '' || location.search === '?') {
+      filters.sortBy = SortBy.LIKES
+      filters.sortOrder = 'desc'
+      filters.group = DEFAULT_POOL_GROUP
+    }
+
+    this.handleChangeFilters(filters)
   }
 
   getFilters(props = this.props) {
@@ -37,31 +43,34 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
 
   handleChangeGroup = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const { group, ...filters } = this.getFilters()
+    const page = 1
     if (data.value === 'all') {
-      this.handleChangeFilters(filters)
+      this.handleChangeFilters({ ...filters, page })
     } else {
-      this.handleChangeFilters({ ...filters, group: data.value as string })
+      this.handleChangeFilters({ ...filters, page, group: data.value as string })
     }
   }
 
   handleChangeUser = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const { userId, ...filters } = this.getFilters()
+    const page = 1
     if (data.value === 'all') {
-      this.handleChangeFilters(filters)
+      this.handleChangeFilters({ ...filters, page })
     } else {
-      this.handleChangeFilters({ ...filters, userId: data.value as string })
+      this.handleChangeFilters({ ...filters, page, userId: data.value as string })
     }
   }
 
   handleChangeSort = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const filters = this.getFilters()
+    const page = 1
     if (data.value && filters.sortBy !== data.value) {
       switch (data.value) {
         case SortBy.NAME:
-          this.handleChangeFilters({ ...filters, sortBy: data.value as string, sortOrder: 'asc' })
+          this.handleChangeFilters({ ...filters, page, sortBy: data.value as string, sortOrder: 'asc' })
           break
         default:
-          this.handleChangeFilters({ ...filters, sortBy: data.value as string, sortOrder: 'desc' })
+          this.handleChangeFilters({ ...filters, page, sortBy: data.value as string, sortOrder: 'desc' })
       }
     }
   }
@@ -85,39 +94,51 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
         <Ad slot="BUILDER_TOP_BANNER" type="full" />
         <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
         <Page isFullscreen>
-          <Container>
-            <div className="HomePageAd">
-              <Ad slot="BUILDER_HOME_PAGE" />
-            </div>
-          </Container>
+          <Responsive minWidth={1025} as={React.Fragment}>
+            <Container>
+              <div className="HomePageAd">
+                <Ad slot="BUILDER_HOME_PAGE" />
+              </div>
+            </Container>
+          </Responsive>
           <div className="SceneListPage">
             <Container>
               <div className="subtitle">
-                <Tabs isFullscreen>
-                  <Tabs.Tab onClick={this.handleNavigateToHome}>{t('home_page.projects_title')}</Tabs.Tab>
-                  <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
-                </Tabs>
+                <Responsive minWidth={1025} as={React.Fragment}>
+                  <Tabs isFullscreen>
+                    <Tabs.Tab onClick={this.handleNavigateToHome}>{t('home_page.projects_title')}</Tabs.Tab>
+                    <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
+                  </Tabs>
+                </Responsive>
+                <Responsive maxWidth={1024} as={React.Fragment}>
+                  <Tabs isFullscreen>
+                    <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
+                  </Tabs>
+                </Responsive>
                 <div className="menu">
-                  <Dropdown
-                    direction="left"
-                    value={filters.group || 'all'}
-                    options={[
-                      { value: 'all', text: t('scene_list_page.filters.all_groups') },
-                      ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
-                    ]}
-                    onChange={this.handleChangeGroup}
-                  />
-                  {isLoggedIn && (
+
+                  <Responsive minWidth={1025} as={React.Fragment}>
                     <Dropdown
                       direction="left"
-                      value={filters.userId || 'all'}
+                      value={filters.group || 'all'}
                       options={[
-                        { value: 'all', text: t('scene_list_page.filters.all_users') },
-                        { value: 'me', text: t('scene_list_page.filters.only_me') }
+                        { value: 'all', text: t('scene_list_page.filters.all_groups') },
+                        ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
                       ]}
-                      onChange={this.handleChangeUser}
+                      onChange={this.handleChangeGroup}
                     />
-                  )}
+                    {isLoggedIn && (
+                      <Dropdown
+                        direction="left"
+                        value={filters.userId || 'all'}
+                        options={[
+                          { value: 'all', text: t('scene_list_page.filters.all_users') },
+                          { value: 'me', text: t('scene_list_page.filters.only_me') }
+                        ]}
+                        onChange={this.handleChangeUser}
+                      />
+                    )}
+                  </Responsive>
                   <Dropdown
                     direction="left"
                     value={filters.sortBy}
@@ -125,6 +146,8 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
                       { value: SortBy.NEWEST, text: t('scene_list_page.filters.newest') },
                       { value: SortBy.NAME, text: t('scene_list_page.filters.name') },
                       { value: SortBy.LIKES, text: t('scene_list_page.filters.likes') },
+                      { value: SortBy.ITEMS, text: t('scene_list_page.filters.items') },
+                      { value: SortBy.SMART_ITEMS, text: t('scene_list_page.filters.smart_items') },
                       { value: SortBy.SIZE, text: t('scene_list_page.filters.size') }
                     ]}
                     onChange={this.handleChangeSort}

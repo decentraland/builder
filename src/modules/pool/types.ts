@@ -27,7 +27,11 @@ export enum SortBy {
   NEWEST = 'updated_at',
   LIKES = 'likes',
   NAME = 'title',
-  SIZE = 'parcels'
+  SIZE = 'parcels',
+  ITEMS = 'transforms',
+  SMART_ITEMS = 'scripts'
 }
 
 export const RECORDS_PER_PAGE = 24
+
+export const DEFAULT_POOL_GROUP = '3bb52ca6-6b66-4820-b92f-40a910aed33b'
