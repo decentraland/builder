@@ -7,6 +7,7 @@ export type Props = {
   status: DeploymentStatus
   deployment: Deployment
   projectId: string
+  type?: 'project' | 'public' | 'pool'
   onQueryRemoteCID: typeof queryRemoteCID
 }
 
