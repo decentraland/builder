@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getLocation } from 'connected-react-router'
 import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
 import { locations } from 'routing/locations'
 
@@ -14,6 +15,7 @@ import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneListPage.ty
 import SceneListPage from './SceneListPage'
 
 const mapState = (state: RootState): MapStateProps => ({
+  location: getLocation(state),
   pools: getPoolList(state),
   poolGroups: getAllPoolGroups(state),
   total: getTotal(state),

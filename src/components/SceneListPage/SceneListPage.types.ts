@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { Location } from 'history'
 import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
 
 import { Pool, PoolsRequestFilters } from 'modules/pool/types'
@@ -7,6 +8,7 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { PoolGroup } from 'modules/poolGroup/types'
 
 export type Props = PoolsRequestFilters & {
+  location: Location,
   pools: Pool[] | null
   poolGroups: PoolGroup[]
   total: number | null
@@ -23,7 +25,7 @@ export type State = {}
 
 export type MapStateProps = Pick<
   Props,
-  'pools' | 'poolGroups' | 'total' | 'totalPages' | 'page' | 'sortBy' | 'sortOrder' | 'group' | 'userId' | 'isLoggedIn'
+  'location' | 'pools' | 'poolGroups' | 'total' | 'totalPages' | 'page' | 'sortBy' | 'sortOrder' | 'group' | 'userId' | 'isLoggedIn'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPageChange' | 'onNavegateToHome' | 'onNavegateToViewPool' | 'onLoadPools'>
 export type MapDispatch = Dispatch<LikePoolRequestAction | OpenModalAction | LoadPoolsRequestAction | NavigateToAction>
