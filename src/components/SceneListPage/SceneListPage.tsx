@@ -5,7 +5,7 @@ import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
-import { PoolsRequestFilters, SortBy } from 'modules/pool/types'
+import { PoolsRequestFilters, SortBy, DEFAULT_POOL_GROUP } from 'modules/pool/types'
 
 import SceneViewMenu from '../SceneViewPage/SceneViewMenu'
 import { Props, State, filterAttributes } from './SceneListPage.types'
@@ -15,9 +15,15 @@ import './SceneListPage.css'
 
 export default class SceneListPage extends React.PureComponent<Props, State> {
   componentDidMount() {
-    const { onLoadPools } = this.props
+    const { location } = this.props
     const filters = this.getFilters()
-    onLoadPools(filters)
+    if (location.search === '' || location.search === '?') {
+      filters.sortBy = SortBy.LIKES
+      filters.sortOrder = 'desc'
+      filters.group = DEFAULT_POOL_GROUP
+    }
+
+    this.handleChangeFilters(filters)
   }
 
   getFilters(props = this.props) {
@@ -37,31 +43,34 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
 
   handleChangeGroup = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const { group, ...filters } = this.getFilters()
+    const page = 1
     if (data.value === 'all') {
-      this.handleChangeFilters(filters)
+      this.handleChangeFilters({ ...filters, page })
     } else {
-      this.handleChangeFilters({ ...filters, group: data.value as string })
+      this.handleChangeFilters({ ...filters, page, group: data.value as string })
     }
   }
 
   handleChangeUser = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const { userId, ...filters } = this.getFilters()
+    const page = 1
     if (data.value === 'all') {
-      this.handleChangeFilters(filters)
+      this.handleChangeFilters({ ...filters, page })
     } else {
-      this.handleChangeFilters({ ...filters, userId: data.value as string })
+      this.handleChangeFilters({ ...filters, page, userId: data.value as string })
     }
   }
 
   handleChangeSort = (_event: React.SyntheticEvent<any>, data: DropdownProps) => {
     const filters = this.getFilters()
+    const page = 1
     if (data.value && filters.sortBy !== data.value) {
       switch (data.value) {
         case SortBy.NAME:
-          this.handleChangeFilters({ ...filters, sortBy: data.value as string, sortOrder: 'asc' })
+          this.handleChangeFilters({ ...filters, page, sortBy: data.value as string, sortOrder: 'asc' })
           break
         default:
-          this.handleChangeFilters({ ...filters, sortBy: data.value as string, sortOrder: 'desc' })
+          this.handleChangeFilters({ ...filters, page, sortBy: data.value as string, sortOrder: 'desc' })
       }
     }
   }
