@@ -27,7 +27,9 @@ export enum SortBy {
   NEWEST = 'updated_at',
   LIKES = 'likes',
   NAME = 'title',
-  SIZE = 'parcels'
+  SIZE = 'parcels',
+  ITEMS = 'transforms',
+  SMART_ITEMS = 'scripts'
 }
 
 export const RECORDS_PER_PAGE = 24
