@@ -16,7 +16,9 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
     const { x, y } = deployment ? deployment.placement.point : { x: 0, y: 0 }
     let classes = `DeploymentStatus ${className}`
 
-    if (type === 'pool' || status === Status.PUBLISHED) {
+    if (type === 'pool' && (status === Status.PUBLISHED || status === Status.NEEDS_SYNC)) {
+      classes += ' published'
+    } else if (status === Status.PUBLISHED) {
       classes += ' published'
     } else if (status === Status.NEEDS_SYNC) {
       classes += ' dirty'
