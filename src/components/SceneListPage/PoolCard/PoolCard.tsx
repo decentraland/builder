@@ -45,7 +45,7 @@ export default class PoolCard extends React.PureComponent<Props, State> {
     return (
       <Link to={locations.poolView(pool.id, 'pool')} className="PoolCard">
         <div className="thumbnail" style={{ backgroundImage: `url(${pool.thumbnail})` }} />
-        <DeploymentStatus projectId={pool.id} className="deployment-status" />
+        <DeploymentStatus projectId={pool.id} className="deployment-status" type="pool" />
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{pool.title}</div>
