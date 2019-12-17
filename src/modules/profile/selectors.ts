@@ -2,9 +2,8 @@ import { createSelector } from 'reselect'
 
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
-import { Project } from 'modules/project/types'
+import { getCurrentPool } from 'modules/pool/selectors'
 import { ProfileState } from './reducer'
-import { Profile } from './types'
 
 export const getState: (state: RootState) => ProfileState = state => state.profile
 
@@ -14,8 +13,17 @@ export const getError: (state: RootState) => ProfileState['error'] = state => ge
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getCurrentAuthor = createSelector<RootState, Project | null, ProfileState['data'], Profile | null>(
+export const getCurrentAuthor = createSelector(
   getCurrentProject,
+  getCurrentPool,
   getData,
-  (project, profiles) => project && project.userId && profiles[project.userId] || null
+  (project, pool, profiles) => {
+    if (project && project.userId && profiles[project.userId]) {
+      return profiles[project.userId]
+    } else if (pool && pool.userId && profiles[pool.userId]) {
+      return profiles[pool.userId]
+    } else {
+      return null
+    }
+  }
 )
