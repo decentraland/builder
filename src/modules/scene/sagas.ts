@@ -26,7 +26,7 @@ import {
   syncSceneAssetsSuccess
 } from 'modules/scene/actions'
 import {
-  getGLTFsBySrc,
+  getGLTFsByAssetId,
   getCurrentScene,
   getEntityComponentsByType,
   getComponentsByEntityId,
@@ -113,9 +113,9 @@ function* handleAddItem(action: AddItemAction) {
 
     position = { ...position!, y: 1.72 }
   } else {
-    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.model]
-    shapeId = gltf ? gltfs[asset.model].id : null
+    const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
+    const gltf = gltfs[asset.id]
+    shapeId = gltf ? gltf.id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -123,8 +123,7 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.GLTFShape,
         data: {
-          assetId: asset.id,
-          src: asset.model
+          assetId: asset.id
         }
       } as ComponentDefinition<ComponentType.GLTFShape>
     }
@@ -348,17 +347,17 @@ function* handleDeleteItem(_: DeleteItemAction) {
 
   // TODO: refactor
   // gather all the models used by gltf shapes
-  const models = Object.values(newComponents).reduce((set, component) => {
+  const ids = Object.values(newComponents).reduce((set, component) => {
     if (component.type === ComponentType.GLTFShape) {
       const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      set.add(gltfShape.data.src)
+      set.add(gltfShape.data.assetId)
     }
     return set
   }, new Set<string>())
 
   // remove assets that are not in the set
   for (const asset of Object.values(newAssets)) {
-    if (models.has(asset.model)) {
+    if (ids.has(asset.id)) {
       continue
     }
     delete newAssets[asset.id]
@@ -406,7 +405,9 @@ function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAct
     ComponentType.GLTFShape
   >[]
   for (const gltfShape of gltfShapes) {
-    const { src } = gltfShape.data
+    const src = (gltfShape.data as any)['src']
+    // if it doesn't have src, we continue
+    if (!src) continue
 
     // if the src looks like <uuid>/<model-url> then it's legacy
     const legacyRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/ // check if the path starts with a UUID
@@ -421,7 +422,7 @@ function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAct
         if (asset) {
           const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
             ...gltfShape,
-            data: { assetId: asset.id, src: asset.model }
+            data: { assetId: asset.id }
           }
           newComponents[newGltfShape.id] = newGltfShape
           continue
@@ -459,8 +460,7 @@ function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAct
           ...gltfShape,
           data: {
             ...gltfShape.data!,
-            assetId: newAsset.id,
-            src: newAsset.model
+            assetId: newAsset.id
           }
         }
         newComponents[newGltfShape.id] = newGltfShape
@@ -542,9 +542,9 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
   if (asset) {
-    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.model]
-    const foundId = gltf ? gltfs[asset.model].id : null
+    const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
+    const gltf = gltfs[asset.id]
+    const foundId = gltf ? gltf.id : null
 
     // Create the Shape component if necessary
     if (!foundId) {
@@ -552,8 +552,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
-          assetId: asset.id,
-          src: asset.model
+          assetId: asset.id
         }
       }
     } else {

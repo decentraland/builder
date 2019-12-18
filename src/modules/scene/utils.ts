@@ -1,5 +1,5 @@
 import { Vector3 } from 'modules/common/types'
-import { Scene, SceneMetrics, ComponentType, ComponentDefinition, AnyComponent, ComponentData, EntityDefinition } from './types'
+import { Scene, SceneMetrics, ComponentType, ComponentDefinition, AnyComponent, EntityDefinition } from './types'
 import { select, put, race, take } from 'redux-saga/effects'
 import {
   loadManifestRequest,
@@ -179,9 +179,12 @@ export function convertToCamelCase(name: string) {
 }
 
 export function getGLTFShapeName(component: ComponentDefinition<ComponentType.GLTFShape>) {
-  const data = component.data as ComponentData[ComponentType.GLTFShape]
+  const src = (component.data as any).src
+  if (!src) {
+    throw Error('Invalid name')
+  }
   const name = convertToCamelCase(
-    data.src // path/to/ModelName.glb
+    src // path/to/ModelName.glb
       .split('/') // ["path", "to", "ModelName.glb"]
       .pop()! // "ModelName.glb"
       .split('.') // ["ModelName", "glb"]

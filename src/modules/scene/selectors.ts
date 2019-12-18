@@ -16,29 +16,24 @@ export const getCurrentScene = createSelector<RootState, Project | null, SceneSt
   (project, scenes) => (project ? scenes[project.sceneId] : null)
 )
 
-export const getCurrentMetrics = createSelector<RootState, Scene | null, SceneMetrics>(
-  getCurrentScene,
-  scene => (scene ? scene.metrics : EMPTY_SCENE_METRICS)
+export const getCurrentMetrics = createSelector<RootState, Scene | null, SceneMetrics>(getCurrentScene, scene =>
+  scene ? scene.metrics : EMPTY_SCENE_METRICS
 )
 
-export const getCurrentLimits = createSelector<RootState, Scene | null, SceneMetrics>(
-  getCurrentScene,
-  scene => (scene ? scene.limits : EMPTY_SCENE_METRICS)
+export const getCurrentLimits = createSelector<RootState, Scene | null, SceneMetrics>(getCurrentScene, scene =>
+  scene ? scene.limits : EMPTY_SCENE_METRICS
 )
 
-export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(
-  getCurrentScene,
-  scene => (scene ? scene.components : {})
+export const getComponents = createSelector<RootState, Scene | null, Scene['components']>(getCurrentScene, scene =>
+  scene ? scene.components : {}
 )
 
-export const getEntities = createSelector<RootState, Scene | null, Scene['entities']>(
-  getCurrentScene,
-  scene => (scene ? scene.entities : {})
+export const getEntities = createSelector<RootState, Scene | null, Scene['entities']>(getCurrentScene, scene =>
+  scene ? scene.entities : {}
 )
 
-export const getEntityNames = createSelector<RootState, Scene | null, string[]>(
-  getCurrentScene,
-  scene => (scene ? Object.values(scene.entities).map(entity => entity.name) : [])
+export const getEntityNames = createSelector<RootState, Scene | null, string[]>(getCurrentScene, scene =>
+  scene ? Object.values(scene.entities).map(entity => entity.name) : []
 )
 
 export const getComponentsByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, AnyComponent[]>>(
@@ -70,28 +65,24 @@ export const getEntityComponentsByType = createSelector<
   Scene['entities'],
   Scene['components'],
   Record<string, Record<ComponentType, AnyComponent>>
->(
-  getEntities,
-  getComponents,
-  (entities, components) => {
-    const out: Record<string, Record<ComponentType, AnyComponent>> = {}
+>(getEntities, getComponents, (entities, components) => {
+  const out: Record<string, Record<ComponentType, AnyComponent>> = {}
 
-    for (let entityId in entities) {
-      if (entities && entityId in entities) {
-        const componentReferences = entities[entityId].components
-        for (const componentId of componentReferences) {
-          const component = components[componentId]
-          if (!out[entityId]) {
-            out[entityId] = {} as Record<ComponentType, AnyComponent>
-          }
-          out[entityId][component.type] = component
+  for (let entityId in entities) {
+    if (entities && entityId in entities) {
+      const componentReferences = entities[entityId].components
+      for (const componentId of componentReferences) {
+        const component = components[componentId]
+        if (!out[entityId]) {
+          out[entityId] = {} as Record<ComponentType, AnyComponent>
         }
+        out[entityId][component.type] = component
       }
     }
-
-    return out
   }
-)
+
+  return out
+})
 
 export const getShapesByEntityId = createSelector<RootState, Scene['entities'], Scene['components'], Record<string, ShapeComponent>>(
   getEntities,
@@ -163,7 +154,7 @@ export const getComponentsByType = createSelector<RootState, Scene | null, Recor
   }
 )
 
-export const getGLTFsBySrc = createSelector<RootState, Scene | null, Record<string, ComponentDefinition<ComponentType.GLTFShape>>>(
+export const getGLTFsByAssetId = createSelector<RootState, Scene | null, Record<string, ComponentDefinition<ComponentType.GLTFShape>>>(
   getCurrentScene,
   scene => {
     if (!scene) return {}
@@ -174,7 +165,7 @@ export const getGLTFsBySrc = createSelector<RootState, Scene | null, Record<stri
     for (let key in componentData) {
       const comp = componentData[key] as ComponentDefinition<ComponentType.GLTFShape>
       if (comp.type === ComponentType.GLTFShape) {
-        res[comp.data.src] = comp
+        res[comp.data.assetId] = comp
       }
     }
 
