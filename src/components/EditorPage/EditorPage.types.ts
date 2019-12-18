@@ -1,6 +1,4 @@
 import { Dispatch } from 'redux'
-
-import { loadAssetPacksRequest, LoadAssetPacksRequestAction } from 'modules/assetPack/actions'
 import {
   closeEditor,
   CloseEditorAction,
@@ -25,7 +23,6 @@ export type Props = {
   isLoggedIn: boolean
   numItems: number
   onOpenModal: typeof openModal
-  onLoadAssetPacks: typeof loadAssetPacksRequest
   onCloseEditor: typeof closeEditor
   onZoomIn: typeof zoomIn
   onZoomOut: typeof zoomOut
@@ -40,13 +37,9 @@ export type MapStateProps = Pick<
   Props,
   'isSidebarOpen' | 'isPreviewing' | 'isLoading' | 'isFetching' | 'isLoggedIn' | 'currentProject' | 'numItems'
 >
-export type MapDispatchProps = Pick<
-  Props,
-  'onOpenModal' | 'onLoadAssetPacks' | 'onCloseEditor' | 'onZoomOut' | 'onZoomIn' | 'onResetCamera'
->
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onCloseEditor' | 'onZoomOut' | 'onZoomIn' | 'onResetCamera'>
 export type MapDispatch = Dispatch<
   | OpenModalAction
-  | LoadAssetPacksRequestAction
   | BindEditorKeybardShortcutsAction
   | UnbindEditorKeybardShortcutsAction
   | CloseEditorAction

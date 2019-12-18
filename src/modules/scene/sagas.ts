@@ -18,11 +18,12 @@ import {
   APPLY_LAYOUT,
   SET_SCRIPT_VALUES,
   SetScriptValuesAction,
-  SYNC_SCENE_ASSETS,
-  SyncSceneAssetsAction,
-  FIX_LEGACY_NAMESPACES,
-  FixLegacyNamespacesAction,
-  syncSceneAssets
+  SYNC_SCENE_ASSETS_REQUEST,
+  SyncSceneAssetsRequestAction,
+  FIX_LEGACY_NAMESPACES_REQUEST,
+  FixLegacyNamespacesRequestAction,
+  fixLegacyNamespacesSuccess,
+  syncSceneAssetsSuccess
 } from 'modules/scene/actions'
 import {
   getGLTFsBySrc,
@@ -45,7 +46,6 @@ import {
   snapToBounds,
   cloneEntities,
   filterEntitiesWithComponent,
-  getSceneByProjectId,
   getEntityName,
   getDefaultValues,
   renameEntity,
@@ -54,7 +54,6 @@ import {
 import { getData as getAssets, getGroundAssets, getAssetsByEntityName } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { loadAssets } from 'modules/asset/actions'
-import { getProjectId } from 'modules/location/selectors'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
@@ -68,8 +67,8 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(FIX_LEGACY_NAMESPACES, handleFixLegacyNamespaces)
-  yield takeLatest(SYNC_SCENE_ASSETS, handleSyncSceneAssetsAction)
+  yield takeLatest(FIX_LEGACY_NAMESPACES_REQUEST, handleFixLegacyNamespacesRequest)
+  yield takeLatest(SYNC_SCENE_ASSETS_REQUEST, handleSyncSceneAssetsAction)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
 }
@@ -386,22 +385,15 @@ function* handleSetGround(action: SetGroundAction) {
   }
 }
 
-function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
+function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAction) {
   /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
       and change them for the asset id instead.
 
       For gltf shapes that don't have a corresponding asset, a dummy one will be created
   */
+  const { scene } = action.payload
   const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
   const newAssets: Record<string, Asset> = {}
-
-  // get current project id
-  const projectId: string = yield select(getProjectId)
-  if (!projectId) return
-
-  // get current scene
-  const scene: Scene | null = yield getSceneByProjectId(projectId)
-  if (!scene) return
 
   // get asset packs
   const assetPacks: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
@@ -478,20 +470,19 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
     }
   }
 
+  let fixedScene = scene
   const hasUpdates = Object.keys(newComponents).length > 0
   if (hasUpdates) {
-    const newScene = {
+    fixedScene = {
       ...scene,
       assets: { ...scene.assets, ...newAssets },
       components: { ...scene.components, ...newComponents }
     }
-    yield put(syncSceneAssets(newScene))
-  } else {
-    yield put(syncSceneAssets(scene))
   }
+  yield put(fixLegacyNamespacesSuccess(fixedScene))
 }
 
-function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
+function* handleSyncSceneAssetsAction(action: SyncSceneAssetsRequestAction) {
   const { scene } = action.payload
 
   // assets that need to be updated in the scene
@@ -527,7 +518,7 @@ function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
   yield put(loadAssets(missingSceneAssets))
 
   // update the scene assets
-  yield put(provisionScene(newScene))
+  yield put(syncSceneAssetsSuccess(newScene))
 }
 
 function* handleApplyLayout(action: ApplyLayoutAction) {
