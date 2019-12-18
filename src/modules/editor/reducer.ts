@@ -26,6 +26,7 @@ import {
   SetEditorReadOnlyAction,
   SET_EDITOR_READ_ONLY
 } from './actions'
+import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 import {
   EXPORT_PROJECT_SUCCESS,
@@ -46,6 +47,7 @@ export type EditorState = {
   isLoading: boolean // models are done loading
   isScreenshotReady: boolean
   isReadOnly: boolean
+  hasLoadedAssetPacks: boolean
   export: {
     isLoading: boolean
     progress: number
@@ -64,6 +66,7 @@ const INITIAL_STATE: EditorState = {
   isLoading: false,
   isScreenshotReady: false,
   isReadOnly: false,
+  hasLoadedAssetPacks: false,
   export: {
     isLoading: false,
     progress: 0,
@@ -88,6 +91,7 @@ export type EditorReducerAction =
   | SetEditorReadOnlyAction
   | ExportProjectRequestAction
   | ExportProjectSuccessAction
+  | LoadAssetPacksSuccessAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -203,6 +207,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         isScreenshotReady: action.payload.isScreenshotReady
+      }
+    }
+    case LOAD_ASSET_PACKS_SUCCESS: {
+      return {
+        ...state,
+        hasLoadedAssetPacks: true
       }
     }
     default:

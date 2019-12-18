@@ -23,21 +23,19 @@ export const getSelectedEntityId = (state: RootState) => getState(state).selecte
 export const isReady = (state: RootState) => getState(state).isReady
 export const isLoading = (state: RootState) => getState(state).isLoading
 export const isReadOnly = (state: RootState) => getState(state).isReadOnly
+export const hasLoadedAssetPacks = (state: RootState) => getState(state).hasLoadedAssetPacks
 export const isScreenshotReady = (state: RootState) => getState(state).isScreenshotReady
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
-export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(
-  getAssets,
-  assets => {
-    const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
-      for (const path of Object.keys(asset.contents)) {
-        mappings[`${asset.id}/${path}`] = asset.contents[path]
-      }
-      return mappings
-    }, {})
+export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {
+  const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
+    for (const path of Object.keys(asset.contents)) {
+      mappings[`${asset.id}/${path}`] = asset.contents[path]
+    }
     return mappings
-  }
-)
+  }, {})
+  return mappings
+})
 
 export const getEnabledTools = createSelector<
   RootState,
@@ -45,32 +43,27 @@ export const getEnabledTools = createSelector<
   Scene['entities'],
   Scene['components'],
   { move: boolean; rotate: boolean; duplicate: boolean; reset: boolean; delete: boolean }
->(
-  getSelectedEntityId,
-  getEntities,
-  getComponents,
-  (selectedEntityId, entities, components) => {
-    let isNFT = false
-    const entity = selectedEntityId ? entities[selectedEntityId] : null
+>(getSelectedEntityId, getEntities, getComponents, (selectedEntityId, entities, components) => {
+  let isNFT = false
+  const entity = selectedEntityId ? entities[selectedEntityId] : null
 
-    if (entity) {
-      for (let componentId of entity.components) {
-        if (components[componentId].type === ComponentType.NFTShape) {
-          isNFT = true
-        }
+  if (entity) {
+    for (let componentId of entity.components) {
+      if (components[componentId].type === ComponentType.NFTShape) {
+        isNFT = true
       }
     }
-
-    return {
-      move: !!selectedEntityId,
-      rotate: !!selectedEntityId,
-      scale: !!selectedEntityId,
-      duplicate: !!selectedEntityId && !isNFT,
-      reset: !!selectedEntityId,
-      delete: !!selectedEntityId
-    }
   }
-)
+
+  return {
+    move: !!selectedEntityId,
+    rotate: !!selectedEntityId,
+    scale: !!selectedEntityId,
+    duplicate: !!selectedEntityId && !isNFT,
+    reset: !!selectedEntityId,
+    delete: !!selectedEntityId
+  }
+})
 
 export const isFetching = createSelector<RootState, Project | null, boolean, LoadingState, LoadingState, boolean>(
   getCurrentProject,

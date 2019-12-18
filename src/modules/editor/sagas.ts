@@ -86,7 +86,8 @@ import {
   isReady,
   isPreviewing,
   isReadOnly,
-  getEntitiesOutOfBoundaries
+  getEntitiesOutOfBoundaries,
+  hasLoadedAssetPacks
 } from './selectors'
 
 import {
@@ -279,7 +280,10 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
   if (project) {
     // load asset packs
-    yield put(loadAssetPacksRequest())
+    const areLoaded = yield select(hasLoadedAssetPacks)
+    if (!areLoaded) {
+      yield put(loadAssetPacksRequest())
+    }
 
     // fix legacy stuff
     let scene: Scene = yield getSceneByProjectId(project.id, type)
@@ -287,7 +291,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
     const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
     scene = fixSuccessAction.payload.scene
 
-    // wait for asset packs to be loaded
+    // if assets packs are being loaded wait for them to finish
     const state: RootState = yield select(state => state)
     if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
       yield take(LOAD_ASSET_PACKS_SUCCESS)
