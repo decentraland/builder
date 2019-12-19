@@ -18,7 +18,6 @@ export enum ComponentType {
 export type ComponentData = {
   [ComponentType.GLTFShape]: {
     assetId: string
-    src: string
   }
 
   [ComponentType.Transform]: {

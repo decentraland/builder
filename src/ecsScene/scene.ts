@@ -185,8 +185,9 @@ function createComponent(component: AnyComponent, scene: Scene) {
   if (!getComponentById(id)) {
     switch (type) {
       case ComponentType.GLTFShape: {
-        const { assetId, src } = data as ComponentData[ComponentType.GLTFShape]
-        const url = `${assetId}/${src}`
+        const { assetId } = data as ComponentData[ComponentType.GLTFShape]
+        const asset = scene.assets[assetId]
+        const url = `${assetId}/${asset.model}`
         editorComponents[id] = new GLTFShape(url)
         editorComponents[id].isPickable = true
         break

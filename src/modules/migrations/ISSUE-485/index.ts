@@ -7,9 +7,10 @@ export function addMappings(scene: Scene | null) {
       if (component.type === ComponentType.GLTFShape) {
         const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
         const hasMappings = 'mappings' in gltfShape.data
-        if (!hasMappings) {
+        const hasSource = 'src' in gltfShape.data
+        if (!hasMappings && hasSource) {
           const data = gltfShape.data as any
-          data.mappings = (mappings as Record<string, Record<string, string>>)[gltfShape.data.src]
+          data.mappings = (mappings as Record<string, Record<string, string>>)[(gltfShape.data as any).src]
         }
       }
     }

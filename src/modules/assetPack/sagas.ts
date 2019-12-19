@@ -20,7 +20,6 @@ import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
-import { fixLegacyNamespaces } from 'modules/scene/actions'
 import { isRemoteURL } from 'modules/media/utils'
 import { selectAssetPack, selectCategory } from 'modules/ui/sidebar/actions'
 
@@ -49,7 +48,6 @@ function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
   try {
     const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
     yield put(loadAssetPacksSuccess(assetPacks))
-    yield put(fixLegacyNamespaces())
   } catch (error) {
     yield put(loadAssetPacksFailure(error.message))
   }

@@ -9,7 +9,11 @@ import {
   UpdateMetricsAction,
   UPDATE_METRICS,
   CREATE_SCENE,
-  CreateSceneAction
+  CreateSceneAction,
+  FixLegacyNamespacesSuccessAction,
+  FIX_LEGACY_NAMESPACES_SUCCESS,
+  SYNC_SCENE_ASSETS_SUCCESS,
+  SyncSceneAssetsSuccessAction
 } from 'modules/scene/actions'
 import { DeleteProjectAction, DELETE_PROJECT, LoadManifestSuccessAction } from 'modules/project/actions'
 
@@ -26,6 +30,8 @@ export type SceneReducerAction =
   | CreateSceneAction
   | DeleteProjectAction
   | LoadManifestSuccessAction
+  | FixLegacyNamespacesSuccessAction
+  | SyncSceneAssetsSuccessAction
 
 const INITIAL_STATE: SceneState = {
   data: {},
@@ -36,7 +42,9 @@ const INITIAL_STATE: SceneState = {
 const baseSceneReducer = (state: SceneState = INITIAL_STATE, action: SceneReducerAction): SceneState => {
   switch (action.type) {
     case CREATE_SCENE:
-    case PROVISION_SCENE: {
+    case PROVISION_SCENE:
+    case FIX_LEGACY_NAMESPACES_SUCCESS:
+    case SYNC_SCENE_ASSETS_SUCCESS: {
       const { scene } = action.payload
 
       return {
