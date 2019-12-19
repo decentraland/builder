@@ -10,7 +10,8 @@ import {
   resetCamera,
   zoomIn,
   zoomOut,
-  toggleSnapToGrid
+  toggleSnapToGrid,
+  toggleMultiselection
 } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
 import { isPreviewing, isSidebarOpen, getGizmo } from 'modules/editor/selectors'
@@ -75,6 +76,12 @@ export const getQwertyLayout = (): ShortcutLayout => ({
     type: 'simple',
     value: 'o',
     title: t('shortcuts.export')
+  },
+  [Shortcut.TOGGLE_MULTISELECTION]: {
+    type: 'simple',
+    value: 'ctrl',
+    title: 'shortcuts.multiselect',
+    hold: true
   }
 })
 
@@ -190,6 +197,16 @@ export function getEditorShortcuts(store: Store): KeyboardShortcut[] {
     {
       combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.EXPORT_SCENE]),
       callback: () => store.dispatch(openModal('ExportModal', { project: getCurrentProject(store.getState()) })),
+      action: 'keyup'
+    },
+    {
+      combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_MULTISELECTION]),
+      callback: () => store.dispatch(toggleMultiselection(true)),
+      action: 'keydown'
+    },
+    {
+      combination: getLibraryComplatibleShortcut(qwertyLayout[Shortcut.TOGGLE_MULTISELECTION]),
+      callback: () => store.dispatch(toggleMultiselection(false)),
       action: 'keyup'
     }
   ]

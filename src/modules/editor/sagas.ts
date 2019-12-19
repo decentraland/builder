@@ -26,7 +26,6 @@ import {
   bindEditorKeyboardShortcuts,
   SET_EDITOR_READY,
   SELECT_ENTITY,
-  SelectEntityAction,
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
   toggleSnapToGrid,
@@ -42,7 +41,8 @@ import {
   SetEditorLoadingAction,
   setScriptUrl,
   DESELECT_ENTITY,
-  setScreenshotReady
+  setScreenshotReady,
+  deselectEntity
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -72,13 +72,14 @@ import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import {
   getGizmo,
-  getSelectedEntityId,
+  getSelectedEntitiesId,
   getSceneMappings,
   isLoading,
   isReady,
   isPreviewing,
   isReadOnly,
-  getEntitiesOutOfBoundaries
+  getEntitiesOutOfBoundaries,
+  isMultiselectEnabled
 } from './selectors'
 
 import {
@@ -129,7 +130,7 @@ function* pollEditor(scene: Scene) {
     yield delay(300)
   } while (entities > 0 && metrics.entities === 0)
 
-  while (editorWindow.editor.getLoadingEntity() !== null) {
+  while (editorWindow.editor.getLoadingEntities() !== null) {
     yield delay(500)
   }
 }
@@ -228,16 +229,40 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   }
 }
 
-function handleGizmoSelected(args: { gizmoType: Gizmo; entityId: string }) {
+function handleGizmoSelected(args: { gizmoType: Gizmo; entityId: string | null }) {
   const { gizmoType, entityId } = args
   const state = store.getState() as RootState
   const currentGizmo = getGizmo(state)
   if (currentGizmo !== gizmoType) {
     store.dispatch(setGizmo(gizmoType))
   }
-  const selectedEntityId = getSelectedEntityId(state)
-  if (selectedEntityId !== entityId) {
-    store.dispatch(selectEntity(entityId))
+  const selectedEntityId = getSelectedEntitiesId(state)
+  if (entityId === null) {
+    if (selectedEntityId.length > 0) {
+      store.dispatch(deselectEntity())
+    }
+  } else {
+    if (!selectedEntityId.includes(entityId)) {
+      if (!isMultiselectEnabled(state)) {
+        store.dispatch(deselectEntity())
+      }
+      store.dispatch(selectEntity([entityId]))
+    } else {
+      store.dispatch(deselectEntity(entityId))
+    }
+  }
+}
+
+function handleGizmoDeselected(args: { gizmoType: Gizmo; entityId: string }) {
+  const { gizmoType, entityId } = args
+  const state = store.getState() as RootState
+  const currentGizmo = getGizmo(state)
+  if (currentGizmo !== gizmoType) {
+    store.dispatch(setGizmo(gizmoType))
+  }
+  const selectedEntityId = getSelectedEntitiesId(state)
+  if (selectedEntityId.includes(entityId)) {
+    store.dispatch(deselectEntity(entityId))
   }
 }
 
@@ -257,6 +282,8 @@ function* handleOpenEditor() {
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
+
+  yield call(() => editorWindow.editor.on('gizmoDeselected', handleGizmoDeselected))
 
   // The client will report when an entity goes out of bounds
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
@@ -288,6 +315,7 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('transform', handleTransformChange))
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
+  yield call(() => editorWindow.editor.off('gizmoDeselected', handleGizmoDeselected))
   yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
   if (yield select(isReady)) {
     yield call(() => editorWindow.editor.sendExternalAction(closeEditor()))
@@ -430,11 +458,11 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   yield put(setScreenshotReady(true))
 }
 
-function* handleSelectEntity(action: SelectEntityAction) {
+function* handleSelectEntity() {
   yield call(() => {
     try {
       // this could throw if the entity does not exist, due to some race condition or the scene is not synced
-      editorWindow.editor.selectEntity(action.payload.entityId)
+      editorWindow.editor.setSelectedEntities(getSelectedEntitiesId(store.getState() as RootState))
     } catch (e) {
       // noop
     }
@@ -475,6 +503,13 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   }
 }
 
-function handleDeselectEntity() {
-  editorWindow.editor.deselectEntity()
+function* handleDeselectEntity() {
+  yield call(() => {
+    try {
+      // this could throw if the entity does not exist, due to some race condition or the scene is not synced
+      editorWindow.editor.setSelectedEntities(getSelectedEntitiesId(store.getState() as RootState))
+    } catch (e) {
+      // noop
+    }
+  })
 }

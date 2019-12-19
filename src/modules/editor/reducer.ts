@@ -24,7 +24,9 @@ import {
   SetScreenshotReadyAction,
   SET_SCREENSHOT_READY,
   SetEditorReadOnlyAction,
-  SET_EDITOR_READ_ONLY
+  SET_EDITOR_READ_ONLY,
+  TOGGLE_MULTISELECTION,
+  ToggleMultiselectionAction
 } from './actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 import {
@@ -40,7 +42,8 @@ export type EditorState = {
   preview: boolean
   sidebar: boolean
   snapToGrid: boolean
-  selectedEntityId: string | null
+  multiselectionEnabled: boolean
+  selectedEntitiesId: string[]
   entitiesOutOfBoundaries: string[]
   isReady: boolean // editor is ready to be interacted with via API
   isLoading: boolean // models are done loading
@@ -58,7 +61,8 @@ const INITIAL_STATE: EditorState = {
   preview: false,
   sidebar: true,
   snapToGrid: true,
-  selectedEntityId: null,
+  multiselectionEnabled: false,
+  selectedEntitiesId: [],
   entitiesOutOfBoundaries: [],
   isReady: false,
   isLoading: false,
@@ -88,6 +92,7 @@ export type EditorReducerAction =
   | SetEditorReadOnlyAction
   | ExportProjectRequestAction
   | ExportProjectSuccessAction
+  | ToggleMultiselectionAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -115,13 +120,15 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case SELECT_ENTITY: {
       return {
         ...state,
-        selectedEntityId: action.payload.entityId
+        selectedEntitiesId: action.payload.entitiesId
+          ? state.selectedEntitiesId.filter(entityId => !action.payload.entitiesId.includes(entityId)).concat(action.payload.entitiesId)
+          : []
       }
     }
     case DESELECT_ENTITY: {
       return {
         ...state,
-        selectedEntityId: null
+        selectedEntitiesId: action.payload.entityId ? state.selectedEntitiesId.filter(entityId => entityId !== action.payload.entityId) : []
       }
     }
     case SET_EDITOR_READY: {
@@ -152,7 +159,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case DELETE_ITEM: {
       return {
         ...state,
-        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => entityId !== state.selectedEntityId)
+        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => !state.selectedEntitiesId.includes(entityId))
       }
     }
     case EXPORT_PROJECT_REQUEST: {
@@ -203,6 +210,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         isScreenshotReady: action.payload.isScreenshotReady
+      }
+    }
+    case TOGGLE_MULTISELECTION: {
+      return {
+        ...state,
+        multiselectionEnabled: action.payload.enabled
       }
     }
     default:

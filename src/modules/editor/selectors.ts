@@ -19,58 +19,54 @@ export const getGizmo = (state: RootState) => getState(state).gizmo
 export const isSidebarOpen = (state: RootState) => getState(state).sidebar
 export const isPreviewing = (state: RootState) => getState(state).preview
 export const isSnapToGridEnabled = (state: RootState) => getState(state).snapToGrid
-export const getSelectedEntityId = (state: RootState) => getState(state).selectedEntityId
+export const isMultiselectEnabled = (state: RootState) => getState(state).multiselectionEnabled
+export const getSelectedEntitiesId = (state: RootState) => getState(state).selectedEntitiesId
 export const isReady = (state: RootState) => getState(state).isReady
 export const isLoading = (state: RootState) => getState(state).isLoading
 export const isReadOnly = (state: RootState) => getState(state).isReadOnly
 export const isScreenshotReady = (state: RootState) => getState(state).isScreenshotReady
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
-export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(
-  getAssets,
-  assets => {
-    const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
-      for (const path of Object.keys(asset.contents)) {
-        mappings[`${asset.id}/${path}`] = asset.contents[path]
-      }
-      return mappings
-    }, {})
+export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {
+  const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
+    for (const path of Object.keys(asset.contents)) {
+      mappings[`${asset.id}/${path}`] = asset.contents[path]
+    }
     return mappings
-  }
-)
+  }, {})
+  return mappings
+})
 
 export const getEnabledTools = createSelector<
   RootState,
-  string | null,
+  string[],
   Scene['entities'],
   Scene['components'],
   { move: boolean; rotate: boolean; duplicate: boolean; reset: boolean; delete: boolean }
->(
-  getSelectedEntityId,
-  getEntities,
-  getComponents,
-  (selectedEntityId, entities, components) => {
-    let isNFT = false
-    const entity = selectedEntityId ? entities[selectedEntityId] : null
+>(getSelectedEntitiesId, getEntities, getComponents, (selectedEntitiesId, entities, components) => {
+  let isNFT = false
 
+  for (let entityId of selectedEntitiesId) {
+    const entity = entities[entityId]
     if (entity) {
       for (let componentId of entity.components) {
         if (components[componentId].type === ComponentType.NFTShape) {
           isNFT = true
+          break
         }
       }
     }
-
-    return {
-      move: !!selectedEntityId,
-      rotate: !!selectedEntityId,
-      scale: !!selectedEntityId,
-      duplicate: !!selectedEntityId && !isNFT,
-      reset: !!selectedEntityId,
-      delete: !!selectedEntityId
-    }
   }
-)
+
+  return {
+    move: !!selectedEntitiesId,
+    rotate: !!selectedEntitiesId,
+    scale: !!selectedEntitiesId,
+    duplicate: !!selectedEntitiesId && !isNFT,
+    reset: !!selectedEntitiesId,
+    delete: !!selectedEntitiesId
+  }
+})
 
 export const isFetching = createSelector<RootState, Project | null, boolean, LoadingState, LoadingState, boolean>(
   getCurrentProject,

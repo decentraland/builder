@@ -49,25 +49,16 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
   subscribeKeyEvent = () => {
     editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
-    editorWindow.addEventListener('keyup', this.handleKeyUpEvent)
   }
 
   unsubscribeKeyEvent = () => {
     editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
-    editorWindow.removeEventListener('keyup', this.handleKeyUpEvent)
   }
 
   handleKeyDownEvent(e: KeyboardEvent) {
     const unityEvt = convertToUnityKeyboardEvent(e)
     if (unityEvt) {
       editorWindow.editor.onKeyDown(unityEvt)
-    }
-  }
-
-  handleKeyUpEvent(e: KeyboardEvent) {
-    const unityEvt = convertToUnityKeyboardEvent(e)
-    if (unityEvt) {
-      editorWindow.editor.onKeyUp(unityEvt)
     }
   }
 

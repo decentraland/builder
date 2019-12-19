@@ -122,8 +122,6 @@ export function convertToUnityKeyboardEvent(e: KeyboardEvent): UnityKeyboardEven
     case 'Right':
     case 'ArrowRight':
       return 'RightArrow'
-    case 'Shift':
-      return 'LeftShift'
   }
   return null
 }

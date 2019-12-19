@@ -92,7 +92,7 @@ export type ToggleSidebarAction = ReturnType<typeof toggleSidebar>
 
 export const SELECT_ENTITY = 'Select entity'
 
-export const selectEntity = (entityId: string) => action(SELECT_ENTITY, { entityId })
+export const selectEntity = (entitiesId: string[]) => action(SELECT_ENTITY, { entitiesId })
 
 export type SelectEntityAction = ReturnType<typeof selectEntity>
 
@@ -100,7 +100,7 @@ export type SelectEntityAction = ReturnType<typeof selectEntity>
 
 export const DESELECT_ENTITY = 'Deselect entity'
 
-export const deselectEntity = () => action(DESELECT_ENTITY, {})
+export const deselectEntity = (entityId: string | null = null) => action(DESELECT_ENTITY, { entityId })
 
 export type DeselectEntityAction = ReturnType<typeof deselectEntity>
 
@@ -203,3 +203,11 @@ export const SET_EXPORT_PROGRESS = 'Set export progress'
 export const setExportProgress = (args: { loaded: number; total: number }) => action(SET_EXPORT_PROGRESS, args)
 
 export type SetExportProgressAction = ReturnType<typeof setExportProgress>
+
+// Toggle snap to grid
+
+export const TOGGLE_MULTISELECTION = 'Toggle multiselection'
+
+export const toggleMultiselection = (enabled: boolean) => action(TOGGLE_MULTISELECTION, { enabled })
+
+export type ToggleMultiselectionAction = ReturnType<typeof toggleMultiselection>

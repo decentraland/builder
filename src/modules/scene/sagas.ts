@@ -34,7 +34,7 @@ import {
   getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
-import { getSelectedEntityId, isReady } from 'modules/editor/selectors'
+import { getSelectedEntitiesId, isReady } from 'modules/editor/selectors'
 import { selectEntity, deselectEntity, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
@@ -182,9 +182,15 @@ function* handleAddItem(action: AddItemAction) {
     comp.data.values = getDefaultValues(entityName, asset.parameters, assets)
   }
 
+  yield put(deselectEntity()) // deselect all currently selected entities
   yield put(provisionScene(newScene))
-  yield delay(200) // gotta wait for the webworker to process the updateEditor action
-  yield put(selectEntity(entityId))
+  yield delay(500) // gotta wait for the webworker to process the updateEditor action
+
+  // wait for entity to finish loading
+  while (editorWindow.editor.getLoadingEntities() !== null && (editorWindow.editor.getLoadingEntities() as string[]).includes(entityId)) {
+    yield delay(200)
+  }
+  yield put(selectEntity([entityId]))
 }
 
 function* handleUpdateTransfrom(action: UpdateTransfromAction) {
@@ -218,7 +224,7 @@ function* handleResetItem(_: ResetItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntityId: string | null = yield select(getSelectedEntityId)
+  const selectedEntityId: string | null = yield select(getSelectedEntitiesId)
   if (!selectedEntityId) return
 
   const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
@@ -246,7 +252,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntityId: string | null = yield select(getSelectedEntityId)
+  const selectedEntityId: string | null = yield select(getSelectedEntitiesId)
   if (!selectedEntityId) return
 
   const newComponents = { ...scene.components }
@@ -313,14 +319,14 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
   yield delay(200) // gotta wait for the webworker to process the updateEditor action
-  yield put(selectEntity(entityId))
+  yield put(selectEntity([entityId]))
 }
 
 function* handleDeleteItem(_: DeleteItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntityId: string | null = yield select(getSelectedEntityId)
+  const selectedEntityId: string | null = yield select(getSelectedEntitiesId)
   if (!selectedEntityId) return
 
   const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)

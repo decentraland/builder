@@ -23,7 +23,8 @@ export enum Shortcut {
   ZOOM_IN = 'ZOOM_IN',
   ZOOM_OUT = 'ZOOM_OUT',
   TOGGLE_SNAP_TO_GRID = 'TOGGLE_SNAP_TO_GRID',
-  EXPORT_SCENE = 'EXPORT_SCENE'
+  EXPORT_SCENE = 'EXPORT_SCENE',
+  TOGGLE_MULTISELECTION = 'TOGGLE_MULTISELECTION'
 }
 
 export type LabeledShortcut = { title: string | null }
