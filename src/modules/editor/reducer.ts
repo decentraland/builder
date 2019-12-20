@@ -5,10 +5,8 @@ import {
   SET_GIZMO,
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
-  SelectEntityAction,
-  SELECT_ENTITY,
-  DeselectEntityAction,
-  DESELECT_ENTITY,
+  SetSelectedEntitiesAction,
+  SET_SELECTED_ENTITIES,
   SET_EDITOR_READY,
   CLOSE_EDITOR,
   SetEditorReadyAction,
@@ -80,8 +78,7 @@ export type EditorReducerAction =
   | SetScreenshotReadyAction
   | TogglePreviewAction
   | ToggleSidebarAction
-  | SelectEntityAction
-  | DeselectEntityAction
+  | SetSelectedEntitiesAction
   | SetEditorReadyAction
   | CloseEditorAction
   | ToggleSnapToGridAction
@@ -117,18 +114,10 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         sidebar: enabled
       }
     }
-    case SELECT_ENTITY: {
+    case SET_SELECTED_ENTITIES: {
       return {
         ...state,
-        selectedEntitiesId: action.payload.entitiesId
-          ? state.selectedEntitiesId.filter(entityId => !action.payload.entitiesId.includes(entityId)).concat(action.payload.entitiesId)
-          : []
-      }
-    }
-    case DESELECT_ENTITY: {
-      return {
-        ...state,
-        selectedEntitiesId: action.payload.entityId ? state.selectedEntitiesId.filter(entityId => entityId !== action.payload.entityId) : []
+        selectedEntitiesId: action.payload.entitiesId ? action.payload.entitiesId : []
       }
     }
     case SET_EDITOR_READY: {

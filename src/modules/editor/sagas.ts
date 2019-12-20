@@ -16,7 +16,7 @@ import {
   OPEN_EDITOR,
   setEditorReady,
   setGizmo,
-  selectEntity,
+  setSelectedEntities,
   EDITOR_REDO,
   EDITOR_UNDO,
   TAKE_SCREENSHOT,
@@ -25,7 +25,7 @@ import {
   unbindEditorKeyboardShortcuts,
   bindEditorKeyboardShortcuts,
   SET_EDITOR_READY,
-  SELECT_ENTITY,
+  SET_SELECTED_ENTITIES,
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
   toggleSnapToGrid,
@@ -40,9 +40,8 @@ import {
   SET_EDITOR_LOADING,
   SetEditorLoadingAction,
   setScriptUrl,
-  DESELECT_ENTITY,
   setScreenshotReady,
-  deselectEntity
+  SetSelectedEntitiesAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -58,7 +57,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, SceneMetrics, ComponentDefinition } from 'modules/scene/types'
+import { Scene, ComponentType, SceneMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -113,11 +112,10 @@ export function* editorSaga() {
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
   yield takeLatest(SET_EDITOR_READY, handleSetEditorReady)
-  yield takeLatest(SELECT_ENTITY, handleSelectEntity)
+  yield takeLatest(SET_SELECTED_ENTITIES, handleSetSelectEntities)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
-  yield takeLatest(DESELECT_ENTITY, handleDeselectEntity)
 }
 
 function* pollEditor(scene: Scene) {
@@ -200,10 +198,9 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
   }
 }
 
-function handleTransformChange(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+function handleTransformChange(args: { transforms: { entityId: string; position: Vector3; rotation: Quaternion; scale: Vector3 }[] }) {
   const bounds: ReturnType<typeof getCurrentBounds> = getCurrentBounds(store.getState() as RootState)
   const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
-  let position: Vector3 = { x: 0, y: 0, z: 0 }
 
   if (!project) return
 
@@ -211,59 +208,65 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   if (!scene) return
 
   const entityComponents = getEntityComponentsByType(store.getState() as RootState)
-  const transform = entityComponents[args.entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform> | undefined
-  if (!transform) return
+  const transformData: { componentId: string; data: ComponentData[ComponentType.Transform] }[] = []
 
-  if (bounds) {
-    position = snapToBounds(args.transform.position, bounds)
-  }
+  for (let transformPayload of args.transforms) {
+    let position: Vector3 = { x: 0, y: 0, z: 0 }
+    const transform = entityComponents[transformPayload.entityId][ComponentType.Transform] as
+      | ComponentDefinition<ComponentType.Transform>
+      | undefined
 
-  const scale = snapScale(args.transform.scale)
+    if (!transform) continue
 
-  if (transform) {
-    const newTransformData = { position, rotation: args.transform.rotation, scale }
-    if (areEqualTransforms(transform.data, newTransformData)) return
-    store.dispatch(updateTransform(scene.id, transform.id, newTransformData))
-  } else {
-    console.warn(`Unable to find Transform component for ${args.entityId}`)
-  }
-}
-
-function handleGizmoSelected(args: { gizmoType: Gizmo; entityId: string | null }) {
-  const { gizmoType, entityId } = args
-  const state = store.getState() as RootState
-  const currentGizmo = getGizmo(state)
-  if (currentGizmo !== gizmoType) {
-    store.dispatch(setGizmo(gizmoType))
-  }
-  const selectedEntityId = getSelectedEntitiesId(state)
-  if (entityId === null) {
-    if (selectedEntityId.length > 0) {
-      store.dispatch(deselectEntity())
+    if (bounds) {
+      position = snapToBounds(transformPayload.position, bounds)
     }
-  } else {
-    if (!selectedEntityId.includes(entityId)) {
-      if (!isMultiselectEnabled(state)) {
-        store.dispatch(deselectEntity())
-      }
-      store.dispatch(selectEntity([entityId]))
+
+    const scale = snapScale(transformPayload.scale)
+
+    if (transform) {
+      const newTransformData = { position, rotation: transformPayload.rotation, scale }
+      if (areEqualTransforms(transform.data, newTransformData)) continue
+      transformData.push({ componentId: transform.id, data: newTransformData })
     } else {
-      store.dispatch(deselectEntity(entityId))
+      console.warn(`Unable to find Transform component for ${transformPayload.entityId}`)
     }
+  }
+  if (transformData.length > 0) {
+    store.dispatch(updateTransform(scene.id, transformData))
   }
 }
 
-function handleGizmoDeselected(args: { gizmoType: Gizmo; entityId: string }) {
-  const { gizmoType, entityId } = args
+function handleGizmoSelected(args: { gizmoType: Gizmo; entities: string[] }) {
+  const { gizmoType, entities } = args
   const state = store.getState() as RootState
   const currentGizmo = getGizmo(state)
+  const multiselectionEnabled = isMultiselectEnabled(state)
+
   if (currentGizmo !== gizmoType) {
     store.dispatch(setGizmo(gizmoType))
   }
   const selectedEntityId = getSelectedEntitiesId(state)
-  if (selectedEntityId.includes(entityId)) {
-    store.dispatch(deselectEntity(entityId))
+  let newSelectedEntities = selectedEntityId
+
+  if (entities.length === 0) {
+    if (!multiselectionEnabled && selectedEntityId.length > 0) {
+      newSelectedEntities = []
+    }
+  } else {
+    if (!multiselectionEnabled) {
+      newSelectedEntities = entities
+    } else {
+      for (let entityId of entities) {
+        if (!newSelectedEntities.includes(entityId)) {
+          newSelectedEntities.push(entityId)
+        } else {
+          newSelectedEntities = newSelectedEntities.filter(id => id !== entityId)
+        }
+      }
+    }
   }
+  store.dispatch(setSelectedEntities(newSelectedEntities))
 }
 
 function handleEditorReadyChange() {
@@ -282,8 +285,6 @@ function* handleOpenEditor() {
 
   // The client will report the deltas when the transform of an entity has changed (gizmo movement)
   yield call(() => editorWindow.editor.on('gizmoSelected', handleGizmoSelected))
-
-  yield call(() => editorWindow.editor.on('gizmoDeselected', handleGizmoDeselected))
 
   // The client will report when an entity goes out of bounds
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
@@ -315,7 +316,6 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('transform', handleTransformChange))
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
-  yield call(() => editorWindow.editor.off('gizmoDeselected', handleGizmoDeselected))
   yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
   if (yield select(isReady)) {
     yield call(() => editorWindow.editor.sendExternalAction(closeEditor()))
@@ -458,11 +458,11 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   yield put(setScreenshotReady(true))
 }
 
-function* handleSelectEntity() {
+function* handleSetSelectEntities(action: SetSelectedEntitiesAction) {
   yield call(() => {
     try {
       // this could throw if the entity does not exist, due to some race condition or the scene is not synced
-      editorWindow.editor.setSelectedEntities(getSelectedEntitiesId(store.getState() as RootState))
+      editorWindow.editor.setSelectedEntities(action.payload.entitiesId)
     } catch (e) {
       // noop
     }
@@ -501,15 +501,4 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
-}
-
-function* handleDeselectEntity() {
-  yield call(() => {
-    try {
-      // this could throw if the entity does not exist, due to some race condition or the scene is not synced
-      editorWindow.editor.setSelectedEntities(getSelectedEntitiesId(store.getState() as RootState))
-    } catch (e) {
-      // noop
-    }
-  })
 }

@@ -6,10 +6,10 @@ import { ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { setScriptValues } from 'modules/scene/actions'
 import { getSelectedEntitiesId } from 'modules/editor/selectors'
-import { deselectEntity } from 'modules/editor/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EntityEditor.types'
 import EntityEditor from './EntityEditor'
+import { setSelectedEntities } from 'modules/editor/actions'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntitiesId = getSelectedEntitiesId(state)
@@ -32,7 +32,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetScriptParameters: (entityId, parameters) => dispatch(setScriptValues(entityId, parameters)),
-  onDeselect: () => dispatch(deselectEntity())
+  onDeselect: () => dispatch(setSelectedEntities([]))
 })
 
 export default connect(mapState, mapDispatch)(EntityEditor)

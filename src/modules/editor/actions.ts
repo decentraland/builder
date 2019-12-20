@@ -90,19 +90,11 @@ export type ToggleSidebarAction = ReturnType<typeof toggleSidebar>
 
 // Select Entity
 
-export const SELECT_ENTITY = 'Select entity'
+export const SET_SELECTED_ENTITIES = 'Set selected entities'
 
-export const selectEntity = (entitiesId: string[]) => action(SELECT_ENTITY, { entitiesId })
+export const setSelectedEntities = (entitiesId: string[]) => action(SET_SELECTED_ENTITIES, { entitiesId })
 
-export type SelectEntityAction = ReturnType<typeof selectEntity>
-
-// Deselect Entity
-
-export const DESELECT_ENTITY = 'Deselect entity'
-
-export const deselectEntity = (entityId: string | null = null) => action(DESELECT_ENTITY, { entityId })
-
-export type DeselectEntityAction = ReturnType<typeof deselectEntity>
+export type SetSelectedEntitiesAction = ReturnType<typeof setSelectedEntities>
 
 // Zoom in/out
 

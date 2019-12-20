@@ -5,9 +5,9 @@ import { dataURLToBlob } from 'modules/media/utils'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { Project } from 'modules/project/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
-import { deselectEntity } from 'modules/editor/actions'
 import { RECORD_MEDIA_REQUEST, recordMediaProgress, recordMediaSuccess } from './actions'
 import { RawMedia } from './types'
+import { setSelectedEntities } from 'modules/editor/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -28,7 +28,7 @@ export function* handleTakePictures() {
 
   const { rows, cols } = project.layout
 
-  yield put(deselectEntity())
+  yield put(setSelectedEntities([]))
 
   const side = Math.max(cols, rows)
   const zoom = (side - 1) * 32
