@@ -79,7 +79,7 @@ export function getUniqueNameLegacy(components: AnyComponent[], takenNames: Read
 }
 
 export function addEntityName(scene: Scene) {
-  const takenNames = new Set()
+  const takenNames = new Set<string>()
 
   for (let entityId in scene.entities) {
     const entity = scene.entities[entityId]

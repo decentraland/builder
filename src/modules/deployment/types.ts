@@ -1,5 +1,3 @@
-import { Coordinate, Rotation } from 'modules/deployment/types'
-
 export type ContentIdentifier = {
   cid: string
   name: string
