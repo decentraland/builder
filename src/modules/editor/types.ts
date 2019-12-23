@@ -36,4 +36,9 @@ export type EditorScene = {
   _mappings: Record<string, string>
 }
 
-export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightArrow' | 'LeftShift'
+export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightArrow'
+
+export type OpenEditorOptions = {
+  isReadOnly: boolean
+  type: 'project' | 'public' | 'pool'
+}

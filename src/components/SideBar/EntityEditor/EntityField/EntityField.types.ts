@@ -17,4 +17,5 @@ export type MapStateProps = Pick<Props, 'entities' | 'assetsByEntityName'>
 
 export type State = {
   value: string
+  search: string
 }

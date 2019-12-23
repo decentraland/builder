@@ -1,7 +1,7 @@
 export type Props = {
   id: string
   label: string
-  value: number | undefined
+  value: number | undefined | null
   className?: string
   allowFloat?: boolean
   onChange(value: number): void

@@ -1,5 +1,6 @@
 // @ts-ignore
 import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import {
   updateEditor,
@@ -41,6 +42,8 @@ import {
   SetEditorLoadingAction,
   setScriptUrl,
   setScreenshotReady,
+  OpenEditorAction,
+  setEditorReadOnly,
   SetSelectedEntitiesAction
 } from 'modules/editor/actions'
 import {
@@ -51,7 +54,12 @@ import {
   DropItemAction,
   addItem,
   setGround,
-  ProvisionSceneAction
+  ProvisionSceneAction,
+  fixLegacyNamespacesRequest,
+  syncSceneAssetsRequest,
+  FIX_LEGACY_NAMESPACES_SUCCESS,
+  FixLegacyNamespacesSuccessAction,
+  SYNC_SCENE_ASSETS_SUCCESS
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
@@ -78,6 +86,7 @@ import {
   isPreviewing,
   isReadOnly,
   getEntitiesOutOfBoundaries,
+  hasLoadedAssetPacks,
   isMultiselectEnabled
 } from './selectors'
 
@@ -93,6 +102,9 @@ import {
   createReadyOnlyScene,
   areEqualTransforms
 } from './utils'
+import { getCurrentPool } from 'modules/pool/selectors'
+import { Pool } from 'modules/pool/types'
+import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -168,19 +180,20 @@ function* createNewEditorScene(project: Project) {
 }
 
 function* handleProvisionScene(action: ProvisionSceneAction) {
-  yield renderScene()
-  if (!action.payload.init) {
+  const { scene, init } = action.payload
+  yield renderScene(scene)
+  if (!init) {
     yield put(takeScreenshot())
   }
 }
 
 function* handleHistory() {
-  yield renderScene()
+  const scene = yield select(getCurrentScene)
+  yield renderScene(scene)
   yield put(takeScreenshot())
 }
 
-function* renderScene() {
-  let scene: Scene = yield select(getCurrentScene)
+function* renderScene(scene: Scene) {
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
     if (yield select(isReadOnly)) {
@@ -273,7 +286,8 @@ function handleEditorReadyChange() {
   store.dispatch(setEditorReady(true))
 }
 
-function* handleOpenEditor() {
+function* handleOpenEditor(action: OpenEditorAction) {
+  const { isReadOnly, type } = action.payload
   // Handles subscriptions to metrics
   yield call(() => editorWindow.editor.on('metrics', handleMetricsChange))
 
@@ -290,16 +304,40 @@ function* handleOpenEditor() {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
-  const project: Project | null = yield select(getCurrentProject)
+  const project: Project | Pool | null = yield type === 'pool' ? select(getCurrentPool) : select(getCurrentProject)
 
   if (project) {
+    // load asset packs
+    const areLoaded = yield select(hasLoadedAssetPacks)
+    if (!areLoaded) {
+      yield put(loadAssetPacksRequest())
+    }
+
+    // fix legacy stuff
+    let scene: Scene = yield getSceneByProjectId(project.id, type)
+    yield put(fixLegacyNamespacesRequest(scene))
+    const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
+    scene = fixSuccessAction.payload.scene
+
+    // if assets packs are being loaded wait for them to finish
+    const state: RootState = yield select(state => state)
+    if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
+      yield take(LOAD_ASSET_PACKS_SUCCESS)
+    }
+
+    // sync scene assets
+    yield put(syncSceneAssetsRequest(scene))
+    const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
+    scene = syncSuccessAction.payload.scene
+
+    yield put(setEditorReadOnly(isReadOnly))
     yield createNewEditorScene(project)
 
     // Set the remote url for scripts
     yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
 
     // Spawns the assets
-    yield renderScene()
+    yield renderScene(scene)
 
     // Enable snap to grid
     yield handleToggleSnapToGrid(toggleSnapToGrid(true))
@@ -307,7 +345,7 @@ function* handleOpenEditor() {
     // Select gizmo
     yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
   } else {
-    console.error('Unable to Open Editor: Invalid project')
+    console.error(`Unable to Open Editor: Invalid ${type}`)
   }
 }
 
@@ -356,7 +394,8 @@ function* handleTogglePreview(action: TogglePreviewAction) {
     }
 
     yield handleResetCamera()
-    yield renderScene()
+    const scene = yield select(getCurrentScene)
+    yield renderScene(scene)
   } else {
     editor.setCameraPosition({ x, y: 1.5, z })
     editor.setCameraRotation(0, 0)

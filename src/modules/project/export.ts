@@ -124,8 +124,9 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   for (const component of Object.values(scene.components)) {
     switch (component.type) {
       case ComponentType.GLTFShape: {
-        const { src } = (component as ComponentDefinition<ComponentType.GLTFShape>).data
-        components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${src}`)
+        const { assetId } = (component as ComponentDefinition<ComponentType.GLTFShape>).data
+        const asset = scene.assets[assetId]
+        components[component.id] = new ECS.GLTFShape(`${EXPORT_PATH.MODELS_FOLDER}/${asset.model}`)
         break
       }
       case ComponentType.NFTShape: {

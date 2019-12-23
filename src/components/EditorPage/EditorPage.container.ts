@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 
 import { getCurrentProject } from 'modules/project/selectors'
-import { loadAssetPacksRequest } from 'modules/assetPack/actions'
 import { RootState } from 'modules/common/types'
 import { closeEditor, zoomIn, zoomOut, resetCamera } from 'modules/editor/actions'
 import { isSidebarOpen, isPreviewing, isReady, isFetching } from 'modules/editor/selectors'
@@ -23,7 +22,6 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: name => dispatch(openModal(name)),
-  onLoadAssetPacks: () => dispatch(loadAssetPacksRequest()),
   onCloseEditor: () => dispatch(closeEditor()),
   onZoomIn: () => dispatch(zoomIn()),
   onZoomOut: () => dispatch(zoomOut()),

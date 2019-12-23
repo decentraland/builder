@@ -9,7 +9,7 @@ import {
   CloseEditorAction,
   SetScriptUrlAction
 } from 'modules/editor/actions'
-import { UnityKeyboardEvent } from 'modules/editor/types'
+import { UnityKeyboardEvent, OpenEditorOptions } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
 import { Project } from 'modules/project/types'
 
@@ -43,7 +43,7 @@ export type EditorWindow = typeof window & {
   editor: Editor
 }
 
-export type Props = {
+export type Props = Partial<OpenEditorOptions> & {
   isLoading: boolean
   onOpenEditor: typeof openEditor
   onDropItem: typeof dropItem

@@ -29,8 +29,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       this.startEditor().catch(error => console.error('Failed to start editor', error))
     } else {
       this.moveCanvas()
-      this.props.onOpenEditor()
-      this.subscribeKeyEvent()
+      this.openEditor()
+      this.subscribeKeyDownEvent()
     }
   }
 
@@ -38,7 +38,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     if (canvas) {
       document.getElementsByTagName('body')[0].appendChild(canvas)
     }
-    this.unsubscribeKeyEvent()
+    this.unsubscribeKeyDownEvent()
   }
 
   moveCanvas = () => {
@@ -47,11 +47,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
   }
 
-  subscribeKeyEvent = () => {
+  subscribeKeyDownEvent = () => {
     editorWindow.addEventListener('keydown', this.handleKeyDownEvent)
   }
 
-  unsubscribeKeyEvent = () => {
+  unsubscribeKeyDownEvent = () => {
     editorWindow.removeEventListener('keydown', this.handleKeyDownEvent)
   }
 
@@ -60,6 +60,11 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     if (unityEvt) {
       editorWindow.editor.onKeyDown(unityEvt)
     }
+  }
+
+  openEditor = () => {
+    const { isReadOnly, type } = this.props
+    this.props.onOpenEditor({ isReadOnly: isReadOnly === true, type: type || 'project' })
   }
 
   async startEditor() {
@@ -75,9 +80,9 @@ class Preview extends React.Component<Props & CollectedProps, State> {
       }
 
       this.moveCanvas()
-      this.props.onOpenEditor()
+      this.openEditor()
 
-      this.subscribeKeyEvent()
+      this.subscribeKeyDownEvent()
     } catch (error) {
       isDCLInitialized = false
       console.error('Failed to load Preview', error)

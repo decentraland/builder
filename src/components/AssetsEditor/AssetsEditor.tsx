@@ -87,9 +87,9 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
     return errors
   }
 
-  getAssetPackErrors = (assetPack: T) => {
+  getAssetPackErrors = () => {
     let errors: Record<string, Record<string, string>> = {}
-    for (let asset of assetPack.assets) {
+    for (let asset of this.getAssets()) {
       errors = { ...errors, ...this.getErrors(asset) }
     }
     return errors
@@ -124,13 +124,12 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
         return i
       }
     }
-    return -1
+    return 0
   }
 
   handleSubmit = () => {
-    const { assetPack } = this.props
     const { currentAsset } = this.state
-    const errors = this.getAssetPackErrors(assetPack)
+    const errors = this.getAssetPackErrors()
     const errorKeys = Object.keys(errors)
     const hasErrors = errorKeys.length > 0
     const assets = this.getAssets()

@@ -24,6 +24,7 @@ export const getSelectedEntitiesId = (state: RootState) => getState(state).selec
 export const isReady = (state: RootState) => getState(state).isReady
 export const isLoading = (state: RootState) => getState(state).isLoading
 export const isReadOnly = (state: RootState) => getState(state).isReadOnly
+export const hasLoadedAssetPacks = (state: RootState) => getState(state).hasLoadedAssetPacks
 export const isScreenshotReady = (state: RootState) => getState(state).isScreenshotReady
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
@@ -59,12 +60,12 @@ export const getEnabledTools = createSelector<
   }
 
   return {
-    move: !!selectedEntitiesId,
-    rotate: !!selectedEntitiesId,
-    scale: !!selectedEntitiesId,
-    duplicate: !!selectedEntitiesId && !isNFT,
-    reset: !!selectedEntitiesId,
-    delete: !!selectedEntitiesId
+    move: selectedEntitiesId.length > 0,
+    rotate: selectedEntitiesId.length > 0,
+    scale: selectedEntitiesId.length > 0,
+    duplicate: selectedEntitiesId.length > 0 && !isNFT,
+    reset: selectedEntitiesId.length > 0,
+    delete: selectedEntitiesId.length > 0
   }
 })
 

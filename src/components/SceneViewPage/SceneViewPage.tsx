@@ -19,15 +19,14 @@ import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
-    const { currentProject, match, onLoadProject, onReadOnly } = this.props
-    onReadOnly(true)
-    if (!currentProject && match.params.projectId) {
+    const { match, onLoadProject } = this.props
+    if (match.params.projectId) {
       onLoadProject(match.params.projectId, this.getType())
     }
   }
 
   componentWillUnmount() {
-    this.props.onReadOnly(false)
+    this.props.onCloseEditor()
   }
 
   handlePreview = () => {
@@ -138,7 +137,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
-              <ViewPort key="SceneView" />
+              <ViewPort key={currentProject.id} isReadOnly={true} type={this.getType()} />
             </Responsive>
           </div>
           <div className="scene-action-list">
@@ -178,7 +177,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
                 <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels: this.getParcelCount() })}
               </div>
               <div className="component">
-                <Icon name="scene-object" /> {t('public_page.object_count', { objects: this.getObjectCount() })}
+                <Icon name="scene-object" /> {t('public_page.item_count', { items: this.getObjectCount() })}
               </div>
             </div>
           </div>

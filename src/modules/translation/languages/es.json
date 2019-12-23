@@ -343,8 +343,9 @@
     "empty_ground": "Sin piso",
     "no_results": "Sin resultados",
     "results": "Resultados",
-    "search": "Buscar objetos",
-    "title": "Asset Packs"
+    "search": "Buscar Assets",
+    "title": "Asset Packs",
+    "search_items": "Buscar objetos"
   },
   "layout_picker": {
     "columns": "columnas",
@@ -378,12 +379,29 @@
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
   },
+  "scene_list_page": {
+    "projects_title": "Scene Pool",
+    "no_projects": "It looks like we don't have any Scenes",
+    "filters": {
+      "creator-contest-2019-12": "Creator Contest (Submission)",
+      "qualified-creator-contest-2019-12": "Creator Contest",
+      "all_groups": "All collections",
+      "all_users": "All users",
+      "only_me": "Only me",
+      "newest": "Newest",
+      "likes": "Likes",
+      "size": "Size",
+      "items": "Items",
+      "smart_items": "Smart items",
+      "name": "Name"
+    }
+  },
   "public_page": {
     "made_with": "Scene made with Builder",
     "made_by": "Scene by",
     "try_it_out": "try it out",
     "parcel_count": "{parcels} {parcels, plural, one {parcel} other {parcels}}",
-    "object_count": "{objects} {objects, plural, one {object} other {objects}}",
+    "item_count": "{items} {items, plural, one {item} other {items}}",
     "likes": "{likes} {likes, plural, one {like} other {likes}}"
   },
   "popups": {

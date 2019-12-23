@@ -1,0 +1,78 @@
+.SceneListPage {
+  display: block;
+  position: relative;
+  margin-top: 47px;
+}
+
+.SceneListPage .ui.container {
+  position: relative;
+}
+
+.SceneListPage .subtitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.SceneListPage .subtitle > .dcl.tabs {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.SceneListPage .subtitle > .dcl.tabs > .ui.container {
+  width: auto;
+}
+
+.SceneListPage .subtitle > .menu {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  font-size: 13px;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.SceneListPage .subtitle > .menu .ui.dropdown {
+  margin-right: 32px;
+}
+
+.SceneListPage .empty-projects {
+  display: flex;
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+  user-select: none;
+  text-align: center;
+  line-height: 28px;
+}
+
+.SceneListPage .PoolCardList {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 400px;
+  justify-content: space-around;
+}
+
+.SceneListPage .ui.pagination.menu {
+  display: flex;
+  margin-top: 40px;
+  justify-content: center;
+  width: 100%;
+}
+
+.SceneListPage .ui.pagination.menu .item[type='nextItem'],
+.SceneListPage .ui.pagination.menu .item[type='prevItem'] {
+  position: absolute;
+  background-color: var(--secondary);
+}
+
+.SceneListPage .ui.pagination.menu .item[type='prevItem'] {
+  left: 0px;
+}
+
+.SceneListPage .ui.pagination.menu .item[type='nextItem'] {
+  right: 0px;
+}

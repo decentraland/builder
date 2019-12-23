@@ -1,22 +1,9 @@
-import { SortBy } from 'modules/ui/dashboard/types'
+import { PaginationOptions, injectPagination, injectParams } from './utils'
 
-export type PaginationOptions = { page?: number; sortBy?: SortBy }
 export const locations = {
-  root: (options: PaginationOptions = {}) => {
-    let location = '/'
-    let params = []
-    if (options.page) {
-      params.push(`page=${options.page}`)
-    }
-    if (options.sortBy) {
-      params.push(`sort_by=${options.sortBy}`)
-    }
-    if (params.length > 0) {
-      location += `?${params.join('&')}`
-    }
-    return location
-  },
+  root: (options: PaginationOptions = {}) => injectPagination('/', options),
   editor: (projectId = ':projectId') => `/editor/${projectId}`,
+  poolSearch: (options: PaginationOptions = {}) => injectParams(injectPagination('/pools', options), { group: 'group', userId: 'user_id' }, options),
   poolView: (projectId = ':projectId', type = ':type(pool)') => `/view/${type}/${projectId}`,
   sceneView: (projectId = ':projectId') => `/view/${projectId}`,
   signIn: () => '/sign-in',
