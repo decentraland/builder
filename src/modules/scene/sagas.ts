@@ -353,7 +353,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const newEntities = { ...scene.entities }
   const newAssets = { ...scene.assets }
 
-  for (let entityId in selectedEntitiesId) {
+  for (let entityId of selectedEntitiesId) {
     const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
     const entityComponents = componentsByEntityId[entityId]
     const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
