@@ -451,7 +451,8 @@
     "toggle_sidebar": "Alternar barra lateral",
     "undo": "Deshacer",
     "zoom_in": "Aumentar el zoom",
-    "zoom_out": "Disminuir el zoom"
+    "zoom_out": "Disminuir el zoom",
+    "multiselect": "Seleccionar múltiples objetos"
   },
   "shortcuts_modal": {
     "editor_shortcuts": "Editor",

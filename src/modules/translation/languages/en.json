@@ -453,7 +453,8 @@
     "toggle_sidebar": "Toggle sidebar",
     "undo": "Undo",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "zoom_out": "Zoom out",
+    "multiselect": "Select multiple items"
   },
   "shortcuts_modal": {
     "editor_shortcuts": "Editor",

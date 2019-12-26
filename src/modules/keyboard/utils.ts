@@ -80,7 +80,7 @@ export const getQwertyLayout = (): ShortcutLayout => ({
   [Shortcut.TOGGLE_MULTISELECTION]: {
     type: 'simple',
     value: 'ctrl',
-    title: 'shortcuts.multiselect',
+    title: t('shortcuts.multiselect'),
     hold: true
   }
 })
