@@ -21,7 +21,7 @@ export type Props = {
   metrics: SceneMetrics
   currentProject: Project | null
   currentPoolGroup: PoolGroup | null
-  selectedEntitiesId: string[]
+  selectedEntityIds: string[]
   isLoading: boolean
   isPreviewing: boolean
   isUploading: boolean
@@ -46,7 +46,7 @@ export type MapStateProps = Pick<
   | 'isPreviewing'
   | 'isUploading'
   | 'isSidebarOpen'
-  | 'selectedEntitiesId'
+  | 'selectedEntityIds'
   | 'enabledTools'
 >
 

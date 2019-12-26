@@ -5,15 +5,15 @@ import { getEntityComponentsByType, getEntities } from 'modules/scene/selectors'
 import { ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { setScriptValues } from 'modules/scene/actions'
-import { getSelectedEntitiesId } from 'modules/editor/selectors'
+import { getSelectedEntityIds } from 'modules/editor/selectors'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EntityEditor.types'
 import EntityEditor from './EntityEditor'
 import { setSelectedEntities } from 'modules/editor/actions'
 
 const mapState = (state: RootState): MapStateProps => {
-  const selectedEntitiesId = getSelectedEntitiesId(state)
-  const entityId = selectedEntitiesId.length === 1 ? selectedEntitiesId[0] : ''
+  const selectedEntityIds = getSelectedEntityIds(state)
+  const entityId = selectedEntityIds.length === 1 ? selectedEntityIds[0] : ''
 
   // The presence of both the entity and the script component are guranteed by the ItemDrawer container
   const components = getEntityComponentsByType(state)[entityId]

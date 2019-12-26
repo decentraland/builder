@@ -70,7 +70,7 @@ export default class TopBar extends React.PureComponent<Props> {
       isPreviewing,
       isUploading,
       isSidebarOpen,
-      selectedEntitiesId,
+      selectedEntityIds: selectedEntityIds,
       enabledTools,
       isLoading,
       onReset,
@@ -111,7 +111,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 <ShortcutTooltip shortcut={Shortcut.MOVE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip
                     icon="move"
-                    isActive={gizmo === Gizmo.MOVE && selectedEntitiesId.length > 0}
+                    isActive={gizmo === Gizmo.MOVE && selectedEntityIds.length > 0}
                     isDisabled={!enabledTools.move}
                     onClick={this.handleMoveMode}
                   />
@@ -119,7 +119,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 <ShortcutTooltip shortcut={Shortcut.ROTATE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip
                     icon="rotate"
-                    isActive={gizmo === Gizmo.ROTATE && selectedEntitiesId.length > 0}
+                    isActive={gizmo === Gizmo.ROTATE && selectedEntityIds.length > 0}
                     isDisabled={!enabledTools.rotate}
                     onClick={this.handleRotateMode}
                   />
@@ -127,7 +127,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 <ShortcutTooltip shortcut={Shortcut.SCALE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip
                     icon="scale"
-                    isActive={gizmo === Gizmo.SCALE && selectedEntitiesId.length > 0}
+                    isActive={gizmo === Gizmo.SCALE && selectedEntityIds.length > 0}
                     isDisabled={!enabledTools.scale}
                     onClick={this.handleScaleMode}
                   />

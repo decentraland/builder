@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getActivePoolGroup } from 'modules/poolGroup/selectors'
-import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntitiesId, isLoading, isReady, getEnabledTools } from 'modules/editor/selectors'
+import { getGizmo, isPreviewing, isSidebarOpen, getSelectedEntityIds, isLoading, isReady, getEnabledTools } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { setGizmo, togglePreview, toggleSidebar } from 'modules/editor/actions'
 import { resetItem, duplicateItem, deleteItem } from 'modules/scene/actions'
@@ -13,13 +13,13 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 
 const mapState = (state: RootState): MapStateProps => {
-  const selectedEntitiesId = getSelectedEntitiesId(state)
+  const selectedEntityIds = getSelectedEntityIds(state)
   return {
     gizmo: getGizmo(state),
     currentProject: getCurrentProject(state),
     currentPoolGroup: getActivePoolGroup(state),
     metrics: getCurrentMetrics(state),
-    selectedEntitiesId,
+    selectedEntityIds: selectedEntityIds,
     isLoading: !isReady(state) || isLoading(state),
     isPreviewing: isPreviewing(state),
     isUploading: isSavingCurrentProject(state),

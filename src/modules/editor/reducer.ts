@@ -42,7 +42,7 @@ export type EditorState = {
   sidebar: boolean
   snapToGrid: boolean
   multiselectionEnabled: boolean
-  selectedEntitiesId: string[]
+  selectedEntityIds: string[]
   entitiesOutOfBoundaries: string[]
   isReady: boolean // editor is ready to be interacted with via API
   isLoading: boolean // models are done loading
@@ -62,7 +62,7 @@ const INITIAL_STATE: EditorState = {
   sidebar: true,
   snapToGrid: true,
   multiselectionEnabled: false,
-  selectedEntitiesId: [],
+  selectedEntityIds: [],
   entitiesOutOfBoundaries: [],
   isReady: false,
   isLoading: false,
@@ -121,7 +121,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case SET_SELECTED_ENTITIES: {
       return {
         ...state,
-        selectedEntitiesId: action.payload.entitiesId ? action.payload.entitiesId : []
+        selectedEntityIds: action.payload.entitiesId ? action.payload.entitiesId : []
       }
     }
     case SET_EDITOR_READY: {
@@ -152,7 +152,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case DELETE_ITEM: {
       return {
         ...state,
-        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => !state.selectedEntitiesId.includes(entityId))
+        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => !state.selectedEntityIds.includes(entityId))
       }
     }
     case EXPORT_PROJECT_REQUEST: {

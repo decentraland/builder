@@ -79,7 +79,7 @@ import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import {
   getGizmo,
-  getSelectedEntitiesId,
+  getSelectedEntityIds,
   getSceneMappings,
   isLoading,
   isReady,
@@ -259,7 +259,7 @@ function handleGizmoSelected(args: { gizmoType: Gizmo; entities: string[] }) {
   if (currentGizmo !== gizmoType) {
     store.dispatch(setGizmo(gizmoType))
   }
-  const selectedEntityId = getSelectedEntitiesId(state)
+  const selectedEntityId = getSelectedEntityIds(state)
   let newSelectedEntities = selectedEntityId
 
   if (entities.length === 0) {

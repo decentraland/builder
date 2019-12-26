@@ -20,7 +20,7 @@ export const isSidebarOpen = (state: RootState) => getState(state).sidebar
 export const isPreviewing = (state: RootState) => getState(state).preview
 export const isSnapToGridEnabled = (state: RootState) => getState(state).snapToGrid
 export const isMultiselectEnabled = (state: RootState) => getState(state).multiselectionEnabled
-export const getSelectedEntitiesId = (state: RootState) => getState(state).selectedEntitiesId
+export const getSelectedEntityIds = (state: RootState) => getState(state).selectedEntityIds
 export const isReady = (state: RootState) => getState(state).isReady
 export const isLoading = (state: RootState) => getState(state).isLoading
 export const isReadOnly = (state: RootState) => getState(state).isReadOnly
@@ -44,10 +44,10 @@ export const getEnabledTools = createSelector<
   Scene['entities'],
   Scene['components'],
   { move: boolean; rotate: boolean; duplicate: boolean; reset: boolean; delete: boolean }
->(getSelectedEntitiesId, getEntities, getComponents, (selectedEntitiesId, entities, components) => {
+>(getSelectedEntityIds, getEntities, getComponents, (selectedEntityIds, entities, components) => {
   let isNFT = false
 
-  for (let entityId of selectedEntitiesId) {
+  for (let entityId of selectedEntityIds) {
     const entity = entities[entityId]
     if (entity) {
       for (let componentId of entity.components) {
@@ -60,12 +60,12 @@ export const getEnabledTools = createSelector<
   }
 
   return {
-    move: selectedEntitiesId.length > 0,
-    rotate: selectedEntitiesId.length > 0,
-    scale: selectedEntitiesId.length > 0,
-    duplicate: selectedEntitiesId.length > 0 && !isNFT,
-    reset: selectedEntitiesId.length > 0,
-    delete: selectedEntitiesId.length > 0
+    move: selectedEntityIds.length > 0,
+    rotate: selectedEntityIds.length > 0,
+    scale: selectedEntityIds.length > 0,
+    duplicate: selectedEntityIds.length > 0 && !isNFT,
+    reset: selectedEntityIds.length > 0,
+    delete: selectedEntityIds.length > 0
   }
 })
 

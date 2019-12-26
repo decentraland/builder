@@ -35,7 +35,7 @@ import {
   getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
-import { getSelectedEntitiesId, isReady } from 'modules/editor/selectors'
+import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
 import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
@@ -223,8 +223,8 @@ function* handleResetItem(_: ResetItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntitiesId: ReturnType<typeof getSelectedEntitiesId> = yield select(getSelectedEntitiesId)
-  if (selectedEntitiesId.length === 0) return
+  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+  if (selectedEntityIds.length === 0) return
 
   const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
 
@@ -232,7 +232,7 @@ function* handleResetItem(_: ResetItemAction) {
     ...scene.components
   }
 
-  for (let entityId of selectedEntitiesId) {
+  for (let entityId of selectedEntityIds) {
     const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
     if (transform) {
       newComponents[transform.id] = {
@@ -255,14 +255,14 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntitiesId: ReturnType<typeof getSelectedEntitiesId> = yield select(getSelectedEntitiesId)
-  if (selectedEntitiesId.length === 0) return
+  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+  if (selectedEntityIds.length === 0) return
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
   const newEntitiesId: string[] = []
 
-  for (let entityId of selectedEntitiesId) {
+  for (let entityId of selectedEntityIds) {
     const entityComponents = []
     const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
     const shape = shapes[entityId]
@@ -344,14 +344,14 @@ function* handleDeleteItem(_: DeleteItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntitiesId: ReturnType<typeof getSelectedEntitiesId> = yield select(getSelectedEntitiesId)
-  if (selectedEntitiesId.length === 0) return
+  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+  if (selectedEntityIds.length === 0) return
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
   const newAssets = { ...scene.assets }
 
-  for (let entityId of selectedEntitiesId) {
+  for (let entityId of selectedEntityIds) {
     const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
     const entityComponents = componentsByEntityId[entityId]
     const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []

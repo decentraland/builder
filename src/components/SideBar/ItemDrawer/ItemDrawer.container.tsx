@@ -12,12 +12,12 @@ import {
   showOnlyAssetsWithScripts
 } from 'modules/ui/sidebar/selectors'
 import { getCollectibleAssets, isLoading as isLoadingAssets } from 'modules/asset/selectors'
-import { getSelectedEntitiesId } from 'modules/editor/selectors'
+import { getSelectedEntityIds } from 'modules/editor/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDrawer.types'
 import ItemDrawer from './ItemDrawer'
 
 const mapState = (state: RootState): MapStateProps => {
-  const selectedEntitiesId = getSelectedEntitiesId(state)
+  const selectedEntityIds = getSelectedEntityIds(state)
 
   return {
     categories: getSideBarCategories(state),
@@ -29,7 +29,7 @@ const mapState = (state: RootState): MapStateProps => {
     isList: isList(state),
     isConnected: isConnected(state),
     showOnlyAssetsWithScripts: showOnlyAssetsWithScripts(state),
-    selectedEntitiesId
+    selectedEntityIds: selectedEntityIds
   }
 }
 
