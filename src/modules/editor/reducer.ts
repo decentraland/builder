@@ -5,10 +5,8 @@ import {
   SET_GIZMO,
   TOGGLE_PREVIEW,
   TOGGLE_SIDEBAR,
-  SelectEntityAction,
-  SELECT_ENTITY,
-  DeselectEntityAction,
-  DESELECT_ENTITY,
+  SetSelectedEntitiesAction,
+  SET_SELECTED_ENTITIES,
   SET_EDITOR_READY,
   CLOSE_EDITOR,
   SetEditorReadyAction,
@@ -24,7 +22,9 @@ import {
   SetScreenshotReadyAction,
   SET_SCREENSHOT_READY,
   SetEditorReadOnlyAction,
-  SET_EDITOR_READ_ONLY
+  SET_EDITOR_READ_ONLY,
+  TOGGLE_MULTISELECTION,
+  ToggleMultiselectionAction
 } from './actions'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
@@ -41,7 +41,8 @@ export type EditorState = {
   preview: boolean
   sidebar: boolean
   snapToGrid: boolean
-  selectedEntityId: string | null
+  multiselectionEnabled: boolean
+  selectedEntityIds: string[]
   entitiesOutOfBoundaries: string[]
   isReady: boolean // editor is ready to be interacted with via API
   isLoading: boolean // models are done loading
@@ -60,7 +61,8 @@ const INITIAL_STATE: EditorState = {
   preview: false,
   sidebar: true,
   snapToGrid: true,
-  selectedEntityId: null,
+  multiselectionEnabled: false,
+  selectedEntityIds: [],
   entitiesOutOfBoundaries: [],
   isReady: false,
   isLoading: false,
@@ -79,8 +81,7 @@ export type EditorReducerAction =
   | SetScreenshotReadyAction
   | TogglePreviewAction
   | ToggleSidebarAction
-  | SelectEntityAction
-  | DeselectEntityAction
+  | SetSelectedEntitiesAction
   | SetEditorReadyAction
   | CloseEditorAction
   | ToggleSnapToGridAction
@@ -92,6 +93,7 @@ export type EditorReducerAction =
   | ExportProjectRequestAction
   | ExportProjectSuccessAction
   | LoadAssetPacksSuccessAction
+  | ToggleMultiselectionAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -116,16 +118,10 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         sidebar: enabled
       }
     }
-    case SELECT_ENTITY: {
+    case SET_SELECTED_ENTITIES: {
       return {
         ...state,
-        selectedEntityId: action.payload.entityId
-      }
-    }
-    case DESELECT_ENTITY: {
-      return {
-        ...state,
-        selectedEntityId: null
+        selectedEntityIds: action.payload.entityIds ? action.payload.entityIds : []
       }
     }
     case SET_EDITOR_READY: {
@@ -156,7 +152,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case DELETE_ITEM: {
       return {
         ...state,
-        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => entityId !== state.selectedEntityId)
+        entitiesOutOfBoundaries: state.entitiesOutOfBoundaries.filter(entityId => !state.selectedEntityIds.includes(entityId))
       }
     }
     case EXPORT_PROJECT_REQUEST: {
@@ -213,6 +209,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         hasLoadedAssetPacks: true
+      }
+    }
+    case TOGGLE_MULTISELECTION: {
+      return {
+        ...state,
+        multiselectionEnabled: action.payload.enabled
       }
     }
     default:

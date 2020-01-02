@@ -116,7 +116,6 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
                   </Tabs>
                 </Responsive>
                 <div className="menu">
-
                   <Responsive minWidth={1025} as={React.Fragment}>
                     <Dropdown
                       direction="left"

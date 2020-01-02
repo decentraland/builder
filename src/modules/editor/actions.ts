@@ -25,7 +25,8 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 
 export const OPEN_EDITOR = 'Open editor'
 
-export const openEditor = (options: Partial<OpenEditorOptions> = {}) => action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
+export const openEditor = (options: Partial<OpenEditorOptions> = {}) =>
+  action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
 
 export type OpenEditorAction = ReturnType<typeof openEditor>
 
@@ -90,19 +91,11 @@ export type ToggleSidebarAction = ReturnType<typeof toggleSidebar>
 
 // Select Entity
 
-export const SELECT_ENTITY = 'Select entity'
+export const SET_SELECTED_ENTITIES = 'Set selected entities'
 
-export const selectEntity = (entityId: string) => action(SELECT_ENTITY, { entityId })
+export const setSelectedEntities = (entityIds: string[]) => action(SET_SELECTED_ENTITIES, { entityIds })
 
-export type SelectEntityAction = ReturnType<typeof selectEntity>
-
-// Deselect Entity
-
-export const DESELECT_ENTITY = 'Deselect entity'
-
-export const deselectEntity = () => action(DESELECT_ENTITY, {})
-
-export type DeselectEntityAction = ReturnType<typeof deselectEntity>
+export type SetSelectedEntitiesAction = ReturnType<typeof setSelectedEntities>
 
 // Zoom in/out
 
@@ -203,3 +196,11 @@ export const SET_EXPORT_PROGRESS = 'Set export progress'
 export const setExportProgress = (args: { loaded: number; total: number }) => action(SET_EXPORT_PROGRESS, args)
 
 export type SetExportProgressAction = ReturnType<typeof setExportProgress>
+
+// Toggle snap to grid
+
+export const TOGGLE_MULTISELECTION = 'Toggle multiselection'
+
+export const toggleMultiselection = (enabled: boolean) => action(TOGGLE_MULTISELECTION, { enabled })
+
+export type ToggleMultiselectionAction = ReturnType<typeof toggleMultiselection>

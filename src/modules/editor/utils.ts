@@ -123,7 +123,6 @@ export function convertToUnityKeyboardEvent(e: KeyboardEvent): UnityKeyboardEven
     case 'ArrowRight':
       return 'RightArrow'
   }
-
   return null
 }
 

@@ -28,14 +28,13 @@ export type Editor = {
   resetCameraZoom: () => void
   setCameraPosition: (position: Vector3) => void
   selectGizmo: (gizmo: Gizmo) => void
-  selectEntity: (entityId: string) => void
-  deselectEntity: () => void
+  setSelectedEntities: (entityId: string[]) => void
   getMouseWorldPosition: (x: number, y: number) => Promise<Vector3>
   preloadFile: (url: string, arrayBuffer?: boolean) => void
   getCameraTarget: () => Promise<Vector3>
   takeScreenshot: (mime?: string) => Promise<string>
   setGridResolution: (position: number, rotation: number, scale: number) => void
-  getLoadingEntity: () => any | null
+  getLoadingEntities: () => string[] | null
   onKeyDown: (key: UnityKeyboardEvent) => void
 }
 

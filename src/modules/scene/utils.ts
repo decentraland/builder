@@ -122,7 +122,7 @@ export function* getSceneByProjectId(projectId: string, type: 'project' | 'publi
 }
 
 export function getEntityName(scene: Scene, entityComponents: EntityDefinition['components'], assets: Record<string, Asset>) {
-  const takenNames = new Set()
+  const takenNames = new Set<string>()
   const components = entityComponents.map(id => scene.components[id])
 
   for (let entityId in scene.entities) {

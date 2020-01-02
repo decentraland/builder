@@ -11,6 +11,7 @@ import './ShortcutsModal.css'
 
 const ShortcutCategories: Record<string, Shortcut[]> = {
   editor: [
+    Shortcut.TOGGLE_MULTISELECTION,
     Shortcut.TOGGLE_SNAP_TO_GRID,
     Shortcut.ZOOM_IN,
     Shortcut.ZOOM_OUT,

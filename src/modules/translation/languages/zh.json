@@ -448,7 +448,8 @@
     "toggle_sidebar": "侧边栏",
     "undo": "撤消",
     "zoom_in": "放大",
-    "zoom_out": "缩小"
+    "zoom_out": "缩小",
+    "multiselect": "选择多个项目"
   },
   "shortcuts_modal": {
     "editor_shortcuts": "编辑器",
