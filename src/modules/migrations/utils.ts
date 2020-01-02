@@ -2,7 +2,7 @@ import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
 import { Migration, Versionable } from './types'
 import { Scene, ComponentType, ComponentDefinition, AnyComponent } from 'modules/scene/types'
-import { getGLTFShapeName } from 'modules/scene/utils'
+import { getGLTFShapeName, getUniqueName } from 'modules/scene/utils'
 
 export function addScale(scene: Scene) {
   if (scene) {
@@ -100,5 +100,19 @@ export function removeScriptSrc(scene: Scene) {
   const scripts = Object.values(scene.components).filter(component => component.type === ComponentType.Script)
   for (const script of scripts) {
     delete (script.data as any).src
+  }
+}
+
+export function sanitizeEntityName(scene: Scene) {
+  const takenNames = new Set<string>()
+
+  for (let entityId in scene.entities) {
+    const entity = scene.entities[entityId]
+    if (entity.name.match(/^\d/)) {
+      const components = entity.components.map(id => scene.components[id])
+      const name = getUniqueName(components, takenNames, scene.assets)
+      takenNames.add(name)
+      entity.name = name
+    }
   }
 }
