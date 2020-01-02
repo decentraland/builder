@@ -501,7 +501,7 @@ function* handleSetSelectEntities(action: SetSelectedEntitiesAction) {
   yield call(() => {
     try {
       // this could throw if the entity does not exist, due to some race condition or the scene is not synced
-      editorWindow.editor.setSelectedEntities(action.payload.entitiesId)
+      editorWindow.editor.setSelectedEntities(action.payload.entityIds)
     } catch (e) {
       // noop
     }

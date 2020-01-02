@@ -121,7 +121,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
     case SET_SELECTED_ENTITIES: {
       return {
         ...state,
-        selectedEntityIds: action.payload.entitiesId ? action.payload.entitiesId : []
+        selectedEntityIds: action.payload.entityIds ? action.payload.entityIds : []
       }
     }
     case SET_EDITOR_READY: {

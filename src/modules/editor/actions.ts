@@ -25,7 +25,8 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 
 export const OPEN_EDITOR = 'Open editor'
 
-export const openEditor = (options: Partial<OpenEditorOptions> = {}) => action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
+export const openEditor = (options: Partial<OpenEditorOptions> = {}) =>
+  action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
 
 export type OpenEditorAction = ReturnType<typeof openEditor>
 
@@ -92,7 +93,7 @@ export type ToggleSidebarAction = ReturnType<typeof toggleSidebar>
 
 export const SET_SELECTED_ENTITIES = 'Set selected entities'
 
-export const setSelectedEntities = (entitiesId: string[]) => action(SET_SELECTED_ENTITIES, { entitiesId })
+export const setSelectedEntities = (entityIds: string[]) => action(SET_SELECTED_ENTITIES, { entityIds })
 
 export type SetSelectedEntitiesAction = ReturnType<typeof setSelectedEntities>
 

@@ -260,7 +260,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
-  const newEntitiesId: string[] = []
+  const newEntityIds: string[] = []
 
   for (let entityId of selectedEntityIds) {
     const entityComponents = []
@@ -299,7 +299,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     const entityName = getEntityName(scene, entityComponents, assets)
 
     newEntities[newEntityId] = { id: newEntityId, components: entityComponents, name: entityName }
-    newEntitiesId.push(newEntityId)
+    newEntityIds.push(newEntityId)
 
     // copy script
     if (script) {
@@ -332,12 +332,12 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   // wait for entities to finish loading
   while (
     editorWindow.editor.getLoadingEntities() !== null &&
-    (editorWindow.editor.getLoadingEntities() as string[]).some(id => newEntitiesId.includes(id))
+    (editorWindow.editor.getLoadingEntities() as string[]).some(id => newEntityIds.includes(id))
   ) {
     yield delay(200)
   }
 
-  yield put(setSelectedEntities(newEntitiesId))
+  yield put(setSelectedEntities(newEntityIds))
 }
 
 function* handleDeleteItem(_: DeleteItemAction) {
