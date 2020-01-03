@@ -107,7 +107,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
       return <ClearDeployment projectId={projectId} name={name} onClose={this.handleClose} />
     }
 
-    if (view === DeployModalView.DEPLOY_TO_LAND || currentPoolGroup || true) {
+    if (view === DeployModalView.DEPLOY_TO_LAND || currentPoolGroup) {
       return (
         <DeployToLand
           name={name}
