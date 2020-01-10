@@ -10,7 +10,8 @@ import {
   addEntityName,
   addAssets,
   removeScriptSrc,
-  sanitizeEntityName
+  sanitizeEntityName,
+  sanitizeEntityName2
 } from './utils'
 
 export const migrations = {
@@ -90,6 +91,13 @@ export const migrations = {
     for (let sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       sanitizeEntityName(scene)
+    }
+    return state
+  },
+  '10': (state: RootState) => {
+    for (let sceneId in state.scene.present.data) {
+      const scene = state.scene.present.data[sceneId]
+      sanitizeEntityName2(scene)
     }
     return state
   }

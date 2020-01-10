@@ -116,3 +116,18 @@ export function sanitizeEntityName(scene: Scene) {
     }
   }
 }
+
+export function sanitizeEntityName2(scene: Scene) {
+  const takenNames = new Set<string>()
+
+  for (let entityId in scene.entities) {
+    const entity = scene.entities[entityId]
+    // If the name is not a letter followed by more letters and numbers, then we need to update it
+    if (entity.name.match(/^[A-Za-z][A-Za-z\d]+$/g) === null) {
+      const components = entity.components.map(id => scene.components[id])
+      const name = getUniqueName(components, takenNames, scene.assets)
+      takenNames.add(name)
+      entity.name = name
+    }
+  }
+}
