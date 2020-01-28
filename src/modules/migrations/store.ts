@@ -3,7 +3,16 @@ import { RootState } from 'modules/common/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
-import { toProjectCloudSchema, toDeploymentCloudSchema, addScale, addEntityName, addAssets, removeScriptSrc } from './utils'
+import {
+  toProjectCloudSchema,
+  toDeploymentCloudSchema,
+  addScale,
+  addEntityName,
+  addAssets,
+  removeScriptSrc,
+  sanitizeEntityName,
+  sanitizeEntityName2
+} from './utils'
 
 export const migrations = {
   '2': (state: RootState) => {
@@ -75,6 +84,20 @@ export const migrations = {
     for (let sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       removeScriptSrc(scene)
+    }
+    return state
+  },
+  '9': (state: RootState) => {
+    for (let sceneId in state.scene.present.data) {
+      const scene = state.scene.present.data[sceneId]
+      sanitizeEntityName(scene)
+    }
+    return state
+  },
+  '10': (state: RootState) => {
+    for (let sceneId in state.scene.present.data) {
+      const scene = state.scene.present.data[sceneId]
+      sanitizeEntityName2(scene)
     }
     return state
   }

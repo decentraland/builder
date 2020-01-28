@@ -10,7 +10,4 @@ const mapState = (_: RootState, ownProps: OwnProps): MapStateProps => ({
 
 const mapDispatch = (): MapDispatchProps => ({})
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ShortcutTooltip)
+export default connect(mapState, mapDispatch)(ShortcutTooltip) as any

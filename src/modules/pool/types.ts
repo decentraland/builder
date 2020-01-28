@@ -34,4 +34,4 @@ export enum SortBy {
 
 export const RECORDS_PER_PAGE = 24
 
-export const DEFAULT_POOL_GROUP = '3bb52ca6-6b66-4820-b92f-40a910aed33b'
+export const DEFAULT_POOL_GROUP = '164a6d2a-93de-4039-a417-a43e679ff66e'

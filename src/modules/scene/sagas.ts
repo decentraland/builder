@@ -18,14 +18,15 @@ import {
   APPLY_LAYOUT,
   SET_SCRIPT_VALUES,
   SetScriptValuesAction,
-  SYNC_SCENE_ASSETS,
-  SyncSceneAssetsAction,
-  FIX_LEGACY_NAMESPACES,
-  FixLegacyNamespacesAction,
-  syncSceneAssets
+  SYNC_SCENE_ASSETS_REQUEST,
+  SyncSceneAssetsRequestAction,
+  FIX_LEGACY_NAMESPACES_REQUEST,
+  FixLegacyNamespacesRequestAction,
+  fixLegacyNamespacesSuccess,
+  syncSceneAssetsSuccess
 } from 'modules/scene/actions'
 import {
-  getGLTFsBySrc,
+  getGLTFsByAssetId,
   getCurrentScene,
   getEntityComponentsByType,
   getComponentsByEntityId,
@@ -34,8 +35,8 @@ import {
   getShapesByEntityId
 } from 'modules/scene/selectors'
 import { ComponentType, Scene, ComponentDefinition, ShapeComponent, AnyComponent } from 'modules/scene/types'
-import { getSelectedEntityId, isReady } from 'modules/editor/selectors'
-import { selectEntity, deselectEntity, SET_EDITOR_READY } from 'modules/editor/actions'
+import { getSelectedEntityIds, isReady } from 'modules/editor/selectors'
+import { setSelectedEntities, SET_EDITOR_READY } from 'modules/editor/actions'
 import { getCurrentBounds, getData as getProjects } from 'modules/project/selectors'
 import { PARCEL_SIZE } from 'modules/project/utils'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -45,7 +46,6 @@ import {
   snapToBounds,
   cloneEntities,
   filterEntitiesWithComponent,
-  getSceneByProjectId,
   getEntityName,
   getDefaultValues,
   renameEntity,
@@ -54,7 +54,6 @@ import {
 import { getData as getAssets, getGroundAssets, getAssetsByEntityName } from 'modules/asset/selectors'
 import { Asset } from 'modules/asset/types'
 import { loadAssets } from 'modules/asset/actions'
-import { getProjectId } from 'modules/location/selectors'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
@@ -68,8 +67,8 @@ export function* sceneSaga() {
   yield takeLatest(DUPLICATE_ITEM, handleDuplicateItem)
   yield takeLatest(DELETE_ITEM, handleDeleteItem)
   yield takeLatest(SET_GROUND, handleSetGround)
-  yield takeLatest(FIX_LEGACY_NAMESPACES, handleFixLegacyNamespaces)
-  yield takeLatest(SYNC_SCENE_ASSETS, handleSyncSceneAssetsAction)
+  yield takeLatest(FIX_LEGACY_NAMESPACES_REQUEST, handleFixLegacyNamespacesRequest)
+  yield takeLatest(SYNC_SCENE_ASSETS_REQUEST, handleSyncSceneAssetsAction)
   yield takeLatest(APPLY_LAYOUT, handleApplyLayout)
   yield takeLatest(SET_SCRIPT_VALUES, handleSetScriptParameters)
 }
@@ -114,9 +113,9 @@ function* handleAddItem(action: AddItemAction) {
 
     position = { ...position!, y: 1.72 }
   } else {
-    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.model]
-    shapeId = gltf ? gltfs[asset.model].id : null
+    const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
+    const gltf = gltfs[asset.id]
+    shapeId = gltf ? gltf.id : null
 
     if (!shapeId) {
       shapeId = uuidv4()
@@ -124,8 +123,7 @@ function* handleAddItem(action: AddItemAction) {
         id: shapeId,
         type: ComponentType.GLTFShape,
         data: {
-          assetId: asset.id,
-          src: asset.model
+          assetId: asset.id
         }
       } as ComponentDefinition<ComponentType.GLTFShape>
     }
@@ -182,58 +180,69 @@ function* handleAddItem(action: AddItemAction) {
     comp.data.values = getDefaultValues(entityName, asset.parameters, assets)
   }
 
+  yield put(setSelectedEntities([])) // deselect all currently selected entities
   yield put(provisionScene(newScene))
-  yield delay(200) // gotta wait for the webworker to process the updateEditor action
-  yield put(selectEntity(entityId))
+  yield delay(500) // gotta wait for the webworker to process the updateEditor action
+
+  // wait for entity to finish loading
+  while (editorWindow.editor.getLoadingEntities() !== null && (editorWindow.editor.getLoadingEntities() as string[]).includes(entityId)) {
+    yield delay(200)
+  }
+  yield put(setSelectedEntities([entityId]))
 }
 
 function* handleUpdateTransfrom(action: UpdateTransfromAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const { componentId, data } = action.payload
+  const { components } = action.payload
+  const newComponents: Scene['components'] = { ...scene.components }
 
-  if (componentId in scene.components) {
-    const newComponents: Scene['components'] = { ...scene.components }
-    newComponents[componentId] = {
-      ...newComponents[componentId],
-      data: {
-        position: {
-          ...data.position
-        },
-        rotation: {
-          ...data.rotation
-        },
-        scale: {
-          ...data.scale
+  for (let componentData of components) {
+    if (componentData.componentId in scene.components) {
+      newComponents[componentData.componentId] = {
+        ...newComponents[componentData.componentId],
+        data: {
+          position: {
+            ...componentData.data.position
+          },
+          rotation: {
+            ...componentData.data.rotation
+          },
+          scale: {
+            ...componentData.data.scale
+          }
         }
       }
     }
-
-    yield put(provisionScene({ ...scene, components: newComponents }))
   }
+  yield put(provisionScene({ ...scene, components: newComponents }))
 }
 
 function* handleResetItem(_: ResetItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntityId: string | null = yield select(getSelectedEntityId)
-  if (!selectedEntityId) return
+  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+  if (selectedEntityIds.length === 0) return
 
   const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
-  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
-  if (!transform) return
 
   const newComponents = {
-    ...scene.components,
-    [transform.id]: {
-      ...transform,
-      data: {
-        ...transform.data,
-        position: snapToGrid(transform.data.position),
-        rotation: { x: 0, y: 0, z: 0, w: 1 },
-        scale: { x: 1, y: 1, z: 1 }
+    ...scene.components
+  }
+
+  for (let entityId of selectedEntityIds) {
+    const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+    if (transform) {
+      newComponents[transform.id] = {
+        ...transform,
+        data: {
+          ...transform.data,
+          position: snapToGrid(transform.data.position),
+          rotation: { x: 0, y: 0, z: 0, w: 1 },
+          scale: { x: 1, y: 1, z: 1 }
+        }
       }
     }
   }
@@ -246,126 +255,144 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntityId: string | null = yield select(getSelectedEntityId)
-  if (!selectedEntityId) return
+  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+  if (selectedEntityIds.length === 0) return
 
   const newComponents = { ...scene.components }
-  const entityComponents = []
+  const newEntities = { ...scene.entities }
+  const newEntityIds: string[] = []
 
-  const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
-  const shape = shapes[selectedEntityId]
-  entityComponents.push(shape.id)
+  for (let entityId of selectedEntityIds) {
+    const entityComponents = []
+    const shapes: Record<string, ShapeComponent> = yield select(getShapesByEntityId)
+    const shape = shapes[entityId]
 
-  if (shape && shape.type === ComponentType.NFTShape) return
+    entityComponents.push(shape.id)
 
-  const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
-  const transform = components[selectedEntityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
-  const script = components[selectedEntityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
+    if (shape && shape.type === ComponentType.NFTShape) continue
 
-  if (!shape || !transform) return
+    const components: ReturnType<typeof getEntityComponentsByType> = yield select(getEntityComponentsByType)
+    const transform = components[entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform>
+    const script = components[entityId][ComponentType.Script] as ComponentDefinition<ComponentType.Script>
 
-  // copy transform
-  const {
-    data: { position, rotation, scale }
-  } = transform
-  const transformId = uuidv4()
-  newComponents[transformId] = {
-    id: transformId,
-    type: ComponentType.Transform,
-    data: {
-      position: { ...position },
-      rotation: { ...rotation },
-      scale: { ...scale }
+    if (!shape || !transform) continue
+
+    // copy transform
+    const {
+      data: { position, rotation, scale }
+    } = transform
+    const transformId = uuidv4()
+    newComponents[transformId] = {
+      id: transformId,
+      type: ComponentType.Transform,
+      data: {
+        position: { ...position },
+        rotation: { ...rotation },
+        scale: { ...scale }
+      }
+    }
+    entityComponents.push(transformId)
+
+    const newEntityId = uuidv4()
+    // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
+    // This means that we use components before we are done creating all of them.
+    const entityName = getEntityName(scene, entityComponents, assets)
+
+    newEntities[newEntityId] = { id: newEntityId, components: entityComponents, name: entityName }
+    newEntityIds.push(newEntityId)
+
+    // copy script
+    if (script) {
+      const {
+        data: { values: parameters, assetId }
+      } = script
+      const scriptId = uuidv4()
+      const values = JSON.parse(JSON.stringify(parameters))
+
+      renameEntity(assets[assetId].parameters, values, scene.entities[entityId].name, entityName)
+
+      newComponents[scriptId] = {
+        id: scriptId,
+        type: ComponentType.Script,
+        data: {
+          values,
+          assetId
+        }
+      } as ComponentDefinition<ComponentType.Script>
+
+      // Scripts components must go first
+      entityComponents.unshift(scriptId)
     }
   }
-  entityComponents.push(transformId)
 
-  const newEntities = { ...scene.entities }
-  const entityId = uuidv4()
-  // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
-  // This means that we use components before we are done creating all of them.
-  const entityName = getEntityName(scene, entityComponents, assets)
+  yield put(setSelectedEntities([]))
+  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
+  yield delay(300) // gotta wait for the webworker to process the updateEditor action
 
-  newEntities[entityId] = { id: entityId, components: entityComponents, name: entityName }
-
-  // copy script
-  if (script) {
-    const {
-      data: { values: parameters, assetId }
-    } = script
-    const scriptId = uuidv4()
-    const values = JSON.parse(JSON.stringify(parameters))
-
-    renameEntity(assets[assetId].parameters, values, scene.entities[selectedEntityId].name, entityName)
-
-    newComponents[scriptId] = {
-      id: scriptId,
-      type: ComponentType.Script,
-      data: {
-        values,
-        assetId
-      }
-    } as ComponentDefinition<ComponentType.Script>
-
-    // Scripts components must go first
-    entityComponents.unshift(scriptId)
+  // wait for entities to finish loading
+  while (
+    editorWindow.editor.getLoadingEntities() !== null &&
+    (editorWindow.editor.getLoadingEntities() as string[]).some(id => newEntityIds.includes(id))
+  ) {
+    yield delay(200)
   }
 
-  yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities }))
-  yield delay(200) // gotta wait for the webworker to process the updateEditor action
-  yield put(selectEntity(entityId))
+  yield put(setSelectedEntities(newEntityIds))
 }
 
 function* handleDeleteItem(_: DeleteItemAction) {
   const scene: Scene = yield select(getCurrentScene)
   if (!scene) return
 
-  const selectedEntityId: string | null = yield select(getSelectedEntityId)
-  if (!selectedEntityId) return
-
-  const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
-  const entityComponents = componentsByEntityId[selectedEntityId]
-  const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
+  const selectedEntityIds: ReturnType<typeof getSelectedEntityIds> = yield select(getSelectedEntityIds)
+  if (selectedEntityIds.length === 0) return
 
   const newComponents = { ...scene.components }
   const newEntities = { ...scene.entities }
   const newAssets = { ...scene.assets }
-  delete newEntities[selectedEntityId]
 
-  for (const componentId of idsToDelete) {
-    // check if commponentId is not used by other entities
-    if (Object.values(newEntities).some(entity => entity.components.some(id => componentId === id))) {
-      continue
+  for (let entityId of selectedEntityIds) {
+    const componentsByEntityId: Record<string, AnyComponent[]> = yield select(getComponentsByEntityId)
+    const entityComponents = componentsByEntityId[entityId]
+    const idsToDelete = entityComponents ? entityComponents.filter(component => !!component).map(component => component.id) : []
+
+    delete newEntities[entityId]
+
+    for (const componentId of idsToDelete) {
+      // check if commponentId is not used by other entities
+      if (Object.values(newEntities).some(entity => entity.components.some(id => componentId === id))) {
+        continue
+      }
+      delete newComponents[componentId]
     }
-    delete newComponents[componentId]
-  }
 
-  for (let componentId in newComponents) {
-    const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
-    if (component.type === ComponentType.Script) {
-      removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.entities[selectedEntityId].name)
+    for (let componentId in newComponents) {
+      const component = newComponents[componentId] as ComponentDefinition<ComponentType.Script>
+      if (component.type === ComponentType.Script) {
+        removeEntityReferences(newAssets[component.data.assetId].parameters, component.data.values, scene.entities[entityId].name)
+      }
     }
   }
 
   // TODO: refactor
   // gather all the models used by gltf shapes
-  const models = Object.values(newComponents).reduce((set, component) => {
+  const ids = Object.values(newComponents).reduce((set, component) => {
     if (component.type === ComponentType.GLTFShape) {
       const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
-      set.add(gltfShape.data.src)
+      set.add(gltfShape.data.assetId)
     }
     return set
   }, new Set<string>())
 
   // remove assets that are not in the set
   for (const asset of Object.values(newAssets)) {
-    if (models.has(asset.model)) {
+    if (ids.has(asset.id)) {
       continue
     }
     delete newAssets[asset.id]
   }
 
-  yield put(deselectEntity())
+  yield put(setSelectedEntities([]))
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities, assets: newAssets }))
 }
 
@@ -386,22 +413,15 @@ function* handleSetGround(action: SetGroundAction) {
   }
 }
 
-function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
+function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAction) {
   /*  The purspose of this saga is to fix old namespaces in gltshapes that used to be asset pack ids,
       and change them for the asset id instead.
 
       For gltf shapes that don't have a corresponding asset, a dummy one will be created
   */
+  const { scene } = action.payload
   const newComponents: Record<string, ComponentDefinition<ComponentType.GLTFShape>> = {}
   const newAssets: Record<string, Asset> = {}
-
-  // get current project id
-  const projectId: string = yield select(getProjectId)
-  if (!projectId) return
-
-  // get current scene
-  const scene: Scene | null = yield getSceneByProjectId(projectId)
-  if (!scene) return
 
   // get asset packs
   const assetPacks: ReturnType<typeof getAssetPacks> = yield select(getAssetPacks)
@@ -414,7 +434,9 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
     ComponentType.GLTFShape
   >[]
   for (const gltfShape of gltfShapes) {
-    const { src } = gltfShape.data
+    const src = (gltfShape.data as any)['src']
+    // if it doesn't have src, we continue
+    if (!src) continue
 
     // if the src looks like <uuid>/<model-url> then it's legacy
     const legacyRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/ // check if the path starts with a UUID
@@ -429,7 +451,7 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
         if (asset) {
           const newGltfShape: ComponentDefinition<ComponentType.GLTFShape> = {
             ...gltfShape,
-            data: { assetId: asset.id, src: asset.model }
+            data: { assetId: asset.id }
           }
           newComponents[newGltfShape.id] = newGltfShape
           continue
@@ -467,8 +489,7 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
           ...gltfShape,
           data: {
             ...gltfShape.data!,
-            assetId: newAsset.id,
-            src: newAsset.model
+            assetId: newAsset.id
           }
         }
         newComponents[newGltfShape.id] = newGltfShape
@@ -478,20 +499,19 @@ function* handleFixLegacyNamespaces(_: FixLegacyNamespacesAction) {
     }
   }
 
+  let fixedScene = scene
   const hasUpdates = Object.keys(newComponents).length > 0
   if (hasUpdates) {
-    const newScene = {
+    fixedScene = {
       ...scene,
       assets: { ...scene.assets, ...newAssets },
       components: { ...scene.components, ...newComponents }
     }
-    yield put(syncSceneAssets(newScene))
-  } else {
-    yield put(syncSceneAssets(scene))
   }
+  yield put(fixLegacyNamespacesSuccess(fixedScene))
 }
 
-function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
+function* handleSyncSceneAssetsAction(action: SyncSceneAssetsRequestAction) {
   const { scene } = action.payload
 
   // assets that need to be updated in the scene
@@ -527,7 +547,7 @@ function* handleSyncSceneAssetsAction(action: SyncSceneAssetsAction) {
   yield put(loadAssets(missingSceneAssets))
 
   // update the scene assets
-  yield put(provisionScene(newScene))
+  yield put(syncSceneAssetsSuccess(newScene))
 }
 
 function* handleApplyLayout(action: ApplyLayoutAction) {
@@ -551,9 +571,9 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
   let entities = cloneEntities(scene)
   let gltfId: string = uuidv4()
   if (asset) {
-    const gltfs: ReturnType<typeof getGLTFsBySrc> = yield select(getGLTFsBySrc)
-    const gltf = gltfs[asset.model]
-    const foundId = gltf ? gltfs[asset.model].id : null
+    const gltfs: ReturnType<typeof getGLTFsByAssetId> = yield select(getGLTFsByAssetId)
+    const gltf = gltfs[asset.id]
+    const foundId = gltf ? gltf.id : null
 
     // Create the Shape component if necessary
     if (!foundId) {
@@ -561,8 +581,7 @@ function* applyGround(scene: Scene, rows: number, cols: number, asset: Asset) {
         id: gltfId,
         type: ComponentType.GLTFShape,
         data: {
-          assetId: asset.id,
-          src: asset.model
+          assetId: asset.id
         }
       }
     } else {

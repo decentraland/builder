@@ -1,5 +1,6 @@
 // @ts-ignore
 import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import {
   updateEditor,
@@ -16,7 +17,7 @@ import {
   OPEN_EDITOR,
   setEditorReady,
   setGizmo,
-  selectEntity,
+  setSelectedEntities,
   EDITOR_REDO,
   EDITOR_UNDO,
   TAKE_SCREENSHOT,
@@ -25,8 +26,7 @@ import {
   unbindEditorKeyboardShortcuts,
   bindEditorKeyboardShortcuts,
   SET_EDITOR_READY,
-  SELECT_ENTITY,
-  SelectEntityAction,
+  SET_SELECTED_ENTITIES,
   TOGGLE_SNAP_TO_GRID,
   ToggleSnapToGridAction,
   toggleSnapToGrid,
@@ -41,10 +41,10 @@ import {
   SET_EDITOR_LOADING,
   SetEditorLoadingAction,
   setScriptUrl,
-  DESELECT_ENTITY,
   setScreenshotReady,
   OpenEditorAction,
-  setEditorReadOnly
+  setEditorReadOnly,
+  SetSelectedEntitiesAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -55,13 +55,17 @@ import {
   addItem,
   setGround,
   ProvisionSceneAction,
-  createScene
+  fixLegacyNamespacesRequest,
+  syncSceneAssetsRequest,
+  FIX_LEGACY_NAMESPACES_SUCCESS,
+  FixLegacyNamespacesSuccessAction,
+  SYNC_SCENE_ASSETS_SUCCESS
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, SceneMetrics, ComponentDefinition } from 'modules/scene/types'
+import { Scene, ComponentType, SceneMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -75,13 +79,15 @@ import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
 import { BUILDER_SERVER_URL } from 'lib/api/builder'
 import {
   getGizmo,
-  getSelectedEntityId,
+  getSelectedEntityIds,
   getSceneMappings,
   isLoading,
   isReady,
   isPreviewing,
   isReadOnly,
-  getEntitiesOutOfBoundaries
+  getEntitiesOutOfBoundaries,
+  hasLoadedAssetPacks,
+  isMultiselectEnabled
 } from './selectors'
 
 import {
@@ -98,7 +104,7 @@ import {
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
-import { loadAssets } from 'modules/asset/actions'
+import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -118,11 +124,10 @@ export function* editorSaga() {
   yield takeLatest(DROP_ITEM, handleDropItem)
   yield takeLatest(TAKE_SCREENSHOT, handleScreenshot)
   yield takeLatest(SET_EDITOR_READY, handleSetEditorReady)
-  yield takeLatest(SELECT_ENTITY, handleSelectEntity)
+  yield takeLatest(SET_SELECTED_ENTITIES, handleSetSelectEntities)
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
-  yield takeLatest(DESELECT_ENTITY, handleDeselectEntity)
 }
 
 function* pollEditor(scene: Scene) {
@@ -135,7 +140,7 @@ function* pollEditor(scene: Scene) {
     yield delay(300)
   } while (entities > 0 && metrics.entities === 0)
 
-  while (editorWindow.editor.getLoadingEntity() !== null) {
+  while (editorWindow.editor.getLoadingEntities() !== null) {
     yield delay(500)
   }
 }
@@ -175,19 +180,20 @@ function* createNewEditorScene(project: Project) {
 }
 
 function* handleProvisionScene(action: ProvisionSceneAction) {
-  yield renderScene()
-  if (!action.payload.init) {
+  const { scene, init } = action.payload
+  yield renderScene(scene)
+  if (!init) {
     yield put(takeScreenshot())
   }
 }
 
 function* handleHistory() {
-  yield renderScene()
+  const scene = yield select(getCurrentScene)
+  yield renderScene(scene)
   yield put(takeScreenshot())
 }
 
-function* renderScene() {
-  let scene: Scene = yield select(getCurrentScene)
+function* renderScene(scene: Scene) {
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
     if (yield select(isReadOnly)) {
@@ -205,10 +211,9 @@ function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics
   }
 }
 
-function handleTransformChange(args: { entityId: string; transform: { position: Vector3; rotation: Quaternion; scale: Vector3 } }) {
+function handleTransformChange(args: { transforms: { entityId: string; position: Vector3; rotation: Quaternion; scale: Vector3 }[] }) {
   const bounds: ReturnType<typeof getCurrentBounds> = getCurrentBounds(store.getState() as RootState)
   const project: ReturnType<typeof getCurrentProject> = getCurrentProject(store.getState() as RootState)
-  let position: Vector3 = { x: 0, y: 0, z: 0 }
 
   if (!project) return
 
@@ -216,35 +221,65 @@ function handleTransformChange(args: { entityId: string; transform: { position: 
   if (!scene) return
 
   const entityComponents = getEntityComponentsByType(store.getState() as RootState)
-  const transform = entityComponents[args.entityId][ComponentType.Transform] as ComponentDefinition<ComponentType.Transform> | undefined
-  if (!transform) return
+  const transformData: { componentId: string; data: ComponentData[ComponentType.Transform] }[] = []
 
-  if (bounds) {
-    position = snapToBounds(args.transform.position, bounds)
+  for (let transformPayload of args.transforms) {
+    let position: Vector3 = { x: 0, y: 0, z: 0 }
+    const transform = entityComponents[transformPayload.entityId][ComponentType.Transform] as
+      | ComponentDefinition<ComponentType.Transform>
+      | undefined
+
+    if (!transform) continue
+
+    if (bounds) {
+      position = snapToBounds(transformPayload.position, bounds)
+    }
+
+    const scale = snapScale(transformPayload.scale)
+
+    if (transform) {
+      const newTransformData = { position, rotation: transformPayload.rotation, scale }
+      if (areEqualTransforms(transform.data, newTransformData)) continue
+      transformData.push({ componentId: transform.id, data: newTransformData })
+    } else {
+      console.warn(`Unable to find Transform component for ${transformPayload.entityId}`)
+    }
   }
-
-  const scale = snapScale(args.transform.scale)
-
-  if (transform) {
-    const newTransformData = { position, rotation: args.transform.rotation, scale }
-    if (areEqualTransforms(transform.data, newTransformData)) return
-    store.dispatch(updateTransform(scene.id, transform.id, newTransformData))
-  } else {
-    console.warn(`Unable to find Transform component for ${args.entityId}`)
+  if (transformData.length > 0) {
+    store.dispatch(updateTransform(scene.id, transformData))
   }
 }
 
-function handleGizmoSelected(args: { gizmoType: Gizmo; entityId: string }) {
-  const { gizmoType, entityId } = args
+function handleGizmoSelected(args: { gizmoType: Gizmo; entities: string[] }) {
+  const { gizmoType, entities } = args
   const state = store.getState() as RootState
   const currentGizmo = getGizmo(state)
+  const multiselectionEnabled = isMultiselectEnabled(state)
+
   if (currentGizmo !== gizmoType) {
     store.dispatch(setGizmo(gizmoType))
   }
-  const selectedEntityId = getSelectedEntityId(state)
-  if (selectedEntityId !== entityId) {
-    store.dispatch(selectEntity(entityId))
+  const selectedEntityId = getSelectedEntityIds(state)
+  let newSelectedEntities = selectedEntityId
+
+  if (entities.length === 0) {
+    if (!multiselectionEnabled && selectedEntityId.length > 0) {
+      newSelectedEntities = []
+    }
+  } else {
+    if (!multiselectionEnabled) {
+      newSelectedEntities = entities
+    } else {
+      for (let entityId of entities) {
+        if (!newSelectedEntities.includes(entityId)) {
+          newSelectedEntities.push(entityId)
+        } else {
+          newSelectedEntities = newSelectedEntities.filter(id => id !== entityId)
+        }
+      }
+    }
   }
+  store.dispatch(setSelectedEntities(newSelectedEntities))
 }
 
 function handleEditorReadyChange() {
@@ -269,16 +304,31 @@ function* handleOpenEditor(action: OpenEditorAction) {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   // Creates a new scene in the dcl client's side
-  const project: Project | Pool | null = yield (type === 'pool' ? select(getCurrentPool) : select(getCurrentProject))
+  const project: Project | Pool | null = yield type === 'pool' ? select(getCurrentPool) : select(getCurrentProject)
 
   if (project) {
-    if (type !== 'project') {
-      const scene: Scene = yield getSceneByProjectId(project.id, type)
-      if (scene) {
-        yield put(createScene(scene))
-        yield put(loadAssets(scene.assets))
-      }
+    // load asset packs
+    const areLoaded = yield select(hasLoadedAssetPacks)
+    if (!areLoaded) {
+      yield put(loadAssetPacksRequest())
     }
+
+    // fix legacy stuff
+    let scene: Scene = yield getSceneByProjectId(project.id, type)
+    yield put(fixLegacyNamespacesRequest(scene))
+    const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
+    scene = fixSuccessAction.payload.scene
+
+    // if assets packs are being loaded wait for them to finish
+    const state: RootState = yield select(state => state)
+    if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
+      yield take(LOAD_ASSET_PACKS_SUCCESS)
+    }
+
+    // sync scene assets
+    yield put(syncSceneAssetsRequest(scene))
+    const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
+    scene = syncSuccessAction.payload.scene
 
     yield put(setEditorReadOnly(isReadOnly))
     yield createNewEditorScene(project)
@@ -287,7 +337,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
     yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
 
     // Spawns the assets
-    yield renderScene()
+    yield renderScene(scene)
 
     // Enable snap to grid
     yield handleToggleSnapToGrid(toggleSnapToGrid(true))
@@ -344,7 +394,8 @@ function* handleTogglePreview(action: TogglePreviewAction) {
     }
 
     yield handleResetCamera()
-    yield renderScene()
+    const scene = yield select(getCurrentScene)
+    yield renderScene(scene)
   } else {
     editor.setCameraPosition({ x, y: 1.5, z })
     editor.setCameraRotation(0, 0)
@@ -446,11 +497,11 @@ function* handleScreenshot(_: TakeScreenshotAction) {
   yield put(setScreenshotReady(true))
 }
 
-function* handleSelectEntity(action: SelectEntityAction) {
+function* handleSetSelectEntities(action: SetSelectedEntitiesAction) {
   yield call(() => {
     try {
       // this could throw if the entity does not exist, due to some race condition or the scene is not synced
-      editorWindow.editor.selectEntity(action.payload.entityId)
+      editorWindow.editor.setSelectedEntities(action.payload.entityIds)
     } catch (e) {
       // noop
     }
@@ -489,8 +540,4 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
-}
-
-function handleDeselectEntity() {
-  editorWindow.editor.deselectEntity()
 }

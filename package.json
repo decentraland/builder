@@ -1,6 +1,6 @@
 {
   "name": "builder",
-  "version": "2.5.0",
+  "version": "2.7.1",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
@@ -24,7 +24,7 @@
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^5.5.0",
-    "decentraland-ecs": "6.4.4-20191128202952.commit-ae8c41b",
+    "decentraland-ecs": "6.4.4-20191223193555.commit-20e50c9",
     "decentraland-eth": "^8.16.0",
     "decentraland-experiments": "^1.0.2",
     "decentraland-ui": "^2.11.1",

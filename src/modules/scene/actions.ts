@@ -33,8 +33,8 @@ export type UpdateMetricsAction = ReturnType<typeof updateMetrics>
 
 export const UPDATE_TRANSFORM = 'Update transform'
 
-export const updateTransform = (sceneId: string, componentId: string, data: ComponentData[ComponentType.Transform]) =>
-  action(UPDATE_TRANSFORM, { sceneId, componentId, data })
+export const updateTransform = (sceneId: string, components: { componentId: string; data: ComponentData[ComponentType.Transform] }[]) =>
+  action(UPDATE_TRANSFORM, { sceneId, components })
 
 export type UpdateTransfromAction = ReturnType<typeof updateTransform>
 
@@ -94,21 +94,37 @@ export const applyLayout = (project: Project) => action(APPLY_LAYOUT, { project 
 
 export type ApplyLayoutAction = ReturnType<typeof applyLayout>
 
-// Fix Lagacy Namespaces
+// Fix Lagacy Namespaces Request
 
-export const FIX_LEGACY_NAMESPACES = 'Fix Legacy Namespaces'
+export const FIX_LEGACY_NAMESPACES_REQUEST = '[Request] Fix Legacy Namespaces'
 
-export const fixLegacyNamespaces = () => action(FIX_LEGACY_NAMESPACES)
+export const fixLegacyNamespacesRequest = (scene: Scene) => action(FIX_LEGACY_NAMESPACES_REQUEST, { scene })
 
-export type FixLegacyNamespacesAction = ReturnType<typeof fixLegacyNamespaces>
+export type FixLegacyNamespacesRequestAction = ReturnType<typeof fixLegacyNamespacesRequest>
+
+// Fix Lagacy Namespaces Success
+
+export const FIX_LEGACY_NAMESPACES_SUCCESS = '[Success] Fix Legacy Namespaces'
+
+export const fixLegacyNamespacesSuccess = (scene: Scene) => action(FIX_LEGACY_NAMESPACES_SUCCESS, { scene })
+
+export type FixLegacyNamespacesSuccessAction = ReturnType<typeof fixLegacyNamespacesSuccess>
 
 // Sync Scene Assets
 
-export const SYNC_SCENE_ASSETS = 'Sync Scene Assets'
+export const SYNC_SCENE_ASSETS_REQUEST = '[Request] Sync Scene Assets'
 
-export const syncSceneAssets = (scene: Scene) => action(SYNC_SCENE_ASSETS, { scene })
+export const syncSceneAssetsRequest = (scene: Scene) => action(SYNC_SCENE_ASSETS_REQUEST, { scene })
 
-export type SyncSceneAssetsAction = ReturnType<typeof syncSceneAssets>
+export type SyncSceneAssetsRequestAction = ReturnType<typeof syncSceneAssetsRequest>
+
+// Sync Scene Assets
+
+export const SYNC_SCENE_ASSETS_SUCCESS = '[Success] Sync Scene Assets'
+
+export const syncSceneAssetsSuccess = (scene: Scene) => action(SYNC_SCENE_ASSETS_SUCCESS, { scene })
+
+export type SyncSceneAssetsSuccessAction = ReturnType<typeof syncSceneAssetsSuccess>
 
 // Set Script Parameters
 

@@ -70,7 +70,7 @@ export default class TopBar extends React.PureComponent<Props> {
       isPreviewing,
       isUploading,
       isSidebarOpen,
-      selectedEntityId,
+      selectedEntityIds: selectedEntityIds,
       enabledTools,
       isLoading,
       onReset,
@@ -98,8 +98,8 @@ export default class TopBar extends React.PureComponent<Props> {
                 {isUploading ? (
                   <OwnIcon name="cloud-upload" className="cloud-upload-indicator is-uploading" />
                 ) : (
-                    <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
-                  )}
+                  <OwnIcon name="edit" className="edit-project-icon" onClick={this.handleTitleClick} />
+                )}
               </>
             ) : null}
           </Header>
@@ -111,7 +111,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 <ShortcutTooltip shortcut={Shortcut.MOVE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip
                     icon="move"
-                    isActive={gizmo === Gizmo.MOVE && !!selectedEntityId}
+                    isActive={gizmo === Gizmo.MOVE && selectedEntityIds.length > 0}
                     isDisabled={!enabledTools.move}
                     onClick={this.handleMoveMode}
                   />
@@ -119,7 +119,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 <ShortcutTooltip shortcut={Shortcut.ROTATE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip
                     icon="rotate"
-                    isActive={gizmo === Gizmo.ROTATE && !!selectedEntityId}
+                    isActive={gizmo === Gizmo.ROTATE && selectedEntityIds.length > 0}
                     isDisabled={!enabledTools.rotate}
                     onClick={this.handleRotateMode}
                   />
@@ -127,7 +127,7 @@ export default class TopBar extends React.PureComponent<Props> {
                 <ShortcutTooltip shortcut={Shortcut.SCALE} position="bottom center" className="tool" popupClassName="top-bar-popup">
                   <Chip
                     icon="scale"
-                    isActive={gizmo === Gizmo.SCALE && !!selectedEntityId}
+                    isActive={gizmo === Gizmo.SCALE && selectedEntityIds.length > 0}
                     isDisabled={!enabledTools.scale}
                     onClick={this.handleScaleMode}
                   />
