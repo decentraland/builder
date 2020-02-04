@@ -377,7 +377,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
   // TODO: refactor
   // gather all the models used by gltf shapes
   const ids = Object.values(newComponents).reduce((set, component) => {
-    if (component.type === ComponentType.GLTFShape) {
+    if (component.type === ComponentType.GLTFShape || component.type === ComponentType.Script) {
       const gltfShape = component as ComponentDefinition<ComponentType.GLTFShape>
       set.add(gltfShape.data.assetId)
     }
@@ -393,6 +393,7 @@ function* handleDeleteItem(_: DeleteItemAction) {
   }
 
   yield put(setSelectedEntities([]))
+
   yield put(provisionScene({ ...scene, components: newComponents, entities: newEntities, assets: newAssets }))
 }
 
