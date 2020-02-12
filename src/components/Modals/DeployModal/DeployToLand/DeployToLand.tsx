@@ -153,7 +153,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   renderProgress = () => {
     const { mediaProgress, deploymentProgress, isRecording, isCreatingFiles, isUploadingAssets, isUploadingRecording } = this.props
 
-    let classes = 'progress-bar'
+    let classes = 'progress-bar active'
 
     const progress = isRecording ? mediaProgress : deploymentProgress.value
 

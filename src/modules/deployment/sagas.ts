@@ -1,9 +1,8 @@
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { Coordinate, Rotation, Deployment, ContentServiceValidation } from 'modules/deployment/types'
+import { Deployment, ContentServiceScene } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 
 import {
@@ -32,21 +31,20 @@ import {
 import { store } from 'modules/common/store'
 import { Media } from 'modules/media/types'
 import { getMedia } from 'modules/media/selectors'
-import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
+import { createFiles, EXPORT_PATH, createGameFileBundle, getSceneDefinition } from 'modules/project/export'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
-import { makeContentFile, getFileManifest, buildUploadRequestMetadata, getCID } from './utils'
-import { ContentServiceFile, ProgressStage } from './types'
+import { ProgressStage } from './types'
 import { getCurrentDeployment, getData as getDeployments } from './selectors'
 import { SET_PROJECT } from 'modules/project/actions'
-import { signMessage } from 'modules/wallet/sagas'
 import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
 import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getSub, isLoggedIn } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { content } from 'lib/api/content'
+import { content, CONTENT_SERVER_URL } from 'lib/api/content'
 import { builder } from 'lib/api/builder'
+import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -121,19 +119,26 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
 
 function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   const { placement, projectId } = action.payload
-  const ethAddress = yield select(getAddress)
-  const userId = yield select(getSub)
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
+  const scene = yield getSceneByProjectId(project.id)
 
   if (project) {
     try {
-      const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation)
-      const rootCID = yield call(() => getCID(contentFiles, true))
-      const manifest = yield call(() => getFileManifest(contentFiles))
-      const timestamp = Math.round(Date.now() / 1000)
-      const signature = yield signMessage(`${rootCID}.${timestamp}`)
-      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, userId)
+      const files = yield call(() =>
+        createFiles({
+          project,
+          scene,
+          point: placement.point,
+          rotation: placement.rotation,
+          isDeploy: true,
+          onProgress: handleProgress(ProgressStage.CREATE_FILES)
+        })
+      )
+
+      const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
+      const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
+      const [data] = yield call(() => buildDeployData([...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
 
       // upload media if logged in
       if (yield select(isLoggedIn)) {
@@ -152,13 +157,11 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
           console.warn('Failed to upload scene preview')
         }
       }
-
-      yield call(() => content.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
-
+      yield call(() => deploy(CONTENT_SERVER_URL, data))
       // generate new deployment
       const deployment: Deployment = {
         id: project.id,
-        lastPublishedCID: rootCID,
+        lastPublishedCID: data.entityId,
         placement,
         isDirty: false,
         userId: yield select(getSub),
@@ -183,10 +186,9 @@ function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
   if (!deployment) return
   const { x, y } = deployment.placement.point
   try {
-    const res: ContentServiceValidation = yield call(() => content.fetchValidation(x, y))
+    const res: ContentServiceScene = yield call(() => content.fetchScene(x, y))
     const lastPublishedCID: string | null = deployment.lastPublishedCID
-    const remoteCID = res.root_cid
-
+    const remoteCID = res[0].id
     // Check for external changes: e.g. CLI
     const isUnsynced = remoteCID !== lastPublishedCID
 
@@ -201,24 +203,30 @@ function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
 
 function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   const { projectId } = action.payload
-  const ethAddress = yield select(getAddress)
-  const userId = yield select(getSub)
   const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
   const deployment = deployments[projectId]
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
+  const scene = yield getSceneByProjectId(project.id)
 
   if (project && deployment) {
     try {
       const { placement } = deployment
-      const contentFiles: ContentServiceFile[] = yield getContentServiceFiles(project, placement.point, placement.rotation, true)
-      const rootCID = yield call(() => getCID(contentFiles, true))
-      const manifest = yield call(() => getFileManifest(contentFiles))
-      const timestamp = Math.round(Date.now() / 1000)
-      const signature = yield signMessage(`${rootCID}.${timestamp}`)
-      const metadata = buildUploadRequestMetadata(rootCID, signature, ethAddress, timestamp, userId)
 
-      yield call(() => content.uploadContent(rootCID, manifest, metadata, contentFiles, handleProgress(ProgressStage.UPLOAD_SCENE_ASSETS)))
+      const files = yield call(() =>
+        createFiles({
+          project,
+          scene,
+          point: placement.point,
+          rotation: placement.rotation,
+          isDeploy: true,
+          onProgress: handleProgress(ProgressStage.CREATE_FILES)
+        })
+      )
+      const contentFiles: ContentFile[] = yield getContentServiceFiles(files, true)
+      const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
+      const [data] = yield call(() => buildDeployData([...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
+      yield call(() => deploy(CONTENT_SERVER_URL, data))
       yield put(clearDeploymentSuccess(projectId))
     } catch (e) {
       yield put(clearDeploymentFailure(e.message))
@@ -228,25 +236,12 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   }
 }
 
-function* getContentServiceFiles(project: Project, point: Coordinate, rotation: Rotation, createEmptyGame: boolean = false) {
-  const scene = yield getSceneByProjectId(project.id)
-
-  const files = yield call(() =>
-    createFiles({
-      project,
-      scene,
-      point,
-      rotation,
-      isDeploy: true,
-      onProgress: handleProgress(ProgressStage.CREATE_FILES)
-    })
-  )
-
-  let contentFiles: ContentServiceFile[] = []
+function* getContentServiceFiles(files: Record<string, string | Blob>, createEmptyGame: boolean = false) {
+  let contentFiles: ContentFile[] = []
 
   for (const fileName of Object.keys(files)) {
     if (blacklist.includes(fileName)) continue
-    let file: ContentServiceFile
+    let file: ContentFile
     if (fileName === EXPORT_PATH.BUNDLED_GAME_FILE && createEmptyGame) {
       file = yield call(() => makeContentFile(fileName, createGameFileBundle('')))
     } else {

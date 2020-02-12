@@ -5,8 +5,8 @@ import { ContentManifest, ContentUploadRequestMetadata, ContentServiceFile } fro
 export const CONTENT_SERVER_URL = env.get('REACT_APP_CONTENT_SERVER_URL', '')
 
 export class ContentAPI extends BaseAPI {
-  fetchValidation = async (x: number, y: number) => {
-    const req = await fetch(`${this.url}/validate?x=${x}&y=${y}`)
+  fetchScene = async (x: number, y: number) => {
+    const req = await fetch(`${this.url}/entities/scene?pointer=${x},${y}`)
     const res = await req.json()
     return res
   }
