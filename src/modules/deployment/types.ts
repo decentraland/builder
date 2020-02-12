@@ -1,3 +1,5 @@
+import { EntityType } from './contentUtils'
+
 export type ContentIdentifier = {
   cid: string
   name: string
@@ -51,16 +53,14 @@ export enum DeploymentStatus {
   NEEDS_SYNC
 }
 
-export type ContentServiceValidation = {
-  pubkey: string
-  root_cid: string
-  sequence: number
-  signature: string
+export type ContentServiceScene = {
+  id: string
+  type: EntityType
   timestamp: number
-  validity: string
-  validityType: number
-  value: string
-}
+  pointers: string[]
+  content: string[]
+  metadata: any
+}[]
 
 export type OccupiedAtlasParcel = Coordinate & {
   title: string
