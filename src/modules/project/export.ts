@@ -450,6 +450,10 @@ export function getSceneDefinition(project: Project, point: Coordinate, rotation
 
   return {
     ...sceneJson,
+    display: {
+      ...sceneJson.display,
+      title: project.title
+    },
     scene: {
       ...sceneJson.scene,
       parcels: parcels.map(parcelToString),
