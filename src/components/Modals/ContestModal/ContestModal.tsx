@@ -71,14 +71,13 @@ export default class ContestModal extends React.PureComponent<Props, State> {
       this.setState({ hasEthAddressError: true })
     } else {
       if (ethAddress) {
-        this.analytics.identify({ ethAddress })
+        this.analytics.identify(ethAddress)
         localStorage.setItem(ETH_ADDRESS_KEY, ethAddress)
       }
 
       this.setState({ hasEthAddressError: false })
       onDeployToPool(projectId, { groups: [poolGroupId] })
     }
-
   }
 
   handleEthAddressChange = (_: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
@@ -165,9 +164,14 @@ export default class ContestModal extends React.PureComponent<Props, State> {
           <Countdown until={until} />
         </div>
         <div className="contest-modal">
-          <label className={hasEthAddressError ? "error" : ""}>
+          <label className={hasEthAddressError ? 'error' : ''}>
             <p className="label">{t('deployment_contest_modal.submit.eth_address')}</p>
-            <Input defaultValue={this.state.ethAddress} placeholder="0x0000000000000000000000000000000000000000" onChange={this.handleEthAddressChange} size="small" />
+            <Input
+              defaultValue={this.state.ethAddress}
+              placeholder="0x0000000000000000000000000000000000000000"
+              onChange={this.handleEthAddressChange}
+              size="small"
+            />
             {hasEthAddressError && <p className="note">{t('deployment_contest_modal.submit.invalid_eth_address')}</p>}
           </label>
         </div>
