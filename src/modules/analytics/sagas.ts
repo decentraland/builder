@@ -184,9 +184,9 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
     const userId: string = yield select(getSub)
 
     if (userId) {
-      analytics.identify(userId, { ethAddress: wallet.address })
+      analytics.identify(wallet.address, { auth0_id: userId })
     } else {
-      analytics.identify({ ethAddress: wallet.address })
+      analytics.identify(wallet.address)
     }
   }
 }
@@ -205,9 +205,9 @@ function* handleAuthSuccess(action: AuthSuccessAction) {
   const analytics = getAnalytics()
 
   if (!ethAddress) {
-    analytics.identify(userId)
+    analytics.identify({ auth0_id: userId })
   } else {
-    analytics.identify(userId, { ethAddress: ethAddress })
+    analytics.identify(ethAddress, { auth0_id: userId })
   }
 }
 
