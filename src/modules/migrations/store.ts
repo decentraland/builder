@@ -11,7 +11,8 @@ import {
   addAssets,
   removeScriptSrc,
   sanitizeEntityName,
-  sanitizeEntityName2
+  sanitizeEntityName2,
+  dedupeEntityName
 } from './utils'
 
 export const migrations = {
@@ -98,6 +99,13 @@ export const migrations = {
     for (let sceneId in state.scene.present.data) {
       const scene = state.scene.present.data[sceneId]
       sanitizeEntityName2(scene)
+    }
+    return state
+  },
+  '11': (state: RootState) => {
+    for (let sceneId in state.scene.present.data) {
+      const scene = state.scene.present.data[sceneId]
+      dedupeEntityName(scene)
     }
     return state
   }

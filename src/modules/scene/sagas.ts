@@ -296,7 +296,7 @@ function* handleDuplicateItem(_: DuplicateItemAction) {
     const newEntityId = uuidv4()
     // WARNING: we use entityComponents here because we can already generate the name which will be used for the Script component.
     // This means that we use components before we are done creating all of them.
-    const entityName = getEntityName(scene, entityComponents, assets)
+    const entityName = getEntityName({ ...scene, components: newComponents, entities: newEntities }, entityComponents, assets)
 
     newEntities[newEntityId] = { id: newEntityId, components: entityComponents, name: entityName }
     newEntityIds.push(newEntityId)

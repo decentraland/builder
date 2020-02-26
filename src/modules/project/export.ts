@@ -107,7 +107,7 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
   })
   sceneEntity.addComponent(transform)
   writer.addEntity('_scene', sceneEntity as any)
-
+  debugger
   // Map component ids to entity ids
   const componentToEntity = new Map<string, string>()
   for (const entity of Object.values(scene.entities)) {
