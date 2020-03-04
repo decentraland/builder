@@ -3,6 +3,7 @@
   "name": "builder",
   "build": {
     "env": {
+      "NODE_PATH": "src",
       "REACT_APP_CONTENT_SERVER_URL": "https://content.decentraland.org",
       "REACT_APP_EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
       "REACT_APP_DAR_URL": "https://schema.decentraland.org/dar",
@@ -13,7 +14,8 @@
       "REACT_APP_AUTH0_DOMAIN": "decentraland.org",
       "REACT_APP_AUTH0_REDIRECT": "dcl-test.auth0.com",
       "REACT_APP_AUTH0_AUDIENCE": "https://builder.decentraland.org/callback",
-      "REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942"
+      "REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+      "REACT_APP_SHARE_SCENE_URL": "https://share.decentraland.org/v1/share"
     }
   },
   "routes": [{ "handle": "filesystem" }, { "src": "/.*", "dest": "/index.html" }]
