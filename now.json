@@ -1,11 +1,20 @@
 {
+  "version": 2,
   "name": "builder",
-  "alias": "builder-staging",
-  "version": 1,
-  "type": "static",
-  "public": false,
-  "github": {
-    "autoAlias": true,
-    "enabled": true
-  }
+  "build": {
+    "env": {
+      "REACT_APP_CONTENT_SERVER_URL": "https://content.decentraland.org",
+      "REACT_APP_EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
+      "REACT_APP_DAR_URL": "https://schema.decentraland.org/dar",
+      "REACT_APP_MARKETPLACE_URL": "https://api.decentraland.org/v1",
+      "REACT_APP_PROFILE_API_URL": "https://profile.decentraland.org/api/v1",
+      "REACT_APP_BUILDER_SERVER_URL": "https://builder-api.decentraland.org/v1",
+      "REACT_APP_AUTH0_CLIENT_ID": "aZoRk3FeF1ct9QAjd7uLd0aeTZG36shL",
+      "REACT_APP_AUTH0_DOMAIN": "decentraland.org",
+      "REACT_APP_AUTH0_REDIRECT": "dcl-test.auth0.com",
+      "REACT_APP_AUTH0_AUDIENCE": "https://builder.decentraland.org/callback",
+      "REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942"
+    }
+  },
+  "routes": [{ "handle": "filesystem" }, { "src": "/.*", "dest": "/index.html" }]
 }
