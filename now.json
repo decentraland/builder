@@ -4,7 +4,7 @@
   "build": {
     "env": {
       "NODE_PATH": "src",
-      "REACT_APP_CONTENT_SERVER_URL": "https://content.decentraland.org",
+      "REACT_APP_CONTENT_SERVER_URL": "https://peer.decentraland.org/content",
       "REACT_APP_EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
       "REACT_APP_DAR_URL": "https://schema.decentraland.org/dar",
       "REACT_APP_MARKETPLACE_URL": "https://api.decentraland.org/v1",
