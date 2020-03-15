@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
+import { CallHistoryMethodAction } from 'connected-react-router'
 
 import { createProjectFromTemplate, CreateProjectFromTemplateAction } from 'modules/project/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
@@ -36,4 +36,4 @@ export type MapStateProps = Pick<
   'projects' | 'isFetching' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'didCreate' | 'isLoggedIn'
 >
 export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin' | 'onNavigateToShowcase'>
-export type MapDispatch = Dispatch<NavigateToAction | CreateProjectFromTemplateAction | OpenModalAction | LoginAction>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | CreateProjectFromTemplateAction | OpenModalAction | LoginAction>

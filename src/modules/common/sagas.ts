@@ -1,5 +1,4 @@
 import { all } from 'redux-saga/effects'
-import { locationSaga as dappsLocationSaga } from 'decentraland-dapps/dist/modules/location/sagas'
 
 import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
@@ -24,7 +23,6 @@ import { poolSaga } from 'modules/pool/sagas'
 export function* rootSaga() {
   yield all([
     analyticsSaga(),
-    dappsLocationSaga(),
     translationSaga(),
     walletSaga(),
     assetPackSaga(),

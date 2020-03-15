@@ -52,7 +52,7 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
           values={{
             sign_in: (
               <span className="sign-in" onClick={this.handleLogin}>
-                {t('global.sign_in')}
+                &nbsp;{t('global.sign_in')}&nbsp;
               </span>
             )
           }}

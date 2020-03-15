@@ -1,7 +1,6 @@
 import { Reducer, Store } from 'redux'
 import { action } from 'typesafe-actions'
 import { RouterState } from 'connected-react-router'
-import { LocationState } from 'decentraland-dapps/dist/modules/location/reducer'
 import { TranslationState } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
@@ -31,7 +30,6 @@ export type StorageLoadAction = ReturnType<typeof storageLoad>
 
 export type RootState = {
   auth: AuthState
-  location: LocationState
   translation: TranslationState
   storage: StorageState
   wallet: WalletState

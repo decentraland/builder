@@ -1,11 +1,11 @@
 import { Dispatch } from 'redux'
-import { navigateTo, NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
+import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type Props = {
   stackTrace: string
-  onNavigate: typeof navigateTo
+  onNavigate: (path: string) => void
 }
 
 export type OwnProps = Pick<Props, 'stackTrace'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
-export type MapDispatch = Dispatch<NavigateToAction>
+export type MapDispatch = Dispatch<CallHistoryMethodAction>

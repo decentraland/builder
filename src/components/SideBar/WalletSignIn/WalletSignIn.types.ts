@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
-import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = SignInProps & {
@@ -16,4 +16,4 @@ export type MapStateProps = Pick<Props, 'isConnecting' | 'hasError'>
 
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onOpenModal'>
 
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | OpenModalAction>
+export type MapDispatch = Dispatch<EnableWalletRequestAction | OpenModalAction>

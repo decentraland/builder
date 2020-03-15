@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
+import { push } from 'connected-react-router'
 
 import { locations } from 'routing/locations'
 import { login } from 'modules/auth/actions'
@@ -30,13 +30,13 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
     dispatch(
       createProjectFromTemplate(template, {
         onSuccess(project) {
-          dispatch(navigateTo(locations.editor(project.id)))
+          dispatch(push(locations.editor(project.id)))
         }
       })
     ),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onPageChange: options => dispatch(navigateTo(locations.root(options))),
-  onNavigateToShowcase: () => dispatch(navigateTo(locations.poolSearch()))
+  onPageChange: options => dispatch(push(locations.root(options))),
+  onNavigateToShowcase: () => dispatch(push(locations.poolSearch()))
 })
 
 export default connect(

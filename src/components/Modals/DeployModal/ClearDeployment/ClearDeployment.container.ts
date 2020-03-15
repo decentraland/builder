@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { RootState } from 'modules/common/types'
@@ -32,7 +32,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(connectWalletRequest()),
+  onConnect: () => dispatch(enableWalletRequest()),
   onClearDeployment: placement => dispatch(clearDeploymentRequest(placement))
 })
 

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
-import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { DeploymentStatus } from 'modules/deployment/types'
 import { clearDeploymentRequest, ClearDeploymentRequestAction } from 'modules/deployment/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
@@ -44,4 +44,4 @@ export type MapStateProps = Pick<
 
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onClearDeployment'>
 
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | ClearDeploymentRequestAction>
+export type MapDispatch = Dispatch<EnableWalletRequestAction | ClearDeploymentRequestAction>

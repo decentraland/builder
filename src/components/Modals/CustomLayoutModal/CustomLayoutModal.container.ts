@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
+import { push } from 'connected-react-router'
 
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
@@ -13,7 +13,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCreateProject: template =>
     dispatch(
       createProjectFromTemplate(template, {
-        onSuccess: project => dispatch(navigateTo(locations.editor(project.id)))
+        onSuccess: project => dispatch(push(locations.editor(project.id)))
       })
     )
 })
