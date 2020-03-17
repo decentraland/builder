@@ -1,9 +1,10 @@
 import CID from 'cids'
 import { Eth } from 'web3x-es/eth'
-import { sha3 } from 'web3x-es/utils'
+import { toHex } from 'web3x-es/utils'
 // @ts-ignore
 import multihashing from 'multihashing-async'
 import { Address } from 'web3x-es/address'
+import { Personal } from 'web3x-es/personal';
 const toBuffer = require('blob-to-buffer')
 
 export type Timestamp = number
@@ -141,8 +142,8 @@ export async function hashAndSignMessage(message: string): Promise<[Address, str
   if (!eth) throw new Error('Failed to sign message')
 
   const address = (await eth.getAccounts())[0]
-  const messageHash = createEthereumMessageHash(message)
-  const signature = await eth.sign(address, messageHash)
+  const personal = new Personal(eth.provider)
+  const signature = await personal.sign(toHex(message), address, '')
   return [address, signature]
 }
 
@@ -171,11 +172,6 @@ export function entityToFile(entity: Entity, fileName?: string): ContentFile {
         })
   delete copy.id
   return { name: fileName || 'name', content: Buffer.from(JSON.stringify(copy)) }
-}
-
-export function createEthereumMessageHash(msg: string) {
-  let msgWithPrefix: string = `\x19Ethereum Signed Message:\n${msg.length}${msg}`
-  return sha3(msgWithPrefix)
 }
 
 export async function deploy(contentServerUrl: string, data: DeployData) {
