@@ -4,7 +4,7 @@ import { toHex } from 'web3x-es/utils'
 // @ts-ignore
 import multihashing from 'multihashing-async'
 import { Address } from 'web3x-es/address'
-import { Personal } from 'web3x-es/personal';
+import { Personal } from 'web3x-es/personal'
 const toBuffer = require('blob-to-buffer')
 
 export type Timestamp = number

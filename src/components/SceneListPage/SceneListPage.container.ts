@@ -1,9 +1,17 @@
 import { connect } from 'react-redux'
-import { getLocation } from 'connected-react-router'
-import { push } from 'connected-react-router'
+import { getLocation, push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 
-import { getPoolList, getTotal, getSortBy, getPage, getSortOrder, getSearchGroup, getSearchUserId, getTotalPages } from 'modules/pool/selectors'
+import {
+  getPoolList,
+  getTotal,
+  getSortBy,
+  getPage,
+  getSortOrder,
+  getSearchGroup,
+  getSearchUserId,
+  getTotalPages
+} from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { PoolsRequestFilters } from 'modules/pool/types'
