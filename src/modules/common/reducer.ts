@@ -20,6 +20,7 @@ import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
 import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
+import { identityReducer as identity } from 'modules/identity/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -41,6 +42,7 @@ export function createRootReducer(history: History) {
       deployment,
       media,
       sync,
+      identity,
       router: connectRouter(history)
     })
   )

@@ -19,6 +19,7 @@ import { syncSaga } from 'modules/sync/sagas'
 import { uiSaga } from 'modules/ui/sagas'
 import { poolGroupSaga } from 'modules/poolGroup/sagas'
 import { poolSaga } from 'modules/pool/sagas'
+import { identitySaga } from 'modules/identity/sagas'
 
 export function* rootSaga() {
   yield all([
@@ -40,6 +41,7 @@ export function* rootSaga() {
     authSaga(),
     locationSaga(),
     syncSaga(),
-    uiSaga()
+    uiSaga(),
+    identitySaga()
   ])
 }
