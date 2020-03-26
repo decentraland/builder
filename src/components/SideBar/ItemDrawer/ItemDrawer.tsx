@@ -15,12 +15,6 @@ import './ItemDrawer.css'
 export default class ItemDrawer extends React.PureComponent<Props, State> {
   drawerContainer: HTMLElement | null = null
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (this.props.selectedAssetPack !== nextProps.selectedAssetPack && !nextProps.isConnected && this.isViewingCollectibles(nextProps)) {
-      this.props.onConnect()
-    }
-  }
-
   handleResetScroll = () => {
     if (this.drawerContainer) {
       this.drawerContainer.scrollTop = 0

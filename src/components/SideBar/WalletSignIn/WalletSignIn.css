@@ -42,7 +42,7 @@
   margin: 24px 20px;
 }
 
-.WalletSignIn .WalletIcon {
+.WalletSignIn .StarWalletIcon {
   margin-top: 40px;
   width: 140px;
   height: 140px;
@@ -54,7 +54,6 @@
   flex: none;
 }
 
-.WalletSignIn .WalletIcon svg {
-  fill: var(--text);
+.WalletSignIn .StarWalletIcon svg {
   transform: scale(0.75);
 }
