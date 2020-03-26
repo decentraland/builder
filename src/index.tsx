@@ -7,6 +7,7 @@ import HTML5Backend from 'react-dnd-html5-backend'
 
 import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
+import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
 
 import { store, history } from 'modules/common/store'
 import * as modals from 'components/Modals'
@@ -23,11 +24,13 @@ ReactDOM.render(
   <Provider store={store}>
     <DragDropContextProvider backend={HTML5Backend}>
       <TranslationProvider locales={Object.keys(languages)}>
-        <ModalProvider components={modals}>
-          <ConnectedRouter history={history}>
-            <Routes />
-          </ConnectedRouter>
-        </ModalProvider>
+        <WalletProvider>
+          <ModalProvider components={modals}>
+            <ConnectedRouter history={history}>
+              <Routes />
+            </ConnectedRouter>
+          </ModalProvider>
+        </WalletProvider>
       </TranslationProvider>
     </DragDropContextProvider>
   </Provider>,

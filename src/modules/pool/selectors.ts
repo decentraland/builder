@@ -4,7 +4,7 @@ import { getLocation } from 'connected-react-router'
 
 import * as routing from 'routing/utils'
 import { RootState } from 'modules/common/types'
-import { getProjectId } from 'modules/location/selectors'
+import { getProjectId } from 'modules/location/utils'
 import { getData as gerProjectsData } from 'modules/project/selectors'
 import { getLoading as getAuthLoading } from 'modules/auth/selectors'
 import { AUTH_REQUEST } from 'modules/auth/actions'

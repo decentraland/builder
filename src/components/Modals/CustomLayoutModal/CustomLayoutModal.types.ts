@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
+import { CallHistoryMethodAction } from 'connected-react-router'
 
 import { createProjectFromTemplate, CreateProjectFromTemplateAction } from 'modules/project/actions'
 
@@ -16,4 +16,4 @@ export type State = {
 
 export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onCreateProject'>
-export type MapDispatch = Dispatch<CreateProjectFromTemplateAction | NavigateToAction>
+export type MapDispatch = Dispatch<CreateProjectFromTemplateAction | CallHistoryMethodAction>

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Loader, Page, Container, Pagination, Tabs, Dropdown, DropdownProps, PaginationProps, Responsive } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import Ad from 'decentraland-ad/lib/Ad/Ad'
+// import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
@@ -91,13 +91,13 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <Ad slot="BUILDER_TOP_BANNER" type="full" />
+        {/* <Ad slot="BUILDER_TOP_BANNER" type="full" /> */}
         <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
         <Page isFullscreen>
           <Responsive minWidth={1025} as={React.Fragment}>
             <Container>
               <div className="HomePageAd">
-                <Ad slot="BUILDER_HOME_PAGE" />
+                {/* <Ad slot="BUILDER_HOME_PAGE" /> */}
               </div>
             </Container>
           </Responsive>

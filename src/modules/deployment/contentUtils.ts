@@ -1,9 +1,7 @@
 import CID from 'cids'
-import { Eth } from 'web3x-es/eth'
-import { sha3 } from 'web3x-es/utils'
 // @ts-ignore
 import multihashing from 'multihashing-async'
-import { Address } from 'web3x-es/address'
+import { Authenticator, AuthLink, AuthIdentity } from 'dcl-crypto'
 const toBuffer = require('blob-to-buffer')
 
 export type Timestamp = number
@@ -16,8 +14,9 @@ export type ContentFile = {
 
 export type DeployData = {
   entityId: string
-  ethAddress: string
-  signature: string
+  ethAddress?: string
+  signature?: string
+  authChain: AuthLink[]
   files: ContentFile[]
 }
 
@@ -94,6 +93,7 @@ export async function calculateBufferHash(buffer: Buffer): Promise<string> {
 }
 
 export async function buildDeployData(
+  identity: AuthIdentity,
   pointers: Pointer[],
   metadata: any,
   files: ContentFile[] = [],
@@ -112,12 +112,9 @@ export async function buildDeployData(
     metadata
   )
 
-  const [address, signature] = await hashAndSignMessage(entity.id)
-
   const deployData: DeployData = {
     entityId: entity.id,
-    ethAddress: address.toString(),
-    signature: signature,
+    authChain: await Authenticator.signPayload(identity, entity.id),
     files: [entityFile, ...files]
   }
 
@@ -133,17 +130,6 @@ export async function buildControllerEntityAndFile(
 ): Promise<[ControllerEntity, ContentFile]> {
   const [entity, file]: [Entity, ContentFile] = await buildEntityAndFile(type, pointers, timestamp, content, metadata)
   return [ControllerEntityFactory.maskEntity(entity), file]
-}
-
-export async function hashAndSignMessage(message: string): Promise<[Address, string]> {
-  const eth = Eth.fromCurrentProvider()
-
-  if (!eth) throw new Error('Failed to sign message')
-
-  const address = (await eth.getAccounts())[0]
-  const messageHash = createEthereumMessageHash(message)
-  const signature = await eth.sign(address, messageHash)
-  return [address, signature]
 }
 
 export async function buildEntityAndFile(
@@ -173,16 +159,10 @@ export function entityToFile(entity: Entity, fileName?: string): ContentFile {
   return { name: fileName || 'name', content: Buffer.from(JSON.stringify(copy)) }
 }
 
-export function createEthereumMessageHash(msg: string) {
-  let msgWithPrefix: string = `\x19Ethereum Signed Message:\n${msg.length}${msg}`
-  return sha3(msgWithPrefix)
-}
-
 export async function deploy(contentServerUrl: string, data: DeployData) {
   const form = new FormData()
   form.append('entityId', data.entityId)
-  form.append('ethAddress', data.ethAddress)
-  form.append('signature', data.signature)
+  convertModelToFormData(data.authChain, form, 'authChain')
 
   for (let file of data.files) {
     form.append(file.name, new Blob([file.content]), file.name)
@@ -207,4 +187,25 @@ export function makeContentFile(path: string, content: string | Blob): Promise<C
       reject(new Error('Unable to create ContentFile: content must be a string or a Blob'))
     }
   })
+}
+
+function convertModelToFormData(model: any, form: FormData, namespace = ''): FormData {
+  let formData = form || new FormData()
+  for (let propertyName in model) {
+    if (!model.hasOwnProperty(propertyName) || !model[propertyName]) continue
+    let formKey = namespace ? `${namespace}[${propertyName}]` : propertyName
+    if (model[propertyName] instanceof Date) {
+      formData.append(formKey, model[propertyName].toISOString())
+    } else if (model[propertyName] instanceof Array) {
+      model[propertyName].forEach((element: any, index: number) => {
+        const tempFormKey = `${formKey}[${index}]`
+        convertModelToFormData(element, formData, tempFormKey)
+      })
+    } else if (typeof model[propertyName] === 'object' && !(model[propertyName] instanceof File)) {
+      convertModelToFormData(model[propertyName], formData, formKey)
+    } else {
+      formData.append(formKey, model[propertyName].toString())
+    }
+  }
+  return formData
 }

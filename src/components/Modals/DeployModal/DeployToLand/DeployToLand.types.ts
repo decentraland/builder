@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
-import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
-import { ConnectWalletRequestAction, connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CallHistoryMethodAction } from 'connected-react-router'
+import { EnableWalletRequestAction, enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Coordinate, Rotation, DeploymentStatus, Deployment, OccupiedAtlasParcel } from 'modules/deployment/types'
 import { DeployToLandRequestAction, deployToLandRequest, LoadDeploymentsRequestAction } from 'modules/deployment/actions'
 import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
@@ -28,7 +28,7 @@ export type Props = {
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null
   occupiedParcels: Record<string, OccupiedAtlasParcel>
-  onConnect: typeof connectWalletRequest
+  onConnect: typeof enableWalletRequest
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
@@ -72,7 +72,7 @@ export type MapStateProps = Pick<
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome' | 'onFetchDeployments'>
 
 export type MapDispatch = Dispatch<
-  ConnectWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | NavigateToAction | LoadDeploymentsRequestAction
+  EnableWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction | LoadDeploymentsRequestAction
 >
 
 export enum DeployToLandView {

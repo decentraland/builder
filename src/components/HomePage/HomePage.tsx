@@ -2,7 +2,7 @@ import * as React from 'react'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Tabs } from 'decentraland-ui'
-import Ad from 'decentraland-ad/lib/Ad/Ad'
+// import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import HomePageHero from 'components/HomePageHero'
 import ProjectCard from 'components/ProjectCard'
@@ -148,7 +148,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        <Ad slot="BUILDER_TOP_BANNER" type="full" />
+        {/* <Ad slot="BUILDER_TOP_BANNER" type="full" /> */}
         <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen>
           {!showDashboard ? (
@@ -156,7 +156,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
           ) : (
               <Container>
                 <div className="HomePageAd">
-                  <Ad slot="BUILDER_HOME_PAGE" />
+                  {/* <Ad slot="BUILDER_HOME_PAGE" /> */}
                 </div>
               </Container>
             )}

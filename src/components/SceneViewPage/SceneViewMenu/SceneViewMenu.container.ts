@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
+import { push } from 'connected-react-router'
 
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
@@ -12,7 +12,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onTryItOut: () => dispatch(navigateTo(locations.root()))
+  onTryItOut: () => dispatch(push(locations.root()))
 })
 
 export default connect(mapState, mapDispatch)(SceneViewMenu)

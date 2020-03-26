@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Location } from 'history'
-import { NavigateToAction } from 'decentraland-dapps/dist/modules/location/actions'
+import { CallHistoryMethodAction } from 'connected-react-router'
 
 import { Pool, PoolsRequestFilters } from 'modules/pool/types'
 import { LikePoolRequestAction, LoadPoolsRequestAction, loadPoolsRequest } from 'modules/pool/actions'
@@ -28,6 +28,6 @@ export type MapStateProps = Pick<
   'location' | 'pools' | 'poolGroups' | 'total' | 'totalPages' | 'page' | 'sortBy' | 'sortOrder' | 'group' | 'userId' | 'isLoggedIn'
 >
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPageChange' | 'onNavegateToHome' | 'onNavegateToViewPool' | 'onLoadPools'>
-export type MapDispatch = Dispatch<LikePoolRequestAction | OpenModalAction | LoadPoolsRequestAction | NavigateToAction>
+export type MapDispatch = Dispatch<LikePoolRequestAction | OpenModalAction | LoadPoolsRequestAction | CallHistoryMethodAction>
 
 export const filterAttributes = (['page', 'sortBy', 'sortOrder', 'group', 'userId'] as (keyof PoolsRequestFilters)[])

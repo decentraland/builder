@@ -477,7 +477,7 @@
     "small": "Mini (1x1)"
   },
   "toasts": {
-    "localstorage": "Las Escenas se guardan en tu navegador. ¡{sign_in} para subirlas a la nube!"
+    "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la nube!"
   },
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",

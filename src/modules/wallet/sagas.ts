@@ -1,31 +1,12 @@
-import { all, call } from 'redux-saga/effects'
-import { env } from 'decentraland-commons'
-import { eth } from 'decentraland-eth'
+import { all } from 'redux-saga/effects'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { MANAToken } from 'modules/common/contracts'
-
-const web3 = (window as any).web3
+import { MANA_ADDRESS } from 'modules/common/contracts'
 
 const baseWalletSaga = createWalletSaga({
-  provider: env.get('REACT_APP_PROVIDER_URL'),
-  contracts: [MANAToken],
-  eth
+  MANA_ADDRESS
 })
 
 export function* walletSaga() {
   yield all([baseWalletSaga()])
-}
-
-export function* signMessage(msg: string) {
-  if (!eth.wallet) {
-    throw new Error(t('@dapps.sign_in.error'))
-  }
-
-  try {
-    return yield call(() => eth.wallet.sign(web3.toHex(msg)))
-  } catch (e) {
-    throw new Error(t('wallet.signature_error'))
-  }
 }

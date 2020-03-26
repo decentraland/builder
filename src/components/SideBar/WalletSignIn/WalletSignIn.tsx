@@ -1,17 +1,17 @@
 import React from 'react'
-import { WalletIcon, Button } from 'decentraland-ui'
+import { StarWalletIcon, Button } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { Props } from './WalletSignIn.types'
+import { Props, State } from './WalletSignIn.types'
 import './WalletSignIn.css'
 
-export default class WalletSignIn extends React.PureComponent<Props> {
+export default class WalletSignIn extends React.PureComponent<Props, State> {
   handleConnect = () => {
     this.props.onConnect!()
   }
 
   render() {
-    const { hasError, isConnecting } = this.props
+    const { isConnecting, hasError } = this.props
     let errorClasses = 'error'
 
     if (hasError) {
@@ -20,7 +20,7 @@ export default class WalletSignIn extends React.PureComponent<Props> {
     return (
       <div className="WalletSignIn">
         <div className="main">
-          <WalletIcon />
+          <StarWalletIcon />
           <span className="message">{t('wallet.title')}</span>
           <Button className="connect" primary onClick={this.handleConnect} disabled={isConnecting}>
             {isConnecting ? <T id="@dapps.sign_in.connecting" /> : <T id="@dapps.sign_in.connect" />}

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { navigateTo } from 'decentraland-dapps/dist/modules/location/actions'
-import { connectWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { push } from 'connected-react-router'
+import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   isUploadingAssets,
@@ -47,10 +47,10 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(connectWalletRequest()),
+  onConnect: () => dispatch(enableWalletRequest()),
   onRecord: () => dispatch(recordMediaRequest()),
   onDeploy: (projectId, placement) => dispatch(deployToLandRequest(projectId, placement)),
-  onNavigateHome: () => dispatch(navigateTo(locations.root())),
+  onNavigateHome: () => dispatch(push(locations.root())),
   onFetchDeployments: () => dispatch(loadDeploymentsRequest())
 })
 

@@ -4,7 +4,7 @@ import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
-import { getProjectId } from 'modules/location/selectors'
+import { getProjectId } from 'modules/location/utils'
 import { getLoading as getAuthLoading, getSub } from 'modules/auth/selectors'
 import { AUTH_REQUEST } from 'modules/auth/actions'
 import { Project } from 'modules/project/types'

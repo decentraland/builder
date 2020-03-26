@@ -4,7 +4,6 @@ import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { Deployment, ContentServiceScene } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
-
 import {
   DEPLOY_TO_POOL_REQUEST,
   deployToPoolFailure,
@@ -45,6 +44,7 @@ import { getSceneByProjectId } from 'modules/scene/utils'
 import { content, CONTENT_SERVER_URL } from 'lib/api/content'
 import { builder } from 'lib/api/builder'
 import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
+import { getIdentity } from 'modules/identity/utils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -119,63 +119,75 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
 
 function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   const { placement, projectId } = action.payload
+
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
-  const scene = yield getSceneByProjectId(project.id)
-
-  if (project) {
-    try {
-      const files = yield call(() =>
-        createFiles({
-          project,
-          scene,
-          point: placement.point,
-          rotation: placement.rotation,
-          isDeploy: true,
-          onProgress: handleProgress(ProgressStage.CREATE_FILES)
-        })
-      )
-
-      const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
-      const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
-      const [data] = yield call(() => buildDeployData([...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
-
-      // upload media if logged in
-      if (yield select(isLoggedIn)) {
-        const media: Media | null = yield select(getMedia)
-        if (media) {
-          const north: Blob = yield call(() => objectURLToBlob(media.north))
-          const east: Blob = yield call(() => objectURLToBlob(media.east))
-          const south: Blob = yield call(() => objectURLToBlob(media.south))
-          const west: Blob = yield call(() => objectURLToBlob(media.west))
-          const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
-
-          yield call(() =>
-            builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
-          )
-        } else {
-          console.warn('Failed to upload scene preview')
-        }
-      }
-      yield call(() => deploy(CONTENT_SERVER_URL, data))
-      // generate new deployment
-      const deployment: Deployment = {
-        id: project.id,
-        lastPublishedCID: data.entityId,
-        placement,
-        isDirty: false,
-        userId: yield select(getSub),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-
-      // notify success
-      yield put(deployToLandSuccess(deployment))
-    } catch (e) {
-      yield put(deployToLandFailure(e.message.split('\n')[0]))
-    }
-  } else {
+  if (!project) {
     yield put(deployToLandFailure('Unable to Publish: Invalid project'))
+    return
+  }
+
+  const scene = yield getSceneByProjectId(project.id)
+  if (!scene) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid scene'))
+    return
+  }
+
+  const identity = yield getIdentity()
+  if (!identity) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
+    return
+  }
+
+  try {
+    const files = yield call(() =>
+      createFiles({
+        project,
+        scene,
+        point: placement.point,
+        rotation: placement.rotation,
+        isDeploy: true,
+        onProgress: handleProgress(ProgressStage.CREATE_FILES)
+      })
+    )
+
+    const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
+    const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
+    const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
+
+    // upload media if logged in
+    if (yield select(isLoggedIn)) {
+      const media: Media | null = yield select(getMedia)
+      if (media) {
+        const north: Blob = yield call(() => objectURLToBlob(media.north))
+        const east: Blob = yield call(() => objectURLToBlob(media.east))
+        const south: Blob = yield call(() => objectURLToBlob(media.south))
+        const west: Blob = yield call(() => objectURLToBlob(media.west))
+        const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
+
+        yield call(() =>
+          builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+        )
+      } else {
+        console.warn('Failed to upload scene preview')
+      }
+    }
+    yield call(() => deploy(CONTENT_SERVER_URL, data))
+    // generate new deployment
+    const deployment: Deployment = {
+      id: project.id,
+      lastPublishedCID: data.entityId,
+      placement,
+      isDirty: false,
+      userId: yield select(getSub),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+
+    // notify success
+    yield put(deployToLandSuccess(deployment))
+  } catch (e) {
+    yield put(deployToLandFailure(e.message.split('\n')[0]))
   }
 }
 
@@ -203,36 +215,52 @@ function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
 
 function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   const { projectId } = action.payload
+
   const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
   const deployment = deployments[projectId]
+  if (!deployment) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid deployment'))
+    return
+  }
+
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
+  if (!project) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid project'))
+    return
+  }
+
   const scene = yield getSceneByProjectId(project.id)
+  if (!scene) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid scene'))
+    return
+  }
 
-  if (project && deployment) {
-    try {
-      const { placement } = deployment
+  const identity = yield getIdentity()
+  if (!identity) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
+    return
+  }
 
-      const files = yield call(() =>
-        createFiles({
-          project,
-          scene,
-          point: placement.point,
-          rotation: placement.rotation,
-          isDeploy: true,
-          onProgress: handleProgress(ProgressStage.CREATE_FILES)
-        })
-      )
-      const contentFiles: ContentFile[] = yield getContentServiceFiles(files, true)
-      const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
-      const [data] = yield call(() => buildDeployData([...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
-      yield call(() => deploy(CONTENT_SERVER_URL, data))
-      yield put(clearDeploymentSuccess(projectId))
-    } catch (e) {
-      yield put(clearDeploymentFailure(e.message))
-    }
-  } else {
-    yield put(clearDeploymentFailure('Unable to Publish: Invalid project'))
+  try {
+    const { placement } = deployment
+    const files = yield call(() =>
+      createFiles({
+        project,
+        scene,
+        point: placement.point,
+        rotation: placement.rotation,
+        isDeploy: true,
+        onProgress: handleProgress(ProgressStage.CREATE_FILES)
+      })
+    )
+    const contentFiles: ContentFile[] = yield getContentServiceFiles(files, true)
+    const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
+    const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
+    yield call(() => deploy(CONTENT_SERVER_URL, data))
+    yield put(clearDeploymentSuccess(projectId))
+  } catch (e) {
+    yield put(clearDeploymentFailure(e.message))
   }
 }
 

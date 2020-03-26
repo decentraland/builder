@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
 import { History } from 'history'
-import { locationReducer as location } from 'decentraland-dapps/dist/modules/location/reducer'
 import { translationReducer as translation } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { storageReducer as storage, storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
@@ -21,12 +20,12 @@ import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
 import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
+import { identityReducer as identity } from 'modules/identity/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
     combineReducers<RootState>({
       storage,
-      location,
       auth,
       editor,
       translation,
@@ -43,6 +42,7 @@ export function createRootReducer(history: History) {
       deployment,
       media,
       sync,
+      identity,
       router: connectRouter(history)
     })
   )

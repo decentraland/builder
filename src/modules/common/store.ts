@@ -27,6 +27,7 @@ import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
+import { GENERATE_IDENTITY_SUCCESS } from 'modules/identity/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -65,7 +66,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ['ui', 'dashboard'],
     ['deployment', 'data'],
     ['auth', 'data'],
-    ['sync', 'localProjectIds']
+    ['sync', 'localProjectIds'],
+    ['identity', 'data']
   ],
   actions: [
     CREATE_PROJECT,
@@ -85,7 +87,8 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
-    SET_SYNC
+    SET_SYNC,
+    GENERATE_IDENTITY_SUCCESS
   ],
   transform: state => {
     let projects: DataByKey<Project> = {}
