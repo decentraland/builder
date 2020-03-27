@@ -12,10 +12,11 @@ import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
-import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { getAssetStorageUrl } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
+import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
 
 export const MANIFEST_FILE_VERSION = Math.max(...Object.keys(migrations).map(version => parseInt(version, 10)))
 
@@ -50,7 +51,7 @@ export async function createFiles(args: {
 }) {
   const { project, scene, point, rotation, isDeploy, onProgress } = args
   const models = await downloadFiles({ scene, onProgress, isDeploy })
-  const gameFile = createGameFile({ project, scene, rotation }, isDeploy)
+  const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
   return {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
@@ -65,7 +66,7 @@ export function createManifest<T = Project>(project: T, scene: Scene): Manifest<
   return { version: MANIFEST_FILE_VERSION, project, scene }
 }
 
-export function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, isDeploy = false) {
+export async function createGameFile(args: { project: Project; scene: Scene; rotation: Rotation }, isDeploy = false) {
   const { scene, project, rotation } = args
   const useLightweight = isDeploy && !hasScripts(scene)
   const Writer = useLightweight ? LightweightWriter : SceneWriter
@@ -209,7 +210,8 @@ export function createGameFile(args: { project: Project; scene: Scene; rotation:
       for (const [assetId, src] of Array.from(scripts)) {
         const scriptName = SCRIPT_INSTANCE_NAME + currentScript++
         assetIdToScriptName.set(assetId, scriptName)
-        executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${src}")`
+        const hash = await convertToV1(src)
+        executeScripts += `\n\tconst ${scriptName} = await getScriptInstance("${assetId}", "${hash}")`
       }
       // initialize all the scripts
       for (const [assetId] of Array.from(scripts)) {
@@ -333,7 +335,7 @@ export async function downloadFiles(args: {
     for (const path of Object.keys(asset.contents)) {
       const isScript = asset.script !== null
       const localPath = isScript ? `${asset.id}/${path}` : `${EXPORT_PATH.MODELS_FOLDER}/${path}`
-      const remotePath = `${BUILDER_SERVER_URL}/storage/assets/${asset.contents[path]}`
+      const remotePath = getAssetStorageUrl(asset.contents[path])
       mappings[localPath] = remotePath
     }
   }
@@ -489,4 +491,12 @@ export function isScript(componentId: string, scene: Scene) {
 
 export function hasScripts(scene: Scene) {
   return Object.values(scene.components).some(component => component.type === ComponentType.Script)
+}
+
+/* Temporary fix until we migrate the Builder to use CID v1 */
+export async function convertToV1(v0: string) {
+  const blob = await fetch(getAssetStorageUrl(v0)).then(resp => resp.blob())
+  const file = await makeContentFile(EXPORT_PATH.BUNDLED_GAME_FILE, blob)
+  const v1 = await calculateBufferHash(file.content)
+  return v1
 }
