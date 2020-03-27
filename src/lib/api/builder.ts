@@ -16,6 +16,9 @@ import { Pool } from 'modules/pool/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
+export const getAssetStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assets/${hash}`
+export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
+
 export type RemoteProject = {
   id: string
   title: string
@@ -31,10 +34,10 @@ export type RemoteProject = {
 }
 
 export type RemotePoolGroup = {
-  id: string,
-  name: string,
-  is_active: boolean,
-  active_from: string,
+  id: string
+  name: string
+  is_active: boolean
+  active_from: string
   active_until: string
 }
 
@@ -114,14 +117,11 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
 }
 
 function fromRemotePool(remotePool: RemotePool): Pool {
-
   const pool = fromRemoteProject(remotePool) as Pool
 
   pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
   pool.isPublic = true
-  pool.groups = remotePool.groups || [],
-    pool.likes = remotePool.likes || 0,
-    pool.like = !!remotePool.like
+  ;(pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
 
   if (remotePool.parcels) {
     pool.statistics = {
@@ -150,7 +150,7 @@ function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
   return {
     id: remoteAssetPack.id,
     title: remoteAssetPack.title,
-    thumbnail: `${BUILDER_SERVER_URL}/storage/assetPacks/${remoteAssetPack.thumbnail!}`,
+    thumbnail: getAssetPackStorageUrl(remoteAssetPack.thumbnail),
     userId: remoteAssetPack.user_id,
     assets: remoteAssetPack.assets.map(asset => fromRemoteAsset(asset)),
     createdAt: remoteAssetPack.created_at,
@@ -165,7 +165,7 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
     name: asset.name,
     model: asset.model.replace(`${asset.assetPackId}/`, ''),
     script: asset.script,
-    thumbnail: asset.thumbnail.replace(`${BUILDER_SERVER_URL}/storage/assets/`, ''),
+    thumbnail: asset.thumbnail.replace(getAssetStorageUrl(), ''),
     tags: asset.tags,
     category: asset.category,
     contents: asset.contents,
@@ -182,7 +182,7 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     name: remoteAsset.name,
     model: remoteAsset.model,
     script: remoteAsset.script,
-    thumbnail: `${BUILDER_SERVER_URL}/storage/assets/${remoteAsset.thumbnail}`,
+    thumbnail: getAssetStorageUrl(remoteAsset.thumbnail),
     tags: remoteAsset.tags,
     category: remoteAsset.category,
     contents: remoteAsset.contents,
@@ -253,12 +253,12 @@ export type PoolDeploymentAdditionalFields = {
 }
 
 export type Sort = {
-  sort_by?: string,
+  sort_by?: string
   sort_order?: 'asc' | 'desc'
 }
 
 export type Pagination = {
-  limit?: number,
+  limit?: number
   offset?: number
 }
 

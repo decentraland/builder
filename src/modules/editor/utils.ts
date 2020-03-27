@@ -1,7 +1,7 @@
 import { EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
-import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { getAssetStorageUrl } from 'lib/api/builder'
 import { Vector3 } from 'modules/common/types'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 
@@ -22,7 +22,7 @@ export function getNewEditorScene(project: Project): EditorScene {
 
   return {
     ...getSceneDefinition(project, { x: 0, y: 0 }, 'east'),
-    baseUrl: `${BUILDER_SERVER_URL}/storage/assets/` as string,
+    baseUrl: getAssetStorageUrl(),
     display: {
       title: project.title
     },
