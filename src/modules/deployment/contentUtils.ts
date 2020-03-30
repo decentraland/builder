@@ -6,6 +6,7 @@ const toBuffer = require('blob-to-buffer')
 
 export type Timestamp = number
 export type Pointer = string
+export type ContentFilePath = string
 export type ContentFileHash = string
 export type ContentFile = {
   name: string
@@ -56,7 +57,7 @@ export class Entity {
     public readonly type: EntityType,
     public readonly pointers: Pointer[],
     public readonly timestamp: Timestamp,
-    public readonly content?: Map<string, ContentFileHash>,
+    public readonly content?: Map<ContentFilePath, ContentFileHash>,
     public readonly metadata?: any
   ) {}
 }
@@ -80,9 +81,9 @@ export class ControllerEntityFactory {
   }
 }
 
-export async function calculateHashes(files: ContentFile[]): Promise<Map<string, ContentFile>> {
-  const entries: Promise<[string, ContentFile]>[] = Array.from(files).map(file => {
-    return calculateBufferHash(file.content).then<[string, ContentFile]>((hash: string) => [hash, file])
+export async function calculateHashes(files: ContentFile[]): Promise<Map<ContentFilePath, ContentFileHash>> {
+  const entries: Promise<[ContentFilePath, ContentFileHash]>[] = Array.from(files).map(file => {
+    return calculateBufferHash(file.content).then<[ContentFilePath, ContentFileHash]>(hash => [file.name, hash])
   })
   return new Map(await Promise.all(entries))
 }
@@ -99,11 +100,7 @@ export async function buildDeployData(
   files: ContentFile[] = [],
   afterEntity?: ControllerEntity
 ): Promise<[DeployData, ControllerEntity]> {
-  const hashes: Map<ContentFileHash, ContentFile> = await calculateHashes(files)
-  const content: Map<string, string> = new Map(
-    Array.from(hashes.entries()).map<Readonly<[string, string]>>(([hash, file]) => [file.name, hash])
-  )
-
+  const content: Map<ContentFilePath, ContentFileHash> = await calculateHashes(files)
   const [entity, entityFile] = await buildControllerEntityAndFile(
     EntityType.SCENE,
     pointers,
