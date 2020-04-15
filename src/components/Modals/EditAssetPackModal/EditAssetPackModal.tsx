@@ -27,7 +27,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
   analytics = getAnalytics()
 
   getRawAssetPack(): MixedAssetPack {
-    const { assetPack, userId } = this.props
+    const { assetPack, ethAddress } = this.props
 
     if (!assetPack) {
       const id = uuidv4()
@@ -35,7 +35,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
         id,
         title: '',
         thumbnail: '',
-        userId: userId || undefined,
+        ethAddress: ethAddress || null,
         assets: []
       }
     }
@@ -44,7 +44,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
       id: assetPack.id,
       title: assetPack.title,
       thumbnail: assetPack.thumbnail,
-      userId: assetPack.userId,
+      ethAddress: assetPack.ethAddress,
       assets: assetPack.assets.map(asset => ({ ...asset, model: asset.model.replace(`${asset.id}/`, '') }))
     }
   }
@@ -127,7 +127,7 @@ export default class EditAssetPackModal extends React.PureComponent<Props, State
           id: assetPack.id,
           title: assetPack.title,
           thumbnail: assetPack.thumbnail,
-          userId: assetPack.userId,
+          ethAddress: assetPack.ethAddress,
           assets: []
         },
         isDirty: true

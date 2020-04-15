@@ -1,5 +1,5 @@
 .UserMenu {
-  display: inline-block;
+  display: flex;
   position: relative;
   text-align: left;
   outline: none;
@@ -102,9 +102,13 @@
   margin-right: 12px;
 }
 
-.UserMenu.authed {
+.UserMenu .toggle {
   width: 46px;
   height: 46px;
+}
+
+.UserMenu .menu .AvatarFace {
+  background-color: #f3f2f5;
 }
 
 @media (max-width: 768px) {

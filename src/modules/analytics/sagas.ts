@@ -33,8 +33,6 @@ import { handleDelighted } from './delighted'
 import { getSub } from 'modules/auth/selectors'
 import { SyncAction, SYNC } from 'modules/sync/actions'
 import { getLocalProjectIds } from 'modules/sync/selectors'
-import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   SaveAssetPackSuccessAction,
   SAVE_ASSET_PACK_SUCCESS,
@@ -45,6 +43,8 @@ import {
   SaveAssetPackFailureAction,
   DeleteAssetPackFailureAction
 } from 'modules/assetPack/actions'
+import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export function* analyticsSaga() {
   yield fork(handleDelighted)
@@ -63,7 +63,7 @@ export function* analyticsSaga() {
   yield takeLatest(SYNC, handleSync)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
   yield takeEvery(LOCATION_CHANGE, handleLocationChange)
-  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
+  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SAVE_ASSET_PACK_SUCCESS, handleSaveAssetPackSuccess)
   yield takeLatest(DELETE_ASSET_PACK_SUCCESS, handleDeleteAssetPackSuccess)
   yield takeLatest(SAVE_ASSET_PACK_FAILURE, handleSaveAssetPackFailure)
@@ -142,25 +142,25 @@ function handleConnectWallet(action: ConnectWalletSuccessAction) {
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
+  const ethAddress = yield select(getAddress)
   // Do not change this event name format
-  track('[Success] Deploy to LAND pool', { project_id: project.id, user_id: userId })
+  track('[Success] Deploy to LAND pool', { project_id: project.id, eth_address: ethAddress })
 }
 
 function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
+  const ethAddress = yield select(getAddress)
   // Do not change this event name format
-  track('[Success] Deploy to LAND', { project_id: project.id, user_id: userId })
+  track('[Success] Deploy to LAND', { project_id: project.id, eth_address: ethAddress })
 }
 
 function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
+  const ethAddress = yield select(getAddress)
   // Do not change this event name format
-  track('[Success] Clear Deployment', { project_id: project.id, user_id: userId })
+  track('[Success] Clear Deployment', { project_id: project.id, eth_address: ethAddress })
 }
 
 function* handleSearchAssets(action: SearchAssetsAction) {
@@ -181,10 +181,10 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const analytics = getAnalytics()
 
   if (analytics) {
-    const userId: string = yield select(getSub)
+    const ethAddress: string = yield select(getSub)
 
-    if (userId) {
-      analytics.identify(wallet.address, { auth0_id: userId })
+    if (ethAddress) {
+      analytics.identify(wallet.address, { auth0_id: ethAddress })
     } else {
       analytics.identify(wallet.address)
     }
@@ -199,46 +199,41 @@ function handleLocationChange() {
   }
 }
 
-function* handleAuthSuccess(action: AuthSuccessAction) {
-  const userId = action.payload.data.sub
-  const ethAddress: string | undefined = yield select(getAddress)
+function handleLoginSuccess(action: LoginSuccessAction) {
+  const { address } = action.payload.wallet
   const analytics = getAnalytics()
 
-  if (!ethAddress) {
-    analytics.identify({ auth0_id: userId })
-  } else {
-    analytics.identify(ethAddress, { auth0_id: userId })
-  }
+  analytics.identify(address)
 }
 
 function* handleSaveAssetPackSuccess(action: SaveAssetPackSuccessAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
-  track('[Success] Save AssetPack', { project_id: project.id, user_id: userId, assetPack })
+  const ethAddress = yield select(getAddress)
+  track('[Success] Save AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }
 
 function* handleDeleteAssetPackSuccess(action: DeleteAssetPackSuccessAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
-  track('[Success] Delete AssetPack', { project_id: project.id, user_id: userId, assetPack })
+  const ethAddress = yield select(getAddress)
+  track('[Success] Delete AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }
 
 function* handleSaveAssetPackFailure(action: SaveAssetPackFailureAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
-  track('[Failure] Save AssetPack', { project_id: project.id, user_id: userId, assetPack })
+  const ethAddress = yield select(getAddress)
+  track('[Failure] Save AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }
 
 function* handleDeleteAssetPackFailure(action: DeleteAssetPackFailureAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const userId = yield select(getSub)
-  track('[Failure] Delete AssetPack', { project_id: project.id, user_id: userId, assetPack })
+  const ethAddress = yield select(getAddress)
+  track('[Failure] Delete AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }

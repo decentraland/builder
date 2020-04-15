@@ -380,20 +380,20 @@
     "title": "404"
   },
   "scene_list_page": {
-    "projects_title": "Scene Pool",
-    "no_projects": "It looks like we don't have any Scenes",
+    "projects_title": "Escenas de la Comunidad",
+    "no_projects": "No se encotraron Escenas",
     "filters": {
       "creator-contest-2019-12": "Creator Contest (Submission)",
       "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "All collections",
-      "all_users": "All users",
-      "only_me": "Only me",
-      "newest": "Newest",
-      "likes": "Likes",
-      "size": "Size",
-      "items": "Items",
-      "smart_items": "Smart items",
-      "name": "Name"
+      "all_groups": "Todas las colecciones",
+      "all_users": "Todos los usuarios",
+      "only_me": "Solo yo",
+      "newest": "Más Nuevas",
+      "likes": "Más Favoritos",
+      "size": "Tamaño",
+      "items": "Más Objetos",
+      "smart_items": "Más Objetos Interactivos",
+      "name": "Nombre"
     }
   },
   "public_page": {

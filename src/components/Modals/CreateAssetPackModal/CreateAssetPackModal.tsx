@@ -9,7 +9,6 @@ import AssetPackEditor from 'components/AssetPackEditor'
 import { convertToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImporter from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
-import { locations } from 'routing/locations'
 
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
@@ -22,6 +21,12 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   analytics = getAnalytics()
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (!this.props.isLoggedIn && nextProps.isLoggedIn) {
+      this.setState({ view: CreateAssetPackView.IMPORT })
+    }
+  }
 
   getDefaultAssetPackName() {
     const { assetPacks } = this.props
@@ -36,6 +41,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   getAssetPack() {
+    const { ethAddress } = this.props
     const existingAssetPack = this.state ? this.state.assetPack : null
     const id = uuidv4()
     return {
@@ -43,6 +49,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
       title: existingAssetPack ? existingAssetPack.title : this.getDefaultAssetPackName(),
       thumbnail: existingAssetPack ? existingAssetPack.thumbnail : '',
       url: `${id}.json`,
+      ethAddress: ethAddress || null,
       assets: []
     }
   }
@@ -91,12 +98,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   handleLogin = () => {
     const { project, onLogin } = this.props
     if (project) {
-      onLogin({
-        returnUrl: locations.editor(project.id),
-        openModal: {
-          name: 'CreateAssetPackModal'
-        }
-      })
+      onLogin()
     }
   }
 

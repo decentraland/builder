@@ -6,9 +6,9 @@ import { closeEditor, zoomIn, zoomOut, resetCamera } from 'modules/editor/action
 import { isSidebarOpen, isPreviewing, isReady, isFetching } from 'modules/editor/selectors'
 import { openModal } from 'modules/modal/actions'
 import { numItems } from 'modules/scene/selectors'
-import { isLoggedIn } from 'modules/auth/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './EditorPage.types'
 import EditorPage from './EditorPage'
+import { isLoggedIn } from 'modules/identity/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),

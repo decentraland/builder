@@ -134,12 +134,18 @@ export function sanitizeEntityName2(scene: Scene) {
 
 export function dedupeEntityName(scene: Scene) {
   const takenNames = new Set<string>()
-  debugger
   for (let entityId in scene.entities) {
     const entity = scene.entities[entityId]
     const components = entity.components.map(id => scene.components[id])
     const name = getUniqueName(components, takenNames, scene.assets)
     takenNames.add(name)
     entity.name = name
+  }
+}
+
+export function replaceUserIdWithEthAddress(project: Project) {
+  delete (project as any).userId
+  if (typeof project.ethAddress === 'undefined') {
+    project.ethAddress = null
   }
 }

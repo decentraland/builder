@@ -1,7 +1,14 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Profile } from 'modules/profile/types'
-import { LoadProfileRequestAction, LoadProfileSuccessAction, LoadProfileFailureAction, LOAD_PROFILE_REQUEST, LOAD_PROFILE_SUCCESS, LOAD_PROFILE_FAILURE } from 'modules/profile/actions'
+import {
+  LoadProfileRequestAction,
+  LoadProfileSuccessAction,
+  LoadProfileFailureAction,
+  LOAD_PROFILE_REQUEST,
+  LOAD_PROFILE_SUCCESS,
+  LOAD_PROFILE_FAILURE
+} from 'modules/profile/actions'
 
 export type ProfileState = {
   data: ModelById<Profile>
@@ -27,12 +34,12 @@ export const profileReducer = (state = INITIAL_STATE, action: ProfileReducerActi
       }
     }
     case LOAD_PROFILE_SUCCESS: {
-      const { profile } = action.payload
+      const { address, profile } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
-          [profile.id] : profile
+          [address]: profile
         },
         loading: loadingReducer(state.loading, action)
       }

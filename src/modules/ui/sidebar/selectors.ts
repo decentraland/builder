@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/common/types'
 import { SidebarState } from 'modules/ui/sidebar/reducer'
@@ -10,7 +10,6 @@ import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
-import { getSub } from 'modules/auth/selectors'
 import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, NEW_ASSET_PACK_IDS, OLD_ASSET_PACK_IDS, sortByName } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
@@ -145,10 +144,10 @@ export const getSideBarCategories = createSelector<
   }
 )
 
-export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['data'], string | null, AssetPack[]>(
+export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['data'], string | undefined, AssetPack[]>(
   getAssetPacks,
-  getSub,
-  (assetPacks, userId) => {
+  getAddress,
+  (assetPacks, address) => {
     const newAssetPacks: AssetPack[] = []
     const defaultAssetPacks: AssetPack[] = []
     const oldAssetPacks: AssetPack[] = []
@@ -160,7 +159,7 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
         newAssetPacks.push(assetPack)
       } else if (OLD_ASSET_PACK_IDS.includes(assetPack.id)) {
         oldAssetPacks.push(assetPack)
-      } else if (assetPack.userId === userId) {
+      } else if (assetPack.ethAddress === address) {
         userAssetPacks.push(assetPack)
       } else if (assetPack.id === COLLECTIBLE_ASSET_PACK_ID) {
         collectibles.push(assetPack)

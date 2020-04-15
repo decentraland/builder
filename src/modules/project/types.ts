@@ -7,7 +7,7 @@ export type Project = {
   thumbnail: string
   isPublic: boolean
   sceneId: string
-  userId: string | null
+  ethAddress: string | null
   createdAt: string
   updatedAt: string
   layout: Layout

@@ -9,6 +9,7 @@ import { Profile } from 'modules/profile/types'
 import { togglePreview, TogglePreviewAction, closeEditor, CloseEditorAction } from 'modules/editor/actions'
 import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type Props = {
   match: match<{ projectId: string; type: 'public' | 'pool' }>
@@ -27,6 +28,7 @@ export type Props = {
   onPreview: () => ReturnType<typeof togglePreview>
   onLikePool: typeof likePoolRequest
   onOpenModal: typeof openModal
+  onBack: () => void
 }
 
 export type State = {}
@@ -35,5 +37,12 @@ export type MapStateProps = Pick<
   Props,
   'isPreviewing' | 'isFetching' | 'isLoggedIn' | 'isReady' | 'currentProject' | 'currentPool' | 'currentScene' | 'currentAuthor'
 >
-export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor'>
-export type MapDispatch = Dispatch<LoadPublicProjectRequestAction | TogglePreviewAction | LikePoolRequestAction | OpenModalAction | CloseEditorAction>
+export type MapDispatchProps = Pick<Props, 'onLoadProject' | 'onPreview' | 'onLikePool' | 'onOpenModal' | 'onCloseEditor' | 'onBack'>
+export type MapDispatch = Dispatch<
+  | LoadPublicProjectRequestAction
+  | TogglePreviewAction
+  | LikePoolRequestAction
+  | OpenModalAction
+  | CloseEditorAction
+  | CallHistoryMethodAction
+>

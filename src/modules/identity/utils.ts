@@ -1,34 +1,34 @@
-import { select, put, race, take } from 'redux-saga/effects'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { select, put, race, take, delay } from 'redux-saga/effects'
 import { AuthIdentity } from 'dcl-crypto'
-import { getData } from 'modules/identity/selectors'
-import {
-  generateIdentityRequest,
-  GenerateIdentitySuccessAction,
-  GenerateIdentityFailureAction,
-  GENERATE_IDENTITY_FAILURE,
-  GENERATE_IDENTITY_SUCCESS
-} from './actions'
+import { getCurrentIdentity, isLoggedIn } from 'modules/identity/selectors'
+import { loginRequest, LOGIN_SUCCESS, LOGIN_FAILURE, LoginFailureAction, LoginSuccessAction } from './actions'
+import { Race } from './types'
 
 export const ONE_MONTH_IN_MINUTES = 31 * 24 * 60
 
-export function* getIdentity() {
-  const address = yield select(getAddress)
+export function isValid(identity?: AuthIdentity | null) {
+  return !!identity && Date.now() < +new Date(identity.expiration)
+}
 
-  const identities: ReturnType<typeof getData> = yield select(getData)
-  let identity: AuthIdentity | null = identities[address] || null
-
-  if (!identity || Date.now() > +new Date(identity.expiration)) {
-    yield put(generateIdentityRequest(address))
-    const result: { success?: GenerateIdentitySuccessAction; failure?: GenerateIdentityFailureAction } = yield race({
-      success: take(GENERATE_IDENTITY_SUCCESS),
-      failure: take(GENERATE_IDENTITY_FAILURE)
-    })
-
-    if (result.success) {
-      identity = result.success.payload.identity
+// Helper that always yields a valid identity
+export function* getIdentity(): IterableIterator<any> {
+  const shouldLogin = yield select(state => !isLoggedIn(state))
+  if (shouldLogin) {
+    yield put(loginRequest())
+    const login: Race<LoginSuccessAction, LoginFailureAction> = yield takeRace(LOGIN_SUCCESS, LOGIN_FAILURE)
+    if (!login.success) {
+      // wait a sec and retry
+      yield delay(1000)
+      return yield getIdentity()
     }
   }
+  // Return current identity
+  return yield select(getCurrentIdentity)
+}
 
-  return identity
+export function takeRace(success: string, failure: string) {
+  return race({
+    success: take(success),
+    failure: take(failure)
+  })
 }

@@ -4,7 +4,6 @@ import { getLocalStorage } from 'decentraland-dapps/dist/lib/localStorage'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
-import { locations } from 'routing/locations'
 import { Props, State } from './LocalStorageToast.types'
 
 import './LocalStorageToast.css'
@@ -23,6 +22,8 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.isVisible && !localStorage.getItem(LOCALSTORAGE_TOAST_KEY)) {
       this.setState({ isVisible: true })
+    } else if (this.props.isVisible && !nextProps.isVisible) {
+      this.setState({ isVisible: false })
     }
   }
 
@@ -35,9 +36,7 @@ export default class LocalStorageToast extends React.PureComponent<Props, State>
     const { project, onLogin } = this.props
     if (project) {
       this.analytics.track(LOCAL_STORAGE_SIGN_IN_EVENT)
-      onLogin({
-        returnUrl: locations.editor(project.id)
-      })
+      onLogin()
     }
   }
 

@@ -109,7 +109,7 @@
   height: 24px;
   border-radius: 12px;
   margin-left: 12px;
-  background: var(--innocence);
+  background: rgba(var(--bluish-steel-raw), 0.4);
   display: inline-block;
   vertical-align: bottom;
 }
@@ -157,6 +157,26 @@
 .SceneViewPage .Chip.circle .LikeCount {
   margin: 0 0.5em;
   font-size: 18px;
+}
+
+.BackButton {
+  background-image: url(../../images/back.svg);
+  background-repeat: no-repeat;
+  background-position-x: 10px;
+  background-position-y: 9px;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  border: solid 1px rgba(115, 110, 125, 0.4);
+  background-size: 7px;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  cursor: pointer;
+  margin-left: 2px;
+}
+
+.BackButton:hover {
+  border: solid 1px rgba(255, 255, 255, 0.5);
 }
 
 @media only screen and (max-width: 900px) {

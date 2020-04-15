@@ -3,7 +3,7 @@ import { Project } from 'modules/project/types'
 import { PaginationOptions } from 'routing/utils'
 
 export type Pool = Project & {
-  groups: string[],
+  groups: string[]
   statistics?: {
     parcels: number
     transforms: number
@@ -20,7 +20,7 @@ export type Manifest<T = Project> = { version: number; project: T; scene: Scene 
 
 export type PoolsRequestFilters = PaginationOptions & {
   group?: string
-  userId?: string
+  ethAddress?: string
 }
 
 export enum SortBy {
@@ -33,5 +33,3 @@ export enum SortBy {
 }
 
 export const RECORDS_PER_PAGE = 24
-
-export const DEFAULT_POOL_GROUP = '164a6d2a-93de-4039-a417-a43e679ff66e'

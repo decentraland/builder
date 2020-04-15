@@ -35,7 +35,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
   }
 
   render() {
-    const { selectedAssetPack, selectedCategory, search, userId } = this.props
+    const { selectedAssetPack, selectedCategory, search, ethAddress } = this.props
 
     const isRoot = selectedAssetPack === null && selectedCategory === null
     const isSearch = search.length > 0
@@ -58,7 +58,7 @@ export default class SidebarHeader extends React.PureComponent<Props> {
                 {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
               </span>
               <div className="spacer">
-                {selectedAssetPack && selectedAssetPack.userId === userId && (
+                {selectedAssetPack && selectedAssetPack.ethAddress === ethAddress && (
                   <Button basic onClick={this.handleEditAssetPack}>
                     {t('itemdrawer.edit_asset_pack')}
                   </Button>

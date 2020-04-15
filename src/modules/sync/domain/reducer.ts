@@ -43,8 +43,8 @@ export function domainReducer(state: DomainState = INITIAL_STATE, action: Reduce
       const { id } = action.payload
       return {
         ...state,
-        loadingIds: removeElement(state.loadingIds, id),
         localIds: removeElement(state.localIds, id),
+        loadingIds: removeElement(state.loadingIds, id),
         errorsById: removeEntry(state.errorsById, id)
       }
     }
@@ -53,7 +53,7 @@ export function domainReducer(state: DomainState = INITIAL_STATE, action: Reduce
       return {
         ...state,
         localIds: addElement(state.localIds, id),
-        loadingIds: removeElement(state.localIds, id),
+        loadingIds: removeElement(state.loadingIds, id),
         errorsById: addEntry(state.errorsById, id, error)
       }
     }

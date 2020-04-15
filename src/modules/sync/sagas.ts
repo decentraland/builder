@@ -1,7 +1,6 @@
 import { takeLatest, select, put, call, takeEvery, take } from 'redux-saga/effects'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 
-import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { getData as getProjects, getCurrentProject } from 'modules/project/selectors'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
@@ -17,7 +16,6 @@ import {
   EDIT_PROJECT_THUMBNAIL,
   EditProjectThumbnailAction
 } from 'modules/project/actions'
-import { isLoggedIn } from 'modules/auth/selectors'
 import { PROVISION_SCENE, ProvisionSceneAction } from 'modules/scene/actions'
 import {
   DEPLOY_TO_LAND_SUCCESS,
@@ -55,14 +53,20 @@ import {
   deleteProjectRequest,
   deleteDeploymentRequest,
   SAVE_PROJECT_SUCCESS,
-  SaveProjectSuccessAction
+  SaveProjectSuccessAction,
+  SAVE_PROJECT_FAILURE,
+  SaveProjectFailureAction
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds, getFailedDeploymentIds, getLocalDeploymentIds } from './selectors'
 import { forEach, saveProject, saveThumbnail } from './utils'
 import { builder } from 'lib/api/builder'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
+import { takeRace } from 'modules/identity/utils'
+import { Race } from 'modules/identity/types'
 
 export function* syncSaga() {
-  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
+  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SYNC, handleSync)
   yield takeLatest(RETRY_SYNC, handleRetrySync)
   yield takeEvery(SAVE_PROJECT_REQUEST, handleSaveProjectRequest)
@@ -79,7 +83,7 @@ export function* syncSaga() {
   yield takeLatest(SAVE_PROJECT_SUCCESS, handleSaveProjectSuccess)
 }
 
-function* handleAuthSuccess(_action: AuthSuccessAction) {
+function* handleLoginSuccess(_action: LoginSuccessAction) {
   yield put(sync())
 }
 
@@ -90,16 +94,22 @@ function* handleSync(_action: SyncAction) {
   yield forEach<Project>(localProjectIds, projects, project => saveProjectRequest(project))
 
   // sync deployments
-  const localDeploymentIds: string[] = yield select(getLocalDeploymentIds)
+  let localDeploymentIds: string[] = yield select(getLocalDeploymentIds)
   const deployments: DataByKey<Deployment> = yield select(getDeployments)
 
   // wait for projects to be saved before syncing deployments
   let waitFor = localProjectIds.filter(projectId => localDeploymentIds.includes(projectId))
 
   while (waitFor.length > 0) {
-    const action: SaveProjectSuccessAction = yield take(SAVE_PROJECT_SUCCESS)
-    const { project } = action.payload
-    waitFor = waitFor.filter(projectId => projectId !== project.id)
+    const saveProject: Race<SaveProjectSuccessAction, SaveProjectFailureAction> = yield takeRace(SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE)
+
+    if (saveProject.success) {
+      waitFor = waitFor.filter(projectId => projectId !== saveProject.success.payload.project.id)
+    } else {
+      const project = saveProject.failure.payload.project
+      localDeploymentIds = localDeploymentIds.filter(projectId => projectId !== project.id)
+      waitFor = waitFor.filter(projectId => projectId !== project.id)
+    }
   }
 
   yield forEach<Deployment>(localDeploymentIds, deployments, deployment => saveDeploymentRequest(deployment))
@@ -134,6 +144,7 @@ function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
 function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   let project = projects[action.payload.project.id]
+  if (!project) return
   if (!project.thumbnail) {
     const action: EditProjectThumbnailAction = yield take(EDIT_PROJECT_THUMBNAIL)
     project = {

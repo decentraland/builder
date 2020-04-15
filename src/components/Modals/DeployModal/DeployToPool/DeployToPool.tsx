@@ -5,10 +5,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { ShareModalType, ShareModalMetadata } from 'components/Modals/ShareModal/ShareModal.types'
 import Icon from 'components/Icon'
-import { locations } from 'routing/locations'
 
 import { Props, State } from './DeployToPool.types'
-import { DeployModalView } from '../DeployModal.types'
 import './DeployToPool.css'
 
 export default class DeployModal extends React.PureComponent<Props, State> {
@@ -58,20 +56,9 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   handleLogin = () => {
-    const { name, project, onLogin } = this.props
-    const projectId = project!.id
-    const returnUrl = locations.editor(projectId)
-    const metadata = {
-      projectId,
-      view: DeployModalView.DEPLOY_TO_POOL
-    }
-    onLogin({
-      returnUrl,
-      openModal: {
-        name,
-        metadata
-      }
-    })
+    const { onLogin } = this.props
+
+    onLogin()
   }
 
   handleShare = () => {
@@ -141,10 +128,14 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     return (
       <div className="DeployToPool progress">
         <Header size="large" className="modal-title">
-          {isRecording ? t('deployment_modal.land.progress.recording.title') : t('deployment_modal.land.progress.uploading_recording.title')}
+          {isRecording
+            ? t('deployment_modal.land.progress.recording.title')
+            : t('deployment_modal.land.progress.uploading_recording.title')}
         </Header>
         <p className="modal-subtitle">
-          {isRecording ? t('deployment_modal.land.progress.creating_files.description') : t('deployment_modal.land.progress.uploading_recording.description')}
+          {isRecording
+            ? t('deployment_modal.land.progress.creating_files.description')
+            : t('deployment_modal.land.progress.uploading_recording.description')}
         </p>
         <div className="progress-bar-container">
           <div className={classes} style={{ width: `${progress}%` }} />

@@ -3,7 +3,7 @@
   width: var(--homepage-card-width);
   height: var(--homepage-card-height);
   border-radius: 12px;
-  margin-top: var(--homepage-card-margin);
+  margin-bottom: var(--homepage-card-margin);
   margin-right: var(--homepage-card-margin);
   background: rgba(var(--bluish-steel-raw), 0.16);
   cursor: pointer;

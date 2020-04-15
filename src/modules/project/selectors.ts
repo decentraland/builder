@@ -5,11 +5,11 @@ import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/utils'
-import { getLoading as getAuthLoading, getSub } from 'modules/auth/selectors'
-import { AUTH_REQUEST } from 'modules/auth/actions'
 import { Project } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
 import { LOAD_PUBLIC_PROJECT_REQUEST } from './actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getCurrentIdentity } from 'modules/identity/selectors'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
 
@@ -19,10 +19,11 @@ export const getError: (state: RootState) => ProjectState['error'] = state => ge
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getUserProjects = createSelector(getSub, getData, (userId, projects) => {
+export const getUserProjects = createSelector(getAddress, getCurrentIdentity, getData, (address, identity, projects) => {
   return Object.keys(projects).reduce((record, projectId) => {
     const project = projects[projectId]
-    if (project.userId === userId || project.userId === null) {
+    const isUserLoggedIn = !!identity
+    if ((isUserLoggedIn && project.ethAddress === address) || project.ethAddress === null) {
       record[projectId] = project
     }
     return record
@@ -45,8 +46,6 @@ export const getCurrentBounds = createSelector<RootState, Project | null, Vector
   }
 })
 
-export const isFetching = createSelector<RootState, LoadingState, LoadingState, boolean>(
-  getLoading,
-  getAuthLoading,
-  (projectLoading, authLoading) => isLoadingType(authLoading, AUTH_REQUEST) || isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST)
+export const isFetching = createSelector<RootState, LoadingState, boolean>(getLoading, projectLoading =>
+  isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST)
 )

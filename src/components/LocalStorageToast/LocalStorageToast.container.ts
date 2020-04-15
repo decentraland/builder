@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { login } from 'modules/auth/actions'
 import { getCurrentProject } from 'modules/project/selectors'
+import { loginRequest } from 'modules/identity/actions'
 import { MapStateProps, MapDispatchProps } from './LocalStorageToast.types'
 import LocalStorageToast from './LocalStorageToast'
 
@@ -11,10 +11,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onLogin: options => dispatch(login(options))
+  onLogin: () => dispatch(loginRequest())
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(LocalStorageToast)
+export default connect(mapState, mapDispatch)(LocalStorageToast)

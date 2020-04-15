@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
-import { isLoggedIn } from 'modules/auth/selectors'
+import { isLoggedIn } from 'modules/identity/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewMenu.types'
 import SceneViewMenu from './SceneViewMenu'
 

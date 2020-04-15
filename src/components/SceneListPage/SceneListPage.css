@@ -1,38 +1,29 @@
 .SceneListPage {
-  display: block;
   position: relative;
-  margin-top: 47px;
 }
 
 .SceneListPage .ui.container {
   position: relative;
 }
 
-.SceneListPage .subtitle {
-  display: flex;
-  justify-content: space-between;
+.SceneListPage .dcl.tabs {
+  position: relative;
 }
 
-.SceneListPage .subtitle > .dcl.tabs {
-  flex: 0 0 auto;
-  width: auto;
-}
-
-.SceneListPage .subtitle > .dcl.tabs > .ui.container {
-  width: auto;
-}
-
-.SceneListPage .subtitle > .menu {
+.SceneListPage .tabs-menu {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
+  position: absolute;
+  bottom: 19px;
+  right: 0px;
 }
 
-.SceneListPage .subtitle > .menu .ui.dropdown {
-  margin-right: 32px;
+.SceneListPage .tabs-menu .ui.dropdown + .ui.dropdown {
+  margin-left: 32px;
 }
 
 .SceneListPage .empty-projects {
@@ -53,7 +44,6 @@
   display: flex;
   flex-wrap: wrap;
   min-height: 400px;
-  justify-content: space-around;
 }
 
 .SceneListPage .ui.pagination.menu {
@@ -75,4 +65,11 @@
 
 .SceneListPage .ui.pagination.menu .item[type='nextItem'] {
   right: 0px;
+}
+
+@media (max-width: 768px) {
+  .SceneListPage .tabs-menu {
+    right: 20px;
+    bottom: 11px;
+  }
 }

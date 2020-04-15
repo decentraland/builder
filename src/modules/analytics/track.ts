@@ -15,9 +15,9 @@ import { SET_SIDEBAR_VIEW, SELECT_CATEGORY, SELECT_ASSET_PACK } from 'modules/ui
 import { SET_PROJECT, EXPORT_PROJECT_REQUEST, IMPORT_PROJECT, CREATE_PROJECT } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_PROJECT_FAILURE } from 'modules/sync/actions'
 import { OPEN_MODAL, CLOSE_MODAL } from 'modules/modal/actions'
-import { LOGOUT, LOGIN } from 'modules/auth/actions'
 import { SHARE_SCENE } from 'modules/ui/share/actions'
 import { LIKE_POOL_REQUEST } from 'modules/pool/actions'
+import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -84,7 +84,7 @@ addPayload(SAVE_PROJECT_SUCCESS, 'Save Project success', trimProject)
 addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
 
 // auth
-addPayload(LOGIN, 'Login')
+addPayload(LOGIN_REQUEST, 'Login')
 addPayload(LOGOUT, 'Logout')
 
 // Share

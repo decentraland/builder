@@ -372,20 +372,20 @@
     "success": "谢谢，我们会与您联系!"
   },
   "scene_list_page": {
-    "projects_title": "Scene Pool",
-    "no_projects": "It looks like we don't have any Scenes",
+    "projects_title": "社区场景",
+    "no_projects": "没有结果",
     "filters": {
       "creator-contest-2019-12": "Creator Contest (Submission)",
       "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "All collections",
-      "all_users": "All users",
-      "only_me": "Only me",
-      "newest": "Newest",
-      "likes": "Likes",
-      "size": "Size",
-      "items": "Items",
-      "smart_items": "Smart items",
-      "name": "Name"
+      "all_groups": "所有收藏",
+      "all_users": "全部用户",
+      "only_me": "只有我",
+      "newest": "最新",
+      "likes": "最喜欢",
+      "size": "尺寸",
+      "items": "项目",
+      "smart_items": "互动项目",
+      "name": "名称"
     }
   },
   "public_page": {

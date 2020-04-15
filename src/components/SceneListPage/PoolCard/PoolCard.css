@@ -1,13 +1,16 @@
 .PoolCard {
   position: relative;
-  width: var(--list-page-card-width);
+  width: calc(33% - 15px);
   height: var(--list-page-card-height);
   border-radius: 12px;
-  margin-top: var(--list-page-card-margin);
-  margin-right: calc(var(--list-page-card-margin) / 2);
-  margin-left: calc(var(--list-page-card-margin) / 2);
+  margin-bottom: 25px;
+  margin-right: 25px;
   background: rgba(var(--bluish-steel-raw), 0.16);
   cursor: pointer;
+}
+
+.PoolCard:nth-child(3n) {
+  margin-right: 0px;
 }
 
 .PoolCard .deployment-status {
@@ -45,16 +48,12 @@
   user-select: none;
 }
 
-.PoolCard:hover {
-  z-index: 999;
-}
-
 .PoolCard .thumbnail {
   position: relative;
   background-size: cover;
   background-position: center;
   border-radius: 12px 12px 0 0;
-  width: var(--list-page-card-width);
+  width: 100%;
   height: calc(var(--list-page-card-width) * 0.75);
 }
 
@@ -85,4 +84,28 @@
 .PoolCard .component-list .component .Icon {
   margin-right: 0.5em;
   vertical-align: top;
+}
+
+@media (max-width: 992px) {
+  .PoolCard {
+    width: calc(50% - 15px);
+  }
+
+  .PoolCard:nth-child(2n) {
+    margin-right: 0px;
+  }
+
+  .PoolCard:nth-child(3n) {
+    margin-right: 25px;
+  }
+}
+
+@media (max-width: 592px) {
+  .PoolCard {
+    width: 100%;
+  }
+
+  .PoolCard {
+    margin-right: 0px;
+  }
 }

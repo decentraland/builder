@@ -15,7 +15,7 @@ export type Props = {
   selectedAssetPack: AssetPack | null
   selectedCategory: string | null
   search: string
-  userId: string | null
+  ethAddress?: string
 
   onSelectAssetPack: typeof selectAssetPack
   onSelectCategory: typeof selectCategory
@@ -25,6 +25,6 @@ export type Props = {
   onCreateAssetPack: () => void
 }
 
-export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'search' | 'userId'>
+export type MapStateProps = Pick<Props, 'selectedAssetPack' | 'selectedCategory' | 'search' | 'ethAddress'>
 export type MapDispatchProps = Pick<Props, 'onSelectAssetPack' | 'onSelectCategory' | 'onSearch' | 'onEditAssetPack' | 'onCreateAssetPack'>
 export type MapDispatch = Dispatch<SelectAssetPackAction | SelectCategoryAction | SearchAssetsAction | OpenModalAction>

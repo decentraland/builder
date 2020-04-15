@@ -60,7 +60,7 @@ export function handleCallback(): Promise<CallbackResult> {
   })
 }
 
-export function login(loginOptions: LoginOptions) {
+export function loginLegacy(loginOptions: LoginOptions) {
   let authorizeOptions: auth0.AuthorizeOptions = {}
   if (loginOptions) {
     const nonce = uuid.v4()
@@ -89,7 +89,7 @@ export function restoreSession(): Promise<AuthData> {
   })
 }
 
-export function logout(): Promise<void> {
+export function logoutLegacy(): Promise<void> {
   return new Promise(resolve => {
     webAuth.logout({
       returnTo: window.location.origin

@@ -6,17 +6,12 @@
   font-size: 17px;
 }
 
-.HomePage .subtitle {
-  color: white;
+.HomePage .ui.button.import-scene {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
 
-.HomePage .subtitle .import-scene {
-  display: flex;
-}
-
-.HomePage .subtitle .import-scene .Icon {
+.HomePage .import-scene .Icon {
   margin-right: 12px;
 }
 
@@ -39,8 +34,13 @@
 }
 
 .HomePage .project-cards {
-  margin-top: 47px;
   position: relative;
+}
+
+.HomePage .subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .HomePage .empty-projects {
@@ -71,7 +71,6 @@
 }
 
 .HomePage .CardList {
-  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -92,27 +91,37 @@
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.24);
   transform: translateY(-4px);
 }
-
-.HomePage .project-cards .subtitle > .dcl.tabs {
-  flex: 0 0 auto;
-  width: auto;
+.HomePage .dcl.tabs,
+.HomePage .dcl.tabs .ui.container {
+  position: relative;
 }
 
-.HomePage .project-cards .subtitle > .dcl.tabs > .ui.container {
-  width: auto;
-}
-
-.HomePage .project-cards .subtitle > .menu {
+.HomePage .tabs-menu {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   font-size: 13px;
   line-height: 18px;
   text-transform: uppercase;
+  position: absolute;
+  bottom: 19px;
+  right: 0px;
 }
 
-.HomePage .project-cards .subtitle > .menu .ui.dropdown {
-  margin-right: 32px;
+.HomePage .tabs-menu .ui.button {
+  padding: 0px;
+}
+
+.HomePage .tabs-menu .ui + .ui {
+  margin-left: 32px;
+}
+
+.HomePage .tabs-menu .ui.dropdown {
+  text-transform: uppercase;
+}
+
+.HomePage .tabs-menu .ui.dropdown + .ui.dropdown {
+  margin-left: 32px;
 }
 
 .HomePage .project-cards.has-pagination .CardList {
@@ -141,6 +150,10 @@
 
 .HomePage .project-cards .ui.pagination .item[type='nextItem'] {
   right: 0px;
+}
+
+.HomePage .SyncToast {
+  top: 16px;
 }
 
 @keyframes templateAnimation {

@@ -2,11 +2,11 @@ import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
-import { login } from 'modules/auth/actions'
-import { isLoggedIn } from 'modules/auth/selectors'
 import { retrySync } from 'modules/sync/actions'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { loginRequest } from 'modules/identity/actions'
 import { MapDispatchProps, MapStateProps } from './QuotaExceededModal.types'
 import QuotaExceededModal from './QuotaExceededModal'
 
@@ -18,11 +18,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
-  onLogin: () => dispatch(login()),
+  onLogin: () => dispatch(loginRequest()),
   onRetry: () => dispatch(retrySync())
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(QuotaExceededModal)
+export default connect(mapState, mapDispatch)(QuotaExceededModal)

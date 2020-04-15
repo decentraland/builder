@@ -1,5 +1,6 @@
+import { AxiosRequestConfig } from 'axios'
 import { env } from 'decentraland-commons'
-import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
+import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { authorize } from './auth'
 import { Rotation, Deployment } from 'modules/deployment/types'
@@ -26,7 +27,7 @@ export type RemoteProject = {
   thumbnail: string
   is_public: boolean
   scene_id: string
-  user_id: string | null
+  eth_address: string
   rows: number
   cols: number
   created_at: string
@@ -58,7 +59,7 @@ export type RemoteAssetPack = {
   title: string
   url?: string
   thumbnail?: string
-  user_id: string
+  eth_address: string
   assets: RemoteAsset[]
   created_at?: string
   updated_at?: string
@@ -90,7 +91,7 @@ function toRemoteProject(project: Project): Omit<RemoteProject, 'thumbnail'> {
     description: project.description,
     is_public: project.isPublic,
     scene_id: project.sceneId,
-    user_id: project.userId,
+    eth_address: project.ethAddress!,
     rows: project.layout.rows,
     cols: project.layout.cols,
     created_at: project.createdAt,
@@ -106,7 +107,7 @@ function fromRemoteProject(remoteProject: RemoteProject): Project {
     thumbnail: `${BUILDER_SERVER_URL}/projects/${remoteProject.id}/media/thumbnail.png`,
     isPublic: !!remoteProject.is_public,
     sceneId: remoteProject.scene_id,
-    userId: remoteProject.user_id,
+    ethAddress: remoteProject.eth_address,
     layout: {
       rows: remoteProject.rows,
       cols: remoteProject.cols
@@ -141,7 +142,7 @@ function toRemoteAssetPack(assetPack: FullAssetPack): RemoteAssetPack {
   return {
     id: assetPack.id,
     title: assetPack.title,
-    user_id: assetPack.userId || '',
+    eth_address: assetPack.ethAddress!,
     assets: assetPack.assets.map(asset => toRemoteAsset(asset))
   }
 }
@@ -151,7 +152,7 @@ function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
     id: remoteAssetPack.id,
     title: remoteAssetPack.title,
     thumbnail: getAssetPackStorageUrl(remoteAssetPack.thumbnail),
-    userId: remoteAssetPack.user_id,
+    ethAddress: remoteAssetPack.eth_address,
     assets: remoteAssetPack.assets.map(asset => fromRemoteAsset(asset)),
     createdAt: remoteAssetPack.created_at,
     updatedAt: remoteAssetPack.updated_at
@@ -211,7 +212,7 @@ export type RemoteDeployment = {
   x: number
   y: number
   rotation: Rotation
-  user_id: string | null
+  eth_address: string
   created_at: string
   updated_at: string
 }
@@ -224,7 +225,7 @@ export function toRemoteDeployment(deployment: Deployment): RemoteDeployment {
     x: deployment.placement.point.x,
     y: deployment.placement.point.y,
     rotation: deployment.placement.rotation,
-    user_id: deployment.userId,
+    eth_address: deployment.ethAddress!,
     created_at: deployment.createdAt,
     updated_at: deployment.updatedAt
   }
@@ -242,7 +243,7 @@ export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deploy
       },
       rotation: remoteDeployment.rotation
     },
-    userId: remoteDeployment.user_id,
+    ethAddress: remoteDeployment.eth_address,
     createdAt: remoteDeployment.created_at,
     updatedAt: remoteDeployment.updated_at
   }
@@ -264,14 +265,32 @@ export type Pagination = {
 
 export type PoolFilters = {
   group?: string
-  user_id?: string
+  eth_address?: string
 }
 
 // API
 
 export class BuilderAPI extends BaseAPI {
+  request(method: AxiosRequestConfig['method'], path: string, params?: APIParam | null, config?: AxiosRequestConfig) {
+    let authConfig = {}
+    let headers = {}
+    if (config) {
+      authConfig = { ...config }
+      if (config.headers) {
+        headers = { ...config.headers }
+      }
+    }
+    const authHeaders = authorize(method, path)
+    headers = {
+      ...headers,
+      ...authHeaders
+    }
+    authConfig = { ...authConfig, headers }
+    return super.request(method, path, params, authConfig)
+  }
+
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
-    await this.request('put', `/projects/${projectId}/pool`, additionalInfo, authorize())
+    await this.request('put', `/projects/${projectId}/pool`, additionalInfo)
     return
   }
 
@@ -289,37 +308,36 @@ export class BuilderAPI extends BaseAPI {
     formData.append('west', shots.west)
 
     await this.request('post', `/projects/${projectId}/media`, formData, {
-      onUploadProgress,
-      ...authorize()
+      onUploadProgress
     })
   }
 
   async fetchDeployments() {
-    const remoteDeployments: RemoteDeployment[] = await this.request('get', `/deployments`, null, authorize())
+    const remoteDeployments: RemoteDeployment[] = await this.request('get', `/deployments`)
     return remoteDeployments.map(fromRemoteDeployment)
   }
 
   async saveDeployment(deployment: Deployment) {
-    await this.request('put', `/projects/${deployment.id}/deployment`, { deployment: toRemoteDeployment(deployment) }, authorize())
+    await this.request('put', `/projects/${deployment.id}/deployment`, { deployment: toRemoteDeployment(deployment) })
   }
 
   async deleteDeployment(id: string) {
-    await this.request('delete', `/projects/${id}/deployment`, null, authorize())
+    await this.request('delete', `/projects/${id}/deployment`)
     return
   }
 
   async fetchProjects() {
-    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', `/projects`, null, authorize())
+    const { items }: { items: RemoteProject[]; total: number } = await this.request('get', `/projects`)
     return items.map(fromRemoteProject)
   }
 
   async fetchPublicProject(projectId: string, type: 'public' | 'pool' = 'public') {
-    const project: RemotePool = await this.request('get', `/projects/${projectId}/${type}`, null, authorize())
+    const project: RemotePool = await this.request('get', `/projects/${projectId}/${type}`)
     return type === 'pool' ? fromRemotePool(project) : fromRemoteProject(project)
   }
 
   async fetchPoolsPage(filters: PoolFilters & Pagination & Sort) {
-    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', filters, authorize())
+    const { items, total }: { items: RemotePool[]; total: number } = await this.request('get', '/pools', filters)
     return { items: items.map(fromRemotePool), total }
   }
 
@@ -330,7 +348,7 @@ export class BuilderAPI extends BaseAPI {
 
   async saveProject(project: Project, scene: Scene) {
     const manifest = createManifest(toRemoteProject(project), scene)
-    await this.request('put', `/projects/${project.id}/manifest`, { manifest }, authorize())
+    await this.request('put', `/projects/${project.id}/manifest`, { manifest })
   }
 
   async saveProjectThumbnail(project: Project) {
@@ -338,18 +356,17 @@ export class BuilderAPI extends BaseAPI {
     const formData = new FormData()
     if (blob) {
       formData.append('thumbnail', blob)
-      await this.request('post', `/projects/${project.id}/media`, formData, authorize())
+      await this.request('post', `/projects/${project.id}/media`, formData)
     }
   }
 
   async deleteProject(id: string) {
-    await this.request('delete', `/projects/${id}`, null, authorize())
+    await this.request('delete', `/projects/${id}`)
     return
   }
 
   async fetchManifest(id: string, type: 'project' | 'public' | 'pool' = 'project') {
-    const axiosRequestConfig = type === 'project' ? authorize() : {}
-    const remoteManifest = await this.request('get', `/${type}s/${id}/manifest`, null, axiosRequestConfig)
+    const remoteManifest = await this.request('get', `/${type}s/${id}/manifest`)
     const manifest = {
       ...remoteManifest,
       project: fromRemoteProject(remoteManifest.project)
@@ -360,7 +377,7 @@ export class BuilderAPI extends BaseAPI {
 
   async saveAssetPack(assetPack: FullAssetPack) {
     const remotePack = toRemoteAssetPack(assetPack)
-    await this.request('put', `/assetPacks/${remotePack.id}`, { assetPack: remotePack }, authorize())
+    await this.request('put', `/assetPacks/${remotePack.id}`, { assetPack: remotePack })
   }
 
   async saveAssetContents(
@@ -374,7 +391,9 @@ export class BuilderAPI extends BaseAPI {
       formData.append(path, contents[path])
     }
 
-    await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, formData, { onUploadProgress, ...authorize() })
+    await this.request('post', `/assetPacks/${asset.assetPackId}/assets/${asset.id}/files`, formData, {
+      onUploadProgress
+    })
   }
 
   async saveAssetPackThumbnail(assetPack: FullAssetPack) {
@@ -391,22 +410,22 @@ export class BuilderAPI extends BaseAPI {
     const formData = new FormData()
     if (blob) {
       formData.append('thumbnail', blob)
-      await this.request('post', `/assetPacks/${assetPack.id}/thumbnail`, formData, authorize())
+      await this.request('post', `/assetPacks/${assetPack.id}/thumbnail`, formData)
     }
   }
 
   async fetchAssetPacks() {
-    const remotePacks: RemoteAssetPack[] = await this.request('get', `/assetPacks`, null, authorize())
+    const remotePacks: RemoteAssetPack[] = await this.request('get', `/assetPacks`)
     return remotePacks.map(fromRemoteAssetPack)
   }
 
   async deleteAssetPack(assetPack: FullAssetPack) {
-    await this.request('delete', `/assetPacks/${assetPack.id}`, null, authorize())
+    await this.request('delete', `/assetPacks/${assetPack.id}`)
   }
 
   async likePool(pool: string, like: boolean = true) {
     const method = like ? 'put' : 'delete'
-    return this.request(method, `/pools/${pool}/likes`, null, authorize())
+    return this.request(method, `/pools/${pool}/likes`)
   }
 }
 

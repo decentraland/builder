@@ -1,10 +1,14 @@
 import * as React from 'react'
-import { NavbarProps } from 'decentraland-ui'
-import { Navbar as DappsNavbar } from 'decentraland-dapps/dist/containers'
+import { Navbar as BaseNavbar } from 'decentraland-dapps/dist/containers'
 import UserMenu from 'components/UserMenu'
+import { Props } from './Navbar.types'
 
-export default class Navbar extends React.PureComponent<NavbarProps> {
+export default class Navbar extends React.PureComponent<Props> {
   render() {
-    return <DappsNavbar activePage="builder" rightMenu={<UserMenu />} {...this.props} />
+    let props = this.props
+    if (props.isConnected) {
+      props = { ...props, rightMenu: <UserMenu /> }
+    }
+    return <BaseNavbar activePage="builder" {...props} />
   }
 }

@@ -13,17 +13,12 @@ export const getError: (state: RootState) => ProfileState['error'] = state => ge
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getCurrentAuthor = createSelector(
-  getCurrentProject,
-  getCurrentPool,
-  getData,
-  (project, pool, profiles) => {
-    if (project && project.userId && profiles[project.userId]) {
-      return profiles[project.userId]
-    } else if (pool && pool.userId && profiles[pool.userId]) {
-      return profiles[pool.userId]
-    } else {
-      return null
-    }
+export const getCurrentAuthor = createSelector(getCurrentProject, getCurrentPool, getData, (project, pool, profiles) => {
+  if (project && project.ethAddress && profiles[project.ethAddress]) {
+    return profiles[project.ethAddress]
+  } else if (pool && pool.ethAddress && profiles[pool.ethAddress]) {
+    return profiles[pool.ethAddress]
+  } else {
+    return null
   }
-)
+})

@@ -17,7 +17,6 @@ import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'mo
 import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
 import { SAVE_PROJECT_SUCCESS, SAVE_DEPLOYMENT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
-import { AUTH_SUCCESS, AUTH_FAILURE } from 'modules/auth/actions'
 import { Project } from 'modules/project/types'
 import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
@@ -27,7 +26,7 @@ import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
-import { GENERATE_IDENTITY_SUCCESS } from 'modules/identity/actions'
+import { GENERATE_IDENTITY_SUCCESS, DESTROY_IDENTITY, LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -80,15 +79,16 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DEPLOY_TO_LAND_SUCCESS,
     CLEAR_DEPLOYMENT_SUCCESS,
     MARK_DIRTY,
-    AUTH_SUCCESS,
-    AUTH_FAILURE,
+    LOGIN_SUCCESS,
+    LOGIN_FAILURE,
     SAVE_PROJECT_SUCCESS,
     SAVE_DEPLOYMENT_SUCCESS,
     EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
     SET_SYNC,
-    GENERATE_IDENTITY_SUCCESS
+    GENERATE_IDENTITY_SUCCESS,
+    DESTROY_IDENTITY
   ],
   transform: state => {
     let projects: DataByKey<Project> = {}

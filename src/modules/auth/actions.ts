@@ -2,26 +2,26 @@ import { action } from 'typesafe-actions'
 import { AuthData, LoginOptions } from './types'
 
 // Logout
-export const LOGIN = 'Login'
-export const login = (options: LoginOptions = {}) => action(LOGIN, options)
-export type LoginAction = ReturnType<typeof login>
+export const LEGACY_LOGIN = '[Legacy] Login'
+export const LEGACY_login = (options: LoginOptions = {}) => action(LEGACY_LOGIN, options)
+export type LEGACY_LoginAction = ReturnType<typeof LEGACY_login>
 
 // Logout
-export const LOGOUT = 'Logout'
-export const logout = () => action(LOGOUT)
-export type LogoutAction = ReturnType<typeof logout>
+export const LEGACY_LOGOUT = '[Legacy] Logout'
+export const LEGACY_logout = () => action(LEGACY_LOGOUT)
+export type LEGACY_LogoutAction = ReturnType<typeof LEGACY_logout>
 
 // Auth
-export const AUTH_REQUEST = '[Request] Auth'
-export const AUTH_SUCCESS = '[Success] Auth'
-export const AUTH_FAILURE = '[Failure] Auth'
+export const LEGACY_AUTH_REQUEST = '[Request] Auth'
+export const LEGACY_AUTH_SUCCESS = '[Success] Auth'
+export const LEGACY_AUTH_FAILURE = '[Failure] Auth'
 
-export const authRequest = () => action(AUTH_REQUEST)
-export const authSuccess = (data: AuthData, options: LoginOptions) => {
-  return action(AUTH_SUCCESS, { data, options })
+export const authRequestLegacy = () => action(LEGACY_AUTH_REQUEST)
+export const authSuccessLegacy = (data: AuthData, options: LoginOptions) => {
+  return action(LEGACY_AUTH_SUCCESS, { data, options })
 }
-export const authFailure = (error: string) => action(AUTH_FAILURE, { error })
+export const authFailureLegacy = (error: string) => action(LEGACY_AUTH_FAILURE, { error })
 
-export type AuthRequestAction = ReturnType<typeof authRequest>
-export type AuthSuccessAction = ReturnType<typeof authSuccess>
-export type AuthFailureAction = ReturnType<typeof authFailure>
+export type AuthRequestLegacyAction = ReturnType<typeof authRequestLegacy>
+export type AuthSuccessLegacyAction = ReturnType<typeof authSuccessLegacy>
+export type AuthFailureLegacyAction = ReturnType<typeof authFailureLegacy>

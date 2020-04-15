@@ -1,8 +1,8 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Project } from 'modules/project/types'
 import { shareProject } from 'modules/project/actions'
-import { login } from 'modules/auth/actions'
 import { shareScene } from 'modules/ui/share/actions'
+import { loginRequest } from 'modules/identity/actions'
 
 export type Props = ModalProps & {
   metadata: ShareModalMetadata
@@ -11,7 +11,7 @@ export type Props = ModalProps & {
   isLoggedIn: boolean
   isScreenshotReady: boolean
   onUpdate: typeof shareProject
-  onLogin: typeof login
+  onLogin: typeof loginRequest
   onShare: typeof shareScene
 }
 
