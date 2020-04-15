@@ -14,9 +14,12 @@ import {
   ENABLE_WALLET_FAILURE,
   EnableWalletSuccessAction,
   EnableWalletFailureAction,
-  disconnectWallet
+  disconnectWallet,
+  CHANGE_ACCOUNT
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Authenticator } from 'dcl-crypto'
+import { replace } from 'connected-react-router'
+import { locations } from 'routing/locations'
 import {
   GENERATE_IDENTITY_REQUEST,
   GenerateIdentityRequestAction,
@@ -39,9 +42,11 @@ import {
 import { ONE_MONTH_IN_MINUTES, takeRace } from './utils'
 import { isLoggedIn, getCurrentIdentity } from './selectors'
 import { Race } from './types'
+import { clearAssetPacks } from 'modules/assetPack/actions'
 
 export function* identitySaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
+  yield takeLatest(CHANGE_ACCOUNT, handleChangeAccount)
   yield takeLatest(GENERATE_IDENTITY_REQUEST, handleGenerateIdentityRequest)
   yield takeLatest(LOGIN_REQUEST, handleLogin)
   yield takeLatest(LOGOUT, handleLogout)
@@ -148,5 +153,17 @@ function* handleLogout(_action: LogoutAction) {
 }
 
 function* handleConnectWalletSuccess() {
-  yield put(loginRequest(true))
+  const shouldRestoreSession = yield select(isLoggedIn)
+  if (shouldRestoreSession) {
+    yield put(loginRequest(true))
+  }
+}
+
+function* handleChangeAccount() {
+  const shouldRestoreSession = yield select(isLoggedIn)
+  if (shouldRestoreSession) {
+    yield put(loginRequest(true))
+  }
+  yield put(clearAssetPacks())
+  yield put(replace(locations.root()))
 }

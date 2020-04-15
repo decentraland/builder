@@ -44,7 +44,7 @@ export default class UserMenu extends React.Component<Props, State> {
         {isLoggedIn && (
           <>
             <span className="dcl account-wrapper">
-              {mana ? (
+              {mana != null ? (
                 <Mana size="small" title={`${mana.toLocaleString()} MANA`}>
                   {parseInt(mana.toFixed(0), 10).toLocaleString()}
                 </Mana>
