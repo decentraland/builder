@@ -145,6 +145,7 @@ export function dedupeEntityName(scene: Scene) {
 
 export function replaceUserIdWithEthAddress(project: Project) {
   delete (project as any).userId
+  // tslint:disable-next-line
   if (typeof project.ethAddress === 'undefined') {
     project.ethAddress = null
   }

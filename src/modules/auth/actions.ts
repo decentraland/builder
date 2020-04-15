@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import { action } from 'typesafe-actions'
 import { AuthData, LoginOptions } from './types'
 

@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import { createSelector } from 'reselect'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
