@@ -20,7 +20,7 @@ function* handleAuthSuccess(action: AuthSuccessLegacyAction) {
   } else {
     const location: ReturnType<typeof getLocation> = yield select(getLocation)
     if (location.pathname === locations.callback()) {
-      yield put(replace(locations.root()))
+      yield put(replace(locations.migrate()))
     }
   }
   if (options.openModal) {
@@ -31,7 +31,7 @@ function* handleAuthSuccess(action: AuthSuccessLegacyAction) {
 function* handleAuthFailure(_action: AuthFailureLegacyAction) {
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
   if (location.pathname === locations.callback()) {
-    yield put(replace(locations.root()))
+    yield put(replace(locations.migrate()))
   }
 }
 

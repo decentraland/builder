@@ -98,6 +98,8 @@ export function logoutLegacy(): Promise<void> {
   })
 }
 
+;(window as any).logout = logoutLegacy
+
 export function isTokenExpired(expiresAt: number) {
   return expiresAt > 0 && expiresAt < Date.now()
 }

@@ -10,5 +10,6 @@ export const locations = {
   signIn: () => '/sign-in',
   mobile: () => '/mobile',
   notFound: () => '/404',
-  callback: () => '/callback'
+  callback: () => '/callback',
+  migrate: () => '/migrate'
 }

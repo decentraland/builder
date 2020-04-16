@@ -6,18 +6,23 @@ import {
   authRequestLegacy,
   authSuccessLegacy,
   authFailureLegacy,
-  LEGACY_LoginAction
+  LEGACY_LoginAction,
+  MIGRATION_REQUEST,
+  migrationSuccess,
+  migrationFailure
 } from './actions'
 import { loginLegacy, logoutLegacy, handleCallback, restoreSession, CallbackResult } from './utils'
 import { isExpired } from './selectors'
 import { AuthData, LoginOptions } from './types'
+import { builder } from 'lib/api/builder'
 
 export function* authSaga() {
   yield fork(handleRestoreSession)
   yield all([
     takeLatest(LEGACY_LOGIN, handleLogin),
     takeLatest(LEGACY_LOGOUT, handleLogout),
-    takeLatest(LEGACY_AUTH_REQUEST, handleAuthRequest)
+    takeLatest(LEGACY_AUTH_REQUEST, handleAuthRequest),
+    takeLatest(MIGRATION_REQUEST, handleMigrationRequest)
   ])
 }
 
@@ -57,4 +62,13 @@ export function* handleAuthRequest() {
   }
 
   yield put(authSuccessLegacy(data, options))
+}
+
+function* handleMigrationRequest() {
+  try {
+    yield call(() => builder.migrate())
+    yield put(migrationSuccess())
+  } catch (error) {
+    yield put(migrationFailure(error.message))
+  }
 }

@@ -19,11 +19,22 @@ export const LEGACY_AUTH_SUCCESS = '[Success] Auth'
 export const LEGACY_AUTH_FAILURE = '[Failure] Auth'
 
 export const authRequestLegacy = () => action(LEGACY_AUTH_REQUEST)
-export const authSuccessLegacy = (data: AuthData, options: LoginOptions) => {
-  return action(LEGACY_AUTH_SUCCESS, { data, options })
-}
+export const authSuccessLegacy = (data: AuthData, options: LoginOptions) => action(LEGACY_AUTH_SUCCESS, { data, options })
+
 export const authFailureLegacy = (error: string) => action(LEGACY_AUTH_FAILURE, { error })
 
 export type AuthRequestLegacyAction = ReturnType<typeof authRequestLegacy>
 export type AuthSuccessLegacyAction = ReturnType<typeof authSuccessLegacy>
 export type AuthFailureLegacyAction = ReturnType<typeof authFailureLegacy>
+
+export const MIGRATION_REQUEST = '[Request] Migrate Auth0'
+export const MIGRATION_SUCCESS = '[Success] Migrate Auth0'
+export const MIGRATION_FAILURE = '[Failure] Migrate Auth0'
+
+export const migrationRequest = () => action(MIGRATION_REQUEST)
+export const migrationSuccess = () => action(MIGRATION_SUCCESS)
+export const migrationFailure = (error: string) => action(MIGRATION_FAILURE, { error })
+
+export type MigrationRequestAction = ReturnType<typeof migrationRequest>
+export type MigrationSuccessAction = ReturnType<typeof migrationSuccess>
+export type MigrationFailureAction = ReturnType<typeof migrationFailure>

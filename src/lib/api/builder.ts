@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios'
 import { env } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
-import { authorize } from './auth'
+import { authorize, authorizeAuth0 } from './auth'
 import { Rotation, Deployment } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
@@ -426,6 +426,10 @@ export class BuilderAPI extends BaseAPI {
   async likePool(pool: string, like: boolean = true) {
     const method = like ? 'put' : 'delete'
     return this.request(method, `/pools/${pool}/likes`)
+  }
+
+  async migrate() {
+    return this.request('post', `/migrate`, null, authorizeAuth0())
   }
 }
 

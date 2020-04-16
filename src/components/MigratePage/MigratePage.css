@@ -1,0 +1,36 @@
+.MigratePage.dcl.page {
+  height: calc(100vh - var(--navbar-height) - var(--footer-height) - var(--navbar-margin-bottom) - var(--footer-margin-top) - 1px);
+}
+
+.MigratePage .ui.container {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+.MigratePage .wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border-radius: 8px;
+  padding: 24px;
+  flex: none;
+  height: 88px;
+}
+
+.MigratePage .message {
+  margin-right: 36px;
+}
+
+.MigratePage .error {
+  color: var(--danger);
+  margin: 20px;
+}
+
+.MigratePage .error a {
+  color: var(--danger);
+  font-weight: bold;
+}
