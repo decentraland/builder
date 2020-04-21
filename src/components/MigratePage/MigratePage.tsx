@@ -5,6 +5,7 @@ import Footer from 'components/Footer'
 import { builder } from 'lib/api/builder'
 import { Props, State } from './MigratePage.types'
 import './MigratePage.css'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 const LOCAL_STORAGE_KEY = 'auth0_migration_started'
 
@@ -54,22 +55,25 @@ export default class MigratePage extends React.PureComponent<Props, State> {
           <div className="migrate-account icon" />
         </div>
         <Header className="title" size="large">
-          Migrate your account
+          {t('migrate_page.step_one_title')}
         </Header>
         <div className="message">
           <p>
-            In order to provide a seemless experience across our products, we have switched the Builder's account system from email to
-            wallet based. This means that you will need to connect an Ethereum wallet to store your scenes in the Cloud. If you don't have a
-            wallet you can learn more about how to get one{' '}
-            <a href="https://docs.decentraland.org/examples/get-a-wallet/" target="_blank">
-              here
-            </a>
-            .
+            <T
+              id="migrate_page.step_one_message_line_one"
+              values={{
+                link: (
+                  <a href="https://docs.decentraland.org/examples/get-a-wallet/" target="_blank">
+                    {t('migrate_page.step_one_link')}
+                  </a>
+                )
+              }}
+            />
           </p>
-          <p>If you had scenes stored in your email account, you can migrate them to your wallet account using this page.</p>
+          <p>{t('migrate_page.step_one_message_line_two')}</p>
         </div>
         <Button primary onClick={this.handleStart}>
-          Start Migration
+          {t('migrate_page.step_one_cta')}
         </Button>
       </div>
     )
@@ -83,13 +87,13 @@ export default class MigratePage extends React.PureComponent<Props, State> {
           <div className="email icon" />
         </div>
         <Header className="title" size="large">
-          Login with your email
+          {t('migrate_page.step_two_title')}
         </Header>
         <div className="message">
-          <p>Please login with your email account to find the scenes that need to be migrated.</p>
+          <p>{t('migrate_page.step_two_message')}</p>
         </div>
         <Button primary onClick={() => onLegacyLogin()}>
-          Login
+          {t('migrate_page.step_two_cta')}
         </Button>
       </div>
     )
@@ -105,27 +109,37 @@ export default class MigratePage extends React.PureComponent<Props, State> {
             <div className="wallet icon" />
           </div>
           <Header className="title" size="large">
-            Connect your wallet
+            {t('migrate_page.step_three_title')}
           </Header>
           <div className="message">
             <p>
-              Please connect your wallet to continue. If you don't have a wallet here's a{' '}
-              <a href="https://docs.decentraland.org/examples/get-a-wallet/" target="_blank">
-                beginners guide
-              </a>{' '}
-              to get one.
+              <T
+                id="migrate_page.step_three_message"
+                values={{
+                  link: (
+                    <a href="https://docs.decentraland.org/examples/get-a-wallet/" target="_blank">
+                      {t('migrate_page.step_three_link')}
+                    </a>
+                  )
+                }}
+              />
             </p>
           </div>
           <Button primary onClick={() => onLogin()}>
-            Connect
+            {t('migrate_page.step_three_cta')}
           </Button>
           {error ? (
             <div className="error">
-              Please install{' '}
-              <a href="https://metamask.io" target="_blank" rel="no:opener no:referrer">
-                MetaMask
-              </a>{' '}
-              or other web3 wallet to continue.
+              <T
+                id="migrate_page.step_three_error"
+                values={{
+                  metamask: (
+                    <a href="https://metamask.io" target="_blank" rel="no:opener no:referrer">
+                      MetaMask
+                    </a>
+                  )
+                }}
+              />
             </div>
           ) : null}
         </div>
@@ -143,13 +157,13 @@ export default class MigratePage extends React.PureComponent<Props, State> {
             <div className="migrate-account icon" />
           </div>
           <Header className="title" size="large">
-            Migrate your scenes
+            {t('migrate_page.step_four_title')}
           </Header>
           <div className="message">
-            <p>Migrate all scenes and asset packs under your email account into your wallet account.</p>
+            <p>{t('migrate_page.step_four_message')}</p>
           </div>
           <Button primary disabled={isMigrating} onClick={() => onMigrate()}>
-            Migrate
+            {t('migrate_page.step_four_cta')}
           </Button>
         </div>
         {this.renderProjects()}
@@ -160,7 +174,7 @@ export default class MigratePage extends React.PureComponent<Props, State> {
   renderProjects() {
     return (
       <>
-        <Header className="projects-title">The following projects will be migrated:</Header>
+        <Header className="projects-title"> {t('migrate_page.projects_title')}</Header>
         <div className="projects">
           {this.state.projects.map(project => (
             <div className="project">

@@ -374,6 +374,25 @@
     },
     "success": "Gracias, ¡Te mantendremos al tanto!"
   },
+  "migrate_page": {
+    "step_one_title": "Migra tu cuenta",
+    "step_one_message_line_one": "Con el objetivo de mejor la experiencia de nuestros productos, hemos cambiado el sistema de cuentas de usuario del Builder. Hemos dejado de usar emails y pasado a usar una billetera en su lugar. Esto significa que necesitaras conectar una billetera de Ethereum para almacenar tus escenas en la nube. Si no tienes una billetera y quieres aprender como conseguir una has {link}.",
+    "step_one_link": "click aquí",
+    "step_one_message_line_two": "Si tenias escenas almacenadas en tu cuenta de email, puedes migrarlas a tu billetera usando esta página.",
+    "step_one_cta": "Comenzar Migración",
+    "step_two_title": "Inicia sesión con tu Email",
+    "step_two_message": "Por favor inicia sesión con tu email para poder encontrar las escenas que necesitan ser migradas.",
+    "step_two_cta": "Iniciar sesión",
+    "step_three_title": "Conecta tu billetera",
+    "step_three_message": "Por favor conecta tu billetera para continuar. Si no tienes una bbilletera, ahi hay una {link} para conseguir una.",
+    "step_three_link": "guía para principiantes",
+    "step_three_cta": "Conectar",
+    "step_three_error": "Por favor instala {metamask} u otra billetera de Ethereum para continuar.",
+    "step_four_title": "Migra tus escenas",
+    "step_four_message": "Migrar todas tus escenas y asset packs de tu cuenta de email a tu billetera.",
+    "step_four_cta": "Migrar",
+    "projects_title": "Las siguientes Escenas seran migradas:"
+  },
   "not_found_page": {
     "back": "Volver a tus Escenas",
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",

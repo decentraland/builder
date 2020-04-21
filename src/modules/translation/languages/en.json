@@ -406,6 +406,25 @@
     "subtitle": "Sorry, we couldn't find the Scene you were looking for",
     "title": "404"
   },
+  "migrate_page": {
+    "step_one_title": "Migrate your account",
+    "step_one_message_line_one": "In order to provide a seemless experience across our products, we have switched the Builder's account system from email to wallet based. This means that you will need to connect an Ethereum wallet to store your scenes in the Cloud. If you don't have a wallet you can learn more about how to get one {link}.",
+    "step_one_link": "here",
+    "step_one_message_line_two": "If you had Scenes stored in your email account, you can migrate them to your wallet account using this page.",
+    "step_one_cta": "Start Migration",
+    "step_two_title": "Login with your email",
+    "step_two_message": "Please login with your email account to find the Scenes that need to be migrated.",
+    "step_two_cta": "Login",
+    "step_three_title": "Connect your wallet",
+    "step_three_message": "Please connect your wallet to continue. If you don't have a wallet here's a {link} to get one.",
+    "step_three_link": "beginners guide",
+    "step_three_cta": "Connect",
+    "step_three_error": "Please install {metamask} or other Ethereum wallet to continue",
+    "step_four_title": "Migrate your Scenes",
+    "step_four_message": "Migrate all Scenes and asset packs under your email account into your wallet account.",
+    "step_four_cta": "Migrate",
+    "projects_title": "The following Scenes will be migrated:"
+  },
   "popups": {
     "metrics_help": "See metrics here!",
     "shortcuts_help": "See shortcuts here!"
