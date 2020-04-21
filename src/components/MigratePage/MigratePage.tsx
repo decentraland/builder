@@ -30,7 +30,7 @@ export default class MigratePage extends React.PureComponent<Props, State> {
         error: null
       })
     } else if (nextProps.isLoggedIn && !this.props.isLoggedIn) {
-      this.fetchProjects()
+      this.fetchProjects().catch()
     }
   }
 
