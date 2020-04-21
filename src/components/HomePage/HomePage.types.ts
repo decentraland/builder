@@ -17,6 +17,8 @@ export type Props = DefaultProps & {
   isLoggingIn: boolean
   didSync: boolean
   didCreate: boolean
+  didMigrate: boolean
+  needsMigration: boolean
   isLoggedIn: boolean
   page: number
   sortBy: SortBy
@@ -34,7 +36,17 @@ export type State = {
 
 export type MapStateProps = Pick<
   Props,
-  'projects' | 'isFetching' | 'isLoggingIn' | 'page' | 'sortBy' | 'totalPages' | 'didSync' | 'didCreate' | 'isLoggedIn'
+  | 'projects'
+  | 'isFetching'
+  | 'isLoggingIn'
+  | 'page'
+  | 'sortBy'
+  | 'totalPages'
+  | 'didSync'
+  | 'didCreate'
+  | 'didMigrate'
+  | 'needsMigration'
+  | 'isLoggedIn'
 >
 export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin' | 'onNavigateToShowcase'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | CreateProjectFromTemplateAction | OpenModalAction | LoginRequestAction>

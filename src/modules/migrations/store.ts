@@ -116,5 +116,10 @@ export const migrations = {
       replaceUserIdWithEthAddress(project)
     }
     return state
+  },
+  '13': (state: RootState) => {
+    const needsMigration = !!(state && state.ui && state.ui.dashboard && state.ui.dashboard.didSync)
+    state.ui.dashboard.needsMigration = needsMigration
+    return state
   }
 }

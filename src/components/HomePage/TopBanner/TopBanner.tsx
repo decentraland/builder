@@ -1,17 +1,19 @@
 import React from 'react'
-import Banner from 'components/Banner'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Link } from 'react-router-dom'
 
+import Banner from 'components/Banner'
+import { locations } from '../../../routing/locations'
 import './TopBanner.css'
 
 export default class TopBanner extends React.PureComponent {
   render() {
     return (
-      <Banner className="TopBanner" isClosable={true} name="dcl-hackathon-banner">
+      <Banner className="TopBanner" isClosable={false} name="auth0-migration-banner">
         <p>
-          <span>{t('banners.top_banner_left')}</span>
-          <a href="https://hack.decentraland.org/"> {t('banners.top_banner_action')} </a>
-          <span>{t('banners.top_banner_right')}</span>
+          <span>
+            The Builder has switched to wallet based account. Use the <Link to={locations.migrate()}>Migration Page</Link> to migrate your
+            scenes.
+          </span>
         </p>
       </Banner>
     )

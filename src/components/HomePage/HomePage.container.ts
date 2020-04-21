@@ -8,7 +8,16 @@ import { openModal } from 'modules/modal/actions'
 import { isFetching } from 'modules/project/selectors'
 import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
 import { createProjectFromTemplate } from 'modules/project/actions'
-import { getProjects, getPage, getSortBy, getTotalPages, didSync, didCreate } from 'modules/ui/dashboard/selectors'
+import {
+  getProjects,
+  getPage,
+  getSortBy,
+  getTotalPages,
+  didSync,
+  didCreate,
+  didMigrate,
+  needsMigration
+} from 'modules/ui/dashboard/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
 import HomePage from './HomePage'
 import { loginRequest } from 'modules/identity/actions'
@@ -23,6 +32,8 @@ const mapState = (state: RootState): MapStateProps => ({
   totalPages: getTotalPages(state),
   didCreate: didCreate(state),
   didSync: didSync(state),
+  didMigrate: didMigrate(state),
+  needsMigration: needsMigration(state),
   isLoggedIn: isLoggedIn(state)
 })
 

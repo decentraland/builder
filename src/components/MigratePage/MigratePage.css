@@ -1,28 +1,12 @@
 .MigratePage.dcl.page {
-  height: calc(100vh - var(--navbar-height) - var(--footer-height) - var(--navbar-margin-bottom) - var(--footer-margin-top) - 1px);
+  margin-top: 96px;
 }
 
 .MigratePage .ui.container {
   display: flex;
   justify-content: center;
   height: 100%;
-  align-items: center;
   flex-direction: column;
-}
-
-.MigratePage .wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--card);
-  border-radius: 8px;
-  padding: 24px;
-  flex: none;
-  height: 88px;
-}
-
-.MigratePage .message {
-  margin-right: 36px;
 }
 
 .MigratePage .error {
@@ -33,4 +17,92 @@
 .MigratePage .error a {
   color: var(--danger);
   font-weight: bold;
+}
+
+.MigratePage .projects {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.MigratePage .projects .project {
+  width: calc(25% - 20px);
+  height: var(--homepage-card-height);
+  margin-right: 25px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  border-radius: 16px;
+  position: relative;
+  background-color: var(--card);
+}
+
+.MigratePage .projects .project:nth-child(4n) {
+  margin-right: 0px;
+}
+
+.MigratePage .projects .title {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.MigratePage .projects .image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.MigratePage .step {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.MigratePage .step .message p {
+  text-align: center;
+  color: var(--secondary-text);
+}
+
+.MigratePage .step .ui.button {
+  flex: none;
+  margin-top: 48px;
+}
+
+.MigratePage .step .icon-wrapper {
+  width: 192px;
+  height: 192px;
+  background-color: var(--card);
+  border-radius: 192px;
+}
+
+.MigratePage .step .icon {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 108px;
+}
+
+.MigratePage .step .icon.migrate-account {
+  background-image: url(../../images/migrate.svg);
+}
+
+.MigratePage .step .icon.email {
+  background-image: url(../../images/email.svg);
+}
+
+.MigratePage .step .icon.wallet {
+  background-image: url(../../images/wallet.svg);
+}
+
+.MigratePage .projects-title.ui.header {
+  margin-top: 96px;
+  margin-bottom: 32px;
 }

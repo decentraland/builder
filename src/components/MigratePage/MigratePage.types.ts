@@ -1,6 +1,7 @@
 import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
 import { LEGACY_login, LEGACY_LoginAction, LEGACY_LogoutAction, migrationRequest, MigrationRequestAction } from 'modules/auth/actions'
 import { Dispatch } from 'redux'
+import { Project } from 'modules/project/types'
 
 export type Props = {
   isLoggedIn: boolean
@@ -13,6 +14,9 @@ export type Props = {
 }
 
 export type State = {
+  projects: Project[]
+  isLoading: boolean
+  hasStarted: boolean
   error: string | null
 }
 

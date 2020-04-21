@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 import { action } from 'typesafe-actions'
-import { AuthData, LoginOptions } from './types'
+import { AuthData, LoginOptions, Auth0MigrationResult } from './types'
 
 // Logout
 export const LEGACY_LOGIN = '[Legacy] Login'
@@ -32,7 +32,7 @@ export const MIGRATION_SUCCESS = '[Success] Migrate Auth0'
 export const MIGRATION_FAILURE = '[Failure] Migrate Auth0'
 
 export const migrationRequest = () => action(MIGRATION_REQUEST)
-export const migrationSuccess = () => action(MIGRATION_SUCCESS)
+export const migrationSuccess = (result: Auth0MigrationResult) => action(MIGRATION_SUCCESS, { result })
 export const migrationFailure = (error: string) => action(MIGRATION_FAILURE, { error })
 
 export type MigrationRequestAction = ReturnType<typeof migrationRequest>

@@ -1,3 +1,5 @@
+import { replace } from 'connected-react-router'
+import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { fork, call, all, takeLatest, put, select } from 'redux-saga/effects'
 import {
   LEGACY_AUTH_REQUEST,
@@ -9,12 +11,17 @@ import {
   LEGACY_LoginAction,
   MIGRATION_REQUEST,
   migrationSuccess,
-  migrationFailure
+  migrationFailure,
+  MigrationSuccessAction,
+  MIGRATION_SUCCESS
 } from './actions'
 import { loginLegacy, logoutLegacy, handleCallback, restoreSession, CallbackResult } from './utils'
 import { isExpired } from './selectors'
 import { AuthData, LoginOptions } from './types'
+import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
+import { loadProjectsRequest } from 'modules/project/actions'
+import { loadDeploymentsRequest } from 'modules/deployment/actions'
 
 export function* authSaga() {
   yield fork(handleRestoreSession)
@@ -22,7 +29,8 @@ export function* authSaga() {
     takeLatest(LEGACY_LOGIN, handleLogin),
     takeLatest(LEGACY_LOGOUT, handleLogout),
     takeLatest(LEGACY_AUTH_REQUEST, handleAuthRequest),
-    takeLatest(MIGRATION_REQUEST, handleMigrationRequest)
+    takeLatest(MIGRATION_REQUEST, handleMigrationRequest),
+    takeLatest(MIGRATION_SUCCESS, handleMigrationsSuccess)
   ])
 }
 
@@ -66,9 +74,16 @@ export function* handleAuthRequest() {
 
 function* handleMigrationRequest() {
   try {
-    yield call(() => builder.migrate())
-    yield put(migrationSuccess())
+    const result = yield call(() => builder.migrate())
+    yield put(migrationSuccess(result))
   } catch (error) {
     yield put(migrationFailure(error.message))
   }
+}
+
+function* handleMigrationsSuccess(action: MigrationSuccessAction) {
+  yield put(loadProjectsRequest())
+  yield put(loadDeploymentsRequest())
+  yield put(replace(locations.root()))
+  yield put(openModal('MigrationModal', action.payload.result))
 }

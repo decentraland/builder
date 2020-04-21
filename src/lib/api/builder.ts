@@ -14,6 +14,7 @@ import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
+import { Auth0MigrationResult } from 'modules/auth/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -429,7 +430,13 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async migrate() {
-    return this.request('post', `/migrate`, null, authorizeAuth0())
+    const result = await this.request('post', `/migrate`, null, authorizeAuth0())
+    return result as Auth0MigrationResult
+  }
+
+  async fetchProjectsToMigrate() {
+    const projects = await this.request('get', `/migrate`, null, authorizeAuth0())
+    return projects.map(fromRemoteProject) as Project[]
   }
 }
 

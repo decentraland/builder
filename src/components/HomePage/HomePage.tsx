@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Tabs } from 'decentraland-ui'
@@ -15,8 +16,10 @@ import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
+import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, State, DefaultProps } from './HomePage.types'
+import TopBanner from './TopBanner'
 import './HomePage.css'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
@@ -86,26 +89,32 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   renderProjects = () => {
-    const { isLoggedIn, didSync, projects } = this.props
+    const { isLoggedIn, didSync, projects, didMigrate, needsMigration } = this.props
 
     if (projects.length > 0) {
       return projects.map((project, index) => <ProjectCard key={index} project={project} />)
     } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
-          <div>
-            <T
-              id="home_page.no_projects_guest"
-              values={{
-                br: <br />,
-                sign_in: (
-                  <a href="#" onClick={this.handleLogin}>
-                    {t('user_menu.sign_in')}
-                  </a>
-                )
-              }}
-            />
-          </div>
+          {needsMigration && !didMigrate ? (
+            <div>
+              You need to <Link to={locations.migrate()}>migrate</Link> your Scenes.
+            </div>
+          ) : (
+            <div>
+              <T
+                id="home_page.no_projects_guest"
+                values={{
+                  br: <br />,
+                  sign_in: (
+                    <a href="#" onClick={this.handleLogin}>
+                      {t('user_menu.sign_in')}
+                    </a>
+                  )
+                }}
+              />
+            </div>
+          )}
         </div>
       )
     }
@@ -140,7 +149,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page, didCreate, didSync, isLoggedIn, isLoggingIn } = this.props
+    const { projects, isFetching, totalPages, page, didCreate, didSync, needsMigration, didMigrate, isLoggedIn, isLoggingIn } = this.props
     if (isLoggingIn || isFetching) {
       return <LoadingPage />
     }
@@ -151,7 +160,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        {/* <Ad slot="BUILDER_TOP_BANNER" type="full" /> */}
+        {needsMigration && !didMigrate ? <TopBanner /> : null}
         <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen className="HomePage">
           {showDashboard ? (

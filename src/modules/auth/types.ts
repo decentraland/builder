@@ -68,3 +68,11 @@ export type LoginOptions = {
     metadata?: any
   }
 }
+
+export type Auth0MigrationResult = {
+  assetPacks: number
+  deployments: number
+  likes: number
+  pools: number
+  projects: number
+}

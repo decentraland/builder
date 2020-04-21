@@ -1,3 +1,14 @@
 .TopBanner {
   padding: 12px 16px;
 }
+
+.TopBanner a {
+  font-weight: bold;
+  color: var(--text);
+}
+
+.TopBanner span {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 100;
+}
