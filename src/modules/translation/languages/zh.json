@@ -323,7 +323,14 @@
     "start": "开始设计",
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
-    "title": "设计酷炫场景！"
+    "title": "设计酷炫场景！",
+    "migration": "您需要{link}您的场景",
+    "migration_link": "迁移",
+    "migration_banner": "Builder已切换到基于钱包的帐户。 使用{link}迁移场景",
+    "migration_banner_link": "迁移页面",
+    "migration_modal_title": "迁移成功！",
+    "migration_modal_message": "下列项目已迁移：",
+    "migration_modal_dismiss": "解雇"
   },
   "import_modal": {
     "action": "导入",

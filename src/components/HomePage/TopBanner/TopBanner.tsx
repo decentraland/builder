@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Banner from 'components/Banner'
 import { locations } from '../../../routing/locations'
@@ -11,8 +12,12 @@ export default class TopBanner extends React.PureComponent {
       <Banner className="TopBanner" isClosable={false} name="auth0-migration-banner">
         <p>
           <span>
-            The Builder has switched to wallet based account. Use the <Link to={locations.migrate()}>Migration Page</Link> to migrate your
-            scenes.
+            <T
+              id="home_page.migration_banner"
+              values={{
+                link: <Link to={locations.migrate()}>{t('home_page.migration_banner_link')}</Link>
+              }}
+            />
           </span>
         </p>
       </Banner>

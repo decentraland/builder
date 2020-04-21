@@ -328,7 +328,14 @@
     "start": "Start building",
     "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your Scene to get started",
-    "title": "Build something Cool!"
+    "title": "Build something Cool!",
+    "migration": "You need to {link} your Scenes",
+    "migration_link": "migrate",
+    "migration_banner": "The Builder has switched to wallet based accounts. Use the {link} to migrate your scenes.",
+    "migration_banner_link": "Migration Page",
+    "migration_modal_title": "Migration successful!",
+    "migration_modal_message": "The following items have been migrated:",
+    "migration_modal_dismiss": "Dismiss"
   },
   "import_modal": {
     "action": "Import",

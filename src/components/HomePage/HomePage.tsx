@@ -98,7 +98,12 @@ export default class HomePage extends React.PureComponent<Props, State> {
         <div className="empty-projects">
           {needsMigration && !didMigrate ? (
             <div>
-              You need to <Link to={locations.migrate()}>migrate</Link> your Scenes.
+              <T
+                id="home_page.migration"
+                values={{
+                  link: <Link to={locations.migrate()}>{t('home_page.migration_link')}</Link>
+                }}
+              />
             </div>
           ) : (
             <div>

@@ -326,7 +326,14 @@
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamaño de tu Escena para comenzar",
-    "title": "¡Construye algo genial!"
+    "title": "¡Construye algo genial!",
+    "migration": "Necesitas {link} tus Escenas",
+    "migration_link": "migrar",
+    "migration_banner": "El Builder ha comenzado a utilizar billeteras en lugar de emails. Usa la {link} para migrar tus escenas.",
+    "migration_banner_link": "Página de Migración",
+    "migration_modal_title": "Migración exitosa!",
+    "migration_modal_message": "Los siguientes datos han sido migrados:",
+    "migration_modal_dismiss": "Aceptar"
   },
   "import_modal": {
     "action": "Cargar",
