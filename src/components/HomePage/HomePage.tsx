@@ -125,9 +125,20 @@ export default class HomePage extends React.PureComponent<Props, State> {
     }
     return (
       <div className="empty-projects">
-        <div>
-          <T id="home_page.no_projects" values={{ br: <br /> }} />
-        </div>
+        {needsMigration && !didMigrate ? (
+          <div>
+            <T
+              id="home_page.migration"
+              values={{
+                link: <Link to={locations.migrate()}>{t('home_page.migration_link')}</Link>
+              }}
+            />
+          </div>
+        ) : (
+          <div>
+            <T id="home_page.no_projects" values={{ br: <br /> }} />
+          </div>
+        )}
       </div>
     )
   }
