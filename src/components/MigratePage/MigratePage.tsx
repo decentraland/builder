@@ -192,7 +192,7 @@ export default class MigratePage extends React.PureComponent<Props, State> {
     const { hasStarted } = this.state
     return (
       <>
-        <Navbar />
+        <Navbar onSignIn={undefined} />
         <Page className="MigratePage">
           {!hasStarted ? this.renderStart() : null}
           {hasStarted && !isLegacyLoggedIn ? this.renderLegacyLogin() : null}

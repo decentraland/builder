@@ -6,3 +6,4 @@ export type Props = NavbarProps
 export type MapStateProps = Pick<Props, 'isConnected'>
 export type MapDispatchProps = Pick<Props, 'onSignIn'>
 export type MapDispatch = Dispatch
+export type OwnProps = Partial<Props>
