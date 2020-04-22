@@ -172,7 +172,7 @@ export default class MigratePage extends React.PureComponent<Props, State> {
   }
 
   renderProjects() {
-    return (
+    return this.state.projects.length === 0 ? null : (
       <>
         <Header className="projects-title"> {t('migrate_page.projects_title')}</Header>
         <div className="projects">
