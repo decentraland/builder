@@ -326,11 +326,11 @@
     "title": "设计酷炫场景！",
     "migration": "您需要{link}您的场景",
     "migration_link": "迁移",
-    "migration_banner": "Builder已切换到基于钱包的帐户。 使用{link}迁移场景",
+    "migration_banner": "生成器已切换到基于钱包的帐户。使用{link}迁移场景。",
     "migration_banner_link": "迁移页面",
     "migration_modal_title": "迁移成功！",
     "migration_modal_message": "下列项目已迁移：",
-    "migration_modal_dismiss": "解雇"
+    "migration_modal_dismiss": "解散"
   },
   "import_modal": {
     "action": "导入",
