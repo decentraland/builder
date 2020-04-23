@@ -18,7 +18,7 @@ import {
   CHANGE_ACCOUNT
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Authenticator } from 'dcl-crypto'
-import { replace } from 'connected-react-router'
+import { replace, getLocation } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import {
   GENERATE_IDENTITY_REQUEST,
@@ -165,5 +165,9 @@ function* handleChangeAccount() {
     yield put(loginRequest(true))
   }
   yield put(clearAssetPacks())
-  yield put(replace(locations.root()))
+
+  const location: ReturnType<typeof getLocation> = yield select(getLocation)
+  if (location.pathname !== locations.migrate()) {
+    yield put(replace(locations.root()))
+  }
 }
