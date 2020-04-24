@@ -1,6 +1,6 @@
-import { User } from 'modules/auth/types'
+import { Profile } from 'modules/profile/types'
 
 export type Props = {
-  user?: User | null
+  profile?: Profile
   size: 'small' | 'medium' | 'large' | 'responsive'
 }

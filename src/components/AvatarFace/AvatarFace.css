@@ -1,6 +1,6 @@
 .AvatarFace {
   border-radius: 100%;
-  background-color: #f3f2f5;
+  background-color: rgba(var(--bluish-steel-raw), 0.4);
   width: 42px;
   height: 42px;
   overflow: hidden;

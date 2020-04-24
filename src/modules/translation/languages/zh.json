@@ -323,7 +323,14 @@
     "start": "开始设计",
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
-    "title": "设计酷炫场景！"
+    "title": "设计酷炫场景！",
+    "migration": "您需要{link}您的场景",
+    "migration_link": "迁移",
+    "migration_banner": "生成器已切换到基于钱包的帐户。使用{link}迁移场景。",
+    "migration_banner_link": "迁移页面",
+    "migration_modal_title": "迁移成功！",
+    "migration_modal_message": "下列项目已迁移：",
+    "migration_modal_dismiss": "解散"
   },
   "import_modal": {
     "action": "导入",
@@ -371,21 +378,40 @@
     },
     "success": "谢谢，我们会与您联系!"
   },
+  "migrate_page": {
+    "step_one_title": "迁移您的帐户",
+    "step_one_message_line_one": "为了在我们的产品中提供隐秘的体验，我们已将Builder的帐户系统从电子邮件切换为基于钱包的帐户。这意味着您将需要连接一个以太坊钱包，以将场景存储在云中。如果您没有钱包，可以了解更多有关如何获得钱包的信息{link}。",
+    "step_one_link": "这里",
+    "step_one_message_line_two": "如果您的场景已存储在电子邮件帐户中，则可以使用此页面将它们迁移到您的钱包帐户。",
+    "step_one_cta": "开始迁移",
+    "step_two_title": "使用您的电子邮件登录",
+    "step_two_message": "请使用您的电子邮件帐户登录以查找需要迁移的场景。",
+    "step_two_cta": "登录",
+    "step_three_title": "连接你的钱包",
+    "step_three_message": "请连接您的钱包以继续。如果您没有钱包，请点击{link}。",
+    "step_three_link": "初学者指南",
+    "step_three_cta": "连接",
+    "step_three_error": "请安装{metamask}或其它以太坊钱包以继续",
+    "step_four_title": "迁移场景",
+    "step_four_message": "将电子邮件帐户下的所有场景和资产包迁移到您的钱包帐户中。",
+    "step_four_cta": "迁移",
+    "projects_title": "以下场景将被迁移："
+  },
   "scene_list_page": {
-    "projects_title": "Scene Pool",
-    "no_projects": "It looks like we don't have any Scenes",
+    "projects_title": "社区场景",
+    "no_projects": "没有结果",
     "filters": {
       "creator-contest-2019-12": "Creator Contest (Submission)",
       "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "All collections",
-      "all_users": "All users",
-      "only_me": "Only me",
-      "newest": "Newest",
-      "likes": "Likes",
-      "size": "Size",
-      "items": "Items",
-      "smart_items": "Smart items",
-      "name": "Name"
+      "all_groups": "所有收藏",
+      "all_users": "全部用户",
+      "only_me": "只有我",
+      "newest": "最新",
+      "likes": "最喜欢",
+      "size": "尺寸",
+      "items": "项目",
+      "smart_items": "互动项目",
+      "name": "名称"
     }
   },
   "public_page": {

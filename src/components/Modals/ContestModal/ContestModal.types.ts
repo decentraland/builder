@@ -1,17 +1,18 @@
+import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Project } from 'modules/project/types'
 import { PoolGroup } from 'modules/poolGroup/types'
-import { shareProject } from 'modules/project/actions'
-import { login } from 'modules/auth/actions'
-import { shareScene } from 'modules/ui/share/actions'
-import { openModal } from 'modules/modal/actions'
-import { deployToPoolRequest } from 'modules/deployment/actions'
+import { shareProject, ShareProjectAction } from 'modules/project/actions'
+import { shareScene, ShareAction } from 'modules/ui/share/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { deployToPoolRequest, DeployToPoolRequestAction } from 'modules/deployment/actions'
+import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
 
 export type Props = ModalProps & {
   metadata: {}
   error: string | null
   project: Project
-  poolGroup: PoolGroup | null,
+  poolGroup: PoolGroup | null
   isLoading: boolean
   isLoggedIn: boolean
   isReady: boolean
@@ -19,14 +20,18 @@ export type Props = ModalProps & {
   progress: number
   onOpenModal: typeof openModal
   onUpdate: typeof shareProject
-  onLogin: typeof login
+  onLogin: typeof loginRequest
   onShare: typeof shareScene
   onDeployToPool: typeof deployToPoolRequest
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
-export type MapStateProps = Pick<Props, 'error' | 'project' | 'poolGroup' | 'isLoading' | 'isLoggedIn' | 'isReady' | 'progress' | 'isSubmitting'>
+export type MapStateProps = Pick<
+  Props,
+  'error' | 'project' | 'poolGroup' | 'isLoading' | 'isLoggedIn' | 'isReady' | 'progress' | 'isSubmitting'
+>
 export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin' | 'onShare' | 'onOpenModal' | 'onDeployToPool'>
+export type MapDispatch = Dispatch<ShareProjectAction | LoginRequestAction | ShareAction | OpenModalAction | DeployToPoolRequestAction>
 
 export type State = {
   isSuccess: boolean

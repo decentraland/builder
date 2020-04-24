@@ -17,7 +17,9 @@ import {
   SAVE_ASSET_PACK_REQUEST,
   SAVE_ASSET_PACK_SUCCESS,
   DELETE_ASSET_PACK_SUCCESS,
-  SET_PROGRESS
+  SET_PROGRESS,
+  ClearAssetPacksAction,
+  CLEAR_ASSET_PACKS
 } from 'modules/assetPack/actions'
 
 export type AssetPackState = {
@@ -49,6 +51,7 @@ export type AssetPackReducerAction =
   | SetProgressAction
   | SaveAssetPackRequestAction
   | SaveAssetPackSuccessAction
+  | ClearAssetPacksAction
 
 export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducerAction): AssetPackState => {
   switch (action.type) {
@@ -124,6 +127,9 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
           value
         }
       }
+    }
+    case CLEAR_ASSET_PACKS: {
+      return INITIAL_STATE
     }
     default:
       return state

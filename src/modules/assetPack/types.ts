@@ -5,7 +5,7 @@ export type AssetPack = {
   id: string
   title: string
   thumbnail: string
-  userId?: string
+  ethAddress: string | null
   createdAt?: string
   updatedAt?: string
   assets: string[]

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Page, Responsive } from 'decentraland-ui'
+import { Loader, Page, Responsive, Container } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 // import Ad from 'decentraland-ad/lib/Ad/Ad'
 
@@ -10,12 +10,12 @@ import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 
-import SceneViewMenu from './SceneViewMenu'
 import { Props, State } from './SceneViewPage.types'
 
 import './SceneViewPage.css'
 import { locations } from 'routing/locations'
 import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
+import { getName, getFace } from 'modules/profile/utils'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -46,7 +46,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   getType() {
-    return this.props.match && this.props.match.params && this.props.match.params.type || 'public'
+    return (this.props.match && this.props.match.params && this.props.match.params.type) || 'public'
   }
 
   getCurrentProject() {
@@ -106,7 +106,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   renderLoading() {
     return (
       <>
-        <Navbar isFullscreen rightMenu={<SceneViewMenu />} />
+        <Navbar isFullscreen />
         <Page isFullscreen>
           <Loader active size="huge" />
         </Page>
@@ -128,12 +128,15 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
     }
 
     const currentPool = this.getCurrentPool()
-    const { currentAuthor: author } = this.props
+    const { currentAuthor: author, onBack } = this.props
 
     return (
       <>
         {/* {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />} */}
-        {!isPreviewing && <Navbar isFullscreen rightMenu={<SceneViewMenu />} />}
+        {!isPreviewing && <Navbar isFullscreen />}
+        <Container>
+          <div className="BackButton" onClick={onBack}></div>
+        </Container>
         <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
@@ -141,12 +144,20 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             </Responsive>
           </div>
           <div className="scene-action-list">
-            {currentPool && <div className="scene-action">
-              <Chip text={<>
-                <Icon name={currentPool.like ? "heart-full" : "heart"} />
-                {currentPool.likes > 0 && <span className="LikeCount">{currentPool.likes}</span>}
-              </>} type="circle" onClick={this.handleLike} />
-            </div>}
+            {currentPool && (
+              <div className="scene-action">
+                <Chip
+                  text={
+                    <>
+                      <Icon name={currentPool.like ? 'heart-full' : 'heart'} />
+                      {currentPool.likes > 0 && <span className="LikeCount">{currentPool.likes}</span>}
+                    </>
+                  }
+                  type="circle"
+                  onClick={this.handleLike}
+                />
+              </div>
+            )}
             <div style={{ flex: 1 }} />
             <Responsive minWidth={1025} as={React.Fragment}>
               <div className="scene-action">
@@ -161,9 +172,9 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             {author && (
               <div className="author">
                 {t('public_page.made_by')}
-                <span className="author-name"> {author.name}</span>
+                <span className="author-name"> {getName(author)}</span>
                 <div className="avatar">
-                  <img width="24" height="24" src={author.avatar.snapshots.face} />
+                  <img width="24" height="24" src={getFace(author)} />
                 </div>
               </div>
             )}
@@ -182,7 +193,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             </div>
           </div>
         </div>
-        {!isPreviewing && <Footer isFullscreen />}
+        {!isPreviewing && <Footer />}
       </>
     )
   }

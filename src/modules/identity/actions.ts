@@ -1,5 +1,22 @@
 import { action } from 'typesafe-actions'
 import { AuthIdentity } from 'dcl-crypto'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+
+export const LOGIN_REQUEST = '[Request] Login'
+export const LOGIN_SUCCESS = '[Success] Login'
+export const LOGIN_FAILURE = '[Failure] Login'
+
+export const loginRequest = (restoreSession = false) => action(LOGIN_REQUEST, { restoreSession })
+export const loginSuccess = (wallet: Wallet, identity: AuthIdentity) => action(LOGIN_SUCCESS, { wallet, identity })
+export const loginFailure = (error: string) => action(LOGIN_FAILURE, { error })
+
+export type LoginRequestAction = ReturnType<typeof loginRequest>
+export type LoginSuccessAction = ReturnType<typeof loginSuccess>
+export type LoginFailureAction = ReturnType<typeof loginFailure>
+
+export const LOGOUT = 'Logout'
+export const logout = () => action(LOGOUT)
+export type LogoutAction = ReturnType<typeof logout>
 
 export const GENERATE_IDENTITY_REQUEST = '[Request] Generate Identity'
 export const GENERATE_IDENTITY_SUCCESS = '[Success] Generate Identity'
@@ -12,3 +29,7 @@ export const generateIdentityFailure = (address: string, error: string) => actio
 export type GenerateIdentityRequestAction = ReturnType<typeof generateIdentityRequest>
 export type GenerateIdentitySuccessAction = ReturnType<typeof generateIdentitySuccess>
 export type GenerateIdentityFailureAction = ReturnType<typeof generateIdentityFailure>
+
+export const DESTROY_IDENTITY = 'Destroy Identity'
+export const destroyIdentity = (address: string) => action(DESTROY_IDENTITY, { address })
+export type DestroyIdentityAction = ReturnType<typeof destroyIdentity>

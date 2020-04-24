@@ -82,3 +82,6 @@ export const getProjects = createSelector<RootState, number, SortBy, DataByKey<P
       .slice(offset, offset + limit)
   }
 )
+
+export const didMigrate = (state: RootState) => getState(state).didMigrate
+export const needsMigration = (state: RootState) => getState(state).needsMigration

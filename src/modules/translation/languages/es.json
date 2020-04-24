@@ -326,7 +326,14 @@
     "start": "Comenzar",
     "subtitle": "Con herramientas simples y cientos de objetos 3D a tu disposición, el Builder hace que crear sea divertido. ¡Libera tu creatividad!",
     "templates_title": "Escoge el tamaño de tu Escena para comenzar",
-    "title": "¡Construye algo genial!"
+    "title": "¡Construye algo genial!",
+    "migration": "Necesitas {link} tus Escenas",
+    "migration_link": "migrar",
+    "migration_banner": "El Builder ha comenzado a utilizar billeteras en lugar de emails. Usa la {link} para migrar tus escenas.",
+    "migration_banner_link": "Página de Migración",
+    "migration_modal_title": "Migración exitosa!",
+    "migration_modal_message": "Los siguientes datos han sido migrados:",
+    "migration_modal_dismiss": "Aceptar"
   },
   "import_modal": {
     "action": "Cargar",
@@ -374,26 +381,45 @@
     },
     "success": "Gracias, ¡Te mantendremos al tanto!"
   },
+  "migrate_page": {
+    "step_one_title": "Migra tu cuenta",
+    "step_one_message_line_one": "Con el objetivo de mejor la experiencia de nuestros productos, hemos cambiado el sistema de cuentas de usuario del Builder. Hemos dejado de usar emails y pasado a usar una billetera en su lugar. Esto significa que necesitaras conectar una billetera de Ethereum para almacenar tus escenas en la nube. Si no tienes una billetera y quieres aprender como conseguir una has {link}.",
+    "step_one_link": "click aquí",
+    "step_one_message_line_two": "Si tenias escenas almacenadas en tu cuenta de email, puedes migrarlas a tu billetera usando esta página.",
+    "step_one_cta": "Comenzar Migración",
+    "step_two_title": "Inicia sesión con tu Email",
+    "step_two_message": "Por favor inicia sesión con tu email para poder encontrar las escenas que necesitan ser migradas.",
+    "step_two_cta": "Iniciar sesión",
+    "step_three_title": "Conecta tu billetera",
+    "step_three_message": "Por favor conecta tu billetera para continuar. Si no tienes una bbilletera, ahi hay una {link} para conseguir una.",
+    "step_three_link": "guía para principiantes",
+    "step_three_cta": "Conectar",
+    "step_three_error": "Por favor instala {metamask} u otra billetera de Ethereum para continuar.",
+    "step_four_title": "Migra tus escenas",
+    "step_four_message": "Migrar todas tus escenas y asset packs de tu cuenta de email a tu billetera.",
+    "step_four_cta": "Migrar",
+    "projects_title": "Las siguientes Escenas seran migradas:"
+  },
   "not_found_page": {
     "back": "Volver a tus Escenas",
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
   },
   "scene_list_page": {
-    "projects_title": "Scene Pool",
-    "no_projects": "It looks like we don't have any Scenes",
+    "projects_title": "Escenas de la Comunidad",
+    "no_projects": "No se encotraron Escenas",
     "filters": {
       "creator-contest-2019-12": "Creator Contest (Submission)",
       "qualified-creator-contest-2019-12": "Creator Contest",
-      "all_groups": "All collections",
-      "all_users": "All users",
-      "only_me": "Only me",
-      "newest": "Newest",
-      "likes": "Likes",
-      "size": "Size",
-      "items": "Items",
-      "smart_items": "Smart items",
-      "name": "Name"
+      "all_groups": "Todas las colecciones",
+      "all_users": "Todos los usuarios",
+      "only_me": "Solo yo",
+      "newest": "Más Nuevas",
+      "likes": "Más Favoritos",
+      "size": "Tamaño",
+      "items": "Más Objetos",
+      "smart_items": "Más Objetos Interactivos",
+      "name": "Nombre"
     }
   },
   "public_page": {

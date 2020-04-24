@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { isFetching, getCurrentPublicProject, getCurrentPool } from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
 import { isPreviewing, isReady, isLoading } from 'modules/editor/selectors'
-import { isLoggedIn } from 'modules/auth/selectors'
 import { loadPublicProjectRequest } from 'modules/project/actions'
 import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
@@ -13,6 +12,9 @@ import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
 import { likePoolRequest } from 'modules/pool/actions'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { push } from 'connected-react-router'
+import { locations } from 'routing/locations'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
@@ -30,7 +32,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPreview: () => dispatch(togglePreview(true)),
   onCloseEditor: () => dispatch(closeEditor()),
   onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type)),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onBack: () => dispatch(push(locations.poolSearch()))
 })
 
 export default connect(mapState, mapDispatch)(SceneViewPage)

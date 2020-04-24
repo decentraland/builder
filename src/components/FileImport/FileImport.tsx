@@ -22,7 +22,7 @@ export default class FileImport<T> extends React.Component<Props<T>> {
         {items.length === 0 && (
           <span className="cta">
             <div className="image" />
-            {renderAction(open)}
+            <div>{renderAction(open)}</div>
           </span>
         )}
       </div>

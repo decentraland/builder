@@ -20,23 +20,12 @@ export enum ProgressStage {
 
 export type ContentManifest = Record<string, ContentIdentifier>
 
-export type ContentUploadRequestMetadata = {
-  value: string
-  signature: string
-  pubKey: string
-  validityType: number
-  validity: Date
-  sequence: number
-  timestamp: number
-  userId: string
-}
-
 export type Deployment = {
   id: string
   lastPublishedCID: string | null
   isDirty: boolean
   placement: Placement
-  userId: string | null
+  ethAddress: string | null
   createdAt: string
   updatedAt: string
 }

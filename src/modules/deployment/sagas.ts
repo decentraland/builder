@@ -38,13 +38,14 @@ import { getCurrentDeployment, getData as getDeployments } from './selectors'
 import { SET_PROJECT } from 'modules/project/actions'
 import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
-import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
-import { getSub, isLoggedIn } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { content, CONTENT_SERVER_URL } from 'lib/api/content'
 import { builder } from 'lib/api/builder'
 import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
 import { getIdentity } from 'modules/identity/utils'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -68,7 +69,7 @@ export function* deploymentSaga() {
   yield takeLatest(UPDATE_TRANSFORM, handleMarkDirty)
   yield takeLatest(SET_PROJECT, handleMarkDirty)
   yield takeLatest(LOAD_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
-  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
+  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
 }
 
 function* handleMarkDirty() {
@@ -179,7 +180,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       lastPublishedCID: data.entityId,
       placement,
       isDirty: false,
-      userId: yield select(getSub),
+      ethAddress: yield select(getAddress) || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -290,6 +291,6 @@ function* handleFetchDeploymentsRequest(_action: LoadDeploymentsRequestAction) {
   }
 }
 
-function* handleAuthSuccess(_action: AuthSuccessAction) {
+function* handleLoginSuccess(_action: LoginSuccessAction) {
   yield put(loadDeploymentsRequest())
 }

@@ -1,20 +1,19 @@
-import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps, OwnProps } from './ContestModal.types'
-import ShareModal from './ContestModal'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getActivePoolGroup } from 'modules/poolGroup/selectors'
 import { isReady, isLoading } from 'modules/editor/selectors'
 import { shareProject } from 'modules/project/actions'
-import { isLoggedIn } from 'modules/auth/selectors'
-import { login } from 'modules/auth/actions'
 import { shareScene } from 'modules/ui/share/actions'
 import { ShareTarget } from 'modules/ui/share/types'
 import { openModal } from 'modules/modal/actions'
 import { getError, getProgress, isLoading as isSubmitting } from 'modules/deployment/selectors'
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
+import { isLoggedIn } from 'modules/identity/selectors'
+import { loginRequest } from 'modules/identity/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ContestModal.types'
+import ShareModal from './ContestModal'
 
 const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
   error: getError(state),
@@ -27,16 +26,13 @@ const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
   isSubmitting: isSubmitting(state)
 })
 
-const mapDispatch = (dispatch: Dispatch): MapDispatchProps => ({
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onUpdate: (id: string) => dispatch(shareProject(id)),
-  onLogin: options => dispatch(login(options)),
+  onLogin: () => dispatch(loginRequest()),
   onShare: (target: ShareTarget) => dispatch(shareScene(target)),
   onDeployToPool: (projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) =>
     dispatch(deployToPoolRequest(projectId, additionalInfo))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ShareModal)
+export default connect(mapState, mapDispatch)(ShareModal)

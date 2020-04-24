@@ -21,8 +21,8 @@ import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 import { locations } from 'routing/locations'
 
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToLand.types'
-import WalletSignIn from './DeployToLand'
-import { isLoggedIn } from 'modules/auth/selectors'
+import DeployToLand from './DeployToLand'
+import { isLoggedIn } from 'modules/identity/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -54,7 +54,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onFetchDeployments: () => dispatch(loadDeploymentsRequest())
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(WalletSignIn)
+export default connect(mapState, mapDispatch)(DeployToLand)

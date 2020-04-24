@@ -7,7 +7,7 @@ import { RootState } from 'modules/common/types'
 import { getProjectId } from 'modules/location/utils'
 import { getData as gerProjectsData } from 'modules/project/selectors'
 import { getLoading as getAuthLoading } from 'modules/auth/selectors'
-import { AUTH_REQUEST } from 'modules/auth/actions'
+import { LEGACY_AUTH_REQUEST } from 'modules/auth/actions'
 import { LOAD_PROJECTS_REQUEST, LOAD_PUBLIC_PROJECT_REQUEST } from 'modules/project/actions'
 import { PoolState } from './reducer'
 import { LOAD_POOLS_REQUEST } from './actions'
@@ -25,60 +25,45 @@ export const getTotal = (state: RootState) => getState(state).total
 
 export const getList = (state: RootState) => getState(state).list
 
-export const getTotalPages = createSelector(
-  getTotal,
-  (total) => {
-    switch (total) {
-      case null:
-      case 0:
-        return total
-      default:
-        return Math.ceil(total / RECORDS_PER_PAGE)
-    }
+export const getTotalPages = createSelector(getTotal, total => {
+  switch (total) {
+    case null:
+    case 0:
+      return total
+    default:
+      return Math.ceil(total / RECORDS_PER_PAGE)
   }
-)
+})
 
-export const getPoolList = createSelector(
-  getList,
-  getData,
-  (list, pools) => {
-    if (list === null) {
-      return null
-    }
-
-    return list.map(id => pools[id])
-  }
-)
-
-export const getCurrentPublicProject = createSelector(
-  getProjectId,
-  gerProjectsData,
-  (projectId, projects) => {
-    if (projectId && projects[projectId] && projects[projectId].isPublic) {
-      return projects[projectId]
-    }
-
+export const getPoolList = createSelector(getList, getData, (list, pools) => {
+  if (list === null) {
     return null
   }
-)
 
-export const getCurrentPool = createSelector(
-  getProjectId,
-  getData,
-  (projectId, pools) => {
-    if (projectId && pools[projectId]) {
-      return pools[projectId]
-    }
+  return list.map(id => pools[id])
+})
 
-    return null
+export const getCurrentPublicProject = createSelector(getProjectId, gerProjectsData, (projectId, projects) => {
+  if (projectId && projects[projectId] && projects[projectId].isPublic) {
+    return projects[projectId]
   }
-)
+
+  return null
+})
+
+export const getCurrentPool = createSelector(getProjectId, getData, (projectId, pools) => {
+  if (projectId && pools[projectId]) {
+    return pools[projectId]
+  }
+
+  return null
+})
 
 export const isFetching = createSelector(
   getAuthLoading,
   getLoading,
   (authLoading, projectLoading) =>
-    isLoadingType(authLoading, AUTH_REQUEST) ||
+    isLoadingType(authLoading, LEGACY_AUTH_REQUEST) ||
     isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST) ||
     isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST) ||
     isLoadingType(projectLoading, LOAD_POOLS_REQUEST)
@@ -92,11 +77,11 @@ export const getSearchGroup = createSelector(
   }
 )
 
-export const getSearchUserId = createSelector(
+export const getSearchEthAddress = createSelector(
   (state: RootState) => getLocation(state),
   location => {
     const params = new URLSearchParams(location.search)
-    return routing.getValue(params.get('user_id')) as string | undefined
+    return routing.getValue(params.get('eth_address')) as string | undefined
   }
 )
 
@@ -112,7 +97,11 @@ export const getSortBy = createSelector(
   (state: RootState) => getLocation(state),
   location => {
     const params = new URLSearchParams(location.search)
-    return routing.getSortBy(params.get('sort_by'), [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE, SortBy.ITEMS, SortBy.SMART_ITEMS], SortBy.NEWEST)
+    return routing.getSortBy(
+      params.get('sort_by'),
+      [SortBy.NEWEST, SortBy.LIKES, SortBy.NAME, SortBy.SIZE, SortBy.ITEMS, SortBy.SMART_ITEMS],
+      SortBy.NEWEST
+    )
   }
 )
 

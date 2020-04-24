@@ -4,7 +4,6 @@ import { Button, Loader, ModalNavigation, Input, InputOnChangeData } from 'decen
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { locations } from 'routing/locations'
 
 import LoginModal from '../LoginModal'
 import { ShareModalType, ShareModalMetadata } from '../ShareModal/ShareModal.types'
@@ -41,14 +40,8 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   }
 
   handleLogin = () => {
-    const { project, name, metadata, onLogin } = this.props
-    onLogin({
-      returnUrl: locations.editor(project.id),
-      openModal: {
-        name,
-        metadata
-      }
-    })
+    const { onLogin } = this.props
+    onLogin()
   }
 
   handleShare = () => {

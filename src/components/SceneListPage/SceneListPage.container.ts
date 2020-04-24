@@ -9,7 +9,7 @@ import {
   getPage,
   getSortOrder,
   getSearchGroup,
-  getSearchUserId,
+  getSearchEthAddress,
   getTotalPages
 } from 'modules/pool/selectors'
 import { RootState } from 'modules/common/types'
@@ -17,7 +17,7 @@ import { openModal } from 'modules/modal/actions'
 import { PoolsRequestFilters } from 'modules/pool/types'
 import { loadPoolsRequest } from 'modules/pool/actions'
 import { getAllPoolGroups } from 'modules/poolGroup/selectors'
-import { isLoggedIn } from 'modules/auth/selectors'
+import { isLoggedIn } from 'modules/identity/selectors'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneListPage.types'
 import SceneListPage from './SceneListPage'
@@ -32,7 +32,7 @@ const mapState = (state: RootState): MapStateProps => ({
   sortBy: getSortBy(state),
   sortOrder: getSortOrder(state),
   group: getSearchGroup(state),
-  userId: getSearchUserId(state),
+  ethAddress: getSearchEthAddress(state),
   isLoggedIn: isLoggedIn(state)
 })
 

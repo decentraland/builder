@@ -9,7 +9,7 @@ import { getLoading as getLoadingAuth } from 'modules/auth/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { LOAD_MANIFEST_REQUEST } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
-import { AUTH_REQUEST } from 'modules/auth/actions'
+import { LEGACY_AUTH_REQUEST } from 'modules/auth/actions'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Asset } from 'modules/asset/types'
@@ -79,7 +79,7 @@ export const isFetching = createSelector<RootState, Project | null, boolean, Loa
       return false
     } else if (isLoadingType(loadingProject, LOAD_MANIFEST_REQUEST)) {
       return true
-    } else if (isLoadingType(loadingAuth, AUTH_REQUEST)) {
+    } else if (isLoadingType(loadingAuth, LEGACY_AUTH_REQUEST)) {
       return true
     }
     return false

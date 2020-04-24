@@ -50,3 +50,8 @@ export const deleteAssetPackFailure = (assetPack: FullAssetPack, error: string) 
 export type DeleteAssetPackRequestAction = ReturnType<typeof deleteAssetPackRequest>
 export type DeleteAssetPackSuccessAction = ReturnType<typeof deleteAssetPackSuccess>
 export type DeleteAssetPackFailureAction = ReturnType<typeof deleteAssetPackFailure>
+
+// Clear Asset Packs
+export const CLEAR_ASSET_PACKS = 'Clear Asset Packs'
+export const clearAssetPacks = () => action(CLEAR_ASSET_PACKS)
+export type ClearAssetPacksAction = ReturnType<typeof clearAssetPacks>

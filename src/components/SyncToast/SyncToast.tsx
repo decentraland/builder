@@ -3,7 +3,6 @@ import * as React from 'react'
 import { Close, Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { locations } from 'routing/locations'
 
 import { Props, State } from './SyncToast.types'
 import './SyncToast.css'
@@ -33,9 +32,7 @@ export default class SyncToast extends React.PureComponent<Props, State> {
   handleLogin = () => {
     const { onLogin } = this.props
     this.analytics.track(SYNC_SIGN_IN_EVENT)
-    onLogin({
-      returnUrl: locations.root()
-    })
+    onLogin()
   }
 
   render() {

@@ -1,9 +1,11 @@
 import uuidv4 from 'uuid/v4'
+import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
@@ -46,18 +48,16 @@ import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, cr
 import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
-import { AUTH_SUCCESS, AuthSuccessAction } from 'modules/auth/actions'
 import { isRemoteURL } from 'modules/media/utils'
-import { getSub } from 'modules/auth/selectors'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 import { builder } from 'lib/api/builder'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { loadProfileRequest } from 'modules/profile/actions'
 import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
+import { loadProfileRequest } from 'modules/profile/actions'
+import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -95,7 +95,7 @@ export function* projectSaga() {
   yield takeLatest(LOAD_PUBLIC_PROJECT_REQUEST, handleLoadPublicProject)
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
-  yield takeLatest(AUTH_SUCCESS, handleAuthSuccess)
+  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -125,7 +125,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
       cols
     },
     sceneId: scene.id,
-    userId: yield select(getSub),
+    ethAddress: yield select(getAddress),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
@@ -241,7 +241,7 @@ function* handleImportProject(action: ImportProjectAction) {
 
   for (let saved of projects) {
     if (saved.scene && saved.project) {
-      yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, userId: null }))])
+      yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, ethAddress: yield select(getAddress) }))])
     }
   }
 }
@@ -252,8 +252,8 @@ function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
     const project: Project | Pool = yield call(() => builder.fetchPublicProject(id, type))
     yield put(loadPublicProjectSuccess(project, type))
     if (project) {
-      if (project.userId) {
-        yield put(loadProfileRequest(project.userId))
+      if (project.ethAddress) {
+        yield put(loadProfileRequest(project.ethAddress))
       }
     }
   } catch (e) {
@@ -286,6 +286,6 @@ function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
   }
 }
 
-function* handleAuthSuccess(_action: AuthSuccessAction) {
+function* handleLoginSuccess(_action: LoginSuccessAction) {
   yield put(loadProjectsRequest())
 }

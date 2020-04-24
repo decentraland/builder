@@ -16,23 +16,23 @@ export type AuthData = {
 }
 
 export type User = {
-  id: string,
-  name: string,
-  description: string,
-  ethAddress: string,
+  id: string
+  name: string
+  description: string
+  ethAddress: string
   avatar: Avatar
-  version: number,
-  createdAt: Date,
+  version: number
+  createdAt: Date
   updatedAt: Date
 }
 
 export type RemoteUser = {
-  name: string,
-  description: string,
-  ethAddress: string,
+  name: string
+  description: string
+  ethAddress: string
   avatar: Avatar
-  version: number,
-  createdAt: string,
+  version: number
+  createdAt: string
   updatedAt: string
 }
 
@@ -67,4 +67,12 @@ export type LoginOptions = {
     name: string
     metadata?: any
   }
+}
+
+export type Auth0MigrationResult = {
+  assetPacks: number
+  deployments: number
+  likes: number
+  pools: number
+  projects: number
 }

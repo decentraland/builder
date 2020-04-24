@@ -12,7 +12,8 @@ import {
   removeScriptSrc,
   sanitizeEntityName,
   sanitizeEntityName2,
-  dedupeEntityName
+  dedupeEntityName,
+  replaceUserIdWithEthAddress
 } from './utils'
 
 export const migrations = {
@@ -107,6 +108,18 @@ export const migrations = {
       const scene = state.scene.present.data[sceneId]
       dedupeEntityName(scene)
     }
+    return state
+  },
+  '12': (state: RootState) => {
+    for (let projectId in state.project.data) {
+      const project = state.project.data[projectId]
+      replaceUserIdWithEthAddress(project)
+    }
+    return state
+  },
+  '13': (state: RootState) => {
+    const needsMigration = !!(state && state.ui && state.ui.dashboard && state.ui.dashboard.didSync)
+    state.ui.dashboard.needsMigration = needsMigration
     return state
   }
 }

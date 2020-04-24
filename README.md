@@ -40,7 +40,6 @@ REACT_APP_CONTENT_SERVER_URL=https://content.decentraland.org
 REACT_APP_DAR_URL=https://schema-api-staging.now.sh/dar
 REACT_APP_BUILDER_SERVER_URL=https://builder-api.decentraland.org/v1
 REACT_APP_MARKETPLACE_URL=https://api.decentraland.org/v1
-REACT_APP_PROFILE_API_URL=https://profile.decentraland.org/api/v1
 
 # Third party
 

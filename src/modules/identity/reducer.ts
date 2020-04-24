@@ -6,7 +6,9 @@ import {
   GenerateIdentityFailureAction,
   GENERATE_IDENTITY_REQUEST,
   GENERATE_IDENTITY_SUCCESS,
-  GENERATE_IDENTITY_FAILURE
+  GENERATE_IDENTITY_FAILURE,
+  DestroyIdentityAction,
+  DESTROY_IDENTITY
 } from './actions'
 
 export type IdentityState = {
@@ -21,7 +23,11 @@ export const INITIAL_STATE: IdentityState = {
   error: null
 }
 
-export type IdentityReducerAction = GenerateIdentityRequestAction | GenerateIdentitySuccessAction | GenerateIdentityFailureAction
+export type IdentityReducerAction =
+  | GenerateIdentityRequestAction
+  | GenerateIdentitySuccessAction
+  | GenerateIdentityFailureAction
+  | DestroyIdentityAction
 
 export function identityReducer(state: IdentityState = INITIAL_STATE, action: IdentityReducerAction): IdentityState {
   switch (action.type) {
@@ -48,6 +54,15 @@ export function identityReducer(state: IdentityState = INITIAL_STATE, action: Id
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case DESTROY_IDENTITY: {
+      const { address } = action.payload
+      const data = { ...state.data }
+      delete data[address]
+      return {
+        ...state,
+        data
       }
     }
     default:

@@ -1,17 +1,17 @@
 import { connect } from 'react-redux'
 
-import { getSub } from 'modules/auth/selectors'
 import { RootState } from 'modules/common/types'
 import { getSelectedCategory, getSelectedAssetPack, getSearch } from 'modules/ui/sidebar/selectors'
 import { selectCategory, selectAssetPack, searchAssets } from 'modules/ui/sidebar/actions'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './SidebarHeader.types'
 import SidebarHeader from './SidebarHeader'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   selectedAssetPack: getSelectedAssetPack(state),
   selectedCategory: getSelectedCategory(state),
-  userId: getSub(state),
+  ethAddress: getAddress(state),
   search: getSearch(state)
 })
 

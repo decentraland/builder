@@ -1,6 +1,15 @@
 import { put, call, takeLatest } from 'redux-saga/effects'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
-import { LikePoolRequestAction, likePoolFailure, likePoolSuccess, LIKE_POOL_REQUEST, LoadPoolsRequestAction, loadPoolsFailure, loadPoolsSuccess, LOAD_POOLS_REQUEST } from './actions'
+import {
+  LikePoolRequestAction,
+  likePoolFailure,
+  likePoolSuccess,
+  LIKE_POOL_REQUEST,
+  LoadPoolsRequestAction,
+  loadPoolsFailure,
+  loadPoolsSuccess,
+  LOAD_POOLS_REQUEST
+} from './actions'
 import { builder } from 'lib/api/builder'
 import { stackHandle, getPagination } from './utils'
 import { Pool, RECORDS_PER_PAGE } from './types'
@@ -16,7 +25,11 @@ export const handlePoolLike = stackHandle(
       yield put(likePoolFailure(e.message))
     }
   },
-  function mergeLikeAction(currentAction: LikePoolRequestAction, nextAction: LikePoolRequestAction | null, newAction: LikePoolRequestAction) {
+  function mergeLikeAction(
+    currentAction: LikePoolRequestAction,
+    nextAction: LikePoolRequestAction | null,
+    newAction: LikePoolRequestAction
+  ) {
     if (nextAction === null && currentAction.payload.like !== newAction.payload.like) {
       return newAction
     } else if (nextAction && nextAction.payload.like !== newAction.payload.like) {
@@ -36,11 +49,13 @@ export function* poolSaga() {
 }
 
 function* handleLoadPools(action: LoadPoolsRequestAction) {
-  const { group, page, sortBy, sortOrder, userId } = action.payload
+  const { group, page, sortBy, sortOrder, ethAddress } = action.payload
 
   try {
     const { offset, limit } = getPagination(page || 1, RECORDS_PER_PAGE)
-    const { items, total }: { items: Pool[], total: number } = yield call(() => builder.fetchPoolsPage({ offset, limit, group, user_id: userId, sort_by: sortBy, sort_order: sortOrder }))
+    const { items, total }: { items: Pool[]; total: number } = yield call(() =>
+      builder.fetchPoolsPage({ offset, limit, group, eth_address: ethAddress, sort_by: sortBy, sort_order: sortOrder })
+    )
     const records: ModelById<Pool> = {}
     for (const item of items) {
       records[item.id] = item

@@ -5,7 +5,7 @@ const pull = require('pull-stream')
 const Importer = require('ipfs-unixfs-engine').Importer
 const toBuffer = require('blob-to-buffer')
 
-import { ContentIdentifier, ContentServiceFile, ContentManifest, ContentUploadRequestMetadata, Deployment, DeploymentStatus } from './types'
+import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, DeploymentStatus } from './types'
 
 export async function getCID(files: ContentServiceFile[], shareRoot: boolean): Promise<string> {
   const importer = new Importer(new MemoryDatastore(), { onlyHash: true })
@@ -55,27 +55,6 @@ export function makeContentFile(path: string, content: string | Blob): Promise<C
       reject(new Error('Unable to create ContentFile: content must be a string or a Blob'))
     }
   })
-}
-
-export function buildUploadRequestMetadata(
-  rootCID: string,
-  signature: string,
-  address: string,
-  timestamp: number,
-  userId: string | null
-): ContentUploadRequestMetadata {
-  const validity = new Date()
-  validity.setMonth(validity.getMonth() + 6)
-  return {
-    value: rootCID,
-    signature,
-    pubKey: address.toLowerCase(),
-    validityType: 0,
-    validity,
-    sequence: 2,
-    timestamp,
-    userId: userId || ''
-  }
 }
 
 export function getStatus(deployment: Deployment) {

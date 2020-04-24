@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Tabs } from 'decentraland-ui'
@@ -15,8 +16,10 @@ import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
+import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, State, DefaultProps } from './HomePage.types'
+import TopBanner from './TopBanner'
 import './HomePage.css'
 
 const PROMO_URL = env.get('REACT_APP_PROMO_URL')
@@ -86,31 +89,56 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   renderProjects = () => {
-    const { isLoggedIn, didSync, projects } = this.props
+    const { isLoggedIn, didSync, projects, didMigrate, needsMigration } = this.props
 
     if (projects.length > 0) {
       return projects.map((project, index) => <ProjectCard key={index} project={project} />)
     } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
-          {' '}
-          <T
-            id="home_page.no_projects_guest"
-            values={{
-              br: <br />,
-              sign_in: (
-                <a href="#" onClick={this.handleLogin}>
-                  {t('user_menu.sign_in')}
-                </a>
-              )
-            }}
-          />
+          {needsMigration && !didMigrate ? (
+            <div>
+              <T
+                id="home_page.migration"
+                values={{
+                  link: <Link to={locations.migrate()}>{t('home_page.migration_link')}</Link>
+                }}
+              />
+            </div>
+          ) : (
+            <div>
+              <T
+                id="home_page.no_projects_guest"
+                values={{
+                  br: <br />,
+                  sign_in: (
+                    <a href="#" onClick={this.handleLogin}>
+                      {t('user_menu.sign_in')}
+                    </a>
+                  )
+                }}
+              />
+            </div>
+          )}
         </div>
       )
     }
     return (
       <div className="empty-projects">
-        <T id="home_page.no_projects" values={{ br: <br /> }} />
+        {needsMigration && !didMigrate ? (
+          <div>
+            <T
+              id="home_page.migration"
+              values={{
+                link: <Link to={locations.migrate()}>{t('home_page.migration_link')}</Link>
+              }}
+            />
+          </div>
+        ) : (
+          <div>
+            <T id="home_page.no_projects" values={{ br: <br /> }} />
+          </div>
+        )}
       </div>
     )
   }
@@ -137,8 +165,8 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page, didCreate, didSync, isLoggedIn } = this.props
-    if (isFetching) {
+    const { projects, isFetching, totalPages, page, didCreate, didSync, needsMigration, didMigrate, isLoggedIn, isLoggingIn } = this.props
+    if (isLoggingIn || isFetching) {
       return <LoadingPage />
     }
     const { isAnimationPlaying } = this.state
@@ -148,33 +176,26 @@ export default class HomePage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        {/* <Ad slot="BUILDER_TOP_BANNER" type="full" /> */}
+        {needsMigration && !didMigrate ? <TopBanner /> : null}
         <Navbar isFullscreen isOverlay={!showDashboard} />
-        <Page isFullscreen>
-          {!showDashboard ? (
-            <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+        <Page isFullscreen className="HomePage">
+          {showDashboard ? (
+            <Tabs>
+              <Tabs.Tab active>{t('home_page.projects_title')}</Tabs.Tab>
+              <Tabs.Tab onClick={this.handleOpenShowcase}>{t('scene_list_page.projects_title')}</Tabs.Tab>
+              <SyncToast />
+              <div className="tabs-menu">
+                {projects.length > 1 ? this.renderSortDropdown() : null}
+                {this.renderImportButton()}
+              </div>
+            </Tabs>
           ) : (
-              <Container>
-                <div className="HomePageAd">
-                  {/* <Ad slot="BUILDER_HOME_PAGE" /> */}
-                </div>
-              </Container>
-            )}
+            <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
+          )}
           <Container>
-            <div className="HomePage">
+            <div>
               {showDashboard && (
                 <div className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
-                  <SyncToast />
-                  <div className="subtitle">
-                    <Tabs isFullscreen>
-                      <Tabs.Tab active>{t('home_page.projects_title')}</Tabs.Tab>
-                      <Tabs.Tab onClick={this.handleOpenShowcase}>{t('scene_list_page.projects_title')}</Tabs.Tab>
-                    </Tabs>
-                    <div className="menu">
-                      {projects.length > 1 ? this.renderSortDropdown() : null}
-                      {this.renderImportButton()}
-                    </div>
-                  </div>
                   <div className="CardList">{this.renderProjects()}</div>
                   {hasPagination ? (
                     <Pagination
