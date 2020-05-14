@@ -21,6 +21,7 @@ import { AuthState } from 'modules/auth/types'
 import { SyncState } from 'modules/sync/types'
 import { PoolState } from 'modules/pool/reducer'
 import { IdentityState } from 'modules/identity/reducer'
+import { LandState } from 'modules/land/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -49,6 +50,7 @@ export type RootState = {
   media: MediaState
   sync: SyncState
   identity: IdentityState
+  land: LandState
 }
 
 export type RootStore = Store<RootState>

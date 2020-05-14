@@ -21,6 +21,7 @@ import { mediaReducer as media } from 'modules/media/reducer'
 import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
+import { landReducer as land } from 'modules/land/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -43,6 +44,7 @@ export function createRootReducer(history: History) {
       media,
       sync,
       identity,
+      land,
       router: connectRouter(history)
     })
   )
