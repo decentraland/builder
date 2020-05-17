@@ -141,7 +141,7 @@ export function getUniqueName(components: AnyComponent[], takenNames: Readonly<S
       if (component.type === ComponentType.GLTFShape) {
         const asset = assets[(component as ComponentDefinition<ComponentType.GLTFShape>).data.assetId]
         if (asset) {
-          const match = asset.name.match(/[A-Za-z]+/g)
+          const match = asset.name && asset.name.match(/[A-Za-z]+/g)
           rawName = convertToCamelCase(match ? match.join('_') : rawName)
         }
       } else if (component.type === ComponentType.NFTShape) {

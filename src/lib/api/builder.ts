@@ -69,7 +69,7 @@ export type RemoteAssetPack = {
 export type RemoteAsset = {
   id: string
   asset_pack_id: string
-  name: string
+  name: string | null
   model: string
   script: string | null
   thumbnail: string

@@ -26,7 +26,7 @@ export const showOnlyAssetsWithScripts = (state: RootState) => getState(state).s
 
 const isSearchResult = (asset: Asset, search: string) => {
   // search by name
-  if (asset.name.toLowerCase().includes(search)) {
+  if (asset.name !== null && asset.name.toLowerCase().includes(search)) {
     return true
   }
   // search by category
@@ -136,7 +136,7 @@ export const getSideBarCategories = createSelector<
         } else if (!a.script && b.script) {
           return 1
         }
-        return a.name > b.name ? 1 : -1
+        return (a.name && b.name && a.name.localeCompare(b.name)) || 0
       })
     }
 

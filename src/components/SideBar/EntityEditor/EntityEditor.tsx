@@ -42,7 +42,7 @@ export default class EntityEditor extends React.PureComponent<Props> {
         </Header>
         <div className="overflow-container">
           <div className="thumbnail">
-            <img src={asset.thumbnail} alt={asset.name} />
+            <img src={asset.thumbnail} alt={asset.name || undefined} />
           </div>
           <div className="parameters">
             <EntityParameters

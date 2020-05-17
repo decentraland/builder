@@ -55,7 +55,7 @@ export enum AssetParameterType {
 
 export type BaseAsset = {
   id: string
-  name: string
+  name: string | null
   model: string
   script: string | null
   thumbnail: string
@@ -110,7 +110,7 @@ export type DARAssetTrait = {
 
 export type RawAsset = {
   id: string
-  name: string
+  name: string | null
   model: string
   script: null | string
   tags: string[]

@@ -62,13 +62,13 @@ export default class AssetsEditor<T extends MixedAssetPack = RawAssetPack> exten
       })
     }
 
-    if (asset.name.length > MAX_NAME_LENGTH) {
+    if (asset.name !== null && asset.name.length > MAX_NAME_LENGTH) {
       newErrors.name = t('asset_pack.edit_asset.errors.max_name_length', {
         count: MAX_NAME_LENGTH
       })
     }
 
-    if (asset.name.length < MIN_NAME_LENGTH) {
+    if (!asset.name || asset.name.length < MIN_NAME_LENGTH) {
       newErrors.name = t('asset_pack.edit_asset.errors.min_name_length', {
         count: MIN_NAME_LENGTH
       })
