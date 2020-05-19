@@ -1,4 +1,4 @@
-import { takeLatest, put, call } from 'redux-saga/effects'
+import { takeLatest, put, call, takeEvery } from 'redux-saga/effects'
 import {
   LOAD_PROFILE_REQUEST,
   LoadProfileRequestAction,
@@ -7,20 +7,19 @@ import {
   loadProfileRequest
 } from 'modules/profile/actions'
 import { Profile } from 'modules/profile/types'
-import { content } from 'lib/api/content'
+import { content } from 'lib/api/peer'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 
 export function* profileSaga() {
-  yield takeLatest(LOAD_PROFILE_REQUEST, handleLoadProfileRequest)
+  yield takeEvery(LOAD_PROFILE_REQUEST, handleLoadProfileRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
 }
 
 function* handleLoadProfileRequest(action: LoadProfileRequestAction) {
   const { address } = action.payload
   try {
-    const profile: Profile[] = yield call(() => content.fetchProfiles(address))
-    // TODO: we just handle the first profile
-    yield put(loadProfileSuccess(address, profile[0]))
+    const profile: Profile = yield call(() => content.fetchProfile(address))
+    yield put(loadProfileSuccess(address, profile))
   } catch (error) {
     yield put(loadProfileFailure(address, error.message))
   }

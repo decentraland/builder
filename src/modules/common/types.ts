@@ -22,6 +22,7 @@ import { SyncState } from 'modules/sync/types'
 import { PoolState } from 'modules/pool/reducer'
 import { IdentityState } from 'modules/identity/reducer'
 import { LandState } from 'modules/land/reducer'
+import { TileState } from 'modules/tile/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -51,6 +52,7 @@ export type RootState = {
   sync: SyncState
   identity: IdentityState
   land: LandState
+  tile: TileState
 }
 
 export type RootStore = Store<RootState>

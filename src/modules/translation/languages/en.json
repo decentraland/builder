@@ -309,6 +309,15 @@
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions"
   },
+  "navigation": {
+    "scenes": "Scenes",
+    "land": "Land"
+  },
+  "list": {
+    "two": "{first} and {second}",
+    "three": "{first}, {second} and {third}",
+    "more": "{count} more"
+  },
   "home_page": {
     "import_scene": "Import Scene",
     "no_projects": "It looks like you don't have any Scenes.{br}Choose an option below to get started.",
@@ -319,7 +328,6 @@
       "export_project": "Download Scene",
       "unpublish": "Unpublish"
     },
-    "projects_title": "My Scenes",
     "sort": {
       "name": "Name",
       "newest": "Newest",

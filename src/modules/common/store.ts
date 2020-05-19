@@ -28,6 +28,7 @@ import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
 import { GENERATE_IDENTITY_SUCCESS, DESTROY_IDENTITY, LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 import { MIGRATION_SUCCESS } from 'modules/auth/actions'
+import { fetchTilesRequest } from 'modules/tile/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -157,5 +158,7 @@ window.onbeforeunload = function() {
   const syncCount = getLoadingSet(store.getState() as RootState).size
   return syncCount > 0 || null
 }
+
+store.dispatch(fetchTilesRequest())
 
 export { store, history }

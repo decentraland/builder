@@ -1,5 +1,4 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { Profile } from 'modules/profile/types'
 import {
   LoadProfileRequestAction,
@@ -11,7 +10,7 @@ import {
 } from 'modules/profile/actions'
 
 export type ProfileState = {
-  data: ModelById<Profile>
+  data: Record<string, Profile>
   loading: LoadingState
   error: Record<string, string>
 }

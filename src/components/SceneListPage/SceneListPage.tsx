@@ -94,7 +94,7 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
           <div className="SceneListPage">
             <Tabs>
               <Responsive minWidth={1024} as={Tabs.Tab} onClick={this.handleNavigateToHome}>
-                {t('home_page.projects_title')}
+                {t('navigation.scenes')}
               </Responsive>
               <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
               <div className="tabs-menu">

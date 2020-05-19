@@ -15,7 +15,6 @@ import { Props, State } from './SceneViewPage.types'
 import './SceneViewPage.css'
 import { locations } from 'routing/locations'
 import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
-import { getName, getFace } from 'modules/profile/utils'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -172,9 +171,9 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             {author && (
               <div className="author">
                 {t('public_page.made_by')}
-                <span className="author-name"> {getName(author)}</span>
+                <span className="author-name"> {author.avatars[0].name}</span>
                 <div className="avatar">
-                  <img width="24" height="24" src={getFace(author)} />
+                  <img width="24" height="24" src={author.avatars[0].avatar.snapshots.face} />
                 </div>
               </div>
             )}

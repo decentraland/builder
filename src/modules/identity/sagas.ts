@@ -167,7 +167,7 @@ function* handleChangeAccount() {
   yield put(clearAssetPacks())
 
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  if (location.pathname !== locations.migrate()) {
+  if (location.pathname !== locations.migrate() && location.pathname !== locations.root() && location.pathname !== locations.land()) {
     yield put(replace(locations.root()))
   }
 }

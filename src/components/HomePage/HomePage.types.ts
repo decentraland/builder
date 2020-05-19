@@ -26,7 +26,7 @@ export type Props = DefaultProps & {
   onCreateProject: typeof createProjectFromTemplate
   onOpenModal: typeof openModal
   onPageChange: (options: PaginationOptions) => void
-  onNavigateToShowcase: () => void
+  onNavigate: (path: string) => void
   onLogin: typeof loginRequest
 }
 
@@ -48,5 +48,5 @@ export type MapStateProps = Pick<
   | 'needsMigration'
   | 'isLoggedIn'
 >
-export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin' | 'onNavigateToShowcase'>
+export type MapDispatchProps = Pick<Props, 'onCreateProject' | 'onOpenModal' | 'onPageChange' | 'onLogin' | 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | CreateProjectFromTemplateAction | OpenModalAction | LoginRequestAction>

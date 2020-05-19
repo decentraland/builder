@@ -1,12 +1,12 @@
 import { Land } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
-  FetchLandRequestAction,
-  FetchLandSuccessAction,
-  FetchLandFailureAction,
-  FETCH_LAND_REQUEST,
-  FETCH_LAND_SUCCESS,
-  FETCH_LAND_FAILURE
+  FetchLandsRequestAction,
+  FetchLandsSuccessAction,
+  FetchLandsFailureAction,
+  FETCH_LANDS_REQUEST,
+  FETCH_LANDS_SUCCESS,
+  FETCH_LANDS_FAILURE
 } from './actions'
 
 export type LandState = {
@@ -21,18 +21,18 @@ const INITIAL_STATE: LandState = {
   error: null
 }
 
-export type LandReducerAction = FetchLandRequestAction | FetchLandSuccessAction | FetchLandFailureAction
+export type LandReducerAction = FetchLandsRequestAction | FetchLandsSuccessAction | FetchLandsFailureAction
 
 export function landReducer(state: LandState = INITIAL_STATE, action: LandReducerAction) {
   switch (action.type) {
-    case FETCH_LAND_REQUEST: {
+    case FETCH_LANDS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
-    case FETCH_LAND_SUCCESS: {
-      const { address, land } = action.payload
+    case FETCH_LANDS_SUCCESS: {
+      const { address, lands: land } = action.payload
       return {
         data: {
           ...state.data,
@@ -42,7 +42,7 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
         error: null
       }
     }
-    case FETCH_LAND_FAILURE: {
+    case FETCH_LANDS_FAILURE: {
       const { error } = action.payload
       return {
         ...state,

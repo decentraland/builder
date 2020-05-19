@@ -1,0 +1,13 @@
+.TableRow .dcl.atlas {
+  margin-top: -22px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.TableRow .dcl.column.name {
+  justify-content: flex-start;
+}
+
+.TableRow .capitalize {
+  text-transform: capitalize;
+}

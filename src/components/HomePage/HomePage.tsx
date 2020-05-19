@@ -147,7 +147,9 @@ export default class HomePage extends React.PureComponent<Props, State> {
     this.props.onLogin()
   }
 
-  handleOpenShowcase = () => this.props.onNavigateToShowcase()
+  handleOpenShowcase = () => this.props.onNavigate(locations.poolSearch())
+
+  handleNavigateToLand = () => this.props.onNavigate(locations.land())
 
   handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
     this.paginate({ sortBy: value as SortBy })
@@ -181,7 +183,8 @@ export default class HomePage extends React.PureComponent<Props, State> {
         <Page isFullscreen className="HomePage">
           {showDashboard ? (
             <Tabs>
-              <Tabs.Tab active>{t('home_page.projects_title')}</Tabs.Tab>
+              <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
+              <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
               <Tabs.Tab onClick={this.handleOpenShowcase}>{t('scene_list_page.projects_title')}</Tabs.Tab>
               <SyncToast />
               <div className="tabs-menu">

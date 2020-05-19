@@ -11,5 +11,6 @@ export const locations = {
   mobile: () => '/mobile',
   notFound: () => '/404',
   callback: () => '/callback',
-  migrate: () => '/migrate'
+  migrate: () => '/migrate',
+  land: () => '/land'
 }
