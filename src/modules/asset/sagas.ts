@@ -36,7 +36,7 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         tags: [],
         category: result.registry.name,
         contents: {},
-        name: asset.name,
+        name: asset.name || '',
         model: asset.uri,
         script: null,
         thumbnail: asset.image,
