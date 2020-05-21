@@ -8,6 +8,7 @@ import Footer from 'components/Footer'
 import TableRow from './TableRow'
 import { Props, State, LandPageView } from './LandPage.types'
 import './LandPage.css'
+import { RoleType } from 'modules/land/types'
 
 const PAGE_SIZE = 20
 
@@ -41,44 +42,61 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
   renderLand() {
     const { lands } = this.props
-    const { page } = this.state
+    const { page, showOwner, showOperator } = this.state
 
-    const totalPages = Math.ceil(lands.length / PAGE_SIZE)
+    const filteredLands = lands.filter(land => {
+      if (showOwner && land.role === RoleType.OWNER) {
+        return true
+      }
+      if (showOperator && land.role === RoleType.OPERATOR) {
+        return true
+      }
+      return false
+    })
+
+    const totalPages = Math.ceil(filteredLands.length / PAGE_SIZE)
 
     return (
       <>
         <Row height={30}>
           <Column>
             <Row>
-              <Header sub>{lands.length.toLocaleString()} Results</Header>
+              <Header sub>{filteredLands.length.toLocaleString()} Results</Header>
             </Row>
           </Column>
           <Column align="right">
             <Row>
-              <Radio checked={true} label="Owner" />
-              <Radio checked={true} label="Operator" />
+              <Radio value="owner" checked={showOwner} onClick={() => this.setState({ showOwner: !showOwner })} label="Owner" />
+              <Radio
+                value="operator"
+                checked={showOperator}
+                onClick={() => this.setState({ showOperator: !showOperator })}
+                label="Operator"
+              />
             </Row>
           </Column>
         </Row>
         <Section className="table-section">
-          <Table basic="very">
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Coordinates</Table.HeaderCell>
-                <Table.HeaderCell>Role</Table.HeaderCell>
-                <Table.HeaderCell>Operated By</Table.HeaderCell>
-                <Table.HeaderCell>Type</Table.HeaderCell>
-                <Table.HeaderCell>Current Scene</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+          {filteredLands.length > 0 ? (
+            <Table basic="very">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Coordinates</Table.HeaderCell>
+                  <Table.HeaderCell>Role</Table.HeaderCell>
+                  <Table.HeaderCell>Operated By</Table.HeaderCell>
+                  <Table.HeaderCell>Type</Table.HeaderCell>
+                  <Table.HeaderCell>Current Scene</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
 
-            <Table.Body>
-              {lands.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(land => (
-                <TableRow land={land} />
-              ))}
-            </Table.Body>
-          </Table>
+              <Table.Body>
+                {filteredLands.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(land => (
+                  <TableRow land={land} />
+                ))}
+              </Table.Body>
+            </Table>
+          ) : null}
         </Section>
         {totalPages > 1 ? (
           <Section className="pagination-section">
