@@ -85,7 +85,7 @@ export type DARAssetsResponse = {
 }
 
 export type DARAsset = {
-  name: string
+  name: string | null
   owner: string
   description: string
   image: string
