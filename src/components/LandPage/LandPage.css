@@ -1,0 +1,23 @@
+.LandPage .ui.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.LandPage .ui.pagination .item[type='nextItem'],
+.LandPage .ui.pagination .item[type='prevItem'] {
+  position: absolute;
+  background-color: var(--secondary);
+}
+
+.LandPage .ui.pagination .item[type='prevItem'] {
+  left: 0px;
+}
+
+.LandPage .ui.pagination .item[type='nextItem'] {
+  right: 0px;
+}
+
+.LandPage .pagination-section {
+  width: 100%;
+}

@@ -4,9 +4,9 @@ import { createClient } from './graph'
 import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, EstateFields } from 'modules/land/types'
 import { coordsToId } from 'modules/land/utils'
 
-export const PERMISSIONS_SERVER_URL = env.get('REACT_APP_PERMISSIONS_SERVER_URL', '')
+export const LAND_MANAGER_URL = env.get('REACT_APP_LAND_MANAGER_URL', '')
 
-const auth = createClient(PERMISSIONS_SERVER_URL)
+const auth = createClient(LAND_MANAGER_URL)
 
 const getLandQuery = () => gql`
   query Land($address: Bytes) {
@@ -26,7 +26,15 @@ const getLandQuery = () => gql`
       operator
     }
     operatorAuthorizations: authorizations(first: 1000, where: { operator: $address, type: "UpdateManager" }) {
-      owner
+      owner {
+        address
+        parcels(where: { estate: null }) {
+          ...parcelFields
+        }
+        estates {
+          ...estateFields
+        }
+      }
     }
   }
   ${parcelFields()}
@@ -39,25 +47,7 @@ type LandQueryResult = {
   updateOperatorParcels: ParcelFields[]
   updateOperatorEstates: EstateFields[]
   ownerAuthorizations: { operator: string }[]
-  operatorAuthorizations: { owner: string }[]
-}
-
-const getOwnerQuery = () => gql`
-  query Owner($owner: Bytes) {
-    parcels(where: { estate: null, owner: $owner }) {
-      ...parcelFields
-    }
-    estates(where: { owner: $owner }) {
-      ...estateFields
-    }
-  }
-  ${parcelFields()}
-  ${estateFields()}
-`
-
-type OwnerQueryResult = {
-  parcels: ParcelFields[]
-  estates: EstateFields[]
+  operatorAuthorizations: { owner: { address: string; parcels: ParcelFields[]; estates: EstateFields[] } }[]
 }
 
 const fromParcel = (parcel: ParcelFields, role: RoleType) => {
@@ -65,13 +55,13 @@ const fromParcel = (parcel: ParcelFields, role: RoleType) => {
 
   const result: Land = {
     id,
-    name: `Parcel ${id}`,
+    name: (parcel.data && parcel.data.name) || `Parcel ${id}`,
     type: LandType.PARCEL,
     role,
-    description: null,
+    description: (parcel.data && parcel.data.description) || null,
     x: parseInt(parcel.x, 10),
     y: parseInt(parcel.y, 10),
-    owner: parcel.owner,
+    owner: parcel.owner.address,
     operators: []
   }
 
@@ -87,17 +77,17 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 
   const result: Land = {
     id,
-    name: `Estate ${id}`,
+    name: (estate.data && estate.data.name) || `Estate ${id}`,
     type: LandType.ESTATE,
     role,
-    description: null,
+    description: (estate.data && estate.data.description) || null,
     size: estate.size,
     parcels: estate.parcels.map(parcel => ({
       x: parseInt(parcel.x, 10),
       y: parseInt(parcel.y, 10),
       id: coordsToId(parcel.x, parcel.y)
     })),
-    owner: estate.owner,
+    owner: estate.owner.address,
     operators: []
   }
 
@@ -109,7 +99,8 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 }
 
 export class ManagerAPI {
-  fetchLand = async (address: string) => {
+  fetchLand = async (_address: string) => {
+    const address = _address.toLowerCase()
     const { data } = await auth.query<LandQueryResult>({
       query: getLandQuery(),
       variables: {
@@ -144,23 +135,19 @@ export class ManagerAPI {
     }
 
     // I'm operator of all the lands from addresses that gave me UpdateManager permission
-    let promises = []
     for (const authorization of data.operatorAuthorizations) {
       const { owner } = authorization
-      const promise = auth.query<OwnerQueryResult>({
-        query: getOwnerQuery(),
-        variables: {
-          owner
-        }
-      })
-      promises.push(promise)
-    }
-    for (const { data } of await Promise.all(promises)) {
-      for (const parcel of data.parcels) {
-        lands.push(fromParcel(parcel, RoleType.OPERATOR))
+      for (const parcel of owner.parcels) {
+        const land = fromParcel(parcel, RoleType.OPERATOR)
+        land.operators.push(address)
+        lands.push(land)
       }
-      for (const estate of data.estates) {
-        lands.push(fromEstate(estate, RoleType.OPERATOR))
+      for (const estate of owner.estates) {
+        if (estate.parcels.length > 0) {
+          const land = fromEstate(estate, RoleType.OPERATOR)
+          land.operators.push(address)
+          lands.push(land)
+        }
       }
     }
 

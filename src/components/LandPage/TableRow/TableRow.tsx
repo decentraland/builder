@@ -13,6 +13,7 @@ export default class TableRow extends React.PureComponent<Props> {
   render() {
     const { land, projects } = this.props
     const coords = getCoords(land)
+
     const isEstate = land.type === LandType.ESTATE
     const [x, y] = !isEstate ? [coords.x, coords.y] : getCenter(land.parcels!)
     const selection = !isEstate ? [coords] : land.parcels!

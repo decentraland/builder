@@ -18,6 +18,7 @@ export type State = {
   showOwner: boolean
   showOperator: boolean
   view: LandPageView
+  page: number
 }
 
 export type MapStateProps = Pick<Props, 'lands' | 'isLoggedIn' | 'isLoading'>

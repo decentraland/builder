@@ -29,8 +29,14 @@ export const parcelFields = () => gql`
     x
     y
     tokenId
-    owner
+    owner {
+      address
+    }
     updateOperator
+    data {
+      name
+      description
+    }
   }
 `
 
@@ -38,14 +44,22 @@ export type ParcelFields = {
   x: string
   y: string
   tokenId: string
-  owner: string
+  owner: {
+    address: string
+  }
   updateOperator: string | null
+  data: {
+    name: string | null
+    description: string | null
+  } | null
 }
 
 export const estateFields = () => gql`
   fragment estateFields on Estate {
     id
-    owner
+    owner {
+      address
+    }
     updateOperator
     size
     parcels {
@@ -53,13 +67,23 @@ export const estateFields = () => gql`
       y
       tokenId
     }
+    data {
+      name
+      description
+    }
   }
 `
 
 export type EstateFields = {
   id: string
-  owner: string
+  owner: {
+    address: string
+  }
   updateOperator: string | null
   size: number
   parcels: Pick<ParcelFields, 'x' | 'y' | 'tokenId'>[]
+  data: {
+    name: string | null
+    description: string | null
+  } | null
 }
