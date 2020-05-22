@@ -6,6 +6,7 @@ export type DefaultProps = {
   type: 'square' | 'rectangle' | 'circle'
   isActive: boolean
   isDisabled: boolean
+  className: string
 }
 
 export type Props = DefaultProps & {

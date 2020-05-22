@@ -1,6 +1,8 @@
 import { Coord } from 'react-tile-map'
 import { DeploymentState } from 'modules/deployment/reducer'
-import { Land, LandType } from './types'
+import { Land, LandType, LandTile } from './types'
+import { Tile } from 'components/Atlas/Atlas.types'
+import { Color } from 'decentraland-ui'
 
 export const coordsToId = (x: string | number, y: string | number) => x + ',' + y
 
@@ -22,4 +24,24 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
   const x = xs[(xs.length / 2) | 0]
   const y = ys[(ys.length / 2) | 0]
   return [x, y]
+}
+
+export const traverseTiles = (x: number, y: number, land: Land, result: Record<string, LandTile>, tiles: Record<string, Tile>) => {
+  const id = coordsToId(x, y)
+  if (id in result) return // already processed
+
+  const tile = tiles[id]
+  if (tile && tile.estate_id === land.id) {
+    result[id] = {
+      color: Color.SUMMER_RED,
+      top: tile ? !!tile.top : false,
+      left: tile ? !!tile.left : false,
+      topLeft: tile ? !!tile.topLeft : false,
+      land
+    }
+    traverseTiles(x + 1, y, land, result, tiles)
+    traverseTiles(x - 1, y, land, result, tiles)
+    traverseTiles(x, y + 1, land, result, tiles)
+    traverseTiles(x, y - 1, land, result, tiles)
+  }
 }

@@ -1,12 +1,14 @@
-import { RootState } from 'modules/common/types'
 import { createSelector } from 'reselect'
+import { AtlasTile, Color } from 'decentraland-ui'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Land, LandType } from './types'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { RootState } from 'modules/common/types'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { DeploymentState } from 'modules/deployment/reducer'
+import { getTiles } from 'modules/tile/selectors'
 import { FETCH_LANDS_REQUEST } from './actions'
-import { findDeployment } from './utils'
+import { findDeployment, coordsToId, traverseTiles } from './utils'
+import { Land, LandType, LandTile } from './types'
 
 export const getState = (state: RootState) => state.land
 export const getData = (state: RootState) => getState(state).data
@@ -43,5 +45,26 @@ export const getProjectIdsByLand = createSelector<RootState, Land[], DeploymentS
     }
 
     return results
+  }
+)
+
+export const getUserTiles = createSelector<RootState, Land[], Record<string, AtlasTile>, Record<string, LandTile>>(
+  getLands,
+  getTiles,
+  (lands, tiles) => {
+    const result: Record<string, LandTile> = {}
+    for (const land of lands) {
+      if (land.type === LandType.PARCEL) {
+        const id = coordsToId(land.x!, land.y!)
+        result[id] = {
+          color: Color.SUMMER_RED,
+          land
+        }
+      } else {
+        const first = land.parcels![0]
+        traverseTiles(first.x, first.y, land, result, tiles)
+      }
+    }
+    return result
   }
 )

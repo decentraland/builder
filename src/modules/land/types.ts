@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost'
+import { Tile } from 'react-tile-map/lib/src/lib/common'
 
 export enum LandType {
   PARCEL = 'parcel',
@@ -87,3 +88,5 @@ export type EstateFields = {
     description: string | null
   } | null
 }
+
+export type LandTile = Tile & { land: Land }

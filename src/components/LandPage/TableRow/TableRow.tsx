@@ -28,7 +28,9 @@ export default class TableRow extends React.PureComponent<Props> {
           </Row>
         </Table.Cell>
         <Table.Cell>{coordsToId(x, y)}</Table.Cell>
-        <Table.Cell className="capitalize">{land.role}</Table.Cell>
+        <Table.Cell>
+          <Profile address={land.owner} />
+        </Table.Cell>
         <Table.Cell>
           <InlineList
             list={land.operators.map(operator => (
