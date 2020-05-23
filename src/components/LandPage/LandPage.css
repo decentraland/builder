@@ -61,11 +61,11 @@
 }
 
 .LandPage .arrow {
-  width: 40px;
-  height: 28px;
+  width: 30px;
+  height: 24px;
   border: solid 1px rgba(115, 110, 125, 0.4);
   background-position: center;
-  background-size: 24px 24px;
+  background-size: 16px;
   background-repeat: no-repeat;
   cursor: pointer;
 }

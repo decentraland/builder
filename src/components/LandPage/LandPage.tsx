@@ -51,7 +51,8 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
     const totalPages = Math.ceil(filteredLands.length / PAGE_SIZE)
 
-    let selectedX, selectedY
+    let selectedX
+    let selectedY
     if (filteredLands.length > 1 && selectedLand < filteredLands.length) {
       const { x, y } = getCoords(filteredLands[selectedLand])
       selectedX = x
