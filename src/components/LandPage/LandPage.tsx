@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Page, Tabs, Center, Loader, Table, Row, Radio, Column, Header, Pagination, Section, Container, Popup } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
@@ -34,7 +34,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
     return (
       <Center>
         <div className="secondary-text">
-          You need to <Link to={locations.signIn()}>Sign In</Link> to access this page.
+          <T id="land_page.sign_in" values={{ link: <Link to={locations.signIn()}>{t('land_page.sign_in_link')}</Link> }} />
         </div>
       </Center>
     )
@@ -69,7 +69,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
             <Row height={30}>
               <Column>
                 <Row>
-                  <Header sub>{filteredLands.length.toLocaleString()} Results</Header>
+                  <Header sub>{t('land_page.results', { count: filteredLands.length.toLocaleString() })}</Header>
                   {view === LandPageView.ATLAS && filteredLands.length > 1 ? (
                     <>
                       <div className="arrow prev" onClick={this.handlePrev}></div>
@@ -87,7 +87,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
                         value="owner"
                         checked={showOwner}
                         onClick={() => this.setState({ showOwner: !showOwner })}
-                        label="Owner"
+                        label={t('land_page.owner')}
                       />
                     }
                     content="These are lands you own."
@@ -99,7 +99,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
                         value="operator"
                         checked={showOperator}
                         onClick={() => this.setState({ showOperator: !showOperator })}
-                        label="Operator"
+                        label={t('land_page.operator')}
                       />
                     }
                     className="operator-popup"
@@ -129,12 +129,11 @@ export default class LandPage extends React.PureComponent<Props, State> {
                 <Table basic="very">
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell width="4">Name</Table.HeaderCell>
-                      <Table.HeaderCell width="2">Coordinates</Table.HeaderCell>
-                      <Table.HeaderCell width="2">Owner</Table.HeaderCell>
-                      <Table.HeaderCell width="4">Operators</Table.HeaderCell>
-                      <Table.HeaderCell width="1">Type</Table.HeaderCell>
-                      <Table.HeaderCell width="3">Current Scene</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.name')}</Table.HeaderCell>
+                      <Table.HeaderCell width="2">{t('land_page.coords')}</Table.HeaderCell>
+                      <Table.HeaderCell width="2">{t('land_page.owner')}</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.operators')}</Table.HeaderCell>
+                      <Table.HeaderCell width="4">{t('land_page.online_scenes')}</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
 
@@ -203,22 +202,6 @@ export default class LandPage extends React.PureComponent<Props, State> {
       this.setState({ selectedLand: selectedLand - 1 })
     }
   }
-
-  // handleHover = (x: number, y: number) => {
-  //   const id = coordsToId(x, y)
-  //   const { showPopup } = this.state
-  //   const tile = this.props.landTiles[id]
-  //   if (tile && !showPopup) {
-  //     this.setState({ hoveredLand: tile.land, mouseX: -1, mouseY: -1, showPopup: true })
-  //   } else if (!tile && showPopup) {
-  //     this.setState({ showPopup: false })
-  //     setTimeout(() => {
-  //       if (!this.state.showPopup) {
-  //         this.setState({ hoveredLand: null })
-  //       }
-  //     }, 500)
-  //   }
-  // }
 
   render() {
     const { isLoggedIn, isLoading, onNavigate } = this.props

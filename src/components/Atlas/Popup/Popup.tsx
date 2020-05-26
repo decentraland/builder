@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Badge, Row, Section, Header } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { LandType } from 'modules/land/types'
 import Profile from 'components/Profile'
 import { Props } from './Popup.types'
@@ -22,13 +23,13 @@ export default class Popup extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Section className="owner">
-          <Header sub>Owner</Header>
+          <Header sub>{t('land_page.owner')}</Header>
           <Profile address={land.owner} />
         </Section>
 
         {land.operators.length > 0 ? (
           <Section className="operators">
-            <Header sub>Operators</Header>
+            <Header sub>{t('land_page.operators')}</Header>
             {land.operators.map(operator => (
               <Profile address={operator} />
             ))}
@@ -36,7 +37,7 @@ export default class Popup extends React.PureComponent<Props> {
         ) : null}
 
         <Section className="online-scenes">
-          <Header sub>Online Scenes</Header>
+          <Header sub>{t('land_page.online_scenes')}</Header>
           {projects.length > 0 ? (
             projects.map(project => (
               <Row className="scene">
@@ -45,7 +46,7 @@ export default class Popup extends React.PureComponent<Props> {
               </Row>
             ))
           ) : (
-            <div className="no-scenes">None</div>
+            <div className="no-scenes">{t('land_page.none')}</div>
           )}
         </Section>
       </div>

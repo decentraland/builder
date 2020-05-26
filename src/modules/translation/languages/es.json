@@ -307,6 +307,10 @@
     "subscribe": "Subscribirse",
     "terms_and_conditions": "Términos y Condiciones"
   },
+  "navigation": {
+    "scenes": "Escenas",
+    "land": "Tierras"
+  },
   "home_page": {
     "import_scene": "Cargar Escena",
     "no_projects": "No tienes ninguna Escena aún.{br}Elige una opción abajo para continuar.",
@@ -379,6 +383,19 @@
       "title": "¿Quieres comenzar a construir cuando estes en tu PC?"
     },
     "success": "Gracias, ¡Te mantendremos al tanto!"
+  },
+  "land_page": {
+    "name": "Nombre",
+    "coords": "Coords",
+    "owner": "Dueño",
+    "operator": "Operador",
+    "operators": "Operadores",
+    "type": "Tipo",
+    "online_scenes": "Escenas Online",
+    "sign_in": "Debes {link} para acceder a esta página.",
+    "sign_in_link": "Iniciar Sesión",
+    "none": "Ninguna",
+    "results": "{count} resultados"
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",

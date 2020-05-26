@@ -304,6 +304,10 @@
     "subscribe": "订阅",
     "terms_and_conditions": "使用条款"
   },
+  "navigation": {
+    "scenes": "场景",
+    "land": "土地"
+  },
   "home_page": {
     "import_scene": "上传场景",
     "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用.",
@@ -376,6 +380,19 @@
       "title": "当回到电脑前就创作场景?"
     },
     "success": "谢谢，我们会与您联系!"
+  },
+  "land_page": {
+    "name": "名称",
+    "coords": "坐标",
+    "owner": "所有者",
+    "operator": "操作员",
+    "operators": "经营者",
+    "type": "类型",
+    "online_scenes": "在线场景",
+    "sign_in": "您需要{link}才能访问此页面。",
+    "sign_in_link": "登入",
+    "none": "没有",
+    "results": "{count}个结果"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",

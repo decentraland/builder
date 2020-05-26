@@ -48,7 +48,6 @@ export default class TableRow extends React.PureComponent<Props> {
             ))}
           />
         </Table.Cell>
-        <Table.Cell className="capitalize">{land.type}</Table.Cell>
         <Table.Cell>
           <InlineList list={projects.map(p => p.title)} />
         </Table.Cell>
