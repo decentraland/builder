@@ -1,8 +1,10 @@
 import { Coord } from 'react-tile-map'
 import { DeploymentState } from 'modules/deployment/reducer'
-import { Land, LandType, LandTile } from './types'
+import { Land, LandType, LandTile, RoleType } from './types'
 import { Tile } from 'components/Atlas/Atlas.types'
 import { Color } from 'decentraland-ui'
+
+export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
 export const coordsToId = (x: string | number, y: string | number) => x + ',' + y
 
@@ -33,7 +35,7 @@ export const traverseTiles = (x: number, y: number, land: Land, result: Record<s
   const tile = tiles[id]
   if (tile && tile.estate_id === land.id) {
     result[id] = {
-      color: Color.SUMMER_RED,
+      color: RoleColor[land.role],
       top: tile ? !!tile.top : false,
       left: tile ? !!tile.left : false,
       topLeft: tile ? !!tile.topLeft : false,
@@ -44,4 +46,9 @@ export const traverseTiles = (x: number, y: number, land: Land, result: Record<s
     traverseTiles(x, y + 1, land, result, tiles)
     traverseTiles(x, y - 1, land, result, tiles)
   }
+}
+
+export const RoleColor: Record<RoleType, string> = {
+  [RoleType.OWNER]: Color.SUMMER_RED,
+  [RoleType.OPERATOR]: '#1FBCFF'
 }

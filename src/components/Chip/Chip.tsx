@@ -36,7 +36,7 @@ export default class Chip extends React.PureComponent<Props> {
 
     return (
       <div className={this.getClassName()} onClick={isDisabled ? undefined : onClick}>
-        <Row center>{text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}</Row>
+        <Row align="center">{text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}</Row>
       </div>
     )
   }

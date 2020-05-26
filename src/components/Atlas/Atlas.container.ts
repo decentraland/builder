@@ -3,9 +3,13 @@ import { RootState } from 'modules/common/types'
 import { getTiles } from 'modules/tile/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './Atlas.types'
 import Atlas from './Atlas'
+import { getLandTiles } from 'modules/land/selectors'
+import { getDeploymentTiles } from 'modules/deployment/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
-  tiles: getTiles(state)
+  landTiles: getLandTiles(state),
+  deploymentTiles: getDeploymentTiles(state),
+  atlasTiles: getTiles(state)
 })
 
 const mapDispatch = (_dispatch: MapDispatch): MapDispatchProps => ({})

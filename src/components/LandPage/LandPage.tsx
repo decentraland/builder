@@ -1,17 +1,17 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Page, Tabs, Center, Loader, Table, Row, Radio, Column, Header, Pagination, Section, Container, Layer } from 'decentraland-ui'
+import { Page, Tabs, Center, Loader, Table, Row, Radio, Column, Header, Pagination, Section, Container, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import Chip from 'components/Chip'
+import { RoleType } from 'modules/land/types'
+import { Atlas } from 'components/Atlas'
+import { getCoords } from 'modules/land/utils'
 import TableRow from './TableRow'
 import { Props, State, LandPageView } from './LandPage.types'
 import './LandPage.css'
-import { RoleType } from 'modules/land/types'
-import { Atlas } from 'components/Atlas'
-import { coordsToId, getCoords } from 'modules/land/utils'
 
 const PAGE_SIZE = 20
 
@@ -80,12 +80,30 @@ export default class LandPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right">
                 <Row>
-                  <Radio value="owner" checked={showOwner} onClick={() => this.setState({ showOwner: !showOwner })} label="Owner" />
-                  <Radio
-                    value="operator"
-                    checked={showOperator}
-                    onClick={() => this.setState({ showOperator: !showOperator })}
-                    label="Operator"
+                  <Popup
+                    trigger={
+                      <Radio
+                        className="owner-checkbox"
+                        value="owner"
+                        checked={showOwner}
+                        onClick={() => this.setState({ showOwner: !showOwner })}
+                        label="Owner"
+                      />
+                    }
+                    content="These are lands you own."
+                  />
+                  <Popup
+                    trigger={
+                      <Radio
+                        className="operator-checkbox"
+                        value="operator"
+                        checked={showOperator}
+                        onClick={() => this.setState({ showOperator: !showOperator })}
+                        label="Operator"
+                      />
+                    }
+                    className="operator-popup"
+                    content={<div>These are lands you don't own, but the owner gave you permission to use them.</div>}
                   />
                   <Chip
                     className="grid"
@@ -111,12 +129,12 @@ export default class LandPage extends React.PureComponent<Props, State> {
                 <Table basic="very">
                   <Table.Header>
                     <Table.Row>
-                      <Table.HeaderCell>Name</Table.HeaderCell>
-                      <Table.HeaderCell>Coordinates</Table.HeaderCell>
-                      <Table.HeaderCell>Owner</Table.HeaderCell>
-                      <Table.HeaderCell>Operators</Table.HeaderCell>
-                      <Table.HeaderCell>Type</Table.HeaderCell>
-                      <Table.HeaderCell>Current Scene</Table.HeaderCell>
+                      <Table.HeaderCell width="4">Name</Table.HeaderCell>
+                      <Table.HeaderCell width="2">Coordinates</Table.HeaderCell>
+                      <Table.HeaderCell width="2">Owner</Table.HeaderCell>
+                      <Table.HeaderCell width="4">Operators</Table.HeaderCell>
+                      <Table.HeaderCell width="1">Type</Table.HeaderCell>
+                      <Table.HeaderCell width="3">Current Scene</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
 
@@ -142,7 +160,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
           </Container>
         ) : (
           <div className="atlas-wrapper">
-            <Atlas className="main" layers={[this.landLayer]} x={selectedX} y={selectedY} />
+            <Atlas className="main" x={selectedX} y={selectedY} showOperator={showOperator} showOwner={showOwner} hasPopup />
           </div>
         )}
       </>
@@ -166,19 +184,6 @@ export default class LandPage extends React.PureComponent<Props, State> {
     return filteredLands
   }
 
-  landLayer: Layer = (x, y) => {
-    const { tiles } = this.props
-    const { showOwner, showOperator } = this.state
-    const id = coordsToId(x, y)
-    const tile = tiles[id]
-    if (tile) {
-      if ((showOwner && tile.land.role === RoleType.OWNER) || (showOperator && tile.land.role === RoleType.OPERATOR)) {
-        return tile
-      }
-    }
-    return null
-  }
-
   handleNext = () => {
     const { selectedLand } = this.state
     const lands = this.getFilteredLands()
@@ -198,6 +203,22 @@ export default class LandPage extends React.PureComponent<Props, State> {
       this.setState({ selectedLand: selectedLand - 1 })
     }
   }
+
+  // handleHover = (x: number, y: number) => {
+  //   const id = coordsToId(x, y)
+  //   const { showPopup } = this.state
+  //   const tile = this.props.landTiles[id]
+  //   if (tile && !showPopup) {
+  //     this.setState({ hoveredLand: tile.land, mouseX: -1, mouseY: -1, showPopup: true })
+  //   } else if (!tile && showPopup) {
+  //     this.setState({ showPopup: false })
+  //     setTimeout(() => {
+  //       if (!this.state.showPopup) {
+  //         this.setState({ hoveredLand: null })
+  //       }
+  //     }, 500)
+  //   }
+  // }
 
   render() {
     const { isLoggedIn, isLoading, onNavigate } = this.props

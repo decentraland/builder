@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import { Land, LandTile } from 'modules/land/types'
+import { Land } from 'modules/land/types'
 
 export enum LandPageView {
   ATLAS = 'atlas',
@@ -12,7 +12,6 @@ export type Props = {
   isLoggedIn: boolean
   isLoading: boolean
   onNavigate: (path: string) => void
-  tiles: Record<string, LandTile>
 }
 
 export type State = {
@@ -23,6 +22,6 @@ export type State = {
   selectedLand: number
 }
 
-export type MapStateProps = Pick<Props, 'lands' | 'isLoggedIn' | 'isLoading' | 'tiles'>
+export type MapStateProps = Pick<Props, 'lands' | 'isLoggedIn' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

@@ -85,3 +85,20 @@
 .LandPage .atlas-wrapper {
   height: calc(100vh - 186px);
 }
+
+.LandPage .ui.radio.checkbox input.hidden ~ label:before,
+.LandPage .ui.radio.checkbox input.hidden:focus ~ label:before {
+  border: 2px solid var(--secondary-text);
+}
+
+.ui.radio.checkbox.checked.operator-checkbox input.hidden + label:before,
+.ui.radio.checkbox.checked.operator-checkbox input.hidden:focus + label:before,
+.ui.radio.checkbox.checked.operator-checkbox input.hidden + label:after,
+.ui.radio.checkbox.checked.operator-checkbox input.hidden:focus + label:after {
+  background-color: rgba(31, 188, 255, 0.8);
+  border: 2px solid rgba(31, 188, 255, 0.8);
+}
+
+.operator-popup {
+  height: auto !important;
+}

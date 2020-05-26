@@ -13,10 +13,8 @@ export default class InlineList extends React.PureComponent<Props> {
         return list[0]
       case 2:
         return <T id="list.two" values={{ first: list[0], second: list[1] }} />
-      case 3:
-        return <T id="list.three" values={{ first: list[0], second: list[1], third: list[2] }} />
       default:
-        return <T id="list.three" values={{ first: list[0], second: list[1], third: t('list.more', { count: list.length - 2 }) }} />
+        return <T id="list.two" values={{ first: list[0], second: t('list.more', { count: list.length - 1 }) }} />
     }
   }
 }

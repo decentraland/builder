@@ -165,7 +165,7 @@ export async function deploy(contentServerUrl: string, data: DeployData) {
     form.append(file.name, new Blob([file.content]), file.name)
   }
 
-  const deployResponse = await fetch(`${contentServerUrl}/entities`, { method: 'POST', body: form })
+  const deployResponse = await fetch(`${contentServerUrl}/content/entities`, { method: 'POST', body: form })
   const { creationTimestamp } = await deployResponse.json()
   return creationTimestamp
 }

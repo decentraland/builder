@@ -6,8 +6,18 @@ import { Atlas } from 'components/Atlas'
 import Profile from 'components/Profile'
 import InlineList from '../InlineList'
 import { Props } from './TableRow.types'
-import { coordsToId, getCoords, getCenter } from 'modules/land/utils'
+import { coordsToId, getCoords, getCenter, LAND_POOL_ADDRESS } from 'modules/land/utils'
 import './TableRow.css'
+import { isEqual } from 'lib/address'
+
+const sortLandPoolLast = (a: string, b: string) => {
+  if (isEqual(a, LAND_POOL_ADDRESS)) {
+    return 1
+  } else if (isEqual(b, LAND_POOL_ADDRESS)) {
+    return -1
+  }
+  return a > b ? 1 : -1
+}
 
 export default class TableRow extends React.PureComponent<Props> {
   render() {
@@ -33,7 +43,7 @@ export default class TableRow extends React.PureComponent<Props> {
         </Table.Cell>
         <Table.Cell>
           <InlineList
-            list={land.operators.map(operator => (
+            list={land.operators.sort(sortLandPoolLast).map(operator => (
               <Profile address={operator} />
             ))}
           />
