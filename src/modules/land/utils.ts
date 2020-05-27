@@ -28,6 +28,11 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
   return [x, y]
 }
 
+export const RoleColor: Record<RoleType, string> = {
+  [RoleType.OWNER]: Color.SUMMER_RED,
+  [RoleType.OPERATOR]: '#1FBCFF'
+}
+
 export const traverseTiles = (x: number, y: number, land: Land, result: Record<string, LandTile>, tiles: Record<string, Tile>) => {
   const id = coordsToId(x, y)
   if (id in result) return // already processed
@@ -46,9 +51,4 @@ export const traverseTiles = (x: number, y: number, land: Land, result: Record<s
     traverseTiles(x, y + 1, land, result, tiles)
     traverseTiles(x, y - 1, land, result, tiles)
   }
-}
-
-export const RoleColor: Record<RoleType, string> = {
-  [RoleType.OWNER]: Color.SUMMER_RED,
-  [RoleType.OPERATOR]: '#1FBCFF'
 }
