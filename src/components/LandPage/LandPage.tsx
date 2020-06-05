@@ -10,8 +10,9 @@ import { RoleType } from 'modules/land/types'
 import { Atlas } from 'components/Atlas'
 import { getCoords } from 'modules/land/utils'
 import TableRow from './TableRow'
-import { Props, State, LandPageView } from './LandPage.types'
+import { Props, State } from './LandPage.types'
 import './LandPage.css'
+import { LandPageView } from 'modules/ui/land/types'
 
 const PAGE_SIZE = 20
 
@@ -19,7 +20,6 @@ export default class LandPage extends React.PureComponent<Props, State> {
   state: State = {
     showOwner: true,
     showOperator: true,
-    view: LandPageView.GRID,
     page: 1,
     selectedLand: 0
   }
@@ -45,7 +45,8 @@ export default class LandPage extends React.PureComponent<Props, State> {
   }
 
   renderLand() {
-    const { page, showOwner, showOperator, view, selectedLand } = this.state
+    const { view, onSetView } = this.props
+    const { page, showOwner, showOperator, selectedLand } = this.state
 
     const filteredLands = this.getFilteredLands()
 
@@ -105,18 +106,8 @@ export default class LandPage extends React.PureComponent<Props, State> {
                     className="operator-popup"
                     content={<div>These are lands you don't own, but the owner gave you permission to use them.</div>}
                   />
-                  <Chip
-                    className="grid"
-                    icon="table"
-                    isActive={view === LandPageView.GRID}
-                    onClick={() => this.setState({ view: LandPageView.GRID })}
-                  />
-                  <Chip
-                    className="atlas"
-                    icon="pin"
-                    isActive={view === LandPageView.ATLAS}
-                    onClick={() => this.setState({ view: LandPageView.ATLAS })}
-                  />
+                  <Chip className="grid" icon="table" isActive={view === LandPageView.GRID} onClick={() => onSetView(LandPageView.GRID)} />
+                  <Chip className="atlas" icon="pin" isActive={view === LandPageView.ATLAS} onClick={() => onSetView(LandPageView.ATLAS)} />
                 </Row>
               </Column>
             </Row>
@@ -204,8 +195,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoggedIn, isLoading, onNavigate } = this.props
-    const { view } = this.state
+    const { isLoggedIn, isLoading, onNavigate, view } = this.props
     return (
       <>
         <Navbar isFullscreen />

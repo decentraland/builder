@@ -1,0 +1,37 @@
+.Scene {
+  border-bottom: 1px solid var(--divider);
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.Scene:first-child {
+  border-top: 1px solid var(--divider);
+}
+
+.Scene:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  cursor: pointer;
+}
+
+.Scene .thumbnail {
+  width: 96px;
+  height: 64px;
+  background-size: cover;
+  border-radius: 8px;
+  margin-right: 24px;
+}
+
+.Scene .title {
+  font-size: 15px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.6;
+  letter-spacing: normal;
+}
+
+.Scene .stat {
+  display: flex;
+  flex-direction: column;
+}

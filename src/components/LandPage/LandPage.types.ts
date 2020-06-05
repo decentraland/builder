@@ -1,27 +1,25 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { Land } from 'modules/land/types'
-
-export enum LandPageView {
-  ATLAS = 'atlas',
-  GRID = 'grid'
-}
+import { LandPageView } from 'modules/ui/land/types'
+import { setLandPageView, SetLandPageViewAction } from 'modules/ui/land/actions'
 
 export type Props = {
   lands: Land[]
   isLoggedIn: boolean
   isLoading: boolean
+  view: LandPageView
   onNavigate: (path: string) => void
+  onSetView: typeof setLandPageView
 }
 
 export type State = {
   showOwner: boolean
   showOperator: boolean
-  view: LandPageView
   page: number
   selectedLand: number
 }
 
-export type MapStateProps = Pick<Props, 'lands' | 'isLoggedIn' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onNavigate'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction>
+export type MapStateProps = Pick<Props, 'lands' | 'isLoggedIn' | 'isLoading' | 'view'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onSetView'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | SetLandPageViewAction>

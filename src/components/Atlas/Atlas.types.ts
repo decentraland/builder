@@ -9,13 +9,15 @@ export type Tile = AtlasTile & { estate_id?: string }
 export type Props = Partial<AtlasProps> & {
   atlasTiles: Record<string, Tile>
   landTiles: Record<string, LandTile>
-  deploymentTiles: Record<string, BaseTile>
+  unoccupiedTiles: Record<string, BaseTile>
   selection?: { x: number | string; y: number | string }[]
   isEstate?: boolean
   showOperator?: boolean
   showOwner?: boolean
+  hasPopup?: boolean
+  onNavigate: (path: string) => void
 }
 
-export type MapStateProps = Pick<Props, 'atlasTiles' | 'landTiles' | 'deploymentTiles'>
-export type MapDispatchProps = {}
+export type MapStateProps = Pick<Props, 'atlasTiles' | 'landTiles' | 'unoccupiedTiles'>
+export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

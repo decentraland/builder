@@ -4,13 +4,12 @@ import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { ProjectState } from 'modules/project/reducer'
-import { ProgressStage, DeploymentStatus, Deployment, OccupiedAtlasParcel } from './types'
-import { getParcelOrientation } from 'modules/project/utils'
-import { DeploymentState } from './reducer'
-import { getStatus } from './utils'
-import { coordsToId } from 'modules/land/utils'
 import { getLandTiles } from 'modules/land/selectors'
 import { LandTile } from 'modules/land/types'
+import { getParcelOrientation } from 'modules/project/utils'
+import { ProgressStage, DeploymentStatus, Deployment, OccupiedAtlasParcel } from './types'
+import { DeploymentState } from './reducer'
+import { getStatus } from './utils'
 
 export const getState = (state: RootState) => state.deployment
 export const getData = (state: RootState) => getState(state).data
@@ -78,19 +77,20 @@ export const getOccuppiedParcels = createSelector<
   return out
 })
 
-export const getDeploymentTiles = createSelector<RootState, DeploymentState['data'], Record<string, LandTile>, Record<string, Tile>>(
-  getData,
+export const getUnoccupiedTiles = createSelector<
+  RootState,
+  Record<string, OccupiedAtlasParcel>,
+  Record<string, LandTile>,
+  Record<string, Tile>
+>(
+  getOccuppiedParcels,
   state => getLandTiles(state),
-  (deployments, landTiles) => {
+  (occupiedParcels, landTiles) => {
     const result: Record<string, Tile> = {}
 
-    const landIdsWithDeployments = Object.values(deployments).reduce(
-      (set, deployment) => set.add(coordsToId(deployment.placement.point.x, deployment.placement.point.y)),
-      new Set<string>()
-    )
-
     for (const id of Object.keys(landTiles)) {
-      if (!landIdsWithDeployments.has(id)) {
+      const isOccupied = id in occupiedParcels
+      if (!isOccupied) {
         result[id] = {
           color: 'rgba(0,0,0, 0.33)',
           scale: 1

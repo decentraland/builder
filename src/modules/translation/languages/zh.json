@@ -308,6 +308,11 @@
     "scenes": "场景",
     "land": "土地"
   },
+  "list": {
+    "two": "{first} and {second}",
+    "three": "{first}, {second} and {third}",
+    "more": "{count} more"
+  },
   "home_page": {
     "import_scene": "上传场景",
     "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用.",
@@ -393,6 +398,22 @@
     "sign_in_link": "登入",
     "none": "没有",
     "results": "{count}个结果"
+  },
+  "land_detail_page": {
+    "transfer": "传递",
+    "edit": "编辑",
+    "set_operator": "设定运算子",
+    "build_estate": "建造屋苑",
+    "add_or_remove_parcels": "添加或删除包裹",
+    "dissolve_estate": "溶解屋",
+    "online_scenes": "在线场景",
+    "none": "没有",
+    "add_scene": "添加场景",
+    "description": "描述",
+    "owner": "所有者",
+    "operators": "经营者",
+    "total_land": "总土地",
+    "empty_land": "空地"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",

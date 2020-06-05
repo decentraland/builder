@@ -1,14 +1,16 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
-import { Tile, Props } from './Atlas.types'
+import { Props } from './Atlas.types'
 import { coordsToId } from 'modules/land/utils'
 import { RoleType, Land } from 'modules/land/types'
 import Popup from './Popup'
+import { locations } from 'routing/locations'
+import './Atlas.css'
 
 const getCoords = (x: number | string, y: number | string) => `${x},${y}`
 
 const Atlas: React.FC<Props> = props => {
-  const { atlasTiles, isEstate, landTiles, deploymentTiles, showOwner, showOperator, hasPopup } = props
+  const { atlasTiles, isEstate, landTiles, unoccupiedTiles, showOwner, showOperator, hasPopup, onNavigate, className } = props
 
   const [showPopup, setShowPopup] = useState(false)
   const [hoveredLand, setHoveredLand] = useState<Land | null>(null)
@@ -22,36 +24,6 @@ const Atlas: React.FC<Props> = props => {
     props.selection
   ])
 
-  const isSelected = useCallback(
-    (x: number, y: number) => {
-      if (selection.has(getCoords(x, y))) return true
-      // This is a workaround to paint the large estates, because GraphQL can return only up to 1000 results
-      // and some Estates have more parcels than thats
-      if (!atlasTiles) return false
-      const id = selection.values().next().value as string
-      const center = atlasTiles[id] as Tile
-      const tile = atlasTiles[getCoords(x, y)] as Tile
-      if (center && tile && center.estate_id && tile.estate_id && center.estate_id === tile.estate_id && isEstate) {
-        return true
-      }
-      return false
-    },
-    [selection, atlasTiles, isEstate]
-  )
-
-  const selectedStrokeLayer: Layer = useCallback(
-    (x, y) => {
-      return isSelected(x, y) ? { color: '#ff0044', scale: 1.4 } : null
-    },
-    [isSelected]
-  )
-
-  const selectedFillLayer: Layer = useCallback(
-    (x, y) => {
-      return isSelected(x, y) ? { color: '#ff9990', scale: 1.2 } : null
-    },
-    [isSelected]
-  )
   const shouldPan = isEstate && props.selection && props.selection.length > 0 && props.size
   const panX = shouldPan ? Math.floor(((props.selection!.length + 1) % 2) * props.size * -0.5) : 0
   const panY = shouldPan ? Math.floor(((props.selection!.length + 1) % 2) * props.size * -0.5) : 0
@@ -70,18 +42,18 @@ const Atlas: React.FC<Props> = props => {
     [landTiles, showOwner, showOperator]
   )
 
-  const deploymentLayer: Layer = useCallback(
+  const unoccupiedLayer: Layer = useCallback(
     (x, y) => {
       const id = coordsToId(x, y)
-      const tile = deploymentTiles[id]
+      const tile = unoccupiedTiles[id]
       return tile || null
     },
-    [deploymentTiles]
+    [unoccupiedTiles]
   )
 
   const handleHover = useCallback(
     (x: number, y: number) => {
-      if (!hasPopup) return
+      if (!hasPopup || selection.has(getCoords(x, y))) return
       const id = coordsToId(x, y)
       const tile = landTiles[id]
       if (tile && !showPopup) {
@@ -98,6 +70,18 @@ const Atlas: React.FC<Props> = props => {
       }
     },
     [hoveredLand, showPopup, landTiles]
+  )
+
+  const handleClick = useCallback(
+    (x: number, y: number) => {
+      const id = coordsToId(x, y)
+      if (id in landTiles && !selection.has(id)) {
+        const { land } = landTiles[id]
+        setShowPopup(false)
+        onNavigate(locations.landDetail(land.id))
+      }
+    },
+    [landTiles, selection, onNavigate]
   )
 
   // fade effect
@@ -130,15 +114,26 @@ const Atlas: React.FC<Props> = props => {
     }
   }, [hasPopup, showPopup, mouseX, mouseY])
 
+  // classes
+  const classes: string[] = []
+  if (className) {
+    classes.push(className)
+  }
+  if (hoveredLand) {
+    classes.push('clickable')
+  }
+
   return (
     <>
       <AtlasComponent
         panX={panX}
         panY={panY}
         {...props}
+        className={classes.join(' ')}
         tiles={atlasTiles}
-        layers={[landLayer, deploymentLayer, ...(props.layers || []), selectedStrokeLayer, selectedFillLayer]}
+        layers={[landLayer, unoccupiedLayer, ...(props.layers || [])]}
         onHover={handleHover}
+        onClick={handleClick}
       />
       {hoveredLand ? <Popup x={x} y={y} visible={showPopup} land={hoveredLand} /> : null}
     </>

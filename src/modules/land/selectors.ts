@@ -4,11 +4,14 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { getData as getDeployments } from 'modules/deployment/selectors'
+import { getData as getProjects } from 'modules/project/selectors'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { getTiles } from 'modules/tile/selectors'
 import { FETCH_LANDS_REQUEST } from './actions'
 import { findDeployment, coordsToId, traverseTiles, RoleColor } from './utils'
 import { Land, LandType, LandTile } from './types'
+import { ProjectState } from 'modules/project/reducer'
+import { Project } from 'modules/project/types'
 
 export const getState = (state: RootState) => state.land
 export const getData = (state: RootState) => getState(state).data
@@ -46,6 +49,17 @@ export const getProjectIdsByLand = createSelector<RootState, Land[], DeploymentS
 
     return results
   }
+)
+
+export const getProjectsByLand = createSelector<RootState, Record<string, string[]>, ProjectState['data'], Record<string, Project[]>>(
+  getProjectIdsByLand,
+  getProjects,
+  (projectIdsByLand, projectData) =>
+    Object.keys(projectIdsByLand).reduce((obj, landId) => {
+      const projectIds = projectIdsByLand[landId]
+      obj[landId] = projectIds.filter(id => id in projectData).map(id => projectData[id])
+      return obj
+    }, {} as Record<string, Project[]>)
 )
 
 export const getLandTiles = createSelector<RootState, Land[], Record<string, AtlasTile>, Record<string, LandTile>>(

@@ -311,6 +311,11 @@
     "scenes": "Escenas",
     "land": "Tierras"
   },
+  "list": {
+    "two": "{first} y {second}",
+    "three": "{first}, {second} y {third}",
+    "more": "{count} más"
+  },
   "home_page": {
     "import_scene": "Cargar Escena",
     "no_projects": "No tienes ninguna Escena aún.{br}Elige una opción abajo para continuar.",
@@ -396,6 +401,22 @@
     "sign_in_link": "Iniciar Sesión",
     "none": "Ninguna",
     "results": "{count} resultados"
+  },
+  "land_detail_page": {
+    "transfer": "Transferir",
+    "edit": "Editar",
+    "set_operator": "Configurar Operador",
+    "build_estate": "Construir Estate",
+    "add_or_remove_parcels": "Añadir o Quitar Parcelas",
+    "dissolve_estate": "Disolver Estate",
+    "online_scenes": "Escenas Online",
+    "none": "Ninguna",
+    "add_scene": "Agregar Escena",
+    "description": "Descripción",
+    "owner": "Dueño",
+    "operators": "Operadores",
+    "total_land": "Tierras Totales",
+    "empty_land": "Tierras Vacias"
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",

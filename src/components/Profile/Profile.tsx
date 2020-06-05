@@ -1,9 +1,9 @@
-import { AvatarFace, Blockie, Logo } from 'decentraland-ui'
 import * as React from 'react'
-import { Props } from './Profile.types'
-import './Profile.css'
+import { AvatarFace, Blockie, Logo } from 'decentraland-ui'
 import { isEqual } from 'lib/address'
 import { LAND_POOL_ADDRESS } from 'modules/land/utils'
+import { Props } from './Profile.types'
+import './Profile.css'
 
 export default class Profile extends React.PureComponent<Props> {
   componentWillMount() {
@@ -14,12 +14,12 @@ export default class Profile extends React.PureComponent<Props> {
   }
 
   render() {
-    const { address, avatar, textOnly } = this.props
+    const { address, avatar, textOnly, size } = this.props
     const name = (avatar && avatar.name) || address.slice(0, 6)
 
     if (isEqual(address, LAND_POOL_ADDRESS)) {
       return (
-        <span className="Profile decentraland">
+        <span className={`Profile decentraland ${size}`}>
           <Logo />
           <span className="name">Decentraland</span>
         </span>
@@ -30,13 +30,13 @@ export default class Profile extends React.PureComponent<Props> {
       return name
     } else {
       return avatar ? (
-        <span className="Profile avatar">
+        <span className={`Profile avatar ${size}`}>
           <AvatarFace size="tiny" inline avatar={avatar} />
           <span className="name">{name}</span>
         </span>
       ) : (
-        <span className="Profile blockie">
-          <Blockie seed={address} scale={3} />
+        <span className={`Profile blockie ${size}`}>
+          <Blockie seed={address} scale={size === 'large' ? 5 : 3} />
           <span className="name">{name}</span>
         </span>
       )

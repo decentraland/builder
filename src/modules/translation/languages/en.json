@@ -296,6 +296,7 @@
     "new": "New",
     "new_scene": "New scene",
     "next": "next",
+    "not_found": "Not found",
     "optional": "optional",
     "or": "or",
     "project": "Scene",
@@ -433,6 +434,22 @@
     "sign_in_link": "Sign In",
     "none": "None",
     "results": "{count} results"
+  },
+  "land_detail_page": {
+    "transfer": "Transfer",
+    "edit": "Edit",
+    "set_operator": "Set Operator",
+    "build_estate": "Build Estate",
+    "add_or_remove_parcels": "Add Or Remove Parcels",
+    "dissolve_estate": "Dissolve Estate",
+    "online_scenes": "Online Scenes",
+    "none": "None",
+    "add_scene": "Add Scene",
+    "description": "Description",
+    "owner": "Owner",
+    "operators": "Operators",
+    "total_land": "Total Land",
+    "empty_land": "Empty Land"
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",

@@ -52,3 +52,6 @@ export const traverseTiles = (x: number, y: number, land: Land, result: Record<s
     traverseTiles(x, y - 1, land, result, tiles)
   }
 }
+
+export const getSelection = (land: Land) =>
+  land.type === LandType.PARCEL ? [{ x: land.x!, y: land.y! }] : land.parcels!.map(parcel => ({ x: parcel.x, y: parcel.y }))

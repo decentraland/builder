@@ -1,0 +1,7 @@
+.dcl.atlas .react-tile-map-canvas:not(.draggable) {
+  cursor: default;
+}
+
+.dcl.atlas.clickable .react-tile-map-canvas {
+  cursor: pointer;
+}

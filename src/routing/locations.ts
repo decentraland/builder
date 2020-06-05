@@ -12,5 +12,6 @@ export const locations = {
   notFound: () => '/404',
   callback: () => '/callback',
   migrate: () => '/migrate',
-  land: () => '/land'
+  land: () => '/land',
+  landDetail: (landId = ':landId') => `/land/${landId}`
 }

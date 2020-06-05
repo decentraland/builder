@@ -7,9 +7,10 @@ export type Props = {
   avatar: Avatar | null
   onLoadProfile: typeof loadProfileRequest
   textOnly?: boolean
+  size?: 'normal' | 'large'
 }
 
 export type MapStateProps = Pick<Props, 'avatar'>
 export type MapDispatchProps = Pick<Props, 'onLoadProfile'>
 export type MapDispatch = Dispatch<LoadProfileRequestAction>
-export type OwnProps = Pick<Props, 'address' | 'textOnly'>
+export type OwnProps = Pick<Props, 'address' | 'textOnly' | 'size'>

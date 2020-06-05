@@ -20,6 +20,7 @@ import MigratePage from 'components/MigratePage'
 import LandPage from 'components/LandPage'
 
 import { Props, State } from './Routes.types'
+import LandDetailPage from 'components/LandDetailPage'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -69,6 +70,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Route exact path={locations.signIn()} component={SignInPage} />
             <Route exact path={locations.land()} component={LandPage} />
+            <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>
