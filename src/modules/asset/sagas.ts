@@ -1,10 +1,17 @@
 import { call, put, takeLatest, select } from 'redux-saga/effects'
-import { LoadCollectiblesRequestAction, LOAD_COLLECTIBLES_REQUEST, loadCollectiblesSuccess, loadCollectiblesRequest } from './actions'
-import { dar } from 'lib/api/dar'
-import { Asset, AssetRegistry, DARAsset } from './types'
+import {
+  LoadCollectiblesRequestAction,
+  LOAD_COLLECTIBLES_REQUEST,
+  loadCollectiblesSuccess,
+  loadCollectiblesRequest,
+  loadCollectiblesFailure
+} from './actions'
+import { Asset, OpenSeaAsset } from './types'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { opensea } from 'lib/api/opensea'
+import { TRANSPARENT_PIXEL } from 'lib/getModelData'
 
 export function* assetSaga() {
   yield takeLatest(LOAD_COLLECTIBLES_REQUEST, handleLoadCollectibles)
@@ -16,30 +23,26 @@ function* handleConnectWallet() {
 }
 
 function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
-  const darRegistries: AssetRegistry[] = yield call(() => dar.fetchCollectibleRegistries())
+  const address: string | null = yield select(getAddress)
 
-  const assets: Asset[] = []
-  const address = yield select(getAddress)
-  const promises: Promise<{ assets: DARAsset[]; registry: AssetRegistry }>[] = []
-
-  for (const registry of darRegistries) {
-    promises.push(dar.fetchCollectibleAssets(registry.common_name, address).then(assets => ({ assets, registry })))
-  }
-
-  const results: { assets: DARAsset[]; registry: AssetRegistry }[] = yield call(() => Promise.all(promises))
-
-  for (const result of results) {
-    for (let asset of result.assets) {
+  try {
+    if (!address) {
+      throw new Error(`Invalid address: ${address}`)
+    }
+    const assets: Asset[] = []
+    const openseaAssets: OpenSeaAsset[] = yield call(() => opensea.fetchAssets(address))
+    for (const openseaAsset of openseaAssets) {
+      const uri = `ethereum://${openseaAsset.asset_contract.address}/${openseaAsset.token_id}`
       assets.push({
         assetPackId: COLLECTIBLE_ASSET_PACK_ID,
-        id: asset.token_id,
+        id: uri,
         tags: [],
-        category: result.registry.name,
+        category: openseaAsset.asset_contract.name,
         contents: {},
-        name: asset.name || '',
-        model: asset.uri,
+        name: openseaAsset.name || '',
+        model: uri,
         script: null,
-        thumbnail: asset.image,
+        thumbnail: openseaAsset.image_thumbnail_url || TRANSPARENT_PIXEL,
         metrics: {
           triangles: 0,
           materials: 0,
@@ -52,7 +55,8 @@ function* handleLoadCollectibles(_: LoadCollectiblesRequestAction) {
         actions: []
       })
     }
+    yield put(loadCollectiblesSuccess(assets))
+  } catch (error) {
+    yield put(loadCollectiblesFailure(error.message))
   }
-
-  yield put(loadCollectiblesSuccess(assets))
 }
