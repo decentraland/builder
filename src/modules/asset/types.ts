@@ -80,34 +80,6 @@ export type AssetRegistry = {
   image_url: string
 }
 
-export type DARAssetsResponse = {
-  assets: DARAsset[]
-}
-
-export type DARAsset = {
-  name: string | null
-  owner: string
-  description: string
-  image: string
-  registry: string
-  token_id: string
-  uri: string
-  files: DARAssetFile[]
-  traits: any[]
-}
-
-export type DARAssetFile = {
-  name: string
-  url: string
-  role: string
-}
-
-export type DARAssetTrait = {
-  id: string
-  name: string
-  type: string
-}
-
 export type OpenSeaResponse = {
   assets: OpenSeaAsset[]
 }
