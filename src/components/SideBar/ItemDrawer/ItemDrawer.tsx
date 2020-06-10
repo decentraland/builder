@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import SidebarHeader from '../SidebarHeader'
 import SidebarSearch from '../SidebarSearch'
@@ -54,7 +53,6 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isConnected } = this.props
     return (
       <div className="ItemDrawer">
         <SidebarHeader />
@@ -62,11 +60,6 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
 
         <div ref={this.setDrawerContainer} className="overflow-container">
           {this.renderView()}
-          {this.isViewingCollectibles() && isConnected && (
-            <span className="disclaimer">
-              <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
-            </span>
-          )}
         </div>
       </div>
     )
