@@ -7,11 +7,3 @@
   height: calc(100% - 96px);
   overflow-y: auto;
 }
-
-.ItemDrawer .disclaimer {
-  color: rgba(var(--bluish-steel-raw), 0.64);
-  text-align: center;
-  width: calc(var(--sidebar-width) - 32px);
-  display: block;
-  margin-top: 10px;
-}
