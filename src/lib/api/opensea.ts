@@ -1,5 +1,6 @@
 import { env } from 'decentraland-commons'
 import { BaseAPI } from 'decentraland-dapps/dist/lib/api'
+import { sleep } from 'decentraland-commons/dist/utils'
 import { OpenSeaResponse, OpenSeaAsset } from 'modules/asset/types'
 
 export const OPENSEA_URL = env.get('REACT_APP_OPENSEA_URL', '')
@@ -16,6 +17,7 @@ export class OpenSeaAPI extends BaseAPI {
     const resp = (await req.json()) as OpenSeaResponse
     const result = resp.assets || []
     if (result.length === OPENSEA_PAGE_SIZE) {
+      await sleep(400)
       const nextPage: OpenSeaAsset[] = await this.fetchAssets(owner, page + 1)
       return [...result, ...nextPage]
     }
