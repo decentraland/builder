@@ -539,6 +539,11 @@
     "medium": "Estándar (2x2)",
     "small": "Mini (1x1)"
   },
+  "transfer_page": {
+    "title": "Transferir",
+    "subtitle": "Estás por transferir {name}.",
+    "disclaimer": "Recuerda que transferir es una operación irreversible.{br}Por favor verifica que la dirección sea la correcta."
+  },
   "toasts": {
     "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la nube!"
   },

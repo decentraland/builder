@@ -536,6 +536,11 @@
     "medium": "中 (2x2)",
     "small": "小 (1x1)"
   },
+  "transfer_page": {
+    "title": "转让",
+    "subtitle": "您即将转让 {name}.",
+    "warning": "请记住，转让是不可逆的操作。{br}请仔细检查地址。"
+  },
   "toasts": {
     "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
   },

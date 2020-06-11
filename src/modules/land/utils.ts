@@ -55,3 +55,9 @@ export const traverseTiles = (x: number, y: number, land: Land, result: Record<s
 
 export const getSelection = (land: Land) =>
   land.type === LandType.PARCEL ? [{ x: land.x!, y: land.y! }] : land.parcels!.map(parcel => ({ x: parcel.x, y: parcel.y }))
+
+export const getAtlasProps = (land: Land) => {
+  const selection = getSelection(land)
+  const [x, y] = getCenter(selection)
+  return { x, y, selection }
+}

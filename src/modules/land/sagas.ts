@@ -1,18 +1,86 @@
-import { takeLatest, call, put, takeEvery } from 'redux-saga/effects'
-import { FETCH_LANDS_REQUEST, FetchLandsRequestAction, fetchLandsFailure, fetchLandsSuccess, fetchLandsRequest } from './actions'
-import { Land } from './types'
+import { Eth } from 'web3x-es/eth'
+import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects'
+import {
+  FETCH_LANDS_REQUEST,
+  FetchLandsRequestAction,
+  fetchLandsFailure,
+  fetchLandsSuccess,
+  fetchLandsRequest,
+  TRANSFER_LAND_REQUEST,
+  TransferLandRequestAction,
+  transferLandFailure,
+  transferLandSuccess
+} from './actions'
+import { Land, LandType } from './types'
 import { manager } from 'lib/api/manager'
+import { LANDRegistry } from 'contracts/LANDRegistry'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
   ConnectWalletSuccessAction,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Address } from 'web3x-es/address'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
+import { EstateRegistry } from 'contracts/EstateRegistry'
 
 export function* landSaga() {
+  yield takeEvery(TRANSFER_LAND_REQUEST, handleTransferLandRequest)
   yield takeEvery(FETCH_LANDS_REQUEST, handleFetchLandRequest)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleWallet)
   yield takeLatest(CHANGE_ACCOUNT, handleWallet)
+}
+
+function* handleTransferLandRequest(action: TransferLandRequestAction) {
+  const { land, address } = action.payload
+
+  const fromAddress = yield select(getAddress)
+
+  try {
+    const eth = Eth.fromCurrentProvider()
+
+    if (!eth) {
+      throw new Error('Wallet not found')
+    }
+
+    if (!fromAddress) {
+      throw new Error(`Invalid address: ${address}`)
+    }
+
+    const from = Address.fromString(fromAddress)
+    const to = Address.fromString(address)
+
+    switch (land.type) {
+      case LandType.PARCEL: {
+        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+        const id = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
+        const txHash = yield call(() =>
+          landRegistry.methods
+            .transferFrom(from, to, id)
+            .send({ from })
+            .getTxHash()
+        )
+        yield put(transferLandSuccess(land, address, txHash))
+        break
+      }
+      case LandType.ESTATE: {
+        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
+        const txHash = yield call(() =>
+          estateRegistry.methods
+            .transferFrom(from, to, land.id)
+            .send({ from })
+            .getTxHash()
+        )
+        yield put(transferLandSuccess(land, address, txHash))
+        break
+      }
+      default:
+        throw new Error(`Unknown Land Type: ${land.type}`)
+    }
+  } catch (error) {
+    yield put(transferLandFailure(land, address, error.message))
+  }
 }
 
 function* handleFetchLandRequest(action: FetchLandsRequestAction) {

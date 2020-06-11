@@ -542,6 +542,11 @@
     "medium": "Standard (2x2)",
     "small": "Mini (1x1)"
   },
+  "transfer_page": {
+    "title": "Transfer",
+    "subtitle": "Your are about to transfer {name}.",
+    "disclaimer": "Remember that transferring is an irreversible operation.{br}Please check the address carefully."
+  },
   "toasts": {
     "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!"
   },

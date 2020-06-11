@@ -73,7 +73,9 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                 </Column>
                 <Column className="actions" align="right">
                   <Row>
-                    <Button basic>{t('land_detail_page.transfer')}</Button>
+                    <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
+                      {t('land_detail_page.transfer')}
+                    </Button>
                     <Button basic>{t('land_detail_page.edit')}</Button>
                     <Dropdown
                       trigger={
