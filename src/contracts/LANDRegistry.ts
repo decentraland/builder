@@ -197,4 +197,4 @@ export class LANDRegistry extends Contract<LANDRegistryDefinition> {
     super(eth, abi, address, options)
   }
 }
-export var LANDRegistryAbi = abi
+export const LANDRegistryAbi = abi

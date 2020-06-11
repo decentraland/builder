@@ -205,4 +205,4 @@ export class EstateRegistry extends Contract<EstateRegistryDefinition> {
     super(eth, abi, address, options)
   }
 }
-export var EstateRegistryAbi = abi
+export const EstateRegistryAbi = abi
