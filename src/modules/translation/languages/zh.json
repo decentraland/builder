@@ -335,7 +335,7 @@
     "upload_manually": "手动导入"
   },
   "itemdrawer": {
-    "collectible_disclaimer": "没看到你所有的加密收藏品？{br}我们很快就会加入支持！",
+    "opensea_credit": "由{link}提供支持",
     "edit_asset_pack": "编辑",
     "empty_ground": "末设置地面",
     "no_results": "没找到",
