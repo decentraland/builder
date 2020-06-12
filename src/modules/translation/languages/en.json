@@ -347,7 +347,7 @@
     "upload_manually": "Import Manually"
   },
   "itemdrawer": {
-    "collectible_disclaimer": "Don’t see all of your crypto-collectibles?{br}We are adding support for more soon!",
+    "opensea_credit": "Powered by {link}",
     "edit_asset_pack": "Edit",
     "empty_ground": "No Ground",
     "no_results": "No results",
