@@ -14,5 +14,6 @@ export const locations = {
   migrate: () => '/migrate',
   land: () => '/land',
   landDetail: (landId = ':landId') => `/land/${landId}`,
-  landTransfer: (landId = ':landId') => `/land/${landId}/transfer`
+  landTransfer: (landId = ':landId') => `/land/${landId}/transfer`,
+  landEdit: (landId = ':landId') => `/land/${landId}/edit`
 }

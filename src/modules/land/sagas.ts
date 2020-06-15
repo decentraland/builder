@@ -9,7 +9,11 @@ import {
   TRANSFER_LAND_REQUEST,
   TransferLandRequestAction,
   transferLandFailure,
-  transferLandSuccess
+  transferLandSuccess,
+  EDIT_LAND_REQUEST,
+  EditLandRequestAction,
+  editLandSuccess,
+  editLandFailure
 } from './actions'
 import { Land, LandType } from './types'
 import { manager } from 'lib/api/manager'
@@ -26,6 +30,7 @@ import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/c
 import { EstateRegistry } from 'contracts/EstateRegistry'
 
 export function* landSaga() {
+  yield takeEvery(EDIT_LAND_REQUEST, handleEditLandRequest)
   yield takeEvery(TRANSFER_LAND_REQUEST, handleTransferLandRequest)
   yield takeEvery(FETCH_LANDS_REQUEST, handleFetchLandRequest)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleWallet)
@@ -45,7 +50,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
     }
 
     if (!fromAddress) {
-      throw new Error(`Invalid address: ${address}`)
+      throw new Error(`Invalid from address: ${fromAddress}`)
     }
 
     const from = Address.fromString(fromAddress)
@@ -96,4 +101,55 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
 function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction) {
   const { address } = action.payload.wallet
   yield put(fetchLandsRequest(address))
+}
+
+function* handleEditLandRequest(action: EditLandRequestAction) {
+  const { land, name, description } = action.payload
+
+  const fromAddress = yield select(getAddress)
+
+  const data = `0,${name},${description},`
+
+  try {
+    const eth = Eth.fromCurrentProvider()
+
+    if (!eth) {
+      throw new Error('Wallet not found')
+    }
+
+    if (!fromAddress) {
+      throw new Error(`Invalid address: ${fromAddress}`)
+    }
+
+    const from = Address.fromString(fromAddress)
+
+    switch (land.type) {
+      case LandType.PARCEL: {
+        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+        const txHash = yield call(() =>
+          landRegistry.methods
+            .updateLandData(land.x!, land.y!, data)
+            .send({ from })
+            .getTxHash()
+        )
+        yield put(editLandSuccess(land, name, description, txHash))
+        break
+      }
+      case LandType.ESTATE: {
+        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
+        const txHash = yield call(() =>
+          estateRegistry.methods
+            .updateMetadata(land.id, data)
+            .send({ from })
+            .getTxHash()
+        )
+        yield put(editLandSuccess(land, name, description, txHash))
+        break
+      }
+      default:
+        throw new Error(`Unknown Land Type: ${land.type}`)
+    }
+  } catch (error) {
+    yield put(editLandFailure(land, name, description, error.message))
+  }
 }

@@ -34,3 +34,26 @@ export const transferLandFailure = (land: Land, address: string, error: string) 
 export type TransferLandRequestAction = ReturnType<typeof transferLandRequest>
 export type TransferLandSuccessAction = ReturnType<typeof transferLandSuccess>
 export type TransferLandFailureAction = ReturnType<typeof transferLandFailure>
+
+export const EDIT_LAND_REQUEST = '[Request] Edit Land'
+export const EDIT_LAND_SUCCESS = '[Success] Edit Land'
+export const EDIT_LAND_FAILURE = '[Failure] Edit Land'
+
+export const editLandRequest = (land: Land, name: string, description: string) => action(EDIT_LAND_REQUEST, { land, name, description })
+export const editLandSuccess = (land: Land, name: string, description: string, txHash: string) =>
+  action(EDIT_LAND_SUCCESS, {
+    land,
+    name,
+    description,
+    ...buildTransactionPayload(txHash, {
+      landId: land.id,
+      name,
+      description
+    })
+  })
+export const editLandFailure = (land: Land, name: string, description: string, error: string) =>
+  action(EDIT_LAND_FAILURE, { land, name, description, error })
+
+export type EditLandRequestAction = ReturnType<typeof editLandRequest>
+export type EditLandSuccessAction = ReturnType<typeof editLandSuccess>
+export type EditLandFailureAction = ReturnType<typeof editLandFailure>

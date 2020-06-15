@@ -264,6 +264,10 @@
     "title": "Scene details",
     "unpublish_needed": "Please Unpublish your Scene before updating your Scene Details"
   },
+  "edit_page": {
+    "title": "Edit",
+    "subtitle": "Your are editing {name}."
+  },
   "error_page": {
     "or": "or try",
     "reload": "reloading the page",
