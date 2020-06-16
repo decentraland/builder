@@ -1,0 +1,11 @@
+encryptionsalt: v1:9X3+G/+xJoE=:v1:oAp27x9lCRuwv+Vm:8LrLnqvlQNaLS7fo/e+AND3QURJovg==
+config:
+  assetbundles:aws-key:
+    secure: v1:sBI5rN2WJ/IO39zs:lUli1B9v0hDhP/zlqHWykNHlJg6WLRCrIZlxWrK4siKbgwPg
+  assetbundles:aws-secret:
+    secure: v1:1OsEpAc5UlhbBxy2:HvRYgUKdx8EbLpJVfV+RGRSxQTuEEqMrwHI6phjWF7ZVwQLA3EEzePjNmt1spEEgsqcIaY4dBq8=
+  assetbundles:db-password:
+    secure: v1:aH+8wpOl0Q+9iBrP:vpUtypE0qTEV78zr927hf0oe1ilAxa1mLo60x03d120n120L+l6qyw==
+  assetbundles:unity-cipher:
+    secure: v1:SZJG/UHdzETUnFpw:Ww7Ys9Jf8n7yUi9iw/lyWigNHaofYE2BBp2AVW96B3Y=
+  aws:region: us-east-1
