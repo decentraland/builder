@@ -89,7 +89,10 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                       direction="left"
                     >
                       <Dropdown.Menu>
-                        <Dropdown.Item text={t('land_detail_page.set_operator')} />
+                        <Dropdown.Item
+                          text={t('land_detail_page.set_operator')}
+                          onClick={() => onNavigate(locations.landOperator(land.id))}
+                        />
                         <Dropdown.Item text={t('land_detail_page.build_estate')} />
                         <Dropdown.Item text={t('land_detail_page.add_or_remove_parcels')} />
                         <Dropdown.Item text={t('land_detail_page.dissolve_estate')} />

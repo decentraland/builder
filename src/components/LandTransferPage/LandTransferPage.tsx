@@ -7,6 +7,7 @@ import { Props, State } from './LandTransferPage.types'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { RoleType } from 'modules/land/types'
 import { locations } from 'routing/locations'
+import { isValid } from 'lib/address'
 import './LandTransferPage.css'
 
 export default class LandTransferPage extends React.PureComponent<Props, State> {
@@ -16,8 +17,7 @@ export default class LandTransferPage extends React.PureComponent<Props, State> 
   }
 
   handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    const isValid = !data.value || /^0x[a-fA-F0-9]{40}$/g.test(data.value)
-    this.setState({ isValid, address: data.value })
+    this.setState({ isValid: !data.value || isValid(data.value), address: data.value })
   }
 
   render() {

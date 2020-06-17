@@ -474,6 +474,14 @@
     "step_four_cta": "Migrate",
     "projects_title": "The following Scenes will be migrated:"
   },
+  "operator_page": {
+    "title": "Set Operator",
+    "subtitle": "Your are setting an operator for {name}.",
+    "address": "Address",
+    "undo": "Undo",
+    "revoke": "Revoke",
+    "invalid_address": "Invalid address"
+  },
   "popups": {
     "metrics_help": "See metrics here!",
     "shortcuts_help": "See shortcuts here!"

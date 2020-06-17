@@ -434,6 +434,14 @@
     "step_four_cta": "迁移",
     "projects_title": "以下场景将被迁移："
   },
+  "operator_page": {
+    "title": "设定运算子",
+    "subtitle": "您正在为{name}设置一个运算符。",
+    "address": "地址",
+    "undo": "撤消",
+    "revoke": "吊销",
+    "invalid_address": "无效"
+  },
   "scene_list_page": {
     "projects_title": "社区场景",
     "no_projects": "没有结果",

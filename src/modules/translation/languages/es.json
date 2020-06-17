@@ -437,6 +437,14 @@
     "step_four_cta": "Migrar",
     "projects_title": "Las siguientes Escenas seran migradas:"
   },
+  "operator_page": {
+    "title": "Asignar Operador",
+    "subtitle": "Estas asignando un operador para {name}.",
+    "address": "Dirección",
+    "undo": "Deshacer",
+    "revoke": "Revocar",
+    "invalid_address": "Dirección invalida"
+  },
   "not_found_page": {
     "back": "Volver a tus Escenas",
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",

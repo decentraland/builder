@@ -1,8 +1,14 @@
 import { Coord } from 'react-tile-map'
-import { DeploymentState } from 'modules/deployment/reducer'
-import { Land, LandType, LandTile, RoleType } from './types'
-import { Tile } from 'components/Atlas/Atlas.types'
 import { Color } from 'decentraland-ui'
+import { Eth } from 'web3x-es/eth'
+import { Address } from 'web3x-es/address'
+import { DeploymentState } from 'modules/deployment/reducer'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
+import { EstateRegistry } from 'contracts/EstateRegistry'
+import { LANDRegistry } from 'contracts/LANDRegistry'
+import { isZero } from 'lib/address'
+import { Tile } from 'components/Atlas/Atlas.types'
+import { Land, LandType, LandTile, RoleType } from './types'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
@@ -60,4 +66,35 @@ export const getAtlasProps = (land: Land) => {
   const selection = getSelection(land)
   const [x, y] = getCenter(selection)
   return { x, y, selection }
+}
+
+export const getUpdateOperator = async (land: Land) => {
+  const eth = Eth.fromCurrentProvider()
+  if (!eth) {
+    return null
+  }
+
+  try {
+    switch (land.type) {
+      case LandType.PARCEL: {
+        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+        const tokenId = await landRegistry.methods.encodeTokenId(land.x!, land.y!).call()
+        const updateOperator = await landRegistry.methods.updateOperator(tokenId).call()
+        const address = updateOperator.toString()
+        return isZero(address) ? null : address
+      }
+
+      case LandType.ESTATE: {
+        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
+        const updateOperator = await estateRegistry.methods.updateOperator(land.id).call()
+        const address = updateOperator.toString()
+        return isZero(address) ? null : address
+      }
+      default:
+        return null
+    }
+  } catch (error) {
+    console.log(`Error fetching updateOperator for ${land.type} ${land.id}:`, error.message)
+    return null
+  }
 }

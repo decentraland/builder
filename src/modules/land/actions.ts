@@ -57,3 +57,24 @@ export const editLandFailure = (land: Land, name: string, description: string, e
 export type EditLandRequestAction = ReturnType<typeof editLandRequest>
 export type EditLandSuccessAction = ReturnType<typeof editLandSuccess>
 export type EditLandFailureAction = ReturnType<typeof editLandFailure>
+
+export const SET_OPERATOR_REQUEST = '[Request] Set Operator'
+export const SET_OPERATOR_SUCCESS = '[Success] Set Operator'
+export const SET_OPERATOR_FAILURE = '[Failure] Set Operator'
+
+export const setOperatorRequest = (land: Land, address: string | null) => action(SET_OPERATOR_REQUEST, { land, address })
+export const setOperatorSuccess = (land: Land, address: string | null, txHash: string) =>
+  action(SET_OPERATOR_SUCCESS, {
+    land,
+    address,
+    ...buildTransactionPayload(txHash, {
+      landId: land.id,
+      address
+    })
+  })
+export const setOperatorFailure = (land: Land, address: string | null, error: string) =>
+  action(SET_OPERATOR_FAILURE, { land, address, error })
+
+export type SetOperatorRequestAction = ReturnType<typeof setOperatorRequest>
+export type SetOperatorSuccessAction = ReturnType<typeof setOperatorSuccess>
+export type SetOperatorFailureAction = ReturnType<typeof setOperatorFailure>

@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { editLandRequest } from 'modules/land/actions'
+import { editLandRequest, EditLandRequestAction } from 'modules/land/actions'
 
 export type Props = {
   onEdit: typeof editLandRequest
@@ -12,4 +12,4 @@ export type State = {
 
 export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onEdit'>
-export type MapDispatch = Dispatch
+export type MapDispatch = Dispatch<EditLandRequestAction>
