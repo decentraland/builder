@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
-
 import { T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { COLLECTIBLE_ASSET_PACK_ID } from 'modules/ui/sidebar/utils'
 import SidebarHeader from '../SidebarHeader'
@@ -63,8 +62,17 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
         <div ref={this.setDrawerContainer} className="overflow-container">
           {this.renderView()}
           {this.isViewingCollectibles() && isConnected && (
-            <span className="disclaimer">
-              <T id={`itemdrawer.collectible_disclaimer`} values={{ br: <br /> }} />
+            <span className="credit">
+              <T
+                id={`itemdrawer.opensea_credit`}
+                values={{
+                  link: (
+                    <a href="https://opensea.io" target="_blank" rel="no:opener no:referrer">
+                      OpenSea
+                    </a>
+                  )
+                }}
+              />
             </span>
           )}
         </div>

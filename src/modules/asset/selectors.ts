@@ -54,7 +54,7 @@ export const getDisabledAssets = createSelector<RootState, Record<ComponentType,
       const asset = assets[assetId]
 
       if (isNFT(asset)) {
-        const component = nfts.find(nft => nft.data.url.split('/').pop() === asset.id)
+        const component = nfts.find(nft => nft.data.url === asset.id)
         if (component) {
           result.push(asset.id)
         }

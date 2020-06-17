@@ -8,10 +8,18 @@
   overflow-y: auto;
 }
 
-.ItemDrawer .disclaimer {
+.ItemDrawer .credit {
   color: rgba(var(--bluish-steel-raw), 0.64);
   text-align: center;
   width: calc(var(--sidebar-width) - 32px);
   display: block;
   margin-top: 10px;
+}
+
+.ItemDrawer .credit a {
+  color: rgba(var(--bluish-steel-raw), 1);
+}
+
+.ItemDrawer .credit a:hover {
+  text-decoration: underline;
 }

@@ -345,7 +345,7 @@
     "upload_manually": "Súbelas manualmente"
   },
   "itemdrawer": {
-    "collectible_disclaimer": "¿No ves todos tus coleccionables?{br}¡Agregaremos más próximamente!",
+    "opensea_credit": "Impulsado por {link}",
     "edit_asset_pack": "Editar",
     "empty_ground": "Sin piso",
     "no_results": "Sin resultados",

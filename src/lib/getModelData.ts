@@ -16,6 +16,10 @@ import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { SceneMetrics } from 'modules/scene/types'
 
+// transparent 1x1 pixel
+export const TRANSPARENT_PIXEL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
+
 type Options = {
   width: number
   height: number
@@ -153,8 +157,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       bodies: 0,
       entities: 1
     }
-    // transparent 1x1 pixel
-    const image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
+    const image = TRANSPARENT_PIXEL
     return { info, image }
   }
 }
