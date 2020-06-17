@@ -23,7 +23,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
     this.setState({ loading: true })
     const { land } = this.props
     const address = await getUpdateOperator(land)
-    if (address != null) {
+    if (address !== null) {
       this.setState({ address, initial: address, loading: false, editing: true })
     } else {
       this.setState({ loading: false })
