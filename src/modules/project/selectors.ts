@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState, Vector3 } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
@@ -8,8 +9,6 @@ import { getProjectId } from 'modules/location/utils'
 import { Project } from 'modules/project/types'
 import { PARCEL_SIZE } from './utils'
 import { LOAD_PUBLIC_PROJECT_REQUEST } from './actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getCurrentIdentity } from 'modules/identity/selectors'
 
 export const getState: (state: RootState) => ProjectState = state => state.project
 
@@ -19,11 +18,11 @@ export const getError: (state: RootState) => ProjectState['error'] = state => ge
 
 export const getLoading = (state: RootState) => getState(state).loading
 
-export const getUserProjects = createSelector(getAddress, getCurrentIdentity, getData, (address, identity, projects) => {
+export const getUserProjects = createSelector(getAddress, getData, (address, projects) => {
   return Object.keys(projects).reduce((record, projectId) => {
     const project = projects[projectId]
-    const isUserLoggedIn = !!identity
-    if ((isUserLoggedIn && project.ethAddress === address) || project.ethAddress === null) {
+    const isOwnedByUser = !!project.ethAddress && !!address && project.ethAddress.toLowerCase() === address.toLowerCase()
+    if (isOwnedByUser || project.ethAddress === null) {
       record[projectId] = project
     }
     return record
