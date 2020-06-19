@@ -183,10 +183,10 @@ export default class HomePage extends React.PureComponent<Props, State> {
         <Page isFullscreen className="HomePage">
           {showDashboard ? (
             <Tabs>
+              <SyncToast />
               <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
               <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
               <Tabs.Tab onClick={this.handleOpenShowcase}>{t('scene_list_page.projects_title')}</Tabs.Tab>
-              <SyncToast />
               <div className="tabs-menu">
                 {projects.length > 1 ? this.renderSortDropdown() : null}
                 {this.renderImportButton()}
