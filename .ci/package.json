@@ -9,6 +9,6 @@
         "@pulumi/eks": "^0.19.2",
         "@pulumi/kubernetes": "^2.3.0",
         "@pulumi/pulumi": "^2.4.0",
-        "dcl-ops-lib": "2.0.10"
+        "dcl-ops-lib": "^3.0.0"
     }
 }
