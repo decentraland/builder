@@ -58,11 +58,14 @@ export default class SidebarHeader extends React.PureComponent<Props> {
                 {selectedCategory || (selectedAssetPack ? selectedAssetPack.title : t('global.loading') + '...')}
               </span>
               <div className="spacer">
-                {selectedAssetPack && selectedAssetPack.ethAddress === ethAddress && (
-                  <Button basic onClick={this.handleEditAssetPack}>
-                    {t('itemdrawer.edit_asset_pack')}
-                  </Button>
-                )}
+                {selectedAssetPack &&
+                  selectedAssetPack.ethAddress &&
+                  ethAddress &&
+                  selectedAssetPack.ethAddress.toLowerCase() === ethAddress.toLowerCase() && (
+                    <Button basic onClick={this.handleEditAssetPack}>
+                      {t('itemdrawer.edit_asset_pack')}
+                    </Button>
+                  )}
               </div>
             </span>
           )}
