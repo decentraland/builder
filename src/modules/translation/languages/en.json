@@ -567,5 +567,6 @@
     "no_wallet": "Wallet not found",
     "connect_error": "Could not connect wallet",
     "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
-  }
+  },
+  "maintenance": "Site under maintenance, we'll be back soon."
 }
