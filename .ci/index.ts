@@ -3,9 +3,8 @@ import { buildStatic } from 'dcl-ops-lib/buildStatic'
 
 async function main() {
   const builder = buildStatic({
-    domain: `builder.decentraland.${envTLD}`,
+    domain: `builder.decentraland.${env === 'prd' ? 'org' : envTLD}`,
     defaultPath: 'index.html',
-    additionalDomains: env === 'prd' ? ['builder.decentraland.org'] : [],
   })
 
   return {
