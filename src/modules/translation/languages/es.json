@@ -563,6 +563,5 @@
   "wallet": {
     "signature_error": "Error al firmar el mensaje",
     "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
-  },
-  "maintenance": "Sitio en mantenimiento, volveremos pronto."
+  }
 }
