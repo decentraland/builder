@@ -10,7 +10,7 @@ import './Atlas.css'
 const getCoords = (x: number | string, y: number | string) => `${x},${y}`
 
 const Atlas: React.FC<Props> = props => {
-  const { atlasTiles, isEstate, landTiles, unoccupiedTiles, showOwner, showOperator, hasPopup, onNavigate, className } = props
+  const { atlasTiles, isEstate, landTiles, unoccupiedTiles, showOwner, showOperator, hasPopup, onNavigate, className, hasLink } = props
 
   const [showPopup, setShowPopup] = useState(false)
   const [hoveredLand, setHoveredLand] = useState<Land | null>(null)
@@ -74,6 +74,7 @@ const Atlas: React.FC<Props> = props => {
 
   const handleClick = useCallback(
     (x: number, y: number) => {
+      if (!hasLink) return
       const id = coordsToId(x, y)
       if (id in landTiles && !selection.has(id)) {
         const { land } = landTiles[id]
@@ -81,7 +82,7 @@ const Atlas: React.FC<Props> = props => {
         onNavigate(locations.landDetail(land.id))
       }
     },
-    [landTiles, selection, onNavigate]
+    [landTiles, selection, onNavigate, hasLink]
   )
 
   // fade effect
@@ -128,12 +129,12 @@ const Atlas: React.FC<Props> = props => {
       <AtlasComponent
         panX={panX}
         panY={panY}
+        onHover={handleHover}
+        onClick={handleClick}
         {...props}
         className={classes.join(' ')}
         tiles={atlasTiles}
         layers={[landLayer, unoccupiedLayer, ...(props.layers || [])]}
-        onHover={handleHover}
-        onClick={handleClick}
       />
       {hoveredLand ? <Popup x={x} y={y} visible={showPopup} land={hoveredLand} /> : null}
     </>
@@ -143,7 +144,8 @@ const Atlas: React.FC<Props> = props => {
 Atlas.defaultProps = {
   showOperator: true,
   showOwner: true,
-  hasPopup: false
+  hasPopup: false,
+  hasLink: true
 }
 
 export default Atlas

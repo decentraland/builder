@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Row, Back, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { LandType, Land } from 'modules/land/types'
+import { LandType, Land, RoleType } from 'modules/land/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { Project } from 'modules/project/types'
@@ -38,7 +38,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderDetail(land: Land, projects: Project[]) {
-    const { onNavigate, occupiedParcels } = this.props
+    const { onNavigate, onOpenModal, occupiedParcels } = this.props
     const projectIds = projects.reduce((set, project) => set.add(project.id), new Set<string>())
     const occupiedTotal = Object.values(occupiedParcels).reduce((total, parcel) => total + (projectIds.has(parcel.projectId) ? 1 : 0), 0)
     const selection = getSelection(land)
@@ -71,35 +71,40 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                     />
                   </Row>
                 </Column>
-                <Column className="actions" align="right">
-                  <Row>
-                    <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
-                      {t('land_detail_page.transfer')}
-                    </Button>
-                    <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
-                      {t('land_detail_page.edit')}
-                    </Button>
-                    <Dropdown
-                      trigger={
-                        <Button basic>
-                          <Icon name="ellipsis horizontal" />
-                        </Button>
-                      }
-                      inline
-                      direction="left"
-                    >
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          text={t('land_detail_page.set_operator')}
-                          onClick={() => onNavigate(locations.landOperator(land.id))}
-                        />
-                        <Dropdown.Item text={t('land_detail_page.build_estate')} />
-                        <Dropdown.Item text={t('land_detail_page.add_or_remove_parcels')} />
-                        <Dropdown.Item text={t('land_detail_page.dissolve_estate')} />
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </Row>
-                </Column>
+                {land.role === RoleType.OWNER ? (
+                  <Column className="actions" align="right">
+                    <Row>
+                      <Button basic onClick={() => onNavigate(locations.landTransfer(land.id))}>
+                        {t('land_detail_page.transfer')}
+                      </Button>
+                      <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
+                        {t('land_detail_page.edit')}
+                      </Button>
+                      <Dropdown
+                        trigger={
+                          <Button basic>
+                            <Icon name="ellipsis horizontal" />
+                          </Button>
+                        }
+                        inline
+                        direction="left"
+                      >
+                        <Dropdown.Menu>
+                          <Dropdown.Item
+                            text={t('land_detail_page.set_operator')}
+                            onClick={() => onNavigate(locations.landOperator(land.id))}
+                          />
+                          <Dropdown.Item
+                            text={t('land_detail_page.build_estate')}
+                            onClick={() => onOpenModal('EstateEditorModal', { land })}
+                          />
+                          <Dropdown.Item text={t('land_detail_page.add_or_remove_parcels')} />
+                          <Dropdown.Item text={t('land_detail_page.dissolve_estate')} />
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Row>
+                  </Column>
+                ) : null}
               </Row>
             </Narrow>
           </Row>

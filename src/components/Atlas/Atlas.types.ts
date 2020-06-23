@@ -15,6 +15,7 @@ export type Props = Partial<AtlasProps> & {
   showOperator?: boolean
   showOwner?: boolean
   hasPopup?: boolean
+  hasLink?: boolean
   onNavigate: (path: string) => void
 }
 
