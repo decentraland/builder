@@ -1,6 +1,10 @@
 image: decentraland/ci-node:latest
 
 build:
+  only:
+    - master
+    - staging
+    - release
   script:
     - ./setupEnv.sh
     - npm install && npm run build
