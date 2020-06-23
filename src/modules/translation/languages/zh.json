@@ -560,5 +560,6 @@
   "wallet": {
     "signature_error": "签名消息失败",
     "title": "连接钱包用加密收藏品装饰你的场景。"
-  }
+  },
+  "maintenance": "网站正在维护中，我们会尽快回来"
 }
