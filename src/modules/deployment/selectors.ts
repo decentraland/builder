@@ -5,11 +5,12 @@ import { Project } from 'modules/project/types'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { ProjectState } from 'modules/project/reducer'
 import { getLandTiles } from 'modules/land/selectors'
-import { LandTile } from 'modules/land/types'
+import { LandTile, RoleType } from 'modules/land/types'
 import { getParcelOrientation } from 'modules/project/utils'
 import { ProgressStage, DeploymentStatus, Deployment, OccupiedAtlasParcel } from './types'
 import { DeploymentState } from './reducer'
 import { getStatus } from './utils'
+import { idToCoords, coordsToId } from 'modules/land/utils'
 
 export const getState = (state: RootState) => state.deployment
 export const getData = (state: RootState) => getState(state).data
@@ -90,11 +91,37 @@ export const getUnoccupiedTiles = createSelector<
 
     for (const id of Object.keys(landTiles)) {
       const isOccupied = id in occupiedParcels
+      const role = landTiles[id].land.role
       if (!isOccupied) {
         result[id] = {
-          color: 'rgba(0,0,0, 0.33)',
+          color: role === RoleType.OWNER ? '#ab2039' : '#147eab',
           scale: 1
         }
+      }
+    }
+
+    // connect unoccupied tiles
+    for (const id of Object.keys(result)) {
+      const land = landTiles[id].land
+      const [x, y] = idToCoords(id)
+
+      const topId = coordsToId(x, y + 1)
+      const leftId = coordsToId(x - 1, y)
+      const topLeftId = coordsToId(x - 1, y + 1)
+
+      const topLand = landTiles[topId]
+      const leftLand = landTiles[leftId]
+      const topLeftLand = landTiles[topLeftId]
+
+      const top = !!topLand && topLand.land.id === land.id
+      const left = !!leftLand && leftLand.land.id === land.id
+      const topLeft = !!topLeftLand && topLeftLand.land.id === land.id
+
+      result[id] = {
+        ...result[id],
+        top,
+        left,
+        topLeft
       }
     }
 

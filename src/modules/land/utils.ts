@@ -14,6 +14,8 @@ export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
 export const coordsToId = (x: string | number, y: string | number) => x + ',' + y
 
+export const idToCoords = (id: string) => id.split(',').map(coord => +coord) as [number, number]
+
 export const findDeployment = (x: string | number, y: string | number, deployments: DeploymentState['data']) => {
   for (const deployment of Object.values(deployments)) {
     if (deployment.placement.point.x === +x && deployment.placement.point.y === +y) {
