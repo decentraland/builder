@@ -1,19 +1,19 @@
 import { Dispatch } from 'redux'
-import { Land } from 'modules/land/types'
-import { ModalProps } from 'decentraland-ui'
+import { ModalProps, Coord } from 'decentraland-ui'
+import { Land, LandTile } from 'modules/land/types'
 
 export type Props = ModalProps & {
+  landTiles: Record<string, LandTile>
   metadata: {
     land: Land
-    isEditing: boolean
   }
 }
 
 export type State = {
-  selection: string[]
+  selection: Coord[]
 }
 
-export type MapStateProps = {}
+export type MapStateProps = Pick<Props, 'landTiles'>
 export type MapDispatchProps = {}
 export type MapDispatch = Dispatch<any>
 export type OwnProps = {}

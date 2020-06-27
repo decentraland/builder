@@ -100,3 +100,47 @@ export const getUpdateOperator = async (land: Land) => {
     return null
   }
 }
+
+export const areEqualCoords = (coord1: Coord, coord2: Coord) => coord1.x === coord2.x && coord1.y === coord2.y
+
+export const getCoordMatcher = (coord1: Coord) => (coord2: Coord) => areEqualCoords(coord1, coord2)
+
+export const getNeighbourMatcher = (coord1: Coord) => (coord2: Coord) =>
+  (coord1.x === coord2.x && (coord1.y === coord2.y + 1 || coord1.y === coord2.y - 1)) ||
+  (coord1.y === coord2.y && (coord1.x === coord2.x + 1 || coord1.x === coord2.x - 1))
+
+export function hasNeighbour(coord: Coord, all: Coord[]) {
+  return all.some(getNeighbourMatcher(coord))
+}
+
+export function getNeighbours(coord: Coord, all: Coord[]) {
+  return all.filter(getNeighbourMatcher(coord))
+}
+
+const visit = (coord: Coord, all: Coord[] = [coord], visited: Coord[] = []) => {
+  const isVisited = visited.some(getCoordMatcher(coord))
+
+  if (!isVisited) {
+    visited.push(coord)
+    const neighbours = getNeighbours(coord, all)
+    for (const neighbour of neighbours) {
+      visit(neighbour, all, visited)
+    }
+  }
+  return visited
+}
+
+export const areConnected = (coords: Coord[]) => {
+  if (coords.length === 0) {
+    return false
+  }
+  const visited = visit(coords[0], coords)
+  return visited.length === coords.length
+}
+
+export const getDiff = (a: Coord[], b: Coord[]) => {
+  return b.filter(coord => !a.some(getCoordMatcher(coord)))
+}
+
+export const getCoordsToAdd = (original: Coord[], modified: Coord[]) => getDiff(original, modified)
+export const getCoordsToRemove = (original: Coord[], modified: Coord[]) => getDiff(modified, original)
