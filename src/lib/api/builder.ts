@@ -373,6 +373,14 @@ export class BuilderAPI extends BaseAPI {
       project: fromRemoteProject(remoteManifest.project)
     } as Manifest
 
+    /* There are projects retrived from the cloud (S3, not DB) that don't have an ethAddress, even after migration (cos migration only impacts the DB),
+       those projects can be loaded into the app state via the Scene Pool, and they end up with a null ethAddress, and are mixed with projects 
+       that the user created while being logged out (no ethAddress either). So to tell them appart we set them a placeholder value.
+    */
+    if (!manifest.project.ethAddress) {
+      manifest.project.ethAddress = 'legacy'
+    }
+
     return runMigrations(manifest, migrations)
   }
 

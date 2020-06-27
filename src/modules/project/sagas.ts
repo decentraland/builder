@@ -114,6 +114,8 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   const { rows, cols } = template
 
+  const ethAddress = yield select(getAddress)
+
   const project: Project = {
     id: uuidv4(),
     title: t('global.new_scene'),
@@ -125,7 +127,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
       cols
     },
     sceneId: scene.id,
-    ethAddress: yield select(getAddress),
+    ethAddress: ethAddress || null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
