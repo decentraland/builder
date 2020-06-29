@@ -167,7 +167,7 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
       <Modal name={this.props.name}>
         <ModalNavigation
           title={isEditing ? 'Edit Estate' : 'Build Estate'}
-          subtitle={isEditing ? 'Add or remove parcels' : 'Select parcels to include in this Estate'}
+          subtitle={isEditing ? 'Add or remove parcels' : 'Select adjacent parcels to include in this Estate'}
         />
 
         {showCreationForm ? (
