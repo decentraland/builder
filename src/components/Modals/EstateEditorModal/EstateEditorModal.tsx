@@ -1,11 +1,13 @@
 import * as React from 'react'
+import { ModalNavigation, ModalActions, Button, Layer, Coord, Field } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { Props, State } from './EstateEditorModal.types'
 import './EstateEditorModal.css'
 import { Atlas } from 'components/Atlas'
-import { getCenter, getSelection, getCoordMatcher, areConnected, coordsToId } from 'modules/land/utils'
+import { getCenter, getSelection, getCoordMatcher, areConnected, coordsToId, getCoordsToAdd, getCoordsToRemove } from 'modules/land/utils'
 import { LandType, Land } from 'modules/land/types'
-import { ModalNavigation, ModalActions, Button, Layer, Coord } from 'decentraland-ui'
+import { Props, State } from './EstateEditorModal.types'
+
+const MAX_PARCELS_PER_TX = 12
 
 const getInitialCoords = (land: Land) => {
   let x = 0
@@ -27,9 +29,16 @@ const getInitialSelection = (land: Land) => {
   return land.type === LandType.PARCEL ? [{ x: land.x!, y: land.y! }] : land.parcels!.map(parcel => ({ x: parcel.x, y: parcel.y }))
 }
 
+const getOriginalParcels = (land: Land) => {
+  return land.type === LandType.PARCEL ? [] : land.parcels!
+}
+
 export default class EstateEditorModal extends React.PureComponent<Props, State> {
   state: State = {
-    selection: getInitialSelection(this.props.metadata.land)
+    name: '',
+    description: '',
+    selection: getInitialSelection(this.props.metadata.land),
+    showCreationForm: false
   }
 
   handleClick = (x: number, y: number) => {
@@ -94,38 +103,89 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
   }
 
   hasReachedAddLimit() {
-
+    return this.getCoordsToAdd().length > MAX_PARCELS_PER_TX
   }
 
   hasReachedRemoveLimit() {
-
+    return this.getCoordsToRemove().length > MAX_PARCELS_PER_TX
   }
 
   getCoordsToAdd() {
     const { land } = this.props.metadata
-    const toAdd: Coord[] = []
-    for (const coord of this.state.selection) {
-      if (land.p)
+    return getCoordsToAdd(getOriginalParcels(land), this.state.selection)
+  }
+
+  getCoordsToRemove() {
+    const { land } = this.props.metadata
+    return getCoordsToRemove(getOriginalParcels(land), this.state.selection)
+  }
+
+  handleSubmit = () => {
+    const { onCreateEstate, onEditEstate, metadata } = this.props
+    const { land } = metadata
+    if (land.type === LandType.PARCEL) {
+      // creating a new estate
+      if (!this.state.showCreationForm) {
+        this.setState({ showCreationForm: true })
+      } else {
+        const { name, description, selection } = this.state
+        onCreateEstate(name, description, selection)
+      }
+    } else {
+      // editing an existing estate
+      const toAdd = this.getCoordsToAdd()
+      const toRemove = this.getCoordsToRemove()
+      onEditEstate(land, toAdd, toRemove)
+    }
+  }
+
+  handleCancel = () => {
+    const { onClose } = this.props
+    const { showCreationForm } = this.state
+    if (showCreationForm) {
+      this.setState({ showCreationForm: false })
+    } else {
+      onClose()
     }
   }
 
   render() {
-    const { name, metadata } = this.props
+    const { metadata } = this.props
+    const { name, description, showCreationForm } = this.state
     const { land } = metadata
     const [x, y] = getInitialCoords(land)
 
+    const isTooSmall = this.isTooSmall()
+    const hasReachedAddLimit = this.hasReachedAddLimit()
+    const hasReachedRemoveLimit = this.hasReachedRemoveLimit()
+    const isValidSelection = !isTooSmall && !hasReachedAddLimit && !hasReachedRemoveLimit
+    const isValidForm = !showCreationForm || name.length > 0
+    const isEditing = land.type === LandType.ESTATE
+    const isDisabled = !isValidSelection || !isValidForm
+
     return (
-      <Modal name={name}>
+      <Modal name={this.props.name}>
         <ModalNavigation
-          title={land.type === LandType.ESTATE ? 'Edit Estate' : 'Build Estate'}
-          subtitle={land.type === LandType.ESTATE ? 'Add or remove parcels' : 'Select parcels to include in this Estate'}
+          title={isEditing ? 'Edit Estate' : 'Build Estate'}
+          subtitle={isEditing ? 'Add or remove parcels' : 'Select parcels to include in this Estate'}
         />
-        <div className="map">
-          <Atlas x={x} y={y} onClick={this.handleClick} hasLink={false} layers={[this.selectedStrokeLayer, this.selectedFillLayer]} />
-        </div>
+
+        {showCreationForm ? (
+          <div className="form">
+            <Field label="Name" placeholder="My Estate..." value={name}></Field>
+            <Field label="Description" placeholder="some description..." value={description}></Field>
+          </div>
+        ) : (
+          <div className="map">
+            <Atlas x={x} y={y} onClick={this.handleClick} hasLink={false} layers={[this.selectedStrokeLayer, this.selectedFillLayer]} />
+          </div>
+        )}
+
         <ModalActions>
-          <Button primary>Submit</Button>
-          <Button>Cancel</Button>
+          <Button primary disabled={isDisabled}>
+            Submit
+          </Button>
+          <Button onClick={this.handleCancel}>Cancel</Button>
         </ModalActions>
       </Modal>
     )

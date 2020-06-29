@@ -1,6 +1,7 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Land } from './types'
+import { Coord } from 'decentraland-ui'
 
 export const FETCH_LANDS_REQUEST = '[Request] Fetch Lands'
 export const FETCH_LANDS_SUCCESS = '[Success] Fetch Lands'
@@ -24,7 +25,7 @@ export const transferLandSuccess = (land: Land, address: string, txHash: string)
     land,
     address,
     ...buildTransactionPayload(txHash, {
-      landId: land.id,
+      id: land.id,
       name: land.name,
       address
     })
@@ -46,7 +47,7 @@ export const editLandSuccess = (land: Land, name: string, description: string, t
     name,
     description,
     ...buildTransactionPayload(txHash, {
-      landId: land.id,
+      id: land.id,
       name,
       description
     })
@@ -68,7 +69,8 @@ export const setOperatorSuccess = (land: Land, address: string | null, txHash: s
     land,
     address,
     ...buildTransactionPayload(txHash, {
-      landId: land.id,
+      id: land.id,
+      name: land.name,
       address
     })
   })
@@ -78,3 +80,51 @@ export const setOperatorFailure = (land: Land, address: string | null, error: st
 export type SetOperatorRequestAction = ReturnType<typeof setOperatorRequest>
 export type SetOperatorSuccessAction = ReturnType<typeof setOperatorSuccess>
 export type SetOperatorFailureAction = ReturnType<typeof setOperatorFailure>
+
+export const CREATE_ESTATE_REQUEST = '[Request] Create Estate'
+export const CREATE_ESTATE_SUCCESS = '[Success] Create Estate'
+export const CREATE_ESTATE_FAILURE = '[Failure] Create Estate'
+
+export const createEstateRequest = (name: string, description: string, coords: Coord[]) =>
+  action(CREATE_ESTATE_REQUEST, { name, description, coords })
+export const createEstateSuccess = (name: string, description: string, coords: Coord[], txHash: string) =>
+  action(CREATE_ESTATE_SUCCESS, {
+    name,
+    description,
+    coords,
+    ...buildTransactionPayload(txHash, {
+      name,
+      description,
+      size: coords.length
+    })
+  })
+export const createEstateFailure = (name: string, description: string, coords: Coord[], error: string) =>
+  action(CREATE_ESTATE_FAILURE, { name, description, coords, error })
+
+export type CreateEstateRequestAction = ReturnType<typeof createEstateRequest>
+export type CreateEstateSuccessAction = ReturnType<typeof createEstateSuccess>
+export type CreateEstateFailureAction = ReturnType<typeof createEstateFailure>
+
+export const EDIT_ESTATE_REQUEST = '[Request] Edit Estate'
+export const EDIT_ESTATE_SUCCESS = '[Success] Edit Estate'
+export const EDIT_ESTATE_FAILURE = '[Failure] Edit Estate'
+
+export const editEstateRequest = (land: Land, toAdd: Coord[], toRemove: Coord[]) => action(EDIT_ESTATE_REQUEST, { land, toAdd, toRemove })
+export const editEstateSuccess = (land: Land, toAdd: Coord[], toRemove: Coord[], txHash: string) =>
+  action(EDIT_ESTATE_SUCCESS, {
+    land,
+    toAdd,
+    toRemove,
+    ...buildTransactionPayload(txHash, {
+      id: land.id,
+      name: land.name,
+      added: toAdd.length,
+      removed: toRemove.length
+    })
+  })
+export const editEstateFailure = (land: Land, toAdd: Coord[], toRemove: Coord[], error: string) =>
+  action(EDIT_ESTATE_FAILURE, { land, toAdd, toRemove, error })
+
+export type EditEstateRequestAction = ReturnType<typeof editEstateRequest>
+export type EditEstateSuccessAction = ReturnType<typeof editEstateSuccess>
+export type EditEstateFailureAction = ReturnType<typeof editEstateFailure>
