@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { AtlasTile } from 'decentraland-ui'
+import { AtlasTile, Coord } from 'decentraland-ui'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
@@ -8,7 +8,7 @@ import { getData as getProjects } from 'modules/project/selectors'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { getTiles } from 'modules/tile/selectors'
 import { FETCH_LANDS_REQUEST } from './actions'
-import { findDeployment, coordsToId, traverseTiles, RoleColor } from './utils'
+import { findDeployment as findProjectIdByCoords, coordsToId, traverseTiles, RoleColor, hasNeighbour } from './utils'
 import { Land, LandType, LandTile } from './types'
 import { ProjectState } from 'modules/project/reducer'
 import { Project } from 'modules/project/types'
@@ -24,23 +24,30 @@ export const getLands = createSelector<RootState, string | undefined, Record<str
 )
 export const isLoading = (state: RootState) => isLoadingType(getLoading(state), FETCH_LANDS_REQUEST)
 
-export const getProjectIdsByLand = createSelector<RootState, Land[], DeploymentState['data'], Record<string, string[]>>(
+export const getProjectIdsByLand = createSelector<
+  RootState,
+  Land[],
+  ProjectState['data'],
+  DeploymentState['data'],
+  Record<string, string[]>
+>(
   getLands,
+  state => getProjects(state),
   state => getDeployments(state),
-  (lands, deployments) => {
+  (lands, projects, deployments) => {
     let results: Record<string, string[]> = {}
 
     for (const land of lands) {
       results[land.id] = []
       if (land.type === LandType.PARCEL) {
-        const found = findDeployment(land.x!, land.y!, deployments)
-        if (found) {
+        const found = findProjectIdByCoords(land.x!, land.y!, deployments, projects)
+        if (found && !results[land.id].includes(found)) {
           results[land.id].push(found)
         }
       } else {
         for (const parcel of land.parcels!) {
-          const found = findDeployment(parcel.x!, parcel.y!, deployments)
-          if (found) {
+          const found = findProjectIdByCoords(parcel.x!, parcel.y!, deployments, projects)
+          if (found && !results[land.id].includes(found)) {
             results[land.id].push(found)
           }
         }
@@ -80,5 +87,21 @@ export const getLandTiles = createSelector<RootState, Land[], Record<string, Atl
       }
     }
     return result
+  }
+)
+
+export const getParcelsAvailableToBuildEstates = createSelector<RootState, Record<string, LandTile>, Record<string, boolean>>(
+  getLandTiles,
+  landTiles => {
+    const all = Object.values(landTiles)
+      .filter(tile => tile.land.type === LandType.PARCEL)
+      .map<Coord>(tile => ({ x: tile.land.x!, y: tile.land.y! }))
+    const neighbours = Object.keys(landTiles).reduce((obj, id) => {
+      const { land } = landTiles[id]
+      const coord = { x: land.x!, y: land.y! }
+      obj[id] = hasNeighbour(coord, all)
+      return obj
+    }, {} as Record<string, boolean>)
+    return neighbours
   }
 )

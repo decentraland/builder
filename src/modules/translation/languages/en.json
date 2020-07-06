@@ -259,6 +259,11 @@
       "title": "Sign in"
     }
   },
+  "dissolve_modal": {
+    "title": "Dissolve Estate",
+    "confirm": "You are about to dissolve {name}. Do you want to proceed?",
+    "too_big": "This Estate is too big to be dissolved in one transaction. Please remove parcels until its size is at most {max} parcels."
+  },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
     "title": "Scene details",
@@ -274,6 +279,20 @@
     "subtitle": "There was an error, this is all we know:",
     "support": "Contact support",
     "title": "Oops!"
+  },
+  "estate_editor": {
+    "title_edit": "Edit Estate",
+    "subtitle_edit": "Click to add or remove parcels",
+    "title_create": "Build Estate",
+    "subtitle_create": "Click on adjacent parcels to build your Estate",
+    "subtitle_form": "Write a name and description for your Estate",
+    "name_label": "Name",
+    "name_placeholder": "My Estate...",
+    "description_label": "Description",
+    "description_placeholder": "Some description...",
+    "add_limit_reached": "You can add a maximum of {max} parcels at once",
+    "remove_limit_reached": "You can remove a maximum of {max} parcels at once",
+    "needs_two_txs": "This change will send 2 transactions: one to add {toAdd} {toAdd, plural, one {parcel} other {parcels}} and another one to remove {toRemove} {toRemove, plural, one {parcel} other {parcels}}"
   },
   "export_modal": {
     "action": "Download",

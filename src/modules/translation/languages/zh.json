@@ -254,6 +254,11 @@
       "title": "登陆"
     }
   },
+  "dissolve_modal": {
+    "title": "解散Estate",
+    "confirm": "您即将解散{name}。 您要继续吗？",
+    "too_big": "该Estate太大，无法分解为一笔交易。 请移除包裹，直到其大小最大为{max}个包裹为止。"
+  },
   "edit_project_modal": {
     "custom_layout_label": "布局",
     "title": "场景详细信息",
@@ -265,6 +270,20 @@
     "subtitle": "发生了一个错误，以下是错误信息:",
     "support": "联系支持服务",
     "title": "糟糕！"
+  },
+  "estate_editor": {
+    "title_edit": "修改Estate",
+    "subtitle_edit": "单击以添加或删除包裹",
+    "title_create": "建立Estate",
+    "subtitle_create": "单击相邻的地块以建造你的庄园",
+    "subtitle_form": "为您的Estate写下名称和描述",
+    "name_label": "名称",
+    "name_placeholder": "我的Estate...",
+    "description_label": "描述",
+    "description_placeholder": "一些描述...",
+    "add_limit_reached": "您一次最多可以添加{max}个地块",
+    "remove_limit_reached": "您一次最多可以删除{max}个包裹",
+    "needs_two_txs": "此项更改将发送2笔交易：一笔交易添加{toAdd}包裹，另一笔交易删除{toRemove}包裹"
   },
   "export_modal": {
     "action": "下载",
@@ -403,9 +422,9 @@
     "transfer": "传递",
     "edit": "编辑",
     "set_operator": "设定运算子",
-    "build_estate": "建造屋苑",
+    "build_estate": "建立Estate",
     "add_or_remove_parcels": "添加或删除包裹",
-    "dissolve_estate": "溶解屋",
+    "dissolve_estate": "解散Estate",
     "online_scenes": "在线场景",
     "none": "没有",
     "add_scene": "添加场景",

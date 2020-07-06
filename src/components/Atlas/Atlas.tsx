@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
+import { Atlas as AtlasComponent, Layer, Color } from 'decentraland-ui'
 import { Props } from './Atlas.types'
 import { coordsToId } from 'modules/land/utils'
 import { RoleType, Land } from 'modules/land/types'
@@ -124,6 +124,21 @@ const Atlas: React.FC<Props> = props => {
     classes.push('clickable')
   }
 
+  let selectionLayers: Layer[] = []
+  if (selection.size > 0) {
+    const isSelected = (x: number, y: number) => selection.has(coordsToId(x, y))
+    const isOwner = (x: number, y: number) => {
+      const id = coordsToId(x, y)
+      const tile = landTiles[id]
+      return !!tile && tile.land.role === RoleType.OWNER
+    }
+    const highlightLayer: Layer = (x, y) =>
+      isSelected(x, y) ? { color: isOwner(x, y) ? Color.SUMMER_RED : Color.NEON_BLUE, scale: 1.2 } : null
+    const selectionLandLayer: Layer = (x, y) => (isSelected(x, y) ? landLayer(x, y) : null)
+    const selectionUnoccupiedLayer: Layer = (x, y) => (isSelected(x, y) ? unoccupiedLayer(x, y) : null)
+    selectionLayers = [highlightLayer, selectionLandLayer, selectionUnoccupiedLayer]
+  }
+
   return (
     <>
       <AtlasComponent
@@ -134,7 +149,7 @@ const Atlas: React.FC<Props> = props => {
         {...props}
         className={classes.join(' ')}
         tiles={atlasTiles}
-        layers={[landLayer, unoccupiedLayer, ...(props.layers || [])]}
+        layers={[landLayer, unoccupiedLayer, ...selectionLayers, ...(props.layers || [])]}
       />
       {hoveredLand ? <Popup x={x} y={y} visible={showPopup} land={hoveredLand} /> : null}
     </>

@@ -151,7 +151,8 @@ export class ManagerAPI {
       }
     }
 
-    return lands
+    // remove empty estates
+    return lands.filter(land => land.type === LandType.PARCEL || land.parcels!.length > 0)
   }
 }
 

@@ -9,17 +9,30 @@ import { LANDRegistry } from 'contracts/LANDRegistry'
 import { isZero } from 'lib/address'
 import { Tile } from 'components/Atlas/Atlas.types'
 import { Land, LandType, LandTile, RoleType } from './types'
+import { ProjectState } from 'modules/project/reducer'
+import { getParcelOrientation } from 'modules/project/utils'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
+
+export const MAX_PARCELS_PER_TX = 20
 
 export const coordsToId = (x: string | number, y: string | number) => x + ',' + y
 
 export const idToCoords = (id: string) => id.split(',').map(coord => +coord) as [number, number]
 
-export const findDeployment = (x: string | number, y: string | number, deployments: DeploymentState['data']) => {
+export const findDeployment = (
+  x: string | number,
+  y: string | number,
+  deployments: DeploymentState['data'],
+  projects: ProjectState['data']
+) => {
   for (const deployment of Object.values(deployments)) {
-    if (deployment.placement.point.x === +x && deployment.placement.point.y === +y) {
-      return deployment.id
+    const project = projects[deployment.id]
+    if (project) {
+      const coords = getParcelOrientation(project, deployment.placement.point, deployment.placement.rotation)
+      if (coords.some(coord => coord.x === x && coord.y === y)) {
+        return deployment.id
+      }
     }
   }
   return null
@@ -144,3 +157,18 @@ export const getDiff = (a: Coord[], b: Coord[]) => {
 
 export const getCoordsToAdd = (original: Coord[], modified: Coord[]) => getDiff(original, modified)
 export const getCoordsToRemove = (original: Coord[], modified: Coord[]) => getDiff(modified, original)
+
+export const splitCoords = (coords: Coord[]): [number[], number[]] => {
+  const xs: number[] = []
+  const ys: number[] = []
+  for (const coord of coords) {
+    xs.push(coord.x)
+    ys.push(coord.y)
+  }
+
+  return [xs, ys]
+}
+
+export const buildMetadata = (name: string, description = '') => {
+  return `0,"${name.replace(/"/g, '\\"')}","${description.replace(/"/g, '\\"')}",`
+}

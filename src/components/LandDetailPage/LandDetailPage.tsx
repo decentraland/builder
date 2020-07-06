@@ -38,11 +38,13 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderDetail(land: Land, projects: Project[]) {
-    const { onNavigate, onOpenModal, occupiedParcels } = this.props
+    const { onNavigate, onOpenModal, occupiedParcels, parcelsAvailableToBuildEstates } = this.props
     const projectIds = projects.reduce((set, project) => set.add(project.id), new Set<string>())
     const occupiedTotal = Object.values(occupiedParcels).reduce((total, parcel) => total + (projectIds.has(parcel.projectId) ? 1 : 0), 0)
     const selection = getSelection(land)
     const [x, y] = getCenter(selection)
+    const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
+
     return (
       <>
         <Section>
@@ -94,12 +96,24 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             text={t('land_detail_page.set_operator')}
                             onClick={() => onNavigate(locations.landOperator(land.id))}
                           />
-                          <Dropdown.Item
-                            text={t('land_detail_page.build_estate')}
-                            onClick={() => onOpenModal('EstateEditorModal', { land })}
-                          />
-                          <Dropdown.Item text={t('land_detail_page.add_or_remove_parcels')} />
-                          <Dropdown.Item text={t('land_detail_page.dissolve_estate')} />
+                          {canBuildEstate ? (
+                            <Dropdown.Item
+                              text={t('land_detail_page.build_estate')}
+                              onClick={() => onOpenModal('EstateEditorModal', { land })}
+                            />
+                          ) : null}
+                          {land.type === LandType.ESTATE ? (
+                            <>
+                              <Dropdown.Item
+                                text={t('land_detail_page.add_or_remove_parcels')}
+                                onClick={() => onOpenModal('EstateEditorModal', { land })}
+                              />
+                              <Dropdown.Item
+                                text={t('land_detail_page.dissolve_estate')}
+                                onClick={() => onOpenModal('DissolveModal', { land })}
+                              />
+                            </>
+                          ) : null}
                         </Dropdown.Menu>
                       </Dropdown>
                     </Row>

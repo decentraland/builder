@@ -1,5 +1,5 @@
 import { Eth } from 'web3x-es/eth'
-import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
 import {
   FETCH_LANDS_REQUEST,
   FetchLandsRequestAction,
@@ -17,7 +17,19 @@ import {
   SET_OPERATOR_REQUEST,
   SetOperatorRequestAction,
   setOperatorSuccess,
-  setOperatorFailure
+  setOperatorFailure,
+  CREATE_ESTATE_REQUEST,
+  CreateEstateRequestAction,
+  createEstateSuccess,
+  createEstateFailure,
+  EditEstateRequestAction,
+  editEstateSuccess,
+  editEstateFailure,
+  EDIT_ESTATE_REQUEST,
+  DISSOLVE_ESTATE_REQUEST,
+  DissolveEstateRequestAction,
+  dissolveEstateSuccess,
+  dissolveEstateFailure
 } from './actions'
 import { Land, LandType } from './types'
 import { manager } from 'lib/api/manager'
@@ -32,8 +44,12 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Address } from 'web3x-es/address'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { EstateRegistry } from 'contracts/EstateRegistry'
+import { splitCoords, buildMetadata } from './utils'
 
 export function* landSaga() {
+  yield takeEvery(DISSOLVE_ESTATE_REQUEST, handleDissolveEstateRequest)
+  yield takeEvery(EDIT_ESTATE_REQUEST, handleEditEstateRequest)
+  yield takeEvery(CREATE_ESTATE_REQUEST, handleCreateEstateRequest)
   yield takeEvery(SET_OPERATOR_REQUEST, handleSetOperatorRequest)
   yield takeEvery(EDIT_LAND_REQUEST, handleEditLandRequest)
   yield takeEvery(TRANSFER_LAND_REQUEST, handleTransferLandRequest)
@@ -42,23 +58,87 @@ export function* landSaga() {
   yield takeLatest(CHANGE_ACCOUNT, handleWallet)
 }
 
+function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
+  const { land } = action.payload
+
+  try {
+    if (land.type !== LandType.ESTATE) {
+      throw new Error(`Invalid LandType: "${land.type}"`)
+    }
+    const [eth, from] = yield getEth()
+    const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+    const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
+    const tokenIds = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
+    const txHash = yield call(() =>
+      estateRegistry.methods
+        .transferManyLands(land.id, tokenIds, from)
+        .send({ from })
+        .getTxHash()
+    )
+    yield put(dissolveEstateSuccess(land, txHash))
+  } catch (error) {
+    yield put(dissolveEstateFailure(land, error.message))
+  }
+}
+
+function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
+  const { name, description, coords } = action.payload
+  try {
+    const [eth, from] = yield getEth()
+    const [xs, ys] = splitCoords(coords)
+    const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+    const metadata = buildMetadata(name, description)
+    const txHash = yield call(() =>
+      landRegistry.methods
+        .createEstateWithMetadata(xs, ys, from, metadata)
+        .send({ from })
+        .getTxHash()
+    )
+
+    yield put(createEstateSuccess(name, description, coords, txHash))
+  } catch (error) {
+    yield put(createEstateFailure(name, description, coords, error.message))
+  }
+}
+
+function* handleEditEstateRequest(action: EditEstateRequestAction) {
+  const { land, toAdd, toRemove } = action.payload
+  try {
+    const [eth, from] = yield getEth()
+    const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+
+    if (toAdd.length > 0) {
+      const [xsToAdd, ysToAdd] = splitCoords(toAdd)
+      const txHash = yield call(() =>
+        landRegistry.methods
+          .transferManyLandToEstate(xsToAdd, ysToAdd, land.id)
+          .send({ from })
+          .getTxHash()
+      )
+      yield put(editEstateSuccess(land, toAdd, 'add', txHash))
+    }
+
+    if (toRemove.length > 0) {
+      const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
+      const tokenIds = yield all(toRemove.map(({ x, y }) => landRegistry.methods.encodeTokenId(x, y).call()))
+      const txHash = yield call(() =>
+        estateRegistry.methods
+          .transferManyLands(land.id, tokenIds, from)
+          .send({ from })
+          .getTxHash()
+      )
+      yield put(editEstateSuccess(land, toRemove, 'remove', txHash))
+    }
+  } catch (error) {
+    yield put(editEstateFailure(land, toAdd, toRemove, error.message))
+  }
+}
+
 function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const { land, address } = action.payload
 
-  const fromAddress = yield select(getAddress)
-
   try {
-    const eth = Eth.fromCurrentProvider()
-
-    if (!eth) {
-      throw new Error('Wallet not found')
-    }
-
-    if (!fromAddress) {
-      throw new Error(`Invalid address: ${fromAddress}`)
-    }
-
-    const from = Address.fromString(fromAddress)
+    const [eth, from] = yield getEth()
     const operator = address ? Address.fromString(address) : Address.ZERO
 
     switch (land.type) {
@@ -96,29 +176,17 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
 function* handleEditLandRequest(action: EditLandRequestAction) {
   const { land, name, description } = action.payload
 
-  const fromAddress = yield select(getAddress)
-
-  const data = `0,${name},${description},`
+  const metadata = buildMetadata(name, description)
 
   try {
-    const eth = Eth.fromCurrentProvider()
-
-    if (!eth) {
-      throw new Error('Wallet not found')
-    }
-
-    if (!fromAddress) {
-      throw new Error(`Invalid address: ${fromAddress}`)
-    }
-
-    const from = Address.fromString(fromAddress)
+    const [eth, from] = yield getEth()
 
     switch (land.type) {
       case LandType.PARCEL: {
         const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
         const txHash = yield call(() =>
           landRegistry.methods
-            .updateLandData(land.x!, land.y!, data)
+            .updateLandData(land.x!, land.y!, metadata)
             .send({ from })
             .getTxHash()
         )
@@ -129,7 +197,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
         const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
         const txHash = yield call(() =>
           estateRegistry.methods
-            .updateMetadata(land.id, data)
+            .updateMetadata(land.id, metadata)
             .send({ from })
             .getTxHash()
         )
@@ -147,20 +215,8 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
 function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const { land, address } = action.payload
 
-  const fromAddress = yield select(getAddress)
-
   try {
-    const eth = Eth.fromCurrentProvider()
-
-    if (!eth) {
-      throw new Error('Wallet not found')
-    }
-
-    if (!fromAddress) {
-      throw new Error(`Invalid from address: ${fromAddress}`)
-    }
-
-    const from = Address.fromString(fromAddress)
+    const [eth, from] = yield getEth()
     const to = Address.fromString(address)
 
     switch (land.type) {
@@ -208,4 +264,20 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
 function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction) {
   const { address } = action.payload.wallet
   yield put(fetchLandsRequest(address))
+}
+
+function* getEth() {
+  const eth = Eth.fromCurrentProvider()
+  if (!eth) {
+    throw new Error('Wallet not found')
+  }
+
+  const fromAddress = yield select(getAddress)
+  if (!fromAddress) {
+    throw new Error(`Invalid from address: ${fromAddress}`)
+  }
+
+  const from = Address.fromString(fromAddress)
+
+  return [eth, from]
 }

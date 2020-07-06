@@ -110,16 +110,16 @@ export const EDIT_ESTATE_SUCCESS = '[Success] Edit Estate'
 export const EDIT_ESTATE_FAILURE = '[Failure] Edit Estate'
 
 export const editEstateRequest = (land: Land, toAdd: Coord[], toRemove: Coord[]) => action(EDIT_ESTATE_REQUEST, { land, toAdd, toRemove })
-export const editEstateSuccess = (land: Land, toAdd: Coord[], toRemove: Coord[], txHash: string) =>
+export const editEstateSuccess = (land: Land, coords: Coord[], type: 'add' | 'remove', txHash: string) =>
   action(EDIT_ESTATE_SUCCESS, {
     land,
-    toAdd,
-    toRemove,
+    coords,
+    type,
     ...buildTransactionPayload(txHash, {
       id: land.id,
       name: land.name,
-      added: toAdd.length,
-      removed: toRemove.length
+      count: coords.length,
+      type
     })
   })
 export const editEstateFailure = (land: Land, toAdd: Coord[], toRemove: Coord[], error: string) =>
@@ -128,3 +128,22 @@ export const editEstateFailure = (land: Land, toAdd: Coord[], toRemove: Coord[],
 export type EditEstateRequestAction = ReturnType<typeof editEstateRequest>
 export type EditEstateSuccessAction = ReturnType<typeof editEstateSuccess>
 export type EditEstateFailureAction = ReturnType<typeof editEstateFailure>
+
+export const DISSOLVE_ESTATE_REQUEST = '[Request] Dissolve Estate'
+export const DISSOLVE_ESTATE_SUCCESS = '[Success] Dissolve Estate'
+export const DISSOLVE_ESTATE_FAILURE = '[Failure] Dissolve Estate'
+
+export const dissolveEstateRequest = (land: Land) => action(DISSOLVE_ESTATE_REQUEST, { land })
+export const dissolveEstateSuccess = (land: Land, txHash: string) =>
+  action(DISSOLVE_ESTATE_SUCCESS, {
+    land,
+    ...buildTransactionPayload(txHash, {
+      id: land.id,
+      name: land.name
+    })
+  })
+export const dissolveEstateFailure = (land: Land, error: string) => action(DISSOLVE_ESTATE_FAILURE, { land, error })
+
+export type DissolveEstateRequestAction = ReturnType<typeof dissolveEstateRequest>
+export type DissolveEstateSuccessAction = ReturnType<typeof dissolveEstateSuccess>
+export type DissolveEstateFailureAction = ReturnType<typeof dissolveEstateFailure>

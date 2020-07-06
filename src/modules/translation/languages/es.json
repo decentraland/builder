@@ -257,6 +257,11 @@
       "subtitle": "Debes iniciar sesión antes de enviar tu escena al concurso."
     }
   },
+  "dissolve_modal": {
+    "title": "Disolver Estate",
+    "confirm": "Estás por disolver a {name}. Deseas continuar?",
+    "too_big": "Este Estate es muy grane para ser disuelto en una transacción. Por favor remueve parcelas hasta que tenga como máximo un tamaño de {max} parcelas."
+  },
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la Escena",
@@ -268,6 +273,20 @@
     "subtitle": "Ocurrió un error, esto es todo lo que sabemos:",
     "support": "Contactar soporte",
     "title": "Oops"
+  },
+  "estate_editor": {
+    "title_edit": "Editar Estate",
+    "subtitle_edit": "Haz click para agregar o remover parcelaas",
+    "title_create": "Construir Estate",
+    "subtitle_create": "Haz click en parcelas adjacentes para construir to Estate",
+    "subtitle_form": "Escribe un nombre y descripción para tu Estate",
+    "name_label": "Nombre",
+    "name_placeholder": "Mi Estate...",
+    "description_label": "Descripción",
+    "description_placeholder": "Alguna descripción...",
+    "add_limit_reached": "Puedes agregar un máximo de {max} parcelas a la vez",
+    "remove_limit_reached": "Puedes remover un máximo de {max} parcelas a la vez",
+    "needs_two_txs": "Este cambio enviará dos transacciones: una para agregar {toAdd} {toAdd, plural, one {parcel} other {parcels}} y otra para remover {toRemove} {toRemove, plural, one {parcel} other {parcels}}"
   },
   "export_modal": {
     "action": "Descargar",
