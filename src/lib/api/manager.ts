@@ -24,6 +24,7 @@ const getLandQuery = () => gql`
     }
     ownerAuthorizations: authorizations(first: 1000, where: { owner: $address, type: "UpdateManager" }) {
       operator
+      isApproved
     }
     operatorAuthorizations: authorizations(first: 1000, where: { operator: $address, type: "UpdateManager" }) {
       owner {
@@ -35,6 +36,7 @@ const getLandQuery = () => gql`
           ...estateFields
         }
       }
+      isApproved
     }
   }
   ${parcelFields()}
@@ -46,8 +48,8 @@ type LandQueryResult = {
   ownerEstates: EstateFields[]
   updateOperatorParcels: ParcelFields[]
   updateOperatorEstates: EstateFields[]
-  ownerAuthorizations: { operator: string }[]
-  operatorAuthorizations: { owner: { address: string; parcels: ParcelFields[]; estates: EstateFields[] } }[]
+  ownerAuthorizations: { operator: string; isApproved: boolean }[]
+  operatorAuthorizations: { owner: { address: string; parcels: ParcelFields[]; estates: EstateFields[] }; isApproved: boolean }[]
 }
 
 const fromParcel = (parcel: ParcelFields, role: RoleType) => {
@@ -109,6 +111,7 @@ export class ManagerAPI {
     })
 
     const lands: Land[] = []
+    const operatorsForAllLand = new Set<string>()
 
     // parcels and estates that I own
     for (const parcel of data.ownerParcels) {
@@ -128,9 +131,11 @@ export class ManagerAPI {
 
     // addresses I gave UpdateManager permission are operators of all my lands
     for (const authorization of data.ownerAuthorizations) {
-      const { operator } = authorization
-      for (const land of lands) {
-        land.operators.push(operator)
+      const { operator, isApproved } = authorization
+      if (isApproved) {
+        operatorsForAllLand.add(operator)
+      } else {
+        operatorsForAllLand.delete(operator)
       }
     }
 
@@ -151,8 +156,23 @@ export class ManagerAPI {
       }
     }
 
-    // remove empty estates
-    return lands.filter(land => land.type === LandType.PARCEL || land.parcels!.length > 0)
+    // add operators for all my lands
+    for (const operator of operatorsForAllLand.values()) {
+      for (const land of lands) {
+        land.operators.push(operator)
+      }
+    }
+
+    return (
+      lands
+        // remove empty estates
+        .filter(land => land.type === LandType.PARCEL || land.parcels!.length > 0)
+        // remove duplicated operators
+        .map(land => {
+          land.operators = Array.from(new Set(land.operators))
+          return land
+        })
+    )
   }
 }
 
