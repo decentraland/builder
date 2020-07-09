@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import { Atlas as AtlasComponent, Layer, Color } from 'decentraland-ui'
+import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
 import { Props } from './Atlas.types'
 import { coordsToId } from 'modules/land/utils'
 import { RoleType, Land } from 'modules/land/types'
@@ -132,8 +132,7 @@ const Atlas: React.FC<Props> = props => {
       const tile = landTiles[id]
       return !!tile && tile.land.role === RoleType.OWNER
     }
-    const highlightLayer: Layer = (x, y) =>
-      isSelected(x, y) ? { color: isOwner(x, y) ? Color.SUMMER_RED : Color.NEON_BLUE, scale: 1.2 } : null
+    const highlightLayer: Layer = (x, y) => (isSelected(x, y) ? { color: isOwner(x, y) ? '#ff8199' : '#6ddff7', scale: 1.2 } : null)
     const selectionLandLayer: Layer = (x, y) => (isSelected(x, y) ? landLayer(x, y) : null)
     const selectionUnoccupiedLayer: Layer = (x, y) => (isSelected(x, y) ? unoccupiedLayer(x, y) : null)
     selectionLayers = [highlightLayer, selectionLandLayer, selectionUnoccupiedLayer]

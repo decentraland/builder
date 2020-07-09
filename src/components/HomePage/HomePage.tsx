@@ -5,7 +5,6 @@ import { env } from 'decentraland-commons'
 import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Tabs } from 'decentraland-ui'
 // import Ad from 'decentraland-ad/lib/Ad/Ad'
 
-import HomePageHero from 'components/HomePageHero'
 import ProjectCard from 'components/ProjectCard'
 import TemplateCard from 'components/TemplateCard'
 import { getTemplates } from 'modules/template/utils'
@@ -181,21 +180,20 @@ export default class HomePage extends React.PureComponent<Props, State> {
         {needsMigration && !didMigrate ? <TopBanner /> : null}
         <Navbar isFullscreen isOverlay={!showDashboard} />
         <Page isFullscreen className="HomePage">
-          {showDashboard ? (
-            <Tabs>
-              <SyncToast />
-              <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
-              <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
-              <Tabs.Tab onClick={this.handleOpenShowcase}>{t('scene_list_page.projects_title')}</Tabs.Tab>
-              <div className="tabs-menu">
-                {projects.length > 1 ? this.renderSortDropdown() : null}
-                {this.renderImportButton()}
-              </div>
-            </Tabs>
-          ) : (
-            <HomePageHero onWatchVideo={this.handleWatchVideo} onStart={this.handleStart} />
-          )}
+          <Tabs>
+            <SyncToast />
+            <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
+            <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
+            <div className="tabs-menu">
+              {projects.length > 1 ? this.renderSortDropdown() : null}
+              {this.renderImportButton()}
+            </div>
+          </Tabs>
           <Container>
+            <div className="menu">
+              <div className="items-count">{projects.length} items</div>
+              <div className="items-count"></div>
+            </div>
             <div>
               {showDashboard && (
                 <div className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
