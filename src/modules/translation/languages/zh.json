@@ -321,7 +321,9 @@
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
-    "terms_and_conditions": "使用条款"
+    "terms_and_conditions": "使用条款",
+    "view_more": "查看更多",
+    "click_here": "点击这里"
   },
   "navigation": {
     "scenes": "场景",
@@ -334,7 +336,7 @@
   },
   "home_page": {
     "import_scene": "上传场景",
-    "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用.",
+    "no_projects": "看来您没有任何场景。 {br} {link}开始。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
@@ -357,7 +359,9 @@
     "migration_banner_link": "迁移页面",
     "migration_modal_title": "迁移成功！",
     "migration_modal_message": "下列项目已迁移：",
-    "migration_modal_dismiss": "解散"
+    "migration_modal_dismiss": "解散",
+    "results": "{count}个结果",
+    "from_scene_pool": "由社区"
   },
   "import_modal": {
     "action": "导入",
@@ -552,6 +556,14 @@
     "loading": "上传中...",
     "retry": "重试",
     "success": "所有场景成功保存！"
+  },
+  "create_modal": {
+    "title": "创建一个场景",
+    "name_subtitle": "为场景设置名称和描述",
+    "size_subtitle": "设置新场景的大小",
+    "name_label": "名称",
+    "description_label": "描述",
+    "description_placeholder": "一些描述..."
   },
   "templates": {
     "big": "大 (2x3)",

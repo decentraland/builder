@@ -10,15 +10,14 @@ import CustomLayoutModal from './CustomLayoutModal'
 const mapState = (_: RootState): MapStateProps => ({})
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onCreateProject: template =>
+  onCreateProject: (name, description, template) =>
     dispatch(
       createProjectFromTemplate(template, {
+        title: name,
+        description,
         onSuccess: project => dispatch(push(locations.editor(project.id)))
       })
     )
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(CustomLayoutModal)
+export default connect(mapState, mapDispatch)(CustomLayoutModal)

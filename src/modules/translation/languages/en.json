@@ -331,7 +331,9 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions"
+    "terms_and_conditions": "Terms & Conditions",
+    "view_more": "View More",
+    "click_here": "Click here"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -344,7 +346,7 @@
   },
   "home_page": {
     "import_scene": "Import Scene",
-    "no_projects": "It looks like you don't have any Scenes.{br}Choose an option below to get started.",
+    "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
       "delete_project": "Delete Scene",
@@ -367,7 +369,9 @@
     "migration_banner_link": "Migration Page",
     "migration_modal_title": "Migration successful!",
     "migration_modal_message": "The following items have been migrated:",
-    "migration_modal_dismiss": "Dismiss"
+    "migration_modal_dismiss": "Dismiss",
+    "results": "{count} {count, plural, one {result} other {results}}",
+    "from_scene_pool": "From The Scene Pool"
   },
   "import_modal": {
     "action": "Import",
@@ -456,7 +460,7 @@
     "sign_in": "You need to {link} to access this page.",
     "sign_in_link": "Sign In",
     "none": "None",
-    "results": "{count} results"
+    "results": "{count} {count, plural, one {result} other {results}}"
   },
   "land_detail_page": {
     "transfer": "Transfer",
@@ -562,6 +566,14 @@
     "loading": "Uploading...",
     "retry": "Retry",
     "success": "All Scenes saved successfully!"
+  },
+  "create_modal": {
+    "title": "Create a Scene",
+    "name_subtitle": "Set a name and a description for your scene",
+    "size_subtitle": "Set the size of your new scene",
+    "name_label": "Name",
+    "description_label": "Description",
+    "description_placeholder": "Some description..."
   },
   "templates": {
     "big": "Big (2x3)",

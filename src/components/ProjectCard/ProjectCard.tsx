@@ -13,6 +13,7 @@ import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
+import { Pool } from 'modules/pool/types'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {
@@ -62,6 +63,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
     const { project, items, deploymentStatus, onClick, isUploading, hasError } = this.props
     const { isDeleting } = this.state
     const canClearDeployment = deploymentStatus !== Status.UNPUBLISHED
+    const isFromScenePool = 'likes' in (project as Pool)
 
     let style = {}
     let classes = 'ProjectCard'
@@ -82,14 +84,16 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
       <>
         {Overlay}
         <DeploymentStatus projectId={project.id} className="deployment-status" />
-        <Dropdown direction="left" onClick={preventDefault()}>
-          <Dropdown.Menu>
-            <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
-            <Dropdown.Item text={t('home_page.project_actions.export_project')} onClick={this.handleExportScene} />
-            <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
-            {canClearDeployment && <Dropdown.Item text={t('home_page.project_actions.unpublish')} onClick={this.handleClearDeployment} />}
-          </Dropdown.Menu>
-        </Dropdown>
+        {isFromScenePool ? null : (
+          <Dropdown direction="left" onClick={preventDefault()}>
+            <Dropdown.Menu>
+              <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
+              <Dropdown.Item text={t('home_page.project_actions.export_project')} onClick={this.handleExportScene} />
+              <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
+              {canClearDeployment && <Dropdown.Item text={t('home_page.project_actions.unpublish')} onClick={this.handleClearDeployment} />}
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{project.title}</div>
@@ -110,7 +114,11 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
             {children}
           </div>
         ) : (
-          <Link to={locations.editor(project.id)} className={classes} style={style}>
+          <Link
+            to={isFromScenePool ? locations.poolView(project.id, 'pool') : locations.editor(project.id)}
+            className={classes}
+            style={style}
+          >
             {children}
           </Link>
         )}

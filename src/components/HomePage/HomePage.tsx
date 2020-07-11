@@ -1,15 +1,23 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { env } from 'decentraland-commons'
-import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Tabs } from 'decentraland-ui'
-// import Ad from 'decentraland-ad/lib/Ad/Ad'
+import {
+  Container,
+  Button,
+  Page,
+  Dropdown,
+  DropdownProps,
+  Pagination,
+  PaginationProps,
+  Tabs,
+  Row,
+  Header,
+  Icon,
+  Section
+} from 'decentraland-ui'
 
+import BuilderIcon from 'components/Icon'
 import ProjectCard from 'components/ProjectCard'
-import TemplateCard from 'components/TemplateCard'
-import { getTemplates } from 'modules/template/utils'
-import { Template } from 'modules/template/types'
-import Icon from 'components/Icon'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
@@ -17,56 +25,40 @@ import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
-import { Props, State, DefaultProps } from './HomePage.types'
+import { Props, DefaultProps } from './HomePage.types'
 import TopBanner from './TopBanner'
 import './HomePage.css'
 
-const PROMO_URL = env.get('REACT_APP_PROMO_URL')
-
-export default class HomePage extends React.PureComponent<Props, State> {
+export default class HomePage extends React.PureComponent<Props> {
   static defaultProps: DefaultProps = {
     projects: []
   }
 
-  state = {
-    isAnimationPlaying: false
-  }
-
-  handleTemplateClick = (template: Template) => {
-    if (template.custom) {
-      this.props.onOpenModal('CustomLayoutModal')
-    } else {
-      this.props.onCreateProject(template)
-    }
-  }
-
-  handleStart = () => {
-    this.setState({ isAnimationPlaying: true })
-    document.getElementById('template-cards')!.scrollIntoView()
-    setTimeout(() => {
-      this.setState({ isAnimationPlaying: false })
-    }, 2000)
-  }
-
-  handleWatchVideo = () => {
-    this.props.onOpenModal('VideoModal')
+  componentWillMount() {
+    const { onLoadFromScenePool } = this.props
+    onLoadFromScenePool({ sortBy: SortBy.NEWEST, sortOrder: 'desc' })
   }
 
   handleOpenImportModal = () => {
     this.props.onOpenModal('ImportModal')
   }
 
-  handlePromoCTA = () => {
-    if (PROMO_URL) {
-      window.open(`${PROMO_URL}?utm_source=builder&utm_campaign=homepage`)
-    }
+  handleOpenCreateModal = () => {
+    this.props.onOpenModal('CustomLayoutModal')
   }
 
   renderImportButton = () => {
     return (
       <Button basic className="import-scene" onClick={this.handleOpenImportModal}>
-        <Icon name="import" />
-        {t('home_page.import_scene')}
+        <BuilderIcon name="import" />
+      </Button>
+    )
+  }
+
+  renderCreateButton = () => {
+    return (
+      <Button basic className="create-scene" onClick={this.handleOpenCreateModal}>
+        <BuilderIcon name="add-active" />
       </Button>
     )
   }
@@ -91,7 +83,7 @@ export default class HomePage extends React.PureComponent<Props, State> {
     const { isLoggedIn, didSync, projects, didMigrate, needsMigration } = this.props
 
     if (projects.length > 0) {
-      return projects.map((project, index) => <ProjectCard key={index} project={project} />)
+      return projects.map(project => <ProjectCard key={project.id} project={project} />)
     } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
@@ -135,7 +127,23 @@ export default class HomePage extends React.PureComponent<Props, State> {
           </div>
         ) : (
           <div>
-            <T id="home_page.no_projects" values={{ br: <br /> }} />
+            <T
+              id="home_page.no_projects"
+              values={{
+                br: <br />,
+                link: (
+                  <a
+                    href="#"
+                    onClick={event => {
+                      event.preventDefault()
+                      this.handleOpenCreateModal()
+                    }}
+                  >
+                    {t('global.click_here')}
+                  </a>
+                )
+              }}
+            />
           </div>
         )}
       </div>
@@ -166,66 +174,65 @@ export default class HomePage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page, didCreate, didSync, needsMigration, didMigrate, isLoggedIn, isLoggingIn } = this.props
+    const { projects, isFetching, totalPages, page, needsMigration, didMigrate, isLoggingIn, poolList } = this.props
     if (isLoggingIn || isFetching) {
       return <LoadingPage />
     }
-    const { isAnimationPlaying } = this.state
-    const templates = getTemplates()
-    const showDashboard = isLoggedIn || didCreate || didSync || projects.length > 0
+
     const hasPagination = totalPages > 1
 
     return (
       <>
         {needsMigration && !didMigrate ? <TopBanner /> : null}
-        <Navbar isFullscreen isOverlay={!showDashboard} />
+        <Navbar isFullscreen />
         <Page isFullscreen className="HomePage">
           <Tabs>
             <SyncToast />
             <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
             <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
-            <div className="tabs-menu">
-              {projects.length > 1 ? this.renderSortDropdown() : null}
-              {this.renderImportButton()}
-            </div>
           </Tabs>
           <Container>
-            <div className="menu">
-              <div className="items-count">{projects.length} items</div>
-              <div className="items-count"></div>
-            </div>
-            <div>
-              {showDashboard && (
-                <div className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
-                  <div className="CardList">{this.renderProjects()}</div>
-                  {hasPagination ? (
-                    <Pagination
-                      firstItem={null}
-                      lastItem={null}
-                      activePage={page}
-                      totalPages={totalPages}
-                      onPageChange={this.handlePageChange}
-                    />
-                  ) : null}
-                </div>
-              )}
-              <div id="template-cards" className={'template-cards' + (isAnimationPlaying ? ' animate' : '')}>
-                <div className="subtitle">
-                  {t('home_page.templates_title')}
-                  {!showDashboard && this.renderImportButton()}
-                </div>
-                <div className="template-list">
-                  <div className="template-row">
-                    <TemplateCard template={templates[0]} onClick={this.handleTemplateClick} />
-                    <TemplateCard template={templates[1]} onClick={this.handleTemplateClick} />
-                  </div>
-                  <div className="template-row">
-                    <TemplateCard template={templates[2]} onClick={this.handleTemplateClick} />
-                    <TemplateCard template={templates[3]} onClick={this.handleTemplateClick} />
-                  </div>
-                </div>
+            <div className="projects-menu">
+              <div className="items-count">{t('home_page.results', { count: projects.length })}</div>
+              <div className="actions">
+                {projects.length > 1 ? this.renderSortDropdown() : null}
+                {this.renderImportButton()}
+                {this.renderCreateButton()}
               </div>
             </div>
+            <Section className={`project-cards ${hasPagination ? 'has-pagination' : ''}`}>
+              <div className="CardList">{this.renderProjects()}</div>
+              {hasPagination ? (
+                <Pagination
+                  firstItem={null}
+                  lastItem={null}
+                  activePage={page}
+                  totalPages={totalPages}
+                  onPageChange={this.handlePageChange}
+                />
+              ) : null}
+            </Section>
+            {poolList ? (
+              <>
+                <Row>
+                  <Row className="scene-pool-menu">
+                    <Header sub>{t('home_page.from_scene_pool')}</Header>
+                  </Row>
+                  <Row align="right">
+                    <Link to={locations.poolSearch()}>
+                      <Button basic>
+                        {t('global.view_more')}&nbsp;<Icon name="chevron right"></Icon>
+                      </Button>
+                    </Link>
+                  </Row>
+                </Row>
+                <div className="scene-pool-projects">
+                  {poolList.map(pool => (
+                    <ProjectCard key={pool.id} project={pool} />
+                  ))}
+                </div>
+              </>
+            ) : null}
           </Container>
         </Page>
         <Footer />

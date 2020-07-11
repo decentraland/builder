@@ -13,7 +13,7 @@ export class PeerAPI extends BaseAPI {
   }
 
   fetchProfile = async (address: string) => {
-    const req = await fetch(`${this.url}/lambdas/profile/${address}`)
+    const req = await fetch(`${this.url}/lambdas/profile/${address.toLowerCase()}`)
     const res = await req.json()
     return res as Profile
   }
