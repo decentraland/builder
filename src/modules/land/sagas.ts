@@ -45,6 +45,9 @@ import { Address } from 'web3x-es/address'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { EstateRegistry } from 'contracts/EstateRegistry'
 import { splitCoords, buildMetadata } from './utils'
+import { push } from 'connected-react-router'
+import { locations } from 'routing/locations'
+import { closeModal } from 'modules/modal/actions'
 
 export function* landSaga() {
   yield takeEvery(DISSOLVE_ESTATE_REQUEST, handleDissolveEstateRequest)
@@ -76,6 +79,8 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
         .getTxHash()
     )
     yield put(dissolveEstateSuccess(land, txHash))
+    yield put(closeModal('DissolveModal'))
+    yield put(push(locations.landDetail(land.id)))
   } catch (error) {
     yield put(dissolveEstateFailure(land, error.message))
   }
@@ -96,6 +101,8 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
     )
 
     yield put(createEstateSuccess(name, description, coords, txHash))
+    yield put(closeModal('EstateEditorModal'))
+    yield put(push(locations.land()))
   } catch (error) {
     yield put(createEstateFailure(name, description, coords, error.message))
   }
@@ -129,6 +136,8 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
       )
       yield put(editEstateSuccess(land, toRemove, 'remove', txHash))
     }
+    yield put(closeModal('EstateEditorModal'))
+    yield put(push(locations.landDetail(land.id)))
   } catch (error) {
     yield put(editEstateFailure(land, toAdd, toRemove, error.message))
   }
@@ -168,6 +177,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type}`)
     }
+    yield put(push(locations.landDetail(land.id)))
   } catch (error) {
     yield put(setOperatorFailure(land, address, error.message))
   }
@@ -207,6 +217,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type}`)
     }
+    yield put(push(locations.landDetail(land.id)))
   } catch (error) {
     yield put(editLandFailure(land, name, description, error.message))
   }
@@ -246,6 +257,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type}`)
     }
+    yield put(push(locations.landDetail(land.id)))
   } catch (error) {
     yield put(transferLandFailure(land, address, error.message))
   }
