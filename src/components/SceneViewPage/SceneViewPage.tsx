@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Page, Responsive, Container } from 'decentraland-ui'
+import { Loader, Page, Responsive, Container, Back } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
@@ -133,8 +133,8 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
         {!isPreviewing && (
           <>
             <Navbar isFullscreen />
-            <Container>
-              <div className="BackButton" onClick={onBack}></div>
+            <Container className="back-container">
+              <Back absolute onClick={onBack}></Back>
             </Container>
           </>
         )}

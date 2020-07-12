@@ -1,5 +1,20 @@
 import * as React from 'react'
-import { Loader, Page, Container, Pagination, Tabs, Dropdown, DropdownProps, PaginationProps, Responsive } from 'decentraland-ui'
+import {
+  Loader,
+  Page,
+  Container,
+  Pagination,
+  Dropdown,
+  DropdownProps,
+  PaginationProps,
+  Responsive,
+  Row,
+  Column,
+  Narrow,
+  Section,
+  Header,
+  Back
+} from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 // import Ad from 'decentraland-ad/lib/Ad/Ad'
 
@@ -81,10 +96,8 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
     }
   }
 
-  handleNavigateToHome = () => this.props.onNavegateToHome()
-
   render() {
-    const { pools, total, totalPages, isLoggedIn } = this.props
+    const { pools, total, totalPages, isLoggedIn, onNavegateToHome } = this.props
     const filters = this.getFilters()
 
     return (
@@ -92,61 +105,64 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
         <Navbar isFullscreen />
         <Page isFullscreen>
           <div className="SceneListPage">
-            <Tabs>
-              <Responsive minWidth={1024} as={Tabs.Tab} onClick={this.handleNavigateToHome}>
-                {t('navigation.scenes')}
-              </Responsive>
-              <Tabs.Tab active>{t('scene_list_page.projects_title')}</Tabs.Tab>
-              <div className="tabs-menu">
-                <Responsive minWidth={1025} as={React.Fragment}>
-                  {/* <Dropdown
-                      direction="left"
-                      value={filters.group || 'all'}
-                      options={[
-                        { value: 'all', text: t('scene_list_page.filters.all_groups') },
-                        ...poolGroups.map(poolGroup => ({ value: poolGroup.id, text: t('scene_list_page.filters.' + poolGroup.name) }))
-                      ]}
-                      onChange={this.handleChangeGroup}
-                    /> */}
-                  {isLoggedIn && (
-                    <Dropdown
-                      direction="left"
-                      value={filters.ethAddress || 'all'}
-                      options={[
-                        { value: 'all', text: t('scene_list_page.filters.all_users') },
-                        { value: 'me', text: t('scene_list_page.filters.only_me') }
-                      ]}
-                      onChange={this.handleChangeUser}
-                    />
-                  )}
-                </Responsive>
-                <Dropdown
-                  direction="left"
-                  value={filters.sortBy}
-                  options={[
-                    { value: SortBy.NEWEST, text: t('scene_list_page.filters.newest') },
-                    { value: SortBy.NAME, text: t('scene_list_page.filters.name') },
-                    { value: SortBy.LIKES, text: t('scene_list_page.filters.likes') },
-                    { value: SortBy.ITEMS, text: t('scene_list_page.filters.items') },
-                    { value: SortBy.SMART_ITEMS, text: t('scene_list_page.filters.smart_items') },
-                    { value: SortBy.SIZE, text: t('scene_list_page.filters.size') }
-                  ]}
-                  onChange={this.handleChangeSort}
-                />
-              </div>
-            </Tabs>
             <Container>
-              <div className="PoolCardList">
-                {pools === null && <Loader active size="huge" />}
-                {Array.isArray(pools) && total === 0 && <div className="empty-projects">{t('scene_list_page.no_projects')}</div>}
-                {Array.isArray(pools) && total !== 0 && (
-                  <>
-                    {pools.map(pool => (
-                      <PoolCard key={pool.id} pool={pool} />
-                    ))}
-                  </>
-                )}
-              </div>
+              <Section className="navigation">
+                <Row>
+                  <Back absolute onClick={onNavegateToHome}></Back>
+                  <Narrow>
+                    <Row>
+                      <Column>
+                        <Row>
+                          <Header size="large">{t('scene_list_page.projects_title')}</Header>
+                        </Row>
+                      </Column>
+                      <Column align="right">
+                        <Row>
+                          <Responsive minWidth={1025} as={React.Fragment}>
+                            {isLoggedIn && (
+                              <Dropdown
+                                direction="left"
+                                value={filters.ethAddress || 'all'}
+                                options={[
+                                  { value: 'all', text: t('scene_list_page.filters.all_users') },
+                                  { value: 'me', text: t('scene_list_page.filters.only_me') }
+                                ]}
+                                onChange={this.handleChangeUser}
+                              />
+                            )}
+                          </Responsive>
+                          <Dropdown
+                            direction="left"
+                            value={filters.sortBy}
+                            options={[
+                              { value: SortBy.NEWEST, text: t('scene_list_page.filters.newest') },
+                              { value: SortBy.NAME, text: t('scene_list_page.filters.name') },
+                              { value: SortBy.LIKES, text: t('scene_list_page.filters.likes') },
+                              { value: SortBy.ITEMS, text: t('scene_list_page.filters.items') },
+                              { value: SortBy.SMART_ITEMS, text: t('scene_list_page.filters.smart_items') },
+                              { value: SortBy.SIZE, text: t('scene_list_page.filters.size') }
+                            ]}
+                            onChange={this.handleChangeSort}
+                          />
+                        </Row>
+                      </Column>
+                    </Row>
+                  </Narrow>
+                </Row>
+              </Section>
+              <Narrow>
+                <div className="PoolCardList">
+                  {pools === null && <Loader active size="huge" />}
+                  {Array.isArray(pools) && total === 0 && <div className="empty-projects">{t('scene_list_page.no_projects')}</div>}
+                  {Array.isArray(pools) && total !== 0 && (
+                    <>
+                      {pools.map(pool => (
+                        <PoolCard key={pool.id} pool={pool} />
+                      ))}
+                    </>
+                  )}
+                </div>
+              </Narrow>
             </Container>
             <Container>
               {total !== null && totalPages !== null && (
