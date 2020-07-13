@@ -48,7 +48,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
 
     const isRevokable = editing && isEqual(address, initial)
     const hasError = !loading && !!address && !isValid(address)
-    const isDisabled = loading || !dirty || ((isEqual(address, initial) || !hasError) && !revoked) || land.role !== RoleType.OWNER
+    const isDisabled = loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || land.role !== RoleType.OWNER
 
     const classes = []
     if (revoked) {
