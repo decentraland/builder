@@ -600,10 +600,10 @@
     "edit": "You edited {name}.",
     "set_operator_assigned": "You assigned {address} as operator of {name}.",
     "set_operator_revoked": "You revoked the operator of {name}.",
-    "create_estate": "You created {name}",
-    "dissolve_estate": "You dissolved {name}",
-    "edit_estate_add": "You added {count} {count, plural, one {parcel} other {parcels}} to {name}",
-    "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}"
+    "create_estate": "You created {name}.",
+    "dissolve_estate": "You dissolved {name}.",
+    "edit_estate_add": "You added {count} {count, plural, one {parcel} other {parcels}} to {name}.",
+    "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}."
   },
   "transfer_page": {
     "title": "Transfer",
@@ -672,7 +672,7 @@
     "signature_error": "Failed to sign message",
     "no_wallet": "Wallet not found",
     "connect_error": "Could not connect wallet",
-    "title": "Connect your wallet to decorate your Scene with crypto-collectibles.",
+    "title": "Connect your wallet to sign in.",
     "sign_in_required": "You need to {sign_in} to access this page.",
     "sign_in": "Sign In"
   }

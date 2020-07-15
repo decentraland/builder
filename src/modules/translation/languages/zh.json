@@ -323,7 +323,8 @@
     "subscribe": "订阅",
     "terms_and_conditions": "使用条款",
     "view_more": "查看更多",
-    "click_here": "点击这里"
+    "click_here": "点击这里",
+    "proceed": "继续"
   },
   "navigation": {
     "scenes": "场景",
@@ -575,6 +576,25 @@
     "medium": "中 (2x2)",
     "small": "小 (1x1)"
   },
+  "activity_page": {
+    "latest_activity": "最新活动",
+    "clear_history": "清除历史记录",
+    "empty": "您还没有活动。",
+    "clear_history_modal": {
+      "title": "您确定吗？",
+      "text": "您将清除交易记录。您要继续吗？"
+    }
+  },
+  "transaction": {
+    "transfer": "您已将{name}转移到{address}。",
+    "edit": "您编辑了{name}。",
+    "set_operator_assigned": "您已将{address}分配为{name}的运算符。",
+    "set_operator_revoked": "您撤销了{name}的运算符。",
+    "create_estate": "您创建了{name}。",
+    "dissolve_estate": "您解散了{name}。",
+    "edit_estate_add": "您已将{count}个地块添加到{name}。",
+    "edit_estate_remove": "您从{name}移除了{count}个包裹。"
+  },
   "transfer_page": {
     "title": "转让",
     "subtitle": "您即将转让 {name}.",
@@ -639,7 +659,11 @@
     "youtube_id": "NhaP_M7tVc8"
   },
   "wallet": {
-    "signature_error": "签名消息失败",
-    "title": "连接钱包用加密收藏品装饰你的场景。"
+    "signature_error": "签名失败",
+    "no_wallet": "找不到钱包",
+    "connect_error": "无法连接钱包",
+    "title": "连接您的钱包以登录。",
+    "sign_in_required": "您需要{sign_in}才能访问此页面。",
+    "sign_in": "登入"
   }
 }
