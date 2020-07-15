@@ -36,7 +36,6 @@ const Atlas: React.FC<Props> = props => {
     if (!landId) {
       return new Set<string>()
     } else if (!isEstate) {
-      console.log('selection es', landId)
       return new Set([landId])
     } else {
       return Object.keys(landTiles).reduce((set, coords) => {
