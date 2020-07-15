@@ -80,7 +80,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     )
     yield put(dissolveEstateSuccess(land, txHash))
     yield put(closeModal('DissolveModal'))
-    yield put(push(locations.landDetail(land.id)))
+    yield put(push(locations.activity()))
   } catch (error) {
     yield put(dissolveEstateFailure(land, error.message))
   }
@@ -102,7 +102,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 
     yield put(createEstateSuccess(name, description, coords, txHash))
     yield put(closeModal('EstateEditorModal'))
-    yield put(push(locations.land()))
+    yield put(push(locations.activity()))
   } catch (error) {
     yield put(createEstateFailure(name, description, coords, error.message))
   }
@@ -137,7 +137,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
       yield put(editEstateSuccess(land, toRemove, 'remove', txHash))
     }
     yield put(closeModal('EstateEditorModal'))
-    yield put(push(locations.landDetail(land.id)))
+    yield put(push(locations.activity()))
   } catch (error) {
     yield put(editEstateFailure(land, toAdd, toRemove, error.message))
   }
@@ -177,7 +177,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type}`)
     }
-    yield put(push(locations.landDetail(land.id)))
+    yield put(push(locations.activity()))
   } catch (error) {
     yield put(setOperatorFailure(land, address, error.message))
   }
@@ -217,7 +217,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type}`)
     }
-    yield put(push(locations.landDetail(land.id)))
+    yield put(push(locations.activity()))
   } catch (error) {
     yield put(editLandFailure(land, name, description, error.message))
   }
@@ -257,7 +257,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
       default:
         throw new Error(`Unknown Land Type: ${land.type}`)
     }
-    yield put(push(locations.landDetail(land.id)))
+    yield put(push(locations.activity()))
   } catch (error) {
     yield put(transferLandFailure(land, address, error.message))
   }

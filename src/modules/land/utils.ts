@@ -16,9 +16,13 @@ export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
 export const MAX_PARCELS_PER_TX = 20
 
-export const coordsToId = (x: string | number, y: string | number) => x + ',' + y
+export const SEPARATOR = ','
 
-export const idToCoords = (id: string) => id.split(',').map(coord => +coord) as [number, number]
+export const coordsToId = (x: string | number, y: string | number) => x + SEPARATOR + y
+
+export const idToCoords = (id: string) => id.split(SEPARATOR).map(coord => +coord) as [number, number]
+
+export const isCoords = (id: string) => id.includes(SEPARATOR)
 
 export const findDeployment = (
   x: string | number,
@@ -76,12 +80,6 @@ export const traverseTiles = (x: number, y: number, land: Land, result: Record<s
 
 export const getSelection = (land: Land) =>
   land.type === LandType.PARCEL ? [{ x: land.x!, y: land.y! }] : land.parcels!.map(parcel => ({ x: parcel.x, y: parcel.y }))
-
-export const getAtlasProps = (land: Land) => {
-  const selection = getSelection(land)
-  const [x, y] = getCenter(selection)
-  return { x, y, selection }
-}
 
 export const getUpdateOperator = async (land: Land) => {
   const eth = Eth.fromCurrentProvider()

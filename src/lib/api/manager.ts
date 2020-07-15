@@ -3,6 +3,7 @@ import { env } from 'decentraland-commons'
 import { createClient } from './graph'
 import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, EstateFields } from 'modules/land/types'
 import { coordsToId } from 'modules/land/utils'
+import { isZero } from 'lib/address'
 
 export const LAND_MANAGER_URL = env.get('REACT_APP_LAND_MANAGER_URL', '')
 
@@ -167,9 +168,9 @@ export class ManagerAPI {
       lands
         // remove empty estates
         .filter(land => land.type === LandType.PARCEL || land.parcels!.length > 0)
-        // remove duplicated operators
+        // remove duplicated and zero address operators
         .map(land => {
-          land.operators = Array.from(new Set(land.operators))
+          land.operators = Array.from(new Set(land.operators)).filter(address => !isZero(address))
           return land
         })
     )

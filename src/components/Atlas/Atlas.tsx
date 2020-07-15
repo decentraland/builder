@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
 import { Props } from './Atlas.types'
-import { coordsToId } from 'modules/land/utils'
-import { RoleType, Land } from 'modules/land/types'
+import { coordsToId, isCoords, idToCoords, getCenter } from 'modules/land/utils'
+import { RoleType, Land, LandTile } from 'modules/land/types'
 import Popup from './Popup'
 import { locations } from 'routing/locations'
 import './Atlas.css'
@@ -10,7 +10,7 @@ import './Atlas.css'
 const getCoords = (x: number | string, y: number | string) => `${x},${y}`
 
 const Atlas: React.FC<Props> = props => {
-  const { atlasTiles, isEstate, landTiles, unoccupiedTiles, showOwner, showOperator, hasPopup, onNavigate, className, hasLink } = props
+  const { landId, atlasTiles, landTiles, unoccupiedTiles, showOwner, showOperator, hasPopup, onNavigate, className, hasLink } = props
 
   const [showPopup, setShowPopup] = useState(false)
   const [hoveredLand, setHoveredLand] = useState<Land | null>(null)
@@ -20,22 +20,64 @@ const Atlas: React.FC<Props> = props => {
   const [y, setY] = useState(0)
   const timeout = useRef<NodeJS.Timer | null>(null)
 
-  const selection = useMemo(() => (props.selection || []).reduce((set, pair) => set.add(getCoords(pair.x, pair.y)), new Set<string>()), [
-    props.selection
-  ])
+  let isEstate = false
+  if (landId) {
+    if (!isCoords(landId)) {
+      isEstate = true
+    } else if (landId in landTiles) {
+      const tile = landTiles[landId]
+      if (!isCoords(tile.land.id)) {
+        isEstate = true
+      }
+    }
+  }
+
+  const selection = useMemo(() => {
+    if (!landId) {
+      return new Set<string>()
+    } else if (!isEstate) {
+      console.log('selection es', landId)
+      return new Set([landId])
+    } else {
+      return Object.keys(landTiles).reduce((set, coords) => {
+        const tile = landTiles[coords]
+        if (tile.land.id === landId) {
+          set.add(coords)
+        }
+        return set
+      }, new Set<string>())
+    }
+  }, [landTiles, landId, isEstate])
+
+  const [landX, landY] = useMemo(
+    () =>
+      landId
+        ? !isEstate
+          ? idToCoords(landId)
+          : getCenter(
+              Array.from(selection).map(id => {
+                const [x, y] = idToCoords(id)
+                return { x, y }
+              })
+            )
+        : [props.x, props.y],
+    [landId, isEstate, selection]
+  )
 
   const shouldPan = isEstate && props.selection && props.selection.length > 0 && props.size
   const panX = shouldPan ? Math.floor(((props.selection!.length + 1) % 2) * props.size * -0.5) : 0
   const panY = shouldPan ? Math.floor(((props.selection!.length + 1) % 2) * props.size * -0.5) : 0
 
+  const shouldShowLayer = (tile?: LandTile, showOwner?: boolean, showOperator?: boolean) => {
+    return !!tile && ((showOwner && tile.land.role === RoleType.OWNER) || (showOperator && tile.land.role === RoleType.OPERATOR))
+  }
+
   const landLayer: Layer = useCallback(
     (x, y) => {
       const id = coordsToId(x, y)
       const tile = landTiles[id]
-      if (tile) {
-        if ((showOwner && tile.land.role === RoleType.OWNER) || (showOperator && tile.land.role === RoleType.OPERATOR)) {
-          return tile
-        }
+      if (shouldShowLayer(tile, showOwner, showOperator)) {
+        return tile || null
       }
       return null
     },
@@ -45,10 +87,13 @@ const Atlas: React.FC<Props> = props => {
   const unoccupiedLayer: Layer = useCallback(
     (x, y) => {
       const id = coordsToId(x, y)
-      const tile = unoccupiedTiles[id]
-      return tile || null
+      const tile = landTiles[id]
+      if (shouldShowLayer(tile, showOwner, showOperator)) {
+        return unoccupiedTiles[id] || null
+      }
+      return null
     },
-    [unoccupiedTiles]
+    [unoccupiedTiles, landTiles, showOwner, showOperator]
   )
 
   const handleHover = useCallback(
@@ -126,7 +171,10 @@ const Atlas: React.FC<Props> = props => {
 
   let selectionLayers: Layer[] = []
   if (selection.size > 0) {
-    const isSelected = (x: number, y: number) => selection.has(coordsToId(x, y))
+    const isSelected = (x: number, y: number) => {
+      const id = coordsToId(x, y)
+      return selection.has(id) && id in landTiles
+    }
     const isOwner = (x: number, y: number) => {
       const id = coordsToId(x, y)
       const tile = landTiles[id]
@@ -146,6 +194,8 @@ const Atlas: React.FC<Props> = props => {
         onHover={handleHover}
         onClick={handleClick}
         {...props}
+        x={props.x || landX}
+        y={props.y || landY}
         className={classes.join(' ')}
         tiles={atlasTiles}
         layers={[landLayer, unoccupiedLayer, ...selectionLayers, ...(props.layers || [])]}

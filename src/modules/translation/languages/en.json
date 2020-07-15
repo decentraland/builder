@@ -333,7 +333,8 @@
     "subscribe": "Subscribe",
     "terms_and_conditions": "Terms & Conditions",
     "view_more": "View More",
-    "click_here": "Click here"
+    "click_here": "Click here",
+    "proceed": "Proceed"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -585,6 +586,25 @@
     "medium": "Standard (2x2)",
     "small": "Mini (1x1)"
   },
+  "activity_page": {
+    "latest_activity": "Latest Activity",
+    "clear_history": "Clear History",
+    "empty": "You have no activity yet.",
+    "clear_history_modal": {
+      "title": "Are you sure?",
+      "text": "You are about to clear your transaction history. Do you want to proceed?"
+    }
+  },
+  "transaction": {
+    "transfer": "You transferred {name} to {address}.",
+    "edit": "You edited {name}.",
+    "set_operator_assigned": "You assigned {address} as operator of {name}.",
+    "set_operator_revoked": "You revoked the operator of {name}.",
+    "create_estate": "You created {name}",
+    "dissolve_estate": "You dissolved {name}",
+    "edit_estate_add": "You added {count} {count, plural, one {parcel} other {parcels}} to {name}",
+    "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}"
+  },
   "transfer_page": {
     "title": "Transfer",
     "subtitle": "Your are about to transfer {name}.",
@@ -652,6 +672,8 @@
     "signature_error": "Failed to sign message",
     "no_wallet": "Wallet not found",
     "connect_error": "Could not connect wallet",
-    "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
+    "title": "Connect your wallet to decorate your Scene with crypto-collectibles.",
+    "sign_in_required": "You need to {sign_in} to access this page.",
+    "sign_in": "Sign In"
   }
 }

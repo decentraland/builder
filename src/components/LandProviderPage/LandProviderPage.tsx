@@ -5,6 +5,7 @@ import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import LandProvider from 'components/LandProvider'
 import { Props } from './LandProviderPage.types'
+import './LandProviderPage.css'
 
 export default class LandProviderPage extends React.PureComponent<Props> {
   renderLoading() {
@@ -31,7 +32,7 @@ export default class LandProviderPage extends React.PureComponent<Props> {
     }
     return (
       <>
-        <Navbar />
+        <Navbar isFullscreen />
         <Page className={classes.join(' ')}>
           <LandProvider>
             {(id, land, projects, isLoading) => (

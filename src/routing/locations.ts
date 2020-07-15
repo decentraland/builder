@@ -16,5 +16,6 @@ export const locations = {
   landDetail: (landId = ':landId') => `/land/${landId}`,
   landTransfer: (landId = ':landId') => `/land/${landId}/transfer`,
   landEdit: (landId = ':landId') => `/land/${landId}/edit`,
-  landOperator: (landId = ':landId') => `/land/${landId}/operator`
+  landOperator: (landId = ':landId') => `/land/${landId}/operator`,
+  activity: () => `/activity`
 }

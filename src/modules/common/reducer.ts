@@ -3,6 +3,7 @@ import { connectRouter } from 'connected-react-router'
 import { History } from 'history'
 import { translationReducer as translation } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { storageReducer as storage, storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
+import { transactionReducer as transaction } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { modalReducer as modal } from 'decentraland-dapps/dist/modules/modal/reducer'
 
@@ -31,6 +32,7 @@ export function createRootReducer(history: History) {
       auth,
       editor,
       translation,
+      transaction,
       wallet,
       modal,
       assetPack,

@@ -1,5 +1,7 @@
 import { all } from 'redux-saga/effects'
 
+import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
+
 import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
@@ -26,6 +28,7 @@ import { tileSaga } from 'modules/tile/sagas'
 export function* rootSaga() {
   yield all([
     analyticsSaga(),
+    transactionSaga(),
     translationSaga(),
     walletSaga(),
     assetPackSaga(),

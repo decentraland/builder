@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { Row, Back, Column, Narrow, Header, Section } from 'decentraland-ui'
 import { Atlas } from 'components/Atlas'
-import { getAtlasProps } from 'modules/land/utils'
 import { Props } from './LandAction.types'
-import './LandAction.css'
 import { locations } from 'routing/locations'
+import './LandAction.css'
 
 export default class LandAction extends React.PureComponent<Props> {
   render() {
@@ -17,7 +16,7 @@ export default class LandAction extends React.PureComponent<Props> {
         <Row className="main">
           <Narrow>
             <Column>
-              <Atlas width={240} height={240} {...getAtlasProps(land)} isDraggable={false} />
+              <Atlas landId={land.id} width={240} height={240} isDraggable={false} />
             </Column>
             <Column className="content">
               {title ? (

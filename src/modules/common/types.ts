@@ -23,6 +23,7 @@ import { PoolState } from 'modules/pool/reducer'
 import { IdentityState } from 'modules/identity/reducer'
 import { LandState } from 'modules/land/reducer'
 import { TileState } from 'modules/tile/reducer'
+import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -33,6 +34,7 @@ export type StorageLoadAction = ReturnType<typeof storageLoad>
 
 export type RootState = {
   auth: AuthState
+  transaction: TransactionState
   translation: TranslationState
   storage: StorageState
   wallet: WalletState

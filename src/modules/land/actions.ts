@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Land } from './types'
 import { Coord } from 'decentraland-ui'
+import { getSelection } from './utils'
 
 export const FETCH_LANDS_REQUEST = '[Request] Fetch Lands'
 export const FETCH_LANDS_SUCCESS = '[Success] Fetch Lands'
@@ -27,7 +28,8 @@ export const transferLandSuccess = (land: Land, address: string, txHash: string)
     ...buildTransactionPayload(txHash, {
       id: land.id,
       name: land.name,
-      address
+      address,
+      selection: getSelection(land)
     })
   })
 export const transferLandFailure = (land: Land, address: string, error: string) => action(TRANSFER_LAND_FAILURE, { land, address, error })
@@ -49,7 +51,8 @@ export const editLandSuccess = (land: Land, name: string, description: string, t
     ...buildTransactionPayload(txHash, {
       id: land.id,
       name,
-      description
+      description,
+      selection: getSelection(land)
     })
   })
 export const editLandFailure = (land: Land, name: string, description: string, error: string) =>
@@ -71,7 +74,8 @@ export const setOperatorSuccess = (land: Land, address: string | null, txHash: s
     ...buildTransactionPayload(txHash, {
       id: land.id,
       name: land.name,
-      address
+      address,
+      selection: getSelection(land)
     })
   })
 export const setOperatorFailure = (land: Land, address: string | null, error: string) =>
@@ -95,7 +99,8 @@ export const createEstateSuccess = (name: string, description: string, coords: C
     ...buildTransactionPayload(txHash, {
       name,
       description,
-      size: coords.length
+      size: coords.length,
+      selection: coords
     })
   })
 export const createEstateFailure = (name: string, description: string, coords: Coord[], error: string) =>
@@ -119,7 +124,8 @@ export const editEstateSuccess = (land: Land, coords: Coord[], type: 'add' | 're
       id: land.id,
       name: land.name,
       count: coords.length,
-      type
+      type,
+      selection: getSelection(land)
     })
   })
 export const editEstateFailure = (land: Land, toAdd: Coord[], toRemove: Coord[], error: string) =>
@@ -139,7 +145,8 @@ export const dissolveEstateSuccess = (land: Land, txHash: string) =>
     land,
     ...buildTransactionPayload(txHash, {
       id: land.id,
-      name: land.name
+      name: land.name,
+      selection: getSelection(land)
     })
   })
 export const dissolveEstateFailure = (land: Land, error: string) => action(DISSOLVE_ESTATE_FAILURE, { land, error })

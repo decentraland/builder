@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { RootState } from 'modules/common/types'
+import { locations } from 'routing/locations'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './Navbar.types'
 import Navbar from './Navbar'
-import { locations } from 'routing/locations'
-import { push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => ({
   isConnected: isLoggedIn(state)

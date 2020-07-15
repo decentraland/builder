@@ -1,0 +1,24 @@
+.activity.item {
+  margin-right: 24px;
+}
+
+.activity.item .bell {
+  color: var(--text);
+  position: relative;
+  cursor: pointer;
+}
+
+.activity.item.active .bell {
+  color: var(--primary);
+}
+
+.activity.item .bell.pending:after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background-color: var(--primary);
+  position: absolute;
+  border-radius: 100%;
+  top: -5px;
+  right: -5px;
+}

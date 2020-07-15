@@ -126,7 +126,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
         <Narrow>
           <Section>
             <div className="atlas-wrapper">
-              <Atlas selection={selection} hasPopup x={x} y={y} layers={[this.hoverLayer]} isDraggable={false}></Atlas>
+              <Atlas landId={land.id} hasPopup layers={[this.hoverLayer]} isDraggable={false}></Atlas>
             </div>
           </Section>
           <Section>

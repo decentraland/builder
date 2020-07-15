@@ -6,6 +6,7 @@ import { createBrowserHistory } from 'history'
 
 import { env } from 'decentraland-commons'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -137,10 +138,10 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     }
   }
 })
-
+const transactionMiddleware = createTransactionMiddleware()
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))
 
-const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware]
+const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware]
 
 const middleware = applyMiddleware(...middlewares)
 
