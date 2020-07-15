@@ -254,6 +254,11 @@
       "title": "登陆"
     }
   },
+  "dissolve_modal": {
+    "title": "解散Estate",
+    "confirm": "您即将解散{name}。 您要继续吗？",
+    "too_big": "该Estate太大，无法分解为一笔交易。 请移除包裹，直到其大小最大为{max}个包裹为止。"
+  },
   "edit_project_modal": {
     "custom_layout_label": "布局",
     "title": "场景详细信息",
@@ -265,6 +270,20 @@
     "subtitle": "发生了一个错误，以下是错误信息:",
     "support": "联系支持服务",
     "title": "糟糕！"
+  },
+  "estate_editor": {
+    "title_edit": "修改Estate",
+    "subtitle_edit": "单击以添加或删除包裹",
+    "title_create": "建立Estate",
+    "subtitle_create": "单击相邻的地块以建造你的庄园",
+    "subtitle_form": "为您的Estate写下名称和描述",
+    "name_label": "名称",
+    "name_placeholder": "我的Estate...",
+    "description_label": "描述",
+    "description_placeholder": "一些描述...",
+    "add_limit_reached": "您一次最多可以添加{max}个地块",
+    "remove_limit_reached": "您一次最多可以删除{max}个包裹",
+    "needs_two_txs": "此项更改将发送2笔交易：一笔交易添加{toAdd}包裹，另一笔交易删除{toRemove}包裹"
   },
   "export_modal": {
     "action": "下载",
@@ -302,11 +321,23 @@
     "sign_up": "注册",
     "submit": "提交",
     "subscribe": "订阅",
-    "terms_and_conditions": "使用条款"
+    "terms_and_conditions": "使用条款",
+    "view_more": "查看更多",
+    "click_here": "点击这里",
+    "proceed": "继续"
+  },
+  "navigation": {
+    "scenes": "场景",
+    "land": "土地"
+  },
+  "list": {
+    "two": "{first} and {second}",
+    "three": "{first}, {second} and {third}",
+    "more": "{count} more"
   },
   "home_page": {
     "import_scene": "上传场景",
-    "no_projects": "看起来你没有任何场景.{br}选择以下选项即可开始使用.",
+    "no_projects": "看来您没有任何场景。 {br} {link}开始。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
@@ -314,7 +345,6 @@
       "export_project": "场景导出",
       "unpublish": "撤消发布"
     },
-    "projects_title": "我的场景",
     "sort": {
       "name": "名称",
       "newest": "最新",
@@ -330,7 +360,9 @@
     "migration_banner_link": "迁移页面",
     "migration_modal_title": "迁移成功！",
     "migration_modal_message": "下列项目已迁移：",
-    "migration_modal_dismiss": "解散"
+    "migration_modal_dismiss": "解散",
+    "results": "{count}个结果",
+    "from_scene_pool": "由社区"
   },
   "import_modal": {
     "action": "导入",
@@ -378,6 +410,35 @@
     },
     "success": "谢谢，我们会与您联系!"
   },
+  "land_page": {
+    "name": "名称",
+    "coords": "坐标",
+    "owner": "所有者",
+    "operator": "操作员",
+    "operators": "经营者",
+    "type": "类型",
+    "online_scenes": "在线场景",
+    "sign_in": "您需要{link}才能访问此页面。",
+    "sign_in_link": "登入",
+    "none": "没有",
+    "results": "{count}个结果"
+  },
+  "land_detail_page": {
+    "transfer": "传递",
+    "edit": "编辑",
+    "set_operator": "设定运算子",
+    "build_estate": "建立Estate",
+    "add_or_remove_parcels": "添加或删除包裹",
+    "dissolve_estate": "解散Estate",
+    "online_scenes": "在线场景",
+    "none": "没有",
+    "add_scene": "添加场景",
+    "description": "描述",
+    "owner": "所有者",
+    "operators": "经营者",
+    "total_land": "总土地",
+    "empty_land": "空地"
+  },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
     "step_one_message_line_one": "为了在我们的产品中提供隐秘的体验，我们已将Builder的帐户系统从电子邮件切换为基于钱包的帐户。这意味着您将需要连接一个以太坊钱包，以将场景存储在云中。如果您没有钱包，可以了解更多有关如何获得钱包的信息{link}。",
@@ -396,6 +457,14 @@
     "step_four_message": "将电子邮件帐户下的所有场景和资产包迁移到您的钱包帐户中。",
     "step_four_cta": "迁移",
     "projects_title": "以下场景将被迁移："
+  },
+  "operator_page": {
+    "title": "设定运算子",
+    "subtitle": "您正在为{name}设置一个运算符。",
+    "address": "地址",
+    "undo": "撤消",
+    "revoke": "吊销",
+    "invalid_address": "无效"
   },
   "scene_list_page": {
     "projects_title": "社区场景",
@@ -489,6 +558,14 @@
     "retry": "重试",
     "success": "所有场景成功保存！"
   },
+  "create_modal": {
+    "title": "创建一个场景",
+    "name_subtitle": "为场景设置名称和描述",
+    "size_subtitle": "设置新场景的大小",
+    "name_label": "名称",
+    "description_label": "描述",
+    "description_placeholder": "一些描述..."
+  },
   "templates": {
     "big": "大 (2x3)",
     "custom_layout": {
@@ -498,6 +575,30 @@
     "description": "{dimensions} - 最多 {amount} 个模型",
     "medium": "中 (2x2)",
     "small": "小 (1x1)"
+  },
+  "activity_page": {
+    "latest_activity": "最新活动",
+    "clear_history": "清除历史记录",
+    "empty": "您还没有活动。",
+    "clear_history_modal": {
+      "title": "您确定吗？",
+      "text": "您将清除交易记录。您要继续吗？"
+    }
+  },
+  "transaction": {
+    "transfer": "您已将{name}转移到{address}。",
+    "edit": "您编辑了{name}。",
+    "set_operator_assigned": "您已将{address}分配为{name}的运算符。",
+    "set_operator_revoked": "您撤销了{name}的运算符。",
+    "create_estate": "您创建了{name}。",
+    "dissolve_estate": "您解散了{name}。",
+    "edit_estate_add": "您已将{count}个地块添加到{name}。",
+    "edit_estate_remove": "您从{name}移除了{count}个包裹。"
+  },
+  "transfer_page": {
+    "title": "转让",
+    "subtitle": "您即将转让 {name}.",
+    "warning": "请记住，转让是不可逆的操作。{br}请仔细检查地址。"
   },
   "toasts": {
     "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
@@ -558,7 +659,11 @@
     "youtube_id": "NhaP_M7tVc8"
   },
   "wallet": {
-    "signature_error": "签名消息失败",
-    "title": "连接钱包用加密收藏品装饰你的场景。"
+    "signature_error": "签名失败",
+    "no_wallet": "找不到钱包",
+    "connect_error": "无法连接钱包",
+    "title": "连接您的钱包以登录。",
+    "sign_in_required": "您需要{sign_in}才能访问此页面。",
+    "sign_in": "登入"
   }
 }

@@ -10,9 +10,7 @@
       "REACT_APP_OPENSEA_URL": "https://api.opensea.io/api/v1",
       "REACT_APP_EMAIL_SERVER_URL": "https://decentraland.org/subscribe",
       "REACT_APP_CONTENT_SERVER_URL": "https://peer-owner.decentraland.io/content",
-      "REACT_APP_BUILDER_SERVER_URL": "https://builder-api.decentraland.io/v1",
-      "REACT_APP_MARKETPLACE_URL": "https://api.decentraland.io/v1",
-      "REACT_APP_SHARE_SCENE_URL": "https://builder-api.decentraland.io/v1/share",
+      "REACT_APP_SHARE_SCENE_URL": "https://share.decentraland.zone/b",
       "REACT_APP_INTERCOM_APP_ID": "z0h94kay",
       "REACT_APP_SEGMENT_API_KEY": "H21EgRI4eYwICDZf5uW6ek2BiykIR6wA",
       "REACT_APP_ROLLBAR_ACCESS_TOKEN": "46e4b7e45c844b9ab81315c8b0919e99",
@@ -20,7 +18,13 @@
       "REACT_APP_AUTH0_AUDIENCE": "decentraland.org",
       "REACT_APP_AUTH0_DOMAIN": "dcl-test.auth0.com",
       "REACT_APP_AUTH0_REDIRECT": "https://builder.decentraland.io/callback",
-      "REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS": "0x2a8fd99c19271f4f04b1b7b9c4f7cf264b626edb"
+      "REACT_APP_MANA_TOKEN_CONTRACT_ADDRESS": "0x2a8fd99c19271f4f04b1b7b9c4f7cf264b626edb",
+      "REACT_APP_LAND_REGISTRY_CONTRACT_ADDRESS": "0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b",
+      "REACT_APP_ESTATE_REGISTRY_CONTRACT_ADDRESS": "0x124bf28a423b2ca80b3846c3aa0eb944fe7ebb95",
+      "REACT_APP_LAND_MANAGER_URL": "https://api.thegraph.com/subgraphs/name/decentraland/land-manager-ropsten",
+      "REACT_APP_MARKETPLACE_URL": "https://api.decentraland.zone/v1",
+      "REACT_APP_PEER_URL": "https://peer.decentraland.zone",
+      "REACT_APP_BUILDER_SERVER_URL": "https://builder-api.decentraland.io/v1"
     }
   },
   "routes": [{ "handle": "filesystem" }, { "src": "/.*", "dest": "/index.html" }]

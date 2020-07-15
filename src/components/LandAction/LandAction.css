@@ -1,0 +1,20 @@
+.LandAction .dcl.atlas canvas {
+  border-radius: 16px;
+}
+
+.LandAction .main {
+  margin-top: 40px;
+}
+
+.LandAction .content {
+  margin-left: 240px;
+  padding-left: 80px;
+}
+
+.LandAction .ui.header.title {
+  margin-bottom: 0px;
+}
+.LandAction .subtitle {
+  margin-top: 8px;
+  display: inline-block;
+}

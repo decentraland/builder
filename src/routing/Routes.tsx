@@ -17,6 +17,12 @@ import SceneViewPage from 'components/SceneViewPage'
 import SceneListPage from 'components/SceneListPage'
 import SignInPage from 'components/SignInPage'
 import MigratePage from 'components/MigratePage'
+import LandPage from 'components/LandPage'
+import LandDetailPage from 'components/LandDetailPage'
+import LandTransferPage from 'components/LandTransferPage'
+import LandEditPage from 'components/LandEditPage'
+import LandOperatorPage from 'components/LandOperatorPage'
+import ActivityPage from 'components/ActivityPage'
 
 import { Props, State } from './Routes.types'
 
@@ -67,6 +73,12 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.poolView()} component={SceneViewPage} />
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Route exact path={locations.signIn()} component={SignInPage} />
+            <Route exact path={locations.land()} component={LandPage} />
+            <Route exact path={locations.landDetail()} component={LandDetailPage} />
+            <Route exact path={locations.landTransfer()} component={LandTransferPage} />
+            <Route exact path={locations.landEdit()} component={LandEditPage} />
+            <Route exact path={locations.landOperator()} component={LandOperatorPage} />
+            <Route exact path={locations.activity()} component={ActivityPage} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

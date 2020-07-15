@@ -13,7 +13,7 @@ export const CREATE_PROJECT_FROM_TEMPLATE = 'Create project from template'
 export const createProjectFromTemplate = (template: Template, meta: CreateProjectFromTemplateMeta = {}) =>
   action(CREATE_PROJECT_FROM_TEMPLATE, { template }, meta)
 
-type CreateProjectFromTemplateMeta = { onSuccess?: (project: Project, scene: Scene) => any }
+type CreateProjectFromTemplateMeta = { title?: string; description?: string; onSuccess?: (project: Project, scene: Scene) => any }
 
 export type CreateProjectFromTemplateAction = ReturnType<typeof createProjectFromTemplate>
 

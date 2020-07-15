@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { Loader, Page, Responsive, Container } from 'decentraland-ui'
+import { Loader, Page, Responsive, Container, Back } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-// import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Chip from 'components/Chip'
 import Footer from 'components/Footer'
@@ -15,7 +14,6 @@ import { Props, State } from './SceneViewPage.types'
 import './SceneViewPage.css'
 import { locations } from 'routing/locations'
 import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
-import { getName, getFace } from 'modules/profile/utils'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -132,11 +130,15 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        {/* {!isPreviewing && <Ad slot="BUILDER_TOP_BANNER" type="full" />} */}
-        {!isPreviewing && <Navbar isFullscreen />}
-        <Container>
-          <div className="BackButton" onClick={onBack}></div>
-        </Container>
+        {!isPreviewing && (
+          <>
+            <Navbar isFullscreen />
+            <Container className="back-container">
+              <Back absolute onClick={onBack}></Back>
+            </Container>
+          </>
+        )}
+
         <div className={'SceneViewPage' + (isPreviewing ? ' preview' : ' mini')}>
           <div className="thumbnail" style={{ backgroundImage: `url("${currentProject.thumbnail}")` }}>
             <Responsive minWidth={1025} as={React.Fragment}>
@@ -172,9 +174,9 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             {author && (
               <div className="author">
                 {t('public_page.made_by')}
-                <span className="author-name"> {getName(author)}</span>
+                <span className="author-name"> {author.avatars[0].name}</span>
                 <div className="avatar">
-                  <img width="24" height="24" src={getFace(author)} />
+                  <img width="24" height="24" src={author.avatars[0].avatar.snapshots.face} />
                 </div>
               </div>
             )}

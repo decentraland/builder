@@ -100,7 +100,7 @@ export function* projectSaga() {
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
   const { template } = action.payload
-  const { onSuccess } = action.meta
+  const { title, description, onSuccess } = action.meta
 
   const scene: Scene = {
     id: uuidv4(),
@@ -118,8 +118,8 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   const project: Project = {
     id: uuidv4(),
-    title: t('global.new_scene'),
-    description: '',
+    title: title || t('global.new_scene'),
+    description: description || '',
     thumbnail: '',
     isPublic: false,
     layout: {

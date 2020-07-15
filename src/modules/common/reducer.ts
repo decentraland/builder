@@ -3,6 +3,7 @@ import { connectRouter } from 'connected-react-router'
 import { History } from 'history'
 import { translationReducer as translation } from 'decentraland-dapps/dist/modules/translation/reducer'
 import { storageReducer as storage, storageReducerWrapper } from 'decentraland-dapps/dist/modules/storage/reducer'
+import { transactionReducer as transaction } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { modalReducer as modal } from 'decentraland-dapps/dist/modules/modal/reducer'
 
@@ -21,6 +22,8 @@ import { mediaReducer as media } from 'modules/media/reducer'
 import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
+import { landReducer as land } from 'modules/land/reducer'
+import { tileReducer as tile } from 'modules/tile/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -29,6 +32,7 @@ export function createRootReducer(history: History) {
       auth,
       editor,
       translation,
+      transaction,
       wallet,
       modal,
       assetPack,
@@ -43,6 +47,8 @@ export function createRootReducer(history: History) {
       media,
       sync,
       identity,
+      land,
+      tile,
       router: connectRouter(history)
     })
   )

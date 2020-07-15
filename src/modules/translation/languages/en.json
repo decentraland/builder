@@ -259,10 +259,19 @@
       "title": "Sign in"
     }
   },
+  "dissolve_modal": {
+    "title": "Dissolve Estate",
+    "confirm": "You are about to dissolve {name}. Do you want to proceed?",
+    "too_big": "This Estate is too big to be dissolved in one transaction. Please remove parcels until its size is at most {max} parcels."
+  },
   "edit_project_modal": {
     "custom_layout_label": "Layout",
     "title": "Scene details",
     "unpublish_needed": "Please Unpublish your Scene before updating your Scene Details"
+  },
+  "edit_page": {
+    "title": "Edit",
+    "subtitle": "Your are editing {name}."
   },
   "error_page": {
     "or": "or try",
@@ -270,6 +279,20 @@
     "subtitle": "There was an error, this is all we know:",
     "support": "Contact support",
     "title": "Oops!"
+  },
+  "estate_editor": {
+    "title_edit": "Edit Estate",
+    "subtitle_edit": "Click to add or remove parcels",
+    "title_create": "Build Estate",
+    "subtitle_create": "Click on adjacent parcels to build your Estate",
+    "subtitle_form": "Write a name and description for your Estate",
+    "name_label": "Name",
+    "name_placeholder": "My Estate...",
+    "description_label": "Description",
+    "description_placeholder": "Some description...",
+    "add_limit_reached": "You can add a maximum of {max} parcels at once",
+    "remove_limit_reached": "You can remove a maximum of {max} parcels at once",
+    "needs_two_txs": "This change will send 2 transactions: one to add {toAdd} {toAdd, plural, one {parcel} other {parcels}} and another one to remove {toRemove} {toRemove, plural, one {parcel} other {parcels}}"
   },
   "export_modal": {
     "action": "Download",
@@ -296,6 +319,7 @@
     "new": "New",
     "new_scene": "New scene",
     "next": "next",
+    "not_found": "Not found",
     "optional": "optional",
     "or": "or",
     "project": "Scene",
@@ -307,11 +331,23 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "subscribe": "Subscribe",
-    "terms_and_conditions": "Terms & Conditions"
+    "terms_and_conditions": "Terms & Conditions",
+    "view_more": "View More",
+    "click_here": "Click here",
+    "proceed": "Proceed"
+  },
+  "navigation": {
+    "scenes": "Scenes",
+    "land": "Land"
+  },
+  "list": {
+    "two": "{first} and {second}",
+    "three": "{first}, {second} and {third}",
+    "more": "{count} more"
   },
   "home_page": {
     "import_scene": "Import Scene",
-    "no_projects": "It looks like you don't have any Scenes.{br}Choose an option below to get started.",
+    "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
       "delete_project": "Delete Scene",
@@ -319,7 +355,6 @@
       "export_project": "Download Scene",
       "unpublish": "Unpublish"
     },
-    "projects_title": "My Scenes",
     "sort": {
       "name": "Name",
       "newest": "Newest",
@@ -335,7 +370,9 @@
     "migration_banner_link": "Migration Page",
     "migration_modal_title": "Migration successful!",
     "migration_modal_message": "The following items have been migrated:",
-    "migration_modal_dismiss": "Dismiss"
+    "migration_modal_dismiss": "Dismiss",
+    "results": "{count} {count, plural, one {result} other {results}}",
+    "from_scene_pool": "From The Scene Pool"
   },
   "import_modal": {
     "action": "Import",
@@ -413,6 +450,35 @@
     "subtitle": "Sorry, we couldn't find the Scene you were looking for",
     "title": "404"
   },
+  "land_page": {
+    "name": "Name",
+    "coords": "Coords",
+    "owner": "Owner",
+    "operator": "Operator",
+    "operators": "Operators",
+    "type": "Type",
+    "online_scenes": "Online Scenes",
+    "sign_in": "You need to {link} to access this page.",
+    "sign_in_link": "Sign In",
+    "none": "None",
+    "results": "{count} {count, plural, one {result} other {results}}"
+  },
+  "land_detail_page": {
+    "transfer": "Transfer",
+    "edit": "Edit",
+    "set_operator": "Set Operator",
+    "build_estate": "Build Estate",
+    "add_or_remove_parcels": "Add Or Remove Parcels",
+    "dissolve_estate": "Dissolve Estate",
+    "online_scenes": "Online Scenes",
+    "none": "None",
+    "add_scene": "Add Scene",
+    "description": "Description",
+    "owner": "Owner",
+    "operators": "Operators",
+    "total_land": "Total Land",
+    "empty_land": "Empty Land"
+  },
   "migrate_page": {
     "step_one_title": "Migrate your account",
     "step_one_message_line_one": "In order to provide a seamless experience across our products, we have switched the Builder's account system from email to wallet based. This means that you will need to connect an Ethereum wallet to store your scenes in the Cloud. If you don't have a wallet you can learn more about how to get one {link}.",
@@ -431,6 +497,14 @@
     "step_four_message": "Migrate all Scenes and asset packs under your email account into your wallet account.",
     "step_four_cta": "Migrate",
     "projects_title": "The following Scenes will be migrated:"
+  },
+  "operator_page": {
+    "title": "Set Operator",
+    "subtitle": "Your are setting an operator for {name}.",
+    "address": "Address",
+    "undo": "Undo",
+    "revoke": "Revoke",
+    "invalid_address": "Invalid address"
   },
   "popups": {
     "metrics_help": "See metrics here!",
@@ -494,6 +568,14 @@
     "retry": "Retry",
     "success": "All Scenes saved successfully!"
   },
+  "create_modal": {
+    "title": "Create a Scene",
+    "name_subtitle": "Set a name and a description for your scene",
+    "size_subtitle": "Set the size of your new scene",
+    "name_label": "Name",
+    "description_label": "Description",
+    "description_placeholder": "Some description..."
+  },
   "templates": {
     "big": "Big (2x3)",
     "custom_layout": {
@@ -503,6 +585,30 @@
     "description": "{dimensions} - about {amount} items max",
     "medium": "Standard (2x2)",
     "small": "Mini (1x1)"
+  },
+  "activity_page": {
+    "latest_activity": "Latest Activity",
+    "clear_history": "Clear History",
+    "empty": "You have no activity yet.",
+    "clear_history_modal": {
+      "title": "Are you sure?",
+      "text": "You are about to clear your transaction history. Do you want to proceed?"
+    }
+  },
+  "transaction": {
+    "transfer": "You transferred {name} to {address}.",
+    "edit": "You edited {name}.",
+    "set_operator_assigned": "You assigned {address} as operator of {name}.",
+    "set_operator_revoked": "You revoked the operator of {name}.",
+    "create_estate": "You created {name}.",
+    "dissolve_estate": "You dissolved {name}.",
+    "edit_estate_add": "You added {count} {count, plural, one {parcel} other {parcels}} to {name}.",
+    "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}."
+  },
+  "transfer_page": {
+    "title": "Transfer",
+    "subtitle": "Your are about to transfer {name}.",
+    "disclaimer": "Remember that transferring is an irreversible operation.{br}Please check the address carefully."
   },
   "toasts": {
     "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!"
@@ -566,6 +672,8 @@
     "signature_error": "Failed to sign message",
     "no_wallet": "Wallet not found",
     "connect_error": "Could not connect wallet",
-    "title": "Connect your wallet to decorate your Scene with crypto-collectibles."
+    "title": "Connect your wallet to sign in.",
+    "sign_in_required": "You need to {sign_in} to access this page.",
+    "sign_in": "Sign In"
   }
 }

@@ -6,24 +6,8 @@
   position: relative;
 }
 
-.SceneListPage .dcl.tabs {
-  position: relative;
-}
-
-.SceneListPage .tabs-menu {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  font-size: 13px;
-  line-height: 18px;
-  text-transform: uppercase;
-  position: absolute;
-  bottom: 19px;
-  right: 0px;
-}
-
-.SceneListPage .tabs-menu .ui.dropdown + .ui.dropdown {
-  margin-left: 32px;
+.SceneListPage .dcl.section.navigation {
+  margin-top: 24px;
 }
 
 .SceneListPage .empty-projects {

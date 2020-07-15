@@ -167,7 +167,8 @@ function* handleChangeAccount() {
   yield put(clearAssetPacks())
 
   const location: ReturnType<typeof getLocation> = yield select(getLocation)
-  if (location.pathname !== locations.migrate()) {
+  const isEditor = location.pathname.includes('editor')
+  if (isEditor) {
     yield put(replace(locations.root()))
   }
 }

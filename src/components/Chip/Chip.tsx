@@ -12,18 +12,20 @@ export default class Chip extends React.PureComponent<Props> {
     icon: '',
     type: 'square',
     isDisabled: false,
-    isActive: false
+    isActive: false,
+    className: ''
   }
 
   getClassName() {
-    const { type, isActive, isDisabled, onClick } = this.props
-    const className = ['Chip', type]
+    const { type, isActive, isDisabled, onClick, className } = this.props
+    const classes = ['Chip', type]
 
-    if (isActive) className.push('active')
-    if (isDisabled) className.push('disabled')
-    if (onClick && !isDisabled) className.push('clickeable')
+    if (isActive) classes.push('active')
+    if (isDisabled) classes.push('disabled')
+    if (onClick && !isDisabled) classes.push('clickeable')
+    if (className) classes.push(className)
 
-    return className.join(' ')
+    return classes.join(' ')
   }
 
   render() {
@@ -34,7 +36,7 @@ export default class Chip extends React.PureComponent<Props> {
 
     return (
       <div className={this.getClassName()} onClick={isDisabled ? undefined : onClick}>
-        <Row center>{text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}</Row>
+        <Row align="center">{text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}</Row>
       </div>
     )
   }

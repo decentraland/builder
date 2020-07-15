@@ -39,7 +39,7 @@ import { SET_PROJECT } from 'modules/project/actions'
 import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { content, CONTENT_SERVER_URL } from 'lib/api/content'
+import { content, PEER_URL } from 'lib/api/peer'
 import { builder } from 'lib/api/builder'
 import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
 import { getIdentity } from 'modules/identity/utils'
@@ -173,7 +173,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         console.warn('Failed to upload scene preview')
       }
     }
-    yield call(() => deploy(CONTENT_SERVER_URL, data))
+    yield call(() => deploy(PEER_URL, data))
     // generate new deployment
     const deployment: Deployment = {
       id: project.id,
@@ -258,7 +258,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files, true)
     const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
-    yield call(() => deploy(CONTENT_SERVER_URL, data))
+    yield call(() => deploy(PEER_URL, data))
     yield put(clearDeploymentSuccess(projectId))
   } catch (e) {
     yield put(clearDeploymentFailure(e.message))

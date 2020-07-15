@@ -1,0 +1,13 @@
+{
+  "outputPath": "./src/contracts",
+  "contracts": {
+    "LANDRegistry": {
+      "source": "files",
+      "abiFile": "./src/contracts/LANDRegistry.json"
+    },
+    "EstateRegistry": {
+      "source": "files",
+      "abiFile": "./src/contracts/EstateRegistry.json"
+    }
+  }
+}

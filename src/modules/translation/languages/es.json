@@ -257,6 +257,11 @@
       "subtitle": "Debes iniciar sesión antes de enviar tu escena al concurso."
     }
   },
+  "dissolve_modal": {
+    "title": "Disolver Estate",
+    "confirm": "Estás por disolver a {name}. Deseas continuar?",
+    "too_big": "Este Estate es muy grane para ser disuelto en una transacción. Por favor remueve parcelas hasta que tenga como máximo un tamaño de {max} parcelas."
+  },
   "edit_project_modal": {
     "custom_layout_label": "Dimensiones",
     "title": "Detalles de la Escena",
@@ -268,6 +273,20 @@
     "subtitle": "Ocurrió un error, esto es todo lo que sabemos:",
     "support": "Contactar soporte",
     "title": "Oops"
+  },
+  "estate_editor": {
+    "title_edit": "Editar Estate",
+    "subtitle_edit": "Haz click para agregar o remover parcelaas",
+    "title_create": "Construir Estate",
+    "subtitle_create": "Haz click en parcelas adjacentes para construir to Estate",
+    "subtitle_form": "Escribe un nombre y descripción para tu Estate",
+    "name_label": "Nombre",
+    "name_placeholder": "Mi Estate...",
+    "description_label": "Descripción",
+    "description_placeholder": "Alguna descripción...",
+    "add_limit_reached": "Puedes agregar un máximo de {max} parcelas a la vez",
+    "remove_limit_reached": "Puedes remover un máximo de {max} parcelas a la vez",
+    "needs_two_txs": "Este cambio enviará dos transacciones: una para agregar {toAdd} {toAdd, plural, one {parcel} other {parcels}} y otra para remover {toRemove} {toRemove, plural, one {parcel} other {parcels}}"
   },
   "export_modal": {
     "action": "Descargar",
@@ -305,11 +324,23 @@
     "sign_up": "Suscribirse",
     "submit": "Enviar",
     "subscribe": "Subscribirse",
-    "terms_and_conditions": "Términos y Condiciones"
+    "terms_and_conditions": "Términos y Condiciones",
+    "view_more": "Ver Más",
+    "click_here": "Has click aquí",
+    "proceed": "Proceder"
+  },
+  "navigation": {
+    "scenes": "Escenas",
+    "land": "Tierras"
+  },
+  "list": {
+    "two": "{first} y {second}",
+    "three": "{first}, {second} y {third}",
+    "more": "{count} más"
   },
   "home_page": {
     "import_scene": "Cargar Escena",
-    "no_projects": "No tienes ninguna Escena aún.{br}Elige una opción abajo para continuar.",
+    "no_projects": "No tienes ninguna Escena aún.{br}{link} para comenzar.",
     "no_projects_guest": "Tus Escenas fueron subidas a la Nube{br}{sign_in} para verlas.",
     "project_actions": {
       "delete_project": "Borrar Escena",
@@ -317,7 +348,6 @@
       "export_project": "Descargar Escena",
       "unpublish": "Despublicar"
     },
-    "projects_title": "Mis Escenas",
     "sort": {
       "name": "Nombre",
       "newest": "Más Nuevas",
@@ -333,7 +363,9 @@
     "migration_banner_link": "Página de Migración",
     "migration_modal_title": "Migración exitosa!",
     "migration_modal_message": "Los siguientes datos han sido migrados:",
-    "migration_modal_dismiss": "Aceptar"
+    "migration_modal_dismiss": "Aceptar",
+    "results": "{count} {count, plural, one {resultado} other {resultados}}",
+    "from_scene_pool": "De La Comunidad"
   },
   "import_modal": {
     "action": "Cargar",
@@ -381,6 +413,35 @@
     },
     "success": "Gracias, ¡Te mantendremos al tanto!"
   },
+  "land_page": {
+    "name": "Nombre",
+    "coords": "Coords",
+    "owner": "Dueño",
+    "operator": "Operador",
+    "operators": "Operadores",
+    "type": "Tipo",
+    "online_scenes": "Escenas Online",
+    "sign_in": "Debes {link} para acceder a esta página.",
+    "sign_in_link": "Iniciar Sesión",
+    "none": "Ninguna",
+    "results": "{count} {count, plural, one {resultado} other {resultados}}"
+  },
+  "land_detail_page": {
+    "transfer": "Transferir",
+    "edit": "Editar",
+    "set_operator": "Configurar Operador",
+    "build_estate": "Construir Estate",
+    "add_or_remove_parcels": "Añadir o Quitar Parcelas",
+    "dissolve_estate": "Disolver Estate",
+    "online_scenes": "Escenas Online",
+    "none": "Ninguna",
+    "add_scene": "Agregar Escena",
+    "description": "Descripción",
+    "owner": "Dueño",
+    "operators": "Operadores",
+    "total_land": "Tierras Totales",
+    "empty_land": "Tierras Vacias"
+  },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",
     "step_one_message_line_one": "Con el objetivo de mejor la experiencia de nuestros productos, hemos cambiado el sistema de cuentas de usuario del Builder. Hemos dejado de usar emails y pasado a usar una billetera en su lugar. Esto significa que necesitaras conectar una billetera de Ethereum para almacenar tus escenas en la nube. Si no tienes una billetera y quieres aprender como conseguir una has {link}.",
@@ -400,13 +461,21 @@
     "step_four_cta": "Migrar",
     "projects_title": "Las siguientes Escenas seran migradas:"
   },
+  "operator_page": {
+    "title": "Asignar Operador",
+    "subtitle": "Estas asignando un operador para {name}.",
+    "address": "Dirección",
+    "undo": "Deshacer",
+    "revoke": "Revocar",
+    "invalid_address": "Dirección invalida"
+  },
   "not_found_page": {
     "back": "Volver a tus Escenas",
     "subtitle": "Lo sentimos, no pudimos encontrar la Escena que buscabas.",
     "title": "404"
   },
   "scene_list_page": {
-    "projects_title": "Escenas de la Comunidad",
+    "projects_title": "Escenas de la comunidad",
     "no_projects": "No se encotraron Escenas",
     "filters": {
       "creator-contest-2019-12": "Creator Contest (Submission)",
@@ -486,6 +555,14 @@
     "other_shortcuts": "Otros",
     "title": "Atajos"
   },
+  "create_modal": {
+    "title": "Crear una Escena",
+    "name_subtitle": "Escribe un nombre y una descripcion de tu Escena",
+    "size_subtitle": "Elige el tamaño de tu nueva Escena",
+    "name_label": "Nombre",
+    "description_label": "Descripción",
+    "description_placeholder": "Una descripción..."
+  },
   "sync": {
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",
     "loading": "Guardando...",
@@ -501,6 +578,30 @@
     "description": "{dimensions} - {amount} objetos aprox",
     "medium": "Estándar (2x2)",
     "small": "Mini (1x1)"
+  },
+  "activity_page": {
+    "latest_activity": "Ultima Actividad",
+    "clear_history": "Limpiar Historial",
+    "empty": "No tienes actividad aún.",
+    "clear_history_modal": {
+      "title": "Estás seguro?",
+      "text": "Estás por limpiar tu historial. Deseas proceder?"
+    }
+  },
+  "transaction": {
+    "transfer": "Has transferido {name} a {address}.",
+    "edit": "Has editado {name}.",
+    "set_operator_assigned": "Has asignado {address} como operador de {name}.",
+    "set_operator_revoked": "Has revocado el operador de {name}.",
+    "create_estate": "Has creado {name}.",
+    "dissolve_estate": "Has disuelto {name}.",
+    "edit_estate_add": "Has agregado {count} {count, plural, one {parcela} other {parcelas}} a {name}.",
+    "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}."
+  },
+  "transfer_page": {
+    "title": "Transferir",
+    "subtitle": "Estás por transferir {name}.",
+    "disclaimer": "Recuerda que transferir es una operación irreversible.{br}Por favor verifica que la dirección sea la correcta."
   },
   "toasts": {
     "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la nube!"
@@ -562,6 +663,10 @@
   },
   "wallet": {
     "signature_error": "Error al firmar el mensaje",
-    "title": "Connecta tu billetera para poder utilizar Crypto-Coleccionables."
+    "no_wallet": "No se encontro una billetera",
+    "connect_error": "No se pudo conectar la billetera",
+    "title": "Conecta tu billetera para iniciar sesión.",
+    "sign_in_required": "Necesitas {sign_in} para acceder a esta página.",
+    "sign_in": "Iniciar sesión"
   }
 }

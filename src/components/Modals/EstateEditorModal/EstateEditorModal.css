@@ -1,0 +1,57 @@
+.EstateEditorModal .map {
+  height: 300px;
+}
+
+.EstateEditorModal .messages-container {
+  position: relative;
+}
+
+.EstateEditorModal .messages {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  bottom: 0px;
+  padding: 16px;
+  width: 100%;
+}
+
+.EstateEditorModal .messages-container .message {
+  display: flex;
+  background: rgba(var(--void-raw), 0.88);
+  font-size: 13px;
+  line-height: 18px;
+  padding: 7px 16px;
+  border-radius: 16px;
+}
+
+.EstateEditorModal .icon {
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-position: center -2px;
+  margin-top: 1px;
+  margin-right: 8px;
+}
+
+.EstateEditorModal .message.warning .icon {
+  background-image: url(../../../images/save-error.svg);
+}
+
+.EstateEditorModal .message.info .icon {
+  background-image: url(../../../images/info.svg);
+  background-size: contain;
+  background-position: center;
+}
+
+.EstateEditorModal .dcl.modal-navigation {
+  margin-bottom: 20px;
+}
+
+.EstateEditorModal .form {
+  padding: 0px 32px;
+}
+
+.EstateEditorModal.ui.modal .actions .ui.button + .ui.button {
+  margin-left: 20px;
+}

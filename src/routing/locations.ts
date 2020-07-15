@@ -11,5 +11,11 @@ export const locations = {
   mobile: () => '/mobile',
   notFound: () => '/404',
   callback: () => '/callback',
-  migrate: () => '/migrate'
+  migrate: () => '/migrate',
+  land: () => '/land',
+  landDetail: (landId = ':landId') => `/land/${landId}`,
+  landTransfer: (landId = ':landId') => `/land/${landId}/transfer`,
+  landEdit: (landId = ':landId') => `/land/${landId}/edit`,
+  landOperator: (landId = ':landId') => `/land/${landId}/operator`,
+  activity: () => `/activity`
 }

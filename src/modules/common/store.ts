@@ -6,6 +6,7 @@ import { createBrowserHistory } from 'history'
 
 import { env } from 'decentraland-commons'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
+import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 import { createAnalyticsMiddleware } from 'decentraland-dapps/dist/modules/analytics/middleware'
 import { configure as configureAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -28,6 +29,7 @@ import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
 import { GENERATE_IDENTITY_SUCCESS, DESTROY_IDENTITY, LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 import { MIGRATION_SUCCESS } from 'modules/auth/actions'
+import { fetchTilesRequest } from 'modules/tile/actions'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -136,10 +138,10 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     }
   }
 })
-
+const transactionMiddleware = createTransactionMiddleware()
 const analyticsMiddleware = createAnalyticsMiddleware(env.get('REACT_APP_SEGMENT_API_KEY'))
 
-const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware]
+const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, storageMiddleware, analyticsMiddleware, transactionMiddleware]
 
 const middleware = applyMiddleware(...middlewares)
 
@@ -157,5 +159,7 @@ window.onbeforeunload = function() {
   const syncCount = getLoadingSet(store.getState() as RootState).size
   return syncCount > 0 || null
 }
+
+store.dispatch(fetchTilesRequest())
 
 export { store, history }
