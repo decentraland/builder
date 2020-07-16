@@ -11,16 +11,16 @@ const auth = createClient(LAND_MANAGER_URL)
 
 const getLandQuery = () => gql`
   query Land($address: Bytes) {
-    ownerParcels: parcels(where: { estate: null, owner: $address }) {
+    ownerParcels: parcels(first: 1000, where: { estate: null, owner: $address }) {
       ...parcelFields
     }
-    ownerEstates: estates(where: { owner: $address }) {
+    ownerEstates: estates(first: 1000, where: { owner: $address }) {
       ...estateFields
     }
-    updateOperatorParcels: parcels(where: { estate: null, updateOperator: $address }) {
+    updateOperatorParcels: parcels(first: 1000, where: { estate: null, updateOperator: $address }) {
       ...parcelFields
     }
-    updateOperatorEstates: estates(where: { updateOperator: $address }) {
+    updateOperatorEstates: estates(first: 1000, where: { updateOperator: $address }) {
       ...estateFields
     }
     ownerAuthorizations: authorizations(first: 1000, where: { owner: $address, type: "UpdateManager" }) {
@@ -103,7 +103,7 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 
 export class ManagerAPI {
   fetchLand = async (_address: string) => {
-    const address = _address.toLowerCase()
+    const address = '0x87956abc4078a0cc3b89b419928b857b8af826ed'.toLowerCase()
     const { data } = await auth.query<LandQueryResult>({
       query: getLandQuery(),
       variables: {
