@@ -8,10 +8,11 @@ import Footer from 'components/Footer'
 import Chip from 'components/Chip'
 import { RoleType } from 'modules/land/types'
 import { Atlas } from 'components/Atlas'
+import { LandPageView } from 'modules/ui/land/types'
+import { getCoords } from 'modules/land/utils'
 import TableRow from './TableRow'
 import { Props, State } from './LandPage.types'
 import './LandPage.css'
-import { LandPageView } from 'modules/ui/land/types'
 
 const PAGE_SIZE = 20
 
@@ -51,11 +52,16 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
     const totalPages = Math.ceil(filteredLands.length / PAGE_SIZE)
 
-    let selectedId
+    let selectedX
+    let selectedY
     if (filteredLands.length > 1 && selectedLand < filteredLands.length) {
-      selectedId = filteredLands[selectedLand].id
+      const { x, y } = getCoords(filteredLands[selectedLand])
+      selectedX = x
+      selectedY = y
     } else if (filteredLands.length === 1) {
-      selectedId = filteredLands[0].id
+      const { x, y } = getCoords(filteredLands[0])
+      selectedX = x
+      selectedY = y
     }
     return (
       <>
@@ -144,7 +150,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
           </Container>
         ) : (
           <div className="atlas-wrapper">
-            <Atlas className="main" landId={selectedId} showOperator={showOperator} showOwner={showOwner} hasPopup />
+            <Atlas className="main" x={selectedX} y={selectedY} showOperator={showOperator} showOwner={showOwner} hasPopup />
           </div>
         )}
       </>

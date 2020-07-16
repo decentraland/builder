@@ -103,7 +103,7 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 
 export class ManagerAPI {
   fetchLand = async (_address: string) => {
-    const address = '0x87956abc4078a0cc3b89b419928b857b8af826ed'.toLowerCase()
+    const address = _address.toLowerCase()
     const { data } = await auth.query<LandQueryResult>({
       query: getLandQuery(),
       variables: {
