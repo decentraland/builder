@@ -58,3 +58,7 @@
   object-fit: cover;
   margin-bottom: 24px;
 }
+
+.DeployToPool.success .ui.button + .ui.button {
+  margin-left: 20px;
+}

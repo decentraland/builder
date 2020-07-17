@@ -63,7 +63,7 @@
   font-size: 17px;
   font-weight: 100;
   text-align: center;
-  width: 400px;
+  padding: 0px 40px;
 }
 
 .DeployModal .choice-form .options {
@@ -146,4 +146,8 @@
 
 .DeployModal .error.visible {
   visibility: visible;
+}
+
+.DeployModal .ui.button + .ui.button {
+  margin-left: 20px;
 }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Loader, Header } from 'decentraland-ui'
+import { Button, Loader, Header, Row } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
@@ -218,11 +218,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
             </div>
           </div>
         </div>
-
-        <Button primary size="small" onClick={this.handleDeploy}>
-          {t('deployment_modal.land.confirmation.action')}
-        </Button>
-
+        <Row align="center">
+          <Button primary size="small" onClick={this.handleDeploy}>
+            {t('deployment_modal.land.confirmation.action')}
+          </Button>
+        </Row>
         {error && <div className="error visible">{error}</div>}
       </div>
     )
