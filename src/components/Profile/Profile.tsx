@@ -19,7 +19,7 @@ export default class Profile extends React.PureComponent<Props> {
 
     if (isEqual(address, LAND_POOL_ADDRESS)) {
       return (
-        <span className={`Profile decentraland ${size}`}>
+        <span className={`Profile decentraland ${size}`} title={address}>
           <Logo />
           <span className="name">Decentraland</span>
         </span>
@@ -30,12 +30,12 @@ export default class Profile extends React.PureComponent<Props> {
       return name
     } else {
       return avatar ? (
-        <span className={`Profile avatar ${size}`}>
+        <span className={`Profile avatar ${size}`} title={address}>
           <AvatarFace size="tiny" inline avatar={avatar} />
           <span className="name">{name}</span>
         </span>
       ) : (
-        <span className={`Profile blockie ${size}`}>
+        <span className={`Profile blockie ${size}`} title={address}>
           <Blockie seed={address} scale={size === 'large' ? 5 : 3} />
           <span className="name">{name}</span>
         </span>
