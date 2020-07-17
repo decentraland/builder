@@ -32,3 +32,16 @@
 .LandDetailPage .dcl.column.actions {
   margin-left: 20px;
 }
+
+.LandDetailPage .dcl.section.medium.no-margin-bottom {
+  margin-bottom: 0px;
+}
+
+.LandDetailPage .dcl.section.data .dcl.stats {
+  margin-top: 32px;
+  margin-right: 48px;
+}
+
+.LandDetailPage .dcl.section.data .dcl.stats + .dcl.stats {
+  margin-left: 0px;
+}

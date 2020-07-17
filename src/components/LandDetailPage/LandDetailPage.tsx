@@ -129,8 +129,8 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               <Atlas landId={land.id} hasPopup layers={[this.hoverLayer]} isDraggable={false}></Atlas>
             </div>
           </Section>
-          <Section>
-            <Header sub>Online Scenes</Header>
+          <Section className={land.description ? '' : 'no-margin-bottom'}>
+            <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {projects.length === 0 ? (
               <Empty height={100}>None</Empty>
             ) : (
@@ -142,7 +142,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             )}
           </Section>
           {land.description ? (
-            <Section className="description">
+            <Section className="description no-margin-bottom">
               <Header sub>{t('land_detail_page.description')}</Header>
               <p>{land.description}</p>
             </Section>
