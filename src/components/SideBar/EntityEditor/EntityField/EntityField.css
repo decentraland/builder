@@ -15,12 +15,6 @@
   margin-left: 4px;
 }
 
-.EntityField .search-field .ui.input {
-  width: 100%;
-  padding: 0px 6px;
-  margin-bottom: 2px;
-}
-
 .EntityField .ui.search input.prompt::placeholder {
   color: rgb(var(--purplish-grey-raw));
 }
@@ -32,6 +26,16 @@
   line-height: 37px;
   height: 36px;
   border-radius: 4px;
+}
+
+.EntityField .dcl.select-field .header {
+  margin: 0px !important;
+  padding: 0px 10px !important;
+}
+
+.EntityField .dcl.select-field .header .ui.input input {
+  font-size: 14px !important;
+  width: 228px;
 }
 
 .EntityField .no-results {
