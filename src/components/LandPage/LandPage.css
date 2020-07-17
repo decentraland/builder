@@ -90,8 +90,8 @@
   height: calc(100vh - 186px);
 }
 
-.LandPage .ui.radio.checkbox input.hidden ~ label:before,
-.LandPage .ui.radio.checkbox input.hidden:focus ~ label:before {
+.LandPage .ui.radio.checkbox:not(.checked) input.hidden ~ label:before,
+.LandPage .ui.radio.checkbox:not(.checked) input.hidden:focus ~ label:before {
   border: 2px solid var(--secondary-text);
 }
 
