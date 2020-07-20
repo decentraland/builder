@@ -106,3 +106,7 @@
 .operator-popup {
   height: auto !important;
 }
+
+.LandPage .dcl.center {
+  top: 64px;
+}
