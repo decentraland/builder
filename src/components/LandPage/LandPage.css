@@ -107,6 +107,6 @@
   height: auto !important;
 }
 
-.LandPage .dcl.center {
+.LandPage .dcl.center.login-wrapper {
   top: 64px;
 }

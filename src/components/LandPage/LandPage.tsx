@@ -32,7 +32,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
 
   renderLogin() {
     return (
-      <Center>
+      <Center className="login-wrapper">
         <div className="secondary-text">
           <T id="land_page.sign_in" values={{ link: <Link to={locations.signIn()}>{t('land_page.sign_in_link')}</Link> }} />
         </div>
