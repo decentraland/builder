@@ -601,7 +601,9 @@
   "transfer_page": {
     "title": "Transferir",
     "subtitle": "Estás por transferir {name}.",
-    "disclaimer": "Recuerda que transferir es una operación irreversible.{br}Por favor verifica que la dirección sea la correcta."
+    "disclaimer": "Recuerda que transferir es una operación irreversible.{br}Por favor verifica que la dirección sea la correcta.",
+    "same_owner": "Ese ya es el dueño",
+    "invalid_address": "Esto no es una dirección válida"
   },
   "toasts": {
     "localstorage": "Las Escenas se guardan en tu navegador. {sign_in} para subirlas a la nube!"

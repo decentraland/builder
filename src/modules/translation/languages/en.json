@@ -608,7 +608,9 @@
   "transfer_page": {
     "title": "Transfer",
     "subtitle": "Your are about to transfer {name}.",
-    "disclaimer": "Remember that transferring is an irreversible operation.{br}Please check the address carefully."
+    "disclaimer": "Remember that transferring is an irreversible operation.{br}Please check the address carefully.",
+    "same_owner": "That's already the owner",
+    "invalid_address": "That's not a valid address"
   },
   "toasts": {
     "localstorage": "Scenes are stored in your browser. {sign_in} to save them in the Cloud!"
