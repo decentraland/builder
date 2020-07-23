@@ -255,14 +255,18 @@
     }
   },
   "dissolve_modal": {
-    "title": "解散Estate",
-    "confirm": "您即将解散{name}。 您要继续吗？",
-    "too_big": "该Estate太大，无法分解为一笔交易。 请移除包裹，直到其大小最大为{max}个包裹为止。"
+    "title": "解散产业",
+    "confirm": "您即将解散{name}。您要继续吗？",
+    "too_big": "这个产业太大，无法在一项交易中解决。请移除包裹，直到其大小最大为{max}个包裹为止。"
   },
   "edit_project_modal": {
     "custom_layout_label": "布局",
     "title": "场景详细信息",
     "unpublish_needed": "请在更新您的场景细节之前先取消发布您的场景"
+  },
+  "edit_page": {
+    "title": "编辑",
+    "subtitle": "您正在编辑{name}。"
   },
   "error_page": {
     "or": "或者重试",
@@ -272,18 +276,18 @@
     "title": "糟糕！"
   },
   "estate_editor": {
-    "title_edit": "修改Estate",
+    "title_edit": "编辑产业",
     "subtitle_edit": "单击以添加或删除包裹",
-    "title_create": "建立Estate",
-    "subtitle_create": "单击相邻的地块以建造你的庄园",
-    "subtitle_form": "为您的Estate写下名称和描述",
+    "title_create": "建造产业",
+    "subtitle_create": "单击相邻的地块以建造你的产业",
+    "subtitle_form": "为您的产业写上名称和描述",
     "name_label": "名称",
-    "name_placeholder": "我的Estate...",
+    "name_placeholder": "我的产业...",
     "description_label": "描述",
     "description_placeholder": "一些描述...",
     "add_limit_reached": "您一次最多可以添加{max}个地块",
-    "remove_limit_reached": "您一次最多可以删除{max}个包裹",
-    "needs_two_txs": "此项更改将发送2笔交易：一笔交易添加{toAdd}包裹，另一笔交易删除{toRemove}包裹"
+    "remove_limit_reached": "您一次最多可以删除{max}个地块",
+    "needs_two_txs": "此更改将发送2笔交易：一笔交易添加{toAdd}地块，另一笔交易删除{toRemove}地块"
   },
   "export_modal": {
     "action": "下载",
@@ -331,13 +335,13 @@
     "land": "土地"
   },
   "list": {
-    "two": "{first} and {second}",
-    "three": "{first}, {second} and {third}",
-    "more": "{count} more"
+    "two": "{first} 及 {second}",
+    "three": "{first}, {second} 及 {third}",
+    "more": "{count} 更多"
   },
   "home_page": {
     "import_scene": "上传场景",
-    "no_projects": "看来您没有任何场景。 {br} {link}开始。",
+    "no_projects": "看来您没有任何场景。{br} {link}开始使用。",
     "no_projects_guest": "您的场景已上传到云端{br}{sign_in}查看它们.",
     "project_actions": {
       "delete_project": "删除场景",
@@ -361,8 +365,8 @@
     "migration_modal_title": "迁移成功！",
     "migration_modal_message": "下列项目已迁移：",
     "migration_modal_dismiss": "解散",
-    "results": "{count}个结果",
-    "from_scene_pool": "由社区"
+    "results": "{count}结果",
+    "from_scene_pool": "自场景池"
   },
   "import_modal": {
     "action": "导入",
@@ -412,30 +416,30 @@
   },
   "land_page": {
     "name": "名称",
-    "coords": "坐标",
-    "owner": "所有者",
-    "operator": "操作员",
-    "operators": "经营者",
+    "coords": "座标",
+    "owner": "持有者",
+    "operator": "操作者",
+    "operators": "操作者",
     "type": "类型",
     "online_scenes": "在线场景",
     "sign_in": "您需要{link}才能访问此页面。",
     "sign_in_link": "登入",
-    "none": "没有",
+    "none": "无",
     "results": "{count}个结果"
   },
   "land_detail_page": {
-    "transfer": "传递",
+    "transfer": "转移",
     "edit": "编辑",
-    "set_operator": "设定运算子",
-    "build_estate": "建立Estate",
-    "add_or_remove_parcels": "添加或删除包裹",
-    "dissolve_estate": "解散Estate",
+    "set_operator": "设定操作者",
+    "build_estate": "建立产业",
+    "add_or_remove_parcels": "添加或删除地块",
+    "dissolve_estate": "解散产业",
     "online_scenes": "在线场景",
-    "none": "没有",
+    "none": "无",
     "add_scene": "添加场景",
     "description": "描述",
-    "owner": "所有者",
-    "operators": "经营者",
+    "owner": "持有者",
+    "operators": "操作者",
     "total_land": "总土地",
     "empty_land": "空地"
   },
@@ -459,12 +463,12 @@
     "projects_title": "以下场景将被迁移："
   },
   "operator_page": {
-    "title": "设定运算子",
-    "subtitle": "您正在为{name}设置一个运算符。",
+    "title": "设定操作者",
+    "subtitle": "您正在为{name}设置一个操作者。",
     "address": "地址",
-    "undo": "撤消",
-    "revoke": "吊销",
-    "invalid_address": "无效"
+    "undo": "复原",
+    "revoke": "撤消",
+    "invalid_address": "无效地址"
   },
   "scene_list_page": {
     "projects_title": "社区场景",
@@ -560,7 +564,7 @@
   },
   "create_modal": {
     "title": "创建一个场景",
-    "name_subtitle": "为场景设置名称和描述",
+    "name_subtitle": "为您的场景设置名称和描述",
     "size_subtitle": "设置新场景的大小",
     "name_label": "名称",
     "description_label": "描述",
@@ -579,7 +583,7 @@
   "activity_page": {
     "latest_activity": "最新活动",
     "clear_history": "清除历史记录",
-    "empty": "您还没有活动。",
+    "empty": "您尚无活动。",
     "clear_history_modal": {
       "title": "您确定吗？",
       "text": "您将清除交易记录。您要继续吗？"
@@ -587,20 +591,18 @@
   },
   "transaction": {
     "transfer": "您已将{name}转移到{address}。",
-    "edit": "您编辑了{name}。",
-    "set_operator_assigned": "您已将{address}分配为{name}的运算符。",
-    "set_operator_revoked": "您撤销了{name}的运算符。",
+    "edit": "您已编辑{name}.",
+    "set_operator_assigned": "您已将{address}分配为{name}的操作者。",
+    "set_operator_revoked": "您撤销了{name}的操作者。",
     "create_estate": "您创建了{name}。",
     "dissolve_estate": "您解散了{name}。",
-    "edit_estate_add": "您已将{count}个地块添加到{name}。",
-    "edit_estate_remove": "您从{name}移除了{count}个包裹。"
+    "edit_estate_add": "您在{name}中添加了{count}土地。",
+    "edit_estate_remove": "您从{name}中删除了{count}土地。"
   },
   "transfer_page": {
-    "title": "转让",
-    "subtitle": "您即将转让 {name}.",
-    "warning": "请记住，转让是不可逆的操作。{br}请仔细检查地址。",
-    "same_owner": "那已经是主人了",
-    "invalid_address": "这不是有效地址"
+    "title": "转移",
+    "subtitle": "您即将转移{name}。",
+    "disclaimer": "请记住，转移是不可逆的操作。{br}请仔细检查地址。"
   },
   "toasts": {
     "localstorage": "场景存储在本地浏览器中。 {sign_in}以将其保存在云端！"
@@ -626,7 +628,7 @@
       "title": "添加对象"
     },
     "slide3": {
-      "description": "通过单击“旋转”工具并拖动轨道来旋转对象。",
+      "description": "通过单击\"旋转\"工具并拖动轨道来旋转对象。",
       "title": "轨道和箭头"
     },
     "slide4": {
@@ -661,10 +663,7 @@
     "youtube_id": "NhaP_M7tVc8"
   },
   "wallet": {
-    "signature_error": "签名失败",
-    "no_wallet": "找不到钱包",
-    "connect_error": "无法连接钱包",
-    "title": "连接您的钱包以登录。",
+    "title": "连接您的钱包以登入。",
     "sign_in_required": "您需要{sign_in}才能访问此页面。",
     "sign_in": "登入"
   }
