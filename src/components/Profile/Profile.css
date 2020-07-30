@@ -31,3 +31,11 @@
   font-size: 20px;
   line-height: 28px;
 }
+
+.Profile.huge .dcl.avatar-face,
+.Profile.huge .dcl.logo {
+  width: 48px;
+  height: 48px;
+  vertical-align: -8px;
+  margin-right: 10px;
+}

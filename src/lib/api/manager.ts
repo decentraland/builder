@@ -1,9 +1,10 @@
 import { gql } from 'apollo-boost'
 import { env } from 'decentraland-commons'
 import { createClient } from './graph'
-import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, EstateFields } from 'modules/land/types'
+import { parcelFields, estateFields, ParcelFields, Land, LandType, RoleType, EstateFields, Authorization } from 'modules/land/types'
 import { coordsToId } from 'modules/land/utils'
 import { isZero } from 'lib/address'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 
 export const LAND_MANAGER_URL = env.get('REACT_APP_LAND_MANAGER_URL', '')
 
@@ -26,6 +27,7 @@ const getLandQuery = () => gql`
     ownerAuthorizations: authorizations(first: 1000, where: { owner: $address, type: "UpdateManager" }) {
       operator
       isApproved
+      tokenAddress
     }
     operatorAuthorizations: authorizations(first: 1000, where: { operator: $address, type: "UpdateManager" }) {
       owner {
@@ -38,6 +40,7 @@ const getLandQuery = () => gql`
         }
       }
       isApproved
+      tokenAddress
     }
   }
   ${parcelFields()}
@@ -49,8 +52,12 @@ type LandQueryResult = {
   ownerEstates: EstateFields[]
   updateOperatorParcels: ParcelFields[]
   updateOperatorEstates: EstateFields[]
-  ownerAuthorizations: { operator: string; isApproved: boolean }[]
-  operatorAuthorizations: { owner: { address: string; parcels: ParcelFields[]; estates: EstateFields[] }; isApproved: boolean }[]
+  ownerAuthorizations: { operator: string; isApproved: boolean; tokenAddress: string }[]
+  operatorAuthorizations: {
+    owner: { address: string; parcels: ParcelFields[]; estates: EstateFields[] }
+    isApproved: boolean
+    tokenAddress: string
+  }[]
 }
 
 const fromParcel = (parcel: ParcelFields, role: RoleType) => {
@@ -102,7 +109,7 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 }
 
 export class ManagerAPI {
-  fetchLand = async (_address: string) => {
+  fetchLand = async (_address: string): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
     const { data } = await auth.query<LandQueryResult>({
       query: getLandQuery(),
@@ -112,7 +119,8 @@ export class ManagerAPI {
     })
 
     const lands: Land[] = []
-    const operatorsForAllLand = new Set<string>()
+    const landUpdateManagers = new Set<string>()
+    const estateUpdateManagers = new Set<string>()
 
     // parcels and estates that I own
     for (const parcel of data.ownerParcels) {
@@ -132,11 +140,24 @@ export class ManagerAPI {
 
     // addresses I gave UpdateManager permission are operators of all my lands
     for (const authorization of data.ownerAuthorizations) {
-      const { operator, isApproved } = authorization
-      if (isApproved) {
-        operatorsForAllLand.add(operator)
-      } else {
-        operatorsForAllLand.delete(operator)
+      const { operator, isApproved, tokenAddress } = authorization
+      switch (tokenAddress) {
+        case LAND_REGISTRY_ADDRESS: {
+          if (isApproved) {
+            landUpdateManagers.add(operator)
+          } else {
+            landUpdateManagers.delete(operator)
+          }
+          break
+        }
+        case ESTATE_REGISTRY_ADDRESS: {
+          if (isApproved) {
+            estateUpdateManagers.add(operator)
+          } else {
+            estateUpdateManagers.delete(operator)
+          }
+          break
+        }
       }
     }
 
@@ -158,13 +179,23 @@ export class ManagerAPI {
     }
 
     // add operators for all my lands
-    for (const operator of operatorsForAllLand.values()) {
-      for (const land of lands) {
-        land.operators.push(operator)
+    let authorizations: Authorization[] = []
+    for (const operator of landUpdateManagers.values()) {
+      authorizations.push({ address: operator, type: LandType.PARCEL })
+      const parcels = lands.filter(land => land.type === LandType.PARCEL && land.role === RoleType.OWNER)
+      for (const parcel of parcels) {
+        parcel.operators.push(operator)
+      }
+    }
+    for (const operator of estateUpdateManagers.values()) {
+      authorizations.push({ address: operator, type: LandType.ESTATE })
+      const estates = lands.filter(land => land.type === LandType.ESTATE && land.role === RoleType.OWNER)
+      for (const estate of estates) {
+        estate.operators.push(operator)
       }
     }
 
-    return (
+    return [
       lands
         // remove empty estates
         .filter(land => land.type === LandType.PARCEL || land.parcels!.length > 0)
@@ -172,8 +203,9 @@ export class ManagerAPI {
         .map(land => {
           land.operators = Array.from(new Set(land.operators)).filter(address => !isZero(address))
           return land
-        })
-    )
+        }),
+      authorizations
+    ]
   }
 }
 

@@ -328,7 +328,13 @@
     "terms_and_conditions": "使用条款",
     "view_more": "查看更多",
     "click_here": "点击这里",
-    "proceed": "继续"
+    "proceed": "继续",
+    "address": "地址",
+    "balance": "平衡",
+    "revoke": "撤消",
+    "parcel_plural": "包裹",
+    "estate_plural": "庄园",
+    "settings": "设定值"
   },
   "navigation": {
     "scenes": "场景",
@@ -589,6 +595,17 @@
       "text": "您将清除交易记录。您要继续吗？"
     }
   },
+  "settings_page": {
+    "authorizations": "授权书",
+    "disclaimer": "您可以分配其他地址代表您经营所有包裹或地产。 他们{emphasis}能够转让或出售它们，只允许他们在其上发布内容。",
+    "emphasis": "将不会",
+    "authorization": "您授权{address}代表您操作所有{type}。",
+    "authorization_action": "授权{address}代表您操作所有{type}。",
+    "copy_address": "复制地址",
+    "copied": "复制的",
+    "buy_more_mana": "买多点",
+    "authorizations_title": "主动授权"
+  },
   "transaction": {
     "transfer": "您已将{name}转移到{address}。",
     "edit": "您已编辑{name}.",
@@ -597,7 +614,9 @@
     "create_estate": "您创建了{name}。",
     "dissolve_estate": "您解散了{name}。",
     "edit_estate_add": "您在{name}中添加了{count}土地。",
-    "edit_estate_remove": "您从{name}中删除了{count}土地。"
+    "edit_estate_remove": "您从{name}中删除了{count}土地。",
+    "set_manager_assigned": "You assigned {address} as operator of all your {type}.",
+    "set_manager_revoked": "You revoked {address} as operator of all your {type}."
   },
   "transfer_page": {
     "title": "转移",

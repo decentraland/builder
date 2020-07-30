@@ -334,7 +334,13 @@
     "terms_and_conditions": "Terms & Conditions",
     "view_more": "View More",
     "click_here": "Click here",
-    "proceed": "Proceed"
+    "proceed": "Proceed",
+    "address": "Address",
+    "balance": "Balance",
+    "revoke": "Revoke",
+    "parcel_plural": "parcels",
+    "estate_plural": "estates",
+    "settings": "Settings"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -595,6 +601,17 @@
       "text": "You are about to clear your transaction history. Do you want to proceed?"
     }
   },
+  "settings_page": {
+    "authorizations": "Authorizations",
+    "disclaimer": "You can assign other addresses to operate all your parcels or estates on your behalf. They {emphasis} be able to transfer or sell them, they will just be allowed to publish content on them.",
+    "emphasis": "will not",
+    "authorization": "You authorized {address} to operate all your {type} on your behalf.",
+    "authorization_action": "Authorize {address} to operate all your {type} on your behalf.",
+    "copy_address": "Copy Address",
+    "copied": "Copied",
+    "buy_more_mana": "Buy More",
+    "authorizations_title": "Active Authorizations"
+  },
   "transaction": {
     "transfer": "You transferred {name} to {address}.",
     "edit": "You edited {name}.",
@@ -603,7 +620,9 @@
     "create_estate": "You created {name}.",
     "dissolve_estate": "You dissolved {name}.",
     "edit_estate_add": "You added {count} {count, plural, one {parcel} other {parcels}} to {name}.",
-    "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}."
+    "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}.",
+    "set_manager_assigned": "You assigned {address} as operator of all your {type}.",
+    "set_manager_revoked": "You revoked {address} as operator of all your {type}."
   },
   "transfer_page": {
     "title": "Transfer",

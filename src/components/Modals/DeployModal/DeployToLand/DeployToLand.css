@@ -106,5 +106,5 @@ p.DeployToLand {
 }
 
 .DeployToLand.success .ui.button.hollow {
-  margin-left: 0px;
+  margin-left: 0px !important;
 }

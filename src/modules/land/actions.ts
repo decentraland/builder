@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
-import { Land } from './types'
+import { Land, LandType, Authorization } from './types'
 import { Coord } from 'decentraland-ui'
 import { getSelection } from './utils'
 
@@ -9,7 +9,8 @@ export const FETCH_LANDS_SUCCESS = '[Success] Fetch Lands'
 export const FETCH_LANDS_FAILURE = '[Failure] Fetch Lands'
 
 export const fetchLandsRequest = (address: string) => action(FETCH_LANDS_REQUEST, { address })
-export const fetchLandsSuccess = (address: string, lands: Land[]) => action(FETCH_LANDS_SUCCESS, { address, lands })
+export const fetchLandsSuccess = (address: string, lands: Land[], authorizations: Authorization[]) =>
+  action(FETCH_LANDS_SUCCESS, { address, lands, authorizations })
 export const fetchLandsFailure = (address: string, error: string) => action(FETCH_LANDS_FAILURE, { address, error })
 
 export type FetchLandsRequestAction = ReturnType<typeof fetchLandsRequest>
@@ -154,3 +155,27 @@ export const dissolveEstateFailure = (land: Land, error: string) => action(DISSO
 export type DissolveEstateRequestAction = ReturnType<typeof dissolveEstateRequest>
 export type DissolveEstateSuccessAction = ReturnType<typeof dissolveEstateSuccess>
 export type DissolveEstateFailureAction = ReturnType<typeof dissolveEstateFailure>
+
+export const SET_UPDATE_MANAGER_REQUEST = '[Request] Set Update Manager'
+export const SET_UPDATE_MANAGER_SUCCESS = '[Success] Set Update Manager'
+export const SET_UPDATE_MANAGER_FAILURE = '[Failure] Set Update Manager'
+
+export const setUpdateManagerRequest = (address: string, type: LandType, isApproved: boolean) =>
+  action(SET_UPDATE_MANAGER_REQUEST, { address, isApproved, type })
+export const setUpdateManagerSuccess = (address: string, type: LandType, isApproved: boolean, txHash: string) =>
+  action(SET_UPDATE_MANAGER_SUCCESS, {
+    address,
+    type,
+    isApproved,
+    ...buildTransactionPayload(txHash, {
+      address,
+      type,
+      isApproved
+    })
+  })
+export const setUpdateManagerFailure = (address: string, type: LandType, isApproved: boolean, error: string) =>
+  action(SET_UPDATE_MANAGER_FAILURE, { address, type, isApproved, error })
+
+export type SetUpdateManagerRequestAction = ReturnType<typeof setUpdateManagerRequest>
+export type SetUpdateManagerSuccessAction = ReturnType<typeof setUpdateManagerSuccess>
+export type SetUpdateManagerFailureAction = ReturnType<typeof setUpdateManagerFailure>

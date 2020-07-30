@@ -6,7 +6,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './ActivityPage.typ
 import ActivityPage from './ActivityPage'
 import { getTransactions } from 'modules/transaction/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { push } from 'connected-react-router'
+import { push } from 'connected-react-router';
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoggedIn: isLoggedIn(state),

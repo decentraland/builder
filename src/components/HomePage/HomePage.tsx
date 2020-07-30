@@ -36,7 +36,7 @@ export default class HomePage extends React.PureComponent<Props> {
 
   componentWillMount() {
     const { onLoadFromScenePool } = this.props
-    onLoadFromScenePool({ sortBy: SortBy.NEWEST, sortOrder: 'desc' })
+    onLoadFromScenePool({ sortBy: 'updated_at', sortOrder: 'desc' })
   }
 
   handleOpenImportModal = () => {

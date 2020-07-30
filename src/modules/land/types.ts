@@ -25,6 +25,11 @@ export type Land = {
   operators: string[]
 }
 
+export type Authorization = {
+  address: string
+  type: LandType
+}
+
 export const parcelFields = () => gql`
   fragment parcelFields on Parcel {
     x

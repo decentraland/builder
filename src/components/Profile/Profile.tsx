@@ -14,14 +14,14 @@ export default class Profile extends React.PureComponent<Props> {
   }
 
   render() {
-    const { address, avatar, textOnly, size } = this.props
+    const { address, avatar, textOnly, imageOnly, size } = this.props
     const name = (avatar && avatar.name) || address.slice(0, 6)
 
     if (isEqual(address, LAND_POOL_ADDRESS)) {
       return (
         <span className={`Profile decentraland ${size}`} title={address}>
           <Logo />
-          <span className="name">Decentraland</span>
+          {imageOnly ? null : <span className="name">Decentraland</span>}
         </span>
       )
     }
@@ -32,12 +32,12 @@ export default class Profile extends React.PureComponent<Props> {
       return avatar ? (
         <span className={`Profile avatar ${size}`} title={address}>
           <AvatarFace size="tiny" inline avatar={avatar} />
-          <span className="name">{name}</span>
+          {imageOnly ? null : <span className="name">{name}</span>}
         </span>
       ) : (
         <span className={`Profile blockie ${size}`} title={address}>
-          <Blockie seed={address} scale={size === 'large' ? 5 : 3} />
-          <span className="name">{name}</span>
+          <Blockie seed={address} scale={size === 'large' ? 5 : size === 'huge' ? 7 : 3} />
+          {imageOnly ? null : <span className="name">{name}</span>}
         </span>
       )
     }

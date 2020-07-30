@@ -8,6 +8,7 @@ import { coordsToId, getCenter } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { Props } from './TransactionDetail.types'
 import './TransactionDetail.css'
+import Profile from 'components/Profile'
 
 const getHref = (tx: Transaction) => {
   if (tx.status === null) {
@@ -17,16 +18,20 @@ const getHref = (tx: Transaction) => {
 }
 
 const TransactionDetail = (props: Props) => {
-  const { selection, text, tx } = props
+  const { selection, address, text, tx } = props
   const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
   const selectedStrokeLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff0044', scale: 1.4 } : null), [set])
   const selectedFillLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff9990', scale: 1.2 } : null), [set])
-  const [x, y] = useMemo(() => getCenter(selection), [selection])
+  const [x, y] = useMemo(() => (selection ? getCenter(selection) : [0, 0]), [selection])
   return (
     <div className="TransactionDetail">
       <div className="left">
         <div className="image">
-          <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
+          {selection ? (
+            <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
+          ) : (
+            <Profile address={address!} size="huge" imageOnly />
+          )}
         </div>
         <div className="text">
           <div className="description">{text}</div>

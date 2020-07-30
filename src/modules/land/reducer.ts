@@ -1,4 +1,4 @@
-import { Land } from './types'
+import { Land, Authorization } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
   FetchLandsRequestAction,
@@ -11,12 +11,14 @@ import {
 
 export type LandState = {
   data: Record<string, Land[]>
+  authorizations: Authorization[]
   loading: LoadingState
   error: string | null
 }
 
 const INITIAL_STATE: LandState = {
   data: {},
+  authorizations: [],
   loading: [],
   error: null
 }
@@ -28,16 +30,18 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
     case FETCH_LANDS_REQUEST: {
       return {
         ...state,
+        authorizations: [],
         loading: loadingReducer(state.loading, action)
       }
     }
     case FETCH_LANDS_SUCCESS: {
-      const { address, lands: land } = action.payload
+      const { address, lands, authorizations } = action.payload
       return {
         data: {
           ...state.data,
-          [address]: land
+          [address]: lands
         },
+        authorizations,
         loading: loadingReducer(state.loading, action),
         error: null
       }

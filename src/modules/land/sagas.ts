@@ -29,9 +29,13 @@ import {
   DISSOLVE_ESTATE_REQUEST,
   DissolveEstateRequestAction,
   dissolveEstateSuccess,
-  dissolveEstateFailure
+  dissolveEstateFailure,
+  SET_UPDATE_MANAGER_REQUEST,
+  SetUpdateManagerRequestAction,
+  setUpdateManagerSuccess,
+  setUpdateManagerFailure
 } from './actions'
-import { Land, LandType } from './types'
+import { Land, LandType, Authorization } from './types'
 import { manager } from 'lib/api/manager'
 import { LANDRegistry } from 'contracts/LANDRegistry'
 import {
@@ -50,6 +54,7 @@ import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
 
 export function* landSaga() {
+  yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
   yield takeEvery(DISSOLVE_ESTATE_REQUEST, handleDissolveEstateRequest)
   yield takeEvery(EDIT_ESTATE_REQUEST, handleEditEstateRequest)
   yield takeEvery(CREATE_ESTATE_REQUEST, handleCreateEstateRequest)
@@ -59,6 +64,41 @@ export function* landSaga() {
   yield takeEvery(FETCH_LANDS_REQUEST, handleFetchLandRequest)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleWallet)
   yield takeLatest(CHANGE_ACCOUNT, handleWallet)
+}
+
+function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
+  const { address, isApproved, type } = action.payload
+  try {
+    const [eth, from] = yield getEth()
+    const manager = Address.fromString(address)
+    switch (type) {
+      case LandType.PARCEL: {
+        const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
+        const txHash = yield call(() =>
+          landRegistry.methods
+            .setUpdateManager(from, manager, isApproved)
+            .send({ from })
+            .getTxHash()
+        )
+        yield put(setUpdateManagerSuccess(address, type, isApproved, txHash))
+        break
+      }
+      case LandType.ESTATE: {
+        const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
+        const txHash = yield call(() =>
+          estateRegistry.methods
+            .setUpdateManager(from, manager, isApproved)
+            .send({ from })
+            .getTxHash()
+        )
+        yield put(setUpdateManagerSuccess(address, type, isApproved, txHash))
+        break
+      }
+    }
+    yield put(push(locations.activity()))
+  } catch (error) {
+    yield put(setUpdateManagerFailure(address, type, isApproved, error.message))
+  }
 }
 
 function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
@@ -266,8 +306,8 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
 function* handleFetchLandRequest(action: FetchLandsRequestAction) {
   const { address } = action.payload
   try {
-    const land: Land[] = yield call(() => manager.fetchLand(address))
-    yield put(fetchLandsSuccess(address, land))
+    const [land, authorizations]: [Land[], Authorization[]] = yield call(() => manager.fetchLand(address))
+    yield put(fetchLandsSuccess(address, land, authorizations))
   } catch (error) {
     yield put(fetchLandsFailure(address, error.message))
   }

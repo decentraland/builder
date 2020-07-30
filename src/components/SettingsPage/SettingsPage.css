@@ -1,0 +1,130 @@
+.SettingsPage .left-column {
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.SettingsPage .row {
+  margin-bottom: 70px;
+}
+
+.SettingsPage .blockie-container .dcl.blockie {
+  margin-right: 24px;
+  float: left;
+}
+
+.SettingsPage .address-container {
+  margin-top: 7px;
+  float: left;
+}
+
+.SettingsPage .address {
+  margin-bottom: 8px;
+  font-size: 21px;
+}
+
+.SettingsPage .copy-text,
+.SettingsPage .link,
+.SettingsPage .buy-more {
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.SettingsPage .link {
+  cursor: pointer;
+}
+
+.SettingsPage .balance {
+  display: flex;
+  align-items: center;
+}
+
+.SettingsPage .dcl.mana.inline {
+  font-size: 21px;
+  margin-bottom: 0;
+}
+
+.SettingsPage .buy-more {
+  margin-left: 24px;
+}
+
+.SettingsPage .authorization {
+  margin-bottom: 12px;
+}
+
+.SettingsPage .authorization .Profile {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.SettingsPage .authorization .ui.button {
+  margin-left: 8px;
+}
+
+.SettingsPage .authorization-action .dcl.field {
+  min-width: 150px;
+  width: 150px;
+  margin: 0px 8px;
+}
+
+.SettingsPage .authorization-action .ui.dropdown {
+  margin: 0px 8px;
+}
+
+.SettingsPage .authorization-action .dcl.field .ui.input input {
+  font-size: 14px;
+  line-height: 17px;
+  padding-bottom: 4px;
+}
+
+.SettingsPage .authorization-action .dcl.field .message {
+  display: none;
+}
+
+.SettingsPage .dcl.field.error .ui.input > i.icon {
+  display: none;
+}
+
+.SettingsPage .center {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SettingsPage .center p {
+  color: var(--secondary-text);
+}
+
+@media (max-width: 992px) {
+  .SettingsPage .ui.grid > .row {
+    flex-direction: column;
+    margin-bottom: 48px;
+  }
+
+  .SettingsPage .ui.grid > .row > .column:first-child {
+    margin-bottom: 16px;
+  }
+
+  .SettingsPage .blockie-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .SettingsPage .address-container {
+    margin-top: 24px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .SettingsPage .address-container .address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

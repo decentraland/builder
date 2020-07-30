@@ -327,7 +327,13 @@
     "terms_and_conditions": "Términos y Condiciones",
     "view_more": "Ver Más",
     "click_here": "Has click aquí",
-    "proceed": "Proceder"
+    "proceed": "Proceder",
+    "address": "Dirección",
+    "balance": "Balance",
+    "revoke": "Revocar",
+    "parcel_plural": "parcelas",
+    "estate_plural": "estates",
+    "settings": "Ajustes"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -588,6 +594,17 @@
       "text": "Estás por limpiar tu historial. Deseas proceder?"
     }
   },
+  "settings_page": {
+    "authorizations": "Autorizaciones",
+    "disclaimer": "Puedes asignar a otra persona para que opere en todas tus tierras por tí. Ellos {emphasis} transferir o venderlas, solo podrán publicar contenido en ellas.",
+    "emphasis": "no podrán",
+    "authorization": "Haz autorizado a {address} para que pueda operar en tus {type}.",
+    "authorization_action": "Autorizar a {address} para que pueda operar tus {type}.",
+    "copy_address": "Copiar direccion",
+    "copied": "Copiada",
+    "buy_more_mana": "Comprar Más",
+    "authorizations_title": "Autorizaciones Activas"
+  },
   "transaction": {
     "transfer": "Has transferido {name} a {address}.",
     "edit": "Has editado {name}.",
@@ -596,7 +613,9 @@
     "create_estate": "Has creado {name}.",
     "dissolve_estate": "Has disuelto {name}.",
     "edit_estate_add": "Has agregado {count} {count, plural, one {parcela} other {parcelas}} a {name}.",
-    "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}."
+    "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
+    "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
+    "set_manager_revoked": "Has revocado a {address} como operador de tus {type}."
   },
   "transfer_page": {
     "title": "Transferir",

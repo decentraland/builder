@@ -88,6 +88,18 @@
   margin-top: 3px;
 }
 
+.TransactionDetail .left .image .Profile.blockie.huge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+}
+
+.TransactionDetail .left .image .Profile.blockie.huge .dcl.blockie {
+  margin: 0px;
+}
+
 @media (max-width: 768px) {
   .TransactionDetail .right .status .description,
   .TransactionDetail .left .text .timestamp {

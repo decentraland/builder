@@ -1,12 +1,13 @@
 import React from 'react'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import {
   TRANSFER_LAND_SUCCESS,
   EDIT_LAND_SUCCESS,
   SET_OPERATOR_SUCCESS,
   CREATE_ESTATE_SUCCESS,
   EDIT_ESTATE_SUCCESS,
-  DISSOLVE_ESTATE_SUCCESS
+  DISSOLVE_ESTATE_SUCCESS,
+  SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
 import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
@@ -113,6 +114,24 @@ const Transaction = (props: Props) => {
               id={'transaction.dissolve_estate'}
               values={{
                 name: <strong>{name}</strong>
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_UPDATE_MANAGER_SUCCESS: {
+      const { address, type, isApproved } = tx.payload
+      return (
+        <TransactionDetail
+          address={address}
+          text={
+            <T
+              id={isApproved ? 'transaction.set_manager_assigned' : 'transaction.set_manager_revoked'}
+              values={{
+                address: <Profile address={address} textOnly />,
+                type: t(`global.${type}_plural`)
               }}
             />
           }

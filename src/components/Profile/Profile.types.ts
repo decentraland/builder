@@ -7,7 +7,8 @@ export type Props = {
   avatar: Avatar | null
   onLoadProfile: typeof loadProfileRequest
   textOnly?: boolean
-  size?: 'normal' | 'large'
+  imageOnly?: boolean
+  size?: 'normal' | 'large' | 'huge'
 }
 
 export type MapStateProps = Pick<Props, 'avatar'>

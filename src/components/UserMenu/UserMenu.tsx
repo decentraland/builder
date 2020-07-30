@@ -3,6 +3,7 @@ import { UserMenu as BaseUserMenu, Row, Menu, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { Props, State } from './UserMenu.types'
 import './UserMenu.css'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export default class UserMenu extends React.Component<Props, State> {
   render() {
@@ -12,7 +13,18 @@ export default class UserMenu extends React.Component<Props, State> {
         <Menu.Item className={pathname === locations.activity() ? 'activity active' : 'activity'}>
           <Icon className={hasPendingTransactions ? 'pending' : ''} name="bell" onClick={() => onNavigate(locations.activity())} />
         </Menu.Item>
-        <BaseUserMenu mana={mana} isSignedIn onSignOut={onLogout} avatar={profile ? profile.avatars[0] : undefined} />
+        <BaseUserMenu
+          menuItems={
+            <Menu.Item onClick={() => onNavigate(locations.settings())}>
+              <Icon name="cog"></Icon>
+              {t('global.settings')}
+            </Menu.Item>
+          }
+          mana={mana}
+          isSignedIn
+          onSignOut={onLogout}
+          avatar={profile ? profile.avatars[0] : undefined}
+        />
       </Row>
     )
   }
