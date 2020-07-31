@@ -18,6 +18,22 @@ import { OPEN_MODAL, CLOSE_MODAL } from 'modules/modal/actions'
 import { SHARE_SCENE } from 'modules/ui/share/actions'
 import { LIKE_POOL_REQUEST } from 'modules/pool/actions'
 import { LOGIN_REQUEST, LOGOUT } from 'modules/identity/actions'
+import {
+  TRANSFER_LAND_SUCCESS,
+  TransferLandSuccessAction,
+  EDIT_LAND_SUCCESS,
+  EditLandSuccessAction,
+  SetOperatorSuccessAction,
+  SET_OPERATOR_SUCCESS,
+  CREATE_ESTATE_SUCCESS,
+  CreateEstateSuccessAction,
+  EditEstateSuccessAction,
+  EDIT_ESTATE_SUCCESS,
+  DISSOLVE_ESTATE_SUCCESS,
+  DissolveEstateSuccessAction,
+  SET_UPDATE_MANAGER_SUCCESS,
+  SetUpdateManagerSuccessAction
+} from 'modules/land/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -76,11 +92,11 @@ addPayload(RESET_CAMERA, 'Reset camera')
 
 // import/export
 // Do not change this event name format
-addPayload(EXPORT_PROJECT_REQUEST, '[Request] Export project', trimProject)
+addPayload(EXPORT_PROJECT_REQUEST, 'Export project', trimProject)
 addPayload(IMPORT_PROJECT, 'Import project', () => ({}))
 
 // sync
-addPayload(SAVE_PROJECT_SUCCESS, 'Save Project success', trimProject)
+addPayload(SAVE_PROJECT_SUCCESS, 'Save project success', trimProject)
 addPayload(SAVE_PROJECT_FAILURE, 'Save project failure', trimProject)
 
 // auth
@@ -88,7 +104,86 @@ addPayload(LOGIN_REQUEST, 'Login')
 addPayload(LOGOUT, 'Logout')
 
 // Share
-addPayload(SHARE_SCENE, 'Share Scene')
+addPayload(SHARE_SCENE, 'Share scene')
 
 // Like
-addPayload(LIKE_POOL_REQUEST, 'Like Pool')
+addPayload(LIKE_POOL_REQUEST, 'Like pool')
+
+// Transfer Land
+add(TRANSFER_LAND_SUCCESS, 'Transfer land', action => {
+  const { payload } = action as TransferLandSuccessAction
+  return {
+    id: payload.land.id,
+    type: payload.land.type,
+    name: payload.land.name,
+    address: payload.address
+  }
+})
+
+// Edit Land
+add(EDIT_LAND_SUCCESS, 'Edit land', action => {
+  const { payload } = action as EditLandSuccessAction
+  return {
+    id: payload.land.id,
+    type: payload.land.type,
+    name: payload.name,
+    desciption: payload.description
+  }
+})
+
+// Set Operator
+add(
+  SET_OPERATOR_SUCCESS,
+  action => (action.payload.address ? 'Add operator' : 'Remove operator'),
+  action => {
+    const { payload } = action as SetOperatorSuccessAction
+    return {
+      id: payload.land.id,
+      type: payload.land.type,
+      address: payload.address
+    }
+  }
+)
+
+// Create Estate
+add(CREATE_ESTATE_SUCCESS, 'Create estate', action => {
+  const { payload } = action as CreateEstateSuccessAction
+  return payload
+})
+
+// Edit Estate
+add(
+  EDIT_ESTATE_SUCCESS,
+  action => (action.payload.type === 'add' ? 'Add parcels' : 'Remove parcels'),
+  action => {
+    const { payload } = action as EditEstateSuccessAction
+    return {
+      id: payload.land.id,
+      type: payload.land.type,
+      name: payload.land.name,
+      coords: payload.coords
+    }
+  }
+)
+
+// Dissolve Estate
+add(DISSOLVE_ESTATE_SUCCESS, 'Dissolve estate', action => {
+  const { payload } = action as DissolveEstateSuccessAction
+  return {
+    id: payload.land.id,
+    type: payload.land.type
+  }
+})
+
+// Set Update Manager
+add(
+  SET_UPDATE_MANAGER_SUCCESS,
+  action => (action.payload.isApproved ? 'Add manager' : 'Remove manager'),
+  action => {
+    const { payload } = action as SetUpdateManagerSuccessAction
+    return {
+      address: payload.address,
+      type: payload.type
+    }
+  }
+)
