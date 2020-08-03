@@ -4,10 +4,11 @@ import { AssetPack } from 'modules/assetPack/types'
 
 export const COLLECTIBLE_ASSET_PACK_ID = 'collectibles'
 
-// Tehese asset packs will be shown on top, with a `new` badge
-export const NEW_ASSET_PACK_IDS = ['c4b073ab-92e0-49d9-9316-89044fc20858']
-// These asset packs will be pushed to the bottom, like for old promotions
-export const OLD_ASSET_PACK_IDS = ['173c9b1a-b730-4065-a7a9-3e7e40da7b52']
+export const ASSET_PACK_ORDER = ['Genesis City', 'Pirates', 'Fantasy', 'Sci-Fi', 'Year Of The Pig', 'Toolbox', 'HTC Exodus']
+
+export const NEW_ASSET_PACKS = []
+
+export const isSameAssetPack = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
 
 export enum CategoryName {
   GROUND_CATEGORY = 'ground',
@@ -53,4 +54,12 @@ export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
 
 export const sortByName = (a: AssetPack, b: AssetPack) => {
   return new Date(a.createdAt!) > new Date(b.createdAt!) ? 1 : -1
+}
+
+export const sortByOrder = (a: AssetPack, b: AssetPack) => {
+  const indexA = ASSET_PACK_ORDER.findIndex(name => isSameAssetPack(a.title, name))
+  const indexB = ASSET_PACK_ORDER.findIndex(name => isSameAssetPack(b.title, name))
+  if (indexA === -1) return 1
+  if (indexB === -1) return -1
+  return indexA > indexB ? 1 : -1
 }

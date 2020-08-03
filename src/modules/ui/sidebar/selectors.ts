@@ -10,7 +10,7 @@ import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
-import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, NEW_ASSET_PACK_IDS, OLD_ASSET_PACK_IDS, sortByName } from './utils'
+import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, sortByName, sortByOrder } from './utils'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -148,18 +148,12 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
   getAssetPacks,
   getAddress,
   (assetPacks, address) => {
-    const newAssetPacks: AssetPack[] = []
     const defaultAssetPacks: AssetPack[] = []
-    const oldAssetPacks: AssetPack[] = []
     const userAssetPacks: AssetPack[] = []
     const collectibles: AssetPack[] = []
 
     for (const assetPack of Object.values(assetPacks)) {
-      if (NEW_ASSET_PACK_IDS.includes(assetPack.id)) {
-        newAssetPacks.push(assetPack)
-      } else if (OLD_ASSET_PACK_IDS.includes(assetPack.id)) {
-        oldAssetPacks.push(assetPack)
-      } else if (assetPack.ethAddress === address) {
+      if (assetPack.ethAddress === address) {
         userAssetPacks.push(assetPack)
       } else if (assetPack.id === COLLECTIBLE_ASSET_PACK_ID) {
         collectibles.push(assetPack)
@@ -168,13 +162,7 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
       }
     }
 
-    return [
-      ...newAssetPacks.sort(sortByName),
-      ...defaultAssetPacks.sort(sortByName),
-      ...oldAssetPacks.sort(sortByName),
-      ...userAssetPacks.sort(sortByName),
-      ...collectibles
-    ]
+    return [...defaultAssetPacks.sort(sortByOrder), ...userAssetPacks.sort(sortByName), ...collectibles]
   }
 )
 

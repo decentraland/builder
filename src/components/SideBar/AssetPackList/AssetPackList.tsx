@@ -3,7 +3,7 @@ import { env } from 'decentraland-commons'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
-import { NEW_ASSET_PACK_IDS } from 'modules/ui/sidebar/utils'
+import { NEW_ASSET_PACKS, isSameAssetPack } from 'modules/ui/sidebar/utils'
 import Icon from 'components/Icon'
 import SidebarCard from '../SidebarCard'
 import { Props } from './AssetPackList.types'
@@ -39,7 +39,7 @@ export default class AssetPackList extends React.PureComponent<Props> {
             thumbnail={`${assetPack.thumbnail}?updated_at=${assetPack.updatedAt}`}
             onClick={onSelectAssetPack}
             isVisible
-            isNew={NEW_ASSET_PACK_IDS.includes(assetPack.id)}
+            isNew={NEW_ASSET_PACKS.some(name => isSameAssetPack(assetPack.title, name))}
           />
         ))}
         <div className="create-asset-pack" onClick={this.handleCreateAssetPack}>
