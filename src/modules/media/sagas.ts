@@ -12,10 +12,10 @@ import { setSelectedEntities } from 'modules/editor/actions'
 const editorWindow = window as EditorWindow
 
 const Rotation = {
-  NORTH: Math.PI,
-  EAST: Math.PI * 1.5,
-  SOUTH: 0,
-  WEST: Math.PI / 2
+  NORTH: Math.PI / 2,
+  EAST: 0,
+  SOUTH: Math.PI * 1.5,
+  WEST: Math.PI
 }
 
 export function* mediaSaga() {
