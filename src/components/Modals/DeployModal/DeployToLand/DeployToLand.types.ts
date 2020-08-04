@@ -8,6 +8,7 @@ import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/acti
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
 import { Media } from 'modules/media/types'
+import { LandTile } from 'modules/land/types'
 
 export type Props = {
   name: string
@@ -28,6 +29,7 @@ export type Props = {
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null
   occupiedParcels: Record<string, OccupiedAtlasParcel>
+  landTiles: Record<string, LandTile>
   onConnect: typeof enableWalletRequest
   onClose: () => void
   onDeploy: typeof deployToLandRequest
@@ -67,6 +69,7 @@ export type MapStateProps = Pick<
   | 'mediaProgress'
   | 'deploymentProgress'
   | 'occupiedParcels'
+  | 'landTiles'
 >
 
 export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome' | 'onFetchDeployments'>

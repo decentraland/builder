@@ -17,12 +17,13 @@ import {
 import { deployToLandRequest, loadDeploymentsRequest } from 'modules/deployment/actions'
 import { recordMediaRequest } from 'modules/media/actions'
 import { getCurrentProject } from 'modules/project/selectors'
+import { getLandTiles } from 'modules/land/selectors'
+import { isLoggedIn } from 'modules/identity/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 import { locations } from 'routing/locations'
 
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToLand.types'
 import DeployToLand from './DeployToLand'
-import { isLoggedIn } from 'modules/identity/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -41,6 +42,7 @@ const mapState = (state: RootState): MapStateProps => {
     deploymentProgress: getUploadProgress(state),
     deploymentStatus: getCurrentDeploymentStatus(state),
     occupiedParcels: getOccuppiedParcels(state),
+    landTiles: getLandTiles(state),
     deployment: getCurrentDeployment(state),
     error: getDeploymentError(state)
   }

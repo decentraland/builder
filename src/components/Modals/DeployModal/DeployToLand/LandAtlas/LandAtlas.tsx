@@ -1,14 +1,15 @@
 import * as React from 'react'
 
-import { Layer, Button, Atlas, Popup, Loader } from 'decentraland-ui'
+import { Layer, Button, Popup } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
+import { Atlas } from 'components/Atlas'
 import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
-import { Coord, marketplace } from 'lib/api/marketplace'
+import { idToCoords } from 'modules/land/utils'
 
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
@@ -39,17 +40,6 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     if (isLoggedIn) {
       onFetchDeployments()
     }
-    if (Object.keys(this.state.parcels).length === 0 && this.props.ethAddress) {
-      // tslint:disable-next-line
-      this.fetchAuthorizedParcels(this.props.ethAddress)
-    }
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (Object.keys(this.state.parcels).length === 0 && nextProps.ethAddress) {
-      // tslint:disable-next-line
-      this.fetchAuthorizedParcels(nextProps.ethAddress)
-    }
   }
 
   componentWillUnmount() {
@@ -57,84 +47,25 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   getBaseState(): State {
-    const { initialPoint } = this.props
+    const { initialPoint, landTiles } = this.props
+    const coords = Object.keys(landTiles)
     return {
       placement: null,
       hover: { x: 0, y: 0 },
-      parcels: {},
       rotation: 'north',
       zoom: 1,
-      landTarget: initialPoint ? `${initialPoint.x},${initialPoint.y}` : '0,0',
-      isLoadingMap: true
-    }
-  }
-
-  fetchAuthorizedParcels = async (ethAddress: string) => {
-    const { landTarget } = this.state
-    try {
-      const [authorizedParcels, authorizedEstates] = await Promise.all([
-        marketplace.fetchAuthorizedParcels(ethAddress),
-        marketplace.fetchAuthorizedEstates(ethAddress)
-      ])
-
-      if (this.mounted) {
-        const parcels: Record<string, Coord> = {}
-
-        authorizedParcels.reduce((parcels, parcel) => {
-          parcels[parcel.id] = {
-            x: parcel.x,
-            y: parcel.y
-          }
-          return parcels
-        }, parcels)
-
-        authorizedEstates.reduce((parcels, estate) => {
-          for (const parcel of estate.data.parcels) {
-            const id = `${parcel.x},${parcel.y}`
-            parcels[id] = {
-              x: parcel.x,
-              y: parcel.y
-            }
-          }
-          return parcels
-        }, parcels)
-
-        this.analytics.track('LAND authorized for publish', { count: authorizedParcels.length })
-
-        let newTarget = landTarget
-
-        if (landTarget === '0,0') {
-          // Only point to the first authorized parcel if no initialPoint was provided
-          if (authorizedParcels.length) {
-            newTarget = authorizedParcels[0].id
-          } else if (authorizedEstates.length) {
-            const estate = authorizedEstates.find(estate => !!estate.data.parcels.length)
-            if (estate) {
-              const land = estate.data.parcels[0]
-              newTarget = `${land.x},${land.y}`
-            }
-          }
-        }
-
-        this.setState({
-          parcels,
-          landTarget: newTarget,
-          isLoadingMap: false
-        })
-      }
-    } catch (e) {
-      console.error('Unable to fetch authorized LANDs', e)
+      landTarget: initialPoint ? `${initialPoint.x},${initialPoint.y}` : coords.length > 0 ? coords[0] : '0,0'
     }
   }
 
   isValid = () => {
-    const { project } = this.props
-    const { rotation, parcels, hover } = this.state
+    const { project, landTiles } = this.props
+    const { rotation, hover } = this.state
     const projectParcels = getParcelOrientation(project!, hover, rotation)
 
     if (!hover) return false
 
-    return projectParcels.every(({ x, y }) => !!parcels[`${x},${y}`])
+    return projectParcels.every(({ x, y }) => !!landTiles[`${x},${y}`])
   }
 
   isHighlighted = (x: number, y: number) => {
@@ -164,19 +95,6 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
         scale: 1.5
       }
     }
-    return null
-  }
-
-  authorizedLayer: Layer = (x: number, y: number) => {
-    const { occupiedParcels } = this.props
-    const { parcels } = this.state
-
-    if (occupiedParcels[x + ',' + y]) {
-      return { color: COLORS.occupiedParcel, scale: 1 }
-    } else if (parcels[x + ',' + y]) {
-      return { color: COLORS.freeParcel, scale: 1 }
-    }
-
     return null
   }
 
@@ -214,7 +132,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     const { rotation, placement } = this.state
     if (placement) return
     const newRotation =
-      ((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length + ROTATION_ORDER.length) % ROTATION_ORDER.length
+      (((ROTATION_ORDER.indexOf(rotation) + direction) % ROTATION_ORDER.length) + ROTATION_ORDER.length) % ROTATION_ORDER.length
 
     this.analytics.track('Publish to LAND atlas rotate', { direction })
 
@@ -222,10 +140,11 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   handleLocateLand = () => {
-    const { landTarget, parcels } = this.state
-    const parcelKeys = Object.keys(parcels)
+    const { landTiles } = this.props
+    const { landTarget } = this.state
+    const parcelKeys = Object.keys(landTiles)
     const index = landTarget ? parcelKeys.indexOf(landTarget) : 0
-    const nextIndex = ((index + 1) % parcelKeys.length + parcelKeys.length) % parcelKeys.length
+    const nextIndex = (((index + 1) % parcelKeys.length) + parcelKeys.length) % parcelKeys.length
 
     this.analytics.track('Publish to LAND atlas locate')
 
@@ -291,21 +210,14 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { media, project } = this.props
-    const { placement, rotation, zoom, landTarget, parcels, isLoadingMap } = this.state
+    const { media, project, landTiles } = this.props
+    const { placement, rotation, zoom, landTarget } = this.state
     const hasPlacement = !!placement
-    const parcelCount = Object.keys(parcels).length
-    const target: Coordinate = landTarget && parcelCount ? parcels[landTarget] : { x: 0, y: 0 }
+    const parcelCount = Object.keys(landTiles).length
+    const [targetX, targetY] = landTarget ? idToCoords(landTarget) : [0, 0]
+    const target: Coordinate = { x: targetX, y: targetY }
     const hasOccupiedParcels = this.hasOccupiedParcels()
     const { rows, cols } = project.layout
-
-    if (isLoadingMap) {
-      return (
-        <div className="LandAtlas">
-          <Loader size="big" />
-        </div>
-      )
-    }
 
     return (
       <div className="LandAtlas">
@@ -338,7 +250,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             </div>
           </div>
           <Atlas
-            layers={[this.authorizedLayer, this.strokeLayer, this.highlightLayer]}
+            layers={[this.strokeLayer, this.highlightLayer]}
             onHover={this.handleHover}
             onClick={this.handlePlacement}
             zoom={zoom}
