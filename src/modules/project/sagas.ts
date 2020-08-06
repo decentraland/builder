@@ -58,6 +58,7 @@ import { Gizmo } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
+import { getName } from 'modules/profile/selectors'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -214,6 +215,7 @@ function* handleExportProject(action: ExportProjectRequestAction) {
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
   yield put(setExportProgress({ loaded: 0, total: 0 }))
+  const author = yield select(getName)
   const files = yield call(() =>
     createFiles({
       project,
@@ -221,6 +223,8 @@ function* handleExportProject(action: ExportProjectRequestAction) {
       point: { x: 0, y: 0 },
       rotation: 'east',
       isDeploy: false,
+      thumbnail: null,
+      author,
       onProgress: progress => store.dispatch(setExportProgress(progress))
     })
   )

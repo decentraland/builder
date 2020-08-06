@@ -197,7 +197,7 @@
         }
       },
       "success": {
-        "back_home": "Back to Dashboard",
+        "jump_in": "Jump In",
         "continue": "Continue working",
         "description": "Your Scene has now been published.",
         "title": "Done!"

@@ -195,7 +195,7 @@
         }
       },
       "success": {
-        "back_home": "Volver al Dashboard",
+        "jump_in": "Ingresar",
         "continue": "Continuar trabajando",
         "description": "¡Tu Escena ha sido publicada!",
         "title": "¡Listo!"

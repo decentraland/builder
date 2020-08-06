@@ -21,7 +21,7 @@ export function getNewEditorScene(project: Project): EditorScene {
   }
 
   return {
-    ...getSceneDefinition(project, { x: 0, y: 0 }, 'east'),
+    ...getSceneDefinition(project, { x: 0, y: 0 }, 'east', null, null),
     baseUrl: getAssetStorageUrl(),
     display: {
       title: project.title

@@ -35,7 +35,9 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
             {t('deployment_modal.land.confirmation.location_label')} {`${x},${y}`}
           </span>
         }
-        trigger={<span className={classes} />}
+        trigger={
+          <a className={classes} href={`https://play.decentraland.org?position=${x},${y}`} target="_blank" rel="no:opener no:referrer" />
+        }
         on="hover"
         inverted
       />

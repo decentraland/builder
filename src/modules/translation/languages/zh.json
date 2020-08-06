@@ -192,7 +192,7 @@
         }
       },
       "success": {
-        "back_home": "返回仪表板",
+        "jump_in": "进入",
         "continue": "继续工作",
         "description": "场景已上传。",
         "title": "已完成!"

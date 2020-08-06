@@ -20,6 +20,7 @@ export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
 export const getAssetStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assets/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
+export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
 
 export type RemoteProject = {
   id: string

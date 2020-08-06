@@ -46,17 +46,19 @@ export async function createFiles(args: {
   scene: Scene
   point: Coordinate
   rotation: Rotation
+  thumbnail: string | null
+  author: string | null
   isDeploy: boolean
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
-  const { project, scene, point, rotation, isDeploy, onProgress } = args
+  const { project, scene, point, rotation, thumbnail, author, isDeploy, onProgress } = args
   const models = await downloadFiles({ scene, onProgress, isDeploy })
   const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
   return {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
-    ...createDynamicFiles({ project, scene, point, rotation }),
+    ...createDynamicFiles({ project, scene, point, rotation, thumbnail, author }),
     ...createStaticFiles(),
     ...models
   }
@@ -411,8 +413,15 @@ export async function downloadFiles(args: {
   return files
 }
 
-export function createDynamicFiles(args: { project: Project; scene: Scene; point: Coordinate; rotation: Rotation }) {
-  const { project, scene, rotation, point } = args
+export function createDynamicFiles(args: {
+  project: Project
+  scene: Scene
+  point: Coordinate
+  rotation: Rotation
+  thumbnail: string | null
+  author: string | null
+}) {
+  const { project, scene, rotation, point, thumbnail, author } = args
 
   const files = {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
@@ -432,7 +441,7 @@ export function createDynamicFiles(args: { project: Project; scene: Scene; point
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation), null, 2),
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation, thumbnail, author), null, 2),
     [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(
       {
         ...tsconfig,
@@ -446,11 +455,17 @@ export function createDynamicFiles(args: { project: Project; scene: Scene; point
   return files
 }
 
-export function getSceneDefinition(project: Project, point: Coordinate, rotation: Rotation) {
+export function getSceneDefinition(
+  project: Project,
+  point: Coordinate,
+  rotation: Rotation,
+  thumbnail: string | null,
+  author: string | null
+) {
   const parcels = getParcelOrientation(project, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
 
-  return {
+  const sceneDefinition = {
     ...sceneJson,
     display: {
       ...sceneJson.display,
@@ -463,9 +478,21 @@ export function getSceneDefinition(project: Project, point: Coordinate, rotation
     },
     source: {
       origin: 'builder',
-      projectId: project.id
+      projectId: project.id,
+      point,
+      rotation
     }
   }
+
+  if (thumbnail) {
+    ;(sceneDefinition.display as any).navmapThumbnail = thumbnail
+  }
+
+  if (author) {
+    sceneDefinition.contact.name = author
+  }
+
+  return sceneDefinition
 }
 
 export function parcelToString({ x, y }: { x: number; y: number }) {

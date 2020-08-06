@@ -258,6 +258,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderSuccess = () => {
+    const { placement } = this.state
     return (
       <div className="DeployToLand success">
         <div className="modal-header">
@@ -268,12 +269,18 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         </Header>
         <p className="modal-subtitle">{t('deployment_modal.land.success.description')}</p>
         <div className="actions">
-          <Button size="small" primary onClick={this.handleClose}>
-            {t('deployment_modal.land.success.continue')}
+          <Button
+            size="small"
+            primary
+            href={`https://play.decentraland.org?position=${placement!.point.x},${placement!.point.y}`}
+            target="_blank"
+            rel="no:opener no:referrer"
+          >
+            {t('deployment_modal.land.success.jump_in')}
           </Button>
 
-          <Button className="hollow" size="small" secondary onClick={this.handleNavigateHome}>
-            {t('deployment_modal.land.success.back_home')}
+          <Button className="hollow" secondary size="small" onClick={this.handleClose}>
+            {t('deployment_modal.land.success.continue')}
           </Button>
         </div>
       </div>

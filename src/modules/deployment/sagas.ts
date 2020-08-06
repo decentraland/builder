@@ -30,7 +30,7 @@ import {
 import { store } from 'modules/common/store'
 import { Media } from 'modules/media/types'
 import { getMedia } from 'modules/media/selectors'
-import { createFiles, EXPORT_PATH, createGameFileBundle, getSceneDefinition } from 'modules/project/export'
+import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { ProgressStage } from './types'
@@ -40,12 +40,13 @@ import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { content, PEER_URL } from 'lib/api/peer'
-import { builder } from 'lib/api/builder'
+import { builder, getPreviewUrl } from 'lib/api/builder'
 import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
 import { getIdentity } from 'modules/identity/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { getName } from 'modules/profile/selectors'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -140,6 +141,29 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     return
   }
 
+  const author = yield select(getName)
+
+  // upload media if logged in
+  let previewUrl: string | null = null
+  if (yield select(isLoggedIn)) {
+    const media: Media | null = yield select(getMedia)
+    if (media) {
+      const north: Blob = yield call(() => objectURLToBlob(media.north))
+      const east: Blob = yield call(() => objectURLToBlob(media.east))
+      const south: Blob = yield call(() => objectURLToBlob(media.south))
+      const west: Blob = yield call(() => objectURLToBlob(media.west))
+      const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
+
+      yield call(() =>
+        builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
+      )
+
+      previewUrl = getPreviewUrl(project.id)
+    } else {
+      console.warn('Failed to upload scene preview')
+    }
+  }
+
   try {
     const files = yield call(() =>
       createFiles({
@@ -147,32 +171,17 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         scene,
         point: placement.point,
         rotation: placement.rotation,
+        author,
+        thumbnail: previewUrl,
         isDeploy: true,
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
 
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
-    const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
+    const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+    console.log(author, sceneDefinition)
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
-
-    // upload media if logged in
-    if (yield select(isLoggedIn)) {
-      const media: Media | null = yield select(getMedia)
-      if (media) {
-        const north: Blob = yield call(() => objectURLToBlob(media.north))
-        const east: Blob = yield call(() => objectURLToBlob(media.east))
-        const south: Blob = yield call(() => objectURLToBlob(media.south))
-        const west: Blob = yield call(() => objectURLToBlob(media.west))
-        const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
-
-        yield call(() =>
-          builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
-        )
-      } else {
-        console.warn('Failed to upload scene preview')
-      }
-    }
     yield call(() => deploy(PEER_URL, data))
     // generate new deployment
     const deployment: Deployment = {
@@ -251,12 +260,14 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
         scene,
         point: placement.point,
         rotation: placement.rotation,
+        thumbnail: null,
+        author: null,
         isDeploy: true,
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files, true)
-    const sceneDefinition = getSceneDefinition(project, placement.point, placement.rotation)
+    const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
     yield put(clearDeploymentSuccess(projectId))
