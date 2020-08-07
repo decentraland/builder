@@ -49,16 +49,17 @@ export async function createFiles(args: {
   thumbnail: string | null
   author: string | null
   isDeploy: boolean
+  isEmpty?: boolean
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
-  const { project, scene, point, rotation, thumbnail, author, isDeploy, onProgress } = args
+  const { project, scene, point, rotation, thumbnail, author, isDeploy, isEmpty, onProgress } = args
   const models = await downloadFiles({ scene, onProgress, isDeploy })
   const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
   return {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
-    ...createDynamicFiles({ project, scene, point, rotation, thumbnail, author }),
+    ...createDynamicFiles({ project, scene, point, rotation, thumbnail, author, isEmpty }),
     ...createStaticFiles(),
     ...models
   }
@@ -420,8 +421,9 @@ export function createDynamicFiles(args: {
   rotation: Rotation
   thumbnail: string | null
   author: string | null
+  isEmpty?: boolean
 }) {
-  const { project, scene, rotation, point, thumbnail, author } = args
+  const { project, scene, rotation, point, thumbnail, author, isEmpty } = args
 
   const files = {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify({
@@ -441,7 +443,7 @@ export function createDynamicFiles(args: {
       null,
       2
     ),
-    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation, thumbnail, author), null, 2),
+    [EXPORT_PATH.SCENE_FILE]: JSON.stringify(getSceneDefinition(project, point, rotation, thumbnail, author, isEmpty), null, 2),
     [EXPORT_PATH.TSCONFIG_FILE]: JSON.stringify(
       {
         ...tsconfig,
@@ -460,7 +462,8 @@ export function getSceneDefinition(
   point: Coordinate,
   rotation: Rotation,
   thumbnail: string | null,
-  author: string | null
+  author: string | null,
+  isEmpty?: boolean
 ) {
   const parcels = getParcelOrientation(project, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
@@ -490,6 +493,10 @@ export function getSceneDefinition(
 
   if (author) {
     sceneDefinition.contact.name = author
+  }
+
+  if (isEmpty) {
+    ;(sceneDefinition.source as any).isEmpty = true
   }
 
   return sceneDefinition

@@ -30,7 +30,7 @@ import {
 import { store } from 'modules/common/store'
 import { Media } from 'modules/media/types'
 import { getMedia } from 'modules/media/selectors'
-import { createFiles, EXPORT_PATH, createGameFileBundle } from 'modules/project/export'
+import { createFiles, EXPORT_PATH } from 'modules/project/export'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
 import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { ProgressStage } from './types'
@@ -47,6 +47,7 @@ import { isLoggedIn } from 'modules/identity/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
+import { getEmptyDeployment } from './utils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -177,10 +178,8 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
-
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-    console.log(author, sceneDefinition)
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
     // generate new deployment
@@ -254,10 +253,11 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
 
   try {
     const { placement } = deployment
+    const [emptyProject, emptyScene] = getEmptyDeployment(project.id)
     const files = yield call(() =>
       createFiles({
-        project,
-        scene,
+        project: emptyProject,
+        scene: emptyScene,
         point: placement.point,
         rotation: placement.rotation,
         thumbnail: null,
@@ -266,7 +266,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
-    const contentFiles: ContentFile[] = yield getContentServiceFiles(files, true)
+    const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
@@ -276,17 +276,13 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   }
 }
 
-function* getContentServiceFiles(files: Record<string, string | Blob>, createEmptyGame: boolean = false) {
+function* getContentServiceFiles(files: Record<string, string | Blob>) {
   let contentFiles: ContentFile[] = []
 
   for (const fileName of Object.keys(files)) {
     if (blacklist.includes(fileName)) continue
     let file: ContentFile
-    if (fileName === EXPORT_PATH.BUNDLED_GAME_FILE && createEmptyGame) {
-      file = yield call(() => makeContentFile(fileName, createGameFileBundle('')))
-    } else {
-      file = yield call(() => makeContentFile(fileName, files[fileName]))
-    }
+    file = yield call(() => makeContentFile(fileName, files[fileName]))
     contentFiles.push(file)
   }
 
