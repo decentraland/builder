@@ -25,6 +25,8 @@
     "connected-react-router": "^6.7.0",
     "css-loader": "1.0.0",
     "date-fns": "^2.14.0",
+    "dcl-catalyst-client": "^2.1.2",
+    "dcl-catalyst-commons": "^1.4.2",
     "dcl-crypto": "^2.1.0",
     "dcl-scene-writer": "^1.1.1",
     "decentraland-ad": "^1.4.2",

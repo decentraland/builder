@@ -9,7 +9,7 @@ import { SceneWriter, LightweightWriter } from 'dcl-scene-writer'
 import packageJson from 'decentraland/samples/ecs/package.json'
 import sceneJson from 'decentraland/samples/ecs/scene.json'
 import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
-import { Rotation, Coordinate } from 'modules/deployment/types'
+import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { getAssetStorageUrl } from 'lib/api/builder'
@@ -468,7 +468,7 @@ export function getSceneDefinition(
   const parcels = getParcelOrientation(project, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
 
-  const sceneDefinition = {
+  const sceneDefinition: SceneDefinition = {
     ...sceneJson,
     display: {
       ...sceneJson.display,
@@ -480,15 +480,17 @@ export function getSceneDefinition(
       base: parcelToString(base)
     },
     source: {
+      version: 1,
       origin: 'builder',
       projectId: project.id,
       point,
-      rotation
+      rotation,
+      layout: project.layout
     }
   }
 
   if (thumbnail) {
-    ;(sceneDefinition.display as any).navmapThumbnail = thumbnail
+    sceneDefinition.display!.navmapThumbnail = thumbnail
   }
 
   if (author) {
@@ -496,7 +498,7 @@ export function getSceneDefinition(
   }
 
   if (isEmpty) {
-    ;(sceneDefinition.source as any).isEmpty = true
+    sceneDefinition.source!.isEmpty = true
   }
 
   return sceneDefinition

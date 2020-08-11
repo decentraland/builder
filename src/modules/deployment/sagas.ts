@@ -1,8 +1,10 @@
+import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { CatalystClient } from 'dcl-catalyst-client'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { Deployment, ContentServiceScene } from 'modules/deployment/types'
+import { Deployment, ContentServiceScene, SceneDefinition, Placement, DeploymentV2 } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 import {
   DEPLOY_TO_POOL_REQUEST,
@@ -25,7 +27,12 @@ import {
   LoadDeploymentsRequestAction,
   loadDeploymentsFailure,
   loadDeploymentsSuccess,
-  loadDeploymentsRequest
+  loadDeploymentsRequest,
+  FETCH_DEPLOYMENTS_REQUEST,
+  FetchDeploymentsRequestAction,
+  fetchDeploymentsRequest,
+  fetchDeploymentsSuccess,
+  fetchDeploymentsFailure
 } from './actions'
 import { store } from 'modules/common/store'
 import { Media } from 'modules/media/types'
@@ -48,6 +55,9 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
 import { getEmptyDeployment } from './utils'
+import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
+import { LandType } from 'modules/land/types'
+import { coordsToId, idToCoords } from 'modules/land/utils'
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -70,8 +80,10 @@ export function* deploymentSaga() {
   yield takeLatest(SET_GROUND, handleMarkDirty)
   yield takeLatest(UPDATE_TRANSFORM, handleMarkDirty)
   yield takeLatest(SET_PROJECT, handleMarkDirty)
-  yield takeLatest(LOAD_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
+  yield takeLatest(LOAD_DEPLOYMENTS_REQUEST, handleLoadDeploymentsRequest)
+  yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
+  yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
 }
 
 function* handleMarkDirty() {
@@ -263,11 +275,13 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
         thumbnail: null,
         author: null,
         isDeploy: true,
+        isEmpty: true,
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+    console.log(sceneDefinition)
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
     yield put(clearDeploymentSuccess(projectId))
@@ -289,7 +303,7 @@ function* getContentServiceFiles(files: Record<string, string | Blob>) {
   return contentFiles
 }
 
-function* handleFetchDeploymentsRequest(_action: LoadDeploymentsRequestAction) {
+function* handleLoadDeploymentsRequest(_action: LoadDeploymentsRequestAction) {
   try {
     const deployments: Deployment[] = yield call(() => builder.fetchDeployments())
     yield put(loadDeploymentsSuccess(deployments))
@@ -300,4 +314,71 @@ function* handleFetchDeploymentsRequest(_action: LoadDeploymentsRequestAction) {
 
 function* handleLoginSuccess(_action: LoginSuccessAction) {
   yield put(loadDeploymentsRequest())
+}
+
+function* handleFetchLandsSuccess(action: FetchLandsSuccessAction) {
+  const coords: string[] = []
+  for (const land of action.payload.lands) {
+    switch (land.type) {
+      case LandType.PARCEL: {
+        coords.push(coordsToId(land.x!, land.y!))
+        break
+      }
+      case LandType.ESTATE: {
+        for (const parcel of land.parcels!) {
+          coords.push(coordsToId(parcel.x, parcel.y))
+        }
+      }
+    }
+  }
+  yield put(fetchDeploymentsRequest(coords))
+}
+
+function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
+  const { coords } = action.payload
+
+  try {
+    const catalyst = new CatalystClient(PEER_URL, 'builder')
+
+    const entities: DeploymentWithMetadataContentAndPointers[] = yield call(() =>
+      catalyst.fetchAllDeployments({ pointers: coords, onlyCurrentlyPointed: true })
+    )
+    const deployments = new Map<string, DeploymentV2>()
+    for (const entity of entities
+      .filter(entity => entity.entityType === 'scene')
+      .sort((a, b) => (a.entityTimestamp > b.entityTimestamp ? 1 : -1))) {
+      const id = entity.pointers[0]
+      if (id) {
+        const [x, y] = idToCoords(id)
+        const scene = entity.metadata as SceneDefinition
+        const name = (scene && scene.display && scene.display.title) || 'Unknown'
+        const thumbnail: string | null = (scene && scene.display && scene.display.navmapThumbnail) || null
+        const placement: Placement = {
+          point: { x, y },
+          rotation: (scene && scene.source && scene.source.rotation) || 'north'
+        }
+        const owner = entity.deployedBy
+        const projectId = (scene && scene.source && scene.source.projectId) || null
+        const layout = (scene && scene.source && scene.source.layout) || null
+        const isEmpty = !!(scene && scene.source && scene.source.isEmpty)
+        if (!isEmpty) {
+          deployments.set(id, {
+            id: entity.entityId,
+            timestamp: entity.entityTimestamp,
+            projectId,
+            name,
+            thumbnail,
+            placement,
+            owner,
+            layout
+          })
+        } else {
+          deployments.delete(id)
+        }
+      }
+    }
+    yield put(fetchDeploymentsSuccess(coords, Array.from(deployments.values())))
+  } catch (error) {
+    yield put(fetchDeploymentsFailure(coords, error.message))
+  }
 }

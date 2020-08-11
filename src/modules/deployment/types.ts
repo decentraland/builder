@@ -1,4 +1,5 @@
 import { EntityType } from './contentUtils'
+import { Project, Layout } from 'modules/project/types'
 
 export type ContentIdentifier = {
   cid: string
@@ -54,4 +55,42 @@ export type ContentServiceScene = {
 export type OccupiedAtlasParcel = Coordinate & {
   title: string
   projectId: string
+}
+
+export type DeploymentV2 = {
+  id: string
+  projectId: string | null
+  timestamp: number
+  name: string
+  thumbnail: string | null
+  placement: Placement
+  owner: string
+  layout: Layout | null
+}
+
+export type SceneDefinition = {
+  display?: {
+    title: string
+    favicon: string
+    navmapThumbnail?: string
+  }
+  main: string
+  owner: string
+  scene: { parcels: string[]; base: string }
+  source?: {
+    version?: number
+    origin: string
+    projectId: string
+    point?: Placement['point']
+    rotation?: Placement['rotation']
+    layout?: Project['layout']
+    isEmpty?: boolean
+  }
+  communications?: any
+  contact: {
+    name: string
+    email: string
+  }
+  policy?: any
+  tags: string[]
 }
