@@ -39,12 +39,15 @@ export default class Popup extends React.PureComponent<Props> {
         <Section className="online-scenes">
           <Header sub>{t('land_page.online_scenes')}</Header>
           {deployments.length > 0 ? (
-            deployments.map(deployment => (
-              <Row className="scene">
-                {deployment.thumbnail ? <div className="thumbnail" style={{ backgroundImage: `url(${deployment.thumbnail})` }} /> : null}
-                <div className="title">{deployment.name}</div>
-              </Row>
-            ))
+            <>
+              {deployments.slice(0, 3).map(deployment => (
+                <Row className="scene">
+                  {deployment.thumbnail ? <div className="thumbnail" style={{ backgroundImage: `url(${deployment.thumbnail})` }} /> : null}
+                  <div className="title">{deployment.name}</div>
+                </Row>
+              ))}
+              {deployments.length > 3 ? <p>+{t('list.more', { count: deployments.length - 3 })}</p> : null}
+            </>
           ) : (
             <div className="no-scenes">{t('land_page.none')}</div>
           )}

@@ -97,7 +97,11 @@ const Atlas: React.FC<Props> = props => {
 
   const handleHover = useCallback(
     (x: number, y: number) => {
-      if (!hasPopup || selection.has(getCoords(x, y))) return
+      if (!hasPopup) return
+      if (selection.has(getCoords(x, y))) {
+        setShowPopup(false)
+        return
+      }
       const id = coordsToId(x, y)
       const tile = landTiles[id]
       if (tile && !showPopup) {

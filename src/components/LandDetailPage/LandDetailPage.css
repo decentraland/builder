@@ -45,3 +45,8 @@
 .LandDetailPage .dcl.section.data .dcl.stats + .dcl.stats {
   margin-left: 0px;
 }
+
+.LandDetailPage .deployments {
+  max-height: 243px;
+  overflow: auto;
+}
