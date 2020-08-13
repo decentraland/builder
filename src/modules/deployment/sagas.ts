@@ -3,8 +3,9 @@ import { CatalystClient } from 'dcl-catalyst-client'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
+import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { Deployment, ContentServiceScene, SceneDefinition, Placement, DeploymentV2 } from 'modules/deployment/types'
+import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
 import { Project } from 'modules/project/types'
 import {
   DEPLOY_TO_POOL_REQUEST,
@@ -16,18 +17,10 @@ import {
   DeployToLandRequestAction,
   DeployToPoolRequestAction,
   deployToLandSuccess,
-  markDirty,
   CLEAR_DEPLOYMENT_REQUEST,
   ClearDeploymentRequestAction,
   clearDeploymentFailure,
   clearDeploymentSuccess,
-  QUERY_REMOTE_CID,
-  QueryRemoteCIDAction,
-  LOAD_DEPLOYMENTS_REQUEST,
-  LoadDeploymentsRequestAction,
-  loadDeploymentsFailure,
-  loadDeploymentsSuccess,
-  loadDeploymentsRequest,
   FETCH_DEPLOYMENTS_REQUEST,
   FetchDeploymentsRequestAction,
   fetchDeploymentsRequest,
@@ -39,20 +32,16 @@ import { Media } from 'modules/media/types'
 import { getMedia } from 'modules/media/selectors'
 import { createFiles, EXPORT_PATH } from 'modules/project/export'
 import { recordMediaRequest, RECORD_MEDIA_SUCCESS, RecordMediaSuccessAction } from 'modules/media/actions'
-import { ADD_ITEM, DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, DELETE_ITEM, SET_GROUND, UPDATE_TRANSFORM } from 'modules/scene/actions'
 import { ProgressStage } from './types'
-import { getCurrentDeployment, getData as getDeployments } from './selectors'
-import { SET_PROJECT } from 'modules/project/actions'
 import { takeScreenshot } from 'modules/editor/actions'
 import { objectURLToBlob } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { content, PEER_URL } from 'lib/api/peer'
+import { PEER_URL } from 'lib/api/peer'
 import { builder, getPreviewUrl } from 'lib/api/builder'
 import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
 import { getIdentity } from 'modules/identity/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
 import { getEmptyDeployment } from './utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
@@ -71,27 +60,8 @@ export function* deploymentSaga() {
   yield takeLatest(DEPLOY_TO_POOL_REQUEST, handleDeployToPoolRequest)
   yield takeLatest(DEPLOY_TO_LAND_REQUEST, handleDeployToLandRequest)
   yield takeLatest(CLEAR_DEPLOYMENT_REQUEST, handleClearDeploymentRequest)
-  yield takeLatest(QUERY_REMOTE_CID, handleQueryRemoteCID)
-  yield takeLatest(ADD_ITEM, handleMarkDirty)
-  yield takeLatest(DROP_ITEM, handleMarkDirty)
-  yield takeLatest(RESET_ITEM, handleMarkDirty)
-  yield takeLatest(DUPLICATE_ITEM, handleMarkDirty)
-  yield takeLatest(DELETE_ITEM, handleMarkDirty)
-  yield takeLatest(SET_GROUND, handleMarkDirty)
-  yield takeLatest(UPDATE_TRANSFORM, handleMarkDirty)
-  yield takeLatest(SET_PROJECT, handleMarkDirty)
-  yield takeLatest(LOAD_DEPLOYMENTS_REQUEST, handleLoadDeploymentsRequest)
   yield takeLatest(FETCH_DEPLOYMENTS_REQUEST, handleFetchDeploymentsRequest)
-  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleFetchLandsSuccess)
-}
-
-function* handleMarkDirty() {
-  const project: Project | null = yield select(getCurrentProject)
-  const deployment: Deployment | null = yield select(getCurrentDeployment)
-  if (project && deployment && !deployment.isDirty) {
-    yield put(markDirty(project.id))
-  }
 }
 
 function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
@@ -191,18 +161,21 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
       })
     )
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
-    const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
+    const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
     // generate new deployment
     const deployment: Deployment = {
-      id: project.id,
-      lastPublishedCID: data.entityId,
+      id: data.entityId,
       placement,
-      isDirty: false,
-      ethAddress: yield select(getAddress) || null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      owner: yield select(getAddress) || '',
+      timestamp: +new Date(),
+      layout: project.layout,
+      name: project.title,
+      thumbnail: previewUrl,
+      projectId: project.id,
+      base: sceneDefinition.scene.base,
+      parcels: sceneDefinition.scene.parcels
     }
 
     // notify success
@@ -212,40 +185,22 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   }
 }
 
-function* handleQueryRemoteCID(action: QueryRemoteCIDAction) {
-  const { projectId } = action.payload
-  const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
-  const deployment = deployments[projectId]
-  if (!deployment) return
-  const { x, y } = deployment.placement.point
-  try {
-    const res: ContentServiceScene = yield call(() => content.fetchScene(x, y))
-    const lastPublishedCID: string | null = deployment.lastPublishedCID
-    const remoteCID = res[0].id
-    // Check for external changes: e.g. CLI
-    const isUnsynced = remoteCID !== lastPublishedCID
-
-    // Once dirty, always dirty until deployed
-    if (!deployment.isDirty && isUnsynced) {
-      yield put(markDirty(projectId, isUnsynced))
-    }
-  } catch (e) {
-    // error handling
-  }
-}
-
 function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
-  const { projectId } = action.payload
+  const { deploymentId } = action.payload
 
   const deployments: ReturnType<typeof getDeployments> = yield select(getDeployments)
-  const deployment = deployments[projectId]
+  const deployment = deployments[deploymentId]
   if (!deployment) {
     yield put(deployToLandFailure('Unable to Publish: Invalid deployment'))
     return
   }
+  if (!deployment.projectId) {
+    yield put(deployToLandFailure('Unable to Publish: Invalid deployment.projectId'))
+    return
+  }
 
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  const project = projects[projectId]
+  const project = projects[deployment.projectId]
   if (!project) {
     yield put(deployToLandFailure('Unable to Publish: Invalid project'))
     return
@@ -284,9 +239,9 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     console.log(sceneDefinition)
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
-    yield put(clearDeploymentSuccess(projectId))
-  } catch (e) {
-    yield put(clearDeploymentFailure(e.message))
+    yield put(clearDeploymentSuccess(deploymentId))
+  } catch (error) {
+    yield put(clearDeploymentFailure(deploymentId, error.message))
   }
 }
 
@@ -301,19 +256,6 @@ function* getContentServiceFiles(files: Record<string, string | Blob>) {
   }
 
   return contentFiles
-}
-
-function* handleLoadDeploymentsRequest(_action: LoadDeploymentsRequestAction) {
-  try {
-    const deployments: Deployment[] = yield call(() => builder.fetchDeployments())
-    yield put(loadDeploymentsSuccess(deployments))
-  } catch (e) {
-    yield put(loadDeploymentsFailure(e.message))
-  }
-}
-
-function* handleLoginSuccess(_action: LoginSuccessAction) {
-  yield put(loadDeploymentsRequest())
 }
 
 function* handleFetchLandsSuccess(action: FetchLandsSuccessAction) {
@@ -343,24 +285,28 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
     const entities: DeploymentWithMetadataContentAndPointers[] = yield call(() =>
       catalyst.fetchAllDeployments({ pointers: coords, onlyCurrentlyPointed: true })
     )
-    const deployments = new Map<string, DeploymentV2>()
+    const deployments = new Map<string, Deployment>()
     for (const entity of entities
       .filter(entity => entity.entityType === 'scene')
       .sort((a, b) => (a.entityTimestamp > b.entityTimestamp ? 1 : -1))) {
       const id = entity.pointers[0]
       if (id) {
         const [x, y] = idToCoords(id)
-        const scene = entity.metadata as SceneDefinition
-        const name = (scene && scene.display && scene.display.title) || 'Unknown'
-        const thumbnail: string | null = (scene && scene.display && scene.display.navmapThumbnail) || null
+        const definition = entity.metadata as SceneDefinition
+        const name = (definition && definition.display && definition.display.title) || 'Unknown'
+        const thumbnail: string | null = (definition && definition.display && definition.display.navmapThumbnail) || null
         const placement: Placement = {
           point: { x, y },
-          rotation: (scene && scene.source && scene.source.rotation) || 'north'
+          rotation: (definition && definition.source && definition.source.rotation) || 'north'
         }
         const owner = entity.deployedBy
-        const projectId = (scene && scene.source && scene.source.projectId) || null
-        const layout = (scene && scene.source && scene.source.layout) || null
-        const isEmpty = !!(scene && scene.source && scene.source.isEmpty)
+        const projectId = (definition && definition.source && definition.source.projectId) || null
+        const layout = (definition && definition.source && definition.source.layout) || null
+        const { base, parcels } = definition.scene
+        if (!parcels) {
+          debugger
+        }
+        const isEmpty = !!(definition && definition.source && definition.source.isEmpty)
         if (!isEmpty) {
           deployments.set(id, {
             id: entity.entityId,
@@ -370,7 +316,9 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
             thumbnail,
             placement,
             owner,
-            layout
+            layout,
+            base,
+            parcels
           })
         } else {
           deployments.delete(id)

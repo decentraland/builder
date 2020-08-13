@@ -9,7 +9,7 @@ import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
-import { idToCoords } from 'modules/land/utils'
+import { idToCoords, coordsToId } from 'modules/land/utils'
 
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
@@ -30,21 +30,7 @@ export const COLORS = Object.freeze({
 export default class LandAtlas extends React.PureComponent<Props, State> {
   state: State = this.getBaseState()
 
-  mounted: boolean = true
-
   analytics = getAnalytics()
-
-  componentDidMount() {
-    this.mounted = true
-    const { isLoggedIn, onFetchDeployments } = this.props
-    if (isLoggedIn) {
-      onFetchDeployments()
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false
-  }
 
   getBaseState(): State {
     const { initialPoint, landTiles } = this.props
@@ -61,7 +47,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   isValid = () => {
     const { project, landTiles } = this.props
     const { rotation, hover } = this.state
-    const projectParcels = getParcelOrientation(project!, hover, rotation)
+    const projectParcels = getParcelOrientation(project!.layout, hover, rotation)
 
     if (!hover) return false
 
@@ -71,7 +57,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   isHighlighted = (x: number, y: number) => {
     const { project } = this.props
     const { rotation, hover, placement } = this.state
-    const projectParcels = getParcelOrientation(project!, hover, rotation)
+    const projectParcels = getParcelOrientation(project!.layout, hover, rotation)
 
     if (!hover || placement) return false
     return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
@@ -83,7 +69,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
     if (!placement) return null
 
-    const projectParcels = getParcelOrientation(project!, placement.point, placement.rotation)
+    const projectParcels = getParcelOrientation(project!.layout, placement.point, placement.rotation)
     return projectParcels.some(parcel => parcel.x === x && parcel.y === y)
   }
 
@@ -183,11 +169,11 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   hasOccupiedParcels = () => {
-    const { occupiedParcels, project } = this.props
+    const { deploymentsByCoord, project } = this.props
     const { placement } = this.state
     if (project && placement) {
-      const projectParcels = getParcelOrientation(project, placement.point, placement.rotation)
-      return projectParcels.some(parcel => !!occupiedParcels[`${parcel.x},${parcel.y}`])
+      const projectParcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
+      return projectParcels.some(parcel => !!deploymentsByCoord[coordsToId(parcel.x, parcel.y)])
     }
     return false
   }

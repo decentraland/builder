@@ -1,6 +1,6 @@
 import { Media } from 'modules/media/types'
 import { Project } from 'modules/project/types'
-import { Coordinate, Rotation, Placement, OccupiedAtlasParcel } from 'modules/deployment/types'
+import { Coordinate, Rotation, Placement, Deployment } from 'modules/deployment/types'
 import { LandTile } from 'modules/land/types'
 
 export type Props = {
@@ -9,12 +9,11 @@ export type Props = {
   media: Media | null
   isLoggedIn: boolean
   initialPoint?: Coordinate
-  occupiedParcels: Record<string, OccupiedAtlasParcel>
+  deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   onNoAuthorizedParcels: () => void
   onConfirmPlacement: (placement: Placement) => void
   onClearDeployment: (projectId: string) => void
-  onFetchDeployments: () => void
 }
 
 export type State = {

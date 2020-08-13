@@ -12,8 +12,6 @@ import {
   SET_PROGRESS,
   DEPLOY_TO_LAND_SUCCESS,
   DeployToLandSuccessAction,
-  MARK_DIRTY,
-  MarkDirtyAction,
   ClearDeploymentSuccessAction,
   ClearDeploymentFailureAction,
   CLEAR_DEPLOYMENT_SUCCESS,
@@ -25,9 +23,12 @@ import {
   DeployToLandRequestAction,
   CLEAR_DEPLOYMENT_REQUEST,
   ClearDeploymentRequestAction,
-  LoadDeploymentsSuccessAction,
-  LoadDeploymentsFailureAction,
-  LOAD_DEPLOYMENTS_SUCCESS
+  FetchDeploymentsFailureAction,
+  FetchDeploymentsSuccessAction,
+  FETCH_DEPLOYMENTS_SUCCESS,
+  FETCH_DEPLOYMENTS_REQUEST,
+  FetchDeploymentsRequestAction,
+  FETCH_DEPLOYMENTS_FAILURE
 } from './actions'
 import { ProgressStage, Deployment } from './types'
 
@@ -41,7 +42,7 @@ export type DeploymentState = {
   error: string | null
 }
 
-const INITIAL_STATE: DeploymentState = {
+export const INITIAL_STATE: DeploymentState = {
   data: {},
   progress: {
     stage: ProgressStage.NONE,
@@ -59,13 +60,13 @@ export type DeploymentReducerAction =
   | DeployToLandRequestAction
   | DeployToLandSuccessAction
   | DeployToLandFailureAction
-  | MarkDirtyAction
   | ClearDeploymentRequestAction
   | ClearDeploymentSuccessAction
   | ClearDeploymentFailureAction
   | DeleteProjectAction
-  | LoadDeploymentsSuccessAction
-  | LoadDeploymentsFailureAction
+  | FetchDeploymentsRequestAction
+  | FetchDeploymentsSuccessAction
+  | FetchDeploymentsFailureAction
 
 export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReducerAction): DeploymentState => {
   switch (action.type) {
@@ -145,28 +146,14 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         }
       }
     }
-    case MARK_DIRTY: {
-      const { projectId, isDirty } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [projectId]: {
-            ...state.data[projectId],
-            isDirty: isDirty,
-            updatedAt: new Date().toISOString()
-          }
-        }
-      }
-    }
     case CLEAR_DEPLOYMENT_REQUEST: {
       return {
         ...state,
-        error: null
+        loading: loadingReducer(state.loading, action)
       }
     }
     case CLEAR_DEPLOYMENT_SUCCESS: {
-      const { projectId } = action.payload
+      const { deploymentId } = action.payload
       const newState = {
         ...state,
         data: {
@@ -175,9 +162,10 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
         progress: {
           stage: ProgressStage.NONE,
           value: 0
-        }
+        },
+        loading: loadingReducer(state.loading, action)
       }
-      delete newState.data[projectId]
+      delete newState.data[deploymentId]
       return newState
     }
     case CLEAR_DEPLOYMENT_FAILURE: {
@@ -205,7 +193,14 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       delete newState.data[project.id]
       return newState
     }
-    case LOAD_DEPLOYMENTS_SUCCESS: {
+    case FETCH_DEPLOYMENTS_REQUEST: {
+      return {
+        ...state,
+        error: null,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case FETCH_DEPLOYMENTS_SUCCESS: {
       return {
         ...state,
         data: {
@@ -215,6 +210,13 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
             return obj
           }, {})
         }
+      }
+    }
+    case FETCH_DEPLOYMENTS_FAILURE: {
+      return {
+        ...state,
+        error: action.payload.error,
+        loading: loadingReducer(state.loading, action)
       }
     }
     default:

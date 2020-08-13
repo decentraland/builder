@@ -21,16 +21,6 @@ export enum ProgressStage {
 
 export type ContentManifest = Record<string, ContentIdentifier>
 
-export type Deployment = {
-  id: string
-  lastPublishedCID: string | null
-  isDirty: boolean
-  placement: Placement
-  ethAddress: string | null
-  createdAt: string
-  updatedAt: string
-}
-
 export type Coordinate = { x: number; y: number }
 
 export type Rotation = 'north' | 'east' | 'south' | 'west'
@@ -52,12 +42,7 @@ export type ContentServiceScene = {
   metadata: any
 }[]
 
-export type OccupiedAtlasParcel = Coordinate & {
-  title: string
-  projectId: string
-}
-
-export type DeploymentV2 = {
+export type Deployment = {
   id: string
   projectId: string | null
   timestamp: number
@@ -66,6 +51,8 @@ export type DeploymentV2 = {
   placement: Placement
   owner: string
   layout: Layout | null
+  base: string
+  parcels: string[]
 }
 
 export type SceneDefinition = {

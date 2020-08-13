@@ -1,5 +1,4 @@
 import { Project } from 'modules/project/types'
-import { Deployment } from 'modules/deployment/types'
 import { Migration, Versionable } from './types'
 import { Scene, ComponentType, ComponentDefinition, AnyComponent } from 'modules/scene/types'
 import { getGLTFShapeName, getUniqueName } from 'modules/scene/utils'
@@ -27,15 +26,6 @@ export function toProjectCloudSchema(project: Project): Project {
   delete (newProject as any).ownerEmail
   delete (newProject as any).parcels
   return newProject
-}
-
-export function toDeploymentCloudSchema(id: string, deployment: Deployment): Deployment {
-  return {
-    ...deployment,
-    id,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
 }
 
 export function runMigrations<T extends Versionable>(input: T, migrations: Migration<T>) {

@@ -11,13 +11,12 @@ import {
   isCreatingFiles,
   getCurrentDeploymentStatus,
   getCurrentDeployment,
-  getOccuppiedParcels,
   isUploadingRecording
 } from 'modules/deployment/selectors'
-import { deployToLandRequest, loadDeploymentsRequest } from 'modules/deployment/actions'
+import { deployToLandRequest } from 'modules/deployment/actions'
 import { recordMediaRequest } from 'modules/media/actions'
 import { getCurrentProject } from 'modules/project/selectors'
-import { getLandTiles } from 'modules/land/selectors'
+import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getMedia, isRecording, getProgress } from 'modules/media/selectors'
 import { locations } from 'routing/locations'
@@ -41,7 +40,7 @@ const mapState = (state: RootState): MapStateProps => {
     mediaProgress: getProgress(state),
     deploymentProgress: getUploadProgress(state),
     deploymentStatus: getCurrentDeploymentStatus(state),
-    occupiedParcels: getOccuppiedParcels(state),
+    deploymentsByCoord: getDeploymentsByCoord(state),
     landTiles: getLandTiles(state),
     deployment: getCurrentDeployment(state),
     error: getDeploymentError(state)
@@ -52,8 +51,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(enableWalletRequest()),
   onRecord: () => dispatch(recordMediaRequest()),
   onDeploy: (projectId, placement) => dispatch(deployToLandRequest(projectId, placement)),
-  onNavigateHome: () => dispatch(push(locations.root())),
-  onFetchDeployments: () => dispatch(loadDeploymentsRequest())
+  onNavigateHome: () => dispatch(push(locations.root()))
 })
 
 export default connect(mapState, mapDispatch)(DeployToLand)

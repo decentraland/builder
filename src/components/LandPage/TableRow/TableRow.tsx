@@ -21,7 +21,7 @@ const sortLandPoolLast = (a: string, b: string) => {
 
 export default class TableRow extends React.PureComponent<Props> {
   render() {
-    const { land, projects, onNavigate } = this.props
+    const { land, deployments, onNavigate } = this.props
     const coords = getCoords(land)
     return (
       <Table.Row className="TableRow" onClick={() => onNavigate(locations.landDetail(land.id))}>
@@ -45,7 +45,7 @@ export default class TableRow extends React.PureComponent<Props> {
           />
         </Table.Cell>
         <Table.Cell>
-          <InlineList list={projects.map(p => p.title)} />
+          <InlineList list={deployments.map(deployment => deployment.name)} />
         </Table.Cell>
       </Table.Row>
     )

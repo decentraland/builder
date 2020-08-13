@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import { AtlasTile, AtlasProps } from 'decentraland-ui'
 import { Tile as BaseTile } from 'react-tile-map/lib/src/lib/common'
+import { AtlasTile, AtlasProps } from 'decentraland-ui'
 import { LandTile } from 'modules/land/types'
 
 export type Tile = AtlasTile & { estate_id?: string }
@@ -9,7 +9,7 @@ export type Tile = AtlasTile & { estate_id?: string }
 export type Props = Partial<AtlasProps> & {
   atlasTiles: Record<string, Tile>
   landTiles: Record<string, LandTile>
-  unoccupiedTiles: Record<string, BaseTile>
+  emptyTiles: Record<string, BaseTile>
   showOperator?: boolean
   landId?: string
   showOwner?: boolean
@@ -18,6 +18,6 @@ export type Props = Partial<AtlasProps> & {
   onNavigate: (path: string) => void
 }
 
-export type MapStateProps = Pick<Props, 'atlasTiles' | 'landTiles' | 'unoccupiedTiles'>
+export type MapStateProps = Pick<Props, 'atlasTiles' | 'landTiles' | 'emptyTiles'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

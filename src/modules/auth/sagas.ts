@@ -21,7 +21,6 @@ import { AuthData, LoginOptions } from './types'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
 import { loadProjectsRequest } from 'modules/project/actions'
-import { loadDeploymentsRequest } from 'modules/deployment/actions'
 
 export function* authSaga() {
   yield fork(handleRestoreSession)
@@ -83,7 +82,6 @@ function* handleMigrationRequest() {
 
 function* handleMigrationsSuccess(action: MigrationSuccessAction) {
   yield put(loadProjectsRequest())
-  yield put(loadDeploymentsRequest())
   yield put(replace(locations.root()))
   yield put(openModal('MigrationModal', action.payload.result))
 }

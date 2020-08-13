@@ -8,7 +8,7 @@ import './Popup.css'
 
 export default class Popup extends React.PureComponent<Props> {
   render() {
-    const { x, y, visible, land, projects } = this.props
+    const { x, y, visible, land, deployments } = this.props
     return (
       <div className="Popup" style={{ top: y, left: x, opacity: visible ? 1 : 0 }}>
         <Section className="land-name">
@@ -38,11 +38,11 @@ export default class Popup extends React.PureComponent<Props> {
 
         <Section className="online-scenes">
           <Header sub>{t('land_page.online_scenes')}</Header>
-          {projects.length > 0 ? (
-            projects.map(project => (
+          {deployments.length > 0 ? (
+            deployments.map(deployment => (
               <Row className="scene">
-                {project.thumbnail ? <div className="thumbnail" style={{ backgroundImage: `url(${project.thumbnail})` }} /> : null}
-                <div className="title">{project.title}</div>
+                {deployment.thumbnail ? <div className="thumbnail" style={{ backgroundImage: `url(${deployment.thumbnail})` }} /> : null}
+                <div className="title">{deployment.name}</div>
               </Row>
             ))
           ) : (

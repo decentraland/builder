@@ -1,20 +1,7 @@
 import { action } from 'typesafe-actions'
-import { Placement, Deployment, DeploymentV2 } from 'modules/deployment/types'
+import { Placement, Deployment } from 'modules/deployment/types'
 import { ProgressStage } from './types'
 import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
-
-// Fetch deployments
-export const LOAD_DEPLOYMENTS_REQUEST = '[Request] Load deployments'
-export const LOAD_DEPLOYMENTS_SUCCESS = '[Success] Load deployments'
-export const LOAD_DEPLOYMENTS_FAILURE = '[Failure] Load deployments'
-
-export const loadDeploymentsRequest = () => action(LOAD_DEPLOYMENTS_REQUEST)
-export const loadDeploymentsSuccess = (deployments: Deployment[]) => action(LOAD_DEPLOYMENTS_SUCCESS, { deployments })
-export const loadDeploymentsFailure = (error: string) => action(LOAD_DEPLOYMENTS_FAILURE, { error })
-
-export type LoadDeploymentsRequestAction = ReturnType<typeof loadDeploymentsRequest>
-export type LoadDeploymentsSuccessAction = ReturnType<typeof loadDeploymentsSuccess>
-export type LoadDeploymentsFailureAction = ReturnType<typeof loadDeploymentsFailure>
 
 // Deploy to LAND pool
 export const DEPLOY_TO_POOL_REQUEST = '[Request] Deploy to LAND pool'
@@ -50,9 +37,9 @@ export const CLEAR_DEPLOYMENT_REQUEST = '[Request] Clear Deployment'
 export const CLEAR_DEPLOYMENT_SUCCESS = '[Success] Clear Deployment'
 export const CLEAR_DEPLOYMENT_FAILURE = '[Failure] Clear Deployment'
 
-export const clearDeploymentRequest = (projectId: string) => action(CLEAR_DEPLOYMENT_REQUEST, { projectId })
-export const clearDeploymentSuccess = (projectId: string) => action(CLEAR_DEPLOYMENT_SUCCESS, { projectId })
-export const clearDeploymentFailure = (error: string) => action(CLEAR_DEPLOYMENT_FAILURE, { error })
+export const clearDeploymentRequest = (deploymentId: string) => action(CLEAR_DEPLOYMENT_REQUEST, { deploymentId })
+export const clearDeploymentSuccess = (deploymentId: string) => action(CLEAR_DEPLOYMENT_SUCCESS, { deploymentId })
+export const clearDeploymentFailure = (deploymentId: string, error: string) => action(CLEAR_DEPLOYMENT_FAILURE, { deploymentId, error })
 
 export type ClearDeploymentRequestAction = ReturnType<typeof clearDeploymentRequest>
 export type ClearDeploymentSuccessAction = ReturnType<typeof clearDeploymentSuccess>
@@ -64,25 +51,13 @@ export const SET_PROGRESS = 'Set Deployment progress'
 export const setProgress = (stage: ProgressStage, value: number) => action(SET_PROGRESS, { stage, value })
 export type SetProgressAction = ReturnType<typeof setProgress>
 
-// Mark Dirty
-
-export const MARK_DIRTY = 'Mark dirty'
-export const markDirty = (projectId: string, isDirty: boolean = true) => action(MARK_DIRTY, { projectId, isDirty })
-export type MarkDirtyAction = ReturnType<typeof markDirty>
-
-// Query remote CID
-
-export const QUERY_REMOTE_CID = 'Query remote CID'
-export const queryRemoteCID = (projectId: string) => action(QUERY_REMOTE_CID, { projectId })
-export type QueryRemoteCIDAction = ReturnType<typeof queryRemoteCID>
-
 // Fetch deployments
 export const FETCH_DEPLOYMENTS_REQUEST = '[Request] Fetch deployments'
 export const FETCH_DEPLOYMENTS_SUCCESS = '[Success] Fetch deployments'
 export const FETCH_DEPLOYMENTS_FAILURE = '[Failure] Fetch deployments'
 
 export const fetchDeploymentsRequest = (coords: string[]) => action(FETCH_DEPLOYMENTS_REQUEST, { coords })
-export const fetchDeploymentsSuccess = (coords: string[], deployments: DeploymentV2[]) =>
+export const fetchDeploymentsSuccess = (coords: string[], deployments: Deployment[]) =>
   action(FETCH_DEPLOYMENTS_SUCCESS, { coords, deployments })
 export const fetchDeploymentsFailure = (coords: string[], error: string) => action(FETCH_DEPLOYMENTS_FAILURE, { coords, error })
 

@@ -1,6 +1,5 @@
 import { action } from 'typesafe-actions'
 import { Project } from 'modules/project/types'
-import { Deployment } from 'modules/deployment/types'
 
 // Sync
 export const SYNC = 'Sync'
@@ -37,29 +36,3 @@ export const deleteProjectFailure = (id: string, error: string) => action(DELETE
 export type DeleteProjectRequestAction = ReturnType<typeof deleteProjectRequest>
 export type DeleteProjectSuccessAction = ReturnType<typeof deleteProjectSuccess>
 export type DeleteProjectFailureAction = ReturnType<typeof deleteProjectFailure>
-
-// Save deployment
-export const SAVE_DEPLOYMENT_REQUEST = '[Request] Save deployment'
-export const SAVE_DEPLOYMENT_SUCCESS = '[Success] Save deployment'
-export const SAVE_DEPLOYMENT_FAILURE = '[Failure] Save deployment'
-
-export const saveDeploymentRequest = (deployment: Deployment) => action(SAVE_DEPLOYMENT_REQUEST, { deployment })
-export const saveDeploymentSuccess = (deployment: Deployment) => action(SAVE_DEPLOYMENT_SUCCESS, { deployment })
-export const saveDeploymentFailure = (deployment: Deployment, error: string) => action(SAVE_DEPLOYMENT_FAILURE, { deployment, error })
-
-export type SaveDeploymentRequestAction = ReturnType<typeof saveDeploymentRequest>
-export type SaveDeploymentSuccessAction = ReturnType<typeof saveDeploymentSuccess>
-export type SaveDeploymentFailureAction = ReturnType<typeof saveDeploymentFailure>
-
-// Delete deployment
-export const DELETE_DEPLOYMENT_REQUEST = '[Request] Delete deployment'
-export const DELETE_DEPLOYMENT_SUCCESS = '[Success] Delete deployment'
-export const DELETE_DEPLOYMENT_FAILURE = '[Failure] Delete deployment'
-
-export const deleteDeploymentRequest = (id: string) => action(DELETE_DEPLOYMENT_REQUEST, { id })
-export const deleteDeploymentSuccess = (id: string) => action(DELETE_DEPLOYMENT_SUCCESS, { id })
-export const deleteDeploymentFailure = (id: string, error: string) => action(DELETE_DEPLOYMENT_FAILURE, { id, error })
-
-export type DeleteDeploymentRequestAction = ReturnType<typeof deleteDeploymentRequest>
-export type DeleteDeploymentSuccessAction = ReturnType<typeof deleteDeploymentSuccess>
-export type DeleteDeploymentFailureAction = ReturnType<typeof deleteDeploymentFailure>

@@ -10,7 +10,7 @@ import './Atlas.css'
 const getCoords = (x: number | string, y: number | string) => `${x},${y}`
 
 const Atlas: React.FC<Props> = props => {
-  const { landId, atlasTiles, landTiles, unoccupiedTiles, showOwner, showOperator, hasPopup, onNavigate, className, hasLink } = props
+  const { landId, atlasTiles, landTiles, emptyTiles, showOwner, showOperator, hasPopup, onNavigate, className, hasLink } = props
 
   const [showPopup, setShowPopup] = useState(false)
   const [hoveredLand, setHoveredLand] = useState<Land | null>(null)
@@ -88,11 +88,11 @@ const Atlas: React.FC<Props> = props => {
       const id = coordsToId(x, y)
       const tile = landTiles[id]
       if (shouldShowLayer(tile, showOwner, showOperator)) {
-        return unoccupiedTiles[id] || null
+        return emptyTiles[id] || null
       }
       return null
     },
-    [unoccupiedTiles, landTiles, showOwner, showOperator]
+    [emptyTiles, landTiles, showOwner, showOperator]
   )
 
   const handleHover = useCallback(

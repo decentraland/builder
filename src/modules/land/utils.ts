@@ -2,15 +2,12 @@ import { Coord } from 'react-tile-map'
 import { Color } from 'decentraland-ui'
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
-import { DeploymentState } from 'modules/deployment/reducer'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { EstateRegistry } from 'contracts/EstateRegistry'
 import { LANDRegistry } from 'contracts/LANDRegistry'
 import { isZero } from 'lib/address'
 import { Tile } from 'components/Atlas/Atlas.types'
 import { Land, LandType, LandTile, RoleType } from './types'
-import { ProjectState } from 'modules/project/reducer'
-import { getParcelOrientation } from 'modules/project/utils'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
@@ -23,24 +20,6 @@ export const coordsToId = (x: string | number, y: string | number) => x + SEPARA
 export const idToCoords = (id: string) => id.split(SEPARATOR).map(coord => +coord) as [number, number]
 
 export const isCoords = (id: string) => id.includes(SEPARATOR)
-
-export const findDeployment = (
-  x: string | number,
-  y: string | number,
-  deployments: DeploymentState['data'],
-  projects: ProjectState['data']
-) => {
-  for (const deployment of Object.values(deployments)) {
-    const project = projects[deployment.id]
-    if (project) {
-      const coords = getParcelOrientation(project, deployment.placement.point, deployment.placement.rotation)
-      if (coords.some(coord => coord.x === x && coord.y === y)) {
-        return deployment.id
-      }
-    }
-  }
-  return null
-}
 
 export const getCoords = (land: Land): Coord =>
   land.type === LandType.PARCEL ? { x: land.x!, y: land.y! } : { x: land.parcels![0].x!, y: land.parcels![0].y! }

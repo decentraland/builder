@@ -59,10 +59,9 @@ export function makeContentFile(path: string, content: string | Blob): Promise<C
   })
 }
 
-export function getStatus(deployment: Deployment) {
-  if (deployment) {
-    if (deployment.isDirty) return DeploymentStatus.NEEDS_SYNC
-    if (deployment.lastPublishedCID) return DeploymentStatus.PUBLISHED
+export function getStatus(project: Project | null, deployment: Deployment | null) {
+  if (project && deployment) {
+    return new Date(deployment.timestamp) > new Date(project.updatedAt) ? DeploymentStatus.PUBLISHED : DeploymentStatus.NEEDS_SYNC
   }
 
   return DeploymentStatus.UNPUBLISHED

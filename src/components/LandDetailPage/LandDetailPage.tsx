@@ -4,9 +4,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { LandType, Land, RoleType } from 'modules/land/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
-import { Project } from 'modules/project/types'
 import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
+import { Deployment } from 'modules/deployment/types'
 import Profile from 'components/Profile'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
@@ -17,8 +17,8 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     hovered: null
   }
 
-  handleMouseEnter = (project: Project) => {
-    this.setState({ hovered: project.id })
+  handleMouseEnter = (deployment: Deployment) => {
+    this.setState({ hovered: deployment.id })
   }
 
   handleMouseLeave = () => {
@@ -26,21 +26,20 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   isHovered = (x: number, y: number) => {
-    const { occupiedParcels } = this.props
+    const { deploymentsByCoord } = this.props
     const { hovered } = this.state
     const id = coordsToId(x, y)
-    const parcel = occupiedParcels[id]
-    return !!parcel && hovered === parcel.projectId
+    const deployment = deploymentsByCoord[id]
+    return !!deployment && hovered === deployment.id
   }
 
   hoverLayer: Layer = (x, y) => {
     return this.isHovered(x, y) ? { color: '#ffffff', scale: 1.2 } : null
   }
 
-  renderDetail(land: Land, projects: Project[]) {
-    const { onNavigate, onOpenModal, occupiedParcels, parcelsAvailableToBuildEstates } = this.props
-    const projectIds = projects.reduce((set, project) => set.add(project.id), new Set<string>())
-    const occupiedTotal = Object.values(occupiedParcels).reduce((total, parcel) => total + (projectIds.has(parcel.projectId) ? 1 : 0), 0)
+  renderDetail(land: Land, deployments: Deployment[]) {
+    const { onNavigate, onOpenModal, parcelsAvailableToBuildEstates } = this.props
+    const occupiedTotal = deployments.reduce((total, deployment) => total + deployment.parcels.length, 0)
     const selection = getSelection(land)
     const [x, y] = getCenter(selection)
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
@@ -131,12 +130,12 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           </Section>
           <Section className={land.description ? '' : 'no-margin-bottom'}>
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
-            {projects.length === 0 ? (
+            {deployments.length === 0 ? (
               <Empty height={100}>None</Empty>
             ) : (
-              <div className="projects">
-                {projects.map(project => (
-                  <Scene project={project} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} />
+              <div className="deployments">
+                {deployments.map(deployment => (
+                  <Scene deployment={deployment} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} />
                 ))}
               </div>
             )}

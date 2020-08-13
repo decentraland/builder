@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import { RootState } from 'modules/common/types'
 import { deleteProject, duplicateProject } from 'modules/project/actions'
-import { getDeploymentStatus } from 'modules/deployment/selectors'
+import { getDeploymentStatusByProjectId } from 'modules/deployment/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { openModal } from 'modules/modal/actions'
 import { getLoadingSet, getErrorSet } from 'modules/sync/selectors'
@@ -15,7 +15,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const scene = getScenes(state)[project.sceneId]
   return {
     items: scene ? scene.metrics.entities : 0,
-    deploymentStatus: getDeploymentStatus(state)[ownProps.project.id],
+    deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.project.id],
     isUploading: getLoadingSet(state).has(project.id),
     hasError: getErrorSet(state).has(project.id)
   }
@@ -27,7 +27,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(ProjectCard)
+export default connect(mapState, mapDispatch)(ProjectCard)

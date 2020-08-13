@@ -14,16 +14,15 @@ import { getOpenModals } from 'decentraland-dapps/dist/modules/modal/selectors'
 import { openModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 import { PROVISION_SCENE, CREATE_SCENE } from 'modules/scene/actions'
-import { DEPLOY_TO_LAND_SUCCESS, MARK_DIRTY, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
+import { DEPLOY_TO_LAND_SUCCESS, CLEAR_DEPLOYMENT_SUCCESS } from 'modules/deployment/actions'
 import { SET_PROJECT, DELETE_PROJECT, CREATE_PROJECT, EDIT_PROJECT_THUMBNAIL } from 'modules/project/actions'
-import { SAVE_PROJECT_SUCCESS, SAVE_DEPLOYMENT_SUCCESS } from 'modules/sync/actions'
+import { SAVE_PROJECT_SUCCESS } from 'modules/sync/actions'
 import { EDITOR_UNDO, EDITOR_REDO } from 'modules/editor/actions'
 import { Project } from 'modules/project/types'
 import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
 import { RootState } from './types'
-import { Deployment } from 'modules/deployment/types'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
@@ -66,7 +65,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     ['project', 'data'],
     ['scene', 'present'],
     ['ui', 'dashboard'],
-    ['deployment', 'data'],
     ['auth', 'data'],
     ['sync', 'localProjectIds'],
     ['identity', 'data']
@@ -81,11 +79,9 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     DELETE_PROJECT,
     DEPLOY_TO_LAND_SUCCESS,
     CLEAR_DEPLOYMENT_SUCCESS,
-    MARK_DIRTY,
     LOGIN_SUCCESS,
     LOGIN_FAILURE,
     SAVE_PROJECT_SUCCESS,
-    SAVE_DEPLOYMENT_SUCCESS,
     EDIT_PROJECT_THUMBNAIL,
     DISMISS_SIGN_IN_TOAST,
     DISMISS_SYNCED_TOAST,
@@ -97,7 +93,6 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
   transform: state => {
     let projects: DataByKey<Project> = {}
     let scene: DataByKey<Scene> = {}
-    let deployments: DataByKey<Deployment> = {}
 
     for (let id of state.sync.project.localIds) {
       const project = state.project.data[id]
@@ -106,19 +101,11 @@ const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
       scene[project.sceneId] = state.scene.present.data[project.sceneId]
     }
 
-    for (let id of state.sync.deployment.localIds) {
-      deployments[id] = state.deployment.data[id]
-    }
-
     const newState: RootState = {
       ...state,
       project: {
         ...state.project,
         data: projects
-      },
-      deployment: {
-        ...state.deployment,
-        data: deployments
       },
       scene: {
         ...state.scene,

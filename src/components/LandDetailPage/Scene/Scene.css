@@ -18,6 +18,19 @@
   width: 96px;
   height: 64px;
   background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-right: 24px;
+}
+
+.Scene .no-thumbnail {
+  width: 96px;
+  height: 64px;
+  background-color: var(--card);
+  background-image: url(../../../images/watermelon.svg);
+  background-size: 32px;
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 8px;
   margin-right: 24px;
 }

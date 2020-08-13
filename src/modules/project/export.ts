@@ -465,7 +465,7 @@ export function getSceneDefinition(
   author: string | null,
   isEmpty?: boolean
 ) {
-  const parcels = getParcelOrientation(project, point, rotation)
+  const parcels = getParcelOrientation(project.layout, point, rotation)
   const base = parcels.reduce((base, parcel) => (parcel.x <= base.x && parcel.y <= base.y ? parcel : base), parcels[0])
 
   const sceneDefinition: SceneDefinition = {

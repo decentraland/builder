@@ -1,20 +1,18 @@
 import { Dispatch } from 'redux'
 import { DeploymentStatus, Deployment } from 'modules/deployment/types'
-import { queryRemoteCID, QueryRemoteCIDAction } from 'modules/deployment/actions'
 
 export type Props = {
   className?: string
-  status: DeploymentStatus
-  deployment: Deployment
+  status: DeploymentStatus | null
+  deployment: Deployment | null
   projectId: string
   type?: 'project' | 'public' | 'pool'
-  onQueryRemoteCID: typeof queryRemoteCID
 }
 
 export type OwnProps = Pick<Props, 'projectId'>
 
 export type MapStateProps = Pick<Props, 'status' | 'deployment'>
 
-export type MapDispatchProps = Pick<Props, 'onQueryRemoteCID'>
+export type MapDispatchProps = {}
 
-export type MapDispatch = Dispatch<QueryRemoteCIDAction>
+export type MapDispatch = Dispatch

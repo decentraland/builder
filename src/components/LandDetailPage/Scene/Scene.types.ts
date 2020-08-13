@@ -1,7 +1,7 @@
-import { Project } from 'modules/project/types'
+import { Deployment } from 'modules/deployment/types'
 
 export type Props = {
-  project: Project
-  onMouseEnter: (project: Project) => void
-  onMouseLeave: (project: Project) => void
+  deployment: Deployment
+  onMouseEnter: (deployment: Deployment) => void
+  onMouseLeave: (deployment: Deployment) => void
 }

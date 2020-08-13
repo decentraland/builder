@@ -3,7 +3,6 @@ import { env } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { authorize, authorizeAuth0 } from './auth'
-import { Rotation, Deployment } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
 import { Scene, SceneMetrics } from 'modules/scene/types'
@@ -205,52 +204,6 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
-// Remote deployment
-
-export type RemoteDeployment = {
-  id: string
-  last_published_cid: string | null
-  is_dirty: boolean
-  x: number
-  y: number
-  rotation: Rotation
-  eth_address: string
-  created_at: string
-  updated_at: string
-}
-
-export function toRemoteDeployment(deployment: Deployment): RemoteDeployment {
-  return {
-    id: deployment.id,
-    last_published_cid: deployment.lastPublishedCID,
-    is_dirty: deployment.isDirty,
-    x: deployment.placement.point.x,
-    y: deployment.placement.point.y,
-    rotation: deployment.placement.rotation,
-    eth_address: deployment.ethAddress!,
-    created_at: deployment.createdAt,
-    updated_at: deployment.updatedAt
-  }
-}
-
-export function fromRemoteDeployment(remoteDeployment: RemoteDeployment): Deployment {
-  return {
-    id: remoteDeployment.id,
-    lastPublishedCID: remoteDeployment.last_published_cid,
-    isDirty: remoteDeployment.is_dirty,
-    placement: {
-      point: {
-        x: remoteDeployment.x,
-        y: remoteDeployment.y
-      },
-      rotation: remoteDeployment.rotation
-    },
-    ethAddress: remoteDeployment.eth_address,
-    createdAt: remoteDeployment.created_at,
-    updatedAt: remoteDeployment.updated_at
-  }
-}
-
 export type PoolDeploymentAdditionalFields = {
   groups?: string[]
 }
@@ -312,20 +265,6 @@ export class BuilderAPI extends BaseAPI {
     await this.request('post', `/projects/${projectId}/media`, formData, {
       onUploadProgress
     })
-  }
-
-  async fetchDeployments() {
-    const remoteDeployments: RemoteDeployment[] = await this.request('get', `/deployments`)
-    return remoteDeployments.map(fromRemoteDeployment)
-  }
-
-  async saveDeployment(deployment: Deployment) {
-    await this.request('put', `/projects/${deployment.id}/deployment`, { deployment: toRemoteDeployment(deployment) })
-  }
-
-  async deleteDeployment(id: string) {
-    await this.request('delete', `/projects/${id}/deployment`)
-    return
   }
 
   async fetchProjects() {

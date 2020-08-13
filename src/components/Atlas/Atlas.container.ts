@@ -5,11 +5,11 @@ import { getTiles } from 'modules/tile/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './Atlas.types'
 import Atlas from './Atlas'
 import { getLandTiles } from 'modules/land/selectors'
-import { getUnoccupiedTiles } from 'modules/deployment/selectors'
+import { getEmptyTiles } from 'modules/deployment/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   landTiles: getLandTiles(state),
-  unoccupiedTiles: getUnoccupiedTiles(state),
+  emptyTiles: getEmptyTiles(state),
   atlasTiles: getTiles(state)
 })
 

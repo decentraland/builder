@@ -2,12 +2,10 @@ import { createSelector } from 'reselect'
 import { Tile } from 'react-tile-map/lib/src/lib/common'
 import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
-import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
-import { ProjectState } from 'modules/project/reducer'
-import { getLandTiles } from 'modules/land/selectors'
+import { getCurrentProject, getUserProjects } from 'modules/project/selectors'
+import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { LandTile, RoleType } from 'modules/land/types'
-import { getParcelOrientation } from 'modules/project/utils'
-import { ProgressStage, DeploymentStatus, Deployment, OccupiedAtlasParcel } from './types'
+import { ProgressStage, DeploymentStatus, Deployment } from './types'
 import { DeploymentState } from './reducer'
 import { getStatus } from './utils'
 import { idToCoords, coordsToId } from 'modules/land/utils'
@@ -21,76 +19,58 @@ export const isUploadingRecording = (state: RootState) => getState(state).progre
 export const isUploadingAssets = (state: RootState) => getState(state).progress.stage === ProgressStage.UPLOAD_SCENE_ASSETS
 export const isCreatingFiles = (state: RootState) => getState(state).progress.stage === ProgressStage.CREATE_FILES
 
-export const getCurrentDeployment = createSelector<RootState, DeploymentState['data'], Project | null, Deployment | null>(
-  getData,
-  getCurrentProject,
-  (data, project) => {
-    if (!project || Object.keys(data).length === 0) return null
-    return data[project.id]
-  }
-)
-
-export const getDeploymentStatus = createSelector<
+export const getDeploymentsByProjectId = createSelector<
   RootState,
   DeploymentState['data'],
-  ProjectState['data'],
-  Record<string, DeploymentStatus>
->(getData, getProjects, (data, projects) => {
-  const out: Record<string, DeploymentStatus> = {}
-  for (let projectId in projects) {
-    const deployment = data[projectId]
-    out[projectId] = getStatus(deployment)
-  }
-  return out
-})
-
-export const getCurrentDeploymentStatus = createSelector<RootState, DeploymentState['data'], Project | null, DeploymentStatus>(
-  getData,
-  getCurrentProject,
-  (data, project) => {
-    if (!project || Object.keys(data).length === 0) return DeploymentStatus.UNPUBLISHED
-    const deployment = data[project.id]
-    return getStatus(deployment)
-  }
-)
-
-export const getOccuppiedParcels = createSelector<
-  RootState,
-  DeploymentState['data'],
-  ProjectState['data'],
-  Record<string, OccupiedAtlasParcel>
->(getData, getProjects, (data, projects) => {
-  const out: Record<string, OccupiedAtlasParcel> = {}
-  for (let projectId in data) {
-    const deployment = data[projectId]
-    const project = projects[projectId]
-
-    if (deployment && project) {
-      const { title } = project
-      const { point, rotation } = deployment.placement
-      const deployedParcels = getParcelOrientation(project, point, rotation)
-      for (let coordinate of deployedParcels) {
-        const { x, y } = coordinate
-        out[`${x},${y}`] = { x, y, title, projectId }
-      }
+  Record<string, Project>,
+  Record<string, Deployment>
+>(getData, getUserProjects, (deployments, projects) => {
+  let out: Record<string, Deployment> = {}
+  for (const deployment of Object.values(deployments)) {
+    const project = deployment.projectId && deployment.projectId in projects ? projects[deployment.projectId] : null
+    if (project) {
+      out[project.id] = deployment
     }
   }
   return out
 })
 
-export const getUnoccupiedTiles = createSelector<
+export const getCurrentDeployment = createSelector<RootState, Record<string, Deployment>, Project | null, Deployment | null>(
+  getDeploymentsByProjectId,
+  getCurrentProject,
+  (deploymentsByProjectId, project) => {
+    return project && project.id in deploymentsByProjectId ? deploymentsByProjectId[project.id] : null
+  }
+)
+
+export const getDeploymentStatusByProjectId = createSelector<
   RootState,
-  Record<string, OccupiedAtlasParcel>,
-  Record<string, LandTile>,
-  Record<string, Tile>
->(
-  getOccuppiedParcels,
+  Record<string, Deployment>,
+  Record<string, Project>,
+  Record<string, DeploymentStatus>
+>(getDeploymentsByProjectId, getUserProjects, (deploymentsByProjectId, projects) => {
+  const out: Record<string, DeploymentStatus> = {}
+  for (const project of Object.values(projects)) {
+    out[project.id] = getStatus(project, deploymentsByProjectId[project.id] || null)
+  }
+  return out
+})
+
+export const getCurrentDeploymentStatus = createSelector<RootState, Project | null, Deployment | null, DeploymentStatus>(
+  getCurrentProject,
+  getCurrentDeployment,
+  (project, deployment) => {
+    return getStatus(project, deployment)
+  }
+)
+export const getEmptyTiles = createSelector<RootState, Record<string, Deployment>, Record<string, LandTile>, Record<string, Tile>>(
+  state => getDeploymentsByCoord(state),
   state => getLandTiles(state),
-  (occupiedParcels, landTiles) => {
+  (deploymentsByCoord, landTiles) => {
     const result: Record<string, Tile> = {}
 
     for (const id of Object.keys(landTiles)) {
-      const isOccupied = id in occupiedParcels
+      const isOccupied = id in deploymentsByCoord
       const role = landTiles[id].land.role
       if (!isOccupied) {
         result[id] = {

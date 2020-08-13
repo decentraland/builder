@@ -35,11 +35,11 @@ export default class LandProviderPage extends React.PureComponent<Props> {
         <Navbar isFullscreen />
         <Page className={classes.join(' ')}>
           <LandProvider>
-            {(id, land, projects, isLoading) => (
+            {(id, land, deployments, isLoading) => (
               <>
                 {isLoading ? this.renderLoading() : null}
                 {!isLoading && !(id && land) ? this.renderNotFound() : null}
-                {id && land ? children(land, projects) : null}
+                {id && land ? children(land, deployments) : null}
               </>
             )}
           </LandProvider>

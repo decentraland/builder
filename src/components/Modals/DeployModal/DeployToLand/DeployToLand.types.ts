@@ -2,8 +2,8 @@ import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { EnableWalletRequestAction, enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { Coordinate, Rotation, DeploymentStatus, Deployment, OccupiedAtlasParcel } from 'modules/deployment/types'
-import { DeployToLandRequestAction, deployToLandRequest, LoadDeploymentsRequestAction } from 'modules/deployment/actions'
+import { Coordinate, Rotation, DeploymentStatus, Deployment } from 'modules/deployment/types'
+import { DeployToLandRequestAction, deployToLandRequest } from 'modules/deployment/actions'
 import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
@@ -28,7 +28,7 @@ export type Props = {
   media: Media | null
   deploymentStatus: DeploymentStatus
   deployment: Deployment | null
-  occupiedParcels: Record<string, OccupiedAtlasParcel>
+  deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   onConnect: typeof enableWalletRequest
   onClose: () => void
@@ -38,7 +38,6 @@ export type Props = {
   onClearDeployment: (projectId: string) => void
   onBack: () => void
   onNavigateHome: () => void
-  onFetchDeployments: () => void
 }
 
 export type State = {
@@ -68,14 +67,14 @@ export type MapStateProps = Pick<
   | 'deployment'
   | 'mediaProgress'
   | 'deploymentProgress'
-  | 'occupiedParcels'
+  | 'deploymentsByCoord'
   | 'landTiles'
 >
 
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome' | 'onFetchDeployments'>
+export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
 
 export type MapDispatch = Dispatch<
-  EnableWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction | LoadDeploymentsRequestAction
+  EnableWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction
 >
 
 export enum DeployToLandView {

@@ -1,15 +1,15 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
-import { getProjectsByLand } from 'modules/land/selectors'
+import { getDeploymentsByLandId } from 'modules/land/selectors'
 import { MapDispatch, MapDispatchProps, MapStateProps, OwnProps } from './TableRow.types'
 import TableRow from './TableRow'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const projectsByLand = getProjectsByLand(state)
-  const projects = projectsByLand[ownProps.land.id] || []
+  const deploymentsByLandId = getDeploymentsByLandId(state)
+  const deployments = deploymentsByLandId[ownProps.land.id] || []
   return {
-    projects
+    deployments
   }
 }
 

@@ -1,4 +1,4 @@
-import { Project } from 'modules/project/types'
+import { Project, Layout } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
 import { getDimensions } from 'lib/layout'
 
@@ -29,8 +29,8 @@ export function didUpdateLayout(update: Partial<Project>, project: Project): boo
   return res
 }
 
-export function getParcelOrientation(project: Project, point: Coordinate, rotation: Rotation): Coordinate[] {
-  const { rows, cols } = project.layout
+export function getParcelOrientation(layout: Layout, point: Coordinate, rotation: Rotation): Coordinate[] {
+  const { rows, cols } = layout
   const parcels: Coordinate[] = []
 
   switch (rotation) {

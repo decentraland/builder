@@ -2,10 +2,9 @@ import { addMappings } from './ISSUE-485'
 import { RootState } from 'modules/common/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
-import { Deployment } from 'modules/deployment/types'
+import { INITIAL_STATE as DEPLOYMENT_INITIAL_STATE } from 'modules/deployment/reducer'
 import {
   toProjectCloudSchema,
-  toDeploymentCloudSchema,
   addScale,
   addEntityName,
   addAssets,
@@ -35,7 +34,6 @@ export const migrations = {
   },
   '4': (state: RootState) => {
     const shouldMigrateProjects = !!state.project && !!state.project.data
-    const shouldMigrateDeployments = !!state.deployment && !!state.deployment.data
     /* tslint:disable */
     return {
       ...state,
@@ -47,16 +45,7 @@ export const migrations = {
               return data
             }, {})
           }
-        : state.project,
-      deployment: shouldMigrateDeployments
-        ? {
-            ...state.deployment,
-            data: Object.keys(state.deployment.data).reduce<DataByKey<Deployment>>((data, id) => {
-              data[id] = toDeploymentCloudSchema(id, state.deployment.data[id])
-              return data
-            }, {})
-          }
-        : state.deployment
+        : state.project
     }
     /* tslint:enable */
   },
@@ -118,9 +107,18 @@ export const migrations = {
     return state
   },
   '13': (state: RootState) => {
+    // auth0 migration
     const needsMigration = !!(state && state.ui && state.ui.dashboard && state.ui.dashboard.didSync)
     if (needsMigration) {
       state.ui.dashboard.needsMigration = needsMigration
+    }
+    return state
+  },
+  '14': (state: RootState) => {
+    // remove deployments from local storage, since now we always fetch them from the catalyst
+    const isDirty = !!(state.deployment && state.deployment.data && Object.keys(state.deployment.data).length > 0)
+    if (isDirty) {
+      state.deployment = DEPLOYMENT_INITIAL_STATE
     }
     return state
   }

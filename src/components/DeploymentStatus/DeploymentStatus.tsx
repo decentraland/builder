@@ -6,11 +6,6 @@ import { Props } from './DeploymentStatus.types'
 import './DeploymentStatus.css'
 
 export default class DeploymentStatus extends React.PureComponent<Props> {
-  componentDidMount() {
-    const { projectId, onQueryRemoteCID } = this.props
-    onQueryRemoteCID(projectId)
-  }
-
   render() {
     const { deployment, status, className = '', type } = this.props
     const { x, y } = deployment ? deployment.placement.point : { x: 0, y: 0 }

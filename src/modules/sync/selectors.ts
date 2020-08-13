@@ -7,19 +7,14 @@ import { ProjectState } from 'modules/project/reducer'
 
 export const getState = (state: RootState) => state.sync
 export const getProjects = (state: RootState) => getState(state).project
-export const getDeployments = (state: RootState) => getState(state).deployment
 export const getLocalProjectIds = (state: RootState) => getLocalIds(getProjects(state))
-export const getLocalDeploymentIds = (state: RootState) => getLocalIds(getDeployments(state))
 export const getProjectErrors = (state: RootState) => getErrors(getProjects(state))
-export const getDeploymentErrors = (state: RootState) => getErrors(getDeployments(state))
 export const getLoadingProjectIds = (state: RootState) => getLoadingIds(getProjects(state))
-export const getLoadingDeploymentIds = (state: RootState) => getLoadingIds(getDeployments(state))
 
-export const getLoadingSet = createSelector<RootState, string[], string[], ProjectState['data'], Set<string>>(
+export const getLoadingSet = createSelector<RootState, string[], ProjectState['data'], Set<string>>(
   getLoadingProjectIds,
-  getLoadingDeploymentIds,
   getUserProjects,
-  (projectIds, deploymentIds, projects) => new Set([...projectIds, ...deploymentIds].filter(id => id in projects))
+  (projectIds, projects) => new Set([...projectIds].filter(id => id in projects))
 )
 
 export const isSavingCurrentProject = createSelector<RootState, Project | null, Set<string>, boolean>(
@@ -35,14 +30,8 @@ export const getFailedProjectIds = createSelector<RootState, Record<string, stri
   Object.keys(projectErrors)
 )
 
-export const getFailedDeploymentIds = createSelector<RootState, Record<string, string>, string[]>(getDeploymentErrors, deploymentErrors =>
-  Object.keys(deploymentErrors)
-)
-
-export const getErrorSet = createSelector<RootState, string[], string[], ProjectState['data'], Set<string>>(
+export const getErrorSet = createSelector<RootState, string[], ProjectState['data'], Set<string>>(
   getFailedProjectIds,
-  getFailedDeploymentIds,
   getUserProjects,
-  (failedProjectIds, failedDeploymentIds, projects) =>
-    new Set<string>([...failedProjectIds, ...failedDeploymentIds].filter(id => id in projects))
+  (failedProjectIds, projects) => new Set<string>([...failedProjectIds].filter(id => id in projects))
 )

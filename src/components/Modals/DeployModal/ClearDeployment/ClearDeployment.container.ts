@@ -9,7 +9,7 @@ import {
   isUploadingAssets,
   getProgress as getUploadProgress,
   isCreatingFiles,
-  getDeploymentStatus,
+  getDeploymentStatusByProjectId,
   getError as getDeploymentError
 } from 'modules/deployment/selectors'
 
@@ -26,17 +26,14 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     hasError: !!getWalletError(state),
     ethAddress: getAddress(state),
     deploymentProgress: getUploadProgress(state),
-    deploymentStatus: getDeploymentStatus(state)[ownProps.projectId],
+    deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.projectId],
     error: getDeploymentError(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(enableWalletRequest()),
-  onClearDeployment: placement => dispatch(clearDeploymentRequest(placement))
+  onClearDeployment: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
 })
 
-export default connect(
-  mapState,
-  mapDispatch
-)(WalletSignIn)
+export default connect(mapState, mapDispatch)(WalletSignIn)
