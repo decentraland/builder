@@ -103,7 +103,7 @@ function* handleDeployToPoolRequest(action: DeployToPoolRequestAction) {
 }
 
 function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
-  const { placement, projectId } = action.payload
+  const { placement, projectId, overrideDeploymentId } = action.payload
 
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const project = projects[projectId]
@@ -179,7 +179,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     }
 
     // notify success
-    yield put(deployToLandSuccess(deployment))
+    yield put(deployToLandSuccess(deployment, overrideDeploymentId))
   } catch (e) {
     yield put(deployToLandFailure(e.message.split('\n')[0]))
   }
@@ -303,9 +303,6 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
         const projectId = (definition && definition.source && definition.source.projectId) || null
         const layout = (definition && definition.source && definition.source.layout) || null
         const { base, parcels } = definition.scene
-        if (!parcels) {
-          debugger
-        }
         const isEmpty = !!(definition && definition.source && definition.source.isEmpty)
         if (!isEmpty) {
           deployments.set(id, {

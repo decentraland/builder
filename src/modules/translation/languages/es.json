@@ -132,6 +132,12 @@
       "title": "¿Te gusta esta escena?"
     }
   },
+  "deployment_status": {
+    "online": "Publicado en {coords}",
+    "online_multiple": "Publicado en {count} ubicaciones",
+    "needs_sync": "Publicado en {coords} pero está desactualizado",
+    "needs_sync_multiple": "{count} {count, plural, one {escena está desactualizada} other {escenas estan desactualizadas}}"
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -154,7 +160,7 @@
       "confirmation": {
         "action": "Publicar",
         "description": "Estas publicando la siguiente Escena en tu LAND:",
-        "location_label": "Publicada en",
+        "location_label": "Publicada en {coords}",
         "size_label": "Tamaño",
         "title_label": "Título"
       },

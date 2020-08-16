@@ -61,10 +61,39 @@ export function makeContentFile(path: string, content: string | Blob): Promise<C
 
 export function getStatus(project: Project | null, deployment: Deployment | null) {
   if (project && deployment) {
-    return new Date(deployment.timestamp) > new Date(project.updatedAt) ? DeploymentStatus.PUBLISHED : DeploymentStatus.NEEDS_SYNC
+    const projectTimestamp = +new Date(project.updatedAt)
+    const deploymentTimestamp = +new Date(deployment.timestamp)
+    if (project.title === 'Palito') {
+      console.log(
+        project,
+        deployment,
+        projectTimestamp,
+        deploymentTimestamp,
+        projectTimestamp - deploymentTimestamp,
+        new Date(projectTimestamp),
+        new Date(deploymentTimestamp),
+        console.log
+      )
+    }
+    return deploymentTimestamp > projectTimestamp ? DeploymentStatus.PUBLISHED : DeploymentStatus.NEEDS_SYNC
   }
 
   return DeploymentStatus.UNPUBLISHED
+}
+
+export function mergeStatuses(statuses: DeploymentStatus[]) {
+  if (statuses.length === 0 || statuses.some(status => status === DeploymentStatus.UNPUBLISHED)) {
+    return DeploymentStatus.UNPUBLISHED
+  } else if (statuses.some(status => status === DeploymentStatus.NEEDS_SYNC)) {
+    return DeploymentStatus.NEEDS_SYNC
+  } else {
+    return DeploymentStatus.PUBLISHED
+  }
+}
+
+export function getDeployment(project: Project | null, deployments: Deployment[]) {
+  // select a deployment that needs sync, or the first one
+  return deployments.find(deployment => getStatus(project, deployment) === DeploymentStatus.NEEDS_SYNC) || deployments[0]
 }
 
 export const getEmptyDeployment = (projectId: string): [Project, Scene] => {

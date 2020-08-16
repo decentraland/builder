@@ -7,7 +7,7 @@ import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
 import { LandTile, RoleType } from 'modules/land/types'
 import { ProgressStage, DeploymentStatus, Deployment } from './types'
 import { DeploymentState } from './reducer'
-import { getStatus } from './utils'
+import { getStatus, mergeStatuses } from './utils'
 import { idToCoords, coordsToId } from 'modules/land/utils'
 
 export const getState = (state: RootState) => state.deployment
@@ -23,44 +23,52 @@ export const getDeploymentsByProjectId = createSelector<
   RootState,
   DeploymentState['data'],
   Record<string, Project>,
-  Record<string, Deployment>
+  Record<string, Deployment[]>
 >(getData, getUserProjects, (deployments, projects) => {
-  let out: Record<string, Deployment> = {}
+  let out: Record<string, Deployment[]> = {}
   for (const deployment of Object.values(deployments)) {
     const project = deployment.projectId && deployment.projectId in projects ? projects[deployment.projectId] : null
     if (project) {
-      out[project.id] = deployment
+      const exists = project.id in out
+      if (!exists) {
+        out[project.id] = []
+      }
+      out[project.id].push(deployment)
     }
   }
   return out
 })
 
-export const getCurrentDeployment = createSelector<RootState, Record<string, Deployment>, Project | null, Deployment | null>(
+export const getCurrentDeployments = createSelector<RootState, Record<string, Deployment[]>, Project | null, Deployment[]>(
   getDeploymentsByProjectId,
   getCurrentProject,
   (deploymentsByProjectId, project) => {
-    return project && project.id in deploymentsByProjectId ? deploymentsByProjectId[project.id] : null
+    return project && project.id in deploymentsByProjectId ? deploymentsByProjectId[project.id] : []
   }
 )
 
 export const getDeploymentStatusByProjectId = createSelector<
   RootState,
-  Record<string, Deployment>,
+  Record<string, Deployment[]>,
   Record<string, Project>,
   Record<string, DeploymentStatus>
 >(getDeploymentsByProjectId, getUserProjects, (deploymentsByProjectId, projects) => {
   const out: Record<string, DeploymentStatus> = {}
   for (const project of Object.values(projects)) {
-    out[project.id] = getStatus(project, deploymentsByProjectId[project.id] || null)
+    const deployments = deploymentsByProjectId[project.id] || []
+    const statuses = deployments.map(deployment => getStatus(project, deployment))
+    const status = mergeStatuses(statuses)
+    out[project.id] = status
   }
+  console.log(out)
   return out
 })
 
-export const getCurrentDeploymentStatus = createSelector<RootState, Project | null, Deployment | null, DeploymentStatus>(
+export const getCurrentDeploymentStatus = createSelector<RootState, Project | null, Record<string, DeploymentStatus>, DeploymentStatus>(
   getCurrentProject,
-  getCurrentDeployment,
-  (project, deployment) => {
-    return getStatus(project, deployment)
+  getDeploymentStatusByProjectId,
+  (project, deploymentStatusByProjectId) => {
+    return project ? deploymentStatusByProjectId[project.id] : DeploymentStatus.UNPUBLISHED
   }
 )
 export const getEmptyTiles = createSelector<RootState, Record<string, Deployment>, Record<string, LandTile>, Record<string, Tile>>(

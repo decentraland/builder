@@ -112,13 +112,20 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
       }
     }
     case DEPLOY_TO_LAND_SUCCESS: {
-      const { deployment } = action.payload
+      const { deployment, overrideDeploymentId } = action.payload
+
+      const newData = {
+        ...state.data,
+        [deployment.id]: deployment
+      }
+
+      if (overrideDeploymentId) {
+        delete newData[overrideDeploymentId]
+      }
+
       return {
         ...state,
-        data: {
-          ...state.data,
-          [deployment.id]: deployment
-        },
+        data: newData,
         progress: {
           stage: ProgressStage.NONE,
           value: 0

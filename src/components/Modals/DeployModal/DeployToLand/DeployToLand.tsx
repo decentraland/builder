@@ -4,15 +4,18 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
+import { getDeployment, getStatus } from 'modules/deployment/utils'
 import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
+import { coordsToId } from 'modules/land/utils'
 
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
     placement: null,
     needsConfirmation: false,
+    coords: null,
     view: DeployToLandView.NONE
   }
 
@@ -24,11 +27,11 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   componentWillReceiveProps(props: Props) {
-    if (props.deployment) {
-      // If a deployment exists, it means we can skip the Atlas (we are updating)
+    const { project, deployments } = props
+    if (deployments.length > 0) {
+      const deployment = getDeployment(project, deployments)
       this.setState({
-        needsConfirmation: true,
-        placement: { ...props.deployment.placement }
+        placement: { ...deployment.placement }
       })
     }
   }
@@ -47,21 +50,23 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       isCreatingFiles,
       isUploadingRecording,
       media,
-      deploymentStatus,
-      deployment,
+      project,
+      deploymentsByCoord,
       error
     } = this.props
-    const { needsConfirmation } = this.state
+    const { coords, needsConfirmation } = this.state
     const isLoading = isRecording || isUploadingAssets || isCreatingFiles || isUploadingRecording
     let view: DeployToLandView = DeployToLandView.NONE
+
+    const deployment = coords && deploymentsByCoord[coords]
 
     if (!isConnected) {
       view = DeployToLandView.CONNECT
     } else if (isConnected && isLoading && !error) {
       view = DeployToLandView.PROGRESS
-    } else if (isConnected && media && !needsConfirmation && !deployment) {
+    } else if (isConnected && media && !needsConfirmation) {
       view = DeployToLandView.MAP
-    } else if (!isLoading && needsConfirmation && deploymentStatus === DeploymentStatus.PUBLISHED) {
+    } else if (!isLoading && deployment && getStatus(project, deployment) === DeploymentStatus.PUBLISHED) {
       view = DeployToLandView.SUCCESS
     } else if (isConnected && media && (!isLoading || error) && needsConfirmation) {
       view = DeployToLandView.CONFIRMATION
@@ -93,12 +98,12 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   handleDeploy = () => {
-    const { placement } = this.state
+    const { placement, overrideDeploymentId } = this.state
     const { project } = this.props
 
     if (placement && project) {
-      this.setState({ needsConfirmation: true })
-      this.props.onDeploy(project.id, placement)
+      this.setState({ needsConfirmation: true, coords: coordsToId(placement.point.x, placement.point.y) })
+      this.props.onDeploy(project.id, placement, overrideDeploymentId)
     }
   }
 
@@ -106,9 +111,10 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     this.props.onConnect()
   }
 
-  handleConfirmPlacement = (placement: State['placement']) => {
+  handleConfirmPlacement = (placement: State['placement'], overrideDeploymentId?: string) => {
     this.setState({
       placement,
+      overrideDeploymentId,
       needsConfirmation: true
     })
   }
@@ -183,7 +189,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderConfirmation = () => {
-    const { media, project, error, deployment } = this.props
+    const { media, project, error, deployments } = this.props
     const { placement } = this.state
     const { rows, cols } = project.layout
 
@@ -191,7 +197,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
       <div className="DeployToLand confirmation">
         <div className="modal-header">
           <Icon name="modal-close" onClick={this.handleClose} />
-          {!deployment && <Icon name="modal-back" onClick={this.handleBack} />}
+          {deployments.length === 0 && <Icon name="modal-back" onClick={this.handleBack} />}
         </div>
         <Header size="large" className="modal-title">
           {t('deployment_modal.pool.title')}
@@ -229,8 +235,8 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   renderMap = () => {
-    const { ethAddress, media, project, deployment, deploymentsByCoord, landTiles, isLoggedIn } = this.props
-    const initialPoint = deployment ? deployment.placement.point : undefined
+    const { ethAddress, media, project, deployments, deploymentsByCoord, landTiles, isLoggedIn } = this.props
+    const deployment = getDeployment(project, deployments)
     return (
       <div className="DeployToLand atlas">
         <div className="modal-header">
@@ -246,7 +252,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           project={project}
           deploymentsByCoord={deploymentsByCoord}
           landTiles={landTiles}
-          initialPoint={initialPoint}
+          deployment={deployment}
           onConfirmPlacement={this.handleConfirmPlacement}
           onNoAuthorizedParcels={this.handleDeployToPool}
           onClearDeployment={this.handleClearDeployment}

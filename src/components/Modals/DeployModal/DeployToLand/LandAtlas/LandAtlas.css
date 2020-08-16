@@ -116,6 +116,15 @@
   user-select: none;
 }
 
+.LandAtlas .notice + .thumbnail {
+  top: calc(64px + 56px);
+}
+
+.LandAtlas .notice .icon.warning.sign {
+  color: var(--danger);
+  margin-right: 8px;
+}
+
 .LandAtlas .inline-action {
   text-transform: uppercase;
   font-size: 12px;

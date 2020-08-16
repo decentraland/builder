@@ -129,6 +129,12 @@
       "title": "喜欢这个场景吗？"
     }
   },
+  "deployment_status": {
+    "online": "发布到{coords}",
+    "online_multiple": "在{count}个位置发布",
+    "needs_sync": "在{coords}发布，但已过时",
+    "needs_sync_multiple": "{count}个场景需要更新"
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -151,7 +157,7 @@
       "confirmation": {
         "action": "发布",
         "description": "您将发布以下场景到土地:",
-        "location_label": "发布到",
+        "location_label": "发布到{coords}",
         "size_label": "大小",
         "title_label": "标题"
       },

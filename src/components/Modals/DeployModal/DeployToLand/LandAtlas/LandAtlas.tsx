@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { Layer, Button, Popup } from 'decentraland-ui'
+import { Layer, Button, Popup, Icon as DCLIcon } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
@@ -33,14 +33,18 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   analytics = getAnalytics()
 
   getBaseState(): State {
-    const { initialPoint, landTiles } = this.props
+    const { deployment, landTiles } = this.props
     const coords = Object.keys(landTiles)
     return {
-      placement: null,
+      placement: deployment ? deployment.placement : null,
       hover: { x: 0, y: 0 },
       rotation: 'north',
       zoom: 1,
-      landTarget: initialPoint ? `${initialPoint.x},${initialPoint.y}` : coords.length > 0 ? coords[0] : '0,0'
+      landTarget: deployment
+        ? coordsToId(deployment.placement.point.x, deployment.placement.point.y)
+        : coords.length > 0
+        ? coords[0]
+        : '0,0'
     }
   }
 
@@ -109,8 +113,9 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   handleSelectPlacement = () => {
     const { placement } = this.state
     const { onConfirmPlacement } = this.props
+    const overlappedDeployment = this.getOverlappedDeployemnt()
     if (placement) {
-      onConfirmPlacement(placement)
+      overlappedDeployment ? onConfirmPlacement(placement, overlappedDeployment.id) : onConfirmPlacement(placement)
     }
   }
 
@@ -168,14 +173,19 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     return input
   }
 
-  hasOccupiedParcels = () => {
+  getOverlappedDeployemnt = () => {
     const { deploymentsByCoord, project } = this.props
     const { placement } = this.state
     if (project && placement) {
-      const projectParcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
-      return projectParcels.some(parcel => !!deploymentsByCoord[coordsToId(parcel.x, parcel.y)])
+      const parcels = getParcelOrientation(project.layout, placement.point, placement.rotation)
+      for (const parcel of parcels) {
+        const deploymentInCoord = deploymentsByCoord[coordsToId(parcel.x, parcel.y)]
+        if (deploymentInCoord) {
+          return deploymentInCoord
+        }
+      }
     }
-    return false
+    return null
   }
 
   renderTool = (icon: IconName, tooltip: string, clickHandler: () => void) => {
@@ -196,13 +206,21 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { media, project, landTiles } = this.props
+    const { media, project, landTiles, deployment } = this.props
     const { placement, rotation, zoom, landTarget } = this.state
     const hasPlacement = !!placement
     const parcelCount = Object.keys(landTiles).length
     const [targetX, targetY] = landTarget ? idToCoords(landTarget) : [0, 0]
     const target: Coordinate = { x: targetX, y: targetY }
-    const hasOccupiedParcels = this.hasOccupiedParcels()
+    const overlappedDeployment = this.getOverlappedDeployemnt()
+    const conflictingDeployment =
+      overlappedDeployment &&
+      deployment &&
+      overlappedDeployment.projectId &&
+      deployment.projectId &&
+      overlappedDeployment.projectId !== deployment.projectId
+        ? overlappedDeployment
+        : null
     const { rows, cols } = project.layout
 
     return (
@@ -215,7 +233,12 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             </span>
           </div>
         )}
-        {hasOccupiedParcels && <div className="notice">{t('deployment_modal.land.map.occupied_warning')}</div>}
+        {conflictingDeployment && (
+          <div className="notice">
+            <DCLIcon name="warning sign" />
+            {t('deployment_modal.land.map.occupied_warning', { name: conflictingDeployment.name })}
+          </div>
+        )}
         {parcelCount !== 0 && (
           <div className={'thumbnail' + (hasPlacement ? ' disable-rotate' : '')}>
             <img src={media ? media[rotation] : ''} />
@@ -268,14 +291,17 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
             className="publish-disabled modal-tooltip"
             content={
               <span>
-                <T id="deployment_modal.land.map.occupied_tooltip" values={{ br: <br /> }} />
+                <T
+                  id="deployment_modal.land.map.occupied_tooltip"
+                  values={{ name: conflictingDeployment ? conflictingDeployment.name : '', br: <br /> }}
+                />
               </span>
             }
             position="top center"
-            disabled={!hasOccupiedParcels}
+            disabled={!conflictingDeployment}
             trigger={
               <span>
-                <Button primary size="small" disabled={!hasPlacement || hasOccupiedParcels} onClick={this.handleSelectPlacement}>
+                <Button primary size="small" disabled={!hasPlacement || !!conflictingDeployment} onClick={this.handleSelectPlacement}>
                   {t('deployment_modal.land.map.continue')}
                 </Button>
               </span>

@@ -147,6 +147,10 @@ export const projectReducer = (state = INITIAL_STATE, action: ProjectReducerActi
     }
     case LOAD_MANIFEST_SUCCESS: {
       const { manifest } = action.payload
+      const prevProject = state.data[manifest.project.id]
+      if (prevProject) {
+        return state // no need to update state if project is already there. This prevents changing the project in the state with an outdated one from the manifest in S3.
+      }
       return {
         ...state,
         data: {

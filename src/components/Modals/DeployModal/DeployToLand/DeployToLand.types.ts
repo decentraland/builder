@@ -27,7 +27,7 @@ export type Props = {
   project: Project
   media: Media | null
   deploymentStatus: DeploymentStatus
-  deployment: Deployment | null
+  deployments: Deployment[]
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   onConnect: typeof enableWalletRequest
@@ -46,6 +46,8 @@ export type State = {
     rotation: Rotation
   } | null
   needsConfirmation: boolean
+  coords: string | null
+  overrideDeploymentId?: string
   view: DeployToLandView
 }
 
@@ -64,7 +66,7 @@ export type MapStateProps = Pick<
   | 'ethAddress'
   | 'project'
   | 'deploymentStatus'
-  | 'deployment'
+  | 'deployments'
   | 'mediaProgress'
   | 'deploymentProgress'
   | 'deploymentsByCoord'

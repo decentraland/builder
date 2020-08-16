@@ -23,8 +23,10 @@ export const DEPLOY_TO_LAND_REQUEST = '[Request] Deploy to LAND'
 export const DEPLOY_TO_LAND_SUCCESS = '[Success] Deploy to LAND'
 export const DEPLOY_TO_LAND_FAILURE = '[Failure] Deploy to LAND'
 
-export const deployToLandRequest = (projectId: string, placement: Placement) => action(DEPLOY_TO_LAND_REQUEST, { projectId, placement })
-export const deployToLandSuccess = (deployment: Deployment) => action(DEPLOY_TO_LAND_SUCCESS, { deployment })
+export const deployToLandRequest = (projectId: string, placement: Placement, overrideDeploymentId?: string) =>
+  action(DEPLOY_TO_LAND_REQUEST, { projectId, placement, overrideDeploymentId })
+export const deployToLandSuccess = (deployment: Deployment, overrideDeploymentId?: string) =>
+  action(DEPLOY_TO_LAND_SUCCESS, { deployment, overrideDeploymentId })
 export const deployToLandFailure = (error: string) => action(DEPLOY_TO_LAND_FAILURE, { error })
 
 export type DeployToLandRequestAction = ReturnType<typeof deployToLandRequest>

@@ -10,7 +10,7 @@ import {
   getError as getDeploymentError,
   isCreatingFiles,
   getCurrentDeploymentStatus,
-  getCurrentDeployment,
+  getCurrentDeployments,
   isUploadingRecording
 } from 'modules/deployment/selectors'
 import { deployToLandRequest } from 'modules/deployment/actions'
@@ -42,7 +42,7 @@ const mapState = (state: RootState): MapStateProps => {
     deploymentStatus: getCurrentDeploymentStatus(state),
     deploymentsByCoord: getDeploymentsByCoord(state),
     landTiles: getLandTiles(state),
-    deployment: getCurrentDeployment(state),
+    deployments: getCurrentDeployments(state),
     error: getDeploymentError(state)
   }
 }
@@ -50,7 +50,7 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onConnect: () => dispatch(enableWalletRequest()),
   onRecord: () => dispatch(recordMediaRequest()),
-  onDeploy: (projectId, placement) => dispatch(deployToLandRequest(projectId, placement)),
+  onDeploy: (projectId, placement, overrideDeploymentId) => dispatch(deployToLandRequest(projectId, placement, overrideDeploymentId)),
   onNavigateHome: () => dispatch(push(locations.root()))
 })
 

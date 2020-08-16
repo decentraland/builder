@@ -134,6 +134,12 @@
       "title": "Like this scene?"
     }
   },
+  "deployment_status": {
+    "online": "Published at {coords}",
+    "online_multiple": "Published at {count} locations",
+    "needs_sync": "An earlier version was published at {coords} but latest changes haven't been published yet",
+    "needs_sync_multiple": "{count} {count, plural, one {scene needs} other {scenes need}} to be updated"
+  },
   "deployment_modal": {
     "clear": {
       "confirmation": {
@@ -156,7 +162,7 @@
       "confirmation": {
         "action": "Publish",
         "description": "You are publishing the following Scene to your LANDs:",
-        "location_label": "Published at",
+        "location_label": "Published at {coords}",
         "size_label": "Size",
         "title_label": "Title"
       },
@@ -169,8 +175,8 @@
         "locate_land": "Locate next LAND",
         "no_land_action": "Submit to Scene pool",
         "no_land_warning": "It seems that you don't own any LAND",
-        "occupied_tooltip": "Free up LAND space{br}Unpublish Scenes from your dashboard",
-        "occupied_warning": "At least one Scene is already published at this location",
+        "occupied_tooltip": "You can't publish here{br}It's overlapping with the scene \"{name}\"",
+        "occupied_warning": "This location is overlapping with the scene \"{name}\"",
         "placement_active": "Placing a {count} LAND Scene at {x},{y}",
         "placement_default": "Select the LANDs that will host your Scene",
         "reset": "Reset",

@@ -8,11 +8,11 @@ export type Props = {
   project: Project
   media: Media | null
   isLoggedIn: boolean
-  initialPoint?: Coordinate
+  deployment?: Deployment | null
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   onNoAuthorizedParcels: () => void
-  onConfirmPlacement: (placement: Placement) => void
+  onConfirmPlacement: (placement: Placement, overrideDeploymentId?: string) => void
   onClearDeployment: (projectId: string) => void
 }
 
