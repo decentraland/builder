@@ -123,10 +123,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
     this.props.onDeployToPool()
   }
 
-  handleClearDeployment = (projectId: string) => {
-    this.props.onClearDeployment(projectId)
-  }
-
   renderConnectForm = () => {
     const { walletError, isConnecting } = this.props
     let errorClasses = 'error'
@@ -255,7 +251,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
           deployment={deployment}
           onConfirmPlacement={this.handleConfirmPlacement}
           onNoAuthorizedParcels={this.handleDeployToPool}
-          onClearDeployment={this.handleClearDeployment}
           isLoggedIn={isLoggedIn}
         />
       </div>

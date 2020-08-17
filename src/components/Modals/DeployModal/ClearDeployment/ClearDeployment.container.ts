@@ -4,21 +4,20 @@ import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/acti
 import { getError as getWalletError, isConnecting, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { RootState } from 'modules/common/types'
-import { getData as getProjects } from 'modules/project/selectors'
+import { getData as getDeployments } from 'modules/deployment/selectors'
 import {
   isUploadingAssets,
   getProgress as getUploadProgress,
   isCreatingFiles,
-  getDeploymentStatusByProjectId,
   getError as getDeploymentError
 } from 'modules/deployment/selectors'
 
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ClearDeployment.types'
-import WalletSignIn from './ClearDeployment'
+import ClearDeployment from './ClearDeployment'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
-    project: getProjects(state)[ownProps.projectId],
+    deployment: getDeployments(state)[ownProps.deploymentId] || null,
     isConnecting: isConnecting(state),
     isConnected: isConnected(state),
     isUploadingAssets: isUploadingAssets(state),
@@ -26,7 +25,6 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     hasError: !!getWalletError(state),
     ethAddress: getAddress(state),
     deploymentProgress: getUploadProgress(state),
-    deploymentStatus: getDeploymentStatusByProjectId(state)[ownProps.projectId],
     error: getDeploymentError(state)
   }
 }
@@ -36,4 +34,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onClearDeployment: deploymentId => dispatch(clearDeploymentRequest(deploymentId))
 })
 
-export default connect(mapState, mapDispatch)(WalletSignIn)
+export default connect(mapState, mapDispatch)(ClearDeployment)

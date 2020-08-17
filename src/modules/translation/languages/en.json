@@ -144,7 +144,7 @@
     "clear": {
       "confirmation": {
         "action": "Unpublish",
-        "description": "You are about to unpublish \"{project}\" from the Metaverse",
+        "description": "You are about to unpublish \"{project}\" from {coords}",
         "title": "Unpublish Scene"
       },
       "connect": {
@@ -346,7 +346,8 @@
     "revoke": "Revoke",
     "parcel_plural": "parcels",
     "estate_plural": "estates",
-    "settings": "Settings"
+    "settings": "Settings",
+    "copy": "Copy"
   },
   "navigation": {
     "scenes": "Scenes",

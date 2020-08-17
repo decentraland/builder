@@ -35,7 +35,6 @@ export type Props = {
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
   onDeployToPool: () => void
-  onClearDeployment: (projectId: string) => void
   onBack: () => void
   onNavigateHome: () => void
 }

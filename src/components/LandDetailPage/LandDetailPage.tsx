@@ -38,7 +38,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderDetail(land: Land, deployments: Deployment[]) {
-    const { onNavigate, onOpenModal, parcelsAvailableToBuildEstates } = this.props
+    const { onNavigate, onOpenModal, parcelsAvailableToBuildEstates, projects } = this.props
     const occupiedTotal = deployments.reduce((total, deployment) => total + deployment.parcels.length, 0)
     const selection = getSelection(land)
     const [x, y] = getCenter(selection)
@@ -135,7 +135,14 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             ) : (
               <div className="deployments">
                 {deployments.map(deployment => (
-                  <Scene deployment={deployment} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} />
+                  <Scene
+                    deployment={deployment}
+                    onMouseEnter={this.handleMouseEnter}
+                    onMouseLeave={this.handleMouseLeave}
+                    onNavigate={onNavigate}
+                    onOpenModal={onOpenModal}
+                    projects={projects}
+                  />
                 ))}
               </div>
             )}

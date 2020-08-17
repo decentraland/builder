@@ -13,3 +13,15 @@ export const getLandId = (state: RootState) => {
   const result = landIdMatchSelector(state)
   return result ? result.params.landId : null
 }
+
+const projectIdMatchSelector = createMatchSelector<
+  RootState,
+  {
+    projectId: string
+  }
+>(locations.sceneDetail())
+
+export const getProjectId = (state: RootState) => {
+  const result = projectIdMatchSelector(state)
+  return result ? result.params.projectId : null
+}

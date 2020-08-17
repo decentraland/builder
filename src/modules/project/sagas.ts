@@ -35,7 +35,9 @@ import {
   LOAD_PUBLIC_PROJECT_REQUEST,
   ShareProjectAction,
   SHARE_PROJECT,
-  EDIT_PROJECT_THUMBNAIL
+  EDIT_PROJECT_THUMBNAIL,
+  DELETE_PROJECT,
+  DeleteProjectAction
 } from 'modules/project/actions'
 
 import { Project } from 'modules/project/types'
@@ -59,6 +61,8 @@ import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
+import { push } from 'connected-react-router'
+import { locations } from 'routing/locations'
 
 const DEFAULT_GROUND_ASSET: Asset = {
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
@@ -97,6 +101,7 @@ export function* projectSaga() {
   yield takeLatest(LOAD_PROJECTS_REQUEST, handleLoadProjectsRequest)
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
+  yield takeLatest(DELETE_PROJECT, handleDeleteProject)
 }
 
 function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
@@ -158,6 +163,7 @@ function* handleDuplicateProject(action: DuplicateProjectAction) {
 
   yield put(createScene(newScene))
   yield put(createProject(newProject))
+  yield put(push(locations.root()))
 }
 
 function* handleEditProject(action: EditProjectAction) {
@@ -294,4 +300,8 @@ function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
 
 function* handleLoginSuccess(_action: LoginSuccessAction) {
   yield put(loadProjectsRequest())
+}
+
+function* handleDeleteProject(_action: DeleteProjectAction) {
+  yield put(push(locations.root()))
 }

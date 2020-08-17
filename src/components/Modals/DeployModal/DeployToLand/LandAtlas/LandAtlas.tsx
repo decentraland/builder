@@ -298,10 +298,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
               </span>
             }
             position="top center"
-            disabled={!conflictingDeployment}
+            disabled
             trigger={
               <span>
-                <Button primary size="small" disabled={!hasPlacement || !!conflictingDeployment} onClick={this.handleSelectPlacement}>
+                <Button primary size="small" disabled={!hasPlacement} onClick={this.handleSelectPlacement}>
                   {t('deployment_modal.land.map.continue')}
                 </Button>
               </span>

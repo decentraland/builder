@@ -12,7 +12,7 @@ import './DeployModal.css'
 export default class DeployModal extends React.PureComponent<Props, State> {
   state: State = {
     view: DeployModalView.NONE,
-    projectId: null
+    deploymentId: null
   }
 
   componentDidMount() {
@@ -20,7 +20,7 @@ export default class DeployModal extends React.PureComponent<Props, State> {
     if (metadata) {
       this.setState({
         view: metadata.view || DeployModalView.NONE,
-        projectId: metadata.projectId || null
+        deploymentId: metadata.deploymentId || null
       })
     }
   }
@@ -34,13 +34,6 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   handleDeployToPool = () => {
     this.setState({
       view: DeployModalView.DEPLOY_TO_POOL
-    })
-  }
-
-  handleClearDeployment = (projectId: string) => {
-    this.setState({
-      view: DeployModalView.CLEAR_DEPLOYMENT,
-      projectId
     })
   }
 
@@ -100,23 +93,15 @@ export default class DeployModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { view, projectId } = this.state
+    const { view, deploymentId } = this.state
     const { name, currentPoolGroup } = this.props
 
-    if (view === DeployModalView.CLEAR_DEPLOYMENT && projectId) {
-      return <ClearDeployment projectId={projectId} name={name} onClose={this.handleClose} />
+    if (view === DeployModalView.CLEAR_DEPLOYMENT && deploymentId) {
+      return <ClearDeployment deploymentId={deploymentId} name={name} onClose={this.handleClose} />
     }
 
     if (view === DeployModalView.DEPLOY_TO_LAND || currentPoolGroup) {
-      return (
-        <DeployToLand
-          name={name}
-          onDeployToPool={this.handleDeployToPool}
-          onClearDeployment={this.handleClearDeployment}
-          onBack={this.handleBack}
-          onClose={this.handleClose}
-        />
-      )
+      return <DeployToLand name={name} onDeployToPool={this.handleDeployToPool} onBack={this.handleBack} onClose={this.handleClose} />
     }
 
     if (view === DeployModalView.DEPLOY_TO_POOL) {

@@ -3,7 +3,6 @@ import { Button, Loader, Header } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { DeploymentStatus } from 'modules/deployment/types'
 import Icon from 'components/Icon'
 import { Props, State } from './ClearDeployment.types'
 import './ClearDeployment.css'
@@ -21,10 +20,10 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   handleClearDeploy = () => {
-    const { project } = this.props
+    const { deployment } = this.props
 
-    if (project) {
-      this.props.onClearDeployment(project.id)
+    if (deployment) {
+      this.props.onClearDeployment(deployment.id)
     }
   }
 
@@ -90,7 +89,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderConfirmation = () => {
-    const { project, error } = this.props
+    const { deployment, error } = this.props
 
     return (
       <div className="ClearDeployment confirmation">
@@ -101,7 +100,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
           {t('deployment_modal.clear.confirmation.title')}
         </Header>
         <p className="modal-subtitle">
-          <T id="deployment_modal.clear.confirmation.description" values={{ project: project!.title }} />
+          <T id="deployment_modal.clear.confirmation.description" values={{ project: deployment!.name, coords: deployment!.base }} />
         </p>
 
         <Button primary size="small" onClick={this.handleClearDeploy}>
@@ -131,7 +130,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   renderView = () => {
-    const { isConnected, isUploadingAssets, isCreatingFiles, deploymentStatus, error } = this.props
+    const { isConnected, isUploadingAssets, isCreatingFiles, deployment, error } = this.props
     const { needsConfirmation } = this.state
     const isLoading = isUploadingAssets || isCreatingFiles
 
@@ -139,7 +138,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
 
     if (isConnected && isLoading && !error) return this.renderProgress()
 
-    if (!isLoading && needsConfirmation && deploymentStatus === DeploymentStatus.UNPUBLISHED) return this.renderSuccess()
+    if (!isLoading && needsConfirmation && !deployment) return this.renderSuccess()
 
     if (isConnected && (!isLoading || error) && needsConfirmation) return this.renderConfirmation()
 

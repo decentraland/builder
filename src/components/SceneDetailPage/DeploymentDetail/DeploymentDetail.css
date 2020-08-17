@@ -1,43 +1,32 @@
-.Scene {
+.DeploymentDetail {
   border-bottom: 1px solid var(--divider);
   height: 80px;
   display: flex;
   align-items: center;
 }
 
-.Scene:first-child {
+.DeploymentDetail:first-child {
   border-top: 1px solid var(--divider);
 }
 
-.Scene.clickable:hover {
+.DeploymentDetail.clickable:hover {
   background-color: rgba(36, 33, 41, 0.4);
   cursor: pointer;
 }
 
-.Scene .thumbnail {
+.DeploymentDetail .atlas-wrapper {
   width: 96px;
   height: 64px;
-  background-size: cover;
-  background-position: center;
   background-color: var(--card);
-  background-image: url(../../../images/watermelon.svg);
   border-radius: 8px;
   margin-right: 24px;
 }
 
-.Scene .no-thumbnail {
-  width: 96px;
-  height: 64px;
-  background-color: var(--card);
-  background-image: url(../../../images/watermelon.svg);
-  background-size: 32px;
-  background-repeat: no-repeat;
-  background-position: center;
+.DeploymentDetail .atlas-wrapper canvas {
   border-radius: 8px;
-  margin-right: 24px;
 }
 
-.Scene .title {
+.DeploymentDetail .title {
   font-size: 15px;
   font-weight: 600;
   font-stretch: normal;
@@ -46,17 +35,34 @@
   letter-spacing: normal;
 }
 
-.Scene .stat {
+.DeploymentDetail .stat {
   display: flex;
   flex-direction: column;
   min-width: 96px;
 }
 
-.Scene .stat + .stat {
+.DeploymentDetail .stat + .stat {
   margin-left: 32px;
 }
 
-.Scene .ui.dropdown {
+.DeploymentDetail .status {
+  width: 10px;
+  height: 10px;
+  margin-bottom: 1px;
+  display: inline-block;
+  border-radius: 100%;
+  margin-right: 6px;
+}
+
+.DeploymentDetail .status.online {
+  background-color: #3fff47;
+}
+
+.DeploymentDetail .status.needs-sync {
+  background-color: orange;
+}
+
+.DeploymentDetail .ui.dropdown {
   position: absolute;
   right: 0px;
 }

@@ -13,7 +13,6 @@ export type Props = {
   landTiles: Record<string, LandTile>
   onNoAuthorizedParcels: () => void
   onConfirmPlacement: (placement: Placement, overrideDeploymentId?: string) => void
-  onClearDeployment: (projectId: string) => void
 }
 
 export type State = {

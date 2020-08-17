@@ -18,5 +18,6 @@ export const locations = {
   landEdit: (landId = ':landId') => `/land/${landId}/edit`,
   landOperator: (landId = ':landId') => `/land/${landId}/operator`,
   activity: () => `/activity`,
-  settings: () => `/settings`
+  settings: () => `/settings`,
+  sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`
 }

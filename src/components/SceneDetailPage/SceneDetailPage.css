@@ -1,0 +1,24 @@
+.SceneDetailPage {
+  margin-top: 24px;
+}
+
+.SceneDetailPage .header-image {
+  height: 300px;
+  width: 100%;
+  border-radius: 8px;
+  background-color: var(--card);
+  background-size: cover;
+  background-position: center;
+}
+
+.SceneDetailPage .capitalize .ui.header:not(.sub) {
+  text-transform: capitalize;
+}
+
+.SceneDetailPage .dcl.column.actions {
+  margin-left: 20px;
+}
+
+.SceneDetailPage .dcl.section.medium.no-margin-bottom {
+  margin-bottom: 0px;
+}

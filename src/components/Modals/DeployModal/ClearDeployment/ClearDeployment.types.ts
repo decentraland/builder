@@ -1,22 +1,20 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
 import { EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { DeploymentStatus } from 'modules/deployment/types'
+import { Deployment } from 'modules/deployment/types'
 import { clearDeploymentRequest, ClearDeploymentRequestAction } from 'modules/deployment/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
-import { Project } from 'modules/project/types'
 
 export type Props = SignInProps & {
   error: string | null
   name: string
-  projectId: string
+  deploymentId: string
   isConnected: boolean
   isUploadingAssets: boolean
   isCreatingFiles: boolean
   deploymentProgress: DeploymentState['progress']
   ethAddress: string | undefined
-  project: Project | null
-  deploymentStatus: DeploymentStatus
+  deployment: Deployment | null
   onClose: () => void
   onClearDeployment: typeof clearDeploymentRequest
 }
@@ -26,7 +24,7 @@ export type State = {
   needsConfirmation: boolean
 }
 
-export type OwnProps = Pick<Props, 'projectId'>
+export type OwnProps = Pick<Props, 'deploymentId'>
 
 export type MapStateProps = Pick<
   Props,
@@ -37,8 +35,7 @@ export type MapStateProps = Pick<
   | 'isCreatingFiles'
   | 'isConnected'
   | 'ethAddress'
-  | 'project'
-  | 'deploymentStatus'
+  | 'deployment'
   | 'deploymentProgress'
 >
 

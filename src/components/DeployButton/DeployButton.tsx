@@ -22,7 +22,7 @@ export default class DeployButton extends React.PureComponent<Props> {
 
   handleClick = () => {
     const { project, onOpenModal } = this.props
-    const canUpdate = this.canUpdate()
+    const canUpdate = this.isUpdate()
 
     onOpenModal('DeployModal', {
       view: canUpdate ? DeployModalView.DEPLOY_TO_LAND : DeployModalView.NONE,
@@ -30,7 +30,7 @@ export default class DeployButton extends React.PureComponent<Props> {
     } as DeployModalMetadata)
   }
 
-  canUpdate = () => {
+  isUpdate = () => {
     const { deploymentStatus } = this.props
     return deploymentStatus !== DeploymentStatus.UNPUBLISHED
   }
@@ -53,11 +53,10 @@ export default class DeployButton extends React.PureComponent<Props> {
   }
 
   render() {
-    const { deploymentStatus, areEntitiesOutOfBoundaries, isLoading } = this.props
+    const { areEntitiesOutOfBoundaries, isLoading } = this.props
     const exceededMetric = this.getExceededMetric()
     const didExceedMetrics = exceededMetric !== '' || areEntitiesOutOfBoundaries
-    const canUpdate = this.canUpdate()
-    const isButtonDisabled = isLoading || didExceedMetrics || deploymentStatus === DeploymentStatus.PUBLISHED
+    const isButtonDisabled = isLoading || didExceedMetrics
     const isPopupDisabled = isLoading || !isButtonDisabled
 
     return (
@@ -70,7 +69,7 @@ export default class DeployButton extends React.PureComponent<Props> {
           trigger={
             <span>
               <Button primary size="mini" onClick={this.handleClick} disabled={isButtonDisabled}>
-                {canUpdate ? t('topbar.update_scene') : t('topbar.publish')}
+                {t('topbar.publish')}
               </Button>
             </span>
           }

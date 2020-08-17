@@ -82,7 +82,7 @@ export default class TopBar extends React.PureComponent<Props> {
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
           <Header size="medium" className="project-title-header">
-            <Link className="text" to={locations.root()}>
+            <Link className="text" to={currentProject ? locations.sceneDetail(currentProject.id) : locations.root()}>
               <Icon name="chevron left" />
             </Link>
             {currentProject ? (
