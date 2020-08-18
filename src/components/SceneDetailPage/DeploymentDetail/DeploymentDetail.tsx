@@ -38,7 +38,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
             <i className={`status ${statusClass}`} />
             {statusText}
           </div>
-          {deployment.layout ? <div className="secondary-text">{t('scene_detail_page.status')}</div> : null}
+          <div className="secondary-text">{t('scene_detail_page.status')}</div>
         </div>
         <div className="stat">
           <div className="title">{deployment.base}</div>
