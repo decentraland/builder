@@ -540,6 +540,22 @@
       "title": "糟糕！"
     }
   },
+  "scene_detail_page": {
+    "actions": {
+      "open_in_editor": "在编辑器中打开",
+      "duplicate": "重复",
+      "download": "下载",
+      "delete": "删除",
+      "unpublish": "取消发布"
+    },
+    "published_in": "出版于",
+    "no_deployments": "此场景尚未在Metaverse中发布。",
+    "online": "线上",
+    "unsynced": "未同步",
+    "status": "状态",
+    "location": "位置",
+    "description": "描述"
+  },
   "shortcuts": {
     "delete": "删除",
     "duplicate": "复制",

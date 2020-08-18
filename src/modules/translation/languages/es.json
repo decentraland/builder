@@ -539,6 +539,22 @@
       "title": "¡Oh no!"
     }
   },
+  "scene_detail_page": {
+    "actions": {
+      "open_in_editor": "Abrir en editor",
+      "duplicate": "Duplicar",
+      "download": "Descargar",
+      "delete": "Eliminar",
+      "unpublish": "Despublicar"
+    },
+    "published_in": "Publicada En",
+    "no_deployments": "Esta Escena no ha sido publicada en el Metaverso aún.",
+    "online": "Online",
+    "unsynced": "Desactualizada",
+    "status": "Estado",
+    "location": "Ubicación",
+    "description": "Descripción"
+  },
   "shortcuts": {
     "delete": "Eliminar objeto",
     "duplicate": "Objeto duplicado",
