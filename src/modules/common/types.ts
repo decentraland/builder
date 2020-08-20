@@ -24,6 +24,7 @@ import { IdentityState } from 'modules/identity/reducer'
 import { LandState } from 'modules/land/reducer'
 import { TileState } from 'modules/tile/reducer'
 import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
+import { ItemState } from 'modules/item/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -55,6 +56,7 @@ export type RootState = {
   identity: IdentityState
   land: LandState
   tile: TileState
+  item: ItemState
 }
 
 export type RootStore = Store<RootState>
