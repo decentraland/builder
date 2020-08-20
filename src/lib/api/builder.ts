@@ -14,6 +14,8 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
+import { Item, ItemType } from 'modules/item/types'
+import { Collection } from 'modules/collection/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -385,6 +387,50 @@ export class BuilderAPI extends BaseAPI {
   async fetchProjectsToMigrate() {
     const projects = await this.request('get', `/migrate`, null, authorizeAuth0())
     return projects.map(fromRemoteProject) as Project[]
+  }
+
+  async fetchItems() {
+    const items: Item[] = [
+      {
+        id: 'dummy-item',
+        name: 'Hat',
+        thumbnail: 'Qmthumb',
+        type: ItemType.WEARABLE,
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      }
+    ]
+    return Promise.resolve(items)
+  }
+
+  async saveItem(_item: Item, _contents: Record<string, Blob>) {
+    return new Promise(resolve => setTimeout(resolve, 2000))
+  }
+
+  async fetchCollections() {
+    const collections: Collection[] = [
+      {
+        id: 'dummy-item',
+        name: 'Hat',
+        contractAddress: '0xsombrero',
+        hash: 'asdf',
+        owner: '0xpepe',
+        published: false
+      }
+    ]
+    return Promise.resolve(collections)
+  }
+
+  async saveCollection(_collection: Collection) {
+    return new Promise(resolve => setTimeout(resolve, 2000))
   }
 }
 
