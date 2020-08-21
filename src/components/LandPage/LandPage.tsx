@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Page, Tabs, Center, Loader, Table, Row, Radio, Column, Header, Pagination, Section, Container, Popup } from 'decentraland-ui'
+import { Page, Center, Loader, Table, Row, Radio, Column, Header, Pagination, Section, Container, Popup } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Navbar from 'components/Navbar'
@@ -8,6 +8,8 @@ import Footer from 'components/Footer'
 import Chip from 'components/Chip'
 import { RoleType } from 'modules/land/types'
 import { Atlas } from 'components/Atlas'
+import Navigation from 'components/Navigation'
+import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { LandPageView } from 'modules/ui/land/types'
 import { getCoords } from 'modules/land/utils'
 import TableRow from './TableRow'
@@ -195,15 +197,12 @@ export default class LandPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoggedIn, isLoading, onNavigate, view } = this.props
+    const { isLoggedIn, isLoading, view } = this.props
     return (
       <>
         <Navbar isFullscreen />
         <Page className={`LandPage ${view}-view`} isFullscreen>
-          <Tabs>
-            <Tabs.Tab onClick={() => onNavigate(locations.root())}>{t('navigation.scenes')}</Tabs.Tab>
-            <Tabs.Tab active>{t('navigation.land')}</Tabs.Tab>
-          </Tabs>
+          <Navigation activeTab={NavigationTab.LAND} />
           {!isLoggedIn ? this.renderLogin() : null}
           {isLoggedIn && isLoading ? this.renderLoading() : null}
           {isLoggedIn && !isLoading ? this.renderLand() : null}

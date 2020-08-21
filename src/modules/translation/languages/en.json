@@ -350,7 +350,8 @@
   },
   "navigation": {
     "scenes": "Scenes",
-    "land": "Land"
+    "land": "Land",
+    "avatar": "Avatar"
   },
   "list": {
     "two": "{first} and {second}",

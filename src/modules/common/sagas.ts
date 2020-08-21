@@ -25,6 +25,7 @@ import { identitySaga } from 'modules/identity/sagas'
 import { landSaga } from 'modules/land/sagas'
 import { tileSaga } from 'modules/tile/sagas'
 import { itemSaga } from 'modules/item/sagas'
+import { collectionSaga } from 'modules/collection/sagas'
 
 export function* rootSaga() {
   yield all([
@@ -51,6 +52,7 @@ export function* rootSaga() {
     identitySaga(),
     landSaga(),
     tileSaga(),
-    itemSaga()
+    itemSaga(),
+    collectionSaga()
   ])
 }

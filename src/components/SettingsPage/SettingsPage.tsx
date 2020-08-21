@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Page,
-  Tabs,
   Grid,
   Blockie,
   Mana,
@@ -23,11 +22,12 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import Profile from 'components/Profile'
+import Navigation from 'components/Navigation'
 import { locations } from 'routing/locations'
 import { shorten, isValid } from 'lib/address'
+import { LandType } from 'modules/land/types'
 import { Props, State } from './SettingsPage.types'
 import './SettingsPage.css'
-import { LandType } from 'modules/land/types'
 
 const BUY_MANA_URL = process.env.REACT_APP_BUY_MANA_URL
 
@@ -208,14 +208,11 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoggingIn, isLoggedIn, onNavigate } = this.props
+    const { isLoggingIn, isLoggedIn } = this.props
     return (
       <>
         <Navbar isFullscreen />
-        <Tabs>
-          <Tabs.Tab onClick={() => onNavigate(locations.root())}>{t('navigation.scenes')}</Tabs.Tab>
-          <Tabs.Tab onClick={() => onNavigate(locations.land())}>{t('navigation.land')}</Tabs.Tab>
-        </Tabs>
+        <Navigation />
         <Page className="SettingsPage">
           {isLoggingIn ? this.renderLoading() : null}
           {!isLoggingIn && !isLoggedIn ? this.renderLogin() : null}

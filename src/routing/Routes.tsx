@@ -25,6 +25,7 @@ import LandOperatorPage from 'components/LandOperatorPage'
 import ActivityPage from 'components/ActivityPage'
 import SettingsPage from 'components/SettingsPage'
 import SceneDetailPage from 'components/SceneDetailPage'
+import AvatarPage from 'components/AvatarPage'
 
 import { Props, State } from './Routes.types'
 
@@ -83,6 +84,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
+            <Route exact path={locations.avatar()} component={AvatarPage} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

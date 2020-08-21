@@ -40,6 +40,7 @@ export type Item = {
   id: string // uuid
   name: string
   thumbnail: string
+  owner: string
   description?: string
   collectionId?: string
   tokenId?: string
