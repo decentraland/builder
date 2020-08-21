@@ -19,5 +19,6 @@ export const locations = {
   landOperator: (landId = ':landId') => `/land/${landId}/operator`,
   activity: () => `/activity`,
   settings: () => `/settings`,
-  sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`
+  sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
+  avatar: () => '/avatar'
 }

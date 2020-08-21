@@ -35,7 +35,7 @@ type CollectionReducerAction =
   | SaveCollectionSuccessAction
   | SaveCollectionFailureAction
 
-export function CollectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
+export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
     case FETCH_COLLECTIONS_REQUEST: {
       return {

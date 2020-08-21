@@ -16,6 +16,8 @@ import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
 import { Item, ItemType } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { store } from 'modules/common/store'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -396,6 +398,7 @@ export class BuilderAPI extends BaseAPI {
         name: 'Hat',
         thumbnail: 'Qmthumb',
         type: ItemType.WEARABLE,
+        owner: getAddress(store.getState())!,
         contents: {
           'thumbnail.png': 'Qmthumb',
           'model.gltf': 'Qmmodel',
