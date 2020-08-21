@@ -1,20 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import {
-  Container,
-  Button,
-  Page,
-  Dropdown,
-  DropdownProps,
-  Pagination,
-  PaginationProps,
-  Tabs,
-  Row,
-  Header,
-  Icon,
-  Section
-} from 'decentraland-ui'
+import { Container, Button, Page, Dropdown, DropdownProps, Pagination, PaginationProps, Row, Header, Icon, Section } from 'decentraland-ui'
 
 import BuilderIcon from 'components/Icon'
 import ProjectCard from 'components/ProjectCard'
@@ -23,6 +10,8 @@ import Navbar from 'components/Navbar'
 import LoadingPage from 'components/LoadingPage'
 import SyncToast from 'components/SyncToast'
 import { SortBy } from 'modules/ui/dashboard/types'
+import Navigation from 'components/Navigation'
+import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './HomePage.types'
@@ -186,11 +175,9 @@ export default class HomePage extends React.PureComponent<Props> {
         {needsMigration && !didMigrate ? <TopBanner /> : null}
         <Navbar isFullscreen />
         <Page isFullscreen className="HomePage">
-          <Tabs>
+          <Navigation activeTab={NavigationTab.SCENES}>
             <SyncToast />
-            <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
-            <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
-          </Tabs>
+          </Navigation>
           <Container>
             <div className="projects-menu">
               <div className="items-count">{t('home_page.results', { count: projects.length })}</div>
