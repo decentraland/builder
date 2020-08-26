@@ -14,7 +14,7 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType } from 'modules/item/types'
+import { Item, ItemType, ItemRarity } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { store } from 'modules/common/store'
@@ -318,7 +318,7 @@ export class BuilderAPI extends BaseAPI {
     } as Manifest
 
     /* There are projects retrived from the cloud (S3, not DB) that don't have an ethAddress, even after migration (cos migration only impacts the DB),
-       those projects can be loaded into the app state via the Scene Pool, and they end up with a null ethAddress, and are mixed with projects 
+       those projects can be loaded into the app state via the Scene Pool, and they end up with a null ethAddress, and are mixed with projects
        that the user created while being logged out (no ethAddress either). So to tell them appart we set them a placeholder value.
     */
     if (!manifest.project.ethAddress) {
@@ -392,13 +392,74 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchItems() {
+    const owner = getAddress(store.getState())!
+
     const items: Item[] = [
       {
         id: 'dummy-item',
-        name: 'Hat',
-        thumbnail: 'Qmthumb',
+        name: 'MANA t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',
         type: ItemType.WEARABLE,
-        owner: getAddress(store.getState())!,
+        rarity: ItemRarity.UNIQUE,
+        owner,
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item2',
+        name: 'Decentraland t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/moonshot_2020/wearables/ms_dcl_upper_body/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.LEGENDARY,
+        owner,
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item3',
+        name: 'Cat',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/pm_outtathisworld/wearables/pm_col1_cat_helmet/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.LEGENDARY,
+        owner,
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item4',
+        name: 'Skull',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/halloween_2019/wearables/diamond_skull_mask/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.MYTHIC,
+        owner,
+        collectionId: 'dummy-collection',
         contents: {
           'thumbnail.png': 'Qmthumb',
           'model.gltf': 'Qmmodel',
@@ -421,11 +482,11 @@ export class BuilderAPI extends BaseAPI {
   async fetchCollections() {
     const collections: Collection[] = [
       {
-        id: 'dummy-item',
-        name: 'Hat',
+        id: 'dummy-collection',
+        name: 'Summer Hats',
         contractAddress: '0xsombrero',
         hash: 'asdf',
-        owner: '0xpepe',
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
         published: false
       }
     ]

@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { Page, Center, Loader } from 'decentraland-ui'
+import { Page, Center, Loader, Container, Row, Column, Header, Card } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import Navbar from 'components/Navbar'
-import Navigation from 'components/Navigation'
-import { NavigationTab } from 'components/Navigation/Navigation.types'
-import Footer from 'components/Footer'
-
 import { Link } from 'react-router-dom'
+
 import { locations } from 'routing/locations'
+import { NavigationTab } from 'components/Navigation/Navigation.types'
+import Navigation from 'components/Navigation'
+import Navbar from 'components/Navbar'
+import ItemCard from 'components/ItemCard'
+import CollectionCard from 'components/CollectionCard'
+import Footer from 'components/Footer'
 import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
 
@@ -28,10 +30,33 @@ export default class AvatarPage extends React.PureComponent<Props> {
 
   renderPage() {
     const { items, collections } = this.props
+    const count = items.length + collections.length
     return (
-      <p>
-        There are {items.length} items and {collections.length} collections
-      </p>
+      <>
+        <div className="filters">
+          <Container>
+            <Row height={30}>
+              <Column>
+                <Row>
+                  <Header sub>{t('avatar_page.results', { count })}</Header>
+                </Row>
+              </Column>
+              <Column align="right">
+                <Row>Some filters here</Row>
+              </Column>
+            </Row>
+          </Container>
+        </div>
+
+        <Card.Group>
+          {items.map((item, index) => (
+            <ItemCard key={index} item={item} />
+          ))}
+          {collections.map((collection, index) => (
+            <CollectionCard key={index} collection={collection} />
+          ))}
+        </Card.Group>
+      </>
     )
   }
 

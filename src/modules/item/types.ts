@@ -36,6 +36,26 @@ export enum WearableRepresentation {
   UNISEX = 'unisex'
 }
 
+export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
+  [ItemRarity.UNIQUE]: '#FFE617',
+  [ItemRarity.MYTHIC]: '#FB7DE3',
+  [ItemRarity.LEGENDARY]: '#A657ED',
+  [ItemRarity.EPIC]: '#6397F2',
+  [ItemRarity.RARE]: '#3AD682',
+  [ItemRarity.UNCOMMON]: '#FF8563',
+  [ItemRarity.COMMON]: '#D4E0E0'
+}
+
+export const RARITY_COLOR: Record<ItemRarity, string> = {
+  [ItemRarity.UNIQUE]: '#FFB626',
+  [ItemRarity.MYTHIC]: '#FF63E1',
+  [ItemRarity.LEGENDARY]: '#842DDA',
+  [ItemRarity.EPIC]: '#3D85E6',
+  [ItemRarity.RARE]: '#36CF75',
+  [ItemRarity.UNCOMMON]: '#ED6D4F',
+  [ItemRarity.COMMON]: '#ABC1C1'
+}
+
 export type Item = {
   id: string // uuid
   name: string

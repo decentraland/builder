@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './AvatarPage.types'
-import AvatarPage from './AvatarPage'
 import { openModal } from 'modules/modal/actions'
 import { getItems } from 'modules/item/selectors'
 import { getCollections } from 'modules/collection/selectors'
@@ -12,6 +10,8 @@ import { getLoading as getLoadingCollections } from 'modules/collection/selector
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './AvatarPage.types'
+import AvatarPage from './AvatarPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   items: getItems(state),
