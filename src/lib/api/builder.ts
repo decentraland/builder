@@ -396,6 +396,24 @@ export class BuilderAPI extends BaseAPI {
 
     const items: Item[] = [
       {
+        id: 'item',
+        name: 'Launch t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.UNIQUE,
+        owner,
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
         id: 'dummy-item',
         name: 'MANA t-shirt',
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',

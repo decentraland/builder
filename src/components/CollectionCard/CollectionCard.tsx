@@ -8,8 +8,6 @@ import ItemImage from '../ItemCard/ItemImage'
 import { Props } from './CollectionCard.types'
 import './CollectionCard.css'
 
-const ITEM_IMAGE_SIZE = 248
-
 export default class CollectionCard extends React.PureComponent<Props> {
   renderItemRow(items: Item[]) {
     return items.map((item, index) => <ItemImage key={index} item={item} />)
@@ -20,7 +18,7 @@ export default class CollectionCard extends React.PureComponent<Props> {
 
     const firstItemRow = items.slice(0, 2)
     const secondItemRow = items.slice(2, 4)
-    const itemRowStyle = { height: secondItemRow.length ? ITEM_IMAGE_SIZE / 2 : ITEM_IMAGE_SIZE }
+    const itemRowStyle = { height: secondItemRow.length ? '50%' : '100%' }
 
     return (
       <Card className="CollectionCard" link as={Link} to={locations.collection(collection.id)}>
@@ -28,9 +26,11 @@ export default class CollectionCard extends React.PureComponent<Props> {
           <div className="item-row" style={itemRowStyle}>
             {this.renderItemRow(firstItemRow)}
           </div>
-          <div className="item-row" style={itemRowStyle}>
-            {this.renderItemRow(secondItemRow)}
-          </div>
+          {secondItemRow.length > 0 ? (
+            <div className="item-row" style={itemRowStyle}>
+              {this.renderItemRow(secondItemRow)}
+            </div>
+          ) : null}
         </div>
         <Card.Content>
           <div className="text">{collection.name}</div>

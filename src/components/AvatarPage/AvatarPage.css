@@ -8,6 +8,10 @@
   box-shadow: none;
 }
 
+.AvatarPage .card .item-rows {
+  height: 248px;
+}
+
 .AvatarPage .card .image-wrapper {
   height: 248px;
   padding: 15px;

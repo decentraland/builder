@@ -49,9 +49,11 @@ export default class AvatarPage extends React.PureComponent<Props> {
         </div>
 
         <Card.Group>
-          {items.map((item, index) => (
-            <ItemCard key={index} item={item} />
-          ))}
+          {items
+            .filter(item => item.collectionId === undefined)
+            .map((item, index) => (
+              <ItemCard key={index} item={item} />
+            ))}
           {collections.map((collection, index) => (
             <CollectionCard key={index} collection={collection} />
           ))}
