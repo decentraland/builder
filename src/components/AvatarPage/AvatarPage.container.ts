@@ -13,15 +13,19 @@ import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './AvatarPage.types'
 import AvatarPage from './AvatarPage'
 
-const mapState = (state: RootState): MapStateProps => ({
-  items: getItems(state),
-  collections: getCollections(state),
-  isLoggedIn: isLoggedIn(state),
-  isLoading:
-    isLoggingIn(state) ||
-    isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST) ||
-    isLoadingType(getLoadingCollections(state), FETCH_COLLECTIONS_REQUEST)
-})
+const mapState = (state: RootState): MapStateProps => {
+  const items = getItems(state).filter(item => item.collectionId === undefined)
+
+  return {
+    items,
+    collections: getCollections(state),
+    isLoggedIn: isLoggedIn(state),
+    isLoading:
+      isLoggingIn(state) ||
+      isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST) ||
+      isLoadingType(getLoadingCollections(state), FETCH_COLLECTIONS_REQUEST)
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),

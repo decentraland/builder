@@ -1,3 +1,59 @@
+.AvatarPage .empty {
+  padding: 112px 0;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--divider);
+  justify-content: center;
+  color: var(--secondary-text);
+  text-align: center;
+  line-height: 28px;
+  font-size: 17px;
+}
+
+.AvatarPage .empty .header.title {
+  margin: 0;
+}
+
+.AvatarPage .empty .empty-description {
+  margin: 8px auto 34px;
+  width: 500px;
+}
+
+.AvatarPage .empty .create-new-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.AvatarPage .empty .create-new {
+  width: 240px;
+  height: 204px;
+  position: relative;
+  background-color: rgba(var(--bluish-steel-raw), 0.16);
+  border-radius: 8px;
+  background-position: 50% 35%;
+  cursor: pointer;
+}
+.AvatarPage .empty .create-new:first-child {
+  margin-right: 24px;
+}
+
+.AvatarPage .empty .create-new > .text {
+  position: absolute;
+  flex: 1 1;
+  color: #fff;
+  bottom: 31px;
+  width: 100%;
+}
+
+.AvatarPage .empty .create-new-item {
+  background-image: url('../../images/hat.svg');
+  background-repeat: no-repeat;
+}
+.AvatarPage .empty .create-new-collection {
+  background-image: url('../../images/folder-hat.svg');
+  background-repeat: no-repeat;
+}
+
 .AvatarPage .ui.cards {
   margin-top: 20px;
 }

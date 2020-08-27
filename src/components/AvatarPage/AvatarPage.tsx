@@ -31,6 +31,7 @@ export default class AvatarPage extends React.PureComponent<Props> {
   renderPage() {
     const { items, collections } = this.props
     const count = items.length + collections.length
+
     return (
       <>
         <div className="filters">
@@ -49,14 +50,31 @@ export default class AvatarPage extends React.PureComponent<Props> {
         </div>
 
         <Card.Group>
-          {items
-            .filter(item => item.collectionId === undefined)
-            .map((item, index) => (
-              <ItemCard key={index} item={item} />
-            ))}
-          {collections.map((collection, index) => (
-            <CollectionCard key={index} collection={collection} />
-          ))}
+          {count >= 0 ? (
+            <>
+              {items.map((item, index) => (
+                <ItemCard key={index} item={item} />
+              ))}
+              {collections.map((collection, index) => (
+                <CollectionCard key={index} collection={collection} />
+              ))}
+            </>
+          ) : (
+            <div className="empty">
+              <Header className="title" size="large">
+                {t('avatar_page.no_items')}
+              </Header>
+              <div className="empty-description">{t('avatar_page.empty_description')}</div>
+              <div className="create-new-wrapper">
+                <div className="create-new create-new-item">
+                  <div className="text">{t('avatar_page.new_item')}</div>
+                </div>
+                <div className="create-new create-new-collection">
+                  <div className="text">{t('avatar_page.new_collection')}</div>
+                </div>
+              </div>
+            </div>
+          )}
         </Card.Group>
       </>
     )
