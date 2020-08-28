@@ -1,22 +1,86 @@
 import * as React from 'react'
+import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { locations } from 'routing/locations'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import Icon from 'components/Icon'
+import ItemImage from 'components/ItemCard/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import { Props } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
 
+const STORAGE_KEY = 'dcl-item-notice'
+
 export default class ItemDetailPage extends React.PureComponent<Props> {
+  state = {
+    isNoticeClosed: localStorage.getItem(STORAGE_KEY) !== null
+  }
+
+  handleCloseNotice = () => {
+    this.setState({ isNoticeClosed: true })
+    localStorage.setItem(STORAGE_KEY, '1')
+  }
+
   renderPage() {
-    const { item } = this.props
-    return item === null ? <NotFound /> : <div>{item.name}</div>
+    const { onNavigate } = this.props
+    const { isNoticeClosed } = this.state
+    const item = this.props.item!
+
+    return (
+      <>
+        <Section>
+          <Row>
+            <Back absolute onClick={() => onNavigate(locations.avatar())} />
+            <Narrow>
+              <Row>
+                <Column>
+                  <Row>
+                    <Header size="huge">{item.name}</Header>
+                  </Row>
+                </Column>
+                <Column align="right">
+                  <Row>
+                    <Button primary onClick={() => console.log('Edit item')}>
+                      {t('item_detail_page.edit')}
+                    </Button>
+                  </Row>
+                </Column>
+              </Row>
+            </Narrow>
+          </Row>
+        </Section>
+        <Narrow>
+          {item.collectionId === undefined && !isNoticeClosed ? (
+            <div className="notice">
+              <div className="text">You need to add your items to a collection before you can publish them</div>
+              <Icon name="close" onClick={this.handleCloseNotice} />
+            </div>
+          ) : null}
+          <div className="item-data">
+            <ItemImage item={item} />
+            <div className="sections">
+              <Section>
+                <div className="subtitle">Category</div>
+                <div className="value">{item.type}</div>
+              </Section>
+              <Section>
+                <div className="subtitle">Rarity</div>
+                <div className="value">{item.rarity}</div>
+              </Section>
+            </div>
+          </div>
+        </Narrow>
+      </>
+    )
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, item } = this.props
     return (
       <LoggedInDetailPage className="ItemDetailPage" activeTab={NavigationTab.AVATAR} isLoading={isLoading}>
-        {this.renderPage()}
+        {item === null ? <NotFound /> : this.renderPage()}
       </LoggedInDetailPage>
     )
   }

@@ -706,5 +706,15 @@
     "title": "连接您的钱包以登入。",
     "sign_in_required": "您需要{sign_in}才能访问此页面。",
     "sign_in": "登入"
+  },
+  "avatar_page": {
+    "results": "{count} {count，复数，一个{result}其他{results}}",
+    "no_items": "有项目",
+    "new_item": "项目",
+    "new_collection": "收藏",
+    "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
+  },
+  "item_detail_page": {
+    "edit": "辑"
   }
 }
