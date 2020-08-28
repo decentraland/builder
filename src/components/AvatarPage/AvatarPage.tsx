@@ -1,34 +1,16 @@
 import * as React from 'react'
-import { Page, Center, Loader, Container, Row, Column, Header, Card, Button } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Link } from 'react-router-dom'
+import { Container, Row, Column, Header, Card, Button } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { locations } from 'routing/locations'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import Navigation from 'components/Navigation'
-import Navbar from 'components/Navbar'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ItemCard from 'components/ItemCard'
 import CollectionCard from 'components/CollectionCard'
-import Footer from 'components/Footer'
 import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
 import Icon from 'components/Icon'
 
 export default class AvatarPage extends React.PureComponent<Props> {
-  renderLogin() {
-    return (
-      <Center className="login-wrapper">
-        <div className="secondary-text">
-          <T id="land_page.sign_in" values={{ link: <Link to={locations.signIn()}>{t('land_page.sign_in_link')}</Link> }} />
-        </div>
-      </Center>
-    )
-  }
-
-  renderLoading() {
-    return <Loader size="large" active />
-  }
-
   renderPage() {
     const { items, collections, onOpenModal } = this.props
     const count = items.length + collections.length
@@ -86,18 +68,11 @@ export default class AvatarPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoggedIn, isLoading } = this.props
+    const { isLoading } = this.props
     return (
-      <>
-        <Navbar isFullscreen />
-        <Navigation activeTab={NavigationTab.AVATAR} />
-        <Page className="AvatarPage">
-          {!isLoggedIn ? this.renderLogin() : null}
-          {isLoggedIn && isLoading ? this.renderLoading() : null}
-          {isLoggedIn && !isLoading ? this.renderPage() : null}
-        </Page>
-        <Footer />
-      </>
+      <LoggedInDetailPage className="AvatarPage" activeTab={NavigationTab.AVATAR} isLoading={isLoading}>
+        {this.renderPage()}
+      </LoggedInDetailPage>
     )
   }
 }

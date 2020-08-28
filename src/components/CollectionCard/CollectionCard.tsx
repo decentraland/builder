@@ -21,7 +21,7 @@ export default class CollectionCard extends React.PureComponent<Props> {
     const itemRowStyle = { height: secondItemRow.length ? '50%' : '100%' }
 
     return (
-      <Card className="CollectionCard" link as={Link} to={locations.collection(collection.id)}>
+      <Card className="CollectionCard" link as={Link} to={locations.collectionDetail(collection.id)}>
         <div className="item-rows">
           <div className="item-row" style={itemRowStyle}>
             {this.renderItemRow(firstItemRow)}

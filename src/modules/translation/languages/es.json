@@ -326,6 +326,7 @@
     "save": "Salvar",
     "send": "Enviar",
     "share": "Compartir",
+    "sign_in_required": "Debes {link} para acceder a esta página.",
     "sign_in": "Inicia sesión",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
@@ -433,8 +434,6 @@
     "operators": "Operadores",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
-    "sign_in": "Debes {link} para acceder a esta página.",
-    "sign_in_link": "Iniciar Sesión",
     "none": "Ninguna",
     "results": "{count} {count, plural, one {resultado} other {resultados}}"
   },

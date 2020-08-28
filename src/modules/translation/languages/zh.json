@@ -327,6 +327,7 @@
     "save": "保存",
     "send": "发送",
     "share": "分享",
+    "sign_in_required": "您需要{link}才能访问此页面。",
     "sign_in": "登录",
     "sign_up": "注册",
     "submit": "提交",
@@ -434,8 +435,6 @@
     "operators": "操作者",
     "type": "类型",
     "online_scenes": "在线场景",
-    "sign_in": "您需要{link}才能访问此页面。",
-    "sign_in_link": "登入",
     "none": "无",
     "results": "{count}个结果"
   },

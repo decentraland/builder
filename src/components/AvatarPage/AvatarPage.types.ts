@@ -7,12 +7,11 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 export type Props = {
   items: Item[]
   collections: Collection[]
-  isLoggedIn: boolean
   isLoading: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
 }
 
-export type MapStateProps = Pick<Props, 'items' | 'collections' | 'isLoggedIn' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'items' | 'collections' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>
