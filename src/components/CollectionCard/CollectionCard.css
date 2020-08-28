@@ -1,0 +1,30 @@
+.CollectionCard .item-rows .item-row,
+.CollectionCard .item-rows .item-row .image-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.CollectionCard .item-rows .item {
+  max-height: 100%;
+}
+
+.CollectionCard .item-rows .item-row .image-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.CollectionCard .item-row .image {
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.CollectionCard .content {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.CollectionCard .content .text {
+  font-size: 17px;
+}

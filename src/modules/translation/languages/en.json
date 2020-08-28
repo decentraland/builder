@@ -719,5 +719,12 @@
     "title": "Connect your wallet to sign in.",
     "sign_in_required": "You need to {sign_in} to access this page.",
     "sign_in": "Sign In"
+  },
+  "avatar_page": {
+    "results": "{count} {count, plural, one {result} other {results}}",
+    "no_items": "No items",
+    "new_item": "New Item",
+    "new_collection": "New Collection",
+    "empty_description": "You have no Wearables or Collections yet, start creating them and dress the metaverse with style"
   }
 }
