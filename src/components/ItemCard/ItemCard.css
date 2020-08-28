@@ -1,0 +1,21 @@
+.ItemCard .image-wrapper {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.ItemCard .image {
+  margin: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.ItemCard .content {
+  background: none;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.ItemCard .content .text {
+  font-size: 17px;
+}
