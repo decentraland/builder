@@ -1,0 +1,30 @@
+import { connect } from 'react-redux'
+// import { push } from 'connected-react-router'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { RootState } from 'modules/common/types'
+import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
+import { getItemId } from 'modules/location/selectors'
+import { getItems, getLoading } from 'modules/item/selectors'
+import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDetailPage.types'
+import ItemDetailPage from './ItemDetailPage'
+
+const mapState = (state: RootState): MapStateProps => {
+  const itemId = getItemId(state)
+  const items = getItems(state)
+
+  const item = items.find(item => item.id === itemId) || null
+
+  return {
+    item,
+    isLoggedIn: isLoggedIn(state),
+    isLoading: isLoggingIn(state) || isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST)
+  }
+}
+
+const mapDispatch = (_dispatch: MapDispatch): MapDispatchProps => ({
+  // onNavigate: path => dispatch(push(path)),
+  // onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
+})
+
+export default connect(mapState, mapDispatch)(ItemDetailPage)

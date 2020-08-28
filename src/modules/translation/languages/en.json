@@ -333,6 +333,7 @@
     "save": "Save",
     "send": "Send",
     "share": "Share",
+    "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
     "submit": "Submit",
@@ -471,8 +472,6 @@
     "operators": "Operators",
     "type": "Type",
     "online_scenes": "Online Scenes",
-    "sign_in": "You need to {link} to access this page.",
-    "sign_in_link": "Sign In",
     "none": "None",
     "results": "{count} {count, plural, one {result} other {results}}"
   },
@@ -716,9 +715,7 @@
     "signature_error": "Failed to sign message",
     "no_wallet": "Wallet not found",
     "connect_error": "Could not connect wallet",
-    "title": "Connect your wallet to sign in.",
-    "sign_in_required": "You need to {sign_in} to access this page.",
-    "sign_in": "Sign In"
+    "title": "Connect your wallet to sign in."
   },
   "avatar_page": {
     "results": "{count} {count, plural, one {result} other {results}}",
