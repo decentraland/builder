@@ -738,6 +738,9 @@
     "no_items": "No items",
     "new_item": "New Item",
     "new_collection": "New Collection",
-    "empty_description": "You have no Wearables or Collections yet, start creating them and dress the metaverse with style"
+    "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
+  },
+  "item_detail_page": {
+    "edit": "Edit"
   }
 }
