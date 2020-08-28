@@ -16,7 +16,6 @@ import {
   Back
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-// import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
