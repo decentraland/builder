@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Page, Center, Loader, Container, Row, Column, Header, Card } from 'decentraland-ui'
+import { Page, Center, Loader, Container, Row, Column, Header, Card, Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 
@@ -12,6 +12,7 @@ import CollectionCard from 'components/CollectionCard'
 import Footer from 'components/Footer'
 import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
+import Icon from 'components/Icon'
 
 export default class AvatarPage extends React.PureComponent<Props> {
   renderLogin() {
@@ -29,7 +30,7 @@ export default class AvatarPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { items, collections } = this.props
+    const { items, collections, onOpenModal } = this.props
     const count = items.length + collections.length
 
     return (
@@ -43,7 +44,11 @@ export default class AvatarPage extends React.PureComponent<Props> {
                 </Row>
               </Column>
               <Column align="right">
-                <Row>Some filters here</Row>
+                <Row className="actions">
+                  <Button basic className="create-item" onClick={() => onOpenModal('CreateItemModal')}>
+                    <Icon name="add-active" />
+                  </Button>
+                </Row>
               </Column>
             </Row>
           </Container>

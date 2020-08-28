@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
 import Icon from 'components/Icon'
-import { SceneMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/scene/types'
 import { getExceededMetrics } from 'modules/scene/utils'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'
@@ -16,7 +16,7 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   analytics = getAnalytics()
-  metricsExceeded: (keyof SceneMetrics)[] = []
+  metricsExceeded: (keyof ModelMetrics)[] = []
 
   componentWillMount() {
     document.addEventListener('click', this.handleClose)
@@ -61,10 +61,10 @@ export default class Metrics extends React.PureComponent<Props, State> {
   }
 
   renderMetrics() {
-    return Object.keys(this.props.metrics).map(key => this.renderMetric(key as keyof SceneMetrics))
+    return Object.keys(this.props.metrics).map(key => this.renderMetric(key as keyof ModelMetrics))
   }
 
-  renderMetric(metric: keyof SceneMetrics) {
+  renderMetric(metric: keyof ModelMetrics) {
     const { metrics, limits } = this.props
     let classes = 'metric'
     if (metrics[metric] > limits[metric]) {

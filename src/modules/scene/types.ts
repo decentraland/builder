@@ -44,7 +44,7 @@ export type ComponentDefinition<T extends ComponentType> = {
   data: ComponentData[T]
 }
 
-export type SceneMetrics = {
+export type ModelMetrics = {
   triangles: number
   materials: number
   meshes: number
@@ -55,8 +55,8 @@ export type SceneMetrics = {
 
 export type Scene = {
   id: string
-  metrics: SceneMetrics
-  limits: SceneMetrics
+  metrics: ModelMetrics
+  limits: ModelMetrics
   entities: Record<string, EntityDefinition>
   components: Record<string, AnyComponent>
   assets: Record<string, Asset>

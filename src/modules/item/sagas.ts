@@ -12,6 +12,7 @@ import {
 } from './actions'
 import { builder } from 'lib/api/builder'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -33,6 +34,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
   try {
     yield call(() => builder.saveItem(item, contents))
     yield put(saveItemSuccess(item, contents))
+    yield put(closeModal('CreateItemModal'))
   } catch (error) {
     yield put(saveItemFailure(item, contents, error.message))
   }

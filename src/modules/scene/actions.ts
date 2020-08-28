@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { Vector3 } from 'modules/common/types'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
-import { Scene, SceneMetrics, ComponentType, ComponentData } from './types'
+import { Scene, ModelMetrics, ComponentType, ComponentData } from './types'
 import { Project } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)
@@ -24,7 +24,7 @@ export type ProvisionSceneAction = ReturnType<typeof provisionScene>
 
 export const UPDATE_METRICS = 'Update metrics'
 
-export const updateMetrics = (sceneId: string, metrics: SceneMetrics, limits: SceneMetrics) =>
+export const updateMetrics = (sceneId: string, metrics: ModelMetrics, limits: ModelMetrics) =>
   action(UPDATE_METRICS, { sceneId, metrics, limits })
 
 export type UpdateMetricsAction = ReturnType<typeof updateMetrics>

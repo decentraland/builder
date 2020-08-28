@@ -4,7 +4,7 @@ import { COLLECTIBLE_ASSET_PACK_ID, CategoryName } from 'modules/ui/sidebar/util
 import { makeContentFile, getCID } from 'modules/deployment/utils'
 
 export const MAX_TAGS = 15
-export const MAX_NAME_LENGTH = 20
+export const MAX_NAME_LENGTH = 48
 export const MIN_NAME_LENGTH = 3
 
 export function isNFT(asset: Asset) {
