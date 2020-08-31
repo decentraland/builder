@@ -61,22 +61,30 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           <div className="item-data">
             <ItemImage item={item} />
             <div className="sections">
-              <Section>
-                <div className="subtitle">{t('item_detail_page.category')}</div>
-                <div className="value">{item.type}</div>
-              </Section>
-              <Section>
-                <div className="subtitle">{t('item_detail_page.rarity')}</div>
-                <div className="value">{item.rarity}</div>
-              </Section>
-              <Section>
-                <div className="subtitle">{t('item_detail_page.price')}</div>
-                <div className="value">{item.price}</div>
-              </Section>
-              <Section>
-                <div className="subtitle">{t('item_detail_page.beneficiary')}</div>
-                <div className="value">{item.beneficiary}</div>
-              </Section>
+              {item.type ? (
+                <Section>
+                  <div className="subtitle">{t('item_detail_page.category')}</div>
+                  <div className="value">{item.type}</div>
+                </Section>
+              ) : null}
+              {item.rarity ? (
+                <Section>
+                  <div className="subtitle">{t('item_detail_page.rarity')}</div>
+                  <div className="value">{item.rarity}</div>
+                </Section>
+              ) : null}
+              {item.price ? (
+                <Section>
+                  <div className="subtitle">{t('item_detail_page.price')}</div>
+                  <div className="value">{item.price}</div>
+                </Section>
+              ) : null}
+              {item.beneficiary ? (
+                <Section>
+                  <div className="subtitle">{t('item_detail_page.beneficiary')}</div>
+                  <div className="value">{item.beneficiary}</div>
+                </Section>
+              ) : null}
             </div>
           </div>
         </Narrow>
