@@ -1,13 +1,13 @@
 import { Dispatch } from 'redux'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { DeploymentStatus } from 'modules/deployment/types'
-import { SceneMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 
 export type Props = {
   project: Project
-  metrics: SceneMetrics
-  limits: SceneMetrics
+  metrics: ModelMetrics
+  limits: ModelMetrics
   isLoading: boolean
   areEntitiesOutOfBoundaries: boolean
   deploymentStatus: DeploymentStatus

@@ -65,7 +65,7 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, SceneMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
+import { Scene, ComponentType, ModelMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { EditorScene, Gizmo } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
@@ -203,7 +203,7 @@ function* renderScene(scene: Scene) {
   }
 }
 
-function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
+function handleMetricsChange(args: { metrics: ModelMetrics; limits: ModelMetrics }) {
   const { metrics, limits } = args
   const scene = getCurrentScene(store.getState() as RootState)
   if (scene) {
