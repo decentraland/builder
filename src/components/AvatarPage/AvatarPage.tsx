@@ -55,7 +55,7 @@ export default class AvatarPage extends React.PureComponent<Props> {
         </div>
 
         <Card.Group>
-          {count >= 0 ? (
+          {count > 0 ? (
             <>
               {items.map((item, index) => (
                 <ItemCard key={index} item={item} />
@@ -70,7 +70,7 @@ export default class AvatarPage extends React.PureComponent<Props> {
                 {t('avatar_page.no_items')}
               </Header>
               <div className="empty-description">{t('avatar_page.empty_description')}</div>
-              <div className="create-new-wrapper">
+              <div className="create-new-wrapper" onClick={() => onOpenModal('CreateItemModal')}>
                 <div className="create-new create-new-item">
                   <div className="text">{t('avatar_page.new_item')}</div>
                 </div>
