@@ -1,5 +1,6 @@
 export { default as ContestModal } from './ContestModal'
 export { default as CreateAssetPackModal } from './CreateAssetPackModal'
+export { default as CreateItemModal } from './CreateItemModal'
 export { default as CustomLayoutModal } from './CustomLayoutModal'
 export { default as DeployModal } from './DeployModal'
 export { default as DissolveModal } from './DissolveModal'

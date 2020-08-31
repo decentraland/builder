@@ -1,5 +1,5 @@
 import { Vector3 } from 'modules/common/types'
-import { Scene, SceneMetrics, ComponentType, ComponentDefinition, AnyComponent, EntityDefinition } from './types'
+import { Scene, ModelMetrics, ComponentType, ComponentDefinition, AnyComponent, EntityDefinition } from './types'
 import { select, put, race, take } from 'redux-saga/effects'
 import {
   loadManifestRequest,
@@ -54,11 +54,11 @@ export function filterEntitiesWithComponent(componentId: string, entities: Scene
   return newEntities
 }
 
-export function getExceededMetrics(metrics: SceneMetrics, limits: SceneMetrics) {
-  const metricsExceeded: (keyof SceneMetrics)[] = []
+export function getExceededMetrics(metrics: ModelMetrics, limits: ModelMetrics) {
+  const metricsExceeded: (keyof ModelMetrics)[] = []
 
   for (const key in metrics) {
-    const metric = key as keyof SceneMetrics
+    const metric = key as keyof ModelMetrics
     if (metrics[metric] > limits[metric]) {
       if (!metricsExceeded.includes(metric)) {
         metricsExceeded.push(metric)

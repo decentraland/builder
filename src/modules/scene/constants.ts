@@ -1,6 +1,6 @@
-import { SceneMetrics, ComponentType } from './types'
+import { ModelMetrics, ComponentType } from './types'
 
-export const EMPTY_SCENE_METRICS: SceneMetrics = {
+export const EMPTY_SCENE_METRICS: ModelMetrics = {
   triangles: 0,
   materials: 0,
   meshes: 0,

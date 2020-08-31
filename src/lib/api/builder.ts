@@ -5,7 +5,7 @@ import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { authorize, authorizeAuth0 } from './auth'
 import { Project, Manifest } from 'modules/project/types'
 import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
-import { Scene, SceneMetrics } from 'modules/scene/types'
+import { Scene, ModelMetrics } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { createManifest } from 'modules/project/export'
 import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
@@ -80,7 +80,7 @@ export type RemoteAsset = {
   tags: string[]
   category: string
   contents: Record<string, string>
-  metrics: SceneMetrics
+  metrics: ModelMetrics
   parameters: AssetParameter[]
   actions: AssetAction[]
 }
@@ -401,6 +401,15 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.UNIQUE,
+        model: '',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
         owner,
         contents: {
           'thumbnail.png': 'Qmthumb',
@@ -419,6 +428,15 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.UNIQUE,
+        model: '',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
         owner,
         collectionId: 'dummy-collection',
         contents: {
@@ -438,6 +456,15 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/moonshot_2020/wearables/ms_dcl_upper_body/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.LEGENDARY,
+        model: '',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
         owner,
         collectionId: 'dummy-collection',
         contents: {
@@ -457,6 +484,15 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/pm_outtathisworld/wearables/pm_col1_cat_helmet/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.LEGENDARY,
+        model: '',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
         owner,
         collectionId: 'dummy-collection',
         contents: {
@@ -476,6 +512,15 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/halloween_2019/wearables/diamond_skull_mask/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.MYTHIC,
+        model: '',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
         owner,
         collectionId: 'dummy-collection',
         contents: {

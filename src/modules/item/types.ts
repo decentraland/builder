@@ -1,3 +1,5 @@
+import { ModelMetrics } from 'modules/scene/types'
+
 export enum ItemType {
   WEARABLE = 'wearable'
 }
@@ -60,6 +62,7 @@ export type Item = {
   id: string // uuid
   name: string
   thumbnail: string
+  model: string
   owner: string
   description?: string
   collectionId?: string
@@ -70,6 +73,7 @@ export type Item = {
   type: ItemType
   data: WearableData
   contents: Record<string, string>
+  metrics: ModelMetrics
 }
 
 export type WearableData = {
@@ -79,3 +83,5 @@ export type WearableData = {
   hides: WearableCategory[]
   tags: string[]
 }
+
+export const THUMBNAIL_PATH = 'thumbnail.png'
