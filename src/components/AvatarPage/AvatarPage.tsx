@@ -6,9 +6,9 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ItemCard from 'components/ItemCard'
 import CollectionCard from 'components/CollectionCard'
+import Icon from 'components/Icon'
 import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
-import Icon from 'components/Icon'
 
 export default class AvatarPage extends React.PureComponent<Props> {
   renderPage() {
