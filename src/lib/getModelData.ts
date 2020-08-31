@@ -69,11 +69,13 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     const loader = new GLTFLoader(manager)
     const gltf = await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
     gltf.scene.traverse(node => {
+      console.log(node.name)
       if (node instanceof Mesh) {
         bodies++
         if (node.material) {
           materials++
         }
+        console.log(node.name)
         if (node.name.includes('_collider')) {
           if (node.geometry instanceof Geometry) {
             colliderTriangles += node.geometry.faces.length
@@ -101,7 +103,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     const center = new Box3().setFromObject(root).getCenter(new Vector3())
     if (thumbnailType === '3d') {
       camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
-      camera.position.set(1, 1, 1)
+      camera.position.set(center.x + 1, center.y + 1, center.z + 1)
     } else {
       camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
       camera.position.set(0, 1, 0)
