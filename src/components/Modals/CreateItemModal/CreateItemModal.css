@@ -37,11 +37,11 @@
 }
 
 .CreateItemModal .preview .metric.materials {
-  background-image: url(../../../images/triangles.svg);
+  background-image: url(../../../images/materials.svg);
 }
 
 .CreateItemModal .preview .metric.textures {
-  background-image: url(../../../images/triangles.svg);
+  background-image: url(../../../images/textures.svg);
 }
 
 .CreateItemModal .actions {
