@@ -715,6 +715,10 @@
     "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
   },
   "item_detail_page": {
-    "edit": "辑"
+    "edit": "辑",
+    "category": "类别",
+    "rarity": "稀有度",
+    "price": "价钱",
+    "beneficiary": "受益人"
   }
 }

@@ -741,6 +741,10 @@
     "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
   },
   "item_detail_page": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "category": "Category",
+    "rarity": "Rarity",
+    "price": "Price",
+    "beneficiary": "Beneficiary"
   }
 }

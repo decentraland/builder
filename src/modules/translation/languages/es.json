@@ -719,6 +719,10 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "item_detail_page": {
-    "edit": "Editar"
+    "edit": "Editar",
+    "category": "Categoría",
+    "rarity": "Rareza",
+    "price": "Precio",
+    "beneficiary": "Beneficiario"
   }
 }
