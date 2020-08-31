@@ -14,7 +14,7 @@ import {
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { SceneMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/scene/types'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
@@ -136,7 +136,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    const info: SceneMetrics = {
+    const info: ModelMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials,
       textures: renderer.info.memory.textures,
@@ -149,7 +149,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     return { info, image }
   } catch (e) {
     // could not render model, default to 0 metrics and default thumnail
-    const info: SceneMetrics = {
+    const info: ModelMetrics = {
       triangles: 0,
       materials: 0,
       textures: 0,

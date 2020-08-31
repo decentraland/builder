@@ -110,6 +110,17 @@
     "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
     "top_banner_right": " "
   },
+  "create_item_modal": {
+    "title": "New Item",
+    "metrics": {
+      "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
+      "materials": "{count} {count, plural, one {material} other {materials}}",
+      "textures": "{count} {count, plural, one {texture} other {textures}}"
+    },
+    "name_label": "Add a name to your new item",
+    "representation_label": "Which body shape does it represent?",
+    "add": "Add"
+  },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
@@ -346,7 +357,12 @@
     "revoke": "Revoke",
     "parcel_plural": "parcels",
     "estate_plural": "estates",
-    "settings": "Settings"
+    "settings": "Settings",
+    "representation": {
+      "unisex": "Both",
+      "male": "Shape A",
+      "female": "Shape B"
+    }
   },
   "navigation": {
     "scenes": "Scenes",

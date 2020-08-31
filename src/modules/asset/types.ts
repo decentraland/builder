@@ -1,4 +1,4 @@
-import { SceneMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/scene/types'
 
 export const GROUND_CATEGORY = 'ground'
 
@@ -62,7 +62,7 @@ export type BaseAsset = {
   tags: string[]
   category: string // name of the category
   contents: Record<string, string>
-  metrics: SceneMetrics
+  metrics: ModelMetrics
   parameters: AssetParameter[]
   actions: AssetAction[]
 }
@@ -153,7 +153,7 @@ export type RawAsset = {
   assetPackId: string
   thumbnail: string
   contents: Record<string, Blob>
-  metrics: SceneMetrics
+  metrics: ModelMetrics
   parameters: AssetParameter[]
   actions: AssetAction[]
 }
