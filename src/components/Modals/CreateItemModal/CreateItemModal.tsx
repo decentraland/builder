@@ -5,7 +5,7 @@ import JSZip from 'jszip'
 import { ModalNavigation, Loader, Row, Column, Button, Field, Section, Header } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { cleanAssetName } from 'modules/asset/utils'
+import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { dataURLToBlob } from 'modules/media/utils'
 import { THUMBNAIL_PATH, WearableRepresentation, Item, ItemType } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
@@ -243,7 +243,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                     className="name"
                     label={t('create_item_modal.name_label')}
                     value={name}
-                    onChange={(_event, props) => this.setState({ name: props.value })}
+                    onChange={(_event, props) => this.setState({ name: props.value.slice(0, MAX_NAME_LENGTH) })}
                   />
                 ) : null}
               </Column>
