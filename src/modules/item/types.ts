@@ -32,10 +32,17 @@ export enum WearableCategory {
   TOP_HEAD = 'top_head'
 }
 
-export enum WearableRepresentation {
-  MALE = 'male',
-  FEMALE = 'female',
-  UNISEX = 'unisex'
+export enum WearableBodyShape {
+  MALE = 'dcl://base-avatars/BaseMale',
+  FEMALE = 'dcl://base-avatars/BaseFemale'
+}
+
+export type WearableRepresentation = {
+  bodyShape: WearableBodyShape[]
+  mainFile: string
+  contents: string[]
+  overrideReplaces: WearableCategory[]
+  overrideHides: WearableCategory[]
 }
 
 export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
@@ -62,7 +69,6 @@ export type Item = {
   id: string // uuid
   name: string
   thumbnail: string
-  model: string
   owner: string
   description?: string
   collectionId?: string
@@ -78,7 +84,7 @@ export type Item = {
 
 export type WearableData = {
   category?: WearableCategory
-  representation?: WearableRepresentation
+  representations: WearableRepresentation[]
   replaces: WearableCategory[]
   hides: WearableCategory[]
   tags: string[]

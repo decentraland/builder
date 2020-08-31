@@ -1,6 +1,5 @@
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/scene/types'
-import { WearableRepresentation } from 'modules/item/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { Dispatch } from 'redux'
 
@@ -8,6 +7,8 @@ export enum CreateItemView {
   IMPORT = 'import',
   DETAILS = 'details'
 }
+
+export type BodyShapeOption = 'unisex' | 'male' | 'female'
 
 export type Props = ModalProps & {
   address?: string
@@ -20,7 +21,7 @@ export type State = {
   view: CreateItemView
   id?: string
   name?: string
-  representation?: WearableRepresentation
+  bodyShape?: BodyShapeOption
   thumbnail?: string
   model?: string
   metrics?: ModelMetrics
