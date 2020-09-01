@@ -14,7 +14,7 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableBodyShape } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { store } from 'modules/common/store'
@@ -401,7 +401,6 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.UNIQUE,
-        model: '',
         metrics: {
           meshes: 0,
           bodies: 0,
@@ -417,6 +416,22 @@ export class BuilderAPI extends BaseAPI {
           'texture.png': 'Qmtext'
         },
         data: {
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
           replaces: [],
           hides: [],
           tags: []
@@ -428,7 +443,6 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.UNIQUE,
-        model: '',
         metrics: {
           meshes: 0,
           bodies: 0,
@@ -445,6 +459,22 @@ export class BuilderAPI extends BaseAPI {
           'texture.png': 'Qmtext'
         },
         data: {
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
           replaces: [],
           hides: [],
           tags: []
@@ -456,7 +486,6 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/moonshot_2020/wearables/ms_dcl_upper_body/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.LEGENDARY,
-        model: '',
         metrics: {
           meshes: 0,
           bodies: 0,
@@ -473,6 +502,22 @@ export class BuilderAPI extends BaseAPI {
           'texture.png': 'Qmtext'
         },
         data: {
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
           replaces: [],
           hides: [],
           tags: []
@@ -484,7 +529,6 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/pm_outtathisworld/wearables/pm_col1_cat_helmet/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.LEGENDARY,
-        model: '',
         metrics: {
           meshes: 0,
           bodies: 0,
@@ -501,6 +545,22 @@ export class BuilderAPI extends BaseAPI {
           'texture.png': 'Qmtext'
         },
         data: {
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
           replaces: [],
           hides: [],
           tags: []
@@ -512,7 +572,6 @@ export class BuilderAPI extends BaseAPI {
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/halloween_2019/wearables/diamond_skull_mask/thumbnail',
         type: ItemType.WEARABLE,
         rarity: ItemRarity.MYTHIC,
-        model: '',
         metrics: {
           meshes: 0,
           bodies: 0,
@@ -529,6 +588,22 @@ export class BuilderAPI extends BaseAPI {
           'texture.png': 'Qmtext'
         },
         data: {
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
           replaces: [],
           hides: [],
           tags: []

@@ -7,7 +7,7 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { dataURLToBlob } from 'modules/media/utils'
-import { THUMBNAIL_PATH, WearableRepresentation, Item, ItemType } from 'modules/item/types'
+import { THUMBNAIL_PATH, Item, ItemType, WearableRepresentation, WearableBodyShape, BodyShapeType } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
@@ -23,20 +23,43 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   async handleSubmit() {
     const { onSubmit } = this.props
-    const { id, name, model, representation, contents, metrics } = this.state
+    const { id, name, model, bodyShape, contents, metrics } = this.state
 
-    if (id && name && model && representation && contents && metrics) {
+    if (id && name && model && bodyShape && contents && metrics) {
+      const representations: WearableRepresentation[] = []
+
+      // add male representation
+      if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
+        representations.push({
+          bodyShape: [WearableBodyShape.MALE],
+          mainFile: model,
+          contents: Object.keys(contents),
+          overrideHides: [],
+          overrideReplaces: []
+        })
+      }
+
+      // add female representation
+      if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
+        representations.push({
+          bodyShape: [WearableBodyShape.FEMALE],
+          mainFile: model,
+          contents: Object.keys(contents),
+          overrideHides: [],
+          overrideReplaces: []
+        })
+      }
+
       const item: Item = {
         id,
         name,
         thumbnail: THUMBNAIL_PATH,
-        model,
         type: ItemType.WEARABLE,
         data: {
           replaces: [],
           hides: [],
           tags: [],
-          representation
+          representations
         },
         owner: '',
         metrics,
@@ -211,8 +234,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   renderDetailsView() {
     const { onClose, isLoading } = this.props
-    const { name, thumbnail, metrics, representation } = this.state
-    const isValid = !!name && !!thumbnail && !!metrics && !!representation
+    const { name, thumbnail, metrics, bodyShape } = this.state
+    const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape
     return (
       <>
         <ModalNavigation title={t('create_item_modal.title')} onClose={onClose} />
@@ -233,12 +256,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 <Section>
                   <Header sub>{t('create_item_modal.representation_label')}</Header>
                   <Row>
-                    {this.renderRepresentation(WearableRepresentation.UNISEX)}
-                    {this.renderRepresentation(WearableRepresentation.MALE)}
-                    {this.renderRepresentation(WearableRepresentation.FEMALE)}
+                    {this.renderRepresentation(BodyShapeType.UNISEX)}
+                    {this.renderRepresentation(BodyShapeType.MALE)}
+                    {this.renderRepresentation(BodyShapeType.FEMALE)}
                   </Row>
                 </Section>
-                {representation ? (
+                {bodyShape ? (
                   <Field
                     className="name"
                     label={t('create_item_modal.name_label')}
@@ -259,12 +282,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     )
   }
 
-  renderRepresentation(type: WearableRepresentation) {
-    const { representation } = this.state
+  renderRepresentation(type: BodyShapeType) {
+    const { bodyShape } = this.state
     return (
       <div
-        className={`representation ${type} ${type === representation ? 'active' : ''}`.trim()}
-        onClick={() => this.setState({ representation: type })}
+        className={`representation ${type} ${type === bodyShape ? 'active' : ''}`.trim()}
+        onClick={() => this.setState({ bodyShape: type })}
       >
         {t('global.representation.' + type)}
       </div>
