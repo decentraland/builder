@@ -13,7 +13,7 @@ import { makeContentFile, calculateBufferHash } from 'modules/deployment/content
 import FileImport from 'components/FileImport'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { Props, State, CreateItemView } from './CreateItemModal.types'
+import { Props, State, CreateItemView, BodyShapeOption } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
@@ -282,7 +282,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     )
   }
 
-  renderRepresentation(type: 'unisex' | 'male' | 'female') {
+  renderRepresentation(type: BodyShapeOption) {
     const { bodyShape } = this.state
     return (
       <div

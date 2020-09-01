@@ -69,13 +69,11 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     const loader = new GLTFLoader(manager)
     const gltf = await new Promise<GLTF>((resolve, reject) => loader.load(url, resolve, undefined, reject))
     gltf.scene.traverse(node => {
-      console.log(node.name)
       if (node instanceof Mesh) {
         bodies++
         if (node.material) {
           materials++
         }
-        console.log(node.name)
         if (node.name.includes('_collider')) {
           if (node.geometry instanceof Geometry) {
             colliderTriangles += node.geometry.faces.length
