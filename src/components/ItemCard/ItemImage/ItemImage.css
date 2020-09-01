@@ -1,3 +1,8 @@
 .ItemImage.image-wrapper {
   border-radius: 5px;
 }
+
+.ItemImage.image-wrapper .image {
+  width: 100%;
+}
+
