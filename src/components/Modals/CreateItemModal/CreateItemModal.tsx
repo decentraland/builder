@@ -7,13 +7,13 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
 import { dataURLToBlob } from 'modules/media/utils'
-import { THUMBNAIL_PATH, Item, ItemType, WearableRepresentation, WearableBodyShape } from 'modules/item/types'
+import { THUMBNAIL_PATH, Item, ItemType, WearableRepresentation, WearableBodyShape, BodyShapeType } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { Props, State, CreateItemView, BodyShapeOption } from './CreateItemModal.types'
+import { Props, State, CreateItemView } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
@@ -29,7 +29,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       const representations: WearableRepresentation[] = []
 
       // add male representation
-      if (bodyShape === 'male' || bodyShape === 'unisex') {
+      if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
         representations.push({
           bodyShape: [WearableBodyShape.MALE],
           mainFile: model,
@@ -40,7 +40,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
 
       // add female representation
-      if (bodyShape === 'female' || bodyShape === 'unisex') {
+      if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
         representations.push({
           bodyShape: [WearableBodyShape.FEMALE],
           mainFile: model,
@@ -256,9 +256,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 <Section>
                   <Header sub>{t('create_item_modal.representation_label')}</Header>
                   <Row>
-                    {this.renderRepresentation('unisex')}
-                    {this.renderRepresentation('male')}
-                    {this.renderRepresentation('female')}
+                    {this.renderRepresentation(BodyShapeType.UNISEX)}
+                    {this.renderRepresentation(BodyShapeType.MALE)}
+                    {this.renderRepresentation(BodyShapeType.FEMALE)}
                   </Row>
                 </Section>
                 {bodyShape ? (
@@ -282,7 +282,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     )
   }
 
-  renderRepresentation(type: BodyShapeOption) {
+  renderRepresentation(type: BodyShapeType) {
     const { bodyShape } = this.state
     return (
       <div

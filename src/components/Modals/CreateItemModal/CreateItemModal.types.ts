@@ -1,14 +1,13 @@
+import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/scene/types'
 import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
-import { Dispatch } from 'redux'
+import { BodyShapeType } from 'modules/item/types'
 
 export enum CreateItemView {
   IMPORT = 'import',
   DETAILS = 'details'
 }
-
-export type BodyShapeOption = 'unisex' | 'male' | 'female'
 
 export type Props = ModalProps & {
   address?: string
@@ -21,7 +20,7 @@ export type State = {
   view: CreateItemView
   id?: string
   name?: string
-  bodyShape?: BodyShapeOption
+  bodyShape?: BodyShapeType
   thumbnail?: string
   model?: string
   metrics?: ModelMetrics

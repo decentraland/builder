@@ -32,6 +32,12 @@ export enum WearableCategory {
   TOP_HEAD = 'top_head'
 }
 
+export enum BodyShapeType {
+  UNISEX = 'unisex',
+  MALE = 'male',
+  FEMALE = 'female'
+}
+
 export enum WearableBodyShape {
   MALE = 'dcl://base-avatars/BaseMale',
   FEMALE = 'dcl://base-avatars/BaseFemale'
