@@ -3,6 +3,7 @@ import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
+import { WearableData } from 'modules/item/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Icon from 'components/Icon'
 import ItemImage from 'components/ItemCard/ItemImage'
@@ -26,7 +27,9 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   renderPage() {
     const { onNavigate } = this.props
     const { isNoticeClosed } = this.state
+
     const item = this.props.item!
+    const data = item.data as WearableData
 
     return (
       <>
@@ -61,10 +64,10 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           <div className="item-data">
             <ItemImage item={item} />
             <div className="sections">
-              {item.type ? (
+              {data.category ? (
                 <Section>
                   <div className="subtitle">{t('item_detail_page.category')}</div>
-                  <div className="value">{item.type}</div>
+                  <div className="value">{data.category}</div>
                 </Section>
               ) : null}
               {item.rarity ? (

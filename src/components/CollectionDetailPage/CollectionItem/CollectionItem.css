@@ -1,0 +1,28 @@
+.CollectionItem .ui.grid {
+  padding: 8px 0;
+  color: var(--text);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.CollectionItem .ui.grid:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  color: var(--text);
+}
+
+.CollectionItem .ui.grid > .row {
+  align-items: center;
+}
+
+.CollectionItem .ui.grid > .row > .column.avatar-column {
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+}
+
+.CollectionItem .ItemImage.image-wrapper {
+  min-width: 64px;
+  max-width: 64px;
+  height: 64px;
+  padding: 5px;
+  margin-right: 24px;
+}

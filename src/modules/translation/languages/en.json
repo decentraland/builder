@@ -746,5 +746,8 @@
     "rarity": "Rarity",
     "price": "Price",
     "beneficiary": "Beneficiary"
+  },
+  "collection_detail_page": {
+    "publish": "Publish"
   }
 }
