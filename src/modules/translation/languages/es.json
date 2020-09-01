@@ -326,6 +326,7 @@
     "save": "Salvar",
     "send": "Enviar",
     "share": "Compartir",
+    "sign_in_required": "Debes {link} para acceder a esta página.",
     "sign_in": "Inicia sesión",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
@@ -433,8 +434,6 @@
     "operators": "Operadores",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
-    "sign_in": "Debes {link} para acceder a esta página.",
-    "sign_in_link": "Iniciar Sesión",
     "none": "Ninguna",
     "results": "{count} {count, plural, one {resultado} other {resultados}}"
   },
@@ -711,5 +710,19 @@
     "title": "Conecta tu billetera para iniciar sesión.",
     "sign_in_required": "Necesitas {sign_in} para acceder a esta página.",
     "sign_in": "Iniciar sesión"
+  },
+  "avatar_page": {
+    "results": "{count} {count, plural, one {resultado} other {resultados}}",
+    "no_items": "Sin items",
+    "new_item": "Nuevo item",
+    "new_collection": "Nueva colección",
+    "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
+  },
+  "item_detail_page": {
+    "edit": "Editar",
+    "category": "Categoría",
+    "rarity": "Rareza",
+    "price": "Precio",
+    "beneficiary": "Beneficiario"
   }
 }

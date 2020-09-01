@@ -1,15 +1,11 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Page, Center, Loader, Table, Row, Radio, Column, Header, Pagination, Section, Container, Popup } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { locations } from 'routing/locations'
-import Navbar from 'components/Navbar'
-import Footer from 'components/Footer'
+import { Table, Row, Radio, Column, Header, Pagination, Section, Container, Popup } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Chip from 'components/Chip'
-import { RoleType } from 'modules/land/types'
 import { Atlas } from 'components/Atlas'
-import Navigation from 'components/Navigation'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import { RoleType } from 'modules/land/types'
 import { LandPageView } from 'modules/ui/land/types'
 import { getCoords } from 'modules/land/utils'
 import TableRow from './TableRow'
@@ -30,20 +26,6 @@ export default class LandPage extends React.PureComponent<Props, State> {
     if (nextProps.lands !== this.props.lands) {
       this.setState({ page: 1 })
     }
-  }
-
-  renderLogin() {
-    return (
-      <Center className="login-wrapper">
-        <div className="secondary-text">
-          <T id="land_page.sign_in" values={{ link: <Link to={locations.signIn()}>{t('land_page.sign_in_link')}</Link> }} />
-        </div>
-      </Center>
-    )
-  }
-
-  renderLoading() {
-    return <Loader size="large" active />
   }
 
   renderLand() {
@@ -197,18 +179,17 @@ export default class LandPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoggedIn, isLoading, view } = this.props
+    const { isLoading, view } = this.props
     return (
-      <>
-        <Navbar isFullscreen />
-        <Page className={`LandPage ${view}-view`} isFullscreen>
-          <Navigation activeTab={NavigationTab.LAND} />
-          {!isLoggedIn ? this.renderLogin() : null}
-          {isLoggedIn && isLoading ? this.renderLoading() : null}
-          {isLoggedIn && !isLoading ? this.renderLand() : null}
-        </Page>
-        <Footer isFullscreen={view === LandPageView.ATLAS} />
-      </>
+      <LoggedInDetailPage
+        className={`LandPage ${view}-view`}
+        activeTab={NavigationTab.LAND}
+        isLoading={isLoading}
+        isPageFullscreen={true}
+        isFooterFullscreen={view === LandPageView.ATLAS}
+      >
+        {this.renderLand()}
+      </LoggedInDetailPage>
     )
   }
 }

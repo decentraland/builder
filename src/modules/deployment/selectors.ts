@@ -60,7 +60,6 @@ export const getDeploymentStatusByProjectId = createSelector<
     const status = mergeStatuses(statuses)
     out[project.id] = status
   }
-  console.log(out)
   return out
 })
 

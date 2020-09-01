@@ -1,8 +1,6 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
-  Page,
   Grid,
   Blockie,
   Mana,
@@ -19,11 +17,9 @@ import {
 import { isMobile } from 'decentraland-dapps/dist/lib/utils'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import Navbar from 'components/Navbar'
-import Footer from 'components/Footer'
 import Profile from 'components/Profile'
-import Navigation from 'components/Navigation'
-import { locations } from 'routing/locations'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import SignInRequired from 'components/SignInRequired'
 import { shorten, isValid } from 'lib/address'
 import { LandType } from 'modules/land/types'
 import { Props, State } from './SettingsPage.types'
@@ -183,20 +179,7 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
   }
 
   renderLogin() {
-    return (
-      <div className="center">
-        <p>
-          {
-            <T
-              id="wallet.sign_in_required"
-              values={{
-                sign_in: <Link to={locations.signIn()}>{t('wallet.sign_in')}</Link>
-              }}
-            />
-          }
-        </p>
-      </div>
-    )
+    return <SignInRequired />
   }
 
   renderLoading() {
@@ -208,18 +191,6 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoggingIn, isLoggedIn } = this.props
-    return (
-      <>
-        <Navbar isFullscreen />
-        <Navigation />
-        <Page className="SettingsPage">
-          {isLoggingIn ? this.renderLoading() : null}
-          {!isLoggingIn && !isLoggedIn ? this.renderLogin() : null}
-          {!isLoggingIn && isLoggedIn ? this.renderPage() : null}
-        </Page>
-        <Footer />
-      </>
-    )
+    return <LoggedInDetailPage className="SettingsPage">{this.renderPage()}</LoggedInDetailPage>
   }
 }

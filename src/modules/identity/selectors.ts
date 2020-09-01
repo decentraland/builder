@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { AuthIdentity } from 'dcl-crypto'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { isConnecting, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { isValid } from './utils'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
@@ -25,4 +25,4 @@ export const getCurrentIdentity = createSelector<RootState, Record<string, AuthI
 )
 
 export const isLoggedIn = (state: RootState) => getCurrentIdentity(state) !== null
-export const isLoggingIn = (state: RootState) => isLoadingType(getLoading(state), GENERATE_IDENTITY_REQUEST)
+export const isLoggingIn = (state: RootState) => isConnecting(state) || isLoadingType(getLoading(state), GENERATE_IDENTITY_REQUEST)

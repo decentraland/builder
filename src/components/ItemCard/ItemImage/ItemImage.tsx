@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import { RARITY_COLOR, RARITY_COLOR_LIGHT } from 'modules/item/types'
 import { Props } from './ItemImage.types'
+import './ItemImage.css'
 
 export default class ItemImage extends React.PureComponent<Props> {
   render() {
