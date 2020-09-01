@@ -346,8 +346,7 @@
     "revoke": "Revoke",
     "parcel_plural": "parcels",
     "estate_plural": "estates",
-    "settings": "Settings",
-    "copy": "Copy"
+    "settings": "Settings"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -363,9 +362,9 @@
     "no_projects": "It looks like you don't have any Scenes.{br}{link} to get started.",
     "no_projects_guest": "Your Scenes have been uploaded to the Cloud{br}{sign_in} to view them.",
     "project_actions": {
-      "delete_project": "Delete Scene",
-      "duplicate_project": "Duplicate Scene",
-      "export_project": "Download Scene",
+      "delete_project": "Delete",
+      "duplicate_project": "Duplicate",
+      "export_project": "Download",
       "unpublish": "Unpublish"
     },
     "sort": {
@@ -546,6 +545,22 @@
       "description": "You've reached the limit of your browser's storage. Please sign in to continue",
       "title": "Ummm..."
     }
+  },
+  "scene_detail_page": {
+    "actions": {
+      "open_in_editor": "Open in editor",
+      "duplicate": "Duplicate",
+      "download": "Download",
+      "delete": "Delete",
+      "unpublish": "Unpublish"
+    },
+    "published_in": "Published In",
+    "no_deployments": "This Scene has not been published in the Metaverse yet.",
+    "online": "Online",
+    "unsynced": "Unsynced",
+    "status": "Status",
+    "location": "Location",
+    "description": "Description"
   },
   "shortcuts": {
     "delete": "Delete item",

@@ -44,7 +44,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
                 <Column className="actions" align="right">
                   <Row>
                     <Button basic onClick={() => onNavigate(locations.editor(project.id))}>
-                      Open in editor
+                      {t('scene_detail_page.actions.open_in_editor')}
                     </Button>
                     <Dropdown
                       trigger={
@@ -56,9 +56,12 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
                       direction="left"
                     >
                       <Dropdown.Menu>
-                        <Dropdown.Item text="Duplicate" onClick={() => onDuplicate(project)} />
-                        <Dropdown.Item text="Download" onClick={() => onOpenModal('ExportModal', { project })} />
-                        <Dropdown.Item text="Delete" onClick={() => onDelete(project)} />
+                        <Dropdown.Item text={t('scene_detail_page.actions.duplicate')} onClick={() => onDuplicate(project)} />
+                        <Dropdown.Item
+                          text={t('scene_detail_page.actions.download')}
+                          onClick={() => onOpenModal('ExportModal', { project })}
+                        />
+                        <Dropdown.Item text={t('scene_detail_page.actions.delete')} onClick={() => onDelete(project)} />
                       </Dropdown.Menu>
                     </Dropdown>
                   </Row>
@@ -72,9 +75,9 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
             <div className="header-image" style={{ backgroundImage: project.thumbnail ? `url(${project.thumbnail})` : '' }} />
           </Section>
           <Section className={project.description ? '' : 'no-margin-bottom'}>
-            <Header sub>Published In</Header>
+            <Header sub>{t('scene_detail_page.published_in')}</Header>
             {deployments.length === 0 ? (
-              <Empty height={100}>This scene hasn't been published in the Metaverse yet.</Empty>
+              <Empty height={100}>{t('scene_detail_page.no_deployments')}</Empty>
             ) : (
               <div className="deployments">
                 {deployments.map(deployment => (
@@ -85,7 +88,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
           </Section>
           {project.description ? (
             <Section className="description no-margin-bottom">
-              <Header sub>Description</Header>
+              <Header sub>{t('scene_detail_page.description')}</Header>
               <p>{project.description}</p>
             </Section>
           ) : null}

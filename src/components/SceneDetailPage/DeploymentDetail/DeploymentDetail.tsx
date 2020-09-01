@@ -8,6 +8,7 @@ import { locations } from 'routing/locations'
 import { getStatus } from 'modules/deployment/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
   highlightLayer: Layer = (x, y) => {
@@ -22,9 +23,9 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     const landId = deployment.base in landTiles ? landTiles[deployment.base].land.id : null
     const status = getStatus(project, deployment)
     let statusClass = 'online'
-    let statusText = 'Online'
+    let statusText = t('scene_detail_page.online')
     if (status === DeploymentStatus.NEEDS_SYNC) {
-      statusText = 'Unsynced'
+      statusText = t('scene_detail_page.unsynced')
       statusClass = 'needs-sync'
     }
     return (
@@ -37,11 +38,11 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
             <i className={`status ${statusClass}`} />
             {statusText}
           </div>
-          {deployment.layout ? <div className="secondary-text">Status</div> : null}
+          <div className="secondary-text">{t('scene_detail_page.status')}</div>
         </div>
         <div className="stat">
           <div className="title">{deployment.base}</div>
-          <div className="secondary-text">Location</div>
+          <div className="secondary-text">{t('scene_detail_page.location')}</div>
         </div>
         <Dropdown
           trigger={
@@ -54,7 +55,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
         >
           <Dropdown.Menu>
             <Dropdown.Item
-              text="Unpublish"
+              text={t('scene_detail_page.actions.unpublish')}
               onClick={() => onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, deploymentId: deployment.id })}
             />
           </Dropdown.Menu>
