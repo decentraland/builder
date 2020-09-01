@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { getProjectId } from 'modules/location/selectors'
 import { getData as getProjects, getLoading } from 'modules/project/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './SceneDetailPage.types'
 import { getDeploymentsByProjectId } from 'modules/deployment/selectors'
-import SceneDetailPage from './SceneDetailPage'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { LOAD_PROJECTS_REQUEST, deleteProject, duplicateProject } from 'modules/project/actions'
 import { openModal } from 'modules/modal/actions'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './SceneDetailPage.types'
+import SceneDetailPage from './SceneDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const projectId = getProjectId(state)

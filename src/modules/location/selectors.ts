@@ -25,3 +25,27 @@ export const getProjectId = (state: RootState) => {
   const result = projectIdMatchSelector(state)
   return result ? result.params.projectId : null
 }
+
+const itemIdMatchSelector = createMatchSelector<
+  RootState,
+  {
+    itemId: string
+  }
+>(locations.itemDetail())
+
+export const getItemId = (state: RootState) => {
+  const result = itemIdMatchSelector(state)
+  return result ? result.params.itemId : null
+}
+
+const collectionIdMatchSelector = createMatchSelector<
+  RootState,
+  {
+    collectionId: string
+  }
+>(locations.collectionDetail())
+
+export const getCollectionId = (state: RootState) => {
+  const result = collectionIdMatchSelector(state)
+  return result ? result.params.collectionId : null
+}
