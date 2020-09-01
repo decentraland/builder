@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Page, Header, Button, Modal } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import Navigation from 'components/Navigation'
-import { locations } from 'routing/locations'
+import SignInRequired from 'components/SignInRequired'
 import Transaction from './Transaction'
 import { Props } from './ActivityPage.types'
 import './ActivityPage.css'
@@ -28,20 +27,7 @@ const ActivityPage = (props: Props) => {
   let content = null
 
   if (!isLoggedIn) {
-    content = (
-      <div className="center">
-        <p>
-          {
-            <T
-              id="wallet.sign_in_required"
-              values={{
-                sign_in: <Link to={locations.signIn()}>{t('wallet.sign_in')}</Link>
-              }}
-            />
-          }
-        </p>
-      </div>
-    )
+    content = <SignInRequired />
   } else if (transactions.length === 0) {
     content = (
       <div className="center">

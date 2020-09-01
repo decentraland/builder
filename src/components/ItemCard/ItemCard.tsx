@@ -12,7 +12,7 @@ export default class ItemCard extends React.PureComponent<Props> {
     const { item } = this.props
 
     return (
-      <Card className="ItemCard" link as={Link} to={locations.item(item.id)}>
+      <Card className="ItemCard" link as={Link} to={locations.itemDetail(item.id)}>
         <ItemImage item={item} />
         <Card.Content>
           <div className="text">{item.name}</div>

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Page, Loader, Center } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
+import NotFound from 'components/NotFound'
 import LandProvider from 'components/LandProvider'
 import { Props } from './LandProviderPage.types'
 import './LandProviderPage.css'
@@ -17,11 +17,7 @@ export default class LandProviderPage extends React.PureComponent<Props> {
   }
 
   renderNotFound() {
-    return (
-      <Center>
-        <span className="secondary-text">{t('global.not_found')}&hellip;</span>
-      </Center>
-    )
+    return <NotFound />
   }
 
   render() {

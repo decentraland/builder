@@ -21,6 +21,6 @@ export const locations = {
   settings: () => `/settings`,
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
   avatar: () => '/avatar',
-  item: (id = ':id') => `/item/${id}`,
-  collection: (id = ':id') => `/collection/${id}`
+  itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
+  collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`
 }
