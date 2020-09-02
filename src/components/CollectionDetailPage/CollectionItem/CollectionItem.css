@@ -29,6 +29,14 @@
 
 .CollectionItem .name {
   font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.CollectionItem .name .ItemBadge {
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
 }
 
 .CollectionItem .link,
@@ -58,4 +66,3 @@
 .CollectionItem .done .check {
   margin-left: 2px;
 }
-

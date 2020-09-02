@@ -62,7 +62,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
             </div>
           ) : null}
           <div className="item-data">
-            <ItemImage item={item} />
+            <ItemImage item={item} hasBadge={true} />
             <div className="sections">
               {data.category ? (
                 <Section>

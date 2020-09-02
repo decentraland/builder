@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
+import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemCard/ItemImage'
 import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
@@ -47,7 +48,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
             <Grid.Column className="avatar-column" width={5}>
               <ItemImage item={item} />
               <div>
-                <div className="name">{item.name}</div>
+                <div className="name">
+                  {item.name} <ItemBadge item={item} />
+                </div>
                 <div className="subtitle">{item.type}</div>
               </div>
             </Grid.Column>
