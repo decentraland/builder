@@ -50,11 +50,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
           ) : (
             <div className="empty">
               <div className="sparkles" />
-              <p>
-                Looking good! now you can start adding items to your collection.
+              <div>
+                {t('collection_detail_page.start_adding_items')}
                 <br />
-                You will not be able to remove or add items to your collection once its published.
-              </p>
+                {t('collection_detail_page.cant_remove')}
+              </div>
             </div>
           )}
         </Narrow>

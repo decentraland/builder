@@ -1,8 +1,22 @@
+.CollectionDetailPage .dcl.narrow > .empty {
+  padding: 200px 0;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  justify-content: center;
+  color: var(--secondary-text);
+  text-align: center;
+  line-height: 22px;
+  font-size: 15px;
+}
+
 .CollectionDetailPage .sparkles {
   width: 54px;
   height: 56px;
   background-image: url('../../images/sparkles.svg');
   background-repeat: no-repeat;
+  margin: auto;
+  margin-bottom: 20px;
 }
 
 .CollectionDetailPage .CollectionItem:first-child .grid {
