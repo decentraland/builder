@@ -14,16 +14,44 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity, WearableBodyShape } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { store } from 'modules/common/store'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
 export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
+
+export type RemoteItem = {
+  id: string // uuid
+  name: string
+  description: string
+  thumbnail: string
+  eth_address: string
+  collection_id?: string
+  blockchain_item_id?: string
+  price?: string
+  beneficiary?: string
+  rarity?: ItemRarity
+  type: ItemType
+  data: WearableData
+  metrics: ModelMetrics
+  contents: Record<string, string>
+  created_at: Date
+  updated_at: Date
+}
+
+export type RemoteCollection = {
+  id: string // uuid
+  name: string
+  eth_address: string
+  salt?: string
+  contract_address?: string
+  is_published: boolean
+  created_at: Date
+  updated_at: Date
+}
 
 export type RemoteProject = {
   id: string
@@ -206,6 +234,86 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
     activeFrom: new Date(Date.parse(poolGroup.active_from)),
     activeUntil: new Date(Date.parse(poolGroup.active_until))
   }
+}
+
+function toRemoteItem(item: Item): RemoteItem {
+  const remoteItem: RemoteItem = {
+    id: item.id,
+    name: item.name,
+    description: item.description || '',
+    thumbnail: item.thumbnail,
+    eth_address: item.owner,
+    type: item.type,
+    data: item.data,
+    metrics: item.metrics,
+    contents: item.contents,
+    created_at: new Date(item.createdAt),
+    updated_at: new Date(item.updatedAt)
+  }
+
+  if (item.collectionId) remoteItem.collection_id = item.collectionId
+  if (item.tokenId) remoteItem.blockchain_item_id = item.tokenId
+  if (item.price) remoteItem.price = item.price.toString()
+  if (item.beneficiary) remoteItem.beneficiary = item.beneficiary
+  if (item.rarity) remoteItem.rarity = item.rarity
+
+  return remoteItem
+}
+
+function fromRemoteItem(remoteItem: RemoteItem): Item {
+  const item: Item = {
+    id: remoteItem.id,
+    name: remoteItem.name,
+    thumbnail: remoteItem.thumbnail,
+    owner: remoteItem.eth_address,
+    description: remoteItem.description,
+    type: remoteItem.type,
+    data: remoteItem.data,
+    contents: remoteItem.contents,
+    metrics: remoteItem.metrics,
+    createdAt: +new Date(remoteItem.created_at),
+    updatedAt: +new Date(remoteItem.created_at)
+  }
+
+  if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
+  if (remoteItem.blockchain_item_id) item.tokenId = remoteItem.blockchain_item_id
+  if (remoteItem.price) item.price = parseInt(remoteItem.price, 10)
+  if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
+  if (remoteItem.rarity) item.rarity = remoteItem.rarity
+
+  return item
+}
+
+function toRemoteCollection(collection: Collection): RemoteCollection {
+  const remoteCollection: RemoteCollection = {
+    id: collection.id,
+    name: collection.name,
+    eth_address: collection.owner,
+    is_published: collection.isPublished,
+    created_at: new Date(collection.createdAt),
+    updated_at: new Date(collection.updatedAt)
+  }
+
+  if (collection.contractAddress) remoteCollection.contract_address = collection.contractAddress
+  if (collection.salt) remoteCollection.salt = collection.salt
+
+  return remoteCollection
+}
+
+function fromRemoteCollection(remoteCollection: RemoteCollection): Collection {
+  const collection: Collection = {
+    id: remoteCollection.id,
+    name: remoteCollection.name,
+    owner: remoteCollection.eth_address,
+    isPublished: remoteCollection.is_published,
+    createdAt: +new Date(remoteCollection.created_at),
+    updatedAt: +new Date(remoteCollection.updated_at)
+  }
+
+  if (remoteCollection.salt) collection.salt = remoteCollection.salt
+  if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
+
+  return collection
 }
 
 export type PoolDeploymentAdditionalFields = {
@@ -392,247 +500,28 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchItems() {
-    const owner = getAddress(store.getState())!
-
-    const items: Item[] = [
-      {
-        id: 'item',
-        name: 'Launch t-shirt',
-        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
-        type: ItemType.WEARABLE,
-        rarity: ItemRarity.UNIQUE,
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        owner,
-        contents: {
-          'thumbnail.png': 'Qmthumb',
-          'model.gltf': 'Qmmodel',
-          'texture.png': 'Qmtext'
-        },
-        data: {
-          representations: [
-            {
-              bodyShape: [WearableBodyShape.MALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            },
-            {
-              bodyShape: [WearableBodyShape.FEMALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            }
-          ],
-          replaces: [],
-          hides: [],
-          tags: []
-        }
-      },
-      {
-        id: 'dummy-item',
-        name: 'MANA t-shirt',
-        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',
-        type: ItemType.WEARABLE,
-        rarity: ItemRarity.UNIQUE,
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        owner,
-        collectionId: 'dummy-collection',
-        contents: {
-          'thumbnail.png': 'Qmthumb',
-          'model.gltf': 'Qmmodel',
-          'texture.png': 'Qmtext'
-        },
-        data: {
-          representations: [
-            {
-              bodyShape: [WearableBodyShape.MALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            },
-            {
-              bodyShape: [WearableBodyShape.FEMALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            }
-          ],
-          replaces: [],
-          hides: [],
-          tags: []
-        }
-      },
-      {
-        id: 'dummy-item2',
-        name: 'Decentraland t-shirt',
-        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/moonshot_2020/wearables/ms_dcl_upper_body/thumbnail',
-        type: ItemType.WEARABLE,
-        rarity: ItemRarity.LEGENDARY,
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        owner,
-        collectionId: 'dummy-collection',
-        contents: {
-          'thumbnail.png': 'Qmthumb',
-          'model.gltf': 'Qmmodel',
-          'texture.png': 'Qmtext'
-        },
-        data: {
-          representations: [
-            {
-              bodyShape: [WearableBodyShape.MALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            },
-            {
-              bodyShape: [WearableBodyShape.FEMALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            }
-          ],
-          replaces: [],
-          hides: [],
-          tags: []
-        }
-      },
-      {
-        id: 'dummy-item3',
-        name: 'Cat',
-        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/pm_outtathisworld/wearables/pm_col1_cat_helmet/thumbnail',
-        type: ItemType.WEARABLE,
-        rarity: ItemRarity.LEGENDARY,
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        owner,
-        collectionId: 'dummy-collection',
-        contents: {
-          'thumbnail.png': 'Qmthumb',
-          'model.gltf': 'Qmmodel',
-          'texture.png': 'Qmtext'
-        },
-        data: {
-          representations: [
-            {
-              bodyShape: [WearableBodyShape.MALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            },
-            {
-              bodyShape: [WearableBodyShape.FEMALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            }
-          ],
-          replaces: [],
-          hides: [],
-          tags: []
-        }
-      },
-      {
-        id: 'dummy-item4',
-        name: 'Skull',
-        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/halloween_2019/wearables/diamond_skull_mask/thumbnail',
-        type: ItemType.WEARABLE,
-        rarity: ItemRarity.MYTHIC,
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        owner,
-        collectionId: 'dummy-collection',
-        contents: {
-          'thumbnail.png': 'Qmthumb',
-          'model.gltf': 'Qmmodel',
-          'texture.png': 'Qmtext'
-        },
-        data: {
-          representations: [
-            {
-              bodyShape: [WearableBodyShape.MALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            },
-            {
-              bodyShape: [WearableBodyShape.FEMALE],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            }
-          ],
-          replaces: [],
-          hides: [],
-          tags: []
-        }
-      }
-    ]
-    return Promise.resolve(items)
+    const remoteItems = await this.request('get', `/items`)
+    return remoteItems.map(fromRemoteItem) as Item[]
   }
 
-  async saveItem(_item: Item, _contents: Record<string, Blob>) {
-    return new Promise(resolve => setTimeout(resolve, 2000))
+  async saveItem(item: Item, contents: Record<string, Blob>) {
+    await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+
+    const formData = new FormData()
+    for (let path in contents) {
+      formData.append(item.contents[path], contents[path])
+    }
+
+    await this.request('post', `/items/${item.id}/files`, formData)
   }
 
   async fetchCollections() {
-    const collections: Collection[] = [
-      {
-        id: 'dummy-collection',
-        name: 'Summer Hats',
-        contractAddress: '0xsombrero',
-        hash: 'asdf',
-        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
-        published: false
-      }
-    ]
-    return Promise.resolve(collections)
+    const remoteCollections = await this.request('get', `/collections`)
+    return remoteCollections.map(fromRemoteCollection) as Collection[]
   }
 
-  async saveCollection(_collection: Collection) {
-    return new Promise(resolve => setTimeout(resolve, 2000))
+  async saveCollection(collection: Collection) {
+    return this.request('put', `/collections/${collection.id}`, { collection: toRemoteCollection(collection) })
   }
 }
 

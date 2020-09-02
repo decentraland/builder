@@ -86,6 +86,8 @@ export type Item = {
   data: WearableData
   contents: Record<string, string>
   metrics: ModelMetrics
+  createdAt: number
+  updatedAt: number
 }
 
 export type WearableData = {
