@@ -755,5 +755,10 @@
     "rarity": "稀有度",
     "price": "价钱",
     "beneficiary": "受益人"
+  },
+  "collection_detail_page": {
+    "publish": "发布",
+    "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
+    "cant_remove": "发布后，您将无法删除或向收藏夹添加项目"
   }
 }
