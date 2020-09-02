@@ -22,7 +22,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   async handleSubmit() {
-    const { onSubmit } = this.props
+    const { address, onSubmit } = this.props
     const { id, name, model, bodyShape, contents, metrics } = this.state
 
     if (id && name && model && bodyShape && contents && metrics) {
@@ -61,7 +61,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           tags: [],
           representations
         },
-        owner: '',
+        owner: address!,
         metrics,
         contents: await this.computeHashes(contents!),
         createdAt: +new Date(),
