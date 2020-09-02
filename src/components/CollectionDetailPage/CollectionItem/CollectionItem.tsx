@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Grid } from 'decentraland-ui'
+import { Grid, Icon } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 
 import { locations } from 'routing/locations'
@@ -9,6 +9,33 @@ import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
+  isDone() {
+    const { item } = this.props
+    return !this.isEditable() && item.price
+  }
+
+  isEditable() {
+    const { item } = this.props
+    const data = item.data as WearableData
+    return !item.rarity || !data.category
+  }
+
+  renderPrice() {
+    const { item } = this.props
+
+    return item.price ? (
+      <>
+        <div>{item.price}</div>
+        <div className="subtitle">price</div>
+      </>
+    ) : !this.isEditable() ? (
+      <>
+        <div className="link">set price</div>
+        <div className="subtitle">price</div>
+      </>
+    ) : null
+  }
+
   render() {
     const { item } = this.props
     const data = item.data as WearableData
@@ -17,23 +44,42 @@ export default class CollectionItem extends React.PureComponent<Props> {
       <Link to={locations.itemDetail(item.id)} className="CollectionItem">
         <Grid columns="equal">
           <Grid.Row>
-            <Grid.Column className="avatar-column" width={4}>
+            <Grid.Column className="avatar-column" width={5}>
               <ItemImage item={item} />
-              <div>{item.name}</div>
+              <div>
+                <div className="name">{item.name}</div>
+                <div className="subtitle">{item.type}</div>
+              </div>
             </Grid.Column>
             <Grid.Column>
-              <div>{data.category}</div>
-              <div className="subtitle">Category</div>
+              {data.category ? (
+                <>
+                  <div>{data.category}</div>
+                  <div className="subtitle">Category</div>
+                </>
+              ) : null}
             </Grid.Column>
             <Grid.Column>
-              <div>{item.rarity}</div>
-              <div className="subtitle">Rarity</div>
+              {item.rarity ? (
+                <>
+                  <div>{item.rarity}</div>
+                  <div className="subtitle">Rarity</div>
+                </>
+              ) : null}
             </Grid.Column>
+            <Grid.Column>{this.renderPrice()}</Grid.Column>
             <Grid.Column>
-              <div>{item.price}</div>
-              <div className="subtitle">Price</div>
+              {this.isDone() ? (
+                <div className="done">
+                  Done
+                  <Icon name="check" />
+                </div>
+              ) : this.isEditable() ? (
+                <Link to={locations.itemEditor(item.id)} className="edit-item">
+                  edit item
+                </Link>
+              ) : null}
             </Grid.Column>
-            <Grid.Column>Actions</Grid.Column>
           </Grid.Row>
         </Grid>
       </Link>

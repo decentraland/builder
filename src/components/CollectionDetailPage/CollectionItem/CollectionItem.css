@@ -26,3 +26,36 @@
   padding: 5px;
   margin-right: 24px;
 }
+
+.CollectionItem .name {
+  font-size: 15px;
+}
+
+.CollectionItem .link,
+.CollectionItem a {
+  text-transform: uppercase;
+}
+
+.CollectionItem .subtitle {
+  margin-top: 2px;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+}
+
+.CollectionItem .edit-item {
+  display: none;
+}
+
+.CollectionItem .ui.grid:hover .edit-item {
+  display: block;
+}
+
+.CollectionItem .done {
+  text-align: right;
+  color: rgb(var(--light-blue-raw));
+}
+
+.CollectionItem .done .check {
+  margin-left: 2px;
+}
+
