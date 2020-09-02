@@ -769,6 +769,8 @@
     "beneficiary": "Beneficiary"
   },
   "collection_detail_page": {
-    "publish": "Publish"
+    "publish": "Publish",
+    "start_adding_items": "Looking good! now you can start adding items to your collection.",
+    "cant_remove": "You will not be able to remove or add items to your collection once its published."
   }
 }
