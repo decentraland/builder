@@ -3,6 +3,7 @@ import * as React from 'react'
 import { RARITY_COLOR, RARITY_COLOR_LIGHT } from 'modules/item/types'
 import { Props } from './ItemImage.types'
 import './ItemImage.css'
+import { getAssetStorageUrl } from 'lib/api/builder'
 
 export default class ItemImage extends React.PureComponent<Props> {
   render() {
@@ -10,11 +11,11 @@ export default class ItemImage extends React.PureComponent<Props> {
 
     const style = item.rarity
       ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[item.rarity]}, ${RARITY_COLOR[item.rarity]})` }
-      : { backgroundColor: '#FFF' }
+      : { backgroundColor: 'var(--secondary)' }
 
     return (
       <div className="ItemImage image-wrapper" style={style}>
-        <img className="image" src={item.thumbnail} alt={item.name} />
+        <img className="image" src={getAssetStorageUrl(item.contents[item.thumbnail])} alt={item.name} />
       </div>
     )
   }

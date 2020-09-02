@@ -63,7 +63,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         },
         owner: '',
         metrics,
-        contents: await this.computeHashes(contents!)
+        contents: await this.computeHashes(contents!),
+        createdAt: +new Date(),
+        updatedAt: +new Date()
       }
 
       onSubmit(item, contents)
