@@ -108,6 +108,23 @@
     "top_banner_left": "Septiembre 16-30 - Súmate a la creación con más de $250k USD en premios para compartir.",
     "top_banner_right": " "
   },
+  "create_collection_modal": {
+    "title": "Nueva Colección",
+    "subtitle": "Ponle un nombre a tu nueva colleción",
+    "label": "Nombre",
+    "placeholder": "Mi colleción"
+  },
+  "create_item_modal": {
+    "title": "Nuevo Item",
+    "metrics": {
+      "triangles": "{count} {count, plural, one {triangulo} other {triangulos}}",
+      "materials": "{count} {count, plural, one {material} other {materiales}}",
+      "textures": "{count} {count, plural, one {textura} other {texturas}}"
+    },
+    "name_label": "Ponle un nombre a tu item",
+    "representation_label": "Para que forma de cuerpo es este item?",
+    "add": "Agregar"
+  },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
@@ -340,7 +357,12 @@
     "revoke": "Revocar",
     "parcel_plural": "parcelas",
     "estate_plural": "estates",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "representation": {
+      "unisex": "Ambas",
+      "male": "Forma A",
+      "female": "Forma B"
+    }
   },
   "navigation": {
     "scenes": "Escenas",
