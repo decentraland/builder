@@ -1,8 +1,10 @@
 import * as React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Icon } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 
 import { locations } from 'routing/locations'
+import { isComplete, isEditable } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemCard/ItemImage'
@@ -10,29 +12,18 @@ import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
-  isDone() {
-    const { item } = this.props
-    return !this.isEditable() && item.price
-  }
-
-  isEditable() {
-    const { item } = this.props
-    const data = item.data as WearableData
-    return !item.rarity || !data.category
-  }
-
   renderPrice() {
     const { item } = this.props
 
     return item.price ? (
       <>
         <div>{item.price}</div>
-        <div className="subtitle">price</div>
+        <div className="subtitle">{t('item.price')}</div>
       </>
-    ) : !this.isEditable() ? (
+    ) : !isEditable(item) ? (
       <>
-        <div className="link">set price</div>
-        <div className="subtitle">price</div>
+        <div className="link">{t('collection_item.set_price')}</div>
+        <div className="subtitle">{t('item.price')}</div>
       </>
     ) : null
   }
@@ -58,7 +49,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
               {data.category ? (
                 <>
                   <div>{data.category}</div>
-                  <div className="subtitle">Category</div>
+                  <div className="subtitle">{t('item.category')}</div>
                 </>
               ) : null}
             </Grid.Column>
@@ -66,20 +57,19 @@ export default class CollectionItem extends React.PureComponent<Props> {
               {item.rarity ? (
                 <>
                   <div>{item.rarity}</div>
-                  <div className="subtitle">Rarity</div>
+                  <div className="subtitle">{t('item.rarity')}</div>
                 </>
               ) : null}
             </Grid.Column>
             <Grid.Column>{this.renderPrice()}</Grid.Column>
             <Grid.Column>
-              {this.isDone() ? (
+              {isComplete(item) ? (
                 <div className="done">
-                  Done
-                  <Icon name="check" />
+                  {t('collection_item.done')} <Icon name="check" />
                 </div>
-              ) : this.isEditable() ? (
+              ) : isEditable(item) ? (
                 <Link to={locations.itemEditor(item.id)} className="edit-item">
-                  edit item
+                  {t('collection_item.edit_item')}
                 </Link>
               ) : null}
             </Grid.Column>

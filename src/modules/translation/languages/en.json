@@ -741,15 +741,22 @@
     "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
   },
   "item_detail_page": {
-    "edit": "Edit",
-    "category": "Category",
-    "rarity": "Rarity",
-    "price": "Price",
-    "beneficiary": "Beneficiary"
+    "edit": "Edit"
   },
   "collection_detail_page": {
     "publish": "Publish",
     "start_adding_items": "Looking good! now you can start adding items to your collection.",
     "cant_remove": "You will not be able to remove or add items to your collection once its published."
+  },
+  "collection_Item": {
+    "set_price": "set price",
+    "done": "Done",
+    "edit_item": "edit item"
+  },
+  "item": {
+    "category": "Category",
+    "rarity": "Rarity",
+    "price": "Price",
+    "beneficiary": "Beneficiary"
   }
 }

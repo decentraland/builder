@@ -66,25 +66,25 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
             <div className="sections">
               {data.category ? (
                 <Section>
-                  <div className="subtitle">{t('item_detail_page.category')}</div>
+                  <div className="subtitle">{t('item.category')}</div>
                   <div className="value">{data.category}</div>
                 </Section>
               ) : null}
               {item.rarity ? (
                 <Section>
-                  <div className="subtitle">{t('item_detail_page.rarity')}</div>
+                  <div className="subtitle">{t('item.rarity')}</div>
                   <div className="value">{item.rarity}</div>
                 </Section>
               ) : null}
               {item.price ? (
                 <Section>
-                  <div className="subtitle">{t('item_detail_page.price')}</div>
+                  <div className="subtitle">{t('item.price')}</div>
                   <div className="value">{item.price}</div>
                 </Section>
               ) : null}
               {item.beneficiary ? (
                 <Section>
-                  <div className="subtitle">{t('item_detail_page.beneficiary')}</div>
+                  <div className="subtitle">{t('item.beneficiary')}</div>
                   <div className="value">{item.beneficiary}</div>
                 </Section>
               ) : null}

@@ -3,6 +3,7 @@ import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
+import { isComplete } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
@@ -11,11 +12,19 @@ import { Props } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
+  canPublish() {
+    const { items } = this.props
+    return this.hasItems() && items.every(isComplete)
+  }
+
+  hasItems() {
+    const { items } = this.props
+    return items.length > 0
+  }
+
   renderPage() {
     const { items, onNavigate } = this.props
     const collection = this.props.collection!
-
-    const hasItems = items.length > 0
 
     return (
       <>
@@ -31,7 +40,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right">
                   <Row>
-                    <Button primary disabled={!hasItems} onClick={() => console.log('Publish collection')}>
+                    <Button primary disabled={!this.canPublish()} onClick={() => console.log('Publish collection')}>
                       {t('collection_detail_page.publish')}
                     </Button>
                   </Row>
@@ -41,7 +50,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Narrow>
-          {hasItems ? (
+          {this.hasItems() ? (
             <div className="collection-items">
               {items.map(item => (
                 <CollectionItem key={item.id} item={item} />

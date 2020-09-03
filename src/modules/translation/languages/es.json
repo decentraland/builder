@@ -719,15 +719,22 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "item_detail_page": {
-    "edit": "Editar",
-    "category": "Categoría",
-    "rarity": "Rareza",
-    "price": "Precio",
-    "beneficiary": "Beneficiario"
+    "edit": "Editar"
   },
   "collection_detail_page": {
     "publish": "Publicar",
     "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+  },
+  "collection_item": {
+    "set_price": "agregar precio",
+    "done": "Terminado",
+    "edit_item": "editar item"
+  },
+  "item": {
+    "category": "Categoría",
+    "rarity": "Rareza",
+    "price": "Precio",
+    "beneficiary": "Beneficiario"
   }
 }
