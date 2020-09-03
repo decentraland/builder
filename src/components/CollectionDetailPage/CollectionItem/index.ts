@@ -1,3 +1,3 @@
-import CollectionItem from './CollectionItem'
+import CollectionItem from './CollectionItem.container'
 
 export default CollectionItem
