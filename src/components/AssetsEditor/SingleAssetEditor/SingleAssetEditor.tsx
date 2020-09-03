@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Field, TagField, SelectField, DropdownProps, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { rawMappingsToObjectURL, revokeMappingsObjectURL, isGround } from 'modules/asset/utils'
-import { getAssetStorageUrl } from 'lib/api/builder'
+import { getContentStorageUrl } from 'lib/api/builder'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { RawAsset, Asset } from 'modules/asset/types'
 import { getModelData } from 'lib/getModelData'
@@ -72,7 +72,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
       mappings = rawMappingsToObjectURL((asset as RawAsset).contents)
     } else {
       mappings = Object.keys((asset as Asset).contents).reduce<Asset['contents']>((acc, path) => {
-        acc[path] = getAssetStorageUrl(asset.contents[path] as string)
+        acc[path] = getContentStorageUrl(asset.contents[path] as string)
         return acc
       }, {})
     }
