@@ -63,7 +63,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
               }}
             />
           </Notice>
-
           {this.hasItems() ? (
             <div className="collection-items">
               {items.map(item => (
