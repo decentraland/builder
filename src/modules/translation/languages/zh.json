@@ -105,6 +105,23 @@
     "top_banner_left": "9月16日至30日-激烈的在线创作，分享了超过25万美元的奖品。",
     "top_banner_right": " "
   },
+  "create_collection_modal": {
+    "title": "新系列",
+    "subtitle": "为您的新收藏取个名字",
+    "label": "名称",
+    "placeholder": "我的大学"
+  },
+  "create_item_modal": {
+    "title": "新物品",
+    "metrics": {
+      "triangles": "{count}个三角形",
+      "materials": "{count}个材料",
+      "textures": "{count}个纹理"
+    },
+    "name_label": "给您的新商品起个名字",
+    "representation_label": "它代表哪种身材？",
+    "add": "加"
+  },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
@@ -341,7 +358,12 @@
     "revoke": "撤消",
     "parcel_plural": "地块",
     "estate_plural": "产业",
-    "settings": "设定"
+    "settings": "设定",
+    "representation": {
+      "unisex": "男女通用",
+      "male": "男",
+      "female": "女"
+    }
   },
   "navigation": {
     "scenes": "场景",

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Container, Row, Column, Header, Card, Button } from 'decentraland-ui'
+import { Container, Row, Column, Header, Card, Button, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -27,9 +27,20 @@ export default class AvatarPage extends React.PureComponent<Props> {
               </Column>
               <Column align="right">
                 <Row className="actions">
-                  <Button basic className="create-item" onClick={() => onOpenModal('CreateItemModal')}>
-                    <Icon name="add-active" />
-                  </Button>
+                  <Dropdown
+                    trigger={
+                      <Button basic className="create-item">
+                        <Icon name="add-active" />
+                      </Button>
+                    }
+                    inline
+                    direction="left"
+                  >
+                    <Dropdown.Menu>
+                      <Dropdown.Item text={t('avatar_page.new_item')} onClick={() => onOpenModal('CreateItemModal')} />
+                      <Dropdown.Item text={t('avatar_page.new_collection')} onClick={() => onOpenModal('CreateCollectionModal')} />
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </Row>
               </Column>
             </Row>
@@ -52,11 +63,11 @@ export default class AvatarPage extends React.PureComponent<Props> {
                 {t('avatar_page.no_items')}
               </Header>
               <div className="empty-description">{t('avatar_page.empty_description')}</div>
-              <div className="create-new-wrapper" onClick={() => onOpenModal('CreateItemModal')}>
-                <div className="create-new create-new-item">
+              <div className="create-new-wrapper">
+                <div className="create-new create-new-item" onClick={() => onOpenModal('CreateItemModal')}>
                   <div className="text">{t('avatar_page.new_item')}</div>
                 </div>
-                <div className="create-new create-new-collection">
+                <div className="create-new create-new-collection" onClick={() => onOpenModal('CreateCollectionModal')}>
                   <div className="text">{t('avatar_page.new_collection')}</div>
                 </div>
               </div>
