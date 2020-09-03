@@ -45,8 +45,3 @@
   bottom: 0px;
   background: rgba(0, 0, 0, 0.5);
 }
-
-.AssetImporter .FileImport .dropzone .link {
-  color: var(--primary);
-  cursor: pointer;
-}

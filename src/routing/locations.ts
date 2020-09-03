@@ -22,5 +22,6 @@ export const locations = {
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
   avatar: () => '/avatar',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
-  collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`
+  collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
+  itemEditor: (itemId = ':itemId') => `/items/${itemId}/editor`
 }

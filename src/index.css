@@ -39,6 +39,11 @@ body canvas.dcl-canvas {
   color: var(--text);
 }
 
+.link {
+  color: var(--primary);
+  cursor: pointer;
+}
+
 .is-uploading {
   animation: uploading 0.5s ease-in-out infinite alternate;
 }
@@ -52,7 +57,7 @@ body canvas.dcl-canvas {
   }
 }
 
-/* 
+/*
 ISSUE 329: https://github.com/decentraland/builder/issues/329
 
 Hides intercom's "Hey do you need help?" thingy that shows up when you enter the editor

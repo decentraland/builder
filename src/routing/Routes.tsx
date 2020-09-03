@@ -27,6 +27,7 @@ import SettingsPage from 'components/SettingsPage'
 import SceneDetailPage from 'components/SceneDetailPage'
 import AvatarPage from 'components/AvatarPage'
 import ItemDetailPage from 'components/ItemDetailPage'
+import CollectionDetailPage from 'components/CollectionDetailPage'
 
 import { Props, State } from './Routes.types'
 
@@ -87,6 +88,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
             <Route exact path={locations.avatar()} component={AvatarPage} />
             <Route exact path={locations.itemDetail()} component={ItemDetailPage} />
+            <Route exact path={locations.collectionDetail()} component={CollectionDetailPage} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

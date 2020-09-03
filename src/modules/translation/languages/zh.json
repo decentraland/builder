@@ -716,6 +716,19 @@
   },
   "item_detail_page": {
     "edit": "辑",
+    "notice": "您需要先将项目添加到集合中，然后才能发布它们"
+  },
+  "collection_detail_page": {
+    "publish": "发布",
+    "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
+    "cant_remove": "发布后，您将无法删除或向收藏夹添加项目"
+  },
+  "collection_item": {
+    "set_price": "设定价格",
+    "done": "完成",
+    "edit_item": "编辑项目"
+  },
+  "item": {
     "category": "类别",
     "rarity": "稀有度",
     "price": "价钱",

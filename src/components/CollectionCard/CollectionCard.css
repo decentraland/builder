@@ -4,6 +4,17 @@
   align-items: center;
 }
 
+.CollectionCard .item-rows .item-row.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  color: var(--secondary-text);
+  border: 1px solid var(--divider);
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
 .CollectionCard .item-rows .item {
   max-height: 100%;
 }
@@ -27,4 +38,12 @@
 
 .CollectionCard .content .text {
   font-size: 17px;
+}
+
+.CollectionCard .sparkles {
+  width: 54px;
+  height: 56px;
+  margin-bottom: 5px;
+  background-image: url('../../images/sparkles.svg');
+  background-repeat: no-repeat;
 }

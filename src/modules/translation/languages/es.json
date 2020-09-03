@@ -720,6 +720,19 @@
   },
   "item_detail_page": {
     "edit": "Editar",
+    "notice": "Debes agregar tus items a una colección antes de poder publicarlos"
+  },
+  "collection_detail_page": {
+    "publish": "Publicar",
+    "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+  },
+  "collection_item": {
+    "set_price": "agregar precio",
+    "done": "Terminado",
+    "edit_item": "editar item"
+  },
+  "item": {
     "category": "Categoría",
     "rarity": "Rareza",
     "price": "Precio",
