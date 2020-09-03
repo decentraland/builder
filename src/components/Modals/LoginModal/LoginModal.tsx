@@ -2,10 +2,7 @@ import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-
 import { Props } from './LoginModal.types'
-
-import './LoginModal.css'
 
 export default class LoginModal extends React.PureComponent<Props> {
   handleClose = () => {
