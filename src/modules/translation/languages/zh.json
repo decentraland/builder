@@ -715,7 +715,8 @@
     "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
   },
   "item_detail_page": {
-    "edit": "辑"
+    "edit": "辑",
+    "notice": "您需要先将项目添加到集合中，然后才能发布它们"
   },
   "collection_detail_page": {
     "publish": "发布",

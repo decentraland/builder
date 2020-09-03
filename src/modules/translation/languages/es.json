@@ -719,7 +719,8 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "item_detail_page": {
-    "edit": "Editar"
+    "edit": "Editar",
+    "notice": "Debes agregar tus items a una colección antes de poder publicarlos"
   },
   "collection_detail_page": {
     "publish": "Publicar",

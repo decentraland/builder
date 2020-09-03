@@ -5,7 +5,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
-import Icon from 'components/Icon'
+import Notice from 'components/Notice'
 import ItemImage from 'components/ItemCard/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
@@ -15,18 +15,8 @@ import './ItemDetailPage.css'
 const STORAGE_KEY = 'dcl-item-notice'
 
 export default class ItemDetailPage extends React.PureComponent<Props> {
-  state = {
-    isNoticeClosed: localStorage.getItem(STORAGE_KEY) !== null
-  }
-
-  handleCloseNotice = () => {
-    this.setState({ isNoticeClosed: true })
-    localStorage.setItem(STORAGE_KEY, '1')
-  }
-
   renderPage() {
     const { onNavigate } = this.props
-    const { isNoticeClosed } = this.state
 
     const item = this.props.item!
     const data = item.data as WearableData
@@ -55,12 +45,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Narrow>
-          {item.collectionId === undefined && !isNoticeClosed ? (
-            <div className="notice">
-              <div className="text">You need to add your items to a collection before you can publish them</div>
-              <Icon name="close" onClick={this.handleCloseNotice} />
-            </div>
-          ) : null}
+          {item.collectionId === undefined ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
           <div className="item-data">
             <ItemImage item={item} hasBadge={true} />
             <div className="sections">

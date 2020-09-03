@@ -1,15 +1,20 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 import { isComplete } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import CollectionItem from './CollectionItem'
 import { Props } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
+
+const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
   canPublish() {
@@ -50,6 +55,15 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Narrow>
+          <Notice storageKey={STORAGE_KEY}>
+            <T
+              id="collection_detail_page.notice"
+              values={{
+                editor_link: <Link to={locations.editor()}>{t('collection_detail_page.click_here')}</Link>
+              }}
+            />
+          </Notice>
+
           {this.hasItems() ? (
             <div className="collection-items">
               {items.map(item => (
