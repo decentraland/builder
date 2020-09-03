@@ -501,7 +501,224 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchItems() {
     const remoteItems = await this.request('get', `/items`)
-    return remoteItems.map(fromRemoteItem) as Item[]
+    return [
+      ...remoteItems.map(fromRemoteItem),
+
+      {
+        id: 'item',
+        name: 'Launch t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.UNIQUE,
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          representations: [
+            {
+              bodyShape: ['male'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: ['female'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item',
+        name: 'MANA t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.UNIQUE,
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          representations: [
+            {
+              bodyShape: ['male'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: ['female'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item2',
+        name: 'Decentraland t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/moonshot_2020/wearables/ms_dcl_upper_body/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.LEGENDARY,
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          representations: [
+            {
+              bodyShape: ['male'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: ['female'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item3',
+        name: 'Cat',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/pm_outtathisworld/wearables/pm_col1_cat_helmet/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.LEGENDARY,
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          representations: [
+            {
+              bodyShape: ['male'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: ['female'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'dummy-item4',
+        name: 'Skull',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/halloween_2019/wearables/diamond_skull_mask/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.MYTHIC,
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        collectionId: 'dummy-collection',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        data: {
+          representations: [
+            {
+              bodyShape: ['male'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: ['female'],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      }
+    ] as Item[]
   }
 
   async saveItem(item: Item, contents: Record<string, Blob>) {
@@ -517,7 +734,19 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections() {
     const remoteCollections = await this.request('get', `/collections`)
-    return remoteCollections.map(fromRemoteCollection) as Collection[]
+    return [
+      ...remoteCollections.map(fromRemoteCollection),
+      {
+        id: 'dummy-collection',
+        name: 'Summer Hats',
+        contractAddress: '0xsombrero',
+        salt: 'asdf',
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        isPublished: false,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    ] as Collection[]
   }
 
   async saveCollection(collection: Collection) {

@@ -6,3 +6,10 @@
   width: 100%;
 }
 
+.ItemImage .ItemBadge {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  bottom: 9px;
+  left: 9px;
+}

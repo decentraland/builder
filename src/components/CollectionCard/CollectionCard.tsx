@@ -23,9 +23,17 @@ export default class CollectionCard extends React.PureComponent<Props> {
     return (
       <Card className="CollectionCard" link as={Link} to={locations.collectionDetail(collection.id)}>
         <div className="item-rows">
-          <div className="item-row" style={itemRowStyle}>
-            {this.renderItemRow(firstItemRow)}
-          </div>
+          {items.length === 0 ? (
+            <div className="item-row empty">
+              <div className="sparkles" />
+              <div>Add Item</div>
+            </div>
+          ) : null}
+          {firstItemRow.length > 0 ? (
+            <div className="item-row" style={itemRowStyle}>
+              {this.renderItemRow(firstItemRow)}
+            </div>
+          ) : null}
           {secondItemRow.length > 0 ? (
             <div className="item-row" style={itemRowStyle}>
               {this.renderItemRow(secondItemRow)}

@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { getItems, getLoading } from 'modules/item/selectors'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
@@ -17,8 +16,7 @@ const mapState = (state: RootState): MapStateProps => {
 
   return {
     item,
-    isLoggedIn: isLoggedIn(state),
-    isLoading: isLoggingIn(state) || isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST)
+    isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST)
   }
 }
 

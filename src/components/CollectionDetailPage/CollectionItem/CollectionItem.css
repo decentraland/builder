@@ -1,0 +1,68 @@
+.CollectionItem .ui.grid {
+  padding: 8px 0;
+  color: var(--text);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.CollectionItem .ui.grid:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  color: var(--text);
+}
+
+.CollectionItem .ui.grid > .row {
+  align-items: center;
+}
+
+.CollectionItem .ui.grid > .row > .column.avatar-column {
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+}
+
+.CollectionItem .ItemImage.image-wrapper {
+  min-width: 64px;
+  max-width: 64px;
+  height: 64px;
+  padding: 5px;
+  margin-right: 24px;
+}
+
+.CollectionItem .name {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.CollectionItem .name .ItemBadge {
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+}
+
+.CollectionItem .link,
+.CollectionItem a {
+  text-transform: uppercase;
+}
+
+.CollectionItem .subtitle {
+  margin-top: 2px;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+}
+
+.CollectionItem .edit-item {
+  display: none;
+}
+
+.CollectionItem .ui.grid:hover .edit-item {
+  display: block;
+}
+
+.CollectionItem .done {
+  text-align: right;
+  color: rgb(var(--light-blue-raw));
+}
+
+.CollectionItem .done .check {
+  margin-left: 2px;
+}
