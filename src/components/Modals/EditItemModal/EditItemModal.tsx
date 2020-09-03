@@ -7,9 +7,9 @@ import { Props } from './EditItemModal.types'
 import './EditItemModal.css'
 
 export default class EditItemModal extends React.PureComponent<Props, {}> {
-  handleEdit = () => {
+  handleSave = () => {
     const { item } = this.props
-    console.log('edit', item)
+    console.log('save', item)
   }
 
   render() {
