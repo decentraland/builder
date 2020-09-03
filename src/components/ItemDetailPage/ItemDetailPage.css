@@ -1,26 +1,8 @@
-.ItemDetailPage .notice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: var(--card);
-  border-radius: 5px;
-}
-
-.ItemDetailPage .text {
-  flex: 1;
-  font-size: 15px;
-  text-align: center;
-  color: var(--secondary-text);
-}
-
-.ItemDetailPage .Icon {
-  filter: invert(65%);
-  cursor: pointer;
+.ItemDetailPage .Notice {
+  margin-bottom: 32px;
 }
 
 .ItemDetailPage .item-data {
-  margin-top: 32px;
   display: flex;
 }
 
