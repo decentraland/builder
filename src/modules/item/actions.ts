@@ -1,5 +1,5 @@
-import { Item } from './types'
 import { action } from 'typesafe-actions'
+import { Item } from './types'
 
 export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
@@ -25,3 +25,15 @@ export const saveItemFailure = (item: Item, contents: Record<string, Blob>, erro
 export type SaveItemRequestAction = ReturnType<typeof saveItemRequest>
 export type SaveItemSuccessAction = ReturnType<typeof saveItemSuccess>
 export type SaveItemFailureAction = ReturnType<typeof saveItemFailure>
+
+export const EDIT_ITEM_REQUEST = '[Request] Edit Items'
+export const EDIT_ITEM_SUCCESS = '[Success] Edit Items'
+export const EDIT_ITEM_FAILURE = '[Failure] Edit Items'
+
+export const editItemRequest = (item: Item) => action(EDIT_ITEM_REQUEST, { item })
+export const editItemSuccess = (item: Item) => action(EDIT_ITEM_SUCCESS, { item })
+export const editItemFailure = (error: string) => action(EDIT_ITEM_FAILURE, { error })
+
+export type EditItemRequestAction = ReturnType<typeof editItemRequest>
+export type EditItemSuccessAction = ReturnType<typeof editItemSuccess>
+export type EditItemFailureAction = ReturnType<typeof editItemFailure>

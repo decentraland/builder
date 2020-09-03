@@ -12,6 +12,11 @@ import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
+  handleEditItem = () => {
+    const { onOpenModal } = this.props
+    onOpenModal('EditItemModal')
+  }
+
   renderPrice() {
     const { item } = this.props
 
@@ -22,7 +27,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
       </>
     ) : !isEditable(item) ? (
       <>
-        <div className="link">{t('collection_item.set_price')}</div>
+        <div className="link" onClick={this.handleEditItem}>
+          {t('collection_item.set_price')}
+        </div>
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : null
