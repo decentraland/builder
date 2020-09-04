@@ -6,11 +6,16 @@ import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 export type Props = ModalProps & {
   item: Item | null
   isLoading: boolean
-  metadata: EditItemModalMetadata
+  metadata: EditPriceAndBeneficiaryModalMetadata
   onSave: typeof saveItemRequest
 }
 
-export type EditItemModalMetadata = {
+export type State = {
+  price?: number
+  beneficiary?: string
+}
+
+export type EditPriceAndBeneficiaryModalMetadata = {
   itemId: string
 }
 
