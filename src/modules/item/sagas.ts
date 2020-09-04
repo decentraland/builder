@@ -35,6 +35,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
     yield call(() => builder.saveItem(item, contents))
     yield put(saveItemSuccess(item, contents))
     yield put(closeModal('CreateItemModal'))
+    yield put(closeModal('EditPriceAndBeneficiaryModal'))
   } catch (error) {
     yield put(saveItemFailure(item, contents, error.message))
   }
