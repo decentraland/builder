@@ -12,6 +12,7 @@ import {
 } from './actions'
 import { builder } from 'lib/api/builder'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { closeModal } from 'modules/modal/actions'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -23,6 +24,7 @@ function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) 
   try {
     const collections = yield call(() => builder.fetchCollections())
     yield put(fetchCollectionsSuccess(collections))
+    yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
     yield put(fetchCollectionsFailure(error.message))
   }

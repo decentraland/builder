@@ -73,7 +73,7 @@
   padding: 15px;
 }
 
-.AvatarPage .filters .dcl.row.actions > .ui.button {
+.AvatarPage .filters .dcl.row.actions .ui.dropdown .ui.button {
   width: 16px;
   height: 16px;
   box-sizing: content-box;
