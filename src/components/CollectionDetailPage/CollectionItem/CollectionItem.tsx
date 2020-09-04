@@ -12,9 +12,9 @@ import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
-  handleEditItem = (event: React.MouseEvent<HTMLElement>) => {
+  handleEditPriceAndBeneficiary = (event: React.MouseEvent<HTMLElement>) => {
     const { onOpenModal, item } = this.props
-    onOpenModal('EditItemModal', { itemId: item.id })
+    onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
     event.preventDefault()
   }
 
@@ -34,7 +34,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
       </>
     ) : !isEditable(item) ? (
       <>
-        <div className="link" onClick={this.handleEditItem}>
+        <div className="link" onClick={this.handleEditPriceAndBeneficiary}>
           {t('collection_item.set_price')}
         </div>
         <div className="subtitle">{t('item.price')}</div>
