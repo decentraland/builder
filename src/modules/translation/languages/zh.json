@@ -760,5 +760,10 @@
     "publish": "发布",
     "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
     "cant_remove": "发布后，您将无法删除或向收藏夹添加项目"
-  }
+  },
+  "edit_price_and_beneficiary_modal": {
+    "title": "设置{name}的价格和地址",
+    "price_label": "价格",
+    "beneficiary_label": "受益人"
+   }
 }
