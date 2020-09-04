@@ -32,7 +32,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { name, onClose, isLoading } = this.props
     const { collectionName } = this.state
     return (
-      <Modal name={name} onClose={onClose} size="small">
+      <Modal name={name} onClose={onClose} size="tiny">
         <ModalNavigation title={t('create_collection_modal.title')} subtitle={t('create_collection_modal.subtitle')} onClose={onClose} />
         <ModalContent>
           <Field
