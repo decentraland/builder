@@ -19,7 +19,7 @@ import { Collection } from 'modules/collection/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
-export const getAssetStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assets/${hash}`
+export const getContentStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
 
@@ -199,7 +199,7 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
     name: asset.name,
     model: asset.model.replace(`${asset.assetPackId}/`, ''),
     script: asset.script,
-    thumbnail: asset.thumbnail.replace(getAssetStorageUrl(), ''),
+    thumbnail: asset.thumbnail.replace(getContentStorageUrl(), ''),
     tags: asset.tags,
     category: asset.category,
     contents: asset.contents,
@@ -216,7 +216,7 @@ function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
     name: remoteAsset.name,
     model: remoteAsset.model,
     script: remoteAsset.script,
-    thumbnail: getAssetStorageUrl(remoteAsset.thumbnail),
+    thumbnail: getContentStorageUrl(remoteAsset.thumbnail),
     tags: remoteAsset.tags,
     category: remoteAsset.category,
     contents: remoteAsset.contents,
