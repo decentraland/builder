@@ -8,12 +8,8 @@ import Icon from 'components/Icon'
 import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
-
 import { Props, State } from './SceneViewPage.types'
-
 import './SceneViewPage.css'
-import { locations } from 'routing/locations'
-import { ShareModalType } from 'components/Modals/ShareModal/ShareModal.types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -38,7 +34,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
       if (isLoggedIn) {
         this.props.onLikePool(currentPool.id, !currentPool.like)
       } else {
-        onOpenModal('LikeModal', { currentUrl: locations.poolView(currentPool.id, ShareModalType.POOL) })
+        onOpenModal('LikeModal', {})
       }
     }
   }
