@@ -110,6 +110,12 @@
     "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
     "top_banner_right": " "
   },
+  "create_collection_modal": {
+    "title": "New Collection",
+    "subtitle": "Give a name to your new collection",
+    "label": "Name",
+    "placeholder": "My collection"
+  },
   "create_item_modal": {
     "title": "New Item",
     "metrics": {
