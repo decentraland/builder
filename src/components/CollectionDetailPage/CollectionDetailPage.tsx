@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland-ui'
+import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Confirm, Icon } from 'decentraland-ui'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -11,12 +11,27 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import CollectionItem from './CollectionItem'
-import { Props } from './CollectionDetailPage.types'
+import { Props, State } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-collection-notice'
 
-export default class CollectionDetailPage extends React.PureComponent<Props> {
+export default class CollectionDetailPage extends React.PureComponent<Props, State> {
+  state = {
+    isConfirmOpen: false
+  }
+
+  handleToggleConfirmModal = () => {
+    const { isConfirmOpen } = this.state
+    this.setState({ isConfirmOpen: !isConfirmOpen })
+  }
+
+  handleDeleteItem = () => {
+    const { collection, onDelete } = this.props
+    onDelete(collection!)
+    this.handleToggleConfirmModal()
+  }
+
   canPublish() {
     const { items } = this.props
     return this.hasItems() && items.every(isComplete)
@@ -29,6 +44,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
   renderPage() {
     const { items, onNavigate } = this.props
+    const { isConfirmOpen } = this.state
     const collection = this.props.collection!
 
     return (
@@ -44,8 +60,29 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                   </Row>
                 </Column>
                 <Column align="right">
-                  <Row>
-                    <Button primary disabled={!this.canPublish()} onClick={() => console.log('Publish collection')}>
+                  <Row className="actions">
+                    <Dropdown
+                      trigger={
+                        <Button basic>
+                          <Icon name="ellipsis horizontal" />
+                        </Button>
+                      }
+                      inline
+                      direction="left"
+                    >
+                      <Dropdown.Menu>
+                        <Confirm
+                          size="tiny"
+                          open={isConfirmOpen}
+                          content={t('collection_detail_page.confirm_delete', { name: collection.name })}
+                          onCancel={this.handleToggleConfirmModal}
+                          onConfirm={this.handleDeleteItem}
+                        />
+                        <Dropdown.Item text={t('global.delete')} onClick={this.handleToggleConfirmModal} />
+                      </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button primary compact disabled={!this.canPublish()} onClick={() => console.log('Publish collection')}>
                       {t('collection_detail_page.publish')}
                     </Button>
                   </Row>

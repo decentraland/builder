@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland-ui'
+import { Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon, Confirm } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
@@ -9,14 +9,30 @@ import Notice from 'components/Notice'
 import ItemImage from 'components/ItemCard/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
-import { Props } from './ItemDetailPage.types'
+import { Props, State } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
-export default class ItemDetailPage extends React.PureComponent<Props> {
+export default class ItemDetailPage extends React.PureComponent<Props, State> {
+  state = {
+    isConfirmOpen: false
+  }
+
+  handleToggleConfirmModal = () => {
+    const { isConfirmOpen } = this.state
+    this.setState({ isConfirmOpen: !isConfirmOpen })
+  }
+
+  handleDeleteItem = () => {
+    const { item, onDelete } = this.props
+    onDelete(item!)
+    this.handleToggleConfirmModal()
+  }
+
   renderPage() {
     const { onNavigate } = this.props
+    const { isConfirmOpen } = this.state
 
     const item = this.props.item!
     const data = item.data as WearableData
@@ -34,9 +50,30 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   </Row>
                 </Column>
                 <Column align="right">
-                  <Row>
-                    <Button primary onClick={() => console.log('Edit item')}>
-                      {t('item_detail_page.edit')}
+                  <Row className="actions">
+                    <Dropdown
+                      trigger={
+                        <Button basic>
+                          <Icon name="ellipsis horizontal" />
+                        </Button>
+                      }
+                      inline
+                      direction="left"
+                    >
+                      <Dropdown.Menu>
+                        <Confirm
+                          size="tiny"
+                          open={isConfirmOpen}
+                          content={t('item_detail_page.confirm_delete', { name: item.name })}
+                          onCancel={this.handleToggleConfirmModal}
+                          onConfirm={this.handleDeleteItem}
+                        />
+                        <Dropdown.Item text={t('global.delete')} onClick={this.handleToggleConfirmModal} />
+                      </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button primary compact onClick={() => console.log('Edit item')}>
+                      {t('global.edit')}
                     </Button>
                   </Row>
                 </Column>

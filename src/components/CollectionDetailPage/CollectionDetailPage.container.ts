@@ -5,7 +5,7 @@ import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getCollections, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getItems, getLoading as getLoadingItem } from 'modules/item/selectors'
-import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
+import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST, deleteCollectionRequest } from 'modules/collection/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetailPage.types'
 import CollectionDetailPage from './CollectionDetailPage'
@@ -22,12 +22,15 @@ const mapState = (state: RootState): MapStateProps => {
     collection,
     items,
     isLoading:
-      isLoadingType(getLoadingCollection(state), FETCH_ITEMS_REQUEST) || isLoadingType(getLoadingItem(state), FETCH_COLLECTIONS_REQUEST)
+      isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
+      isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
+      isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path))
+  onNavigate: path => dispatch(push(path)),
+  onDelete: collection => dispatch(deleteCollectionRequest(collection))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)

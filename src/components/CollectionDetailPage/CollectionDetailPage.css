@@ -1,3 +1,16 @@
+.CollectionDetailPage .actions .ui.dropdown {
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 5px;
+}
+
+.CollectionDetailPage .actions .ui.dropdown .icon.ellipsis {
+  margin: auto !important;
+}
+
+.CollectionDetailPage .actions .ui.button.compact {
+  border: 1.5px solid var(--primary);
+}
+
 .CollectionDetailPage .Notice {
   margin-bottom: 32px;
 }
