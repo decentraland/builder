@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
+import { CallHistoryMethodAction } from 'connected-react-router'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { clearTransactions, ClearTransactionsAction } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type Props = {
   isLoggedIn: boolean

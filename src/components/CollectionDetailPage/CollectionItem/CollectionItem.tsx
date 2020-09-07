@@ -12,6 +12,18 @@ import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
+  handleEditPriceAndBeneficiary = (event: React.MouseEvent<HTMLElement>) => {
+    const { onOpenModal, item } = this.props
+    onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
+    event.preventDefault()
+  }
+
+  handleNavigateToEditor = (event: React.MouseEvent<HTMLElement>) => {
+    const { onNavigate, item } = this.props
+    onNavigate(locations.itemEditor(item.id))
+    event.preventDefault()
+  }
+
   renderPrice() {
     const { item } = this.props
 
@@ -22,7 +34,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
       </>
     ) : !isEditable(item) ? (
       <>
-        <div className="link">{t('collection_item.set_price')}</div>
+        <div className="link" onClick={this.handleEditPriceAndBeneficiary}>
+          {t('collection_item.set_price')}
+        </div>
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : null
@@ -68,9 +82,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
                   {t('collection_item.done')} <Icon name="check" />
                 </div>
               ) : isEditable(item) ? (
-                <Link to={locations.itemEditor(item.id)} className="edit-item">
+                <span onClick={this.handleNavigateToEditor} className="link edit-item">
                   {t('collection_item.edit_item')}
-                </Link>
+                </span>
               ) : null}
             </Grid.Column>
           </Grid.Row>

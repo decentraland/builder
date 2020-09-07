@@ -1,5 +1,5 @@
-import { Item } from './types'
 import { action } from 'typesafe-actions'
+import { Item } from './types'
 
 export const FETCH_ITEMS_REQUEST = '[Request] Fetch Items'
 export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
