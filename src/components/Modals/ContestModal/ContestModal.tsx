@@ -85,7 +85,6 @@ export default class ContestModal extends React.PureComponent<Props, State> {
         onLogin={this.handleLogin}
         title={t('deployment_contest_modal.sign_in.title')}
         subtitle={t(`deployment_contest_modal.sign_in.subtitle`)}
-        callToAction={t(`global.sign_in`)}
       />
     )
   }

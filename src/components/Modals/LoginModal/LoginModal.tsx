@@ -1,22 +1,21 @@
 import * as React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, ModalNavigation } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-
 import { Props } from './LoginModal.types'
 
-import './LoginModal.css'
-
-export default class LoginModal extends React.PureComponent<Props, {}> {
+export default class LoginModal extends React.PureComponent<Props> {
   handleClose = () => {
-    if (this.props.onClose) {
-      this.props.onClose()
+    const { onClose } = this.props
+    if (onClose) {
+      onClose()
     }
   }
 
   handleLogin = () => {
-    if (this.props.onLogin) {
-      const { returnUrl, name, metadata } = this.props
-      this.props.onLogin({
+    const { returnUrl, name, metadata, onLogin } = this.props
+    if (onLogin) {
+      onLogin({
         returnUrl: returnUrl || '',
         openModal: { name, metadata }
       })
@@ -24,7 +23,7 @@ export default class LoginModal extends React.PureComponent<Props, {}> {
   }
 
   render() {
-    const { name, title, subtitle, callToAction } = this.props
+    const { name, title, subtitle } = this.props
 
     return (
       <Modal name={name} onClose={this.handleClose}>
@@ -32,7 +31,7 @@ export default class LoginModal extends React.PureComponent<Props, {}> {
         <div className="login-modal">
           <div className="modal-action">
             <Button primary size="small" onClick={this.handleLogin}>
-              {callToAction}
+              {t('global.sign_in')}
             </Button>
           </div>
         </div>

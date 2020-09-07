@@ -117,7 +117,6 @@ export default class ShareModal extends React.PureComponent<Props, State> {
         onLogin={this.handleLogin}
         title={t('share_modal.sign_in.title')}
         subtitle={t('share_modal.sign_in.subtitle')}
-        callToAction={t('global.sign_in')}
       />
     )
   }

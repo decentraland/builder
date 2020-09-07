@@ -2,7 +2,7 @@ import { FullAssetPack, MixedAssetPack } from './types'
 import { RawAssetContents, Asset, RawAsset } from 'modules/asset/types'
 import { getContentsCID } from 'modules/asset/utils'
 import { dataURLToBlob, blobToCID, isDataUrl } from 'modules/media/utils'
-import { getAssetStorageUrl } from 'lib/api/builder'
+import { getContentsStorageUrl } from 'lib/api/builder'
 
 export const MAX_TITLE_LENGTH = 20
 export const MIN_TITLE_LENGTH = 3
@@ -45,7 +45,7 @@ export async function convertToFullAssetPack(
     if (isDataUrl(thumbnail)) {
       const blob = dataURLToBlob(thumbnail)!
       const cid = await blobToCID(blob, THUMBNAIL_PATH)
-      newAsset.thumbnail = getAssetStorageUrl(cid)
+      newAsset.thumbnail = getContentsStorageUrl(cid)
       newAsset.model = `${asset.assetPackId}/${asset.model}`
       rawContents[asset.id][cid] = blob
     }

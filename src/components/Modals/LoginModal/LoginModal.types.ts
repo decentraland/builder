@@ -3,21 +3,18 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 export type Props = ModalProps & {
   title?: string
   subtitle?: string
-  callToAction?: string
   returnUrl?: string
   onLogin?: (params: OnLogingParams) => void
 }
-
-export type State = {}
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onLogin'>
 
 export type OnLogingParams = {
-  returnUrl: string,
+  returnUrl: string
   openModal: {
-    name: string,
+    name: string
     metadata: any
   }
 }

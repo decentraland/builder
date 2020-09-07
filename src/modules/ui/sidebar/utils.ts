@@ -1,4 +1,4 @@
-import { getAssetStorageUrl } from 'lib/api/builder'
+import { getContentsStorageUrl } from 'lib/api/builder'
 import { Category } from './types'
 import { AssetPack } from 'modules/assetPack/types'
 
@@ -22,32 +22,32 @@ export enum CategoryName {
 export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
   [CategoryName.GROUND_CATEGORY]: {
     name: CategoryName.GROUND_CATEGORY,
-    thumbnail: getAssetStorageUrl('QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6'),
+    thumbnail: getContentsStorageUrl('QmUCDv34krVLGENkoRBuqATPwgrd6xF2k5NXLgeoNG6qW6'),
     assets: []
   },
   [CategoryName.TILES_CATEGORY]: {
     name: CategoryName.TILES_CATEGORY,
-    thumbnail: getAssetStorageUrl('QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH'),
+    thumbnail: getContentsStorageUrl('QmebeSZq8QxGZBgBgRQnm3JV94mRtt7zqUy28hzTc3ZuDH'),
     assets: []
   },
   [CategoryName.NATURE_CATEGORY]: {
     name: CategoryName.NATURE_CATEGORY,
-    thumbnail: getAssetStorageUrl('QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg'),
+    thumbnail: getContentsStorageUrl('QmYFWdh5yJnrg4VuXPniDd8HHbVrfV2FPn35RPdVYVMLjg'),
     assets: []
   },
   [CategoryName.STRUCTURES_CATEGORY]: {
     name: CategoryName.STRUCTURES_CATEGORY,
-    thumbnail: getAssetStorageUrl('Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA'),
+    thumbnail: getContentsStorageUrl('Qme15L6oTnjfAuCs9ayTDPNEBhPRJukcLVFDNw43UXUaLA'),
     assets: []
   },
   [CategoryName.DECORATIONS_CATEGORY]: {
     name: CategoryName.DECORATIONS_CATEGORY,
-    thumbnail: getAssetStorageUrl('QmUQZQEGF2tSz2hBy4xyKZ4uoWoURvQUcTxJMEyHPEWjhX'),
+    thumbnail: getContentsStorageUrl('QmUQZQEGF2tSz2hBy4xyKZ4uoWoURvQUcTxJMEyHPEWjhX'),
     assets: []
   },
   [CategoryName.FURNITURE]: {
     name: CategoryName.FURNITURE,
-    thumbnail: getAssetStorageUrl('Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN'),
+    thumbnail: getContentsStorageUrl('Qmd7N96rupxCLr3mWwRfgsM6Pwnf7k2SUemvxTjYvSddgN'),
     assets: []
   }
 }

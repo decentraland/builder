@@ -12,7 +12,7 @@ import tsconfig from 'decentraland/samples/ecs/tsconfig.json'
 import { Rotation, Coordinate, SceneDefinition } from 'modules/deployment/types'
 import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
-import { getAssetStorageUrl } from 'lib/api/builder'
+import { getContentsStorageUrl } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
 import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
@@ -338,7 +338,7 @@ export async function downloadFiles(args: {
     for (const path of Object.keys(asset.contents)) {
       const isScript = asset.script !== null
       const localPath = isScript ? `${asset.id}/${path}` : `${EXPORT_PATH.MODELS_FOLDER}/${path}`
-      const remotePath = getAssetStorageUrl(asset.contents[path])
+      const remotePath = getContentsStorageUrl(asset.contents[path])
       mappings[localPath] = remotePath
     }
   }
@@ -531,7 +531,7 @@ export function hasScripts(scene: Scene) {
 
 /* Temporary fix until we migrate the Builder to use CID v1 */
 export async function convertToV1(v0: string) {
-  const blob = await fetch(getAssetStorageUrl(v0)).then(resp => resp.blob())
+  const blob = await fetch(getContentsStorageUrl(v0)).then(resp => resp.blob())
   const file = await makeContentFile(EXPORT_PATH.BUNDLED_GAME_FILE, blob)
   const v1 = await calculateBufferHash(file.content)
   return v1
