@@ -374,7 +374,9 @@
       "unisex": "Both",
       "male": "Shape A",
       "female": "Shape B"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "navigation": {
     "scenes": "Scenes",

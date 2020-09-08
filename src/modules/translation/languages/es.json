@@ -367,7 +367,9 @@
       "unisex": "Ambas",
       "male": "Forma A",
       "female": "Forma B"
-    }
+    },
+    "yes": "Si",
+    "no": "No"
   },
   "navigation": {
     "scenes": "Escenas",

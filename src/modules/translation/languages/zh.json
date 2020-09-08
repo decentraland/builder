@@ -368,7 +368,9 @@
       "unisex": "男女通用",
       "male": "男",
       "female": "女"
-    }
+    },
+    "yes": "是",
+    "no": "没有"
   },
   "navigation": {
     "scenes": "场景",

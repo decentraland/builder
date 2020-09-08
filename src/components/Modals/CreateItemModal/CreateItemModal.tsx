@@ -339,13 +339,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                                 className={`option ${isRepresentation === true ? 'active' : ''}`}
                                 onClick={() => this.setState({ isRepresentation: true })}
                               >
-                                Yes
+                                {t('global.yes')}
                               </div>
                               <div
                                 className={`option ${isRepresentation === false ? 'active' : ''}`}
                                 onClick={() => this.setState({ isRepresentation: false })}
                               >
-                                No
+                                {t('global.no')}
                               </div>
                             </Row>
                           </Section>
