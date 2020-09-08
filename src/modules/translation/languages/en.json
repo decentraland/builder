@@ -767,5 +767,10 @@
     "rarity": "Rarity",
     "price": "Price",
     "beneficiary": "Beneficiary"
+  },
+  "edit_price_and_beneficiary_modal": {
+    "title": "Set price and address for {name}",
+    "price_label": "Price",
+    "beneficiary_label": "Beneficiary"
   }
 }

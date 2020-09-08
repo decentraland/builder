@@ -759,5 +759,15 @@
     "rarity": "Rareza",
     "price": "Precio",
     "beneficiary": "Beneficiario"
+  },
+  "collection_detail_page": {
+    "publish": "Publicar",
+    "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+  },
+  "edit_price_and_beneficiary_modal": {
+    "title": "Asignar un precio y un beneficiario para {name}",
+    "price_label": "Precio",
+    "beneficiary_label": "Beneficiario"
   }
 }
