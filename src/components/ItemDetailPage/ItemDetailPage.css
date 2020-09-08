@@ -1,5 +1,5 @@
 .ItemDetailPage .actions .ui.dropdown {
-  border: 1px solid rgba(115, 110, 125, 0.4);
+  border: 1px solid var(--gray);
   border-radius: 5px;
 }
 

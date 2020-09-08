@@ -18,6 +18,11 @@ import './CollectionDetailPage.css'
 const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
+  handleNewItem = () => {
+    const { collection, onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { collectionId: collection!.id })
+  }
+
   handleDeleteItem = () => {
     const { collection, onDelete } = this.props
     onDelete(collection!)
@@ -51,6 +56,9 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right">
                   <Row className="actions">
+                    <Button basic className="new-item" onClick={this.handleNewItem}>
+                      <Icon name="plus" /> {t('collection_detail_page.new_item')}
+                    </Button>
                     <Dropdown
                       trigger={
                         <Button basic>

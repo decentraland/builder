@@ -11,6 +11,14 @@ import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
 
 export default class AvatarPage extends React.PureComponent<Props> {
+  handleNewItem = () => {
+    this.props.onOpenModal('CreateItemModal')
+  }
+
+  handleNewCollection = () => {
+    this.props.onOpenModal('CreateCollectionModal')
+  }
+
   renderPage() {
     const { items, collections, onOpenModal } = this.props
     const count = items.length + collections.length
@@ -37,8 +45,8 @@ export default class AvatarPage extends React.PureComponent<Props> {
                     direction="left"
                   >
                     <Dropdown.Menu>
-                      <Dropdown.Item text={t('avatar_page.new_item')} onClick={() => onOpenModal('CreateItemModal')} />
-                      <Dropdown.Item text={t('avatar_page.new_collection')} onClick={() => onOpenModal('CreateCollectionModal')} />
+                      <Dropdown.Item text={t('avatar_page.new_item')} onClick={this.handleNewItem} />
+                      <Dropdown.Item text={t('avatar_page.new_collection')} onClick={this.handleNewCollection} />
                     </Dropdown.Menu>
                   </Dropdown>
                 </Row>

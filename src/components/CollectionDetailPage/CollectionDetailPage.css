@@ -1,6 +1,20 @@
+.CollectionDetailPage .dcl.row.actions > .ui.button.new-item {
+  border: 1px solid var(--gray);
+  padding: 8px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .CollectionDetailPage .actions .ui.dropdown {
-  border: 1px solid rgba(115, 110, 125, 0.4);
+  border: 1px solid var(--gray);
   border-radius: 5px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
+
+.CollectionDetailPage .actions .ui.button.new-item + .ui.dropdown {
+  margin-left: 0;
 }
 
 .CollectionDetailPage .actions .ui.dropdown .icon.ellipsis {

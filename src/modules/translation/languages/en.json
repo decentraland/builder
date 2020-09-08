@@ -751,6 +751,7 @@
     "notice": "You need to add your items to a collection before you can publish them"
   },
   "collection_detail_page": {
+    "new_item": "New Item",
     "publish": "Publish",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
