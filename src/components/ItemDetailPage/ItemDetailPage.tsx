@@ -12,6 +12,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import { Props } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
+import { getMissingBodyShapeType } from 'modules/item/utils'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
@@ -21,11 +22,18 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onDelete(item!)
   }
 
+  handleAddRepresentationToItem = () => {
+    const { item, onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { addRepresentationTo: item })
+  }
+
   renderPage() {
     const { onNavigate } = this.props
 
     const item = this.props.item!
     const data = item.data as WearableData
+
+    const missingBodyShape = getMissingBodyShapeType(item)
 
     return (
       <>
@@ -51,6 +59,12 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                       direction="left"
                     >
                       <Dropdown.Menu>
+                        {missingBodyShape !== null ? (
+                          <Dropdown.Item
+                            text={t('item_detail_page.add_representation', { bodyShape: t(`global.representation.${missingBodyShape}`) })}
+                            onClick={this.handleAddRepresentationToItem}
+                          />
+                        ) : null}
                         <ConfirmDelete
                           name={item.name}
                           onDelete={this.handleDeleteItem}

@@ -120,6 +120,9 @@
     },
     "name_label": "给您的新商品起个名字",
     "representation_label": "它代表哪种身材？",
+    "existing_item": "这是现有项目的一部分吗？",
+    "pick_item": "选择没有{bodyShape}的商品",
+    "adding_representation": "这将添加为以下项目的{body Shape}",
     "add": "加"
   },
   "custom_layout_modal": {
@@ -423,6 +426,10 @@
     "search": "搜索",
     "title": "物品目录",
     "search_items": "搜索"
+  },
+  "item_dropdown": {
+    "placeholder": "选择一个项目",
+    "no_items": "找不到有效的项目"
   },
   "layout_picker": {
     "columns": "列",
@@ -739,7 +746,8 @@
     "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
   },
   "item_detail_page": {
-    "notice": "您需要先将项目添加到集合中，然后才能发布它们"
+    "notice": "您需要先将项目添加到集合中，然后才能发布它们",
+    "add_representation": "添加{bodyShape}"
   },
   "collection_detail_page": {
     "new_item": "新项目",
@@ -764,7 +772,7 @@
     "title": "设置{name}的价格和地址",
     "price_label": "价格",
     "beneficiary_label": "受益人"
-   },
+  },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"
   }

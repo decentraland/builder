@@ -123,6 +123,9 @@
     },
     "name_label": "Ponle un nombre a tu item",
     "representation_label": "Para que forma de cuerpo es este item?",
+    "existing_item": "Es parte de un item existente?",
+    "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
+    "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
     "add": "Agregar"
   },
   "custom_layout_modal": {
@@ -422,6 +425,10 @@
     "search": "Buscar Assets",
     "title": "Asset Packs",
     "search_items": "Buscar objetos"
+  },
+  "item_dropdown": {
+    "placeholder": "Selecciona un item",
+    "no_items": "No hay items validos"
   },
   "layout_picker": {
     "columns": "columnas",
@@ -742,7 +749,8 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "item_detail_page": {
-    "notice": "Debes agregar tus items a una colección antes de poder publicarlos"
+    "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
+    "add_representation": "Agregar {bodyShape}"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
