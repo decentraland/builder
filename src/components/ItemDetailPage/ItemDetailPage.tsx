@@ -1,38 +1,28 @@
 import * as React from 'react'
-import { Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon, Confirm } from 'decentraland-ui'
+import { Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Notice from 'components/Notice'
+import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemCard/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
-import { Props, State } from './ItemDetailPage.types'
+import { Props } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
-export default class ItemDetailPage extends React.PureComponent<Props, State> {
-  state = {
-    isConfirmOpen: false
-  }
-
-  handleToggleConfirmModal = () => {
-    const { isConfirmOpen } = this.state
-    this.setState({ isConfirmOpen: !isConfirmOpen })
-  }
-
+export default class ItemDetailPage extends React.PureComponent<Props> {
   handleDeleteItem = () => {
     const { item, onDelete } = this.props
     onDelete(item!)
-    this.handleToggleConfirmModal()
   }
 
   renderPage() {
     const { onNavigate } = this.props
-    const { isConfirmOpen } = this.state
 
     const item = this.props.item!
     const data = item.data as WearableData
@@ -61,14 +51,11 @@ export default class ItemDetailPage extends React.PureComponent<Props, State> {
                       direction="left"
                     >
                       <Dropdown.Menu>
-                        <Confirm
-                          size="tiny"
-                          open={isConfirmOpen}
-                          content={t('item_detail_page.confirm_delete', { name: item.name })}
-                          onCancel={this.handleToggleConfirmModal}
-                          onConfirm={this.handleDeleteItem}
+                        <ConfirmDelete
+                          name={item.name}
+                          onDelete={this.handleDeleteItem}
+                          trigger={<Dropdown.Item text={t('global.delete')} />}
                         />
-                        <Dropdown.Item text={t('global.delete')} onClick={this.handleToggleConfirmModal} />
                       </Dropdown.Menu>
                     </Dropdown>
 

@@ -748,16 +748,14 @@
     "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
   },
   "item_detail_page": {
-    "notice": "You need to add your items to a collection before you can publish them",
-    "confirm_delete": "Are you sure you want to delete \"{name}\"?"
+    "notice": "You need to add your items to a collection before you can publish them"
   },
   "collection_detail_page": {
     "publish": "Publish",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
     "start_adding_items": "Looking good! now you can start adding items to your collection.",
-    "cant_remove": "You will not be able to remove or add items to your collection once its published.",
-    "confirm_delete": "Are you sure you want to delete \"{name}\"?"
+    "cant_remove": "You will not be able to remove or add items to your collection once its published."
   },
   "collection_item": {
     "set_price": "set price",
@@ -774,5 +772,8 @@
     "title": "Set price and address for {name}",
     "price_label": "Price",
     "beneficiary_label": "Beneficiary"
+  },
+  "confirm_delete": {
+    "content": "Are you sure you want to delete \"{name}\"?"
   }
 }

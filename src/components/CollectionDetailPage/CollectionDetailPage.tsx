@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Confirm, Icon } from 'decentraland-ui'
+import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon } from 'decentraland-ui'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -8,28 +8,19 @@ import { locations } from 'routing/locations'
 import { isComplete } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import ConfirmDelete from 'components/ConfirmDelete'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import CollectionItem from './CollectionItem'
-import { Props, State } from './CollectionDetailPage.types'
+import { Props } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-collection-notice'
 
-export default class CollectionDetailPage extends React.PureComponent<Props, State> {
-  state = {
-    isConfirmOpen: false
-  }
-
-  handleToggleConfirmModal = () => {
-    const { isConfirmOpen } = this.state
-    this.setState({ isConfirmOpen: !isConfirmOpen })
-  }
-
+export default class CollectionDetailPage extends React.PureComponent<Props> {
   handleDeleteItem = () => {
     const { collection, onDelete } = this.props
     onDelete(collection!)
-    this.handleToggleConfirmModal()
   }
 
   canPublish() {
@@ -44,7 +35,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   renderPage() {
     const { items, onNavigate } = this.props
-    const { isConfirmOpen } = this.state
     const collection = this.props.collection!
 
     return (
@@ -71,14 +61,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                       direction="left"
                     >
                       <Dropdown.Menu>
-                        <Confirm
-                          size="tiny"
-                          open={isConfirmOpen}
-                          content={t('collection_detail_page.confirm_delete', { name: collection.name })}
-                          onCancel={this.handleToggleConfirmModal}
-                          onConfirm={this.handleDeleteItem}
+                        <ConfirmDelete
+                          name={collection.name}
+                          onDelete={this.handleDeleteItem}
+                          trigger={<Dropdown.Item text={t('global.delete')} />}
                         />
-                        <Dropdown.Item text={t('global.delete')} onClick={this.handleToggleConfirmModal} />
                       </Dropdown.Menu>
                     </Dropdown>
 

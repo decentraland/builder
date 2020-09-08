@@ -10,10 +10,6 @@ export type Props = {
   onDelete: typeof deleteItemRequest
 }
 
-export type State = {
-  isConfirmOpen: boolean
-}
-
 export type MapStateProps = Pick<Props, 'item' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteItemRequestAction>

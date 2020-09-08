@@ -50,12 +50,17 @@
   text-transform: uppercase;
 }
 
-.CollectionItem .edit-item {
+.CollectionItem .item-actions {
   display: none;
 }
 
-.CollectionItem .ui.grid:hover .edit-item {
-  display: block;
+.CollectionItem .ui.grid:hover .item-actions {
+  display: flex;
+  align-items: center;
+}
+
+.CollectionItem .edit-item {
+  margin-right: 15px;
 }
 
 .CollectionItem .done {

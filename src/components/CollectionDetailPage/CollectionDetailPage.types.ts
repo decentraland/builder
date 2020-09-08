@@ -12,10 +12,6 @@ export type Props = {
   onDelete: typeof deleteCollectionRequest
 }
 
-export type State = {
-  isConfirmOpen: boolean
-}
-
 export type MapStateProps = Pick<Props, 'collection' | 'items' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onDelete'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | DeleteCollectionRequestAction>
