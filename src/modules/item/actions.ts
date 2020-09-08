@@ -25,3 +25,15 @@ export const saveItemFailure = (item: Item, contents: Record<string, Blob>, erro
 export type SaveItemRequestAction = ReturnType<typeof saveItemRequest>
 export type SaveItemSuccessAction = ReturnType<typeof saveItemSuccess>
 export type SaveItemFailureAction = ReturnType<typeof saveItemFailure>
+
+export const DELETE_ITEM_REQUEST = '[Request] Delete Item'
+export const DELETE_ITEM_SUCCESS = '[Success] Delete Item'
+export const DELETE_ITEM_FAILURE = '[Failure] Delete Item'
+
+export const deleteItemRequest = (item: Item) => action(DELETE_ITEM_REQUEST, { item })
+export const deleteItemSuccess = (item: Item) => action(DELETE_ITEM_SUCCESS, { item })
+export const deleteItemFailure = (item: Item, error: string) => action(DELETE_ITEM_FAILURE, { item, error })
+
+export type DeleteItemRequestAction = ReturnType<typeof deleteItemRequest>
+export type DeleteItemSuccessAction = ReturnType<typeof deleteItemSuccess>
+export type DeleteItemFailureAction = ReturnType<typeof deleteItemFailure>

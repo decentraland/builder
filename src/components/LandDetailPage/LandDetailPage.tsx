@@ -130,7 +130,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                         {t('land_detail_page.transfer')}
                       </Button>
                       <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
-                        {t('land_detail_page.edit')}
+                        {t('global.edit')}
                       </Button>
                       <Dropdown
                         trigger={

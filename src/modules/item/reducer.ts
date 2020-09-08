@@ -7,12 +7,18 @@ import {
   SaveItemRequestAction,
   SaveItemSuccessAction,
   SaveItemFailureAction,
+  DeleteItemRequestAction,
+  DeleteItemSuccessAction,
+  DeleteItemFailureAction,
   FETCH_ITEMS_REQUEST,
   FETCH_ITEMS_SUCCESS,
   FETCH_ITEMS_FAILURE,
   SAVE_ITEM_REQUEST,
   SAVE_ITEM_FAILURE,
-  SAVE_ITEM_SUCCESS
+  SAVE_ITEM_SUCCESS,
+  DELETE_ITEM_REQUEST,
+  DELETE_ITEM_FAILURE,
+  DELETE_ITEM_SUCCESS
 } from './actions'
 
 export type ItemState = {
@@ -34,6 +40,9 @@ type ItemReducerAction =
   | SaveItemRequestAction
   | SaveItemSuccessAction
   | SaveItemFailureAction
+  | DeleteItemRequestAction
+  | DeleteItemSuccessAction
+  | DeleteItemFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
@@ -83,6 +92,31 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case SAVE_ITEM_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error
+      }
+    }
+    case DELETE_ITEM_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case DELETE_ITEM_SUCCESS: {
+      const { item } = action.payload
+      const newState = {
+        data: {
+          ...state.data
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+      delete newState.data[item.id]
+      return newState
+    }
+    case DELETE_ITEM_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
