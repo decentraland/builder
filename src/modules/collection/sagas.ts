@@ -8,6 +8,10 @@ import {
   saveCollectionSuccess,
   saveCollectionFailure,
   SAVE_COLLECTION_REQUEST,
+  DeleteCollectionRequestAction,
+  deleteCollectionSuccess,
+  deleteCollectionFailure,
+  DELETE_COLLECTION_REQUEST,
   fetchCollectionsRequest
 } from './actions'
 import { builder } from 'lib/api/builder'
@@ -17,6 +21,7 @@ import { closeModal } from 'modules/modal/actions'
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
+  yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
 }
 
@@ -37,6 +42,16 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     yield put(saveCollectionSuccess(collection))
   } catch (error) {
     yield put(saveCollectionFailure(collection, error.message))
+  }
+}
+
+function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
+  const { collection } = action.payload
+  try {
+    yield call(() => builder.deleteCollection(collection))
+    yield put(deleteCollectionSuccess(collection))
+  } catch (error) {
+    yield put(deleteCollectionFailure(collection, error.message))
   }
 }
 

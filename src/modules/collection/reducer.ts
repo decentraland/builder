@@ -7,12 +7,18 @@ import {
   SaveCollectionRequestAction,
   SaveCollectionSuccessAction,
   SaveCollectionFailureAction,
+  DeleteCollectionRequestAction,
+  DeleteCollectionSuccessAction,
+  DeleteCollectionFailureAction,
   FETCH_COLLECTIONS_REQUEST,
   FETCH_COLLECTIONS_SUCCESS,
   FETCH_COLLECTIONS_FAILURE,
   SAVE_COLLECTION_REQUEST,
   SAVE_COLLECTION_FAILURE,
-  SAVE_COLLECTION_SUCCESS
+  SAVE_COLLECTION_SUCCESS,
+  DELETE_COLLECTION_REQUEST,
+  DELETE_COLLECTION_FAILURE,
+  DELETE_COLLECTION_SUCCESS
 } from './actions'
 
 export type CollectionState = {
@@ -34,6 +40,9 @@ type CollectionReducerAction =
   | SaveCollectionRequestAction
   | SaveCollectionSuccessAction
   | SaveCollectionFailureAction
+  | DeleteCollectionRequestAction
+  | DeleteCollectionSuccessAction
+  | DeleteCollectionFailureAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -89,6 +98,32 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         error: action.payload.error
       }
     }
+    case DELETE_COLLECTION_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case DELETE_COLLECTION_SUCCESS: {
+      const { collection } = action.payload
+      const newState = {
+        data: {
+          ...state.data
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+      delete newState.data[collection.id]
+      return newState
+    }
+    case DELETE_COLLECTION_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error
+      }
+    }
+
     default:
       return state
   }

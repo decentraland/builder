@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland-ui'
+import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon } from 'decentraland-ui'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -8,6 +8,7 @@ import { locations } from 'routing/locations'
 import { isComplete } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import ConfirmDelete from 'components/ConfirmDelete'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import CollectionItem from './CollectionItem'
@@ -17,6 +18,16 @@ import './CollectionDetailPage.css'
 const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
+  handleNewItem = () => {
+    const { collection, onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { collectionId: collection!.id })
+  }
+
+  handleDeleteItem = () => {
+    const { collection, onDelete } = this.props
+    onDelete(collection!)
+  }
+
   canPublish() {
     const { items } = this.props
     return this.hasItems() && items.every(isComplete)
@@ -44,8 +55,29 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                   </Row>
                 </Column>
                 <Column align="right">
-                  <Row>
-                    <Button primary disabled={!this.canPublish()} onClick={() => console.log('Publish collection')}>
+                  <Row className="actions">
+                    <Button basic className="new-item" onClick={this.handleNewItem}>
+                      <Icon name="plus" /> {t('collection_detail_page.new_item')}
+                    </Button>
+                    <Dropdown
+                      trigger={
+                        <Button basic>
+                          <Icon name="ellipsis horizontal" />
+                        </Button>
+                      }
+                      inline
+                      direction="left"
+                    >
+                      <Dropdown.Menu>
+                        <ConfirmDelete
+                          name={collection.name}
+                          onDelete={this.handleDeleteItem}
+                          trigger={<Dropdown.Item text={t('global.delete')} />}
+                        />
+                      </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button primary compact disabled={!this.canPublish()} onClick={() => console.log('Publish collection')}>
                       {t('collection_detail_page.publish')}
                     </Button>
                   </Row>

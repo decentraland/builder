@@ -335,6 +335,8 @@
     "loading": "Cargando",
     "new": "Nuevo",
     "new_scene": "Nueva escena",
+    "delete": "Borrar",
+    "edit": "Editar",
     "next": "siguiente",
     "optional": "opcional",
     "or": "o",
@@ -461,7 +463,6 @@
   },
   "land_detail_page": {
     "transfer": "Transferir",
-    "edit": "Editar",
     "set_operator": "Configurar Operador",
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
@@ -741,10 +742,12 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "item_detail_page": {
-    "edit": "Editar",
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos"
   },
   "collection_detail_page": {
+    "new_item": "Nuevo Item",
+    "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
+    "click_here": "Clickea aquí",
     "publish": "Publicar",
     "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
@@ -760,14 +763,12 @@
     "price": "Precio",
     "beneficiary": "Beneficiario"
   },
-  "collection_detail_page": {
-    "publish": "Publicar",
-    "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
-    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
-  },
   "edit_price_and_beneficiary_modal": {
     "title": "Asignar un precio y un beneficiario para {name}",
     "price_label": "Precio",
     "beneficiary_label": "Beneficiario"
+  },
+  "confirm_delete": {
+    "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
   }
 }

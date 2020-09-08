@@ -1,3 +1,16 @@
+.ItemDetailPage .actions .ui.dropdown {
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+}
+
+.ItemDetailPage .actions .ui.dropdown .icon.ellipsis {
+  margin: auto !important;
+}
+
+.ItemDetailPage .actions .ui.button.compact {
+  border: 1.5px solid var(--primary);
+}
+
 .ItemDetailPage .Notice {
   margin-bottom: 32px;
 }

@@ -732,6 +732,10 @@ export class BuilderAPI extends BaseAPI {
     await this.request('post', `/items/${item.id}/files`, formData)
   }
 
+  async deleteItem(item: Item) {
+    await this.request('delete', `/items/${item.id}`, {})
+  }
+
   async fetchCollections() {
     const remoteCollections = await this.request('get', `/collections`)
     return [
@@ -751,6 +755,10 @@ export class BuilderAPI extends BaseAPI {
 
   async saveCollection(collection: Collection) {
     return this.request('put', `/collections/${collection.id}`, { collection: toRemoteCollection(collection) })
+  }
+
+  async deleteCollection(collection: Collection) {
+    await this.request('delete', `/items/${collection.id}`, {})
   }
 }
 

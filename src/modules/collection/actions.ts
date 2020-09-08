@@ -24,3 +24,15 @@ export const saveCollectionFailure = (collection: Collection, error: string) => 
 export type SaveCollectionRequestAction = ReturnType<typeof saveCollectionRequest>
 export type SaveCollectionSuccessAction = ReturnType<typeof saveCollectionSuccess>
 export type SaveCollectionFailureAction = ReturnType<typeof saveCollectionFailure>
+
+export const DELETE_COLLECTION_REQUEST = '[Request] Delete Collection'
+export const DELETE_COLLECTION_SUCCESS = '[Success] Delete Collection'
+export const DELETE_COLLECTION_FAILURE = '[Failure] Delete Collection'
+
+export const deleteCollectionRequest = (collection: Collection) => action(DELETE_COLLECTION_REQUEST, { collection })
+export const deleteCollectionSuccess = (collection: Collection) => action(DELETE_COLLECTION_SUCCESS, { collection })
+export const deleteCollectionFailure = (collection: Collection, error: string) => action(DELETE_COLLECTION_FAILURE, { collection, error })
+
+export type DeleteCollectionRequestAction = ReturnType<typeof deleteCollectionRequest>
+export type DeleteCollectionSuccessAction = ReturnType<typeof deleteCollectionSuccess>
+export type DeleteCollectionFailureAction = ReturnType<typeof deleteCollectionFailure>
