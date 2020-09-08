@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { Section, Row, Back, Narrow, Column, Header, Button } from 'decentraland-ui'
+import { Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Notice from 'components/Notice'
+import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemCard/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
@@ -15,6 +16,11 @@ import './ItemDetailPage.css'
 const STORAGE_KEY = 'dcl-item-notice'
 
 export default class ItemDetailPage extends React.PureComponent<Props> {
+  handleDeleteItem = () => {
+    const { item, onDelete } = this.props
+    onDelete(item!)
+  }
+
   renderPage() {
     const { onNavigate } = this.props
 
@@ -34,9 +40,27 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   </Row>
                 </Column>
                 <Column align="right">
-                  <Row>
-                    <Button primary onClick={() => console.log('Edit item')}>
-                      {t('item_detail_page.edit')}
+                  <Row className="actions">
+                    <Dropdown
+                      trigger={
+                        <Button basic>
+                          <Icon name="ellipsis horizontal" />
+                        </Button>
+                      }
+                      inline
+                      direction="left"
+                    >
+                      <Dropdown.Menu>
+                        <ConfirmDelete
+                          name={item.name}
+                          onDelete={this.handleDeleteItem}
+                          trigger={<Dropdown.Item text={t('global.delete')} />}
+                        />
+                      </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button primary compact onClick={() => console.log('Edit item')}>
+                      {t('global.edit')}
                     </Button>
                   </Row>
                 </Column>

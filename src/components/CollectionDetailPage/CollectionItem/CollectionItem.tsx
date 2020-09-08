@@ -1,27 +1,32 @@
-import * as React from 'react'
+import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Grid, Icon } from 'decentraland-ui'
+import { Grid, Dropdown, Icon, Button } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 
 import { locations } from 'routing/locations'
+import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isEditable } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
+import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemCard/ItemImage'
 import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
-  handleEditPriceAndBeneficiary = (event: React.MouseEvent<HTMLElement>) => {
+  handleEditPriceAndBeneficiary = () => {
     const { onOpenModal, item } = this.props
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
-    event.preventDefault()
   }
 
-  handleNavigateToEditor = (event: React.MouseEvent<HTMLElement>) => {
+  handleNavigateToEditor = () => {
     const { onNavigate, item } = this.props
     onNavigate(locations.itemEditor(item.id))
-    event.preventDefault()
+  }
+
+  handleDeleteItem = () => {
+    const { item, onDelete } = this.props
+    onDelete(item!)
   }
 
   renderPrice() {
@@ -34,7 +39,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
       </>
     ) : !isEditable(item) ? (
       <>
-        <div className="link" onClick={this.handleEditPriceAndBeneficiary}>
+        <div className="link" onClick={preventDefault(this.handleEditPriceAndBeneficiary)}>
           {t('collection_item.set_price')}
         </div>
         <div className="subtitle">{t('item.price')}</div>
@@ -77,15 +82,37 @@ export default class CollectionItem extends React.PureComponent<Props> {
             </Grid.Column>
             <Grid.Column>{this.renderPrice()}</Grid.Column>
             <Grid.Column>
-              {isComplete(item) ? (
-                <div className="done">
-                  {t('collection_item.done')} <Icon name="check" />
-                </div>
-              ) : isEditable(item) ? (
-                <span onClick={this.handleNavigateToEditor} className="link edit-item">
-                  {t('collection_item.edit_item')}
-                </span>
-              ) : null}
+              <div className="item-actions">
+                {isComplete(item) ? (
+                  <div className="done">
+                    {t('collection_item.done')} <Icon name="check" />
+                  </div>
+                ) : isEditable(item) ? (
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item">
+                    {t('collection_item.edit_item')}
+                  </span>
+                ) : null}
+                {isComplete(item) || isEditable(item) ? (
+                  <Dropdown
+                    trigger={
+                      <Button basic>
+                        <Icon name="ellipsis horizontal" />
+                      </Button>
+                    }
+                    inline
+                    direction="left"
+                    onClick={preventDefault()}
+                  >
+                    <Dropdown.Menu>
+                      <ConfirmDelete
+                        name={item.name}
+                        onDelete={this.handleDeleteItem}
+                        trigger={<Dropdown.Item text={t('global.delete')} />}
+                      />
+                    </Dropdown.Menu>
+                  </Dropdown>
+                ) : null}
+              </div>
             </Grid.Column>
           </Grid.Row>
         </Grid>

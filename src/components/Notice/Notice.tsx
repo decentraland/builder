@@ -9,8 +9,9 @@ export default class Notice extends React.PureComponent<Props> {
     isNoticeClosed: false
   }
 
-  componentWillMount() {
-    const { storageKey } = this.props
+  constructor(props: Props) {
+    super(props)
+    const { storageKey } = props
 
     this.state = {
       isNoticeClosed: localStorage.getItem(storageKey) !== null

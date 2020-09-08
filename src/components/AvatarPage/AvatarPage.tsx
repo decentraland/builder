@@ -11,8 +11,16 @@ import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
 
 export default class AvatarPage extends React.PureComponent<Props> {
+  handleNewItem = () => {
+    this.props.onOpenModal('CreateItemModal')
+  }
+
+  handleNewCollection = () => {
+    this.props.onOpenModal('CreateCollectionModal')
+  }
+
   renderPage() {
-    const { items, collections, onOpenModal } = this.props
+    const { items, collections } = this.props
     const count = items.length + collections.length
 
     return (
@@ -37,8 +45,8 @@ export default class AvatarPage extends React.PureComponent<Props> {
                     direction="left"
                   >
                     <Dropdown.Menu>
-                      <Dropdown.Item text={t('avatar_page.new_item')} onClick={() => onOpenModal('CreateItemModal')} />
-                      <Dropdown.Item text={t('avatar_page.new_collection')} onClick={() => onOpenModal('CreateCollectionModal')} />
+                      <Dropdown.Item text={t('avatar_page.new_item')} onClick={this.handleNewItem} />
+                      <Dropdown.Item text={t('avatar_page.new_collection')} onClick={this.handleNewCollection} />
                     </Dropdown.Menu>
                   </Dropdown>
                 </Row>
@@ -64,10 +72,10 @@ export default class AvatarPage extends React.PureComponent<Props> {
               </Header>
               <div className="empty-description">{t('avatar_page.empty_description')}</div>
               <div className="create-new-wrapper">
-                <div className="create-new create-new-item" onClick={() => onOpenModal('CreateItemModal')}>
+                <div className="create-new create-new-item" onClick={this.handleNewItem}>
                   <div className="text">{t('avatar_page.new_item')}</div>
                 </div>
-                <div className="create-new create-new-collection" onClick={() => onOpenModal('CreateCollectionModal')}>
+                <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
                   <div className="text">{t('avatar_page.new_collection')}</div>
                 </div>
               </div>
