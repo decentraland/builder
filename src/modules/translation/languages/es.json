@@ -373,7 +373,8 @@
   },
   "navigation": {
     "scenes": "Escenas",
-    "land": "Tierras"
+    "land": "Tierras",
+    "avatar": "Avatar"
   },
   "list": {
     "two": "{first} y {second}",

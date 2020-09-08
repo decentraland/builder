@@ -374,7 +374,8 @@
   },
   "navigation": {
     "scenes": "场景",
-    "land": "土地"
+    "land": "土地",
+    "avatar": "头像"
   },
   "list": {
     "two": "{first} 及 {second}",
