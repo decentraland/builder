@@ -1,17 +1,17 @@
 import * as React from 'react'
-import { Form, Field, Row, Button, InputOnChangeData, Input } from 'decentraland-ui'
+import { Form, Field, Row, Button, InputOnChangeData } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
-import { getSelection, getCenter, getUpdateOperator, coordsToId } from 'modules/land/utils'
+import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandEnsForm.types'
 import './LandEnsForm.css'
-import { isEqual, isValid } from 'lib/address'
+import { isEqual } from 'lib/address'
 import { RoleType } from 'modules/land/types'
 
 export default class LandEnsForm extends React.PureComponent<Props, State> {
   state: State = {
-    address: '',
+    name: '',
     initial: '',
     loading: false,
     editing: false,
@@ -19,19 +19,9 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     revoked: false
   }
 
-  async componentWillMount() {
-    this.setState({ loading: true })
-    const { land } = this.props
-    const address = await getUpdateOperator(land)
-    if (address !== null) {
-      this.setState({ address, initial: address, loading: false, editing: true })
-    } else {
-      this.setState({ loading: false })
-    }
-  }
 
   handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    this.setState({ address: data.value, dirty: true, revoked: false })
+    this.setState({ name: data.value, dirty: true, revoked: false })
   }
 
   handleRevoke = () => {
@@ -44,13 +34,13 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
 
   render() {
     const { land, onSetOperator } = this.props
-    const { address, loading, dirty, revoked, editing, initial } = this.state
+    const { name, loading, dirty, revoked, editing, initial } = this.state
     const selection = getSelection(land)
     const [x, y] = getCenter(selection)
  
-    const isRevokable = editing && isEqual(address, initial)
-    const hasError = !loading && !!address && !isValid(address)
-    const isDisabled = loading || !dirty || ((isEqual(address, initial) || hasError) && !revoked) || land.role !== RoleType.OWNER
+    const isRevokable = editing && isEqual(name, initial)
+    const hasError = !loading && !!name 
+    const isDisabled = loading || !dirty || ((isEqual(name, initial) || hasError) && !revoked) || land.role !== RoleType.OWNER
 
     const classes = []
     if (revoked) {
@@ -67,18 +57,18 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
       <Form className="LandEnsForm">
         <Field
           placeholder="0x..."
-          label={t('operator_page.address')}
+          label={t('land_ens_page.name')}
           className={classes.join(' ')}
-          value={address}
+          value={name}
           onChange={this.handleChange}
           loading={loading}
           action={isRevokable ? (revoked ? t('operator_page.undo') : t('operator_page.revoke')) : undefined}
           onAction={isRevokable ? (revoked ? this.handleUndo : this.handleRevoke) : undefined}
           error={hasError}
-          message={hasError ? t('operator_page.invalid_address') : undefined}
+          message={hasError ? t('operator_page.invalid_name') : undefined}
         />
         <Row>
-          <Button type="submit" primary disabled={isDisabled} onClick={() => onSetOperator(land, revoked ? null : address)}>
+          <Button type="submit" primary disabled={isDisabled} onClick={() => onSetOperator(land, revoked ? null : name)}>
             {t('global.submit')}
           </Button>
           <Link className="cancel" to={locations.landDetail(land.id)}>
@@ -86,15 +76,21 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
           </Link>
         </Row>
         <Row>
-          <Input />
-          <Button basic onClick={async () => {
+          <Button primary onClick={async () => {
             const formData = new FormData()
 
             const html:string = `<html>
+              <head>
+                <meta http-equiv="refresh" content="0; URL=https://play.decentraland.org?position=${coordsToId(x, y)} />
+              </head>
               <body>
-                 https://play.decentraland.org?position=${coordsToId(x, y)}
+                <p>
+                  If you are not redirected 
+                  <a href="https://play.decentraland.org?position=${coordsToId(x, y)}">click here</a>.
+                </p>
               </body>
             </html>`
+
             formData.append('blob', new Blob([html]), 'index.html')
             const result = await fetch('https://ipfs.infura.io:5001/api/v0/add?pin=false' , {
               method: 'POST',
@@ -103,12 +99,10 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
             const json = await result.json()
             console.log(json)
           }}> 
-            Buy Name
+            Send index.html to ipfs
           </Button>
 
         </Row>
-
-
       </Form>
     )
   }

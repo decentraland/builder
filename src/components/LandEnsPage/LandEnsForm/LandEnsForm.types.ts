@@ -6,7 +6,7 @@ export type Props = {
 }
 
 export type State = {
-  address: string
+  name: string
   initial: string
   loading: boolean
   revoked: boolean
