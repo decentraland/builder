@@ -116,6 +116,7 @@
   },
   "create_item_modal": {
     "title": "Nuevo Item",
+    "add_representation": "Agregar {bodyShape}",
     "metrics": {
       "triangles": "{count} {count, plural, one {triangulo} other {triangulos}}",
       "materials": "{count} {count, plural, one {material} other {materiales}}",
@@ -349,7 +350,7 @@
     "send": "Enviar",
     "share": "Compartir",
     "sign_in_required": "Debes {link} para acceder a esta página.",
-    "sign_in": "Inicia sesión",
+    "sign_in": "Iniciar sesión",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
     "subscribe": "Subscribirse",

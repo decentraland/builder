@@ -277,10 +277,19 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderImportView() {
-    const { onClose } = this.props
+    const { onClose, metadata } = this.props
+    const isAddingRepresentation = !!(metadata && metadata.addRepresentationTo)
+    const { bodyShape } = this.state
     return (
       <>
-        <ModalNavigation title={t('create_item_modal.title')} onClose={onClose} />
+        <ModalNavigation
+          title={
+            isAddingRepresentation
+              ? t('create_item_modal.add_representation', { bodyShape: t(`global.representation.${bodyShape}`) })
+              : t('create_item_modal.title')
+          }
+          onClose={onClose}
+        />
         <Modal.Content>
           <FileImport
             accept={['.zip', '.gltf', '.glb']}
@@ -300,7 +309,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const isAddingRepresentation = !!(metadata && metadata.addRepresentationTo)
     return (
       <>
-        <ModalNavigation title={t('create_item_modal.title')} onClose={onClose} />
+        <ModalNavigation
+          title={
+            isAddingRepresentation
+              ? t('create_item_modal.add_representation', { bodyShape: t(`global.representation.${bodyShape}`) })
+              : t('create_item_modal.title')
+          }
+          onClose={onClose}
+        />
         <Modal.Content>
           <Column>
             <Row className="details">

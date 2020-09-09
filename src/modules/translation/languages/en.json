@@ -118,6 +118,7 @@
   },
   "create_item_modal": {
     "title": "New Item",
+    "add_representation": "Add {bodyShape}",
     "metrics": {
       "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
       "materials": "{count} {count, plural, one {material} other {materials}}",
