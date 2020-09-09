@@ -76,7 +76,7 @@ import { PARCEL_SIZE } from 'modules/project/utils'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
-import { BUILDER_SERVER_URL } from 'lib/api/builder'
+import { getContentsStorageUrl } from 'lib/api/builder'
 import {
   getGizmo,
   getSelectedEntityIds,
@@ -334,7 +334,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
     yield createNewEditorScene(project)
 
     // Set the remote url for scripts
-    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
+    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
 
     // Spawns the assets
     yield renderScene(scene)
@@ -390,7 +390,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
     if (hasScript) {
       // Reset scene
       yield createNewEditorScene(project)
-      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(`${BUILDER_SERVER_URL}/storage/assets`)))
+      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
     }
 
     yield handleResetCamera()

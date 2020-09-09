@@ -8,6 +8,7 @@ const toBuffer = require('blob-to-buffer')
 import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, DeploymentStatus } from './types'
 import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
+import { getContentsStorageUrl } from 'lib/api/builder'
 
 export async function getCID(files: ContentServiceFile[], shareRoot: boolean): Promise<string> {
   const importer = new Importer(new MemoryDatastore(), { onlyHash: true })
@@ -162,7 +163,7 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
         name: 'Bermuda Grass',
         model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
         script: null,
-        thumbnail: 'https://builder-api.decentraland.org/v1/storage/assets/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
+        thumbnail: getContentsStorageUrl('QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'),
         tags: ['genesis', 'city', 'town', 'ground'],
         category: 'ground',
         contents: {
