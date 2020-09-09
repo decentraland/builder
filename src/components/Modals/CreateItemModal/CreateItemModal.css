@@ -61,47 +61,51 @@
   text-transform: none;
 }
 
-.CreateItemModal .representation {
+.CreateItemModal .option {
   font-size: 13px;
   line-height: 18px;
   border-radius: 5px;
   border: 1px solid var(--divider);
   padding: 8px;
-  padding-left: 32px;
+  padding-left: 16px;
   padding-right: 16px;
   color: var(--secondary-text);
   text-transform: capitalize;
+}
+
+.CreateItemModal .option.has-icon {
+  padding-left: 32px;
   background-size: 16px;
   background-repeat: no-repeat;
   background-position-y: center;
   background-position-x: 8px;
 }
 
-.CreateItemModal .representation + .representation {
+.CreateItemModal .option + .option {
   margin-left: 16px;
 }
 
-.CreateItemModal .representation:hover {
+.CreateItemModal .option:hover {
   border-color: white;
   color: white;
   cursor: pointer;
 }
 
-.CreateItemModal .representation.active {
+.CreateItemModal .option.active {
   border-color: var(--primary);
   color: white;
   background-color: var(--primary);
 }
 
-.CreateItemModal .representation.unisex {
+.CreateItemModal .option.has-icon.unisex {
   background-image: url(../../../images/unisex.svg);
 }
 
-.CreateItemModal .representation.male {
+.CreateItemModal .option.has-icon.male {
   background-image: url(../../../images/male.svg);
 }
 
-.CreateItemModal .representation.female {
+.CreateItemModal .option.has-icon.female {
   background-image: url(../../../images/female.svg);
   background-size: 12px;
   background-position-x: 12px;
