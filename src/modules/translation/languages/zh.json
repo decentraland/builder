@@ -105,6 +105,11 @@
     "top_banner_left": "9月16日至30日-激烈的在线创作，分享了超过25万美元的奖品。",
     "top_banner_right": " "
   },
+  "body_shapes": {
+    "unisex": "男女通用",
+    "male": "男",
+    "female": "女"
+  },
   "create_collection_modal": {
     "title": "新系列",
     "subtitle": "为您的新收藏取个名字",
@@ -113,6 +118,7 @@
   },
   "create_item_modal": {
     "title": "新物品",
+    "add_representation": "添加{bodyShape}",
     "metrics": {
       "triangles": "{count}个三角形",
       "materials": "{count}个材料",
@@ -120,6 +126,9 @@
     },
     "name_label": "给您的新商品起个名字",
     "representation_label": "它代表哪种身材？",
+    "existing_item": "这是现有项目的一部分吗？",
+    "pick_item": "选择没有{bodyShape}的商品",
+    "adding_representation": "这将添加为以下项目的{body Shape}",
     "add": "加"
   },
   "custom_layout_modal": {
@@ -361,15 +370,13 @@
     "parcel_plural": "地块",
     "estate_plural": "产业",
     "settings": "设定",
-    "representation": {
-      "unisex": "男女通用",
-      "male": "男",
-      "female": "女"
-    }
+    "yes": "是",
+    "no": "没有"
   },
   "navigation": {
     "scenes": "场景",
-    "land": "土地"
+    "land": "土地",
+    "avatar": "头像"
   },
   "list": {
     "two": "{first} 及 {second}",
@@ -423,6 +430,10 @@
     "search": "搜索",
     "title": "物品目录",
     "search_items": "搜索"
+  },
+  "item_dropdown": {
+    "placeholder": "选择一个项目",
+    "no_items": "找不到有效的项目"
   },
   "layout_picker": {
     "columns": "列",
@@ -739,7 +750,8 @@
     "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
   },
   "item_detail_page": {
-    "notice": "您需要先将项目添加到集合中，然后才能发布它们"
+    "notice": "您需要先将项目添加到集合中，然后才能发布它们",
+    "add_representation": "添加{bodyShape}"
   },
   "collection_detail_page": {
     "new_item": "新项目",
@@ -764,7 +776,7 @@
     "title": "设置{name}的价格和地址",
     "price_label": "价格",
     "beneficiary_label": "受益人"
-   },
+  },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"
   }
