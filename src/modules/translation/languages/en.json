@@ -110,6 +110,11 @@
     "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
     "top_banner_right": " "
   },
+  "body_shapes": {
+    "unisex": "Both",
+    "male": "Shape A",
+    "female": "Shape B"
+  },
   "create_collection_modal": {
     "title": "New Collection",
     "subtitle": "Give a name to your new collection",
@@ -371,11 +376,6 @@
     "parcel_plural": "parcels",
     "estate_plural": "estates",
     "settings": "Settings",
-    "representation": {
-      "unisex": "Both",
-      "male": "Shape A",
-      "female": "Shape B"
-    },
     "yes": "Yes",
     "no": "No"
   },

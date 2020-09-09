@@ -61,7 +61,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                       <Dropdown.Menu>
                         {missingBodyShape !== null ? (
                           <Dropdown.Item
-                            text={t('item_detail_page.add_representation', { bodyShape: t(`global.representation.${missingBodyShape}`) })}
+                            text={t('item_detail_page.add_representation', { bodyShape: t(`body_shapes.${missingBodyShape}`) })}
                             onClick={this.handleAddRepresentationToItem}
                           />
                         ) : null}

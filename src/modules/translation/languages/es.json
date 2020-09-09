@@ -108,6 +108,11 @@
     "top_banner_left": "Septiembre 16-30 - Súmate a la creación con más de $250k USD en premios para compartir.",
     "top_banner_right": " "
   },
+  "body_shapes": {
+    "unisex": "Ambas",
+    "male": "Forma A",
+    "female": "Forma B"
+  },
   "create_collection_modal": {
     "title": "Nueva Colección",
     "subtitle": "Ponle un nombre a tu nueva colleción",
@@ -364,11 +369,6 @@
     "parcel_plural": "parcelas",
     "estate_plural": "estates",
     "settings": "Ajustes",
-    "representation": {
-      "unisex": "Ambas",
-      "male": "Forma A",
-      "female": "Forma B"
-    },
     "yes": "Si",
     "no": "No"
   },

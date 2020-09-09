@@ -105,6 +105,11 @@
     "top_banner_left": "9月16日至30日-激烈的在线创作，分享了超过25万美元的奖品。",
     "top_banner_right": " "
   },
+  "body_shapes": {
+    "unisex": "男女通用",
+    "male": "男",
+    "female": "女"
+  },
   "create_collection_modal": {
     "title": "新系列",
     "subtitle": "为您的新收藏取个名字",
@@ -365,11 +370,6 @@
     "parcel_plural": "地块",
     "estate_plural": "产业",
     "settings": "设定",
-    "representation": {
-      "unisex": "男女通用",
-      "male": "男",
-      "female": "女"
-    },
     "yes": "是",
     "no": "没有"
   },

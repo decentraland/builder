@@ -47,6 +47,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return state
   }
 
+  isAddingRepresentation = () => {
+    const { metadata } = this.props
+    return !!(metadata && metadata.addRepresentationTo)
+  }
+
+  filterItemsByBodyShape = (item: Item) => {
+    const { bodyShape } = this.state
+    return getMissingBodyShapeType(item) === bodyShape
+  }
+
   async handleSubmit() {
     const { address, onSubmit } = this.props
     const { id, name, model, bodyShape, contents, metrics, collectionId, isRepresentation, addRepresentationTo } = this.state
@@ -66,12 +76,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             tags: [...addRepresentationTo.data.tags]
           },
           contents: {
-            ...(await this.computeHashes(contents!)),
             ...addRepresentationTo.contents
           },
           updatedAt: +new Date()
         }
 
+        // add new representation
         item.data.representations.push({
           bodyShape: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
           mainFile: model,
@@ -79,6 +89,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           overrideHides: [],
           overrideReplaces: []
         })
+
+        // add new contents
+        const newContents = await this.computeHashes(contents!)
+        delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
+        for (const path in newContents) {
+          item.contents[path] = newContents[path]
+        }
       } else {
         // create new item
         item = {
@@ -276,16 +293,22 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     this.setState({ name: props.value.slice(0, MAX_NAME_LENGTH) })
   }
 
+  handleItemChange = (item: Item) => this.setState({ addRepresentationTo: item })
+
+  handleYes = () => this.setState({ isRepresentation: true })
+
+  handleNo = () => this.setState({ isRepresentation: false })
+
   renderImportView() {
-    const { onClose, metadata } = this.props
-    const isAddingRepresentation = !!(metadata && metadata.addRepresentationTo)
+    const { onClose } = this.props
+    const isAddingRepresentation = this.isAddingRepresentation()
     const { bodyShape } = this.state
     return (
       <>
         <ModalNavigation
           title={
             isAddingRepresentation
-              ? t('create_item_modal.add_representation', { bodyShape: t(`global.representation.${bodyShape}`) })
+              ? t('create_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
               : t('create_item_modal.title')
           }
           onClose={onClose}
@@ -303,16 +326,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, isLoading, metadata } = this.props
+    const { onClose, isLoading } = this.props
     const { name, thumbnail, metrics, bodyShape, isRepresentation, addRepresentationTo } = this.state
     const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape
-    const isAddingRepresentation = !!(metadata && metadata.addRepresentationTo)
+    const isAddingRepresentation = this.isAddingRepresentation()
     return (
       <>
         <ModalNavigation
           title={
             isAddingRepresentation
-              ? t('create_item_modal.add_representation', { bodyShape: t(`global.representation.${bodyShape}`) })
+              ? t('create_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
               : t('create_item_modal.title')
           }
           onClose={onClose}
@@ -351,16 +374,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                           <Section>
                             <Header sub>{t('create_item_modal.existing_item')}</Header>
                             <Row>
-                              <div
-                                className={`option ${isRepresentation === true ? 'active' : ''}`}
-                                onClick={() => this.setState({ isRepresentation: true })}
-                              >
+                              <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
                                 {t('global.yes')}
                               </div>
-                              <div
-                                className={`option ${isRepresentation === false ? 'active' : ''}`}
-                                onClick={() => this.setState({ isRepresentation: false })}
-                              >
+                              <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
                                 {t('global.no')}
                               </div>
                             </Row>
@@ -370,13 +387,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                           <Section>
                             <Header sub>
                               {isAddingRepresentation
-                                ? t('create_item_modal.adding_representation', { bodyShape: t(`global.representation.${bodyShape}`) })
-                                : t('create_item_modal.pick_item', { bodyShape: t(`global.representation.${bodyShape}`) })}
+                                ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                                : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
                             </Header>
                             <ItemDropdown
                               value={addRepresentationTo}
-                              filter={item => getMissingBodyShapeType(item) === bodyShape}
-                              onChange={item => this.setState({ addRepresentationTo: item })}
+                              filter={this.filterItemsByBodyShape}
+                              onChange={this.handleItemChange}
                               isDisabled={isAddingRepresentation}
                             />
                           </Section>
@@ -407,7 +424,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         className={`option has-icon ${type} ${type === bodyShape ? 'active' : ''}`.trim()}
         onClick={() => this.setState({ bodyShape: type, isRepresentation: undefined, addRepresentationTo: undefined })}
       >
-        {t('global.representation.' + type)}
+        {t('body_shapes.' + type)}
       </div>
     )
   }

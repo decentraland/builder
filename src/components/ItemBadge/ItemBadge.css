@@ -3,7 +3,7 @@
   border-radius: 3px;
 }
 
-.ItemBadge.male:before {
+.ItemBadge:before {
   content: ' ';
   display: block;
   width: 100%;
@@ -20,8 +20,9 @@
 
 .ItemBadge.female:before {
   background-image: url('../../images/female.svg');
+  background-size: 40%;
 }
 
-.ItemBadge.male.female:before {
+.ItemBadge.unisex:before {
   background-image: url('../../images/unisex.svg');
 }
