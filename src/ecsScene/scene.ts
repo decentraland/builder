@@ -205,7 +205,7 @@ function createComponent(component: AnyComponent, scene: Scene) {
         const src = asset.contents[asset.script!]
         editorComponents[id] = new Script(assetId, src, values)
         if (!scriptPromises.has(assetId)) {
-          const url = `${scriptBaseUrl}/${src}`
+          const url = scriptBaseUrl + src
           const promise = fetch(url).then(resp => resp.text())
           scriptPromises.set(assetId, promise)
         }
