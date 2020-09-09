@@ -724,12 +724,14 @@ export class BuilderAPI extends BaseAPI {
   async saveItem(item: Item, contents: Record<string, Blob>) {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
 
-    const formData = new FormData()
-    for (let path in contents) {
-      formData.append(item.contents[path], contents[path])
-    }
+    if (Object.keys(contents).length > 0) {
+      const formData = new FormData()
+      for (let path in contents) {
+        formData.append(item.contents[path], contents[path])
+      }
 
-    await this.request('post', `/items/${item.id}/files`, formData)
+      await this.request('post', `/items/${item.id}/files`, formData)
+    }
   }
 
   async deleteItem(item: Item) {

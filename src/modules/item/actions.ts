@@ -37,3 +37,7 @@ export const deleteItemFailure = (item: Item, error: string) => action(DELETE_IT
 export type DeleteItemRequestAction = ReturnType<typeof deleteItemRequest>
 export type DeleteItemSuccessAction = ReturnType<typeof deleteItemSuccess>
 export type DeleteItemFailureAction = ReturnType<typeof deleteItemFailure>
+
+export const SET_COLLECTION = 'Set Collection'
+export const setCollection = (item: Item, collectionId: string | null) => action(SET_COLLECTION, { item, collectionId })
+export type SetCollectionAction = ReturnType<typeof setCollection>

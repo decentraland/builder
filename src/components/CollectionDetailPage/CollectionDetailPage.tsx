@@ -39,7 +39,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { items, onNavigate } = this.props
+    const { items, onOpenModal, onNavigate } = this.props
     const collection = this.props.collection!
 
     return (
@@ -69,6 +69,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                       direction="left"
                     >
                       <Dropdown.Menu>
+                        <Dropdown.Item
+                          text="Add Existing Item"
+                          onClick={() => onOpenModal('AddExistingItemModal', { collectionId: collection!.id })}
+                        />
                         <ConfirmDelete
                           name={collection.name}
                           onDelete={this.handleDeleteItem}
