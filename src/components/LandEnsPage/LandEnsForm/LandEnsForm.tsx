@@ -8,6 +8,11 @@ import { Props, State } from './LandEnsForm.types'
 import './LandEnsForm.css'
 import { isEqual } from 'lib/address'
 import { RoleType } from 'modules/land/types'
+import * as contentHash from 'content-hash'
+import { ethers } from "ethers";
+import { namehash } from "@ethersproject/hash";
+import { Eth } from 'web3x-es/eth';
+import { Net } from 'web3x-es/net';
 
 export default class LandEnsForm extends React.PureComponent<Props, State> {
   state: State = {
@@ -56,7 +61,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     return (
       <Form className="LandEnsForm">
         <Field
-          placeholder="0x..."
+          placeholder=""
           label={t('land_ens_page.name')}
           className={classes.join(' ')}
           value={name}
@@ -98,6 +103,84 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
             })
             const json = await result.json()
             console.log(json)
+
+            const ensAbi = [
+              "function setOwner(bytes32 node, address owner) external @500000",
+              "function setSubnodeOwner(bytes32 node, bytes32 label, address owner) external @500000",
+              "function setResolver(bytes32 node, address resolver) external @500000",
+              "function owner(bytes32 node) external view returns (address)",
+              "function resolver(bytes32 node) external view returns (address)"
+            ];
+            const resolverAbi = [
+              "function interfaceImplementer(bytes32 nodehash, bytes4 interfaceId) view returns (address)",
+              "function addr(bytes32 nodehash) view returns (address)",
+              "function setAddr(bytes32 nodehash, address addr) @500000",
+              "function name(bytes32 nodehash) view returns (string)",
+              "function setName(bytes32 nodehash, string name) @500000",
+              "function text(bytes32 nodehash, string key) view returns (string)",
+              "function setText(bytes32 nodehash, string key, string value) @500000",
+              "function contenthash(bytes32 nodehash) view returns (bytes)",
+              "function setContenthash(bytes32 nodehash, bytes contenthash) @500000",
+            ];
+
+            const accountProvider = Eth.fromCurrentProvider() // puede fallar
+            if (!accountProvider) {
+              console.log('No web3 found.');
+              return;
+            }
+            const net = new Net(accountProvider);
+            const network = await net.getNetworkType();
+            const addressAccount = (await accountProvider.getAccounts())[0]
+            console.log(`Connected to network: ${network}`)
+            console.log(`Provider Info: ${await accountProvider.getNodeInfo()}`)
+            console.log(`Account: ${(await accountProvider.getAccounts())[0]}`)
+            const query = `
+              query getUserNames($owner: String) {
+                nfts(where: { owner: $owner, category: ens }) {
+                  ens {
+                    labelHash
+                    subdomain
+                  }
+                }
+              }
+            `;
+            const body = JSON.stringify({ query, variables: { owner: addressAccount.toString().toLowerCase() } });
+            const res = await fetch('https://api.thegraph.com/subgraphs/name/decentraland/marketplace-ropsten', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body // ETH ADDRESS
+            })      
+            const { data } = await res.json()
+            if (data.nfts.length === 0) {
+              console.log(`Error: empty result - ${JSON.stringify({data})}`)
+              return;
+            }
+            console.log(`Result: ${JSON.stringify({data})}`)
+            const domain = `{data.subdmain.toLowerCase()}.dcl.eth`
+
+            const nodehash = namehash(domain)
+            console.log({nodehash})
+            const ensAddress = '0x112234455c3a32fd11230c42e7bccd4a84e02010'
+
+
+            const ethersAccountProvider = new ethers.providers.Web3Provider((window as any).ethereum as any)
+
+            console.log({ethersAccountProvider})
+
+            debugger
+
+            const ensContract = new ethers.Contract(ensAddress, ensAbi, ethersAccountProvider.getSigner(0))
+            let resolverAddress = await ensContract.resolver(nodehash)
+
+            if (!resolverAddress) {
+              resolverAddress = '0x12299799a50340FB860D276805E78550cBaD3De3' 
+            }
+            const resolverContract = new ethers.Contract(resolverAddress, resolverAbi, accountProvider!.provider as any)
+
+
+            const hash = contentHash.fromIpfs(json.Hash)
+            const resultSetContentHash = await resolverContract.setContentHash(nodehash, hash)
+            console.log(resultSetContentHash)
           }}> 
             Send index.html to ipfs
           </Button>
@@ -107,3 +190,14 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     )
   }
 }
+
+/*
+usamos ens contracts viejos
+ENS Registry -> to set a resolver to the node. Also, to check if the node has a resolver already set
+mainnet: 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e
+ropsten: 0x112234455c3a32fd11230c42e7bccd4a84e02010
+
+Public resolver
+mainnet: 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41
+ropsten: 0x12299799a50340FB860D276805E78550cBaD3De3
+*/
