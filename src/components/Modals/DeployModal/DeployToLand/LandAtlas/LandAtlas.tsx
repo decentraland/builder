@@ -38,7 +38,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
     return {
       placement: deployment ? deployment.placement : null,
       hover: { x: 0, y: 0 },
-      rotation: 'north',
+      rotation: deployment ? deployment.placement.rotation : 'north',
       zoom: 1,
       landTarget: deployment
         ? coordsToId(deployment.placement.point.x, deployment.placement.point.y)
