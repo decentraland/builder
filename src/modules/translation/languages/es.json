@@ -670,7 +670,8 @@
     "edit_estate_add": "Has agregado {count} {count, plural, one {parcela} other {parcelas}} a {name}.",
     "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
-    "set_manager_revoked": "Has revocado a {address} como operador de tus {type}."
+    "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
+    "collection_published": "Has publicado la colección {name}"
   },
   "transfer_page": {
     "title": "Transferir",
@@ -782,5 +783,15 @@
   },
   "confirm_delete": {
     "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
+  },
+  "publish_collection_modal": {
+    "title": "Publicar Collección",
+    "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
+    "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar",
+    "third_paragraph": "Podrás ver tus items en el marketplace pero serán puestos en venta luego de ser validados por la DAO",
+    "publish": "Publish"
+  },
+  "collection_image": {
+    "no_items": "No Items"
   }
 }
