@@ -142,7 +142,7 @@ const Transaction = (props: Props) => {
     }
     case PUBLISH_COLLECTION_SUCCESS: {
       const { collection } = tx.payload
-      return <TransactionDetail collection={collection} text={`Published ${collection.name}`} tx={tx} />
+      return <TransactionDetail collection={collection} text={t('transaction.collection_published', { name: collection.name })} tx={tx} />
     }
     default:
       return null

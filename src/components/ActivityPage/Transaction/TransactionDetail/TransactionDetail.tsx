@@ -33,7 +33,7 @@ const Image = (props: Props) => {
   } else if (collection) {
     return <CollectionImage collection={collection} />
   } else {
-    return <></>
+    return null
   }
 }
 
