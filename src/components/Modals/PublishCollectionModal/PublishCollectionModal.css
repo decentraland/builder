@@ -1,10 +1,13 @@
-.PublishCollectionModal {
-  padding: 20px 60px;
-}
-
 .PublishCollectionModal .header,
 .PublishCollectionModal .content {
   text-align: center;
+}
+.PublishCollectionModal.ui.modal > .dcl.modal-navigation {
+  padding-top: 48px;
+}
+
+.PublishCollectionModal.ui.modal > .content {
+  padding: 0 60px 30px;
 }
 
 .PublishCollectionModal .divider {

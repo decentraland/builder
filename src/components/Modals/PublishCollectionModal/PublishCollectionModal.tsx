@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Close, Button } from 'decentraland-ui'
+import { ModalNavigation, Button } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -22,8 +22,8 @@ export default class PublishCollectionModal extends React.PureComponent<Props> {
   render() {
     const { onClose } = this.props
     return (
-      <Modal name={name} className="PublishCollectionModal" size="tiny" closeIcon={<Close onClick={onClose} />}>
-        <Modal.Header>{t('publish_collection_modal.title')}</Modal.Header>
+      <Modal name={name} className="PublishCollectionModal" size="tiny" onClose={onClose}>
+        <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
         <Modal.Content>
           {t('publish_collection_modal.first_paragraph')}
           <div className="divider"></div>
