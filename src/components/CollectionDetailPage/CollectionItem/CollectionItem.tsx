@@ -29,6 +29,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onDelete(item!)
   }
 
+  handleRemoveFromCollection = () => {
+    const { item, onRemoveFromCollection } = this.props
+    onRemoveFromCollection(item!, null)
+  }
+
   renderPrice() {
     const { item } = this.props
 
@@ -104,6 +109,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     onClick={preventDefault()}
                   >
                     <Dropdown.Menu>
+                      <Dropdown.Item text="Remove from collection" onClick={this.handleRemoveFromCollection} />
                       <ConfirmDelete
                         name={item.name}
                         onDelete={this.handleDeleteItem}
