@@ -1,0 +1,20 @@
+.PublishCollectionModal {
+  padding: 20px 60px;
+}
+
+.PublishCollectionModal .header,
+.PublishCollectionModal .content {
+  text-align: center;
+}
+
+.PublishCollectionModal .divider {
+  width: 50%;
+  margin: 25px auto;
+  height: 1px;
+  border: 2px solid var(--primary);
+  border-radius: 2px;
+}
+
+.PublishCollectionModal .ui.button {
+  margin-top: 60px;
+}

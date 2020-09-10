@@ -787,5 +787,15 @@
   },
   "confirm_delete": {
     "content": "Are you sure you want to delete \"{name}\"?"
+  },
+  "publish_collection_modal": {
+    "title": "Publish Collection",
+    "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
+    "second_paragraph": "You will not be able to add or delete items after you publish your collection",
+    "third_paragraph": "You will be able to see your items in the marketplace but they will available for sale once the collection is validated by the DAO",
+    "publish": "Publish"
+  },
+  "collection_image": {
+    "no_items": "No Items"
   }
 }

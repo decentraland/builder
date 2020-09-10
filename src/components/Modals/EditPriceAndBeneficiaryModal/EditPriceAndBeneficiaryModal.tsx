@@ -6,7 +6,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { addSymbol } from 'lib/mana'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
-import './EditPriceAndBeneficiaryModal.css'
 
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {}

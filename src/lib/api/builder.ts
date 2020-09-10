@@ -14,7 +14,7 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData, WearableCategory, WearableBodyShape } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
@@ -505,48 +505,6 @@ export class BuilderAPI extends BaseAPI {
       ...remoteItems.map(fromRemoteItem),
 
       {
-        id: 'item',
-        name: 'Launch t-shirt',
-        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
-        type: ItemType.WEARABLE,
-        rarity: ItemRarity.UNIQUE,
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
-        contents: {
-          'thumbnail.png': 'Qmthumb',
-          'model.gltf': 'Qmmodel',
-          'texture.png': 'Qmtext'
-        },
-        data: {
-          representations: [
-            {
-              bodyShape: ['male'],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            },
-            {
-              bodyShape: ['female'],
-              mainFile: 'model.gltf',
-              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
-              overrideHides: [],
-              overrideReplaces: []
-            }
-          ],
-          replaces: [],
-          hides: [],
-          tags: []
-        }
-      },
-      {
         id: 'dummy-item',
         name: 'MANA t-shirt',
         thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/mana_tshirt_upper_body/thumbnail',
@@ -561,7 +519,7 @@ export class BuilderAPI extends BaseAPI {
           entities: 0
         },
         owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
-        collectionId: 'dummy-collection',
+        collectionId: 'dummy-collection2',
         contents: {
           'thumbnail.png': 'Qmthumb',
           'model.gltf': 'Qmmodel',
@@ -604,7 +562,7 @@ export class BuilderAPI extends BaseAPI {
           entities: 0
         },
         owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
-        collectionId: 'dummy-collection',
+        collectionId: 'dummy-collection2',
         contents: {
           'thumbnail.png': 'Qmthumb',
           'model.gltf': 'Qmmodel',
@@ -647,7 +605,7 @@ export class BuilderAPI extends BaseAPI {
           entities: 0
         },
         owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
-        collectionId: 'dummy-collection',
+        collectionId: 'dummy-collection2',
         contents: {
           'thumbnail.png': 'Qmthumb',
           'model.gltf': 'Qmmodel',
@@ -690,23 +648,26 @@ export class BuilderAPI extends BaseAPI {
           entities: 0
         },
         owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
-        collectionId: 'dummy-collection',
+        beneficiary: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        price: 100,
+        collectionId: 'dummy-collection2',
         contents: {
           'thumbnail.png': 'Qmthumb',
           'model.gltf': 'Qmmodel',
           'texture.png': 'Qmtext'
         },
         data: {
+          category: WearableCategory.HAT,
           representations: [
             {
-              bodyShape: ['male'],
+              bodyShape: [WearableBodyShape.MALE],
               mainFile: 'model.gltf',
               contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
               overrideHides: [],
               overrideReplaces: []
             },
             {
-              bodyShape: ['female'],
+              bodyShape: [WearableBodyShape.FEMALE],
               mainFile: 'model.gltf',
               contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
               overrideHides: [],
@@ -741,10 +702,10 @@ export class BuilderAPI extends BaseAPI {
     return [
       ...remoteCollections.map(fromRemoteCollection),
       {
-        id: 'dummy-collection',
-        name: 'Summer Hats',
-        contractAddress: '0xsombrero',
-        salt: 'asdf',
+        id: 'dummy-collection2',
+        name: 'Winter Hats',
+        contractAddress: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+        salt: '0x57995df61c7b8e77180cc9f4d82cef2af319e4cd314c1d8a0166d977f5e07d4e',
         owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
         isPublished: false,
         createdAt: Date.now(),

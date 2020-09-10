@@ -1,3 +1,6 @@
+import BN from 'bn.js'
+import { Address } from 'web3x-es/address'
+
 export type Collection = {
   id: string // uuid
   name: string
@@ -7,4 +10,13 @@ export type Collection = {
   isPublished: boolean
   createdAt: number
   updatedAt: number
+}
+
+export type InitializeItem = {
+  rarity: number
+  totalSupply: number
+  price: BN
+  beneficiary: Address
+  metadata: string
+  contentHash: string
 }
