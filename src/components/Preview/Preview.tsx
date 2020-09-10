@@ -73,6 +73,8 @@ class Preview extends React.Component<Props & CollectedProps, State> {
     }
     try {
       isDCLInitialized = true
+      // tslint:disable-next-line: no-eval
+      eval('window.devicePixelRatio = 1')
       await editorWindow.editor.initEngine(this.canvasContainer.current, '/unity/Build/unity.json')
       if (!unityDebugParams) {
         canvas = await editorWindow.editor.getDCLCanvas()
