@@ -9,7 +9,8 @@ import './LandEnsForm.css'
 import { isEqual } from 'lib/address'
 import { RoleType } from 'modules/land/types'
 import * as contentHash from 'content-hash'
-import { ethers } from "ethers";
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import { namehash } from "@ethersproject/hash";
 import { Eth } from 'web3x-es/eth';
 import { Net } from 'web3x-es/net';
@@ -144,6 +145,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
                 }
               }
             `;
+
             const body = JSON.stringify({ query, variables: { owner: addressAccount.toString().toLowerCase() } });
             const res = await fetch('https://api.thegraph.com/subgraphs/name/decentraland/marketplace-ropsten', {
               method: 'POST',
@@ -155,32 +157,38 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
               console.log(`Error: empty result - ${JSON.stringify({data})}`)
               return;
             }
+
+            const {ens} = data.nfts[0]
             console.log(`Result: ${JSON.stringify({data})}`)
-            const domain = `{data.subdmain.toLowerCase()}.dcl.eth`
+            const domain = `${ens.subdomain.toLowerCase()}.dcl.eth`
+            console.log({domain}, {data})
 
             const nodehash = namehash(domain)
             console.log({nodehash})
             const ensAddress = '0x112234455c3a32fd11230c42e7bccd4a84e02010'
 
 
-            const ethersAccountProvider = new ethers.providers.Web3Provider((window as any).ethereum as any)
+            const ethersAccountProvider = new Web3Provider((window as any).ethereum)
 
             console.log({ethersAccountProvider})
 
-            debugger
-
-            const ensContract = new ethers.Contract(ensAddress, ensAbi, ethersAccountProvider.getSigner(0))
+            const ensContract = new Contract(ensAddress, ensAbi, ethersAccountProvider.getSigner(0))
             let resolverAddress = await ensContract.resolver(nodehash)
 
-            if (!resolverAddress) {
-              resolverAddress = '0x12299799a50340FB860D276805E78550cBaD3De3' 
+            const ownerOf = await ensContract.owner(nodehash)
+            console.log({ownerOf})
+            if (resolverAddress !== '0x0000000000000000000000000000000000000000') {
+              console.log(resolverAddress)
+              return ;
             }
-            const resolverContract = new ethers.Contract(resolverAddress, resolverAbi, accountProvider!.provider as any)
-
+            resolverAddress = '0x12299799a50340FB860D276805E78550cBaD3De3' 
+            const resolverContract = new Contract(resolverAddress, resolverAbi, ethersAccountProvider.getSigner(0))
 
             const hash = contentHash.fromIpfs(json.Hash)
-            const resultSetContentHash = await resolverContract.setContentHash(nodehash, hash)
+            const resultSetContentHash = await resolverContract.setContenthash(nodehash, `0x${hash}`)
             console.log(resultSetContentHash)
+            let resultSetResolver = await ensContract.setResolver(nodehash, resolverAddress)
+            console.log(domain, resultSetResolver)
           }}> 
             Send index.html to ipfs
           </Button>
