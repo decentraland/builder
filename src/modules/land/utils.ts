@@ -6,8 +6,7 @@ import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/c
 import { EstateRegistry } from 'contracts/EstateRegistry'
 import { LANDRegistry } from 'contracts/LANDRegistry'
 import { isZero } from 'lib/address'
-import { Tile } from 'components/Atlas/Atlas.types'
-import { Land, LandType, LandTile, RoleType } from './types'
+import { Land, LandType, RoleType } from './types'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
@@ -35,26 +34,6 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
 export const RoleColor: Record<RoleType, string> = {
   [RoleType.OWNER]: Color.SUMMER_RED,
   [RoleType.OPERATOR]: '#1FBCFF'
-}
-
-export const traverseTiles = (x: number, y: number, land: Land, result: Record<string, LandTile>, tiles: Record<string, Tile>) => {
-  const id = coordsToId(x, y)
-  if (id in result) return // already processed
-
-  const tile = tiles[id]
-  if (tile && tile.estate_id === land.id) {
-    result[id] = {
-      color: RoleColor[land.role],
-      top: tile ? !!tile.top : false,
-      left: tile ? !!tile.left : false,
-      topLeft: tile ? !!tile.topLeft : false,
-      land
-    }
-    traverseTiles(x + 1, y, land, result, tiles)
-    traverseTiles(x - 1, y, land, result, tiles)
-    traverseTiles(x, y + 1, land, result, tiles)
-    traverseTiles(x, y - 1, land, result, tiles)
-  }
 }
 
 export const getSelection = (land: Land) =>

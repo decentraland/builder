@@ -18,7 +18,7 @@ const getLandQuery = () => gql`
     ownerEstates: estates(first: 1000, where: { owner: $address }) {
       ...estateFields
     }
-    updateOperatorParcels: parcels(first: 1000, where: { estate: null, updateOperator: $address }) {
+    updateOperatorParcels: parcels(first: 1000, where: { updateOperator: $address }) {
       ...parcelFields
     }
     updateOperatorEstates: estates(first: 1000, where: { updateOperator: $address }) {
@@ -167,13 +167,19 @@ export class ManagerAPI {
       for (const parcel of owner.parcels) {
         const land = fromParcel(parcel, RoleType.OPERATOR)
         land.operators.push(address)
-        lands.push(land)
+        // skip if already owned or operated
+        if (!lands.some(_land => _land.id === land.id)) {
+          lands.push(land)
+        }
       }
       for (const estate of owner.estates) {
         if (estate.parcels.length > 0) {
           const land = fromEstate(estate, RoleType.OPERATOR)
           land.operators.push(address)
-          lands.push(land)
+          // skip if already owned or operated
+          if (!lands.some(_land => _land.id === land.id)) {
+            lands.push(land)
+          }
         }
       }
     }

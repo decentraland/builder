@@ -12,17 +12,55 @@ import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
 
+const FILL_COLOR = {
+  [RoleType.OWNER]: '#ff8199',
+  [RoleType.OPERATOR]: '#6ddff7'
+}
+
+const STROKE_COLOR = {
+  [RoleType.OWNER]: '#fcc6d1',
+  [RoleType.OPERATOR]: '#d7f6fc'
+}
+
 export default class LandDetailPage extends React.PureComponent<Props, State> {
-  state = {
-    hovered: null
+  state: State = {
+    hovered: null,
+    mouseX: 0,
+    mouseY: 0,
+    showTooltip: false
   }
 
   handleMouseEnter = (deployment: Deployment) => {
-    this.setState({ hovered: deployment.id })
+    this.setState({ hovered: deployment, showTooltip: false })
   }
 
   handleMouseLeave = () => {
-    this.setState({ hovered: null })
+    this.setState({ hovered: null, showTooltip: false })
+  }
+
+  handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    this.setState({ mouseX: event.clientX, mouseY: event.clientY })
+  }
+
+  handleHover = (deployments: Deployment[]) => (x: number, y: number) => {
+    const { deploymentsByCoord } = this.props
+    const deployment = deploymentsByCoord[coordsToId(x, y)]
+    if (deployment && deployments.some(_deployment => _deployment.id === deployment.id)) {
+      this.setState({ hovered: deployment, showTooltip: true })
+    } else {
+      this.setState({ hovered: null, showTooltip: false })
+    }
+  }
+
+  handleClick = (x: number, y: number) => {
+    const { deploymentsByCoord, projects, onNavigate, landTiles } = this.props
+    const id = coordsToId(x, y)
+    const deployment = deploymentsByCoord[id]
+    if (deployment && deployment.projectId && deployment.projectId in projects) {
+      onNavigate(locations.sceneDetail(deployment.projectId))
+    } else if (id in landTiles) {
+      onNavigate(locations.landDetail(landTiles[id].land.id))
+    }
   }
 
   isHovered = (x: number, y: number) => {
@@ -30,22 +68,35 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     const { hovered } = this.state
     const id = coordsToId(x, y)
     const deployment = deploymentsByCoord[id]
-    return !!deployment && hovered === deployment.id
+
+    return !!deployment && !!hovered && hovered.id === deployment.id
   }
 
-  hoverLayer: Layer = (x, y) => {
-    return this.isHovered(x, y) ? { color: '#ffffff', scale: 1.2 } : null
+  hoverStrokeLayer = (land: Land): Layer => (x, y) => {
+    return this.isHovered(x, y) ? { color: STROKE_COLOR[land.role], scale: 1.4 } : null
+  }
+
+  hoverFillLayer = (land: Land): Layer => (x, y) => {
+    return this.isHovered(x, y) ? { color: FILL_COLOR[land.role], scale: 1.2 } : null
   }
 
   renderDetail(land: Land, deployments: Deployment[]) {
     const { onNavigate, onOpenModal, parcelsAvailableToBuildEstates, projects } = this.props
+    const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = deployments.reduce((total, deployment) => total + deployment.parcels.length, 0)
     const selection = getSelection(land)
     const [x, y] = getCenter(selection)
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
+    const isAtlasClickable = showTooltip && hovered && hovered.projectId && hovered.projectId in projects
 
     return (
       <>
+        {hovered && showTooltip ? (
+          <div className="tooltip" style={{ top: mouseY, left: mouseX }}>
+            {hovered.thumbnail ? <div className="thumbnail" style={{ backgroundImage: `url(${hovered.thumbnail})` }} /> : null}
+            <div className="name">{hovered.name}</div>
+          </div>
+        ) : null}
         <Section>
           <Row>
             <Back absolute onClick={() => onNavigate(locations.land())} />
@@ -124,8 +175,19 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
         </Section>
         <Narrow>
           <Section>
-            <div className="atlas-wrapper">
-              <Atlas landId={land.id} layers={[this.hoverLayer]} isDraggable={false}></Atlas>
+            <div
+              className={`atlas-wrapper ${isAtlasClickable ? 'clickable' : ''}`}
+              onMouseLeave={this.handleMouseLeave}
+              onMouseMove={this.handleMouseMove}
+            >
+              <Atlas
+                landId={land.id}
+                layers={[this.hoverStrokeLayer(land), this.hoverFillLayer(land)]}
+                isDraggable
+                zoom={land.size && land.size >= 1000 ? 0.5 : 1}
+                onHover={this.handleHover(deployments)}
+                onClick={this.handleClick}
+              ></Atlas>
             </div>
           </Section>
           <Section className={land.description ? '' : 'no-margin-bottom'}>

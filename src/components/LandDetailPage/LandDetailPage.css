@@ -4,6 +4,12 @@
   border-radius: 8px;
 }
 
+.LandDetailPage .atlas-wrapper.clickable,
+.LandDetailPage .atlas-wrapper.clickable .dcl.atlas .react-tile-map-canvas:not(.draggable),
+.LandDetailPage .atlas-wrapper.clickable .dcl.atlas .react-tile-map-canvas.draggable {
+  cursor: pointer;
+}
+
 .LandDetailPage .jump-in {
   background-color: var(--primary);
   background-image: url(../../images/jump-in.svg);
@@ -49,4 +55,32 @@
 .LandDetailPage .deployments {
   max-height: 243px;
   overflow: auto;
+}
+
+.LandDetailPage .tooltip {
+  position: fixed;
+  z-index: 999;
+  pointer-events: none;
+  background: var(--card);
+  color: var(--text);
+  margin-left: 20px;
+  margin-top: -16px;
+  padding: 8px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.LandDetailPage .tooltip .thumbnail {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+}
+
+.LandDetailPage .tooltip .name {
+  font-weight: 600;
+  padding: 0px 4px;
 }

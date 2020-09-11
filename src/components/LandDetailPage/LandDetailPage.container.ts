@@ -4,12 +4,13 @@ import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './LandDetailPage.types'
 import LandDetailPage from './LandDetailPage'
 import { openModal } from 'modules/modal/actions'
-import { getParcelsAvailableToBuildEstates, getDeploymentsByCoord } from 'modules/land/selectors'
+import { getParcelsAvailableToBuildEstates, getDeploymentsByCoord, getLandTiles } from 'modules/land/selectors'
 import { getData as getProjects } from 'modules/project/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   parcelsAvailableToBuildEstates: getParcelsAvailableToBuildEstates(state),
   deploymentsByCoord: getDeploymentsByCoord(state),
+  landTiles: getLandTiles(state),
   projects: getProjects(state)
 })
 

@@ -24,7 +24,9 @@ export default class Scene extends React.PureComponent<Props> {
           <div className="no-thumbnail" />
         )}
         <div className="stat">
-          <div className="title">{deployment.name}</div>
+          <div className="title" title={deployment.name}>
+            {deployment.name}
+          </div>
           {deployment.layout ? (
             <div className="secondary-text">
               {deployment.layout.rows}x{deployment.layout.cols}
