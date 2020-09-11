@@ -47,6 +47,7 @@ import { getEmptyDeployment } from './utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
 import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
+import { getCoordsByEstateId } from 'modules/land/selectors'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -257,8 +258,9 @@ function* handleFetchLandsSuccess(action: FetchLandsSuccessAction) {
         break
       }
       case LandType.ESTATE: {
-        for (const parcel of land.parcels!) {
-          coords.push(coordsToId(parcel.x, parcel.y))
+        const coordsByEstateId = yield select(getCoordsByEstateId)
+        for (const coord of coordsByEstateId[land.id]) {
+          coords.push(coord)
         }
       }
     }
