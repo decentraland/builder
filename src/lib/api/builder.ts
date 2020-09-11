@@ -14,7 +14,7 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity, WearableData, WearableCategory, WearableBodyShape } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
