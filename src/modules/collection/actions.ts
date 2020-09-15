@@ -56,7 +56,7 @@ export const publishCollectionSuccess = (collection: Collection, items: Item[], 
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,
     items,
-    ...buildTransactionPayload(txHash, { collection })
+    ...buildTransactionPayload(txHash, { collection, items })
   })
 export const publishCollectionFailure = (collection: Collection, items: Item[], error: string) =>
   action(PUBLISH_COLLECTION_FAILURE, { collection, items, error })

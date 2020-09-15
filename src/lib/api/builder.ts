@@ -14,7 +14,7 @@ import { migrations } from 'modules/migrations/manifest'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData, WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
@@ -34,6 +34,8 @@ export type RemoteItem = {
   price?: string
   beneficiary?: string
   rarity?: ItemRarity
+  total_supply: number
+  is_published: boolean
   type: ItemType
   data: WearableData
   metrics: ModelMetrics
@@ -243,6 +245,8 @@ function toRemoteItem(item: Item): RemoteItem {
     description: item.description || '',
     thumbnail: item.thumbnail,
     eth_address: item.owner,
+    total_supply: item.totalSupply,
+    is_published: item.isPublished,
     type: item.type,
     data: item.data,
     metrics: item.metrics,
@@ -267,6 +271,8 @@ function fromRemoteItem(remoteItem: RemoteItem): Item {
     thumbnail: remoteItem.thumbnail,
     owner: remoteItem.eth_address,
     description: remoteItem.description,
+    totalSupply: remoteItem.total_supply,
+    isPublished: remoteItem.is_published,
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
@@ -501,7 +507,107 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchItems() {
     const remoteItems = await this.request('get', `/items`)
-    return remoteItems.map(fromRemoteItem)
+    // return remoteItems.map(fromRemoteItem)
+    return [
+      ...remoteItems.map(fromRemoteItem),
+
+      {
+        id: 'item-1',
+        name: 'Launch t-shirt',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/dcl_launch/wearables/launch_tshirt_upper_body/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.LEGENDARY,
+        collectionId: 'dummy-collection2',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        totalSupply: 10,
+        beneficiary: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        price: 1000,
+        isPublished: true,
+        data: {
+          category: WearableCategory.HAT,
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      },
+      {
+        id: 'item-2',
+        name: 'Western Hat',
+        thumbnail: 'https://wearable-api.decentraland.org/v2/collections/community_contest/wearables/cw_western_hat/thumbnail',
+        type: ItemType.WEARABLE,
+        rarity: ItemRarity.RARE,
+        collectionId: 'dummy-collection2',
+        metrics: {
+          meshes: 0,
+          bodies: 0,
+          materials: 0,
+          textures: 0,
+          triangles: 0,
+          entities: 0
+        },
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        contents: {
+          'thumbnail.png': 'Qmthumb',
+          'model.gltf': 'Qmmodel',
+          'texture.png': 'Qmtext'
+        },
+        totalSupply: 4,
+        beneficiary: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        price: 200,
+        isPublished: true,
+        data: {
+          category: WearableCategory.HAT,
+          representations: [
+            {
+              bodyShape: [WearableBodyShape.MALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            },
+            {
+              bodyShape: [WearableBodyShape.FEMALE],
+              mainFile: 'model.gltf',
+              contents: ['thumbnail.png', 'model.gltf', 'texture.png'],
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ],
+          replaces: [],
+          hides: [],
+          tags: []
+        }
+      }
+    ] as Item[]
   }
 
   async saveItem(item: Item, contents: Record<string, Blob>) {
@@ -521,7 +627,21 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections() {
     const remoteCollections = await this.request('get', `/collections`)
-    return remoteCollections.map(fromRemoteCollection)
+    // return remoteCollections.map(fromRemoteCollection)
+    return [
+      ...remoteCollections.map(fromRemoteCollection),
+
+      {
+        id: 'dummy-collection2',
+        name: 'Winter Hats',
+        contractAddress: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+        salt: '0x57995df61c7b8e77180cc9f4d82cef2af319e4cd314c1d8a0166d977f5e07d4e',
+        owner: '0x66788f71bf33ecbd263a57e5f371ccdcaffc519e',
+        isPublished: true,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }
+    ] as Collection[]
   }
 
   async saveCollection(collection: Collection) {

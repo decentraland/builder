@@ -1,0 +1,15 @@
+.MintItemsModal .add-item {
+  margin-top: 24px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.MintItemsModal .actions {
+  margin-top: 150px;
+  width: 100%;
+  text-align: right;
+}
+
+.MintItemsModal .actions .ui.button {
+  padding: 10px 70px;
+}

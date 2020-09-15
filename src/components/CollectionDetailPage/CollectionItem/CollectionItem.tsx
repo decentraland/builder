@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isEditable } from 'modules/item/utils'
-import { WearableData } from 'modules/item/types'
+import { WearableData, RARITY_MAX_SUPPLY } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemCard/ItemImage'
@@ -19,6 +19,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
   }
 
+  handleMintItem = () => {
+    const { onOpenModal, item } = this.props
+    onOpenModal('MintItemsModal', { itemIds: [item.id] })
+  }
+
   handleNavigateToEditor = () => {
     const { onNavigate, item } = this.props
     onNavigate(locations.itemEditor(item.id))
@@ -27,6 +32,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
   handleDeleteItem = () => {
     const { item, onDelete } = this.props
     onDelete(item!)
+  }
+
+  hasActions() {
+    const { item } = this.props
+    return item.isPublished || isComplete(item) || isEditable(item)
   }
 
   renderPrice() {
@@ -82,37 +92,56 @@ export default class CollectionItem extends React.PureComponent<Props> {
             </Grid.Column>
             <Grid.Column>{this.renderPrice()}</Grid.Column>
             <Grid.Column>
+              {item.isPublished ? (
+                <>
+                  <div>
+                    {item.totalSupply}/{RARITY_MAX_SUPPLY[item.rarity!]}
+                  </div>
+                  <div className="subtitle">{t('item.supply')}</div>
+                </>
+              ) : null}
+            </Grid.Column>
+            <Grid.Column>
               <div className="item-actions">
-                {isComplete(item) ? (
+                {item.isPublished ? (
+                  <span onClick={preventDefault(this.handleMintItem)} className="link action">
+                    {t('collection_item.mint_item')}
+                  </span>
+                ) : isComplete(item) ? (
                   <div className="done">
                     {t('collection_item.done')} <Icon name="check" />
                   </div>
                 ) : isEditable(item) ? (
-                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item action">
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link action">
                     {t('collection_item.edit_item')}
                   </span>
                 ) : null}
-                {isComplete(item) || isEditable(item) ? (
-                  <Dropdown
-                    trigger={
-                      <Button basic>
-                        <Icon name="ellipsis horizontal" />
-                      </Button>
-                    }
-                    inline
-                    direction="left"
-                    className="action"
-                    onClick={preventDefault()}
-                  >
-                    <Dropdown.Menu>
+                <Dropdown
+                  trigger={
+                    <Button basic>
+                      <Icon name="ellipsis horizontal" />
+                    </Button>
+                  }
+                  inline
+                  direction="left"
+                  className="action"
+                  onClick={preventDefault()}
+                >
+                  <Dropdown.Menu>
+                    {item.isPublished ? (
+                      <>
+                        <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
+                        <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
+                      </>
+                    ) : (
                       <ConfirmDelete
                         name={item.name}
                         onDelete={this.handleDeleteItem}
                         trigger={<Dropdown.Item text={t('global.delete')} />}
                       />
-                    </Dropdown.Menu>
-                  </Dropdown>
-                ) : null}
+                    )}
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             </Grid.Column>
           </Grid.Row>

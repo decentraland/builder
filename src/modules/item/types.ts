@@ -71,6 +71,16 @@ export const RARITY_COLOR: Record<ItemRarity, string> = {
   [ItemRarity.COMMON]: '#ABC1C1'
 }
 
+export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
+  [ItemRarity.UNIQUE]: 1,
+  [ItemRarity.MYTHIC]: 10,
+  [ItemRarity.LEGENDARY]: 100,
+  [ItemRarity.EPIC]: 1000,
+  [ItemRarity.RARE]: 5000,
+  [ItemRarity.UNCOMMON]: 10000,
+  [ItemRarity.COMMON]: 100000
+}
+
 export type Item = {
   id: string // uuid
   name: string
@@ -82,6 +92,8 @@ export type Item = {
   price?: number
   beneficiary?: string
   rarity?: ItemRarity
+  totalSupply: number
+  isPublished: boolean
   type: ItemType
   data: WearableData
   contents: Record<string, string>

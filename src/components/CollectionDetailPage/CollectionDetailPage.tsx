@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon } from 'decentraland-ui'
+import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -18,6 +18,13 @@ import './CollectionDetailPage.css'
 const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
+  handleMintItems = () => {
+    const { items, onOpenModal } = this.props
+    onOpenModal('MintItemsModal', {
+      itemIds: items.map(item => item.id)
+    })
+  }
+
   handleNewItem = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('CreateItemModal', { collectionId: collection!.id })
@@ -31,6 +38,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   handlePublish = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('PublishCollectionModal', { collectionId: collection!.id })
+  }
+
+  handleOnSaleChange = (_event: React.FormEvent<HTMLInputElement>, props: CheckboxProps) => {
+    console.log('Change', props.checked)
   }
 
   canPublish() {
@@ -61,9 +72,38 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right">
                   <Row className="actions">
-                    <Button basic className="new-item" onClick={this.handleNewItem}>
-                      <Icon name="plus" /> {t('collection_detail_page.new_item')}
-                    </Button>
+                    {collection.isPublished ? (
+                      <>
+                        <Popup
+                          content={t('collection_detail_page.on_sale_popup')}
+                          position="top center"
+                          trigger={
+                            <Radio
+                              toggle
+                              className="on-sale"
+                              checked={false}
+                              onChange={this.handleOnSaleChange}
+                              label={t('collection_detail_page.on_sale')}
+                            />
+                          }
+                          hideOnScroll={true}
+                          on="hover"
+                          inverted
+                          flowing
+                        />
+
+                        <Button basic className="action-button" onClick={this.handleMintItems}>
+                          <Icon name="paper plane" />
+                          <span>{t('collection_detail_page.mint_items')}</span>
+                        </Button>
+                      </>
+                    ) : (
+                      <Button basic className="action-button" onClick={this.handleNewItem}>
+                        <Icon name="plus" />
+                        <span>{t('collection_detail_page.new_item')}</span>
+                      </Button>
+                    )}
+
                     <Dropdown
                       trigger={
                         <Button basic>
@@ -74,17 +114,29 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                       direction="left"
                     >
                       <Dropdown.Menu>
-                        <ConfirmDelete
-                          name={collection.name}
-                          onDelete={this.handleDeleteItem}
-                          trigger={<Dropdown.Item text={t('global.delete')} />}
-                        />
+                        {collection.isPublished ? (
+                          <>
+                            <Dropdown.Item text={t('collection_detail_page.collaborators')} />
+                          </>
+                        ) : (
+                          <ConfirmDelete
+                            name={collection.name}
+                            onDelete={this.handleDeleteItem}
+                            trigger={<Dropdown.Item text={t('global.delete')} />}
+                          />
+                        )}
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    <Button primary compact disabled={!this.canPublish()} onClick={this.handlePublish}>
-                      {t('collection_detail_page.publish')}
-                    </Button>
+                    {collection.isPublished ? (
+                      <Button secondary compact disabled={true}>
+                        {t('collection_detail_page.published')}
+                      </Button>
+                    ) : (
+                      <Button primary compact disabled={!this.canPublish()} onClick={this.handlePublish}>
+                        {t('collection_detail_page.publish')}
+                      </Button>
+                    )}
                   </Row>
                 </Column>
               </Row>

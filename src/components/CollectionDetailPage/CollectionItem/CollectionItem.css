@@ -11,6 +11,7 @@
 
 .CollectionItem .ui.grid > .row {
   align-items: center;
+  font-size: 15px;
 }
 
 .CollectionItem .ui.grid > .row > .column.avatar-column {
@@ -62,10 +63,7 @@
 
 .CollectionItem .ui.grid:hover .item-actions .action {
   display: inherit;
-}
-
-.CollectionItem .edit-item {
-  margin-right: 15px;
+  margin-left: 15px;
 }
 
 .CollectionItem .done {

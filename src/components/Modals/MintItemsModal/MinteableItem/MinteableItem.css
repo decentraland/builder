@@ -1,0 +1,59 @@
+.MinteableItem {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: rgba(22, 20, 26, 0.48);
+  border-radius: 8px;
+}
+
+.MinteableItem .item-header {
+  display: flex;
+  align-items: center;
+}
+
+.MinteableItem .ItemImage {
+  width: 36px;
+  height: 36px;
+}
+
+.MinteableItem .ItemImage,
+.MinteableItem .stock {
+  margin-right: 16px;
+}
+
+.MinteableItem .form {
+  margin-top: 16px;
+}
+
+.MinteableItem .holder {
+  display: flex;
+}
+
+.MinteableItem .holder .dcl.field.address {
+  flex: 1 1 auto;
+  margin-right: 10px;
+}
+
+.MinteableItem .holder .dcl.field,
+.MinteableItem .holder.dcl.section:last-child {
+  margin-bottom: 0;
+}
+
+.MinteableItem .holder .dcl.field {
+  min-width: 128px;
+}
+
+.ui.form .dcl.field .ui.input.rounded > input {
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  font-size: 15px;
+  padding-bottom: 5px;
+  padding-left: 1em;
+}
+
+.ui.form .dcl.field .ui.input.rounded > input:focus {
+  border: 1px solid var(--light-gray);
+}
+
+.ui.form .dcl.field .message {
+  display: none;
+}

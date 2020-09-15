@@ -1,5 +1,8 @@
 import { Item } from './types'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+
+import { PUBLISH_COLLECTION_SUCCESS } from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
   FetchItemsSuccessAction,
@@ -43,6 +46,7 @@ type ItemReducerAction =
   | DeleteItemRequestAction
   | DeleteItemSuccessAction
   | DeleteItemFailureAction
+  | FetchTransactionSuccessAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
@@ -121,6 +125,30 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case FETCH_TRANSACTION_SUCCESS: {
+      const transaction = action.payload.transaction
+
+      switch (transaction.actionType) {
+        case PUBLISH_COLLECTION_SUCCESS: {
+          const items: Item[] = transaction.payload.items
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              ...items.reduce(
+                (accum, item) => ({
+                  ...accum,
+                  [item.id]: { ...item, isPublished: true }
+                }),
+                {}
+              )
+            }
+          }
+        }
+        default:
+          return state
       }
     }
     default:

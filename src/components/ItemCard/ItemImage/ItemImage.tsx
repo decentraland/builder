@@ -20,7 +20,7 @@ export default class ItemImage extends React.PureComponent<Props> {
 
     return (
       <div className="ItemImage image-wrapper" style={style}>
-        <img className="image" src={getContentsStorageUrl(item.contents[item.thumbnail])} alt={item.name} />
+        <img className="image" src={item.thumbnail || getContentsStorageUrl(item.contents[item.thumbnail])} alt={item.name} />
         {hasBadge ? <ItemBadge item={item}></ItemBadge> : null}
       </div>
     )

@@ -43,3 +43,17 @@ export const deleteItemFailure = (item: Item, error: string) => action(DELETE_IT
 export type DeleteItemRequestAction = ReturnType<typeof deleteItemRequest>
 export type DeleteItemSuccessAction = ReturnType<typeof deleteItemSuccess>
 export type DeleteItemFailureAction = ReturnType<typeof deleteItemFailure>
+
+// Mint items
+
+export const MINT_ITEMS_REQUEST = '[Request] Mint Item'
+export const MINT_ITEMS_SUCCESS = '[Success] Mint Item'
+export const MINT_ITEMS_FAILURE = '[Failure] Mint Item'
+
+export const mintItemsRequest = (items: Item[]) => action(MINT_ITEMS_REQUEST, { items })
+export const mintItemsSuccess = (items: Item[]) => action(MINT_ITEMS_SUCCESS, { items })
+export const mintItemsFailure = (items: Item[], error: string) => action(MINT_ITEMS_FAILURE, { items, error })
+
+export type MintItemsRequestAction = ReturnType<typeof mintItemsRequest>
+export type MintItemsSuccessAction = ReturnType<typeof mintItemsSuccess>
+export type MintItemsFailureAction = ReturnType<typeof mintItemsFailure>
