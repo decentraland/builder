@@ -672,7 +672,8 @@
     "edit_estate_add": "您在{name}中添加了{count}土地。",
     "edit_estate_remove": "您从{name}中删除了{count}土地。",
     "set_manager_assigned": "您已将{地址}分配、为所有{type}的运算符。",
-    "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。"
+    "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。",
+    "collection_published": "发布了收藏集{name}"
   },
   "transfer_page": {
     "title": "转移",
@@ -779,5 +780,15 @@
   },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"
-  }
+  },
+  "publish_collection_modal": {
+    "title":"发布收藏",
+    "first_paragraph":"您将要发布您的收藏集，请注意以下几点：",
+    "second_paragraph":"发布收藏集后，您将无法添加或删除项目",
+    "third_paragraph":"您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
+    "publish":"发布"
+ },
+ "collection_image": {
+   "no_items":"没有项目"
+ }
 }

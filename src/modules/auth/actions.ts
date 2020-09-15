@@ -27,6 +27,8 @@ export type AuthRequestLegacyAction = ReturnType<typeof authRequestLegacy>
 export type AuthSuccessLegacyAction = ReturnType<typeof authSuccessLegacy>
 export type AuthFailureLegacyAction = ReturnType<typeof authFailureLegacy>
 
+// Migrate
+
 export const MIGRATION_REQUEST = '[Request] Migrate Auth0'
 export const MIGRATION_SUCCESS = '[Success] Migrate Auth0'
 export const MIGRATION_FAILURE = '[Failure] Migrate Auth0'

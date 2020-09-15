@@ -57,7 +57,6 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
 
   try {
     const eth = Eth.fromCurrentProvider()
-
     if (!eth) {
       throw new Error('Wallet not found')
     }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, ModalContent, ModalActions, ModalHeader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { MAX_PARCELS_PER_TX } from 'modules/land/utils'
 import { Props } from './DissolveModal.types'
@@ -21,7 +21,7 @@ export default class DissolveModal extends React.PureComponent<Props, {}> {
 
     return (
       <Modal name={name} onClose={onClose}>
-        <ModalHeader>Dissole Estate</ModalHeader>
+        <ModalHeader>{t('dissolve_modal.title')}</ModalHeader>
         <ModalContent>
           {isTooBig ? (
             <T id="dissolve_modal.too_big" values={{ max: MAX_PARCELS_PER_TX }} />
@@ -31,9 +31,9 @@ export default class DissolveModal extends React.PureComponent<Props, {}> {
         </ModalContent>
         <ModalActions>
           <Button primary onClick={this.handleConfirm} disabled={isTooBig}>
-            Confirm
+            {t('global.confirm')}
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{t('global.cancel')}</Button>
         </ModalActions>
       </Modal>
     )

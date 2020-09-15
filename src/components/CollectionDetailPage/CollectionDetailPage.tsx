@@ -28,6 +28,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     onDelete(collection!)
   }
 
+  handlePublish = () => {
+    const { collection, onOpenModal } = this.props
+    onOpenModal('PublishCollectionModal', { collectionId: collection!.id })
+  }
+
   canPublish() {
     const { items } = this.props
     return this.hasItems() && items.every(isComplete)
@@ -77,7 +82,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    <Button primary compact disabled={!this.canPublish()} onClick={() => console.log('Publish collection')}>
+                    <Button primary compact disabled={!this.canPublish()} onClick={this.handlePublish}>
                       {t('collection_detail_page.publish')}
                     </Button>
                   </Row>
