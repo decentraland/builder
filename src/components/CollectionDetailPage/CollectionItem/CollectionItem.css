@@ -51,12 +51,17 @@
 }
 
 .CollectionItem .item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.CollectionItem .ui.grid .item-actions .action {
   display: none;
 }
 
-.CollectionItem .ui.grid:hover .item-actions {
-  display: flex;
-  align-items: center;
+.CollectionItem .ui.grid:hover .item-actions .action {
+  display: inherit;
 }
 
 .CollectionItem .edit-item {

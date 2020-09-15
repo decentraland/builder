@@ -88,7 +88,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     {t('collection_item.done')} <Icon name="check" />
                   </div>
                 ) : isEditable(item) ? (
-                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item">
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item action">
                     {t('collection_item.edit_item')}
                   </span>
                 ) : null}
@@ -101,6 +101,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     }
                     inline
                     direction="left"
+                    className="action"
                     onClick={preventDefault()}
                   >
                     <Dropdown.Menu>

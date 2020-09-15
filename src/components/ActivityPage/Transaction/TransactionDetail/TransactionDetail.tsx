@@ -6,9 +6,10 @@ import { TransactionStatus, Transaction } from 'decentraland-dapps/dist/modules/
 import { formatDistanceToNow } from 'lib/date'
 import { coordsToId, getCenter } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
+import CollectionImage from 'components/CollectionCard/CollectionImage'
+import Profile from 'components/Profile'
 import { Props } from './TransactionDetail.types'
 import './TransactionDetail.css'
-import Profile from 'components/Profile'
 
 const getHref = (tx: Transaction) => {
   if (tx.status === null) {
@@ -17,21 +18,33 @@ const getHref = (tx: Transaction) => {
   return getEtherscanHref({ txHash: tx.replacedBy || tx.hash })
 }
 
+const Image = (props: Props) => {
+  const { selection, address, collection } = props
+
+  if (selection) {
+    const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
+    const selectedStrokeLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff0044', scale: 1.4 } : null), [set])
+    const selectedFillLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff9990', scale: 1.2 } : null), [set])
+    const [x, y] = useMemo(() => (selection ? getCenter(selection) : [0, 0]), [selection])
+
+    return <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
+  } else if (address) {
+    return <Profile address={address!} size="huge" imageOnly />
+  } else if (collection) {
+    return <CollectionImage collection={collection} />
+  } else {
+    return null
+  }
+}
+
 const TransactionDetail = (props: Props) => {
-  const { selection, address, text, tx } = props
-  const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
-  const selectedStrokeLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff0044', scale: 1.4 } : null), [set])
-  const selectedFillLayer: Layer = useCallback((x, y) => (set.has(coordsToId(x, y)) ? { color: '#ff9990', scale: 1.2 } : null), [set])
-  const [x, y] = useMemo(() => (selection ? getCenter(selection) : [0, 0]), [selection])
+  const { text, tx } = props
+
   return (
     <div className="TransactionDetail">
       <div className="left">
         <div className="image">
-          {selection ? (
-            <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
-          ) : (
-            <Profile address={address!} size="huge" imageOnly />
-          )}
+          <Image {...props} />
         </div>
         <div className="text">
           <div className="description">{text}</div>

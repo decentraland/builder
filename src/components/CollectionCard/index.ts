@@ -1,3 +1,3 @@
-import CollectionCard from './CollectionCard.container'
+import CollectionCard from './CollectionCard'
 
 export default CollectionCard

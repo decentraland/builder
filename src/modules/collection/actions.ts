@@ -1,5 +1,9 @@
-import { Collection } from './types'
 import { action } from 'typesafe-actions'
+import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { Item } from 'modules/item/types'
+import { Collection } from './types'
+
+// Fetch collections
 
 export const FETCH_COLLECTIONS_REQUEST = '[Request] Fetch Collections'
 export const FETCH_COLLECTIONS_SUCCESS = '[Success] Fetch Collections'
@@ -13,6 +17,8 @@ export type FetchCollectionsRequestAction = ReturnType<typeof fetchCollectionsRe
 export type FetchCollectionsSuccessAction = ReturnType<typeof fetchCollectionsSuccess>
 export type FetchCollectionsFailureAction = ReturnType<typeof fetchCollectionsFailure>
 
+// Save collection
+
 export const SAVE_COLLECTION_REQUEST = '[Request] Save Collection'
 export const SAVE_COLLECTION_SUCCESS = '[Success] Save Collection'
 export const SAVE_COLLECTION_FAILURE = '[Failure] Save Collection'
@@ -25,6 +31,8 @@ export type SaveCollectionRequestAction = ReturnType<typeof saveCollectionReques
 export type SaveCollectionSuccessAction = ReturnType<typeof saveCollectionSuccess>
 export type SaveCollectionFailureAction = ReturnType<typeof saveCollectionFailure>
 
+// Delete collection
+
 export const DELETE_COLLECTION_REQUEST = '[Request] Delete Collection'
 export const DELETE_COLLECTION_SUCCESS = '[Success] Delete Collection'
 export const DELETE_COLLECTION_FAILURE = '[Failure] Delete Collection'
@@ -36,3 +44,23 @@ export const deleteCollectionFailure = (collection: Collection, error: string) =
 export type DeleteCollectionRequestAction = ReturnType<typeof deleteCollectionRequest>
 export type DeleteCollectionSuccessAction = ReturnType<typeof deleteCollectionSuccess>
 export type DeleteCollectionFailureAction = ReturnType<typeof deleteCollectionFailure>
+
+// Publish collection
+
+export const PUBLISH_COLLECTION_REQUEST = '[Request] Publish Collection'
+export const PUBLISH_COLLECTION_SUCCESS = '[Success] Publish Collection'
+export const PUBLISH_COLLECTION_FAILURE = '[Failure] Publish Collection'
+
+export const publishCollectionRequest = (collection: Collection, items: Item[]) => action(PUBLISH_COLLECTION_REQUEST, { collection, items })
+export const publishCollectionSuccess = (collection: Collection, items: Item[], txHash: string) =>
+  action(PUBLISH_COLLECTION_SUCCESS, {
+    collection,
+    items,
+    ...buildTransactionPayload(txHash, { collection })
+  })
+export const publishCollectionFailure = (collection: Collection, items: Item[], error: string) =>
+  action(PUBLISH_COLLECTION_FAILURE, { collection, items, error })
+
+export type PublishCollectionRequestAction = ReturnType<typeof publishCollectionRequest>
+export type PublishCollectionSuccessAction = ReturnType<typeof publishCollectionSuccess>
+export type PublishCollectionFailureAction = ReturnType<typeof publishCollectionFailure>

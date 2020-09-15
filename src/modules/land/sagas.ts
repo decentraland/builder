@@ -1,4 +1,12 @@
 import { Eth } from 'web3x-es/eth'
+import { Address } from 'web3x-es/address'
+import {
+  CONNECT_WALLET_SUCCESS,
+  CHANGE_ACCOUNT,
+  ConnectWalletSuccessAction,
+  ChangeAccountAction
+} from 'decentraland-dapps/dist/modules/wallet/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
 import {
   FETCH_LANDS_REQUEST,
@@ -35,23 +43,15 @@ import {
   setUpdateManagerSuccess,
   setUpdateManagerFailure
 } from './actions'
-import { Land, LandType, Authorization } from './types'
 import { manager } from 'lib/api/manager'
 import { LANDRegistry } from 'contracts/LANDRegistry'
-import {
-  CONNECT_WALLET_SUCCESS,
-  CHANGE_ACCOUNT,
-  ConnectWalletSuccessAction,
-  ChangeAccountAction
-} from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Address } from 'web3x-es/address'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { EstateRegistry } from 'contracts/EstateRegistry'
-import { splitCoords, buildMetadata } from './utils'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
+import { splitCoords, buildMetadata } from './utils'
+import { Land, LandType, Authorization } from './types'
 
 export function* landSaga() {
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
