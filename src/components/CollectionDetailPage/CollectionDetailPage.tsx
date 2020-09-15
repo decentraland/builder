@@ -75,7 +75,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     >
                       <Dropdown.Menu>
                         <Dropdown.Item
-                          text="Add Existing Item"
+                          text={t('collection_detail_page.add_existing_item')}
                           onClick={() => onOpenModal('AddExistingItemModal', { collectionId: collection!.id })}
                         />
                         <ConfirmDelete
