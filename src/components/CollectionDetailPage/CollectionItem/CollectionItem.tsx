@@ -8,7 +8,6 @@ import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isEditable } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
-import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemCard/ItemImage'
 import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
@@ -22,11 +21,6 @@ export default class CollectionItem extends React.PureComponent<Props> {
   handleNavigateToEditor = () => {
     const { onNavigate, item } = this.props
     onNavigate(locations.itemEditor(item.id))
-  }
-
-  handleDeleteItem = () => {
-    const { item, onDelete } = this.props
-    onDelete(item!)
   }
 
   handleRemoveFromCollection = () => {
@@ -93,7 +87,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     {t('collection_item.done')} <Icon name="check" />
                   </div>
                 ) : isEditable(item) ? (
-                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item">
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item action">
                     {t('collection_item.edit_item')}
                   </span>
                 ) : null}
@@ -106,15 +100,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     }
                     inline
                     direction="left"
+                    className="action"
                     onClick={preventDefault()}
                   >
                     <Dropdown.Menu>
                       <Dropdown.Item text="Remove from collection" onClick={this.handleRemoveFromCollection} />
-                      <ConfirmDelete
-                        name={item.name}
-                        onDelete={this.handleDeleteItem}
-                        trigger={<Dropdown.Item text={t('global.delete')} />}
-                      />
                     </Dropdown.Menu>
                   </Dropdown>
                 ) : null}

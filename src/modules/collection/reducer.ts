@@ -1,5 +1,7 @@
 import { Collection } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -18,7 +20,8 @@ import {
   SAVE_COLLECTION_SUCCESS,
   DELETE_COLLECTION_REQUEST,
   DELETE_COLLECTION_FAILURE,
-  DELETE_COLLECTION_SUCCESS
+  DELETE_COLLECTION_SUCCESS,
+  PUBLISH_COLLECTION_SUCCESS
 } from './actions'
 
 export type CollectionState = {
@@ -43,6 +46,7 @@ type CollectionReducerAction =
   | DeleteCollectionRequestAction
   | DeleteCollectionSuccessAction
   | DeleteCollectionFailureAction
+  | FetchTransactionSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -123,7 +127,26 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         error: action.payload.error
       }
     }
+    case FETCH_TRANSACTION_SUCCESS: {
+      const transaction = action.payload.transaction
 
+      switch (transaction.actionType) {
+        case PUBLISH_COLLECTION_SUCCESS: {
+          const { collection } = transaction.payload
+          return {
+            ...state,
+            data: {
+              [collection.id]: {
+                ...state.data[collection.id],
+                isPublished: true
+              }
+            }
+          }
+        }
+        default:
+          return state
+      }
+    }
     default:
       return state
   }

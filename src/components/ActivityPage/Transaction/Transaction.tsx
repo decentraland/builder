@@ -9,6 +9,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
+import { PUBLISH_COLLECTION_SUCCESS } from 'modules/collection/actions'
 import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
 import { Props } from './Transaction.types'
@@ -138,6 +139,10 @@ const Transaction = (props: Props) => {
           tx={tx}
         />
       )
+    }
+    case PUBLISH_COLLECTION_SUCCESS: {
+      const { collection } = tx.payload
+      return <TransactionDetail collection={collection} text={t('transaction.collection_published', { name: collection.name })} tx={tx} />
     }
     default:
       return null

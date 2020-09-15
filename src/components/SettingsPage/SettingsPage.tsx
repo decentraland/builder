@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { env } from 'decentraland-commons'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Grid,
@@ -25,7 +26,7 @@ import { LandType } from 'modules/land/types'
 import { Props, State } from './SettingsPage.types'
 import './SettingsPage.css'
 
-const BUY_MANA_URL = process.env.REACT_APP_BUY_MANA_URL
+const BUY_MANA_URL = env.get('REACT_APP_BUY_MANA_URL', '')
 
 export default class SettingsPage extends React.PureComponent<Props, State> {
   timeoutId: NodeJS.Timer | null = null
