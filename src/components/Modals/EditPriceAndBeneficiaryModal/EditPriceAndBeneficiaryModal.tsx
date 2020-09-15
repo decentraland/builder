@@ -10,13 +10,21 @@ import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {}
 
-  componentWillReceiveProps(nextProps: Props) {
-    const { item, isLoading, onClose } = nextProps
+  constructor(props: Props) {
+    super(props)
+
+    const { item } = this.props
+    if (item) {
+      this.state = { price: item.price, beneficiary: item.beneficiary }
+    }
+  }
+
+  componentDidUpdate() {
+    const { item, isLoading, onClose } = this.props
 
     if (item) {
       this.setState({ price: item.price, beneficiary: item.beneficiary })
-    }
-    if (!isLoading && !item) {
+    } else if (!isLoading) {
       onClose()
     }
   }

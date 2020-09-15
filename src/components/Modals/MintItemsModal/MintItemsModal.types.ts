@@ -17,3 +17,4 @@ export type CreateItemModalMetadata = {
 export type MapStateProps = Pick<Props, 'items' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch<MintItemsRequestAction>
+export type OwnProps = Pick<Props, 'metadata'>

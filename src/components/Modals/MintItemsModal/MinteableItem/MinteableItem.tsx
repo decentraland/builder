@@ -5,15 +5,15 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { isValid } from 'lib/address'
 import ItemImage from 'components/ItemCard/ItemImage'
 import { RARITY_MAX_SUPPLY } from 'modules/item/types'
-import { Props, State, Holder } from './MinteableItem.types'
+import { Props, State, Beneficiary } from './MinteableItem.types'
 import './MinteableItem.css'
 
 export default class MinteableItem extends React.PureComponent<Props, State> {
   state: State = {
-    holders: [this.buildEmptyHolder()]
+    beneficiaries: [this.buildEmptyHolder()]
   }
 
-  buildEmptyHolder(): Holder {
+  buildEmptyHolder(): Beneficiary {
     return {
       address: undefined,
       amount: undefined
@@ -21,8 +21,8 @@ export default class MinteableItem extends React.PureComponent<Props, State> {
   }
 
   handleAddNewHolder = () => {
-    const holders = [...this.state.holders, this.buildEmptyHolder()]
-    this.setState({ holders })
+    const beneficiaries = [...this.state.beneficiaries, this.buildEmptyHolder()]
+    this.setState({ beneficiaries })
   }
 
   handleMint = () => {
@@ -31,21 +31,21 @@ export default class MinteableItem extends React.PureComponent<Props, State> {
 
   getChangeAddressHandler(index: number) {
     return (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      const { holders } = this.state
-      const holder = holders[index]
+      const { beneficiaries } = this.state
+      const beneficiary = beneficiaries[index]
 
-      holder.address = data.value ? data.value : undefined
-      this.setState({ holders })
+      beneficiary.address = data.value ? data.value : undefined
+      this.setState({ beneficiaries })
     }
   }
 
   getChangeAmountHandler(index: number) {
     return (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-      const { holders } = this.state
-      const holder = holders[index]
+      const { beneficiaries } = this.state
+      const beneficiary = beneficiaries[index]
 
-      holder.amount = data.value ? Number(data.value) : undefined
-      this.setState({ holders })
+      beneficiary.amount = data.value ? Number(data.value) : undefined
+      this.setState({ beneficiaries })
     }
   }
 
@@ -59,7 +59,7 @@ export default class MinteableItem extends React.PureComponent<Props, State> {
 
   render() {
     const { item } = this.props
-    const { holders } = this.state
+    const { beneficiaries } = this.state
 
     return (
       <div className="MinteableItem">
@@ -83,8 +83,8 @@ export default class MinteableItem extends React.PureComponent<Props, State> {
           </Column>
         </Row>
         <Form onSubmit={this.handleMint}>
-          {holders.map(({ address, amount }, index) => (
-            <Section key={index} className="holder" size="tiny">
+          {beneficiaries.map(({ address, amount }, index) => (
+            <Section key={index} className="beneficiary" size="tiny">
               <Field
                 className="rounded"
                 type="address"
@@ -101,6 +101,9 @@ export default class MinteableItem extends React.PureComponent<Props, State> {
                 message={undefined}
                 onChange={this.getChangeAmountHandler(index)}
               />
+              {/*<div className="link remove-item" onClick={this.handleAddNewHolder}>
+                -
+              </div>*/}
             </Section>
           ))}
         </Form>

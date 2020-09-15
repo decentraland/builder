@@ -24,21 +24,21 @@
   margin-top: 16px;
 }
 
-.MinteableItem .holder {
+.MinteableItem .beneficiary {
   display: flex;
 }
 
-.MinteableItem .holder .dcl.field.address {
+.MinteableItem .beneficiary .dcl.field.address {
   flex: 1 1 auto;
   margin-right: 10px;
 }
 
-.MinteableItem .holder .dcl.field,
-.MinteableItem .holder.dcl.section:last-child {
+.MinteableItem .beneficiary .dcl.field,
+.MinteableItem .beneficiary.dcl.section:last-child {
   margin-bottom: 0;
 }
 
-.MinteableItem .holder .dcl.field {
+.MinteableItem .beneficiary .dcl.field {
   min-width: 128px;
 }
 

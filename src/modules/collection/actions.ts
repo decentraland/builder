@@ -64,3 +64,45 @@ export const publishCollectionFailure = (collection: Collection, items: Item[], 
 export type PublishCollectionRequestAction = ReturnType<typeof publishCollectionRequest>
 export type PublishCollectionSuccessAction = ReturnType<typeof publishCollectionSuccess>
 export type PublishCollectionFailureAction = ReturnType<typeof publishCollectionFailure>
+
+// Mint collection tokens
+
+export const MINT_COLLECTION_ITEMS_REQUEST = '[Request] Mint collection items'
+export const MINT_COLLECTION_ITEMS_SUCCESS = '[Success] Mint collection items'
+export const MINT_COLLECTION_ITEMS_FAILURE = '[Failure] Mint collection items'
+
+export const mintCollectionItemsRequest = (beneficiaries: string[], itemIds: string[]) =>
+  action(MINT_COLLECTION_ITEMS_REQUEST, { beneficiaries, itemIds })
+export const mintCollectionItemsSuccess = (beneficiaries: string[], itemIds: string[], txHash: string) =>
+  action(MINT_COLLECTION_ITEMS_SUCCESS, {
+    beneficiaries,
+    itemIds,
+    ...buildTransactionPayload(txHash, { beneficiaries, itemIds })
+  })
+export const mintCollectionItemsFailure = (beneficiaries: string[], itemIds: string[], error: string) =>
+  action(MINT_COLLECTION_ITEMS_FAILURE, { beneficiaries, itemIds, error })
+
+export type MintCollectionItemsRequestAction = ReturnType<typeof mintCollectionItemsRequest>
+export type MintCollectionItemsSuccessAction = ReturnType<typeof mintCollectionItemsSuccess>
+export type MintCollectionItemsFailureAction = ReturnType<typeof mintCollectionItemsFailure>
+
+// Set collection minters
+
+export const SET_COLLECTION_MINTERS_REQUEST = '[Request] Set collection Minters'
+export const SET_COLLECTION_MINTERS_SUCCESS = '[Success] Set collection Minters'
+export const SET_COLLECTION_MINTERS_FAILURE = '[Failure] Set collection Minters'
+
+export const setCollectionMintersRequest = (minters: string[], access: boolean[]) =>
+  action(SET_COLLECTION_MINTERS_REQUEST, { minters, access })
+export const setCollectionMintersSuccess = (minters: string[], access: boolean[], txHash: string) =>
+  action(SET_COLLECTION_MINTERS_SUCCESS, {
+    minters,
+    access,
+    ...buildTransactionPayload(txHash, { minters, access })
+  })
+export const setCollectionMintersFailure = (minters: string[], access: boolean[], error: string) =>
+  action(SET_COLLECTION_MINTERS_FAILURE, { minters, access, error })
+
+export type SetCollectionMintersRequestAction = ReturnType<typeof setCollectionMintersRequest>
+export type SetCollectionMintersSuccessAction = ReturnType<typeof setCollectionMintersSuccess>
+export type SetCollectionMintersFailureAction = ReturnType<typeof setCollectionMintersFailure>

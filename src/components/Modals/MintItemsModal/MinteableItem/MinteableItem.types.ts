@@ -5,10 +5,10 @@ export type Props = {
 }
 
 export type State = {
-  holders: Holder[]
+  beneficiaries: Beneficiary[]
 }
 
-export type Holder = {
+export type Beneficiary = {
   address?: string
   amount?: number
 }

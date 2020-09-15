@@ -91,16 +91,16 @@ export default class CollectionItem extends React.PureComponent<Props> {
               ) : null}
             </Grid.Column>
             <Grid.Column>{this.renderPrice()}</Grid.Column>
-            <Grid.Column>
-              {item.isPublished ? (
+            {item.isPublished ? (
+              <Grid.Column>
                 <>
                   <div>
                     {item.totalSupply}/{RARITY_MAX_SUPPLY[item.rarity!]}
                   </div>
                   <div className="subtitle">{t('item.supply')}</div>
                 </>
-              ) : null}
-            </Grid.Column>
+              </Grid.Column>
+            ) : null}
             <Grid.Column>
               <div className="item-actions">
                 {item.isPublished ? (

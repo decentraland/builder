@@ -69,7 +69,7 @@ export function* landSaga() {
 function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
   try {
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
     const manager = Address.fromString(address)
     switch (type) {
       case LandType.PARCEL: {
@@ -108,7 +108,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     if (land.type !== LandType.ESTATE) {
       throw new Error(`Invalid LandType: "${land.type}"`)
     }
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
     const tokenIds = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
@@ -129,7 +129,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
 function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
   const { name, description, coords } = action.payload
   try {
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
     const [xs, ys] = splitCoords(coords)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const metadata = buildMetadata(name, description)
@@ -151,7 +151,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 function* handleEditEstateRequest(action: EditEstateRequestAction) {
   const { land, toAdd, toRemove } = action.payload
   try {
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
 
     if (toAdd.length > 0) {
@@ -187,7 +187,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
     const operator = address ? Address.fromString(address) : Address.ZERO
 
     switch (land.type) {
@@ -229,7 +229,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
   const metadata = buildMetadata(name, description)
 
   try {
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
 
     switch (land.type) {
       case LandType.PARCEL: {
@@ -267,7 +267,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [eth, from] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getEth()
     const to = Address.fromString(address)
 
     switch (land.type) {
