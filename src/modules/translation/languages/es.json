@@ -1,5 +1,10 @@
 {
   "asset_pack": {
+    "add_existing_item_modal": {
+      "title": "Agregar Item",
+      "subtitle": "Selecciona un item que no pertenezca a ninguna colección",
+      "add": "Agregar"
+    },
     "confirm_delete": {
       "action": "Eliminar Asset Pack",
       "back": "Volver",
@@ -759,6 +764,7 @@
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
+    "add_existing_item": "Agregar item existente",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
     "click_here": "Clickea aquí",
     "publish": "Publicar",

@@ -1,4 +1,9 @@
 {
+  "add_existing_item_modal": {
+    "title": "添加现有项目",
+    "subtitle": "选择一个不属于集合的项目",
+    "add": "加"
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "清除Asset Pack",
@@ -756,6 +761,7 @@
   },
   "collection_detail_page": {
     "new_item": "新项目",
+    "add_existing_item": "添加现有项目",
     "notice": "发布",
     "publish": "发布",
     "click_here": "单击此处",
@@ -782,13 +788,13 @@
     "content": "您确定要删除\"{name}\"吗?"
   },
   "publish_collection_modal": {
-    "title":"发布收藏",
-    "first_paragraph":"您将要发布您的收藏集，请注意以下几点：",
-    "second_paragraph":"发布收藏集后，您将无法添加或删除项目",
-    "third_paragraph":"您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
-    "publish":"发布"
- },
- "collection_image": {
-   "no_items":"没有项目"
- }
+    "title": "发布收藏",
+    "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
+    "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
+    "third_paragraph": "您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
+    "publish": "发布"
+  },
+  "collection_image": {
+    "no_items": "没有项目"
+  }
 }
