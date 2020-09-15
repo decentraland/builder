@@ -1,4 +1,4 @@
-import { ItemCardDragObject } from 'components/ItemCard/ItemCard.dnd'
+import { ItemCardDragObject } from '../ItemCard/ItemCard.dnd'
 import { ConnectDropTarget, DropTargetSpec } from 'react-dnd'
 import { Props } from './CollectionCard.types'
 

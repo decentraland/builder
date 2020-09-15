@@ -8,7 +8,7 @@ import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isEditable } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
-import ItemImage from 'components/ItemCard/ItemImage'
+import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 

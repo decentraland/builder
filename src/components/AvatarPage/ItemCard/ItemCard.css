@@ -24,3 +24,7 @@
   transform: translateY(0px);
   border: 1px solid var(--primary) !important;
 }
+
+.ItemCard.is-dragging .ItemImage {
+  border: 1px solid var(--primary);
+}

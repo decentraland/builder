@@ -11,16 +11,10 @@
   width: 54px;
   height: 56px;
   margin-bottom: 5px;
-  background-image: url('../../images/sparkles.svg');
+  background-image: url('../../../images/sparkles.svg');
   background-repeat: no-repeat;
 }
 
-.CollectionCard.is-over {
+.CollectionCard.is-over .CollectionImage {
   border: 1px solid var(--primary) !important;
-}
-
-.CollectionCard > .ui.card > .CollectionImage {
-  height: 248px;
-  overflow: hidden;
-  border-radius: 8px !important;
 }

@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 import { Card } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { collect, CollectedProps, collectionTarget } from './CollectionCard.dnd'
-import { ITEM_DASHBOARD_CARD_SOURCE } from 'components/ItemCard/ItemCard.dnd'
-import CollectionImage from './CollectionImage'
+import { ITEM_DASHBOARD_CARD_SOURCE } from '../ItemCard/ItemCard.dnd'
+import CollectionImage from 'components/CollectionImage'
 import { Props } from './CollectionCard.types'
 import './CollectionCard.css'
 
@@ -14,8 +14,8 @@ class CollectionCard extends React.PureComponent<Props & CollectedProps> {
     const { collection, connectDropTarget, isOver } = this.props
 
     return connectDropTarget(
-      <div className={`ui card link CollectionCard ${isOver ? 'is-over' : ''}`}>
-        <Link to={locations.collectionDetail(collection.id)} className="ui card link">
+      <div className={`CollectionCard is-card ${isOver ? 'is-over' : ''}`}>
+        <Link to={locations.collectionDetail(collection.id)}>
           <CollectionImage collection={collection} />
           <Card.Content>
             <div className="text">{collection.name}</div>
