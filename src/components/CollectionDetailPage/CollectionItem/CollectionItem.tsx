@@ -104,7 +104,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     onClick={preventDefault()}
                   >
                     <Dropdown.Menu>
-                      <Dropdown.Item text="Remove from collection" onClick={this.handleRemoveFromCollection} />
+                      <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                     </Dropdown.Menu>
                   </Dropdown>
                 ) : null}

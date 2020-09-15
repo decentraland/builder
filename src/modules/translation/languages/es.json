@@ -774,7 +774,8 @@
   "collection_item": {
     "set_price": "agregar precio",
     "done": "Terminado",
-    "edit_item": "editar item"
+    "edit_item": "editar item",
+    "remove_from_collection": "Remover de la colección"
   },
   "item": {
     "category": "Categoría",

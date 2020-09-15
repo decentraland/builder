@@ -771,7 +771,8 @@
   "collection_item": {
     "set_price": "设定价格",
     "done": "完成",
-    "edit_item": "编辑项目"
+    "edit_item": "编辑项目",
+    "remove_from_collection": "从收藏中删除"
   },
   "item": {
     "category": "类别",

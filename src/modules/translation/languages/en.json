@@ -779,7 +779,8 @@
   "collection_item": {
     "set_price": "set price",
     "done": "Done",
-    "edit_item": "edit item"
+    "edit_item": "edit item",
+    "remove_from_collection": "Remove from collection"
   },
   "item": {
     "category": "Category",
