@@ -1,12 +1,12 @@
 import { DragSourceSpec, DragSourceCollector, ConnectDragSource, ConnectDragPreview } from 'react-dnd'
 
-import { Asset } from 'modules/asset/types'
-import { Props } from './AssetCard.types'
+import { Item } from 'modules/item/types'
+import { Props } from './ItemCard.types'
 
-export const ASSET_TYPE = 'ASSET'
+export const ITEM_DASHBOARD_CARD_SOURCE = 'ITEM_DASHBOARD_CARD'
 
-export type AssetCardDragObject = {
-  asset: Asset
+export type ItemCardDragObject = {
+  item: Item
 }
 
 export type CollectedProps = {
@@ -15,15 +15,11 @@ export type CollectedProps = {
   isDragging: boolean
 }
 
-export const assetSource: DragSourceSpec<Props, AssetCardDragObject> = {
+export const itemCardSource: DragSourceSpec<Props, ItemCardDragObject> = {
   beginDrag(props) {
-    props.onBeginDrag(props.asset)
     return {
-      asset: props.asset
+      item: props.item
     }
-  },
-  canDrag(props) {
-    return !props.asset.isDisabled
   }
 }
 

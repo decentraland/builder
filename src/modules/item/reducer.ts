@@ -18,7 +18,9 @@ import {
   SAVE_ITEM_SUCCESS,
   DELETE_ITEM_REQUEST,
   DELETE_ITEM_FAILURE,
-  DELETE_ITEM_SUCCESS
+  DELETE_ITEM_SUCCESS,
+  SetCollectionAction,
+  SET_COLLECTION
 } from './actions'
 
 export type ItemState = {
@@ -43,6 +45,7 @@ type ItemReducerAction =
   | DeleteItemRequestAction
   | DeleteItemSuccessAction
   | DeleteItemFailureAction
+  | SetCollectionAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
@@ -121,6 +124,22 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
+      }
+    }
+    case SET_COLLECTION: {
+      const { item, collectionId } = action.payload
+      const newItem: Item = { ...item }
+      if (collectionId) {
+        newItem.collectionId = collectionId
+      } else {
+        delete newItem.collectionId
+      }
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [newItem.id]: newItem
+        }
       }
     }
     default:

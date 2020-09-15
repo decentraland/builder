@@ -29,11 +29,11 @@ export type RemoteItem = {
   description: string
   thumbnail: string
   eth_address: string
-  collection_id?: string
-  blockchain_item_id?: string
-  price?: string
-  beneficiary?: string
-  rarity?: ItemRarity
+  collection_id: string | null
+  blockchain_item_id: string | null
+  price: string | null
+  beneficiary: string | null
+  rarity: ItemRarity | null
   type: ItemType
   data: WearableData
   metrics: ModelMetrics
@@ -247,15 +247,14 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
+    collection_id: item.collectionId || null,
+    blockchain_item_id: item.tokenId || null,
+    price: item.price ? item.price.toString() : null,
+    beneficiary: item.beneficiary || null,
+    rarity: item.rarity || null,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
-
-  if (item.collectionId) remoteItem.collection_id = item.collectionId
-  if (item.tokenId) remoteItem.blockchain_item_id = item.tokenId
-  if (item.price) remoteItem.price = item.price.toString()
-  if (item.beneficiary) remoteItem.beneficiary = item.beneficiary
-  if (item.rarity) remoteItem.rarity = item.rarity
 
   return remoteItem
 }

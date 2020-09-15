@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { getItems } from 'modules/item/selectors'
-import { OwnProps, MapStateProps } from './CollectionCard.types'
+import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './CollectionCard.types'
 import CollectionCard from './CollectionCard'
+import { setCollection } from 'modules/item/actions'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const allItems = getItems(state)
@@ -11,6 +12,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return { items }
 }
 
-const mapDispatch = () => ({})
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId))
+})
 
 export default connect(mapState, mapDispatch)(CollectionCard)

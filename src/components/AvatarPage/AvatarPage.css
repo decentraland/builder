@@ -58,7 +58,7 @@
   margin-top: 20px;
 }
 
-.AvatarPage .ui.cards > .ui.card {
+.AvatarPage .ui.cards .ui.card {
   width: 248px;
   background-color: transparent;
   box-shadow: none;

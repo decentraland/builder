@@ -9,6 +9,7 @@ export type State = {
 
 export type Props = ModalProps & {
   metadata: AddExistingItemModalMetadata
+  isLoading: boolean
   onSubmit: typeof setCollection
 }
 
@@ -16,6 +17,6 @@ export type AddExistingItemModalMetadata = {
   collectionId: string
 }
 
-export type MapStateProps = {}
+export type MapStateProps = Pick<Props, 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch<SetCollectionAction>

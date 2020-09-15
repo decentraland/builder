@@ -47,3 +47,7 @@
   background-image: url('../../images/sparkles.svg');
   background-repeat: no-repeat;
 }
+
+.CollectionCard.is-over {
+  border: 1px solid var(--primary) !important;
+}
