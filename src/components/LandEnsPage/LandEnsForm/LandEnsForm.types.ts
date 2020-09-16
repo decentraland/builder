@@ -6,10 +6,9 @@ export type Props = {
 }
 
 export type State = {
-  name: string
-  initial: string
+  selectedSubdomain: string
+  subdomainList: string[]
   loading: boolean
-  revoked: boolean
-  dirty: boolean
-  editing: boolean
+  done: boolean
+  message: string
 }

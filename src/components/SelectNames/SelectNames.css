@@ -1,0 +1,28 @@
+.SelectNames .ui.dropdown {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  color: var(--secondary-text);
+}
+
+.SelectNames .ui.dropdown .text {
+  flex: 1 0 auto;
+  color: var(--text);
+}
+
+.SelectNames .ui.dropdown .dropdown.icon {
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .SelectNames {
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  .SelectNames .ui.sub.header.name {
+    font-weight: normal;
+  }
+}
