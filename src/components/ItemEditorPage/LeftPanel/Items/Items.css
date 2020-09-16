@@ -1,0 +1,40 @@
+.Items {
+  padding: 0px 16px;
+}
+
+.Items .item {
+  display: flex;
+  align-items: center;
+  background: rgba(var(--bluish-steel-raw), 0.2);
+  height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.Items .item {
+  margin-top: 8px;
+  padding: 8px;
+}
+
+.Items .item .ItemImage {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.Items .item .name {
+  margin-left: 8px;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: bold;
+}
+
+.Items .item:hover {
+  background: rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.Items .item.is-selected {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.7);
+}

@@ -28,6 +28,7 @@ import SceneDetailPage from 'components/SceneDetailPage'
 import AvatarPage from 'components/AvatarPage'
 import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
+import ItemEditorPage from 'components/ItemEditorPage'
 
 import { Props, State } from './Routes.types'
 
@@ -71,7 +72,7 @@ export default class Routes extends React.Component<Props, State> {
           <Switch>
             <Route exact path={locations.root()} component={HomePage} />
             <Route exact path={locations.notFound()} component={NotFoundPage} />
-            <Route exact path={locations.editor()} component={EditorPage} />
+            <Route exact path={locations.sceneEditor()} component={EditorPage} />
             <Route exact path={locations.poolSearch()} component={SceneListPage} />
             <Route exact path={locations.migrate()} component={MigratePage} />
             <Route exact path={locations.sceneView()} component={SceneViewPage} />
@@ -89,6 +90,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.avatar()} component={AvatarPage} />
             <Route exact path={locations.itemDetail()} component={ItemDetailPage} />
             <Route exact path={locations.collectionDetail()} component={CollectionDetailPage} />
+            <Route exact path={locations.itemEditor()} component={ItemEditorPage} />
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

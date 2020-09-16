@@ -797,5 +797,18 @@
   },
   "collection_image": {
     "no_items": "没有项目"
+  },
+  "item_editor": {
+    "left_panel": {
+      "title": "我的物品",
+      "actions": {
+        "new_item": "新物品",
+        "new_collection": "新系列",
+        "add_existing_item": "添加现有项目"
+      },
+      "items": "物品",
+      "collections": "馆藏",
+      "items_count": "{count}个项目"
+    }
   }
 }
