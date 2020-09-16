@@ -51,5 +51,5 @@
 }
 
 .CollectionDetailPage .CollectionItem:first-child .grid {
-  border-top: 1px solid var(--light-gray);
+  border-top: 1px solid var(--divider);
 }

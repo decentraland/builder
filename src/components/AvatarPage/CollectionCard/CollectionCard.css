@@ -1,0 +1,20 @@
+.CollectionCard .content {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.CollectionCard .content .text {
+  font-size: 17px;
+}
+
+.CollectionCard .sparkles {
+  width: 54px;
+  height: 56px;
+  margin-bottom: 5px;
+  background-image: url('../../../images/sparkles.svg');
+  background-repeat: no-repeat;
+}
+
+.CollectionCard.is-over .CollectionImage {
+  border: 1px solid var(--primary) !important;
+}

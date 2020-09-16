@@ -6,7 +6,7 @@ import { TransactionStatus, Transaction } from 'decentraland-dapps/dist/modules/
 import { formatDistanceToNow } from 'lib/date'
 import { coordsToId, getCenter } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
-import CollectionImage from 'components/CollectionCard/CollectionImage'
+import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
 import { Props } from './TransactionDetail.types'
 import './TransactionDetail.css'

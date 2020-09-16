@@ -1,7 +1,7 @@
 .CollectionItem .ui.grid {
   padding: 8px 0;
   color: var(--text);
-  border-bottom: 1px solid var(--light-gray);
+  border-bottom: 1px solid var(--divider);
 }
 
 .CollectionItem .ui.grid:hover {
