@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
-import ItemImage from 'components/ItemCard/ItemImage'
+import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionImage.types'
 import './CollectionImage.css'
 
@@ -19,7 +19,7 @@ export default class CollectionImage extends React.PureComponent<Props> {
     const itemRowStyle = { height: secondItemRow.length ? '50%' : '100%' }
 
     return (
-      <div className="CollectionImage">
+      <div className="CollectionImage is-image">
         {isLoading ? (
           <Loader active size="tiny" />
         ) : items.length === 0 ? (

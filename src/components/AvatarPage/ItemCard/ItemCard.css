@@ -19,3 +19,12 @@
 .ItemCard .content .text {
   font-size: 17px;
 }
+
+.ui.cards > .ui.card.link.ItemCard.is-dragging {
+  transform: translateY(0px);
+  border: 1px solid var(--primary) !important;
+}
+
+.ItemCard.is-dragging .ItemImage {
+  border: 1px solid var(--primary);
+}

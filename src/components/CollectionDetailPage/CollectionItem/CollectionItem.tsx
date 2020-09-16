@@ -8,8 +8,7 @@ import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isEditable } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
-import ConfirmDelete from 'components/ConfirmDelete'
-import ItemImage from 'components/ItemCard/ItemImage'
+import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
 
@@ -24,9 +23,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor(item.id))
   }
 
-  handleDeleteItem = () => {
-    const { item, onDelete } = this.props
-    onDelete(item!)
+  handleRemoveFromCollection = () => {
+    const { item, onRemoveFromCollection } = this.props
+    onRemoveFromCollection(item!, null)
   }
 
   renderPrice() {
@@ -105,11 +104,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     onClick={preventDefault()}
                   >
                     <Dropdown.Menu>
-                      <ConfirmDelete
-                        name={item.name}
-                        onDelete={this.handleDeleteItem}
-                        trigger={<Dropdown.Item text={t('global.delete')} />}
-                      />
+                      <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                     </Dropdown.Menu>
                   </Dropdown>
                 ) : null}

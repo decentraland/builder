@@ -19,7 +19,7 @@ export default class ItemImage extends React.PureComponent<Props> {
       : { backgroundColor: 'var(--secondary)' }
 
     return (
-      <div className="ItemImage image-wrapper" style={style}>
+      <div className="ItemImage is-image image-wrapper" style={style}>
         <img className="image" src={getContentsStorageUrl(item.contents[item.thumbnail])} alt={item.name} />
         {hasBadge ? <ItemBadge item={item}></ItemBadge> : null}
       </div>

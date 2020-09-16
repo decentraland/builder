@@ -1,4 +1,9 @@
 {
+  "add_existing_item_modal": {
+    "title": "Add Existing Item",
+    "subtitle": "Select an item that is not part of a collection yet",
+    "add": "Add"
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "Delete Asset Pack",
@@ -764,6 +769,7 @@
   },
   "collection_detail_page": {
     "new_item": "New Item",
+    "add_existing_item": "Add Existing Item",
     "publish": "Publish",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
@@ -773,7 +779,8 @@
   "collection_item": {
     "set_price": "set price",
     "done": "Done",
-    "edit_item": "edit item"
+    "edit_item": "edit item",
+    "remove_from_collection": "Remove from collection"
   },
   "item": {
     "category": "Category",

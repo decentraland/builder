@@ -58,7 +58,7 @@
   margin-top: 20px;
 }
 
-.AvatarPage .ui.cards > .ui.card {
+.AvatarPage .ui.cards .ui.card {
   width: 248px;
   background-color: transparent;
   box-shadow: none;
@@ -80,4 +80,32 @@
   padding: 5px 10px;
   border-radius: 4px;
   border: solid 1px var(--gray);
+}
+
+.AvatarPage .is-card {
+  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+  box-shadow: none;
+  transform: translateY(0px);
+  margin-right: 28px;
+}
+
+.AvatarPage .is-card:hover {
+  transform: translateY(-4px);
+}
+
+.AvatarPage .is-card .is-image {
+  transition: box-shadow 0.2s ease-in-out;
+  height: 248px;
+  width: 248px;
+  overflow: hidden;
+  border-radius: 8px !important;
+}
+
+.AvatarPage .is-card:hover .is-image {
+  box-shadow: var(--shadow-2);
+}
+
+.AvatarPage .is-card .is-image .is-image {
+  border-radius: 0px !important;
+  box-shadow: none;
 }

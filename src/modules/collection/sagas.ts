@@ -54,6 +54,7 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   try {
     yield call(() => builder.saveCollection(collection))
     yield put(saveCollectionSuccess(collection))
+    yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
     yield put(saveCollectionFailure(collection, error.message))
   }

@@ -29,11 +29,11 @@ export type RemoteItem = {
   description: string
   thumbnail: string
   eth_address: string
-  collection_id?: string
-  blockchain_item_id?: string
-  price?: string
-  beneficiary?: string
-  rarity?: ItemRarity
+  collection_id: string | null
+  blockchain_item_id: string | null
+  price: string | null
+  beneficiary: string | null
+  rarity: ItemRarity | null
   type: ItemType
   data: WearableData
   metrics: ModelMetrics
@@ -46,8 +46,8 @@ export type RemoteCollection = {
   id: string // uuid
   name: string
   eth_address: string
-  salt?: string
-  contract_address?: string
+  salt: string | null
+  contract_address: string | null
   is_published: boolean
   created_at: Date
   updated_at: Date
@@ -247,15 +247,14 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
+    collection_id: item.collectionId || null,
+    blockchain_item_id: item.tokenId || null,
+    price: item.price ? item.price.toString() : null,
+    beneficiary: item.beneficiary || null,
+    rarity: item.rarity || null,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
-
-  if (item.collectionId) remoteItem.collection_id = item.collectionId
-  if (item.tokenId) remoteItem.blockchain_item_id = item.tokenId
-  if (item.price) remoteItem.price = item.price.toString()
-  if (item.beneficiary) remoteItem.beneficiary = item.beneficiary
-  if (item.rarity) remoteItem.rarity = item.rarity
 
   return remoteItem
 }
@@ -290,12 +289,11 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     name: collection.name,
     eth_address: collection.owner,
     is_published: collection.isPublished,
+    contract_address: collection.contractAddress || null,
+    salt: collection.salt || null,
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
   }
-
-  if (collection.contractAddress) remoteCollection.contract_address = collection.contractAddress
-  if (collection.salt) remoteCollection.salt = collection.salt
 
   return remoteCollection
 }
@@ -507,12 +505,14 @@ export class BuilderAPI extends BaseAPI {
   async saveItem(item: Item, contents: Record<string, Blob>) {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
 
-    const formData = new FormData()
-    for (let path in contents) {
-      formData.append(item.contents[path], contents[path])
-    }
+    if (Object.keys(contents).length > 0) {
+      const formData = new FormData()
+      for (let path in contents) {
+        formData.append(item.contents[path], contents[path])
+      }
 
-    await this.request('post', `/items/${item.id}/files`, formData)
+      await this.request('post', `/items/${item.id}/files`, formData)
+    }
   }
 
   async deleteItem(item: Item) {
