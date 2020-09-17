@@ -18,9 +18,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
   state: State = {
     selectedSubdomain: '',
     subdomainList: [],
-    loading: false,
-    done: false,
-    message: ''
+    done: false
   }
 
   componentDidMount() {
@@ -41,11 +39,11 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
   }
   
   render() {
-    const { land, onSetNameResolver } = this.props
-    const { subdomainList, selectedSubdomain, done, message } = this.state
+    const { land, onSetNameResolver, error } = this.props
+    const { subdomainList, selectedSubdomain, done } = this.state
     const selectOptions = subdomainList.map(x => ({value: x.toLowerCase(), text: x.toLowerCase()}))
  
-    
+    const message = error ? error : 'Name saved correctly'
     return (
       <Form className="LandEnsForm">
 
@@ -69,7 +67,10 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
               />
             </Row>
             <Row>
-              <Button type="submit" primary onClick={() => onSetNameResolver(selectedSubdomain, land)}>
+              <Button type="submit" primary onClick={async () => {
+                await onSetNameResolver(selectedSubdomain, land)
+                this.setState({done: true})
+              }}>
                 {t('global.submit')}
               </Button>
               <Link className="cancel" to={locations.landDetail(land.id)}>

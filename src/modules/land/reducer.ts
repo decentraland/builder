@@ -6,7 +6,13 @@ import {
   FetchLandsFailureAction,
   FETCH_LANDS_REQUEST,
   FETCH_LANDS_SUCCESS,
-  FETCH_LANDS_FAILURE
+  FETCH_LANDS_FAILURE,
+  //SetNameResolverRequestAction,
+  //SetNameResolverSuccessAction,
+  SetNameResolverFailureAction,
+  //SET_NAME_RESOLVER_REQUEST,
+  //SET_NAME_RESOLVER_SUCCESS,
+  SET_NAME_RESOLVER_FAILURE
 } from './actions'
 
 export type LandState = {
@@ -20,12 +26,12 @@ const INITIAL_STATE: LandState = {
   data: {},
   authorizations: [],
   loading: [],
-  error: null
+  error: null,
 }
 
-export type LandReducerAction = FetchLandsRequestAction | FetchLandsSuccessAction | FetchLandsFailureAction
+export type LandReducerAction = FetchLandsRequestAction | FetchLandsSuccessAction | FetchLandsFailureAction | SetNameResolverFailureAction
 
-export function landReducer(state: LandState = INITIAL_STATE, action: LandReducerAction) {
+export function landReducer(state: LandState = INITIAL_STATE, action: LandReducerAction): LandState {
   switch (action.type) {
     case FETCH_LANDS_REQUEST: {
       return {
@@ -37,6 +43,7 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
     case FETCH_LANDS_SUCCESS: {
       const { address, lands, authorizations } = action.payload
       return {
+        ...state,
         data: {
           ...state.data,
           [address]: lands
@@ -47,6 +54,30 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
       }
     }
     case FETCH_LANDS_FAILURE: {
+      const { error } = action.payload
+      return {
+        ...state,
+        error
+      }
+    }
+    /*
+    case SET_NAME_RESOLVER_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case SET_NAME_RESOLVER_SUCCESS: {
+      const { ens } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null,
+        ensList: [...state.ensList, ens]
+      }
+    }
+    */
+    case SET_NAME_RESOLVER_FAILURE: {
       const { error } = action.payload
       return {
         ...state,
