@@ -199,7 +199,7 @@ export const setNameResolverSuccess = (ens: string, land: Land, txHash: string) 
     })
   })
 export const setNameResolverFailure = (ens: string, land: Land, error: string) =>
-  action(SET_UPDATE_MANAGER_FAILURE, { ens, land, error })
+  action(SET_NAME_RESOLVER_FAILURE, { ens, land, error })
 
 export type SetNameResolverRequestAction = ReturnType<typeof setNameResolverRequest>
 export type SetNameResolverSuccessAction = ReturnType<typeof setNameResolverSuccess>
