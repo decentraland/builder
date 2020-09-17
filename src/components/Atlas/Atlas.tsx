@@ -63,10 +63,6 @@ const Atlas: React.FC<Props> = props => {
     [landId, isEstate, selection]
   )
 
-  const shouldPan = isEstate && props.selection && props.selection.length > 0 && props.size
-  const panX = shouldPan ? Math.floor(((props.selection!.length + 1) % 2) * props.size * -0.5) : 0
-  const panY = shouldPan ? Math.floor(((props.selection!.length + 1) % 2) * props.size * -0.5) : 0
-
   const shouldShowLayer = (tile?: LandTile, showOwner?: boolean, showOperator?: boolean) => {
     return !!tile && ((showOwner && tile.land.role === RoleType.OWNER) || (showOperator && tile.land.role === RoleType.OPERATOR))
   }
@@ -147,10 +143,10 @@ const Atlas: React.FC<Props> = props => {
   useEffect(() => {
     function handleMouseMove(event: MouseEvent) {
       if (showPopup && mouseX === -1 && mouseY === -1) {
-        setMouseX(event.layerX)
-        setMouseY(event.layerY)
-        setX(event.layerX)
-        setY(event.layerY)
+        setMouseX(event.offsetX)
+        setMouseY(event.offsetY)
+        setX(event.offsetX)
+        setY(event.offsetY)
       }
     }
     if (hasPopup) {
@@ -192,8 +188,6 @@ const Atlas: React.FC<Props> = props => {
   return (
     <>
       <AtlasComponent
-        panX={panX}
-        panY={panY}
         onHover={handleHover}
         onClick={handleClick}
         {...props}

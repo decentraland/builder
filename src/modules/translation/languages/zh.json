@@ -476,7 +476,8 @@
     "type": "类型",
     "online_scenes": "在线场景",
     "none": "无",
-    "results": "{count}个结果"
+    "results": "{count}个结果",
+    "owner_permission": "这些是您不拥有的土地，但所有者授予您使用它们的许可。"
   },
   "land_detail_page": {
     "transfer": "转移",
@@ -762,23 +763,33 @@
   "collection_detail_page": {
     "new_item": "新项目",
     "add_existing_item": "添加现有项目",
+   "mint_items": "薄荷项目",
+    "on_sale": "特价",
+    "on_sale_popup": "这将使您的收藏可以在自动售货机中出售。",
     "notice": "发布",
     "publish": "发布",
+    "collaborators": "合作者",
     "click_here": "单击此处",
     "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
-    "cant_remove": "发布后，您将无法删除或向收藏夹添加项目"
+    "cant_remove": "发布后，您将无法删除或向收藏夹添加项目",
+    "published": "已发表"
   },
   "collection_item": {
     "set_price": "设定价格",
     "done": "完成",
     "edit_item": "编辑项目",
-    "remove_from_collection": "从收藏中删除"
+    "edit_item": "编辑",
+    "mint_item": "铸币",
+    "remove_from_collection": "从收藏中删除",
+    "edit_price": "修改价格",
+    "open_in_editor": "在编辑器中打开"
   },
   "item": {
     "category": "类别",
     "rarity": "稀有度",
     "price": "价钱",
-    "beneficiary": "受益人"
+    "beneficiary": "受益人",
+    "supply": "供应"
   },
   "edit_price_and_beneficiary_modal": {
     "title": "设置{name}的价格和地址",
@@ -794,6 +805,10 @@
     "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
     "third_paragraph": "您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
     "publish": "发布"
+  },
+  "mint_items_modal": {
+    "title": "薄荷项目",
+    "add_item": "新增项目"
   },
   "collection_image": {
     "no_items": "没有项目"

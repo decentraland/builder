@@ -1,8 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select } from 'redux-saga/effects'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { takeEvery, call, put, takeLatest } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import {
   FETCH_COLLECTIONS_REQUEST,
@@ -38,6 +37,7 @@ import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
+import { getCurrentAddress } from 'modules/wallet/utils'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -83,7 +83,7 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   const { collection, items } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
 
     const factory = new ERC721CollectionFactoryV2(eth, Address.fromString(ERC721_COLLECTION_FACTORY_ADDRESS))
     const implementation = new ERC721CollectionV2(eth, Address.fromString(ERC721_COLLECTION_ADDRESS))
@@ -107,7 +107,7 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
 function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
   const { collection, minters, access } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
@@ -128,7 +128,7 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
 function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
   const { collection, mints } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
     const beneficiaries: Address[] = []
@@ -158,21 +158,4 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
 
 function* handleConnectWalletSuccess() {
   yield put(fetchCollectionsRequest())
-}
-
-// TODO: Extract
-function* getEth() {
-  const eth = Eth.fromCurrentProvider()
-  if (!eth) {
-    throw new Error('Wallet not found')
-  }
-
-  const fromAddress: string = yield select(getAddress)
-  if (!fromAddress) {
-    throw new Error(`Invalid from address: ${fromAddress}`)
-  }
-
-  const from = Address.fromString(fromAddress)
-
-  return [eth, from]
 }

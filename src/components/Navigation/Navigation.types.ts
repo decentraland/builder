@@ -8,6 +8,7 @@ export enum NavigationTab {
 }
 
 export type Props = {
+  children?: React.ReactNode
   activeTab?: NavigationTab
   onNavigate: (path: string) => void
 }

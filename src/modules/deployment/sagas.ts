@@ -6,6 +6,7 @@ import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
+import { Scene } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import {
   DEPLOY_TO_POOL_REQUEST,
@@ -47,6 +48,8 @@ import { getEmptyDeployment } from './utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
 import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
+
+type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
 const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
@@ -112,19 +115,19 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     return
   }
 
-  const scene = yield getSceneByProjectId(project.id)
+  const scene: Scene = yield getSceneByProjectId(project.id)
   if (!scene) {
     yield put(deployToLandFailure('Unable to Publish: Invalid scene'))
     return
   }
 
-  const identity = yield getIdentity()
+  const identity: any = yield getIdentity()
   if (!identity) {
     yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
     return
   }
 
-  const author = yield select(getName)
+  const author: ReturnType<typeof getName> = yield select(getName)
 
   // upload media if logged in
   let previewUrl: string | null = null
@@ -206,13 +209,13 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     return
   }
 
-  const scene = yield getSceneByProjectId(project.id)
+  const scene: Scene = yield getSceneByProjectId(project.id)
   if (!scene) {
     yield put(deployToLandFailure('Unable to Publish: Invalid scene'))
     return
   }
 
-  const identity = yield getIdentity()
+  const identity: any = yield getIdentity()
   if (!identity) {
     yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
     return
@@ -221,7 +224,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   try {
     const { placement } = deployment
     const [emptyProject, emptyScene] = getEmptyDeployment(project.id)
-    const files = yield call(() =>
+    const files: UnwrapPromise<ReturnType<typeof createFiles>> = yield call(() =>
       createFiles({
         project: emptyProject,
         scene: emptyScene,
@@ -236,7 +239,6 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     )
     const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-    console.log(sceneDefinition)
     const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
     yield call(() => deploy(PEER_URL, data))
     yield put(clearDeploymentSuccess(deploymentId))
