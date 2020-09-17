@@ -6,8 +6,7 @@ import {
   ConnectWalletSuccessAction,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
 import {
   FETCH_LANDS_REQUEST,
   FetchLandsRequestAction,
@@ -50,6 +49,7 @@ import { EstateRegistry } from 'contracts/EstateRegistry'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
+import { getCurrentAddress } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization } from './types'
 
@@ -69,7 +69,7 @@ export function* landSaga() {
 function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
   try {
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const manager = Address.fromString(address)
     switch (type) {
       case LandType.PARCEL: {
@@ -108,7 +108,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     if (land.type !== LandType.ESTATE) {
       throw new Error(`Invalid LandType: "${land.type}"`)
     }
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
     const tokenIds = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
@@ -129,7 +129,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
 function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
   const { name, description, coords } = action.payload
   try {
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const [xs, ys] = splitCoords(coords)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const metadata = buildMetadata(name, description)
@@ -151,7 +151,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 function* handleEditEstateRequest(action: EditEstateRequestAction) {
   const { land, toAdd, toRemove } = action.payload
   try {
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
 
     if (toAdd.length > 0) {
@@ -187,7 +187,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const operator = address ? Address.fromString(address) : Address.ZERO
 
     switch (land.type) {
@@ -229,7 +229,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
   const metadata = buildMetadata(name, description)
 
   try {
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
 
     switch (land.type) {
       case LandType.PARCEL: {
@@ -267,7 +267,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [eth, from] = yield getEth()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const to = Address.fromString(address)
 
     switch (land.type) {
@@ -316,20 +316,4 @@ function* handleFetchLandRequest(action: FetchLandsRequestAction) {
 function* handleWallet(action: ConnectWalletSuccessAction | ChangeAccountAction) {
   const { address } = action.payload.wallet
   yield put(fetchLandsRequest(address))
-}
-
-function* getEth() {
-  const eth = Eth.fromCurrentProvider()
-  if (!eth) {
-    throw new Error('Wallet not found')
-  }
-
-  const fromAddress = yield select(getAddress)
-  if (!fromAddress) {
-    throw new Error(`Invalid from address: ${fromAddress}`)
-  }
-
-  const from = Address.fromString(fromAddress)
-
-  return [eth, from]
 }

@@ -1,5 +1,9 @@
 import { Item } from './types'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+
+import { Mint } from 'modules/collection/types'
+import { PUBLISH_COLLECTION_SUCCESS, MINT_COLLECTION_ITEMS_SUCCESS } from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
   FetchItemsSuccessAction,
@@ -46,6 +50,7 @@ type ItemReducerAction =
   | DeleteItemSuccessAction
   | DeleteItemFailureAction
   | SetCollectionAction
+  | FetchTransactionSuccessAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
@@ -140,6 +145,48 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
           ...state.data,
           [newItem.id]: newItem
         }
+      }
+    }
+    case FETCH_TRANSACTION_SUCCESS: {
+      const transaction = action.payload.transaction
+
+      switch (transaction.actionType) {
+        case PUBLISH_COLLECTION_SUCCESS: {
+          const items: Item[] = transaction.payload.items
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              ...items.reduce(
+                (accum, item) => ({
+                  ...accum,
+                  [item.id]: { ...item, isPublished: true }
+                }),
+                {}
+              )
+            }
+          }
+        }
+        case MINT_COLLECTION_ITEMS_SUCCESS: {
+          const mints: Mint[] = transaction.payload.mints
+
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              ...mints.reduce((accum, mint) => {
+                const item = state.data[mint.item.id]
+                const totalSupply = (item.totalSupply || 0) + 1
+                return {
+                  ...accum,
+                  [item.id]: { ...state.data[item.id], totalSupply }
+                }
+              }, {})
+            }
+          }
+        }
+        default:
+          return state
       }
     }
     default:

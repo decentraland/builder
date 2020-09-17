@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { isComplete, isEditable } from 'modules/item/utils'
+import { isComplete, isEditable, canMint, getMaxSupply } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemImage'
@@ -18,6 +18,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onOpenModal('EditPriceAndBeneficiaryModal', { itemId: item.id })
   }
 
+  handleMintItem = () => {
+    const { onOpenModal, item } = this.props
+    onOpenModal('MintItemsModal', { itemIds: [item.id] })
+  }
+
   handleNavigateToEditor = () => {
     const { onNavigate, item } = this.props
     onNavigate(locations.itemEditor(item.id))
@@ -26,6 +31,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
   handleRemoveFromCollection = () => {
     const { item, onRemoveFromCollection } = this.props
     onRemoveFromCollection(item!, null)
+  }
+
+  hasActions() {
+    const { item } = this.props
+    return item.isPublished || isComplete(item) || isEditable(item)
   }
 
   renderPrice() {
@@ -54,11 +64,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
       <Link to={locations.itemDetail(item.id)} className="CollectionItem">
         <Grid columns="equal">
           <Grid.Row>
-            <Grid.Column className="avatar-column" width={5}>
+            <Grid.Column className="avatar-column" width={4}>
               <ItemImage item={item} />
-              <div>
-                <div className="name">
-                  {item.name} <ItemBadge item={item} />
+              <div className="info">
+                <div className="name-wrapper">
+                  <div className="name">{item.name}</div> <ItemBadge item={item} />
                 </div>
                 <div className="subtitle">{item.type}</div>
               </div>
@@ -80,34 +90,53 @@ export default class CollectionItem extends React.PureComponent<Props> {
               ) : null}
             </Grid.Column>
             <Grid.Column>{this.renderPrice()}</Grid.Column>
+            {item.isPublished ? (
+              <Grid.Column>
+                <>
+                  <div>
+                    {item.totalSupply}/{getMaxSupply(item)}
+                  </div>
+                  <div className="subtitle">{t('item.supply')}</div>
+                </>
+              </Grid.Column>
+            ) : null}
             <Grid.Column>
               <div className="item-actions">
-                {isComplete(item) ? (
-                  <div className="done">
+                {canMint(item) ? (
+                  <span onClick={preventDefault(this.handleMintItem)} className="link action">
+                    {t('collection_item.mint_item')}
+                  </span>
+                ) : isComplete(item) ? (
+                  <div className="done action">
                     {t('collection_item.done')} <Icon name="check" />
                   </div>
                 ) : isEditable(item) ? (
-                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link edit-item action">
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link action">
                     {t('collection_item.edit_item')}
                   </span>
                 ) : null}
-                {isComplete(item) || isEditable(item) ? (
-                  <Dropdown
-                    trigger={
-                      <Button basic>
-                        <Icon name="ellipsis horizontal" />
-                      </Button>
-                    }
-                    inline
-                    direction="left"
-                    className="action"
-                    onClick={preventDefault()}
-                  >
-                    <Dropdown.Menu>
+                <Dropdown
+                  trigger={
+                    <Button basic>
+                      <Icon name="ellipsis horizontal" />
+                    </Button>
+                  }
+                  inline
+                  direction="left"
+                  className="action"
+                  onClick={preventDefault()}
+                >
+                  <Dropdown.Menu>
+                    {item.isPublished ? (
+                      <>
+                        <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
+                        <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
+                      </>
+                    ) : (
                       <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
-                    </Dropdown.Menu>
-                  </Dropdown>
-                ) : null}
+                    )}
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             </Grid.Column>
           </Grid.Row>

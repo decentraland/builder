@@ -1,4 +1,14 @@
-.CollectionDetailPage .dcl.row.actions > .ui.button.new-item {
+.CollectionDetailPage .ui.toggle.on-sale {
+  text-transform: uppercase;
+}
+
+.CollectionDetailPage .ui.toggle.on-sale input.hidden + label {
+  padding-left: 40px;
+  color: var(--secondary-text) !important;
+}
+
+.CollectionDetailPage .dcl.row.actions > .ui.button.action-button {
+  margin-left: 24px;
   border: 1px solid var(--gray);
   padding: 8px;
   border-top-right-radius: 0;
@@ -13,8 +23,12 @@
   border-left: 0;
 }
 
-.CollectionDetailPage .actions .ui.button.new-item + .ui.dropdown {
+.CollectionDetailPage .actions .ui.button.action-button + .ui.dropdown {
   margin-left: 0;
+}
+
+.CollectionDetailPage .actions .ui.button.action-button > span {
+  color: var(--text);
 }
 
 .CollectionDetailPage .actions .ui.dropdown .icon.ellipsis {
@@ -22,7 +36,7 @@
 }
 
 .CollectionDetailPage .actions .ui.button.compact {
-  border: 1.5px solid var(--primary);
+  padding: 10px;
 }
 
 .CollectionDetailPage .Notice {

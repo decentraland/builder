@@ -4,6 +4,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 
 export type Props = {
   land: Land
+  children?: React.ReactNode
   title?: React.ReactNode
   subtitle?: React.ReactNode
   onNavigate: (path: string) => void

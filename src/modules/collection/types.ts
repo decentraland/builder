@@ -1,5 +1,6 @@
 import BN from 'bn.js'
 import { Address } from 'web3x-es/address'
+import { Item } from 'modules/item/types'
 
 export type Collection = {
   id: string // uuid
@@ -19,4 +20,10 @@ export type InitializeItem = {
   beneficiary: Address
   metadata: string
   contentHash: string
+}
+
+export type Mint = {
+  address: string
+  amount: number
+  item: Item
 }

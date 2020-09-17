@@ -1,0 +1,21 @@
+/* -----------------------------
+    Rounded input
+ ----------------------------- */
+
+.ui.form .dcl.field .ui.input.rounded > input,
+.dcl.field .ui.input.rounded > input {
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  font-size: 15px;
+  padding-bottom: 5px;
+  padding-left: 1em;
+}
+
+.ui.form .dcl.field .ui.input.rounded > input:focus,
+.dcl.field .ui.input.rounded > input:focus {
+  border: 1px solid var(--light-gray);
+}
+
+.dcl.field.address .ui.input.rounded + .dcl.blockie {
+  margin-right: 12px;
+}
