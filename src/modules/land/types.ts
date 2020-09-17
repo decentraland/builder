@@ -23,6 +23,7 @@ export type Land = {
   description: string | null
   owner: string
   operators: string[]
+  ensList?: string[]
 }
 
 export type Authorization = {
