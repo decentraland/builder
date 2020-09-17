@@ -1,4 +1,5 @@
 .AvatarPage .ui.cards > .empty {
+  margin-top: 28px;
   padding: 112px 0;
   width: 100%;
   border-radius: 8px;
@@ -54,17 +55,13 @@
   background-repeat: no-repeat;
 }
 
-.AvatarPage .ui.cards {
-  margin-top: 20px;
-}
-
 .AvatarPage .ui.cards .ui.card {
   width: 248px;
   background-color: transparent;
   box-shadow: none;
 }
 
-.AvatarPage .card .item-rows {
+.AvatarPage .card .CollectionImage {
   height: 248px;
 }
 
@@ -86,6 +83,7 @@
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
   box-shadow: none;
   transform: translateY(0px);
+  margin-top: 20px;
   margin-right: 28px;
 }
 

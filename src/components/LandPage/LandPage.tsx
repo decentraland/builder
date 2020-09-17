@@ -88,7 +88,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
                       />
                     }
                     className="operator-popup"
-                    content={<div>These are lands you don't own, but the owner gave you permission to use them.</div>}
+                    content={<div>{t('land_page.owner_permission')}</div>}
                   />
                   <Chip className="grid" icon="table" isActive={view === LandPageView.GRID} onClick={() => onSetView(LandPageView.GRID)} />
                   <Chip className="atlas" icon="pin" isActive={view === LandPageView.ATLAS} onClick={() => onSetView(LandPageView.ATLAS)} />

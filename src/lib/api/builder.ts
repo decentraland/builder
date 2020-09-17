@@ -34,6 +34,8 @@ export type RemoteItem = {
   price: string | null
   beneficiary: string | null
   rarity: ItemRarity | null
+  total_supply: number | null
+  is_published: boolean
   type: ItemType
   data: WearableData
   metrics: ModelMetrics
@@ -243,15 +245,17 @@ function toRemoteItem(item: Item): RemoteItem {
     description: item.description || '',
     thumbnail: item.thumbnail,
     eth_address: item.owner,
-    type: item.type,
-    data: item.data,
-    metrics: item.metrics,
-    contents: item.contents,
     collection_id: item.collectionId || null,
     blockchain_item_id: item.tokenId || null,
     price: item.price ? item.price.toString() : null,
     beneficiary: item.beneficiary || null,
     rarity: item.rarity || null,
+    total_supply: item.totalSupply === undefined ? null : item.totalSupply,
+    is_published: item.isPublished || false,
+    type: item.type,
+    data: item.data,
+    metrics: item.metrics,
+    contents: item.contents,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -266,6 +270,7 @@ function fromRemoteItem(remoteItem: RemoteItem): Item {
     thumbnail: remoteItem.thumbnail,
     owner: remoteItem.eth_address,
     description: remoteItem.description,
+    isPublished: remoteItem.is_published,
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
@@ -279,6 +284,7 @@ function fromRemoteItem(remoteItem: RemoteItem): Item {
   if (remoteItem.price) item.price = parseInt(remoteItem.price, 10)
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
+  if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
 
   return item
 }

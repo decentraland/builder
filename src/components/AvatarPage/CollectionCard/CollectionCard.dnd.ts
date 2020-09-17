@@ -16,7 +16,7 @@ export const collectionTarget: DropTargetSpec<Props> = {
 }
 
 // @ts-ignore
-export const collect: DropTargetCollector<CollectedProps> = (connect, monitor) => {
+export const collect: DropTargetCollector<CollectedProps> = (connect, monitor, props: Props) => {
   return {
     connectDropTarget: connect.dropTarget(),
     canDrop: monitor.canDrop(),

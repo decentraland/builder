@@ -21,7 +21,15 @@ import {
   PublishCollectionRequestAction,
   publishCollectionSuccess,
   publishCollectionFailure,
-  PUBLISH_COLLECTION_REQUEST
+  PUBLISH_COLLECTION_REQUEST,
+  SetCollectionMintersRequestAction,
+  setCollectionMintersSuccess,
+  setCollectionMintersFailure,
+  SET_COLLECTION_MINTERS_REQUEST,
+  MintCollectionItemsRequestAction,
+  mintCollectionItemsSuccess,
+  mintCollectionItemsFailure,
+  MINT_COLLECTION_ITEMS_REQUEST
 } from './actions'
 import { initializeCollection } from './utils'
 import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS } from 'modules/common/contracts'
@@ -36,6 +44,8 @@ export function* collectionSaga() {
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
+  yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
+  yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintColectionItems)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
 }
 
@@ -73,17 +83,7 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   const { collection, items } = action.payload
   try {
-    const eth = Eth.fromCurrentProvider()
-    if (!eth) {
-      throw new Error('Wallet not found')
-    }
-
-    const fromAddress = yield select(getAddress)
-    if (!fromAddress) {
-      throw new Error(`Invalid from address: ${fromAddress}`)
-    }
-
-    const from = Address.fromString(fromAddress)
+    const [eth, from]: [Eth, Address] = yield getEth()
 
     const factory = new ERC721CollectionFactoryV2(eth, Address.fromString(ERC721_COLLECTION_FACTORY_ADDRESS))
     const implementation = new ERC721CollectionV2(eth, Address.fromString(ERC721_COLLECTION_ADDRESS))
@@ -104,6 +104,75 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
   }
 }
 
+function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
+  const { collection, minters, access } = action.payload
+  try {
+    const [eth, from]: [Eth, Address] = yield getEth()
+
+    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+
+    const txHash = yield call(() =>
+      implementation.methods
+        .setMinters(minters.map(Address.fromString), access)
+        .send({ from })
+        .getTxHash()
+    )
+
+    yield put(setCollectionMintersSuccess(collection, minters, access, txHash))
+    yield put(replace(locations.activity()))
+  } catch (error) {
+    yield put(setCollectionMintersFailure(collection, minters, access, error.message))
+  }
+}
+
+function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
+  const { collection, mints } = action.payload
+  try {
+    const [eth, from]: [Eth, Address] = yield getEth()
+
+    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+    const beneficiaries: Address[] = []
+    const itemIds: string[] = []
+
+    for (const mint of mints) {
+      const beneficiary = Address.fromString(mint.address)
+      for (let i = 0; i < mint.amount; i++) {
+        beneficiaries.push(beneficiary)
+        itemIds.push(mint.item.tokenId!)
+      }
+    }
+
+    const txHash = yield call(() =>
+      implementation.methods
+        .issueTokens(beneficiaries, itemIds)
+        .send({ from })
+        .getTxHash()
+    )
+
+    yield put(mintCollectionItemsSuccess(collection, mints, txHash))
+    yield put(replace(locations.activity()))
+  } catch (error) {
+    yield put(mintCollectionItemsFailure(collection, mints, error.message))
+  }
+}
+
 function* handleConnectWalletSuccess() {
   yield put(fetchCollectionsRequest())
+}
+
+// TODO: Extract
+function* getEth() {
+  const eth = Eth.fromCurrentProvider()
+  if (!eth) {
+    throw new Error('Wallet not found')
+  }
+
+  const fromAddress: string = yield select(getAddress)
+  if (!fromAddress) {
+    throw new Error(`Invalid from address: ${fromAddress}`)
+  }
+
+  const from = Address.fromString(fromAddress)
+
+  return [eth, from]
 }

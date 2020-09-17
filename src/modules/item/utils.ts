@@ -1,4 +1,4 @@
-import { Item, ItemRarity, ItemType, WearableData, WearableBodyShape, BodyShapeType } from 'modules/item/types'
+import { Item, ItemRarity, ItemType, WearableData, WearableBodyShape, BodyShapeType, RARITY_MAX_SUPPLY } from './types'
 
 export function isComplete(item: Item) {
   return !isEditable(item) && !!item.beneficiary && !!item.price
@@ -7,6 +7,15 @@ export function isComplete(item: Item) {
 export function isEditable(item: Item) {
   const data = item.data as WearableData
   return !item.rarity || !data.category
+}
+
+export function canMint(item: Item) {
+  const totalSupply = item.totalSupply || 0
+  return item.isPublished && totalSupply < getMaxSupply(item)
+}
+
+export function getMaxSupply(item: Item) {
+  return RARITY_MAX_SUPPLY[item.rarity!]
 }
 
 export function getBodyShapeType(item: Item) {
