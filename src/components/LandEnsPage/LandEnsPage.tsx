@@ -7,7 +7,7 @@ import LandEnsForm from './LandEnsForm/LandEnsForm'
 
 export default class LandEnsPage extends React.PureComponent<Props> {
   render() {
-    const { onSetOperator } = this.props
+    const { onSetNameResolver } = this.props
     return (
       <LandProviderPage className="LandEditPage">
         {land => (
@@ -16,7 +16,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
             title={t('land_ens_page.title')}
             subtitle={<T id="land_ens_page.subtitle" values={{ name: <strong>{land.name}</strong> }} />}
           >
-            <LandEnsForm land={land} onSetOperator={onSetOperator} />
+            <LandEnsForm land={land} onSetNameResolver={onSetNameResolver} />
           </LandAction>
         )}
       </LandProviderPage>

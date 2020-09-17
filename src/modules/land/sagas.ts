@@ -82,8 +82,9 @@ export function* landSaga() {
 }
 
 function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
-  const { land, owner, ens } = action.payload
+  const { land, ens } = action.payload
 
+  console.log("start")
   try {
     const [eth, from] = yield getEth()
     const nodehash = namehash(ens)
@@ -92,8 +93,9 @@ function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
     let resolverAddress = yield call(() => ensContract.methods.resolver(nodehash).call())
 
     if (resolverAddress !== '0x0000000000000000000000000000000000000000') {
+      console.log("Already setted")
       return yield put(setNameResolverFailure(
-        owner, ens, land, 
+        ens, land, 
         'Your name has been setted previously. Please choose another one.'
       ))
     }
@@ -114,12 +116,13 @@ function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
         .send({from})
         .getTxHash()
     )
+    console.log({txHashSetResolver})
     yield put(setNameResolverSuccess(
-      owner, ens, land, txHashSetResolver
+      ens, land, txHashSetResolver
     ))
   } catch (error) {
     yield put(setNameResolverFailure(
-        owner, ens, land, 
+        ens, land, 
         'Your name has been setted previously. Please choose another one.'
       ))
   }

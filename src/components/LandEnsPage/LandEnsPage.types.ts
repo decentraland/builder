@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux'
-import { setOperatorRequest } from 'modules/land/actions'
+import { setNameResolverRequest } from 'modules/land/actions'
 
 export type Props = {
-  onSetOperator: typeof setOperatorRequest
+  onSetNameResolver: typeof setNameResolverRequest
 }
 
 export type MapStateProps = {}
-export type MapDispatchProps = Pick<Props, 'onSetOperator'>
+export type MapDispatchProps = Pick<Props, 'onSetNameResolver'>
 export type MapDispatch = Dispatch

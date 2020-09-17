@@ -2,7 +2,7 @@ import { Land } from 'modules/land/types'
 
 export type Props = {
   land: Land
-  onSetOperator: (land: Land, address: string | null) => void
+  onSetNameResolver: (ens: string, land: Land) => void
 }
 
 export type State = {

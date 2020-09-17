@@ -186,22 +186,20 @@ export const SET_NAME_RESOLVER_REQUEST = '[Request] Set Name Resolver'
 export const SET_NAME_RESOLVER_SUCCESS = '[Success] Set Name Resolver'
 export const SET_NAME_RESOLVER_FAILURE = '[Failure] Set Name Resolver'
 
-export const setNameResolverRequest = (owner: string, ens: string, land: Land) =>
-  action(SET_NAME_RESOLVER_REQUEST, { owner, ens, land })
-export const setNameResolverSuccess = (owner: string, ens: string, land: Land, txHash: string) =>
+export const setNameResolverRequest = (ens: string, land: Land) => 
+  action(SET_NAME_RESOLVER_REQUEST, { ens, land })
+export const setNameResolverSuccess = (ens: string, land: Land, txHash: string) =>
   action(SET_NAME_RESOLVER_SUCCESS, {
-    owner,
     ens,
     land,
     ...buildTransactionPayload(txHash, {
       id: land.id,
       name: land.name,
-      owner,
       selection: getSelection(land)
     })
   })
-export const setNameResolverFailure = (owner: string, ens: string, land: Land, error: string) =>
-  action(SET_UPDATE_MANAGER_FAILURE, { owner, ens, land, error })
+export const setNameResolverFailure = (ens: string, land: Land, error: string) =>
+  action(SET_UPDATE_MANAGER_FAILURE, { ens, land, error })
 
 export type SetNameResolverRequestAction = ReturnType<typeof setNameResolverRequest>
 export type SetNameResolverSuccessAction = ReturnType<typeof setNameResolverSuccess>
