@@ -40,8 +40,9 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
 
   getFilters(props = this.props) {
     return filterAttributes.reduce((filters, key) => {
-      if (props[key] !== undefined) {
-        filters[key] = props[key]
+      const value = props[key]
+      if (value !== undefined) {
+        filters[key] = value as any
       }
       return filters
     }, {} as PoolsRequestFilters)

@@ -6,9 +6,7 @@ import { createEstateRequest, editEstateRequest, CreateEstateRequestAction, Edit
 
 export type Props = ModalProps & {
   landTiles: Record<string, LandTile>
-  metadata: {
-    land: Land
-  }
+  metadata: EstateEditorModalMetadata
   onCreateEstate: typeof createEstateRequest
   onEditEstate: typeof editEstateRequest
 }
@@ -18,6 +16,10 @@ export type State = {
   name: string
   description: string
   showCreationForm: boolean
+}
+
+export type EstateEditorModalMetadata = {
+  land: Land
 }
 
 export type MapStateProps = Pick<Props, 'landTiles'>

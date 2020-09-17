@@ -43,8 +43,7 @@ export function trimAsset(action: AddItemAction | DropItemAction | SetGroundActi
   if (!action.payload.asset) {
     return action.payload
   }
-  const asset = { ...action.payload.asset }
-  delete asset.contents // this generates tons of unnecessary columns on segment
+  const asset = { ...action.payload.asset, contents: undefined } // contents generates tons of unnecessary columns on segment
 
   return {
     ...action.payload,

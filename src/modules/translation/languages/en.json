@@ -340,6 +340,7 @@
   "global": {
     "back": "back",
     "blog_post": "blog post",
+    "amount": "Amount",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "continue": "Continue",
@@ -512,7 +513,8 @@
     "type": "Type",
     "online_scenes": "Online Scenes",
     "none": "None",
-    "results": "{count} {count, plural, one {result} other {results}}"
+    "results": "{count} {count, plural, one {result} other {results}}",
+    "owner_permission": "These are lands you don't own, but the owner gave you permission to use them."
   },
   "land_detail_page": {
     "transfer": "Transfer",
@@ -770,23 +772,32 @@
   "collection_detail_page": {
     "new_item": "New Item",
     "add_existing_item": "Add Existing Item",
+    "mint_items": "Mint Items",
+    "on_sale": "On sale",
+    "on_sale_popup": "This will allow your collection to be sold in in-world vending machines.",
     "publish": "Publish",
+    "collaborators": "Collaborators",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
     "start_adding_items": "Looking good! now you can start adding items to your collection.",
-    "cant_remove": "You will not be able to remove or add items to your collection once its published."
+    "cant_remove": "You will not be able to remove or add items to your collection once its published.",
+    "published": "Published"
   },
   "collection_item": {
     "set_price": "set price",
     "done": "Done",
-    "edit_item": "edit item",
-    "remove_from_collection": "Remove from collection"
+    "edit_item": "edit",
+    "mint_item": "mint",
+    "remove_from_collection": "Remove from collection",
+    "edit_price": "Edit price",
+    "open_in_editor": "Open in editor"
   },
   "item": {
     "category": "Category",
     "rarity": "Rarity",
     "price": "Price",
-    "beneficiary": "Beneficiary"
+    "beneficiary": "Beneficiary",
+    "supply": "Supply"
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Set price and address for {name}",
@@ -802,6 +813,10 @@
     "second_paragraph": "You will not be able to add or delete items after you publish your collection",
     "third_paragraph": "You will be able to see your items in the marketplace but they will available for sale once the collection is validated by the DAO",
     "publish": "Publish"
+  },
+  "mint_items_modal": {
+    "title": "Mint Items",
+    "add_item": "Add Item"
   },
   "collection_image": {
     "no_items": "No Items"

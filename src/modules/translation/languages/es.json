@@ -334,6 +334,7 @@
   "global": {
     "back": "volver",
     "blog_post": "blog post",
+    "amount": "Cantidad",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "continue": "Continuar",
@@ -475,7 +476,8 @@
     "type": "Tipo",
     "online_scenes": "Escenas Online",
     "none": "Ninguna",
-    "results": "{count} {count, plural, one {resultado} other {resultados}}"
+    "results": "{count} {count, plural, one {resultado} other {resultados}}",
+    "owner_permission": "Estas son tierras que no son tuyas, pero donde tienes permiso"
   },
   "land_detail_page": {
     "transfer": "Transferir",
@@ -765,23 +767,32 @@
   "collection_detail_page": {
     "new_item": "Nuevo Item",
     "add_existing_item": "Agregar item existente",
+    "mint_items": "Crear Items",
+    "on_sale": "En venta",
+    "on_sale_popup": "Esto permitirá que tu colección sea vendida dentro del mundo.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
     "click_here": "Clickea aquí",
     "publish": "Publicar",
+    "collaborators": "Colaboradores",
     "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
-    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
+    "published": "Publicados"
   },
   "collection_item": {
     "set_price": "agregar precio",
     "done": "Terminado",
-    "edit_item": "editar item",
-    "remove_from_collection": "Remover de la colección"
+    "edit_item": "editar",
+    "mint_item": "crear",
+    "remove_from_collection": "Eliminar de la colección",
+    "edit_price": "Editar precio",
+    "open_in_editor": "Abrir en el editor"
   },
   "item": {
     "category": "Categoría",
     "rarity": "Rareza",
     "price": "Precio",
-    "beneficiary": "Beneficiario"
+    "beneficiary": "Beneficiario",
+    "supply": "Suministro"
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Asignar un precio y un beneficiario para {name}",
@@ -797,6 +808,10 @@
     "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar",
     "third_paragraph": "Podrás ver tus items en el marketplace pero serán puestos en venta luego de ser validados por la DAO",
     "publish": "Publish"
+  },
+  "mint_items_modal": {
+    "title": "Crear Items",
+    "add_item": "Agregar Item"
   },
   "collection_image": {
     "no_items": "No Items"

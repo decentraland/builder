@@ -11,6 +11,7 @@
 
 .CollectionItem .ui.grid > .row {
   align-items: center;
+  font-size: 15px;
 }
 
 .CollectionItem .ui.grid > .row > .column.avatar-column {
@@ -27,16 +28,28 @@
   margin-right: 24px;
 }
 
-.CollectionItem .name {
-  font-size: 15px;
+.CollectionItem .info {
+  width: 100%;
+}
+
+.CollectionItem .name-wrapper {
   display: flex;
   align-items: center;
 }
 
-.CollectionItem .name .ItemBadge {
+.CollectionItem .name-wrapper .ItemBadge {
   width: 24px;
   height: 24px;
+  flex: 0 0 auto;
   margin-left: 12px;
+}
+
+.CollectionItem .name {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40%;
 }
 
 .CollectionItem .link,
@@ -62,10 +75,11 @@
 
 .CollectionItem .ui.grid:hover .item-actions .action {
   display: inherit;
+  margin-left: 5px;
 }
 
-.CollectionItem .edit-item {
-  margin-right: 15px;
+.CollectionItem .item-actions .ui.dropdown.action i {
+  margin: 0 !important;
 }
 
 .CollectionItem .done {

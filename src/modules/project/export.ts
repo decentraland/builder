@@ -55,7 +55,9 @@ export async function createFiles(args: {
   const { project, scene, point, rotation, thumbnail, author, isDeploy, isEmpty, onProgress } = args
   const models = await downloadFiles({ scene, onProgress, isDeploy })
   const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
+
   return {
+    // @ts-ignore: 'builder.json' is specified more than once, but don't want to break anything
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,

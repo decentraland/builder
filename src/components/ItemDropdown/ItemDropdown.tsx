@@ -29,14 +29,14 @@ export default class ItemDropdown extends React.PureComponent<Props> {
   }
 
   renderTrigger(options: DropdownItemProps[]) {
-    const { value } = this.props
+    const { value, placeholder } = this.props
     return value ? (
       <Row className="selected-item">
         <img src={getContentsStorageUrl(value.contents[value.thumbnail])} />
         <div className="name">{value.name}</div>
       </Row>
     ) : options.length > 0 ? (
-      <p className="placeholder">{t('item_dropdown.placeholder')}&hellip;</p>
+      <p className="placeholder">{placeholder ? placeholder : <>{t('item_dropdown.placeholder')}&hellip;</>}</p>
     ) : (
       <p className="no-items">{t('item_dropdown.no_items')}</p>
     )

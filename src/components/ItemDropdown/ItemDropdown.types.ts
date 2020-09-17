@@ -4,6 +4,7 @@ import { Dispatch } from 'redux'
 export type Props = {
   items: Item[]
   value?: Item
+  placeholder?: string
   filter?: (item: Item) => boolean
   onChange: (item: Item) => void
   isDisabled?: boolean
