@@ -9,6 +9,7 @@ export type Collection = {
   contractAddress?: string
   salt?: string
   isPublished: boolean
+  minters: string[]
   createdAt: number
   updatedAt: number
 }
@@ -26,4 +27,10 @@ export type Mint = {
   address: string
   amount: number
   item: Item
+}
+
+export type MinterAccess = {
+  address: string
+  hasAccess: boolean
+  collection: Collection
 }
