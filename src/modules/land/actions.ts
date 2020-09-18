@@ -188,8 +188,9 @@ export const SET_NAME_RESOLVER_FAILURE = '[Failure] Set Name Resolver'
 
 export const setNameResolverRequest = (ens: string, land: Land) => 
   action(SET_NAME_RESOLVER_REQUEST, { ens, land })
-export const setNameResolverSuccess = (ens: string, land: Land, txHash: string) =>
+export const setNameResolverSuccess = (owner: string, ens: string, land: Land, txHash: string) =>
   action(SET_NAME_RESOLVER_SUCCESS, {
+    owner,
     ens,
     land,
     ...buildTransactionPayload(txHash, {

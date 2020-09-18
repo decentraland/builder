@@ -118,7 +118,7 @@ function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
     )
     console.log({txHashSetResolver})
     yield put(setNameResolverSuccess(
-      ens, land, txHashSetResolver
+      from, ens, land, txHashSetResolver
     ))
   } catch (error) {
     yield put(setNameResolverFailure(
