@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Item } from 'modules/item/types'
-import { Collection, Mint } from './types'
+import { Collection, Mint, MinterAccess } from './types'
 
 // Fetch collections
 
@@ -92,17 +92,16 @@ export const SET_COLLECTION_MINTERS_REQUEST = '[Request] Set collection Minters'
 export const SET_COLLECTION_MINTERS_SUCCESS = '[Success] Set collection Minters'
 export const SET_COLLECTION_MINTERS_FAILURE = '[Failure] Set collection Minters'
 
-export const setCollectionMintersRequest = (collection: Collection, minters: string[], access: boolean[]) =>
-  action(SET_COLLECTION_MINTERS_REQUEST, { collection, minters, access })
-export const setCollectionMintersSuccess = (collection: Collection, minters: string[], access: boolean[], txHash: string) =>
+export const setCollectionMintersRequest = (collection: Collection, mintersAccess: MinterAccess[]) =>
+  action(SET_COLLECTION_MINTERS_REQUEST, { collection, mintersAccess })
+export const setCollectionMintersSuccess = (collection: Collection, minters: string[], txHash: string) =>
   action(SET_COLLECTION_MINTERS_SUCCESS, {
     collection,
     minters,
-    access,
-    ...buildTransactionPayload(txHash, { collection, minters, access })
+    ...buildTransactionPayload(txHash, { collection, minters })
   })
-export const setCollectionMintersFailure = (collection: Collection, minters: string[], access: boolean[], error: string) =>
-  action(SET_COLLECTION_MINTERS_FAILURE, { collection, minters, access, error })
+export const setCollectionMintersFailure = (collection: Collection, mintersAccess: MinterAccess[], error: string) =>
+  action(SET_COLLECTION_MINTERS_FAILURE, { collection, mintersAccess, error })
 
 export type SetCollectionMintersRequestAction = ReturnType<typeof setCollectionMintersRequest>
 export type SetCollectionMintersSuccessAction = ReturnType<typeof setCollectionMintersSuccess>

@@ -51,6 +51,7 @@ export type RemoteCollection = {
   salt: string | null
   contract_address: string | null
   is_published: boolean
+  minters: string[]
   created_at: Date
   updated_at: Date
 }
@@ -295,6 +296,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     name: collection.name,
     eth_address: collection.owner,
     is_published: collection.isPublished,
+    minters: collection.minters,
     contract_address: collection.contractAddress || null,
     salt: collection.salt || null,
     created_at: new Date(collection.createdAt),
@@ -310,6 +312,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection): Collection {
     name: remoteCollection.name,
     owner: remoteCollection.eth_address,
     isPublished: remoteCollection.is_published,
+    minters: remoteCollection.minters || [],
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }

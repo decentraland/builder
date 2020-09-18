@@ -105,23 +105,40 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
 }
 
 function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
-  const { collection, minters, access } = action.payload
+  const { collection, mintersAccess } = action.payload
   try {
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
+    const addresses: Address[] = []
+    const access: boolean[] = []
+
+    const newMinters = new Set(collection.minters)
+
+    for (const { address, hasAccess } of mintersAccess) {
+      addresses.push(Address.fromString(address))
+      access.push(hasAccess)
+
+      if (hasAccess) {
+        newMinters.add(address)
+      } else {
+        newMinters.delete(address)
+      }
+    }
+
     const txHash = yield call(() =>
       implementation.methods
-        .setMinters(minters.map(Address.fromString), access)
+        .setMinters(addresses, access)
         .send({ from })
         .getTxHash()
     )
 
-    yield put(setCollectionMintersSuccess(collection, minters, access, txHash))
+    yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
-    yield put(setCollectionMintersFailure(collection, minters, access, error.message))
+    console.log(error)
+    yield put(setCollectionMintersFailure(collection, mintersAccess, error.message))
   }
 }
 
@@ -150,6 +167,7 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
     )
 
     yield put(mintCollectionItemsSuccess(collection, mints, txHash))
+    yield put(closeModal('MintItemsModal'))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(mintCollectionItemsFailure(collection, mints, error.message))

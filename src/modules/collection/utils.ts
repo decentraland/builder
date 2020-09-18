@@ -3,11 +3,20 @@ import { toBN, toWei } from 'web3x-es/utils'
 import { env } from 'decentraland-commons'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { Item } from 'modules/item/types'
+import { COLLECTION_STORE_ADDRESS } from 'modules/common/contracts'
 import { getRarityIndex, getMetadata } from 'modules/item/utils'
-import { InitializeItem, Collection } from './types'
+import { InitializeItem, Collection, MinterAccess } from './types'
 
 const EMPTY_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const BASE_URI = env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
+
+export function setOnSale(collection: Collection, isOnSale: boolean): MinterAccess[] {
+  return [{ address: COLLECTION_STORE_ADDRESS, hasAccess: isOnSale, collection }]
+}
+
+export function isOnSale(collection: Collection) {
+  return collection.minters.includes(COLLECTION_STORE_ADDRESS)
+}
 
 export function getCollectionSymbol(collection: Collection) {
   const vowelLessName = collection.name.replace(/a|e|i|o|u|\s/, '')

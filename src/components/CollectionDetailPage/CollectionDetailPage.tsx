@@ -5,6 +5,7 @@ import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon, Pop
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
+import { setOnSale, isOnSale } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -38,8 +39,12 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     onOpenModal('PublishCollectionModal', { collectionId: collection!.id })
   }
 
-  handleOnSaleChange = (_event: React.FormEvent<HTMLInputElement>, props: CheckboxProps) => {
-    console.log('Change', props.checked)
+  handleOnSaleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
+    const { collection, onSetMinters } = this.props
+    const { checked } = checkboxProps
+    if (collection && checked !== undefined) {
+      onSetMinters(collection!, setOnSale(collection, checked))
+    }
   }
 
   canPublish() {
@@ -53,7 +58,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { items, onOpenModal, onNavigate } = this.props
+    const { items, isOnSaleLoading, onOpenModal, onNavigate } = this.props
     const collection = this.props.collection!
 
     return (
@@ -73,15 +78,16 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     {collection.isPublished ? (
                       <>
                         <Popup
-                          content={t('collection_detail_page.on_sale_popup')}
+                          content={isOnSaleLoading ? t('global.loading') : t('collection_detail_page.on_sale_popup')}
                           position="top center"
                           trigger={
                             <Radio
                               toggle
                               className="on-sale"
-                              checked={false}
+                              checked={isOnSale(collection)}
                               onChange={this.handleOnSaleChange}
                               label={t('collection_detail_page.on_sale')}
+                              disabled={isOnSaleLoading}
                             />
                           }
                           hideOnScroll={true}
