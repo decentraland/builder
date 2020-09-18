@@ -21,7 +21,8 @@ import {
   DELETE_COLLECTION_REQUEST,
   DELETE_COLLECTION_FAILURE,
   DELETE_COLLECTION_SUCCESS,
-  PUBLISH_COLLECTION_SUCCESS
+  PUBLISH_COLLECTION_SUCCESS,
+  SET_COLLECTION_MINTERS_SUCCESS
 } from './actions'
 
 export type CollectionState = {
@@ -139,6 +140,18 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               [collection.id]: {
                 ...state.data[collection.id],
                 isPublished: true
+              }
+            }
+          }
+        }
+        case SET_COLLECTION_MINTERS_SUCCESS: {
+          const { collection, minters } = transaction.payload
+          return {
+            ...state,
+            data: {
+              [collection.id]: {
+                ...state.data[collection.id],
+                minters: [...minters]
               }
             }
           }
