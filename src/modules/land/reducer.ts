@@ -7,10 +7,10 @@ import {
   FETCH_LANDS_REQUEST,
   FETCH_LANDS_SUCCESS,
   FETCH_LANDS_FAILURE,
-  //SetNameResolverRequestAction,
+  SetNameResolverRequestAction,
   SetNameResolverSuccessAction,
   SetNameResolverFailureAction,
-  //SET_NAME_RESOLVER_REQUEST,
+  SET_NAME_RESOLVER_REQUEST,
   SET_NAME_RESOLVER_SUCCESS,
   SET_NAME_RESOLVER_FAILURE
 } from './actions'
@@ -29,8 +29,8 @@ const INITIAL_STATE: LandState = {
   error: null,
 }
 
-export type LandReducerAction = FetchLandsRequestAction | FetchLandsSuccessAction | FetchLandsFailureAction |
-                                SetNameResolverSuccessAction | SetNameResolverFailureAction
+export type LandReducerAction = FetchLandsRequestAction      | FetchLandsSuccessAction      | FetchLandsFailureAction      |
+                                SetNameResolverRequestAction | SetNameResolverSuccessAction | SetNameResolverFailureAction
 
 export function landReducer(state: LandState = INITIAL_STATE, action: LandReducerAction): LandState {
   switch (action.type) {
@@ -61,17 +61,19 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
         error
       }
     }
-    /*
     case SET_NAME_RESOLVER_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
-    */
     case SET_NAME_RESOLVER_SUCCESS: {
       const { owner, ens, land } = action.payload
-      const landRef = state.data.lands.find(l => l.id === land.id)
+      const lands:Land[] = JSON.parse(JSON.stringify(state.data[owner]))
+      if (!lands) {
+        return state
+      }
+      const landRef = lands.find(l => l.id === land.id)
       if (!landRef) {
         return state
       }
@@ -82,7 +84,7 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
         error: null,
         data: {
           ...state.data,
-          [owner]: [...state.data.lands, landRef]
+          [owner]: lands
         }
       }
     }

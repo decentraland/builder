@@ -442,6 +442,7 @@
     "transfer": "Transferir",
     "edit": "Editar",
     "set_operator": "Configurar Operador",
+    "set_name": "Establece tu nombre",
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
@@ -453,6 +454,13 @@
     "operators": "Operadores",
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias"
+  },
+  "land_ens_page" : {
+    "title": "Establece tu Nombre",
+    "subtitle": "Establece un nombre ethereum a tu tierra",
+    "select_names": {
+      "placeholder": "Tus nombres registrados"
+    }
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",

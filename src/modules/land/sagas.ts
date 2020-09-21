@@ -83,17 +83,12 @@ export function* landSaga() {
 
 function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
   const { land, ens } = action.payload
-
-  console.log("start")
   try {
     const [eth, from] = yield getEth()
     const nodehash = namehash(ens)
-
     const ensContract = new ENS(eth, Address.fromString(ENS_ADDRESS))
-    let resolverAddress = yield call(() => ensContract.methods.resolver(nodehash).call())
-
-    if (resolverAddress !== '0x0000000000000000000000000000000000000000') {
-      console.log("Already setted")
+    let resolverAddress:Address = yield call(() => ensContract.methods.resolver(nodehash).call())
+    if (resolverAddress.toString() !== "0x0000000000000000000000000000000000000000") {
       return yield put(setNameResolverFailure(
         ens, land, 
         'Your name has been setted previously. Please choose another one.'
@@ -103,27 +98,25 @@ function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
 
     const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
     const hash = contentHash.fromIpfs(ipfsHash)
-    const txHashSetContent = yield call(() => 
+    yield call(() => 
       resolverContract.methods
         .setContenthash(nodehash, `0x${hash}`)
         .send({from})
         .getTxHash()
     )
-    console.log({txHashSetContent})
     const txHashSetResolver = yield call(() => 
       ensContract.methods
         .setResolver(nodehash, resolverAddress)
         .send({from})
         .getTxHash()
     )
-    console.log({txHashSetResolver})
     yield put(setNameResolverSuccess(
       from, ens, land, txHashSetResolver
     ))
   } catch (error) {
     yield put(setNameResolverFailure(
         ens, land, 
-        'Your name has been setted previously. Please choose another one.'
+        'Unexpected error!'
       ))
   }
 }

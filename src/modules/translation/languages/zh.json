@@ -443,6 +443,7 @@
     "transfer": "转移",
     "edit": "编辑",
     "set_operator": "设定操作者",
+    "set_name": "设置名称",
     "build_estate": "建立产业",
     "add_or_remove_parcels": "添加或删除地块",
     "dissolve_estate": "解散产业",
@@ -455,6 +456,14 @@
     "total_land": "总土地",
     "empty_land": "空地"
   },
+  "land_ens_page" : {
+    "title": "设置名称",
+    "subtitle": "将以太坊名称服务设置为您的土地",
+    "select_names": {
+      "placeholder": "您的注册名称"
+    }
+  },
+
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
     "step_one_message_line_one": "为了在我们的产品中提供隐秘的体验，我们已将Builder的帐户系统从电子邮件切换为基于钱包的帐户。这意味着您将需要连接一个以太坊钱包，以将场景存储在云中。如果您没有钱包，可以了解更多有关如何获得钱包的信息{link}。",

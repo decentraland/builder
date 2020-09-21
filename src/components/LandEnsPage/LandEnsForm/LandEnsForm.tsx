@@ -60,7 +60,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
           </> : <>
             <Row>
               <SelectNames
-                name={t('land_ens_page.select_names.name')}
+                name={t('land_ens_page.select_names.placeholder')}
                 value={selectedSubdomain}
                 options={selectOptions}
                 onChange={this.handleChange}

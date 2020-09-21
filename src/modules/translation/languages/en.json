@@ -479,6 +479,7 @@
     "transfer": "Transfer",
     "edit": "Edit",
     "set_operator": "Set Operator",
+    "set_name": "Set name",
     "build_estate": "Build Estate",
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
@@ -490,6 +491,13 @@
     "operators": "Operators",
     "total_land": "Total Land",
     "empty_land": "Empty Land"
+  },
+  "land_ens_page" : {
+    "title": "Set Name",
+    "subtitle": "Set the ethereum name service to your land",
+    "select_names": {
+      "placeholder": "Your registered names"
+    }
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",
