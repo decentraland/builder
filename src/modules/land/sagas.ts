@@ -106,7 +106,7 @@ function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
     )
     const txHashSetResolver = yield call(() => 
       ensContract.methods
-        .setResolver(nodehash, resolverAddress)
+        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
         .send({from})
         .getTxHash()
     )
