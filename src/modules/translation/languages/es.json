@@ -815,5 +815,18 @@
   },
   "collection_image": {
     "no_items": "No Items"
+  },
+  "item_editor": {
+    "left_panel": {
+      "title": "Mis Items",
+      "actions": {
+        "new_item": "Nuevo Item",
+        "new_collection": "Nueva Colección",
+        "add_existing_item": "Agregar Item"
+      },
+      "items": "Items",
+      "collections": "Colecciones",
+      "items_count": "{count} items"
+    }
   }
 }

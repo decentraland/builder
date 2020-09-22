@@ -1,0 +1,5 @@
+.LeftPanel {
+  width: 360px;
+  flex: none;
+  background-color: var(--void);
+}

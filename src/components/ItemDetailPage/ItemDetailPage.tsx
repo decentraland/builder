@@ -17,6 +17,11 @@ import { getMissingBodyShapeType } from 'modules/item/utils'
 const STORAGE_KEY = 'dcl-item-notice'
 
 export default class ItemDetailPage extends React.PureComponent<Props> {
+  handleEditItem = () => {
+    const { item, onNavigate } = this.props
+    onNavigate(locations.itemEditor({ itemId: item!.id }))
+  }
+
   handleDeleteItem = () => {
     const { item, onDelete } = this.props
     onDelete(item!)
@@ -73,7 +78,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    <Button primary compact onClick={() => console.log('Edit item')}>
+                    <Button primary compact onClick={this.handleEditItem}>
                       {t('global.edit')}
                     </Button>
                   </Row>
