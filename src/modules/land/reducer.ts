@@ -91,6 +91,7 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
     case SET_NAME_RESOLVER_FAILURE: {
       const { error } = action.payload
       return {
+        loading: loadingReducer(state.loading, action),
         ...state,
         error
       }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Row, Button } from 'decentraland-ui'
+import { Form, Row, Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
@@ -39,14 +39,19 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
   }
   
   render() {
-    const { land, onSetNameResolver, error } = this.props
+    const { land, onSetNameResolver, error, isLoading } = this.props
     const { subdomainList, selectedSubdomain, done } = this.state
     const selectOptions = subdomainList.map(x => ({value: x.toLowerCase(), text: x.toLowerCase()}))
  
+ 
+    if (!error && isLoading) {
+      return <Row><Loader size="large" active /></Row>
+    }
+
     const message = error ? error : 'Name saved correctly'
+
     return (
       <Form className="LandEnsForm">
-
         { 
           done ? <>
             <Row>
@@ -54,7 +59,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
             </Row>
             <Row>
               <Link className="cancel" to={locations.landDetail(land.id)}>
-                <Button>{t('global.cancel')}</Button>
+                <Button>{t('global.done')}</Button>
               </Link>
             </Row>
           </> : <>
@@ -74,7 +79,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
                 {t('global.submit')}
               </Button>
               <Link className="cancel" to={locations.landDetail(land.id)}>
-                <Button>{t('global.cancel')}</Button>
+                <Button>{t('global.submit')}</Button>
               </Link>
             </Row>
           </>
