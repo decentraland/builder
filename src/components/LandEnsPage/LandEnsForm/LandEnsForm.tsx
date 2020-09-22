@@ -79,7 +79,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
                 {t('global.submit')}
               </Button>
               <Link className="cancel" to={locations.landDetail(land.id)}>
-                <Button>{t('global.submit')}</Button>
+                <Button>{t('global.cancel')}</Button>
               </Link>
             </Row>
           </>
