@@ -1,0 +1,6 @@
+.RightPanel {
+  width: 360px;
+  flex: none;
+  background-color: var(--preview-background);
+  border-left: 1px solid rgba(115, 110, 125, 0.3);
+}

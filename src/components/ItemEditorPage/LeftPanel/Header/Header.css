@@ -1,0 +1,48 @@
+.Header {
+  width: 100%;
+  height: 52px;
+}
+
+.Header .block {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.Header .title {
+  flex: 1 0 auto;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: bold;
+}
+
+.Header .ui.dropdown .dropdown.icon {
+  display: none;
+}
+
+.Header .home {
+  background-image: url(../../../../images/home.svg);
+  background-size: 20px;
+}
+
+.Header .back {
+  background-image: url(../../../../images/back-item-editor.svg);
+  background-size: 8px;
+}
+
+.Header .add {
+  background-image: url(../../../../images/add-item-editor.svg);
+  background-size: 15px;
+}
+
+.Header .actions {
+  background-image: url(../../../../images/options-item-editor.svg);
+  background-size: 18px;
+}

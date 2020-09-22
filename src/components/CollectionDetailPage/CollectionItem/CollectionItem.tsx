@@ -25,7 +25,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   handleNavigateToEditor = () => {
     const { onNavigate, item } = this.props
-    onNavigate(locations.itemEditor(item.id))
+    onNavigate(locations.itemEditor({ itemId: item.id }))
   }
 
   handleRemoveFromCollection = () => {
