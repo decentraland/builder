@@ -19,9 +19,9 @@ import './CollectionDetailPage.css'
 const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
-  handleCollaborators = () => {
+  handleUpdateManagers = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('CollaboratorsModal', { collectionId: collection!.id })
+    onOpenModal('CollectionManagersModal', { collectionId: collection!.id })
   }
 
   handleMintItems = () => {
@@ -124,7 +124,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     >
                       <Dropdown.Menu>
                         {collection.isPublished ? (
-                          <Dropdown.Item text={t('collection_detail_page.collaborators')} onClick={this.handleCollaborators} />
+                          <Dropdown.Item text={t('collection_detail_page.collaborators')} onClick={this.handleUpdateManagers} />
                         ) : (
                           <>
                             <Dropdown.Item

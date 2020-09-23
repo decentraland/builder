@@ -6,109 +6,105 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { isValid, shorten } from 'lib/address'
 import { Access } from 'modules/collection/types'
 import Profile from 'components/Profile'
-import { Props } from './CollaboratorsModal.types'
-import './CollaboratorsModal.css'
+import { Props, State } from './CollectionManagersModal.types'
+import './CollectionManagersModal.css'
 
-type State = {
-  collaborators: string[]
-}
-
-export default class CollaboratorsModal extends React.PureComponent<Props> {
+export default class CollectionManagersModal extends React.PureComponent<Props> {
   state: State = this.getInitialState()
 
   getInitialState(): State {
     const { collection } = this.props
-    const collaborators = new Set(collection.managers)
+    const managers = new Set(collection.managers)
     return {
-      collaborators: Array.from(collaborators)
+      managers: Array.from(managers)
     }
   }
 
-  handleAddNewCollaborator = () => {
-    const { collaborators } = this.state
+  handleAddNewManager = () => {
+    const { managers } = this.state
     this.setState({
-      collaborators: [...collaborators, undefined]
+      managers: [...managers, undefined]
     })
   }
 
-  handleAddCollaborator = (index: number, collaborator: string) => {
-    if (this.isValidCollaborator(collaborator)) {
-      const collaborators = this.removeCollaboratorAtIndex(index)
-      collaborators.push(collaborator)
-      this.setState({ collaborators })
+  handleAddManager = (index: number, collaborator: string) => {
+    if (this.isValidManager(collaborator)) {
+      const managers = this.removeManagerAtIndex(index)
+      managers.push(collaborator)
+      this.setState({ managers })
     }
   }
 
-  handleRemoveCollaborator = (collaborator: string) => {
-    const { collaborators } = this.state
+  handleRemoveManager = (collaborator: string) => {
+    const { managers } = this.state
     this.setState({
-      collaborators: collaborators.filter(_collaborator => _collaborator !== collaborator)
+      managers: managers.filter(_collaborator => _collaborator !== collaborator)
     })
   }
 
   handleCancelNew = (index: number) => {
     this.setState({
-      collaborators: this.removeCollaboratorAtIndex(index)
+      managers: this.removeManagerAtIndex(index)
     })
   }
 
   handleSubmit = () => {
-    const { collection, onSetCollaborators } = this.props
-    const { collaborators } = this.state
+    const { collection, onSetManagers } = this.props
+    const { managers } = this.state
     const accessList: Access[] = []
     for (const collaborator of collection.managers) {
-      if (!collaborators.includes(collaborator)) {
+      if (!managers.includes(collaborator)) {
         accessList.push({ address: collaborator, hasAccess: false, collection })
       }
     }
-    for (const collaborator of collaborators) {
+    for (const collaborator of managers) {
       if (!collection.managers.includes(collaborator)) {
         accessList.push({ address: collaborator, hasAccess: true, collection })
       }
     }
-    onSetCollaborators(collection, accessList)
+    onSetManagers(collection, accessList)
   }
 
-  removeCollaboratorAtIndex(index: number) {
-    const { collaborators } = this.state
-    return [...collaborators.slice(0, index), ...collaborators.slice(index + 1)]
+  removeManagerAtIndex(index: number) {
+    const { managers } = this.state
+    return [...managers.slice(0, index), ...managers.slice(index + 1)]
   }
 
-  isValidCollaborator(collaborator: string) {
-    return isValid(collaborator) && !this.state.collaborators.includes(collaborator)
+  isValidManager(collaborator: string) {
+    return isValid(collaborator) && !this.state.managers.includes(collaborator)
   }
 
   render() {
     const { onClose } = this.props
-    const { collaborators } = this.state
+    const { managers } = this.state
     return (
-      <Modal name={name} className="CollaboratorsModal" onClose={onClose}>
+      <Modal name={name} className="CollectionManagersModal" onClose={onClose}>
         <ModalNavigation title={t('collaborators_modal.title')} onClose={onClose} />
         <Modal.Content>
-          <div className="collaborators">
-            {collaborators.length > 0 ? (
+          <div className="managers">
+            {managers.length > 0 ? (
               <>
-                <div className="collaborators-list">
-                  {collaborators.map((collaborator, index) =>
+                <div className="managers-list">
+                  {managers.map((collaborator, index) =>
                     collaborator ? (
-                      <Collaborator key={index} collaborator={collaborator} onRemove={this.handleRemoveCollaborator} />
+                      <Manager key={index} collaborator={collaborator} onRemove={this.handleRemoveManager} />
                     ) : (
-                      <EmptyCollaborator
+                      <EmptyManager
                         key={index}
-                        onAdd={(collaborator: string) => this.handleAddCollaborator(index, collaborator)}
+                        onAdd={(collaborator: string) => this.handleAddManager(index, collaborator)}
                         onCancel={() => this.handleCancelNew(index)}
                       />
                     )
                   )}
                 </div>
-                <div className="add-collaborators link" onClick={this.handleAddNewCollaborator}>
+                <div className="add-managers link" onClick={this.handleAddNewManager}>
                   {t('collaborators_modal.add_collaborator')}
                 </div>
               </>
             ) : (
-              <div className="empty-collaborators-list">
+              <div className="empty-managers-list">
                 {t('collaborators_modal.no_collaborators')}&nbsp;
-                <span className="link" onClick={this.handleAddNewCollaborator}>
+                <span className="link" onClick={this.handleAddNewManager}>
                   {t('collaborators_modal.adding_one')}
                 </span>
               </div>
@@ -125,14 +121,14 @@ export default class CollaboratorsModal extends React.PureComponent<Props> {
   }
 }
 
-type EmptyCollaboratorProps = {
+type EmptyManagerProps = {
   onAdd: (collaborator: string) => void
   onCancel: () => void
 }
-type EmptyCollaboratorState = {
+type EmptyManagerState = {
   collaborator: string
 }
-class EmptyCollaborator extends React.PureComponent<EmptyCollaboratorProps, EmptyCollaboratorState> {
+class EmptyManager extends React.PureComponent<EmptyManagerProps, EmptyManagerState> {
   state = {
     collaborator: ''
   }
@@ -157,7 +153,7 @@ class EmptyCollaborator extends React.PureComponent<EmptyCollaboratorProps, Empt
   render() {
     const { collaborator } = this.state
     return (
-      <div className="EmptyCollaborator">
+      <div className="EmptyManager">
         <Field className="rounded" type="address" value={collaborator} onChange={this.handleChange} placeholder="0x..." />
         <span className="action link" onClick={this.handleAdd}>
           {t('global.add')}
@@ -170,11 +166,11 @@ class EmptyCollaborator extends React.PureComponent<EmptyCollaboratorProps, Empt
   }
 }
 
-type CollaboratorProps = {
+type ManagerProps = {
   collaborator: string
   onRemove: (collaborator: string) => void
 }
-class Collaborator extends React.PureComponent<CollaboratorProps> {
+class Manager extends React.PureComponent<ManagerProps> {
   handleRemove = () => {
     const { collaborator, onRemove } = this.props
     onRemove(collaborator)
@@ -183,7 +179,7 @@ class Collaborator extends React.PureComponent<CollaboratorProps> {
   render() {
     const { collaborator } = this.props
     return (
-      <div className="Collaborator">
+      <div className="Manager">
         <div className="info">
           <Profile address={collaborator} blockieOnly={true} />
           {shorten(collaborator)}

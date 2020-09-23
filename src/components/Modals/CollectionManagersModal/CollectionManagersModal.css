@@ -1,78 +1,78 @@
-.CollaboratorsModal .collaborators {
+.CollectionManagersModal .collaborators {
   background-color: var(--dark-gray);
   border-radius: 8px;
   padding: 20px 25px;
 }
 
-.CollaboratorsModal .empty-collaborators-list {
+.CollectionManagersModal .empty-collaborators-list {
   padding: 40px;
   text-align: center;
 }
 
-.CollaboratorsModal .empty-collaborators-list .link {
+.CollectionManagersModal .empty-collaborators-list .link {
   text-transform: none;
 }
 
-.CollaboratorsModal .add-collaborators {
+.CollectionManagersModal .add-collaborators {
   margin-top: 24px;
   margin-left: 10px;
   font-size: 13px;
 }
 
-.CollaboratorsModal .link {
+.CollectionManagersModal .link {
   text-transform: uppercase;
 }
 
-.CollaboratorsModal .actions {
+.CollectionManagersModal .actions {
   margin-top: 150px;
   width: 100%;
   text-align: right;
 }
 
-.Collaborator {
+.Manager {
   display: flex;
   padding: 10px;
   align-items: center;
 }
 
-.Collaborator:hover {
+.Manager:hover {
   background-color: rgba(22, 20, 26, 0.5);
 }
 
-.Collaborator .info {
+.Manager .info {
   flex: 1 1 auto;
 }
 
-.Collaborator .action {
+.Manager .action {
   display: none;
   font-size: 13px;
 }
 
-.Collaborator:hover .action {
+.Manager:hover .action {
   display: block;
 }
 
-.EmptyCollaborator {
+.EmptyManager {
   display: flex;
   align-items: center;
   padding: 10px;
 }
 
-.EmptyCollaborator {
+.EmptyManager {
   display: flex;
   padding: 10px;
   background-color: #16141a;
 }
 
-.EmptyCollaborator .dcl.field {
+.EmptyManager .dcl.field {
   flex: 1 1 auto;
 }
 
-.EmptyCollaborator .dcl.field .ui.input.rounded > input {
+.EmptyManager .dcl.field .ui.input.rounded > input {
   border: none;
 }
 
-.EmptyCollaborator .action {
+.EmptyManager .action {
   font-size: 13px;
   margin-left: 16px;
 }

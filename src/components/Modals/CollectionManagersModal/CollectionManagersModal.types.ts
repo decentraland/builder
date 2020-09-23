@@ -7,7 +7,11 @@ export type Props = ModalProps & {
   metadata: CollaboratorsModalMetadata
   collection: Collection
   isLoading: boolean
-  onSetCollaborators: typeof setCollectionManagersRequest
+  onSetManagers: typeof setCollectionManagersRequest
+}
+
+export type State = {
+  managers: string[]
 }
 
 export type CollaboratorsModalMetadata = {
@@ -15,6 +19,6 @@ export type CollaboratorsModalMetadata = {
 }
 
 export type MapStateProps = Pick<Props, 'collection' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSetCollaborators'>
+export type MapDispatchProps = Pick<Props, 'onSetManagers'>
 export type MapDispatch = Dispatch<SetCollectionManagersRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>
