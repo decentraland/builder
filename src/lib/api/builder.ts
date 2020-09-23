@@ -52,6 +52,7 @@ export type RemoteCollection = {
   contract_address: string | null
   is_published: boolean
   minters: string[]
+  managers: string[]
   created_at: Date
   updated_at: Date
 }
@@ -297,6 +298,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     eth_address: collection.owner,
     is_published: collection.isPublished,
     minters: collection.minters,
+    managers: collection.managers,
     contract_address: collection.contractAddress || null,
     salt: collection.salt || null,
     created_at: new Date(collection.createdAt),
@@ -313,6 +315,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection): Collection {
     owner: remoteCollection.eth_address,
     isPublished: remoteCollection.is_published,
     minters: remoteCollection.minters || [],
+    managers: remoteCollection.managers || [],
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }
@@ -530,7 +533,9 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections() {
     const remoteCollections = await this.request('get', `/collections`)
-    return remoteCollections.map(fromRemoteCollection)
+    return remoteCollections
+      .map(fromRemoteCollection)
+      .map((collection: Collection) => ({ ...collection, managers: ['0x66788F71Bf33EcBd263a57E5F371cCDCaFfc519e'] }))
   }
 
   async saveCollection(collection: Collection) {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, ModalActions, Button } from 'decentraland-ui'
+import { Loader, ModalNavigation, ModalActions, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
@@ -14,7 +14,7 @@ import './MintItemsModal.css'
 export default class MintItemsModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
 
-  getInitialState() {
+  getInitialState(): State {
     const { items } = this.props
     const itemMints: ItemMints = {}
     for (const item of items) {
@@ -49,7 +49,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
         }
       }
     }
-    this.props.onSubmit(collection, mints)
+    this.props.onMint(collection, mints)
   }
 
   handleAddItems = (item: Item) => {
@@ -73,7 +73,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { totalCollectionItems, onClose } = this.props
+    const { isLoading, totalCollectionItems, onClose } = this.props
     const { itemMints } = this.state
 
     const items = this.props.items.concat(this.state.items)
@@ -82,17 +82,27 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       <Modal name={name} className="MintItemsModal" onClose={onClose}>
         <ModalNavigation title={t('mint_items_modal.title')} onClose={onClose} />
         <Modal.Content>
-          {items.map(item => (
-            <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />
-          ))}
-          {items.length !== totalCollectionItems ? (
-            <ItemDropdown placeholder={t('mint_items_modal.add_item')} onChange={this.handleAddItems} filter={this.filterAddableItems} />
-          ) : null}
-          <ModalActions>
-            <Button primary onClick={this.handleMintItems}>
-              {t('global.done')}
-            </Button>
-          </ModalActions>
+          {isLoading ? (
+            <Loader active size="massive" />
+          ) : (
+            <>
+              {items.map(item => (
+                <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />
+              ))}
+              {items.length !== totalCollectionItems ? (
+                <ItemDropdown
+                  placeholder={t('mint_items_modal.add_item')}
+                  onChange={this.handleAddItems}
+                  filter={this.filterAddableItems}
+                />
+              ) : null}
+              <ModalActions>
+                <Button primary onClick={this.handleMintItems}>
+                  {t('global.done')}
+                </Button>
+              </ModalActions>
+            </>
+          )}
         </Modal.Content>
       </Modal>
     )

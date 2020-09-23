@@ -1,4 +1,5 @@
 export { default as AddExistingItemModal } from './AddExistingItemModal'
+export { default as CollaboratorsModal } from './CollaboratorsModal'
 export { default as ContestModal } from './ContestModal'
 export { default as CreateAssetPackModal } from './CreateAssetPackModal'
 export { default as CreateCollectionModal } from './CreateCollectionModal'

@@ -410,7 +410,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             </Row>
             <Row className="actions" align="right">
               <Button primary onClick={() => this.handleSubmit()} disabled={!isValid || isLoading} loading={isLoading}>
-                {t('create_item_modal.add')}
+                {t('global.add')}
               </Button>
             </Row>
           </Column>

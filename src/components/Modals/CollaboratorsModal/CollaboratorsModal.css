@@ -1,0 +1,78 @@
+.CollaboratorsModal .collaborators {
+  background-color: var(--dark-gray);
+  border-radius: 8px;
+  padding: 20px 25px;
+}
+
+.CollaboratorsModal .empty-collaborators-list {
+  padding: 40px;
+  text-align: center;
+}
+
+.CollaboratorsModal .empty-collaborators-list .link {
+  text-transform: none;
+}
+
+.CollaboratorsModal .add-collaborators {
+  margin-top: 24px;
+  margin-left: 10px;
+  font-size: 13px;
+}
+
+.CollaboratorsModal .link {
+  text-transform: uppercase;
+}
+
+.CollaboratorsModal .actions {
+  margin-top: 150px;
+  width: 100%;
+  text-align: right;
+}
+
+.Collaborator {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
+.Collaborator:hover {
+  background-color: rgba(22, 20, 26, 0.5);
+}
+
+.Collaborator .info {
+  flex: 1 1 auto;
+}
+
+.Collaborator .action {
+  display: none;
+  font-size: 13px;
+}
+
+.Collaborator:hover .action {
+  display: block;
+}
+
+.EmptyCollaborator {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.EmptyCollaborator {
+  display: flex;
+  padding: 10px;
+  background-color: #16141a;
+}
+
+.EmptyCollaborator .dcl.field {
+  flex: 1 1 auto;
+}
+
+.EmptyCollaborator .dcl.field .ui.input.rounded > input {
+  border: none;
+}
+
+.EmptyCollaborator .action {
+  font-size: 13px;
+  margin-left: 16px;
+}

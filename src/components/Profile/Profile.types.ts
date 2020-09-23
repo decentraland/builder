@@ -5,10 +5,12 @@ import { Dispatch } from 'redux'
 export type Props = {
   address: string
   avatar: Avatar | null
-  onLoadProfile: typeof loadProfileRequest
   textOnly?: boolean
   imageOnly?: boolean
+  avatarOnly?: boolean
+  blockieOnly?: boolean
   size?: 'normal' | 'large' | 'huge'
+  onLoadProfile: typeof loadProfileRequest
 }
 
 export type MapStateProps = Pick<Props, 'avatar'>
