@@ -818,6 +818,12 @@
     "title": "Crear Items",
     "add_item": "Agregar Item"
   },
+  "collaborators_modal": {
+    "title": "Colaboradores",
+    "add_collaborator": "Agregar Colaborador",
+    "no_collaborators":"No hay colaboradores, comienza por",
+    "adding_one": "agregar uno!"
+  },
   "collection_image": {
     "no_items": "No Items"
   },
