@@ -533,9 +533,7 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections() {
     const remoteCollections = await this.request('get', `/collections`)
-    return remoteCollections
-      .map(fromRemoteCollection)
-      .map((collection: Collection) => ({ ...collection, managers: ['0x66788F71Bf33EcBd263a57E5F371cCDCaFfc519e'] }))
+    return remoteCollections.map(fromRemoteCollection)
   }
 
   async saveCollection(collection: Collection) {
