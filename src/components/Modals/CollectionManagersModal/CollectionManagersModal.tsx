@@ -1,15 +1,16 @@
 import * as React from 'react'
-import { ModalNavigation, ModalActions, Button, Field } from 'decentraland-ui'
+import { ModalNavigation, ModalActions, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
-import { isValid, shorten } from 'lib/address'
+import { isValid } from 'lib/address'
 import { Access } from 'modules/collection/types'
-import Profile from 'components/Profile'
+import Manager from './Manager'
+import EmptyManager from './EmptyManager'
 import { Props, State } from './CollectionManagersModal.types'
 import './CollectionManagersModal.css'
 
-export default class CollectionManagersModal extends React.PureComponent<Props> {
+export default class CollectionManagersModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
 
   getInitialState(): State {
@@ -58,8 +59,8 @@ export default class CollectionManagersModal extends React.PureComponent<Props> 
       }
     }
     for (const collaborator of managers) {
-      if (!collection.managers.includes(collaborator)) {
-        accessList.push({ address: collaborator, hasAccess: true, collection })
+      if (!collection.managers.includes(collaborator!)) {
+        accessList.push({ address: collaborator!, hasAccess: true, collection })
       }
     }
     onSetManagers(collection, accessList)
@@ -117,77 +118,6 @@ export default class CollectionManagersModal extends React.PureComponent<Props> 
           </ModalActions>
         </Modal.Content>
       </Modal>
-    )
-  }
-}
-
-type EmptyManagerProps = {
-  onAdd: (collaborator: string) => void
-  onCancel: () => void
-}
-type EmptyManagerState = {
-  collaborator: string
-}
-class EmptyManager extends React.PureComponent<EmptyManagerProps, EmptyManagerState> {
-  state = {
-    collaborator: ''
-  }
-
-  handleAdd = () => {
-    const { onAdd } = this.props
-    const { collaborator } = this.state
-    onAdd(collaborator)
-  }
-
-  handleCancel = () => {
-    const { onCancel } = this.props
-    onCancel()
-  }
-
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      collaborator: event.target.value
-    })
-  }
-
-  render() {
-    const { collaborator } = this.state
-    return (
-      <div className="EmptyManager">
-        <Field className="rounded" type="address" value={collaborator} onChange={this.handleChange} placeholder="0x..." />
-        <span className="action link" onClick={this.handleAdd}>
-          {t('global.add')}
-        </span>
-        <span className="action link" onClick={this.handleCancel}>
-          {t('global.cancel')}
-        </span>
-      </div>
-    )
-  }
-}
-
-type ManagerProps = {
-  collaborator: string
-  onRemove: (collaborator: string) => void
-}
-class Manager extends React.PureComponent<ManagerProps> {
-  handleRemove = () => {
-    const { collaborator, onRemove } = this.props
-    onRemove(collaborator)
-  }
-
-  render() {
-    const { collaborator } = this.props
-    return (
-      <div className="Manager">
-        <div className="info">
-          <Profile address={collaborator} blockieOnly={true} />
-          {shorten(collaborator)}
-        </div>
-        <span className="action link" onClick={this.handleRemove}>
-          {t('global.delete')}
-        </span>
-      </div>
     )
   }
 }

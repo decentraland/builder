@@ -1,0 +1,22 @@
+.Manager {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
+.Manager:hover {
+  background-color: rgba(22, 20, 26, 0.5);
+}
+
+.Manager .info {
+  flex: 1 1 auto;
+}
+
+.Manager .action {
+  display: none;
+  font-size: 13px;
+}
+
+.Manager:hover .action {
+  display: block;
+}

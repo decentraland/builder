@@ -11,7 +11,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  managers: string[]
+  managers: (string | undefined)[]
 }
 
 export type CollaboratorsModalMetadata = {
