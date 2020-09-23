@@ -1,8 +1,8 @@
 export type Props = {
-  onAdd: (collaborator: string) => void
+  onAdd: (manager: string) => void
   onCancel: () => void
 }
 
 export type State = {
-  collaborator: string
+  manager: string
 }

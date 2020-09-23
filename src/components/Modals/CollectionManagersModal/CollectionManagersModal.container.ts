@@ -12,7 +12,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   let { collectionId } = ownProps.metadata
 
   if (!collectionId) {
-    throw new Error('Invalid collection id to add collaborators')
+    throw new Error('Invalid collection id to add managers')
   }
 
   return {
@@ -22,7 +22,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetManagers: (collection, collaborators) => dispatch(setCollectionManagersRequest(collection, collaborators))
+  onSetManagers: (collection, managers) => dispatch(setCollectionManagersRequest(collection, managers))
 })
 
 export default connect(mapState, mapDispatch)(CollectionManagersModal)

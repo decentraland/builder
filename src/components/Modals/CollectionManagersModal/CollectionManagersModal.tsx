@@ -28,18 +28,18 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     })
   }
 
-  handleAddManager = (index: number, collaborator: string) => {
-    if (this.isValidManager(collaborator)) {
+  handleAddManager = (index: number, manager: string) => {
+    if (this.isValidManager(manager)) {
       const managers = this.removeManagerAtIndex(index)
-      managers.push(collaborator)
+      managers.push(manager)
       this.setState({ managers })
     }
   }
 
-  handleRemoveManager = (collaborator: string) => {
+  handleRemoveManager = (manager: string) => {
     const { managers } = this.state
     this.setState({
-      managers: managers.filter(_collaborator => _collaborator !== collaborator)
+      managers: managers.filter(_manager => _manager !== manager)
     })
   }
 
@@ -53,14 +53,14 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     const { collection, onSetManagers } = this.props
     const { managers } = this.state
     const accessList: Access[] = []
-    for (const collaborator of collection.managers) {
-      if (!managers.includes(collaborator)) {
-        accessList.push({ address: collaborator, hasAccess: false, collection })
+    for (const manager of collection.managers) {
+      if (!managers.includes(manager)) {
+        accessList.push({ address: manager, hasAccess: false, collection })
       }
     }
-    for (const collaborator of managers) {
-      if (!collection.managers.includes(collaborator!)) {
-        accessList.push({ address: collaborator!, hasAccess: true, collection })
+    for (const manager of managers) {
+      if (!collection.managers.includes(manager!)) {
+        accessList.push({ address: manager!, hasAccess: true, collection })
       }
     }
     onSetManagers(collection, accessList)
@@ -71,8 +71,8 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     return [...managers.slice(0, index), ...managers.slice(index + 1)]
   }
 
-  isValidManager(collaborator: string) {
-    return isValid(collaborator) && !this.state.managers.includes(collaborator)
+  isValidManager(manager: string) {
+    return isValid(manager) && !this.state.managers.includes(manager)
   }
 
   render() {
@@ -86,13 +86,13 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
             {managers.length > 0 ? (
               <>
                 <div className="managers-list">
-                  {managers.map((collaborator, index) =>
-                    collaborator ? (
-                      <Manager key={index} collaborator={collaborator} onRemove={this.handleRemoveManager} />
+                  {managers.map((manager, index) =>
+                    manager ? (
+                      <Manager key={index} manager={manager} onRemove={this.handleRemoveManager} />
                     ) : (
                       <EmptyManager
                         key={index}
-                        onAdd={(collaborator: string) => this.handleAddManager(index, collaborator)}
+                        onAdd={(manager: string) => this.handleAddManager(index, manager)}
                         onCancel={() => this.handleCancelNew(index)}
                       />
                     )

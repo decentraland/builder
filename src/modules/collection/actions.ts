@@ -115,11 +115,11 @@ export const SET_COLLECTION_MANAGERS_FAILURE = '[Failure] Set collection manager
 
 export const setCollectionManagersRequest = (collection: Collection, accessList: Access[]) =>
   action(SET_COLLECTION_MANAGERS_REQUEST, { collection, accessList })
-export const setCollectionManagersSuccess = (collection: Collection, collaborators: string[], txHash: string) =>
+export const setCollectionManagersSuccess = (collection: Collection, managers: string[], txHash: string) =>
   action(SET_COLLECTION_MANAGERS_SUCCESS, {
     collection,
-    collaborators,
-    ...buildTransactionPayload(txHash, { collection, collaborators })
+    managers,
+    ...buildTransactionPayload(txHash, { collection, managers })
   })
 export const setCollectionManagersFailure = (collection: Collection, accessList: Access[], error: string) =>
   action(SET_COLLECTION_MANAGERS_FAILURE, { collection, accessList, error })

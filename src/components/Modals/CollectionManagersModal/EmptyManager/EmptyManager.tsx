@@ -7,13 +7,13 @@ import './EmptyManager.css'
 
 export default class EmptyManager extends React.PureComponent<Props, State> {
   state: State = {
-    collaborator: ''
+    manager: ''
   }
 
   handleAdd = () => {
     const { onAdd } = this.props
-    const { collaborator } = this.state
-    onAdd(collaborator)
+    const { manager } = this.state
+    onAdd(manager)
   }
 
   handleCancel = () => {
@@ -23,15 +23,15 @@ export default class EmptyManager extends React.PureComponent<Props, State> {
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
-      collaborator: event.target.value
+      manager: event.target.value
     })
   }
 
   render() {
-    const { collaborator } = this.state
+    const { manager } = this.state
     return (
       <div className="EmptyManager">
-        <Field className="rounded" type="address" value={collaborator} onChange={this.handleChange} placeholder="0x..." />
+        <Field className="rounded" type="address" value={manager} onChange={this.handleChange} placeholder="0x..." />
         <span className="action link" onClick={this.handleAdd}>
           {t('global.add')}
         </span>

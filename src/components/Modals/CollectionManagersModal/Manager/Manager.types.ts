@@ -1,4 +1,4 @@
 export type Props = {
-  collaborator: string
-  onRemove: (collaborator: string) => void
+  manager: string
+  onRemove: (manager: string) => void
 }

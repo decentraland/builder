@@ -8,17 +8,17 @@ import './Manager.css'
 
 export default class Manager extends React.PureComponent<Props> {
   handleRemove = () => {
-    const { collaborator, onRemove } = this.props
-    onRemove(collaborator)
+    const { manager, onRemove } = this.props
+    onRemove(manager)
   }
 
   render() {
-    const { collaborator } = this.props
+    const { manager } = this.props
     return (
       <div className="Manager">
         <div className="info">
-          <Profile address={collaborator} blockieOnly={true} />
-          {shorten(collaborator)}
+          <Profile address={manager} blockieOnly={true} />
+          {shorten(manager)}
         </div>
         <span className="action link" onClick={this.handleRemove}>
           {t('global.delete')}
