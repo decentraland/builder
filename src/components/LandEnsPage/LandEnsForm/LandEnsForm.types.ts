@@ -1,10 +1,13 @@
 import { Land } from 'modules/land/types'
+import {ENSState} from 'modules/ens/reducer';
 
 export type Props = {
   land: Land
   isLoading: boolean
+  ens: ENSState
   error: string | null
   onSetNameResolver: (ens: string, land: Land) => void
+  onGetENS: (ens: string, land: Land) => void
 }
 
 export type State = {

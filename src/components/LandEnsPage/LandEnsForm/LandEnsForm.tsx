@@ -35,11 +35,13 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
   }
     
   handleChange = (selectedSubdomain: string) => {
+    const { onGetENS, land } = this.props
+    onGetENS(selectedSubdomain, land)
     this.setState({ selectedSubdomain })
   }
   
   render() {
-    const { land, onSetNameResolver, error, isLoading } = this.props
+    const { land, onSetNameResolver, error, ens, isLoading } = this.props
     const { subdomainList, selectedSubdomain, done } = this.state
     const selectOptions = subdomainList.map(x => ({value: x.toLowerCase(), text: x.toLowerCase()}))
  
@@ -49,6 +51,13 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     }
 
     const message = error ? error : 'Name saved correctly'
+    const messageType = ens.data[selectedSubdomain] ? ens.data[selectedSubdomain].type : 'default'
+    let selectMessage = ((type) => {
+      switch(type) {
+        case 'EqualContent' : return 'The name has been assign to the current land'
+        default             : return 'Choose a name to assign to this land'
+      }
+    })(messageType)
 
     return (
       <Form className="LandEnsForm">
@@ -70,6 +79,9 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
                 options={selectOptions}
                 onChange={this.handleChange}
               />
+            </Row>
+            <Row>
+              <p> {selectMessage} </p>
             </Row>
             <Row>
               <Button type="submit" primary onClick={async () => {

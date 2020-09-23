@@ -23,6 +23,7 @@ import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
 import { landReducer as land } from 'modules/land/reducer'
+import { ensReducer as ens } from 'modules/ens/reducer'
 import { tileReducer as tile } from 'modules/tile/reducer'
 
 export function createRootReducer(history: History) {
@@ -48,6 +49,7 @@ export function createRootReducer(history: History) {
       sync,
       identity,
       land,
+      ens,
       tile,
       router: connectRouter(history)
     })
