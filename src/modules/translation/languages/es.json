@@ -809,6 +809,13 @@
     "third_paragraph": "Podrás ver tus items en el marketplace pero serán puestos en venta luego de ser validados por la DAO",
     "publish": "Publish"
   },
+  "sell_collection_modal": {
+    "title": "Quieres vender tus items?",
+    "turn_on_description": "Al activar esta opción tu colección estará en venta dentro del mundo.",
+    "turn_on": "Activar",
+    "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
+    "turn_off": "Desactivar"
+  },
   "mint_items_modal": {
     "title": "Crear Items",
     "add_item": "Agregar Item"

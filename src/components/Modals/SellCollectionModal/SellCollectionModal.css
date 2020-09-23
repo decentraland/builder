@@ -1,0 +1,18 @@
+.SellCollectionModal.ui.modal > .content {
+  text-align: center;
+  margin-left: 60px;
+  margin-right: 60px;
+}
+
+.SellCollectionModal.ui.modal > .dcl.modal-navigation {
+  padding-top: 48px;
+}
+
+.SellCollectionModal.ui.modal .ui.button.primary {
+  margin-top: 48px;
+}
+
+.SellCollectionModal.ui.modal .ui.button.secondary {
+  margin-top: 12px;
+  margin-bottom: 48px;
+}

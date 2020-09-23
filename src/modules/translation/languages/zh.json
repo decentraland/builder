@@ -806,6 +806,13 @@
     "third_paragraph": "您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
     "publish": "发布"
   },
+  "sell_collection_modal": {
+    "title": "您想出售您的物品吗？",
+    "turn_on_description": "通过打开此开关，您的收藏将可以在自动售货机中购买。",
+    "turn_on": "打开",
+    "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
+    "turn_off": "关掉"
+  },
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目"
