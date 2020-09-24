@@ -6,13 +6,7 @@ import {
   FetchLandsFailureAction,
   FETCH_LANDS_REQUEST,
   FETCH_LANDS_SUCCESS,
-  FETCH_LANDS_FAILURE,
-  SetNameResolverRequestAction,
-  SetNameResolverSuccessAction,
-  SetNameResolverFailureAction,
-  SET_NAME_RESOLVER_REQUEST,
-  SET_NAME_RESOLVER_SUCCESS,
-  SET_NAME_RESOLVER_FAILURE
+  FETCH_LANDS_FAILURE
 } from './actions'
 
 export type LandState = {
@@ -26,13 +20,12 @@ const INITIAL_STATE: LandState = {
   data: {},
   authorizations: [],
   loading: [],
-  error: null,
+  error: null
 }
 
-export type LandReducerAction = FetchLandsRequestAction      | FetchLandsSuccessAction      | FetchLandsFailureAction      |
-                                SetNameResolverRequestAction | SetNameResolverSuccessAction | SetNameResolverFailureAction
+export type LandReducerAction = FetchLandsRequestAction | FetchLandsSuccessAction | FetchLandsFailureAction
 
-export function landReducer(state: LandState = INITIAL_STATE, action: LandReducerAction): LandState {
+export function landReducer(state: LandState = INITIAL_STATE, action: LandReducerAction) {
   switch (action.type) {
     case FETCH_LANDS_REQUEST: {
       return {
@@ -44,7 +37,6 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
     case FETCH_LANDS_SUCCESS: {
       const { address, lands, authorizations } = action.payload
       return {
-        ...state,
         data: {
           ...state.data,
           [address]: lands
@@ -57,41 +49,6 @@ export function landReducer(state: LandState = INITIAL_STATE, action: LandReduce
     case FETCH_LANDS_FAILURE: {
       const { error } = action.payload
       return {
-        ...state,
-        error
-      }
-    }
-    case SET_NAME_RESOLVER_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
-      }
-    }
-    case SET_NAME_RESOLVER_SUCCESS: {
-      const { owner, ens, land } = action.payload
-      const lands:Land[] = JSON.parse(JSON.stringify(state.data[owner]))
-      if (!lands) {
-        return state
-      }
-      const landRef = lands.find(l => l.id === land.id)
-      if (!landRef) {
-        return state
-      }
-      landRef.ensList = landRef.ensList ? landRef.ensList.concat([ens]) : [ens]
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null,
-        data: {
-          ...state.data,
-          [owner]: lands
-        }
-      }
-    }
-    case SET_NAME_RESOLVER_FAILURE: {
-      const { error } = action.payload
-      return {
-        loading: loadingReducer(state.loading, action),
         ...state,
         error
       }

@@ -33,17 +33,11 @@ import {
   SET_UPDATE_MANAGER_REQUEST,
   SetUpdateManagerRequestAction,
   setUpdateManagerSuccess,
-  setUpdateManagerFailure,
-  SET_NAME_RESOLVER_REQUEST, 
-  SetNameResolverRequestAction,
-  setNameResolverSuccess,
-  setNameResolverFailure
+  setUpdateManagerFailure
 } from './actions'
 import { Land, LandType, Authorization } from './types'
 import { manager } from 'lib/api/manager'
 import { LANDRegistry } from 'contracts/LANDRegistry'
-import { ENS } from 'contracts/ENS'
-import { ENSResolver } from 'contracts/ENSResolver'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,
@@ -52,23 +46,14 @@ import {
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Address } from 'web3x-es/address'
-import { 
-  LAND_REGISTRY_ADDRESS, 
-  ESTATE_REGISTRY_ADDRESS, 
-  ENS_ADDRESS, 
-  ENS_RESOLVER_ADDRESS 
-} from 'modules/common/contracts'
+import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { EstateRegistry } from 'contracts/EstateRegistry'
 import { splitCoords, buildMetadata } from './utils'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
-import { ipfs } from 'lib/api/ipfs'
-import { namehash } from "@ethersproject/hash";
-import * as contentHash from 'content-hash'
 
 export function* landSaga() {
-  yield takeEvery(SET_NAME_RESOLVER_REQUEST, handleSetNameResolverRequest)
   yield takeEvery(SET_UPDATE_MANAGER_REQUEST, handleSetUpdateManagerRequest)
   yield takeEvery(DISSOLVE_ESTATE_REQUEST, handleDissolveEstateRequest)
   yield takeEvery(EDIT_ESTATE_REQUEST, handleEditEstateRequest)
@@ -80,47 +65,6 @@ export function* landSaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleWallet)
   yield takeLatest(CHANGE_ACCOUNT, handleWallet)
 }
-
-function* handleSetNameResolverRequest(action: SetNameResolverRequestAction) {
-  const { land, ens } = action.payload
-  try {
-    const [eth, from] = yield getEth()
-    const nodehash = namehash(ens)
-    const ensContract = new ENS(eth, Address.fromString(ENS_ADDRESS))
-    let resolverAddress:Address = yield call(() => ensContract.methods.resolver(nodehash).call())
-    if (resolverAddress.toString() !== "0x0000000000000000000000000000000000000000") {
-      return yield put(setNameResolverFailure(
-        ens, land, 
-        'Your name has been setted previously. Please choose another one.'
-      ))
-    }
-    const resolverContract = new ENSResolver(eth, Address.fromString(ENS_RESOLVER_ADDRESS))
-
-    const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
-    const hash = contentHash.fromIpfs(ipfsHash)
-    yield call(() => 
-      resolverContract.methods
-        .setContenthash(nodehash, `0x${hash}`)
-        .send({from})
-        .getTxHash()
-    )
-    const txHashSetResolver = yield call(() => 
-      ensContract.methods
-        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
-        .send({from})
-        .getTxHash()
-    )
-    yield put(setNameResolverSuccess(
-      from, ens, land, txHashSetResolver
-    ))
-  } catch (error) {
-    yield put(setNameResolverFailure(
-        ens, land, 
-        'Unexpected error!'
-      ))
-  }
-}
-
 
 function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
