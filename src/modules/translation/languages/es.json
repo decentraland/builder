@@ -459,7 +459,13 @@
     "title": "Establece tu Nombre",
     "subtitle": "Establece un nombre ethereum a tu tierra",
     "select_names": {
-      "placeholder": "Tus nombres registrados"
+      "placeholder": "Tus nombres registrados",
+      "message": {
+        "choose_name": "Selecciona un nombre para tu tierra",
+        "name_available": "Este nombre funcionara bien para tu tierra",
+        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
+      }
+
     }
   },
   "migrate_page": {
