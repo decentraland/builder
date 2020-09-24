@@ -1,10 +1,5 @@
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { GET_ENS_REQUEST } from './actions'
-import {getLoading} from 'modules/auth/selectors';
-import {ENSState} from './reducer';
 
-export const getEns = (state: RootState):ENSState => state.ens
-export const isLoading = (state: RootState) => isLoadingType(getLoading(state), GET_ENS_REQUEST)
-
-
+export const getState = (state: RootState) => state.ens
+export const getLoading = (state: RootState) => getState(state).loading
+export const getError = (state: RootState) => getState(state).error
