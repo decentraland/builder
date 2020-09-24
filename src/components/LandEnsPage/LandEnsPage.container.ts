@@ -2,21 +2,20 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './LandEnsPage.types'
 import LandEditPage from './LandEnsPage'
-import { setNameResolverRequest, SET_NAME_RESOLVER_REQUEST } from 'modules/land/actions'
-import { getENSRequest } from 'modules/ens/actions'
-import { getError, getLoading } from 'modules/land/selectors';
-import {isLoadingType} from 'decentraland-dapps/dist/modules/loading/selectors';
-import {getEns} from 'modules/ens/selectors';
+import { getENSRequest, GET_ENS_REQUEST, SET_ENS_REQUEST, setENSRequest } from 'modules/ens/actions'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors';
+import { getState, getLoading, getError } from 'modules/ens/selectors';
+import { Land } from 'modules/land/types';
 
-const mapState = (_state: RootState): MapStateProps => ({
-  error: getError(_state),
-  ens: getEns(_state),
-  isLoading: isLoadingType(getLoading(_state), SET_NAME_RESOLVER_REQUEST) 
+const mapState = (state: RootState): MapStateProps => ({
+  error: getError(state),
+  ens: getState(state),
+  isLoading: isLoadingType(getLoading(state), SET_ENS_REQUEST) || isLoadingType(getLoading(state), GET_ENS_REQUEST)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetNameResolver: (ens, land) => dispatch(setNameResolverRequest(ens, land)),
-  onGetENS: (ens, land) => dispatch(getENSRequest(ens, land))
+  onSetENS: (ens:string, land:Land) => dispatch(setENSRequest(ens, land)),
+  onGetENS: (ens:string, land:Land) => dispatch(getENSRequest(ens, land))
 })
 
 export default connect(mapState, mapDispatch)(LandEditPage)

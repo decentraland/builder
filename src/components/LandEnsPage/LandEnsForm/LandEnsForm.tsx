@@ -31,7 +31,6 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
        this.setState({subdomainList})
      }
     })()
-
   }
     
   handleChange = (selectedSubdomain: string) => {
@@ -39,32 +38,51 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     onGetENS(selectedSubdomain, land)
     this.setState({ selectedSubdomain })
   }
+
+  handleSubmit = () => {
+    const { onSetENS, land } = this.props
+    const { selectedSubdomain } = this.state
+    onSetENS(selectedSubdomain, land)
+    this.setState({done: true})
+  }
   
   render() {
-    const { land, onSetNameResolver, error, ens, isLoading } = this.props
+    const { land, ens, isLoading, error } = this.props
     const { subdomainList, selectedSubdomain, done } = this.state
     const selectOptions = subdomainList.map(x => ({value: x.toLowerCase(), text: x.toLowerCase()}))
  
  
-    if (!error && isLoading) {
+    if ( isLoading) {
       return <Row><Loader size="large" active /></Row>
     }
 
-    const message = error ? error : 'Name saved correctly'
     const messageType = ens.data[selectedSubdomain] ? ens.data[selectedSubdomain].type : 'default'
-    let selectMessage = ((type) => {
+    const { message: selectMessage, disable: disableButton } = ((type) => {
       switch(type) {
-        case 'EqualContent' : return 'The name has been assign to the current land'
-        default             : return 'Choose a name to assign to this land'
+        case 'EmptyResolver' : 
+        case 'EmptyContent' : 
+        case 'DifferentContent' : return {
+          message: 'The name is assignable for this land',
+          disable: false
+        }
+        case 'EqualContent' : return {
+          message: 'The name has been assign to the current land',
+          disable: true
+        }
+        default             : return {
+          message: 'Choose a name to assign to this land',
+          disable: true
+        }
       }
     })(messageType)
 
+    const submitMessage = error? error: 'Name set properly'
     return (
       <Form className="LandEnsForm">
         { 
           done ? <>
             <Row>
-              <p> {message} </p>
+              <p style={{paddingTop: '20px'}}> {submitMessage} </p>
             </Row>
             <Row>
               <Link className="cancel" to={locations.landDetail(land.id)}>
@@ -81,13 +99,10 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
               />
             </Row>
             <Row>
-              <p> {selectMessage} </p>
+              <p style={{paddingBottom: '20px'}}> {selectMessage} </p>
             </Row>
             <Row>
-              <Button type="submit" primary onClick={async () => {
-                await onSetNameResolver(selectedSubdomain, land)
-                this.setState({done: true})
-              }}>
+              <Button type="submit" disabled={disableButton} primary onClick={this.handleSubmit}>
                 {t('global.submit')}
               </Button>
               <Link className="cancel" to={locations.landDetail(land.id)}>

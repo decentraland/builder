@@ -6,7 +6,7 @@ export type Props = {
   isLoading: boolean
   ens: ENSState
   error: string | null
-  onSetNameResolver: (ens: string, land: Land) => void
+  onSetENS: (ens: string, land: Land) => void
   onGetENS: (ens: string, land: Land) => void
 }
 
