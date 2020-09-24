@@ -465,7 +465,9 @@
         "name_available": "Este nombre funcionara bien para tu tierra",
         "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
       }
-
+    },
+    "submit_message": {
+      "success": "Nombre configurado correctamente para su tierra"
     }
   },
   "migrate_page": {

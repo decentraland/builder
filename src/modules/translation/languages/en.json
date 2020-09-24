@@ -502,6 +502,9 @@
         "name_available": "This name will work for your land",
         "name_assigned": "This name has been assigned to this land"
       }
+    },
+    "submit_message": {
+      "success": "Name set properly to your land"
     }
   },
   "migrate_page": {

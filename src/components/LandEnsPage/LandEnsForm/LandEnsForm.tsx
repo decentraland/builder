@@ -59,24 +59,24 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     const messageType = ens.data[selectedSubdomain] ? ens.data[selectedSubdomain].type : 'default'
     const { message: selectMessage, disable: disableButton } = ((type) => {
       switch(type) {
-        case 'EmptyResolver' : 
-        case 'EmptyContent' : 
-        case 'DifferentContent' : return {
+        case 'EmptyResolver': 
+        case 'EmptyContent': 
+        case 'DifferentContent': return {
           message: t('land_ens_page.select_names.message.name_available'),
           disable: false
         }
-        case 'EqualContent' : return {
+        case 'EqualContent': return {
           message: t('land_ens_page.select_names.message.name_assigned'),
           disable: true
         }
-        default             : return {
+        default: return {
           message: t('land_ens_page.select_names.message.choose_name'),
           disable: true
         }
       }
     })(messageType)
 
-    const submitMessage = error? error: 'Name set properly'
+    const submitMessage = error? error: t('land_ens_page.submit_message.success')
     return (
       <Form className="LandEnsForm">
         { 
@@ -115,5 +115,3 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     )
   }
 }
-
-
