@@ -496,7 +496,12 @@
     "title": "Set Name",
     "subtitle": "Set the ethereum name service to your land",
     "select_names": {
-      "placeholder": "Your registered names"
+      "placeholder": "Your registered names",
+      "message": {
+        "choose_name": "Select a name for this land",
+        "name_available": "This name will work for your land",
+        "name_assigned": "This name has been assigned to this land"
+      }
     }
   },
   "migrate_page": {

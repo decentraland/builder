@@ -62,15 +62,15 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
         case 'EmptyResolver' : 
         case 'EmptyContent' : 
         case 'DifferentContent' : return {
-          message: 'The name is assignable for this land',
+          message: t('land_ens_page.select_names.message.name_available'),
           disable: false
         }
         case 'EqualContent' : return {
-          message: 'The name has been assign to the current land',
+          message: t('land_ens_page.select_names.message.name_assigned'),
           disable: true
         }
         default             : return {
-          message: 'Choose a name to assign to this land',
+          message: t('land_ens_page.select_names.message.choose_name'),
           disable: true
         }
       }
