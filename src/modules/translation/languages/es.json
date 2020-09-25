@@ -834,8 +834,8 @@
     "right_panel": {
       "properties": "Propiedades",
       "details": "Detalles",
-      "basics": "Basico",
-      "overrides": "Sobreesritura",
+      "basics": "Básico",
+      "overrides": "Avanzado",
       "replaces": "Remplaza",
       "hides": "Oculta",
       "tags": "Etiquetas",
