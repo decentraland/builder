@@ -1,2 +1,2 @@
-import RightPanel from './RightPanel'
+import RightPanel from './RightPanel.container'
 export default RightPanel

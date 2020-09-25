@@ -12,7 +12,7 @@ export default class ItemImage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { item, hasBadge } = this.props
+    const { item, hasBadge, badgeSize } = this.props
 
     const style = item.rarity
       ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[item.rarity]}, ${RARITY_COLOR[item.rarity]})` }
@@ -21,7 +21,7 @@ export default class ItemImage extends React.PureComponent<Props> {
     return (
       <div className="ItemImage is-image image-wrapper" style={style}>
         <img className="image" src={getContentsStorageUrl(item.contents[item.thumbnail])} alt={item.name} />
-        {hasBadge ? <ItemBadge item={item}></ItemBadge> : null}
+        {hasBadge ? <ItemBadge item={item} size={badgeSize}></ItemBadge> : null}
       </div>
     )
   }

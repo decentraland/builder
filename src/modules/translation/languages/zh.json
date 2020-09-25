@@ -121,14 +121,14 @@
     "label": "名称",
     "placeholder": "我的大学"
   },
+  "model_metrics": {
+    "triangles": "{count}个三角形",
+    "materials": "{count}个材料",
+    "textures": "{count}个纹理"
+  },
   "create_item_modal": {
     "title": "新物品",
     "add_representation": "添加{bodyShape}",
-    "metrics": {
-      "triangles": "{count}个三角形",
-      "materials": "{count}个材料",
-      "textures": "{count}个纹理"
-    },
     "name_label": "给您的新商品起个名字",
     "representation_label": "它代表哪种身材？",
     "existing_item": "这是现有项目的一部分吗？",
@@ -376,7 +376,10 @@
     "estate_plural": "产业",
     "settings": "设定",
     "yes": "是",
-    "no": "没有"
+    "no": "没有",
+    "name": "名称",
+    "category": "类别",
+    "rarity": "稀有度"
   },
   "navigation": {
     "scenes": "场景",
@@ -763,7 +766,7 @@
   "collection_detail_page": {
     "new_item": "新项目",
     "add_existing_item": "添加现有项目",
-   "mint_items": "薄荷项目",
+    "mint_items": "薄荷项目",
     "on_sale": "特价",
     "on_sale_popup": "这将使您的收藏可以在自动售货机中出售。",
     "notice": "发布",
@@ -777,7 +780,6 @@
   "collection_item": {
     "set_price": "设定价格",
     "done": "完成",
-    "edit_item": "编辑项目",
     "edit_item": "编辑",
     "mint_item": "铸币",
     "remove_from_collection": "从收藏中删除",
@@ -824,6 +826,46 @@
       "items": "物品",
       "collections": "馆藏",
       "items_count": "{count}个项目"
+    },
+    "right_panel": {
+      "properties": "物产",
+      "details": "细节",
+      "basics": "基本",
+      "overrides": "覆写",
+      "replaces": "取代",
+      "hides": "皮",
+      "tags": "标签",
+      "text_placeholder": "写一些东西...",
+      "select_placeholder": "选择一个选项"
+    }
+  },
+  "wearable": {
+    "rarity": {
+      "unique": "独特",
+      "mythic": "神话",
+      "legendary": "传奇",
+      "epic": "史诗",
+      "rare": "稀有",
+      "uncommon": "罕见",
+      "common": "常见"
+    },
+    "category": {
+      "body_shape": "身材",
+      "earring": "耳环",
+      "eyebrows": "眉毛",
+      "eyes": "眼睛",
+      "eyewear": "眼镜",
+      "facial_hair": "胡子",
+      "feet": "腿部",
+      "hair": "头发",
+      "hat": "帽子",
+      "helmet": "头盔",
+      "lower_body": "下半身",
+      "mask": "面具",
+      "mouth": "嘴巴",
+      "tiara": "头饰",
+      "top_head": "头顶",
+      "upper_body": "上半身"
     }
   }
 }

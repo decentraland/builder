@@ -114,9 +114,9 @@
     "top_banner_right": " "
   },
   "body_shapes": {
-    "unisex": "Ambas",
-    "male": "Forma A",
-    "female": "Forma B"
+    "unisex": "Unisex",
+    "male": "Hombre",
+    "female": "Mujers"
   },
   "create_collection_modal": {
     "title": "Nueva Colección",
@@ -124,14 +124,14 @@
     "label": "Nombre",
     "placeholder": "Mi colleción"
   },
+  "model_metrics": {
+    "triangles": "{count} {count, plural, one {triangulo} other {triangulos}}",
+    "materials": "{count} {count, plural, one {material} other {materiales}}",
+    "textures": "{count} {count, plural, one {textura} other {texturas}}"
+  },
   "create_item_modal": {
     "title": "Nuevo Item",
-    "add_representation": "Agregar {bodyShape}",
-    "metrics": {
-      "triangles": "{count} {count, plural, one {triangulo} other {triangulos}}",
-      "materials": "{count} {count, plural, one {material} other {materiales}}",
-      "textures": "{count} {count, plural, one {textura} other {texturas}}"
-    },
+    "add_representation": "Agregar representación de {bodyShape}",
     "name_label": "Ponle un nombre a tu item",
     "representation_label": "Para que forma de cuerpo es este item?",
     "existing_item": "Es parte de un item existente?",
@@ -376,7 +376,10 @@
     "estate_plural": "estates",
     "settings": "Ajustes",
     "yes": "Si",
-    "no": "No"
+    "no": "No",
+    "name": "Nombre",
+    "category": "Categoría",
+    "rarity": "Rareza"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -762,7 +765,7 @@
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
-    "add_representation": "Agregar {bodyShape}"
+    "add_representation": "Agregar representación de {bodyShape}"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
@@ -827,6 +830,46 @@
       "items": "Items",
       "collections": "Colecciones",
       "items_count": "{count} items"
+    },
+    "right_panel": {
+      "properties": "Propiedades",
+      "details": "Detalles",
+      "basics": "Basico",
+      "overrides": "Sobreesritura",
+      "replaces": "Remplaza",
+      "hides": "Oculta",
+      "tags": "Etiquetas",
+      "text_placeholder": "Escribe algo...",
+      "select_placeholder": "Selecciona una opción"
+    }
+  },
+  "wearable": {
+    "rarity": {
+      "unique": "Único",
+      "mythic": "Mítico",
+      "legendary": "Legendario",
+      "epic": "Épico",
+      "rare": "Raro",
+      "uncommon": "Poco común",
+      "common": "Común"
+    },
+    "category": {
+      "body_shape": "Cuerpo",
+      "earring": "Aros",
+      "eyebrows": "Cejas",
+      "eyes": "Ojos",
+      "eyewear": "Gafas",
+      "facial_hair": "Barba",
+      "feet": "Pies",
+      "hair": "Cabello",
+      "hat": "Sombrero",
+      "helmet": "Cazco",
+      "lower_body": "Piernas",
+      "mask": "Mascara",
+      "mouth": "Boca",
+      "tiara": "Tiara",
+      "top_head": "Cabeza",
+      "upper_body": "Torso"
     }
   }
 }

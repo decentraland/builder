@@ -3,6 +3,16 @@
   border-radius: 3px;
 }
 
+.ItemBadge.normal {
+  width: 32px;
+  height: 32px;
+}
+
+.ItemBadge.small {
+  width: 20px;
+  height: 20px;
+}
+
 .ItemBadge:before {
   content: ' ';
   display: block;
