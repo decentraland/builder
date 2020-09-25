@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './Tags.types'
 import './Tags.css'
 
@@ -84,7 +85,7 @@ export default class Tags extends React.PureComponent<Props, State> {
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleAdd}
-          placeholder={value.length === 0 ? 'Write something...' : undefined}
+          placeholder={value.length === 0 ? t('item_editor.right_panel.text_placeholder') : undefined}
         />
       </div>
     )

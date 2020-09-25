@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './Input.types'
 import './Input.css'
 
@@ -28,7 +29,7 @@ export default class Input extends React.PureComponent<Props, State> {
     return (
       <div className="Input">
         <div className="label">{label}</div>
-        <input value={this.state.value} onChange={this.handleChange} placeholder="Write something..." />
+        <input value={this.state.value} onChange={this.handleChange} placeholder={t('item_editor.right_panel.text_placeholder')} />
       </div>
     )
   }

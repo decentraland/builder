@@ -125,7 +125,7 @@
     "placeholder": "Mi colleción"
   },
   "model_metrics": {
-    "triangles": "{count} {count, plural, one {triangulo} other {triangulos}}",
+    "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
     "materials": "{count} {count, plural, one {material} other {materiales}}",
     "textures": "{count} {count, plural, one {textura} other {texturas}}"
   },

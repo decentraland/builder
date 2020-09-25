@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Dropdown, DropdownProps } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './MultiSelect.types'
 import './MultiSelect.css'
 
@@ -60,7 +61,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
               </div>
             ))
           ) : (
-            <div className="placeholder">Select an option</div>
+            <div className="placeholder">{t('item_editor.right_panel.select_placeholder')}</div>
           )}
         </div>
         <div className="handle" />
