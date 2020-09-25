@@ -116,7 +116,7 @@
   "body_shapes": {
     "unisex": "Unisex",
     "male": "Hombre",
-    "female": "Mujers"
+    "female": "Mujer"
   },
   "create_collection_modal": {
     "title": "Nueva Colección",
@@ -131,7 +131,7 @@
   },
   "create_item_modal": {
     "title": "Nuevo Item",
-    "add_representation": "Agregar representación de {bodyShape}",
+    "add_representation": "Agregar Representación De {bodyShape}",
     "name_label": "Ponle un nombre a tu item",
     "representation_label": "Para que forma de cuerpo es este item?",
     "existing_item": "Es parte de un item existente?",
