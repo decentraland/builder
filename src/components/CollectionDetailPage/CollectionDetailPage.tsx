@@ -5,7 +5,7 @@ import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon, Pop
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { setOnSale, isOnSale } from 'modules/collection/utils'
+import { isOnSale } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -40,10 +40,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   }
 
   handleOnSaleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
-    const { collection, onSetMinters } = this.props
+    const { collection, onOpenModal } = this.props
     const { checked } = checkboxProps
     if (collection && checked !== undefined) {
-      onSetMinters(collection!, setOnSale(collection, checked))
+      onOpenModal('SellCollectionModal', { collectionId: collection.id, isOnSale: checked })
     }
   }
 
