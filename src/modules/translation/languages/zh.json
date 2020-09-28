@@ -443,7 +443,7 @@
     "transfer": "转移",
     "edit": "编辑",
     "set_operator": "设定操作者",
-    "set_name": "设置名称",
+    "set_link": "设定连结",
     "build_estate": "建立产业",
     "add_or_remove_parcels": "添加或删除地块",
     "dissolve_estate": "解散产业",
@@ -458,7 +458,7 @@
   },
   "land_ens_page" : {
     "title": "设置名称",
-    "subtitle": "将以太坊名称服务设置为您的土地",
+    "subtitle": "分配您的一个名字作为您土地的链接。",
     "select_names": {
       "placeholder": "您的注册名称",
       "message": {

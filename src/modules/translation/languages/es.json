@@ -442,7 +442,7 @@
     "transfer": "Transferir",
     "edit": "Editar",
     "set_operator": "Configurar Operador",
-    "set_name": "Establece tu nombre",
+    "set_link": "Establece tu Enlace",
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
@@ -457,7 +457,7 @@
   },
   "land_ens_page" : {
     "title": "Establece tu Nombre",
-    "subtitle": "Establece un nombre ethereum a tu tierra",
+    "subtitle": "Asigna uno de tus nombres como link para tu tierra",
     "select_names": {
       "placeholder": "Tus nombres registrados",
       "message": {

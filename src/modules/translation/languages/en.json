@@ -479,7 +479,7 @@
     "transfer": "Transfer",
     "edit": "Edit",
     "set_operator": "Set Operator",
-    "set_name": "Set name",
+    "set_link": "Set Link",
     "build_estate": "Build Estate",
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
@@ -494,7 +494,7 @@
   },
   "land_ens_page" : {
     "title": "Set Name",
-    "subtitle": "Set the ethereum name service to your land",
+    "subtitle": "Assign one of your Names to act as a link to your land.",
     "select_names": {
       "placeholder": "Your registered names",
       "message": {
