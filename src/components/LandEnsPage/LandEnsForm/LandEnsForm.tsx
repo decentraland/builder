@@ -66,7 +66,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
         { 
           done ? <>
             <Row>
-              <p style={{paddingTop: '20px'}}> {submitMessage} </p>
+              <p> {submitMessage} </p>
             </Row>
             <Row>
               <Link className="cancel" to={locations.landDetail(land.id)}>
@@ -83,7 +83,7 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
               />
             </Row>
             <Row>
-              <p style={{paddingBottom: '20px'}}> {selectMessage} </p>
+              <p> {selectMessage} </p>
             </Row>
             <Row>
               <Button type="submit" disabled={isButtonDisabled} primary onClick={this.handleSubmit}>
