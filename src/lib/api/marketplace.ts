@@ -26,16 +26,13 @@ type SubdomainQueryResult = {
 }
 
 export class MarketplaceAPI {
-  fetchDomainList = async (_address: string): Promise<string[]> => {
-    const owner = _address.toLowerCase()
+  fetchDomainList = async (address: string): Promise<string[]> => {
+    const owner = address.toLowerCase()
     const { data } = await graphClient.query<SubdomainQueryResult>({
       query: getSubdomainQuery(),
       variables: { owner }
     })
-    console.log({data})
-    const domains: string[] = data.nfts.map(x => `${x.ens.subdomain}.dcl.eth`)
-
-    return domains
+    return data.nfts.map(ntf => `${ntf.ens.subdomain}.dcl.eth`)
   }
 }
 

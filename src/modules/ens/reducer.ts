@@ -70,6 +70,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
+          ...state.data,
           [ens] : data
         }
       }

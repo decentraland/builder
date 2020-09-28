@@ -5,6 +5,7 @@ export type Props = {
   land: Land
   isLoading: boolean
   ens: ENSState
+  address: string | undefined
   error: string | null
   onSetENS: (ens: string, land: Land) => void
   onGetENS: (ens: string, land: Land) => void

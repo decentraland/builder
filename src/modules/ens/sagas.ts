@@ -39,14 +39,14 @@ function* handleSetENSRequest(action: SetENSRequestAction) {
     const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
     const hash = contentHash.fromIpfs(ipfsHash)
     yield call(() => 
-      resolverContract.methods
-        .setContenthash(nodehash, `0x${hash}`)
+      ensContract.methods
+        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
         .send({from})
         .getTxHash()
     )
     yield call(() => 
-      ensContract.methods
-        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
+      resolverContract.methods
+        .setContenthash(nodehash, `0x${hash}`)
         .send({from})
         .getTxHash()
     )
@@ -79,7 +79,6 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
     const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
     const hash = contentHash.fromIpfs(ipfsHash)
     const currentContent = yield call(() => resolverContract.methods.contenthash(nodehash).call())
-    console.log({ens, resolver: resolverAddress.toString(), ipfsHash, hash, currentContent})
     if (currentContent === ENS_EMPTY_CONTENT) {
       return yield put(
         getENSSuccess(ens, {
@@ -111,6 +110,7 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
 }
 
 
+// TODO: use wallet/utils getCurrentAddress instead
 function* getEth() {
   const eth = Eth.fromCurrentProvider()
   if (!eth) {

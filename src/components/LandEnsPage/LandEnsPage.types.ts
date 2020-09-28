@@ -3,6 +3,7 @@ import { getENSRequest, setENSRequest } from 'modules/ens/actions'
 import { ENSState } from 'modules/ens/reducer';
 
 export type Props = {
+  address: string | undefined
   error: string | null
   isLoading: boolean
   ens: ENSState
@@ -11,6 +12,7 @@ export type Props = {
 }
 
 export type MapStateProps = {
+  address: string | undefined
   error: string | null
   isLoading: boolean
   ens: ENSState

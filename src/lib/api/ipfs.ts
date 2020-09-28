@@ -28,7 +28,7 @@ export class IpfsAPI {
     </html>`
 
     formData.append('blob', new Blob([html]), 'index.html')
-    const result = await fetch('https://ipfs.infura.io:5001/api/v0/add?pin=false' , {
+    const result = await fetch(IPFS_URL , {
       method: 'POST',
       body: formData
     })
