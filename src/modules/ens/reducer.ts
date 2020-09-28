@@ -1,6 +1,12 @@
 import { ENSData } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
+  GetDomainListRequestAction,
+  GetDomainListSuccessAction,
+  GetDomainListFailureAction,
+  GET_DOMAINLIST_REQUEST,
+  GET_DOMAINLIST_SUCCESS,
+  GET_DOMAINLIST_FAILURE,
   GetENSRequestAction,
   GetENSSuccessAction,
   GetENSFailureAction,
@@ -17,21 +23,47 @@ import {
 
 export type ENSState = {
   data: Record<string, ENSData>
+  subdomainList: string[]
   loading: LoadingState
   error: string | null
 }
 
 const INITIAL_STATE: ENSState = {
   data: {},
+  subdomainList: [],
   loading: [],
-  error: null,
+  error: null
 }
 
 export type ENSReducerAction = GetENSRequestAction | GetENSSuccessAction | GetENSFailureAction |
-                                  SetENSRequestAction | SetENSSuccessAction | SetENSFailureAction
+                               SetENSRequestAction | SetENSSuccessAction | SetENSFailureAction |
+                               GetDomainListRequestAction | GetDomainListSuccessAction | GetDomainListFailureAction
+
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
+    case GET_DOMAINLIST_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+      }
+    }
+    case GET_DOMAINLIST_SUCCESS: {
+      const { data } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        subdomainList: data
+      }
+    }
+    case GET_DOMAINLIST_FAILURE: {
+      const { error } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error
+      }
+    }
     case GET_ENS_REQUEST: {
       return {
         ...state,
@@ -83,7 +115,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         error
       }
     }
-
     default:
       return state
   }

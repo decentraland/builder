@@ -37,3 +37,22 @@ export const setENSFailure = (ens: string, land: Land, error: string) =>
 export type SetENSRequestAction = ReturnType<typeof setENSRequest>
 export type SetENSSuccessAction = ReturnType<typeof setENSSuccess>
 export type SetENSFailureAction = ReturnType<typeof setENSFailure>
+
+
+
+export const GET_DOMAINLIST_REQUEST = '[Request] Get Domain List'
+export const GET_DOMAINLIST_SUCCESS = '[Success] Get Domain List'
+export const GET_DOMAINLIST_FAILURE = '[Failure] Get Domain List'
+
+export const getDomainListRequest = () => 
+  action(GET_DOMAINLIST_REQUEST, { })
+
+export const getDomainListSuccess = (data: string[]) =>
+  action(GET_DOMAINLIST_SUCCESS, { data })
+
+export const getDomainListFailure = (error: string) =>
+  action(GET_DOMAINLIST_FAILURE, { error })
+
+export type GetDomainListRequestAction = ReturnType<typeof getDomainListRequest>
+export type GetDomainListSuccessAction = ReturnType<typeof getDomainListSuccess>
+export type GetDomainListFailureAction = ReturnType<typeof getDomainListFailure>

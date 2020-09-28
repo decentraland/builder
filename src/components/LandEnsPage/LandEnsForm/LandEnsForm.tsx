@@ -5,24 +5,17 @@ import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandEnsForm.types'
 import './LandEnsForm.css'
-import { marketplace } from 'lib/api/marketplace'
 import { SelectNames } from 'components/SelectNames'
 
 export default class LandEnsForm extends React.PureComponent<Props, State> {
   state: State = {
     selectedSubdomain: '',
-    subdomainList: [],
     done: false
   }
-
-  async componentDidMount() {
-    const { address } = this.props
-    if (address) {
-      const subdomainList = await marketplace.fetchDomainList(address)
-      this.setState({subdomainList})
-    }
+  componentDidMount() {
+    this.props.onGetDomainList()
   }
-    
+
   handleChange = (selectedSubdomain: string) => {
     const { onGetENS, land } = this.props
     onGetENS(selectedSubdomain, land)
@@ -37,8 +30,8 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
   }
   
   render() {
-    const { land, ens, isLoading, error } = this.props
-    const { subdomainList, selectedSubdomain, done } = this.state
+    const { land, ens, isLoading, error, subdomainList } = this.props
+    const { selectedSubdomain, done } = this.state
     const selectOptions = subdomainList.map(subdomain => ({value: subdomain.toLowerCase(), text: subdomain.toLowerCase()}))
  
  

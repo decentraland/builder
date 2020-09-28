@@ -8,7 +8,11 @@ import {
   SET_ENS_REQUEST,
   SetENSRequestAction, 
   setENSSuccess, 
-  setENSFailure
+  setENSFailure,
+  GET_DOMAINLIST_REQUEST,
+  GetDomainListRequestAction,
+  getDomainListSuccess,
+  getDomainListFailure
 } from './actions'
 import { ENS } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
@@ -22,10 +26,22 @@ import { ipfs } from 'lib/api/ipfs'
 import { namehash } from "@ethersproject/hash";
 import * as contentHash from 'content-hash'
 import { ENS_EMPTY_CONTENT, ENS_EMPTY_RESOLVER } from './constants'
+import {marketplace} from 'lib/api/marketplace';
 
 export function* ensSaga() {
+  yield takeEvery(GET_DOMAINLIST_REQUEST, handleGetDomainListRequest)
   yield takeEvery(GET_ENS_REQUEST, handleGetENSRequest)
   yield takeEvery(SET_ENS_REQUEST, handleSetENSRequest)
+}
+
+function* handleGetDomainListRequest(_action: GetDomainListRequestAction) {
+  try {
+    const owner = yield select(getAddress)
+    const result = yield marketplace.fetchDomainList(owner)
+    yield put(getDomainListSuccess(result))
+  } catch (error) {
+    yield put(getDomainListFailure(error))
+  }
 }
 
 function* handleSetENSRequest(action: SetENSRequestAction) {
@@ -39,14 +55,14 @@ function* handleSetENSRequest(action: SetENSRequestAction) {
     const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
     const hash = contentHash.fromIpfs(ipfsHash)
     yield call(() => 
-      ensContract.methods
-        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
+      resolverContract.methods
+        .setContenthash(nodehash, `0x${hash}`)
         .send({from})
         .getTxHash()
     )
     yield call(() => 
-      resolverContract.methods
-        .setContenthash(nodehash, `0x${hash}`)
+      ensContract.methods
+        .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
         .send({from})
         .getTxHash()
     )
@@ -110,7 +126,6 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
 }
 
 
-// TODO: use wallet/utils getCurrentAddress instead
 function* getEth() {
   const eth = Eth.fromCurrentProvider()
   if (!eth) {

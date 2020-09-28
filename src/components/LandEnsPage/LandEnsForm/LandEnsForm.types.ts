@@ -5,14 +5,14 @@ export type Props = {
   land: Land
   isLoading: boolean
   ens: ENSState
-  address: string | undefined
+  subdomainList: string[]
   error: string | null
   onSetENS: (ens: string, land: Land) => void
   onGetENS: (ens: string, land: Land) => void
+  onGetDomainList: () => void
 }
 
 export type State = {
   selectedSubdomain: string
-  subdomainList: string[]
   done: boolean
 }

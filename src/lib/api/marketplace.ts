@@ -26,7 +26,10 @@ type SubdomainQueryResult = {
 }
 
 export class MarketplaceAPI {
-  fetchDomainList = async (address: string): Promise<string[]> => {
+  fetchDomainList = async (address: string | undefined): Promise<string[]> => {
+    if (!address) {
+      return []
+    }
     const owner = address.toLowerCase()
     const { data } = await graphClient.query<SubdomainQueryResult>({
       query: getSubdomainQuery(),
