@@ -24,9 +24,10 @@ import {
 } from 'modules/common/contracts'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from "@ethersproject/hash";
-import * as contentHash from 'content-hash'
 import { ENS_EMPTY_CONTENT, ENS_EMPTY_RESOLVER } from './constants'
 import {marketplace} from 'lib/api/marketplace';
+
+const contentHash = require('content-hash')
 
 export function* ensSaga() {
   yield takeEvery(GET_DOMAINLIST_REQUEST, handleGetDomainListRequest)
