@@ -31,7 +31,7 @@ import { namehash } from "@ethersproject/hash"
 import { ENS_EMPTY_CONTENT, ENS_EMPTY_RESOLVER } from './constants'
 import { marketplace } from 'lib/api/marketplace'
 
-const contentHash = require('content-hash')
+import * as contentHash from 'content-hash'
 
 export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
