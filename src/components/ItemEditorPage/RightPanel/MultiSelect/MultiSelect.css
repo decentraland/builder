@@ -1,0 +1,66 @@
+.MultiSelect.ui.dropdown.inline {
+  height: 38px;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0px 12px;
+  margin-bottom: 8px;
+}
+
+.MultiSelect.ui.dropdown.inline .label {
+  flex: none;
+  margin-right: 20px;
+  color: var(--secondary-text);
+}
+
+.MultiSelect.ui.dropdown.inline .values {
+  flex: 1 1 auto;
+  overflow: auto;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.MultiSelect.ui.dropdown.inline .values .placeholder {
+  color: var(--secondary-text);
+}
+
+.MultiSelect.ui.dropdown.inline .values .value {
+  background-color: #37333d;
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.MultiSelect.ui.dropdown.inline .values .value .remove {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  background-image: url(../../../../icons/close.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 8px 8px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.MultiSelect.ui.dropdown.inline .values .value + .value {
+  margin-left: 4px;
+}
+
+.MultiSelect.ui.dropdown.inline .handle {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background-image: url(../../../../images/select-active.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin-left: 7px;
+}
+
+.MultiSelect.ui.dropdown.inline.blank .handle {
+  background-image: url(../../../../images/select-inactive.svg);
+}

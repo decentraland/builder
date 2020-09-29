@@ -349,9 +349,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 <img className="thumbnail" src={thumbnail || undefined} />
                 {metrics ? (
                   <div className="metrics">
-                    <div className="metric triangles">{t('create_item_modal.metrics.triangles', { count: metrics.triangles })}</div>
-                    <div className="metric materials">{t('create_item_modal.metrics.materials', { count: metrics.materials })}</div>
-                    <div className="metric textures">{t('create_item_modal.metrics.textures', { count: metrics.textures })}</div>
+                    <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+                    <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+                    <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
                   </div>
                 ) : null}
               </Column>

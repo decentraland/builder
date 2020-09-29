@@ -1,6 +1,85 @@
 .RightPanel {
   width: 360px;
   flex: none;
-  background-color: var(--preview-background);
+  background-color: #242229;
   border-left: 1px solid rgba(115, 110, 125, 0.3);
+  padding: 16px;
+}
+
+.RightPanel > .header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.RightPanel > .header .title {
+  flex: 1 0 auto;
+  text-align: center;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--secondary-text);
+}
+
+.RightPanel .details {
+  display: flex;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 6px;
+  padding: 8px;
+  align-items: stretch;
+}
+
+.RightPanel .details .ItemImage {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.RightPanel .details .metrics {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.RightPanel .details .metrics .metric {
+  color: var(--secondary-text);
+  font-size: 13px;
+  line-height: 18px;
+  padding-left: 20px;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  text-transform: uppercase;
+}
+
+.RightPanel .details .metrics .metric.triangles {
+  background-image: url(../../../images/triangles.svg);
+}
+
+.RightPanel .details .metrics .metric.materials {
+  background-image: url(../../../images/materials.svg);
+}
+
+.RightPanel .details .metrics .metric.textures {
+  background-image: url(../../../images/textures.svg);
+}
+
+.RightPanel > .header > .ui.dropdown {
+  position: absolute;
+  right: 0px;
+}
+
+.RightPanel .actions {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  background-image: url(../../../images/optons-right-panel.svg);
+  background-size: 18px;
 }

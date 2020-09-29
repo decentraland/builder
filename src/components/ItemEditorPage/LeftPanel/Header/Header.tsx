@@ -7,37 +7,37 @@ import './Header.css'
 import { locations } from 'routing/locations'
 
 export default class Header extends React.PureComponent<Props> {
-  handleHome() {
+  handleHome = () => {
     const { onNavigate } = this.props
     onNavigate(locations.avatar())
   }
 
-  handleBack() {
+  handleBack = () => {
     const { onNavigate } = this.props
     onNavigate(locations.itemEditor())
   }
 
-  handleNewItem() {
+  handleNewItem = () => {
     const { onOpenModal } = this.props
     onOpenModal('CreateItemModal')
   }
 
-  handleNewCollection() {
+  handleNewCollection = () => {
     const { onOpenModal } = this.props
     onOpenModal('CreateCollectionModal')
   }
 
-  handleAddNewItem() {
+  handleAddNewItem = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('CreateItemModal', { collectionId: collection!.id })
   }
 
-  handleAddExistingItem() {
+  handleAddExistingItem = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('AddExistingItemModal', { collectionId: collection!.id })
   }
 
-  handleDelete() {
+  handleDelete = () => {
     const { collection, onDeleteCollection } = this.props
     onDeleteCollection(collection!)
   }
