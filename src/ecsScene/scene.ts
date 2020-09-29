@@ -1,6 +1,6 @@
 // tslint:disable
 import { EventEmitter } from 'events'
-import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, Vector3, AvatarShape, Color4 } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
@@ -174,6 +174,34 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       for (const entityId in engine.entities) {
         engine.removeEntity(engine.entities[entityId])
       }
+      break
+    }
+    case 'Update avatar': {
+      console.log('[message from scene] update avatar', message)
+
+      // no anda
+      const avatar = new Entity()
+      avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
+      const avatarShape = new AvatarShape()
+      avatarShape.bodyShape = 'dcl://base-avatars/BaseFemale'
+      avatarShape.skinColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+      avatarShape.hairColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+      avatarShape.eyeColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+      avatarShape.name = 'Test'
+      avatarShape.wearables = ['9c0de36f-3dac-4c8e-a5e1-b91f11d18e48']
+      avatar.addComponent(avatarShape)
+      engine.addEntity(avatar)
+
+      // anda
+      const shape = new ECS.BoxShape()
+      const box = new Entity()
+      box.addComponent(new Transform({ position: new Vector3(4, 0, 4), scale: new Vector3(1, 1, 1) }))
+      box.addComponent(shape)
+      engine.addEntity(box)
+      break
+    }
+    case 'Update items': {
+      console.log('[message from scene] update items', message)
       break
     }
   }

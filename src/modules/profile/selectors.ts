@@ -5,6 +5,7 @@ import { getCurrentProject } from 'modules/project/selectors'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { ProfileState } from './reducer'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { Avatar } from 'decentraland-ui'
 
 export const getState: (state: RootState) => ProfileState = state => state.profile
 
@@ -24,7 +25,7 @@ export const getCurrentAuthor = createSelector(getCurrentProject, getCurrentPool
   }
 })
 
-export const getName = createSelector<RootState, string | undefined, ProfileState['data'], string | null>(
+export const getAvatar = createSelector<RootState, string | undefined, ProfileState['data'], Avatar | null>(
   getAddress,
   getData,
   (address, profileData) => {
@@ -33,12 +34,19 @@ export const getName = createSelector<RootState, string | undefined, ProfileStat
       if (profile) {
         const avatar = profile.avatars[0]
         if (avatar) {
-          if (avatar.name) {
-            return avatar.name
-          }
+          return avatar
         }
       }
     }
     return null
   }
 )
+
+export const getName = createSelector<RootState, Avatar | null, string | null>(getAvatar, avatar => {
+  if (avatar) {
+    if (avatar.name) {
+      return avatar.name
+    }
+  }
+  return null
+})

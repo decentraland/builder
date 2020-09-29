@@ -10,11 +10,12 @@ import { Profile } from 'modules/profile/types'
 import { togglePreview, TogglePreviewAction, closeEditor, CloseEditorAction } from 'modules/editor/actions'
 import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
+import { PreviewType } from 'modules/editor/types'
 
 export type Props = {
-  match: match<{ projectId: string; type: 'public' | 'pool' }>
+  match: match<{ projectId: string; type: PreviewType.PUBLIC | PreviewType.POOL }>
   projectId: string
-  type: 'public' | 'pool'
+  type: PreviewType.PUBLIC | PreviewType.POOL
   currentProject: Project | null
   currentPool: Pool | null
   currentScene: Scene | null

@@ -13,6 +13,7 @@ import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
 import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
 import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue, Asset, GROUND_CATEGORY } from 'modules/asset/types'
+import { PreviewType } from 'modules/editor/types'
 
 /**
  * Returns a new random position bound to y: 0
@@ -99,7 +100,10 @@ export function areEqualMappings(mappingsA: Record<string, string> = {}, mapping
   return true
 }
 
-export function* getSceneByProjectId(projectId: string, type: 'project' | 'public' | 'pool' = 'project') {
+export function* getSceneByProjectId(
+  projectId: string,
+  type: PreviewType.PROJECT | PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PROJECT
+) {
   const projects: ReturnType<typeof getProjects> = yield select(getProjects)
   const pools: ReturnType<typeof getPools> = yield select(getPools)
   const scenes: ReturnType<typeof getScenes> = yield select(getScenes)

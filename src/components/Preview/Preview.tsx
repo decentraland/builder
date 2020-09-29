@@ -10,6 +10,7 @@ import { convertToUnityKeyboardEvent } from 'modules/editor/utils'
 import { previewTarget, collect, CollectedProps } from './Preview.dnd'
 import { EditorWindow, Props, State } from './Preview.types'
 import './Preview.css'
+import { PreviewType } from 'modules/editor/types'
 
 const editorWindow = window as EditorWindow
 const unityDebugParams = env.get('REACT_APP_UNITY_DEBUG_PARAMS')
@@ -64,7 +65,7 @@ class Preview extends React.Component<Props & CollectedProps, State> {
 
   openEditor = () => {
     const { isReadOnly, type } = this.props
-    this.props.onOpenEditor({ isReadOnly: isReadOnly === true, type: type || 'project' })
+    this.props.onOpenEditor({ isReadOnly: isReadOnly === true, type: type || PreviewType.PROJECT })
   }
 
   async startEditor() {

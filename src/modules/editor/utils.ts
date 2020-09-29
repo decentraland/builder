@@ -1,9 +1,13 @@
+import { BodyShapeRespresentation, Wearable } from 'decentraland-ecs'
 import { EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Vector3 } from 'modules/common/types'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
+import { TRANSPARENT_PIXEL } from 'lib/getModelData'
+import { getMetrics } from 'components/AssetImporter/utils'
+import { Item } from 'modules/item/types'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -142,4 +146,52 @@ export function areEqualTransforms(
     a.scale.y === b.scale.y &&
     a.scale.z === b.scale.z
   )
+}
+
+export function createAvatarProject(): Project {
+  return {
+    id: 'avatar-project',
+    title: 'Avatar',
+    description: 'Dummy project for the Avatar Editor',
+    thumbnail: TRANSPARENT_PIXEL,
+    sceneId: 'avatar-scene',
+    layout: {
+      rows: 1,
+      cols: 1
+    },
+    isPublic: false,
+    ethAddress: null,
+    createdAt: new Date().toString(),
+    updatedAt: new Date().toString()
+  }
+}
+
+export function createAvatarScene(): Scene {
+  return {
+    id: 'avatar-scene',
+    assets: {},
+    components: {},
+    entities: {},
+    ground: null,
+    limits: getMetrics(),
+    metrics: getMetrics()
+  }
+}
+
+export function toWearable(item: Item): Wearable {
+  return {
+    id: item.id,
+    type: 'wearable',
+    category: item.data.category!,
+    baseUrl: getContentsStorageUrl(),
+    representations: item.data.representations.map<BodyShapeRespresentation>(representation => ({
+      bodyShapes: representation.bodyShape,
+      mainFile: representation.mainFile,
+      contents: Object.keys(representation.contents).map(path => ({
+        file: path,
+        hash: item.contents[path]
+      }))
+    })),
+    tags: item.data.tags
+  }
 }

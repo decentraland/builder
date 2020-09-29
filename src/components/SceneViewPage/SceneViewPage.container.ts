@@ -15,6 +15,7 @@ import { openModal } from 'modules/modal/actions'
 
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
+import { PreviewType } from 'modules/editor/types'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),
@@ -31,7 +32,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLikePool: (id: string, like: boolean = true) => dispatch(likePoolRequest(id, like)),
   onPreview: () => dispatch(togglePreview(true)),
   onCloseEditor: () => dispatch(closeEditor()),
-  onLoadProject: (id: string, type: 'public' | 'pool' = 'public') => dispatch(loadPublicProjectRequest(id, type)),
+  onLoadProject: (id: string, type: PreviewType.PUBLIC | PreviewType.POOL = PreviewType.PUBLIC) =>
+    dispatch(loadPublicProjectRequest(id, type)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onBack: () => dispatch(push(locations.poolSearch()))
 })

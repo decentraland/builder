@@ -44,7 +44,9 @@ import {
   setScreenshotReady,
   OpenEditorAction,
   setEditorReadOnly,
-  SetSelectedEntitiesAction
+  SetSelectedEntitiesAction,
+  updateItems,
+  updateAvatar
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -67,7 +69,7 @@ import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getCompo
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, ModelMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene, Gizmo } from 'modules/editor/types'
+import { EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -100,11 +102,18 @@ import {
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
   createReadyOnlyScene,
-  areEqualTransforms
+  areEqualTransforms,
+  createAvatarProject,
+  toWearable
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
+import { getSearch } from 'connected-react-router'
+import { Item } from 'modules/item/types'
+import { getItems } from 'modules/item/selectors'
+import { getAvatar } from 'modules/profile/selectors'
+import { Avatar } from 'decentraland-ui'
 
 const editorWindow = window as EditorWindow
 
@@ -303,49 +312,73 @@ function* handleOpenEditor(action: OpenEditorAction) {
   // The client will report when an entity goes out of bounds
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
-  // Creates a new scene in the dcl client's side
-  const project: Project | Pool | null = yield type === 'pool' ? select(getCurrentPool) : select(getCurrentProject)
-
-  if (project) {
-    // load asset packs
-    const areLoaded = yield select(hasLoadedAssetPacks)
-    if (!areLoaded) {
-      yield put(loadAssetPacksRequest())
+  if (type === PreviewType.WEARABLE) {
+    const search = yield select(getSearch)
+    const itemId = new URLSearchParams(search).get('item')
+    const items: Item[] = yield select(getItems)
+    const item = items.find(item => item.id === itemId)
+    if (item) {
+      yield put(setEditorReadOnly(true))
+      yield createNewEditorScene(createAvatarProject())
+      const avatar: Avatar | null = yield select(getAvatar)
+      const items = [item]
+      const wearables = items.map(toWearable)
+      yield call(() => {
+        console.log('render avatar', avatar)
+        editorWindow.editor.sendExternalAction(updateAvatar(avatar))
+        if (item.data.category) {
+          console.log('add wearables to catalog', wearables)
+          editorWindow.editor.addWearablesToCatalog(wearables)
+          console.log('render items', items)
+          editorWindow.editor.sendExternalAction(updateItems(items))
+        }
+      })
     }
-
-    // fix legacy stuff
-    let scene: Scene = yield getSceneByProjectId(project.id, type)
-    yield put(fixLegacyNamespacesRequest(scene))
-    const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
-    scene = fixSuccessAction.payload.scene
-
-    // if assets packs are being loaded wait for them to finish
-    const state: RootState = yield select(state => state)
-    if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
-      yield take(LOAD_ASSET_PACKS_SUCCESS)
-    }
-
-    // sync scene assets
-    yield put(syncSceneAssetsRequest(scene))
-    const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
-    scene = syncSuccessAction.payload.scene
-
-    yield put(setEditorReadOnly(isReadOnly))
-    yield createNewEditorScene(project)
-
-    // Set the remote url for scripts
-    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
-
-    // Spawns the assets
-    yield renderScene(scene)
-
-    // Enable snap to grid
-    yield handleToggleSnapToGrid(toggleSnapToGrid(true))
-
-    // Select gizmo
-    yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
   } else {
-    console.error(`Unable to Open Editor: Invalid ${type}`)
+    // Creates a new scene in the dcl client's side
+    const project: Project | Pool | null = yield type === PreviewType.POOL ? select(getCurrentPool) : select(getCurrentProject)
+
+    if (project) {
+      // load asset packs
+      const areLoaded = yield select(hasLoadedAssetPacks)
+      if (!areLoaded) {
+        yield put(loadAssetPacksRequest())
+      }
+
+      // fix legacy stuff
+      let scene: Scene = yield getSceneByProjectId(project.id, type)
+      yield put(fixLegacyNamespacesRequest(scene))
+      const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
+      scene = fixSuccessAction.payload.scene
+
+      // if assets packs are being loaded wait for them to finish
+      const state: RootState = yield select(state => state)
+      if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
+        yield take(LOAD_ASSET_PACKS_SUCCESS)
+      }
+
+      // sync scene assets
+      yield put(syncSceneAssetsRequest(scene))
+      const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
+      scene = syncSuccessAction.payload.scene
+
+      yield put(setEditorReadOnly(isReadOnly))
+      yield createNewEditorScene(project)
+
+      // Set the remote url for scripts
+      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
+
+      // Spawns the assets
+      yield renderScene(scene)
+
+      // Enable snap to grid
+      yield handleToggleSnapToGrid(toggleSnapToGrid(true))
+
+      // Select gizmo
+      yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+    } else {
+      console.error(`Unable to Open Editor: Invalid ${type}`)
+    }
   }
 }
 

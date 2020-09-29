@@ -38,7 +38,14 @@ export type EditorScene = {
 
 export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightArrow'
 
+export enum PreviewType {
+  PROJECT = 'project',
+  PUBLIC = 'public',
+  POOL = 'pool',
+  WEARABLE = 'wearable'
+}
+
 export type OpenEditorOptions = {
   isReadOnly: boolean
-  type: 'project' | 'public' | 'pool'
+  type: PreviewType
 }

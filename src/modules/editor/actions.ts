@@ -3,7 +3,9 @@ import { action } from 'typesafe-actions'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { Gizmo, OpenEditorOptions } from './types'
+import { Gizmo, OpenEditorOptions, PreviewType } from './types'
+import { Avatar } from 'decentraland-ui'
+import { Item } from 'modules/item/types'
 
 // Bind keyboard shortcuts
 
@@ -26,7 +28,7 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 export const OPEN_EDITOR = 'Open editor'
 
 export const openEditor = (options: Partial<OpenEditorOptions> = {}) =>
-  action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
+  action(OPEN_EDITOR, { isReadOnly: false, type: PreviewType.PROJECT, ...options } as OpenEditorOptions)
 
 export type OpenEditorAction = ReturnType<typeof openEditor>
 
@@ -204,3 +206,17 @@ export const TOGGLE_MULTISELECTION = 'Toggle multiselection'
 export const toggleMultiselection = (enabled: boolean) => action(TOGGLE_MULTISELECTION, { enabled })
 
 export type ToggleMultiselectionAction = ReturnType<typeof toggleMultiselection>
+
+// Set Avatar
+export const UPDATE_AVATAR = 'Update avatar'
+
+export const updateAvatar = (avatar: Avatar | null) => action(UPDATE_AVATAR, { avatar })
+
+export type UpdateAvatarAction = ReturnType<typeof updateAvatar>
+
+// Update Items
+export const UPDATE_ITEMS = 'Update items'
+
+export const updateItems = (items: Item[]) => action(UPDATE_ITEMS, { items })
+
+export type UpdateItemsAction = ReturnType<typeof updateItems>
