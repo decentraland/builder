@@ -176,8 +176,6 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
         .getTxHash()
     )
 
-    console.log('NEW MANAGERS', newManagers)
-
     yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
