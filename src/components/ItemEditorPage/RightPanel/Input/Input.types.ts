@@ -1,7 +1,7 @@
 export type Props = {
   itemId: string
   label: string
-  value: string | null | undefined
+  value?: string | null
   onChange: (newValue: string) => void
 }
 

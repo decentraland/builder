@@ -1,13 +1,8 @@
 import * as React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { BACKSPACE_KEY_CODE, COMMA_KEY_CODE, ENTER_KEY_CODE, WHITE_SPACE_KEY_CODE } from 'modules/keyboard/types'
 import { Props, State } from './Tags.types'
 import './Tags.css'
-
-const WHITE_SPACE_KEY_CODE = 32
-const ENTER_KEY_CODE = 13
-const COMMA_KEY_CODE = 118
-const BACKSPACE_KEY_CODE = 8
-const DELETE_KEY_CODE = 46
 
 export default class Tags extends React.PureComponent<Props, State> {
   state: State = {
@@ -43,7 +38,7 @@ export default class Tags extends React.PureComponent<Props, State> {
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === WHITE_SPACE_KEY_CODE || event.keyCode === ENTER_KEY_CODE || event.keyCode === COMMA_KEY_CODE) {
       this.handleAdd()
-    } else if (event.keyCode === BACKSPACE_KEY_CODE || event.keyCode === DELETE_KEY_CODE) {
+    } else if (event.keyCode === BACKSPACE_KEY_CODE || event.keyCode === ENTER_KEY_CODE) {
       const { draft, value } = this.state
       const last = value[value.length - 1]
       if (last && draft === '') {
