@@ -42,7 +42,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSubmit: (collection, items) => dispatch(mintCollectionItemsRequest(collection, items))
+  onMint: (collection, items) => dispatch(mintCollectionItemsRequest(collection, items))
 })
 
 export default connect(mapState, mapDispatch)(MintItemsModal)

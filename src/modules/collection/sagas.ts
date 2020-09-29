@@ -25,6 +25,10 @@ import {
   setCollectionMintersSuccess,
   setCollectionMintersFailure,
   SET_COLLECTION_MINTERS_REQUEST,
+  SetCollectionManagersRequestAction,
+  setCollectionManagersSuccess,
+  setCollectionManagersFailure,
+  SET_COLLECTION_MANAGERS_REQUEST,
   MintCollectionItemsRequestAction,
   mintCollectionItemsSuccess,
   mintCollectionItemsFailure,
@@ -45,6 +49,7 @@ export function* collectionSaga() {
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
   yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
+  yield takeEvery(SET_COLLECTION_MANAGERS_REQUEST, handleSetCollectionManagersRequest)
   yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintColectionItems)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
 }
@@ -105,20 +110,20 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
 }
 
 function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
-  const { collection, mintersAccess } = action.payload
+  const { collection, accessList } = action.payload
   try {
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
     const addresses: Address[] = []
-    const access: boolean[] = []
+    const values: boolean[] = []
 
     const newMinters = new Set(collection.minters)
 
-    for (const { address, hasAccess } of mintersAccess) {
+    for (const { address, hasAccess } of accessList) {
       addresses.push(Address.fromString(address))
-      access.push(hasAccess)
+      values.push(hasAccess)
 
       if (hasAccess) {
         newMinters.add(address)
@@ -129,7 +134,7 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
 
     const txHash = yield call(() =>
       implementation.methods
-        .setMinters(addresses, access)
+        .setMinters(addresses, values)
         .send({ from })
         .getTxHash()
     )
@@ -137,8 +142,44 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
     yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
-    console.log(error)
-    yield put(setCollectionMintersFailure(collection, mintersAccess, error.message))
+    yield put(setCollectionMintersFailure(collection, accessList, error.message))
+  }
+}
+
+function* handleSetCollectionManagersRequest(action: SetCollectionManagersRequestAction) {
+  const { collection, accessList } = action.payload
+  try {
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+
+    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+
+    const addresses: Address[] = []
+    const values: boolean[] = []
+
+    const newManagers = new Set(collection.managers)
+
+    for (const { address, hasAccess } of accessList) {
+      addresses.push(Address.fromString(address))
+      values.push(hasAccess)
+
+      if (hasAccess) {
+        newManagers.add(address)
+      } else {
+        newManagers.delete(address)
+      }
+    }
+
+    const txHash = yield call(() =>
+      implementation.methods
+        .setManagers(addresses, values)
+        .send({ from })
+        .getTxHash()
+    )
+
+    yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), txHash))
+    yield put(replace(locations.activity()))
+  } catch (error) {
+    yield put(setCollectionManagersFailure(collection, accessList, error.message))
   }
 }
 

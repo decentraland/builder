@@ -1,8 +1,7 @@
 {
   "add_existing_item_modal": {
     "title": "Add Existing Item",
-    "subtitle": "Select an item that is not part of a collection yet",
-    "add": "Add"
+    "subtitle": "Select an item that is not part of a collection yet"
   },
   "asset_pack": {
     "confirm_delete": {
@@ -138,8 +137,7 @@
     "representation_label": "Which body shape does it represent?",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
-    "adding_representation": "This will be added as {bodyShape} for the following item",
-    "add": "Add"
+    "adding_representation": "This will be added as {bodyShape} for the following item"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -343,6 +341,7 @@
     "amount": "Amount",
     "cancel": "Cancel",
     "confirm": "Confirm",
+    "add": "Add",
     "continue": "Continue",
     "create": "Create",
     "dismiss": "Dismiss",
@@ -827,6 +826,12 @@
     "turn_on": "Turn On",
     "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
     "turn_off": "Turn Off"
+  },
+  "collaborators_modal": {
+    "title": "Collaborators",
+    "add_collaborator": "Add Collaborator",
+    "no_collaborators":"No collaborators yet, start by",
+    "adding_one": "adding one!"
   },
   "collection_image": {
     "no_items": "No Items"

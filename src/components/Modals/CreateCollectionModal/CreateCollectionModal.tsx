@@ -3,9 +3,9 @@ import uuid from 'uuid'
 import { ModalNavigation, Button, Field, ModalContent, ModalActions } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { Collection } from 'modules/collection/types'
 import { Props, State } from './CreateCollectionModal.types'
 import './CreateCollectionModal.css'
-import { Collection } from 'modules/collection/types'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -22,6 +22,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         owner: address!,
         isPublished: false,
         minters: [],
+        managers: [],
         createdAt: Date.now(),
         updatedAt: Date.now()
       }

@@ -10,7 +10,7 @@ export type Props = ModalProps & {
   items: Item[]
   totalCollectionItems: number
   isLoading: boolean
-  onSubmit: typeof mintCollectionItemsRequest
+  onMint: typeof mintCollectionItemsRequest
 }
 
 export type CreateItemModalMetadata = {
@@ -26,6 +26,6 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'collection' | 'items' | 'totalCollectionItems' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSubmit'>
+export type MapDispatchProps = Pick<Props, 'onMint'>
 export type MapDispatch = Dispatch<MintCollectionItemsRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

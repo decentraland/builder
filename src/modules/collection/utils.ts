@@ -5,12 +5,12 @@ import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { Item } from 'modules/item/types'
 import { COLLECTION_STORE_ADDRESS } from 'modules/common/contracts'
 import { getRarityIndex, getMetadata } from 'modules/item/utils'
-import { InitializeItem, Collection, MinterAccess } from './types'
+import { InitializeItem, Collection, Access } from './types'
 
 const EMPTY_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const BASE_URI = env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
 
-export function setOnSale(collection: Collection, isOnSale: boolean): MinterAccess[] {
+export function setOnSale(collection: Collection, isOnSale: boolean): Access[] {
   return [{ address: COLLECTION_STORE_ADDRESS, hasAccess: isOnSale, collection }]
 }
 

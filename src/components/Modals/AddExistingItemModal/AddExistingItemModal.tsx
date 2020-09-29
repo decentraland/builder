@@ -25,7 +25,7 @@ export default class AddExistingItemModal extends React.PureComponent<Props, Sta
         </ModalContent>
         <ModalActions>
           <Button primary onClick={() => item && onSubmit(item, collectionId)} loading={isLoading} disabled={!item}>
-            {t('add_existing_item_modal.add')}
+            {t('global.add')}
           </Button>
         </ModalActions>
       </Modal>

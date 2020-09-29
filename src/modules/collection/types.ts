@@ -10,6 +10,7 @@ export type Collection = {
   salt?: string
   isPublished: boolean
   minters: string[]
+  managers: string[]
   createdAt: number
   updatedAt: number
 }
@@ -29,7 +30,7 @@ export type Mint = {
   item: Item
 }
 
-export type MinterAccess = {
+export type Access = {
   address: string
   hasAccess: boolean
   collection: Collection
