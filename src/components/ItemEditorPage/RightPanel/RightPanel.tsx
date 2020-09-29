@@ -1,9 +1,133 @@
 import * as React from 'react'
+import { Dropdown } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import ItemImage from 'components/ItemImage'
+import ConfirmDelete from 'components/ConfirmDelete'
+import { getMissingBodyShapeType } from 'modules/item/utils'
+import { Item, ItemRarity, WearableCategory } from 'modules/item/types'
+import Collapsable from './Collapsable'
+import Input from './Input'
+import Select from './Select'
+import MultiSelect from './MultiSelect'
+import Tags from './Tags'
 import { Props } from './RightPanel.types'
 import './RightPanel.css'
 
 export default class RightPanel extends React.PureComponent<Props> {
+  timeout: NodeJS.Timer | null = null
+
+  getSelectedItem = () => {
+    const { items, selectedItemId } = this.props
+    return items.find(item => item.id === selectedItemId) || null
+  }
+
+  handleDeleteItem = () => {
+    const { onDeleteItem } = this.props
+    onDeleteItem(this.getSelectedItem()!)
+  }
+
+  handleAddRepresentationToItem = () => {
+    const { onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { addRepresentationTo: this.getSelectedItem()! })
+  }
+
+  handleChange = (newItem: Item) => {
+    const { onSaveItem } = this.props
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+    }
+    this.timeout = setTimeout(() => {
+      this.timeout = null
+      onSaveItem(newItem, {})
+    }, 500)
+  }
+
   render() {
-    return <div className="RightPanel"></div>
+    const selectedItem = this.getSelectedItem()
+
+    return (
+      <div className="RightPanel">
+        <div className="header">
+          <div className="title">{t('item_editor.right_panel.properties')}</div>
+          {selectedItem ? (
+            <Dropdown trigger={<div className="actions" />} inline direction="left">
+              <Dropdown.Menu>
+                {getMissingBodyShapeType(selectedItem) !== null ? (
+                  <Dropdown.Item
+                    text={t('item_detail_page.add_representation', {
+                      bodyShape: t(`body_shapes.${getMissingBodyShapeType(selectedItem)}`).toLowerCase()
+                    })}
+                    onClick={this.handleAddRepresentationToItem}
+                  />
+                ) : null}
+                <ConfirmDelete
+                  name={selectedItem.name}
+                  onDelete={this.handleDeleteItem}
+                  trigger={<Dropdown.Item text={t('global.delete')} />}
+                />
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : null}
+        </div>
+        <Collapsable item={selectedItem} label={t('item_editor.right_panel.details')}>
+          {item => (
+            <div className="details">
+              <ItemImage item={item} hasBadge={true} badgeSize="small" />
+              <div className="metrics">
+                <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
+                <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
+                <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
+              </div>
+            </div>
+          )}
+        </Collapsable>
+        <Collapsable item={selectedItem} label={t('item_editor.right_panel.basics')}>
+          {item => (
+            <>
+              <Input itemId={item.id} label={t('global.name')} value={item.name} onChange={name => this.handleChange({ ...item, name })} />
+              <Select<WearableCategory>
+                itemId={item.id}
+                label={t('global.category')}
+                value={item.data.category}
+                options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                onChange={category => this.handleChange({ ...item, data: { ...item.data, category } })}
+              />
+              <Select<ItemRarity>
+                itemId={item.id}
+                label={t('global.rarity')}
+                value={item.rarity}
+                options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+                onChange={rarity => this.handleChange({ ...item, rarity })}
+              />
+            </>
+          )}
+        </Collapsable>
+        <Collapsable item={selectedItem} label={t('item_editor.right_panel.overrides')}>
+          {item => (
+            <>
+              <MultiSelect<WearableCategory>
+                itemId={item.id}
+                label={t('item_editor.right_panel.replaces')}
+                value={item.data.replaces}
+                options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                onChange={replaces => this.handleChange({ ...item, data: { ...item.data, replaces } })}
+              />
+              <MultiSelect<WearableCategory>
+                itemId={item.id}
+                label={t('item_editor.right_panel.hides')}
+                value={item.data.hides}
+                options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                onChange={hides => this.handleChange({ ...item, data: { ...item.data, hides } })}
+              />
+            </>
+          )}
+        </Collapsable>
+        <Collapsable item={selectedItem} label={t('item_editor.right_panel.tags')}>
+          {item => (
+            <Tags itemId={item.id} value={item.data.tags} onChange={tags => this.handleChange({ ...item, data: { ...item.data, tags } })} />
+          )}
+        </Collapsable>
+      </div>
+    )
   }
 }

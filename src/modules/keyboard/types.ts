@@ -1,3 +1,9 @@
+export const WHITE_SPACE_KEY_CODE = 32
+export const ENTER_KEY_CODE = 13
+export const COMMA_KEY_CODE = 118
+export const BACKSPACE_KEY_CODE = 8
+export const DELETE_KEY_CODE = 46
+
 export type KeyboardShortcut = BaseKeyboardShortcut & {
   callback: (event: ExtendedKeyboardEvent, combination: string) => any
 }
