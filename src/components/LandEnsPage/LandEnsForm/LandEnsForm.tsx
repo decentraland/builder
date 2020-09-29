@@ -10,7 +10,8 @@ import { SelectNames } from 'components/SelectNames'
 export default class LandEnsForm extends React.PureComponent<Props, State> {
   state: State = {
     selectedSubdomain: '',
-    done: false
+    isSetResolverDone: false,
+    isSetContentDone: false
   }
   componentDidMount() {
     this.props.onGetDomainList()
@@ -22,16 +23,23 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
     this.setState({ selectedSubdomain })
   }
 
-  handleSubmit = () => {
-    const { onSetENS, land } = this.props
+  handleSubmitResolver = () => {
+    const { onSetENSResolver, land } = this.props
     const { selectedSubdomain } = this.state
-    onSetENS(selectedSubdomain, land)
-    this.setState({done: true})
+    onSetENSResolver(selectedSubdomain, land)
+    this.setState({isSetResolverDone: true})
   }
   
+  handleSubmitContent = () => {
+    const { onSetENSContent, land } = this.props
+    const { selectedSubdomain } = this.state
+    onSetENSContent(selectedSubdomain, land)
+    this.setState({isSetContentDone: true})
+  }
+ 
   render() {
     const { land, ens, isLoading, error, subdomainList } = this.props
-    const { selectedSubdomain, done } = this.state
+    const { selectedSubdomain, isSetResolverDone, isSetContentDone } = this.state
     const selectOptions = subdomainList.map(subdomain => ({value: subdomain.toLowerCase(), text: subdomain.toLowerCase()}))
  
  
@@ -59,12 +67,12 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
         break
     }
 
-
     const submitMessage = error? error: t('land_ens_page.submit_message.success')
+    const isDone = isSetResolverDone && isSetContentDone
     return (
       <Form className="LandEnsForm">
         { 
-          done ? <>
+          isDone ? <>
             <Row>
               <p> {submitMessage} </p>
             </Row>
@@ -86,9 +94,17 @@ export default class LandEnsForm extends React.PureComponent<Props, State> {
               <p> {selectMessage} </p>
             </Row>
             <Row>
-              <Button type="submit" disabled={isButtonDisabled} primary onClick={this.handleSubmit}>
-                {t('global.submit')}
-              </Button>
+              { 
+                isSetResolverDone ? <>
+                  <Button type="submit" primary onClick={this.handleSubmitContent}>
+                    Set Content
+                  </Button>
+                </> : <>
+                  <Button type="submit" disabled={isButtonDisabled} primary onClick={this.handleSubmitResolver}>
+                    Set Resolver
+                  </Button>
+                </>
+              }
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>
               </Link>

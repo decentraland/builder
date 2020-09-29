@@ -7,7 +7,7 @@ import LandEnsForm from './LandEnsForm/LandEnsForm'
 
 export default class LandEnsPage extends React.PureComponent<Props> {
   render() {
-    const { onSetENS, onGetENS, onGetDomainList, subdomainList, error, isLoading, ens } = this.props
+    const { onSetENSResolver, onSetENSContent, onGetENS, onGetDomainList, subdomainList, error, isLoading, ens } = this.props
     return (
       <LandProviderPage className="LandEditPage">
         {land => (
@@ -20,7 +20,8 @@ export default class LandEnsPage extends React.PureComponent<Props> {
               land={land} 
               ens={ens}
               onGetDomainList={onGetDomainList}
-              onSetENS={onSetENS} 
+              onSetENSResolver={onSetENSResolver} 
+              onSetENSContent={onSetENSContent} 
               onGetENS={onGetENS} 
               subdomainList={subdomainList}
               error={error} 

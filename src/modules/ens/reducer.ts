@@ -13,12 +13,18 @@ import {
   GET_ENS_REQUEST,
   GET_ENS_SUCCESS,
   GET_ENS_FAILURE,
-  SetENSRequestAction,
-  SetENSSuccessAction,
-  SetENSFailureAction,
-  SET_ENS_REQUEST,
-  SET_ENS_SUCCESS,
-  SET_ENS_FAILURE,
+  SetENSContentRequestAction,
+  SetENSContentSuccessAction,
+  SetENSContentFailureAction,
+  SET_ENS_CONTENT_REQUEST,
+  SET_ENS_CONTENT_SUCCESS,
+  SET_ENS_CONTENT_FAILURE,
+  SetENSResolverRequestAction,
+  SetENSResolverSuccessAction,
+  SetENSResolverFailureAction,
+  SET_ENS_RESOLVER_REQUEST,
+  SET_ENS_RESOLVER_SUCCESS,
+  SET_ENS_RESOLVER_FAILURE,
 } from './actions'
 
 export type ENSState = {
@@ -36,16 +42,16 @@ const INITIAL_STATE: ENSState = {
 }
 
 export type ENSReducerAction = GetENSRequestAction | GetENSSuccessAction | GetENSFailureAction |
-                               SetENSRequestAction | SetENSSuccessAction | SetENSFailureAction |
+                               SetENSContentRequestAction | SetENSContentSuccessAction | SetENSContentFailureAction |
+                               SetENSResolverRequestAction | SetENSResolverSuccessAction | SetENSResolverFailureAction |
                                GetDomainListRequestAction | GetDomainListSuccessAction | GetDomainListFailureAction
-
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
     case GET_DOMAINLIST_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action),
+        loading: loadingReducer(state.loading, action)
       }
     }
     case GET_DOMAINLIST_SUCCESS: {
@@ -67,12 +73,11 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case GET_ENS_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action),
+        loading: loadingReducer(state.loading, action)
       }
     }
     case GET_ENS_SUCCESS: {
       const { ens, data } = action.payload
-      
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -90,15 +95,14 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         error
       }
     }
-    case SET_ENS_REQUEST: {
+    case SET_ENS_CONTENT_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action),
+        loading: loadingReducer(state.loading, action)
       }
     }
-    case SET_ENS_SUCCESS: {
+    case SET_ENS_CONTENT_SUCCESS: {
       const { ens, data } = action.payload
-      
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -108,7 +112,32 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case SET_ENS_FAILURE: {
+    case SET_ENS_CONTENT_FAILURE: {
+      const { error } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error
+      }
+    }
+    case SET_ENS_RESOLVER_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
+      }
+    }
+    case SET_ENS_RESOLVER_SUCCESS: {
+      const { ens, data } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [ens] : data
+        }
+      }
+    }
+    case SET_ENS_RESOLVER_FAILURE: {
       const { error } = action.payload
       return {
         ...state,

@@ -1,5 +1,5 @@
 import { Land } from 'modules/land/types'
-import {ENSState} from 'modules/ens/reducer';
+import { ENSState } from 'modules/ens/reducer'
 
 export type Props = {
   land: Land
@@ -7,12 +7,14 @@ export type Props = {
   ens: ENSState
   subdomainList: string[]
   error: string | null
-  onSetENS: (ens: string, land: Land) => void
+  onSetENSResolver: (ens: string, land: Land) => void
+  onSetENSContent: (ens: string, land: Land) => void
   onGetENS: (ens: string, land: Land) => void
   onGetDomainList: () => void
 }
 
 export type State = {
   selectedSubdomain: string
-  done: boolean
+  isSetResolverDone: boolean
+  isSetContentDone: boolean
 }
