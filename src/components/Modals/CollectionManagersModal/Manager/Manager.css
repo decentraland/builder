@@ -10,6 +10,7 @@
 
 .Manager .info {
   flex: 1 1 auto;
+  display: flex;
 }
 
 .Manager .action {
@@ -19,4 +20,16 @@
 
 .Manager:hover .action {
   display: block;
+}
+
+.Manager .Profile {
+  width: 120px;
+  margin-right: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.Manager .Profile.blockie .name {
+  display: none;
 }

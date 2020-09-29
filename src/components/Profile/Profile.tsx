@@ -14,7 +14,7 @@ export default class Profile extends React.PureComponent<Props> {
   }
 
   render() {
-    const { address, avatar, textOnly, imageOnly, avatarOnly, blockieOnly, size } = this.props
+    const { address, avatar, textOnly, imageOnly, size } = this.props
     const name = (avatar && avatar.name) || address.slice(0, 6)
 
     if (isEqual(address, LAND_POOL_ADDRESS)) {
@@ -32,12 +32,12 @@ export default class Profile extends React.PureComponent<Props> {
       return avatar ? (
         <span className={`Profile avatar ${size}`} title={address}>
           <AvatarFace size="tiny" inline avatar={avatar} />
-          {avatarOnly || imageOnly ? null : <span className="name">{name}</span>}
+          {imageOnly ? null : <span className="name">{name}</span>}
         </span>
       ) : (
         <span className={`Profile blockie ${size}`} title={address}>
           <Blockie seed={address} scale={size === 'large' ? 5 : size === 'huge' ? 7 : 3} />
-          {blockieOnly || imageOnly ? null : <span className="name">{name}</span>}
+          {imageOnly ? null : <span className="name">{name}</span>}
         </span>
       )
     }

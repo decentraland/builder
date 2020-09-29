@@ -17,8 +17,8 @@ export default class Manager extends React.PureComponent<Props> {
     return (
       <div className="Manager">
         <div className="info">
-          <Profile address={manager} blockieOnly={true} />
-          {shorten(manager)}
+          <Profile address={manager} />
+          <div className="address">{shorten(manager)}</div>
         </div>
         <span className="action link" onClick={this.handleRemove}>
           {t('global.delete')}

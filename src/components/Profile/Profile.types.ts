@@ -7,8 +7,6 @@ export type Props = {
   avatar: Avatar | null
   textOnly?: boolean
   imageOnly?: boolean
-  avatarOnly?: boolean
-  blockieOnly?: boolean
   size?: 'normal' | 'large' | 'huge'
   onLoadProfile: typeof loadProfileRequest
 }
