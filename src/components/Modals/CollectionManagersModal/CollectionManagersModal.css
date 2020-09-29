@@ -1,0 +1,30 @@
+.CollectionManagersModal .managers {
+  background-color: var(--dark-gray);
+  border-radius: 8px;
+  padding: 20px 25px;
+}
+
+.CollectionManagersModal .empty-managers-list {
+  padding: 40px;
+  text-align: center;
+}
+
+.CollectionManagersModal .empty-managers-list .link {
+  text-transform: none;
+}
+
+.CollectionManagersModal .add-managers {
+  margin-top: 24px;
+  margin-left: 10px;
+  font-size: 13px;
+}
+
+.CollectionManagersModal .link {
+  text-transform: uppercase;
+}
+
+.CollectionManagersModal .actions {
+  margin-top: 150px;
+  width: 100%;
+  text-align: right;
+}

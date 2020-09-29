@@ -19,3 +19,7 @@
 .dcl.field.address .ui.input.rounded + .dcl.blockie {
   margin-right: 12px;
 }
+
+.dcl.field .ui.input.rounded ~ .message {
+  display: none;
+}

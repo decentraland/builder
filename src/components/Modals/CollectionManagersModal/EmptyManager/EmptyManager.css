@@ -1,0 +1,24 @@
+.EmptyManager {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.EmptyManager {
+  display: flex;
+  padding: 10px;
+  background-color: #16141a;
+}
+
+.EmptyManager .dcl.field {
+  flex: 1 1 auto;
+}
+
+.EmptyManager .dcl.field .ui.input.rounded > input {
+  border: none;
+}
+
+.EmptyManager .action {
+  font-size: 13px;
+  margin-left: 16px;
+}

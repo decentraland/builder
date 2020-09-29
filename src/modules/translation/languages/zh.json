@@ -1,8 +1,7 @@
 {
   "add_existing_item_modal": {
     "title": "添加现有项目",
-    "subtitle": "选择一个不属于集合的项目",
-    "add": "加"
+    "subtitle": "选择一个不属于集合的项目"
   },
   "asset_pack": {
     "confirm_delete": {
@@ -133,8 +132,7 @@
     "representation_label": "它代表哪种身材？",
     "existing_item": "这是现有项目的一部分吗？",
     "pick_item": "选择没有{bodyShape}的商品",
-    "adding_representation": "这将添加为以下项目的{body Shape}",
-    "add": "加"
+    "adding_representation": "这将添加为以下项目的{body Shape}"
   },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
@@ -818,6 +816,12 @@
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目"
+  },
+  "collaborators_modal": {
+    "title": "合作者",
+    "add_collaborator": "添加协作者",
+    "no_collaborators":"还没有合作者，首先",
+    "adding_one": "加一个！"
   },
   "collection_image": {
     "no_items": "没有项目"

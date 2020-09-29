@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Item } from 'modules/item/types'
-import { Collection, Mint, MinterAccess } from './types'
+import { Collection, Mint, Access } from './types'
 
 // Fetch collections
 
@@ -88,21 +88,42 @@ export type MintCollectionItemsFailureAction = ReturnType<typeof mintCollectionI
 
 // Set collection minters
 
-export const SET_COLLECTION_MINTERS_REQUEST = '[Request] Set collection Minters'
-export const SET_COLLECTION_MINTERS_SUCCESS = '[Success] Set collection Minters'
-export const SET_COLLECTION_MINTERS_FAILURE = '[Failure] Set collection Minters'
+export const SET_COLLECTION_MINTERS_REQUEST = '[Request] Set collection minters'
+export const SET_COLLECTION_MINTERS_SUCCESS = '[Success] Set collection minters'
+export const SET_COLLECTION_MINTERS_FAILURE = '[Failure] Set collection minters'
 
-export const setCollectionMintersRequest = (collection: Collection, mintersAccess: MinterAccess[]) =>
-  action(SET_COLLECTION_MINTERS_REQUEST, { collection, mintersAccess })
+export const setCollectionMintersRequest = (collection: Collection, accessList: Access[]) =>
+  action(SET_COLLECTION_MINTERS_REQUEST, { collection, accessList })
 export const setCollectionMintersSuccess = (collection: Collection, minters: string[], txHash: string) =>
   action(SET_COLLECTION_MINTERS_SUCCESS, {
     collection,
     minters,
     ...buildTransactionPayload(txHash, { collection, minters })
   })
-export const setCollectionMintersFailure = (collection: Collection, mintersAccess: MinterAccess[], error: string) =>
-  action(SET_COLLECTION_MINTERS_FAILURE, { collection, mintersAccess, error })
+export const setCollectionMintersFailure = (collection: Collection, accessList: Access[], error: string) =>
+  action(SET_COLLECTION_MINTERS_FAILURE, { collection, accessList, error })
 
 export type SetCollectionMintersRequestAction = ReturnType<typeof setCollectionMintersRequest>
 export type SetCollectionMintersSuccessAction = ReturnType<typeof setCollectionMintersSuccess>
 export type SetCollectionMintersFailureAction = ReturnType<typeof setCollectionMintersFailure>
+
+// Set collection minters
+
+export const SET_COLLECTION_MANAGERS_REQUEST = '[Request] Set collection managers'
+export const SET_COLLECTION_MANAGERS_SUCCESS = '[Success] Set collection managers'
+export const SET_COLLECTION_MANAGERS_FAILURE = '[Failure] Set collection managers'
+
+export const setCollectionManagersRequest = (collection: Collection, accessList: Access[]) =>
+  action(SET_COLLECTION_MANAGERS_REQUEST, { collection, accessList })
+export const setCollectionManagersSuccess = (collection: Collection, managers: string[], txHash: string) =>
+  action(SET_COLLECTION_MANAGERS_SUCCESS, {
+    collection,
+    managers,
+    ...buildTransactionPayload(txHash, { collection, managers })
+  })
+export const setCollectionManagersFailure = (collection: Collection, accessList: Access[], error: string) =>
+  action(SET_COLLECTION_MANAGERS_FAILURE, { collection, accessList, error })
+
+export type SetCollectionManagersRequestAction = ReturnType<typeof setCollectionManagersRequest>
+export type SetCollectionManagersSuccessAction = ReturnType<typeof setCollectionManagersSuccess>
+export type SetCollectionManagersFailureAction = ReturnType<typeof setCollectionManagersFailure>

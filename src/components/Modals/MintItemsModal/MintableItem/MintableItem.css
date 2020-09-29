@@ -1,7 +1,7 @@
 .MintableItem {
   margin-bottom: 16px;
   padding: 16px;
-  background-color: rgba(22, 20, 26, 0.48);
+  background-color: var(--dark-gray);
   border-radius: 8px;
 }
 
@@ -51,8 +51,4 @@
 
 .MintableItem .mint:hover .remove-item {
   opacity: 1;
-}
-
-.MintableItem .ui.form .dcl.field .message {
-  display: none;
 }
