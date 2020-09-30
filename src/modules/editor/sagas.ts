@@ -1,5 +1,6 @@
 // @ts-ignore
 import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
+import { Wearable } from 'decentraland-ecs'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import {
@@ -45,7 +46,6 @@ import {
   OpenEditorAction,
   setEditorReadOnly,
   SetSelectedEntitiesAction,
-  updateItems,
   updateAvatar
 } from 'modules/editor/actions'
 import {
@@ -103,8 +103,7 @@ import {
   ROTATION_GRID_RESOLUTION,
   createReadyOnlyScene,
   areEqualTransforms,
-  createAvatarProject,
-  toWearable
+  createAvatarProject
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
@@ -112,8 +111,6 @@ import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUE
 import { getSearch } from 'connected-react-router'
 import { Item } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
-import { getAvatar } from 'modules/profile/selectors'
-import { Avatar } from 'decentraland-ui'
 
 const editorWindow = window as EditorWindow
 
@@ -320,18 +317,33 @@ function* handleOpenEditor(action: OpenEditorAction) {
     if (item) {
       yield put(setEditorReadOnly(true))
       yield createNewEditorScene(createAvatarProject())
-      const avatar: Avatar | null = yield select(getAvatar)
-      const items = [item]
-      const wearables = items.map(toWearable)
-      yield call(() => {
-        console.log('render avatar', avatar)
-        editorWindow.editor.sendExternalAction(updateAvatar(avatar))
-        if (item.data.category) {
-          console.log('add wearables to catalog', wearables)
-          editorWindow.editor.addWearablesToCatalog(wearables)
-          console.log('render items', items)
-          editorWindow.editor.sendExternalAction(updateItems(items))
-        }
+
+      yield call(async () => {
+        // load collection
+        const resp = await fetch('https://dcl-wearables-dev.now.sh/expected.json')
+        const defaultCollection: Wearable[] = await resp.json()
+        console.log('default collection:', defaultCollection)
+
+        // select wearables
+        const wearableIds = [
+          'dcl://base-avatars/BaseFemale',
+          'dcl://base-avatars/f_sweater',
+          'dcl://base-avatars/f_jeans',
+          'dcl://base-avatars/bun_shoes',
+          'dcl://base-avatars/standard_hair',
+          'dcl://base-avatars/f_eyes_00',
+          'dcl://base-avatars/f_eyebrows_00',
+          'dcl://base-avatars/f_mouth_00'
+        ]
+        const wearables = defaultCollection.filter(wearable => wearable && wearableIds.includes(wearable.id))
+        console.log('wearables:', wearables)
+        console.log('all wearables exist:', wearables.length === wearableIds.length)
+
+        // add wearables
+        editorWindow.editor.addWearablesToCatalog(wearables)
+
+        // render default avatar
+        setTimeout(() => editorWindow.editor.sendExternalAction(updateAvatar(null)), 2000)
       })
     }
   } else {

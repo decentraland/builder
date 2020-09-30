@@ -188,7 +188,15 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       avatarShape.hairColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
       avatarShape.eyeColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
       avatarShape.name = 'Test'
-      avatarShape.wearables = ['9c0de36f-3dac-4c8e-a5e1-b91f11d18e48']
+      avatarShape.wearables = [
+        'dcl://base-avatars/f_sweater',
+        'dcl://base-avatars/f_jeans',
+        'dcl://base-avatars/bun_shoes',
+        'dcl://base-avatars/standard_hair',
+        'dcl://base-avatars/f_eyes_00',
+        'dcl://base-avatars/f_eyebrows_00',
+        'dcl://base-avatars/f_mouth_00'
+      ]
       avatar.addComponent(avatarShape)
       engine.addEntity(avatar)
 
