@@ -83,7 +83,13 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     {collection.isPublished ? (
                       <>
                         <Popup
-                          content={isOnSaleLoading ? t('global.loading') : t('collection_detail_page.on_sale_popup')}
+                          content={
+                            isOnSaleLoading
+                              ? t('global.loading')
+                              : isOnSale(collection)
+                              ? t('collection_detail_page.unset_on_sale_popup')
+                              : t('collection_detail_page.set_on_sale_popup')
+                          }
                           position="top center"
                           trigger={
                             <Radio
@@ -101,15 +107,15 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                           flowing
                         />
 
-                        <Button basic className="action-button" onClick={this.handleMintItems}>
+                        <Button basic className="action-button" disabled={!collection.isApproved} onClick={this.handleMintItems}>
                           <Icon name="paper plane" />
-                          <span>{t('collection_detail_page.mint_items')}</span>
+                          <span className="text">{t('collection_detail_page.mint_items')}</span>
                         </Button>
                       </>
                     ) : (
                       <Button basic className="action-button" onClick={this.handleNewItem}>
                         <Icon name="plus" />
-                        <span>{t('collection_detail_page.new_item')}</span>
+                        <span className="text">{t('collection_detail_page.new_item')}</span>
                       </Button>
                     )}
 
@@ -124,7 +130,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     >
                       <Dropdown.Menu>
                         {collection.isPublished ? (
-                          <Dropdown.Item text={t('collection_detail_page.collaborators')} onClick={this.handleUpdateManagers} />
+                          <Dropdown.Item text={t('collection_detail_page.managers')} onClick={this.handleUpdateManagers} />
                         ) : (
                           <>
                             <Dropdown.Item
@@ -142,9 +148,27 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     </Dropdown>
 
                     {collection.isPublished ? (
-                      <Button secondary compact disabled={true}>
-                        {t('collection_detail_page.published')}
-                      </Button>
+                      collection.isApproved ? (
+                        <Button secondary compact disabled={true}>
+                          {t('collection_detail_page.published')}
+                        </Button>
+                      ) : (
+                        <Popup
+                          content={t('collection_detail_page.cant_mint')}
+                          position="top center"
+                          trigger={
+                            <div className="popup-button">
+                              <Button secondary compact disabled={true}>
+                                {t('collection_detail_page.under_review')}
+                              </Button>
+                            </div>
+                          }
+                          hideOnScroll={true}
+                          on="hover"
+                          inverted
+                          flowing
+                        />
+                      )
                     ) : (
                       <Button primary compact disabled={!this.canPublish()} onClick={this.handlePublish}>
                         {t('collection_detail_page.publish')}

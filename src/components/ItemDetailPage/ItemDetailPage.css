@@ -7,7 +7,7 @@
   margin: auto !important;
 }
 
-.ItemDetailPage .actions .ui.button.compact {
+.ItemDetailPage .actions .ui.button.primary.compact {
   border: 1.5px solid var(--primary);
 }
 

@@ -680,7 +680,13 @@
     "edit_estate_remove": "您从{name}中删除了{count}土地。",
     "set_manager_assigned": "您已将{地址}分配、为所有{type}的运算符。",
     "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。",
-    "collection_published": "发布了收藏集{name}"
+    "collection_published": "发布了收藏集{name}",
+    "collection_published": "发布了收藏集{name}",
+    "collection_items_minted": "为{name}收集了{count}个项目",
+    "added_collection_managers": "在集合{name}上添加了{count} {count，复数，一个{collaborator}其他{collaborators}}",
+    "removed_collection_managers": "删除了集合{name}的{count} {count，复数，一个{collaborator}其他{collaborators}}",
+    "set_collection_on_sale": "设置要出售的收藏集{name}",
+    "unset_collection_on_sale": "已将集合{name}从出售中移除"
   },
   "transfer_page": {
     "title": "转移",
@@ -759,7 +765,8 @@
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",
-    "add_representation": "添加{bodyShape}"
+    "add_representation": "添加{bodyShape}",
+    "published": "已发表"
   },
   "collection_detail_page": {
     "new_item": "新项目",
@@ -769,11 +776,13 @@
     "on_sale_popup": "这将使您的收藏可以在自动售货机中出售。",
     "notice": "发布",
     "publish": "发布",
-    "collaborators": "合作者",
+    "managers": "合作者",
     "click_here": "单击此处",
     "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
     "cant_remove": "发布后，您将无法删除或向收藏夹添加项目",
-    "published": "已发表"
+    "published": "已发表",
+    "set_on_sale_popup": "这样一来，您的收藏就可以在自动售货机上出售。",
+    "unset_on_sale_popup": "该系列可在世界上的自动售货机上购买。"
   },
   "collection_item": {
     "set_price": "设定价格",
@@ -813,15 +822,16 @@
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
     "turn_off": "关掉"
   },
+  "collection_managers_modal": {
+    "title": "合作者",
+    "add_manager": "添加协作者",
+    "no_managers":"还没有合作者，首先",
+    "adding_one": "加一个！"
+  },
   "mint_items_modal": {
     "title": "薄荷项目",
-    "add_item": "新增项目"
-  },
-  "collaborators_modal": {
-    "title": "合作者",
-    "add_collaborator": "添加协作者",
-    "no_collaborators":"还没有合作者，首先",
-    "adding_one": "加一个！"
+    "add_item": "新增项目",
+    "no_items": "您没有可用于\"{name}\"的项目"
   },
   "collection_image": {
     "no_items": "没有项目"

@@ -28,7 +28,7 @@
   margin-left: 0;
 }
 
-.CollectionDetailPage .actions .ui.button.action-button > span {
+.CollectionDetailPage .actions .ui.button.action-button > .text {
   color: var(--text);
 }
 
@@ -38,6 +38,10 @@
 
 .CollectionDetailPage .actions .ui.button.compact {
   padding: 10px;
+}
+
+.CollectionDetailPage .actions .popup-button {
+  margin-left: 16px;
 }
 
 .CollectionDetailPage .Notice {

@@ -73,10 +73,13 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoading, totalCollectionItems, onClose } = this.props
+    const { collection, totalCollectionItems, isLoading, onClose } = this.props
     const { itemMints } = this.state
 
     const items = this.props.items.concat(this.state.items)
+
+    const isEmpty = items.length === 0
+    const isFull = items.length === totalCollectionItems
 
     return (
       <Modal name={name} className="MintItemsModal" onClose={onClose}>
@@ -86,20 +89,28 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
             <Loader active size="massive" />
           ) : (
             <>
-              {items.map(item => (
-                <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />
-              ))}
-              {items.length !== totalCollectionItems ? (
+              {isEmpty ? (
+                <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
+              ) : (
+                items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+              )}
+              {isFull ? null : (
                 <ItemDropdown
                   placeholder={t('mint_items_modal.add_item')}
                   onChange={this.handleAddItems}
                   filter={this.filterAddableItems}
                 />
-              ) : null}
+              )}
               <ModalActions>
-                <Button primary onClick={this.handleMintItems}>
-                  {t('global.done')}
-                </Button>
+                {isEmpty ? (
+                  <Button secondary fluid onClick={onClose}>
+                    {t('global.cancel')}
+                  </Button>
+                ) : (
+                  <Button primary onClick={this.handleMintItems}>
+                    {t('global.done')}
+                  </Button>
+                )}
               </ModalActions>
             </>
           )}

@@ -9,6 +9,7 @@ export type Collection = {
   contractAddress?: string
   salt?: string
   isPublished: boolean
+  isApproved: boolean
   minters: string[]
   managers: string[]
   createdAt: number

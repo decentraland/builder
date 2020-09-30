@@ -26,3 +26,15 @@
   font-size: 13px;
   text-transform: uppercase;
 }
+
+.MintItemsModal .empty {
+  background-color: var(--dark-gray);
+  border-radius: 8px;
+  margin-top: 40px;
+  padding: 50px 25px;
+  text-align: center;
+}
+
+.MintItemsModal .empty ~ .actions {
+  margin-top: 40px;
+}

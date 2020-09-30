@@ -94,6 +94,7 @@ export type Item = {
   rarity?: ItemRarity
   totalSupply?: number
   isPublished: boolean
+  isApproved: boolean
   type: ItemType
   data: WearableData
   contents: Record<string, string>
