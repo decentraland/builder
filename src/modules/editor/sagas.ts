@@ -320,8 +320,9 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
       yield call(async () => {
         // load collection
-        const resp = await fetch('https://dcl-wearables-dev.now.sh/expected.json')
-        const defaultCollection: Wearable[] = await resp.json()
+        const resp = await fetch('https://wearable-api.decentraland.org/v2/collections')
+        const collections: { id: string; wearables: Wearable[] }[] = await resp.json()
+        const defaultCollection: Wearable[] = collections[0].wearables
         console.log('default collection:', defaultCollection)
 
         // select wearables
