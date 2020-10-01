@@ -789,7 +789,8 @@
     "rarity": "稀有度",
     "price": "价钱",
     "beneficiary": "受益人",
-    "supply": "供应"
+    "supply": "供应",
+    "collection": "采集"
   },
   "edit_price_and_beneficiary_modal": {
     "title": "设置{name}的价格和地址",

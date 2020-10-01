@@ -3,6 +3,7 @@ import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { getItemId } from 'modules/location/selectors'
+import { getCollection } from 'modules/collection/selectors'
 import { getItems, getLoading } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST, DELETE_ITEM_REQUEST, deleteItemRequest } from 'modules/item/actions'
@@ -14,9 +15,11 @@ const mapState = (state: RootState): MapStateProps => {
   const items = getItems(state)
 
   const item = items.find(item => item.id === itemId) || null
+  const collection = item && item.collectionId ? getCollection(state, item.collectionId) : null
 
   return {
     item,
+    collection,
     isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) || isLoadingType(getLoading(state), DELETE_ITEM_REQUEST)
   }
 }
