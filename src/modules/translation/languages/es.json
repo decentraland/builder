@@ -377,7 +377,8 @@
     "no": "No",
     "name": "Nombre",
     "category": "Categoría",
-    "rarity": "Rareza"
+    "rarity": "Rareza",
+    "published": "Publicado"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -768,8 +769,7 @@
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
-    "add_representation": "Agregar representación de {bodyShape}",
-    "published": "Publicado"
+    "add_representation": "Agregar representación de {bodyShape}"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
@@ -783,8 +783,7 @@
     "publish": "Publicar",
     "managers": "Colaboradores",
     "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
-    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
-    "published": "Publicados"
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
   },
   "collection_item": {
     "set_price": "agregar precio",
@@ -801,7 +800,10 @@
     "price": "Precio",
     "beneficiary": "Beneficiario",
     "supply": "Suministro",
-    "collection": "Colección"
+    "collection": "Colección",
+    "type": {
+      "wearable": "Vestimenta"
+    }
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Asignar un precio y un beneficiario para {name}",
@@ -838,6 +840,9 @@
   },
   "collection_image": {
     "no_items": "No Items"
+  },
+  "collection_card": {
+    "subtitle": "Colección · {count} {count, plural, one {item} other {items}}"
   },
   "item_editor": {
     "left_panel": {

@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Dropdown, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { locations } from 'routing/locations'
 import ConfirmDelete from 'components/ConfirmDelete'
+import CollectionBadge from 'components/CollectionBadge'
 import { Props } from './Header.types'
 import './Header.css'
-import { locations } from 'routing/locations'
 
 export default class Header extends React.PureComponent<Props> {
   handleHome = () => {
@@ -44,21 +45,23 @@ export default class Header extends React.PureComponent<Props> {
 
   renderSelectedCollection() {
     const { collection } = this.props
-    return (
+    return collection ? (
       <>
         <div className="block back" onClick={this.handleBack} />
-        <div className="title">{collection!.name}</div>
-        {collection!.isPublished ? null : (
+        <div className="title">
+          {collection.name} <CollectionBadge collection={collection} />
+        </div>
+        {collection.isPublished ? null : (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
               <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
-              <ConfirmDelete name={collection!.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
+              <ConfirmDelete name={collection.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
             </Dropdown.Menu>
           </Dropdown>
         )}
       </>
-    )
+    ) : null
   }
 
   renderHeader() {

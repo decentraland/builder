@@ -150,7 +150,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                     {collection.isPublished ? (
                       collection.isApproved ? (
                         <Button secondary compact disabled={true}>
-                          {t('collection_detail_page.published')}
+                          {t('global.published')}
                         </Button>
                       ) : (
                         <Popup
