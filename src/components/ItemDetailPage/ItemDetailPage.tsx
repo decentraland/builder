@@ -19,7 +19,7 @@ const STORAGE_KEY = 'dcl-item-notice'
 export default class ItemDetailPage extends React.PureComponent<Props> {
   handleEditItem = () => {
     const { item, onNavigate } = this.props
-    onNavigate(locations.itemEditor({ itemId: item!.id }))
+    onNavigate(locations.itemEditor({ itemId: item!.id, collectionId: item!.collectionId }))
   }
 
   handleDeleteItem = () => {
