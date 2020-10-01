@@ -30,7 +30,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handleSubmit = () => {
-    const { item, onSave } = this.props
+    const { item, onSave, onSavePublished } = this.props
     const { price, beneficiary } = this.state
 
     const newItem: Item = {
@@ -39,7 +39,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
       beneficiary
     }
 
-    onSave(newItem, {})
+    if (item!.isPublished) {
+      onSavePublished(newItem)
+    } else {
+      onSave(newItem, {})
+    }
   }
 
   isDisabled() {

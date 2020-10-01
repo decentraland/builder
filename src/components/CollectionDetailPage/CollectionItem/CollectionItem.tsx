@@ -127,11 +127,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
                   onClick={preventDefault()}
                 >
                   <Dropdown.Menu>
+                    {item.price ? (
+                      <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
+                    ) : null}
                     {item.isPublished ? (
-                      <>
-                        <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
-                        <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
-                      </>
+                      <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
                     ) : (
                       <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                     )}

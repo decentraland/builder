@@ -81,6 +81,19 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
+export type SaleData = {
+  price?: number
+  beneficiary?: string
+}
+
+export type WearableData = {
+  category?: WearableCategory
+  representations: WearableRepresentation[]
+  replaces: WearableCategory[]
+  hides: WearableCategory[]
+  tags: string[]
+}
+
 export type Item = {
   id: string // uuid
   name: string
@@ -89,8 +102,6 @@ export type Item = {
   description?: string
   collectionId?: string
   tokenId?: string
-  price?: number
-  beneficiary?: string
   rarity?: ItemRarity
   totalSupply?: number
   isPublished: boolean
@@ -101,14 +112,6 @@ export type Item = {
   metrics: ModelMetrics
   createdAt: number
   updatedAt: number
-}
-
-export type WearableData = {
-  category?: WearableCategory
-  representations: WearableRepresentation[]
-  replaces: WearableCategory[]
-  hides: WearableCategory[]
-  tags: string[]
-}
+} & SaleData
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
