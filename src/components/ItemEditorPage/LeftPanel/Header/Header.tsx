@@ -48,13 +48,15 @@ export default class Header extends React.PureComponent<Props> {
       <>
         <div className="block back" onClick={this.handleBack} />
         <div className="title">{collection!.name}</div>
-        <Dropdown trigger={<div className="block actions" />} inline direction="left">
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
-            <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
-            <ConfirmDelete name={collection!.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
-          </Dropdown.Menu>
-        </Dropdown>
+        {collection!.isPublished ? null : (
+          <Dropdown trigger={<div className="block actions" />} inline direction="left">
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
+              <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
+              <ConfirmDelete name={collection!.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
       </>
     )
   }

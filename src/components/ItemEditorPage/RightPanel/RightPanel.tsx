@@ -49,7 +49,7 @@ export default class RightPanel extends React.PureComponent<Props> {
       <div className="RightPanel">
         <div className="header">
           <div className="title">{t('item_editor.right_panel.properties')}</div>
-          {selectedItem ? (
+          {selectedItem && !selectedItem.isPublished ? (
             <Dropdown trigger={<div className="actions" />} inline direction="left">
               <Dropdown.Menu>
                 {getMissingBodyShapeType(selectedItem) !== null ? (
@@ -90,6 +90,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                 label={t('global.category')}
                 value={item.data.category}
                 options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                disabled={item.isPublished}
                 onChange={category => this.handleChange({ ...item, data: { ...item.data, category } })}
               />
               <Select<ItemRarity>
@@ -97,6 +98,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                 label={t('global.rarity')}
                 value={item.rarity}
                 options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+                disabled={item.isPublished}
                 onChange={rarity => this.handleChange({ ...item, rarity })}
               />
             </>
@@ -110,6 +112,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                 label={t('item_editor.right_panel.replaces')}
                 value={item.data.replaces}
                 options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                disabled={item.isPublished}
                 onChange={replaces => this.handleChange({ ...item, data: { ...item.data, replaces } })}
               />
               <MultiSelect<WearableCategory>
@@ -117,6 +120,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                 label={t('item_editor.right_panel.hides')}
                 value={item.data.hides}
                 options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                disabled={item.isPublished}
                 onChange={hides => this.handleChange({ ...item, data: { ...item.data, hides } })}
               />
             </>

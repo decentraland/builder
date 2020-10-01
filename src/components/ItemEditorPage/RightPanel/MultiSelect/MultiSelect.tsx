@@ -5,6 +5,10 @@ import { Props, State } from './MultiSelect.types'
 import './MultiSelect.css'
 
 export default class MultiSelect<T extends string> extends React.PureComponent<Props<T>, State<T>> {
+  static defaultProps = {
+    disabled: false
+  }
+
   state: State<T> = {
     value: this.props.value
   }
@@ -70,7 +74,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
   }
 
   render() {
-    const { options } = this.props
+    const { options, disabled } = this.props
     const { value } = this.state
     return (
       <Dropdown
@@ -78,9 +82,10 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
         trigger={this.renderTrigger()}
         inline
         direction="right"
-        options={options.filter(option => !value.includes(option.value))}
-        onChange={this.handleChange}
         scrolling={options.length > 4}
+        options={options.filter(option => !value.includes(option.value))}
+        disabled={disabled}
+        onChange={this.handleChange}
       />
     )
   }
