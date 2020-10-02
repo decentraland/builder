@@ -5,6 +5,10 @@ import { Props, State } from './Select.types'
 import './Select.css'
 
 export default class Select<T extends string> extends React.PureComponent<Props<T>, State> {
+  static defaultProps = {
+    disabled: false
+  }
+
   state: State = {
     value: this.props.value || ''
   }
@@ -39,7 +43,7 @@ export default class Select<T extends string> extends React.PureComponent<Props<
   }
 
   render() {
-    const { options } = this.props
+    const { options, disabled } = this.props
     const { value } = this.state
     return (
       <Dropdown
@@ -47,10 +51,11 @@ export default class Select<T extends string> extends React.PureComponent<Props<
         trigger={this.renderTrigger()}
         inline
         direction="right"
+        scrolling={options.length > 4}
         value={value || undefined}
         options={options}
+        disabled={disabled}
         onChange={this.handleChange}
-        scrolling={options.length > 4}
       />
     )
   }

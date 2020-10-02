@@ -62,7 +62,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   <Row className="actions">
                     {item.isPublished ? (
                       <Button secondary compact disabled={true}>
-                        {t('item_detail_page.published')}
+                        {t('global.published')}
                       </Button>
                     ) : (
                       <>

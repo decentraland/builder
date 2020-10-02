@@ -377,7 +377,8 @@
     "no": "没有",
     "name": "名称",
     "category": "类别",
-    "rarity": "稀有度"
+    "rarity": "稀有度",
+    "published": "已发表"
   },
   "navigation": {
     "scenes": "场景",
@@ -765,8 +766,7 @@
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",
-    "add_representation": "添加{bodyShape}",
-    "published": "已发表"
+    "add_representation": "添加{bodyShape}"
   },
   "collection_detail_page": {
     "new_item": "新项目",
@@ -780,7 +780,6 @@
     "click_here": "单击此处",
     "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
     "cant_remove": "发布后，您将无法删除或向收藏夹添加项目",
-    "published": "已发表",
     "set_on_sale_popup": "这样一来，您的收藏就可以在自动售货机上出售。",
     "unset_on_sale_popup": "该系列可在世界上的自动售货机上购买。"
   },
@@ -799,7 +798,10 @@
     "price": "价钱",
     "beneficiary": "受益人",
     "supply": "供应",
-    "collection": "采集"
+    "collection": "采集",
+    "type": {
+      "wearable": "可穿戴"
+    }
   },
   "edit_price_and_beneficiary_modal": {
     "title": "设置{name}的价格和地址",
@@ -836,6 +838,9 @@
   },
   "collection_image": {
     "no_items": "没有项目"
+  },
+  "collection_card": {
+    "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}"
   },
   "item_editor": {
     "left_panel": {

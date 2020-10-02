@@ -20,6 +20,11 @@
   font-size: 17px;
 }
 
+.ItemCard .subtitle {
+  margin-top: 5px;
+  color: var(--secondary-text);
+}
+
 .ui.cards > .ui.card.link.ItemCard.is-dragging {
   transform: translateY(0px);
   border: 1px solid var(--primary) !important;
