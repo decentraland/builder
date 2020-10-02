@@ -10,6 +10,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
+import { SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
@@ -143,6 +144,16 @@ const Transaction = (props: Props) => {
               }}
             />
           }
+          tx={tx}
+        />
+      )
+    }
+    case SAVE_PUBLISHED_ITEM_SUCCESS: {
+      const { item } = tx.payload
+      return (
+        <TransactionDetail
+          item={item}
+          text={<T id="transaction.saved_published_item" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />}
           tx={tx}
         />
       )

@@ -688,6 +688,7 @@
     "set_manager_assigned": "You assigned {address} as operator of all your {type}.",
     "set_manager_revoked": "You revoked {address} as operator of all your {type}.",
     "collection_published": "Published the collection {name}",
+    "saved_published_item": "You edited the item {name}",
     "collection_items_minted": "Minted {count} items for the collection {name}",
     "added_collection_managers": "Added {count} {count, plural, one {collaborator} other {collaborators}} on the collection {name}",
     "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
@@ -774,7 +775,8 @@
   },
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",
-    "add_representation": "Add {bodyShape} representation"
+    "add_representation": "Add {bodyShape} representation",
+    "published": "Published"
   },
   "collection_detail_page": {
     "new_item": "New Item",

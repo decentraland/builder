@@ -4,11 +4,11 @@ import { replace } from 'connected-react-router'
 import { select, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import {
-  FETCH_COLLECTIONS_REQUEST,
   FetchCollectionsRequestAction,
   fetchCollectionsRequest,
   fetchCollectionsSuccess,
   fetchCollectionsFailure,
+  FETCH_COLLECTIONS_REQUEST,
   SaveCollectionRequestAction,
   saveCollectionSuccess,
   saveCollectionFailure,
@@ -34,16 +34,16 @@ import {
   mintCollectionItemsFailure,
   MINT_COLLECTION_ITEMS_REQUEST
 } from './actions'
-import { initializeCollection } from './utils'
+import { getCurrentAddress } from 'modules/wallet/utils'
 import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS } from 'modules/common/contracts'
-import { setItemsTokenIdRequest } from 'modules/item/actions'
 import { ERC721CollectionFactoryV2 } from 'contracts/ERC721CollectionFactoryV2'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
+import { setItemsTokenIdRequest } from 'modules/item/actions'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
-import { getCurrentAddress } from 'modules/wallet/utils'
+import { initializeCollection } from './utils'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)

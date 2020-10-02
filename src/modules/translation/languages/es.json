@@ -680,6 +680,7 @@
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
     "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
     "collection_published": "Collección {name} publicada",
+    "saved_published_item": "Has editado el item {name}",
     "collection_items_minted": "{count} items creados para la colleción {name}",
     "added_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} agreados a la colección {name}",
     "removed_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} borrados de la colección {name}",

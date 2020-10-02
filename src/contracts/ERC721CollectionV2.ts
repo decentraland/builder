@@ -25,7 +25,6 @@ export type ApprovalForAllEvent = {
     operator: Address;
     approved: boolean;
 };
-export type ApproveEvent = {};
 export type BaseURIEvent = {
     _oldBaseURI: string;
     _newBaseURI: string;
@@ -49,6 +48,10 @@ export type RescueItemEvent = {
     _itemId: string;
     _contentHash: string;
     _metadata: string;
+};
+export type SetApprovedEvent = {
+    _previousValue: boolean;
+    _newValue: boolean;
 };
 export type SetEditableEvent = {
     _previousValue: boolean;
@@ -77,7 +80,11 @@ export type TransferEvent = {
     to: Address;
     tokenId: string;
 };
-export type UpdateItemEvent = {
+export type UpdateItemMetadataEvent = {
+    _itemId: string;
+    _metadata: string;
+};
+export type UpdateItemSalesDataEvent = {
     _itemId: string;
     _price: string;
     _beneficiary: Address;
@@ -87,8 +94,6 @@ export interface AddItemEventLog extends EventLog<AddItemEvent, "AddItem"> {
 export interface ApprovalEventLog extends EventLog<ApprovalEvent, "Approval"> {
 }
 export interface ApprovalForAllEventLog extends EventLog<ApprovalForAllEvent, "ApprovalForAll"> {
-}
-export interface ApproveEventLog extends EventLog<ApproveEvent, "Approve"> {
 }
 export interface BaseURIEventLog extends EventLog<BaseURIEvent, "BaseURI"> {
 }
@@ -102,6 +107,8 @@ export interface OwnershipTransferredEventLog extends EventLog<OwnershipTransfer
 }
 export interface RescueItemEventLog extends EventLog<RescueItemEvent, "RescueItem"> {
 }
+export interface SetApprovedEventLog extends EventLog<SetApprovedEvent, "SetApproved"> {
+}
 export interface SetEditableEventLog extends EventLog<SetEditableEvent, "SetEditable"> {
 }
 export interface SetGlobalManagerEventLog extends EventLog<SetGlobalManagerEvent, "SetGlobalManager"> {
@@ -114,68 +121,74 @@ export interface SetItemMinterEventLog extends EventLog<SetItemMinterEvent, "Set
 }
 export interface TransferEventLog extends EventLog<TransferEvent, "Transfer"> {
 }
-export interface UpdateItemEventLog extends EventLog<UpdateItemEvent, "UpdateItem"> {
+export interface UpdateItemMetadataEventLog extends EventLog<UpdateItemMetadataEvent, "UpdateItemMetadata"> {
+}
+export interface UpdateItemSalesDataEventLog extends EventLog<UpdateItemSalesDataEvent, "UpdateItemSalesData"> {
 }
 interface ERC721CollectionV2Events {
     AddItem: EventSubscriptionFactory<AddItemEventLog>;
     Approval: EventSubscriptionFactory<ApprovalEventLog>;
     ApprovalForAll: EventSubscriptionFactory<ApprovalForAllEventLog>;
-    Approve: EventSubscriptionFactory<ApproveEventLog>;
     BaseURI: EventSubscriptionFactory<BaseURIEventLog>;
     Complete: EventSubscriptionFactory<CompleteEventLog>;
     CreatorshipTransferred: EventSubscriptionFactory<CreatorshipTransferredEventLog>;
     Issue: EventSubscriptionFactory<IssueEventLog>;
     OwnershipTransferred: EventSubscriptionFactory<OwnershipTransferredEventLog>;
     RescueItem: EventSubscriptionFactory<RescueItemEventLog>;
+    SetApproved: EventSubscriptionFactory<SetApprovedEventLog>;
     SetEditable: EventSubscriptionFactory<SetEditableEventLog>;
     SetGlobalManager: EventSubscriptionFactory<SetGlobalManagerEventLog>;
     SetGlobalMinter: EventSubscriptionFactory<SetGlobalMinterEventLog>;
     SetItemManager: EventSubscriptionFactory<SetItemManagerEventLog>;
     SetItemMinter: EventSubscriptionFactory<SetItemMinterEventLog>;
     Transfer: EventSubscriptionFactory<TransferEventLog>;
-    UpdateItem: EventSubscriptionFactory<UpdateItemEventLog>;
+    UpdateItemMetadata: EventSubscriptionFactory<UpdateItemMetadataEventLog>;
+    UpdateItemSalesData: EventSubscriptionFactory<UpdateItemSalesDataEventLog>;
 }
 interface ERC721CollectionV2EventLogs {
     AddItem: AddItemEventLog;
     Approval: ApprovalEventLog;
     ApprovalForAll: ApprovalForAllEventLog;
-    Approve: ApproveEventLog;
     BaseURI: BaseURIEventLog;
     Complete: CompleteEventLog;
     CreatorshipTransferred: CreatorshipTransferredEventLog;
     Issue: IssueEventLog;
     OwnershipTransferred: OwnershipTransferredEventLog;
     RescueItem: RescueItemEventLog;
+    SetApproved: SetApprovedEventLog;
     SetEditable: SetEditableEventLog;
     SetGlobalManager: SetGlobalManagerEventLog;
     SetGlobalMinter: SetGlobalMinterEventLog;
     SetItemManager: SetItemManagerEventLog;
     SetItemMinter: SetItemMinterEventLog;
     Transfer: TransferEventLog;
-    UpdateItem: UpdateItemEventLog;
+    UpdateItemMetadata: UpdateItemMetadataEventLog;
+    UpdateItemSalesData: UpdateItemSalesDataEventLog;
 }
 interface ERC721CollectionV2TxEventLogs {
     AddItem: AddItemEventLog[];
     Approval: ApprovalEventLog[];
     ApprovalForAll: ApprovalForAllEventLog[];
-    Approve: ApproveEventLog[];
     BaseURI: BaseURIEventLog[];
     Complete: CompleteEventLog[];
     CreatorshipTransferred: CreatorshipTransferredEventLog[];
     Issue: IssueEventLog[];
     OwnershipTransferred: OwnershipTransferredEventLog[];
     RescueItem: RescueItemEventLog[];
+    SetApproved: SetApprovedEventLog[];
     SetEditable: SetEditableEventLog[];
     SetGlobalManager: SetGlobalManagerEventLog[];
     SetGlobalMinter: SetGlobalMinterEventLog[];
     SetItemManager: SetItemManagerEventLog[];
     SetItemMinter: SetItemMinterEventLog[];
     Transfer: TransferEventLog[];
-    UpdateItem: UpdateItemEventLog[];
+    UpdateItemMetadata: UpdateItemMetadataEventLog[];
+    UpdateItemSalesData: UpdateItemSalesDataEventLog[];
 }
 export interface ERC721CollectionV2TransactionReceipt extends TransactionReceipt<ERC721CollectionV2TxEventLogs> {
 }
 interface ERC721CollectionV2Methods {
+    GRACE_PERIOD(): TxCall<string>;
     ISSUED_ID_BITS(): TxCall<string>;
     ITEM_ID_BITS(): TxCall<string>;
     MAX_ISSUED_ID(): TxCall<string>;
@@ -189,11 +202,11 @@ interface ERC721CollectionV2Methods {
         contentHash: string;
     }[]): TxSend<ERC721CollectionV2TransactionReceipt>;
     approve(to: Address, tokenId: number | string | BN): TxSend<ERC721CollectionV2TransactionReceipt>;
-    approveCollection(): TxSend<ERC721CollectionV2TransactionReceipt>;
     balanceOf(owner: Address): TxCall<string>;
     baseURI(): TxCall<string>;
     batchTransferFrom(_from: Address, _to: Address, _tokenIds: (number | string | BN)[]): TxSend<ERC721CollectionV2TransactionReceipt>;
     completeCollection(): TxSend<ERC721CollectionV2TransactionReceipt>;
+    createdAt(): TxCall<string>;
     creator(): TxCall<Address>;
     decodeTokenId(_id: number | string | BN): TxCall<{
         "itemId": string;
@@ -201,7 +214,8 @@ interface ERC721CollectionV2Methods {
         "issuedId": string;
         1: string;
     }>;
-    editItems(_itemIds: (number | string | BN)[], _prices: (number | string | BN)[], _beneficiaries: Address[]): TxSend<ERC721CollectionV2TransactionReceipt>;
+    editItemsMetadata(_itemIds: (number | string | BN)[], _metadatas: string[]): TxSend<ERC721CollectionV2TransactionReceipt>;
+    editItemsSalesData(_itemIds: (number | string | BN)[], _prices: (number | string | BN)[], _beneficiaries: Address[]): TxSend<ERC721CollectionV2TransactionReceipt>;
     encodeTokenId(_itemId: number | string | BN, _issuedId: number | string | BN): TxCall<string>;
     getApproved(tokenId: number | string | BN): TxCall<Address>;
     getRarityName(_rarity: number | string | BN): TxCall<string>;
@@ -221,6 +235,7 @@ interface ERC721CollectionV2Methods {
     isCompleted(): TxCall<boolean>;
     isEditable(): TxCall<boolean>;
     isInitialized(): TxCall<boolean>;
+    isMintingAllowed(): TxCall<boolean>;
     issueToken(_beneficiary: Address, _itemId: number | string | BN): TxSend<ERC721CollectionV2TransactionReceipt>;
     issueTokens(_beneficiaries: Address[], _itemIds: (number | string | BN)[]): TxSend<ERC721CollectionV2TransactionReceipt>;
     itemManagers(a0: number | string | BN, a1: Address): TxCall<boolean>;
@@ -250,6 +265,7 @@ interface ERC721CollectionV2Methods {
     safeTransferFrom(from: Address, to: Address, tokenId: number | string | BN): TxSend<ERC721CollectionV2TransactionReceipt>;
     safeTransferFrom(from: Address, to: Address, tokenId: number | string | BN, _data: string): TxSend<ERC721CollectionV2TransactionReceipt>;
     setApprovalForAll(operator: Address, approved: boolean): TxSend<ERC721CollectionV2TransactionReceipt>;
+    setApproved(_value: boolean): TxSend<ERC721CollectionV2TransactionReceipt>;
     setBaseURI(_baseURI: string): TxSend<ERC721CollectionV2TransactionReceipt>;
     setEditable(_value: boolean): TxSend<ERC721CollectionV2TransactionReceipt>;
     setItemsManagers(_itemIds: (number | string | BN)[], _managers: Address[], _values: boolean[]): TxSend<ERC721CollectionV2TransactionReceipt>;

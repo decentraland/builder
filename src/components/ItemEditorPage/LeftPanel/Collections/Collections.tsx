@@ -16,6 +16,7 @@ export default class Collections extends React.PureComponent<Props> {
         {hasHeader ? <Header sub>{t('item_editor.left_panel.collections')}</Header> : null}
         {collections.map(collection => (
           <div
+            key={collection.id}
             className={`collection ${collection.id === selectedCollectionId ? 'is-selected' : ''}`}
             onClick={() => onNavigate(locations.itemEditor({ collectionId: collection.id }))}
           >

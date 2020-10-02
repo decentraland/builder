@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Item } from './types'
 
 // Fetch items
@@ -29,6 +30,21 @@ export const saveItemFailure = (item: Item, contents: Record<string, Blob>, erro
 export type SaveItemRequestAction = ReturnType<typeof saveItemRequest>
 export type SaveItemSuccessAction = ReturnType<typeof saveItemSuccess>
 export type SaveItemFailureAction = ReturnType<typeof saveItemFailure>
+
+// Edit On Chain Sale Data
+
+export const SAVE_PUBLISHED_ITEM_REQUEST = '[Request] Save published Item'
+export const SAVE_PUBLISHED_ITEM_SUCCESS = '[Success] Save published Item'
+export const SAVE_PUBLISHED_ITEM_FAILURE = '[Failure] Save published Item'
+
+export const savePublishedItemRequest = (item: Item) => action(SAVE_PUBLISHED_ITEM_REQUEST, { item })
+export const savePublishedItemSuccess = (item: Item, txHash: string) =>
+  action(SAVE_PUBLISHED_ITEM_SUCCESS, { item, ...buildTransactionPayload(txHash, { item }) })
+export const savePublishedItemFailure = (item: Item, error: string) => action(SAVE_PUBLISHED_ITEM_FAILURE, { item, error })
+
+export type SavePublishedItemRequestAction = ReturnType<typeof savePublishedItemRequest>
+export type SavePublishedItemSuccessAction = ReturnType<typeof savePublishedItemSuccess>
+export type SavePublishedItemFailureAction = ReturnType<typeof savePublishedItemFailure>
 
 // Delete items
 

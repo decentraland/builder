@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'lib/date'
 import { coordsToId, getCenter } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import CollectionImage from 'components/CollectionImage'
+import ItemImage from 'components/ItemImage'
 import Profile from 'components/Profile'
 import { Props } from './TransactionDetail.types'
 import './TransactionDetail.css'
@@ -19,7 +20,7 @@ const getHref = (tx: Transaction) => {
 }
 
 const Image = (props: Props) => {
-  const { selection, address, collection } = props
+  const { selection, address, collection, item } = props
 
   if (selection) {
     const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
@@ -32,6 +33,8 @@ const Image = (props: Props) => {
     return <Profile address={address!} size="huge" imageOnly />
   } else if (collection) {
     return <CollectionImage collection={collection} />
+  } else if (item) {
+    return <ItemImage item={item} />
   } else {
     return null
   }
