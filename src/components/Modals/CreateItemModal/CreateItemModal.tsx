@@ -2,7 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { ModalNavigation, Loader, Row, Column, Button, Field, Section, Header, InputOnChangeData } from 'decentraland-ui'
+import { ModalNavigation, Loader, Row, Column, Button, Form, Field, Section, Header, InputOnChangeData } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
@@ -57,7 +57,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return getMissingBodyShapeType(item) === bodyShape
   }
 
-  async handleSubmit() {
+  handleSubmit = async () => {
     const { address, onSubmit } = this.props
     const { id, name, model, bodyShape, contents, metrics, collectionId, isRepresentation, addRepresentationTo } = this.state
 
@@ -332,6 +332,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { onClose, isLoading } = this.props
     const { name, thumbnail, metrics, bodyShape, isRepresentation, addRepresentationTo } = this.state
     const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape
+    const isDisabled = !isValid || isLoading
     const isAddingRepresentation = this.isAddingRepresentation()
     return (
       <>
@@ -344,77 +345,84 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           onClose={onClose}
         />
         <Modal.Content>
-          <Column>
-            <Row className="details">
-              <Column className="preview" width={192} grow={false}>
-                <img className="thumbnail" src={thumbnail || undefined} />
-                {metrics ? (
-                  <div className="metrics">
-                    <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-                    <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-                    <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
-                  </div>
-                ) : null}
-              </Column>
-              <Column className="data" grow={true}>
-                {isAddingRepresentation ? null : (
-                  <Section>
-                    <Header sub>{t('create_item_modal.representation_label')}</Header>
-                    <Row>
-                      {this.renderRepresentation(BodyShapeType.UNISEX)}
-                      {this.renderRepresentation(BodyShapeType.MALE)}
-                      {this.renderRepresentation(BodyShapeType.FEMALE)}
-                    </Row>
-                  </Section>
-                )}
-                {bodyShape ? (
-                  <>
-                    {bodyShape === BodyShapeType.UNISEX ? (
-                      <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
-                    ) : (
-                      <>
-                        {isAddingRepresentation ? null : (
-                          <Section>
-                            <Header sub>{t('create_item_modal.existing_item')}</Header>
-                            <Row>
-                              <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
-                                {t('global.yes')}
-                              </div>
-                              <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
-                                {t('global.no')}
-                              </div>
-                            </Row>
-                          </Section>
-                        )}
-                        {isRepresentation === undefined ? null : isRepresentation ? (
-                          <Section>
-                            <Header sub>
-                              {isAddingRepresentation
-                                ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                                : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
-                            </Header>
-                            <ItemDropdown
-                              value={addRepresentationTo}
-                              filter={this.filterItemsByBodyShape}
-                              onChange={this.handleItemChange}
-                              isDisabled={isAddingRepresentation}
+          <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
+            <Column>
+              <Row className="details">
+                <Column className="preview" width={192} grow={false}>
+                  <img className="thumbnail" src={thumbnail || undefined} />
+                  {metrics ? (
+                    <div className="metrics">
+                      <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+                      <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+                      <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+                    </div>
+                  ) : null}
+                </Column>
+                <Column className="data" grow={true}>
+                  {isAddingRepresentation ? null : (
+                    <Section>
+                      <Header sub>{t('create_item_modal.representation_label')}</Header>
+                      <Row>
+                        {this.renderRepresentation(BodyShapeType.UNISEX)}
+                        {this.renderRepresentation(BodyShapeType.MALE)}
+                        {this.renderRepresentation(BodyShapeType.FEMALE)}
+                      </Row>
+                    </Section>
+                  )}
+                  {bodyShape ? (
+                    <>
+                      {bodyShape === BodyShapeType.UNISEX ? (
+                        <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+                      ) : (
+                        <>
+                          {isAddingRepresentation ? null : (
+                            <Section>
+                              <Header sub>{t('create_item_modal.existing_item')}</Header>
+                              <Row>
+                                <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
+                                  {t('global.yes')}
+                                </div>
+                                <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
+                                  {t('global.no')}
+                                </div>
+                              </Row>
+                            </Section>
+                          )}
+                          {isRepresentation === undefined ? null : isRepresentation ? (
+                            <Section>
+                              <Header sub>
+                                {isAddingRepresentation
+                                  ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                                  : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                              </Header>
+                              <ItemDropdown
+                                value={addRepresentationTo}
+                                filter={this.filterItemsByBodyShape}
+                                onChange={this.handleItemChange}
+                                isDisabled={isAddingRepresentation}
+                              />
+                            </Section>
+                          ) : (
+                            <Field
+                              className="name"
+                              label={t('create_item_modal.name_label')}
+                              value={name}
+                              onChange={this.handleNameChange}
                             />
-                          </Section>
-                        ) : (
-                          <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
-                        )}
-                      </>
-                    )}
-                  </>
-                ) : null}
-              </Column>
-            </Row>
-            <Row className="actions" align="right">
-              <Button primary onClick={() => this.handleSubmit()} disabled={!isValid || isLoading} loading={isLoading}>
-                {t('global.add')}
-              </Button>
-            </Row>
-          </Column>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : null}
+                </Column>
+              </Row>
+              <Row className="actions" align="right">
+                <Button primary onClick={this.handleSubmit} disabled={isDisabled} loading={isLoading}>
+                  {t('global.add')}
+                </Button>
+              </Row>
+            </Column>
+          </Form>
         </Modal.Content>
       </>
     )
