@@ -807,7 +807,8 @@
     "rarity": "Rarity",
     "price": "Price",
     "beneficiary": "Beneficiary",
-    "supply": "Supply"
+    "supply": "Supply",
+    "collection": "Collection"
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Set price and address for {name}",
