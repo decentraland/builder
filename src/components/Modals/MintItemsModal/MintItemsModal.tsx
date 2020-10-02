@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, ModalNavigation, ModalActions, Button } from 'decentraland-ui'
+import { Loader, ModalNavigation, ModalActions, Form, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
@@ -49,7 +49,10 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
         }
       }
     }
-    this.props.onMint(collection, mints)
+
+    if (mints.length > 0) {
+      this.props.onMint(collection, mints)
+    }
   }
 
   handleAddItems = (item: Item) => {
@@ -88,7 +91,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
           {isLoading ? (
             <Loader active size="massive" />
           ) : (
-            <>
+            <Form>
               {isEmpty ? (
                 <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
               ) : (
@@ -112,7 +115,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   </Button>
                 )}
               </ModalActions>
-            </>
+            </Form>
           )}
         </Modal.Content>
       </Modal>

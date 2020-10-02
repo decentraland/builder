@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Column, Form, Field, Section, InputOnChangeData } from 'decentraland-ui'
+import { Row, Column, Field, Section, InputOnChangeData } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { isValid } from 'lib/address'
@@ -98,27 +98,27 @@ export default class MintableItem extends React.PureComponent<Props> {
           </Column>
         </Row>
         {mints.map(({ address, amount }, index) => (
-          <Form key={index}>
-            <Section key={index} className="mint" size="tiny">
-              <Field
-                className="rounded"
-                type="address"
-                placeholder={t('global.address')}
-                value={address || ''}
-                message={undefined}
-                onChange={this.getChangeAddressHandler(index)}
-              />
-              <Field
-                className="rounded"
-                type="number"
-                placeholder={t('global.amount')}
-                value={amount || ''}
-                message={undefined}
-                onChange={this.getChangeAmountHandler(index)}
-              />
-              <Icon name="minus" className="remove-item" onClick={this.getRemoveMintHandler(index)} />
-            </Section>
-          </Form>
+          <Section key={index} className="mint" size="tiny">
+            <Field
+              className="rounded"
+              type="address"
+              placeholder={t('global.address')}
+              value={address || ''}
+              message={undefined}
+              error={address !== undefined && !isValid(address)}
+              onChange={this.getChangeAddressHandler(index)}
+            />
+            <Field
+              className="rounded"
+              type="number"
+              placeholder={t('global.amount')}
+              value={amount || ''}
+              message={undefined}
+              error={amount !== undefined && amount > 0}
+              onChange={this.getChangeAmountHandler(index)}
+            />
+            <Icon name="minus" className="remove-item" onClick={this.getRemoveMintHandler(index)} />
+          </Section>
         ))}
       </div>
     )
