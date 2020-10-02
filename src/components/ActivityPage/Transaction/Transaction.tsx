@@ -1,5 +1,6 @@
 import React from 'react'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Link } from 'react-router-dom'
 import {
   TRANSFER_LAND_SUCCESS,
   EDIT_LAND_SUCCESS,
@@ -9,9 +10,15 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-import { PUBLISH_COLLECTION_SUCCESS } from 'modules/collection/actions'
+import {
+  MINT_COLLECTION_ITEMS_SUCCESS,
+  SET_COLLECTION_MINTERS_SUCCESS,
+  SET_COLLECTION_MANAGERS_SUCCESS,
+  PUBLISH_COLLECTION_SUCCESS
+} from 'modules/collection/actions'
 import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
+import { locations } from 'routing/locations'
 import { Props } from './Transaction.types'
 
 const Transaction = (props: Props) => {
@@ -142,7 +149,70 @@ const Transaction = (props: Props) => {
     }
     case PUBLISH_COLLECTION_SUCCESS: {
       const { collection } = tx.payload
-      return <TransactionDetail collection={collection} text={t('transaction.collection_published', { name: collection.name })} tx={tx} />
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id="transaction.collection_published"
+              values={{ name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link> }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case MINT_COLLECTION_ITEMS_SUCCESS: {
+      const { collection, mints } = tx.payload
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id="transaction.collection_items_minted"
+              values={{ name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>, count: mints.length }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_COLLECTION_MINTERS_SUCCESS: {
+      // We're only setting the Collection Store as minter to allow sales for now
+      const { collection, minters } = tx.payload
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id={minters.length > 0 ? 'transaction.set_collection_on_sale' : 'transaction.unset_collection_on_sale'}
+              values={{
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_COLLECTION_MANAGERS_SUCCESS: {
+      const { collection, managers } = tx.payload
+      const managersCountDifference = managers.length - collection.managers.length
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id={managersCountDifference > 0 ? 'transaction.added_collection_managers' : 'transaction.removed_collection_managers'}
+              values={{
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
+                count: Math.abs(managersCountDifference)
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
     }
     default:
       return null

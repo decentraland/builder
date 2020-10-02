@@ -138,8 +138,9 @@ const store = createStore(rootReducer, enhancer)
 sagasMiddleware.run(rootSaga)
 loadStorageMiddleware(store)
 
-export function getState() {
-  return store.getState()
+if (env.isDevelopment()) {
+  const _window = window as any
+  _window.getState = store.getState
 }
 
 window.onbeforeunload = function() {

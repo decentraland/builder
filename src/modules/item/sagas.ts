@@ -1,5 +1,5 @@
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import {
@@ -18,6 +18,10 @@ import {
   fetchItemsRequest,
   SET_COLLECTION,
   SetCollectionAction,
+  SET_ITEMS_TOKEN_ID_REQUEST,
+  setItemsTokenIdSuccess,
+  setItemsTokenIdFailure,
+  SetItemsTokenIdRequestAction,
   saveItemRequest,
   SAVE_ITEM_SUCCESS
 } from './actions'
@@ -31,6 +35,7 @@ export function* itemSaga() {
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
+  yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
 }
 
 function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
@@ -83,4 +88,27 @@ function* handleSetCollection(action: SetCollectionAction) {
   yield put(saveItemRequest(newItem, {}))
   yield take(SAVE_ITEM_SUCCESS)
   yield put(closeModal('AddExistingItemModal'))
+}
+
+function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
+  const { items, tokenIds } = action.payload
+
+  try {
+    const saves = []
+    const newItems = []
+    for (const [index, item] of items.entries()) {
+      const tokenId = tokenIds[index]
+      const newItem = {
+        ...item,
+        tokenId
+      }
+      saves.push(call(() => builder.saveItem(newItem, {})))
+      newItems.push(newItem)
+    }
+
+    yield all(saves)
+    yield put(setItemsTokenIdSuccess(newItems, tokenIds))
+  } catch (error) {
+    yield put(setItemsTokenIdFailure(items, error.message))
+  }
 }

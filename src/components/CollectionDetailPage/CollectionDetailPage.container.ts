@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { SET_COLLECTION_MINTERS_REQUEST } from 'modules/collection/actions'
 import { getCollectionId } from 'modules/location/selectors'
-import { getCollection, getCollectionItems, getLoading as getLoadingCollection } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems, isOnSaleLoading, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getLoading as getLoadingItem } from 'modules/item/selectors'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST, deleteCollectionRequest } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
@@ -19,7 +19,7 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     collection,
     items: getCollectionItems(state, collectionId),
-    isOnSaleLoading: isLoadingType(getLoadingCollection(state), SET_COLLECTION_MINTERS_REQUEST),
+    isOnSaleLoading: isOnSaleLoading(state, getAddress(state)),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||

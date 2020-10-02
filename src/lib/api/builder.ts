@@ -36,6 +36,7 @@ export type RemoteItem = {
   rarity: ItemRarity | null
   total_supply: number | null
   is_published: boolean
+  is_approved: boolean
   type: ItemType
   data: WearableData
   metrics: ModelMetrics
@@ -51,6 +52,7 @@ export type RemoteCollection = {
   salt: string | null
   contract_address: string | null
   is_published: boolean
+  is_approved: boolean
   minters: string[]
   managers: string[]
   created_at: Date
@@ -254,6 +256,7 @@ function toRemoteItem(item: Item): RemoteItem {
     rarity: item.rarity || null,
     total_supply: item.totalSupply === undefined ? null : item.totalSupply,
     is_published: item.isPublished || false,
+    is_approved: item.isApproved || false,
     type: item.type,
     data: item.data,
     metrics: item.metrics,
@@ -273,6 +276,7 @@ function fromRemoteItem(remoteItem: RemoteItem): Item {
     owner: remoteItem.eth_address,
     description: remoteItem.description,
     isPublished: remoteItem.is_published,
+    isApproved: remoteItem.is_approved,
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
@@ -297,6 +301,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     name: collection.name,
     eth_address: collection.owner,
     is_published: collection.isPublished,
+    is_approved: collection.isApproved,
     minters: collection.minters,
     managers: collection.managers,
     contract_address: collection.contractAddress || null,
@@ -314,6 +319,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection): Collection {
     name: remoteCollection.name,
     owner: remoteCollection.eth_address,
     isPublished: remoteCollection.is_published,
+    isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
     createdAt: +new Date(remoteCollection.created_at),
@@ -541,7 +547,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async deleteCollection(collection: Collection) {
-    await this.request('delete', `/items/${collection.id}`, {})
+    await this.request('delete', `/collections/${collection.id}`, {})
   }
 }
 

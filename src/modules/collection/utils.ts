@@ -19,7 +19,7 @@ export function isOnSale(collection: Collection) {
 }
 
 export function getCollectionSymbol(collection: Collection) {
-  const vowelLessName = collection.name.replace(/a|e|i|o|u|\s/, '')
+  const vowelLessName = collection.name.replace(/a|e|i|o|u|\s/g, '')
   return 'DCL-' + vowelLessName.toUpperCase()
 }
 

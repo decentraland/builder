@@ -63,18 +63,6 @@ export function getStatus(project: Project | null, deployment: Deployment | null
   if (project && deployment) {
     const projectTimestamp = +new Date(project.updatedAt)
     const deploymentTimestamp = +new Date(deployment.timestamp)
-    if (project.title === 'Palito') {
-      console.log(
-        project,
-        deployment,
-        projectTimestamp,
-        deploymentTimestamp,
-        projectTimestamp - deploymentTimestamp,
-        new Date(projectTimestamp),
-        new Date(deploymentTimestamp),
-        console.log
-      )
-    }
     return deploymentTimestamp > projectTimestamp ? DeploymentStatus.PUBLISHED : DeploymentStatus.NEEDS_SYNC
   }
 
