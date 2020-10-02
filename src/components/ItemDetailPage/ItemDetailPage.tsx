@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Link } from 'react-router-dom'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
+import { getMaxSupply, getMissingBodyShapeType } from 'modules/item/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -12,7 +14,6 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import { Props } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
-import { getMissingBodyShapeType } from 'modules/item/utils'
 
 const STORAGE_KEY = 'dcl-item-notice'
 
@@ -38,7 +39,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { onNavigate } = this.props
+    const { collection, onNavigate } = this.props
 
     const item = this.props.item!
     const data = item.data as WearableData
@@ -103,7 +104,8 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Narrow>
-          {item.collectionId === undefined ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
+          {collection === null ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
+
           <div className="item-data">
             <ItemImage item={item} hasBadge={true} />
             <div className="sections">
@@ -129,6 +131,22 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Section>
                   <div className="subtitle">{t('item.beneficiary')}</div>
                   <div className="value">{item.beneficiary}</div>
+                </Section>
+              ) : null}
+              {item.isPublished ? (
+                <Section>
+                  <div className="subtitle">{t('item.supply')}</div>
+                  <div className="value">
+                    {item.totalSupply}/{getMaxSupply(item)}
+                  </div>
+                </Section>
+              ) : null}
+              {collection ? (
+                <Section>
+                  <div className="subtitle">{t('item.collection')}</div>
+                  <div className="value">
+                    <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
+                  </div>
                 </Section>
               ) : null}
             </div>

@@ -800,7 +800,8 @@
     "rarity": "Rareza",
     "price": "Precio",
     "beneficiary": "Beneficiario",
-    "supply": "Suministro"
+    "supply": "Suministro",
+    "collection": "Colección"
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Asignar un precio y un beneficiario para {name}",
