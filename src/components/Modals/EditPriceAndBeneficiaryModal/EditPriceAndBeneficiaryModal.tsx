@@ -70,9 +70,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
             />
             <Field
               label={t('edit_price_and_beneficiary_modal.beneficiary_label')}
+              type="address"
               placeholder="0x..."
               value={beneficiary}
               onChange={this.handleBeneficiaryChange}
+              error={!isValid(beneficiary)}
             />
           </ModalContent>
           <ModalActions>
