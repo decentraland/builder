@@ -1,3 +1,5 @@
+import { Eth } from 'web3x-es/eth'
+import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
@@ -8,9 +10,15 @@ import {
   fetchItemsSuccess,
   fetchItemsFailure,
   SaveItemRequestAction,
+  saveItemRequest,
   saveItemSuccess,
   saveItemFailure,
   SAVE_ITEM_REQUEST,
+  SAVE_ITEM_SUCCESS,
+  SavePublishedItemRequestAction,
+  savePublishedItemSuccess,
+  savePublishedItemFailure,
+  SAVE_PUBLISHED_ITEM_REQUEST,
   DeleteItemRequestAction,
   deleteItemSuccess,
   deleteItemFailure,
@@ -21,17 +29,21 @@ import {
   SET_ITEMS_TOKEN_ID_REQUEST,
   setItemsTokenIdSuccess,
   setItemsTokenIdFailure,
-  SetItemsTokenIdRequestAction,
-  saveItemRequest,
-  SAVE_ITEM_SUCCESS
+  SetItemsTokenIdRequestAction
 } from './actions'
+import { getCurrentAddress } from 'modules/wallet/utils'
+import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
+import { getCollection } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
+import { Collection } from 'modules/collection/types'
+import { Item } from './types'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
+  yield takeEvery(SAVE_PUBLISHED_ITEM_REQUEST, handleSavePublishedItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
@@ -56,6 +68,35 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
   } catch (error) {
     yield put(saveItemFailure(item, contents, error.message))
+  }
+}
+
+function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction) {
+  const { item } = action.payload
+  try {
+    if (!item.isPublished) {
+      throw new Error('Item must be published to save it')
+    }
+    if (!item.collectionId) {
+      throw new Error("Can't save a published without a collection")
+    }
+    const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+
+    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+
+    const txHash = yield call(() =>
+      implementation.methods
+        .editItemsSalesData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)])
+        .send({ from })
+        .getTxHash()
+    )
+
+    yield put(savePublishedItemSuccess(item, txHash))
+    yield put(closeModal('EditPriceAndBeneficiaryModal'))
+    yield put(replace(locations.activity()))
+  } catch (error) {
+    yield put(savePublishedItemFailure(item, error.message))
   }
 }
 
@@ -102,7 +143,7 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
         ...item,
         tokenId
       }
-      saves.push(call(() => builder.saveItem(newItem, {})))
+      saves.push(saveItem(newItem))
       newItems.push(newItem)
     }
 
@@ -111,4 +152,8 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
   } catch (error) {
     yield put(setItemsTokenIdFailure(items, error.message))
   }
+}
+
+function saveItem(item: Item, contents: Record<string, Blob> = {}) {
+  return call(() => builder.saveItem(item, contents))
 }

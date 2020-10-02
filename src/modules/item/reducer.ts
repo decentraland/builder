@@ -17,6 +17,12 @@ import {
   SAVE_ITEM_REQUEST,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
+  SavePublishedItemRequestAction,
+  SavePublishedItemSuccessAction,
+  SavePublishedItemFailureAction,
+  SAVE_PUBLISHED_ITEM_REQUEST,
+  SAVE_PUBLISHED_ITEM_FAILURE,
+  SAVE_PUBLISHED_ITEM_SUCCESS,
   DeleteItemRequestAction,
   DeleteItemSuccessAction,
   DeleteItemFailureAction,
@@ -52,6 +58,9 @@ type ItemReducerAction =
   | SaveItemRequestAction
   | SaveItemSuccessAction
   | SaveItemFailureAction
+  | SavePublishedItemRequestAction
+  | SavePublishedItemSuccessAction
+  | SavePublishedItemFailureAction
   | DeleteItemRequestAction
   | DeleteItemSuccessAction
   | DeleteItemFailureAction
@@ -93,12 +102,14 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: action.payload.error
       }
     }
+    case SAVE_PUBLISHED_ITEM_REQUEST:
     case SAVE_ITEM_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
+    case SAVE_PUBLISHED_ITEM_SUCCESS:
     case SAVE_ITEM_SUCCESS: {
       const { item } = action.payload
       return {
@@ -111,6 +122,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
+    case SAVE_PUBLISHED_ITEM_FAILURE:
     case SAVE_ITEM_FAILURE: {
       return {
         ...state,

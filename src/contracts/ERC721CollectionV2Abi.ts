@@ -108,12 +108,6 @@ export default new ContractAbi([
   },
   {
     "anonymous": false,
-    "inputs": [],
-    "name": "Approve",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
     "inputs": [
       {
         "indexed": false,
@@ -229,6 +223,25 @@ export default new ContractAbi([
       }
     ],
     "name": "RescueItem",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "_previousValue",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "_newValue",
+        "type": "bool"
+      }
+    ],
+    "name": "SetApproved",
     "type": "event"
   },
   {
@@ -374,6 +387,25 @@ export default new ContractAbi([
       },
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "_metadata",
+        "type": "string"
+      }
+    ],
+    "name": "UpdateItemMetadata",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_itemId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "_price",
         "type": "uint256"
@@ -385,8 +417,21 @@ export default new ContractAbi([
         "type": "address"
       }
     ],
-    "name": "UpdateItem",
+    "name": "UpdateItemSalesData",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "GRACE_PERIOD",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -504,13 +549,6 @@ export default new ContractAbi([
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "approveCollection",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -574,6 +612,19 @@ export default new ContractAbi([
   },
   {
     "inputs": [],
+    "name": "createdAt",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "creator",
     "outputs": [
       {
@@ -617,6 +668,24 @@ export default new ContractAbi([
         "type": "uint256[]"
       },
       {
+        "internalType": "string[]",
+        "name": "_metadatas",
+        "type": "string[]"
+      }
+    ],
+    "name": "editItemsMetadata",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "_itemIds",
+        "type": "uint256[]"
+      },
+      {
         "internalType": "uint256[]",
         "name": "_prices",
         "type": "uint256[]"
@@ -627,7 +696,7 @@ export default new ContractAbi([
         "type": "address[]"
       }
     ],
-    "name": "editItems",
+    "name": "editItemsSalesData",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -887,6 +956,19 @@ export default new ContractAbi([
   {
     "inputs": [],
     "name": "isInitialized",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isMintingAllowed",
     "outputs": [
       {
         "internalType": "bool",
@@ -1229,6 +1311,19 @@ export default new ContractAbi([
       }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "_value",
+        "type": "bool"
+      }
+    ],
+    "name": "setApproved",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

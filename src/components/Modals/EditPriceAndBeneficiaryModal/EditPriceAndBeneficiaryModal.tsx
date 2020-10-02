@@ -3,6 +3,7 @@ import { ModalNavigation, ModalContent, ModalActions, Field, Button, InputOnChan
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
+import { isValid } from 'lib/address'
 import { addSymbol } from 'lib/mana'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
@@ -30,7 +31,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   handleSubmit = () => {
-    const { item, onSave } = this.props
+    const { item, onSave, onSavePublished } = this.props
     const { price, beneficiary } = this.state
 
     const newItem: Item = {
@@ -39,7 +40,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
       beneficiary
     }
 
-    onSave(newItem, {})
+    if (item!.isPublished) {
+      onSavePublished(newItem)
+    } else {
+      onSave(newItem, {})
+    }
   }
 
   isDisabled() {
@@ -64,9 +69,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
           />
           <Field
             label={t('edit_price_and_beneficiary_modal.beneficiary_label')}
+            type="address"
             placeholder="0x..."
             value={beneficiary}
             onChange={this.handleBeneficiaryChange}
+            error={!isValid(beneficiary)}
           />
         </ModalContent>
         <ModalActions>
