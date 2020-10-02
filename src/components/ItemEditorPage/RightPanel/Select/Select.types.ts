@@ -3,6 +3,7 @@ export type Props<T extends string> = {
   label: string
   value: T | null | undefined
   options: { value: T; text: string }[]
+  disabled?: boolean
   onChange: (newValue: T) => void
 }
 

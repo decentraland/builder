@@ -23,6 +23,10 @@
   font-weight: bold;
 }
 
+.Header .CollectionBadge {
+  margin-left: 5px;
+}
+
 .Header .ui.dropdown .dropdown.icon {
   display: none;
 }
