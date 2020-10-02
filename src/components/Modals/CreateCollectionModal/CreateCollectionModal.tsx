@@ -21,6 +21,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         name: collectionName,
         owner: address!,
         isPublished: false,
+        isApproved: false,
         minters: [],
         managers: [],
         createdAt: Date.now(),

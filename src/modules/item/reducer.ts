@@ -8,23 +8,29 @@ import {
   FetchItemsRequestAction,
   FetchItemsSuccessAction,
   FetchItemsFailureAction,
-  SaveItemRequestAction,
-  SaveItemSuccessAction,
-  SaveItemFailureAction,
-  DeleteItemRequestAction,
-  DeleteItemSuccessAction,
-  DeleteItemFailureAction,
   FETCH_ITEMS_REQUEST,
   FETCH_ITEMS_SUCCESS,
   FETCH_ITEMS_FAILURE,
+  SaveItemRequestAction,
+  SaveItemSuccessAction,
+  SaveItemFailureAction,
   SAVE_ITEM_REQUEST,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
+  DeleteItemRequestAction,
+  DeleteItemSuccessAction,
+  DeleteItemFailureAction,
   DELETE_ITEM_REQUEST,
-  DELETE_ITEM_FAILURE,
   DELETE_ITEM_SUCCESS,
+  DELETE_ITEM_FAILURE,
   SetCollectionAction,
-  SET_COLLECTION
+  SET_COLLECTION,
+  SetItemsTokenIdRequestAction,
+  SetItemsTokenIdSuccessAction,
+  SetItemsTokenIdFailureAction,
+  SET_ITEMS_TOKEN_ID_REQUEST,
+  SET_ITEMS_TOKEN_ID_SUCCESS,
+  SET_ITEMS_TOKEN_ID_FAILURE
 } from './actions'
 
 export type ItemState = {
@@ -51,16 +57,21 @@ type ItemReducerAction =
   | DeleteItemFailureAction
   | SetCollectionAction
   | FetchTransactionSuccessAction
+  | SetItemsTokenIdRequestAction
+  | SetItemsTokenIdSuccessAction
+  | SetItemsTokenIdFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
-    case FETCH_ITEMS_REQUEST: {
+    case FETCH_ITEMS_REQUEST:
+    case SET_ITEMS_TOKEN_ID_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
-    case FETCH_ITEMS_SUCCESS: {
+    case FETCH_ITEMS_SUCCESS:
+    case SET_ITEMS_TOKEN_ID_SUCCESS: {
       return {
         ...state,
         data: {
@@ -74,7 +85,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
-    case FETCH_ITEMS_FAILURE: {
+    case FETCH_ITEMS_FAILURE:
+    case SET_ITEMS_TOKEN_ID_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

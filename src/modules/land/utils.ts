@@ -65,7 +65,6 @@ export const getUpdateOperator = async (land: Land) => {
         return null
     }
   } catch (error) {
-    console.log(`Error fetching updateOperator for ${land.type} ${land.id}:`, error.message)
     return null
   }
 }

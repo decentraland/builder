@@ -679,7 +679,12 @@
     "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
     "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
-    "collection_published": "Has publicado la colección {name}"
+    "collection_published": "Collección {name} publicada",
+    "collection_items_minted": "{count} items creados para la colleción {name}",
+    "added_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} agreados a la colección {name}",
+    "removed_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} borrados de la colección {name}",
+    "set_collection_on_sale": "Colección {name} puesta a la venta",
+    "unset_collection_on_sale": "La colección {name} ya no está a la venta"
   },
   "transfer_page": {
     "title": "Transferir",
@@ -763,18 +768,20 @@
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
-    "add_representation": "Agregar representación de {bodyShape}"
+    "add_representation": "Agregar representación de {bodyShape}",
+    "published": "Publicado"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
     "add_existing_item": "Agregar item existente",
     "mint_items": "Crear Items",
     "on_sale": "En venta",
-    "on_sale_popup": "Esto permitirá que tu colección sea vendida dentro del mundo.",
+    "set_on_sale_popup": "Esto permitirá que tu colección sea vendida dentro del mundo.",
+    "unset_on_sale_popup": "Esta colección está disponibles para la compra dentro del mundo.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
     "click_here": "Clickea aquí",
     "publish": "Publicar",
-    "collaborators": "Colaboradores",
+    "managers": "Colaboradores",
     "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "published": "Publicados"
@@ -819,12 +826,13 @@
   },
   "mint_items_modal": {
     "title": "Crear Items",
-    "add_item": "Agregar Item"
+    "add_item": "Agregar Item",
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
   },
-  "collaborators_modal": {
+  "collection_managers_modal": {
     "title": "Colaboradores",
-    "add_collaborator": "Agregar Colaborador",
-    "no_collaborators":"No hay colaboradores, comienza por",
+    "add_manager": "Agregar Colaborador",
+    "no_managers":"No hay colaboradores, comienza por",
     "adding_one": "agregar uno!"
   },
   "collection_image": {

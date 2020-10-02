@@ -32,6 +32,11 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onOpenModal('CreateItemModal', { addRepresentationTo: item })
   }
 
+  handleNavigateToEditor = () => {
+    const { onNavigate, item } = this.props
+    onNavigate(locations.itemEditor({ itemId: item!.id }))
+  }
+
   renderPage() {
     const { onNavigate } = this.props
 
@@ -54,35 +59,43 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right">
                   <Row className="actions">
-                    <Dropdown
-                      trigger={
-                        <Button basic>
-                          <Icon name="ellipsis horizontal" />
-                        </Button>
-                      }
-                      inline
-                      direction="left"
-                    >
-                      <Dropdown.Menu>
-                        {missingBodyShape !== null ? (
-                          <Dropdown.Item
-                            text={t('item_detail_page.add_representation', {
-                              bodyShape: t(`body_shapes.${missingBodyShape}`).toLowerCase()
-                            })}
-                            onClick={this.handleAddRepresentationToItem}
-                          />
-                        ) : null}
-                        <ConfirmDelete
-                          name={item.name}
-                          onDelete={this.handleDeleteItem}
-                          trigger={<Dropdown.Item text={t('global.delete')} />}
-                        />
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    {item.isPublished ? (
+                      <Button secondary compact disabled={true}>
+                        {t('item_detail_page.published')}
+                      </Button>
+                    ) : (
+                      <>
+                        <Dropdown
+                          trigger={
+                            <Button basic>
+                              <Icon name="ellipsis horizontal" />
+                            </Button>
+                          }
+                          inline
+                          direction="left"
+                        >
+                          <Dropdown.Menu>
+                            {missingBodyShape !== null ? (
+                              <Dropdown.Item
+                                text={t('item_detail_page.add_representation', {
+                                  bodyShape: t(`body_shapes.${missingBodyShape}`).toLowerCase()
+                                })}
+                                onClick={this.handleAddRepresentationToItem}
+                              />
+                            ) : null}
+                            <ConfirmDelete
+                              name={item.name}
+                              onDelete={this.handleDeleteItem}
+                              trigger={<Dropdown.Item text={t('global.delete')} />}
+                            />
+                          </Dropdown.Menu>
+                        </Dropdown>
 
-                    <Button primary compact onClick={this.handleEditItem}>
-                      {t('global.edit')}
-                    </Button>
+                        <Button primary compact onClick={this.handleNavigateToEditor}>
+                          {t('global.edit')}
+                        </Button>
+                      </>
+                    )}
                   </Row>
                 </Column>
               </Row>

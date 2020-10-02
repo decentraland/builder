@@ -12,7 +12,7 @@ import './AvatarPage.css'
 
 export default class AvatarPage extends React.PureComponent<Props> {
   handleNewItem = () => {
-    this.props.onOpenModal('CreateItemModal')
+    this.props.onOpenModal('CreateItemModal', {})
   }
 
   handleNewCollection = () => {

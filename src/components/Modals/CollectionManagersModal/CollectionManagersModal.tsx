@@ -80,7 +80,7 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     const { managers } = this.state
     return (
       <Modal name={name} className="CollectionManagersModal" onClose={onClose}>
-        <ModalNavigation title={t('collaborators_modal.title')} onClose={onClose} />
+        <ModalNavigation title={t('collection_managers_modal.title')} onClose={onClose} />
         <Modal.Content>
           <div className="managers">
             {managers.length > 0 ? (
@@ -99,14 +99,14 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
                   )}
                 </div>
                 <div className="add-managers link" onClick={this.handleAddNewManager}>
-                  {t('collaborators_modal.add_collaborator')}
+                  {t('collection_managers_modal.add_manager')}
                 </div>
               </>
             ) : (
               <div className="empty-managers-list">
-                {t('collaborators_modal.no_collaborators')}&nbsp;
+                {t('collection_managers_modal.no_managers')}&nbsp;
                 <span className="link" onClick={this.handleAddNewManager}>
-                  {t('collaborators_modal.adding_one')}
+                  {t('collection_managers_modal.adding_one')}
                 </span>
               </div>
             )}

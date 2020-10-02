@@ -44,6 +44,22 @@ export type DeleteItemRequestAction = ReturnType<typeof deleteItemRequest>
 export type DeleteItemSuccessAction = ReturnType<typeof deleteItemSuccess>
 export type DeleteItemFailureAction = ReturnType<typeof deleteItemFailure>
 
+// Set Collection
+
 export const SET_COLLECTION = 'Set Collection'
 export const setCollection = (item: Item, collectionId: string | null) => action(SET_COLLECTION, { item, collectionId })
 export type SetCollectionAction = ReturnType<typeof setCollection>
+
+// Set Token Ids
+
+export const SET_ITEMS_TOKEN_ID_REQUEST = '[Request] Set Items Token Id'
+export const SET_ITEMS_TOKEN_ID_SUCCESS = '[Success] Set Items Token Id'
+export const SET_ITEMS_TOKEN_ID_FAILURE = '[Failure] Set Items Token Id'
+
+export const setItemsTokenIdRequest = (items: Item[], tokenIds: string[]) => action(SET_ITEMS_TOKEN_ID_REQUEST, { items, tokenIds })
+export const setItemsTokenIdSuccess = (items: Item[], tokenIds: string[]) => action(SET_ITEMS_TOKEN_ID_SUCCESS, { items, tokenIds })
+export const setItemsTokenIdFailure = (items: Item[], error: string) => action(SET_ITEMS_TOKEN_ID_FAILURE, { items, error })
+
+export type SetItemsTokenIdRequestAction = ReturnType<typeof setItemsTokenIdRequest>
+export type SetItemsTokenIdSuccessAction = ReturnType<typeof setItemsTokenIdSuccess>
+export type SetItemsTokenIdFailureAction = ReturnType<typeof setItemsTokenIdFailure>

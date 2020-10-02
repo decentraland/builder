@@ -7,7 +7,7 @@ import { Props } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
 
 export default class PublishCollectionModal extends React.PureComponent<Props> {
-  componentWillMount() {
+  componentDidMount() {
     const { collection, onClose } = this.props
     if (!collection) {
       onClose()

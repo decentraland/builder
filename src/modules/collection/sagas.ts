@@ -1,7 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest } from 'redux-saga/effects'
+import { select, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import {
   FETCH_COLLECTIONS_REQUEST,
@@ -36,9 +36,11 @@ import {
 } from './actions'
 import { initializeCollection } from './utils'
 import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS } from 'modules/common/contracts'
+import { setItemsTokenIdRequest } from 'modules/item/actions'
 import { ERC721CollectionFactoryV2 } from 'contracts/ERC721CollectionFactoryV2'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
+import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { getCurrentAddress } from 'modules/wallet/utils'
@@ -80,6 +82,10 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
   try {
     yield call(() => builder.deleteCollection(collection))
     yield put(deleteCollectionSuccess(collection))
+    const collectionIdInUriParam = yield select(getCollectionId)
+    if (collectionIdInUriParam === collection.id) {
+      yield put(replace(locations.avatar()))
+    }
   } catch (error) {
     yield put(deleteCollectionFailure(collection, error.message))
   }
@@ -101,8 +107,10 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
         .send({ from })
         .getTxHash()
     )
+    const tokenIds: string[] = Object.keys(items)
 
     yield put(publishCollectionSuccess(collection, items, txHash))
+    yield put(setItemsTokenIdRequest(items, tokenIds))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(publishCollectionFailure(collection, items, error.message))
@@ -190,19 +198,19 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
     const beneficiaries: Address[] = []
-    const itemIds: string[] = []
+    const tokenIds: string[] = []
 
     for (const mint of mints) {
       const beneficiary = Address.fromString(mint.address)
       for (let i = 0; i < mint.amount; i++) {
         beneficiaries.push(beneficiary)
-        itemIds.push(mint.item.tokenId!)
+        tokenIds.push(mint.item.tokenId!)
       }
     }
 
     const txHash = yield call(() =>
       implementation.methods
-        .issueTokens(beneficiaries, itemIds)
+        .issueTokens(beneficiaries, tokenIds)
         .send({ from })
         .getTxHash()
     )

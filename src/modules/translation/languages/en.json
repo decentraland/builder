@@ -687,7 +687,12 @@
     "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}.",
     "set_manager_assigned": "You assigned {address} as operator of all your {type}.",
     "set_manager_revoked": "You revoked {address} as operator of all your {type}.",
-    "collection_published": "Published the collection {name}"
+    "collection_published": "Published the collection {name}",
+    "collection_items_minted": "Minted {count} items for the collection {name}",
+    "added_collection_managers": "Added {count} {count, plural, one {collaborator} other {collaborators}} on the collection {name}",
+    "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
+    "set_collection_on_sale": "Set the collection {name} on sale",
+    "unset_collection_on_sale": "Removed the collection {name} from being on sale"
   },
   "transfer_page": {
     "title": "Transfer",
@@ -776,13 +781,16 @@
     "add_existing_item": "Add Existing Item",
     "mint_items": "Mint Items",
     "on_sale": "On sale",
-    "on_sale_popup": "This will allow your collection to be sold in in-world vending machines.",
+    "set_on_sale_popup": "This will allow your collection to be sold on in-world vending machines.",
+    "unset_on_sale_popup": "This collection is available for purchase on in-world vending machines.",
     "publish": "Publish",
-    "collaborators": "Collaborators",
+    "managers": "Collaborators",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
     "start_adding_items": "Looking good! now you can start adding items to your collection.",
     "cant_remove": "You will not be able to remove or add items to your collection once its published.",
+    "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
+    "under_review": "Under Review",
     "published": "Published"
   },
   "collection_item": {
@@ -818,7 +826,8 @@
   },
   "mint_items_modal": {
     "title": "Mint Items",
-    "add_item": "Add Item"
+    "add_item": "Add Item",
+    "no_items": "You have no items available to mint for \"{name}\""
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",
@@ -827,10 +836,10 @@
     "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
     "turn_off": "Turn Off"
   },
-  "collaborators_modal": {
+  "collection_managers_modal": {
     "title": "Collaborators",
-    "add_collaborator": "Add Collaborator",
-    "no_collaborators":"No collaborators yet, start by",
+    "add_manager": "Add Collaborator",
+    "no_managers":"No collaborators yet, start by",
     "adding_one": "adding one!"
   },
   "collection_image": {
