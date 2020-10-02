@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, ModalContent, ModalActions, Field, Button, InputOnChangeData } from 'decentraland-ui'
+import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -60,27 +60,27 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
         <ModalNavigation title={t('edit_price_and_beneficiary_modal.title', { name: item ? item.name : '...' })} onClose={onClose} />
-        <ModalContent>
-          <Field
-            label={t('edit_price_and_beneficiary_modal.price_label')}
-            placeholder={addSymbol(100)}
-            value={price}
-            onChange={this.handlePriceChange}
-          />
-          <Field
-            label={t('edit_price_and_beneficiary_modal.beneficiary_label')}
-            type="address"
-            placeholder="0x..."
-            value={beneficiary}
-            onChange={this.handleBeneficiaryChange}
-            error={!isValid(beneficiary)}
-          />
-        </ModalContent>
-        <ModalActions>
-          <Button primary disabled={this.isDisabled()} loading={isLoading} onClick={this.handleSubmit}>
-            {t('global.submit')}
-          </Button>
-        </ModalActions>
+        <Form onSubmit={this.handleSubmit}>
+          <ModalContent>
+            <Field
+              label={t('edit_price_and_beneficiary_modal.price_label')}
+              placeholder={addSymbol(100)}
+              value={price}
+              onChange={this.handlePriceChange}
+            />
+            <Field
+              label={t('edit_price_and_beneficiary_modal.beneficiary_label')}
+              placeholder="0x..."
+              value={beneficiary}
+              onChange={this.handleBeneficiaryChange}
+            />
+          </ModalContent>
+          <ModalActions>
+            <Button primary disabled={this.isDisabled()} loading={isLoading} onClick={this.handleSubmit}>
+              {t('global.submit')}
+            </Button>
+          </ModalActions>
+        </Form>
       </Modal>
     )
   }
