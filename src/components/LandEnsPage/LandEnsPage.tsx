@@ -21,7 +21,17 @@ export default class LandEnsPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { onGetENS, onGetDomainList, onSetENSResolver, onSetENSContent, subdomainList, error, isLoading, ens } = this.props
+    const { 
+      onGetENS,
+      onGetDomainList,
+      onSetENSResolver,
+      onSetENSContent,
+      subdomainList,
+      error,
+      isLoading,
+      isWaitingConfirmationTx,
+      ens
+    } = this.props
     const { selectedName } = this.state
 
     return (
@@ -51,6 +61,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
                   selectedName={selectedName}
                   error={error} 
                   isLoading={isLoading} 
+                  isWaitingConfirmationTx={isWaitingConfirmationTx}
                   onSetENSContent={onSetENSContent}
                   onSetENSResolver={onSetENSResolver}
                   onRestartForm={this.restartForm.bind(this)}

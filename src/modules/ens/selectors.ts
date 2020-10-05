@@ -14,7 +14,7 @@ export const getLoadingTx = (state: RootState) => {
     address 
       ? getPendingTransactions(state, address).some(
         transaction => 
-        transaction.actionType in [SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS]  && 
+        [SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS].includes(transaction.actionType)  && 
         isPending(transaction.status)
       )
       : false

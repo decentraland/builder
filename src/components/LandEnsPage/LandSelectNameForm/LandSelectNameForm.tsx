@@ -32,9 +32,13 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     const { selectedSubdomain } = this.state
     const selectOptions = subdomainList.map(subdomain => ({value: subdomain.toLowerCase(), text: subdomain.toLowerCase()}))
  
- 
-    if ( isLoading) {
-      return <Row><Loader size="large" active /></Row>
+     if (isLoading) {
+      return (
+        <Row className="centered">
+          <Loader size="large" active />
+          <p> {t('land_ens_page.loading')} </p>
+        </Row>
+      )
     }
 
     const messageType = ens.data[selectedSubdomain] ? ens.data[selectedSubdomain].type : 'default'

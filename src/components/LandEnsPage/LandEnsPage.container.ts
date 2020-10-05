@@ -19,8 +19,8 @@ const mapState = (state: RootState): MapStateProps => ({
   subdomainList: getSubdomainList(state),
   error: getError(state),
   ens: getState(state),
-  isLoading: getLoadingTx(state) ||
-             isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
+  isWaitingConfirmationTx: getLoadingTx(state),
+  isLoading: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
              isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
              isLoadingType(getLoading(state), GET_ENS_REQUEST) ||
              isLoadingType(getLoading(state), GET_DOMAINLIST_REQUEST)

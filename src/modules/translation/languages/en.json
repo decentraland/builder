@@ -496,6 +496,7 @@
     "empty_land": "Empty Land"
   },
   "land_ens_page" : {
+    "loading": "Loading ...",
     "subtitle": "Assign a name to {name}",
     "select_names": {
       "placeholder": "My names",
@@ -506,14 +507,15 @@
       }
     },
     "set_content": "Set Content",
-    "set_content_explanation": "In order to link this name to your parcel you first need to approve 2 transactions.",
-    "set_name_message": "Brief explanation about why they need to approve this.",
+    "set_content_explanation": "Brief explanation about why they need to approve this.",
+    "set_name_message": "In order to link this name to your parcel you first need to approve 2 transactions.",
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "Brief explanation about why they need to approve this.",
     "submit_message": {
       "success": "Name set properly to your land"
     },
-    "title": "Assign Name"
+    "title": "Assign Name",
+    "waiting_confirmation_tx": "Waiting Confirmation from TX"
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",

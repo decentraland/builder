@@ -4,6 +4,7 @@ import { ENSState } from 'modules/ens/reducer'
 export type Props = {
   land: Land
   isLoading: boolean
+  isWaitingConfirmationTx: boolean
   ens: ENSState
   selectedName: string
   error: string | null

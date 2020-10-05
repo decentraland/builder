@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandSetNameForm.types'
 import './LandSetNameForm.css'
+import {Link} from 'react-router-dom';
 
 export default class LandSetNameForm extends React.PureComponent<Props, State> {
   state: State = {
@@ -29,18 +30,27 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     this.props.onRestartForm()
   }
 
-  handleFinish = () => {
-    const { land } = this.props
-    locations.landDetail(land.id)
-  }
-
   render() {
-    const { isLoading } = this.props
+    const { isLoading, isWaitingConfirmationTx, land } = this.props
     const { isSetContentDisabled, isSetResolverDisabled, isSetContentDone, isSetResolverDone } = this.state
     const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) 
  
-    if ( isLoading) {
-      return <Row><Loader size="large" active /></Row>
+    if (isLoading) {
+      return (
+        <Row className="centered">
+          <Loader size="large" active />
+          <p> {t('land_ens_page.loading')} </p>
+        </Row>
+      )
+    }
+
+    if (isWaitingConfirmationTx) {
+      return (
+        <Row className="centered">
+          <Loader size="large" active />
+          <p> {t('land_ens_page.waiting_confirmation_tx')} </p>
+        </Row>
+      )
     }
 
     return (
@@ -79,12 +89,14 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           </div>
         </Row>
         <Row className="confirmationButtons">
-          <Button onClick={this.handleBack}>
+          <Button onClick={this.handleBack} disabled={!isSubmitDisabled}>
             { t('global.back') }
           </Button>
-          <Button type="submit" disabled={isSubmitDisabled} primary onClick={this.handleFinish}> 
-            { t('global.finish') }
-          </Button>
+          <Link className="cancel" to={locations.landDetail(land.id)}>
+            <Button disabled={isSubmitDisabled} primary> 
+              { t('global.finish') }
+            </Button>
+          </Link>
         </Row>
       </Form>
     )
