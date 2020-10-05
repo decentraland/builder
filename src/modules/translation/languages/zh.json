@@ -302,6 +302,7 @@
     "title": "下载场景"
   },
   "global": {
+    "approved_tx": "批准的Tx",
     "back": "返回",
     "blog_post": "博客",
     "cancel": "取消",
@@ -313,6 +314,7 @@
     "email": "email",
     "error_ocurred": "出错了",
     "eth_address": "ETH 地址",
+    "finish": "完",
     "here": "这里",
     "items": "模型",
     "learn_more": "更多",
@@ -326,6 +328,7 @@
     "read_more": "阅读更多",
     "save": "保存",
     "send": "发送",
+    "send_tx": "发送Tx",
     "share": "分享",
     "sign_in": "登录",
     "sign_up": "注册",
@@ -457,19 +460,24 @@
     "empty_land": "空地"
   },
   "land_ens_page" : {
-    "title": "设置名称",
-    "subtitle": "分配您的一个名字作为您土地的链接。",
+    "subtitle": "给...分配一个名字 {name}",
     "select_names": {
-      "placeholder": "您的注册名称",
+      "placeholder": "我的名字是",
       "message": {
         "choose_name": "选择这片土地的名称",
         "name_available": "这个名字会为你的土地工作",
         "name_assigned": "这个名字已经分配给这片土地"
       }
     },
-  "submit_message": {
+    "set_content": "设定内容",
+    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "set_name_message": "关于他们为什么需要批准的简要说明。",
+    "set_resolver": "设置解析器",
+    "set_resolver_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "submit_message": {
       "success": "名称正确设置到您的土地"
-    }
+    },
+    "title": "分配名称"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",

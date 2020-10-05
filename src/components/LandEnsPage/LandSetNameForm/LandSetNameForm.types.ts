@@ -9,6 +9,7 @@ export type Props = {
   error: string | null
   onSetENSResolver: (ens: string, land: Land) => void
   onSetENSContent: (ens: string, land: Land) => void
+  onRestartForm: () => void
 }
 
 export type State = {

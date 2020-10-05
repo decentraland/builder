@@ -7,14 +7,11 @@ export type Props = {
   ens: ENSState
   subdomainList: string[]
   error: string | null
-  onSetENSResolver: (ens: string, land: Land) => void
-  onSetENSContent: (ens: string, land: Land) => void
+  onUpdateName: (selectedName: string) => void
   onGetENS: (ens: string, land: Land) => void
   onGetDomainList: () => void
 }
 
 export type State = {
   selectedSubdomain: string
-  isSetResolverDone: boolean
-  isSetContentDone: boolean
 }

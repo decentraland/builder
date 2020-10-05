@@ -1,14 +1,22 @@
+.SelectNames, .SelectNames .menu.visible {
+  width: 100%;
+}
+
 .SelectNames .ui.dropdown {
   display: flex;
   align-items: center;
   padding: 6px 10px;
-  border: 1px solid var(--divider);
-  border-radius: 6px;
+  border-bottom: 1px solid var(--divider);
   color: var(--secondary-text);
+}
+
+.SelectNames .ui.sub.header {
+  text-transform: none;
 }
 
 .SelectNames .ui.dropdown .text {
   flex: 1 0 auto;
+  text-transform: lowercase;
   color: var(--text);
 }
 

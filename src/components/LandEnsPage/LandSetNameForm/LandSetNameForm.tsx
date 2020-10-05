@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Form, Row, Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandSetNameForm.types'
 import './LandSetNameForm.css'
@@ -17,22 +16,27 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
   handleSetResolver = () => {
     const { onSetENSResolver, land, selectedName } = this.props
     onSetENSResolver(selectedName, land)
-    this.setState({isSetResolverDone: true, isSetResolverDisabled: true, isSetContentDisabled: true})
+    this.setState({isSetResolverDone: true, isSetResolverDisabled: true, isSetContentDisabled: false})
   }
   
   handleSetContent = () => {
     const { onSetENSContent, land, selectedName } = this.props
     onSetENSContent(selectedName, land)
-    this.setState({isSetContentDone: true, isSetResolverDisabled: false, isSetContentDisabled: true})
+    this.setState({isSetContentDone: true, isSetResolverDisabled: true, isSetContentDisabled: true})
   }
  
+  handleBack = () => {
+    this.props.onRestartForm()
+  }
+
   handleFinish = () => {
-    console.log(this.props.selectedName)
+    const { land } = this.props
+    locations.landDetail(land.id)
   }
 
   render() {
-    const { land, isLoading } = this.props
-    const { isSetContentDisabled, isSetResolverDisabled } = this.state
+    const { isLoading } = this.props
+    const { isSetContentDisabled, isSetResolverDisabled, isSetContentDone, isSetResolverDone } = this.state
     const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) 
  
     if ( isLoading) {
@@ -42,32 +46,44 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     return (
       <Form className="LandSetNameForm">
         <Row>
-          <p className="message"> In order to link this name to your parcel you first need to approve 2 transactions.</p>
+          <p className="message"> {t('land_ens_page.set_name_message')}</p>
         </Row>
         <Row>
           <div className="box">
-            <h3> Set Resolver </h3>
-            <p>Brief explanation why they need to approve this.</p>
-            <Button type="submit" disabled={isSetResolverDisabled} primary onClick={this.handleSetResolver}> 
-              SEND TX
+            <h3>{t('land_ens_page.set_resolver')}</h3>
+            <p>{t('land_ens_page.set_resolver_explanation')}</p>
+            <Button 
+              type="submit"
+              disabled={isSetResolverDisabled}
+              onClick={this.handleSetResolver}
+              className={isSetResolverDone ? 'grey-button' : ''}
+              primary
+            >
+              {isSetResolverDone? t('global.approved_tx') : t('global.send_tx')}
             </Button>
           </div>
         </Row>
         <Row>
           <div className="box">
-            <h3> Set Content </h3>
-            <p>Brief explanation why they need to approve this.</p>
-            <Button type="submit" disabled={isSetContentDisabled} primary onClick={this.handleSetContent}> 
-              SEND TX
+            <h3>{t('land_ens_page.set_content')}</h3>
+            <p>{t('land_ens_page.set_content_explanation')}</p>
+            <Button
+              type="submit"
+              disabled={isSetContentDisabled}
+              onClick={this.handleSetContent}
+              className={isSetContentDone ? 'grey-button' : ''}
+              primary 
+            > 
+              {isSetContentDone? t('global.approved_tx') : t('global.send_tx')}
             </Button>
           </div>
         </Row>
         <Row className="confirmationButtons">
-          <Link className="cancel" to={locations.landDetail(land.id)}>
-            <Button>{t('global.cancel')}</Button>
-          </Link>
+          <Button onClick={this.handleBack}>
+            { t('global.back') }
+          </Button>
           <Button type="submit" disabled={isSubmitDisabled} primary onClick={this.handleFinish}> 
-            Finish
+            { t('global.finish') }
           </Button>
         </Row>
       </Form>

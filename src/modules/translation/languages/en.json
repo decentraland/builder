@@ -307,6 +307,7 @@
     "title": "Download Scene"
   },
   "global": {
+    "approved_tx": "Approved Tx",
     "back": "back",
     "blog_post": "blog post",
     "cancel": "Cancel",
@@ -318,6 +319,7 @@
     "email": "email",
     "error_ocurred": "An error ocurred",
     "eth_address": "ETH address",
+    "finish": "Finish",
     "here": "here",
     "items": "items",
     "learn_more": "Learn more",
@@ -332,6 +334,7 @@
     "read_more": "Read more",
     "save": "Save",
     "send": "Send",
+    "send_tx": "Send Tx",
     "share": "Share",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
@@ -493,19 +496,24 @@
     "empty_land": "Empty Land"
   },
   "land_ens_page" : {
-    "title": "Set Name",
-    "subtitle": "Assign one of your Names to act as a link to your land.",
+    "subtitle": "Assign a name to {name}",
     "select_names": {
-      "placeholder": "Your registered names",
+      "placeholder": "My names",
       "message": {
-        "choose_name": "Select a name for this land",
+        "choose_name": "Click here to claim a new name",
         "name_available": "This name will work for your land",
         "name_assigned": "This name has been assigned to this land"
       }
     },
+    "set_content": "Set Content",
+    "set_content_explanation": "In order to link this name to your parcel you first need to approve 2 transactions.",
+    "set_name_message": "Brief explanation about why they need to approve this.",
+    "set_resolver": "Set Resolver",
+    "set_resolver_explanation": "Brief explanation about why they need to approve this.",
     "submit_message": {
       "success": "Name set properly to your land"
-    }
+    },
+    "title": "Assign Name"
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",

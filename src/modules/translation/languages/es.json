@@ -301,6 +301,7 @@
     "title": "Descargar Escena"
   },
   "global": {
+    "approved_tx": "Tx Aprovada",
     "back": "volver",
     "blog_post": "blog post",
     "cancel": "Cancelar",
@@ -312,6 +313,7 @@
     "email": "email",
     "error_ocurred": "Ha ocurrido un error",
     "eth_address": "ETH address",
+    "finish": "Finalizar",
     "here": "aquí",
     "items": "objetos",
     "learn_more": "Más información",
@@ -325,6 +327,7 @@
     "read_more": "Leer más",
     "save": "Salvar",
     "send": "Enviar",
+    "send_tx": "Enviar Tx",
     "share": "Compartir",
     "sign_in": "Inicia sesión",
     "sign_up": "Suscribirse",
@@ -456,19 +459,24 @@
     "empty_land": "Tierras Vacias"
   },
   "land_ens_page" : {
-    "title": "Establece tu Nombre",
-    "subtitle": "Asigna uno de tus nombres como link para tu tierra",
+    "subtitle": "Asigna un nombre a {name}",
     "select_names": {
-      "placeholder": "Tus nombres registrados",
+      "placeholder": "Mis nombres",
       "message": {
-        "choose_name": "Selecciona un nombre para tu tierra",
+        "choose_name": "Click aquí para reclamar un nuevo nombre",
         "name_available": "Este nombre funcionara bien para tu tierra",
         "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
       }
     },
+    "set_content": "Establecer Contenido",
+    "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones.",
+    "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
+    "set_resolver": "Establecer Resolver",
+    "set_resolver_explanation": "Explicación sobre porque se necesita aprovar esto.",
     "submit_message": {
       "success": "Nombre configurado correctamente para su tierra"
-    }
+    },
+    "title": "Asigna un Nombre"
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",

@@ -13,14 +13,15 @@ import {
   getDomainListRequest
 } from 'modules/ens/actions'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getState, getLoading, getError, getSubdomainList } from 'modules/ens/selectors'
+import { getState, getLoading, getError, getSubdomainList, getLoadingTx } from 'modules/ens/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   subdomainList: getSubdomainList(state),
   error: getError(state),
   ens: getState(state),
-  isLoading: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
+  isLoading: getLoadingTx(state) ||
              isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
+             isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
              isLoadingType(getLoading(state), GET_ENS_REQUEST) ||
              isLoadingType(getLoading(state), GET_DOMAINLIST_REQUEST)
 })

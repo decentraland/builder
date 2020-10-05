@@ -1,0 +1,30 @@
+.LandSelectNameForm.ui.form {
+  width: 100%;
+}
+.LandSelectNameForm.ui.form .dcl.field .ui.input.revoked input {
+  text-decoration: line-through;
+  color: var(--secondary-text);
+}
+
+.LandSelectNameForm .cancel {
+  margin-right: 16px;
+  margin-left: 0px;
+}
+
+.LandSelectNameForm.ui.form .dcl.field .ui.input input {
+  font-size: 16px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+}
+
+.LandSelectNameForm.ui.form .dcl.field .ui.input.is-revokable input {
+  padding-right: 86px;
+}
+.LandSelectNameForm .SelectNames {
+  width: 100%;
+}
+.LandSelectNameForm .selectMessage {
+  margin-top: 8px;
+  margin-bottom: 48px;
+
+}

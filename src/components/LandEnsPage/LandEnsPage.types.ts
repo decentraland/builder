@@ -2,6 +2,10 @@ import { Dispatch } from 'redux'
 import { getENSRequest, setENSContentRequest, setENSResolverRequest, getDomainListRequest } from 'modules/ens/actions'
 import { ENSState } from 'modules/ens/reducer'
 
+export type State = {
+  selectedName: string
+}
+
 export type Props = {
   subdomainList: string[]
   error: string | null
