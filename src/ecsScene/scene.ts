@@ -1,6 +1,18 @@
 // tslint:disable
 import { EventEmitter } from 'events'
-import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity, Vector3, AvatarShape, Color4 } from 'decentraland-ecs'
+import {
+  engine,
+  GLTFShape,
+  Transform,
+  Entity,
+  Component,
+  NFTShape,
+  IEntity,
+  Vector3,
+  AvatarShape,
+  Color4,
+  BoxShape
+} from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
@@ -87,6 +99,16 @@ function getScriptInstance(assetId: string) {
             spawn() {}
           }
         })
+}
+
+// avatar
+let avatar: Entity | null = null
+function getAvatar(): Entity {
+  if (!avatar) {
+    avatar = new Entity()
+    engine.addEntity(avatar)
+  }
+  return avatar
 }
 
 async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
@@ -180,7 +202,7 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       console.log('[message from scene] update avatar', message)
 
       // no anda
-      const avatar = new Entity()
+      const avatar = getAvatar()
       avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
       const avatarShape = new AvatarShape()
       avatarShape.bodyShape = 'dcl://base-avatars/BaseFemale'
@@ -200,16 +222,20 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       avatar.addComponent(avatarShape)
       engine.addEntity(avatar)
 
-      // anda
-      const shape = new ECS.BoxShape()
-      const box = new Entity()
-      box.addComponent(new Transform({ position: new Vector3(4, 0, 4), scale: new Vector3(1, 1, 1) }))
-      box.addComponent(shape)
-      engine.addEntity(box)
+      // add a base so the avatar is standing, otherwise it does the "falling" animation
+      const base = new Entity()
+      base.addComponent(new Transform({ position: new Vector3(8, -0.2, 8), scale: new Vector3(0.01, 0.1, 0.01) }))
+      const box = new BoxShape()
+      base.addComponent(box)
+      engine.addEntity(base)
       break
     }
     case 'Update items': {
       console.log('[message from scene] update items', message)
+
+      const avatar = getAvatar()
+      const avatarShape = avatar.getComponent(AvatarShape)
+      avatarShape.wearables = [...avatarShape.wearables, message.payload.wearables[0].id]
       break
     }
   }

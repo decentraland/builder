@@ -46,7 +46,8 @@ import {
   OpenEditorAction,
   setEditorReadOnly,
   SetSelectedEntitiesAction,
-  updateAvatar
+  updateAvatar,
+  updateItems
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -103,7 +104,8 @@ import {
   ROTATION_GRID_RESOLUTION,
   createReadyOnlyScene,
   areEqualTransforms,
-  createAvatarProject
+  createAvatarProject,
+  toWearable
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
@@ -319,14 +321,13 @@ function* handleOpenEditor(action: OpenEditorAction) {
       yield createNewEditorScene(createAvatarProject())
 
       yield call(async () => {
-        // load collection
-        const resp = await fetch('https://wearable-api.decentraland.org/v2/collections')
-        const collections: { id: string; wearables: Wearable[] }[] = await resp.json()
-        const defaultCollection: Wearable[] = collections[0].wearables
+        // load default collection
+        const resp = await fetch('https://dcl-wearables-dev.now.sh/index.json')
+        const defaultCollection: Wearable[] = await resp.json()
         console.log('default collection:', defaultCollection)
 
-        // select wearables
-        const wearableIds = [
+        // select default wearables
+        const defaultWearableIds = [
           'dcl://base-avatars/BaseFemale',
           'dcl://base-avatars/f_sweater',
           'dcl://base-avatars/f_jeans',
@@ -336,15 +337,31 @@ function* handleOpenEditor(action: OpenEditorAction) {
           'dcl://base-avatars/f_eyebrows_00',
           'dcl://base-avatars/f_mouth_00'
         ]
-        const wearables = defaultCollection.filter(wearable => wearable && wearableIds.includes(wearable.id))
+        const defaultWearables = defaultCollection.filter(wearable => wearable && defaultWearableIds.includes(wearable.id))
+        console.log('default wearables:', defaultWearables)
+        console.log('all default wearables exist:', defaultWearables.length === defaultWearableIds.length)
+
+        const wearable = toWearable(item)
+        const wearables = [...defaultWearables, wearable]
         console.log('wearables:', wearables)
-        console.log('all wearables exist:', wearables.length === wearableIds.length)
+        console.log('item:', item)
 
         // add wearables
         editorWindow.editor.addWearablesToCatalog(wearables)
 
+        // set camera
+        editorWindow.editor.resetCameraZoom()
+        editorWindow.editor.setCameraPosition({ x: 8, y: 1.2, z: 8 })
+        editorWindow.editor.setCameraZoomDelta(-30)
+        editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
+
         // render default avatar
-        setTimeout(() => editorWindow.editor.sendExternalAction(updateAvatar(null)), 2000)
+        editorWindow.editor.sendExternalAction(updateAvatar(null))
+
+        // render selected items
+        if (item.data.category) {
+          editorWindow.editor.sendExternalAction(updateItems([wearable]))
+        }
       })
     }
   } else {

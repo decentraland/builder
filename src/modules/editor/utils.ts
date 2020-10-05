@@ -187,7 +187,7 @@ export function toWearable(item: Item): Wearable {
     representations: item.data.representations.map<BodyShapeRespresentation>(representation => ({
       bodyShapes: representation.bodyShape,
       mainFile: representation.mainFile,
-      contents: Object.keys(representation.contents).map(path => ({
+      contents: Object.values(representation.contents).map(path => ({
         file: path,
         hash: item.contents[path]
       }))

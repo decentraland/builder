@@ -1,11 +1,11 @@
 import { action } from 'typesafe-actions'
+import { Avatar } from 'decentraland-ui'
+import { Wearable } from 'decentraland-ecs'
 
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
 import { Gizmo, OpenEditorOptions, PreviewType } from './types'
-import { Avatar } from 'decentraland-ui'
-import { Item } from 'modules/item/types'
 
 // Bind keyboard shortcuts
 
@@ -217,6 +217,6 @@ export type UpdateAvatarAction = ReturnType<typeof updateAvatar>
 // Update Items
 export const UPDATE_ITEMS = 'Update items'
 
-export const updateItems = (items: Item[]) => action(UPDATE_ITEMS, { items })
+export const updateItems = (wearables: Wearable[]) => action(UPDATE_ITEMS, { wearables })
 
 export type UpdateItemsAction = ReturnType<typeof updateItems>
