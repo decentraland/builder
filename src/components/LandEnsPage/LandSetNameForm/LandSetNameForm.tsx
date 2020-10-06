@@ -14,6 +14,19 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     isResolverLoading: false,
     isContentLoading: false
   }
+  componentDidMount () {
+    const { ens, selectedName } = this.props
+    const { type } = ens.data[selectedName]
+    if (type && ['DifferentContent', 'EmptyContent'].includes(type)) {
+      this.setState({
+        isSetResolverDone: true,
+        isSetResolverDisabled: true,
+        isSetContentDisabled: false,
+        isResolverLoading: true,
+        isContentLoading: false
+      })
+    }
+  }
 
   handleSetResolver = () => {
     const { onSetENSResolver, land, selectedName } = this.props
@@ -53,14 +66,18 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
       isContentLoading,
       isResolverLoading
     } = this.state
+
     const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || isLoading ||isWaitingConfirmationTx 
     const isBackDisabled = isSetResolverDone || isSetContentDone
  
     let buttonSetResolver = <> 
       {isSetResolverDone? t('global.approved_tx'): t('global.send_tx')} 
-      {isSetResolverDone && <Icon name='check' />} 
+      {!(isResolverLoading && (isLoading || isWaitingConfirmationTx)) && isSetResolverDone && <Icon name='check' />} 
     </>
-    let buttonSetContent = <> {isSetContentDone? t('global.approved_tx'): t('global.send_tx')} </>
+    let buttonSetContent = <> 
+      {isSetContentDone? t('global.approved_tx'): t('global.send_tx')} 
+      {!(isContentLoading && (isLoading || isWaitingConfirmationTx)) && isSetContentDone && <Icon name='check' />} 
+    </>
     let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingConfirmationTx)) || isSetContentDone) ? 'grey-button': ''
     let setContentButtonClassName = (isSetContentDone && isSetContentDone && !(isLoading || isWaitingConfirmationTx)) ? 'grey-button': ''
     let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingConfirmationTx
