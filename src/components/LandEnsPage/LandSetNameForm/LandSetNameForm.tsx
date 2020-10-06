@@ -13,13 +13,25 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     isSetContentDisabled: true,
   }
   componentDidMount () {
-    const { ens, selectedName } = this.props
+    const { ens, selectedName, isWaitingTxSetResolver, isWaitingTxSetContent } = this.props
     const { type } = ens.data[selectedName]
+    if (isWaitingTxSetResolver) {
+      this.setState({isSetResolverDone: true})
+    }
+
     if (type && ['DifferentContent', 'EmptyContent'].includes(type)) {
       this.setState({
         isSetResolverDone: true,
         isSetResolverDisabled: true,
         isSetContentDisabled: false,
+      })
+    }
+    if (isWaitingTxSetContent) {
+      this.setState({
+        isSetResolverDone: true, 
+        isSetContentDone: true, 
+        isSetResolverDisabled: true,
+        isSetContentDisabled: true
       })
     }
   }
@@ -71,7 +83,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
       {!isContentLoading && isSetContentDone && <Icon name='check' />} 
     </>
     let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingTxSetResolver)) || isSetContentDone) ? 'grey-button': ''
-    let setContentButtonClassName = (isSetContentDone && isSetContentDone && !(isLoading || isWaitingTxSetContent)) ? 'grey-button': ''
+    let setContentButtonClassName = (isSetContentDone && !(isLoading || isWaitingTxSetContent)) ? 'grey-button': ''
     let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     if (error && error.code === 4001) {
@@ -128,7 +140,11 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           <Button onClick={this.handleBack} disabled={isBackDisabled}>
             { t('global.back') }
           </Button>
-          <Button disabled={isSubmitDisabled || isLoading} onClick={() => onNavigate(locations.landDetail(land.id))} primary> 
+          <Button
+            disabled={isSubmitDisabled || isLoading}
+            onClick={() => onNavigate(locations.landDetail(land.id))}
+            primary
+          > 
             { t('global.finish') }
           </Button>
         </Row>
