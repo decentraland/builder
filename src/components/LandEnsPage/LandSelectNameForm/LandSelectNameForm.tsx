@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Row, Button, Loader } from 'decentraland-ui'
+import { Form, Row, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
@@ -32,15 +32,6 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     const { selectedSubdomain } = this.state
     const selectOptions = subdomainList.map(subdomain => ({value: subdomain.toLowerCase(), text: subdomain.toLowerCase()}))
  
-     if (isLoading) {
-      return (
-        <Row className="centered">
-          <Loader size="large" active />
-          <p> {t('land_ens_page.loading')} </p>
-        </Row>
-      )
-    }
-
     const messageType = ens.data[selectedSubdomain] ? ens.data[selectedSubdomain].type : 'default'
     let selectMessage: string = ""
     let isButtonDisabled: boolean = false
@@ -78,7 +69,7 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
           <Link className="cancel" to={locations.landDetail(land.id)}>
             <Button>{t('global.cancel')}</Button>
           </Link>
-          <Button type="submit" disabled={isButtonDisabled} primary onClick={this.handleContinue}> 
+          <Button type="submit" disabled={isButtonDisabled} primary onClick={this.handleContinue} loading={isLoading}> 
             {t('global.continue')} 
           </Button>
         </Row>

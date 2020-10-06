@@ -55,7 +55,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     )
     yield put(setENSResolverSuccess(ens, land, txHash))
   } catch (error) {
-    yield put(setENSResolverFailure(ens, land, error))
+    yield put(setENSResolverFailure(ens, land, {...error, origin: 'SET_ENS_RESOLVER'}))
   }
 }
 
@@ -75,7 +75,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     )
     yield put(setENSContentSuccess(ens, land, txHash))
   } catch (error) {
-    yield put(setENSContentFailure(ens, land, error))
+    yield put(setENSContentFailure(ens, land, {...error, origin: 'SET_ENS_CONTENT'}))
   }
 }
 
@@ -94,7 +94,6 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
   try {
     const [eth] = yield getEth()
     const nodehash = namehash(ens)
-    console.log({ nodehash, value: ENS_EMPTY_RESOLVER })
     const ensContract = new ENS(eth, Address.fromString(ENS_ADDRESS))
     let resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
 

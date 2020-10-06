@@ -13,7 +13,6 @@ export default class LandEnsPage extends React.PureComponent<Props> {
 
   updateSelectedName(selectedName:string) {
     this.setState({selectedName})
-    console.log({selectedName})
   }
 
   restartForm() {

@@ -1,12 +1,12 @@
 import { Land } from 'modules/land/types'
-import { ENSState } from 'modules/ens/reducer'
+import { ENSState, ENSError } from 'modules/ens/reducer'
 
 export type Props = {
   land: Land
   isLoading: boolean
   ens: ENSState
   subdomainList: string[]
-  error: string | null
+  error: ENSError | null
   onUpdateName: (selectedName: string) => void
   onGetENS: (ens: string, land: Land) => void
   onGetDomainList: () => void

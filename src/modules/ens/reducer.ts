@@ -27,11 +27,16 @@ import {
   SET_ENS_RESOLVER_FAILURE,
 } from './actions'
 
+export type ENSError = {
+  code: number
+  message: string
+  origin: string
+}
 export type ENSState = {
   data: Record<string, ENSData>
   subdomainList: string[]
   loading: LoadingState
-  error: string | null
+  error: ENSError | null
 }
 
 const INITIAL_STATE: ENSState = {
@@ -98,7 +103,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_CONTENT_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
     case SET_ENS_CONTENT_SUCCESS: {
@@ -106,6 +112,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
+        error: null,
         data: {
           ...state.data,
           [ens] : data
@@ -123,7 +130,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_REQUEST: {
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
     case SET_ENS_RESOLVER_SUCCESS: {
@@ -131,6 +139,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
+        error: null,
         data: {
           ...state.data,
           [ens] : data

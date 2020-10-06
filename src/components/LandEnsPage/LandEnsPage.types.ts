@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { getENSRequest, setENSContentRequest, setENSResolverRequest, getDomainListRequest } from 'modules/ens/actions'
-import { ENSState } from 'modules/ens/reducer'
+import { ENSState, ENSError } from 'modules/ens/reducer'
 
 export type State = {
   selectedName: string
@@ -8,7 +8,7 @@ export type State = {
 
 export type Props = {
   subdomainList: string[]
-  error: string | null
+  error: ENSError | null
   isLoading: boolean
   isWaitingConfirmationTx: boolean
   ens: ENSState
@@ -20,7 +20,7 @@ export type Props = {
 
 export type MapStateProps = {
   subdomainList: string[]
-  error: string | null
+  error: ENSError | null
   isLoading: boolean
   isWaitingConfirmationTx: boolean
   ens: ENSState

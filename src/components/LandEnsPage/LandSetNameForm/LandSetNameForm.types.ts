@@ -1,5 +1,5 @@
 import { Land } from 'modules/land/types'
-import { ENSState } from 'modules/ens/reducer'
+import { ENSState, ENSError } from 'modules/ens/reducer'
 
 export type Props = {
   land: Land
@@ -7,7 +7,7 @@ export type Props = {
   isWaitingConfirmationTx: boolean
   ens: ENSState
   selectedName: string
-  error: string | null
+  error: ENSError | null
   onSetENSResolver: (ens: string, land: Land) => void
   onSetENSContent: (ens: string, land: Land) => void
   onRestartForm: () => void
@@ -18,4 +18,6 @@ export type State = {
   isSetResolverDone: boolean
   isSetContentDisabled: boolean
   isSetResolverDisabled: boolean
+  isResolverLoading: boolean
+  isContentLoading: boolean
 }

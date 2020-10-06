@@ -307,7 +307,7 @@
     "title": "Download Scene"
   },
   "global": {
-    "approved_tx": "Approved Tx",
+    "approved_tx": "Done",
     "back": "back",
     "blog_post": "blog post",
     "cancel": "Cancel",
@@ -501,14 +501,14 @@
     "select_names": {
       "placeholder": "My names",
       "message": {
-        "choose_name": "Click here to claim a new name",
+        "choose_name": "Choose a name for your land",
         "name_available": "This name will work for your land",
         "name_assigned": "This name has been assigned to this land"
       }
     },
     "set_content": "Set Content",
     "set_content_explanation": "Brief explanation about why they need to approve this.",
-    "set_name_message": "In order to link this name to your parcel you first need to approve 2 transactions.",
+    "set_name_message": "In order to link this name to your parcel you first need to send 2 transactions.",
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "Brief explanation about why they need to approve this.",
     "submit_message": {

@@ -2,6 +2,7 @@ import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Land } from 'modules/land/types'
 import { ENSData } from './types'
+import {ENSError} from './reducer';
 
 export const SET_ENS_RESOLVER_REQUEST = '[Request] Set ENS Resolver'
 export const SET_ENS_RESOLVER_SUCCESS = '[Success] Set ENS Resolver'
@@ -16,7 +17,7 @@ export const setENSResolverSuccess = (ens: string, data: ENSData, txHash: string
     ens, data
   })
 
-export const setENSResolverFailure = (ens: string, land: Land, error: string) =>
+export const setENSResolverFailure = (ens: string, land: Land, error: ENSError) =>
   action(SET_ENS_RESOLVER_FAILURE, { ens, land, error })
 
 export type SetENSResolverRequestAction = ReturnType<typeof setENSResolverRequest>
@@ -36,7 +37,7 @@ export const setENSContentSuccess = (ens: string, data: ENSData, txHash: string)
     ens, data
   })
 
-export const setENSContentFailure = (ens: string, land: Land, error: string) =>
+export const setENSContentFailure = (ens: string, land: Land, error: ENSError) =>
   action(SET_ENS_CONTENT_FAILURE, { ens, land, error })
 
 export type SetENSContentRequestAction = ReturnType<typeof setENSContentRequest>
@@ -53,7 +54,7 @@ export const getENSRequest = (ens: string, land: Land) =>
 export const getENSSuccess = (ens: string, data: ENSData) =>
   action(GET_ENS_SUCCESS, { ens, data })
 
-export const getENSFailure = (error: string) =>
+export const getENSFailure = (error: ENSError) =>
   action(GET_ENS_FAILURE, { error })
 
 export type GetENSRequestAction = ReturnType<typeof getENSRequest>
@@ -70,7 +71,7 @@ export const getDomainListRequest = () =>
 export const getDomainListSuccess = (data: string[]) =>
   action(GET_DOMAINLIST_SUCCESS, { data })
 
-export const getDomainListFailure = (error: string) =>
+export const getDomainListFailure = (error: ENSError) =>
   action(GET_DOMAINLIST_FAILURE, { error })
 
 export type GetDomainListRequestAction = ReturnType<typeof getDomainListRequest>
