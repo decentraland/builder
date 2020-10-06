@@ -11,6 +11,7 @@ export type Props = {
   onSetENSResolver: (ens: string, land: Land) => void
   onSetENSContent: (ens: string, land: Land) => void
   onRestartForm: () => void
+  onNavigate: (path: string) => void
 }
 
 export type State = {

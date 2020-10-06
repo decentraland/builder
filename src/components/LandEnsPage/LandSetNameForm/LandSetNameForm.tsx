@@ -4,7 +4,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandSetNameForm.types'
 import './LandSetNameForm.css'
-import {Link} from 'react-router-dom';
 
 export default class LandSetNameForm extends React.PureComponent<Props, State> {
   state: State = {
@@ -45,7 +44,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoading, isWaitingConfirmationTx, land, error } = this.props
+    const { isLoading, isWaitingConfirmationTx, land, error, onNavigate } = this.props
     const { 
       isSetContentDisabled,
       isSetResolverDisabled,
@@ -59,17 +58,18 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
  
     let buttonSetResolver = isSetResolverDone? t('global.approved_tx'): t('global.send_tx');
     let buttonSetContent = isSetContentDone? t('global.approved_tx'): t('global.send_tx');
-    let setResolverButtonClassName = isSetResolverDone ? 'grey-button': ''
-    let setContentButtonClassName = isSetContentDone ? 'grey-button': ''
-    let isSetContentButtonDisabled = isSetContentDisabled
-    let isSetResolverButtonDisabled = isSetResolverDisabled
+    let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingConfirmationTx)) || isSetContentDone) ? 'grey-button': ''
+    let setContentButtonClassName = (isSetContentDone && isSetContentDone && !(isLoading || isWaitingConfirmationTx)) ? 'grey-button': ''
+    let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingConfirmationTx
+    let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingConfirmationTx
     if (error && error.code === 4001) {
       if (error.origin === 'SET_ENS_RESOLVER') {
-        buttonSetResolver = 'Retry TX'
+        buttonSetResolver = t('global.retry_tx')
         isSetResolverButtonDisabled = false
+        isSetContentButtonDisabled = true
         setResolverButtonClassName = ''
       } else if (error.origin === 'SET_ENS_CONTENT') {
-        buttonSetContent = 'Retry TX'
+        buttonSetContent =  t('global.retry_tx')
         isSetContentButtonDisabled = false
         setContentButtonClassName = ''
       }
@@ -116,11 +116,9 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           <Button onClick={this.handleBack} disabled={isBackDisabled}>
             { t('global.back') }
           </Button>
-          <Link className="cancel" to={locations.landDetail(land.id)}>
-            <Button disabled={isSubmitDisabled || isLoading} primary> 
-              { t('global.finish') }
-            </Button>
-          </Link>
+          <Button disabled={isSubmitDisabled || isLoading} onClick={() => onNavigate(locations.landDetail(land.id))} primary> 
+            { t('global.finish') }
+          </Button>
         </Row>
       </Form>
     )

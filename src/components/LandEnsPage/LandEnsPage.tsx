@@ -25,6 +25,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
       onGetDomainList,
       onSetENSResolver,
       onSetENSContent,
+      onNavigate,
       subdomainList,
       error,
       isLoading,
@@ -64,6 +65,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
                   onSetENSContent={onSetENSContent}
                   onSetENSResolver={onSetENSResolver}
                   onRestartForm={this.restartForm.bind(this)}
+                  onNavigate={onNavigate}
                 />
               )
             }

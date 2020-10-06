@@ -16,6 +16,7 @@ export type Props = {
   onSetENSContent: typeof setENSContentRequest
   onGetENS: typeof getENSRequest
   onGetDomainList: typeof getDomainListRequest
+  onNavigate: (path: string) => void
 }
 
 export type MapStateProps = {
@@ -25,5 +26,5 @@ export type MapStateProps = {
   isWaitingConfirmationTx: boolean
   ens: ENSState
 }
-export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onGetENS' | 'onGetDomainList'>
+export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onGetENS' | 'onGetDomainList' | 'onNavigate'>
 export type MapDispatch = Dispatch

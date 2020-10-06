@@ -14,6 +14,7 @@ import {
 } from 'modules/ens/actions'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getState, getLoading, getError, getSubdomainList, getLoadingTx } from 'modules/ens/selectors'
+import {push} from 'connected-react-router';
 
 const mapState = (state: RootState): MapStateProps => ({
   subdomainList: getSubdomainList(state),
@@ -30,7 +31,8 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetENSResolver: (ens, land) => dispatch(setENSResolverRequest(ens, land)),
   onSetENSContent: (ens, land) => dispatch(setENSContentRequest(ens, land)),
   onGetENS: (ens, land) => dispatch(getENSRequest(ens, land)),
-  onGetDomainList: () => dispatch(getDomainListRequest())
+  onGetDomainList: () => dispatch(getDomainListRequest()),
+  onNavigate: path => dispatch(push(path))
 })
 
 export default connect(mapState, mapDispatch)(LandEditPage)
