@@ -1,8 +1,7 @@
 // @ts-ignore
 import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
-import { Wearable } from 'decentraland-ecs'
+import { getSearch } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-
 import {
   updateEditor,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
@@ -46,8 +45,9 @@ import {
   OpenEditorAction,
   setEditorReadOnly,
   SetSelectedEntitiesAction,
-  updateAvatar,
-  updateItems
+  updateItems,
+  UPDATE_ITEMS,
+  UpdateItemsAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -90,7 +90,9 @@ import {
   isReadOnly,
   getEntitiesOutOfBoundaries,
   hasLoadedAssetPacks,
-  isMultiselectEnabled
+  isMultiselectEnabled,
+  getBodyShape,
+  getSelectedItems
 } from './selectors'
 
 import {
@@ -105,14 +107,17 @@ import {
   createReadyOnlyScene,
   areEqualTransforms,
   createAvatarProject,
-  toWearable
+  toWearable,
+  mergeWearables
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
-import { getSearch } from 'connected-react-router'
-import { Item } from 'modules/item/types'
+import { Item, WearableBodyShape } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
+import maleAvatar from './wearables/male.json'
+import femaleAvatar from './wearables/female.json'
+import { Wearable } from 'decentraland-ecs'
 
 const editorWindow = window as EditorWindow
 
@@ -136,6 +141,7 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
+  yield takeLatest(UPDATE_ITEMS, handleUpdateItems)
 }
 
 function* pollEditor(scene: Scene) {
@@ -320,49 +326,17 @@ function* handleOpenEditor(action: OpenEditorAction) {
       yield put(setEditorReadOnly(true))
       yield createNewEditorScene(createAvatarProject())
 
+      // set camera
       yield call(async () => {
-        // load default collection
-        const resp = await fetch('https://dcl-wearables-dev.now.sh/index.json')
-        const defaultCollection: Wearable[] = await resp.json()
-        console.log('default collection:', defaultCollection)
-
-        // select default wearables
-        const defaultWearableIds = [
-          'dcl://base-avatars/BaseFemale',
-          'dcl://base-avatars/f_sweater',
-          'dcl://base-avatars/f_jeans',
-          'dcl://base-avatars/bun_shoes',
-          'dcl://base-avatars/standard_hair',
-          'dcl://base-avatars/f_eyes_00',
-          'dcl://base-avatars/f_eyebrows_00',
-          'dcl://base-avatars/f_mouth_00'
-        ]
-        const defaultWearables = defaultCollection.filter(wearable => wearable && defaultWearableIds.includes(wearable.id))
-        console.log('default wearables:', defaultWearables)
-        console.log('all default wearables exist:', defaultWearables.length === defaultWearableIds.length)
-
-        const wearable = toWearable(item)
-        const wearables = [...defaultWearables, wearable]
-        console.log('wearables:', wearables)
-        console.log('item:', item)
-
-        // add wearables
-        editorWindow.editor.addWearablesToCatalog(wearables)
-
-        // set camera
         editorWindow.editor.resetCameraZoom()
         editorWindow.editor.setCameraPosition({ x: 8, y: 1.2, z: 8 })
         editorWindow.editor.setCameraZoomDelta(-30)
         editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
-
-        // render default avatar
-        editorWindow.editor.sendExternalAction(updateAvatar(null))
-
-        // render selected items
-        if (item.data.category) {
-          editorWindow.editor.sendExternalAction(updateItems([wearable]))
-        }
       })
+
+      // render selected items
+      const selectedItems: Item[] = yield select(getSelectedItems)
+      yield put(updateItems(selectedItems))
     }
   } else {
     // Creates a new scene in the dcl client's side
@@ -603,4 +577,15 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
+}
+
+function* handleUpdateItems(action: UpdateItemsAction) {
+  const bodyShape: WearableBodyShape = yield select(getBodyShape)
+  const avatar = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
+  const apply = action.payload.items.map(item => toWearable(item))
+  const wearables = mergeWearables(avatar, apply)
+  yield call(async () => {
+    editorWindow.editor.addWearablesToCatalog(wearables)
+    //editorWindow.editor.sendExternalAction()
+  })
 }

@@ -13,6 +13,9 @@ import { LEGACY_AUTH_REQUEST } from 'modules/auth/actions'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Asset } from 'modules/asset/types'
+import { ItemState } from 'modules/item/reducer'
+import { getData } from 'modules/item/selectors'
+import { Item } from 'modules/item/types'
 
 export const getState = (state: RootState) => state.editor
 export const getGizmo = (state: RootState) => getState(state).gizmo
@@ -28,6 +31,8 @@ export const hasLoadedAssetPacks = (state: RootState) => getState(state).hasLoad
 export const isScreenshotReady = (state: RootState) => getState(state).isScreenshotReady
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
+export const getBodyShape = (state: RootState) => getState(state).bodyShape
+export const getSelectedItemIds = (state: RootState) => getState(state).selectedItemIds
 export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {
   const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
     for (const path of Object.keys(asset.contents)) {
@@ -84,4 +89,10 @@ export const isFetching = createSelector<RootState, Project | null, boolean, Loa
     }
     return false
   }
+)
+
+export const getSelectedItems = createSelector<RootState, string[], ItemState['data'], Item[]>(
+  getSelectedItemIds,
+  getData,
+  (itemIds, itemData) => itemIds.map(id => itemData[id])
 )

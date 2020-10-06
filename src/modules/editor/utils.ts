@@ -195,3 +195,12 @@ export function toWearable(item: Item): Wearable {
     tags: item.data.tags
   }
 }
+
+export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
+  const wearables: Record<string, Wearable> = {}
+  for (const wearable of [...avatar, ...apply]) {
+    if (!wearable.category) continue
+    wearables[wearable.category] = wearable
+  }
+  return Object.values(wearables)
+}

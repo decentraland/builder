@@ -24,7 +24,11 @@ import {
   SetEditorReadOnlyAction,
   SET_EDITOR_READ_ONLY,
   TOGGLE_MULTISELECTION,
-  ToggleMultiselectionAction
+  ToggleMultiselectionAction,
+  SetBodyShapeAction,
+  SET_BODY_SHAPE,
+  UpdateItemsAction,
+  UPDATE_ITEMS
 } from './actions'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
@@ -35,6 +39,7 @@ import {
   ExportProjectSuccessAction
 } from 'modules/project/actions'
 import { Gizmo } from './types'
+import { WearableBodyShape } from 'modules/item/types'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -54,6 +59,8 @@ export type EditorState = {
     progress: number
     total: number
   }
+  bodyShape: WearableBodyShape
+  selectedItemIds: string[]
 }
 
 const INITIAL_STATE: EditorState = {
@@ -73,7 +80,9 @@ const INITIAL_STATE: EditorState = {
     isLoading: false,
     progress: 0,
     total: 0
-  }
+  },
+  bodyShape: WearableBodyShape.FEMALE,
+  selectedItemIds: []
 }
 
 export type EditorReducerAction =
@@ -94,6 +103,8 @@ export type EditorReducerAction =
   | ExportProjectSuccessAction
   | LoadAssetPacksSuccessAction
   | ToggleMultiselectionAction
+  | SetBodyShapeAction
+  | UpdateItemsAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -215,6 +226,18 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         multiselectionEnabled: action.payload.enabled
+      }
+    }
+    case SET_BODY_SHAPE: {
+      return {
+        ...state,
+        bodyShape: action.payload.bodyShape
+      }
+    }
+    case UPDATE_ITEMS: {
+      return {
+        ...state,
+        selectedItemIds: action.payload.items.map(item => item.id)
       }
     }
     default:
