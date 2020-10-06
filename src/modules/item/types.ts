@@ -82,7 +82,7 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
 }
 
 export type SaleData = {
-  price?: number
+  price?: string
   beneficiary?: string
 }
 
@@ -106,6 +106,7 @@ export type Item = {
   totalSupply?: number
   isPublished: boolean
   isApproved: boolean
+  inCatalyst: boolean
   type: ItemType
   data: WearableData
   contents: Record<string, string>

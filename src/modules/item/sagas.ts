@@ -62,7 +62,7 @@ function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
 function* handleSaveItemRequest(action: SaveItemRequestAction) {
   const { item, contents } = action.payload
   try {
-    yield call(() => builder.saveItem(item, contents))
+    yield call(() => saveItem(item, contents))
     yield put(saveItemSuccess(item, contents))
     yield put(closeModal('CreateItemModal'))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
@@ -143,7 +143,7 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
         ...item,
         tokenId
       }
-      saves.push(saveItem(newItem))
+      saves.push(call(() => saveItem(newItem)))
       newItems.push(newItem)
     }
 
@@ -154,6 +154,6 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
   }
 }
 
-function saveItem(item: Item, contents: Record<string, Blob> = {}) {
-  return call(() => builder.saveItem(item, contents))
+export function saveItem(item: Item, contents: Record<string, Blob> = {}) {
+  return builder.saveItem(item, contents)
 }

@@ -31,10 +31,11 @@
   font-weight: bold;
 }
 
-.Items .item:hover {
+.Items .item:not(.is-selected):hover {
   background: rgba(var(--bluish-steel-raw), 0.4);
 }
 
 .Items .item.is-selected {
   border: 1px solid rgba(var(--bluish-steel-raw), 0.7);
+  cursor: default;
 }

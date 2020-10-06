@@ -1,7 +1,7 @@
-import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
-import { CatalystClient } from 'dcl-catalyst-client'
+import { CatalystClient, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { takeLatest, put, select, call, take } from 'redux-saga/effects'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
@@ -39,10 +39,9 @@ import { objectURLToBlob } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { PEER_URL } from 'lib/api/peer'
 import { builder, getPreviewUrl } from 'lib/api/builder'
-import { buildDeployData, deploy, ContentFile, makeContentFile } from './contentUtils'
+import { buildDeployData, deploy, ContentFile, makeContentFiles, EntityType } from './contentUtils'
 import { getIdentity } from 'modules/identity/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getName } from 'modules/profile/selectors'
 import { getEmptyDeployment } from './utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
@@ -50,8 +49,6 @@ import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
-
-const blacklist = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
 const handleProgress = (type: ProgressStage) => (args: { loaded: number; total: number }) => {
   const { loaded, total } = args
@@ -163,9 +160,11 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
-    const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
+    const contentFiles: ContentFile[] = yield call(() => makeContentFiles(files))
     const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-    const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
+    const [data] = yield call(() =>
+      buildDeployData(EntityType.SCENE, identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles)
+    )
     yield call(() => deploy(PEER_URL, data))
     // generate new deployment
     const deployment: Deployment = {
@@ -237,27 +236,16 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
-    const contentFiles: ContentFile[] = yield getContentServiceFiles(files)
+    const contentFiles: ContentFile[] = yield call(() => makeContentFiles(files))
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-    const [data] = yield call(() => buildDeployData(identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles))
+    const [data] = yield call(() =>
+      buildDeployData(EntityType.SCENE, identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles)
+    )
     yield call(() => deploy(PEER_URL, data))
     yield put(clearDeploymentSuccess(deploymentId))
   } catch (error) {
     yield put(clearDeploymentFailure(deploymentId, error.message))
   }
-}
-
-function* getContentServiceFiles(files: Record<string, string | Blob>) {
-  let contentFiles: ContentFile[] = []
-
-  for (const fileName of Object.keys(files)) {
-    if (blacklist.includes(fileName)) continue
-    let file: ContentFile
-    file = yield call(() => makeContentFile(fileName, files[fileName]))
-    contentFiles.push(file)
-  }
-
-  return contentFiles
 }
 
 function* handleFetchLandsSuccess(action: FetchLandsSuccessAction) {

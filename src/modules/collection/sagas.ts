@@ -1,14 +1,17 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { select, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
   FetchCollectionsRequestAction,
+  FetchCollectionsSuccessAction,
   fetchCollectionsRequest,
   fetchCollectionsSuccess,
   fetchCollectionsFailure,
   FETCH_COLLECTIONS_REQUEST,
+  FETCH_COLLECTIONS_SUCCESS,
   SaveCollectionRequestAction,
   saveCollectionSuccess,
   saveCollectionFailure,
@@ -32,17 +35,23 @@ import {
   MintCollectionItemsRequestAction,
   mintCollectionItemsSuccess,
   mintCollectionItemsFailure,
-  MINT_COLLECTION_ITEMS_REQUEST
+  MINT_COLLECTION_ITEMS_REQUEST,
+  PUBLISH_COLLECTION_SUCCESS
 } from './actions'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS } from 'modules/common/contracts'
 import { ERC721CollectionFactoryV2 } from 'contracts/ERC721CollectionFactoryV2'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
-import { setItemsTokenIdRequest } from 'modules/item/actions'
+import { setItemsTokenIdRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
+import { Item } from 'modules/item/types'
+import { getItems } from 'modules/item/selectors'
+import { getIdentity } from 'modules/identity/utils'
+import { deployItemContents } from './export'
+import { getCollection, getCollectionItems } from './selectors'
 import { initializeCollection } from './utils'
 
 export function* collectionSaga() {
@@ -54,6 +63,8 @@ export function* collectionSaga() {
   yield takeEvery(SET_COLLECTION_MANAGERS_REQUEST, handleSetCollectionManagersRequest)
   yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintColectionItems)
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
+  yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
+  yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
 }
 
 function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) {
@@ -225,4 +236,52 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
 
 function* handleConnectWalletSuccess() {
   yield put(fetchCollectionsRequest())
+}
+
+function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
+  const transaction = action.payload.transaction
+
+  try {
+    switch (transaction.actionType) {
+      case PUBLISH_COLLECTION_SUCCESS: {
+        const identity = yield getIdentity()
+        if (!identity) {
+          throw new Error('Invalid identity')
+        }
+
+        // We re-fetch the collection from the store to get the updated version
+        const collectionId = transaction.payload.collection.id
+        const collection = yield select(state => getCollection(state, collectionId))
+        const items = yield select(state => getCollectionItems(state, collectionId))
+
+        yield deployItemContents(identity, collection, items)
+        break
+      }
+      default: {
+        break
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
+  const identity = yield getIdentity()
+  if (!identity) {
+    throw new Error('Invalid identity')
+  }
+
+  const allItems: Item[] = yield select(getItems)
+  if (allItems.length === 0) {
+    yield take(FETCH_ITEMS_SUCCESS)
+  }
+
+  const { collections } = action.payload
+
+  for (const collection of collections) {
+    if (!collection.isPublished) continue
+    const items = allItems.filter(item => item.collectionId === collection.id)
+    yield deployItemContents(identity, collection, items)
+  }
 }

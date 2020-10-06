@@ -107,6 +107,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           totalSupply: 0,
           isPublished: false,
           isApproved: false,
+          inCatalyst: false,
           data: {
             replaces: [],
             hides: [],

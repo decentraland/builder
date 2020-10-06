@@ -2,12 +2,12 @@ import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
+import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isEditable, canMint, getMaxSupply } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
-import ItemBadge from 'components/ItemBadge'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import './CollectionItem.css'
@@ -43,7 +43,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return item.price ? (
       <>
-        <div>{item.price}</div>
+        <div>{fromWei(item.price, 'ether')}</div>
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : !isEditable(item) ? (
@@ -64,11 +64,13 @@ export default class CollectionItem extends React.PureComponent<Props> {
       <Link to={locations.itemDetail(item.id)} className="CollectionItem">
         <Grid columns="equal">
           <Grid.Row>
-            <Grid.Column className="avatar-column" width={4}>
-              <ItemImage item={item} />
+            <Grid.Column className="avatar-column" width={5}>
+              <ItemImage item={item} hasBadge badgeSize="small" />
               <div className="info">
                 <div className="name-wrapper">
-                  <div className="name">{item.name}</div> <ItemBadge item={item} />
+                  <div className="name" title={item.name}>
+                    {item.name}
+                  </div>
                 </div>
                 <div className="subtitle">{item.type}</div>
               </div>
