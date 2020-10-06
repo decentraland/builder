@@ -29,7 +29,8 @@ export default class LandEnsPage extends React.PureComponent<Props> {
       subdomainList,
       error,
       isLoading,
-      isWaitingConfirmationTx,
+      isWaitingTxSetContent,
+      isWaitingTxSetResolver,
       ens
     } = this.props
     const { selectedName } = this.state
@@ -61,7 +62,8 @@ export default class LandEnsPage extends React.PureComponent<Props> {
                   selectedName={selectedName}
                   error={error} 
                   isLoading={isLoading} 
-                  isWaitingConfirmationTx={isWaitingConfirmationTx}
+                  isWaitingTxSetResolver={isWaitingTxSetResolver}
+                  isWaitingTxSetContent={isWaitingTxSetContent}
                   onSetENSContent={onSetENSContent}
                   onSetENSResolver={onSetENSResolver}
                   onRestartForm={this.restartForm.bind(this)}

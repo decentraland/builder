@@ -10,7 +10,8 @@ export type Props = {
   subdomainList: string[]
   error: ENSError | null
   isLoading: boolean
-  isWaitingConfirmationTx: boolean
+  isWaitingTxSetContent: boolean
+  isWaitingTxSetResolver: boolean
   ens: ENSState
   onSetENSResolver: typeof setENSResolverRequest
   onSetENSContent: typeof setENSContentRequest
@@ -23,7 +24,8 @@ export type MapStateProps = {
   subdomainList: string[]
   error: ENSError | null
   isLoading: boolean
-  isWaitingConfirmationTx: boolean
+  isWaitingTxSetContent: boolean
+  isWaitingTxSetResolver: boolean
   ens: ENSState
 }
 export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onGetENS' | 'onGetDomainList' | 'onNavigate'>

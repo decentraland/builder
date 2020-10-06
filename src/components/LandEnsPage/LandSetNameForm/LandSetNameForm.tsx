@@ -11,8 +11,6 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     isSetContentDone: false,
     isSetResolverDisabled: false,
     isSetContentDisabled: true,
-    isResolverLoading: false,
-    isContentLoading: false
   }
   componentDidMount () {
     const { ens, selectedName } = this.props
@@ -22,8 +20,6 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
         isSetResolverDone: true,
         isSetResolverDisabled: true,
         isSetContentDisabled: false,
-        isResolverLoading: true,
-        isContentLoading: false
       })
     }
   }
@@ -35,8 +31,6 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
       isSetResolverDone: true,
       isSetResolverDisabled: true,
       isSetContentDisabled: false,
-      isResolverLoading: true,
-      isContentLoading: false
     })
   }
   
@@ -47,8 +41,6 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
       isSetContentDone: true,
       isSetResolverDisabled: true,
       isSetContentDisabled: true,
-      isContentLoading: true,
-      isResolverLoading: false
     })
   }
  
@@ -57,31 +49,31 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoading, isWaitingConfirmationTx, land, error, onNavigate } = this.props
+    const { isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, land, error, onNavigate } = this.props
     const { 
       isSetContentDisabled,
       isSetResolverDisabled,
       isSetContentDone,
       isSetResolverDone,
-      isContentLoading,
-      isResolverLoading
     } = this.state
 
-    const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || isLoading ||isWaitingConfirmationTx 
+    const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     const isBackDisabled = isSetResolverDone || isSetContentDone
+    const isResolverLoading = (isLoading && isSetResolverDone && !isSetContentDone) || isWaitingTxSetResolver 
+    const isContentLoading = (isLoading && isSetResolverDone && isSetContentDone) || isWaitingTxSetContent 
  
     let buttonSetResolver = <> 
       {isSetResolverDone? t('global.approved_tx'): t('global.send_tx')} 
-      {!(isResolverLoading && (isLoading || isWaitingConfirmationTx)) && isSetResolverDone && <Icon name='check' />} 
+      {!(isResolverLoading && (isLoading || isWaitingTxSetResolver)) && isSetResolverDone && <Icon name='check' />} 
     </>
     let buttonSetContent = <> 
       {isSetContentDone? t('global.approved_tx'): t('global.send_tx')} 
-      {!(isContentLoading && (isLoading || isWaitingConfirmationTx)) && isSetContentDone && <Icon name='check' />} 
+      {!isContentLoading && isSetContentDone && <Icon name='check' />} 
     </>
-    let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingConfirmationTx)) || isSetContentDone) ? 'grey-button': ''
-    let setContentButtonClassName = (isSetContentDone && isSetContentDone && !(isLoading || isWaitingConfirmationTx)) ? 'grey-button': ''
-    let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingConfirmationTx
-    let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingConfirmationTx
+    let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingTxSetResolver)) || isSetContentDone) ? 'grey-button': ''
+    let setContentButtonClassName = (isSetContentDone && isSetContentDone && !(isLoading || isWaitingTxSetContent)) ? 'grey-button': ''
+    let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
+    let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     if (error && error.code === 4001) {
       if (error.origin === 'SET_ENS_RESOLVER') {
         buttonSetResolver = <> { t('global.retry_tx') } </>
@@ -109,7 +101,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
               disabled={isSetResolverButtonDisabled}
               onClick={this.handleSetResolver}
               className={setResolverButtonClassName}
-              loading={isResolverLoading && (isLoading || isWaitingConfirmationTx)}
+              loading={isResolverLoading}
               primary
             >
               {buttonSetResolver}
@@ -125,7 +117,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
               disabled={isSetContentButtonDisabled}
               onClick={this.handleSetContent}
               className={setContentButtonClassName}
-              loading={isContentLoading && (isLoading || isWaitingConfirmationTx)}
+              loading={isContentLoading}
               primary 
             > 
               {buttonSetContent}

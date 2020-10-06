@@ -13,14 +13,15 @@ import {
   getDomainListRequest
 } from 'modules/ens/actions'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getState, getLoading, getError, getSubdomainList, getLoadingTx } from 'modules/ens/selectors'
+import { getState, getLoading, getError, getSubdomainList, getWaitingTxSetContent, getWaitingTxSetResolver } from 'modules/ens/selectors'
 import {push} from 'connected-react-router';
 
 const mapState = (state: RootState): MapStateProps => ({
   subdomainList: getSubdomainList(state),
   error: getError(state),
   ens: getState(state),
-  isWaitingConfirmationTx: getLoadingTx(state),
+  isWaitingTxSetResolver: getWaitingTxSetResolver(state),
+  isWaitingTxSetContent: getWaitingTxSetContent(state),
   isLoading: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
              isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
              isLoadingType(getLoading(state), GET_ENS_REQUEST) ||
