@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Form, Row, Button } from 'decentraland-ui'
+import { Form, Row, Button, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Props, State } from './LandSetNameForm.types'
@@ -56,20 +56,23 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || isLoading ||isWaitingConfirmationTx 
     const isBackDisabled = isSetResolverDone || isSetContentDone
  
-    let buttonSetResolver = isSetResolverDone? t('global.approved_tx'): t('global.send_tx');
-    let buttonSetContent = isSetContentDone? t('global.approved_tx'): t('global.send_tx');
+    let buttonSetResolver = <> 
+      {isSetResolverDone? t('global.approved_tx'): t('global.send_tx')} 
+      {isSetResolverDone && <Icon name='check' />} 
+    </>
+    let buttonSetContent = <> {isSetContentDone? t('global.approved_tx'): t('global.send_tx')} </>
     let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingConfirmationTx)) || isSetContentDone) ? 'grey-button': ''
     let setContentButtonClassName = (isSetContentDone && isSetContentDone && !(isLoading || isWaitingConfirmationTx)) ? 'grey-button': ''
     let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingConfirmationTx
     let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingConfirmationTx
     if (error && error.code === 4001) {
       if (error.origin === 'SET_ENS_RESOLVER') {
-        buttonSetResolver = t('global.retry_tx')
+        buttonSetResolver = <> { t('global.retry_tx') } </>
         isSetResolverButtonDisabled = false
         isSetContentButtonDisabled = true
         setResolverButtonClassName = ''
       } else if (error.origin === 'SET_ENS_CONTENT') {
-        buttonSetContent =  t('global.retry_tx')
+        buttonSetContent =  <> { t('global.retry_tx') } </>
         isSetContentButtonDisabled = false
         setContentButtonClassName = ''
       }

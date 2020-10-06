@@ -34,3 +34,6 @@
 .grey-button {
   background-color: #444 !important;
 }
+i.check.icon {
+  padding-left: 10px;
+}
