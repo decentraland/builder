@@ -52,6 +52,23 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
         break
     }
 
+    if (!isLoading && selectOptions.length === 0) {
+      return (
+        <Form className="LandSelectNameForm">
+          <Row>
+            <p className="emptyOptions">{t('land_ens_page.empty_options_message')}</p>
+          </Row>
+          <Row>
+            <Link className="cancel" to={locations.landDetail(land.id)}>
+              <Button>{t('global.cancel')}</Button>
+            </Link>
+            <Link className="cancel" to={locations.landDetail(land.id)}>
+              <Button primary>{t('land_ens_page.claim_new_name')}</Button>
+            </Link>
+          </Row>
+        </Form>
+      )
+    }
     return (
       <Form className="LandSelectNameForm">
         <Row>
