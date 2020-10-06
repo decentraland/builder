@@ -269,8 +269,10 @@ function* handleFetchLandsSuccess(action: FetchLandsSuccessAction) {
       }
       case LandType.ESTATE: {
         const coordsByEstateId = yield select(getCoordsByEstateId)
-        for (const coord of coordsByEstateId[land.id]) {
-          coords.push(coord)
+        if (land.id in coordsByEstateId) {
+          for (const coord of coordsByEstateId[land.id]) {
+            coords.push(coord)
+          }
         }
       }
     }
