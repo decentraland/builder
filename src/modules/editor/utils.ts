@@ -178,9 +178,9 @@ export function createAvatarScene(): Scene {
   }
 }
 
-export function toWearable(item: Item): Wearable {
+export function toWearable(item: Item) {
   return {
-    id: item.id,
+    id: item.id + '/' + item.updatedAt, // we add the updatedAt suffix to bust the cache
     type: 'wearable',
     category: item.data.category!,
     baseUrl: getContentsStorageUrl(),
@@ -190,17 +190,20 @@ export function toWearable(item: Item): Wearable {
       contents: Object.values(representation.contents).map(path => ({
         file: path,
         hash: item.contents[path]
-      }))
+      })),
+      overrideReplaces: representation.overrideReplaces,
+      overrideHides: representation.overrideHides
     })),
+    replaces: item.data.replaces,
+    hides: item.data.hides,
     tags: item.data.tags
-  }
+  } as Wearable
 }
 
 export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
   const wearables: Record<string, Wearable> = {}
   for (const wearable of [...avatar, ...apply]) {
-    if (!wearable.category) continue
-    wearables[wearable.category] = wearable
+    wearables[wearable.category || wearable.id] = wearable
   }
   return Object.values(wearables)
 }

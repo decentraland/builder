@@ -11,7 +11,8 @@ import {
   Vector3,
   AvatarShape,
   Color4,
-  BoxShape
+  BoxShape,
+  Wearable
 } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
@@ -20,6 +21,7 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
+import { BODY_SHAPE_CATEGOTY, WearableBodyShape } from 'modules/item/types'
 const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
@@ -105,8 +107,25 @@ function getScriptInstance(assetId: string) {
 let avatar: Entity | null = null
 function getAvatar(): Entity {
   if (!avatar) {
+    // create avatar
     avatar = new Entity()
+    avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
+    const avatarShape = new AvatarShape()
+    avatarShape.bodyShape = 'dcl://base-avatars/BaseMale'
+    avatarShape.skinColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+    avatarShape.hairColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+    avatarShape.eyeColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+    avatarShape.name = 'Builder Avatar'
+    avatarShape.wearables = []
+    avatar.addComponent(avatarShape)
     engine.addEntity(avatar)
+
+    // add a base so the avatar is standing, otherwise it does the "falling" animation
+    const base = new Entity()
+    base.addComponent(new Transform({ position: new Vector3(8, -0.2, 8), scale: new Vector3(0.01, 0.1, 0.01) }))
+    const box = new BoxShape()
+    base.addComponent(box)
+    engine.addEntity(base)
   }
   return avatar
 }
@@ -198,44 +217,18 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       }
       break
     }
+
     case 'Update avatar': {
-      console.log('[message from scene] update avatar', message)
-
-      // no anda
-      const avatar = getAvatar()
-      avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
-      const avatarShape = new AvatarShape()
-      avatarShape.bodyShape = 'dcl://base-avatars/BaseFemale'
-      avatarShape.skinColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
-      avatarShape.hairColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
-      avatarShape.eyeColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
-      avatarShape.name = 'Test'
-      avatarShape.wearables = [
-        'dcl://base-avatars/f_sweater',
-        'dcl://base-avatars/f_jeans',
-        'dcl://base-avatars/bun_shoes',
-        'dcl://base-avatars/standard_hair',
-        'dcl://base-avatars/f_eyes_00',
-        'dcl://base-avatars/f_eyebrows_00',
-        'dcl://base-avatars/f_mouth_00'
-      ]
-      avatar.addComponent(avatarShape)
-      engine.addEntity(avatar)
-
-      // add a base so the avatar is standing, otherwise it does the "falling" animation
-      const base = new Entity()
-      base.addComponent(new Transform({ position: new Vector3(8, -0.2, 8), scale: new Vector3(0.01, 0.1, 0.01) }))
-      const box = new BoxShape()
-      base.addComponent(box)
-      engine.addEntity(base)
-      break
-    }
-    case 'Update items': {
-      console.log('[message from scene] update items', message)
-
+      console.log('[scene] update avatar', message.payload.wearables, message.payload.animation)
+      const wearables: Wearable[] = message.payload.wearables
       const avatar = getAvatar()
       const avatarShape = avatar.getComponent(AvatarShape)
-      avatarShape.wearables = [...avatarShape.wearables, message.payload.wearables[0].id]
+      const bodyShape = wearables.find(wearable => wearable.category === BODY_SHAPE_CATEGOTY)
+      const otherWearables = wearables.filter(wearable => wearable.category !== BODY_SHAPE_CATEGOTY)
+      avatarShape.bodyShape = bodyShape ? bodyShape.id : WearableBodyShape.MALE
+      avatarShape.wearables = otherWearables.map(wearable => wearable.id)
+      avatarShape.expressionTriggerId = message.payload.animation === 'idle' ? 'Idle' : message.payload.animation // the 'idle' animation is the only one that is capitalized :shrug:
+      avatarShape.expressionTriggerTimestamp = Date.now()
       break
     }
   }

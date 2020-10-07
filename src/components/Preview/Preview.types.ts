@@ -9,7 +9,7 @@ import {
   TogglePreviewAction,
   CloseEditorAction,
   SetScriptUrlAction,
-  UpdateItemsAction
+  UpdateAvatarAction
 } from 'modules/editor/actions'
 import { UnityKeyboardEvent, OpenEditorOptions } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
@@ -24,7 +24,7 @@ export type Editor = {
   off: (event: string, listener: (...args: any[]) => void) => void
   handleMessage: (msg: { type: 'update'; payload: any }) => void
   sendExternalAction: (
-    action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction | SetScriptUrlAction | UpdateItemsAction
+    action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction | SetScriptUrlAction | UpdateAvatarAction
   ) => void
   setPlayMode: (enabled: boolean) => void
   setCameraZoomDelta: (delta: number) => void

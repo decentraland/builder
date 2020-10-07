@@ -7,7 +7,7 @@ import './LeftPanel.css'
 
 export default class LeftPanel extends React.PureComponent<Props> {
   render() {
-    const { items, collections, selectedItemId, selectedCollectionId, onNavigate } = this.props
+    const { items, collections, selectedItemId, selectedCollectionId, visibleItems, onNavigate, onSetItems, bodyShape } = this.props
     const listItems = items.filter(item => (selectedCollectionId ? item.collectionId === selectedCollectionId : !item.collectionId))
     return (
       <div className="LeftPanel">
@@ -18,6 +18,9 @@ export default class LeftPanel extends React.PureComponent<Props> {
           onNavigate={onNavigate}
           selectedItemId={selectedItemId}
           selectedCollectionId={selectedCollectionId}
+          visibleItems={visibleItems}
+          onSetItems={onSetItems}
+          bodyShape={bodyShape}
         />
         {selectedCollectionId ? null : (
           <Collections

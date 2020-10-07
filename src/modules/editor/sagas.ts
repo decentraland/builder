@@ -45,9 +45,15 @@ import {
   OpenEditorAction,
   setEditorReadOnly,
   SetSelectedEntitiesAction,
-  updateItems,
-  UPDATE_ITEMS,
-  UpdateItemsAction
+  setItems,
+  SET_ITEMS,
+  updateAvatar,
+  SET_BODY_SHAPE,
+  SetBodyShapeAction,
+  SET_AVATAR_ANIMATION,
+  SetAvatarAnimationAction,
+  SetItemsAction,
+  setAvatarAnimation
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -70,7 +76,7 @@ import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getCompo
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, ModelMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
+import { AvatarAnimation, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -92,7 +98,8 @@ import {
   hasLoadedAssetPacks,
   isMultiselectEnabled,
   getBodyShape,
-  getSelectedItems
+  getVisibleItems,
+  getAvatarAnimation
 } from './selectors'
 
 import {
@@ -118,6 +125,7 @@ import { getItems } from 'modules/item/selectors'
 import maleAvatar from './wearables/male.json'
 import femaleAvatar from './wearables/female.json'
 import { Wearable } from 'decentraland-ecs'
+import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 
 const editorWindow = window as EditorWindow
 
@@ -141,7 +149,10 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
-  yield takeLatest(UPDATE_ITEMS, handleUpdateItems)
+  yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
+  yield takeLatest(SET_ITEMS, handleSetItems)
+  yield takeLatest(SET_AVATAR_ANIMATION, handleSetAvatarAnimation)
+  yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
 }
 
 function* pollEditor(scene: Scene) {
@@ -335,8 +346,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
       })
 
       // render selected items
-      const selectedItems: Item[] = yield select(getSelectedItems)
-      yield put(updateItems(selectedItems))
+      yield put(setItems([item]))
     }
   } else {
     // Creates a new scene in the dcl client's side
@@ -579,13 +589,51 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   }
 }
 
-function* handleUpdateItems(action: UpdateItemsAction) {
+function* getWearables(items: Item[]) {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
   const avatar = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
-  const apply = action.payload.items.map(item => toWearable(item))
+  const apply = items.map(item => toWearable(item))
   const wearables = mergeWearables(avatar, apply)
-  yield call(async () => {
-    editorWindow.editor.addWearablesToCatalog(wearables)
-    //editorWindow.editor.sendExternalAction()
-  })
+  return wearables
+}
+
+function* renderAvatar() {
+  if (yield select(isReady)) {
+    const visibleItems: Item[] = yield select(getVisibleItems)
+    const wearables = yield getWearables(visibleItems)
+    const animation = yield select(getAvatarAnimation)
+    yield call(async () => {
+      console.log('render', wearables, animation)
+      editorWindow.editor.addWearablesToCatalog(wearables)
+      editorWindow.editor.sendExternalAction(updateAvatar(wearables, animation))
+    })
+  }
+}
+
+function* bustCache() {
+  const wearables = yield getWearables([])
+  editorWindow.editor.addWearablesToCatalog(wearables)
+  editorWindow.editor.sendExternalAction(updateAvatar(wearables, AvatarAnimation.IDLE))
+  yield delay(200)
+}
+
+function* handleSetItems(action: SetItemsAction) {
+  if (action.payload.items.length === 0) {
+    yield put(setAvatarAnimation(AvatarAnimation.IDLE))
+  } else {
+    yield renderAvatar()
+  }
+}
+
+function* handleSetBodyShape(_action: SetBodyShapeAction) {
+  yield bustCache() // without this, the representation of the wearables get cached when the body shape changes
+
+  // this gets rid of items that don't have a representation for the current body shape
+  const visibleItems: Item[] = yield select(getVisibleItems)
+  yield put(setItems(visibleItems))
+}
+
+function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
+  yield bustCache() // without this, the next animation doesn't play
+  yield renderAvatar()
 }

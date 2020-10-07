@@ -32,7 +32,8 @@ export const isScreenshotReady = (state: RootState) => getState(state).isScreens
 export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
 export const getBodyShape = (state: RootState) => getState(state).bodyShape
-export const getSelectedItemIds = (state: RootState) => getState(state).selectedItemIds
+export const getAvatarAnimation = (state: RootState) => getState(state).avatarAnimation
+export const getVisibleItemIds = (state: RootState) => getState(state).visibleItemIds
 export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {
   const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {
     for (const path of Object.keys(asset.contents)) {
@@ -91,8 +92,8 @@ export const isFetching = createSelector<RootState, Project | null, boolean, Loa
   }
 )
 
-export const getSelectedItems = createSelector<RootState, string[], ItemState['data'], Item[]>(
-  getSelectedItemIds,
+export const getVisibleItems = createSelector<RootState, string[], ItemState['data'], Item[]>(
+  getVisibleItemIds,
   getData,
-  (itemIds, itemData) => itemIds.map(id => itemData[id])
+  (itemIds, itemData) => itemIds.map(id => itemData[id]).filter(item => !!item)
 )

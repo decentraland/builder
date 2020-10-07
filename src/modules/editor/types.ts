@@ -49,3 +49,14 @@ export type OpenEditorOptions = {
   isReadOnly: boolean
   type: PreviewType
 }
+
+export enum AvatarAnimation {
+  IDLE = 'idle',
+  WAVE = 'wave',
+  FISTPUMP = 'fistpump',
+  ROBOT = 'robot',
+  RAISEHAND = 'raiseHand',
+  CLAP = 'clap',
+  MONEY = 'money',
+  KISS = 'kiss'
+}

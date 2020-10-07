@@ -3,8 +3,9 @@ import { action } from 'typesafe-actions'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { Gizmo, OpenEditorOptions, PreviewType } from './types'
+import { AvatarAnimation, Gizmo, OpenEditorOptions, PreviewType } from './types'
 import { Item, WearableBodyShape } from 'modules/item/types'
+import { Wearable } from 'decentraland-ecs'
 
 // Bind keyboard shortcuts
 
@@ -207,11 +208,11 @@ export const toggleMultiselection = (enabled: boolean) => action(TOGGLE_MULTISEL
 export type ToggleMultiselectionAction = ReturnType<typeof toggleMultiselection>
 
 // Update items
-export const UPDATE_ITEMS = 'Update items'
+export const SET_ITEMS = 'Set items'
 
-export const updateItems = (items: Item[]) => action(UPDATE_ITEMS, { items })
+export const setItems = (items: Item[]) => action(SET_ITEMS, { items })
 
-export type UpdateItemsAction = ReturnType<typeof updateItems>
+export type SetItemsAction = ReturnType<typeof setItems>
 
 // Set body shape
 export const SET_BODY_SHAPE = 'Set body shape'
@@ -219,3 +220,17 @@ export const SET_BODY_SHAPE = 'Set body shape'
 export const setBodyShape = (bodyShape: WearableBodyShape) => action(SET_BODY_SHAPE, { bodyShape })
 
 export type SetBodyShapeAction = ReturnType<typeof setBodyShape>
+
+// Set avatar animation
+export const SET_AVATAR_ANIMATION = 'Set avatar animation'
+
+export const setAvatarAnimation = (animation: AvatarAnimation) => action(SET_AVATAR_ANIMATION, { animation })
+
+export type SetAvatarAnimationAction = ReturnType<typeof setAvatarAnimation>
+
+// Update wearables
+export const UPDATE_AVATAR = 'Update avatar'
+
+export const updateAvatar = (wearables: Wearable[], animation?: AvatarAnimation) => action(UPDATE_AVATAR, { wearables, animation })
+
+export type UpdateAvatarAction = ReturnType<typeof updateAvatar>

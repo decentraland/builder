@@ -27,8 +27,10 @@ import {
   ToggleMultiselectionAction,
   SetBodyShapeAction,
   SET_BODY_SHAPE,
-  UpdateItemsAction,
-  UPDATE_ITEMS
+  SetItemsAction,
+  SET_ITEMS,
+  SetAvatarAnimationAction,
+  SET_AVATAR_ANIMATION
 } from './actions'
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
@@ -38,8 +40,9 @@ import {
   ExportProjectRequestAction,
   ExportProjectSuccessAction
 } from 'modules/project/actions'
-import { Gizmo } from './types'
+import { AvatarAnimation, Gizmo } from './types'
 import { WearableBodyShape } from 'modules/item/types'
+import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -60,7 +63,8 @@ export type EditorState = {
     total: number
   }
   bodyShape: WearableBodyShape
-  selectedItemIds: string[]
+  avatarAnimation: AvatarAnimation
+  visibleItemIds: string[]
 }
 
 const INITIAL_STATE: EditorState = {
@@ -82,7 +86,8 @@ const INITIAL_STATE: EditorState = {
     total: 0
   },
   bodyShape: WearableBodyShape.FEMALE,
-  selectedItemIds: []
+  avatarAnimation: AvatarAnimation.IDLE,
+  visibleItemIds: []
 }
 
 export type EditorReducerAction =
@@ -104,7 +109,9 @@ export type EditorReducerAction =
   | LoadAssetPacksSuccessAction
   | ToggleMultiselectionAction
   | SetBodyShapeAction
-  | UpdateItemsAction
+  | SetAvatarAnimationAction
+  | SetItemsAction
+  | DeleteItemSuccessAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -234,10 +241,24 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         bodyShape: action.payload.bodyShape
       }
     }
-    case UPDATE_ITEMS: {
+    case SET_AVATAR_ANIMATION: {
       return {
         ...state,
-        selectedItemIds: action.payload.items.map(item => item.id)
+        avatarAnimation: action.payload.animation
+      }
+    }
+    case SET_ITEMS: {
+      return {
+        ...state,
+        visibleItemIds: action.payload.items
+          .filter(item => item.data.representations.some(r => r.bodyShape.includes(state.bodyShape))) // only add items that have a valid representation for the selected body shape
+          .map(item => item.id)
+      }
+    }
+    case DELETE_ITEM_SUCCESS: {
+      return {
+        ...state,
+        visibleItemIds: state.visibleItemIds.filter(id => id !== action.payload.item.id)
       }
     }
     default:

@@ -117,7 +117,18 @@
   "body_shapes": {
     "unisex": "Unisex",
     "male": "Male",
-    "female": "Female"
+    "female": "Female",
+    "null": "None"
+  },
+  "avatar_animations": {
+    "idle": "Idle",
+    "wave": "Wave",
+    "fistpump": "Fistpump",
+    "robot": "Dance",
+    "raiseHand": "Raise Hand",
+    "clap": "Clap",
+    "money": "Money",
+    "kiss": "Kiss"
   },
   "create_collection_modal": {
     "title": "New Collection",
@@ -845,7 +856,7 @@
   "collection_managers_modal": {
     "title": "Collaborators",
     "add_manager": "Add Collaborator",
-    "no_managers":"No collaborators yet, start by",
+    "no_managers": "No collaborators yet, start by",
     "adding_one": "adding one!"
   },
   "collection_image": {
@@ -864,7 +875,11 @@
       },
       "items": "Items",
       "collections": "Collections",
-      "items_count": "{count} items"
+      "items_count": "{count} items",
+      "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation"
+    },
+    "center_panel": {
+      "disabled_animation_dropdown": "There needs to be at least one wearable visible to select an avatar animation"
     },
     "right_panel": {
       "properties": "Properties",
