@@ -22,6 +22,10 @@
   border-radious: 8px;
 }
 
+.box.boxDisabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
 .box button {
   float: right;
 }

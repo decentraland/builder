@@ -105,7 +105,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           <p className="message"> {t('land_ens_page.set_name_message')}</p>
         </Row>
         <Row>
-          <div className="box">
+          <div className={isSetResolverButtonDisabled? "box boxDisabled": "box"}>
             <h3>{t('land_ens_page.set_resolver')}</h3>
             <p>{t('land_ens_page.set_resolver_explanation')}</p>
             <Button 
@@ -121,7 +121,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           </div>
         </Row>
         <Row>
-          <div className="box">
+          <div className={isSetContentButtonDisabled? "box boxDisabled": "box"}>
             <h3>{t('land_ens_page.set_content')}</h3>
             <p>{t('land_ens_page.set_content_explanation')}</p>
             <Button
