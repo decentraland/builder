@@ -114,6 +114,16 @@
     "male": "男",
     "female": "女"
   },
+  "avatar_animations": {
+    "idle": "闲",
+    "wave": "挥手",
+    "fistpump": "拳头泵",
+    "robot": "舞蹈",
+    "raiseHand": "举手",
+    "clap": "拍",
+    "money": "扔钱",
+    "kiss": "吻"
+  },
   "create_collection_modal": {
     "title": "新系列",
     "subtitle": "为您的新收藏取个名字",
@@ -828,7 +838,7 @@
   "collection_managers_modal": {
     "title": "合作者",
     "add_manager": "添加协作者",
-    "no_managers":"还没有合作者，首先",
+    "no_managers": "还没有合作者，首先",
     "adding_one": "加一个！"
   },
   "mint_items_modal": {
@@ -852,7 +862,11 @@
       },
       "items": "物品",
       "collections": "馆藏",
-      "items_count": "{count}个项目"
+      "items_count": "{count}个项目",
+      "invalid_representation_tooltip": "此项没有{bodyShape}表示形式"
+    },
+    "center_panel": {
+      "disabled_animation_dropdown": "需要至少可见一个项目才能选择头像动画"
     },
     "right_panel": {
       "properties": "物产",

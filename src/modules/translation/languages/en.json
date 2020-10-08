@@ -879,7 +879,7 @@
       "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation"
     },
     "center_panel": {
-      "disabled_animation_dropdown": "There needs to be at least one wearable visible to select an avatar animation"
+      "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation"
     },
     "right_panel": {
       "properties": "Properties",
