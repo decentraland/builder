@@ -25,7 +25,7 @@
 
 .ItemDetailPage .item-data .image-wrapper {
   width: 256px;
-  max-height: 256px;
+  height: 256px;
 }
 
 .ItemDetailPage .item-data .subtitle {
