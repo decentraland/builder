@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { toWei } from 'web3x-es/utils'
+import { fromWei, toWei } from 'web3x-es/utils'
 
 import { isValid } from 'lib/address'
 import { addSymbol } from 'lib/mana'
@@ -17,7 +17,10 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
     const { item } = this.props
     if (item) {
-      this.state = { price: item.price, beneficiary: item.beneficiary }
+      this.state = {
+        price: item.price ? fromWei(item.price, 'ether') : undefined,
+        beneficiary: item.beneficiary
+      }
     }
   }
 
@@ -49,8 +52,17 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   isDisabled() {
     const { isLoading } = this.props
+    return !this.isValidPrice() || !this.isValidBeneficiary() || isLoading
+  }
+
+  isValidPrice() {
     const { price } = this.state
-    return (price && Number(price) < 0) || isLoading
+    return price && Number(price) >= 0
+  }
+
+  isValidBeneficiary() {
+    const { beneficiary } = this.state
+    return beneficiary && isValid(beneficiary)
   }
 
   render() {
@@ -67,6 +79,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               placeholder={addSymbol(100)}
               value={price}
               onChange={this.handlePriceChange}
+              error={!this.isValidPrice()}
             />
             <Field
               label={t('edit_price_and_beneficiary_modal.beneficiary_label')}
@@ -74,7 +87,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               placeholder="0x..."
               value={beneficiary}
               onChange={this.handleBeneficiaryChange}
-              error={!!beneficiary && !isValid(beneficiary)}
+              error={!this.isValidBeneficiary()}
             />
           </ModalContent>
           <ModalActions>
