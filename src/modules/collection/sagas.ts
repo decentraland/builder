@@ -277,11 +277,15 @@ function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) 
     yield take(FETCH_ITEMS_SUCCESS)
   }
 
-  const { collections } = action.payload
+  try {
+    const { collections } = action.payload
 
-  for (const collection of collections) {
-    if (!collection.isPublished) continue
-    const items = allItems.filter(item => item.collectionId === collection.id)
-    yield deployItemContents(identity, collection, items)
+    for (const collection of collections) {
+      if (!collection.isPublished) continue
+      const items = allItems.filter(item => item.collectionId === collection.id)
+      yield deployItemContents(identity, collection, items)
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
