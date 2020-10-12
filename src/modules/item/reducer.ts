@@ -36,7 +36,13 @@ import {
   SetItemsTokenIdFailureAction,
   SET_ITEMS_TOKEN_ID_REQUEST,
   SET_ITEMS_TOKEN_ID_SUCCESS,
-  SET_ITEMS_TOKEN_ID_FAILURE
+  SET_ITEMS_TOKEN_ID_FAILURE,
+  DeployItemContentsRequestAction,
+  DeployItemContentsSuccessAction,
+  DeployItemContentsFailureAction,
+  DEPLOY_ITEM_CONTENTS_REQUEST,
+  DEPLOY_ITEM_CONTENTS_SUCCESS,
+  DEPLOY_ITEM_CONTENTS_FAILURE
 } from './actions'
 
 export type ItemState = {
@@ -69,11 +75,18 @@ type ItemReducerAction =
   | SetItemsTokenIdRequestAction
   | SetItemsTokenIdSuccessAction
   | SetItemsTokenIdFailureAction
+  | DeployItemContentsRequestAction
+  | DeployItemContentsSuccessAction
+  | DeployItemContentsFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
     case FETCH_ITEMS_REQUEST:
-    case SET_ITEMS_TOKEN_ID_REQUEST: {
+    case SET_ITEMS_TOKEN_ID_REQUEST:
+    case DEPLOY_ITEM_CONTENTS_REQUEST:
+    case SAVE_PUBLISHED_ITEM_REQUEST:
+    case SAVE_ITEM_REQUEST:
+    case DELETE_ITEM_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -95,45 +108,29 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case FETCH_ITEMS_FAILURE:
-    case SET_ITEMS_TOKEN_ID_FAILURE: {
+    case SET_ITEMS_TOKEN_ID_FAILURE:
+    case DEPLOY_ITEM_CONTENTS_FAILURE:
+    case SAVE_PUBLISHED_ITEM_FAILURE:
+    case SAVE_ITEM_FAILURE:
+    case DELETE_ITEM_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error: action.payload.error
       }
     }
-    case SAVE_PUBLISHED_ITEM_REQUEST:
-    case SAVE_ITEM_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
-      }
-    }
     case SAVE_PUBLISHED_ITEM_SUCCESS:
-    case SAVE_ITEM_SUCCESS: {
+    case SAVE_ITEM_SUCCESS:
+    case DEPLOY_ITEM_CONTENTS_SUCCESS: {
       const { item } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
-          [item.id]: item
+          [item.id]: { ...item }
         },
         loading: loadingReducer(state.loading, action),
         error: null
-      }
-    }
-    case SAVE_PUBLISHED_ITEM_FAILURE:
-    case SAVE_ITEM_FAILURE: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: action.payload.error
-      }
-    }
-    case DELETE_ITEM_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
       }
     }
     case DELETE_ITEM_SUCCESS: {
@@ -147,13 +144,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
       delete newState.data[item.id]
       return newState
-    }
-    case DELETE_ITEM_FAILURE: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: action.payload.error
-      }
     }
     case SET_COLLECTION: {
       const { item, collectionId } = action.payload
@@ -184,7 +174,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               ...items.reduce(
                 (accum, item) => ({
                   ...accum,
-                  [item.id]: { ...item, isPublished: true }
+                  [item.id]: { ...state.data[item.id], ...item, isPublished: true }
                 }),
                 {}
               )

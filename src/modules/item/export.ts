@@ -2,27 +2,25 @@ import { utils } from 'decentraland-commons'
 import { AuthIdentity } from 'dcl-crypto'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { saveItem } from 'modules/item/sagas'
-import { Item } from 'modules/item/types'
 import { getCatalystEntityId } from 'modules/item/utils'
 import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
 import { PEER_URL } from 'lib/api/peer'
-import { Collection } from './types'
+import { Collection } from 'modules/collection/types'
+import { Item } from './types'
 
-export async function deployItemContents(identity: AuthIdentity, collection: Collection, items: Item[]) {
-  const deploys = []
-  for (const item of items) {
-    if (item.inCatalyst) continue
+export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
+  const pointer = getCatalystEntityId(collection, item)
+  const files = await getFiles(item.contents)
+  const contentFiles = await makeContentFiles(files)
+  const metadata = utils.omit(item, ['contents'])
+  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [pointer], metadata, contentFiles)
 
-    const pointer = getCatalystEntityId(collection, item)
-    const files = await getFiles(item.contents)
-    const contentFiles = await makeContentFiles(files)
-    const metadata = utils.omit(item, ['contents'])
-    const [data] = await buildDeployData(EntityType.WEARABLE, identity, [pointer], metadata, contentFiles)
+  await deploy(PEER_URL, data)
 
-    const deployItem = deploy(PEER_URL, data).then(() => saveItem({ ...item, inCatalyst: true }))
-    deploys.push(deployItem)
-  }
-  return Promise.all(deploys)
+  const newItem = { ...item, inCatalyst: true }
+  await saveItem(newItem)
+
+  return newItem
 }
 
 async function getFiles(contents: Record<string, string>) {

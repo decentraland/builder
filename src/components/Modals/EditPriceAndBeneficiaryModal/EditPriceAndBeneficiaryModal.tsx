@@ -57,12 +57,12 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   isValidPrice() {
     const { price } = this.state
-    return price && Number(price) >= 0
+    return !price || Number(price) >= 0
   }
 
   isValidBeneficiary() {
     const { beneficiary } = this.state
-    return beneficiary && isValid(beneficiary)
+    return !beneficiary || isValid(beneficiary)
   }
 
   render() {

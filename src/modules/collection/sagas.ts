@@ -42,15 +42,13 @@ import { getCurrentAddress } from 'modules/wallet/utils'
 import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS } from 'modules/common/contracts'
 import { ERC721CollectionFactoryV2 } from 'contracts/ERC721CollectionFactoryV2'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
-import { setItemsTokenIdRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
+import { setItemsTokenIdRequest, deployItemContentsRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
-import { getIdentity } from 'modules/identity/utils'
-import { deployItemContents } from './export'
 import { getCollection, getCollectionItems } from './selectors'
 import { initializeCollection } from './utils'
 
@@ -80,8 +78,9 @@ function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) 
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    yield call(() => builder.saveCollection(collection))
-    yield put(saveCollectionSuccess(collection))
+    const remoteCollection = yield call(() => builder.saveCollection(collection))
+    const newCollection = { ...collection, ...remoteCollection }
+    yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
     yield put(saveCollectionFailure(collection, error.message))
@@ -244,17 +243,17 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
   try {
     switch (transaction.actionType) {
       case PUBLISH_COLLECTION_SUCCESS: {
-        const identity = yield getIdentity()
-        if (!identity) {
-          throw new Error('Invalid identity')
-        }
-
         // We re-fetch the collection from the store to get the updated version
         const collectionId = transaction.payload.collection.id
         const collection = yield select(state => getCollection(state, collectionId))
         const items = yield select(state => getCollectionItems(state, collectionId))
 
-        yield deployItemContents(identity, collection, items)
+        console.log('TRANSACTION SUCCESS collection', collection)
+        console.log('TRANSACTION SUCCESS item', items)
+        console.log('getState()', (window as any).getState())
+        for (const item of items) {
+          yield put(deployItemContentsRequest(collection, item))
+        }
         break
       }
       default: {
@@ -267,11 +266,6 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
 }
 
 function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
-  const identity = yield getIdentity()
-  if (!identity) {
-    throw new Error('Invalid identity')
-  }
-
   const allItems: Item[] = yield select(getItems)
   if (allItems.length === 0) {
     yield take(FETCH_ITEMS_SUCCESS)
@@ -282,8 +276,11 @@ function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) 
 
     for (const collection of collections) {
       if (!collection.isPublished) continue
-      const items = allItems.filter(item => item.collectionId === collection.id)
-      yield deployItemContents(identity, collection, items)
+      for (const item of allItems) {
+        if (item.collectionId === collection.id) {
+          yield put(deployItemContentsRequest(collection, item))
+        }
+      }
     }
   } catch (error) {
     console.error(error)

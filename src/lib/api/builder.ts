@@ -546,7 +546,8 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async saveCollection(collection: Collection) {
-    return this.request('put', `/collections/${collection.id}`, { collection: toRemoteCollection(collection) })
+    const remoteCollection = await this.request('put', `/collections/${collection.id}`, { collection: toRemoteCollection(collection) })
+    return fromRemoteCollection(remoteCollection)
   }
 
   async deleteCollection(collection: Collection) {
