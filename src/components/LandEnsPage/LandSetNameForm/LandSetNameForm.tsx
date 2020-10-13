@@ -107,33 +107,37 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
         <Row>
           <div className={isSetResolverButtonDisabled ? "box boxDisabled" : "box"}>
             <h3>{t('land_ens_page.set_resolver')}</h3>
-            <p>{t('land_ens_page.set_resolver_explanation')}</p>
-            <Button
-              type="submit"
-              disabled={isSetResolverButtonDisabled}
-              onClick={this.handleSetResolver}
-              className={setResolverButtonClassName}
-              loading={isResolverLoading}
-              primary
-            >
-              {buttonSetResolver}
-            </Button>
+            <div className="messageBox">
+              <p>{t('land_ens_page.set_resolver_explanation')}</p>
+              <Button
+                type="submit"
+                disabled={isSetResolverButtonDisabled}
+                onClick={this.handleSetResolver}
+                className={setResolverButtonClassName}
+                loading={isResolverLoading}
+                primary
+              >
+                {buttonSetResolver}
+              </Button>
+            </div>
           </div>
         </Row>
         <Row>
           <div className={isSetContentButtonDisabled ? "box boxDisabled" : "box"}>
             <h3>{t('land_ens_page.set_content')}</h3>
-            <p>{t('land_ens_page.set_content_explanation')}</p>
-            <Button
-              type="submit"
-              disabled={isSetContentButtonDisabled}
-              onClick={this.handleSetContent}
-              className={setContentButtonClassName}
-              loading={isContentLoading}
-              primary
-            >
-              {buttonSetContent}
-            </Button>
+            <div className="messageBox">
+              <p>{t('land_ens_page.set_content_explanation')}</p>
+              <Button
+                type="submit"
+                disabled={isSetContentButtonDisabled}
+                onClick={this.handleSetContent}
+                className={setContentButtonClassName}
+                loading={isContentLoading}
+                primary
+              >
+                {buttonSetContent}
+              </Button>
+            </div>
           </div>
         </Row>
         <Row className="confirmationButtons">

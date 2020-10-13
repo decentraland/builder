@@ -21,18 +21,27 @@
   margin-bottom: 12px;
   border-radious: 8px;
 }
+.LandSetNameForm .box .messageBox {
+  display: flex;
+  align-items: flex-start;
+  align-content: t;
+}
 
 .LandSetNameForm .box.boxDisabled {
   pointer-events: none;
   opacity: 0.4;
 }
-.LandSetNameForm .box button {
-  float: right;
+.LandSetNameForm .box .message button {
+  padding: 13px 20px;
+}
+.LandSetNameForm .box p {
 }
 
+
 .LandSetNameForm .confirmationButtons button {
-  padding: 10px 20px 10px 20px;
-  margin: 50px
+  width: 155px;
+  margin-top: 50px;
+  margin-right: 5px;
 }
 
 .LandSetNameForm .grey-button {
