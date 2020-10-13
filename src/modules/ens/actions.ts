@@ -4,6 +4,7 @@ import { Land } from 'modules/land/types'
 import { ENSData } from './types'
 import { ENSError } from './reducer'
 
+// Set the ENS Resolver
 export const SET_ENS_RESOLVER_REQUEST = '[Request] Set ENS Resolver'
 export const SET_ENS_RESOLVER_SUCCESS = '[Success] Set ENS Resolver'
 export const SET_ENS_RESOLVER_FAILURE = '[Failure] Set ENS Resolver'
@@ -23,6 +24,8 @@ export type SetENSResolverRequestAction = ReturnType<typeof setENSResolverReques
 export type SetENSResolverSuccessAction = ReturnType<typeof setENSResolverSuccess>
 export type SetENSResolverFailureAction = ReturnType<typeof setENSResolverFailure>
 
+// Set the Content on ENS resolver contract.
+// The Content is a IPFS hash refering a file. This file is an HTML file with a Redirection to a LAND url.
 export const SET_ENS_CONTENT_REQUEST = '[Request] Set ENS Content'
 export const SET_ENS_CONTENT_SUCCESS = '[Success] Set ENS Content'
 export const SET_ENS_CONTENT_FAILURE = '[Failure] Set ENS Content'
@@ -42,6 +45,7 @@ export type SetENSContentRequestAction = ReturnType<typeof setENSContentRequest>
 export type SetENSContentSuccessAction = ReturnType<typeof setENSContentSuccess>
 export type SetENSContentFailureAction = ReturnType<typeof setENSContentFailure>
 
+// Get ENS resolver for a land
 export const GET_ENS_REQUEST = '[Request] Get ENS'
 export const GET_ENS_SUCCESS = '[Success] Get ENS'
 export const GET_ENS_FAILURE = '[Failure] Get ENS'
@@ -56,6 +60,7 @@ export type GetENSRequestAction = ReturnType<typeof getENSRequest>
 export type GetENSSuccessAction = ReturnType<typeof getENSSuccess>
 export type GetENSFailureAction = ReturnType<typeof getENSFailure>
 
+// Get a Domain List (list of names) owned by the current account
 export const GET_DOMAIN_LIST_REQUEST = '[Request] Get Domain List'
 export const GET_DOMAIN_LIST_SUCCESS = '[Success] Get Domain List'
 export const GET_DOMAIN_LIST_FAILURE = '[Failure] Get Domain List'

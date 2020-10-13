@@ -1,9 +1,10 @@
 import { env } from 'decentraland-commons'
 import { Land } from 'modules/land/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export const IPFS_URL = env.get('REACT_APP_IPFS_URL', '')
-
+export const LAND_POSITION_URL = env.get('REACT_APP_LAND_POSITION_URL', '')
 
 export class IpfsAPI {
   uploadRedirectionFile = async (land: Land): Promise<string> => {
@@ -12,28 +13,30 @@ export class IpfsAPI {
 
     const formData = new FormData()
 
-    const html:string = `<html>
+    const html: string = `<html>
     <head>
-      <meta 
-        http-equiv="refresh" 
-        content="0; URL=https://play.decentraland.org?position=${coordsToId(x, y)}" 
+      <meta
+        http-equiv="refresh"
+        content="0; URL=${LAND_POSITION_URL}${coordsToId(x, y)}"
       />
     </head>
     <body>
       <p>
-        If you are not redirected 
-        <a href="https://play.decentraland.org?position=${coordsToId(x, y)}">click here</a>.
+        ${t('land_ens_page.not_redirected')}
+        <a href="${LAND_POSITION_URL}${coordsToId(x, y)}">
+          ${t('global.click_here')}
+        </a>.
       </p>
     </body>
     </html>`
 
+    console.log({ html })
     formData.append('blob', new Blob([html]), 'index.html')
-    const result = await fetch(IPFS_URL , {
+    const result = await fetch(IPFS_URL, {
       method: 'POST',
       body: formData
     })
     const json = await result.json()
-
 
     return json.Hash
   }

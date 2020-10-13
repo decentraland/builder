@@ -5,24 +5,24 @@ import { Props, State } from './LandEnsPage.types'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LandSelectNameForm from './LandSelectNameForm/LandSelectNameForm'
 import LandSetNameForm from './LandSetNameForm/LandSetNameForm'
-import {locations} from 'routing/locations';
-import {Link} from 'react-router-dom';
+import { locations } from 'routing/locations'
+import { Link } from 'react-router-dom'
 
 export default class LandEnsPage extends React.PureComponent<Props> {
-  state:State = {
-    selectedName: '',
+  state: State = {
+    selectedName: ''
   }
 
-  updateSelectedName(selectedName:string) {
-    this.setState({selectedName})
+  updateSelectedName = (selectedName: string) => {
+    this.setState({ selectedName })
   }
 
-  restartForm() {
+  restartForm = () => {
     this.setState({ selectedName: '' })
   }
 
   render() {
-    const { 
+    const {
       onGetENS,
       onGetDomainList,
       onSetENSResolver,
@@ -43,35 +43,35 @@ export default class LandEnsPage extends React.PureComponent<Props> {
           <LandAction
             land={land}
             title={t('land_ens_page.title')}
-            subtitle={<T 
+            subtitle={<T
               id="land_ens_page.subtitle"
-              values={{ name: <Link to={locations.landDetail(land.id)}> {land.name}</Link> }} 
+              values={{ name: <Link to={locations.landDetail(land.id)}> {land.name}</Link> }}
             />}
           >
             {
               (selectedName === '') ? (
-                <LandSelectNameForm 
-                  land={land} 
+                <LandSelectNameForm
+                  land={land}
                   ens={ens}
-                  onUpdateName={this.updateSelectedName.bind(this)}
+                  onUpdateName={this.updateSelectedName}
                   onGetDomainList={onGetDomainList}
-                  onGetENS={onGetENS} 
+                  onGetENS={onGetENS}
                   subdomainList={subdomainList}
-                  error={error} 
-                  isLoading={isLoading} 
+                  error={error}
+                  isLoading={isLoading}
                 />
               ) : (
-                <LandSetNameForm 
-                  land={land} 
+                <LandSetNameForm
+                  land={land}
                   ens={ens}
                   selectedName={selectedName}
-                  error={error} 
-                  isLoading={isLoading} 
+                  error={error}
+                  isLoading={isLoading}
                   isWaitingTxSetResolver={isWaitingTxSetResolver}
                   isWaitingTxSetContent={isWaitingTxSetContent}
                   onSetENSContent={onSetENSContent}
                   onSetENSResolver={onSetENSResolver}
-                  onRestartForm={this.restartForm.bind(this)}
+                  onRestartForm={this.restartForm}
                   onNavigate={onNavigate}
                 />
               )

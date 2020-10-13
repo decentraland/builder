@@ -20,13 +20,9 @@ export type Props = {
   onNavigate: (path: string) => void
 }
 
-export type MapStateProps = {
-  subdomainList: string[]
-  error: ENSError | null
-  isLoading: boolean
-  isWaitingTxSetContent: boolean
-  isWaitingTxSetResolver: boolean
-  ens: ENSState
-}
+export type MapStateProps = Pick<
+  Props,
+  'subdomainList' | 'error' | 'isLoading' | 'isWaitingTxSetContent' | 'isWaitingTxSetResolver' | 'ens'
+>
 export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onGetENS' | 'onGetDomainList' | 'onNavigate'>
 export type MapDispatch = Dispatch
