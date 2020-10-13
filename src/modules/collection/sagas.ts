@@ -50,6 +50,7 @@ import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
 import { getCollection, getCollectionItems } from './selectors'
+import { Collection } from './types'
 import { initializeCollection } from './utils'
 
 export function* collectionSaga() {
@@ -248,9 +249,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         const collection = yield select(state => getCollection(state, collectionId))
         const items = yield select(state => getCollectionItems(state, collectionId))
 
-        for (const item of items) {
-          yield put(deployItemContentsRequest(collection, item))
-        }
+        yield deployItems(collection, items)
         break
       }
       default: {
@@ -273,13 +272,18 @@ function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) 
 
     for (const collection of collections) {
       if (!collection.isPublished) continue
-      for (const item of allItems) {
-        if (item.collectionId === collection.id) {
-          yield put(deployItemContentsRequest(collection, item))
-        }
-      }
+      const items = allItems.filter(item => item.collectionId === collection.id)
+      yield deployItems(collection, items)
     }
   } catch (error) {
     console.error(error)
+  }
+}
+
+function* deployItems(collection: Collection, items: Item[]) {
+  for (const item of items) {
+    if (!item.inCatalyst) {
+      yield put(deployItemContentsRequest(collection, item))
+    }
   }
 }

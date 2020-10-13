@@ -170,7 +170,6 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
       throw new Error('Invalid identity')
     }
 
-    console.log('DEPLOYING ITEM CONTENTS', item, 'in catalyst?', item.inCatalyst)
     const deployedItem = item.inCatalyst ? item : yield deployContents(identity, collection, item)
 
     yield put(deployItemContentsSuccess(collection, deployedItem))
