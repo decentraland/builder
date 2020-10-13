@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { env } from 'decentraland-commons'
 import { Form, Row, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
@@ -6,6 +7,8 @@ import { locations } from 'routing/locations'
 import { Props, State } from './LandSelectNameForm.types'
 import './LandSelectNameForm.css'
 import { SelectNames } from 'components/SelectNames'
+
+export const CLAIM_NAME_URL = env.get('REACT_APP_CLAIM_NAME_URL', '')
 
 export default class LandSelectNameForm extends React.PureComponent<Props, State> {
   state: State = {
@@ -62,9 +65,13 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
             <Link className="cancel" to={locations.landDetail(land.id)}>
               <Button>{t('global.cancel')}</Button>
             </Link>
-            <Link to={locations.landDetail(land.id)}>
-              <Button primary>{t('land_ens_page.claim_new_name')}</Button>
-            </Link>
+            <Button
+              primary
+              onClick={() => {
+                window.location.href = CLAIM_NAME_URL
+              }}>
+              {t('land_ens_page.claim_new_name')}
+            </Button>
           </Row>
         </Form>
       )
