@@ -24,7 +24,6 @@
 .LandSetNameForm .box .messageBox {
   display: flex;
   align-items: flex-start;
-  align-content: t;
 }
 
 .LandSetNameForm .box.boxDisabled {
