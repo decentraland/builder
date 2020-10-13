@@ -60,6 +60,11 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     this.props.onRestartForm()
   }
 
+  isAnythingLoading() {
+    const { isLoading, isWaitingTxSetResolver, isWaitingTxSetContent } = this.props
+    return isLoading || isWaitingTxSetContent || isWaitingTxSetResolver
+  }
+
   render() {
     const { isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, land, error, onNavigate } = this.props
     const {
@@ -69,7 +74,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
       isSetResolverDone
     } = this.state
 
-    const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
+    const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || this.isAnythingLoading()
     const isBackDisabled = isSetResolverDone || isSetContentDone
     const isResolverLoading = (isLoading && isSetResolverDone && !isSetContentDone) || isWaitingTxSetResolver
     const isContentLoading = (isLoading && isSetResolverDone && isSetContentDone) || isWaitingTxSetContent
@@ -84,8 +89,8 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     </>
     let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingTxSetResolver)) || isSetContentDone) ? 'grey-button' : ''
     let setContentButtonClassName = (isSetContentDone && !(isLoading || isWaitingTxSetContent)) ? 'grey-button' : ''
-    let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
-    let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
+    let isSetResolverButtonDisabled = isSetResolverDisabled || this.isAnythingLoading()
+    let isSetContentButtonDisabled = isSetContentDisabled || this.isAnythingLoading()
     if (error && error.code === 4001) {
       if (error.origin === 'SET_ENS_RESOLVER') {
         buttonSetResolver = <> { t('global.retry_tx') } </>
