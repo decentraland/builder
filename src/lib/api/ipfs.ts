@@ -30,7 +30,6 @@ export class IpfsAPI {
     </body>
     </html>`
 
-    console.log({ html })
     formData.append('blob', new Blob([html]), 'index.html')
     const result = await fetch(IPFS_URL, {
       method: 'POST',
