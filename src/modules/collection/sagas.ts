@@ -248,9 +248,6 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         const collection = yield select(state => getCollection(state, collectionId))
         const items = yield select(state => getCollectionItems(state, collectionId))
 
-        console.log('TRANSACTION SUCCESS collection', collection)
-        console.log('TRANSACTION SUCCESS item', items)
-        console.log('getState()', (window as any).getState())
         for (const item of items) {
           yield put(deployItemContentsRequest(collection, item))
         }
