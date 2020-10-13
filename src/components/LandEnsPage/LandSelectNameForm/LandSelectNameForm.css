@@ -1,9 +1,9 @@
-.centered {
+.LandSelectNameForm .centered {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-.centered p {
+.LandSelectNameForm .centered p {
   width: 100%;
   text-align: center;
   padding-top: 70px;

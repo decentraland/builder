@@ -10,26 +10,26 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     isSetResolverDone: false,
     isSetContentDone: false,
     isSetResolverDisabled: false,
-    isSetContentDisabled: true,
+    isSetContentDisabled: true
   }
   componentDidMount () {
     const { ens, selectedName, isWaitingTxSetResolver, isWaitingTxSetContent } = this.props
     const { type } = ens.data[selectedName]
     if (isWaitingTxSetResolver) {
-      this.setState({isSetResolverDone: true})
+      this.setState({ isSetResolverDone: true })
     }
 
     if (type && ['DifferentContent', 'EmptyContent'].includes(type)) {
       this.setState({
         isSetResolverDone: true,
         isSetResolverDisabled: true,
-        isSetContentDisabled: false,
+        isSetContentDisabled: false
       })
     }
     if (isWaitingTxSetContent) {
       this.setState({
-        isSetResolverDone: true, 
-        isSetContentDone: true, 
+        isSetResolverDone: true,
+        isSetContentDone: true,
         isSetResolverDisabled: true,
         isSetContentDisabled: true
       })
@@ -42,48 +42,48 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
     this.setState({
       isSetResolverDone: true,
       isSetResolverDisabled: true,
-      isSetContentDisabled: false,
+      isSetContentDisabled: false
     })
   }
-  
+
   handleSetContent = () => {
     const { onSetENSContent, land, selectedName } = this.props
     onSetENSContent(selectedName, land)
     this.setState({
       isSetContentDone: true,
       isSetResolverDisabled: true,
-      isSetContentDisabled: true,
+      isSetContentDisabled: true
     })
   }
- 
+
   handleBack = () => {
     this.props.onRestartForm()
   }
 
   render() {
     const { isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, land, error, onNavigate } = this.props
-    const { 
+    const {
       isSetContentDisabled,
       isSetResolverDisabled,
       isSetContentDone,
-      isSetResolverDone,
+      isSetResolverDone
     } = this.state
 
     const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     const isBackDisabled = isSetResolverDone || isSetContentDone
-    const isResolverLoading = (isLoading && isSetResolverDone && !isSetContentDone) || isWaitingTxSetResolver 
-    const isContentLoading = (isLoading && isSetResolverDone && isSetContentDone) || isWaitingTxSetContent 
- 
-    let buttonSetResolver = <> 
-      {isSetResolverDone? t('global.approved_tx'): t('global.send_tx')} 
-      {!(isResolverLoading && (isLoading || isWaitingTxSetResolver)) && isSetResolverDone && <Icon name='check' />} 
+    const isResolverLoading = (isLoading && isSetResolverDone && !isSetContentDone) || isWaitingTxSetResolver
+    const isContentLoading = (isLoading && isSetResolverDone && isSetContentDone) || isWaitingTxSetContent
+
+    let buttonSetResolver = <>
+      {isSetResolverDone ? t('global.approved_tx') : t('global.send_tx')}
+      {!(isResolverLoading && (isLoading || isWaitingTxSetResolver)) && isSetResolverDone && <Icon name='check' />}
     </>
-    let buttonSetContent = <> 
-      {isSetContentDone? t('global.approved_tx'): t('global.send_tx')} 
-      {!isContentLoading && isSetContentDone && <Icon name='check' />} 
+    let buttonSetContent = <>
+      {isSetContentDone ? t('global.approved_tx') : t('global.send_tx')}
+      {!isContentLoading && isSetContentDone && <Icon name='check' />}
     </>
-    let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingTxSetResolver)) || isSetContentDone) ? 'grey-button': ''
-    let setContentButtonClassName = (isSetContentDone && !(isLoading || isWaitingTxSetContent)) ? 'grey-button': ''
+    let setResolverButtonClassName = ((isSetResolverDone && !(isLoading || isWaitingTxSetResolver)) || isSetContentDone) ? 'grey-button' : ''
+    let setContentButtonClassName = (isSetContentDone && !(isLoading || isWaitingTxSetContent)) ? 'grey-button' : ''
     let isSetResolverButtonDisabled = isSetResolverDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     let isSetContentButtonDisabled = isSetContentDisabled || isLoading || isWaitingTxSetResolver || isWaitingTxSetContent
     if (error && error.code === 4001) {
@@ -93,7 +93,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
         isSetContentButtonDisabled = true
         setResolverButtonClassName = ''
       } else if (error.origin === 'SET_ENS_CONTENT') {
-        buttonSetContent =  <> { t('global.retry_tx') } </>
+        buttonSetContent = <> { t('global.retry_tx') } </>
         isSetContentButtonDisabled = false
         setContentButtonClassName = ''
       }
@@ -105,10 +105,10 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           <p className="message"> {t('land_ens_page.set_name_message')}</p>
         </Row>
         <Row>
-          <div className={isSetResolverButtonDisabled? "box boxDisabled": "box"}>
+          <div className={isSetResolverButtonDisabled ? "box boxDisabled" : "box"}>
             <h3>{t('land_ens_page.set_resolver')}</h3>
             <p>{t('land_ens_page.set_resolver_explanation')}</p>
-            <Button 
+            <Button
               type="submit"
               disabled={isSetResolverButtonDisabled}
               onClick={this.handleSetResolver}
@@ -121,7 +121,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
           </div>
         </Row>
         <Row>
-          <div className={isSetContentButtonDisabled? "box boxDisabled": "box"}>
+          <div className={isSetContentButtonDisabled ? "box boxDisabled" : "box"}>
             <h3>{t('land_ens_page.set_content')}</h3>
             <p>{t('land_ens_page.set_content_explanation')}</p>
             <Button
@@ -130,8 +130,8 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
               onClick={this.handleSetContent}
               className={setContentButtonClassName}
               loading={isContentLoading}
-              primary 
-            > 
+              primary
+            >
               {buttonSetContent}
             </Button>
           </div>
@@ -144,7 +144,7 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
             disabled={isSubmitDisabled || isLoading}
             onClick={() => onNavigate(locations.landDetail(land.id))}
             primary
-          > 
+          >
             { t('global.finish') }
           </Button>
         </Row>

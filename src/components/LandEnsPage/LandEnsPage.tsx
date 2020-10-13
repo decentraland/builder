@@ -5,6 +5,8 @@ import { Props, State } from './LandEnsPage.types'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LandSelectNameForm from './LandSelectNameForm/LandSelectNameForm'
 import LandSetNameForm from './LandSetNameForm/LandSetNameForm'
+import {locations} from 'routing/locations';
+import {Link} from 'react-router-dom';
 
 export default class LandEnsPage extends React.PureComponent<Props> {
   state:State = {
@@ -41,7 +43,10 @@ export default class LandEnsPage extends React.PureComponent<Props> {
           <LandAction
             land={land}
             title={t('land_ens_page.title')}
-            subtitle={<T id="land_ens_page.subtitle" values={{ name: <strong>{land.name}</strong> }} />}
+            subtitle={<T 
+              id="land_ens_page.subtitle"
+              values={{ name: <Link to={locations.landDetail(land.id)}> {land.name}</Link> }} 
+            />}
           >
             {
               (selectedName === '') ? (

@@ -4,9 +4,9 @@ import {
   GetDomainListRequestAction,
   GetDomainListSuccessAction,
   GetDomainListFailureAction,
-  GET_DOMAINLIST_REQUEST,
-  GET_DOMAINLIST_SUCCESS,
-  GET_DOMAINLIST_FAILURE,
+  GET_DOMAIN_LIST_REQUEST,
+  GET_DOMAIN_LIST_SUCCESS,
+  GET_DOMAIN_LIST_FAILURE,
   GetENSRequestAction,
   GetENSSuccessAction,
   GetENSFailureAction,
@@ -24,7 +24,7 @@ import {
   SetENSResolverFailureAction,
   SET_ENS_RESOLVER_REQUEST,
   SET_ENS_RESOLVER_SUCCESS,
-  SET_ENS_RESOLVER_FAILURE,
+  SET_ENS_RESOLVER_FAILURE
 } from './actions'
 
 export type ENSError = {
@@ -46,20 +46,29 @@ const INITIAL_STATE: ENSState = {
   error: null
 }
 
-export type ENSReducerAction = GetENSRequestAction | GetENSSuccessAction | GetENSFailureAction |
-                               SetENSContentRequestAction | SetENSContentSuccessAction | SetENSContentFailureAction |
-                               SetENSResolverRequestAction | SetENSResolverSuccessAction | SetENSResolverFailureAction |
-                               GetDomainListRequestAction | GetDomainListSuccessAction | GetDomainListFailureAction
+export type ENSReducerAction =
+  | GetENSRequestAction
+  | GetENSSuccessAction
+  | GetENSFailureAction
+  | SetENSContentRequestAction
+  | SetENSContentSuccessAction
+  | SetENSContentFailureAction
+  | SetENSResolverRequestAction
+  | SetENSResolverSuccessAction
+  | SetENSResolverFailureAction
+  | GetDomainListRequestAction
+  | GetDomainListSuccessAction
+  | GetDomainListFailureAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
-    case GET_DOMAINLIST_REQUEST: {
+    case GET_DOMAIN_LIST_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
-    case GET_DOMAINLIST_SUCCESS: {
+    case GET_DOMAIN_LIST_SUCCESS: {
       const { data } = action.payload
       return {
         ...state,
@@ -67,7 +76,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         subdomainList: data
       }
     }
-    case GET_DOMAINLIST_FAILURE: {
+    case GET_DOMAIN_LIST_FAILURE: {
       const { error } = action.payload
       return {
         ...state,
@@ -88,7 +97,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [ens] : data
+          [ens]: data
         }
       }
     }
@@ -115,7 +124,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         error: null,
         data: {
           ...state.data,
-          [ens] : data
+          [ens]: data
         }
       }
     }
@@ -142,7 +151,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         error: null,
         data: {
           ...state.data,
-          [ens] : data
+          [ens]: data
         }
       }
     }

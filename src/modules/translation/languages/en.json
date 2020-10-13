@@ -512,7 +512,7 @@
     "set_name_message": "In order to link this name to your parcel you first need to send 2 transactions.",
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "The Resolver is a Smart Contract responsible for the process of translating names into addresses.",
-    "empty_options_message": "You don't have any name claimed, so first you'll need to claim one.",
+    "empty_options_message": "You don't have any available names. To assign a name to your LAND, you first need to claim it.",
     "claim_new_name": "Claim a new name",
     "submit_message": {
       "success": "Name set properly to your land"

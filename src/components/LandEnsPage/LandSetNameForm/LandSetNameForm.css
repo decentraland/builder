@@ -1,20 +1,20 @@
-.centered {
+.LandSetNameForm .centered {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-.centered p {
+.LandSetNameForm .centered p {
   width: 100%;
   text-align: center;
   padding-top: 70px;
 }
 
-.message {
+.LandSetNameForm .message {
   padding-top: 0px;
   padding-bottom: 20px;
 }
 
-.box {
+.LandSetNameForm .box {
   width: 100%;
   padding: 16px;
   background-color: #242129;
@@ -22,22 +22,22 @@
   border-radious: 8px;
 }
 
-.box.boxDisabled {
+.LandSetNameForm .box.boxDisabled {
   pointer-events: none;
   opacity: 0.4;
 }
-.box button {
+.LandSetNameForm .box button {
   float: right;
 }
 
-.confirmationButtons button {
+.LandSetNameForm .confirmationButtons button {
   padding: 10px 20px 10px 20px;
   margin: 50px
 }
 
-.grey-button {
+.LandSetNameForm .grey-button {
   background-color: #444 !important;
 }
-i.check.icon {
+.LandSetNameForm i.check.icon {
   padding-left: 10px;
 }

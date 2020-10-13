@@ -13,7 +13,7 @@ import {
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
-  GET_DOMAINLIST_REQUEST,
+  GET_DOMAIN_LIST_REQUEST,
   GetDomainListRequestAction,
   getDomainListSuccess,
   getDomainListFailure
@@ -22,12 +22,9 @@ import { ENS } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { Address } from 'web3x-es/address'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import {
-  ENS_ADDRESS,
-  ENS_RESOLVER_ADDRESS
-} from 'modules/common/contracts'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { ipfs } from 'lib/api/ipfs'
-import { namehash } from "@ethersproject/hash"
+import { namehash } from '@ethersproject/hash'
 import { ENS_EMPTY_CONTENT, ENS_EMPTY_RESOLVER } from './constants'
 import { marketplace } from 'lib/api/marketplace'
 
@@ -36,7 +33,7 @@ import * as contentHash from 'content-hash'
 export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
-  yield takeEvery(GET_DOMAINLIST_REQUEST, handleGetDomainListRequest)
+  yield takeEvery(GET_DOMAIN_LIST_REQUEST, handleGetDomainListRequest)
   yield takeEvery(GET_ENS_REQUEST, handleGetENSRequest)
 }
 
@@ -55,7 +52,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     )
     yield put(setENSResolverSuccess(ens, land, txHash))
   } catch (error) {
-    yield put(setENSResolverFailure(ens, land, {...error, origin: 'SET_ENS_RESOLVER'}))
+    yield put(setENSResolverFailure(ens, land, { ...error, origin: 'SET_ENS_RESOLVER' }))
   }
 }
 
@@ -75,7 +72,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     )
     yield put(setENSContentSuccess(ens, land, txHash))
   } catch (error) {
-    yield put(setENSContentFailure(ens, land, {...error, origin: 'SET_ENS_CONTENT'}))
+    yield put(setENSContentFailure(ens, land, { ...error, origin: 'SET_ENS_CONTENT' }))
   }
 }
 
