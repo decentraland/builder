@@ -76,14 +76,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         subdomainList: data
       }
     }
-    case GET_DOMAIN_LIST_FAILURE: {
-      const { error } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error
-      }
-    }
     case GET_ENS_REQUEST: {
       return {
         ...state,
@@ -99,14 +91,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
           ...state.data,
           [ens]: data
         }
-      }
-    }
-    case GET_ENS_FAILURE: {
-      const { error } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error
       }
     }
     case SET_ENS_CONTENT_REQUEST: {
@@ -128,14 +112,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case SET_ENS_CONTENT_FAILURE: {
-      const { error } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error
-      }
-    }
     case SET_ENS_RESOLVER_REQUEST: {
       return {
         ...state,
@@ -155,7 +131,10 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
-    case SET_ENS_RESOLVER_FAILURE: {
+    case SET_ENS_RESOLVER_FAILURE:
+    case SET_ENS_CONTENT_FAILURE:
+    case GET_ENS_FAILURE:
+    case GET_DOMAIN_LIST_FAILURE: {
       const { error } = action.payload
       return {
         ...state,
@@ -163,6 +142,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         error
       }
     }
+
     default:
       return state
   }

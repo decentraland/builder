@@ -82,7 +82,7 @@ function* handleGetDomainListRequest(_action: GetDomainListRequestAction) {
     const result = yield marketplace.fetchDomainList(owner)
     yield put(getDomainListSuccess(result))
   } catch (error) {
-    yield put(getDomainListFailure(error))
+    yield put(getDomainListFailure({ ...error, origin: '', code: 0 }))
   }
 }
 
@@ -134,7 +134,7 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
       })
     )
   } catch (error) {
-    yield put(getENSFailure(error.toString()))
+    yield put(getENSFailure({ ...error, origin: '', code: 0 }))
   }
 }
 
