@@ -1,3 +1,4 @@
+import { Collection } from 'modules/collection/types'
 import { Item, ItemRarity, ItemType, WearableData, WearableBodyShape, BodyShapeType, RARITY_MAX_SUPPLY } from './types'
 
 export function isComplete(item: Item) {
@@ -16,6 +17,13 @@ export function canMint(item: Item) {
 
 export function getMaxSupply(item: Item) {
   return RARITY_MAX_SUPPLY[item.rarity!]
+}
+
+export function getCatalystEntityId(collection: Collection, item: Item) {
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published to get the catalyst entity id')
+  }
+  return `${collection.contractAddress}-${item.tokenId}`
 }
 
 export function getBodyShapeType(item: Item) {

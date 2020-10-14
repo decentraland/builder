@@ -29,15 +29,21 @@ import {
   SET_ITEMS_TOKEN_ID_REQUEST,
   setItemsTokenIdSuccess,
   setItemsTokenIdFailure,
-  SetItemsTokenIdRequestAction
+  SetItemsTokenIdRequestAction,
+  DEPLOY_ITEM_CONTENTS_REQUEST,
+  deployItemContentsSuccess,
+  deployItemContentsFailure,
+  DeployItemContentsRequestAction
 } from './actions'
 import { getCurrentAddress } from 'modules/wallet/utils'
+import { getIdentity } from 'modules/identity/utils'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
 import { getCollection } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
+import { deployContents } from './export'
 import { Item } from './types'
 
 export function* itemSaga() {
@@ -48,6 +54,7 @@ export function* itemSaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
+  yield takeLatest(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
 }
 
 function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
@@ -62,7 +69,7 @@ function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
 function* handleSaveItemRequest(action: SaveItemRequestAction) {
   const { item, contents } = action.payload
   try {
-    yield call(() => builder.saveItem(item, contents))
+    yield call(() => saveItem(item, contents))
     yield put(saveItemSuccess(item, contents))
     yield put(closeModal('CreateItemModal'))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
@@ -143,7 +150,7 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
         ...item,
         tokenId
       }
-      saves.push(saveItem(newItem))
+      saves.push(call(() => saveItem(newItem)))
       newItems.push(newItem)
     }
 
@@ -154,6 +161,23 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
   }
 }
 
-function saveItem(item: Item, contents: Record<string, Blob> = {}) {
-  return call(() => builder.saveItem(item, contents))
+function* handleDeployItemContentsRequest(action: DeployItemContentsRequestAction) {
+  const { collection, item } = action.payload
+
+  try {
+    const identity = yield getIdentity()
+    if (!identity) {
+      throw new Error('Invalid identity')
+    }
+
+    const deployedItem = item.inCatalyst ? item : yield deployContents(identity, collection, item)
+
+    yield put(deployItemContentsSuccess(collection, deployedItem))
+  } catch (error) {
+    yield put(deployItemContentsFailure(collection, item, error.message))
+  }
+}
+
+export function saveItem(item: Item, contents: Record<string, Blob> = {}) {
+  return builder.saveItem(item, contents)
 }

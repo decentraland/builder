@@ -12,7 +12,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  price?: number
+  price?: string
   beneficiary?: string
 }
 
