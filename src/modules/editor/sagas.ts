@@ -77,6 +77,7 @@ import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
 import { Scene, ComponentType, ModelMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
 import { AvatarAnimation, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
+import { getLoading } from 'modules/assetPack/selectors'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -126,6 +127,7 @@ import maleAvatar from './wearables/male.json'
 import femaleAvatar from './wearables/female.json'
 import { Wearable } from 'decentraland-ecs'
 import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
+import { AssetPackState } from 'modules/assetPack/reducer'
 
 const editorWindow = window as EditorWindow
 
@@ -366,8 +368,8 @@ function* handleOpenEditor(action: OpenEditorAction) {
       scene = fixSuccessAction.payload.scene
 
       // if assets packs are being loaded wait for them to finish
-      const state: RootState = yield select(state => state)
-      if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
+      const loading: AssetPackState['loading'] = yield select(getLoading)
+      if (isLoadingType(loading, LOAD_ASSET_PACKS_REQUEST)) {
         yield take(LOAD_ASSET_PACKS_SUCCESS)
       }
 
