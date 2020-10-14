@@ -56,13 +56,13 @@ export default class MintableItem extends React.PureComponent<Props> {
     return address === undefined || isValid(address)
   }
 
-  isValidAmount(amount?: string) {
-    return amount === undefined || !isNaN(Number(amount))
+  isValidAmount(amount?: number) {
+    return amount === undefined || amount >= 0
   }
 
   isValidSupply(supply: number) {
     const { item } = this.props
-    return supply > 0 && supply <= getMaxSupply(item)
+    return supply >= 0 && supply <= getMaxSupply(item)
   }
 
   getSupply(mints: Props['mints']) {
@@ -105,7 +105,7 @@ export default class MintableItem extends React.PureComponent<Props> {
               placeholder={t('global.address')}
               value={address || ''}
               message={undefined}
-              error={address !== undefined && !isValid(address)}
+              error={!this.isValidAddress(address)}
               onChange={this.getChangeAddressHandler(index)}
             />
             <Field
@@ -114,7 +114,7 @@ export default class MintableItem extends React.PureComponent<Props> {
               placeholder={t('global.amount')}
               value={amount || ''}
               message={undefined}
-              error={amount !== undefined && amount > 0}
+              error={!this.isValidAmount(amount)}
               onChange={this.getChangeAmountHandler(index)}
             />
             <Icon name="minus" className="remove-item" onClick={this.getRemoveMintHandler(index)} />

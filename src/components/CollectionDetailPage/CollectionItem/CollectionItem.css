@@ -37,11 +37,9 @@
   align-items: center;
 }
 
-.CollectionItem .name-wrapper .ItemBadge {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 auto;
-  margin-left: 12px;
+.CollectionItem .ItemImage .ItemBadge {
+  bottom: 5px;
+  left: 5px;
 }
 
 .CollectionItem .name {
@@ -49,7 +47,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 70%;
 }
 
 .CollectionItem .link,

@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { Collection } from 'modules/collection/types'
 import { Item } from './types'
 
 // Fetch items
@@ -79,3 +80,18 @@ export const setItemsTokenIdFailure = (items: Item[], error: string) => action(S
 export type SetItemsTokenIdRequestAction = ReturnType<typeof setItemsTokenIdRequest>
 export type SetItemsTokenIdSuccessAction = ReturnType<typeof setItemsTokenIdSuccess>
 export type SetItemsTokenIdFailureAction = ReturnType<typeof setItemsTokenIdFailure>
+
+// Deploy item contents
+
+export const DEPLOY_ITEM_CONTENTS_REQUEST = '[Request] Deploy item contents'
+export const DEPLOY_ITEM_CONTENTS_SUCCESS = '[Success] Deploy item contents'
+export const DEPLOY_ITEM_CONTENTS_FAILURE = '[Failure] Deploy item contents'
+
+export const deployItemContentsRequest = (collection: Collection, item: Item) => action(DEPLOY_ITEM_CONTENTS_REQUEST, { collection, item })
+export const deployItemContentsSuccess = (collection: Collection, item: Item) => action(DEPLOY_ITEM_CONTENTS_SUCCESS, { collection, item })
+export const deployItemContentsFailure = (collection: Collection, item: Item, error: string) =>
+  action(DEPLOY_ITEM_CONTENTS_FAILURE, { collection, item, error })
+
+export type DeployItemContentsRequestAction = ReturnType<typeof deployItemContentsRequest>
+export type DeployItemContentsSuccessAction = ReturnType<typeof deployItemContentsSuccess>
+export type DeployItemContentsFailureAction = ReturnType<typeof deployItemContentsFailure>

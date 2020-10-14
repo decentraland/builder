@@ -1,5 +1,5 @@
 import { Address } from 'web3x-es/address'
-import { toBN, toWei } from 'web3x-es/utils'
+import { toBN } from 'web3x-es/utils'
 import { env } from 'decentraland-commons'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { Item } from 'modules/item/types'
@@ -35,7 +35,7 @@ function toInitializeItem(item: Item): InitializeItem {
   return {
     rarity: getRarityIndex(item.rarity!),
     totalSupply: 0,
-    price: toWei(toBN(item.price!), 'ether'),
+    price: toBN(item.price!),
     beneficiary: Address.fromString(item.beneficiary!),
     metadata: getMetadata(item),
     contentHash: EMPTY_HASH

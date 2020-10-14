@@ -16,8 +16,13 @@ export default class Items extends React.PureComponent<Props> {
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
         {items.map(item => (
           <div
+            key={item.id}
             className={`item ${item.id === selectedItemId ? 'is-selected' : ''}`}
-            onClick={() => onNavigate(locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined }))}
+            onClick={
+              item.id === selectedItemId
+                ? undefined
+                : () => onNavigate(locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined }))
+            }
           >
             <ItemImage item={item} />
             <div className="name">{item.name}</div>
