@@ -29,6 +29,7 @@ import { ENS_EMPTY_CONTENT, ENS_EMPTY_RESOLVER } from './constants'
 import { marketplace } from 'lib/api/marketplace'
 
 import * as contentHash from 'content-hash'
+import { FetchEnsTypeResult } from './types'
 
 export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
@@ -99,7 +100,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
         fetchENSSuccess(ens, {
           resolver: ENS_EMPTY_RESOLVER,
           content: ENS_EMPTY_CONTENT,
-          type: 'EmptyResolver'
+          type: FetchEnsTypeResult.EmptyResolver
         })
       )
     }
@@ -113,7 +114,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
         fetchENSSuccess(ens, {
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent,
-          type: 'EmptyContent'
+          type: FetchEnsTypeResult.EmptyContent
         })
       )
     }
@@ -122,7 +123,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
         fetchENSSuccess(ens, {
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent,
-          type: 'EqualContent'
+          type: FetchEnsTypeResult.EqualContent
         })
       )
     }
@@ -130,7 +131,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
       fetchENSSuccess(ens, {
         resolver: ENS_RESOLVER_ADDRESS,
         content: currentContent,
-        type: 'DifferentContent'
+        type: FetchEnsTypeResult.DifferentContent
       })
     )
   } catch (error) {
