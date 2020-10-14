@@ -1,10 +1,10 @@
 import { Eth } from 'web3x-es/eth'
 import { call, put, takeEvery, select } from 'redux-saga/effects'
 import {
-  GET_ENS_REQUEST,
-  GetENSRequestAction,
-  getENSSuccess,
-  getENSFailure,
+  FETCH_ENS_REQUEST,
+  FetchENSRequestAction,
+  fetchENSSuccess,
+  fetchENSFailure,
   SET_ENS_CONTENT_REQUEST,
   SetENSContentRequestAction,
   setENSContentSuccess,
@@ -13,10 +13,10 @@ import {
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
-  GET_DOMAIN_LIST_REQUEST,
-  GetDomainListRequestAction,
-  getDomainListSuccess,
-  getDomainListFailure
+  FETCH_DOMAIN_LIST_REQUEST,
+  FetchDomainListRequestAction,
+  fetchDomainListSuccess,
+  fetchDomainListFailure
 } from './actions'
 import { ENS } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
@@ -33,8 +33,8 @@ import * as contentHash from 'content-hash'
 export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
-  yield takeEvery(GET_DOMAIN_LIST_REQUEST, handleGetDomainListRequest)
-  yield takeEvery(GET_ENS_REQUEST, handleGetENSRequest)
+  yield takeEvery(FETCH_DOMAIN_LIST_REQUEST, handleFetchDomainListRequest)
+  yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
 }
 
 function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
@@ -76,17 +76,17 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
   }
 }
 
-function* handleGetDomainListRequest(_action: GetDomainListRequestAction) {
+function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
   try {
     const owner = yield select(getAddress)
     const result = yield marketplace.fetchDomainList(owner)
-    yield put(getDomainListSuccess(result))
+    yield put(fetchDomainListSuccess(result))
   } catch (error) {
-    yield put(getDomainListFailure({ ...error, origin: '', code: 0 }))
+    yield put(fetchDomainListFailure({ ...error, origin: '', code: 0 }))
   }
 }
 
-function* handleGetENSRequest(action: GetENSRequestAction) {
+function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { ens, land } = action.payload
   try {
     const [eth] = yield getEth()
@@ -96,7 +96,7 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
 
     if (resolverAddress.toString() === ENS_EMPTY_RESOLVER) {
       return yield put(
-        getENSSuccess(ens, {
+        fetchENSSuccess(ens, {
           resolver: ENS_EMPTY_RESOLVER,
           content: ENS_EMPTY_CONTENT,
           type: 'EmptyResolver'
@@ -110,7 +110,7 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
     const currentContent = yield call(() => resolverContract.methods.contenthash(nodehash).call())
     if (currentContent === ENS_EMPTY_CONTENT) {
       return yield put(
-        getENSSuccess(ens, {
+        fetchENSSuccess(ens, {
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent,
           type: 'EmptyContent'
@@ -119,7 +119,7 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
     }
     if (`0x${hash}` === currentContent) {
       return yield put(
-        getENSSuccess(ens, {
+        fetchENSSuccess(ens, {
           resolver: ENS_RESOLVER_ADDRESS,
           content: currentContent,
           type: 'EqualContent'
@@ -127,14 +127,14 @@ function* handleGetENSRequest(action: GetENSRequestAction) {
       )
     }
     yield put(
-      getENSSuccess(ens, {
+      fetchENSSuccess(ens, {
         resolver: ENS_RESOLVER_ADDRESS,
         content: currentContent,
         type: 'DifferentContent'
       })
     )
   } catch (error) {
-    yield put(getENSFailure({ ...error, origin: '', code: 0 }))
+    yield put(fetchENSFailure({ ...error, origin: '', code: 0 }))
   }
 }
 

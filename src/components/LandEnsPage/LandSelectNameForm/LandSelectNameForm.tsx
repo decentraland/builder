@@ -15,12 +15,12 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     selectedSubdomain: ''
   }
   componentDidMount() {
-    this.props.onGetDomainList()
+    this.props.onFetchDomainList()
   }
 
   handleChange = (selectedSubdomain: string) => {
-    const { onGetENS, land } = this.props
-    onGetENS(selectedSubdomain, land)
+    const { onFetchENS, land } = this.props
+    onFetchENS(selectedSubdomain, land)
     this.setState({ selectedSubdomain })
   }
 

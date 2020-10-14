@@ -8,8 +8,8 @@ export type Props = {
   subdomainList: string[]
   error: ENSError | null
   onUpdateName: (selectedName: string) => void
-  onGetENS: (ens: string, land: Land) => void
-  onGetDomainList: () => void
+  onFetchENS: (ens: string, land: Land) => void
+  onFetchDomainList: () => void
 }
 
 export type State = {

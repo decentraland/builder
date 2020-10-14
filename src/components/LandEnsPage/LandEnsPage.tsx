@@ -23,8 +23,8 @@ export default class LandEnsPage extends React.PureComponent<Props> {
 
   render() {
     const {
-      onGetENS,
-      onGetDomainList,
+      onFetchENS,
+      onFetchDomainList,
       onSetENSResolver,
       onSetENSContent,
       onNavigate,
@@ -54,8 +54,8 @@ export default class LandEnsPage extends React.PureComponent<Props> {
                   land={land}
                   ens={ens}
                   onUpdateName={this.updateSelectedName}
-                  onGetDomainList={onGetDomainList}
-                  onGetENS={onGetENS}
+                  onFetchDomainList={onFetchDomainList}
+                  onFetchENS={onFetchENS}
                   subdomainList={subdomainList}
                   error={error}
                   isLoading={isLoading}
