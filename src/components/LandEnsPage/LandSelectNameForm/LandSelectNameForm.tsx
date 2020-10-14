@@ -7,6 +7,7 @@ import { locations } from 'routing/locations'
 import { Props, State } from './LandSelectNameForm.types'
 import './LandSelectNameForm.css'
 import { SelectNames } from 'components/SelectNames'
+import {FetchEnsTypeResult} from 'modules/ens/types';
 
 export const CLAIM_NAME_URL = env.get('REACT_APP_CLAIM_NAME_URL', '')
 
@@ -39,13 +40,13 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     let selectMessage: string = ""
     let isButtonDisabled: boolean = false
     switch (messageType) {
-      case 'EmptyResolver':
-      case 'EmptyContent':
-      case 'DifferentContent':
+      case FetchEnsTypeResult.EmptyResolver:
+      case FetchEnsTypeResult.EmptyContent:
+      case FetchEnsTypeResult.DifferentContent:
         selectMessage = t('land_ens_page.select_names.message.name_available')
         isButtonDisabled = false
         break
-      case 'EqualContent':
+      case FetchEnsTypeResult.EqualContent:
         selectMessage = t('land_ens_page.select_names.message.name_assigned')
         isButtonDisabled = true
         break
