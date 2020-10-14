@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Props } from './CenterPanel.types'
-import './CenterPanel.css'
+import { Dropdown, DropdownProps, Popup } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ViewPort from 'components/ViewPort'
 import { AvatarAnimation, PreviewType } from 'modules/editor/types'
-import { Dropdown, Popup } from 'decentraland-ui'
 import { WearableBodyShape } from 'modules/item/types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Props } from './CenterPanel.types'
+import './CenterPanel.css'
 
 export default class CenterPanel extends React.PureComponent<Props> {
   componentWillUnmount() {
@@ -13,8 +13,18 @@ export default class CenterPanel extends React.PureComponent<Props> {
     onClose()
   }
 
+  handleBodyShapeChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const { onSetBodyShape } = this.props
+    onSetBodyShape(value as WearableBodyShape)
+  }
+
+  handleAnimationChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const { onSetAvatarAnimation } = this.props
+    onSetAvatarAnimation(value as AvatarAnimation)
+  }
+
   render() {
-    const { bodyShape, onSetBodyShape, avatarAnimation, onSetAvatarAnimation, visibleItems } = this.props
+    const { bodyShape, avatarAnimation, visibleItems } = this.props
     return (
       <div className="CenterPanel">
         <ViewPort type={PreviewType.WEARABLE} />
@@ -26,7 +36,7 @@ export default class CenterPanel extends React.PureComponent<Props> {
               { value: WearableBodyShape.MALE, text: t('body_shapes.male') },
               { value: WearableBodyShape.FEMALE, text: t('body_shapes.female') }
             ]}
-            onChange={(_event, { value }) => onSetBodyShape(value as WearableBodyShape)}
+            onChange={this.handleBodyShapeChange}
           />
           <Popup
             className="disabled-animation-tooltip"
@@ -40,7 +50,7 @@ export default class CenterPanel extends React.PureComponent<Props> {
                   disabled={visibleItems.length === 0}
                   value={avatarAnimation}
                   options={Object.values(AvatarAnimation).map(value => ({ value, text: t(`avatar_animations.${value}`) }))}
-                  onChange={(_event, { value }) => onSetAvatarAnimation(value as AvatarAnimation)}
+                  onChange={this.handleAnimationChange}
                 />
               </div>
             }
