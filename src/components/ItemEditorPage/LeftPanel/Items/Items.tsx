@@ -5,24 +5,19 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import { Item } from 'modules/item/types'
 import { locations } from 'routing/locations'
+import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
 import { Props } from './Items.types'
 import './Items.css'
-import { getMissingBodyShapeType } from 'modules/item/utils'
 
 export default class Items extends React.PureComponent<Props> {
-  hasValidRepresentation = (item: Item) => {
-    const { bodyShape } = this.props
-    return item.data.representations.some(representation => representation.bodyShape.includes(bodyShape))
-  }
-
   isVisible = (item: Item) => {
     const { visibleItems } = this.props
     return visibleItems.some(_item => _item.id === item.id)
   }
 
   handleToggle = (item: Item) => {
-    const { visibleItems, onSetItems } = this.props
-    if (!this.hasValidRepresentation(item)) return
+    const { visibleItems, onSetItems, bodyShape } = this.props
+    if (!hasBodyShape(item, bodyShape)) return
 
     const newVisibleItemIds = visibleItems.filter(_item => _item.id !== item.id)
     if (!this.isVisible(item)) {
@@ -32,7 +27,7 @@ export default class Items extends React.PureComponent<Props> {
   }
 
   render() {
-    const { items, selectedItemId, selectedCollectionId, hasHeader } = this.props
+    const { items, selectedItemId, selectedCollectionId, hasHeader, bodyShape } = this.props
     if (items.length === 0) return null
 
     return (
@@ -51,7 +46,7 @@ export default class Items extends React.PureComponent<Props> {
               content={t('item_editor.left_panel.invalid_representation_tooltip', {
                 bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()}</b>
               })}
-              disabled={this.hasValidRepresentation(item)}
+              disabled={hasBodyShape(item, bodyShape)}
               position="top center"
               trigger={
                 <div className={`toggle ${this.isVisible(item) ? 'visible' : 'hidden'}`} onClick={() => this.handleToggle(item)}></div>

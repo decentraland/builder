@@ -1,3 +1,14 @@
+import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
+import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
+import {
+  EXPORT_PROJECT_SUCCESS,
+  EXPORT_PROJECT_REQUEST,
+  ExportProjectRequestAction,
+  ExportProjectSuccessAction
+} from 'modules/project/actions'
+import { WearableBodyShape } from 'modules/item/types'
+import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
+import { hasBodyShape } from 'modules/item/utils'
 import {
   SetGizmoAction,
   TogglePreviewAction,
@@ -32,17 +43,7 @@ import {
   SetAvatarAnimationAction,
   SET_AVATAR_ANIMATION
 } from './actions'
-import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
-import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
-import {
-  EXPORT_PROJECT_SUCCESS,
-  EXPORT_PROJECT_REQUEST,
-  ExportProjectRequestAction,
-  ExportProjectSuccessAction
-} from 'modules/project/actions'
 import { AvatarAnimation, Gizmo } from './types'
-import { WearableBodyShape } from 'modules/item/types'
-import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -251,7 +252,7 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         visibleItemIds: action.payload.items
-          .filter(item => item.data.representations.some(r => r.bodyShape.includes(state.bodyShape))) // only add items that have a valid representation for the selected body shape
+          .filter(item => hasBodyShape(item, state.bodyShape)) // only add items that have a valid representation for the selected body shape
           .map(item => item.id)
       }
     }

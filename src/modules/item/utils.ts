@@ -63,6 +63,10 @@ export function getMissingBodyShapeType(item: Item) {
   return null
 }
 
+export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
+  return item.data.representations.some(representation => representation.bodyShape.includes(bodyShape))
+}
+
 export function getRarityIndex(rarity: ItemRarity) {
   return {
     [ItemRarity.COMMON]: 0,
