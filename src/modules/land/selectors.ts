@@ -7,7 +7,7 @@ import { getData as getDeployments } from 'modules/deployment/selectors'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { getTiles } from 'modules/tile/selectors'
 import { FETCH_LANDS_REQUEST } from './actions'
-import { coordsToId, traverseTiles, RoleColor, hasNeighbour } from './utils'
+import { coordsToId, RoleColor, hasNeighbour } from './utils'
 import { Land, LandType, LandTile } from './types'
 import { Deployment } from 'modules/deployment/types'
 
@@ -23,26 +23,56 @@ export const getLands = createSelector<RootState, string | undefined, Record<str
 )
 export const isLoading = (state: RootState) => isLoadingType(getLoading(state), FETCH_LANDS_REQUEST)
 
-export const getLandTiles = createSelector<RootState, Land[], Record<string, AtlasTile>, Record<string, LandTile>>(
-  getLands,
-  getTiles,
-  (lands, tiles) => {
-    const result: Record<string, LandTile> = {}
-    for (const land of lands) {
-      if (land.type === LandType.PARCEL) {
-        const id = coordsToId(land.x!, land.y!)
-        result[id] = {
-          color: RoleColor[land.role],
-          land
+export const getCoordsByEstateId = createSelector<RootState, Record<string, AtlasTile>, Record<string, string[]>>(getTiles, tiles => {
+  const result: Record<string, string[]> = {}
+  for (const tile of Object.values(tiles)) {
+    if (tile.estate_id) {
+      const exists = tile.estate_id in result
+      if (!exists) {
+        result[tile.estate_id] = []
+      }
+      result[tile.estate_id].push(coordsToId(tile.x, tile.y))
+    }
+  }
+  return result
+})
+
+export const getLandTiles = createSelector<
+  RootState,
+  Land[],
+  Record<string, AtlasTile>,
+  Record<string, string[]>,
+  Record<string, LandTile>
+>(getLands, getTiles, getCoordsByEstateId, (lands, tiles, coordsByEstateId) => {
+  const result: Record<string, LandTile> = {}
+  for (const land of lands) {
+    if (land.type === LandType.PARCEL) {
+      const id = coordsToId(land.x!, land.y!)
+      result[id] = {
+        color: RoleColor[land.role],
+        land
+      }
+    } else {
+      const estateId = land.id
+      const coords = coordsByEstateId[estateId]
+      if (coords) {
+        for (const coord of coords) {
+          const tile = tiles[coord]
+          if (tile) {
+            result[coord] = {
+              color: RoleColor[land.role],
+              top: !!tile.top,
+              left: !!tile.left,
+              topLeft: !!tile.topLeft,
+              land
+            }
+          }
         }
-      } else {
-        const first = land.parcels![0]
-        traverseTiles(first.x, first.y, land, result, tiles)
       }
     }
-    return result
   }
-)
+  return result
+})
 
 export const getDeploymentsByCoord = createSelector<RootState, DeploymentState['data'], Record<string, Deployment>>(
   state => getDeployments(state),

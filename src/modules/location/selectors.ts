@@ -1,5 +1,5 @@
 import { locations } from 'routing/locations'
-import { createMatchSelector } from 'connected-react-router'
+import { createMatchSelector, getSearch } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 
 const landIdMatchSelector = createMatchSelector<
@@ -49,3 +49,6 @@ export const getCollectionId = (state: RootState) => {
   const result = collectionIdMatchSelector(state)
   return result ? result.params.collectionId : null
 }
+
+export const getSelectedItemId = (state: RootState) => new URLSearchParams(getSearch(state)).get('item')
+export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')

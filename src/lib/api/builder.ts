@@ -16,6 +16,7 @@ import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
 import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import { PreviewType } from 'modules/editor/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -437,7 +438,7 @@ export class BuilderAPI extends BaseAPI {
     return
   }
 
-  async fetchManifest(id: string, type: 'project' | 'public' | 'pool' = 'project') {
+  async fetchManifest(id: string, type: PreviewType.PROJECT | PreviewType.POOL | PreviewType.PUBLIC = PreviewType.PROJECT) {
     const remoteManifest = await this.request('get', `/${type}s/${id}/manifest`)
     const manifest = {
       ...remoteManifest,

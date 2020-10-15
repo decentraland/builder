@@ -117,6 +117,16 @@
     "male": "Hombre",
     "female": "Mujer"
   },
+  "avatar_animations": {
+    "idle": "Nada",
+    "wave": "Saludar",
+    "fistpump": "Festejar",
+    "robot": "Bailar",
+    "raiseHand": "Alzar Mano",
+    "clap": "Aplaudir",
+    "money": "Tirar Billetes",
+    "kiss": "Tirar Besos"
+  },
   "create_collection_modal": {
     "title": "Nueva Colección",
     "subtitle": "Ponle un nombre a tu nueva colleción",
@@ -836,7 +846,7 @@
   "collection_managers_modal": {
     "title": "Colaboradores",
     "add_manager": "Agregar Colaborador",
-    "no_managers":"No hay colaboradores, comienza por",
+    "no_managers": "No hay colaboradores, comienza por",
     "adding_one": "agregar uno!"
   },
   "collection_image": {
@@ -855,7 +865,11 @@
       },
       "items": "Items",
       "collections": "Colecciones",
-      "items_count": "{count} items"
+      "items_count": "{count} items",
+      "invalid_representation_tooltip": "Este item no tiene representacion de {bodyShape}"
+    },
+    "center_panel": {
+      "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion"
     },
     "right_panel": {
       "properties": "Propiedades",

@@ -1,15 +1,13 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import { Tile as BaseTile } from 'react-tile-map/lib/src/lib/common'
+import { Tile } from 'react-tile-map/lib/src/lib/common'
 import { AtlasTile, AtlasProps } from 'decentraland-ui'
 import { LandTile } from 'modules/land/types'
 
-export type Tile = AtlasTile & { estate_id?: string }
-
 export type Props = Partial<AtlasProps> & {
-  atlasTiles: Record<string, Tile>
+  atlasTiles: Record<string, AtlasTile>
   landTiles: Record<string, LandTile>
-  emptyTiles: Record<string, BaseTile>
+  emptyTiles: Record<string, Tile>
   showOperator?: boolean
   landId?: string
   showOwner?: boolean

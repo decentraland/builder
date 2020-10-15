@@ -3,6 +3,7 @@
   height: 80px;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .Scene:first-child {
@@ -44,6 +45,10 @@
   font-style: normal;
   line-height: 1.6;
   letter-spacing: normal;
+  width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .Scene .stat {

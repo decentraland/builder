@@ -1,2 +1,2 @@
-import CenterPanel from './CenterPanel'
+import CenterPanel from './CenterPanel.container'
 export default CenterPanel
