@@ -605,7 +605,6 @@ function* renderAvatar() {
     const wearables = yield getWearables(visibleItems)
     const animation = yield select(getAvatarAnimation)
     yield call(async () => {
-      console.log('render', wearables, animation)
       editorWindow.editor.addWearablesToCatalog(wearables)
       editorWindow.editor.sendExternalAction(updateAvatar(wearables, animation))
     })
