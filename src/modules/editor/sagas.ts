@@ -591,18 +591,16 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   }
 }
 
-function* getWearables(items: Item[]) {
+function* getDefaultWearables() {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
-  const avatar = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
-  const apply = items.map(toWearable)
-  const wearables = mergeWearables(avatar, apply)
-  return wearables
+  return (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
 }
 
 function* renderAvatar() {
   if (yield select(isReady)) {
     const visibleItems: Item[] = yield select(getVisibleItems)
-    const wearables = yield getWearables(visibleItems)
+    const defaultWearables = yield getDefaultWearables()
+    const wearables = mergeWearables(defaultWearables, visibleItems.map(toWearable))
     const animation = yield select(getAvatarAnimation)
     yield call(async () => {
       editorWindow.editor.addWearablesToCatalog(wearables)
@@ -612,9 +610,9 @@ function* renderAvatar() {
 }
 
 function* bustCache() {
-  const wearables = yield getWearables([])
-  editorWindow.editor.addWearablesToCatalog(wearables)
-  editorWindow.editor.sendExternalAction(updateAvatar(wearables, AvatarAnimation.IDLE))
+  const defaultWearables = yield getDefaultWearables()
+  editorWindow.editor.addWearablesToCatalog(defaultWearables)
+  editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, AvatarAnimation.IDLE))
   yield delay(200)
 }
 
