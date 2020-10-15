@@ -100,7 +100,7 @@ export type Item = {
   description?: string
   collectionId?: string
   tokenId?: string
-  price?: number
+  price?: string
   beneficiary?: string
   rarity?: ItemRarity
   totalSupply?: number
