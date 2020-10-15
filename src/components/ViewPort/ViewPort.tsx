@@ -20,7 +20,7 @@ export default class ViewPort extends React.PureComponent<Props> {
     const { isPreviewing, isReadOnly, type } = this.props
     return (
       <>
-        <Preview isReadOnly={isReadOnly === true} type={type || PreviewType.PROJECT} />
+        <Preview isReadOnly={isReadOnly} type={type || PreviewType.PROJECT} />
         {isPreviewing ? (
           <div className="close-preview" onClick={this.handleClose}>
             <Icon name="close" />
