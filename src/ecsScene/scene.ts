@@ -219,7 +219,6 @@ async function handleExternalAction(message: { type: string; payload: Record<str
     }
 
     case 'Update avatar': {
-      console.log('[scene] update avatar', message.payload.wearables, message.payload.animation)
       const wearables: Wearable[] = message.payload.wearables
       const avatar = getAvatar()
       const avatarShape = avatar.getComponent(AvatarShape)
