@@ -16,7 +16,7 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'items' | 'collections' | 'orphanItems' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape'
+  'items' | 'orphanItems' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems'>
 export type MapDispatch = Dispatch<SetItemsAction>

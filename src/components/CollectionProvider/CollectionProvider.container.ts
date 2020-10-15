@@ -4,15 +4,14 @@ import { isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { isLoggingIn } from 'modules/identity/selectors'
-import { getLoading, getCollections, getCollectionItems } from 'modules/collection/selectors'
+import { getLoading, getCollection, getCollectionItems } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionProvider.types'
 import CollectionProvider from './CollectionProvider'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const id = ownProps.id || getCollectionId(state)
-  const collections = getCollections(state)
-  const collection = collections.find(collection => collection.id === id) || null
+  const collection = id ? getCollection(state, id) : null
   const items = collection ? getCollectionItems(state, collection.id) : []
   return {
     id,

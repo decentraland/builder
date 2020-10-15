@@ -9,7 +9,7 @@ import './LeftPanel.css'
 
 export default class LeftPanel extends React.PureComponent<Props> {
   render() {
-    const { items, collections, orphanItems, selectedItemId, selectedCollectionId, visibleItems, onSetItems, bodyShape } = this.props
+    const { items, orphanItems, collections, selectedItemId, selectedCollectionId, visibleItems, onSetItems, bodyShape } = this.props
     return (
       <div className="LeftPanel">
         <CollectionProvider id={selectedCollectionId}>

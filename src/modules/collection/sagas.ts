@@ -52,7 +52,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
-import { getItems } from 'modules/item/selectors'
+import { getWalletItems } from 'modules/item/selectors'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection, CollectionWithItems } from './types'
 import { initializeCollection } from './utils'
@@ -277,7 +277,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
 }
 
 function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
-  const allItems: Item[] = yield select(getItems)
+  const allItems: Item[] = yield select(getWalletItems)
   if (allItems.length === 0) {
     yield take(FETCH_ITEMS_SUCCESS)
   }

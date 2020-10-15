@@ -6,7 +6,7 @@ import { Item } from 'modules/item/types'
 import { mintCollectionItemsRequest, MINT_COLLECTION_ITEMS_REQUEST } from 'modules/collection/actions'
 import { getCollection } from 'modules/collection/selectors'
 import { canMint } from 'modules/item/utils'
-import { getItems, getLoading } from 'modules/item/selectors'
+import { getWalletItems, getLoading } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './MintItemsModal.types'
 import MintItemsModal from './MintItemsModal'
 
@@ -17,7 +17,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     throw new Error('Invalid collection id or items id to mint')
   }
 
-  const allItems = getItems(state).filter(canMint)
+  const allItems = getWalletItems(state).filter(canMint)
   let collection: Collection
   let items: Item[]
   let totalCollectionItems: number
