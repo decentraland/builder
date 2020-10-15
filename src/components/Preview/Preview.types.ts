@@ -42,7 +42,15 @@ export type Editor = {
   onKeyDown: (key: UnityKeyboardEvent) => void
   addWearablesToCatalog: (wearables: Wearable[]) => void
   removeWearablesFromCatalog: (wearableIds: string[]) => void
-  setBuilderConfiguration: (config: any) => void
+  setBuilderConfiguration: (config: {
+    camera: {
+      zoomMin: number
+      zoomMax: number
+    }
+    environment: {
+      disableFloor: boolean
+    }
+  }) => void
 }
 
 export type EditorWindow = typeof window & {
