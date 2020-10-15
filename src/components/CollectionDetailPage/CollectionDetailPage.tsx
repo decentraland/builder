@@ -185,7 +185,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <T
               id="collection_detail_page.notice"
               values={{
-                editor_link: <Link to={locations.sceneEditor()}>{t('collection_detail_page.click_here')}</Link>
+                editor_link: (
+                  <Link to={locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })}>
+                    {t('collection_detail_page.click_here')}
+                  </Link>
+                )
               }}
             />
           </Notice>

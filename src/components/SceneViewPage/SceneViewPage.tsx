@@ -10,6 +10,7 @@ import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
 import { Props, State } from './SceneViewPage.types'
 import './SceneViewPage.css'
+import { PreviewType } from 'modules/editor/types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -40,7 +41,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   getType() {
-    return (this.props.match && this.props.match.params && this.props.match.params.type) || 'public'
+    return (this.props.match && this.props.match.params && this.props.match.params.type) || PreviewType.PUBLIC
   }
 
   getCurrentProject() {

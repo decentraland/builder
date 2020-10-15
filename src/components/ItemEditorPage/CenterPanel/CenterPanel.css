@@ -1,4 +1,36 @@
 .CenterPanel {
+  position: relative;
   flex: 1 0 auto;
   background-color: var(--preview-background);
+}
+
+.CenterPanel .dropdowns {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+}
+
+.CenterPanel .dropdowns .ui.dropdown {
+  background-color: #4a4551;
+  padding: 4px 12px 6px 12px;
+  border-radius: 4px;
+}
+
+.CenterPanel .dropdowns .ui.dropdown > .dropdown.icon {
+  color: var(--text);
+}
+
+.CenterPanel .dropdowns .ui.dropdown > .text {
+  color: var(--text);
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.CenterPanel .dropdowns .avatar-animation-dropdown-wrapper {
+  margin-left: 16px;
+  display: inline-block;
+}
+
+.ui.popup.disabled-animation-tooltip {
+  height: auto;
 }

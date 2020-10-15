@@ -38,7 +38,25 @@ export type EditorScene = {
 
 export type UnityKeyboardEvent = 'DownArrow' | 'UpArrow' | 'LeftArrow' | 'RightArrow'
 
+export enum PreviewType {
+  PROJECT = 'project',
+  PUBLIC = 'public',
+  POOL = 'pool',
+  WEARABLE = 'wearable'
+}
+
 export type OpenEditorOptions = {
   isReadOnly: boolean
-  type: 'project' | 'public' | 'pool'
+  type: PreviewType
+}
+
+export enum AvatarAnimation {
+  IDLE = 'idle',
+  WAVE = 'wave',
+  FISTPUMP = 'fistpump',
+  ROBOT = 'robot',
+  RAISEHAND = 'raiseHand',
+  CLAP = 'clap',
+  MONEY = 'money',
+  KISS = 'kiss'
 }

@@ -1,4 +1,5 @@
 import uuidv4 from 'uuid/v4'
+import { push } from 'connected-react-router'
 import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
@@ -6,7 +7,6 @@ import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-
 import {
   CREATE_PROJECT_FROM_TEMPLATE,
   CreateProjectFromTemplateAction,
@@ -39,7 +39,6 @@ import {
   DELETE_PROJECT,
   DeleteProjectAction
 } from 'modules/project/actions'
-
 import { Project } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
@@ -47,13 +46,10 @@ import { getData as getScenes } from 'modules/scene/selectors'
 import { EMPTY_SCENE_METRICS } from 'modules/scene/constants'
 import { createScene, setGround, applyLayout } from 'modules/scene/actions'
 import { SET_EDITOR_READY, setEditorReady, takeScreenshot, setExportProgress, createEditorScene, setGizmo } from 'modules/editor/actions'
-import { Asset } from 'modules/asset/types'
 import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { didUpdateLayout, getImageAsDataUrl } from './utils'
-import { createFiles } from './export'
 import { builder } from 'lib/api/builder'
 import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo } from 'modules/editor/types'
@@ -61,34 +57,10 @@ import { Pool } from 'modules/pool/types'
 import { loadProfileRequest } from 'modules/profile/actions'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
-import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
-
-const DEFAULT_GROUND_ASSET: Asset = {
-  id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
-  name: 'Bermuda Grass',
-  thumbnail: 'https://cnhost.decentraland.org/QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE',
-  model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
-  script: null,
-  tags: ['ground'],
-  category: 'ground',
-  contents: {
-    'FloorBaseGrass_01/FloorBaseGrass_01.glb': 'QmSyvWnb5nKCaGHw9oHLSkwywvS5NYpj6vgb8L121kWveS',
-    'FloorBaseGrass_01/Floor_Grass01.png.png': 'QmT1WfQPMBVhgwyxV5SfcfWivZ6hqMCT74nxdKXwyZBiXb',
-    'FloorBaseGrass_01/thumbnail.png': 'QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'
-  },
-  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a',
-  metrics: {
-    triangles: 0,
-    materials: 0,
-    meshes: 0,
-    bodies: 0,
-    entities: 0,
-    textures: 0
-  },
-  parameters: [],
-  actions: []
-}
+import { getDefaultGroundAsset } from 'modules/deployment/utils'
+import { didUpdateLayout, getImageAsDataUrl } from './utils'
+import { createFiles } from './export'
 
 export function* projectSaga() {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
@@ -143,7 +115,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   if (onSuccess) {
     onSuccess(project, scene)
-    yield put(setGround(project.id, DEFAULT_GROUND_ASSET))
+    yield put(setGround(project.id, getDefaultGroundAsset()))
   }
 }
 

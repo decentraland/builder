@@ -113,7 +113,16 @@ export default class RightPanel extends React.PureComponent<Props> {
                 value={item.data.replaces}
                 options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                 disabled={item.isPublished}
-                onChange={replaces => this.handleChange({ ...item, data: { ...item.data, replaces } })}
+                onChange={replaces =>
+                  this.handleChange({
+                    ...item,
+                    data: {
+                      ...item.data,
+                      replaces,
+                      representations: item.data.representations.map(representation => ({ ...representation, overrideReplaces: replaces }))
+                    }
+                  })
+                }
               />
               <MultiSelect<WearableCategory>
                 itemId={item.id}
@@ -121,7 +130,16 @@ export default class RightPanel extends React.PureComponent<Props> {
                 value={item.data.hides}
                 options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                 disabled={item.isPublished}
-                onChange={hides => this.handleChange({ ...item, data: { ...item.data, hides } })}
+                onChange={hides =>
+                  this.handleChange({
+                    ...item,
+                    data: {
+                      ...item.data,
+                      hides,
+                      representations: item.data.representations.map(representation => ({ ...representation, overrideHides: hides }))
+                    }
+                  })
+                }
               />
             </>
           )}

@@ -69,8 +69,9 @@ function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
 function* handleSaveItemRequest(action: SaveItemRequestAction) {
   const { item, contents } = action.payload
   try {
-    yield call(() => saveItem(item, contents))
-    yield put(saveItemSuccess(item, contents))
+    const itemWithUpdatedDate = { ...item, updatedAt: Date.now() }
+    yield call(() => saveItem(itemWithUpdatedDate, contents))
+    yield put(saveItemSuccess(itemWithUpdatedDate, contents))
     yield put(closeModal('CreateItemModal'))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
   } catch (error) {
