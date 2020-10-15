@@ -43,10 +43,5 @@ export const getAvatar = createSelector<RootState, string | undefined, ProfileSt
 )
 
 export const getName = createSelector<RootState, Avatar | null, string | null>(getAvatar, avatar => {
-  if (avatar) {
-    if (avatar.name) {
-      return avatar.name
-    }
-  }
-  return null
+  return avatar && avatar.name ? avatar.name : null
 })
