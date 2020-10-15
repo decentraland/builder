@@ -153,10 +153,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_COLLECTIONS_SUCCESS: {
       const { collections } = action.payload
-      const items = ([] as Item[]).concat.apply(
-        [],
-        collections.map(collection => collection.items)
-      )
+      const items = collections.reduce<Item[]>((items, collection) => items.concat(collection.items), [])
       return {
         ...state,
         data: {
