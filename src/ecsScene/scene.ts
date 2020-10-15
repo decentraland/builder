@@ -21,7 +21,7 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
-import { BODY_SHAPE_CATEGOTY, WearableBodyShape } from 'modules/item/types'
+import { BODY_SHAPE_CATEGORY, WearableBodyShape } from 'modules/item/types'
 const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
@@ -222,8 +222,8 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       const wearables: Wearable[] = message.payload.wearables
       const avatar = getAvatar()
       const avatarShape = avatar.getComponent(AvatarShape)
-      const bodyShape = wearables.find(wearable => wearable.category === BODY_SHAPE_CATEGOTY)
-      const otherWearables = wearables.filter(wearable => wearable.category !== BODY_SHAPE_CATEGOTY)
+      const bodyShape = wearables.find(wearable => wearable.category === BODY_SHAPE_CATEGORY)
+      const otherWearables = wearables.filter(wearable => wearable.category !== BODY_SHAPE_CATEGORY)
       avatarShape.bodyShape = bodyShape ? bodyShape.id : WearableBodyShape.MALE
       avatarShape.wearables = otherWearables.map(wearable => wearable.id)
       avatarShape.expressionTriggerId = message.payload.animation === 'idle' ? 'Idle' : message.payload.animation // the 'idle' animation is the only one that is capitalized :shrug:
