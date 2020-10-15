@@ -34,6 +34,7 @@
   font-size: 15px;
   line-height: 24px;
   font-weight: bold;
+  color: var(--text);
 }
 
 .Collections .collection .count {

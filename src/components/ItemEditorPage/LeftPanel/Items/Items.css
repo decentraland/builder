@@ -31,6 +31,7 @@
   line-height: 24px;
   font-weight: bold;
   flex: 1 0 auto;
+  color: var(--text);
 }
 
 .Items .item .toggle {

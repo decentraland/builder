@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { getSearch, push } from 'connected-react-router'
+import { getSearch } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCollections } from 'modules/collection/selectors'
 import { getItems } from 'modules/item/selectors'
@@ -18,7 +18,6 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
   onSetItems: items => dispatch(setItems(items))
 })
 

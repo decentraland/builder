@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Header, Popup, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
@@ -31,21 +32,17 @@ export default class Items extends React.PureComponent<Props> {
   }
 
   render() {
-    const { items, onNavigate, selectedItemId, selectedCollectionId, hasHeader } = this.props
+    const { items, selectedItemId, selectedCollectionId, hasHeader } = this.props
     if (items.length === 0) return null
 
     return (
       <Section className="Items">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
         {items.map(item => (
-          <div
+          <Link
             key={item.id}
             className={`item ${item.id === selectedItemId ? 'is-selected' : ''}`}
-            onClick={
-              item.id === selectedItemId
-                ? undefined
-                : () => onNavigate(locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined }))
-            }
+            to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}
           >
             <ItemImage item={item} />
             <div className="name">{item.name}</div>
@@ -60,7 +57,7 @@ export default class Items extends React.PureComponent<Props> {
                 <div className={`toggle ${this.isVisible(item) ? 'visible' : 'hidden'}`} onClick={() => this.handleToggle(item)}></div>
               }
             />
-          </div>
+          </Link>
         ))}
       </Section>
     )

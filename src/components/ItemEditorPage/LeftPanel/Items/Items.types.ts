@@ -6,7 +6,6 @@ export type Props = {
   selectedCollectionId: string | null
   visibleItems: Item[]
   items: Item[]
-  onNavigate: (path: string) => void
   hasHeader: boolean
   bodyShape: WearableBodyShape
   onSetItems: typeof setItems
