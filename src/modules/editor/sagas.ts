@@ -594,7 +594,7 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
 function* getWearables(items: Item[]) {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
   const avatar = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
-  const apply = items.map(item => toWearable(item))
+  const apply = items.map(toWearable)
   const wearables = mergeWearables(avatar, apply)
   return wearables
 }
