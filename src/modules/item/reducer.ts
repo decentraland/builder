@@ -1,9 +1,14 @@
-import { Item } from './types'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
-
 import { Mint } from 'modules/collection/types'
-import { PUBLISH_COLLECTION_SUCCESS, MINT_COLLECTION_ITEMS_SUCCESS } from 'modules/collection/actions'
+import {
+  FetchCollectionsSuccessAction,
+  FetchCollectionSuccessAction,
+  FETCH_COLLECTIONS_SUCCESS,
+  FETCH_COLLECTION_SUCCESS,
+  PUBLISH_COLLECTION_SUCCESS,
+  MINT_COLLECTION_ITEMS_SUCCESS
+} from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
   FetchItemsSuccessAction,
@@ -11,6 +16,12 @@ import {
   FETCH_ITEMS_REQUEST,
   FETCH_ITEMS_SUCCESS,
   FETCH_ITEMS_FAILURE,
+  FetchItemRequestAction,
+  FetchItemSuccessAction,
+  FetchItemFailureAction,
+  FETCH_ITEM_REQUEST,
+  FETCH_ITEM_SUCCESS,
+  FETCH_ITEM_FAILURE,
   SaveItemRequestAction,
   SaveItemSuccessAction,
   SaveItemFailureAction,
@@ -44,6 +55,8 @@ import {
   DEPLOY_ITEM_CONTENTS_SUCCESS,
   DEPLOY_ITEM_CONTENTS_FAILURE
 } from './actions'
+import { toItemObject } from './utils'
+import { Item } from './types'
 
 export type ItemState = {
   data: Record<string, Item>
@@ -61,6 +74,9 @@ type ItemReducerAction =
   | FetchItemsRequestAction
   | FetchItemsSuccessAction
   | FetchItemsFailureAction
+  | FetchItemRequestAction
+  | FetchItemSuccessAction
+  | FetchItemFailureAction
   | SaveItemRequestAction
   | SaveItemSuccessAction
   | SaveItemFailureAction
@@ -78,10 +94,13 @@ type ItemReducerAction =
   | DeployItemContentsRequestAction
   | DeployItemContentsSuccessAction
   | DeployItemContentsFailureAction
+  | FetchCollectionsSuccessAction
+  | FetchCollectionSuccessAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
     case FETCH_ITEMS_REQUEST:
+    case FETCH_ITEM_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
     case DEPLOY_ITEM_CONTENTS_REQUEST:
     case SAVE_PUBLISHED_ITEM_REQUEST:
@@ -94,14 +113,12 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEMS_SUCCESS:
     case SET_ITEMS_TOKEN_ID_SUCCESS: {
+      const { items } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
-          ...action.payload.items.reduce((obj, item) => {
-            obj[item.id] = item
-            return obj
-          }, {} as Record<string, Item>)
+          ...toItemObject(items)
         },
         loading: loadingReducer(state.loading, action),
         error: null
@@ -119,6 +136,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: action.payload.error
       }
     }
+    case FETCH_ITEM_SUCCESS:
     case SAVE_PUBLISHED_ITEM_SUCCESS:
     case SAVE_ITEM_SUCCESS:
     case DEPLOY_ITEM_CONTENTS_SUCCESS: {
@@ -127,7 +145,35 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         ...state,
         data: {
           ...state.data,
-          [item.id]: { ...item }
+          ...toItemObject([item])
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+    case FETCH_COLLECTIONS_SUCCESS: {
+      const { collections } = action.payload
+      const items = ([] as Item[]).concat.apply(
+        [],
+        collections.map(collection => collection.items)
+      )
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(items)
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+    case FETCH_COLLECTION_SUCCESS: {
+      const { collection } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...toItemObject(collection.items)
         },
         loading: loadingReducer(state.loading, action),
         error: null
@@ -144,6 +190,18 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
       delete newState.data[item.id]
       return newState
+    }
+    case FETCH_ITEMS_FAILURE:
+    case FETCH_ITEM_FAILURE:
+    case SET_ITEMS_TOKEN_ID_FAILURE:
+    case SAVE_PUBLISHED_ITEM_FAILURE:
+    case SAVE_ITEM_FAILURE:
+    case DELETE_ITEM_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error
+      }
     }
     case SET_COLLECTION: {
       const { item, collectionId } = action.payload

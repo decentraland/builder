@@ -44,14 +44,15 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   renderSelectedCollection() {
-    const { collection } = this.props
+    const { address, collection } = this.props
+    const isOwner = collection && collection.owner === address
     return collection ? (
       <>
         <div className="block back" onClick={this.handleBack} />
         <div className="title">
           {collection.name} <CollectionBadge collection={collection} />
         </div>
-        {collection.isPublished ? null : (
+        {isOwner || !collection.isPublished ? (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
@@ -59,7 +60,7 @@ export default class Header extends React.PureComponent<Props> {
               <ConfirmDelete name={collection.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
             </Dropdown.Menu>
           </Dropdown>
-        )}
+        ) : null}
       </>
     ) : null
   }

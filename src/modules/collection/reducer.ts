@@ -1,11 +1,13 @@
-import { Collection } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-
+import { FetchItemsSuccessAction, FetchItemSuccessAction, FETCH_ITEMS_SUCCESS, FETCH_ITEM_SUCCESS } from 'modules/item/actions'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
   FetchCollectionsFailureAction,
+  FetchCollectionRequestAction,
+  FetchCollectionSuccessAction,
+  FetchCollectionFailureAction,
   SaveCollectionRequestAction,
   SaveCollectionSuccessAction,
   SaveCollectionFailureAction,
@@ -15,6 +17,9 @@ import {
   FETCH_COLLECTIONS_REQUEST,
   FETCH_COLLECTIONS_SUCCESS,
   FETCH_COLLECTIONS_FAILURE,
+  FETCH_COLLECTION_REQUEST,
+  FETCH_COLLECTION_SUCCESS,
+  FETCH_COLLECTION_FAILURE,
   SAVE_COLLECTION_REQUEST,
   SAVE_COLLECTION_FAILURE,
   SAVE_COLLECTION_SUCCESS,
@@ -25,6 +30,8 @@ import {
   SET_COLLECTION_MINTERS_SUCCESS,
   SET_COLLECTION_MANAGERS_SUCCESS
 } from './actions'
+import { toCollectionObject } from './utils'
+import { Collection } from './types'
 
 export type CollectionState = {
   data: Record<string, Collection>
@@ -42,6 +49,9 @@ type CollectionReducerAction =
   | FetchCollectionsRequestAction
   | FetchCollectionsSuccessAction
   | FetchCollectionsFailureAction
+  | FetchCollectionRequestAction
+  | FetchCollectionSuccessAction
+  | FetchCollectionFailureAction
   | SaveCollectionRequestAction
   | SaveCollectionSuccessAction
   | SaveCollectionFailureAction
@@ -49,65 +59,71 @@ type CollectionReducerAction =
   | DeleteCollectionSuccessAction
   | DeleteCollectionFailureAction
   | FetchTransactionSuccessAction
+  | FetchItemsSuccessAction
+  | FetchItemSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
-    case FETCH_COLLECTIONS_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
-      }
-    }
-    case FETCH_COLLECTIONS_SUCCESS: {
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          ...action.payload.collections.reduce((obj, Collection) => {
-            obj[Collection.id] = Collection
-            return obj
-          }, {} as Record<string, Collection>)
-        },
-        loading: loadingReducer(state.loading, action),
-        error: null
-      }
-    }
-    case FETCH_COLLECTIONS_FAILURE: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: action.payload.error
-      }
-    }
+    case FETCH_COLLECTIONS_REQUEST:
+    case FETCH_COLLECTION_REQUEST:
+    case DELETE_COLLECTION_REQUEST:
     case SAVE_COLLECTION_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
-    case SAVE_COLLECTION_SUCCESS: {
-      const { collection } = action.payload
+    case FETCH_COLLECTIONS_SUCCESS: {
+      const { collections } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
-          [collection.id]: collection
+          ...toCollectionObject(collections)
         },
         loading: loadingReducer(state.loading, action),
         error: null
       }
     }
-    case SAVE_COLLECTION_FAILURE: {
+    case FETCH_ITEMS_SUCCESS: {
+      const { items } = action.payload
+      const collections = items.filter(item => !!item.collection).map(item => item.collection) as Collection[]
       return {
         ...state,
+        data: {
+          ...state.data,
+          ...toCollectionObject(collections)
+        },
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error
+        error: null
       }
     }
-    case DELETE_COLLECTION_REQUEST: {
+    case FETCH_ITEM_SUCCESS: {
+      const { item } = action.payload
+      return item.collection
+        ? {
+            ...state,
+            data: {
+              ...state.data,
+              ...toCollectionObject([item.collection])
+            },
+            loading: loadingReducer(state.loading, action),
+            error: null
+          }
+        : state
+    }
+    case FETCH_COLLECTION_SUCCESS:
+    case SAVE_COLLECTION_SUCCESS: {
+      const { collection } = action.payload
+
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        data: {
+          ...state.data,
+          ...toCollectionObject([collection])
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
     case DELETE_COLLECTION_SUCCESS: {
@@ -122,6 +138,9 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       delete newState.data[collection.id]
       return newState
     }
+    case FETCH_COLLECTIONS_FAILURE:
+    case FETCH_COLLECTION_FAILURE:
+    case SAVE_COLLECTION_FAILURE:
     case DELETE_COLLECTION_FAILURE: {
       return {
         ...state,

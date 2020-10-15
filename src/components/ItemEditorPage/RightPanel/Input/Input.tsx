@@ -4,6 +4,10 @@ import { Props, State } from './Input.types'
 import './Input.css'
 
 export default class Input extends React.PureComponent<Props, State> {
+  static defaultProps = {
+    disabled: false
+  }
+
   state: State = {
     value: this.props.value || ''
   }
@@ -24,12 +28,17 @@ export default class Input extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label } = this.props
+    const { label, disabled } = this.props
 
     return (
       <div className="Input">
         <div className="label">{label}</div>
-        <input value={this.state.value} onChange={this.handleChange} placeholder={t('item_editor.right_panel.text_placeholder')} />
+        <input
+          value={this.state.value}
+          onChange={this.handleChange}
+          placeholder={t('item_editor.right_panel.text_placeholder')}
+          disabled={disabled}
+        />
       </div>
     )
   }

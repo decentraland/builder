@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getItems } from 'modules/item/selectors'
 import { deleteItemRequest, saveItemRequest } from 'modules/item/actions'
@@ -8,6 +9,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './RightPanel.types
 import RightPanel from './RightPanel'
 
 const mapState = (state: RootState): MapStateProps => ({
+  address: getAddress(state),
   items: getItems(state),
   selectedItemId: getSelectedItemId(state)
 })

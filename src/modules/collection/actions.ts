@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Item } from 'modules/item/types'
-import { Collection, Mint, Access } from './types'
+import { Collection, CollectionWithItems, Mint, Access } from './types'
 
 // Fetch collections
 
@@ -10,12 +10,26 @@ export const FETCH_COLLECTIONS_SUCCESS = '[Success] Fetch Collections'
 export const FETCH_COLLECTIONS_FAILURE = '[Failure] Fetch Collections'
 
 export const fetchCollectionsRequest = () => action(FETCH_COLLECTIONS_REQUEST)
-export const fetchCollectionsSuccess = (collections: Collection[]) => action(FETCH_COLLECTIONS_SUCCESS, { collections })
+export const fetchCollectionsSuccess = (collections: CollectionWithItems[]) => action(FETCH_COLLECTIONS_SUCCESS, { collections })
 export const fetchCollectionsFailure = (error: string) => action(FETCH_COLLECTIONS_FAILURE, { error })
 
 export type FetchCollectionsRequestAction = ReturnType<typeof fetchCollectionsRequest>
 export type FetchCollectionsSuccessAction = ReturnType<typeof fetchCollectionsSuccess>
 export type FetchCollectionsFailureAction = ReturnType<typeof fetchCollectionsFailure>
+
+// Fetch collection
+
+export const FETCH_COLLECTION_REQUEST = '[Request] Fetch Collection'
+export const FETCH_COLLECTION_SUCCESS = '[Success] Fetch Collection'
+export const FETCH_COLLECTION_FAILURE = '[Failure] Fetch Collection'
+
+export const fetchCollectionRequest = (id: string) => action(FETCH_COLLECTION_REQUEST, { id })
+export const fetchCollectionSuccess = (collection: CollectionWithItems) => action(FETCH_COLLECTION_SUCCESS, { collection })
+export const fetchCollectionFailure = (id: string, error: string) => action(FETCH_COLLECTION_FAILURE, { id, error })
+
+export type FetchCollectionRequestAction = ReturnType<typeof fetchCollectionRequest>
+export type FetchCollectionSuccessAction = ReturnType<typeof fetchCollectionSuccess>
+export type FetchCollectionFailureAction = ReturnType<typeof fetchCollectionFailure>
 
 // Save collection
 

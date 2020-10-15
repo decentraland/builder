@@ -1,34 +1,47 @@
 import * as React from 'react'
-import { Props } from './LeftPanel.types'
+import { Loader } from 'decentraland-ui'
+import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
 import Collections from './Collections'
+import { Props } from './LeftPanel.types'
 import './LeftPanel.css'
 
 export default class LeftPanel extends React.PureComponent<Props> {
   render() {
     const { items, collections, selectedItemId, selectedCollectionId, visibleItems, onSetItems, bodyShape } = this.props
-    const listItems = items.filter(item => (selectedCollectionId ? item.collectionId === selectedCollectionId : !item.collectionId))
+    const itemsWithoutCollection = items.filter(item => !item.collectionId)
     return (
       <div className="LeftPanel">
-        <Header />
-        <Items
-          items={listItems}
-          hasHeader={!selectedCollectionId && collections.length > 0}
-          selectedItemId={selectedItemId}
-          selectedCollectionId={selectedCollectionId}
-          visibleItems={visibleItems}
-          onSetItems={onSetItems}
-          bodyShape={bodyShape}
-        />
-        {selectedCollectionId ? null : (
-          <Collections
-            collections={collections}
-            items={items}
-            hasHeader={listItems.length > 0}
-            selectedCollectionId={selectedCollectionId}
-          />
-        )}
+        <CollectionProvider id={selectedCollectionId}>
+          {(_collection, collectionItems, isLoading) => {
+            const listItems = selectedCollectionId ? collectionItems : itemsWithoutCollection
+            return isLoading ? (
+              <Loader size="massive" active />
+            ) : (
+              <>
+                <Header />
+                <Items
+                  items={listItems}
+                  hasHeader={!selectedCollectionId && collections.length > 0}
+                  selectedItemId={selectedItemId}
+                  selectedCollectionId={selectedCollectionId}
+                  visibleItems={visibleItems}
+                  onSetItems={onSetItems}
+                  bodyShape={bodyShape}
+                />
+                {selectedCollectionId ? null : (
+                  <Collections
+                    collections={collections}
+                    items={items}
+                    hasHeader={listItems.length > 0}
+                    selectedCollectionId={selectedCollectionId}
+                  />
+                )}
+              </>
+            )
+          }}
+        </CollectionProvider>
       </div>
     )
   }

@@ -1,3 +1,4 @@
+import { utils } from 'decentraland-commons'
 import { Collection } from 'modules/collection/types'
 import { Item, ItemRarity, ItemType, WearableData, WearableBodyShape, BodyShapeType, RARITY_MAX_SUPPLY } from './types'
 
@@ -99,4 +100,11 @@ export function getMetadata(item: Item) {
     default:
       return `${version}:${type}:${slug}`
   }
+}
+
+export function toItemObject(items: Item[]) {
+  return items.reduce((obj, item) => {
+    obj[item.id] = utils.omit<Item>(item, ['collection'])
+    return obj
+  }, {} as Record<string, Item>)
 }
