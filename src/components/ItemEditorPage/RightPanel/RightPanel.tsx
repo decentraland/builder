@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
+import { isEqual } from 'lib/address'
 import { getMissingBodyShapeType } from 'modules/item/utils'
 import { Item, ItemRarity, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
@@ -44,9 +45,10 @@ export default class RightPanel extends React.PureComponent<Props> {
   }
 
   render() {
-    const { selectedItemId, address } = this.props
+    const { selectedItemId, address = '' } = this.props
     const selectedItem = this.getSelectedItem()
-    const isOwner = selectedItem && selectedItem.owner === address
+
+    const isOwner = selectedItem && isEqual(selectedItem.owner, address)
 
     const categories = Object.values(WearableCategory)
     const rarities = Object.values(ItemRarity)

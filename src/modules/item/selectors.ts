@@ -13,3 +13,7 @@ export const getError = (state: RootState) => getState(state).error
 export const getItems = createSelector<RootState, ItemState['data'], string | undefined, Item[]>(getData, getAddress, (itemData, address) =>
   Object.values(itemData).filter(item => address && isEqual(item.owner, address))
 )
+
+export const getOrphanItems = createSelector<RootState, Item[], Item[]>(getItems, items =>
+  items.filter(item => item.collectionId === undefined)
+)

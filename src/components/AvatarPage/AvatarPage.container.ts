@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
-import { getItems } from 'modules/item/selectors'
+import { getOrphanItems } from 'modules/item/selectors'
 import { getCollections } from 'modules/collection/selectors'
 import { getLoading as getLoadingItems } from 'modules/item/selectors'
 import { getLoading as getLoadingCollections } from 'modules/collection/selectors'
@@ -13,7 +13,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './AvatarPage.types
 import AvatarPage from './AvatarPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const items = getItems(state).filter(item => item.collectionId === undefined)
+  const items = getOrphanItems(state)
 
   return {
     items,

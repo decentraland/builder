@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Dropdown, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { isEqual } from 'lib/address'
 import ConfirmDelete from 'components/ConfirmDelete'
 import CollectionBadge from 'components/CollectionBadge'
 import { Props } from './Header.types'
@@ -44,8 +45,8 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   renderSelectedCollection() {
-    const { address, collection } = this.props
-    const isOwner = collection && collection.owner === address
+    const { collection, address = '' } = this.props
+    const isOwner = collection && isEqual(collection.owner, address)
     return collection ? (
       <>
         <div className="block back" onClick={this.handleBack} />
