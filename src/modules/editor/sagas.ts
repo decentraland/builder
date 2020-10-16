@@ -633,6 +633,5 @@ function* handleSetBodyShape(_action: SetBodyShapeAction) {
 }
 
 function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
-  yield bustCache() // without this, the next animation doesn't play
   yield renderAvatar()
 }
