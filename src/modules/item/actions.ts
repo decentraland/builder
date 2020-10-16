@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
-import { Item } from './types'
+import { Item, CollectionItem } from './types'
 
 // Fetch items
 
@@ -10,12 +10,26 @@ export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
 export const fetchItemsRequest = () => action(FETCH_ITEMS_REQUEST)
-export const fetchItemsSuccess = (items: Item[]) => action(FETCH_ITEMS_SUCCESS, { items })
+export const fetchItemsSuccess = (items: CollectionItem[]) => action(FETCH_ITEMS_SUCCESS, { items })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })
 
 export type FetchItemsRequestAction = ReturnType<typeof fetchItemsRequest>
 export type FetchItemsSuccessAction = ReturnType<typeof fetchItemsSuccess>
 export type FetchItemsFailureAction = ReturnType<typeof fetchItemsFailure>
+
+// Fetch item
+
+export const FETCH_ITEM_REQUEST = '[Request] Fetch Item'
+export const FETCH_ITEM_SUCCESS = '[Success] Fetch Item'
+export const FETCH_ITEM_FAILURE = '[Failure] Fetch Item'
+
+export const fetchItemRequest = (id: string) => action(FETCH_ITEM_REQUEST, { id })
+export const fetchItemSuccess = (item: CollectionItem) => action(FETCH_ITEM_SUCCESS, { item })
+export const fetchItemFailure = (id: string, error: string) => action(FETCH_ITEM_FAILURE, { id, error })
+
+export type FetchItemRequestAction = ReturnType<typeof fetchItemRequest>
+export type FetchItemSuccessAction = ReturnType<typeof fetchItemSuccess>
+export type FetchItemFailureAction = ReturnType<typeof fetchItemFailure>
 
 // Save items
 

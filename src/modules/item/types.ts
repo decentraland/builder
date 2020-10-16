@@ -1,4 +1,5 @@
 import { ModelMetrics } from 'modules/scene/types'
+import { Collection } from 'modules/collection/types'
 
 export enum ItemType {
   WEARABLE = 'wearable'
@@ -83,11 +84,6 @@ export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
   [ItemRarity.COMMON]: 100000
 }
 
-export type SaleData = {
-  price?: string
-  beneficiary?: string
-}
-
 export type WearableData = {
   category?: WearableCategory
   representations: WearableRepresentation[]
@@ -104,6 +100,8 @@ export type Item = {
   description?: string
   collectionId?: string
   tokenId?: string
+  price?: string
+  beneficiary?: string
   rarity?: ItemRarity
   totalSupply?: number
   isPublished: boolean
@@ -115,6 +113,10 @@ export type Item = {
   metrics: ModelMetrics
   createdAt: number
   updatedAt: number
-} & SaleData
+}
+
+export type CollectionItem = Item & {
+  collection?: Collection
+}
 
 export const THUMBNAIL_PATH = 'thumbnail.png'

@@ -1,11 +1,11 @@
 import ItemDropdown from './ItemDropdown'
 import { RootState } from 'modules/common/types'
-import { getItems } from 'modules/item/selectors'
+import { getWalletItems } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDropdown.types'
 import { connect } from 'react-redux'
 
 const mapState = (state: RootState): MapStateProps => ({
-  items: getItems(state)
+  items: getWalletItems(state)
 })
 
 const mapDispatch = (_dispatch: MapDispatch): MapDispatchProps => ({})

@@ -1,22 +1,22 @@
 import { AxiosRequestConfig } from 'axios'
-import { env } from 'decentraland-commons'
+import { env, utils } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
-import { authorize, authorizeAuth0 } from './auth'
+import { runMigrations } from 'modules/migrations/utils'
+import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest } from 'modules/project/types'
 import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
 import { Scene, ModelMetrics } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
-import { createManifest } from 'modules/project/export'
 import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
-import { runMigrations } from 'modules/migrations/utils'
-import { migrations } from 'modules/migrations/manifest'
+import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
-import { Collection } from 'modules/collection/types'
+import { Item, ItemType, ItemRarity, CollectionItem, WearableData } from 'modules/item/types'
+import { Collection, CollectionWithItems } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
+import { authorize, authorizeAuth0 } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -43,6 +43,7 @@ export type RemoteItem = {
   data: WearableData
   metrics: ModelMetrics
   contents: Record<string, string>
+  collection?: RemoteCollection
   created_at: Date
   updated_at: Date
 }
@@ -57,6 +58,7 @@ export type RemoteCollection = {
   is_approved: boolean
   minters: string[]
   managers: string[]
+  items: RemoteItem[]
   created_at: Date
   updated_at: Date
 }
@@ -264,6 +266,7 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
+    collection: undefined,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -271,8 +274,8 @@ function toRemoteItem(item: Item): RemoteItem {
   return remoteItem
 }
 
-function fromRemoteItem(remoteItem: RemoteItem): Item {
-  const item: Item = {
+function fromRemoteItem(remoteItem: RemoteItem): CollectionItem {
+  const item: CollectionItem = {
     id: remoteItem.id,
     name: remoteItem.name,
     thumbnail: remoteItem.thumbnail,
@@ -295,6 +298,7 @@ function fromRemoteItem(remoteItem: RemoteItem): Item {
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
+  if (remoteItem.collection) item.collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items']))
 
   return item
 }
@@ -310,6 +314,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     managers: collection.managers,
     contract_address: collection.contractAddress || null,
     salt: collection.salt || null,
+    items: [],
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
   }
@@ -317,8 +322,8 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
   return remoteCollection
 }
 
-function fromRemoteCollection(remoteCollection: RemoteCollection): Collection {
-  const collection: Collection = {
+function fromRemoteCollection(remoteCollection: RemoteCollection): CollectionWithItems {
+  const collection: CollectionWithItems = {
     id: remoteCollection.id,
     name: remoteCollection.name,
     owner: remoteCollection.eth_address,
@@ -326,12 +331,16 @@ function fromRemoteCollection(remoteCollection: RemoteCollection): Collection {
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
+    items: [],
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }
 
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
+  if (remoteCollection.items) {
+    collection.items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection'])))
+  }
 
   return collection
 }
@@ -378,7 +387,6 @@ export class BuilderAPI extends BaseAPI {
 
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
     await this.request('put', `/projects/${projectId}/pool`, additionalInfo)
-    return
   }
 
   async uploadMedia(
@@ -435,7 +443,6 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteProject(id: string) {
     await this.request('delete', `/projects/${id}`)
-    return
   }
 
   async fetchManifest(id: string, type: PreviewType.PROJECT | PreviewType.POOL | PreviewType.PUBLIC = PreviewType.PROJECT) {
@@ -520,8 +527,13 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchItems() {
-    const remoteItems = await this.request('get', `/items`)
+    const remoteItems: RemoteItem[] = await this.request('get', `/items`)
     return remoteItems.map(fromRemoteItem)
+  }
+
+  async fetchItem(id: string) {
+    const remoteItem: RemoteItem = await this.request('get', `/items/${id}`)
+    return fromRemoteItem(remoteItem)
   }
 
   async saveItem(item: Item, contents: Record<string, Blob>) {
@@ -542,8 +554,13 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCollections() {
-    const remoteCollections = await this.request('get', `/collections`)
+    const remoteCollections: RemoteCollection[] = await this.request('get', `/collections`)
     return remoteCollections.map(fromRemoteCollection)
+  }
+
+  async fetchCollection(id: string) {
+    const remoteCollection: RemoteCollection = await this.request('get', `/collections/${id}`)
+    return fromRemoteCollection(remoteCollection)
   }
 
   async saveCollection(collection: Collection) {

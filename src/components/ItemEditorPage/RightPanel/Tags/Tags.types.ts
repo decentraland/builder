@@ -1,6 +1,7 @@
 export type Props = {
   itemId: string
   value: string[]
+  isDisabled?: boolean
   onChange: (newValue: string[]) => void
 }
 
