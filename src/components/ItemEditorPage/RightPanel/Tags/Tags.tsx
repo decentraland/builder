@@ -5,6 +5,10 @@ import { Props, State } from './Tags.types'
 import './Tags.css'
 
 export default class Tags extends React.PureComponent<Props, State> {
+  static defaultProps = {
+    isDisabled: false
+  }
+
   state: State = {
     draft: '',
     value: this.props.value
@@ -55,6 +59,7 @@ export default class Tags extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const { isDisabled } = this.props
     const { draft, value } = this.state
     return (
       <div className={`Tags ${value.length > 0 ? '' : 'blank'}`.trim()}>
@@ -81,6 +86,7 @@ export default class Tags extends React.PureComponent<Props, State> {
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleAdd}
           placeholder={value.length === 0 ? t('item_editor.right_panel.text_placeholder') : undefined}
+          disabled={isDisabled}
         />
       </div>
     )

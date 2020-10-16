@@ -5,10 +5,14 @@ import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import {
-  FETCH_ITEMS_REQUEST,
   FetchItemsRequestAction,
   fetchItemsSuccess,
   fetchItemsFailure,
+  FETCH_ITEMS_REQUEST,
+  FetchItemRequestAction,
+  fetchItemSuccess,
+  fetchItemFailure,
+  FETCH_ITEM_REQUEST,
   SaveItemRequestAction,
   saveItemRequest,
   saveItemSuccess,
@@ -48,6 +52,7 @@ import { Item } from './types'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
+  yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_PUBLISHED_ITEM_REQUEST, handleSavePublishedItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
@@ -63,6 +68,16 @@ function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
     yield put(fetchItemsSuccess(items))
   } catch (error) {
     yield put(fetchItemsFailure(error.message))
+  }
+}
+
+function* handleFetchItemRequest(action: FetchItemRequestAction) {
+  const { id } = action.payload
+  try {
+    const item = yield call(() => builder.fetchItem(id))
+    yield put(fetchItemSuccess(item))
+  } catch (error) {
+    yield put(fetchItemFailure(id, error.message))
   }
 }
 

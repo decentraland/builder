@@ -1,3 +1,4 @@
+import { utils } from 'decentraland-commons'
 import { Address } from 'web3x-es/address'
 import { toBN } from 'web3x-es/utils'
 import { env } from 'decentraland-commons'
@@ -40,4 +41,11 @@ function toInitializeItem(item: Item): InitializeItem {
     metadata: getMetadata(item),
     contentHash: EMPTY_HASH
   }
+}
+
+export function toCollectionObject(collections: Collection[]) {
+  return collections.reduce((obj, collection) => {
+    obj[collection.id] = utils.omit<Collection>(collection, ['items'])
+    return obj
+  }, {} as Record<string, Collection>)
 }

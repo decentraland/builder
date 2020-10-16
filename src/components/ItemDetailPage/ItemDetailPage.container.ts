@@ -4,7 +4,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { RootState } from 'modules/common/types'
 import { getItemId } from 'modules/location/selectors'
 import { getCollection } from 'modules/collection/selectors'
-import { getItems, getLoading } from 'modules/item/selectors'
+import { getWalletItems, getLoading } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST, DELETE_ITEM_REQUEST, deleteItemRequest } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ItemDetailPage.types'
@@ -12,7 +12,7 @@ import ItemDetailPage from './ItemDetailPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const itemId = getItemId(state)
-  const items = getItems(state)
+  const items = getWalletItems(state)
 
   const item = items.find(item => item.id === itemId) || null
   const collection = item && item.collectionId ? getCollection(state, item.collectionId) : null

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import { RootState } from 'modules/common/types'
-import { getItems, getLoading } from 'modules/item/selectors'
+import { getWalletItems, getLoading } from 'modules/item/selectors'
 import {
   saveItemRequest,
   savePublishedItemRequest,
@@ -15,7 +15,7 @@ import EditPriceAndBeneficiaryModal from './EditPriceAndBeneficiaryModal'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { itemId } = ownProps.metadata
-  const items = getItems(state)
+  const items = getWalletItems(state)
   const item = items.find(item => item.id === itemId) || null
 
   return {

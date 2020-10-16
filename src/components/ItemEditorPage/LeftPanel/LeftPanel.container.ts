@@ -1,16 +1,17 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { getCollections } from 'modules/collection/selectors'
-import { getItems } from 'modules/item/selectors'
+import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { getBodyShape, getVisibleItems } from 'modules/editor/selectors'
 import { setItems } from 'modules/editor/actions'
+import { getItems, getWalletOrphanItems } from 'modules/item/selectors'
+import { getWalletCollections } from 'modules/collection/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './LeftPanel.types'
 import LeftPanel from './LeftPanel'
-import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   items: getItems(state),
-  collections: getCollections(state),
+  orphanItems: getWalletOrphanItems(state),
+  collections: getWalletCollections(state),
   selectedItemId: getSelectedItemId(state),
   selectedCollectionId: getSelectedCollectionId(state),
   visibleItems: getVisibleItems(state),

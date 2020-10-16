@@ -5,6 +5,7 @@ import { setItems, SetItemsAction } from 'modules/editor/actions'
 
 export type Props = {
   items: Item[]
+  orphanItems: Item[]
   collections: Collection[]
   selectedItemId: string | null
   selectedCollectionId: string | null
@@ -13,6 +14,9 @@ export type Props = {
   onSetItems: typeof setItems
 }
 
-export type MapStateProps = Pick<Props, 'items' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape'>
+export type MapStateProps = Pick<
+  Props,
+  'items' | 'orphanItems' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape'
+>
 export type MapDispatchProps = Pick<Props, 'onSetItems'>
 export type MapDispatch = Dispatch<SetItemsAction>

@@ -6,6 +6,7 @@ import { deleteCollectionRequest, DeleteCollectionRequestAction } from 'modules/
 import { deleteItemRequest, DeleteItemRequestAction } from 'modules/item/actions'
 
 export type Props = {
+  address?: string
   collection?: Collection
   onOpenModal: typeof openModal
   onNavigate: (path: string) => void
@@ -13,6 +14,6 @@ export type Props = {
   onDeleteItem: typeof deleteItemRequest
 }
 
-export type MapStateProps = Pick<Props, 'collection'>
+export type MapStateProps = Pick<Props, 'address' | 'collection'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDeleteCollection' | 'onDeleteItem'>
 export type MapDispatch = Dispatch<OpenModalAction | CallHistoryMethodAction | DeleteCollectionRequestAction | DeleteItemRequestAction>

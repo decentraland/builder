@@ -18,7 +18,13 @@ export const getError = (state: RootState) => getState(state).error
 export const getCollections = createSelector<RootState, CollectionState['data'], string | undefined, Collection[]>(
   getData,
   getAddress,
-  (collectionData, address) => Object.values(collectionData).filter(collection => address && isEqual(collection.owner, address))
+  collectionData => Object.values(collectionData)
+)
+
+export const getWalletCollections = createSelector<RootState, Collection[], string | undefined, Collection[]>(
+  getCollections,
+  getAddress,
+  (collections, address) => collections.filter(collection => address && isEqual(collection.owner, address))
 )
 
 export const getCollection = (state: RootState, collectionId: string) => {
@@ -27,11 +33,6 @@ export const getCollection = (state: RootState, collectionId: string) => {
 }
 
 export const getCollectionItems = (state: RootState, collectionId: string) => {
-  const collection = getCollection(state, collectionId)
-  if (!collection) {
-    return []
-  }
-
   const allItems = getItems(state)
   return allItems.filter(item => item.collectionId === collectionId)
 }
