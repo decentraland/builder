@@ -46,6 +46,7 @@ export type Editor = {
     camera: {
       zoomMin: number
       zoomMax: number
+      zoomDefault: number
     }
     environment: {
       disableFloor: boolean

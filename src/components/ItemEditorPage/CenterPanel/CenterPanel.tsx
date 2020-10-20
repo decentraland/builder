@@ -24,7 +24,7 @@ export default class CenterPanel extends React.PureComponent<Props> {
   }
 
   render() {
-    const { bodyShape, avatarAnimation, visibleItems } = this.props
+    const { bodyShape, avatarAnimation } = this.props
     return (
       <div className="CenterPanel">
         <ViewPort type={PreviewType.WEARABLE} />
@@ -41,13 +41,12 @@ export default class CenterPanel extends React.PureComponent<Props> {
           <Popup
             className="disabled-animation-tooltip"
             content={t('item_editor.center_panel.disabled_animation_dropdown')}
-            disabled={visibleItems.length > 0}
+            disabled
             position="top center"
             trigger={
               <div className="avatar-animation-dropdown-wrapper">
                 <Dropdown
                   className="avatar-animation"
-                  disabled={visibleItems.length === 0}
                   value={avatarAnimation}
                   options={Object.values(AvatarAnimation).map(value => ({ value, text: t(`avatar_animations.${value}`) }))}
                   onChange={this.handleAnimationChange}
