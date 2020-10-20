@@ -11,7 +11,6 @@ import {
   Vector3,
   AvatarShape,
   Color4,
-  BoxShape,
   Wearable
 } from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
@@ -119,13 +118,6 @@ function getAvatar(): Entity {
     avatarShape.wearables = []
     avatar.addComponent(avatarShape)
     engine.addEntity(avatar)
-
-    // add a base so the avatar is standing, otherwise it does the "falling" animation
-    const base = new Entity()
-    base.addComponent(new Transform({ position: new Vector3(8, -0.2, 8), scale: new Vector3(0.01, 0.1, 0.01) }))
-    const box = new BoxShape()
-    base.addComponent(box)
-    engine.addEntity(base)
   }
   return avatar
 }

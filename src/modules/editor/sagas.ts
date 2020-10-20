@@ -52,8 +52,7 @@ import {
   SetBodyShapeAction,
   SET_AVATAR_ANIMATION,
   SetAvatarAnimationAction,
-  SetItemsAction,
-  setAvatarAnimation
+  SetItemsAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -341,9 +340,12 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
       // set camera
       yield call(async () => {
+        editorWindow.editor.setBuilderConfiguration({
+          camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
+          environment: { disableFloor: true }
+        })
         editorWindow.editor.resetCameraZoom()
-        editorWindow.editor.setCameraPosition({ x: 8, y: 1.2, z: 8 })
-        editorWindow.editor.setCameraZoomDelta(-30)
+        editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
         editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
       })
 
@@ -353,6 +355,14 @@ function* handleOpenEditor(action: OpenEditorAction) {
   } else {
     // Creates a new scene in the dcl client's side
     const project: Project | Pool | null = yield type === PreviewType.POOL ? select(getCurrentPool) : select(getCurrentProject)
+
+    // set editor in "scene mode" (min/max zoom, and show floor)
+    yield call(() => {
+      editorWindow.editor.setBuilderConfiguration({
+        camera: { zoomMax: 100, zoomMin: 1, zoomDefault: 32 },
+        environment: { disableFloor: false }
+      })
+    })
 
     if (project) {
       // load asset packs
@@ -613,15 +623,11 @@ function* bustCache() {
   const defaultWearables = yield getDefaultWearables()
   editorWindow.editor.addWearablesToCatalog(defaultWearables)
   editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, AvatarAnimation.IDLE))
-  yield delay(200)
+  yield delay(32)
 }
 
-function* handleSetItems(action: SetItemsAction) {
-  if (action.payload.items.length === 0) {
-    yield put(setAvatarAnimation(AvatarAnimation.IDLE))
-  } else {
-    yield renderAvatar()
-  }
+function* handleSetItems(_action: SetItemsAction) {
+  yield renderAvatar()
 }
 
 function* handleSetBodyShape(_action: SetBodyShapeAction) {
@@ -633,6 +639,5 @@ function* handleSetBodyShape(_action: SetBodyShapeAction) {
 }
 
 function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
-  yield bustCache() // without this, the next animation doesn't play
   yield renderAvatar()
 }
