@@ -341,11 +341,11 @@ function* handleOpenEditor(action: OpenEditorAction) {
       // set camera
       yield call(async () => {
         editorWindow.editor.setBuilderConfiguration({
-          camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 5 },
+          camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
           environment: { disableFloor: true }
         })
         editorWindow.editor.resetCameraZoom()
-        editorWindow.editor.setCameraPosition({ x: 8, y: 1.2, z: 8 })
+        editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
         editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
       })
 
