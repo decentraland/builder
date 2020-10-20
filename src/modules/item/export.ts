@@ -2,14 +2,14 @@ import { utils } from 'decentraland-commons'
 import { AuthIdentity } from 'dcl-crypto'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { saveItem } from 'modules/item/sagas'
-import { getCatalystEntityId } from 'modules/item/utils'
+import { getCatalystPointer } from 'modules/item/utils'
 import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
 import { PEER_URL } from 'lib/api/peer'
 import { Collection } from 'modules/collection/types'
 import { Item } from './types'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
-  const pointer = getCatalystEntityId(collection, item)
+  const pointer = getCatalystPointer(collection, item)
   const files = await getFiles(item.contents)
   const contentFiles = await makeContentFiles(files)
   const metadata = utils.omit(item, ['contents'])
