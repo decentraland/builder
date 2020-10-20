@@ -33,7 +33,7 @@
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^7.13.0",
-    "decentraland-ecs": "6.6.1-20201016174811.commit-0df6508",
+    "decentraland-ecs": "6.6.1-20201020183014.commit-bdc29ef",
     "decentraland-experiments": "^1.0.2",
     "decentraland-ui": "^2.23.1",
     "dotenv": "6.0.0",

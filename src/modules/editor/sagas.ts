@@ -340,11 +340,13 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
       // set camera
       yield call(async () => {
+        editorWindow.editor.setBuilderConfiguration({
+          camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 5 },
+          environment: { disableFloor: true }
+        })
         editorWindow.editor.resetCameraZoom()
-        editorWindow.editor.setBuilderConfiguration({ camera: { zoomMax: 5, zoomMin: 2 }, environment: { disableFloor: true } })
         editorWindow.editor.setCameraPosition({ x: 8, y: 1.2, z: 8 })
         editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
-        editorWindow.editor.setCameraZoomDelta(-30)
       })
 
       // render selected items
@@ -356,7 +358,10 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
     // set editor in "scene mode" (min/max zoom, and show floor)
     yield call(() => {
-      editorWindow.editor.setBuilderConfiguration({ camera: { zoomMax: 100, zoomMin: 1 }, environment: { disableFloor: false } })
+      editorWindow.editor.setBuilderConfiguration({
+        camera: { zoomMax: 100, zoomMin: 1, zoomDefault: 32 },
+        environment: { disableFloor: false }
+      })
     })
 
     if (project) {
