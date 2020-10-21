@@ -7,7 +7,7 @@ import { locations } from 'routing/locations'
 import { Props, State } from './LandSelectNameForm.types'
 import './LandSelectNameForm.css'
 import { SelectNames } from 'components/SelectNames'
-import {FetchEnsTypeResult} from 'modules/ens/types';
+import { FetchEnsTypeResult } from 'modules/ens/types'
 
 export const CLAIM_NAME_URL = env.get('REACT_APP_CLAIM_NAME_URL', '')
 
