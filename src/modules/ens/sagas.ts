@@ -53,7 +53,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     )
     yield put(setENSResolverSuccess(ens, land, txHash))
   } catch (error) {
-    yield put(setENSResolverFailure(ens, land, { ...error, origin: 'SET_ENS_RESOLVER' }))
+    yield put(setENSResolverFailure(ens, land, { message: error.message, code: error.code, origin: 'SET_ENS_RESOLVER' }))
   }
 }
 
@@ -73,7 +73,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     )
     yield put(setENSContentSuccess(ens, land, txHash))
   } catch (error) {
-    yield put(setENSContentFailure(ens, land, { ...error, origin: 'SET_ENS_CONTENT' }))
+    yield put(setENSContentFailure(ens, land, { message: error.message, code: error.code, origin: 'SET_ENS_CONTENT' }))
   }
 }
 
@@ -83,7 +83,7 @@ function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
     const result = yield marketplace.fetchDomainList(owner)
     yield put(fetchDomainListSuccess(result))
   } catch (error) {
-    yield put(fetchDomainListFailure({ ...error, origin: '', code: 0 }))
+    yield put(fetchDomainListFailure({ message: error.message, origin: '', code: 0 }))
   }
 }
 
@@ -135,7 +135,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
       })
     )
   } catch (error) {
-    yield put(fetchENSFailure({ ...error, origin: '', code: 0 }))
+    yield put(fetchENSFailure({ origin: '', code: 0, message: error.message }))
   }
 }
 
