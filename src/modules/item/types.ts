@@ -1,5 +1,4 @@
 import { ModelMetrics } from 'modules/scene/types'
-import { Collection } from 'modules/collection/types'
 
 export enum ItemType {
   WEARABLE = 'wearable'
@@ -113,10 +112,6 @@ export type Item = {
   metrics: ModelMetrics
   createdAt: number
   updatedAt: number
-}
-
-export type CollectionItem = Item & {
-  collection?: Collection
 }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'

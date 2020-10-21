@@ -54,7 +54,7 @@ import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getWalletItems } from 'modules/item/selectors'
 import { getCollection, getCollectionItems } from './selectors'
-import { Collection, CollectionWithItems } from './types'
+import { Collection } from './types'
 import { initializeCollection } from './utils'
 
 export function* collectionSaga() {
@@ -73,8 +73,8 @@ export function* collectionSaga() {
 
 function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) {
   try {
-    const collections: CollectionWithItems[] = yield call(() => builder.fetchCollections())
-    yield put(fetchCollectionsSuccess(collections))
+    const [collections, items]: [Collection[], Item[]] = yield call(() => builder.fetchCollections())
+    yield put(fetchCollectionsSuccess(collections, items))
     yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
     yield put(fetchCollectionsFailure(error.message))
@@ -84,8 +84,8 @@ function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
   const { id } = action.payload
   try {
-    const collection: CollectionWithItems = yield call(() => builder.fetchCollection(id))
-    yield put(fetchCollectionSuccess(collection))
+    const [collection, items]: [Collection, Item[]] = yield call(() => builder.fetchCollection(id))
+    yield put(fetchCollectionSuccess(collection, items))
   } catch (error) {
     yield put(fetchCollectionFailure(id, error.message))
   }
