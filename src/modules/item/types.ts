@@ -55,23 +55,23 @@ export type WearableRepresentation = {
 }
 
 export const RARITY_COLOR_LIGHT: Record<ItemRarity, string> = {
-  [ItemRarity.UNIQUE]: '#FFE617',
-  [ItemRarity.MYTHIC]: '#FB7DE3',
-  [ItemRarity.LEGENDARY]: '#A657ED',
-  [ItemRarity.EPIC]: '#6397F2',
-  [ItemRarity.RARE]: '#3AD682',
-  [ItemRarity.UNCOMMON]: '#FF8563',
-  [ItemRarity.COMMON]: '#D4E0E0'
+  [ItemRarity.UNIQUE]: '#fde97b',
+  [ItemRarity.MYTHIC]: '#ffc3f0',
+  [ItemRarity.LEGENDARY]: '#d4a2fb',
+  [ItemRarity.EPIC]: '#96befb',
+  [ItemRarity.RARE]: '#5dfdbe',
+  [ItemRarity.UNCOMMON]: '#ffb3a0',
+  [ItemRarity.COMMON]: '#f6f7fa'
 }
 
 export const RARITY_COLOR: Record<ItemRarity, string> = {
-  [ItemRarity.UNIQUE]: '#FFB626',
-  [ItemRarity.MYTHIC]: '#FF63E1',
-  [ItemRarity.LEGENDARY]: '#842DDA',
-  [ItemRarity.EPIC]: '#3D85E6',
-  [ItemRarity.RARE]: '#36CF75',
-  [ItemRarity.UNCOMMON]: '#ED6D4F',
-  [ItemRarity.COMMON]: '#ABC1C1'
+  [ItemRarity.UNIQUE]: '#cd8f1b',
+  [ItemRarity.MYTHIC]: '#e347b8',
+  [ItemRarity.LEGENDARY]: '#7a2fb3',
+  [ItemRarity.EPIC]: '#2062af',
+  [ItemRarity.RARE]: '#00a566',
+  [ItemRarity.UNCOMMON]: '#f1643b',
+  [ItemRarity.COMMON]: '#888d8f'
 }
 
 export const RARITY_MAX_SUPPLY: Record<ItemRarity, number> = {
@@ -120,3 +120,4 @@ export type CollectionItem = Item & {
 }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
+export const IMAGE_PATH = 'image.png'

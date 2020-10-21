@@ -161,7 +161,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
     const url = URL.createObjectURL(contents[model])
-    const { image: thumbnail, info: metrics } = await getModelData(url)
+    const { image: thumbnail, info: metrics } = await getModelData(url, { width: 1024, height: 1024 })
     if (!contents[THUMBNAIL_PATH]) {
       const thumbnailBlob = dataURLToBlob(thumbnail)
       if (thumbnailBlob) {
