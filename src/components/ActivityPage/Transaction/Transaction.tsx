@@ -17,6 +17,7 @@ import {
   SET_COLLECTION_MANAGERS_SUCCESS,
   PUBLISH_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
+import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
 import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
 import { locations } from 'routing/locations'
@@ -218,6 +219,42 @@ const Transaction = (props: Props) => {
               values={{
                 name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
                 count: Math.abs(managersCountDifference)
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_ENS_RESOLVER_SUCCESS: {
+      const { address, ens } = tx.payload
+      return (
+        <TransactionDetail
+          address={address}
+          text={
+            <T
+              id={'transaction.set_ens_resolver'}
+              values={{
+                address: <Profile address={address} />,
+                name: ens
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_ENS_CONTENT_SUCCESS: {
+      const { address, ens } = tx.payload
+      return (
+        <TransactionDetail
+          address={address}
+          text={
+            <T
+              id={'transaction.set_ens_content'}
+              values={{
+                address: <Profile address={address} />,
+                name: ens
               }}
             />
           }
