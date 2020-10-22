@@ -141,7 +141,7 @@ const Transaction = (props: Props) => {
       )
     }
     case SET_ENS_RESOLVER_SUCCESS: {
-      const { address } = tx.payload
+      const { address, ens } = tx.payload
       return (
         <TransactionDetail
           address={address}
@@ -149,7 +149,8 @@ const Transaction = (props: Props) => {
             <T
               id={'transaction.set_ens_resolver'}
               values={{
-                address: <Profile address={address} />
+                address: <Profile address={address} />,
+                name: ens
               }}
             />
           }
@@ -158,7 +159,7 @@ const Transaction = (props: Props) => {
       )
     }
     case SET_ENS_CONTENT_SUCCESS: {
-      const { address } = tx.payload
+      const { address, ens } = tx.payload
       return (
         <TransactionDetail
           address={address}
@@ -166,7 +167,8 @@ const Transaction = (props: Props) => {
             <T
               id={'transaction.set_ens_content'}
               values={{
-                address: <Profile address={address} />
+                address: <Profile address={address} />,
+                name: ens
               }}
             />
           }

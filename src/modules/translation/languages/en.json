@@ -674,7 +674,9 @@
     "edit_estate_add": "You added {count} {count, plural, one {parcel} other {parcels}} to {name}.",
     "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}.",
     "set_manager_assigned": "You assigned {address} as operator of all your {type}.",
-    "set_manager_revoked": "You revoked {address} as operator of all your {type}."
+    "set_manager_revoked": "You revoked {address} as operator of all your {type}.",
+    "set_ens_content": "Setting redirection content for your name: {name}.",
+    "set_ens_resolver": "Setting resolver for your name: {name}."
   },
   "transfer_page": {
     "title": "Transfer",
