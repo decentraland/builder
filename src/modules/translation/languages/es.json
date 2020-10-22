@@ -301,6 +301,7 @@
     "title": "Descargar Escena"
   },
   "global": {
+    "approved_tx": "Tx Aprobada",
     "back": "volver",
     "blog_post": "blog post",
     "cancel": "Cancelar",
@@ -312,6 +313,7 @@
     "email": "email",
     "error_ocurred": "Ha ocurrido un error",
     "eth_address": "ETH address",
+    "finish": "Finalizar",
     "here": "aquí",
     "items": "objetos",
     "learn_more": "Más información",
@@ -323,8 +325,10 @@
     "or": "o",
     "project": "Escena",
     "read_more": "Leer más",
+    "retry_tx": "Enviar Tx",
     "save": "Salvar",
     "send": "Enviar",
+    "send_tx": "Enviar Tx",
     "share": "Compartir",
     "sign_in": "Inicia sesión",
     "sign_up": "Suscribirse",
@@ -442,6 +446,7 @@
     "transfer": "Transferir",
     "edit": "Editar",
     "set_operator": "Configurar Operador",
+    "set_link": "Establece tu Enlace",
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
@@ -453,6 +458,30 @@
     "operators": "Operadores",
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias"
+  },
+  "land_ens_page" : {
+    "subtitle": "Asigna un nombre a {name}",
+    "select_names": {
+      "placeholder": "Mis nombres",
+      "message": {
+        "choose_name": "Click aquí para reclamar un nuevo nombre",
+        "name_available": "Este nombre funcionara bien para tu tierra",
+        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
+      }
+    },
+    "set_content": "Establecer Contenido",
+    "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones.",
+    "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
+    "set_resolver": "Establecer Resolver",
+    "set_resolver_explanation": "Explicación sobre porque se necesita aprovar esto.",
+    "empty_options_message": "No tienes nombres disponibles. Para asignar un nuevo nombre a tu LAND, necesitas reclamar uno",
+    "claim_new_name": "Reclamar un nuevo nombre",
+    "not_redirected": "Si no estas siendo redirigido",
+    "submit_message": {
+      "success": "Nombre configurado correctamente para su tierra"
+    },
+    "title": "Asigna un Nombre",
+    "waiting_confirmation_tx": "Esperando Confirmación de Tx"
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",
@@ -637,7 +666,9 @@
     "edit_estate_add": "Has agregado {count} {count, plural, one {parcela} other {parcelas}} a {name}.",
     "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
-    "set_manager_revoked": "Has revocado a {address} como operador de tus {type}."
+    "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
+    "set_ens_content": "Has asignado el contenido de redirección para tu nombre: {name}.",
+    "set_ens_resolver": "Has asignado el resolver para tu nombre: {name}."
   },
   "transfer_page": {
     "title": "Transferir",

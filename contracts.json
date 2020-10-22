@@ -8,6 +8,14 @@
     "EstateRegistry": {
       "source": "files",
       "abiFile": "./src/contracts/EstateRegistry.json"
+    },
+    "ENS": {
+      "source": "files",
+      "abiFile": "./src/contracts/ENS.json"
+    },
+    "ENSResolver": {
+      "source": "files",
+      "abiFile": "./src/contracts/ENSResolver.json"
     }
   }
 }

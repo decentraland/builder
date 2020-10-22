@@ -22,6 +22,7 @@ import { SyncState } from 'modules/sync/types'
 import { PoolState } from 'modules/pool/reducer'
 import { IdentityState } from 'modules/identity/reducer'
 import { LandState } from 'modules/land/reducer'
+import { ENSState } from 'modules/ens/reducer'
 import { TileState } from 'modules/tile/reducer'
 import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
 
@@ -54,6 +55,7 @@ export type RootState = {
   sync: SyncState
   identity: IdentityState
   land: LandState
+  ens: ENSState
   tile: TileState
 }
 

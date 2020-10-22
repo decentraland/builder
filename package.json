@@ -23,6 +23,7 @@
     "chalk": "2.4.1",
     "cids": "^0.7.2",
     "connected-react-router": "^6.7.0",
+    "content-hash": "^2.5.2",
     "css-loader": "1.0.0",
     "date-fns": "^2.14.0",
     "dcl-catalyst-client": "^2.1.2",
@@ -133,6 +134,7 @@
     "printWidth": 140
   },
   "devDependencies": {
+    "@ethersproject/hash": "^5.0.3",
     "@types/auth0-js": "^9.10.2",
     "@types/file-saver": "^2.0.0",
     "@types/jest": "23.3.10",

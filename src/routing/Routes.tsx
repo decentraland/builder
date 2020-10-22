@@ -21,6 +21,7 @@ import LandPage from 'components/LandPage'
 import LandDetailPage from 'components/LandDetailPage'
 import LandTransferPage from 'components/LandTransferPage'
 import LandEditPage from 'components/LandEditPage'
+import LandEnsPage from 'components/LandEnsPage'
 import LandOperatorPage from 'components/LandOperatorPage'
 import ActivityPage from 'components/ActivityPage'
 import SettingsPage from 'components/SettingsPage'
@@ -78,6 +79,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.land()} component={LandPage} />
             <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Route exact path={locations.landTransfer()} component={LandTransferPage} />
+            <Route exact path={locations.landEns()} component={LandEnsPage} />
             <Route exact path={locations.landEdit()} component={LandEditPage} />
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
