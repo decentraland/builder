@@ -302,7 +302,7 @@
     "title": "下载场景"
   },
   "global": {
-    "approved_tx": "批准的Tx",
+    "approved_tx": "完成了",
     "back": "返回",
     "blog_post": "博客",
     "cancel": "取消",
@@ -326,6 +326,7 @@
     "or": "或",
     "project": "场景",
     "read_more": "阅读更多",
+    "retry_tx": "重试发送",
     "save": "保存",
     "send": "发送",
     "send_tx": "发送Tx",
@@ -460,6 +461,7 @@
     "empty_land": "空地"
   },
   "land_ens_page" : {
+    "loading": "载入中...",
     "subtitle": "给...分配一个名字 {name}",
     "select_names": {
       "placeholder": "我的名字是",
@@ -474,10 +476,14 @@
     "set_name_message": "关于他们为什么需要批准的简要说明。",
     "set_resolver": "设置解析器",
     "set_resolver_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "empty_options_message": "您没有可用的名称。 要为您的LAND分配名称，您首先需要声明它。",
+    "claim_new_name": "申请新名字",
+    "not_redirected": "如果您未重定向",
     "submit_message": {
       "success": "名称正确设置到您的土地"
     },
-    "title": "分配名称"
+    "title": "分配名称",
+    "waiting_confirmation_tx": "来自TX的等待确认"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
@@ -662,7 +668,9 @@
     "edit_estate_add": "您在{name}中添加了{count}土地。",
     "edit_estate_remove": "您从{name}中删除了{count}土地。",
     "set_manager_assigned": "您已将{地址}分配、为所有{type}的运算符。",
-    "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。"
+    "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。",
+    "set_ens_content": "设置名称的重定向内容: {name}.",
+    "set_ens_resolver": "为您的名字设置解析器: {name}."
   },
   "transfer_page": {
     "title": "转移",
