@@ -51,7 +51,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
         .send({ from })
         .getTxHash()
     )
-    yield put(setENSResolverSuccess(ens, land, txHash))
+    yield put(setENSResolverSuccess(ens, from, land, txHash))
   } catch (error) {
     yield put(setENSResolverFailure(ens, land, { message: error.message, code: error.code, origin: 'SET_ENS_RESOLVER' }))
   }
@@ -71,7 +71,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
         .send({ from })
         .getTxHash()
     )
-    yield put(setENSContentSuccess(ens, land, txHash))
+    yield put(setENSContentSuccess(ens, from.toString(), land, txHash))
   } catch (error) {
     yield put(setENSContentFailure(ens, land, { message: error.message, code: error.code, origin: 'SET_ENS_CONTENT' }))
   }

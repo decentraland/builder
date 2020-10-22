@@ -12,6 +12,7 @@ import {
 import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
 import { Props } from './Transaction.types'
+import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
 
 const Transaction = (props: Props) => {
   const { tx } = props
@@ -132,6 +133,40 @@ const Transaction = (props: Props) => {
               values={{
                 address: <Profile address={address} textOnly />,
                 type: t(`global.${type}_plural`)
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_ENS_RESOLVER_SUCCESS: {
+      const { address } = tx.payload
+      return (
+        <TransactionDetail
+          address={address}
+          text={
+            <T
+              id={'transaction.set_ens_resolver'}
+              values={{
+                address: <Profile address={address} />
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_ENS_CONTENT_SUCCESS: {
+      const { address } = tx.payload
+      return (
+        <TransactionDetail
+          address={address}
+          text={
+            <T
+              id={'transaction.set_ens_content'}
+              values={{
+                address: <Profile address={address} />
               }}
             />
           }

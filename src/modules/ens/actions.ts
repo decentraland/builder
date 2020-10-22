@@ -11,9 +11,9 @@ export const SET_ENS_RESOLVER_FAILURE = '[Failure] Set ENS Resolver'
 
 export const setENSResolverRequest = (ens: string, land: Land) => action(SET_ENS_RESOLVER_REQUEST, { ens, land })
 
-export const setENSResolverSuccess = (ens: string, data: ENSData, txHash: string) =>
+export const setENSResolverSuccess = (ens: string, address: string, data: ENSData, txHash: string) =>
   action(SET_ENS_RESOLVER_SUCCESS, {
-    ...buildTransactionPayload(txHash, { ens }),
+    ...buildTransactionPayload(txHash, { ens, address }),
     ens,
     data
   })
@@ -32,9 +32,9 @@ export const SET_ENS_CONTENT_FAILURE = '[Failure] Set ENS Content'
 
 export const setENSContentRequest = (ens: string, land: Land) => action(SET_ENS_CONTENT_REQUEST, { ens, land })
 
-export const setENSContentSuccess = (ens: string, data: ENSData, txHash: string) =>
+export const setENSContentSuccess = (ens: string, address: string, data: ENSData, txHash: string) =>
   action(SET_ENS_CONTENT_SUCCESS, {
-    ...buildTransactionPayload(txHash, { ens }),
+    ...buildTransactionPayload(txHash, { ens, address }),
     ens,
     data
   })
