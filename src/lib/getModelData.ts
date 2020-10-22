@@ -10,7 +10,8 @@ import {
   BufferGeometry,
   DirectionalLight,
   AmbientLight,
-  RectAreaLight
+  RectAreaLight,
+  MeshStandardMaterial
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -81,6 +82,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
             const geometry = new Geometry().fromBufferGeometry(node.geometry)
             colliderTriangles += geometry.faces.length
           }
+          node.visible = false
+        } else if (node.material instanceof MeshStandardMaterial && node.material.name.toLowerCase().includes('hair_mat')) {
           node.visible = false
         }
       }
