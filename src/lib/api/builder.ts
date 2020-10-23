@@ -13,8 +13,8 @@ import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
-import { Item, ItemType, ItemRarity, CollectionItem, WearableData } from 'modules/item/types'
-import { Collection, CollectionWithItems } from 'modules/collection/types'
+import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
+import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
 import { authorize, authorizeAuth0 } from './auth'
 
@@ -58,7 +58,7 @@ export type RemoteCollection = {
   is_approved: boolean
   minters: string[]
   managers: string[]
-  items: RemoteItem[]
+  items?: RemoteItem[]
   created_at: Date
   updated_at: Date
 }
@@ -274,8 +274,8 @@ function toRemoteItem(item: Item): RemoteItem {
   return remoteItem
 }
 
-function fromRemoteItem(remoteItem: RemoteItem): CollectionItem {
-  const item: CollectionItem = {
+function fromRemoteItem(remoteItem: RemoteItem) {
+  const item: Item = {
     id: remoteItem.id,
     name: remoteItem.name,
     thumbnail: remoteItem.thumbnail,
@@ -292,15 +292,19 @@ function fromRemoteItem(remoteItem: RemoteItem): CollectionItem {
     updatedAt: +new Date(remoteItem.created_at)
   }
 
+  let collection: Collection | null = null
+
   if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
   if (remoteItem.blockchain_item_id) item.tokenId = remoteItem.blockchain_item_id
   if (remoteItem.price) item.price = remoteItem.price
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
-  if (remoteItem.collection) item.collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items']))
+  if (remoteItem.collection) {
+    collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items'])).collection
+  }
 
-  return item
+  return { item, collection }
 }
 
 function toRemoteCollection(collection: Collection): RemoteCollection {
@@ -314,7 +318,6 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     managers: collection.managers,
     contract_address: collection.contractAddress || null,
     salt: collection.salt || null,
-    items: [],
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
   }
@@ -322,8 +325,8 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
   return remoteCollection
 }
 
-function fromRemoteCollection(remoteCollection: RemoteCollection): CollectionWithItems {
-  const collection: CollectionWithItems = {
+function fromRemoteCollection(remoteCollection: RemoteCollection) {
+  const collection: Collection = {
     id: remoteCollection.id,
     name: remoteCollection.name,
     owner: remoteCollection.eth_address,
@@ -331,18 +334,19 @@ function fromRemoteCollection(remoteCollection: RemoteCollection): CollectionWit
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
-    items: [],
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }
 
+  let items: Item[] = []
+
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
   if (remoteCollection.items) {
-    collection.items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection'])))
+    items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection'])).item)
   }
 
-  return collection
+  return { collection, items }
 }
 
 export type PoolDeploymentAdditionalFields = {
@@ -528,7 +532,16 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchItems() {
     const remoteItems: RemoteItem[] = await this.request('get', `/items`)
-    return remoteItems.map(fromRemoteItem)
+    const collections: Collection[] = []
+    let items: Item[] = []
+    for (const remoteItem of remoteItems) {
+      const { item, collection } = fromRemoteItem(remoteItem)
+      items = items.concat(item)
+      if (collection) {
+        collections.push(collection)
+      }
+    }
+    return { items, collections }
   }
 
   async fetchItem(id: string) {
@@ -555,7 +568,14 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchCollections() {
     const remoteCollections: RemoteCollection[] = await this.request('get', `/collections`)
-    return remoteCollections.map(fromRemoteCollection)
+    const collections: Collection[] = []
+    let items: Item[] = []
+    for (const remoteCollection of remoteCollections) {
+      const { collection, items: collectionItems } = fromRemoteCollection(remoteCollection)
+      collections.push(collection)
+      items = items.concat(collectionItems)
+    }
+    return { collections, items } as const
   }
 
   async fetchCollection(id: string) {

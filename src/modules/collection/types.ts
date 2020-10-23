@@ -16,10 +16,6 @@ export type Collection = {
   updatedAt: number
 }
 
-export type CollectionWithItems = Collection & {
-  items: Item[]
-}
-
 export type InitializeItem = {
   rarity: number
   totalSupply: number

@@ -1,6 +1,18 @@
 import { utils } from 'decentraland-commons'
+import future from 'fp-future'
+import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
-import { Item, ItemRarity, ItemType, WearableData, WearableBodyShape, BodyShapeType, RARITY_MAX_SUPPLY } from './types'
+import {
+  Item,
+  ItemRarity,
+  ItemType,
+  WearableData,
+  WearableBodyShape,
+  BodyShapeType,
+  RARITY_MAX_SUPPLY,
+  RARITY_COLOR_LIGHT,
+  RARITY_COLOR
+} from './types'
 
 export function isComplete(item: Item) {
   return !isEditable(item) && !!item.beneficiary && !!item.price
@@ -107,4 +119,40 @@ export function toItemObject(items: Item[]) {
     obj[item.id] = utils.omit<Item>(item, ['collection'])
     return obj
   }, {} as Record<string, Item>)
+}
+
+export async function generateImage(item: Item, width = 1024, height = 1024) {
+  // fetch thumbnail
+  const thumbnailUrl = getContentsStorageUrl(item.contents[item.thumbnail])
+  const thumbnail = await fetch(thumbnailUrl).then(response => response.blob())
+
+  // create canvas
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const context = canvas.getContext('2d')
+
+  // fail
+  if (!context || !item.rarity) return thumbnail
+
+  // render gradient
+  const gradient = context.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width / 1.75)
+  gradient.addColorStop(0, RARITY_COLOR_LIGHT[item.rarity!])
+  gradient.addColorStop(1, RARITY_COLOR[item.rarity!])
+  context.fillStyle = gradient
+  context.fillRect(0, 0, width, height)
+
+  // render item
+  const img = document.createElement('img')
+  const url = URL.createObjectURL(thumbnail)
+  const load = future()
+  img.onload = load.resolve
+  img.src = url
+  await load // wait for image to load
+  URL.revokeObjectURL(url)
+  context.drawImage(img, 0, 0, width, height)
+
+  const blob = future<Blob>()
+  canvas.toBlob(result => (result ? blob.resolve(result) : blob.reject(new Error('Error generating image blob'))))
+  return blob
 }

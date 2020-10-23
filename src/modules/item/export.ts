@@ -6,15 +6,16 @@ import { getCatalystPointer } from 'modules/item/utils'
 import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
 import { PEER_URL } from 'lib/api/peer'
 import { Collection } from 'modules/collection/types'
-import { Item } from './types'
+import { IMAGE_PATH, Item } from './types'
+import { generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
   const pointer = getCatalystPointer(collection, item)
   const files = await getFiles(item.contents)
-  const contentFiles = await makeContentFiles(files)
-  const metadata = utils.omit(item, ['contents'])
+  const image = await generateImage(item)
+  const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
+  const metadata = { ...(utils.omit(item, ['contents']) as Omit<Item, 'contents'>), image: IMAGE_PATH }
   const [data] = await buildDeployData(EntityType.WEARABLE, identity, [pointer], metadata, contentFiles)
-
   await deploy(PEER_URL, data)
 
   const newItem = { ...item, inCatalyst: true }
