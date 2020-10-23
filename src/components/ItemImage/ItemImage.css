@@ -8,6 +8,7 @@
 
 .ItemImage.image-wrapper .image {
   width: auto;
+  max-width: 100%;
 }
 
 .ItemImage .ItemBadge {
