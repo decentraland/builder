@@ -1,0 +1,38 @@
+import * as React from 'react'
+import { Link } from 'react-router-dom'
+import { Popup } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import ItemImage from 'components/ItemImage'
+import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
+import { locations } from 'routing/locations'
+import { Props } from './SidebarItem.types'
+import './SidebarItem.css'
+
+export default class SidebarItem extends React.PureComponent<Props> {
+  handleClick = () => {
+    const { item, onClick } = this.props
+    onClick(item)
+  }
+
+  render() {
+    const { item, isSelected, isVisible, selectedCollectionId, bodyShape } = this.props
+    return (
+      <Link
+        className={`SidebarItem ${isSelected ? 'is-selected' : ''}`}
+        to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}
+      >
+        <ItemImage item={item} />
+        <div className="name">{item.name}</div>
+        <Popup
+          className="invalid-representation-popup"
+          content={t('item_editor.left_panel.invalid_representation_tooltip', {
+            bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()}</b>
+          })}
+          disabled={hasBodyShape(item, bodyShape)}
+          position="top center"
+          trigger={<div className={`toggle ${isVisible ? 'is-visible' : 'is-hidden'}`} onClick={this.handleClick}></div>}
+        />
+      </Link>
+    )
+  }
+}
