@@ -7,7 +7,7 @@
 }
 
 .ItemImage.image-wrapper .image {
-  width: 100%;
+  width: auto;
 }
 
 .ItemImage .ItemBadge {
