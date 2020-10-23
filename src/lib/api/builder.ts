@@ -301,10 +301,10 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
   if (remoteItem.collection) {
-    collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items']))[0]
+    collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items'])).collection
   }
 
-  return [item, collection] as const
+  return { item, collection }
 }
 
 function toRemoteCollection(collection: Collection): RemoteCollection {
@@ -343,10 +343,10 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
   if (remoteCollection.items) {
-    items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection']))[0])
+    items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection'])).item)
   }
 
-  return [collection, items] as const
+  return { collection, items }
 }
 
 export type PoolDeploymentAdditionalFields = {
@@ -535,13 +535,13 @@ export class BuilderAPI extends BaseAPI {
     const collections: Collection[] = []
     let items: Item[] = []
     for (const remoteItem of remoteItems) {
-      const [item, collection] = fromRemoteItem(remoteItem)
+      const { item, collection } = fromRemoteItem(remoteItem)
       items = items.concat(item)
       if (collection) {
         collections.push(collection)
       }
     }
-    return [items, collections] as const
+    return { items, collections }
   }
 
   async fetchItem(id: string) {
@@ -571,11 +571,11 @@ export class BuilderAPI extends BaseAPI {
     const collections: Collection[] = []
     let items: Item[] = []
     for (const remoteCollection of remoteCollections) {
-      const [collection, collectionItems] = fromRemoteCollection(remoteCollection)
+      const { collection, items: collectionItems } = fromRemoteCollection(remoteCollection)
       collections.push(collection)
       items = items.concat(collectionItems)
     }
-    return [collections, items] as const
+    return { collections, items } as const
   }
 
   async fetchCollection(id: string) {

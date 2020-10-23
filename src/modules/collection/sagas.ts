@@ -73,7 +73,7 @@ export function* collectionSaga() {
 
 function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) {
   try {
-    const [collections, items]: [Collection[], Item[]] = yield call(() => builder.fetchCollections())
+    const { collections, items }: { collections: Collection[]; items: Item[] } = yield call(() => builder.fetchCollections())
     yield put(fetchCollectionsSuccess(collections, items))
     yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
@@ -84,7 +84,7 @@ function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
   const { id } = action.payload
   try {
-    const [collection, items]: [Collection, Item[]] = yield call(() => builder.fetchCollection(id))
+    const { collection, items }: { collection: Collection; items: Item[] } = yield call(() => builder.fetchCollection(id))
     yield put(fetchCollectionSuccess(collection, items))
   } catch (error) {
     yield put(fetchCollectionFailure(id, error.message))
