@@ -1,4 +1,8 @@
 .SidebarItem {
+  margin-top: 8px;
+}
+
+.SidebarItem > a {
   display: flex;
   align-items: center;
   background: rgba(var(--bluish-steel-raw), 0.2);
@@ -6,10 +10,6 @@
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid transparent;
-}
-
-.SidebarItem {
-  margin-top: 8px;
   padding: 8px;
 }
 
@@ -40,25 +40,31 @@
   margin-left: 20px;
 }
 
-.SidebarItem:hover .toggle {
+.SidebarItem.is-selected > a {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.7);
+  cursor: default;
+}
+
+.SidebarItem.is-dragging > a {
+  border: 1px solid var(--primary);
+  cursor: grabbing;
+}
+
+.SidebarItem > a:hover .toggle {
   background-image: url(../../../../../images/eye-toggle-item.svg);
 }
 
-.SidebarItem .toggle.is-visible {
+.SidebarItem .toggle.is-visible,
+.SidebarItem > a:hover .toggle.is-visible {
   background-image: url(../../../../../images/eye-toggle-item-active.svg);
 }
 
-.SidebarItem .toggle.is-visible:hover {
-  background-image: url(../../../../../images/eye-toggle-item.svg);
+.SidebarItem .toggle:hover {
+  cursor: pointer;
 }
 
-.SidebarItem:not(.is-selected):hover {
+.SidebarItem > a:not(.is-selected):hover {
   background: rgba(var(--bluish-steel-raw), 0.4);
-}
-
-.SidebarItem.is-selected {
-  border: 1px solid rgba(var(--bluish-steel-raw), 0.7);
-  cursor: default;
 }
 
 .ui.popup.invalid-representation-popup {

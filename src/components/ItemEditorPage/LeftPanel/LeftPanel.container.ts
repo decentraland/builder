@@ -5,6 +5,7 @@ import { getBodyShape, getVisibleItems } from 'modules/editor/selectors'
 import { setItems } from 'modules/editor/actions'
 import { getItems, getWalletOrphanItems } from 'modules/item/selectors'
 import { getWalletCollections } from 'modules/collection/selectors'
+import { setCollection } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './LeftPanel.types'
 import LeftPanel from './LeftPanel'
 
@@ -19,7 +20,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetItems: items => dispatch(setItems(items))
+  onSetItems: items => dispatch(setItems(items)),
+  onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId))
 })
 
 export default connect(mapState, mapDispatch)(LeftPanel)
