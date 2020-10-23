@@ -24,13 +24,13 @@ type Options = {
   width: number
   height: number
   mappings?: Record<string, string>
-  thumbnailType: '3d' | '2d'
+  thumbnailType: 'default' | 'top' | 'front'
 }
 
 const defaults: Options = {
   width: 512,
   height: 512,
-  thumbnailType: '3d'
+  thumbnailType: 'default'
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
@@ -99,12 +99,22 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       .length()
     root.scale.multiplyScalar(1 / size)
     const center = new Box3().setFromObject(root).getCenter(new Vector3())
-    if (thumbnailType === '3d') {
-      camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
-      camera.position.set(center.x + 1, center.y + 1, center.z + 1)
-    } else {
-      camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
-      camera.position.set(0, 1, 0)
+    switch (thumbnailType) {
+      case 'front': {
+        camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
+        camera.position.set(center.x + 0, center.y + 0, center.z + 1)
+        break
+      }
+      case 'top': {
+        camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
+        camera.position.set(center.x + 0, center.y + 1, center.z + 0)
+        break
+      }
+      default: {
+        camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
+        camera.position.set(center.x + 1, center.y + 1, center.z + 1)
+        break
+      }
     }
     camera.lookAt(center)
     camera.updateProjectionMatrix()
@@ -113,20 +123,32 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     const ambient = new AmbientLight(0xffffff, 1.2)
     scene.add(ambient)
 
-    if (thumbnailType === '3d') {
-      const directional = new DirectionalLight(0xffffff, 0.8)
-      directional.position.set(1, 1, -1)
-      directional.lookAt(center)
-      scene.add(directional)
-      const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
-      rectarea.position.set(-3, 0, 0)
-      rectarea.lookAt(center)
-      scene.add(rectarea)
-    } else {
-      const directional = new DirectionalLight(0xffffff, 1)
-      directional.position.set(0, 1, 0)
-      directional.lookAt(center)
-      scene.add(directional)
+    switch (thumbnailType) {
+      case 'front': {
+        const directional = new DirectionalLight(0xffffff, 0.8)
+        directional.position.set(center.x + 1, center.y + 1, center.z)
+        directional.lookAt(center)
+        scene.add(directional)
+        break
+      }
+      case 'top': {
+        const directional = new DirectionalLight(0xffffff, 1)
+        directional.position.set(center.x + 0, center.y + 1, center.z + 0)
+        directional.lookAt(center)
+        scene.add(directional)
+        break
+      }
+      default: {
+        const directional = new DirectionalLight(0xffffff, 0.8)
+        directional.position.set(center.x + 1, center.y + 1, center.z - 1)
+        directional.lookAt(center)
+        scene.add(directional)
+        const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
+        rectarea.position.set(-3, 0, 0)
+        rectarea.lookAt(center)
+        scene.add(rectarea)
+        break
+      }
     }
 
     // render scenes
