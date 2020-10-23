@@ -86,8 +86,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       }
     }
     case FETCH_ITEMS_SUCCESS: {
-      const { items } = action.payload
-      const collections = items.filter(item => !!item.collection).map(item => item.collection) as Collection[]
+      const { collections } = action.payload
       return {
         ...state,
         data: {
@@ -99,13 +98,13 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       }
     }
     case FETCH_ITEM_SUCCESS: {
-      const { item } = action.payload
-      return item.collection
+      const { collection } = action.payload
+      return collection
         ? {
             ...state,
             data: {
               ...state.data,
-              ...toCollectionObject([item.collection])
+              ...toCollectionObject([collection])
             },
             loading: loadingReducer(state.loading, action),
             error: null

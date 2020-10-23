@@ -64,8 +64,8 @@ export function* itemSaga() {
 
 function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
   try {
-    const items = yield call(() => builder.fetchItems())
-    yield put(fetchItemsSuccess(items))
+    const { items, collections }: { items: Item[]; collections: Collection[] } = yield call(() => builder.fetchItems())
+    yield put(fetchItemsSuccess(items, collections))
   } catch (error) {
     yield put(fetchItemsFailure(error.message))
   }
@@ -74,8 +74,8 @@ function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
 function* handleFetchItemRequest(action: FetchItemRequestAction) {
   const { id } = action.payload
   try {
-    const item = yield call(() => builder.fetchItem(id))
-    yield put(fetchItemSuccess(item))
+    const { item, collection }: { item: Item; collection: Collection | null } = yield call(() => builder.fetchItem(id))
+    yield put(fetchItemSuccess(item, collection))
   } catch (error) {
     yield put(fetchItemFailure(id, error.message))
   }

@@ -152,8 +152,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case FETCH_COLLECTIONS_SUCCESS: {
-      const { collections } = action.payload
-      const items = collections.reduce<Item[]>((items, collection) => items.concat(collection.items), [])
+      const { items } = action.payload
       return {
         ...state,
         data: {
@@ -165,12 +164,12 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case FETCH_COLLECTION_SUCCESS: {
-      const { collection } = action.payload
+      const { items } = action.payload
       return {
         ...state,
         data: {
           ...state.data,
-          ...toItemObject(collection.items)
+          ...toItemObject(items)
         },
         loading: loadingReducer(state.loading, action),
         error: null
