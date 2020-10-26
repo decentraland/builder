@@ -13,10 +13,10 @@ import './CollectionCard.css'
 
 class CollectionCard extends React.PureComponent<Props & CollectedProps> {
   render() {
-    const { collection, items, connectDropTarget, isOver } = this.props
+    const { collection, items, connectDropTarget, isOver, canDrop } = this.props
 
     return connectDropTarget(
-      <div className={`CollectionCard is-card ${isOver ? 'is-over' : ''}`}>
+      <div className={`CollectionCard is-card ${isOver && canDrop ? 'is-over' : ''}`}>
         <Link to={locations.collectionDetail(collection.id)}>
           <CollectionImage collection={collection} />
           <Card.Content>
