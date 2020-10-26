@@ -12,6 +12,9 @@ export const collectionTarget: DropTargetSpec<Props> = {
   drop(props, monitor) {
     const { item }: ItemCardDragObject = monitor.getItem()
     props.onSetCollection(item, props.collection.id)
+  },
+  canDrop(props) {
+    return !props.collection.isPublished
   }
 }
 
