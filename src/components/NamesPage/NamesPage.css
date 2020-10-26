@@ -1,0 +1,112 @@
+.LandPage .ui.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.LandPage .ui.pagination .item[type='nextItem'],
+.LandPage .ui.pagination .item[type='prevItem'] {
+  position: absolute;
+  background-color: var(--secondary);
+}
+
+.LandPage .ui.pagination .item[type='prevItem'] {
+  left: 0px;
+}
+
+.LandPage .ui.pagination .item[type='nextItem'] {
+  right: 0px;
+}
+
+.LandPage .pagination-section {
+  width: 100%;
+}
+
+.LandPage .Chip {
+  padding: 4px;
+  height: 14px;
+}
+
+.LandPage .Chip.grid {
+  border-radius: 4px 0px 0px 4px;
+  margin-left: 20px;
+}
+
+.LandPage .Chip.atlas {
+  border-radius: 0px 4px 4px 0px;
+}
+
+.LandPage .dcl.tabs {
+  margin-bottom: 15px;
+}
+
+.LandPage .filters {
+  height: 36px;
+}
+
+.LandPage .filters .ui.header.sub {
+  font-weight: 500;
+}
+
+.LandPage.atlas-view .dcl.tabs {
+  margin-bottom: 0px;
+}
+
+.LandPage.atlas-view .filters {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  z-index: 10;
+  height: 60px;
+  padding-top: 15px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background-color: rgba(22, 20, 26, 0.8);
+}
+
+.LandPage .arrow {
+  width: 30px;
+  height: 24px;
+  border: solid 1px rgba(115, 110, 125, 0.4);
+  background-position: center;
+  background-size: 16px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.LandPage .arrow.prev {
+  border-radius: 4px 0px 0px 4px;
+  margin-left: 24px;
+  background-image: url(../../images/back-active.svg);
+}
+
+.LandPage .arrow.next {
+  border-radius: 0px 4px 4px 0px;
+  border-left: none;
+  background-image: url(../../images/next-active.svg);
+}
+
+.LandPage .atlas-wrapper {
+  height: calc(100vh - 186px);
+}
+
+.LandPage .ui.radio.checkbox:not(.checked) input.hidden ~ label:before,
+.LandPage .ui.radio.checkbox:not(.checked) input.hidden:focus ~ label:before {
+  border: 2px solid var(--secondary-text);
+}
+
+.ui.radio.checkbox.checked.operator-checkbox input.hidden + label:before,
+.ui.radio.checkbox.checked.operator-checkbox input.hidden:focus + label:before,
+.ui.radio.checkbox.checked.operator-checkbox input.hidden + label:after,
+.ui.radio.checkbox.checked.operator-checkbox input.hidden:focus + label:after {
+  background-color: rgba(31, 188, 255, 0.8);
+  border: 2px solid rgba(31, 188, 255, 0.8);
+}
+
+.operator-popup {
+  height: auto !important;
+}
+
+.LandPage .dcl.center.login-wrapper {
+  top: 64px;
+}

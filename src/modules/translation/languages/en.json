@@ -354,7 +354,8 @@
   },
   "navigation": {
     "scenes": "Scenes",
-    "land": "Land"
+    "land": "Land",
+    "names": "Names"
   },
   "list": {
     "two": "{first} and {second}",

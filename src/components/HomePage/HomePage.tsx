@@ -158,6 +158,8 @@ export default class HomePage extends React.PureComponent<Props> {
 
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
 
+  handleNavigateToNames = () => this.props.onNavigate(locations.names())
+
   handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
     this.paginate({ sortBy: value as SortBy })
 
@@ -190,6 +192,7 @@ export default class HomePage extends React.PureComponent<Props> {
             <SyncToast />
             <Tabs.Tab active>{t('navigation.scenes')}</Tabs.Tab>
             <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
+            <Tabs.Tab onClick={this.handleNavigateToNames}>{t('navigation.names')}</Tabs.Tab>
           </Tabs>
           <Container>
             <div className="projects-menu">

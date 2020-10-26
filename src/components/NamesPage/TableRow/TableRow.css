@@ -1,0 +1,22 @@
+.TableRow .dcl.atlas {
+  margin-top: -22px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.TableRow .dcl.atlas .react-tile-map-canvas {
+  cursor: pointer;
+}
+
+.TableRow .dcl.column.name {
+  justify-content: flex-start;
+}
+
+.TableRow .capitalize {
+  text-transform: capitalize;
+}
+
+.TableRow:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  cursor: pointer;
+}

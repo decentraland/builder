@@ -11,12 +11,12 @@ import { Atlas } from 'components/Atlas'
 import { LandPageView } from 'modules/ui/land/types'
 import { getCoords } from 'modules/land/utils'
 import TableRow from './TableRow'
-import { Props, State } from './LandPage.types'
-import './LandPage.css'
+import { Props, State } from './NamesPage.types'
+import './NamesPage.css'
 
 const PAGE_SIZE = 20
 
-export default class LandPage extends React.PureComponent<Props, State> {
+export default class NamesPage extends React.PureComponent<Props, State> {
   state: State = {
     showOwner: true,
     showOperator: true,
@@ -25,8 +25,6 @@ export default class LandPage extends React.PureComponent<Props, State> {
   }
 
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
-
-  handleNavigateToNames = () => this.props.onNavigate(locations.names())
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.lands !== this.props.lands) {
@@ -206,8 +204,8 @@ export default class LandPage extends React.PureComponent<Props, State> {
         <Page className={`LandPage ${view}-view`} isFullscreen>
           <Tabs>
             <Tabs.Tab onClick={() => onNavigate(locations.root())}>{t('navigation.scenes')}</Tabs.Tab>
-            <Tabs.Tab active>{t('navigation.land')}</Tabs.Tab>
-            <Tabs.Tab onClick={this.handleNavigateToNames}>{t('navigation.names')}</Tabs.Tab>
+            <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
+            <Tabs.Tab active>{t('navigation.names')}</Tabs.Tab>
           </Tabs>
           {!isLoggedIn ? this.renderLogin() : null}
           {isLoggedIn && isLoading ? this.renderLoading() : null}

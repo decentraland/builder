@@ -26,6 +26,7 @@ import LandOperatorPage from 'components/LandOperatorPage'
 import ActivityPage from 'components/ActivityPage'
 import SettingsPage from 'components/SettingsPage'
 import SceneDetailPage from 'components/SceneDetailPage'
+import NamesPage from 'components/NamesPage'
 
 import { Props, State } from './Routes.types'
 
@@ -77,6 +78,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Route exact path={locations.signIn()} component={SignInPage} />
             <Route exact path={locations.land()} component={LandPage} />
+            <Route exact path={locations.names()} component={NamesPage} />
             <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Route exact path={locations.landTransfer()} component={LandTransferPage} />
             {env.get('REACT_APP_FF_ENS') ? <Route exact path={locations.landEns()} component={LandEnsPage} /> : null}
