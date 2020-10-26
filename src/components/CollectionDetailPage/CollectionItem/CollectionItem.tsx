@@ -1,6 +1,6 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Grid, Dropdown, Icon, Button } from 'decentraland-ui'
+import { Grid, Dropdown, Icon, Button, Mana } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { fromWei } from 'web3x-es/utils'
 
@@ -43,7 +43,9 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return item.price ? (
       <>
-        <div>{fromWei(item.price, 'ether')}</div>
+        <div>
+          <Mana>{fromWei(item.price, 'ether')}</Mana>
+        </div>
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : !isEditable(item) ? (
@@ -78,7 +80,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
             <Grid.Column>
               {data.category ? (
                 <>
-                  <div>{data.category}</div>
+                  <div>{t(`wearable.category.${data.category}`)}</div>
                   <div className="subtitle">{t('item.category')}</div>
                 </>
               ) : null}
@@ -86,7 +88,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
             <Grid.Column>
               {item.rarity ? (
                 <>
-                  <div>{item.rarity}</div>
+                  <div>{t(`wearable.rarity.${item.rarity}`)}</div>
                   <div className="subtitle">{t('item.rarity')}</div>
                 </>
               ) : null}
