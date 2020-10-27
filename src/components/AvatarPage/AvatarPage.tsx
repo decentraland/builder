@@ -41,9 +41,6 @@ export default class AvatarPage extends React.PureComponent<Props> {
               </Column>
               <Column align="right">
                 <Row className="actions">
-                  <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
-                    {t('item_editor.open')}
-                  </Button>
                   <Dropdown
                     trigger={
                       <Button basic className="create-item">
@@ -58,6 +55,9 @@ export default class AvatarPage extends React.PureComponent<Props> {
                       <Dropdown.Item text={t('avatar_page.new_collection')} onClick={this.handleNewCollection} />
                     </Dropdown.Menu>
                   </Dropdown>
+                  <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
+                    {t('item_editor.open')}
+                  </Button>
                 </Row>
               </Column>
             </Row>
