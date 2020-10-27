@@ -2,9 +2,8 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction, goBack } from 'connected-react-router'
 import { BackProps } from 'decentraland-ui'
 
-
 export type Props = BackProps & {
-  hasHistory: boolean,
+  hasHistory: boolean
   onBack: typeof goBack
 }
 
