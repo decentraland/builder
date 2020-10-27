@@ -401,6 +401,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { name, category, rarity } = this.state
     return (
       <>
+        <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+        <SelectField
+          label={t('create_item_modal.rarity_label')}
+          placeholder={t('create_item_modal.rarity_placeholder')}
+          value={rarity}
+          options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+          onChange={this.handleRarityChange}
+        />
         <SelectField
           label={t('create_item_modal.category_label')}
           placeholder={t('create_item_modal.category_placeholder')}
@@ -408,16 +416,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
-        {category ? (
-          <SelectField
-            label={t('create_item_modal.rarity_label')}
-            placeholder={t('create_item_modal.rarity_placeholder')}
-            value={rarity}
-            options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
-            onChange={this.handleRarityChange}
-          />
-        ) : null}
-        {rarity ? <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} /> : null}
       </>
     )
   }
