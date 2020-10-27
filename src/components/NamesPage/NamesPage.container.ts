@@ -2,22 +2,18 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './NamesPage.types'
-import { getLands, isLoading } from 'modules/land/selectors'
-import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
+import { getState, getLoading } from 'modules/names/selectors'
 import NamesPage from './NamesPage'
-import { getLandPageView } from 'modules/ui/land/selectors'
-import { setLandPageView } from 'modules/ui/land/actions'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { FETCH_NAMES_REQUEST } from 'modules/names/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
-  lands: getLands(state),
-  isLoading: isLoading(state) || isLoggingIn(state),
-  isLoggedIn: isLoggedIn(state),
-  view: getLandPageView(state)
+  names: getState(state),
+  isLoading: isLoadingType(getLoading(state), FETCH_NAMES_REQUEST)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path)),
-  onSetView: view => dispatch(setLandPageView(view))
+  onNavigate: path => dispatch(push(path))
 })
 
 export default connect(mapState, mapDispatch)(NamesPage)

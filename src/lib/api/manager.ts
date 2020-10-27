@@ -109,6 +109,26 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 }
 
 export class ManagerAPI {
+  fetchNames = async (_address: string): Promise<{}> => {
+    const result = await new Promise(r => {
+      setTimeout(() => {
+        r([
+          {
+            name: 'saraza',
+            beingAssigned: true,
+            assignedTo: 'me?'
+          },
+          {
+            name: 'malberso',
+            beingAssigned: true,
+            assignedTo: 'me?'
+          }
+        ])
+      }, 3000)
+    })
+    return result
+  }
+
   fetchLand = async (_address: string): Promise<[Land[], Authorization[]]> => {
     const address = _address.toLowerCase()
     const { data } = await auth.query<LandQueryResult>({
