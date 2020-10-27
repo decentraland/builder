@@ -20,17 +20,23 @@ import { ModelMetrics } from 'modules/scene/types'
 export const TRANSPARENT_PIXEL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
 
+export enum ThumbnailType {
+  DEFAULT='default',
+  TOP='top',
+  FRONT='front'
+}
+
 type Options = {
   width: number
   height: number
   mappings?: Record<string, string>
-  thumbnailType: 'default' | 'top' | 'front'
+  thumbnailType: ThumbnailType
 }
 
 const defaults: Options = {
   width: 512,
   height: 512,
-  thumbnailType: 'default'
+  thumbnailType: ThumbnailType.DEFAULT
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
@@ -100,12 +106,12 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     root.scale.multiplyScalar(1 / size)
     const center = new Box3().setFromObject(root).getCenter(new Vector3())
     switch (thumbnailType) {
-      case 'front': {
+      case ThumbnailType.FRONT: {
         camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
         camera.position.set(center.x + 0, center.y + 0, center.z + 1)
         break
       }
-      case 'top': {
+      case ThumbnailType.TOP: {
         camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
         camera.position.set(center.x + 0, center.y + 1, center.z + 0)
         break
@@ -124,14 +130,14 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     scene.add(ambient)
 
     switch (thumbnailType) {
-      case 'front': {
+      case ThumbnailType.FRONT: {
         const directional = new DirectionalLight(0xffffff, 0.8)
         directional.position.set(center.x + 1, center.y + 1, center.z)
         directional.lookAt(center)
         scene.add(directional)
         break
       }
-      case 'top': {
+      case ThumbnailType.FRONT: {
         const directional = new DirectionalLight(0xffffff, 1)
         directional.position.set(center.x + 0, center.y + 1, center.z + 0)
         directional.lookAt(center)

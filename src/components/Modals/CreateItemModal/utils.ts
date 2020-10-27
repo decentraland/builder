@@ -1,3 +1,4 @@
+import { ThumbnailType } from 'lib/getModelData'
 import { WearableCategory } from 'modules/item/types'
 
 export const getThumbnailType = (category: WearableCategory) => {
@@ -6,8 +7,8 @@ export const getThumbnailType = (category: WearableCategory) => {
     case WearableCategory.EYES:
     case WearableCategory.MASK:
     case WearableCategory.MOUTH:
-      return 'front' as const
+      return ThumbnailType.FRONT
     default:
-      return 'default' as const
+      return ThumbnailType.DEFAULT
   }
 }
