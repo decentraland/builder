@@ -857,6 +857,8 @@
     "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}"
   },
   "item_editor": {
+    "open": "打开编辑器",
+    "open_in": "在编辑器中打开",
     "left_panel": {
       "title": "我的物品",
       "actions": {

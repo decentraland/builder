@@ -9,6 +9,7 @@ import CollectionCard from './CollectionCard'
 import Icon from 'components/Icon'
 import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
+import { locations } from 'routing/locations'
 
 export default class AvatarPage extends React.PureComponent<Props> {
   handleNewItem = () => {
@@ -17,6 +18,11 @@ export default class AvatarPage extends React.PureComponent<Props> {
 
   handleNewCollection = () => {
     this.props.onOpenModal('CreateCollectionModal')
+  }
+
+  handleOpenEditor = () => {
+    const { onNavigate } = this.props
+    onNavigate(locations.itemEditor())
   }
 
   renderPage() {
@@ -35,6 +41,9 @@ export default class AvatarPage extends React.PureComponent<Props> {
               </Column>
               <Column align="right">
                 <Row className="actions">
+                  <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
+                    {t('item_editor.open')}
+                  </Button>
                   <Dropdown
                     trigger={
                       <Button basic className="create-item">
