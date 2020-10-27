@@ -20,6 +20,9 @@ export const sidebarItemSource: DragSourceSpec<Props, SidebarItemDragObject> = {
     return {
       item: props.item
     }
+  },
+  canDrag(props) {
+    return props.selectedCollectionId === null
   }
 }
 
