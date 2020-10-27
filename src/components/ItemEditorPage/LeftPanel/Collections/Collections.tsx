@@ -15,6 +15,7 @@ export default class Collections extends React.PureComponent<Props> {
         {hasHeader ? <Header sub>{t('item_editor.left_panel.collections')}</Header> : null}
         {collections.map(collection => (
           <SidebarCollection
+            key={collection.id}
             collection={collection}
             items={items}
             isSelected={collection.id === selectedCollectionId}

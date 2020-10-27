@@ -62,7 +62,7 @@ export default class Tags extends React.PureComponent<Props, State> {
     const { isDisabled } = this.props
     const { draft, value } = this.state
     return (
-      <div className={`Tags ${value.length > 0 ? '' : 'blank'}`.trim()}>
+      <div className={`Tags ${value.length > 0 ? '' : 'blank'} ${isDisabled ? 'is-disabled' : ''}`.trim()}>
         <div className="values">
           {value.map(value => (
             <div className="value">
@@ -85,7 +85,7 @@ export default class Tags extends React.PureComponent<Props, State> {
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleAdd}
-          placeholder={value.length === 0 ? t('item_editor.right_panel.text_placeholder') : undefined}
+          placeholder={value.length === 0 && !isDisabled ? t('item_editor.right_panel.text_placeholder') : undefined}
           disabled={isDisabled}
         />
       </div>

@@ -31,7 +31,7 @@ export default class Input extends React.PureComponent<Props, State> {
     const { label, disabled } = this.props
 
     return (
-      <div className="Input">
+      <div className={`Input ${disabled ? 'is-disabled' : ''}`.trim()}>
         <div className="label">{label}</div>
         <input
           value={this.state.value}

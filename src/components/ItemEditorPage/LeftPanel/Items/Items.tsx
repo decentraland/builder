@@ -33,6 +33,7 @@ export default class Items extends React.PureComponent<Props> {
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
         {items.map(item => (
           <SidebarItem
+            key={item.id}
             item={item}
             isSelected={selectedItemId === item.id}
             isVisible={this.isVisible(item)}
