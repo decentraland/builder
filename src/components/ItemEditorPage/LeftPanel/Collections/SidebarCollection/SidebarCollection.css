@@ -54,3 +54,7 @@
 .SidebarCollection.no-drop > a {
   cursor: no-drop;
 }
+
+.SidebarCollection .CollectionBadge {
+  margin-left: 6px;
+}
