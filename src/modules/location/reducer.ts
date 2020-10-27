@@ -10,8 +10,8 @@ const INITIAL_STATE: LocationState = {
 
 export type LocationReducerAction = LocationChangeAction
 
-export function locationReducer(state = INITIAL_STATE, action: LocationReducerAction){
-  switch(action.type) {
+export function locationReducer(state = INITIAL_STATE, action: LocationReducerAction) {
+  switch (action.type) {
     case LOCATION_CHANGE: {
       return {
         ...state,
