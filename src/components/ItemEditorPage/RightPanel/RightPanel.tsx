@@ -44,6 +44,14 @@ export default class RightPanel extends React.PureComponent<Props> {
     }, 500)
   }
 
+  handleRemoveFromCollection = () => {
+    const { onSetCollection } = this.props
+    const item = this.getSelectedItem()
+    if (item) {
+      onSetCollection(item, null)
+    }
+  }
+
   render() {
     const { selectedItemId, address = '' } = this.props
     const selectedItem = this.getSelectedItem()
@@ -56,7 +64,7 @@ export default class RightPanel extends React.PureComponent<Props> {
     return (
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
-          {(_item, _collection, isLoading) =>
+          {(item, _collection, isLoading) =>
             isLoading ? (
               <Loader size="massive" active />
             ) : (
@@ -73,6 +81,9 @@ export default class RightPanel extends React.PureComponent<Props> {
                             })}
                             onClick={this.handleAddRepresentationToItem}
                           />
+                        ) : null}
+                        {item!.collectionId ? (
+                          <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                         ) : null}
                         <ConfirmDelete
                           name={selectedItem.name}
