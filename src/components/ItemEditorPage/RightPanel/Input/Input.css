@@ -8,6 +8,10 @@
   margin-bottom: 8px;
 }
 
+.Input.is-disabled {
+  opacity: 0.45;
+}
+
 .Input .label {
   flex: none;
   margin-right: 20px;

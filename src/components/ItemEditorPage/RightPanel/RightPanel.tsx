@@ -102,7 +102,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                         itemId={item.id}
                         label={t('global.name')}
                         value={item.name}
-                        disabled={!isOwner}
+                        disabled={item.isPublished || !isOwner}
                         onChange={name => this.handleChange({ ...item, name })}
                       />
                       <Select<WearableCategory>
@@ -176,7 +176,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                       itemId={item.id}
                       value={item.data.tags}
                       onChange={tags => this.handleChange({ ...item, data: { ...item.data, tags } })}
-                      isDisabled={!isOwner}
+                      isDisabled={item.isPublished || !isOwner}
                     />
                   )}
                 </Collapsable>
