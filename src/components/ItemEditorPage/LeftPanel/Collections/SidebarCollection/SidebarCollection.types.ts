@@ -3,9 +3,8 @@ import { setCollection } from 'modules/item/actions'
 import { Item } from 'modules/item/types'
 
 export type Props = {
-  selectedCollectionId: string | null
-  collections: Collection[]
+  collection: Collection
   items: Item[]
-  hasHeader: boolean
+  isSelected: boolean
   onSetCollection: typeof setCollection
 }

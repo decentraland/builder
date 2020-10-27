@@ -1,0 +1,72 @@
+.SidebarItem {
+  margin-top: 8px;
+}
+
+.SidebarItem > a {
+  display: flex;
+  align-items: center;
+  background: rgba(var(--bluish-steel-raw), 0.2);
+  height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 8px;
+}
+
+.SidebarItem .ItemImage {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: 8px;
+  flex: none;
+}
+
+.SidebarItem .name {
+  margin-left: 8px;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: bold;
+  flex: 1 0 auto;
+  color: var(--text);
+}
+
+.SidebarItem .toggle {
+  flex: none;
+  width: 20px;
+  height: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-left: 20px;
+}
+
+.SidebarItem.is-selected > a {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.7);
+  cursor: default;
+}
+
+.SidebarItem.is-dragging > a {
+  border: 1px solid var(--primary);
+  cursor: grabbing;
+}
+
+.SidebarItem > a:hover .toggle {
+  background-image: url(../../../../../images/eye-toggle-item.svg);
+}
+
+.SidebarItem .toggle.is-visible,
+.SidebarItem > a:hover .toggle.is-visible {
+  background-image: url(../../../../../images/eye-toggle-item-active.svg);
+}
+
+.SidebarItem .toggle:hover {
+  cursor: pointer;
+}
+
+.SidebarItem > a:not(.is-selected):hover {
+  background: rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.ui.popup.invalid-representation-popup {
+  height: auto;
+}
