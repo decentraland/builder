@@ -54,3 +54,16 @@
 .SidebarCollection.no-drop > a {
   cursor: no-drop;
 }
+
+.SidebarCollection .CollectionBadge {
+  margin-left: 6px;
+}
+
+.SidebarCollection .CollectionImage .empty {
+  overflow: hidden;
+  border: 2px solid var(--divider);
+}
+
+.SidebarCollection .CollectionImage .empty > * {
+  display: none;
+}

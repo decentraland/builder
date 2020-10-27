@@ -53,7 +53,7 @@ export default class Header extends React.PureComponent<Props> {
         <div className="title">
           {collection.name} <CollectionBadge collection={collection} />
         </div>
-        {isOwner || !collection.isPublished ? (
+        {isOwner && !collection.isPublished ? (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>

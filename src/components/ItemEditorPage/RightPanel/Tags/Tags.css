@@ -8,6 +8,10 @@
   margin-bottom: 8px;
 }
 
+.Tags.is-disabled {
+  opacity: 0.45;
+}
+
 .Tags .label {
   flex: none;
   margin-right: 20px;
