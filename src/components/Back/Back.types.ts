@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import {CallHistoryMethodAction, goBack } from 'connected-react-router'
+import { CallHistoryMethodAction, goBack } from 'connected-react-router'
 import { BackProps } from 'decentraland-ui'
 
 
