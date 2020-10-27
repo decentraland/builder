@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Section, Row, Back, Dropdown, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
+import { Section, Row, Dropdown, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
 
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -11,6 +11,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
+import Back from 'components/Back'
 import CollectionItem from './CollectionItem'
 import { Props } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
