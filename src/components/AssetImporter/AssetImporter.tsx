@@ -13,7 +13,7 @@ import { Asset, GROUND_CATEGORY, RawAsset } from 'modules/asset/types'
 import { EXPORT_PATH } from 'modules/project/export'
 import { RawAssetPack, MixedAssetPack } from 'modules/assetPack/types'
 import { cleanAssetName, rawMappingsToObjectURL, revokeMappingsObjectURL, MAX_NAME_LENGTH } from 'modules/asset/utils'
-import { getModelData } from 'lib/getModelData'
+import { getModelData, ThumbnailType } from 'lib/getModelData'
 import { createDefaultImportedFile, getMetrics, ASSET_MANIFEST, prepareScript } from './utils'
 import { truncateFileName, getExtension, MAX_FILE_SIZE } from 'lib/file'
 
@@ -269,7 +269,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           let mappings = rawMappingsToObjectURL(outFile.asset.contents)
           const { image, info } = await getModelData(mappings[outFile.asset.model], {
             mappings,
-            thumbnailType: outFile.asset.category === GROUND_CATEGORY ? '2d' : '3d'
+            thumbnailType: outFile.asset.category === GROUND_CATEGORY ? ThumbnailType.TOP : ThumbnailType.DEFAULT
           })
           revokeMappingsObjectURL(mappings)
 

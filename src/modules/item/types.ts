@@ -15,19 +15,19 @@ export enum ItemRarity {
 }
 
 export enum WearableCategory {
+  EARRING = 'earring',
+  EYEWEAR = 'eyewear',
   EYEBROWS = 'eyebrows',
   EYES = 'eyes',
   FACIAL_HAIR = 'facial_hair',
-  HAIR = 'hair',
-  MOUTH = 'mouth',
-  UPPER_BODY = 'upper_body',
-  LOWER_BODY = 'lower_body',
   FEET = 'feet',
-  EARRING = 'earring',
-  EYEWEAR = 'eyewear',
+  HAIR = 'hair',
   HAT = 'hat',
   HELMET = 'helmet',
+  LOWER_BODY = 'lower_body',
   MASK = 'mask',
+  MOUTH = 'mouth',
+  UPPER_BODY = 'upper_body',
   TIARA = 'tiara',
   TOP_HEAD = 'top_head'
 }

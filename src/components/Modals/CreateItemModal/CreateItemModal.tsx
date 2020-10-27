@@ -2,12 +2,35 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
-import { ModalNavigation, Loader, Row, Column, Button, Form, Field, Section, Header, InputOnChangeData } from 'decentraland-ui'
+import {
+  ModalNavigation,
+  Loader,
+  Row,
+  Column,
+  Button,
+  Form,
+  Field,
+  Section,
+  Header,
+  InputOnChangeData,
+  SelectField,
+  DropdownProps
+} from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
-import { dataURLToBlob } from 'modules/media/utils'
-import { THUMBNAIL_PATH, Item, ItemType, WearableBodyShape, BodyShapeType } from 'modules/item/types'
+import { blobToDataURL, dataURLToBlob } from 'modules/media/utils'
+import {
+  THUMBNAIL_PATH,
+  Item,
+  ItemType,
+  WearableBodyShape,
+  BodyShapeType,
+  WearableCategory,
+  ItemRarity,
+  RARITY_COLOR_LIGHT,
+  RARITY_COLOR
+} from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
@@ -17,6 +40,7 @@ import { ModelMetrics } from 'modules/scene/types'
 import { getMissingBodyShapeType } from 'modules/item/utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata } from './CreateItemModal.types'
 import './CreateItemModal.css'
+import { getThumbnailType } from './utils'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -59,10 +83,29 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   handleSubmit = async () => {
     const { address, onSubmit } = this.props
-    const { id, name, model, bodyShape, contents, metrics, collectionId, isRepresentation, addRepresentationTo } = this.state
+    const {
+      id,
+      name,
+      model,
+      thumbnail,
+      bodyShape,
+      contents,
+      metrics,
+      collectionId,
+      isRepresentation,
+      addRepresentationTo,
+      category,
+      rarity
+    } = this.state
 
-    if (id && name && model && bodyShape && contents && metrics) {
+    if (id && name && model && bodyShape && contents && metrics && category && thumbnail) {
       let item: Item | undefined
+
+      const blob = dataURLToBlob(thumbnail)
+      const hasCustomThumbnail = THUMBNAIL_PATH in contents
+      if (blob && !hasCustomThumbnail) {
+        contents[THUMBNAIL_PATH] = blob
+      }
 
       // add this item as a representation of an existing item
       if (isRepresentation && addRepresentationTo) {
@@ -108,7 +151,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           isPublished: false,
           isApproved: false,
           inCatalyst: false,
+          rarity,
           data: {
+            category,
             replaces: [],
             hides: [],
             tags: [],
@@ -161,15 +206,25 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
     const url = URL.createObjectURL(contents[model])
-    const { image: thumbnail, info: metrics } = await getModelData(url, { width: 1024, height: 1024 })
-    if (!contents[THUMBNAIL_PATH]) {
-      const thumbnailBlob = dataURLToBlob(thumbnail)
-      if (thumbnailBlob) {
-        contents[THUMBNAIL_PATH] = thumbnailBlob
-      }
+    const { image, info: metrics } = await getModelData(url, { width: 1024, height: 1024 })
+    URL.revokeObjectURL(url)
+
+    let thumbnail = image
+
+    const hasCustomThumbnail = THUMBNAIL_PATH in contents
+    if (hasCustomThumbnail) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH])
     }
 
     return [thumbnail, model, metrics, contents]
+  }
+
+  async updateThumbnail(category: WearableCategory) {
+    const { model, contents } = this.state
+    const url = URL.createObjectURL(contents![model!])
+    const { image: thumbnail } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+    URL.revokeObjectURL(url)
+    this.setState({ thumbnail })
   }
 
   renderDropzoneCTA = (open: () => void) => {
@@ -299,6 +354,19 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   handleItemChange = (item: Item) => this.setState({ addRepresentationTo: item })
 
+  handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const category = value as WearableCategory
+    if (this.state.category !== category) {
+      this.updateThumbnail(category)
+      this.setState({ category })
+    }
+  }
+
+  handleRarityChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
+    const rarity = value as ItemRarity
+    this.setState({ rarity })
+  }
+
   handleYes = () => this.setState({ isRepresentation: true })
 
   handleNo = () => this.setState({ isRepresentation: false })
@@ -329,12 +397,38 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     )
   }
 
+  renderFields() {
+    const { name, category, rarity } = this.state
+    return (
+      <>
+        <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+        <SelectField
+          label={t('create_item_modal.rarity_label')}
+          placeholder={t('create_item_modal.rarity_placeholder')}
+          value={rarity}
+          options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+          onChange={this.handleRarityChange}
+        />
+        <SelectField
+          label={t('create_item_modal.category_label')}
+          placeholder={t('create_item_modal.category_placeholder')}
+          value={category}
+          options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+          onChange={this.handleCategoryChange}
+        />
+      </>
+    )
+  }
+
   renderDetailsView() {
     const { onClose, isLoading } = this.props
-    const { name, thumbnail, metrics, bodyShape, isRepresentation, addRepresentationTo } = this.state
-    const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape
+    const { name, thumbnail, metrics, bodyShape, isRepresentation, addRepresentationTo, category, rarity } = this.state
+    const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape && !!category
     const isDisabled = !isValid || isLoading
     const isAddingRepresentation = this.isAddingRepresentation()
+    const thumbnailStyle = rarity
+      ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
+      : undefined
     return (
       <>
         <ModalNavigation
@@ -350,7 +444,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             <Column>
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
-                  <img className="thumbnail" src={thumbnail || undefined} />
+                  <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
                   {metrics ? (
                     <div className="metrics">
                       <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
@@ -373,7 +467,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                   {bodyShape ? (
                     <>
                       {bodyShape === BodyShapeType.UNISEX ? (
-                        <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+                        this.renderFields()
                       ) : (
                         <>
                           {isAddingRepresentation ? null : (
@@ -404,12 +498,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                               />
                             </Section>
                           ) : (
-                            <Field
-                              className="name"
-                              label={t('create_item_modal.name_label')}
-                              value={name}
-                              onChange={this.handleNameChange}
-                            />
+                            this.renderFields()
                           )}
                         </>
                       )}
