@@ -11,6 +11,7 @@ import Profile from 'components/Profile'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
+import { env } from 'decentraland-commons'
 
 const FILL_COLOR = {
   [RoleType.OWNER]: '#ff8199',
@@ -21,6 +22,8 @@ const STROKE_COLOR = {
   [RoleType.OWNER]: '#fcc6d1',
   [RoleType.OPERATOR]: '#d7f6fc'
 }
+
+const FF_ENS = env.get('REACT_APP_FF_ENS')
 
 export default class LandDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -146,10 +149,12 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             text={t('land_detail_page.set_operator')}
                             onClick={() => onNavigate(locations.landOperator(land.id))}
                           />
-                          <Dropdown.Item
-                            text={t('land_detail_page.set_link')}
-                            onClick={() => onNavigate(locations.landEns(land.id))}
-                          />
+                          { FF_ENS &&
+                            <Dropdown.Item
+                              text={t('land_detail_page.set_link')}
+                              onClick={() => onNavigate(locations.landEns(land.id))}
+                            />
+                          }
                           {canBuildEstate ? (
                             <Dropdown.Item
                               text={t('land_detail_page.build_estate')}
