@@ -7,7 +7,6 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isOnSale } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
-import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Notice from 'components/Notice'
@@ -218,7 +217,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   render() {
     const { isLoading, collection } = this.props
     return (
-      <LoggedInDetailPage className="CollectionDetailPage" activeTab={NavigationTab.AVATAR} isLoading={isLoading}>
+      <LoggedInDetailPage className="CollectionDetailPage" hasNavigation={false} isLoading={isLoading}>
         {collection === null ? <NotFound /> : this.renderPage()}
       </LoggedInDetailPage>
     )
