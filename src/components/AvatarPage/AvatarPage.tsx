@@ -4,12 +4,12 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import Icon from 'components/Icon'
+import { locations } from 'routing/locations'
 import ItemCard from './ItemCard'
 import CollectionCard from './CollectionCard'
-import Icon from 'components/Icon'
 import { Props } from './AvatarPage.types'
 import './AvatarPage.css'
-import { locations } from 'routing/locations'
 
 export default class AvatarPage extends React.PureComponent<Props> {
   handleNewItem = () => {
