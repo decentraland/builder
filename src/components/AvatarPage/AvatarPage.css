@@ -1,3 +1,7 @@
+.AvatarPage .ui.cards {
+  margin: 0px;
+}
+
 .AvatarPage .ui.cards > .empty {
   margin-top: 28px;
   padding: 112px 0;
@@ -84,7 +88,11 @@
   box-shadow: none;
   transform: translateY(0px);
   margin-top: 20px;
-  margin-right: 28px;
+  margin-right: 24px;
+}
+
+.AvatarPage .is-card:nth-child(4n) {
+  margin-right: 0px;
 }
 
 .AvatarPage .is-card:hover {
