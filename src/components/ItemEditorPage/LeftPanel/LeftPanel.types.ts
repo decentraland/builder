@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { Collection } from 'modules/collection/types'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { setItems, SetItemsAction } from 'modules/editor/actions'
+import { setCollection, SetCollectionAction } from 'modules/item/actions'
 
 export type Props = {
   items: Item[]
@@ -12,11 +13,12 @@ export type Props = {
   visibleItems: Item[]
   bodyShape: WearableBodyShape
   onSetItems: typeof setItems
+  onSetCollection: typeof setCollection
 }
 
 export type MapStateProps = Pick<
   Props,
   'items' | 'orphanItems' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape'
 >
-export type MapDispatchProps = Pick<Props, 'onSetItems'>
-export type MapDispatch = Dispatch<SetItemsAction>
+export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection'>
+export type MapDispatch = Dispatch<SetItemsAction | SetCollectionAction>

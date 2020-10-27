@@ -1,13 +1,11 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Header, Popup, Section } from 'decentraland-ui'
+import { Header, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import ItemImage from 'components/ItemImage'
 import { Item } from 'modules/item/types'
-import { locations } from 'routing/locations'
-import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
+import { hasBodyShape } from 'modules/item/utils'
 import { Props } from './Items.types'
 import './Items.css'
+import SidebarItem from './SidebarItem'
 
 export default class Items extends React.PureComponent<Props> {
   isVisible = (item: Item) => {
@@ -34,25 +32,14 @@ export default class Items extends React.PureComponent<Props> {
       <Section className="Items">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
         {items.map(item => (
-          <Link
-            key={item.id}
-            className={`item ${item.id === selectedItemId ? 'is-selected' : ''}`}
-            to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}
-          >
-            <ItemImage item={item} />
-            <div className="name">{item.name}</div>
-            <Popup
-              className="invalid-representation-popup"
-              content={t('item_editor.left_panel.invalid_representation_tooltip', {
-                bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()}</b>
-              })}
-              disabled={hasBodyShape(item, bodyShape)}
-              position="top center"
-              trigger={
-                <div className={`toggle ${this.isVisible(item) ? 'visible' : 'hidden'}`} onClick={() => this.handleToggle(item)}></div>
-              }
-            />
-          </Link>
+          <SidebarItem
+            item={item}
+            isSelected={selectedItemId === item.id}
+            isVisible={this.isVisible(item)}
+            selectedCollectionId={selectedCollectionId}
+            bodyShape={bodyShape}
+            onClick={this.handleToggle}
+          />
         ))}
       </Section>
     )

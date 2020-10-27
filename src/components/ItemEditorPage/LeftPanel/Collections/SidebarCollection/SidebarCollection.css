@@ -1,0 +1,56 @@
+.SidebarCollection {
+  margin-top: 8px;
+}
+
+.SidebarCollection > a {
+  display: flex;
+  align-items: center;
+  background: rgba(var(--bluish-steel-raw), 0.2);
+  height: 72px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 8px;
+}
+
+.SidebarCollection .CollectionImage {
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.SidebarCollection .wrapper {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.SidebarCollection .name {
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.SidebarCollection .count {
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--secondary-text);
+}
+
+.SidebarCollection:hover > a {
+  background: rgba(var(--bluish-steel-raw), 0.4);
+}
+
+.SidebarCollection.is-selected > a {
+  border: 1px solid rgba(var(--bluish-steel-raw), 0.7);
+}
+
+.SidebarCollection.is-over > a {
+  border: 1px solid var(--primary);
+}
+
+.SidebarCollection.no-drop > a {
+  cursor: no-drop;
+}
