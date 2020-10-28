@@ -1,3 +1,7 @@
+.AvatarPage .ui.cards {
+  margin: 0px;
+}
+
 .AvatarPage .ui.cards > .empty {
   margin-top: 28px;
   padding: 112px 0;
@@ -34,6 +38,7 @@
   background-position: 50% 35%;
   cursor: pointer;
 }
+
 .AvatarPage .ui.cards > .empty .create-new:first-child {
   margin-right: 24px;
 }
@@ -92,7 +97,11 @@
   box-shadow: none;
   transform: translateY(0px);
   margin-top: 20px;
-  margin-right: 28px;
+  margin-right: 24px;
+}
+
+.AvatarPage .is-card:nth-child(4n) {
+  margin-right: 0px;
 }
 
 .AvatarPage .is-card:hover {
@@ -114,4 +123,11 @@
 .AvatarPage .is-card .is-image .is-image {
   border-radius: 0px !important;
   box-shadow: none;
+}
+
+@media (max-width: 1200px) {
+  .AvatarPage .is-card .is-image {
+    width: 215px;
+    height: 215px;
+  }
 }
