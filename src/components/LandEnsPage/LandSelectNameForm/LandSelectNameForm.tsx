@@ -37,7 +37,7 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     const selectOptions = subdomainList.map(subdomain => ({ value: subdomain.toLowerCase(), text: subdomain.toLowerCase() }))
 
     const messageType = ens.data[selectedSubdomain] ? ens.data[selectedSubdomain].type : 'default'
-    let selectMessage: string = ""
+    let selectMessage: string = ''
     let isButtonDisabled: boolean = false
     switch (messageType) {
       case FetchEnsTypeResult.EmptyResolver:
@@ -70,7 +70,8 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
               primary
               onClick={() => {
                 window.location.href = CLAIM_NAME_URL
-              }}>
+              }}
+            >
               {t('land_ens_page.claim_new_name')}
             </Button>
           </Row>
@@ -88,7 +89,7 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
           />
         </Row>
         <Row>
-          <p className="selectMessage"> {selectMessage} </p>
+          <p className="selectMessage">{selectMessage}</p>
         </Row>
         <Row>
           <Link className="cancel" to={locations.landDetail(land.id)}>
