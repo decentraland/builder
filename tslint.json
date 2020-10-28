@@ -3,9 +3,14 @@
   "rules": {
     "quotemark": false,
     "no-commented-out-code": false,
-    "no-unnecessary-type-assertion": false
+    "no-unnecessary-type-assertion": false,
+    "prettier": [
+      true,
+      { "printWidth": 140, "singleQuote": true, "semi": false }
+    ]
   },
   "linterOptions": {
-    "exclude": ["./**/*.js"]
+    "exclude": ["src/contracts/*.ts", "node_modules/**/*.ts", "./**/*.js"]
   }
 }
+

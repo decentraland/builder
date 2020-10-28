@@ -43,39 +43,34 @@ export default class LandEnsPage extends React.PureComponent<Props> {
           <LandAction
             land={land}
             title={t('land_ens_page.title')}
-            subtitle={<T
-              id="land_ens_page.subtitle"
-              values={{ name: <Link to={locations.landDetail(land.id)}> {land.name}</Link> }}
-            />}
+            subtitle={<T id="land_ens_page.subtitle" values={{ name: <Link to={locations.landDetail(land.id)}> {land.name}</Link> }} />}
           >
-            {
-              (selectedName === '') ? (
-                <LandSelectNameForm
-                  land={land}
-                  ens={ens}
-                  onUpdateName={this.updateSelectedName}
-                  onFetchDomainList={onFetchDomainList}
-                  onFetchENS={onFetchENS}
-                  subdomainList={subdomainList}
-                  error={error}
-                  isLoading={isLoading}
-                />
-              ) : (
-                <LandSetNameForm
-                  land={land}
-                  ens={ens}
-                  selectedName={selectedName}
-                  error={error}
-                  isLoading={isLoading}
-                  isWaitingTxSetResolver={isWaitingTxSetResolver}
-                  isWaitingTxSetContent={isWaitingTxSetContent}
-                  onSetENSContent={onSetENSContent}
-                  onSetENSResolver={onSetENSResolver}
-                  onRestartForm={this.restartForm}
-                  onNavigate={onNavigate}
-                />
-              )
-            }
+            {selectedName === '' ? (
+              <LandSelectNameForm
+                land={land}
+                ens={ens}
+                onUpdateName={this.updateSelectedName}
+                onFetchDomainList={onFetchDomainList}
+                onFetchENS={onFetchENS}
+                subdomainList={subdomainList}
+                error={error}
+                isLoading={isLoading}
+              />
+            ) : (
+              <LandSetNameForm
+                land={land}
+                ens={ens}
+                selectedName={selectedName}
+                error={error}
+                isLoading={isLoading}
+                isWaitingTxSetResolver={isWaitingTxSetResolver}
+                isWaitingTxSetContent={isWaitingTxSetContent}
+                onSetENSContent={onSetENSContent}
+                onSetENSResolver={onSetENSResolver}
+                onRestartForm={this.restartForm}
+                onNavigate={onNavigate}
+              />
+            )}
           </LandAction>
         )}
       </LandProviderPage>
