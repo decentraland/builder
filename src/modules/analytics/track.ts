@@ -388,15 +388,3 @@ add(SET_COLLECTION_MANAGERS_FAILURE, 'Set collaborators error', action => {
     error: payload.error
   }
 })
-
-add(
-  SET_UPDATE_MANAGER_SUCCESS,
-  action => (action.payload.isApproved ? 'Add manager' : 'Remove manager'),
-  action => {
-    const { payload } = action as SetUpdateManagerSuccessAction
-    return {
-      address: payload.address,
-      type: payload.type
-    }
-  }
-)
