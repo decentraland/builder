@@ -79,6 +79,14 @@
   border: solid 1px var(--gray);
 }
 
+.AvatarPage .filters .dcl.row.actions .ui.button.open-editor {
+  padding: 6px 13px;
+}
+
+.AvatarPage .filters .dcl.row.actions .ui.button.open-editor:hover {
+  transform: translateY(0px);
+}
+
 .AvatarPage .is-card {
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
   box-shadow: none;

@@ -860,6 +860,7 @@
     "subtitle": "Colección · {count} {count, plural, one {item} other {items}}"
   },
   "item_editor": {
+    "open": "Abrir editor",
     "left_panel": {
       "title": "Mis Items",
       "actions": {

@@ -334,24 +334,23 @@ function* handleOpenEditor(action: OpenEditorAction) {
     const itemId = new URLSearchParams(search).get('item')
     const items: Item[] = yield select(getItems)
     const item = items.find(item => item.id === itemId)
-    if (item) {
-      yield put(setEditorReadOnly(true))
-      yield createNewEditorScene(createAvatarProject())
 
-      // set camera
-      yield call(async () => {
-        editorWindow.editor.setBuilderConfiguration({
-          camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
-          environment: { disableFloor: true }
-        })
-        editorWindow.editor.resetCameraZoom()
-        editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
-        editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
+    yield put(setEditorReadOnly(true))
+    yield createNewEditorScene(createAvatarProject())
+
+    // set camera
+    yield call(async () => {
+      editorWindow.editor.setBuilderConfiguration({
+        camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
+        environment: { disableFloor: true }
       })
+      editorWindow.editor.resetCameraZoom()
+      editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
+      editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
+    })
 
-      // render selected items
-      yield put(setItems([item]))
-    }
+    // render selected items
+    yield put(setItems(item ? [item] : []))
   } else {
     // Creates a new scene in the dcl client's side
     const project: Project | Pool | null = yield type === PreviewType.POOL ? select(getCurrentPool) : select(getCurrentProject)

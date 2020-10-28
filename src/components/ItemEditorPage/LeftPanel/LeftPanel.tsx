@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Loader } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import Header from './Header'
 import Items from './Items'
@@ -27,6 +28,13 @@ export default class LeftPanel extends React.PureComponent<Props> {
             const listItems = selectedCollectionId ? collectionItems : orphanItems
             return isLoading ? (
               <Loader size="massive" active />
+            ) : listItems.length === 0 && collections.length === 0 ? (
+              <>
+                <Header />
+                <div className="empty">
+                  <div className="subtitle">{t('avatar_page.empty_description')}</div>
+                </div>
+              </>
             ) : (
               <>
                 <Header />

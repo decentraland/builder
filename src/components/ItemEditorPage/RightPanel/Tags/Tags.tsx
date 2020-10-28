@@ -65,7 +65,7 @@ export default class Tags extends React.PureComponent<Props, State> {
       <div className={`Tags ${value.length > 0 ? '' : 'blank'} ${isDisabled ? 'is-disabled' : ''}`.trim()}>
         <div className="values">
           {value.map(value => (
-            <div className="value">
+            <div className="value" key={value}>
               {value}
               <div
                 className="remove"
