@@ -15,7 +15,7 @@ export function locationReducer(state = INITIAL_STATE, action: LocationReducerAc
     case LOCATION_CHANGE: {
       return {
         ...state,
-        hasHistory: !action.payload.isFirstRendering
+        hasHistory: !action.payload.isFirstRendering && action.payload.action === 'PUSH'
       }
     }
     default:
