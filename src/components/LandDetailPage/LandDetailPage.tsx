@@ -146,10 +146,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             text={t('land_detail_page.set_operator')}
                             onClick={() => onNavigate(locations.landOperator(land.id))}
                           />
-                          <Dropdown.Item
-                            text={t('land_detail_page.set_link')}
-                            onClick={() => onNavigate(locations.landEns(land.id))}
-                          />
+                          <Dropdown.Item text={t('land_detail_page.set_link')} onClick={() => onNavigate(locations.landEns(land.id))} />
                           {canBuildEstate ? (
                             <Dropdown.Item
                               text={t('land_detail_page.build_estate')}
