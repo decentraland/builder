@@ -50,7 +50,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
         <div className="values">
           {value.length > 0 ? (
             value.map(value => (
-              <div className="value">
+              <div className="value" key={value}>
                 {labels[value]}
                 <div
                   className="remove"
