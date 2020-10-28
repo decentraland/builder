@@ -6,7 +6,7 @@
   overflow: auto;
 }
 
-.LeftPanel .empty {
+.LeftPanel > .empty {
   width: 100%;
   height: calc(100% - 52px);
   display: flex;
@@ -17,6 +17,6 @@
   padding: 32px;
 }
 
-.LeftPanel .empty .subtitle {
+.LeftPanel > .empty .subtitle {
   color: var(--secondary-text);
 }
