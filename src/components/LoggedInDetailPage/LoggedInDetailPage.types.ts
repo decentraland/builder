@@ -5,6 +5,7 @@ export type Props = {
   children: React.ReactNode
   activeTab?: NavigationTab
   className?: string
+  hasNavigation?: boolean
   isPageFullscreen?: boolean
   isFooterFullscreen?: boolean
   isLoading?: boolean

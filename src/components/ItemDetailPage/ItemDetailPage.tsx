@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { fromWei } from 'web3x-es/utils'
@@ -7,12 +7,12 @@ import { fromWei } from 'web3x-es/utils'
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { getMaxSupply, getMissingBodyShapeType } from 'modules/item/utils'
-import { NavigationTab } from 'components/Navigation/Navigation.types'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
+import Back from 'components/Back'
 import { Props } from './ItemDetailPage.types'
 import './ItemDetailPage.css'
 
@@ -160,7 +160,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   render() {
     const { isLoading, item } = this.props
     return (
-      <LoggedInDetailPage className="ItemDetailPage" activeTab={NavigationTab.AVATAR} isLoading={isLoading}>
+      <LoggedInDetailPage className="ItemDetailPage" hasNavigation={false} isLoading={isLoading}>
         {item === null ? <NotFound /> : this.renderPage()}
       </LoggedInDetailPage>
     )
