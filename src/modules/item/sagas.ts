@@ -2,7 +2,6 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
-import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import {
   FetchItemsRequestAction,
@@ -47,6 +46,7 @@ import { builder } from 'lib/api/builder'
 import { getCollection } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
+import { LOGIN_SUCCESS } from 'modules/identity/actions'
 import { deployContents } from './export'
 import { Item } from './types'
 
@@ -56,7 +56,7 @@ export function* itemSaga() {
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_PUBLISHED_ITEM_REQUEST, handleSavePublishedItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
-  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
+  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
   yield takeLatest(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
@@ -137,7 +137,7 @@ function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
   }
 }
 
-function* handleConnectWalletSuccess() {
+function* handleLoginSuccess() {
   yield put(fetchItemsRequest())
 }
 

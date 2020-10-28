@@ -2,7 +2,6 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
-import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
   FetchCollectionsRequestAction,
@@ -53,6 +52,7 @@ import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getWalletItems } from 'modules/item/selectors'
+import { LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { initializeCollection } from './utils'
@@ -66,7 +66,7 @@ export function* collectionSaga() {
   yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
   yield takeEvery(SET_COLLECTION_MANAGERS_REQUEST, handleSetCollectionManagersRequest)
   yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintColectionItems)
-  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
+  yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
 }
@@ -249,7 +249,7 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
   }
 }
 
-function* handleConnectWalletSuccess() {
+function* handleLoginSuccess() {
   yield put(fetchCollectionsRequest())
 }
 
