@@ -87,10 +87,14 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.activity()} component={ActivityPage} />
             <Route exact path={locations.settings()} component={SettingsPage} />
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
-            <Route exact path={locations.avatar()} component={AvatarPage} />
-            <Route exact path={locations.itemDetail()} component={ItemDetailPage} />
-            <Route exact path={locations.collectionDetail()} component={CollectionDetailPage} />
-            <Route exact path={locations.itemEditor()} component={ItemEditorPage} />
+            {env.get('REACT_APP_FF_WEARABLES') ? (
+              <>
+                <Route exact path={locations.avatar()} component={AvatarPage} />
+                <Route exact path={locations.itemDetail()} component={ItemDetailPage} />
+                <Route exact path={locations.collectionDetail()} component={CollectionDetailPage} />
+                <Route exact path={locations.itemEditor()} component={ItemEditorPage} />
+              </>
+            ) : null}
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>
