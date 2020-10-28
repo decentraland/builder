@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Row, Back, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { env } from 'decentraland-commons'
 import { LandType, Land, RoleType } from 'modules/land/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
@@ -11,7 +12,6 @@ import Profile from 'components/Profile'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
-import { env } from 'decentraland-commons'
 
 const FILL_COLOR = {
   [RoleType.OWNER]: '#ff8199',
