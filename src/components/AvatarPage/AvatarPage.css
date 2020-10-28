@@ -38,6 +38,7 @@
   background-position: 50% 35%;
   cursor: pointer;
 }
+
 .AvatarPage .ui.cards > .empty .create-new:first-child {
   margin-right: 24px;
 }
@@ -114,4 +115,11 @@
 .AvatarPage .is-card .is-image .is-image {
   border-radius: 0px !important;
   box-shadow: none;
+}
+
+@media (max-width: 1200px) {
+  .AvatarPage .is-card .is-image {
+    width: 215px;
+    height: 215px;
+  }
 }
