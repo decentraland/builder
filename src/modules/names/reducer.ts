@@ -23,7 +23,7 @@ const INITIAL_STATE: NamesState = {
 
 export type NamesReducerAction = FetchNamesRequestAction | FetchNamesSuccessAction | FetchNamesFailureAction
 
-export function landReducer(state: NamesState = INITIAL_STATE, action: NamesReducerAction) {
+export function namesReducer(state: NamesState = INITIAL_STATE, action: NamesReducerAction) {
   switch (action.type) {
     case FETCH_NAMES_REQUEST: {
       return {

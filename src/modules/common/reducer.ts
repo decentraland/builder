@@ -19,6 +19,7 @@ import { profileReducer as profile } from 'modules/profile/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
+import { namesReducer as names } from 'modules/names/reducer'
 import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
@@ -36,6 +37,7 @@ export function createRootReducer(history: History) {
       transaction,
       wallet,
       modal,
+      names,
       assetPack,
       asset,
       ui,

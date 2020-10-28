@@ -9,8 +9,13 @@ import { Props, State } from './NamesPage.types'
 import './NamesPage.css'
 
 export default class NamesPage extends React.PureComponent<Props, State> {
-
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
+
+  componentDidMount() {
+    const { onFetchNames, address } = this.props
+    console.log(address)
+    onFetchNames(address)
+  }
 
   renderLogin() {
     return (
@@ -46,23 +51,23 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
                 <Table.Body>
                   {names.map(name => (
-                      <Table.Row className="TableRow">
-                        <Table.Cell>
-                          <Row>
-                            <Column className="name">{name.name}</Column>
-                          </Row>
-                        </Table.Cell>
-                        <Table.Cell>
-                          <Row>
-                            <Column className="name">{name.beingAssigned ? 'Yes' : 'No'}</Column>
-                          </Row>
-                        </Table.Cell>
-                        <Table.Cell>
-                          <Row>
-                            <Column className="name">{name.assignedTo}</Column>
-                          </Row>
-                        </Table.Cell>
-                      </Table.Row>
+                    <Table.Row className="TableRow">
+                      <Table.Cell>
+                        <Row>
+                          <Column className="name">{name.name}</Column>
+                        </Row>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Row>
+                          <Column className="name">{name.beingAssigned ? 'Yes' : 'No'}</Column>
+                        </Row>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Row>
+                          <Column className="name">{name.assignedTo}</Column>
+                        </Row>
+                      </Table.Cell>
+                    </Table.Row>
                   ))}
                 </Table.Body>
               </Table>
