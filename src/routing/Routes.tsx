@@ -28,7 +28,9 @@ import SettingsPage from 'components/SettingsPage'
 import SceneDetailPage from 'components/SceneDetailPage'
 
 import { Props, State } from './Routes.types'
+
 const FF_ENS = env.get('REACT_APP_FF_ENS')
+
 export default class Routes extends React.Component<Props, State> {
   state = {
     hasError: false,
@@ -79,7 +81,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.land()} component={LandPage} />
             <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Route exact path={locations.landTransfer()} component={LandTransferPage} />
-            {FF_ENS && <Route exact path={locations.landEns()} component={LandEnsPage} />}
+            { FF_ENS && <Route exact path={locations.landEns()} component={LandEnsPage} /> }
             <Route exact path={locations.landEdit()} component={LandEditPage} />
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
