@@ -55,7 +55,7 @@ export function getBodyShapeType(item: Item) {
 }
 
 export function getBodyShapes(item: Item) {
-  const bodyShapes = new Set()
+  const bodyShapes = new Set<WearableBodyShape>()
   for (const representation of item.data.representations) {
     for (const bodyShape of representation.bodyShape) {
       bodyShapes.add(bodyShape)
@@ -107,7 +107,9 @@ export function getMetadata(item: Item) {
     case ItemType.WEARABLE: {
       const data = item.data as WearableData
       const bodyShapes = getBodyShapes(item)
-      return `${version}:${type}:${slug}:${data.category}:${bodyShapes.join(',')}`
+      return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapes
+        .map(bodyShape => bodyShape.split('/').pop())
+        .join(',')}`
     }
     default:
       return `${version}:${type}:${slug}`

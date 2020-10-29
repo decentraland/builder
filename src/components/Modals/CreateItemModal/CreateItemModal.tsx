@@ -144,6 +144,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item = {
           id,
           name,
+          description: '',
           thumbnail: THUMBNAIL_PATH,
           type: ItemType.WEARABLE,
           collectionId,

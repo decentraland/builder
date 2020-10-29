@@ -392,7 +392,8 @@
     "name": "名称",
     "category": "类别",
     "rarity": "稀有度",
-    "published": "已发表"
+    "published": "已发表",
+    "description": "描述"
   },
   "navigation": {
     "scenes": "场景",
@@ -881,7 +882,6 @@
       "replaces": "取代",
       "hides": "皮",
       "tags": "标签",
-      "text_placeholder": "写一些东西...",
       "select_placeholder": "选择一个选项"
     }
   },

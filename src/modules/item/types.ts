@@ -96,7 +96,7 @@ export type Item = {
   name: string
   thumbnail: string
   owner: string
-  description?: string
+  description: string
   collectionId?: string
   tokenId?: string
   price?: string

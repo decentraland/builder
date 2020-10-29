@@ -401,7 +401,8 @@
     "name": "Name",
     "category": "Category",
     "rarity": "Rarity",
-    "published": "Published"
+    "published": "Published",
+    "description": "Description"
   },
   "navigation": {
     "scenes": "Scenes",
@@ -894,7 +895,6 @@
       "replaces": "Replaces",
       "hides": "Hides",
       "tags": "Tags",
-      "text_placeholder": "Write something...",
       "select_placeholder": "Select an option"
     }
   },
