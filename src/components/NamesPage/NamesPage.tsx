@@ -13,8 +13,9 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     const { onFetchNames, address } = this.props
-    console.log(address)
-    onFetchNames(address)
+    if (address) {
+      onFetchNames(address)
+    }
   }
 
   renderLogin() {
@@ -33,6 +34,10 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   renderLand() {
     const { names } = this.props
+
+    if (!names) {
+      return this.renderLoading()
+    }
 
     return (
       <>
@@ -80,7 +85,6 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   render() {
     const { isLoggedIn, isLoading, onNavigate } = this.props
-    console.log({isLoading})
     return (
       <>
         <Navbar isFullscreen />

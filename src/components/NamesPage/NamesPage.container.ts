@@ -9,7 +9,7 @@ import { fetchNamesRequest } from 'modules/names/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
-  address: getAddress(state) || null,
+  address: getAddress(state),
   names: getNames(state),
   isLoading: isLoading(state) || isLoggingIn(state),
   isLoggedIn: isLoggedIn(state)
