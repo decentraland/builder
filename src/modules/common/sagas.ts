@@ -15,6 +15,7 @@ import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetSaga } from 'modules/asset/sagas'
 import { deploymentSaga } from 'modules/deployment/sagas'
 import { mediaSaga } from 'modules/media/sagas'
+import { namesSaga } from 'modules/names/sagas'
 import { authSaga } from 'modules/auth/sagas'
 import { locationSaga } from 'modules/location/sagas'
 import { syncSaga } from 'modules/sync/sagas'
@@ -34,6 +35,7 @@ export function* rootSaga() {
     walletSaga(),
     assetPackSaga(),
     modalSaga(),
+    namesSaga(),
     sceneSaga(),
     projectSaga(),
     poolGroupSaga(),

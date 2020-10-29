@@ -5,7 +5,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export const getState = (state: RootState) => state.names
 export const getNames = (state: RootState) => {
-  const address = getAddress(state) || ''
-  return state.names.data[address]
+  const address = getAddress(state)
+  return address ? state.names.data[address] : []
 }
 export const isLoading = (state: RootState) => isLoadingType(getState(state).loading, FETCH_NAMES_REQUEST)

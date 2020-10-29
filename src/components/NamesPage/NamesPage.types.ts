@@ -3,7 +3,7 @@ import { Name } from 'modules/names/types'
 import { fetchNamesRequest } from 'modules/names/actions'
 
 export type Props = {
-  address: string
+  address: string || null
   names: Name[]
   isLoggedIn: boolean
   isLoading: boolean

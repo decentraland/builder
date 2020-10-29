@@ -80,6 +80,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   render() {
     const { isLoggedIn, isLoading, onNavigate } = this.props
+    console.log({isLoading})
     return (
       <>
         <Navbar isFullscreen />
