@@ -55,7 +55,7 @@ export function getBodyShapeType(item: Item) {
 }
 
 export function getBodyShapes(item: Item) {
-  const bodyShapes = new Set()
+  const bodyShapes = new Set<WearableBodyShape>()
   for (const representation of item.data.representations) {
     for (const bodyShape of representation.bodyShape) {
       bodyShapes.add(bodyShape)
