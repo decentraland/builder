@@ -34,11 +34,6 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onOpenModal('CreateItemModal', { addRepresentationTo: item })
   }
 
-  handleNavigateToEditor = () => {
-    const { onNavigate, item } = this.props
-    onNavigate(locations.itemEditor({ itemId: item!.id }))
-  }
-
   renderPage() {
     const { collection, onNavigate } = this.props
 
@@ -93,7 +88,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                           </Dropdown.Menu>
                         </Dropdown>
 
-                        <Button primary compact onClick={this.handleNavigateToEditor}>
+                        <Button primary compact onClick={this.handleEditItem}>
                           {t('global.edit')}
                         </Button>
                       </>
