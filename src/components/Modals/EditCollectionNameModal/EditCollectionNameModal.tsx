@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { ModalNavigation, ModalContent, ModalActions, Button, Field, InputOnChangeData } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State, EditCollectionNameModalMetadata } from './EditCollectionNameModal.types'
 
 export default class EditCollectionNameModal extends React.PureComponent<Props, State> {
@@ -10,7 +11,7 @@ export default class EditCollectionNameModal extends React.PureComponent<Props, 
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, { value }: InputOnChangeData) => {
-    this.setState({ name: value })
+    this.setState({ name: value.slice(0, COLLECTION_NAME_MAX_LENGTH) })
   }
 
   handleSubmit = () => {

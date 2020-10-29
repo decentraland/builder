@@ -36,3 +36,5 @@ export type Access = {
   hasAccess: boolean
   collection: Collection
 }
+
+export const COLLECTION_NAME_MAX_LENGTH = 32
