@@ -26,7 +26,6 @@ export type NamesReducerAction = FetchNamesRequestAction | FetchNamesSuccessActi
 export function namesReducer(state: NamesState = INITIAL_STATE, action: NamesReducerAction) {
   switch (action.type) {
     case FETCH_NAMES_REQUEST: {
-      console.log({ action })
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -34,7 +33,6 @@ export function namesReducer(state: NamesState = INITIAL_STATE, action: NamesRed
     }
     case FETCH_NAMES_SUCCESS: {
       const { address, names } = action.payload
-      console.log({ FETCH_NAMES_SUCCESS: { address, names } })
       return {
         ...state,
         data: {

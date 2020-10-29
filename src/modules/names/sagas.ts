@@ -9,7 +9,6 @@ export function* namesSaga() {
 
 function* handleFetchNamesRequest(action: FetchNamesRequestAction) {
   const { address } = action.payload
-  console.log({ address })
   try {
     const names: Name[] = yield call(() => manager.fetchNames(address))
     yield put(fetchNamesSuccess(address, names))

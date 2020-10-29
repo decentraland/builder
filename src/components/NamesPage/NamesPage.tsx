@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Page, Tabs, Center, Loader, Table, Column, Row, Section, Container } from 'decentraland-ui'
+import { Page, Tabs, Center, Loader, Table, Column, Row, Section, Container, Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Navbar from 'components/Navbar'
@@ -13,6 +13,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     const { onFetchNames, address } = this.props
+    console.log('Address from componentDidMount:', address)
     if (address) {
       onFetchNames(address)
     }
@@ -70,6 +71,16 @@ export default class NamesPage extends React.PureComponent<Props, State> {
                       <Table.Cell>
                         <Row>
                           <Column className="name">{name.assignedTo}</Column>
+                        </Row>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Row>
+                          <Column className="name">
+                            <Button> Assign to </Button>
+                          </Column>
+                          <Column className="name">
+                            <Button> Re-Assign </Button>
+                          </Column>
                         </Row>
                       </Table.Cell>
                     </Table.Row>
