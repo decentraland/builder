@@ -23,8 +23,6 @@ const STROKE_COLOR = {
   [RoleType.OPERATOR]: '#d7f6fc'
 }
 
-const FF_ENS = env.get('REACT_APP_FF_ENS')
-
 export default class LandDetailPage extends React.PureComponent<Props, State> {
   state: State = {
     hovered: null,
@@ -149,7 +147,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             text={t('land_detail_page.set_operator')}
                             onClick={() => onNavigate(locations.landOperator(land.id))}
                           />
-                          {FF_ENS ? (
+                          {env.get('REACT_APP_FF_ENS') ? (
                             <Dropdown.Item
                               text={t('land_detail_page.set_link')}
                               onClick={() => onNavigate(locations.landEns(land.id))}
