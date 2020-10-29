@@ -11,6 +11,8 @@ import { getCurrentMetrics } from 'modules/scene/selectors'
 import { isSavingCurrentProject } from 'modules/sync/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
+import { hasHistory } from 'modules/location/selectors'
+import { goBack, push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntityIds = getSelectedEntityIds(state)
@@ -24,7 +26,8 @@ const mapState = (state: RootState): MapStateProps => {
     isPreviewing: isPreviewing(state),
     isUploading: isSavingCurrentProject(state),
     isSidebarOpen: isSidebarOpen(state),
-    enabledTools: getEnabledTools(state)
+    enabledTools: getEnabledTools(state),
+    hasHistory: hasHistory(state)
   }
 }
 
@@ -35,7 +38,9 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onReset: () => dispatch(resetItem()),
   onDuplicate: () => dispatch(duplicateItem()),
   onDelete: () => dispatch(deleteItem()),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
+  onBack: () => dispatch(goBack()),
+  onNavigate: path => dispatch(push(path))
 })
 
 export default connect(mapState, mapDispatch)(TopBar)
