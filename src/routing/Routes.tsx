@@ -79,7 +79,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.land()} component={LandPage} />
             <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Route exact path={locations.landTransfer()} component={LandTransferPage} />
-            <Route exact path={locations.landEns()} component={LandEnsPage} />
+            {env.get('REACT_APP_FF_ENS') ? <Route exact path={locations.landEns()} component={LandEnsPage} /> : null}
             <Route exact path={locations.landEdit()} component={LandEditPage} />
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />
