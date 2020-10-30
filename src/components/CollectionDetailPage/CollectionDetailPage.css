@@ -32,6 +32,10 @@
   text-transform: uppercase;
 }
 
+.CollectionDetailPage .ui.toggle.on-sale > label {
+  white-space: nowrap;
+}
+
 .CollectionDetailPage .ui.toggle.checkbox input.hidden:focus + label,
 .CollectionDetailPage .ui.toggle.on-sale input.hidden + label {
   padding-left: 40px;
