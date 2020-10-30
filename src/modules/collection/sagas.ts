@@ -98,6 +98,7 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     const newCollection = { ...collection, ...remoteCollection }
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
+    yield put(closeModal('EditCollectionNameModal'))
   } catch (error) {
     yield put(saveCollectionFailure(collection, error.message))
   }

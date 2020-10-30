@@ -148,6 +148,11 @@
     "pick_item": "选择没有{bodyShape}的商品",
     "adding_representation": "这将添加为以下项目的{body Shape}"
   },
+  "edit_collection_name_modal": {
+    "title": "编辑集合名称",
+    "subtitle": "为此收藏集设置一个新名称",
+    "submit": "救"
+  },
   "custom_layout_modal": {
     "subtitle_one": "您可以自定义场景布局.",
     "subtitle_two": "在下面的输入框中输入所需的大小值."
