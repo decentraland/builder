@@ -7,6 +7,7 @@ import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { deleteItemRequest } from 'modules/item/actions'
+import { isLoggedIn } from 'modules/identity/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './Header.types'
 import Header from './Header'
 
@@ -21,6 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
   }
   return {
     address: getAddress(state),
+    isLoggedIn: isLoggedIn(state),
     collection
   }
 }
