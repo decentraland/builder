@@ -18,10 +18,10 @@ export default class Input extends React.PureComponent<Props, State> {
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, onChange } = this.props
+    const { value, onChange, maxLength } = this.props
     const newValue = event.target.value
     if (value !== newValue) {
-      this.setState({ value: newValue })
+      this.setState({ value: maxLength ? newValue.slice(0, maxLength) : newValue })
       onChange(newValue)
     }
   }
