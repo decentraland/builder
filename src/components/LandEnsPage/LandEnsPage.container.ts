@@ -13,15 +13,14 @@ import {
   fetchDomainListRequest
 } from 'modules/ens/actions'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getState, getLoading, getError, getSubdomainList, getWaitingTxSetContent, getWaitingTxSetResolver } from 'modules/ens/selectors'
+import { getENSList, getLoading, getError, getIsWaitingTxSetResolver, getIsWaitingTxSetContent } from 'modules/ens/selectors'
 import { push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => ({
-  subdomainList: getSubdomainList(state),
+  ensList: getENSList(state),
   error: getError(state),
-  ens: getState(state),
-  isWaitingTxSetResolver: getWaitingTxSetResolver(state),
-  isWaitingTxSetContent: getWaitingTxSetContent(state),
+  isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || getIsWaitingTxSetResolver(state),
+  isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || getIsWaitingTxSetContent(state),
   isLoading:
     isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
     isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
@@ -30,7 +29,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSetENSResolver: (ens, land) => dispatch(setENSResolverRequest(ens, land)),
+  onSetENSResolver: ens => dispatch(setENSResolverRequest(ens)),
   onSetENSContent: (ens, land) => dispatch(setENSContentRequest(ens, land)),
   onFetchENS: (ens, land) => dispatch(fetchENSRequest(ens, land)),
   onFetchDomainList: () => dispatch(fetchDomainListRequest()),

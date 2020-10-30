@@ -1,5 +1,5 @@
-import { ENSData } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
   FetchDomainListRequestAction,
   FetchDomainListSuccessAction,
@@ -26,22 +26,16 @@ import {
   SET_ENS_RESOLVER_SUCCESS,
   SET_ENS_RESOLVER_FAILURE
 } from './actions'
+import { ENS, ENSError } from './types'
 
-export type ENSError = {
-  code: number
-  message: string
-  origin: string
-}
 export type ENSState = {
-  data: Record<string, ENSData>
-  subdomainList: string[]
+  data: Record<string, Record<string, ENS>> // {address: { subdomain: ENS } }
   loading: LoadingState
   error: ENSError | null
 }
 
 const INITIAL_STATE: ENSState = {
   data: {},
-  subdomainList: [],
   loading: [],
   error: null
 }
@@ -59,75 +53,51 @@ export type ENSReducerAction =
   | FetchDomainListRequestAction
   | FetchDomainListSuccessAction
   | FetchDomainListFailureAction
+  | FetchTransactionSuccessAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
-    case FETCH_DOMAIN_LIST_REQUEST: {
+    case FETCH_DOMAIN_LIST_REQUEST:
+    case FETCH_ENS_REQUEST:
+    case SET_ENS_CONTENT_REQUEST:
+    case SET_ENS_RESOLVER_REQUEST:
+    case SET_ENS_CONTENT_SUCCESS:
+    case SET_ENS_RESOLVER_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
     case FETCH_DOMAIN_LIST_SUCCESS: {
-      const { data } = action.payload
+      const { address } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        subdomainList: data
-      }
-    }
-    case FETCH_ENS_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action)
+        data: {
+          ...state.data,
+          [address]: action.payload.ensList.reduce(
+            (obj, ens) => {
+              obj[ens.subdomain] = { ...obj[ens.subdomain], ...ens }
+              return obj
+            },
+            { ...state.data[address] }
+          )
+        }
       }
     }
     case FETCH_ENS_SUCCESS: {
-      const { ens, data } = action.payload
+      const { address, ens } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [ens]: data
-        }
-      }
-    }
-    case SET_ENS_CONTENT_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null
-      }
-    }
-    case SET_ENS_CONTENT_SUCCESS: {
-      const { ens, data } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null,
-        data: {
-          ...state.data,
-          [ens]: data
-        }
-      }
-    }
-    case SET_ENS_RESOLVER_REQUEST: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null
-      }
-    }
-    case SET_ENS_RESOLVER_SUCCESS: {
-      const { ens, data } = action.payload
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: null,
-        data: {
-          ...state.data,
-          [ens]: data
+          [address]: {
+            ...state.data[address],
+            [ens.subdomain]: {
+              ...ens
+            }
+          }
         }
       }
     }
@@ -135,14 +105,55 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
     case FETCH_DOMAIN_LIST_FAILURE: {
-      const { error } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error
+        error: { ...action.payload.error }
       }
     }
+    case FETCH_TRANSACTION_SUCCESS: {
+      const transaction = action.payload.transaction
 
+      switch (transaction.actionType) {
+        case SET_ENS_RESOLVER_SUCCESS: {
+          const { address, subdomain, resolver } = transaction.payload
+          return {
+            ...state,
+            loading: loadingReducer(state.loading, action),
+            data: {
+              ...state.data,
+              [address]: {
+                ...state.data[address],
+                [subdomain]: {
+                  ...state.data[address][subdomain],
+                  resolver
+                }
+              }
+            }
+          }
+        }
+        case SET_ENS_CONTENT_SUCCESS: {
+          const { address, subdomain, content, land } = transaction.payload
+          return {
+            ...state,
+            loading: loadingReducer(state.loading, action),
+            data: {
+              ...state.data,
+              [address]: {
+                ...state.data[address],
+                [subdomain]: {
+                  ...state.data[address][subdomain],
+                  content,
+                  landId: land.id
+                }
+              }
+            }
+          }
+        }
+        default:
+          return state
+      }
+    }
     default:
       return state
   }

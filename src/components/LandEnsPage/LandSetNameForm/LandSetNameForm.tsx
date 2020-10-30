@@ -2,111 +2,52 @@ import * as React from 'react'
 import { Form, Row, Button, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Props, State } from './LandSetNameForm.types'
+import { isResolverEmpty, isContentEmpty, isEmpty } from 'modules/ens/utils'
+import { ENSOrigin } from 'modules/ens/types'
+import { Props } from './LandSetNameForm.types'
 import './LandSetNameForm.css'
 
-export default class LandSetNameForm extends React.PureComponent<Props, State> {
-  state: State = {
-    isSetResolverDone: false,
-    isSetContentDone: false,
-    isSetResolverDisabled: false,
-    isSetContentDisabled: true
-  }
-  componentDidMount() {
-    const { ens, selectedName, isWaitingTxSetResolver, isWaitingTxSetContent } = this.props
-    const { type } = ens.data[selectedName]
-    if (isWaitingTxSetResolver) {
-      this.setState({ isSetResolverDone: true })
-    }
-
-    if (type && ['DifferentContent', 'EmptyContent'].includes(type)) {
-      this.setState({
-        isSetResolverDone: true,
-        isSetResolverDisabled: true,
-        isSetContentDisabled: false
-      })
-    }
-    if (isWaitingTxSetContent) {
-      this.setState({
-        isSetResolverDone: true,
-        isSetContentDone: true,
-        isSetResolverDisabled: true,
-        isSetContentDisabled: true
-      })
-    }
+export default class LandSetNameForm extends React.PureComponent<Props> {
+  handleNavigateToLand() {
+    const { land, onNavigate } = this.props
+    onNavigate(locations.landDetail(land.id))
   }
 
   handleSetResolver = () => {
-    const { onSetENSResolver, land, selectedName } = this.props
-    onSetENSResolver(selectedName, land)
-    this.setState({
-      isSetResolverDone: true,
-      isSetResolverDisabled: true,
-      isSetContentDisabled: false
-    })
+    const { onSetENSResolver, selectedSubdomain } = this.props
+    onSetENSResolver(selectedSubdomain)
   }
 
   handleSetContent = () => {
-    const { onSetENSContent, land, selectedName } = this.props
-    onSetENSContent(selectedName, land)
-    this.setState({
-      isSetContentDone: true,
-      isSetResolverDisabled: true,
-      isSetContentDisabled: true
-    })
+    const { onSetENSContent, land, selectedSubdomain } = this.props
+    onSetENSContent(selectedSubdomain, land)
   }
 
   handleBack = () => {
     this.props.onRestartForm()
   }
 
-  isAnythingLoading() {
-    const { isLoading, isWaitingTxSetResolver, isWaitingTxSetContent } = this.props
-    return isLoading || isWaitingTxSetContent || isWaitingTxSetResolver
-  }
-
   render() {
-    const { isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, land, error, onNavigate } = this.props
-    const { isSetContentDisabled, isSetResolverDisabled, isSetContentDone, isSetResolverDone } = this.state
+    const { ens, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, error } = this.props
 
-    const isSubmitDisabled = !(isSetContentDisabled && isSetResolverDisabled) || this.isAnythingLoading()
-    const isBackDisabled = isSetResolverDone || isSetContentDone
-    const isResolverLoading = (isLoading && isSetResolverDone && !isSetContentDone) || isWaitingTxSetResolver
-    const isContentLoading = (isLoading && isSetResolverDone && isSetContentDone) || isWaitingTxSetContent
+    const hasResolver = !isResolverEmpty(ens)
+    const hasContent = !isContentEmpty(ens)
+    const hasData = !isEmpty(ens)
 
-    let buttonSetResolver = (
-      <>
-        {isSetResolverDone ? t('global.approved_tx') : t('global.send_tx')}
-        {!(isResolverLoading && (isLoading || isWaitingTxSetResolver)) && isSetResolverDone && <Icon name="check" />}
-      </>
-    )
-    let buttonSetContent = (
-      <>
-        {isSetContentDone ? t('global.approved_tx') : t('global.send_tx')}
-        {!isContentLoading && isSetContentDone && <Icon name="check" />}
-      </>
-    )
-    let setResolverButtonClassName = (isSetResolverDone && !(isLoading || isWaitingTxSetResolver)) || isSetContentDone ? 'grey-button' : ''
-    let setContentButtonClassName = isSetContentDone && !(isLoading || isWaitingTxSetContent) ? 'grey-button' : ''
-    let isSetResolverButtonDisabled = isSetResolverDisabled || this.isAnythingLoading()
-    let isSetContentButtonDisabled = isSetContentDisabled || this.isAnythingLoading()
-    if (error && error.code === 4001) {
-      if (error.origin === 'SET_ENS_RESOLVER') {
-        buttonSetResolver = <> {t('global.retry_tx')} </>
-        isSetResolverButtonDisabled = false
-        isSetContentButtonDisabled = true
-        setResolverButtonClassName = ''
-      } else if (error.origin === 'SET_ENS_CONTENT') {
-        buttonSetContent = <> {t('global.retry_tx')} </>
-        isSetContentButtonDisabled = false
-        setContentButtonClassName = ''
-      }
-    }
+    const hasError = error && error.code === 4001
+    const hasResolverError = hasError && error!.origin === ENSOrigin.RESOLVER
+    const hasContentError = hasError && error!.origin === ENSOrigin.CONTENT
+
+    const setResolverButtonClassName = hasResolver && !isWaitingTxSetResolver && !hasResolverError ? 'grey-button' : ''
+    const setContentButtonClassName = hasContent && !isWaitingTxSetContent && !hasContentError ? 'grey-button' : ''
+
+    const isSetResolverButtonDisabled = hasResolverError ? false : hasData || isWaitingTxSetResolver
+    const isSetContentButtonDisabled = hasContentError ? false : hasResolverError || !hasResolver || hasContent || isWaitingTxSetContent
 
     return (
       <Form className="LandSetNameForm">
         <Row>
-          <p className="message"> {t('land_ens_page.set_name_message')}</p>
+          <p className="message">{t('land_ens_page.set_name_message')}</p>
         </Row>
         <Row>
           <div className={isSetResolverButtonDisabled ? 'box boxDisabled' : 'box'}>
@@ -118,10 +59,19 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
                 disabled={isSetResolverButtonDisabled}
                 onClick={this.handleSetResolver}
                 className={setResolverButtonClassName}
-                loading={isResolverLoading}
+                loading={isWaitingTxSetResolver}
                 primary
               >
-                {buttonSetResolver}
+                {hasResolverError ? (
+                  t('global.retry_tx')
+                ) : hasResolver ? (
+                  <>
+                    {t('global.approved_tx')}
+                    {!isWaitingTxSetResolver ? <Icon name="check" /> : null}
+                  </>
+                ) : (
+                  t('global.send_tx')
+                )}
               </Button>
             </div>
           </div>
@@ -136,19 +86,32 @@ export default class LandSetNameForm extends React.PureComponent<Props, State> {
                 disabled={isSetContentButtonDisabled}
                 onClick={this.handleSetContent}
                 className={setContentButtonClassName}
-                loading={isContentLoading}
+                loading={isWaitingTxSetContent}
                 primary
               >
-                {buttonSetContent}
+                {hasContentError ? (
+                  t('global.retry_tx')
+                ) : hasContent ? (
+                  <>
+                    {t('global.approved_tx')}
+                    {!isWaitingTxSetContent ? <Icon name="check" /> : null}
+                  </>
+                ) : (
+                  t('global.send_tx')
+                )}
               </Button>
             </div>
           </div>
         </Row>
         <Row className="confirmationButtons">
-          <Button onClick={this.handleBack} disabled={isBackDisabled}>
+          <Button onClick={this.handleBack} disabled={hasData}>
             {t('global.back')}
           </Button>
-          <Button disabled={isSubmitDisabled || isLoading} onClick={() => onNavigate(locations.landDetail(land.id))} primary>
+          <Button
+            disabled={!hasData || isLoading || isWaitingTxSetContent || isWaitingTxSetResolver}
+            onClick={this.handleNavigateToLand}
+            primary
+          >
             {t('global.finish')}
           </Button>
         </Row>

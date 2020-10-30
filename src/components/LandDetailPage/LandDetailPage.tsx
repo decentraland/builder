@@ -148,10 +148,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             onClick={() => onNavigate(locations.landOperator(land.id))}
                           />
                           {env.get('REACT_APP_FF_ENS') ? (
-                            <Dropdown.Item
-                              text={t('land_detail_page.set_link')}
-                              onClick={() => onNavigate(locations.landEns(land.id))}
-                            />
+                            <Dropdown.Item text={t('land_detail_page.set_link')} onClick={() => onNavigate(locations.landEns(land.id))} />
                           ) : null}
                           {canBuildEstate ? (
                             <Dropdown.Item
@@ -200,7 +197,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           <Section className={land.description ? '' : 'no-margin-bottom'}>
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {deployments.length === 0 ? (
-              <Empty height={100}>None</Empty>
+              <Empty height={100}>{t('land_detail_page.none')}</Empty>
             ) : (
               <div className="deployments">
                 {deployments.map(deployment => (

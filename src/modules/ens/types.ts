@@ -1,13 +1,23 @@
-export type ENSData = {
-  resolver?: string
-  content?: string
-  error?: string
-  type?: string
+export type ENS = {
+  subdomain: string
+  resolver: string
+  content: string
+
+  ipfsHash?: string
+
+  // We'll need to change `landId` eventually so it can handle different content types. We could use:
+  //   contentId?: string
+  //   contentType?: ENSContent {LAND = 'land', (...)}
+  landId?: string
 }
 
-export enum FetchEnsTypeResult {
-  EmptyResolver = 'EmptyResolver',
-  EmptyContent = 'EmptyContent',
-  EqualContent = 'EqualContent',
-  DifferentContent = 'DifferentContent'
+export type ENSError = {
+  message: string
+  code?: number
+  origin?: ENSOrigin
+}
+
+export enum ENSOrigin {
+  RESOLVER = 'Resolver',
+  CONTENT = 'Content'
 }
