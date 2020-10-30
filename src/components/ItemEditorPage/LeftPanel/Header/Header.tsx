@@ -39,6 +39,11 @@ export default class Header extends React.PureComponent<Props> {
     onOpenModal('AddExistingItemModal', { collectionId: collection!.id })
   }
 
+  handleEditName = () => {
+    const { collection, onOpenModal } = this.props
+    onOpenModal('EditCollectionNameModal', { collection })
+  }
+
   handleDelete = () => {
     const { collection, onDeleteCollection } = this.props
     onDeleteCollection(collection!)
@@ -56,12 +61,15 @@ export default class Header extends React.PureComponent<Props> {
         {isOwner && !collection.isPublished ? (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
             <Dropdown.Menu>
+              <Dropdown.Item onClick={this.handleEditName}>{t('item_editor.left_panel.actions.edit_name')}</Dropdown.Item>
               <Dropdown.Item onClick={this.handleAddNewItem}>{t('item_editor.left_panel.actions.new_item')}</Dropdown.Item>
               <Dropdown.Item onClick={this.handleAddExistingItem}>{t('item_editor.left_panel.actions.add_existing_item')}</Dropdown.Item>
               <ConfirmDelete name={collection.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
             </Dropdown.Menu>
           </Dropdown>
-        ) : null}
+        ) : (
+          <div className="block" />
+        )}
       </>
     ) : null
   }
