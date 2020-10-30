@@ -52,7 +52,8 @@ import {
   SetBodyShapeAction,
   SET_AVATAR_ANIMATION,
   SetAvatarAnimationAction,
-  SetItemsAction
+  SetItemsAction,
+  setBodyShape
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -127,6 +128,7 @@ import femaleAvatar from './wearables/female.json'
 import { Wearable } from 'decentraland-ecs'
 import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
+import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -349,8 +351,22 @@ function* handleOpenEditor(action: OpenEditorAction) {
       editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
     })
 
-    // render selected items
-    yield put(setItems(item ? [item] : []))
+    if (item) {
+      // select a valid body shape for the selected item
+      const currentBodyShape: ReturnType<typeof getBodyShape> = yield select(getBodyShape)
+      if (!hasBodyShape(item, currentBodyShape)) {
+        const bodyShapes = getBodyShapes(item)
+        if (bodyShapes.length > 0) {
+          yield put(setBodyShape(bodyShapes[0]))
+        }
+      }
+
+      // render avatar with selected item
+      yield put(setItems([item]))
+    } else {
+      // render avatar without any selected items
+      yield put(setItems([]))
+    }
   } else {
     // Creates a new scene in the dcl client's side
     const project: Project | Pool | null = yield type === PreviewType.POOL ? select(getCurrentPool) : select(getCurrentProject)
