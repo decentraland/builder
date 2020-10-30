@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 import { Header, Grid, Icon } from 'decentraland-ui'
 import { IntercomWidget } from 'decentraland-dapps/dist/components/Intercom/IntercomWidget'
 
@@ -53,6 +52,15 @@ export default class TopBar extends React.PureComponent<Props> {
     }
   }
 
+  handleGoBack = () => {
+    const { currentProject, onNavigate, onBack, hasHistory } = this.props
+    if (hasHistory) {
+      onBack()
+    } else {
+      onNavigate(currentProject ? locations.sceneDetail(currentProject.id) : locations.root())
+    }
+  }
+
   handleExport = () => {
     this.props.onOpenModal('ExportModal', { project: this.props.currentProject })
   }
@@ -82,9 +90,9 @@ export default class TopBar extends React.PureComponent<Props> {
       <Grid className="TopBar">
         <Grid.Column mobile={4} tablet={4} computer={4} className="left-column" verticalAlign="middle">
           <Header size="medium" className="project-title-header">
-            <Link className="text" to={currentProject ? locations.sceneDetail(currentProject.id) : locations.root()}>
+            <div className="go-back" onClick={this.handleGoBack}>
               <Icon name="chevron left" />
-            </Link>
+            </div>
             {currentProject ? (
               <>
                 <DeploymentStatus projectId={currentProject.id} />
