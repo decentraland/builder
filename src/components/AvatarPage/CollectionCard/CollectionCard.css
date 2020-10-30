@@ -5,6 +5,10 @@
 
 .CollectionCard .content .text {
   font-size: 17px;
+  max-width: 248px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .CollectionCard .subtitle {
@@ -26,4 +30,10 @@
 
 .CollectionCard.is-over .CollectionImage {
   border: 1px solid var(--primary) !important;
+}
+
+@media (max-width: 1200px) {
+  .CollectionCard .content .text {
+    max-width: 215px;
+  }
 }
