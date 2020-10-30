@@ -7,7 +7,7 @@ export function findBySubdomain(ensList: ENS[], subdomain: string) {
 }
 
 export function isEmpty(ens: ENS) {
-  return isResolverEmpty(ens) || isContentEmpty(ens)
+  return isResolverEmpty(ens) && isContentEmpty(ens)
 }
 
 export function isResolverEmpty(ens: ENS) {

@@ -93,7 +93,12 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
       )
     }
 
-    yield put(fetchENSSuccess({ subdomain, resolver: ENS_RESOLVER_ADDRESS, content: landHash, landId: landHash }, address))
+    yield put(
+      fetchENSSuccess(
+        { subdomain, resolver: ENS_RESOLVER_ADDRESS, content: currentContent || Address.ZERO.toString(), landId: '' },
+        address
+      )
+    )
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchENSFailure(ensError))

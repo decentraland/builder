@@ -141,7 +141,6 @@ loadStorageMiddleware(store)
 export function getState() {
   return store.getState()
 }
-;(window as any).getState = getState
 
 window.onbeforeunload = function() {
   const syncCount = getLoadingSet(store.getState() as RootState).size

@@ -2,13 +2,13 @@ import * as React from 'react'
 import { Form, Row, Button, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { isResolverEmpty, isContentEmpty, isEmpty } from 'modules/ens/utils'
+import { isResolverEmpty, isContentEmpty } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
 import { Props } from './LandSetNameForm.types'
 import './LandSetNameForm.css'
 
 export default class LandSetNameForm extends React.PureComponent<Props> {
-  handleNavigateToLand() {
+  handleNavigateToLand = () => {
     const { land, onNavigate } = this.props
     onNavigate(locations.landDetail(land.id))
   }
@@ -32,7 +32,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
 
     const hasResolver = !isResolverEmpty(ens)
     const hasContent = !isContentEmpty(ens)
-    const hasData = !isEmpty(ens)
+    const hasData = hasResolver || hasContent
 
     const hasError = error && error.code === 4001
     const hasResolverError = hasError && error!.origin === ENSOrigin.RESOLVER
@@ -108,7 +108,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
             {t('global.back')}
           </Button>
           <Button
-            disabled={!hasData || isLoading || isWaitingTxSetContent || isWaitingTxSetResolver}
+            disabled={!hasResolver || !hasContent || isLoading || isWaitingTxSetContent || isWaitingTxSetResolver}
             onClick={this.handleNavigateToLand}
             primary
           >

@@ -86,7 +86,7 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>
               </Link>
-              <Button type="submit" disabled={isButtonDisabled} primary onClick={this.handleContinue} loading={isLoading}>
+              <Button type="submit" disabled={isButtonDisabled || isLoading} primary onClick={this.handleContinue} loading={isLoading}>
                 {t('global.continue')}
               </Button>
             </Row>
