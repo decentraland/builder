@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { getSearch, push } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getWalletCollections } from 'modules/collection/selectors'
+import { getCollections } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
@@ -16,7 +16,7 @@ const mapState = (state: RootState): MapStateProps => {
   let collection: Collection | undefined
   const collectionId = new URLSearchParams(search).get('collection')
   if (collectionId) {
-    const collections = getWalletCollections(state)
+    const collections = getCollections(state)
     collection = collections.find(collection => collection.id === collectionId)
   }
   return {
