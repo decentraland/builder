@@ -13,18 +13,18 @@ import './SidebarCollection.css'
 class SidebarCollection extends React.PureComponent<Props & CollectedProps> {
   render() {
     const { collection, items, isSelected, connectDropTarget, isOver, canDrop } = this.props
+    const collectionItems = items.filter(item => item.collectionId === collection.id)
+    const itemId = collectionItems.length > 0 ? collectionItems[0].id : undefined
     return connectDropTarget(
       <div className={`SidebarCollection ${isSelected ? 'is-selected' : ''} ${isOver ? (canDrop ? 'is-over' : 'no-drop') : ''}`}>
-        <Link to={locations.itemEditor({ collectionId: collection.id })}>
+        <Link to={locations.itemEditor({ collectionId: collection.id, itemId })}>
           <CollectionImage collection={collection} />
           <div className="wrapper">
             <div className="name">
               {collection.name}
               <CollectionBadge collection={collection} />
             </div>
-            <div className="count">
-              {t('item_editor.left_panel.items_count', { count: items.filter(item => item.collectionId === collection.id).length })}
-            </div>
+            <div className="count">{t('item_editor.left_panel.items_count', { count: collectionItems.length })}</div>
           </div>
         </Link>
       </div>
