@@ -151,6 +151,11 @@
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
     "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item"
   },
+  "edit_collection_name_modal": {
+    "title": "Editar Nombre",
+    "subtitle": "Escribe un nuevo nombre para esta colección",
+    "submit": "Guardar"
+  },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."

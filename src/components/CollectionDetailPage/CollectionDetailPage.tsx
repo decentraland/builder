@@ -11,6 +11,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
+import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import CollectionItem from './CollectionItem'
 import { Props } from './CollectionDetailPage.types'
@@ -44,6 +45,13 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
     onOpenModal('PublishCollectionModal', { collectionId: collection!.id })
   }
 
+  handleEditName = () => {
+    const { collection, onOpenModal } = this.props
+    if (collection) {
+      onOpenModal('EditCollectionNameModal', { collection })
+    }
+  }
+
   handleOnSaleChange = (_event: React.FormEvent<HTMLInputElement>, checkboxProps: CheckboxProps) => {
     const { collection, onOpenModal } = this.props
     const { checked } = checkboxProps
@@ -74,8 +82,9 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <Narrow>
               <Row>
                 <Column>
-                  <Row>
+                  <Row className="header-row" onClick={this.handleEditName}>
                     <Header size="huge">{collection.name}</Header>
+                    <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
                 </Column>
                 <Column align="right">

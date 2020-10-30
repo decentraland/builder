@@ -154,6 +154,11 @@
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
     "adding_representation": "This will be added as {bodyShape} for the following item"
   },
+  "edit_collection_name_modal": {
+    "title": "Edit Collection Name",
+    "subtitle": "Set a new name for this collection",
+    "submit": "Save"
+  },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."

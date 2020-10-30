@@ -1,3 +1,17 @@
+.CollectionDetailPage .edit-collection-name {
+  margin-left: 16px;
+  transform: scale(1.2);
+}
+
+.CollectionDetailPage .header-row:hover {
+  cursor: pointer;
+}
+
+.CollectionDetailPage .header-row:not(:hover) .edit-collection-name {
+  filter: saturate(0.1);
+  opacity: 0.4;
+}
+
 .CollectionDetailPage .ui.toggle.on-sale {
   text-transform: uppercase;
 }

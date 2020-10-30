@@ -3,7 +3,7 @@ import uuid from 'uuid'
 import { ModalNavigation, Button, Form, Field, ModalContent, ModalActions } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { Collection } from 'modules/collection/types'
+import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State } from './CreateCollectionModal.types'
 import './CreateCollectionModal.css'
 
@@ -44,7 +44,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               label={t('create_collection_modal.label')}
               placeholder={t('create_collection_modal.placeholder')}
               value={collectionName}
-              onChange={(_event, props) => this.setState({ collectionName: props.value })}
+              onChange={(_event, props) => this.setState({ collectionName: props.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })}
             ></Field>
           </ModalContent>
           <ModalActions>
