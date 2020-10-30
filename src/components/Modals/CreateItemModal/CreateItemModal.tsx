@@ -18,7 +18,7 @@ import {
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { cleanAssetName, MAX_NAME_LENGTH } from 'modules/asset/utils'
+import { cleanAssetName } from 'modules/asset/utils'
 import { blobToDataURL, dataURLToBlob } from 'modules/media/utils'
 import {
   THUMBNAIL_PATH,
@@ -29,7 +29,8 @@ import {
   WearableCategory,
   ItemRarity,
   RARITY_COLOR_LIGHT,
-  RARITY_COLOR
+  RARITY_COLOR,
+  ITEM_NAME_MAX_LENGTH
 } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
@@ -350,7 +351,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
-    this.setState({ name: props.value.slice(0, MAX_NAME_LENGTH) })
+    this.setState({ name: props.value.slice(0, ITEM_NAME_MAX_LENGTH) })
   }
 
   handleItemChange = (item: Item) => this.setState({ addRepresentationTo: item })

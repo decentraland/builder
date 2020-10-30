@@ -6,7 +6,7 @@ import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { isEqual } from 'lib/address'
 import { getMissingBodyShapeType } from 'modules/item/utils'
-import { Item, ItemRarity, WearableCategory } from 'modules/item/types'
+import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
 import Select from './Select'
@@ -114,14 +114,16 @@ export default class RightPanel extends React.PureComponent<Props> {
                         label={t('global.name')}
                         value={item.name}
                         disabled={item.isPublished || !isOwner}
-                        onChange={name => this.handleChange({ ...item, name })}
+                        onChange={name => this.handleChange({ ...item, name: name.slice(0, ITEM_NAME_MAX_LENGTH) })}
                       />
                       <Input
                         itemId={item.id}
                         label={t('global.description')}
                         value={item.description}
                         disabled={item.isPublished || !isOwner}
-                        onChange={description => this.handleChange({ ...item, description })}
+                        onChange={description =>
+                          this.handleChange({ ...item, description: description.slice(ITEM_DESCRIPTION_MAX_LENGTH) })
+                        }
                       />
                       <Select<WearableCategory>
                         itemId={item.id}
