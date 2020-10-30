@@ -23,6 +23,14 @@
   cursor: pointer;
 }
 
+.CollectionDetailPage .is-published .edit-collection-name {
+  display: none;
+}
+
+.CollectionDetailPage .is-published .header-row:hover {
+  cursor: default;
+}
+
 .CollectionDetailPage .header-row:not(:hover) .edit-collection-name {
   filter: saturate(0.1);
   opacity: 0.4;

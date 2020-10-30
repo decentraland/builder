@@ -47,7 +47,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
   handleEditName = () => {
     const { collection, onOpenModal } = this.props
-    if (collection) {
+    if (collection && !collection.isPublished) {
       onOpenModal('EditCollectionNameModal', { collection })
     }
   }
@@ -76,7 +76,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
     return (
       <>
-        <Section>
+        <Section className={collection.isPublished ? 'is-published' : ''}>
           <Row>
             <Back absolute onClick={() => onNavigate(locations.avatar())} />
             <Narrow>
