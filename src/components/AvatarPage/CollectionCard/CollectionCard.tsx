@@ -20,7 +20,7 @@ class CollectionCard extends React.PureComponent<Props & CollectedProps> {
         <Link to={locations.collectionDetail(collection.id)}>
           <CollectionImage collection={collection} />
           <Card.Content>
-            <div className="text">
+            <div className="text" title={collection.name}>
               {collection.name} <CollectionBadge collection={collection} />
             </div>
             <div className="subtitle">{t('collection_card.subtitle', { count: items.length })}</div>

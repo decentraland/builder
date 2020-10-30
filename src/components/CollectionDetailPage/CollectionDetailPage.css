@@ -1,3 +1,19 @@
+.CollectionDetailPage .header-column {
+  flex: none;
+  width: calc(100% - 300px);
+}
+
+.CollectionDetailPage .header-row {
+  width: 100%;
+}
+
+.CollectionDetailPage .header-row .name {
+  max-width: calc(100% - 40px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .CollectionDetailPage .edit-collection-name {
   margin-left: 16px;
   transform: scale(1.2);
@@ -28,6 +44,7 @@
   padding: 8px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  white-space: nowrap;
 }
 
 .CollectionDetailPage .actions .ui.dropdown {

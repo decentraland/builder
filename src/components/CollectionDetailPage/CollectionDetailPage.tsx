@@ -81,13 +81,15 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <Back absolute onClick={() => onNavigate(locations.avatar())} />
             <Narrow>
               <Row>
-                <Column>
+                <Column className="header-column">
                   <Row className="header-row" onClick={this.handleEditName}>
-                    <Header size="huge">{collection.name}</Header>
+                    <Header size="huge" className="name">
+                      {collection.name}
+                    </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
                 </Column>
-                <Column align="right">
+                <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
                     {collection.isPublished ? (
                       <>
