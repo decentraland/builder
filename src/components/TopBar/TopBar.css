@@ -46,6 +46,11 @@
   align-items: center;
 }
 
+.TopBar .project-title-header .go-back:hover {
+  cursor: pointer;
+  color: var(--primary);
+}
+
 .TopBar .project-title {
   user-select: none;
   cursor: pointer;
