@@ -18,6 +18,9 @@
 
 .ItemCard .content .text {
   font-size: 17px;
+  max-width: 248px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ItemCard .subtitle {
@@ -32,4 +35,10 @@
 
 .ItemCard.is-dragging .ItemImage {
   border: 1px solid var(--primary);
+}
+
+@media (max-width: 1200px) {
+  .ItemCard .content .text {
+    max-width: 215px;
+  }
 }

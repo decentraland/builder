@@ -19,7 +19,9 @@ class ItemCard extends React.PureComponent<Props & CollectedProps> {
         <Link to={locations.itemDetail(item.id)}>
           <ItemImage item={item} />
           <Card.Content>
-            <div className="text">{item.name}</div>
+            <div className="text" title={item.name}>
+              {item.name}
+            </div>
             <div className="subtitle">{t(`item.type.${item.type}`)}</div>
           </Card.Content>
         </Link>
