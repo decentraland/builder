@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { BACKSPACE_KEY_CODE, COMMA_KEY_CODE, ENTER_KEY_CODE, WHITE_SPACE_KEY_CODE } from 'modules/keyboard/types'
 import { Props, State } from './Tags.types'
 import './Tags.css'
@@ -80,14 +79,7 @@ export default class Tags extends React.PureComponent<Props, State> {
             </div>
           ))}
         </div>
-        <input
-          value={draft}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          onBlur={this.handleAdd}
-          placeholder={value.length === 0 && !isDisabled ? t('item_editor.right_panel.text_placeholder') : undefined}
-          disabled={isDisabled}
-        />
+        <input value={draft} onChange={this.handleChange} onKeyDown={this.handleKeyDown} onBlur={this.handleAdd} disabled={isDisabled} />
       </div>
     )
   }

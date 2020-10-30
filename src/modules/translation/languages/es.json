@@ -397,7 +397,8 @@
     "name": "Nombre",
     "category": "Categoría",
     "rarity": "Rareza",
-    "published": "Publicado"
+    "published": "Publicado",
+    "description": "Descripción"
   },
   "navigation": {
     "scenes": "Escenas",
@@ -889,7 +890,6 @@
       "replaces": "Remplaza",
       "hides": "Oculta",
       "tags": "Etiquetas",
-      "text_placeholder": "Escribe algo...",
       "select_placeholder": "Selecciona una opción"
     }
   },
