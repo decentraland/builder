@@ -38,10 +38,6 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
 
     const selectOptions = ensList.map(({ subdomain }) => ({ value: subdomain.toLowerCase(), text: subdomain.toLowerCase() }))
     const selectedENS = findBySubdomain(ensList, selectedSubdomain)
-    console.log({
-      ensList,
-      selectedENS
-    })
 
     let selectMessage: string = ''
     let isButtonDisabled: boolean = false
