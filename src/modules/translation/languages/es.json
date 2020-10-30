@@ -872,7 +872,8 @@
       "actions": {
         "new_item": "Nuevo Item",
         "new_collection": "Nueva Colección",
-        "add_existing_item": "Agregar Item"
+        "add_existing_item": "Agregar Item",
+        "edit_name": "Editar Nombre"
       },
       "items": "Items",
       "collections": "Colecciones",

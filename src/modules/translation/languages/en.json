@@ -882,7 +882,8 @@
       "actions": {
         "new_item": "New Item",
         "new_collection": "New Collection",
-        "add_existing_item": "Add Existing Item"
+        "add_existing_item": "Add Existing Item",
+        "edit_name": "Edit Name"
       },
       "items": "Items",
       "collections": "Collections",
