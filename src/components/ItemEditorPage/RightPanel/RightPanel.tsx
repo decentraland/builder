@@ -114,16 +114,16 @@ export default class RightPanel extends React.PureComponent<Props> {
                         label={t('global.name')}
                         value={item.name}
                         disabled={item.isPublished || !isOwner}
-                        onChange={name => this.handleChange({ ...item, name: name.slice(0, ITEM_NAME_MAX_LENGTH) })}
+                        maxLength={ITEM_NAME_MAX_LENGTH}
+                        onChange={name => this.handleChange({ ...item, name })}
                       />
                       <Input
                         itemId={item.id}
                         label={t('global.description')}
                         value={item.description}
                         disabled={item.isPublished || !isOwner}
-                        onChange={description =>
-                          this.handleChange({ ...item, description: description.slice(ITEM_DESCRIPTION_MAX_LENGTH) })
-                        }
+                        maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
+                        onChange={description => this.handleChange({ ...item, description })}
                       />
                       <Select<WearableCategory>
                         itemId={item.id}
