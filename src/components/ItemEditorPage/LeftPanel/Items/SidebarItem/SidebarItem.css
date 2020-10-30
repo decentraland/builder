@@ -26,8 +26,10 @@
   font-size: 15px;
   line-height: 24px;
   font-weight: bold;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .SidebarItem .toggle {

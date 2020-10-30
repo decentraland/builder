@@ -1,3 +1,13 @@
+.ItemDetailPage .page-header .header-row {
+  width: 100%;
+}
+
+.ItemDetailPage .page-header .name {
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ItemDetailPage .actions .ui.dropdown {
   border: 1px solid var(--gray);
   border-radius: 5px;

@@ -48,13 +48,15 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           <Row>
             <Back absolute onClick={() => onNavigate(locations.avatar())} />
             <Narrow>
-              <Row>
+              <Row className="page-header">
                 <Column>
-                  <Row>
-                    <Header size="huge">{item.name}</Header>
+                  <Row className="header-row">
+                    <Header className="name" size="huge">
+                      {item.name}
+                    </Header>
                   </Row>
                 </Column>
-                <Column align="right">
+                <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
                     {item.isPublished ? (
                       <Button secondary compact disabled={true}>
