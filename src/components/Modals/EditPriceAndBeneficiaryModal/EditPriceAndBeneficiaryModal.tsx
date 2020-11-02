@@ -62,7 +62,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   isValidBeneficiary() {
     const { beneficiary } = this.state
-    return !beneficiary || isValid(beneficiary)
+    return !!beneficiary && isValid(beneficiary)
   }
 
   render() {
@@ -87,7 +87,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               placeholder="0x..."
               value={beneficiary}
               onChange={this.handleBeneficiaryChange}
-              error={!this.isValidBeneficiary()}
+              error={!!beneficiary && !this.isValidBeneficiary()}
             />
           </ModalContent>
           <ModalActions>
