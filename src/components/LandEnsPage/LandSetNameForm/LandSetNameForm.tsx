@@ -104,9 +104,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
           </div>
         </Row>
         <Row className="confirmationButtons">
-          <Button onClick={this.handleBack} disabled={hasData}>
-            {t('global.back')}
-          </Button>
+          <Button onClick={this.handleBack}>{t('global.back')}</Button>
           <Button
             disabled={!hasResolver || !hasContent || isLoading || isWaitingTxSetContent || isWaitingTxSetResolver}
             onClick={this.handleNavigateToLand}

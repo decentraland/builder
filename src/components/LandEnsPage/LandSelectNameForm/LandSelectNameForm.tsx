@@ -5,7 +5,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { SelectNames } from 'components/SelectNames'
-import { findBySubdomain, isEmpty, isEqualContent } from 'modules/ens/utils'
+import { findBySubdomain, isEqualContent } from 'modules/ens/utils'
 import { Props, State } from './LandSelectNameForm.types'
 import './LandSelectNameForm.css'
 
@@ -45,11 +45,11 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     if (!selectedENS) {
       selectMessage = t('land_ens_page.select_names.message.choose_name')
       isButtonDisabled = true
-    } else if (isEmpty(selectedENS) || isEqualContent(selectedENS, land)) {
-      selectMessage = t('land_ens_page.select_names.message.name_available')
+    } else if (isEqualContent(selectedENS, land)) {
+      selectMessage = t('land_ens_page.select_names.message.name_assigned')
       isButtonDisabled = false
     } else {
-      selectMessage = t('land_ens_page.select_names.message.name_assigned')
+      selectMessage = t('land_ens_page.select_names.message.name_available')
       isButtonDisabled = false
     }
 
