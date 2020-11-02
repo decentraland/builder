@@ -29,7 +29,7 @@ import {
 import { ENS, ENSError } from './types'
 
 export type ENSState = {
-  data: Record<string, Record<string, ENS>> // {address: { subdomain: ENS } }
+  data: Record<string, ENS>
   loading: LoadingState
   error: ENSError | null
 }
@@ -69,34 +69,30 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       }
     }
     case FETCH_DOMAIN_LIST_SUCCESS: {
-      const { address } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [address]: action.payload.ensList.reduce(
+          ...action.payload.ensList.reduce(
             (obj, ens) => {
               obj[ens.subdomain] = { ...obj[ens.subdomain], ...ens }
               return obj
             },
-            { ...state.data[address] }
+            { ...state.data }
           )
         }
       }
     }
     case FETCH_ENS_SUCCESS: {
-      const { address, ens } = action.payload
+      const { ens } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          [address]: {
-            ...state.data[address],
-            [ens.subdomain]: {
-              ...ens
-            }
+          [ens.subdomain]: {
+            ...ens
           }
         }
       }
@@ -116,36 +112,30 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
 
       switch (transaction.actionType) {
         case SET_ENS_RESOLVER_SUCCESS: {
-          const { address, subdomain, resolver } = transaction.payload
+          const { subdomain, resolver } = transaction.payload
           return {
             ...state,
             loading: loadingReducer(state.loading, action),
             data: {
               ...state.data,
-              [address]: {
-                ...state.data[address],
-                [subdomain]: {
-                  ...state.data[address][subdomain],
-                  resolver
-                }
+              [subdomain]: {
+                ...state.data[subdomain],
+                resolver
               }
             }
           }
         }
         case SET_ENS_CONTENT_SUCCESS: {
-          const { address, subdomain, content, land } = transaction.payload
+          const { subdomain, content, land } = transaction.payload
           return {
             ...state,
             loading: loadingReducer(state.loading, action),
             data: {
               ...state.data,
-              [address]: {
-                ...state.data[address],
-                [subdomain]: {
-                  ...state.data[address][subdomain],
-                  content,
-                  landId: land.id
-                }
+              [subdomain]: {
+                ...state.data[subdomain],
+                content,
+                landId: land.id
               }
             }
           }

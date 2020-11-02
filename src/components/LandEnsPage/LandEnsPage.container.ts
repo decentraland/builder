@@ -1,7 +1,7 @@
+import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './LandEnsPage.types'
-import LandEditPage from './LandEnsPage'
 import {
   FETCH_ENS_REQUEST,
   fetchENSRequest,
@@ -12,21 +12,26 @@ import {
   FETCH_DOMAIN_LIST_REQUEST,
   fetchDomainListRequest
 } from 'modules/ens/actions'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getLandId } from 'modules/location/selectors'
 import { getENSList, getLoading, getError, getIsWaitingTxSetResolver, getIsWaitingTxSetContent } from 'modules/ens/selectors'
-import { push } from 'connected-react-router'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './LandEnsPage.types'
+import LandEditPage from './LandEnsPage'
 
-const mapState = (state: RootState): MapStateProps => ({
-  ensList: getENSList(state),
-  error: getError(state),
-  isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || getIsWaitingTxSetResolver(state),
-  isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || getIsWaitingTxSetContent(state),
-  isLoading:
-    isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
-    isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
-    isLoadingType(getLoading(state), FETCH_ENS_REQUEST) ||
-    isLoadingType(getLoading(state), FETCH_DOMAIN_LIST_REQUEST)
-})
+const mapState = (state: RootState): MapStateProps => {
+  const landId = getLandId(state) || ''
+
+  return {
+    ensList: getENSList(state),
+    error: getError(state),
+    isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || getIsWaitingTxSetResolver(state),
+    isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || getIsWaitingTxSetContent(state, landId),
+    isLoading:
+      isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
+      isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
+      isLoadingType(getLoading(state), FETCH_ENS_REQUEST) ||
+      isLoadingType(getLoading(state), FETCH_DOMAIN_LIST_REQUEST)
+  }
+}
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetENSResolver: ens => dispatch(setENSResolverRequest(ens)),

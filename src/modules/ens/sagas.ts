@@ -48,14 +48,12 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
 
     if (resolverAddress.toString() === Address.ZERO.toString()) {
       return yield put(
-        fetchENSSuccess(
-          {
-            subdomain,
-            resolver: Address.ZERO.toString(),
-            content: Address.ZERO.toString()
-          },
-          address
-        )
+        fetchENSSuccess({
+          address,
+          subdomain,
+          resolver: Address.ZERO.toString(),
+          content: Address.ZERO.toString()
+        })
       )
     }
 
@@ -66,38 +64,37 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
     const currentContent = yield call(() => resolverContract.methods.contenthash(nodehash).call())
     if (currentContent === Address.ZERO.toString()) {
       return yield put(
-        fetchENSSuccess(
-          {
-            subdomain,
-            resolver: resolverAddress.toString(),
-            content: Address.ZERO.toString(),
-            ipfsHash
-          },
-          address
-        )
+        fetchENSSuccess({
+          address,
+          subdomain,
+          resolver: resolverAddress.toString(),
+          content: Address.ZERO.toString(),
+          ipfsHash
+        })
       )
     }
 
     if (`0x${landHash}` === currentContent) {
       return yield put(
-        fetchENSSuccess(
-          {
-            subdomain,
-            resolver: ENS_RESOLVER_ADDRESS,
-            content: landHash,
-            ipfsHash,
-            landId: land.id
-          },
-          address
-        )
+        fetchENSSuccess({
+          address,
+          subdomain,
+          resolver: ENS_RESOLVER_ADDRESS,
+          content: landHash,
+          ipfsHash,
+          landId: land.id
+        })
       )
     }
 
     yield put(
-      fetchENSSuccess(
-        { subdomain, resolver: ENS_RESOLVER_ADDRESS, content: currentContent || Address.ZERO.toString(), landId: '' },
-        address
-      )
+      fetchENSSuccess({
+        address,
+        subdomain,
+        resolver: ENS_RESOLVER_ADDRESS,
+        content: currentContent || Address.ZERO.toString(),
+        landId: ''
+      })
     )
   } catch (error) {
     const ensError: ENSError = { message: error.message }
@@ -149,14 +146,15 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
 function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
   try {
-    const owner = yield select(getAddress)
-    const domains: string[] = yield call(() => marketplace.fetchDomainList(owner))
+    const address = yield select(getAddress)
+    const domains: string[] = yield call(() => marketplace.fetchDomainList(address))
     const ensList: ENS[] = domains.map(subdomain => ({
+      address,
       subdomain: subdomain.toLowerCase(),
       resolver: Address.ZERO.toString(),
       content: Address.ZERO.toString()
     }))
-    yield put(fetchDomainListSuccess(ensList, owner))
+    yield put(fetchDomainListSuccess(ensList))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchDomainListFailure(ensError))

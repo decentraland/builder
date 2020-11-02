@@ -9,7 +9,7 @@ export const FETCH_ENS_SUCCESS = '[Success] Fetch ENS'
 export const FETCH_ENS_FAILURE = '[Failure] Fetch ENS'
 
 export const fetchENSRequest = (subdomain: string, land: Land) => action(FETCH_ENS_REQUEST, { subdomain, land })
-export const fetchENSSuccess = (ens: ENS, address: string) => action(FETCH_ENS_SUCCESS, { ens, address })
+export const fetchENSSuccess = (ens: ENS) => action(FETCH_ENS_SUCCESS, { ens })
 export const fetchENSFailure = (error: ENSError) => action(FETCH_ENS_FAILURE, { error })
 
 export type FetchENSRequestAction = ReturnType<typeof fetchENSRequest>
@@ -25,8 +25,7 @@ export const setENSResolverRequest = (subdomain: string) => action(SET_ENS_RESOL
 export const setENSResolverSuccess = (subdomain: string, resolver: string, address: string, txHash: string) =>
   action(SET_ENS_RESOLVER_SUCCESS, {
     ...buildTransactionPayload(txHash, { subdomain, resolver, address }),
-    subdomain,
-    address
+    subdomain
   })
 export const setENSResolverFailure = (subdomain: string, error: ENSError) => action(SET_ENS_RESOLVER_FAILURE, { subdomain, error })
 
@@ -60,7 +59,7 @@ export const FETCH_DOMAIN_LIST_SUCCESS = '[Success] Fetch Domain List'
 export const FETCH_DOMAIN_LIST_FAILURE = '[Failure] Fetch Domain List'
 
 export const fetchDomainListRequest = () => action(FETCH_DOMAIN_LIST_REQUEST, {})
-export const fetchDomainListSuccess = (ensList: ENS[], address: string) => action(FETCH_DOMAIN_LIST_SUCCESS, { ensList, address })
+export const fetchDomainListSuccess = (ensList: ENS[]) => action(FETCH_DOMAIN_LIST_SUCCESS, { ensList })
 export const fetchDomainListFailure = (error: ENSError) => action(FETCH_DOMAIN_LIST_FAILURE, { error })
 
 export type FetchDomainListRequestAction = ReturnType<typeof fetchDomainListRequest>

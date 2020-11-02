@@ -13,24 +13,25 @@ export const getError = (state: RootState) => getState(state).error
 export const getLoading = (state: RootState) => getState(state).loading
 
 export const getENSList = createSelector<RootState, ENSState['data'], string | undefined, ENS[]>(getData, getAddress, (ensData, address) =>
-  address ? Object.values(ensData[address] || {}) : []
+  Object.values(ensData).filter(ens => ens.address === address)
 )
 
 export const getIsWaitingTxSetResolver = (state: RootState) => {
   const address = getAddress(state)
   const result = address
     ? getPendingTransactions(state, address).some(
-        transaction => SET_ENS_RESOLVER_SUCCESS === transaction.actionType && isPending(transaction.status)
+        transaction => SET_ENS_RESOLVER_SUCCESS === transaction.actionType && isPending(transaction.status) && transaction.payload.land
       )
     : false
   return result
 }
 
-export const getIsWaitingTxSetContent = (state: RootState) => {
+export const getIsWaitingTxSetContent = (state: RootState, landId: string) => {
   const address = getAddress(state)
   const result = address
     ? getPendingTransactions(state, address).some(
-        transaction => SET_ENS_CONTENT_SUCCESS === transaction.actionType && isPending(transaction.status)
+        transaction =>
+          SET_ENS_CONTENT_SUCCESS === transaction.actionType && isPending(transaction.status) && transaction.payload.land.id === landId
       )
     : false
   return result

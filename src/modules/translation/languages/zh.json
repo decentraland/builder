@@ -669,8 +669,8 @@
     "edit_estate_remove": "您从{name}中删除了{count}土地。",
     "set_manager_assigned": "您已将{地址}分配、为所有{type}的运算符。",
     "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。",
-    "set_ens_content": "设置名称的重定向内容: {name}.",
-    "set_ens_resolver": "为您的名字设置解析器: {name}."
+    "set_ens_resolver": "为名称\"{name}\"设置解析器",
+    "set_ens_content": "在{land_link}上为名称\"{name}\"设置重定向内容。"
   },
   "transfer_page": {
     "title": "转移",

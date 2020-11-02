@@ -667,8 +667,8 @@
     "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
     "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
-    "set_ens_content": "Has asignado el contenido de redirección para tu nombre: {name}.",
-    "set_ens_resolver": "Has asignado el resolver para tu nombre: {name}."
+    "set_ens_content": "Has asignado el contenido de redirección para el nombre \"{name}\" en {land_link}.",
+    "set_ens_resolver": "Has asignado el resolver para el nombre \"{name}\"."
   },
   "transfer_page": {
     "title": "Transferir",
