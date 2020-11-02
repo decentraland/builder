@@ -112,19 +112,12 @@ export class ManagerAPI {
   fetchNames = async (_address: string): Promise<{}> => {
     const result = await new Promise(r => {
       setTimeout(() => {
-        r([
-          {
-            name: 'saraza',
-            beingAssigned: true,
-            assignedTo: 'me?'
-          },
-          {
-            name: 'malberso',
-            beingAssigned: true,
-            assignedTo: 'me?'
-          }
-        ])
-      }, 3000)
+        const result = []
+        for (let i = 0; i < 100; i++) {
+          result.push({ name: `data ${i}`, beingAssigned: true, assignedTo: 'me?' })
+        }
+        r(result)
+      }, 1000)
     })
     return result
   }

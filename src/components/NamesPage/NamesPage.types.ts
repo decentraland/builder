@@ -11,7 +11,9 @@ export type Props = {
   onFetchNames: typeof fetchNamesRequest
 }
 
-export type State = {}
+export type State = {
+  page: number
+}
 
 export type MapStateProps = Pick<Props, 'address' | 'names' | 'isLoading' | 'isLoggedIn'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onFetchNames'>
