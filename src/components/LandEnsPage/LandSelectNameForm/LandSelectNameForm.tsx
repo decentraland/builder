@@ -47,7 +47,7 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
       isButtonDisabled = true
     } else if (isEqualContent(selectedENS, land)) {
       selectMessage = t('land_ens_page.select_names.message.name_assigned')
-      isButtonDisabled = false
+      isButtonDisabled = true
     } else {
       selectMessage = t('land_ens_page.select_names.message.name_available')
       isButtonDisabled = false

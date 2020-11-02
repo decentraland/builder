@@ -194,7 +194,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               ></Atlas>
             </div>
           </Section>
-          <Section className={land.description ? '' : 'no-margin-bottom'}>
+          <Section>
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {deployments.length === 0 ? (
               <Empty height={100}>{t('land_detail_page.none')}</Empty>
@@ -214,7 +214,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             )}
           </Section>
           {land.description ? (
-            <Section className="description no-margin-bottom">
+            <Section>
               <Header sub>{t('land_detail_page.description')}</Header>
               <p>{land.description}</p>
             </Section>

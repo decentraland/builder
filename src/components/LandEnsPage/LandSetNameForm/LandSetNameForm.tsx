@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Form, Row, Button, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { isResolverEmpty, isContentEmpty } from 'modules/ens/utils'
+import { isResolverEmpty, isContentEmpty, isEqualContent } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
 import { Props } from './LandSetNameForm.types'
 import './LandSetNameForm.css'
@@ -28,10 +28,10 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
   }
 
   render() {
-    const { ens, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, error } = this.props
+    const { ens, land, isLoading, isWaitingTxSetContent, isWaitingTxSetResolver, error } = this.props
 
     const hasResolver = !isResolverEmpty(ens)
-    const hasContent = !isContentEmpty(ens)
+    const hasContent = !isContentEmpty(ens) && isEqualContent(ens, land)
     const hasData = hasResolver || hasContent
 
     const hasError = error && error.code === 4001
