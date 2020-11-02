@@ -7,8 +7,9 @@ import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
-import { Deployment } from 'modules/deployment/types'
+import Chip from 'components/Chip'
 import Profile from 'components/Profile'
+import { Deployment } from 'modules/deployment/types'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
@@ -82,7 +83,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderDetail(land: Land, deployments: Deployment[]) {
-    const { onNavigate, onOpenModal, parcelsAvailableToBuildEstates, projects } = this.props
+    const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = deployments.reduce((total, deployment) => total + deployment.parcels.length, 0)
     const selection = getSelection(land)
@@ -98,7 +99,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             <div className="name">{hovered.name}</div>
           </div>
         ) : null}
-        <Section>
+        <Section size="large">
           <Row>
             <Back absolute onClick={() => onNavigate(locations.land())} />
             <Narrow>
@@ -143,18 +144,14 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                         direction="left"
                       >
                         <Dropdown.Menu>
-                          <Dropdown.Item
-                            text={t('land_detail_page.set_operator')}
-                            onClick={() => onNavigate(locations.landOperator(land.id))}
-                          />
-                          {env.get('REACT_APP_FF_ENS') ? (
-                            <Dropdown.Item text={t('land_detail_page.set_link')} onClick={() => onNavigate(locations.landEns(land.id))} />
-                          ) : null}
                           {canBuildEstate ? (
-                            <Dropdown.Item
-                              text={t('land_detail_page.build_estate')}
-                              onClick={() => onOpenModal('EstateEditorModal', { land })}
-                            />
+                            <>
+                              <Dropdown.Item
+                                text={t('land_detail_page.build_estate')}
+                                onClick={() => onOpenModal('EstateEditorModal', { land })}
+                              />
+                              <Dropdown.Divider />
+                            </>
                           ) : null}
                           {land.type === LandType.ESTATE ? (
                             <>
@@ -166,8 +163,22 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                                 text={t('land_detail_page.dissolve_estate')}
                                 onClick={() => onOpenModal('DissolveModal', { land })}
                               />
+                              <Dropdown.Divider />
                             </>
                           ) : null}
+                          {env.get('REACT_APP_FF_ENS') ? (
+                            <>
+                              <Dropdown.Item
+                                text={t('land_detail_page.assign_name')}
+                                onClick={() => onNavigate(locations.landEns(land.id))}
+                              />
+                              <Dropdown.Divider />
+                            </>
+                          ) : null}
+                          <Dropdown.Item
+                            text={t('land_detail_page.set_operator')}
+                            onClick={() => onNavigate(locations.landOperator(land.id))}
+                          />
                         </Dropdown.Menu>
                       </Dropdown>
                     </Row>
@@ -178,7 +189,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           </Row>
         </Section>
         <Narrow>
-          <Section>
+          <Section size="large">
             <div
               className={`atlas-wrapper ${isAtlasClickable ? 'clickable' : ''}`}
               onMouseLeave={this.handleMouseLeave}
@@ -194,7 +205,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               ></Atlas>
             </div>
           </Section>
-          <Section>
+          <Section size="large">
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {deployments.length === 0 ? (
               <Empty height={100}>{t('land_detail_page.none')}</Empty>
@@ -213,8 +224,18 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </div>
             )}
           </Section>
+          {ensList.length > 0 ? (
+            <Section size="large">
+              <Header sub>{t('land_detail_page.assigned_names')}</Header>
+              <div className="ens-list">
+                {ensList.map(ens => (
+                  <Chip text={ens.subdomain} />
+                ))}
+              </div>
+            </Section>
+          ) : null}
           {land.description ? (
-            <Section>
+            <Section size="large">
               <Header sub>{t('land_detail_page.description')}</Header>
               <p>{land.description}</p>
             </Section>

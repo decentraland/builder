@@ -43,10 +43,11 @@
   /* Share */
   --facebook: #4267b2;
   --twitter: #1da1f2;
-  --share-detail-text: #736e7d;
 
   /* Colors to be moved to decentraland ui */
+  --smart-grey-raw: 55, 51, 61;
   --smart-grey: #37333d;
+  --smart-grey-contrast: #736e7d;
   --dark-two: #242129;
 
   --parameter-font-size: 15px;

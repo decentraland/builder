@@ -1,27 +1,20 @@
 import * as React from 'react'
-import { env } from 'decentraland-commons'
-import { Form, Row, Button } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Form, Row, Button, Section, Header, Dropdown, DropdownProps } from 'decentraland-ui'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
-import { SelectNames } from 'components/SelectNames'
 import { findBySubdomain, isEqualContent } from 'modules/ens/utils'
 import { Props, State } from './LandSelectNameForm.types'
 import './LandSelectNameForm.css'
-
-export const CLAIM_NAME_URL = env.get('REACT_APP_CLAIM_NAME_URL', '')
 
 export default class LandSelectNameForm extends React.PureComponent<Props, State> {
   state: State = {
     selectedSubdomain: ''
   }
 
-  componentDidMount() {
-    this.props.onFetchDomainList()
-  }
-
-  handleChange = (selectedSubdomain: string) => {
+  handleChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { onFetchENS, land } = this.props
+    const selectedSubdomain = data.value as string
     onFetchENS(selectedSubdomain, land)
     this.setState({ selectedSubdomain })
   }
@@ -39,49 +32,50 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     const selectOptions = ensList.map(({ subdomain }) => ({ value: subdomain.toLowerCase(), text: subdomain.toLowerCase() }))
     const selectedENS = findBySubdomain(ensList, selectedSubdomain)
 
-    let selectMessage: string = ''
-    let isButtonDisabled: boolean = false
-
-    if (!selectedENS) {
-      selectMessage = t('land_ens_page.select_names.message.choose_name')
-      isButtonDisabled = true
-    } else if (isEqualContent(selectedENS, land)) {
-      selectMessage = t('land_ens_page.select_names.message.name_assigned')
-      isButtonDisabled = true
-    } else {
-      selectMessage = t('land_ens_page.select_names.message.name_available')
-      isButtonDisabled = false
-    }
+    const isButtonDisabled: boolean = !selectedENS || isEqualContent(selectedENS, land)
 
     return (
       <Form className="LandSelectNameForm">
         {!isLoading && selectOptions.length === 0 ? (
           <>
-            <Row>
-              <p className="emptyOptions">{t('land_ens_page.empty_options_message')}</p>
-            </Row>
+            <Section size="large">{t('land_ens_page.empty_options_message')}</Section>
             <Row>
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>
               </Link>
-              <Link to={CLAIM_NAME_URL}>
+              <Link to={locations.claimName()}>
                 <Button primary>{t('land_ens_page.claim_new_name')}</Button>
               </Link>
             </Row>
           </>
         ) : (
           <>
-            <Row>
-              <SelectNames
-                name={t('land_ens_page.select_names.placeholder')}
-                value={selectedSubdomain}
-                options={selectOptions}
-                onChange={this.handleChange}
-              />
-            </Row>
-            <Row>
-              <p className="selectMessage">{selectMessage}</p>
-            </Row>
+            <Section size="large">
+              <div className="select-names">
+                <Header sub className="name">
+                  {t('land_ens_page.select_names.title')}
+                </Header>
+                <Dropdown
+                  value={selectedSubdomain}
+                  options={selectOptions}
+                  placeholder={t('land_ens_page.select_names.placeholder')}
+                  onChange={this.handleChange}
+                />
+              </div>
+
+              <div className="select-message">
+                {selectedENS && isEqualContent(selectedENS, land) ? (
+                  <span className="danger-text">{t('land_ens_page.select_names.message.name_assigned')}</span>
+                ) : (
+                  <T
+                    id="land_ens_page.select_names.message.click_to_claim_new_name"
+                    values={{
+                      click_here: <Link to={locations.claimName()}>{t('global.click_here')}</Link>
+                    }}
+                  />
+                )}
+              </div>
+            </Section>
             <Row>
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>

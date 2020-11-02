@@ -2,8 +2,15 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
-import { call, put, takeEvery, select } from 'redux-saga/effects'
+import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
+import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+
+import { ENS as ENSContract } from 'contracts/ENS'
+import { ENSResolver } from 'contracts/ENSResolver'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
+import { marketplace } from 'lib/api/marketplace'
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
@@ -19,21 +26,22 @@ import {
   setENSResolverFailure,
   FETCH_DOMAIN_LIST_REQUEST,
   FetchDomainListRequestAction,
+  fetchDomainListRequest,
   fetchDomainListSuccess,
   fetchDomainListFailure
 } from './actions'
-import { ENS as ENSContract } from 'contracts/ENS'
-import { ENSResolver } from 'contracts/ENSResolver'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
-import { marketplace } from 'lib/api/marketplace'
 import { ENS, ENSOrigin, ENSError } from './types'
 
 export function* ensSaga() {
+  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_DOMAIN_LIST_REQUEST, handleFetchDomainListRequest)
+}
+
+function* handleConnectWallet() {
+  yield put(fetchDomainListRequest())
 }
 
 function* handleFetchENSRequest(action: FetchENSRequestAction) {

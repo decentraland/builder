@@ -94,7 +94,7 @@
 }
 
 .SceneViewPage .detail .author {
-  color: var(--share-detail-text);
+  color: var(--smart-grey-contrast);
   font-size: 15px;
   line-height: 24px;
   margin: 0;
@@ -130,7 +130,7 @@
 }
 
 .SceneViewPage .detail .component-list {
-  color: var(--share-detail-text);
+  color: var(--smart-grey-contrast);
   font-weight: 600;
   display: flex;
   font-size: 13px;

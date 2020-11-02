@@ -18,7 +18,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
     this.setState({ selectedSubdomain })
   }
 
-  restartForm = () => {
+  handleRestartForm = () => {
     this.setState({ selectedSubdomain: '' })
   }
 
@@ -30,7 +30,6 @@ export default class LandEnsPage extends React.PureComponent<Props> {
       isWaitingTxSetContent,
       isWaitingTxSetResolver,
       onFetchENS,
-      onFetchDomainList,
       onSetENSResolver,
       onSetENSContent,
       onNavigate
@@ -43,18 +42,17 @@ export default class LandEnsPage extends React.PureComponent<Props> {
         {land => (
           <LandAction
             land={land}
-            title={t('land_ens_page.title')}
-            subtitle={<T id="land_ens_page.subtitle" values={{ name: <Link to={locations.landDetail(land.id)}>{land.name}</Link> }} />}
+            title={selectedENS ? t('land_ens_page.assign_name_title', { name: selectedENS.subdomain }) : t('land_ens_page.title')}
+            subtitle={<T id="land_ens_page.subtitle" values={{ land: <Link to={locations.landDetail(land.id)}>{land.name}</Link> }} />}
           >
             {!selectedENS ? (
               <LandSelectNameForm
                 land={land}
                 ensList={ensList}
-                onUpdateSubdomain={this.handleUpdateSubdomain}
-                onFetchDomainList={onFetchDomainList}
-                onFetchENS={onFetchENS}
                 error={error}
                 isLoading={isLoading}
+                onUpdateSubdomain={this.handleUpdateSubdomain}
+                onFetchENS={onFetchENS}
               />
             ) : (
               <LandSetNameForm
@@ -67,7 +65,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
                 isWaitingTxSetContent={isWaitingTxSetContent}
                 onSetENSContent={onSetENSContent}
                 onSetENSResolver={onSetENSResolver}
-                onRestartForm={this.restartForm}
+                onRestartForm={this.handleRestartForm}
                 onNavigate={onNavigate}
               />
             )}

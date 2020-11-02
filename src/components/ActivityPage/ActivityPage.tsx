@@ -30,14 +30,12 @@ const ActivityPage = (props: Props) => {
     content = (
       <div className="center">
         <p>
-          {
-            <T
-              id="wallet.sign_in_required"
-              values={{
-                sign_in: <Link to={locations.signIn()}>{t('wallet.sign_in')}</Link>
-              }}
-            />
-          }
+          <T
+            id="wallet.sign_in_required"
+            values={{
+              sign_in: <Link to={locations.signIn()}>{t('wallet.sign_in')}</Link>
+            }}
+          />
         </p>
       </div>
     )

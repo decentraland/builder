@@ -1,16 +1,7 @@
-.LandSelectNameForm .centered {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-.LandSelectNameForm .centered p {
-  width: 100%;
-  text-align: center;
-  padding-top: 70px;
-}
 .LandSelectNameForm.ui.form {
   width: 100%;
 }
+
 .LandSelectNameForm.ui.form .dcl.field .ui.input.revoked input {
   text-decoration: line-through;
   color: var(--secondary-text);
@@ -31,19 +22,41 @@
   padding-right: 86px;
 }
 
-.LandSelectNameForm .SelectNames {
-  width: 100%;
-}
-
-.LandSelectNameForm .SelectNames .ui.dropdown {
-  padding-left: 0;
-}
-
-.LandSelectNameForm .selectMessage {
-  margin-top: 8px;
+.LandSelectNameForm .select-name-container {
   margin-bottom: 48px;
 }
 
-.LandSelectNameForm p.emptyOptions {
-  padding-bottom: 20px;
+.LandSelectNameForm .select-message {
+  margin-top: 8px;
+}
+
+.select-names,
+.select-names .menu.visible {
+  width: 100%;
+}
+
+.select-names .ui.dropdown {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--divider);
+  color: var(--secondary-text);
+}
+
+.select-names .ui.sub.header {
+  text-transform: none;
+}
+
+.select-names .ui.dropdown .text {
+  flex: 1 0 auto;
+  text-transform: none;
+  color: var(--text);
+}
+
+.select-names .ui.dropdown > .text:not(.default) {
+  font-size: 21px;
+}
+
+.select-names .ui.dropdown .dropdown.icon {
+  color: var(--text);
 }

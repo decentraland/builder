@@ -1,11 +1,13 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { ProjectState } from 'modules/project/reducer'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { Deployment } from 'modules/deployment/types'
-import { ProjectState } from 'modules/project/reducer'
 import { LandTile } from 'modules/land/types'
+import { ENS } from 'modules/ens/types'
 
 export type Props = {
+  ensList: ENS[]
   parcelsAvailableToBuildEstates: Record<string, boolean>
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
@@ -21,6 +23,6 @@ export type State = {
   showTooltip: boolean
 }
 
-export type MapStateProps = Pick<Props, 'parcelsAvailableToBuildEstates' | 'deploymentsByCoord' | 'projects' | 'landTiles'>
+export type MapStateProps = Pick<Props, 'ensList' | 'parcelsAvailableToBuildEstates' | 'deploymentsByCoord' | 'projects' | 'landTiles'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>

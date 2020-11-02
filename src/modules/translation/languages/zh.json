@@ -302,7 +302,7 @@
     "title": "下载场景"
   },
   "global": {
-    "approved_tx": "完成了",
+    "approved_tx": "批准的TX",
     "back": "返回",
     "blog_post": "博客",
     "cancel": "取消",
@@ -447,13 +447,14 @@
     "transfer": "转移",
     "edit": "编辑",
     "set_operator": "设定操作者",
-    "set_link": "设定连结",
+    "assign_name": "分配名称",
     "build_estate": "建立产业",
     "add_or_remove_parcels": "添加或删除地块",
     "dissolve_estate": "解散产业",
     "online_scenes": "在线场景",
     "none": "无",
     "add_scene": "添加场景",
+    "assigned_names": "分配名称",
     "description": "描述",
     "owner": "持有者",
     "operators": "操作者",
@@ -461,16 +462,8 @@
     "empty_land": "空地"
   },
   "land_ens_page" : {
-    "loading": "载入中...",
-    "subtitle": "给...分配一个名字 {name}",
-    "select_names": {
-      "placeholder": "我的名字是",
-      "message": {
-        "choose_name": "选择这片土地的名称",
-        "name_available": "这个名字会为你的土地工作",
-        "name_assigned": "这个名字已经分配给这片土地"
-      }
-    },
+    "title": "分配名称",
+    "subtitle": "给...分配一个名字 {land}",
     "set_content": "设定内容",
     "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
     "set_name_message": "关于他们为什么需要批准的简要说明。",
@@ -479,11 +472,14 @@
     "empty_options_message": "您没有可用的名称。 要为您的LAND分配名称，您首先需要声明它。",
     "claim_new_name": "申请新名字",
     "not_redirected": "如果您未重定向",
-    "submit_message": {
-      "success": "名称正确设置到您的土地"
-    },
-    "title": "分配名称",
-    "waiting_confirmation_tx": "来自TX的等待确认"
+    "select_names": {
+      "title": "我的名字是",
+      "placeholder": "选择一个名字",
+      "message": {
+        "click_to_claim_new_name": "{click_here}申请新名称",
+        "name_assigned": "这个名字已经分配给这片土地"
+      }
+    }
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
