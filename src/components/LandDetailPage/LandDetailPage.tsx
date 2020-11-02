@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Row, Back, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
@@ -224,16 +225,25 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </div>
             )}
           </Section>
-          {ensList.length > 0 ? (
-            <Section size="large">
-              <Header sub>{t('land_detail_page.assigned_names')}</Header>
+          <Section size="large">
+            <Header sub>
+              <Row>
+                <Column>{t('land_detail_page.assigned_names')}</Column>
+                <Column align="right">
+                  <Link to={locations.landEns(land.id)}>{t('land_detail_page.assign_name')}</Link>
+                </Column>
+              </Row>
+            </Header>
+            {ensList.length > 0 ? (
               <div className="ens-list">
                 {ensList.map(ens => (
                   <Chip text={ens.subdomain} />
                 ))}
               </div>
-            </Section>
-          ) : null}
+            ) : (
+              <Empty height={100}>{t('land_detail_page.no_names')}</Empty>
+            )}
+          </Section>
           {land.description ? (
             <Section size="large">
               <Header sub>{t('land_detail_page.description')}</Header>

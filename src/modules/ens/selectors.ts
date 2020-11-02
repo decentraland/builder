@@ -21,9 +21,7 @@ export const getENSByWallet = createSelector<RootState, ENS[], string | undefine
 
 export const getENSForLand = (state: RootState, landId: string) => {
   const ensList = getENSList(state)
-  console.log(landId)
-  // return ensList.filter(ens => ens.landId === landId)
-  return ensList
+  return ensList.filter(ens => ens.landId === landId)
 }
 
 export const getIsWaitingTxSetResolver = (state: RootState) => {
