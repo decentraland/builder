@@ -357,6 +357,12 @@
     "land": "Land",
     "names": "Names"
   },
+  "names_page": {
+    "sort": {
+      "newest": "Newest",
+      "name": "Name"
+    }
+  },
   "list": {
     "two": "{first} and {second}",
     "three": "{first}, {second} and {third}",

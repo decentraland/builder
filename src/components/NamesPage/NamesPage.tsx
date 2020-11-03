@@ -35,7 +35,6 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     const { onFetchNames, address, page } = this.props
-    console.log('Address from componentDidMount:', address)
     if (address) {
       onFetchNames(address, page)
     }
