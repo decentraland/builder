@@ -738,8 +738,8 @@
     "removed_collection_managers": "删除了集合{name}的{count} {count，复数，一个{collaborator}其他{collaborators}}",
     "set_collection_on_sale": "设置要出售的收藏集{name}",
     "unset_collection_on_sale": "已将集合{name}从出售中移除",
-    "set_ens_content": "设置名称的重定向内容: {name}.",
-    "set_ens_resolver": "为您的名字设置解析器: {name}."
+    "set_ens_resolver": "为名称\"{name}\"设置解析器",
+    "set_ens_content": "在{land_link}上为名称\"{name}\"设置重定向内容。"
   },
   "transfer_page": {
     "title": "转移",

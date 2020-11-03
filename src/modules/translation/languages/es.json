@@ -736,8 +736,8 @@
     "removed_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} borrados de la colección {name}",
     "set_collection_on_sale": "Colección {name} puesta a la venta",
     "unset_collection_on_sale": "La colección {name} ya no está a la venta",
-    "set_ens_content": "Has asignado el contenido de redirección para tu nombre: {name}.",
-    "set_ens_resolver": "Has asignado el resolver para tu nombre: {name}."
+    "set_ens_content": "Has asignado el contenido de redirección para el nombre \"{name}\" en {land_link}.",
+    "set_ens_resolver": "Has asignado el resolver para el nombre \"{name}\"."
   },
   "transfer_page": {
     "title": "Transferir",

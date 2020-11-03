@@ -7,6 +7,7 @@ export type Props = {
   children?: React.ReactNode
   title?: React.ReactNode
   subtitle?: React.ReactNode
+  children: React.ReactNode
   onNavigate: (path: string) => void
 }
 
