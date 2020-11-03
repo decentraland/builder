@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Page, Responsive, Container, Back } from 'decentraland-ui'
+import { Loader, Page, Responsive, Container } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import Chip from 'components/Chip'
@@ -8,8 +8,10 @@ import Icon from 'components/Icon'
 import Navbar from 'components/Navbar'
 import NotFoundPage from 'components/NotFoundPage'
 import ViewPort from 'components/ViewPort'
+import Back from 'components/Back'
 import { Props, State } from './SceneViewPage.types'
 import './SceneViewPage.css'
+import { PreviewType } from 'modules/editor/types'
 
 export default class SceneViewPage extends React.PureComponent<Props, State> {
   componentDidMount() {
@@ -40,7 +42,7 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
   }
 
   getType() {
-    return (this.props.match && this.props.match.params && this.props.match.params.type) || 'public'
+    return (this.props.match && this.props.match.params && this.props.match.params.type) || PreviewType.PUBLIC
   }
 
   getCurrentProject() {

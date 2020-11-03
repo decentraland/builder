@@ -1,0 +1,40 @@
+.Select.ui.dropdown.inline {
+  height: 38px;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0px 12px;
+  margin-bottom: 8px;
+}
+
+.Select.ui.dropdown.inline .label {
+  flex: none;
+  margin-right: 20px;
+  color: var(--secondary-text);
+}
+
+.Select.ui.dropdown.inline .value {
+  flex: 1 0 auto;
+  text-align: right;
+  color: var(--text);
+}
+
+.Select.ui.dropdown.inline.blank .value {
+  color: var(--secondary-text);
+}
+
+.Select.ui.dropdown.inline .handle {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background-image: url(../../../../images/select-active.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin-left: 7px;
+}
+
+.Select.ui.dropdown.inline.blank .handle {
+  background-image: url(../../../../images/select-inactive.svg);
+}

@@ -12,6 +12,12 @@
   --smart-item: #472550;
   --smart-item-hover: #5f326a;
 
+  --light-gray: #736e7d;
+  --gray: rgba(115, 110, 125, 0.4);
+  --dark-gray: rgba(22, 20, 26, 0.48);
+
+  --light-blue-raw: 0, 217, 255;
+
   /**
   * Component variables
   */
@@ -43,7 +49,6 @@
   /* Share */
   --facebook: #4267b2;
   --twitter: #1da1f2;
-  --share-detail-text: #736e7d;
 
   /* Colors to be moved to decentraland ui */
   --smart-grey: #37333d;

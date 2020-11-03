@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Row, Back, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
+import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { LandType, Land, RoleType } from 'modules/land/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
@@ -7,6 +7,7 @@ import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
 import { Deployment } from 'modules/deployment/types'
+import Back from 'components/Back'
 import Profile from 'components/Profile'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
@@ -130,7 +131,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                         {t('land_detail_page.transfer')}
                       </Button>
                       <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
-                        {t('land_detail_page.edit')}
+                        {t('global.edit')}
                       </Button>
                       <Dropdown
                         trigger={

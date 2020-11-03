@@ -33,7 +33,7 @@
     "decentraland-builder-scripts": "^0.24.0",
     "decentraland-commons": "^5.1.0",
     "decentraland-dapps": "^7.13.0",
-    "decentraland-ecs": "6.6.1-20200928181050.commit-a33777f",
+    "decentraland-ecs": "6.6.1-20201020183014.commit-bdc29ef",
     "decentraland-experiments": "^1.0.2",
     "decentraland-ui": "^2.23.1",
     "dotenv": "6.0.0",
@@ -56,7 +56,7 @@
     "interface-datastore": "^0.7.0",
     "ipfs-unixfs-engine": "^0.35.4",
     "ismobilejs": "^1.0.3",
-    "jest": "^24.1.0",
+    "jest": "^24.9.0",
     "jest-pnp-resolver": "1.0.1",
     "jest-resolve": "23.6.0",
     "jszip": "^3.2.1",
@@ -98,8 +98,8 @@
     "url-loader": "1.1.1",
     "uuid": "^3.3.2",
     "web3x-es": "^4.0.6",
-    "webpack": "4.19.1",
-    "webpack-dev-server": "3.1.14",
+    "webpack": "^4.44.1",
+    "webpack-dev-server": "^3.11.0",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "3.6.3"
   },
@@ -138,7 +138,6 @@
     "@types/jest": "23.3.10",
     "@types/jszip": "^3.1.5",
     "@types/mousetrap": "^1.6.0",
-    "@types/node": "^9.6.41",
     "@types/query-string": "^6.2.0",
     "@types/rc-slider": "^8.6.5",
     "@types/react": "16.7.18",
@@ -155,8 +154,9 @@
     "decentraland-rpc": "^3.1.5",
     "prettier": "^1.19.1",
     "ts-loader": "^6.2.1",
+    "tslib": "^2.0.1",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.2.2"
+    "typescript": "^4.0.2"
   },
   "jest": {
     "collectCoverageFrom": [

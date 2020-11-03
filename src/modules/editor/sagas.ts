@@ -1,7 +1,7 @@
 // @ts-ignore
 import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
+import { getSearch } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-
 import {
   updateEditor,
   BIND_EDITOR_KEYBOARD_SHORTCUTS,
@@ -44,7 +44,16 @@ import {
   setScreenshotReady,
   OpenEditorAction,
   setEditorReadOnly,
-  SetSelectedEntitiesAction
+  SetSelectedEntitiesAction,
+  setItems,
+  SET_ITEMS,
+  updateAvatar,
+  SET_BODY_SHAPE,
+  SetBodyShapeAction,
+  SET_AVATAR_ANIMATION,
+  SetAvatarAnimationAction,
+  SetItemsAction,
+  setBodyShape
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -65,9 +74,10 @@ import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard
 import { editProjectThumbnail } from 'modules/project/actions'
 import { getCurrentScene, getEntityComponentsByType, getCurrentMetrics, getComponents } from 'modules/scene/selectors'
 import { getCurrentProject, getCurrentBounds } from 'modules/project/selectors'
-import { Scene, ComponentType, SceneMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
+import { Scene, ComponentType, ModelMetrics, ComponentDefinition, ComponentData } from 'modules/scene/types'
 import { Project } from 'modules/project/types'
-import { EditorScene, Gizmo } from 'modules/editor/types'
+import { AvatarAnimation, EditorScene, Gizmo, PreviewType } from 'modules/editor/types'
+import { getLoading } from 'modules/assetPack/selectors'
 import { GROUND_CATEGORY } from 'modules/asset/types'
 import { RootState, Vector3, Quaternion } from 'modules/common/types'
 import { EditorWindow } from 'components/Preview/Preview.types'
@@ -87,7 +97,10 @@ import {
   isReadOnly,
   getEntitiesOutOfBoundaries,
   hasLoadedAssetPacks,
-  isMultiselectEnabled
+  isMultiselectEnabled,
+  getBodyShape,
+  getVisibleItems,
+  getAvatarAnimation
 } from './selectors'
 
 import {
@@ -100,11 +113,22 @@ import {
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION,
   createReadyOnlyScene,
-  areEqualTransforms
+  areEqualTransforms,
+  createAvatarProject,
+  toWearable,
+  mergeWearables
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
+import { Item, WearableBodyShape } from 'modules/item/types'
+import { getItems } from 'modules/item/selectors'
+import maleAvatar from './wearables/male.json'
+import femaleAvatar from './wearables/female.json'
+import { Wearable } from 'decentraland-ecs'
+import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
+import { AssetPackState } from 'modules/assetPack/reducer'
+import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -128,6 +152,10 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
+  yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
+  yield takeLatest(SET_ITEMS, handleSetItems)
+  yield takeLatest(SET_AVATAR_ANIMATION, handleSetAvatarAnimation)
+  yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
 }
 
 function* pollEditor(scene: Scene) {
@@ -203,7 +231,7 @@ function* renderScene(scene: Scene) {
   }
 }
 
-function handleMetricsChange(args: { metrics: SceneMetrics; limits: SceneMetrics }) {
+function handleMetricsChange(args: { metrics: ModelMetrics; limits: ModelMetrics }) {
   const { metrics, limits } = args
   const scene = getCurrentScene(store.getState() as RootState)
   if (scene) {
@@ -303,49 +331,95 @@ function* handleOpenEditor(action: OpenEditorAction) {
   // The client will report when an entity goes out of bounds
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
-  // Creates a new scene in the dcl client's side
-  const project: Project | Pool | null = yield type === 'pool' ? select(getCurrentPool) : select(getCurrentProject)
+  if (type === PreviewType.WEARABLE) {
+    const search = yield select(getSearch)
+    const itemId = new URLSearchParams(search).get('item')
+    const items: Item[] = yield select(getItems)
+    const item = items.find(item => item.id === itemId)
 
-  if (project) {
-    // load asset packs
-    const areLoaded = yield select(hasLoadedAssetPacks)
-    if (!areLoaded) {
-      yield put(loadAssetPacksRequest())
+    yield put(setEditorReadOnly(true))
+    yield createNewEditorScene(createAvatarProject())
+
+    // set camera
+    yield call(async () => {
+      editorWindow.editor.setBuilderConfiguration({
+        camera: { zoomMax: 5, zoomMin: 2, zoomDefault: 2 },
+        environment: { disableFloor: true }
+      })
+      editorWindow.editor.resetCameraZoom()
+      editorWindow.editor.setCameraPosition({ x: 8, y: 1, z: 8 })
+      editorWindow.editor.setCameraRotation(Math.PI, Math.PI / 16)
+    })
+
+    if (item) {
+      // select a valid body shape for the selected item
+      const currentBodyShape: ReturnType<typeof getBodyShape> = yield select(getBodyShape)
+      if (!hasBodyShape(item, currentBodyShape)) {
+        const bodyShapes = getBodyShapes(item)
+        if (bodyShapes.length > 0) {
+          yield put(setBodyShape(bodyShapes[0]))
+        }
+      }
+
+      // render avatar with selected item
+      yield put(setItems([item]))
+    } else {
+      // render avatar without any selected items
+      yield put(setItems([]))
     }
-
-    // fix legacy stuff
-    let scene: Scene = yield getSceneByProjectId(project.id, type)
-    yield put(fixLegacyNamespacesRequest(scene))
-    const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
-    scene = fixSuccessAction.payload.scene
-
-    // if assets packs are being loaded wait for them to finish
-    const state: RootState = yield select(state => state)
-    if (isLoadingType(state.assetPack.loading, LOAD_ASSET_PACKS_REQUEST)) {
-      yield take(LOAD_ASSET_PACKS_SUCCESS)
-    }
-
-    // sync scene assets
-    yield put(syncSceneAssetsRequest(scene))
-    const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
-    scene = syncSuccessAction.payload.scene
-
-    yield put(setEditorReadOnly(isReadOnly))
-    yield createNewEditorScene(project)
-
-    // Set the remote url for scripts
-    yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
-
-    // Spawns the assets
-    yield renderScene(scene)
-
-    // Enable snap to grid
-    yield handleToggleSnapToGrid(toggleSnapToGrid(true))
-
-    // Select gizmo
-    yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
   } else {
-    console.error(`Unable to Open Editor: Invalid ${type}`)
+    // Creates a new scene in the dcl client's side
+    const project: Project | Pool | null = yield type === PreviewType.POOL ? select(getCurrentPool) : select(getCurrentProject)
+
+    // set editor in "scene mode" (min/max zoom, and show floor)
+    yield call(() => {
+      editorWindow.editor.setBuilderConfiguration({
+        camera: { zoomMax: 100, zoomMin: 1, zoomDefault: 32 },
+        environment: { disableFloor: false }
+      })
+    })
+
+    if (project) {
+      // load asset packs
+      const areLoaded = yield select(hasLoadedAssetPacks)
+      if (!areLoaded) {
+        yield put(loadAssetPacksRequest())
+      }
+
+      // fix legacy stuff
+      let scene: Scene = yield getSceneByProjectId(project.id, type)
+      yield put(fixLegacyNamespacesRequest(scene))
+      const fixSuccessAction: FixLegacyNamespacesSuccessAction = yield take(FIX_LEGACY_NAMESPACES_SUCCESS)
+      scene = fixSuccessAction.payload.scene
+
+      // if assets packs are being loaded wait for them to finish
+      const loading: AssetPackState['loading'] = yield select(getLoading)
+      if (isLoadingType(loading, LOAD_ASSET_PACKS_REQUEST)) {
+        yield take(LOAD_ASSET_PACKS_SUCCESS)
+      }
+
+      // sync scene assets
+      yield put(syncSceneAssetsRequest(scene))
+      const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
+      scene = syncSuccessAction.payload.scene
+
+      yield put(setEditorReadOnly(isReadOnly))
+      yield createNewEditorScene(project)
+
+      // Set the remote url for scripts
+      yield call(() => editorWindow.editor.sendExternalAction(setScriptUrl(getContentsStorageUrl())))
+
+      // Spawns the assets
+      yield renderScene(scene)
+
+      // Enable snap to grid
+      yield handleToggleSnapToGrid(toggleSnapToGrid(true))
+
+      // Select gizmo
+      yield call(() => editorWindow.editor.selectGizmo(Gizmo.NONE))
+    } else {
+      console.error(`Unable to Open Editor: Invalid ${type}`)
+    }
   }
 }
 
@@ -540,4 +614,45 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
   if (!previewMode) {
     store.dispatch(setEntitiesOutOfBoundaries(entities))
   }
+}
+
+function* getDefaultWearables() {
+  const bodyShape: WearableBodyShape = yield select(getBodyShape)
+  return (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
+}
+
+function* renderAvatar() {
+  if (yield select(isReady)) {
+    const visibleItems: Item[] = yield select(getVisibleItems)
+    const defaultWearables = yield getDefaultWearables()
+    const wearables = mergeWearables(defaultWearables, visibleItems.map(toWearable))
+    const animation = yield select(getAvatarAnimation)
+    yield call(async () => {
+      editorWindow.editor.addWearablesToCatalog(wearables)
+      editorWindow.editor.sendExternalAction(updateAvatar(wearables, animation))
+    })
+  }
+}
+
+function* bustCache() {
+  const defaultWearables = yield getDefaultWearables()
+  editorWindow.editor.addWearablesToCatalog(defaultWearables)
+  editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, AvatarAnimation.IDLE))
+  yield delay(32)
+}
+
+function* handleSetItems(_action: SetItemsAction) {
+  yield renderAvatar()
+}
+
+function* handleSetBodyShape(_action: SetBodyShapeAction) {
+  yield bustCache() // without this, the representation of the wearables get cached when the body shape changes
+
+  // this gets rid of items that don't have a representation for the current body shape
+  const visibleItems: Item[] = yield select(getVisibleItems)
+  yield put(setItems(visibleItems))
+}
+
+function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
+  yield renderAvatar()
 }

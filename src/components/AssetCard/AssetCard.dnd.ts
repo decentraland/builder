@@ -5,7 +5,7 @@ import { Props } from './AssetCard.types'
 
 export const ASSET_TYPE = 'ASSET'
 
-export type DragObject = {
+export type AssetCardDragObject = {
   asset: Asset
 }
 
@@ -15,7 +15,7 @@ export type CollectedProps = {
   isDragging: boolean
 }
 
-export const assetSource: DragSourceSpec<Props, DragObject> = {
+export const assetSource: DragSourceSpec<Props, AssetCardDragObject> = {
   beginDrag(props) {
     props.onBeginDrag(props.asset)
     return {

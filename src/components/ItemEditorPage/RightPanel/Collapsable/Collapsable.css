@@ -1,0 +1,34 @@
+.Collapsable {
+  margin-bottom: 20px;
+}
+
+.Collapsable > .header {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.Collapsable > .header > .label {
+  flex: 1 0 auto;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.Collapsable > .header > .handle {
+  flex: none;
+  background-image: url(../../../../images/caret.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 18px;
+  height: 8px;
+  transform: rotateZ(180deg);
+  transition: transform 0.2s ease;
+}
+
+.Collapsable.is-open .header .handle {
+  transform: rotateZ(360deg);
+}

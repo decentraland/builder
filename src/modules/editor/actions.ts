@@ -3,7 +3,9 @@ import { action } from 'typesafe-actions'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { Gizmo, OpenEditorOptions } from './types'
+import { AvatarAnimation, Gizmo, OpenEditorOptions, PreviewType } from './types'
+import { Item, WearableBodyShape } from 'modules/item/types'
+import { Wearable } from 'decentraland-ecs'
 
 // Bind keyboard shortcuts
 
@@ -26,7 +28,7 @@ export type UnbindEditorKeybardShortcutsAction = ReturnType<typeof unbindEditorK
 export const OPEN_EDITOR = 'Open editor'
 
 export const openEditor = (options: Partial<OpenEditorOptions> = {}) =>
-  action(OPEN_EDITOR, { isReadOnly: false, type: 'project', ...options } as OpenEditorOptions)
+  action(OPEN_EDITOR, { isReadOnly: false, type: PreviewType.PROJECT, ...options } as OpenEditorOptions)
 
 export type OpenEditorAction = ReturnType<typeof openEditor>
 
@@ -204,3 +206,31 @@ export const TOGGLE_MULTISELECTION = 'Toggle multiselection'
 export const toggleMultiselection = (enabled: boolean) => action(TOGGLE_MULTISELECTION, { enabled })
 
 export type ToggleMultiselectionAction = ReturnType<typeof toggleMultiselection>
+
+// Update items
+export const SET_ITEMS = 'Set items'
+
+export const setItems = (items: Item[]) => action(SET_ITEMS, { items })
+
+export type SetItemsAction = ReturnType<typeof setItems>
+
+// Set body shape
+export const SET_BODY_SHAPE = 'Set body shape'
+
+export const setBodyShape = (bodyShape: WearableBodyShape) => action(SET_BODY_SHAPE, { bodyShape })
+
+export type SetBodyShapeAction = ReturnType<typeof setBodyShape>
+
+// Set avatar animation
+export const SET_AVATAR_ANIMATION = 'Set avatar animation'
+
+export const setAvatarAnimation = (animation: AvatarAnimation) => action(SET_AVATAR_ANIMATION, { animation })
+
+export type SetAvatarAnimationAction = ReturnType<typeof setAvatarAnimation>
+
+// Update wearables
+export const UPDATE_AVATAR = 'Update avatar'
+
+export const updateAvatar = (wearables: Wearable[], animation?: AvatarAnimation) => action(UPDATE_AVATAR, { wearables, animation })
+
+export type UpdateAvatarAction = ReturnType<typeof updateAvatar>

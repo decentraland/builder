@@ -96,6 +96,10 @@
   height: 48px;
 }
 
+.TransactionDetail .left .image .CollectionImage .ItemImage:not(:first-child) {
+  display: none;
+}
+
 .TransactionDetail .left .image .Profile.blockie.huge .dcl.blockie {
   margin: 0px;
 }

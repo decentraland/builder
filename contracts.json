@@ -8,6 +8,14 @@
     "EstateRegistry": {
       "source": "files",
       "abiFile": "./src/contracts/EstateRegistry.json"
+    },
+    "ERC721CollectionFactoryV2": {
+      "source": "files",
+      "abiFile": "./src/contracts/ERC721CollectionFactoryV2.json"
+    },
+    "ERC721CollectionV2": {
+      "source": "files",
+      "abiFile": "./src/contracts/ERC721CollectionV2.json"
     }
   }
 }

@@ -1,0 +1,38 @@
+.ItemBadge {
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+.ItemBadge.normal {
+  width: 32px;
+  height: 32px;
+}
+
+.ItemBadge.small {
+  width: 20px;
+  height: 20px;
+}
+
+.ItemBadge:before {
+  content: ' ';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  filter: invert(100%);
+}
+
+.ItemBadge.male:before {
+  background-image: url('../../images/male.svg');
+}
+
+.ItemBadge.female:before {
+  background-image: url('../../images/female.svg');
+  background-size: 40%;
+}
+
+.ItemBadge.unisex:before {
+  background-image: url('../../images/unisex.svg');
+}

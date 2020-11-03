@@ -1,0 +1,44 @@
+.ItemCard .image-wrapper {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.ItemCard .image {
+  margin: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.ItemCard .content {
+  background: none;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.ItemCard .content .text {
+  font-size: 17px;
+  max-width: 248px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemCard .subtitle {
+  margin-top: 5px;
+  color: var(--secondary-text);
+}
+
+.ui.cards > .ui.card.link.ItemCard.is-dragging {
+  transform: translateY(0px);
+  border: 1px solid var(--primary) !important;
+}
+
+.ItemCard.is-dragging .ItemImage {
+  border: 1px solid var(--primary);
+}
+
+@media (max-width: 1200px) {
+  .ItemCard .content .text {
+    max-width: 215px;
+  }
+}

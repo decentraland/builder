@@ -1,0 +1,21 @@
+.EmptyManager {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #16141a;
+}
+
+.EmptyManager.ui.form .dcl.field {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+.EmptyManager .dcl.field .ui.input.rounded > input {
+  border: none;
+}
+
+.EmptyManager .ui.button.basic.action,
+.EmptyManager .action {
+  font-size: 13px;
+  margin-left: 16px;
+}

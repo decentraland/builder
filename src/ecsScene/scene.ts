@@ -1,6 +1,18 @@
 // tslint:disable
 import { EventEmitter } from 'events'
-import { engine, GLTFShape, Transform, Entity, Component, NFTShape, IEntity } from 'decentraland-ecs'
+import {
+  engine,
+  GLTFShape,
+  Transform,
+  Entity,
+  Component,
+  NFTShape,
+  IEntity,
+  Vector3,
+  AvatarShape,
+  Color4,
+  Wearable
+} from 'decentraland-ecs'
 import * as ECS from 'decentraland-ecs'
 import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
@@ -8,6 +20,7 @@ import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
+import { BODY_SHAPE_CATEGORY, WearableBodyShape } from 'modules/item/types'
 const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface
 
@@ -87,6 +100,26 @@ function getScriptInstance(assetId: string) {
             spawn() {}
           }
         })
+}
+
+// avatar
+let avatar: Entity | null = null
+function getAvatar(): Entity {
+  if (!avatar) {
+    // create avatar
+    avatar = new Entity()
+    avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
+    const avatarShape = new AvatarShape()
+    avatarShape.bodyShape = 'dcl://base-avatars/BaseMale'
+    avatarShape.skinColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+    avatarShape.hairColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+    avatarShape.eyeColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
+    avatarShape.name = 'Builder Avatar'
+    avatarShape.wearables = []
+    avatar.addComponent(avatarShape)
+    engine.addEntity(avatar)
+  }
+  return avatar
 }
 
 async function handleExternalAction(message: { type: string; payload: Record<string, any> }) {
@@ -174,6 +207,19 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       for (const entityId in engine.entities) {
         engine.removeEntity(engine.entities[entityId])
       }
+      break
+    }
+
+    case 'Update avatar': {
+      const wearables: Wearable[] = message.payload.wearables
+      const avatar = getAvatar()
+      const avatarShape = avatar.getComponent(AvatarShape)
+      const bodyShape = wearables.find(wearable => wearable.category === BODY_SHAPE_CATEGORY)
+      const otherWearables = wearables.filter(wearable => wearable.category !== BODY_SHAPE_CATEGORY)
+      avatarShape.bodyShape = bodyShape ? bodyShape.id : WearableBodyShape.MALE
+      avatarShape.wearables = otherWearables.map(wearable => wearable.id)
+      avatarShape.expressionTriggerId = message.payload.animation === 'idle' ? 'Idle' : message.payload.animation // the 'idle' animation is the only one that is capitalized :shrug:
+      avatarShape.expressionTriggerTimestamp = Date.now()
       break
     }
   }

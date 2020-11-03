@@ -1,9 +1,7 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { env } from 'decentraland-commons'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
-  Page,
-  Tabs,
   Grid,
   Blockie,
   Mana,
@@ -20,16 +18,15 @@ import {
 import { isMobile } from 'decentraland-dapps/dist/lib/utils'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import Navbar from 'components/Navbar'
-import Footer from 'components/Footer'
 import Profile from 'components/Profile'
-import { locations } from 'routing/locations'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import SignInRequired from 'components/SignInRequired'
 import { shorten, isValid } from 'lib/address'
+import { LandType } from 'modules/land/types'
 import { Props, State } from './SettingsPage.types'
 import './SettingsPage.css'
-import { LandType } from 'modules/land/types'
 
-const BUY_MANA_URL = process.env.REACT_APP_BUY_MANA_URL
+const BUY_MANA_URL = env.get('REACT_APP_BUY_MANA_URL', '')
 
 export default class SettingsPage extends React.PureComponent<Props, State> {
   timeoutId: NodeJS.Timer | null = null
@@ -183,20 +180,7 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
   }
 
   renderLogin() {
-    return (
-      <div className="center">
-        <p>
-          {
-            <T
-              id="wallet.sign_in_required"
-              values={{
-                sign_in: <Link to={locations.signIn()}>{t('wallet.sign_in')}</Link>
-              }}
-            />
-          }
-        </p>
-      </div>
-    )
+    return <SignInRequired />
   }
 
   renderLoading() {
@@ -208,21 +192,6 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isLoggingIn, isLoggedIn, onNavigate } = this.props
-    return (
-      <>
-        <Navbar isFullscreen />
-        <Tabs>
-          <Tabs.Tab onClick={() => onNavigate(locations.root())}>{t('navigation.scenes')}</Tabs.Tab>
-          <Tabs.Tab onClick={() => onNavigate(locations.land())}>{t('navigation.land')}</Tabs.Tab>
-        </Tabs>
-        <Page className="SettingsPage">
-          {isLoggingIn ? this.renderLoading() : null}
-          {!isLoggingIn && !isLoggedIn ? this.renderLogin() : null}
-          {!isLoggingIn && isLoggedIn ? this.renderPage() : null}
-        </Page>
-        <Footer />
-      </>
-    )
+    return <LoggedInDetailPage className="SettingsPage">{this.renderPage()}</LoggedInDetailPage>
   }
 }

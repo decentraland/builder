@@ -1,0 +1,7 @@
+.CollectionBadge {
+  width: 10px;
+  height: 10px;
+  background-color: #3fff46;
+  border-radius: 100px;
+  display: inline-block;
+}

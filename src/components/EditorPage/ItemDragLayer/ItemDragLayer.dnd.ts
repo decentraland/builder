@@ -1,7 +1,7 @@
 import { DragLayerCollector, XYCoord } from 'react-dnd'
 
 import { Asset } from 'modules/asset/types'
-import { DragObject } from 'components/AssetCard/AssetCard.dnd'
+import { AssetCardDragObject } from 'components/AssetCard/AssetCard.dnd'
 
 export type CollectedProps = {
   currentOffset: XYCoord | null
@@ -10,7 +10,7 @@ export type CollectedProps = {
 }
 
 export const collect: DragLayerCollector<{}, CollectedProps> = monitor => {
-  const item: DragObject | null = monitor.getItem()
+  const item: AssetCardDragObject | null = monitor.getItem()
   return {
     currentOffset: monitor.getClientOffset(),
     isDragging: monitor.isDragging(),

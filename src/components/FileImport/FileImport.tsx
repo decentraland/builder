@@ -17,9 +17,9 @@ export default class FileImport<T> extends React.Component<Props<T>> {
       <div {...getRootProps()} className={classes}>
         <input {...getInputProps()} />
 
-        {items.length > 0 && renderFiles(items)}
+        {items && items.length > 0 && renderFiles && renderFiles(items)}
 
-        {items.length === 0 && (
+        {(!items || items.length === 0) && renderAction && (
           <span className="cta">
             <div className="image" />
             <div>{renderAction(open)}</div>

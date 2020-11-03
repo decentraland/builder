@@ -1,0 +1,51 @@
+.ItemDetailPage .page-header .header-row {
+  width: 100%;
+}
+
+.ItemDetailPage .page-header .name {
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ItemDetailPage .actions .ui.dropdown {
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+}
+
+.ItemDetailPage .actions .ui.dropdown .icon.ellipsis {
+  margin: auto !important;
+}
+
+.ItemDetailPage .actions .ui.button.primary.compact {
+  border: 1.5px solid var(--primary);
+}
+
+.ItemDetailPage .Notice {
+  margin-bottom: 32px;
+}
+
+.ItemDetailPage .item-data {
+  display: flex;
+}
+
+.ItemDetailPage .sections {
+  margin-left: 48px;
+}
+
+.ItemDetailPage .item-data .image-wrapper {
+  width: 256px;
+  height: 256px;
+}
+
+.ItemDetailPage .item-data .subtitle {
+  color: var(--secondary-text);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.ItemDetailPage .item-data .value {
+  margin-top: 5px;
+  font-size: 21px;
+  text-transform: capitalize;
+}

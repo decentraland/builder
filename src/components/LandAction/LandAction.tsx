@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { Row, Back, Column, Narrow, Header, Section } from 'decentraland-ui'
+import { Row, Column, Narrow, Header, Section } from 'decentraland-ui'
 import { Atlas } from 'components/Atlas'
-import { Props } from './LandAction.types'
+import Back from 'components/Back'
 import { locations } from 'routing/locations'
+import { Props } from './LandAction.types'
 import './LandAction.css'
 
 export default class LandAction extends React.PureComponent<Props> {

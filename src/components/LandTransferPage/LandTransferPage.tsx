@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Field, InputOnChangeData, Form, Row, Button, Section } from 'decentraland-ui'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LandAction from 'components/LandAction'
 import LandProviderPage from 'components/LandProviderPage'
-import { Props, State } from './LandTransferPage.types'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { RoleType } from 'modules/land/types'
 import { locations } from 'routing/locations'
 import { isValid, isEqual } from 'lib/address'
+import { Props, State } from './LandTransferPage.types'
 import './LandTransferPage.css'
 
 export default class LandTransferPage extends React.PureComponent<Props, State> {
@@ -58,7 +58,7 @@ export default class LandTransferPage extends React.PureComponent<Props, State> 
                   <Button
                     type="submit"
                     primary
-                    disabled={!address || !isValid || land.role !== RoleType.OWNER || land.owner === address.toLowerCase()}
+                    disabled={!address || !isValid || land.role !== RoleType.OWNER || isEqual(land.owner, address)}
                   >
                     {t('global.submit')}
                   </Button>

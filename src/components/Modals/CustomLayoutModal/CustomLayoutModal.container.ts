@@ -15,7 +15,7 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
       createProjectFromTemplate(template, {
         title: name,
         description,
-        onSuccess: project => dispatch(push(locations.editor(project.id)))
+        onSuccess: project => dispatch(push(locations.sceneEditor(project.id)))
       })
     )
 })

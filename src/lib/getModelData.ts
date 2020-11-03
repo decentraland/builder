@@ -10,27 +10,34 @@ import {
   BufferGeometry,
   DirectionalLight,
   AmbientLight,
-  RectAreaLight
+  RectAreaLight,
+  MeshStandardMaterial
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { SceneMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/scene/types'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
 
+export enum ThumbnailType {
+  DEFAULT='default',
+  TOP='top',
+  FRONT='front'
+}
+
 type Options = {
   width: number
   height: number
   mappings?: Record<string, string>
-  thumbnailType: '3d' | '2d'
+  thumbnailType: ThumbnailType
 }
 
 const defaults: Options = {
   width: 512,
   height: 512,
-  thumbnailType: '3d'
+  thumbnailType: ThumbnailType.DEFAULT
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
@@ -82,6 +89,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
             colliderTriangles += geometry.faces.length
           }
           node.visible = false
+        } else if (node.material instanceof MeshStandardMaterial && node.material.name.toLowerCase().includes('hair_mat')) {
+          node.visible = false
         }
       }
     })
@@ -99,12 +108,22 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       .length()
     root.scale.multiplyScalar(1 / size)
     const center = new Box3().setFromObject(root).getCenter(new Vector3())
-    if (thumbnailType === '3d') {
-      camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
-      camera.position.set(1, 1, 1)
-    } else {
-      camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
-      camera.position.set(0, 1, 0)
+    switch (thumbnailType) {
+      case ThumbnailType.FRONT: {
+        camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
+        camera.position.set(center.x + 0, center.y + 0, center.z + 1)
+        break
+      }
+      case ThumbnailType.TOP: {
+        camera = new OrthographicCamera(-0.25, 0.25, 0.25, -0.25, 0, 1000)
+        camera.position.set(center.x + 0, center.y + 1, center.z + 0)
+        break
+      }
+      default: {
+        camera = new OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0, 1000)
+        camera.position.set(center.x + 1, center.y + 1, center.z + 1)
+        break
+      }
     }
     camera.lookAt(center)
     camera.updateProjectionMatrix()
@@ -113,20 +132,32 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     const ambient = new AmbientLight(0xffffff, 1.2)
     scene.add(ambient)
 
-    if (thumbnailType === '3d') {
-      const directional = new DirectionalLight(0xffffff, 0.8)
-      directional.position.set(1, 1, -1)
-      directional.lookAt(center)
-      scene.add(directional)
-      const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
-      rectarea.position.set(-3, 0, 0)
-      rectarea.lookAt(center)
-      scene.add(rectarea)
-    } else {
-      const directional = new DirectionalLight(0xffffff, 1)
-      directional.position.set(0, 1, 0)
-      directional.lookAt(center)
-      scene.add(directional)
+    switch (thumbnailType) {
+      case ThumbnailType.FRONT: {
+        const directional = new DirectionalLight(0xffffff, 0.8)
+        directional.position.set(center.x + 1, center.y + 1, center.z)
+        directional.lookAt(center)
+        scene.add(directional)
+        break
+      }
+      case ThumbnailType.FRONT: {
+        const directional = new DirectionalLight(0xffffff, 1)
+        directional.position.set(center.x + 0, center.y + 1, center.z + 0)
+        directional.lookAt(center)
+        scene.add(directional)
+        break
+      }
+      default: {
+        const directional = new DirectionalLight(0xffffff, 0.8)
+        directional.position.set(center.x + 1, center.y + 1, center.z - 1)
+        directional.lookAt(center)
+        scene.add(directional)
+        const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
+        rectarea.position.set(-3, 0, 0)
+        rectarea.lookAt(center)
+        scene.add(rectarea)
+        break
+      }
     }
 
     // render scenes
@@ -136,7 +167,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     document.body.removeChild(renderer.domElement)
 
     // return data
-    const info: SceneMetrics = {
+    const info: ModelMetrics = {
       triangles: renderer.info.render.triangles + colliderTriangles,
       materials,
       textures: renderer.info.memory.textures,
@@ -149,7 +180,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
     return { info, image }
   } catch (e) {
     // could not render model, default to 0 metrics and default thumnail
-    const info: SceneMetrics = {
+    const info: ModelMetrics = {
       triangles: 0,
       materials: 0,
       textures: 0,
