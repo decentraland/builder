@@ -1,23 +1,16 @@
 import { Land } from 'modules/land/types'
-import { ENSState, ENSError } from 'modules/ens/reducer'
+import { ENS, ENSError } from 'modules/ens/types'
 
 export type Props = {
+  ens: ENS
   land: Land
   isLoading: boolean
   isWaitingTxSetContent: boolean
   isWaitingTxSetResolver: boolean
-  ens: ENSState
-  selectedName: string
+  selectedSubdomain: string
   error: ENSError | null
-  onSetENSResolver: (ens: string, land: Land) => void
+  onSetENSResolver: (ens: string) => void
   onSetENSContent: (ens: string, land: Land) => void
   onRestartForm: () => void
   onNavigate: (path: string) => void
-}
-
-export type State = {
-  isSetContentDone: boolean
-  isSetResolverDone: boolean
-  isSetContentDisabled: boolean
-  isSetResolverDisabled: boolean
 }

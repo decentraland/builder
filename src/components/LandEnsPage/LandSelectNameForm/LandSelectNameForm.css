@@ -30,13 +30,20 @@
 .LandSelectNameForm.ui.form .dcl.field .ui.input.is-revokable input {
   padding-right: 86px;
 }
+
 .LandSelectNameForm .SelectNames {
   width: 100%;
 }
+
+.LandSelectNameForm .SelectNames .ui.dropdown {
+  padding-left: 0;
+}
+
 .LandSelectNameForm .selectMessage {
   margin-top: 8px;
   margin-bottom: 48px;
 }
+
 .LandSelectNameForm p.emptyOptions {
   padding-bottom: 20px;
 }

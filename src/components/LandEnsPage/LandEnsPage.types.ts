@@ -1,18 +1,17 @@
 import { Dispatch } from 'redux'
 import { fetchENSRequest, setENSContentRequest, setENSResolverRequest, fetchDomainListRequest } from 'modules/ens/actions'
-import { ENSState, ENSError } from 'modules/ens/reducer'
+import { ENS, ENSError } from 'modules/ens/types'
 
 export type State = {
-  selectedName: string
+  selectedSubdomain: string
 }
 
 export type Props = {
-  subdomainList: string[]
-  error: ENSError | null
+  ensList: ENS[]
   isLoading: boolean
+  error: ENSError | null
   isWaitingTxSetContent: boolean
   isWaitingTxSetResolver: boolean
-  ens: ENSState
   onSetENSResolver: typeof setENSResolverRequest
   onSetENSContent: typeof setENSContentRequest
   onFetchENS: typeof fetchENSRequest
@@ -20,9 +19,6 @@ export type Props = {
   onNavigate: (path: string) => void
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'subdomainList' | 'error' | 'isLoading' | 'isWaitingTxSetContent' | 'isWaitingTxSetResolver' | 'ens'
->
+export type MapStateProps = Pick<Props, 'ensList' | 'isLoading' | 'error' | 'isWaitingTxSetContent' | 'isWaitingTxSetResolver'>
 export type MapDispatchProps = Pick<Props, 'onSetENSResolver' | 'onSetENSContent' | 'onFetchENS' | 'onFetchDomainList' | 'onNavigate'>
 export type MapDispatch = Dispatch
