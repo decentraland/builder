@@ -28,6 +28,7 @@ import { tileReducer as tile } from 'modules/tile/reducer'
 import { itemReducer as item } from 'modules/item/reducer'
 import { collectionReducer as collection } from 'modules/collection/reducer'
 import { locationReducer as location } from 'modules/location/reducer'
+import { statsReducer as stats } from 'modules/stats/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -57,6 +58,7 @@ export function createRootReducer(history: History) {
       item,
       collection,
       location,
+      stats,
       router: connectRouter(history)
     })
   )

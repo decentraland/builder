@@ -115,3 +115,10 @@ export const getEmptyTiles = createSelector<RootState, Record<string, Deployment
     return result
   }
 )
+
+export const getDeploymentsByBase = createSelector<RootState, DeploymentState['data'], Record<string, Deployment>>(getData, deployments =>
+  Object.values(deployments).reduce((obj, deployment) => {
+    obj[deployment.base] = deployment
+    return obj
+  }, {} as Record<string, Deployment>)
+)
