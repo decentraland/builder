@@ -29,7 +29,7 @@
 }
 
 .CollectionItem .info {
-  width: 100%;
+  width: calc(100% - 80px);
 }
 
 .CollectionItem .name-wrapper {
