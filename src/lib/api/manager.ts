@@ -109,14 +109,18 @@ const fromEstate = (estate: EstateFields, role: RoleType) => {
 }
 
 export class ManagerAPI {
-  fetchNames = async (_address: string): Promise<{}> => {
+  fetchNames = async (_address: string, _offset: number, limit: number): Promise<{}> => {
     const result = await new Promise(r => {
       setTimeout(() => {
-        const result = []
+        let result = []
         for (let i = 0; i < 100; i++) {
-          result.push({ name: `data ${i}`, beingAssigned: true, assignedTo: 'me?' })
+          const beingAssigned = Math.random() > 0.5 ? true : false
+          result.push({ id: 0, name: `data ${i}`, beingAssigned, assignedTo: 'me?' })
         }
-        r(result)
+        const total = Math.ceil(result.length / limit)
+        result = result.sort(() => Math.random() - 0.5)
+        const names = result.map((name, index) => ({ ...name, id: index }))
+        r({ names, total })
       }, 1000)
     })
     return result

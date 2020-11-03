@@ -13,12 +13,14 @@ export type NamesState = {
   data: Record<string, Name[]>
   loading: LoadingState
   error: string | null
+  total: number
 }
 
 const INITIAL_STATE: NamesState = {
   data: {},
   loading: [],
-  error: null
+  error: null,
+  total: 1
 }
 
 export type NamesReducerAction = FetchNamesRequestAction | FetchNamesSuccessAction | FetchNamesFailureAction
@@ -32,9 +34,10 @@ export function namesReducer(state: NamesState = INITIAL_STATE, action: NamesRed
       }
     }
     case FETCH_NAMES_SUCCESS: {
-      const { address, names } = action.payload
+      const { address, names, total } = action.payload
       return {
         ...state,
+        total,
         data: {
           ...state.data,
           [address]: names

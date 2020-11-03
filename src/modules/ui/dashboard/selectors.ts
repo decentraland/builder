@@ -19,6 +19,24 @@ export const didDismissSyncedToast = (state: RootState) => getState(state).didDi
 
 export const didDismissSignInToast = (state: RootState) => getState(state).didDismissSignInToast
 
+export const getTotalPagesNames = (_state: RootState) => Math.max(Math.ceil(100 / PAGE_SIZE), 1)
+
+export const getPageNames = createSelector<RootState, Location, number, number>(
+  state => getLocation<RootState>(state),
+  getTotalPagesNames,
+  (location, totalPages) => {
+    const params = new URLSearchParams(location.search)
+    let page = parseInt(params.get('page')!, 10)
+    if (!page || page < 1) {
+      page = 1
+    }
+    if (page > totalPages) {
+      page = totalPages
+    }
+    return page
+  }
+)
+
 export const getTotalPages = createSelector<RootState, DataByKey<Project>, number>(getUserProjects, projects =>
   Math.max(Math.ceil(Object.keys(projects).length / PAGE_SIZE), 1)
 )
