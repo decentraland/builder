@@ -1,0 +1,54 @@
+.MintableItem {
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: var(--dark-gray);
+  border-radius: 8px;
+}
+
+.MintableItem .item-header {
+  display: flex;
+  align-items: center;
+}
+
+.MintableItem .ItemImage {
+  width: 36px;
+  height: 36px;
+}
+
+.MintableItem .ItemImage,
+.MintableItem .stock {
+  margin-right: 16px;
+}
+
+.MintableItem .dcl.section {
+  margin-top: 16px;
+}
+
+.MintableItem .mint {
+  display: flex;
+  align-items: center;
+}
+
+.MintableItem .mint .dcl.field.address {
+  flex: 1 1 auto;
+  margin-right: 10px;
+}
+
+.MintableItem .mint .dcl.field,
+.MintableItem .mint.dcl.section:last-child {
+  margin-bottom: 0;
+}
+
+.MintableItem .mint .dcl.field {
+  min-width: 128px;
+}
+
+.MintableItem .mint .remove-item {
+  margin-left: 12px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+.MintableItem .mint:hover .remove-item {
+  opacity: 1;
+}

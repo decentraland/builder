@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { isLoading } from 'decentraland-dapps/dist/modules/loading/selectors'
 
 import ItemDrawer from './ItemDrawer'
 import { Props } from './SideBar.types'
@@ -19,6 +18,7 @@ export default class SideBar extends React.PureComponent<Props> {
   }
 
   render() {
+    const { isLoading } = this.props
     return <div className={'SideBar ' + (isLoading ? 'loading' : '')}>{this.renderView()}</div>
   }
 }

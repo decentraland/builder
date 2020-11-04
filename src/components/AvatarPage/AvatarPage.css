@@ -1,0 +1,133 @@
+.AvatarPage .ui.cards {
+  margin: 0px;
+}
+
+.AvatarPage .ui.cards > .empty {
+  margin-top: 28px;
+  padding: 112px 0;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  justify-content: center;
+  color: var(--secondary-text);
+  text-align: center;
+  line-height: 28px;
+  font-size: 17px;
+}
+
+.AvatarPage .ui.cards > .empty .header.title {
+  margin: 0;
+}
+
+.AvatarPage .ui.cards > .empty .empty-description {
+  margin: 8px auto 34px;
+  width: 500px;
+}
+
+.AvatarPage .ui.cards > .empty .create-new-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.AvatarPage .ui.cards > .empty .create-new {
+  width: 240px;
+  height: 204px;
+  position: relative;
+  background-color: rgba(var(--bluish-steel-raw), 0.16);
+  border-radius: 8px;
+  background-position: 50% 35%;
+  cursor: pointer;
+}
+
+.AvatarPage .ui.cards > .empty .create-new:first-child {
+  margin-right: 24px;
+}
+
+.AvatarPage .ui.cards > .empty .create-new > .text {
+  position: absolute;
+  flex: 1 1;
+  color: #fff;
+  bottom: 31px;
+  width: 100%;
+}
+
+.AvatarPage .ui.cards > .empty .create-new-item {
+  background-image: url('../../images/hat.svg');
+  background-repeat: no-repeat;
+}
+.AvatarPage .ui.cards > .empty .create-new-collection {
+  background-image: url('../../images/folder-hat.svg');
+  background-repeat: no-repeat;
+}
+
+.AvatarPage .ui.cards .ui.card {
+  width: 248px;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.AvatarPage .card .CollectionImage {
+  height: 248px;
+}
+
+.AvatarPage .card .image-wrapper {
+  height: 248px;
+  padding: 15px;
+}
+
+.AvatarPage .filters .dcl.row.actions .ui.dropdown .ui.button {
+  width: 16px;
+  height: 16px;
+  box-sizing: content-box;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: solid 1px var(--gray);
+}
+
+.AvatarPage .filters .dcl.row.actions .ui.button.open-editor {
+  padding: 6px 13px;
+}
+
+.AvatarPage .filters .dcl.row.actions .ui.button.open-editor:hover {
+  transform: translateY(0px);
+}
+
+.AvatarPage .is-card {
+  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+  box-shadow: none;
+  transform: translateY(0px);
+  margin-top: 20px;
+  margin-right: 24px;
+}
+
+.AvatarPage .is-card:nth-child(4n) {
+  margin-right: 0px;
+}
+
+.AvatarPage .is-card:hover {
+  transform: translateY(-4px);
+}
+
+.AvatarPage .is-card .is-image {
+  transition: box-shadow 0.2s ease-in-out;
+  height: 248px;
+  width: 248px;
+  overflow: hidden;
+  border-radius: 8px !important;
+}
+
+.AvatarPage .is-card:hover .is-image {
+  box-shadow: var(--shadow-2);
+}
+
+.AvatarPage .is-card .is-image .is-image {
+  border-radius: 0px !important;
+  box-shadow: none;
+}
+
+@media (max-width: 1200px) {
+  .AvatarPage .is-card .is-image {
+    width: 215px;
+    height: 215px;
+  }
+}

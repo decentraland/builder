@@ -67,7 +67,7 @@
 }
 
 .PoolCard .component-list {
-  color: var(--smart-grey-contrast);
+  color: var(--light-gray);
   font-weight: 600;
   display: flex;
   font-size: 13px;

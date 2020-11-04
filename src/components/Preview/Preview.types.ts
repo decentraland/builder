@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { Wearable } from 'decentraland-ecs'
 import { Vector3 } from 'modules/common/types'
 import {
   UpdateEditorAction,
@@ -7,7 +8,8 @@ import {
   openEditor,
   TogglePreviewAction,
   CloseEditorAction,
-  SetScriptUrlAction
+  SetScriptUrlAction,
+  UpdateAvatarAction
 } from 'modules/editor/actions'
 import { UnityKeyboardEvent, OpenEditorOptions } from 'modules/editor/types'
 import { dropItem, DropItemAction } from 'modules/scene/actions'
@@ -21,7 +23,9 @@ export type Editor = {
   on: (event: string, listener: (...args: any[]) => void) => void
   off: (event: string, listener: (...args: any[]) => void) => void
   handleMessage: (msg: { type: 'update'; payload: any }) => void
-  sendExternalAction: (action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction | SetScriptUrlAction) => void
+  sendExternalAction: (
+    action: UpdateEditorAction | TogglePreviewAction | CloseEditorAction | SetScriptUrlAction | UpdateAvatarAction
+  ) => void
   setPlayMode: (enabled: boolean) => void
   setCameraZoomDelta: (delta: number) => void
   setCameraRotation: (alpha: number, beta: number) => void
@@ -36,6 +40,18 @@ export type Editor = {
   setGridResolution: (position: number, rotation: number, scale: number) => void
   getLoadingEntities: () => string[] | null
   onKeyDown: (key: UnityKeyboardEvent) => void
+  addWearablesToCatalog: (wearables: Wearable[]) => void
+  removeWearablesFromCatalog: (wearableIds: string[]) => void
+  setBuilderConfiguration: (config: {
+    camera: {
+      zoomMin: number
+      zoomMax: number
+      zoomDefault: number
+    }
+    environment: {
+      disableFloor: boolean
+    }
+  }) => void
 }
 
 export type EditorWindow = typeof window & {

@@ -1,0 +1,10 @@
+.ItemDropdown .selected-item > img {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+.ItemDropdown .no-items {
+  pointer-events: none;
+  color: var(--secondary-text);
+}

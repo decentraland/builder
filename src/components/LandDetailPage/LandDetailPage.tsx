@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Row, Back, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
+import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { LandType, Land, RoleType } from 'modules/land/types'
@@ -8,7 +7,8 @@ import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
-import Chip from 'components/Chip'
+import { Deployment } from 'modules/deployment/types'
+import Back from 'components/Back'
 import Profile from 'components/Profile'
 import { Deployment } from 'modules/deployment/types'
 import Scene from './Scene'
@@ -133,7 +133,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                         {t('land_detail_page.transfer')}
                       </Button>
                       <Button basic onClick={() => onNavigate(locations.landEdit(land.id))}>
-                        {t('land_detail_page.edit')}
+                        {t('global.edit')}
                       </Button>
                       <Dropdown
                         trigger={
@@ -145,6 +145,13 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                         direction="left"
                       >
                         <Dropdown.Menu>
+                          <Dropdown.Item
+                            text={t('land_detail_page.set_operator')}
+                            onClick={() => onNavigate(locations.landOperator(land.id))}
+                          />
+                          {env.get('REACT_APP_FF_ENS') ? (
+                            <Dropdown.Item text={t('land_detail_page.set_link')} onClick={() => onNavigate(locations.landEns(land.id))} />
+                          ) : null}
                           {canBuildEstate ? (
                             <>
                               <Dropdown.Item

@@ -12,14 +12,13 @@ import {
   Column,
   Narrow,
   Section,
-  Header,
-  Back
+  Header
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-// import Ad from 'decentraland-ad/lib/Ad/Ad'
 
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
+import Back from 'components/Back'
 import { PoolsRequestFilters, SortBy } from 'modules/pool/types'
 
 import { Props, State, filterAttributes } from './SceneListPage.types'
@@ -41,8 +40,9 @@ export default class SceneListPage extends React.PureComponent<Props, State> {
 
   getFilters(props = this.props) {
     return filterAttributes.reduce((filters, key) => {
-      if (props[key] !== undefined) {
-        filters[key] = props[key]
+      const value = props[key]
+      if (value !== undefined) {
+        filters[key] = value as any
       }
       return filters
     }, {} as PoolsRequestFilters)

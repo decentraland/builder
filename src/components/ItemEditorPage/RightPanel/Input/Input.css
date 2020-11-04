@@ -1,0 +1,29 @@
+.Input {
+  height: 38px;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0px 12px;
+  margin-bottom: 8px;
+}
+
+.Input.is-disabled {
+  opacity: 0.45;
+}
+
+.Input .label {
+  flex: none;
+  margin-right: 20px;
+  color: var(--secondary-text);
+}
+
+.Input input {
+  flex: 1 0 auto;
+  text-align: right;
+  background: none;
+  color: var(--text);
+  appearance: none;
+  border: none;
+  outline: none;
+}

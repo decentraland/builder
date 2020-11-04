@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 import { clearTransactions } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './ActivityPage.types'
-import ActivityPage from './ActivityPage'
 import { getTransactions } from 'modules/transaction/selectors'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { push } from 'connected-react-router'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './ActivityPage.types'
+import ActivityPage from './ActivityPage'
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoggedIn: isLoggedIn(state),

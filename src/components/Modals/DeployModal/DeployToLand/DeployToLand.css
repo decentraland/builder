@@ -76,7 +76,7 @@ p.DeployToLand {
 
 .DeployToLand.confirmation .details .detail .label {
   text-transform: uppercase;
-  color: var(--smart-grey-contrast);
+  color: var(--light-gray);
   font-size: 13px;
   display: block;
   margin-bottom: 10px;

@@ -1,4 +1,8 @@
 {
+  "add_existing_item_modal": {
+    "title": "Add Existing Item",
+    "subtitle": "Select an item that is not part of a collection yet"
+  },
   "asset_pack": {
     "confirm_delete": {
       "action": "Delete Asset Pack",
@@ -109,6 +113,51 @@
     "top_banner_action": "Learn more.",
     "top_banner_left": "September 16-30 - Intense online creation with over $250k USD in prizes to share.",
     "top_banner_right": " "
+  },
+  "body_shapes": {
+    "unisex": "Unisex",
+    "male": "Male",
+    "female": "Female",
+    "null": "None"
+  },
+  "avatar_animations": {
+    "idle": "Idle",
+    "wave": "Wave",
+    "fistpump": "Fistpump",
+    "robot": "Dance",
+    "raiseHand": "Raise Hand",
+    "clap": "Clap",
+    "money": "Money",
+    "kiss": "Kiss"
+  },
+  "create_collection_modal": {
+    "title": "New Collection",
+    "subtitle": "Give a name to your new collection",
+    "label": "Name",
+    "placeholder": "My collection"
+  },
+  "model_metrics": {
+    "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
+    "materials": "{count} {count, plural, one {material} other {materials}}",
+    "textures": "{count} {count, plural, one {texture} other {textures}}"
+  },
+  "create_item_modal": {
+    "title": "New Item",
+    "add_representation": "Add {bodyShape} Repesentation",
+    "name_label": "Add a name to your new item",
+    "category_label": "What's the category of this item?",
+    "category_placeholder": "Select a category",
+    "rarity_label": "How rare is this item?",
+    "rarity_placeholder": "Select a rarity",
+    "representation_label": "Which body shape does it represent?",
+    "existing_item": "Is this part of an existing item?",
+    "pick_item": "Pick an item that doesn't have a {bodyShape}",
+    "adding_representation": "This will be added as {bodyShape} for the following item"
+  },
+  "edit_collection_name_modal": {
+    "title": "Edit Collection Name",
+    "subtitle": "Set a new name for this collection",
+    "submit": "Save"
   },
   "custom_layout_modal": {
     "subtitle_one": "You can create custom layouts for your Scene.",
@@ -307,11 +356,17 @@
     "title": "Download Scene"
   },
   "global": {
+<<<<<<< HEAD
     "approved_tx": "Approved",
+=======
+    "approved_tx": "Done",
+>>>>>>> master
     "back": "back",
     "blog_post": "blog post",
+    "amount": "Amount",
     "cancel": "Cancel",
     "confirm": "Confirm",
+    "add": "Add",
     "continue": "Continue",
     "create": "Create",
     "dismiss": "Dismiss",
@@ -326,6 +381,8 @@
     "loading": "Loading",
     "new": "New",
     "new_scene": "New scene",
+    "delete": "Delete",
+    "edit": "Edit",
     "next": "next",
     "not_found": "Not found",
     "optional": "optional",
@@ -337,6 +394,7 @@
     "send": "Send",
     "send_tx": "Send Tx",
     "share": "Share",
+    "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
     "submit": "Submit",
@@ -350,11 +408,19 @@
     "revoke": "Revoke",
     "parcel_plural": "parcels",
     "estate_plural": "estates",
-    "settings": "Settings"
+    "settings": "Settings",
+    "yes": "Yes",
+    "no": "No",
+    "name": "Name",
+    "category": "Category",
+    "rarity": "Rarity",
+    "published": "Published",
+    "description": "Description"
   },
   "navigation": {
     "scenes": "Scenes",
-    "land": "Land"
+    "land": "Land",
+    "avatar": "Wearables"
   },
   "list": {
     "two": "{first} and {second}",
@@ -408,6 +474,10 @@
     "search": "Search assets",
     "title": "Asset Packs",
     "search_items": "Search items"
+  },
+  "item_dropdown": {
+    "placeholder": "Select an item",
+    "no_items": "No valid items found"
   },
   "layout_picker": {
     "columns": "columns",
@@ -474,16 +544,18 @@
     "operators": "Operators",
     "type": "Type",
     "online_scenes": "Online Scenes",
-    "sign_in": "You need to {link} to access this page.",
-    "sign_in_link": "Sign In",
     "none": "None",
-    "results": "{count} {count, plural, one {result} other {results}}"
+    "results": "{count} {count, plural, one {result} other {results}}",
+    "owner_permission": "These are lands you don't own, but the owner gave you permission to use them."
   },
   "land_detail_page": {
     "transfer": "Transfer",
-    "edit": "Edit",
     "set_operator": "Set Operator",
+<<<<<<< HEAD
     "assign_name": "Assign name",
+=======
+    "set_link": "Set Link",
+>>>>>>> master
     "build_estate": "Build Estate",
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
@@ -499,17 +571,34 @@
     "empty_land": "Empty Land"
   },
   "land_ens_page" : {
+<<<<<<< HEAD
     "title": "Assign Name",
     "assign_name_title": "Assign {name}",
     "subtitle": "Assign a name to {land}",
     "set_content": "Set Content",
     "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver.",
     "set_name_message": "In order to set this name to your parcel you first need to send 2 transactions.",
+=======
+    "loading": "Loading ...",
+    "subtitle": "Assign a name to {name}",
+    "select_names": {
+      "placeholder": "My names",
+      "message": {
+        "choose_name": "Choose a name for your land",
+        "name_available": "This name will work for your land",
+        "name_assigned": "This name has been assigned to this land"
+      }
+    },
+    "set_content": "Set Content",
+    "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver.",
+    "set_name_message": "In order to link this name to your parcel you first need to send 2 transactions.",
+>>>>>>> master
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "The Resolver is a Smart Contract responsible for the process of translating names into addresses.",
     "empty_options_message": "You don't have any available names. To assign a name to your LAND, you first need to claim it.",
     "claim_new_name": "Claim a new name",
     "not_redirected": "If you are not redirected",
+<<<<<<< HEAD
     "select_names": {
       "title": "My names",
       "placeholder": "Choose a name...",
@@ -518,6 +607,13 @@
         "name_assigned": "This name has been assigned to this land"
       }
     }
+=======
+    "submit_message": {
+      "success": "Name set properly to your land"
+    },
+    "title": "Assign Name",
+    "waiting_confirmation_tx": "Waiting Confirmation from TX"
+>>>>>>> master
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",
@@ -673,6 +769,13 @@
     "edit_estate_remove": "You removed {count} {count, plural, one {parcel} other {parcels}} from {name}.",
     "set_manager_assigned": "You assigned {address} as operator of all your {type}.",
     "set_manager_revoked": "You revoked {address} as operator of all your {type}.",
+    "collection_published": "Published the collection {name}",
+    "saved_published_item": "You edited the item {name}",
+    "collection_items_minted": "Minted {count} items for the collection {name}",
+    "added_collection_managers": "Added {count} {count, plural, one {collaborator} other {collaborators}} on the collection {name}",
+    "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
+    "set_collection_on_sale": "Set the collection {name} on sale",
+    "unset_collection_on_sale": "Removed the collection {name} from being on sale",
     "set_ens_content": "Setting redirection content for the name \"{name}\" on {land_link}.",
     "set_ens_resolver": "Setting resolver for the name \"{name}\"."
   },
@@ -745,8 +848,151 @@
     "signature_error": "Failed to sign message",
     "no_wallet": "Wallet not found",
     "connect_error": "Could not connect wallet",
-    "title": "Connect your wallet to sign in.",
-    "sign_in_required": "You need to {sign_in} to access this page.",
-    "sign_in": "Sign In"
+    "title": "Connect your wallet to sign in."
+  },
+  "avatar_page": {
+    "results": "{count} {count, plural, one {result} other {results}}",
+    "no_items": "No items",
+    "new_item": "New Item",
+    "new_collection": "New Collection",
+    "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
+  },
+  "item_detail_page": {
+    "notice": "You need to add your items to a collection before you can publish them",
+    "add_representation": "Add {bodyShape} representation",
+    "published": "Published"
+  },
+  "collection_detail_page": {
+    "new_item": "New Item",
+    "add_existing_item": "Add Existing Item",
+    "mint_items": "Mint Items",
+    "on_sale": "On sale",
+    "set_on_sale_popup": "This will allow your collection to be sold on in-world vending machines.",
+    "unset_on_sale_popup": "This collection is available for purchase on in-world vending machines.",
+    "publish": "Publish",
+    "managers": "Collaborators",
+    "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
+    "click_here": "Click here",
+    "start_adding_items": "Looking good! now you can start adding items to your collection.",
+    "cant_remove": "You will not be able to remove or add items to your collection once its published.",
+    "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
+    "under_review": "Under Review"
+  },
+  "collection_item": {
+    "set_price": "set price",
+    "done": "Done",
+    "edit_item": "edit",
+    "mint_item": "mint",
+    "remove_from_collection": "Remove from collection",
+    "edit_price": "Edit price",
+    "open_in_editor": "Open in editor"
+  },
+  "item": {
+    "category": "Category",
+    "rarity": "Rarity",
+    "price": "Price",
+    "beneficiary": "Beneficiary",
+    "supply": "Supply",
+    "collection": "Collection",
+    "type": {
+      "wearable": "Wearable"
+    }
+  },
+  "edit_price_and_beneficiary_modal": {
+    "title": "Set price and address for {name}",
+    "price_label": "Price",
+    "beneficiary_label": "Beneficiary"
+  },
+  "confirm_delete": {
+    "content": "Are you sure you want to delete \"{name}\"?"
+  },
+  "publish_collection_modal": {
+    "title": "Publish Collection",
+    "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
+    "second_paragraph": "You will not be able to add or delete items after you publish your collection",
+    "third_paragraph": "You will be able to see your items in the marketplace but they will available for sale once the collection is validated by the DAO",
+    "publish": "Publish"
+  },
+  "mint_items_modal": {
+    "title": "Mint Items",
+    "add_item": "Add Item",
+    "no_items": "You have no items available to mint for \"{name}\""
+  },
+  "sell_collection_modal": {
+    "title": "Do you want to sell your items?",
+    "turn_on_description": "By turning this switch on your collection will be available for purchase in in-world vending machines.",
+    "turn_on": "Turn On",
+    "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
+    "turn_off": "Turn Off"
+  },
+  "collection_managers_modal": {
+    "title": "Collaborators",
+    "add_manager": "Add Collaborator",
+    "no_managers": "No collaborators yet, start by",
+    "adding_one": "adding one!"
+  },
+  "collection_image": {
+    "no_items": "No Items"
+  },
+  "collection_card": {
+    "subtitle": "Collection · {count} {count, plural, one {item} other {items}}"
+  },
+  "item_editor": {
+    "open": "Open editor",
+    "left_panel": {
+      "title": "My Items",
+      "actions": {
+        "new_item": "New Item",
+        "new_collection": "New Collection",
+        "add_existing_item": "Add Existing Item",
+        "edit_name": "Edit Name"
+      },
+      "items": "Items",
+      "collections": "Collections",
+      "items_count": "{count} items",
+      "invalid_representation_tooltip": "This item doesn't have a {bodyShape} representation"
+    },
+    "center_panel": {
+      "disabled_animation_dropdown": "There needs to be at least one visible item in order to select an avatar animation"
+    },
+    "right_panel": {
+      "properties": "Properties",
+      "details": "Details",
+      "basics": "Basics",
+      "overrides": "Overrides",
+      "replaces": "Replaces",
+      "hides": "Hides",
+      "tags": "Tags",
+      "select_placeholder": "Select an option"
+    }
+  },
+  "wearable": {
+    "rarity": {
+      "unique": "Unique",
+      "mythic": "Mythic",
+      "legendary": "Legendary",
+      "epic": "Epic",
+      "rare": "Rare",
+      "uncommon": "Uncommon",
+      "common": "Common"
+    },
+    "category": {
+      "body_shape": "Body Shape",
+      "earring": "Earring",
+      "eyebrows": "Eyebrows",
+      "eyes": "Eyes",
+      "eyewear": "Eyewear",
+      "facial_hair": "Facial Hair",
+      "feet": "Feet",
+      "hair": "Hair",
+      "hat": "Hat",
+      "helmet": "Helmet",
+      "lower_body": "Lower Body",
+      "mask": "Mask",
+      "mouth": "Mouth",
+      "tiara": "Tiara",
+      "top_head": "Top Head",
+      "upper_body": "Upper Body"
+    }
   }
 }

@@ -5,10 +5,37 @@ const MemoryDatastore = require('interface-datastore').MemoryDatastore
 const pull = require('pull-stream')
 const Importer = require('ipfs-unixfs-engine').Importer
 const toBuffer = require('blob-to-buffer')
+import { Asset } from 'modules/asset/types'
 import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, DeploymentStatus } from './types'
 import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
+
+export const getDefaultGroundAsset = (): Asset => ({
+  id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
+  name: 'Bermuda Grass',
+  thumbnail: getContentsStorageUrl('QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'),
+  model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
+  script: null,
+  tags: ['ground'],
+  category: 'ground',
+  contents: {
+    'FloorBaseGrass_01/FloorBaseGrass_01.glb': 'QmSyvWnb5nKCaGHw9oHLSkwywvS5NYpj6vgb8L121kWveS',
+    'FloorBaseGrass_01/Floor_Grass01.png.png': 'QmT1WfQPMBVhgwyxV5SfcfWivZ6hqMCT74nxdKXwyZBiXb',
+    'FloorBaseGrass_01/thumbnail.png': 'QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'
+  },
+  assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a',
+  metrics: {
+    triangles: 0,
+    materials: 0,
+    meshes: 0,
+    bodies: 0,
+    entities: 0,
+    textures: 0
+  },
+  parameters: [],
+  actions: []
+})
 
 export async function getCID(files: ContentServiceFile[], shareRoot: boolean): Promise<string> {
   const importer = new Importer(new MemoryDatastore(), { onlyHash: true })
@@ -64,18 +91,6 @@ export function getStatus(project: Project | null, deployment: Deployment | null
   if (project && deployment) {
     const projectTimestamp = +new Date(project.updatedAt)
     const deploymentTimestamp = +new Date(deployment.timestamp)
-    if (project.title === 'Palito') {
-      console.log(
-        project,
-        deployment,
-        projectTimestamp,
-        deploymentTimestamp,
-        projectTimestamp - deploymentTimestamp,
-        new Date(projectTimestamp),
-        new Date(deploymentTimestamp),
-        console.log
-      )
-    }
     return deploymentTimestamp > projectTimestamp ? DeploymentStatus.PUBLISHED : DeploymentStatus.NEEDS_SYNC
   }
 
@@ -114,6 +129,8 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
+
+  const defaultGroundAsset = getDefaultGroundAsset()
 
   const scene: Scene = {
     id: sceneId,
@@ -157,31 +174,7 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
       }
     },
     assets: {
-      da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf: {
-        id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
-        assetPackId: 'e6fa9601-3e47-4dff-9a84-e8e017add15a',
-        name: 'Bermuda Grass',
-        model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
-        script: null,
-        thumbnail: getContentsStorageUrl('QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'),
-        tags: ['genesis', 'city', 'town', 'ground'],
-        category: 'ground',
-        contents: {
-          'FloorBaseGrass_01/FloorBaseGrass_01.glb': 'QmSyvWnb5nKCaGHw9oHLSkwywvS5NYpj6vgb8L121kWveS',
-          'FloorBaseGrass_01/Floor_Grass01.png.png': 'QmT1WfQPMBVhgwyxV5SfcfWivZ6hqMCT74nxdKXwyZBiXb',
-          'FloorBaseGrass_01/thumbnail.png': 'QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'
-        },
-        metrics: {
-          meshes: 0,
-          bodies: 0,
-          materials: 0,
-          textures: 0,
-          triangles: 0,
-          entities: 0
-        },
-        parameters: [],
-        actions: []
-      }
+      [defaultGroundAsset.id]: defaultGroundAsset
     },
     metrics: {
       triangles: 32,

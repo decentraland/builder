@@ -1,5 +1,9 @@
 {
   "asset_pack": {
+    "add_existing_item_modal": {
+      "title": "Agregar Item",
+      "subtitle": "Selecciona un item que no pertenezca a ninguna colección"
+    },
     "confirm_delete": {
       "action": "Eliminar Asset Pack",
       "back": "Volver",
@@ -107,6 +111,50 @@
     "top_banner_action": "Descubre más.",
     "top_banner_left": "Septiembre 16-30 - Súmate a la creación con más de $250k USD en premios para compartir.",
     "top_banner_right": " "
+  },
+  "body_shapes": {
+    "unisex": "Unisex",
+    "male": "Hombre",
+    "female": "Mujer"
+  },
+  "avatar_animations": {
+    "idle": "Nada",
+    "wave": "Saludar",
+    "fistpump": "Festejar",
+    "robot": "Bailar",
+    "raiseHand": "Alzar Mano",
+    "clap": "Aplaudir",
+    "money": "Tirar Billetes",
+    "kiss": "Tirar Besos"
+  },
+  "create_collection_modal": {
+    "title": "Nueva Colección",
+    "subtitle": "Ponle un nombre a tu nueva colleción",
+    "label": "Nombre",
+    "placeholder": "Mi colleción"
+  },
+  "model_metrics": {
+    "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
+    "materials": "{count} {count, plural, one {material} other {materiales}}",
+    "textures": "{count} {count, plural, one {textura} other {texturas}}"
+  },
+  "create_item_modal": {
+    "title": "Nuevo Item",
+    "add_representation": "Agregar Representación De {bodyShape}",
+    "name_label": "Ponle un nombre a tu item",
+    "category_label": "Cuál es la categoría de este item?",
+    "category_placeholder": "Selecciona una categoria",
+    "rarity_label": "Cuál es la rareza de este item?",
+    "rarity_placeholder": "Selecciona una rareza",
+    "representation_label": "Para que forma de cuerpo es este item?",
+    "existing_item": "Es parte de un item existente?",
+    "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
+    "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item"
+  },
+  "edit_collection_name_modal": {
+    "title": "Editar Nombre",
+    "subtitle": "Escribe un nuevo nombre para esta colección",
+    "submit": "Guardar"
   },
   "custom_layout_modal": {
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
@@ -301,9 +349,14 @@
     "title": "Descargar Escena"
   },
   "global": {
+<<<<<<< HEAD
     "approved_tx": "Aprobada",
+=======
+    "approved_tx": "Tx Aprobada",
+>>>>>>> master
     "back": "volver",
     "blog_post": "blog post",
+    "amount": "Cantidad",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "continue": "Continuar",
@@ -320,6 +373,8 @@
     "loading": "Cargando",
     "new": "Nuevo",
     "new_scene": "Nueva escena",
+    "delete": "Borrar",
+    "edit": "Editar",
     "next": "siguiente",
     "optional": "opcional",
     "or": "o",
@@ -330,7 +385,8 @@
     "send": "Enviar",
     "send_tx": "Enviar Tx",
     "share": "Compartir",
-    "sign_in": "Inicia sesión",
+    "sign_in_required": "Debes {link} para acceder a esta página.",
+    "sign_in": "Iniciar sesión",
     "sign_up": "Suscribirse",
     "submit": "Enviar",
     "subscribe": "Subscribirse",
@@ -343,11 +399,19 @@
     "revoke": "Revocar",
     "parcel_plural": "parcelas",
     "estate_plural": "estates",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "yes": "Si",
+    "no": "No",
+    "name": "Nombre",
+    "category": "Categoría",
+    "rarity": "Rareza",
+    "published": "Publicado",
+    "description": "Descripción"
   },
   "navigation": {
     "scenes": "Escenas",
-    "land": "Tierras"
+    "land": "Tierras",
+    "avatar": "Avatar"
   },
   "list": {
     "two": "{first} y {second}",
@@ -402,6 +466,10 @@
     "title": "Asset Packs",
     "search_items": "Buscar objetos"
   },
+  "item_dropdown": {
+    "placeholder": "Selecciona un item",
+    "no_items": "No hay items validos"
+  },
   "layout_picker": {
     "columns": "columnas",
     "rows": "filas"
@@ -437,16 +505,18 @@
     "operators": "Operadores",
     "type": "Tipo",
     "online_scenes": "Escenas Online",
-    "sign_in": "Debes {link} para acceder a esta página.",
-    "sign_in_link": "Iniciar Sesión",
     "none": "Ninguna",
-    "results": "{count} {count, plural, one {resultado} other {resultados}}"
+    "results": "{count} {count, plural, one {resultado} other {resultados}}",
+    "owner_permission": "Estas son tierras que no son tuyas, pero donde tienes permiso"
   },
   "land_detail_page": {
     "transfer": "Transferir",
-    "edit": "Editar",
     "set_operator": "Configurar Operador",
+<<<<<<< HEAD
     "assign_name": "Asignar nombre",
+=======
+    "set_link": "Establece tu Enlace",
+>>>>>>> master
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
@@ -462,8 +532,20 @@
     "empty_land": "Tierras Vacias"
   },
   "land_ens_page" : {
+<<<<<<< HEAD
     "title": "Asigna un Nombre",
     "subtitle": "Asigna un nombre a {land}",
+=======
+    "subtitle": "Asigna un nombre a {name}",
+    "select_names": {
+      "placeholder": "Mis nombres",
+      "message": {
+        "choose_name": "Click aquí para reclamar un nuevo nombre",
+        "name_available": "Este nombre funcionara bien para tu tierra",
+        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
+      }
+    },
+>>>>>>> master
     "set_content": "Establecer Contenido",
     "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones.",
     "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
@@ -472,6 +554,7 @@
     "empty_options_message": "No tienes nombres disponibles. Para asignar un nuevo nombre a tu LAND, necesitas reclamar uno",
     "claim_new_name": "Reclamar un nuevo nombre",
     "not_redirected": "Si no estas siendo redirigido",
+<<<<<<< HEAD
     "select_names": {
       "title": "Mis nombres",
       "placeholder": "Selecciona un nombre",
@@ -480,6 +563,13 @@
         "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
       }
     }
+=======
+    "submit_message": {
+      "success": "Nombre configurado correctamente para su tierra"
+    },
+    "title": "Asigna un Nombre",
+    "waiting_confirmation_tx": "Esperando Confirmación de Tx"
+>>>>>>> master
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",
@@ -665,6 +755,13 @@
     "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
     "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
+    "collection_published": "Collección {name} publicada",
+    "saved_published_item": "Has editado el item {name}",
+    "collection_items_minted": "{count} items creados para la colleción {name}",
+    "added_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} agreados a la colección {name}",
+    "removed_collection_managers": "{count} {count, plural, one {colaboradores} other {colaboradoress}} borrados de la colección {name}",
+    "set_collection_on_sale": "Colección {name} puesta a la venta",
+    "unset_collection_on_sale": "La colección {name} ya no está a la venta",
     "set_ens_content": "Has asignado el contenido de redirección para el nombre \"{name}\" en {land_link}.",
     "set_ens_resolver": "Has asignado el resolver para el nombre \"{name}\"."
   },
@@ -740,5 +837,147 @@
     "title": "Conecta tu billetera para iniciar sesión.",
     "sign_in_required": "Necesitas {sign_in} para acceder a esta página.",
     "sign_in": "Iniciar sesión"
+  },
+  "avatar_page": {
+    "results": "{count} {count, plural, one {resultado} other {resultados}}",
+    "no_items": "Sin items",
+    "new_item": "Nuevo item",
+    "new_collection": "Nueva colección",
+    "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
+  },
+  "item_detail_page": {
+    "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
+    "add_representation": "Agregar representación de {bodyShape}"
+  },
+  "collection_detail_page": {
+    "new_item": "Nuevo Item",
+    "add_existing_item": "Agregar item existente",
+    "mint_items": "Crear Items",
+    "on_sale": "En venta",
+    "set_on_sale_popup": "Esto permitirá que tu colección sea vendida dentro del mundo.",
+    "unset_on_sale_popup": "Esta colección está disponibles para la compra dentro del mundo.",
+    "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
+    "click_here": "Clickea aquí",
+    "publish": "Publicar",
+    "managers": "Colaboradores",
+    "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+  },
+  "collection_item": {
+    "set_price": "agregar precio",
+    "done": "Terminado",
+    "edit_item": "editar",
+    "mint_item": "crear",
+    "remove_from_collection": "Eliminar de la colección",
+    "edit_price": "Editar precio",
+    "open_in_editor": "Abrir en el editor"
+  },
+  "item": {
+    "category": "Categoría",
+    "rarity": "Rareza",
+    "price": "Precio",
+    "beneficiary": "Beneficiario",
+    "supply": "Suministro",
+    "collection": "Colección",
+    "type": {
+      "wearable": "Vestimenta"
+    }
+  },
+  "edit_price_and_beneficiary_modal": {
+    "title": "Asignar un precio y un beneficiario para {name}",
+    "price_label": "Precio",
+    "beneficiary_label": "Beneficiario"
+  },
+  "confirm_delete": {
+    "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
+  },
+  "publish_collection_modal": {
+    "title": "Publicar Collección",
+    "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
+    "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar",
+    "third_paragraph": "Podrás ver tus items en el marketplace pero serán puestos en venta luego de ser validados por la DAO",
+    "publish": "Publish"
+  },
+  "sell_collection_modal": {
+    "title": "Quieres vender tus items?",
+    "turn_on_description": "Al activar esta opción tu colección estará en venta dentro del mundo.",
+    "turn_on": "Activar",
+    "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
+    "turn_off": "Desactivar"
+  },
+  "mint_items_modal": {
+    "title": "Crear Items",
+    "add_item": "Agregar Item",
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
+  },
+  "collection_managers_modal": {
+    "title": "Colaboradores",
+    "add_manager": "Agregar Colaborador",
+    "no_managers": "No hay colaboradores, comienza por",
+    "adding_one": "agregar uno!"
+  },
+  "collection_image": {
+    "no_items": "No Items"
+  },
+  "collection_card": {
+    "subtitle": "Colección · {count} {count, plural, one {item} other {items}}"
+  },
+  "item_editor": {
+    "open": "Abrir editor",
+    "left_panel": {
+      "title": "Mis Items",
+      "actions": {
+        "new_item": "Nuevo Item",
+        "new_collection": "Nueva Colección",
+        "add_existing_item": "Agregar Item",
+        "edit_name": "Editar Nombre"
+      },
+      "items": "Items",
+      "collections": "Colecciones",
+      "items_count": "{count} items",
+      "invalid_representation_tooltip": "Este item no tiene representacion de {bodyShape}"
+    },
+    "center_panel": {
+      "disabled_animation_dropdown": "Tiene que haber al menos un item visible para poder activar una animacion"
+    },
+    "right_panel": {
+      "properties": "Propiedades",
+      "details": "Detalles",
+      "basics": "Básico",
+      "overrides": "Avanzado",
+      "replaces": "Remplaza",
+      "hides": "Oculta",
+      "tags": "Etiquetas",
+      "select_placeholder": "Selecciona una opción"
+    }
+  },
+  "wearable": {
+    "rarity": {
+      "unique": "Único",
+      "mythic": "Mítico",
+      "legendary": "Legendario",
+      "epic": "Épico",
+      "rare": "Raro",
+      "uncommon": "Poco común",
+      "common": "Común"
+    },
+    "category": {
+      "body_shape": "Cuerpo",
+      "earring": "Aros",
+      "eyebrows": "Cejas",
+      "eyes": "Ojos",
+      "eyewear": "Gafas",
+      "facial_hair": "Barba",
+      "feet": "Pies",
+      "hair": "Cabello",
+      "hat": "Sombrero",
+      "helmet": "Cazco",
+      "lower_body": "Piernas",
+      "mask": "Mascara",
+      "mouth": "Boca",
+      "tiara": "Tiara",
+      "top_head": "Cabeza",
+      "upper_body": "Torso"
+    }
   }
 }

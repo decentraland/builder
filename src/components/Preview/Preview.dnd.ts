@@ -1,6 +1,6 @@
 import { DropTargetSpec, DropTargetCollector, ConnectDropTarget } from 'react-dnd'
 
-import { DragObject } from 'components/AssetCard/AssetCard.dnd'
+import { AssetCardDragObject } from 'components/AssetCard/AssetCard.dnd'
 import { Props } from './Preview.types'
 
 export const PREVIEW_OFFSET = {
@@ -16,7 +16,7 @@ export type CollectedProps = {
 
 export const previewTarget: DropTargetSpec<Props> = {
   drop(props, monitor) {
-    const item: DragObject = monitor.getItem()
+    const item: AssetCardDragObject = monitor.getItem()
     const offset = monitor.getClientOffset()
     if (!offset) return
     props.onDropItem(item.asset, offset.x - PREVIEW_OFFSET.x, offset.y - PREVIEW_OFFSET.y)

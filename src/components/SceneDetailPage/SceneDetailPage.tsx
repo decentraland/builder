@@ -1,14 +1,16 @@
 import * as React from 'react'
 import { Props } from './SceneDetailPage.types'
-import Navbar from 'components/Navbar'
-import { Page, Center, Loader, Section, Row, Back, Narrow, Column, Header, Button, Dropdown, Icon, Empty } from 'decentraland-ui'
-import Footer from 'components/Footer'
+import { Page, Center, Loader, Section, Row, Narrow, Column, Header, Button, Dropdown, Icon, Empty } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { locations } from 'routing/locations'
+import Navbar from 'components/Navbar'
+import Footer from 'components/Footer'
+import Back from 'components/Back'
+import NotFound from 'components/NotFound'
 import { Project } from 'modules/project/types'
 import { Deployment } from 'modules/deployment/types'
-import { locations } from 'routing/locations'
-import './SceneDetailPage.css'
 import DeploymentDetail from './DeploymentDetail'
+import './SceneDetailPage.css'
 
 export default class SceneDetailPage extends React.PureComponent<Props> {
   renderLoading() {
@@ -20,11 +22,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
   }
 
   renderNotFound() {
-    return (
-      <Center>
-        <span className="secondary-text">{t('global.not_found')}&hellip;</span>
-      </Center>
-    )
+    return <NotFound />
   }
 
   renderPage(project: Project, deployments: Deployment[]) {
@@ -43,7 +41,7 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column className="actions" align="right">
                   <Row>
-                    <Button basic onClick={() => onNavigate(locations.editor(project.id))}>
+                    <Button basic onClick={() => onNavigate(locations.sceneEditor(project.id))}>
                       {t('scene_detail_page.actions.open_in_editor')}
                     </Button>
                     <Dropdown

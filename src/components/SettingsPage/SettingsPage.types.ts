@@ -12,13 +12,11 @@ export type State = {
 export type Props = {
   mana?: number
   address?: string
-  isLoggedIn: boolean
-  isLoggingIn: boolean
   authorizations: Authorization[]
   onNavigate: (path: string) => void
   onSetUpdateManager: typeof setUpdateManagerRequest
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'mana' | 'isLoggedIn' | 'isLoggingIn' | 'authorizations'>
+export type MapStateProps = Pick<Props, 'address' | 'mana' | 'authorizations'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onSetUpdateManager'>
 export type MapDispatch = Dispatch<SetUpdateManagerRequestAction | CallHistoryMethodAction>

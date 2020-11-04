@@ -11,10 +11,17 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
+import { SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
+import {
+  MINT_COLLECTION_ITEMS_SUCCESS,
+  SET_COLLECTION_MINTERS_SUCCESS,
+  SET_COLLECTION_MANAGERS_SUCCESS,
+  PUBLISH_COLLECTION_SUCCESS
+} from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
 import Profile from 'components/Profile'
-import TransactionDetail from './TransactionDetail'
 import { Props } from './Transaction.types'
+import TransactionDetail from './TransactionDetail'
 
 const Transaction = (props: Props) => {
   const { tx } = props
@@ -135,6 +142,83 @@ const Transaction = (props: Props) => {
               values={{
                 address: <Profile address={address} textOnly />,
                 type: t(`global.${type}_plural`)
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SAVE_PUBLISHED_ITEM_SUCCESS: {
+      const { item } = tx.payload
+      return (
+        <TransactionDetail
+          item={item}
+          text={<T id="transaction.saved_published_item" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />}
+          tx={tx}
+        />
+      )
+    }
+    case PUBLISH_COLLECTION_SUCCESS: {
+      const { collection } = tx.payload
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id="transaction.collection_published"
+              values={{ name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link> }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case MINT_COLLECTION_ITEMS_SUCCESS: {
+      const { collection, mints } = tx.payload
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id="transaction.collection_items_minted"
+              values={{ name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>, count: mints.length }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_COLLECTION_MINTERS_SUCCESS: {
+      // We're only setting the Collection Store as minter to allow sales for now
+      const { collection, minters } = tx.payload
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id={minters.length > 0 ? 'transaction.set_collection_on_sale' : 'transaction.unset_collection_on_sale'}
+              values={{
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_COLLECTION_MANAGERS_SUCCESS: {
+      const { collection, managers } = tx.payload
+      const managersCountDifference = managers.length - collection.managers.length
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id={managersCountDifference > 0 ? 'transaction.added_collection_managers' : 'transaction.removed_collection_managers'}
+              values={{
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
+                count: Math.abs(managersCountDifference)
               }}
             />
           }

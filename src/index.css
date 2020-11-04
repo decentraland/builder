@@ -39,6 +39,11 @@ body canvas.dcl-canvas {
   color: var(--text);
 }
 
+.link {
+  color: var(--primary);
+  cursor: pointer;
+}
+
 .is-uploading {
   animation: uploading 0.5s ease-in-out infinite alternate;
 }

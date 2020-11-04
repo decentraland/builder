@@ -5,7 +5,7 @@ import { rawMappingsToObjectURL, revokeMappingsObjectURL, isGround } from 'modul
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { RawAsset, Asset } from 'modules/asset/types'
-import { getModelData } from 'lib/getModelData'
+import { getModelData, ThumbnailType } from 'lib/getModelData'
 import Icon from 'components/Icon'
 import { Props, State } from './SingleAssetEditor.types'
 import './SingleAssetEditor.css'
@@ -79,7 +79,7 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
 
     const { image } = await getModelData(mappings[asset.model], {
       mappings,
-      thumbnailType: ground ? '2d' : '3d'
+      thumbnailType: ground ? ThumbnailType.TOP : ThumbnailType.DEFAULT
     })
     revokeMappingsObjectURL(mappings)
 

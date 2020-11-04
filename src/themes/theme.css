@@ -12,6 +12,12 @@
   --smart-item: #472550;
   --smart-item-hover: #5f326a;
 
+  --light-gray: #736e7d;
+  --gray: rgba(115, 110, 125, 0.4);
+  --dark-gray: rgba(22, 20, 26, 0.48);
+
+  --light-blue-raw: 0, 217, 255;
+
   /**
   * Component variables
   */
@@ -47,7 +53,6 @@
   /* Colors to be moved to decentraland ui */
   --smart-grey-raw: 55, 51, 61;
   --smart-grey: #37333d;
-  --smart-grey-contrast: #736e7d;
   --dark-two: #242129;
 
   --parameter-font-size: 15px;

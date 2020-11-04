@@ -1,25 +1,67 @@
 import { AxiosRequestConfig } from 'axios'
-import { env } from 'decentraland-commons'
+import { env, utils } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
-import { authorize, authorizeAuth0 } from './auth'
-import { Project, Manifest } from 'modules/project/types'
-import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
-import { Scene, SceneMetrics } from 'modules/scene/types'
-import { FullAssetPack } from 'modules/assetPack/types'
-import { createManifest } from 'modules/project/export'
-import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
+import { Project, Manifest } from 'modules/project/types'
+import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
+import { Scene, ModelMetrics } from 'modules/scene/types'
+import { FullAssetPack } from 'modules/assetPack/types'
+import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
+import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Auth0MigrationResult } from 'modules/auth/types'
+import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
+import { Collection } from 'modules/collection/types'
+import { PreviewType } from 'modules/editor/types'
+import { authorize, authorizeAuth0 } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
 export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
+
+export type RemoteItem = {
+  id: string // uuid
+  name: string
+  description: string
+  thumbnail: string
+  eth_address: string
+  collection_id: string | null
+  blockchain_item_id: string | null
+  price: string | null
+  beneficiary: string | null
+  rarity: ItemRarity | null
+  total_supply: number | null
+  is_published: boolean
+  is_approved: boolean
+  in_catalyst: boolean
+  type: ItemType
+  data: WearableData
+  metrics: ModelMetrics
+  contents: Record<string, string>
+  collection?: RemoteCollection
+  created_at: Date
+  updated_at: Date
+}
+
+export type RemoteCollection = {
+  id: string // uuid
+  name: string
+  eth_address: string
+  salt: string | null
+  contract_address: string | null
+  is_published: boolean
+  is_approved: boolean
+  minters: string[]
+  managers: string[]
+  items?: RemoteItem[]
+  created_at: Date
+  updated_at: Date
+}
 
 export type RemoteProject = {
   id: string
@@ -76,7 +118,7 @@ export type RemoteAsset = {
   tags: string[]
   category: string
   contents: Record<string, string>
-  metrics: SceneMetrics
+  metrics: ModelMetrics
   parameters: AssetParameter[]
   actions: AssetAction[]
 }
@@ -204,6 +246,109 @@ function fromPoolGroup(poolGroup: RemotePoolGroup): PoolGroup {
   }
 }
 
+function toRemoteItem(item: Item): RemoteItem {
+  const remoteItem: RemoteItem = {
+    id: item.id,
+    name: item.name,
+    description: item.description || '',
+    thumbnail: item.thumbnail,
+    eth_address: item.owner,
+    collection_id: item.collectionId || null,
+    blockchain_item_id: item.tokenId || null,
+    price: item.price || null,
+    beneficiary: item.beneficiary || null,
+    rarity: item.rarity || null,
+    total_supply: item.totalSupply === undefined ? null : item.totalSupply,
+    is_published: item.isPublished || false,
+    is_approved: item.isApproved || false,
+    in_catalyst: item.inCatalyst || false,
+    type: item.type,
+    data: item.data,
+    metrics: item.metrics,
+    contents: item.contents,
+    collection: undefined,
+    created_at: new Date(item.createdAt),
+    updated_at: new Date(item.updatedAt)
+  }
+
+  return remoteItem
+}
+
+function fromRemoteItem(remoteItem: RemoteItem) {
+  const item: Item = {
+    id: remoteItem.id,
+    name: remoteItem.name,
+    thumbnail: remoteItem.thumbnail,
+    owner: remoteItem.eth_address,
+    description: remoteItem.description,
+    isPublished: remoteItem.is_published,
+    isApproved: remoteItem.is_approved,
+    inCatalyst: remoteItem.in_catalyst,
+    type: remoteItem.type,
+    data: remoteItem.data,
+    contents: remoteItem.contents,
+    metrics: remoteItem.metrics,
+    createdAt: +new Date(remoteItem.created_at),
+    updatedAt: +new Date(remoteItem.created_at)
+  }
+
+  let collection: Collection | null = null
+
+  if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
+  if (remoteItem.blockchain_item_id) item.tokenId = remoteItem.blockchain_item_id
+  if (remoteItem.price) item.price = remoteItem.price
+  if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
+  if (remoteItem.rarity) item.rarity = remoteItem.rarity
+  if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
+  if (remoteItem.collection) {
+    collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items'])).collection
+  }
+
+  return { item, collection }
+}
+
+function toRemoteCollection(collection: Collection): RemoteCollection {
+  const remoteCollection: RemoteCollection = {
+    id: collection.id,
+    name: collection.name,
+    eth_address: collection.owner,
+    is_published: collection.isPublished,
+    is_approved: collection.isApproved,
+    minters: collection.minters,
+    managers: collection.managers,
+    contract_address: collection.contractAddress || null,
+    salt: collection.salt || null,
+    created_at: new Date(collection.createdAt),
+    updated_at: new Date(collection.updatedAt)
+  }
+
+  return remoteCollection
+}
+
+function fromRemoteCollection(remoteCollection: RemoteCollection) {
+  const collection: Collection = {
+    id: remoteCollection.id,
+    name: remoteCollection.name,
+    owner: remoteCollection.eth_address,
+    isPublished: remoteCollection.is_published,
+    isApproved: remoteCollection.is_approved,
+    minters: remoteCollection.minters || [],
+    managers: remoteCollection.managers || [],
+    createdAt: +new Date(remoteCollection.created_at),
+    updatedAt: +new Date(remoteCollection.updated_at)
+  }
+
+  let items: Item[] = []
+
+  if (remoteCollection.salt) collection.salt = remoteCollection.salt
+  if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
+  if (remoteCollection.items) {
+    items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection'])).item)
+  }
+
+  return { collection, items }
+}
+
 export type PoolDeploymentAdditionalFields = {
   groups?: string[]
 }
@@ -246,7 +391,6 @@ export class BuilderAPI extends BaseAPI {
 
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
     await this.request('put', `/projects/${projectId}/pool`, additionalInfo)
-    return
   }
 
   async uploadMedia(
@@ -303,10 +447,9 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteProject(id: string) {
     await this.request('delete', `/projects/${id}`)
-    return
   }
 
-  async fetchManifest(id: string, type: 'project' | 'public' | 'pool' = 'project') {
+  async fetchManifest(id: string, type: PreviewType.PROJECT | PreviewType.POOL | PreviewType.PUBLIC = PreviewType.PROJECT) {
     const remoteManifest = await this.request('get', `/${type}s/${id}/manifest`)
     const manifest = {
       ...remoteManifest,
@@ -385,6 +528,68 @@ export class BuilderAPI extends BaseAPI {
   async fetchProjectsToMigrate() {
     const projects = await this.request('get', `/migrate`, null, authorizeAuth0())
     return projects.map(fromRemoteProject) as Project[]
+  }
+
+  async fetchItems() {
+    const remoteItems: RemoteItem[] = await this.request('get', `/items`)
+    const collections: Collection[] = []
+    let items: Item[] = []
+    for (const remoteItem of remoteItems) {
+      const { item, collection } = fromRemoteItem(remoteItem)
+      items = items.concat(item)
+      if (collection) {
+        collections.push(collection)
+      }
+    }
+    return { items, collections }
+  }
+
+  async fetchItem(id: string) {
+    const remoteItem: RemoteItem = await this.request('get', `/items/${id}`)
+    return fromRemoteItem(remoteItem)
+  }
+
+  async saveItem(item: Item, contents: Record<string, Blob>) {
+    await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+
+    if (Object.keys(contents).length > 0) {
+      const formData = new FormData()
+      for (let path in contents) {
+        formData.append(item.contents[path], contents[path])
+      }
+
+      await this.request('post', `/items/${item.id}/files`, formData)
+    }
+  }
+
+  async deleteItem(item: Item) {
+    await this.request('delete', `/items/${item.id}`, {})
+  }
+
+  async fetchCollections() {
+    const remoteCollections: RemoteCollection[] = await this.request('get', `/collections`)
+    const collections: Collection[] = []
+    let items: Item[] = []
+    for (const remoteCollection of remoteCollections) {
+      const { collection, items: collectionItems } = fromRemoteCollection(remoteCollection)
+      collections.push(collection)
+      items = items.concat(collectionItems)
+    }
+    return { collections, items } as const
+  }
+
+  async fetchCollection(id: string) {
+    const remoteCollection: RemoteCollection = await this.request('get', `/collections/${id}`)
+    return fromRemoteCollection(remoteCollection)
+  }
+
+  async saveCollection(collection: Collection) {
+    const remoteCollection = await this.request('put', `/collections/${collection.id}`, { collection: toRemoteCollection(collection) })
+    return fromRemoteCollection(remoteCollection)
+  }
+
+  async deleteCollection(collection: Collection) {
+    await this.request('delete', `/collections/${collection.id}`, {})
   }
 }
 

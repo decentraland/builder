@@ -1,0 +1,18 @@
+.ItemImage {
+  position: relative;
+}
+
+.ItemImage.image-wrapper {
+  border-radius: 5px;
+}
+
+.ItemImage.image-wrapper .image {
+  width: auto;
+  max-width: 100%;
+}
+
+.ItemImage .ItemBadge {
+  position: absolute;
+  bottom: 9px;
+  left: 9px;
+}

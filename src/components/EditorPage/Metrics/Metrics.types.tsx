@@ -1,13 +1,13 @@
 import { Dispatch } from 'redux'
 
-import { SceneMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/scene/types'
 
 export type Props = {
   rows: number
   cols: number
   parcels: number
-  metrics: SceneMetrics
-  limits: SceneMetrics
+  metrics: ModelMetrics
+  limits: ModelMetrics
 }
 
 export type State = {

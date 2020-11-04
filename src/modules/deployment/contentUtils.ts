@@ -51,6 +51,8 @@ export enum EntityField {
 
 export const ENTITY_FILE_NAME = 'entity.json'
 
+export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
+
 export class Entity {
   constructor(
     public readonly id: EntityId,
@@ -94,6 +96,7 @@ export async function calculateBufferHash(buffer: Buffer): Promise<string> {
 }
 
 export async function buildDeployData(
+  type: EntityType,
   identity: AuthIdentity,
   pointers: Pointer[],
   metadata: any,
@@ -102,7 +105,7 @@ export async function buildDeployData(
 ): Promise<[DeployData, ControllerEntity]> {
   const content: Map<ContentFilePath, ContentFileHash> = await calculateHashes(files)
   const [entity, entityFile] = await buildControllerEntityAndFile(
-    EntityType.SCENE,
+    type,
     pointers,
     (afterEntity ? afterEntity.timestamp : Date.now()) + 1,
     content,
@@ -168,6 +171,16 @@ export async function deploy(contentServerUrl: string, data: DeployData) {
   const deployResponse = await fetch(`${contentServerUrl}/content/entities`, { method: 'POST', body: form })
   const { creationTimestamp } = await deployResponse.json()
   return creationTimestamp
+}
+
+export async function makeContentFiles(files: Record<string, string | Blob>) {
+  const makeRequests = []
+  for (const fileName of Object.keys(files)) {
+    if (FILE_NAME_BLACKLIST.includes(fileName)) continue
+    makeRequests.push(makeContentFile(fileName, files[fileName]))
+  }
+
+  return Promise.all(makeRequests)
 }
 
 export function makeContentFile(path: string, content: string | Blob): Promise<ContentFile> {
