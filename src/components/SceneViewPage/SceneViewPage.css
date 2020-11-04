@@ -130,8 +130,9 @@
 }
 
 .SceneViewPage .detail .component-list {
-  color: var(--light-gray);
-  font-weight: 600;
+  <<<<<<<headcolor: var(--smart-grey-contrast);
+  =======color: var(--light-gray);
+  >>>>>>>masterfont-weight: 600;
   display: flex;
   font-size: 13px;
   line-height: 16px;

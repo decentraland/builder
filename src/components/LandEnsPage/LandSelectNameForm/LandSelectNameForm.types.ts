@@ -8,7 +8,6 @@ export type Props = {
   error: ENSError | null
   onUpdateSubdomain: (selectedSubdomain: string) => void
   onFetchENS: (ens: string, land: Land) => void
-  onFetchDomainList: () => void
 }
 
 export type State = {

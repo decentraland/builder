@@ -22,12 +22,12 @@
   border-radious: 8px;
 }
 
-.LandSetNameForm .box .messageBox {
+.LandSetNameForm .box .message-box {
   display: flex;
   align-items: flex-start;
 }
 
-.LandSetNameForm .box.boxDisabled {
+.LandSetNameForm .box.box-disabled {
   pointer-events: none;
   opacity: 0.4;
 }
@@ -40,7 +40,7 @@
   margin-right: 45px;
 }
 
-.LandSetNameForm .confirmationButtons button {
+.LandSetNameForm .confirmation-buttons button {
   width: 155px;
   margin-top: 50px;
   margin-right: 5px;

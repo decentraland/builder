@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
@@ -6,8 +7,9 @@ import { LandType, Land, RoleType } from 'modules/land/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
-import LandProviderPage from 'components/LandProviderPage'
 import { Deployment } from 'modules/deployment/types'
+import LandProviderPage from 'components/LandProviderPage'
+import Chip from 'components/Chip'
 import Back from 'components/Back'
 import Profile from 'components/Profile'
 import Scene from './Scene'
@@ -83,7 +85,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   renderDetail(land: Land, deployments: Deployment[]) {
-    const { onNavigate, onOpenModal, parcelsAvailableToBuildEstates, projects } = this.props
+    const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = deployments.reduce((total, deployment) => total + deployment.parcels.length, 0)
     const selection = getSelection(land)
@@ -99,7 +101,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             <div className="name">{hovered.name}</div>
           </div>
         ) : null}
-        <Section>
+        <Section size="large">
           <Row>
             <Back absolute onClick={() => onNavigate(locations.land())} />
             <Narrow>
@@ -144,18 +146,14 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                         direction="left"
                       >
                         <Dropdown.Menu>
-                          <Dropdown.Item
-                            text={t('land_detail_page.set_operator')}
-                            onClick={() => onNavigate(locations.landOperator(land.id))}
-                          />
-                          {env.get('REACT_APP_FF_ENS') ? (
-                            <Dropdown.Item text={t('land_detail_page.set_link')} onClick={() => onNavigate(locations.landEns(land.id))} />
-                          ) : null}
                           {canBuildEstate ? (
-                            <Dropdown.Item
-                              text={t('land_detail_page.build_estate')}
-                              onClick={() => onOpenModal('EstateEditorModal', { land })}
-                            />
+                            <>
+                              <Dropdown.Item
+                                text={t('land_detail_page.build_estate')}
+                                onClick={() => onOpenModal('EstateEditorModal', { land })}
+                              />
+                              <Dropdown.Divider />
+                            </>
                           ) : null}
                           {land.type === LandType.ESTATE ? (
                             <>
@@ -167,8 +165,22 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                                 text={t('land_detail_page.dissolve_estate')}
                                 onClick={() => onOpenModal('DissolveModal', { land })}
                               />
+                              <Dropdown.Divider />
                             </>
                           ) : null}
+                          {env.get('REACT_APP_FF_ENS') ? (
+                            <>
+                              <Dropdown.Item
+                                text={t('land_detail_page.assign_name')}
+                                onClick={() => onNavigate(locations.landEns(land.id))}
+                              />
+                              <Dropdown.Divider />
+                            </>
+                          ) : null}
+                          <Dropdown.Item
+                            text={t('land_detail_page.set_operator')}
+                            onClick={() => onNavigate(locations.landOperator(land.id))}
+                          />
                         </Dropdown.Menu>
                       </Dropdown>
                     </Row>
@@ -179,7 +191,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
           </Row>
         </Section>
         <Narrow>
-          <Section>
+          <Section size="large">
             <div
               className={`atlas-wrapper ${isAtlasClickable ? 'clickable' : ''}`}
               onMouseLeave={this.handleMouseLeave}
@@ -195,7 +207,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               ></Atlas>
             </div>
           </Section>
-          <Section>
+          <Section size="large">
             <Header sub>{t('land_detail_page.online_scenes')}</Header>
             {deployments.length === 0 ? (
               <Empty height={100}>{t('land_detail_page.none')}</Empty>
@@ -214,8 +226,27 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </div>
             )}
           </Section>
+          <Section size="large">
+            <Header sub>
+              <Row>
+                <Column>{t('land_detail_page.assigned_names')}</Column>
+                <Column align="right">
+                  <Link to={locations.landEns(land.id)}>{t('land_detail_page.assign_name')}</Link>
+                </Column>
+              </Row>
+            </Header>
+            {ensList.length > 0 ? (
+              <div className="ens-list">
+                {ensList.map(ens => (
+                  <Chip text={ens.subdomain} />
+                ))}
+              </div>
+            ) : (
+              <Empty height={100}>{t('land_detail_page.no_names')}</Empty>
+            )}
+          </Section>
           {land.description ? (
-            <Section>
+            <Section size="large">
               <Header sub>{t('land_detail_page.description')}</Header>
               <p>{land.description}</p>
             </Section>

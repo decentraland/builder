@@ -349,7 +349,7 @@
     "title": "Descargar Escena"
   },
   "global": {
-    "approved_tx": "Tx Aprobada",
+    "approved_tx": "Aprobada",
     "back": "volver",
     "blog_post": "blog post",
     "amount": "Cantidad",
@@ -508,13 +508,15 @@
   "land_detail_page": {
     "transfer": "Transferir",
     "set_operator": "Configurar Operador",
-    "set_link": "Establece tu Enlace",
+    "assign_name": "Asignar nombre",
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
     "online_scenes": "Escenas Online",
     "none": "Ninguna",
+    "no_names": "Sin nombres aún",
     "add_scene": "Agregar Escena",
+    "assigned_names": "Nombres asignados",
     "description": "Descripción",
     "owner": "Dueño",
     "operators": "Operadores",
@@ -522,15 +524,8 @@
     "empty_land": "Tierras Vacias"
   },
   "land_ens_page" : {
-    "subtitle": "Asigna un nombre a {name}",
-    "select_names": {
-      "placeholder": "Mis nombres",
-      "message": {
-        "choose_name": "Click aquí para reclamar un nuevo nombre",
-        "name_available": "Este nombre funcionara bien para tu tierra",
-        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
-      }
-    },
+    "title": "Asigna un Nombre",
+    "subtitle": "Asigna un nombre a {land}",
     "set_content": "Establecer Contenido",
     "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones.",
     "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
@@ -539,11 +534,14 @@
     "empty_options_message": "No tienes nombres disponibles. Para asignar un nuevo nombre a tu LAND, necesitas reclamar uno",
     "claim_new_name": "Reclamar un nuevo nombre",
     "not_redirected": "Si no estas siendo redirigido",
-    "submit_message": {
-      "success": "Nombre configurado correctamente para su tierra"
-    },
-    "title": "Asigna un Nombre",
-    "waiting_confirmation_tx": "Esperando Confirmación de Tx"
+    "select_names": {
+      "title": "Mis nombres",
+      "placeholder": "Selecciona un nombre",
+      "message": {
+        "click_to_claim_new_name": "{click_here} para obtener un nuevo nombre",
+        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
+      }
+    }
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",

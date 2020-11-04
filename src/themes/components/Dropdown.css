@@ -1,0 +1,7 @@
+.ui.dropdown .menu {
+  background-color: var(--smart-grey);
+}
+
+.ui.dropdown .menu > .divider {
+  background-color: var(--light-gray);
+}
