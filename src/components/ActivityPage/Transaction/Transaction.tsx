@@ -1,10 +1,7 @@
 import React from 'react'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
-<<<<<<< HEAD
-=======
 import { locations } from 'routing/locations'
->>>>>>> 9082ac0... refactor: change the ENS state to support multiple wallets (#1163)
 import {
   TRANSFER_LAND_SUCCESS,
   EDIT_LAND_SUCCESS,
@@ -14,7 +11,6 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-<<<<<<< HEAD
 import { SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
@@ -22,13 +18,10 @@ import {
   SET_COLLECTION_MANAGERS_SUCCESS,
   PUBLISH_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
-=======
->>>>>>> 9082ac0... refactor: change the ENS state to support multiple wallets (#1163)
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
 import Profile from 'components/Profile'
-import TransactionDetail from './TransactionDetail'
-import { locations } from 'routing/locations'
 import { Props } from './Transaction.types'
+import TransactionDetail from './TransactionDetail'
 
 const Transaction = (props: Props) => {
   const { tx } = props
