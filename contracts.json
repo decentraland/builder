@@ -16,6 +16,14 @@
     "ERC721CollectionV2": {
       "source": "files",
       "abiFile": "./src/contracts/ERC721CollectionV2.json"
+    },
+    "ENS": {
+      "source": "files",
+      "abiFile": "./src/contracts/ENS.json"
+    },
+    "ENSResolver": {
+      "source": "files",
+      "abiFile": "./src/contracts/ENSResolver.json"
     }
   }
 }

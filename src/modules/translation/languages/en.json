@@ -356,6 +356,7 @@
     "title": "Download Scene"
   },
   "global": {
+    "approved_tx": "Done",
     "back": "back",
     "blog_post": "blog post",
     "amount": "Amount",
@@ -369,6 +370,7 @@
     "email": "email",
     "error_ocurred": "An error ocurred",
     "eth_address": "ETH address",
+    "finish": "Finish",
     "here": "here",
     "items": "items",
     "learn_more": "Learn more",
@@ -383,8 +385,10 @@
     "or": "or",
     "project": "Scene",
     "read_more": "Read more",
+    "retry_tx": "Retry Tx",
     "save": "Save",
     "send": "Send",
+    "send_tx": "Send Tx",
     "share": "Share",
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
@@ -543,6 +547,7 @@
   "land_detail_page": {
     "transfer": "Transfer",
     "set_operator": "Set Operator",
+    "set_link": "Set Link",
     "build_estate": "Build Estate",
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
@@ -554,6 +559,31 @@
     "operators": "Operators",
     "total_land": "Total Land",
     "empty_land": "Empty Land"
+  },
+  "land_ens_page" : {
+    "loading": "Loading ...",
+    "subtitle": "Assign a name to {name}",
+    "select_names": {
+      "placeholder": "My names",
+      "message": {
+        "choose_name": "Choose a name for your land",
+        "name_available": "This name will work for your land",
+        "name_assigned": "This name has been assigned to this land"
+      }
+    },
+    "set_content": "Set Content",
+    "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver.",
+    "set_name_message": "In order to link this name to your parcel you first need to send 2 transactions.",
+    "set_resolver": "Set Resolver",
+    "set_resolver_explanation": "The Resolver is a Smart Contract responsible for the process of translating names into addresses.",
+    "empty_options_message": "You don't have any available names. To assign a name to your LAND, you first need to claim it.",
+    "claim_new_name": "Claim a new name",
+    "not_redirected": "If you are not redirected",
+    "submit_message": {
+      "success": "Name set properly to your land"
+    },
+    "title": "Assign Name",
+    "waiting_confirmation_tx": "Waiting Confirmation from TX"
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",
@@ -715,7 +745,9 @@
     "added_collection_managers": "Added {count} {count, plural, one {collaborator} other {collaborators}} on the collection {name}",
     "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
     "set_collection_on_sale": "Set the collection {name} on sale",
-    "unset_collection_on_sale": "Removed the collection {name} from being on sale"
+    "unset_collection_on_sale": "Removed the collection {name} from being on sale",
+    "set_ens_content": "Setting redirection content for the name \"{name}\" on {land_link}.",
+    "set_ens_resolver": "Setting resolver for the name \"{name}\"."
   },
   "transfer_page": {
     "title": "Transfer",

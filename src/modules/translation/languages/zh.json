@@ -350,6 +350,7 @@
     "title": "下载场景"
   },
   "global": {
+    "approved_tx": "完成了",
     "back": "返回",
     "blog_post": "博客",
     "cancel": "取消",
@@ -361,6 +362,7 @@
     "email": "email",
     "error_ocurred": "出错了",
     "eth_address": "ETH 地址",
+    "finish": "完",
     "here": "这里",
     "items": "模型",
     "learn_more": "更多",
@@ -374,8 +376,10 @@
     "or": "或",
     "project": "场景",
     "read_more": "阅读更多",
+    "retry_tx": "重试发送",
     "save": "保存",
     "send": "发送",
+    "send_tx": "发送Tx",
     "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
     "sign_in": "登录",
@@ -505,6 +509,7 @@
     "transfer": "转移",
     "edit": "编辑",
     "set_operator": "设定操作者",
+    "set_link": "设定连结",
     "build_estate": "建立产业",
     "add_or_remove_parcels": "添加或删除地块",
     "dissolve_estate": "解散产业",
@@ -516,6 +521,31 @@
     "operators": "操作者",
     "total_land": "总土地",
     "empty_land": "空地"
+  },
+  "land_ens_page" : {
+    "loading": "载入中...",
+    "subtitle": "给...分配一个名字 {name}",
+    "select_names": {
+      "placeholder": "我的名字是",
+      "message": {
+        "choose_name": "选择这片土地的名称",
+        "name_available": "这个名字会为你的土地工作",
+        "name_assigned": "这个名字已经分配给这片土地"
+      }
+    },
+    "set_content": "设定内容",
+    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "set_name_message": "关于他们为什么需要批准的简要说明。",
+    "set_resolver": "设置解析器",
+    "set_resolver_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "empty_options_message": "您没有可用的名称。 要为您的LAND分配名称，您首先需要声明它。",
+    "claim_new_name": "申请新名字",
+    "not_redirected": "如果您未重定向",
+    "submit_message": {
+      "success": "名称正确设置到您的土地"
+    },
+    "title": "分配名称",
+    "waiting_confirmation_tx": "来自TX的等待确认"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
@@ -707,7 +737,9 @@
     "added_collection_managers": "在集合{name}上添加了{count} {count，复数，一个{collaborator}其他{collaborators}}",
     "removed_collection_managers": "删除了集合{name}的{count} {count，复数，一个{collaborator}其他{collaborators}}",
     "set_collection_on_sale": "设置要出售的收藏集{name}",
-    "unset_collection_on_sale": "已将集合{name}从出售中移除"
+    "unset_collection_on_sale": "已将集合{name}从出售中移除",
+    "set_ens_resolver": "为名称\"{name}\"设置解析器",
+    "set_ens_content": "在{land_link}上为名称\"{name}\"设置重定向内容。"
   },
   "transfer_page": {
     "title": "转移",
