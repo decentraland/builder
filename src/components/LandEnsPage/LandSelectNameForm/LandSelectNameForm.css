@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .LandSelectNameForm.ui.form {
   width: 100%;
 }
@@ -31,12 +30,12 @@
   margin-top: 8px;
 }
 
-.select-names,
-.select-names .menu.visible {
+.LandSelectNameForm .select-names,
+.LandSelectNameForm .select-names .menu.visible {
   width: 100%;
 }
 
-.select-names .ui.dropdown {
+.LandSelectNameForm .select-names .ui.dropdown {
   display: flex;
   align-items: center;
   padding: 6px 10px 6px 0;
@@ -44,19 +43,20 @@
   color: var(--secondary-text);
 }
 
-.select-names .ui.sub.header {
+.LandSelectNameForm .select-names .ui.sub.header {
   text-transform: none;
 }
 
-.select-names .ui.dropdown .text {
+.LandSelectNameForm .select-names .ui.dropdown .text {
   flex: 1 0 auto;
   text-transform: none;
   color: var(--text);
 }
 
-.select-names .ui.dropdown > .text:not(.default) {
+.LandSelectNameForm .select-names .ui.dropdown > .text:not(.default) {
   font-size: 21px;
 }
 
-.select-names .ui.dropdown .dropdown.icon {
+.LandSelectNameForm .select-names .ui.dropdown .dropdown.icon {
   color: var(--text);
+}

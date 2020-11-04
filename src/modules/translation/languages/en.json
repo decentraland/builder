@@ -356,11 +356,7 @@
     "title": "Download Scene"
   },
   "global": {
-<<<<<<< HEAD
     "approved_tx": "Approved",
-=======
-    "approved_tx": "Done",
->>>>>>> master
     "back": "back",
     "blog_post": "blog post",
     "amount": "Amount",
@@ -551,11 +547,7 @@
   "land_detail_page": {
     "transfer": "Transfer",
     "set_operator": "Set Operator",
-<<<<<<< HEAD
     "assign_name": "Assign name",
-=======
-    "set_link": "Set Link",
->>>>>>> master
     "build_estate": "Build Estate",
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
@@ -571,34 +563,17 @@
     "empty_land": "Empty Land"
   },
   "land_ens_page" : {
-<<<<<<< HEAD
     "title": "Assign Name",
     "assign_name_title": "Assign {name}",
     "subtitle": "Assign a name to {land}",
     "set_content": "Set Content",
     "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver.",
     "set_name_message": "In order to set this name to your parcel you first need to send 2 transactions.",
-=======
-    "loading": "Loading ...",
-    "subtitle": "Assign a name to {name}",
-    "select_names": {
-      "placeholder": "My names",
-      "message": {
-        "choose_name": "Choose a name for your land",
-        "name_available": "This name will work for your land",
-        "name_assigned": "This name has been assigned to this land"
-      }
-    },
-    "set_content": "Set Content",
-    "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver.",
-    "set_name_message": "In order to link this name to your parcel you first need to send 2 transactions.",
->>>>>>> master
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "The Resolver is a Smart Contract responsible for the process of translating names into addresses.",
     "empty_options_message": "You don't have any available names. To assign a name to your LAND, you first need to claim it.",
     "claim_new_name": "Claim a new name",
     "not_redirected": "If you are not redirected",
-<<<<<<< HEAD
     "select_names": {
       "title": "My names",
       "placeholder": "Choose a name...",
@@ -607,13 +582,6 @@
         "name_assigned": "This name has been assigned to this land"
       }
     }
-=======
-    "submit_message": {
-      "success": "Name set properly to your land"
-    },
-    "title": "Assign Name",
-    "waiting_confirmation_tx": "Waiting Confirmation from TX"
->>>>>>> master
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",

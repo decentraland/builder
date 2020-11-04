@@ -50,7 +50,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
           <p className="message">{t('land_ens_page.set_name_message')}</p>
         </Row>
         <Row>
-          <div className={isSetResolverButtonDisabled ? 'box boxDisabled' : 'box'}>
+          <div className={isSetResolverButtonDisabled ? 'box box-disabled' : 'box'}>
             <h3>{t('land_ens_page.set_resolver')}</h3>
             <div className="messageBox">
               <p>{t('land_ens_page.set_resolver_explanation')}</p>
@@ -77,9 +77,9 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
           </div>
         </Row>
         <Row>
-          <div className={isSetContentButtonDisabled ? 'box boxDisabled' : 'box'}>
+          <div className={isSetContentButtonDisabled ? 'box box-disabled' : 'box'}>
             <h3>{t('land_ens_page.set_content')}</h3>
-            <div className="messageBox">
+            <div className="message-box">
               <p>{t('land_ens_page.set_content_explanation')}</p>
               <Button
                 type="submit"
@@ -103,7 +103,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
             </div>
           </div>
         </Row>
-        <Row className="confirmationButtons">
+        <Row className="confirmation-buttons">
           <Button onClick={this.handleBack} disabled={hasData}>
             {t('global.back')}
           </Button>

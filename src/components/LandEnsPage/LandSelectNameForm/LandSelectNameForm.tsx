@@ -7,13 +7,11 @@ import { findBySubdomain, isEqualContent } from 'modules/ens/utils'
 import { Props, State } from './LandSelectNameForm.types'
 import './LandSelectNameForm.css'
 
-
 export default class LandSelectNameForm extends React.PureComponent<Props, State> {
   state: State = {
     selectedSubdomain: ''
   }
 
-<<<<<<< HEAD
   handleChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { onFetchENS, land } = this.props
     const selectedSubdomain = data.value as string
@@ -35,7 +33,6 @@ export default class LandSelectNameForm extends React.PureComponent<Props, State
     const selectedENS = findBySubdomain(ensList, selectedSubdomain)
 
     const isButtonDisabled: boolean = !selectedENS || isEqualContent(selectedENS, land)
-
 
     return (
       <Form className="LandSelectNameForm">

@@ -5,11 +5,11 @@ import { namehash } from '@ethersproject/hash'
 import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
-
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
+import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import {
   FETCH_ENS_REQUEST,
@@ -47,7 +47,7 @@ function* handleConnectWallet() {
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { subdomain, land } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getCurrentAddress()
     const address = from.toString()
     const nodehash = namehash(subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
@@ -113,7 +113,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
 function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
   const { subdomain } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getCurrentAddress()
     const nodehash = namehash(subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
 
@@ -133,7 +133,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
 function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
   const { subdomain, land } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getEth()
+    const [eth, from]: [Eth, Address] = yield getCurrentAddress()
     const nodehash = namehash(subdomain)
     const resolverContract = new ENSResolver(eth, Address.fromString(ENS_RESOLVER_ADDRESS))
     const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
@@ -167,20 +167,4 @@ function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchDomainListFailure(ensError))
   }
-}
-
-function* getEth() {
-  const eth = Eth.fromCurrentProvider()
-  if (!eth) {
-    throw new Error('Wallet not found')
-  }
-
-  const fromAddress = yield select(getAddress)
-  if (!fromAddress) {
-    throw new Error(`Invalid from address: ${fromAddress}`)
-  }
-
-  const from = Address.fromString(fromAddress)
-
-  return [eth, from]
 }

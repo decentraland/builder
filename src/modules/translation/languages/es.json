@@ -349,11 +349,7 @@
     "title": "Descargar Escena"
   },
   "global": {
-<<<<<<< HEAD
     "approved_tx": "Aprobada",
-=======
-    "approved_tx": "Tx Aprobada",
->>>>>>> master
     "back": "volver",
     "blog_post": "blog post",
     "amount": "Cantidad",
@@ -512,11 +508,7 @@
   "land_detail_page": {
     "transfer": "Transferir",
     "set_operator": "Configurar Operador",
-<<<<<<< HEAD
     "assign_name": "Asignar nombre",
-=======
-    "set_link": "Establece tu Enlace",
->>>>>>> master
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",
@@ -532,20 +524,8 @@
     "empty_land": "Tierras Vacias"
   },
   "land_ens_page" : {
-<<<<<<< HEAD
     "title": "Asigna un Nombre",
     "subtitle": "Asigna un nombre a {land}",
-=======
-    "subtitle": "Asigna un nombre a {name}",
-    "select_names": {
-      "placeholder": "Mis nombres",
-      "message": {
-        "choose_name": "Click aquí para reclamar un nuevo nombre",
-        "name_available": "Este nombre funcionara bien para tu tierra",
-        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
-      }
-    },
->>>>>>> master
     "set_content": "Establecer Contenido",
     "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones.",
     "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
@@ -554,7 +534,6 @@
     "empty_options_message": "No tienes nombres disponibles. Para asignar un nuevo nombre a tu LAND, necesitas reclamar uno",
     "claim_new_name": "Reclamar un nuevo nombre",
     "not_redirected": "Si no estas siendo redirigido",
-<<<<<<< HEAD
     "select_names": {
       "title": "Mis nombres",
       "placeholder": "Selecciona un nombre",
@@ -563,13 +542,6 @@
         "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
       }
     }
-=======
-    "submit_message": {
-      "success": "Nombre configurado correctamente para su tierra"
-    },
-    "title": "Asigna un Nombre",
-    "waiting_confirmation_tx": "Esperando Confirmación de Tx"
->>>>>>> master
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",
