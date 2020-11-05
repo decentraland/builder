@@ -26,5 +26,6 @@ export const locations = {
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
   collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
   itemEditor: (options: { itemId?: string; collectionId?: string } = {}) =>
-    injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection' }, options)
+    injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection' }, options),
+  names: (options: PaginationOptions = {}) => injectPagination('/names', options)
 }
