@@ -416,7 +416,8 @@
   "navigation": {
     "scenes": "Scenes",
     "land": "Land",
-    "avatar": "Wearables"
+    "avatar": "Wearables",
+    "names": "Names"
   },
   "list": {
     "two": "{first} and {second}",
