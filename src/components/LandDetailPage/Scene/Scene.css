@@ -54,7 +54,7 @@
 .Scene .stat {
   display: flex;
   flex-direction: column;
-  width: 150px;
+  width: 128px;
   margin-right: 32px;
   overflow: hidden;
   text-overflow: ellipsis;

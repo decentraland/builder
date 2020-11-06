@@ -15,6 +15,7 @@
 }
 
 .DeploymentDetail .atlas-wrapper {
+  flex: none;
   width: 96px;
   height: 64px;
   background-color: var(--card);
@@ -38,11 +39,8 @@
 .DeploymentDetail .stat {
   display: flex;
   flex-direction: column;
-  min-width: 150px;
-}
-
-.DeploymentDetail .stat + .stat {
-  margin-left: 32px;
+  min-width: 128px;
+  margin-right: 32px;
 }
 
 .DeploymentDetail .status {
