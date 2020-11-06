@@ -12,6 +12,7 @@ export type Props = {
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
   onNavigate: (path: string) => void
+  onReplace: (path: string) => void
   onOpenModal: typeof openModal
   projects: ProjectState['data']
 }
@@ -24,5 +25,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'ensList' | 'parcelsAvailableToBuildEstates' | 'deploymentsByCoord' | 'projects' | 'landTiles'>
-export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onReplace'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>

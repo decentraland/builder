@@ -57,13 +57,13 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   handleClick = (x: number, y: number) => {
-    const { deploymentsByCoord, projects, onNavigate, landTiles } = this.props
+    const { deploymentsByCoord, projects, onNavigate, onReplace, landTiles } = this.props
     const id = coordsToId(x, y)
     const deployment = deploymentsByCoord[id]
     if (deployment && deployment.projectId && deployment.projectId in projects) {
       onNavigate(locations.sceneDetail(deployment.projectId))
     } else if (id in landTiles) {
-      onNavigate(locations.landDetail(landTiles[id].land.id))
+      onReplace(locations.landDetail(landTiles[id].land.id))
     }
   }
 

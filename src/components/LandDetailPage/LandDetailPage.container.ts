@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { getLandId } from 'modules/location/selectors'
@@ -22,6 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
+  onReplace: path => dispatch(replace(path)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
