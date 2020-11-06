@@ -962,5 +962,16 @@
       "top_head": "Top Head",
       "upper_body": "Upper Body"
     }
+  },
+  "time": {
+    "hours": "{amount}h",
+    "minutes": "{amount}m",
+    "seconds": "{amount}s"
+  },
+  "analytics": {
+    "users": "Weekly Users",
+    "sessions": "Weekly Sessions",
+    "median_session_time": "Med. Session Time",
+    "max_concurrent_users": "Peak Users"
   }
 }

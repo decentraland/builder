@@ -1,10 +1,10 @@
 import { builder } from 'lib/api/builder'
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, takeEvery } from 'redux-saga/effects'
 import { fetchSceneStatsFailure, FetchSceneStatsRequestAction, fetchSceneStatsSuccess, FETCH_SCENE_STATS_REQUEST } from './action'
 import { WeeklyStats } from './types'
 
 export function* statsSaga() {
-  yield takeLatest(FETCH_SCENE_STATS_REQUEST, handleFetchSceneStatsRequest)
+  yield takeEvery(FETCH_SCENE_STATS_REQUEST, handleFetchSceneStatsRequest)
 }
 
 function* handleFetchSceneStatsRequest(action: FetchSceneStatsRequestAction) {

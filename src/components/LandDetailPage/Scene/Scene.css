@@ -16,6 +16,7 @@
 }
 
 .Scene .thumbnail {
+  flex: 1 0 auto;
   width: 96px;
   height: 64px;
   background-size: cover;
@@ -45,7 +46,6 @@
   font-style: normal;
   line-height: 1.6;
   letter-spacing: normal;
-  width: 240px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -54,11 +54,11 @@
 .Scene .stat {
   display: flex;
   flex-direction: column;
-  min-width: 96px;
-}
-
-.Scene .stat + .stat {
-  margin-left: 32px;
+  width: 150px;
+  margin-right: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: none;
 }
 
 .Scene .ui.dropdown {

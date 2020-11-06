@@ -951,5 +951,16 @@
       "top_head": "Cabeza",
       "upper_body": "Torso"
     }
+  },
+  "time": {
+    "hours": "{amount}h",
+    "minutes": "{amount}m",
+    "seconds": "{amount}s"
+  },
+  "analytics": {
+    "users": "Usuarios Semanales",
+    "sessions": "Sesiones Semanales",
+    "median_session_time": "Tiempo de Sesion",
+    "max_concurrent_users": "Usuarios Concurrentes"
   }
 }

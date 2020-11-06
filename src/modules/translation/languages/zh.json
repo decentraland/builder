@@ -948,5 +948,16 @@
       "top_head": "头顶",
       "upper_body": "上半身"
     }
+  },
+  "time": {
+    "hours": "{amount}小时",
+    "minutes": "{amount}分钟",
+    "seconds": "{amount}秒"
+  },
+  "analytics": {
+    "users": "每周用户",
+    "sessions": "每周会议",
+    "median_session_time": "会话时间中位数",
+    "max_concurrent_users": "高峰用户"
   }
 }

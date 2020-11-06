@@ -38,7 +38,7 @@
 .DeploymentDetail .stat {
   display: flex;
   flex-direction: column;
-  min-width: 96px;
+  min-width: 150px;
 }
 
 .DeploymentDetail .stat + .stat {

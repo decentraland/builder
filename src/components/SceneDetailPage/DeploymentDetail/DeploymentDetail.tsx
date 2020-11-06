@@ -9,6 +9,7 @@ import { getStatus } from 'modules/deployment/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
 import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import SceneStats from 'components/SceneStats'
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
   highlightLayer: Layer = (x, y) => {
@@ -40,10 +41,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
           </div>
           <div className="secondary-text">{t('scene_detail_page.status')}</div>
         </div>
-        <div className="stat">
-          <div className="title">{deployment.base}</div>
-          <div className="secondary-text">{t('scene_detail_page.location')}</div>
-        </div>
+        <SceneStats deployment={deployment} />
         <Dropdown
           trigger={
             <Button basic>

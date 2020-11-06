@@ -1,0 +1,31 @@
+.Stats {
+  display: flex;
+  flex-direction: column;
+  min-width: 96px;
+  overflow: hidden;
+}
+
+.Stats .value {
+  position: relative;
+  height: 24px;
+  font-size: 15px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.6;
+  letter-spacing: normal;
+  width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Stats .value .ui.loader.active {
+  position: relative;
+  left: 8px;
+}
+
+.Stats .label {
+  text-transform: uppercase;
+  color: var(--secondary-text);
+}
