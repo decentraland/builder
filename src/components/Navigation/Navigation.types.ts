@@ -10,6 +10,7 @@ export enum NavigationTab {
 export type Props = {
   children?: React.ReactNode
   activeTab?: NavigationTab
+  isFullscreen?: boolean
   onNavigate: (path: string) => void
 }
 

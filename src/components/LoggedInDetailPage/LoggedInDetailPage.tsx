@@ -13,6 +13,7 @@ export default class LoggedInDetailPage extends React.PureComponent<Props> {
     className: '',
     isPageFullscreen: false,
     isFooterFullscreen: false,
+    isNavigationFullscreen: false,
     hasNavigation: true,
     isLoading: false
   }
@@ -26,12 +27,22 @@ export default class LoggedInDetailPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { activeTab, className, hasNavigation, isPageFullscreen, isFooterFullscreen, isLoggedIn, isLoggingIn, children } = this.props
+    const {
+      activeTab,
+      className,
+      hasNavigation,
+      isPageFullscreen,
+      isFooterFullscreen,
+      isNavigationFullscreen,
+      isLoggedIn,
+      isLoggingIn,
+      children
+    } = this.props
     const isLoading = isLoggingIn || this.props.isLoading
     return (
       <>
         <Navbar isFullscreen />
-        {hasNavigation ? <Navigation activeTab={activeTab} /> : null}
+        {hasNavigation ? <Navigation activeTab={activeTab} isFullscreen={isNavigationFullscreen} /> : null}
         <Page className={`LoggedInDetailPage ${className}`} isFullscreen={isPageFullscreen}>
           {isLoading ? this.renderLoading() : null}
           {!isLoggedIn && !isLoading ? this.renderLogin() : null}

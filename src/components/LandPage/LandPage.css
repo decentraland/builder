@@ -48,8 +48,8 @@
   font-weight: 500;
 }
 
-.LandPage.atlas-view .dcl.tabs {
-  margin-bottom: 0px;
+.LandPage.atlas-view {
+  margin-top: 0px;
 }
 
 .LandPage.atlas-view .filters {
@@ -57,8 +57,8 @@
   left: 0px;
   right: 0px;
   z-index: 10;
-  height: 60px;
-  padding-top: 15px;
+  height: 78px;
+  padding-top: 24px;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   background-color: rgba(22, 20, 26, 0.8);
