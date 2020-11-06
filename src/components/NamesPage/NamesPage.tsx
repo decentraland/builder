@@ -17,7 +17,7 @@ import {
   DropdownProps,
   PaginationProps
 } from 'decentraland-ui'
-
+import * as contentHash from 'content-hash'
 import { Address } from 'web3x-es/address'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -29,17 +29,32 @@ import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/utils'
 import './NamesPage.css'
 import { ENS } from 'modules/ens/types'
+import { ipfs } from 'lib/api/ipfs'
 
 const PAGE_SIZE = 12
 
 export default class NamesPage extends React.PureComponent<Props, State> {
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
 
-  componentDidMount() {
-    const { onFetchNames, address } = this.props
-    if (address) {
-      onFetchNames()
-    }
+  computeEnsByLands = async () => {
+    const { ensByWallet: ensList, landsByWallet: landList } = this.props
+
+    const contentHashes = await Promise.all(
+      landList.map(async land => {
+        const ipfsHash = await ipfs.uploadRedirectionFile(land)
+        const landHash = await contentHash.fromIpfs(ipfsHash)
+        const { id, name, type } = land
+        return { content: `0x${landHash}`, id, name, type }
+      })
+    )
+    const result = ensList.map(ens => {
+      const land = contentHashes.find(landhash => landhash.content === ens.content) || {}
+      return {
+        ...ens,
+        land
+      }
+    })
+    return result
   }
 
   renderSortDropdown = () => {
@@ -86,14 +101,11 @@ export default class NamesPage extends React.PureComponent<Props, State> {
     return <Loader size="large" active />
   }
 
-  renderNames() {
-    const { names, totalPages, page, sortBy } = this.props
-    if (!names) {
-      return this.renderLoading()
-    }
+  async renderEnsList() {
+    const { ensByWallet, totalPages, page, sortBy } = this.props
 
-    const total = names.length
-    const paginatedItems = names
+    const total = ensByWallet.length
+    const paginatedItems = ensByWallet
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
           case SortBy.NEWEST: {
@@ -116,7 +128,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
             <Row height={30}>
               <Column>
                 <Row>
-                  <Header sub>{t('land_page.results', { count: names.length.toLocaleString() })}</Header>
+                  <Header sub>{t('land_page.results', { count: ensByWallet.length.toLocaleString() })}</Header>
                   {totalPages > 1 ? (
                     <>
                       <div className="arrow prev" onClick={() => console.log('this.handlePrev')}></div>
@@ -127,7 +139,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right">
                 <Row>
-                  {names.length > 1 ? this.renderSortDropdown() : null}
+                  {ensByWallet.length > 1 ? this.renderSortDropdown() : null}
                   <Button basic className="create-scene" onClick={() => alert('must be implemented')}>
                     <BuilderIcon name="add-active" />
                   </Button>
@@ -138,7 +150,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
         </div>
         <Container>
           <Section className="table-section">
-            {names.length > 0 ? (
+            {ensByWallet.length > 0 ? (
               <Table basic="very">
                 <Table.Header>
                   <Table.Row>
@@ -149,37 +161,37 @@ export default class NamesPage extends React.PureComponent<Props, State> {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {paginatedItems.map((name: ENS) => {
+                  {paginatedItems.map((ens: ENS) => {
                     const zero = Address.ZERO.toString()
-                    const beingAssigned = name.content !== zero
-                    const assignedTo = beingAssigned ? name.subdomain : '--'
+                    const beingAssigned = ens.content !== zero
+                    const assignedTo = beingAssigned ? ens.subdomain : '--'
                     return (
                       <Table.Row className="TableRow">
                         <Table.Cell>
                           <Row>
-                            <Column className="name">{name.subdomain}</Column>
+                            <Column className="name">{ens.subdomain}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="name">{beingAssigned ? 'Yes' : 'No'}</Column>
+                            <Column className="beingAssigned">{beingAssigned ? 'Yes' : 'No'}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="name">{assignedTo}</Column>
+                            <Column className="assignedTo">{assignedTo}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="name">
+                            <Column>
                               {!beingAssigned ? (
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   Assign to
                                 </Button>
                               ) : null}
                             </Column>
-                            <Column className="name">
+                            <Column>
                               {beingAssigned ? (
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   Re-Assign
@@ -218,7 +230,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
           </Tabs>
           {!isLoggedIn ? this.renderLogin() : null}
           {isLoggedIn && isLoading ? this.renderLoading() : null}
-          {isLoggedIn && !isLoading ? this.renderNames() : null}
+          {isLoggedIn && !isLoading ? this.renderEnsList() : null}
         </Page>
         <Footer />
       </>

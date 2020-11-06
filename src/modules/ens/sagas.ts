@@ -2,10 +2,9 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
-import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects'
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
@@ -154,14 +153,31 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
 function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
   try {
-    const address = yield select(getAddress)
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const address = from.toString()
+    const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
     const domains: string[] = yield call(() => marketplace.fetchDomainList(address))
-    const ensList: ENS[] = domains.map(subdomain => ({
-      address,
-      subdomain: subdomain.toLowerCase(),
-      resolver: Address.ZERO.toString(),
-      content: Address.ZERO.toString()
-    }))
+    console.log({ address, from })
+
+    console.log({ domains })
+    const ensList: ENS[] = []
+    for (let i = 0; i < domains.length; i++) {
+      const subdomain = yield call(() => domains[i].toLowerCase())
+      console.log('subdomain: ', subdomain)
+      const nodehash = namehash(subdomain)
+      const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
+      const resolver = resolverAddress.toString()
+
+      const resolverContract = new ENSResolver(eth, resolverAddress)
+      const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
+
+      ensList.push({
+        address,
+        subdomain,
+        resolver,
+        content
+      })
+    }
     yield put(fetchDomainListSuccess(ensList))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
