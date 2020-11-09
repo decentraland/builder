@@ -17,7 +17,6 @@ import {
   DropdownProps,
   PaginationProps
 } from 'decentraland-ui'
-import * as contentHash from 'content-hash'
 import { Address } from 'web3x-es/address'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -29,33 +28,11 @@ import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/utils'
 import './NamesPage.css'
 import { ENS } from 'modules/ens/types'
-import { ipfs } from 'lib/api/ipfs'
 
 const PAGE_SIZE = 12
 
 export default class NamesPage extends React.PureComponent<Props, State> {
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
-
-  computeEnsByLands = async () => {
-    const { ensByWallet: ensList, landsByWallet: landList } = this.props
-
-    const contentHashes = await Promise.all(
-      landList.map(async land => {
-        const ipfsHash = await ipfs.uploadRedirectionFile(land)
-        const landHash = await contentHash.fromIpfs(ipfsHash)
-        const { id, name, type } = land
-        return { content: `0x${landHash}`, id, name, type }
-      })
-    )
-    const result = ensList.map(ens => {
-      const land = contentHashes.find(landhash => landhash.content === ens.content) || {}
-      return {
-        ...ens,
-        land
-      }
-    })
-    return result
-  }
 
   renderSortDropdown = () => {
     const { sortBy } = this.props
@@ -101,7 +78,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
     return <Loader size="large" active />
   }
 
-  async renderEnsList() {
+  renderEnsList() {
     const { ensByWallet, totalPages, page, sortBy } = this.props
 
     const total = ensByWallet.length
@@ -154,19 +131,19 @@ export default class NamesPage extends React.PureComponent<Props, State> {
               <Table basic="very">
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell width="2">Name</Table.HeaderCell>
-                    <Table.HeaderCell width="2">Being Assigned</Table.HeaderCell>
-                    <Table.HeaderCell width="2">Assigned to</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_page.table.name')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_page.table.being_assigned')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_page.table.assigned_to')}</Table.HeaderCell>
                     <Table.HeaderCell width="2"></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {paginatedItems.map((ens: ENS) => {
+                  {paginatedItems.map((ens: ENS, index) => {
                     const zero = Address.ZERO.toString()
                     const beingAssigned = ens.content !== zero
                     const assignedTo = beingAssigned ? ens.subdomain : '--'
                     return (
-                      <Table.Row className="TableRow">
+                      <Table.Row className="TableRow" key={`tableRow${index}`}>
                         <Table.Cell>
                           <Row>
                             <Column className="name">{ens.subdomain}</Column>
@@ -174,7 +151,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="beingAssigned">{beingAssigned ? 'Yes' : 'No'}</Column>
+                            <Column className="beingAssigned">{beingAssigned ? t('global.yes') : t('global.no')}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
@@ -187,14 +164,14 @@ export default class NamesPage extends React.PureComponent<Props, State> {
                             <Column>
                               {!beingAssigned ? (
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
-                                  Assign to
+                                  {t('ens_page.button.assign')}
                                 </Button>
                               ) : null}
                             </Column>
                             <Column>
                               {beingAssigned ? (
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
-                                  Re-Assign
+                                  {t('ens_page.button.re_assign')}
                                 </Button>
                               ) : null}
                             </Column>
@@ -209,7 +186,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
           </Section>
         </Container>
         <Container>
-          {total !== null && totalPages !== null && (
+          {total !== null && totalPages !== null && totalPages > 1 && (
             <Pagination firstItem={null} lastItem={null} totalPages={totalPages} activePage={page} onPageChange={this.handlePageChange} />
           )}
         </Container>

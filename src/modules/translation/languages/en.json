@@ -328,6 +328,17 @@
     "title": "Edit",
     "subtitle": "Your are editing {name}."
   },
+  "ens_page": {
+    "table": {
+      "name": "Name",
+      "being_assigned": "Being Assigned",
+      "assigned_to": "Assigned To"
+    },
+    "button": {
+      "assign": "Assign",
+      "re_assign": "Re Assign"
+    }
+  },
   "error_page": {
     "or": "or try",
     "reload": "reloading the page",
