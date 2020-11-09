@@ -80,6 +80,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   renderEnsList() {
     const { ensByWallet, totalPages, page, sortBy } = this.props
+    console.log({ensByWallet})
 
     const total = ensByWallet.length
     const paginatedItems = ensByWallet

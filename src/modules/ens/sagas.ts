@@ -2,9 +2,9 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
-import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
+//import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
@@ -30,9 +30,11 @@ import {
   fetchDomainListFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
+import { getLands } from 'modules/land/selectors'
+import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 
 export function* ensSaga() {
-  yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
+  yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
@@ -153,29 +155,40 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
 function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
   try {
+    const landHashes = []
+    const lands = yield select(getLands)
+    for (let i = 0; i < lands.length; i++) {
+      const land = lands[i]
+      const ipfshash = yield call(() => ipfs.uploadRedirectionFile(land))
+      const landHash = yield call(() => contentHash.fromIpfs(ipfshash))
+      landHashes[i] = { hash: `0x${landHash}`, id: land.id }
+    }
+
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const address = from.toString()
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
     const domains: string[] = yield call(() => marketplace.fetchDomainList(address))
-    console.log({ address, from })
 
-    console.log({ domains })
     const ensList: ENS[] = []
     for (let i = 0; i < domains.length; i++) {
       const subdomain = yield call(() => domains[i].toLowerCase())
-      console.log('subdomain: ', subdomain)
       const nodehash = namehash(subdomain)
       const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
       const resolver = resolverAddress.toString()
 
       const resolverContract = new ENSResolver(eth, resolverAddress)
       const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
+      console.log({ content, landHashes })
+      const x = landHashes.find(lh => lh.hash === content)
+      console.log({ x })
+      const landId = x ? x.id : undefined
 
       ensList.push({
         address,
         subdomain,
         resolver,
-        content
+        content,
+        landId
       })
     }
     yield put(fetchDomainListSuccess(ensList))
