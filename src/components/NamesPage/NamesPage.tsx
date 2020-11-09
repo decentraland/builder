@@ -17,7 +17,6 @@ import {
   DropdownProps,
   PaginationProps
 } from 'decentraland-ui'
-import { Address } from 'web3x-es/address'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Navbar from 'components/Navbar'
@@ -80,7 +79,6 @@ export default class NamesPage extends React.PureComponent<Props, State> {
 
   renderEnsList() {
     const { ensByWallet, totalPages, page, sortBy } = this.props
-    console.log({ensByWallet})
 
     const total = ensByWallet.length
     const paginatedItems = ensByWallet
@@ -140,9 +138,6 @@ export default class NamesPage extends React.PureComponent<Props, State> {
                 </Table.Header>
                 <Table.Body>
                   {paginatedItems.map((ens: ENS, index) => {
-                    const zero = Address.ZERO.toString()
-                    const beingAssigned = ens.content !== zero
-                    const assignedTo = beingAssigned ? ens.subdomain : '--'
                     return (
                       <Table.Row className="TableRow" key={`tableRow${index}`}>
                         <Table.Cell>
@@ -152,25 +147,25 @@ export default class NamesPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="beingAssigned">{beingAssigned ? t('global.yes') : t('global.no')}</Column>
+                            <Column className="beingAssigned">{ens.landId ? ens.landId : t('global.no')}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="assignedTo">{assignedTo}</Column>
+                            <Column className="assignedTo">{ens.landId ? ens.subdomain : '--'}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
                             <Column>
-                              {!beingAssigned ? (
+                              {!ens.landId ? (
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   {t('ens_page.button.assign')}
                                 </Button>
                               ) : null}
                             </Column>
                             <Column>
-                              {beingAssigned ? (
+                              {ens.landId ? (
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   {t('ens_page.button.re_assign')}
                                 </Button>

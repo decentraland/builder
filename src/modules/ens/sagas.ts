@@ -4,7 +4,6 @@ import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
-//import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
@@ -178,9 +177,7 @@ function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
 
       const resolverContract = new ENSResolver(eth, resolverAddress)
       const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
-      console.log({ content, landHashes })
       const x = landHashes.find(lh => lh.hash === content)
-      console.log({ x })
       const landId = x ? x.id : undefined
 
       ensList.push({
