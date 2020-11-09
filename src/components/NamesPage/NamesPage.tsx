@@ -2,8 +2,6 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import {
   Button,
-  Page,
-  Tabs,
   Center,
   Loader,
   Table,
@@ -19,14 +17,14 @@ import {
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import Navbar from 'components/Navbar'
-import Footer from 'components/Footer'
 import { Props, State } from './NamesPage.types'
 import BuilderIcon from 'components/Icon'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/utils'
 import './NamesPage.css'
 import { ENS } from 'modules/ens/types'
+import { NavigationTab } from 'components/Navigation/Navigation.types'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
 
 const PAGE_SIZE = 12
 
@@ -191,6 +189,16 @@ export default class NamesPage extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const { isLoading } = this.props
+    return (
+      <LoggedInDetailPage className={`NamesPage view`} activeTab={NavigationTab.NAMES} isLoading={isLoading} isPageFullscreen={true}>
+        {this.renderEnsList()}
+      </LoggedInDetailPage>
+    )
+  }
+
+  /*
+  render() {
     const { isLoggedIn, isLoading, onNavigate } = this.props
     return (
       <>
@@ -209,4 +217,5 @@ export default class NamesPage extends React.PureComponent<Props, State> {
       </>
     )
   }
+  */
 }
