@@ -53,15 +53,15 @@ export type SetENSContentRequestAction = ReturnType<typeof setENSContentRequest>
 export type SetENSContentSuccessAction = ReturnType<typeof setENSContentSuccess>
 export type SetENSContentFailureAction = ReturnType<typeof setENSContentFailure>
 
-// Get a Domain List (list of names) owned by the current account
-export const FETCH_DOMAIN_LIST_REQUEST = '[Request] Fetch Domain List'
-export const FETCH_DOMAIN_LIST_SUCCESS = '[Success] Fetch Domain List'
-export const FETCH_DOMAIN_LIST_FAILURE = '[Failure] Fetch Domain List'
+// Get a ENS List (list of names) owned by the current account
+export const FETCH_ENS_LIST_REQUEST = '[Request] Fetch ENS List'
+export const FETCH_ENS_LIST_SUCCESS = '[Success] Fetch ENS List'
+export const FETCH_ENS_LIST_FAILURE = '[Failure] Fetch ENS List'
 
-export const fetchDomainListRequest = () => action(FETCH_DOMAIN_LIST_REQUEST, {})
-export const fetchDomainListSuccess = (ensList: ENS[]) => action(FETCH_DOMAIN_LIST_SUCCESS, { ensList })
-export const fetchDomainListFailure = (error: ENSError) => action(FETCH_DOMAIN_LIST_FAILURE, { error })
+export const fetchENSListRequest = () => action(FETCH_ENS_LIST_REQUEST, {})
+export const fetchENSListSuccess = (ensList: ENS[]) => action(FETCH_ENS_LIST_SUCCESS, { ensList })
+export const fetchENSListFailure = (error: ENSError) => action(FETCH_ENS_LIST_FAILURE, { error })
 
-export type FetchDomainListRequestAction = ReturnType<typeof fetchDomainListRequest>
-export type FetchDomainListSuccessAction = ReturnType<typeof fetchDomainListSuccess>
-export type FetchDomainListFailureAction = ReturnType<typeof fetchDomainListFailure>
+export type FetchENSListRequestAction = ReturnType<typeof fetchENSListRequest>
+export type FetchENSListSuccessAction = ReturnType<typeof fetchENSListSuccess>
+export type FetchENSListFailureAction = ReturnType<typeof fetchENSListFailure>

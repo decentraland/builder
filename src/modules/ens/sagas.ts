@@ -22,11 +22,11 @@ import {
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
-  FETCH_DOMAIN_LIST_REQUEST,
-  FetchDomainListRequestAction,
-  fetchDomainListRequest,
-  fetchDomainListSuccess,
-  fetchDomainListFailure
+  FETCH_ENS_LIST_REQUEST,
+  FetchENSListRequestAction,
+  fetchENSListRequest,
+  fetchENSListSuccess,
+  fetchENSListFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getLands } from 'modules/land/selectors'
@@ -37,11 +37,11 @@ export function* ensSaga() {
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
-  yield takeEvery(FETCH_DOMAIN_LIST_REQUEST, handleFetchDomainListRequest)
+  yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
 }
 
 function* handleConnectWallet() {
-  yield put(fetchDomainListRequest())
+  yield put(fetchENSListRequest())
 }
 
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
@@ -152,7 +152,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
   }
 }
 
-function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
+function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   try {
     const landHashes = []
     const lands = yield select(getLands)
@@ -166,7 +166,7 @@ function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const address = from.toString()
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
-    const domains: string[] = yield call(() => marketplace.fetchDomainList(address))
+    const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
     const ensList: ENS[] = []
     for (let i = 0; i < domains.length; i++) {
@@ -188,9 +188,9 @@ function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
         landId
       })
     }
-    yield put(fetchDomainListSuccess(ensList))
+    yield put(fetchENSListSuccess(ensList))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
-    yield put(fetchDomainListFailure(ensError))
+    yield put(fetchENSListFailure(ensError))
   }
 }

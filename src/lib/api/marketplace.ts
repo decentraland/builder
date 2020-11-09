@@ -26,7 +26,7 @@ type SubdomainQueryResult = {
 }
 
 export class MarketplaceAPI {
-  fetchDomainList = async (address: string | undefined): Promise<string[]> => {
+  fetchENSList = async (address: string | undefined): Promise<string[]> => {
     if (!address) {
       return []
     }
