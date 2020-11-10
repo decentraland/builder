@@ -1,38 +1,42 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
-  FetchSceneStatsFailureAction,
-  FetchSceneStatsRequestAction,
-  FetchSceneStatsSuccessAction,
-  FETCH_SCENE_STATS_FAILURE,
-  FETCH_SCENE_STATS_REQUEST,
-  FETCH_SCENE_STATS_SUCCESS
+  FetchWeeklySceneStatsFailureAction,
+  FetchWeeklySceneStatsRequestAction,
+  FetchWeeklySceneStatsSuccessAction,
+  FETCH_WEEKLY_SCENE_STATS_FAILURE,
+  FETCH_WEEKLY_SCENE_STATS_REQUEST,
+  FETCH_WEEKLY_SCENE_STATS_SUCCESS
 } from './action'
 import { WeeklyStats } from './types'
 
 const INITIAL_STATE: StatsState = {
-  data: {},
+  data: {
+    weekly: {}
+  },
   loading: [],
   error: null
 }
 
 export type StatsState = {
-  data: Record<string, WeeklyStats | null>
+  data: {
+    weekly: Record<string, WeeklyStats | null>
+  }
   loading: LoadingState
   error: string | null
 }
 
-type StatsReducerAction = FetchSceneStatsRequestAction | FetchSceneStatsFailureAction | FetchSceneStatsSuccessAction
+type StatsReducerAction = FetchWeeklySceneStatsRequestAction | FetchWeeklySceneStatsFailureAction | FetchWeeklySceneStatsSuccessAction
 
 export function statsReducer(state = INITIAL_STATE, action: StatsReducerAction) {
   switch (action.type) {
-    case FETCH_SCENE_STATS_REQUEST: {
+    case FETCH_WEEKLY_SCENE_STATS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
     }
 
-    case FETCH_SCENE_STATS_SUCCESS: {
+    case FETCH_WEEKLY_SCENE_STATS_SUCCESS: {
       const { base, stats } = action.payload
       return {
         ...state,
@@ -45,7 +49,7 @@ export function statsReducer(state = INITIAL_STATE, action: StatsReducerAction) 
       }
     }
 
-    case FETCH_SCENE_STATS_FAILURE: {
+    case FETCH_WEEKLY_SCENE_STATS_FAILURE: {
       const { error } = action.payload
       return {
         ...state,

@@ -3,14 +3,15 @@ import { WeeklyStats } from './types'
 
 // Fetch Stats
 
-export const FETCH_SCENE_STATS_REQUEST = '[Request] Fetch scene stats'
-export const FETCH_SCENE_STATS_SUCCESS = '[Success] Fetch scene stats'
-export const FETCH_SCENE_STATS_FAILURE = '[Failure] Fetch scene stats'
+export const FETCH_WEEKLY_SCENE_STATS_REQUEST = '[Request] Fetch weekly scene stats'
+export const FETCH_WEEKLY_SCENE_STATS_SUCCESS = '[Success] Fetch weekly  scene stats'
+export const FETCH_WEEKLY_SCENE_STATS_FAILURE = '[Failure] Fetch weekly  scene stats'
 
-export const fetchSceneStatsRequest = (base: string) => action(FETCH_SCENE_STATS_REQUEST, { base })
-export const fetchSceneStatsSuccess = (base: string, stats: WeeklyStats | null) => action(FETCH_SCENE_STATS_SUCCESS, { base, stats })
-export const fetchSceneStatsFailure = (base: string, error: string) => action(FETCH_SCENE_STATS_FAILURE, { base, error })
+export const fetchWeeklySceneStatsRequest = (base: string) => action(FETCH_WEEKLY_SCENE_STATS_REQUEST, { base })
+export const fetchWeeklySceneStatsSuccess = (base: string, stats: WeeklyStats | null) =>
+  action(FETCH_WEEKLY_SCENE_STATS_SUCCESS, { base, stats })
+export const fetchWeeklySceneStatsFailure = (base: string, error: string) => action(FETCH_WEEKLY_SCENE_STATS_FAILURE, { base, error })
 
-export type FetchSceneStatsRequestAction = ReturnType<typeof fetchSceneStatsRequest>
-export type FetchSceneStatsSuccessAction = ReturnType<typeof fetchSceneStatsSuccess>
-export type FetchSceneStatsFailureAction = ReturnType<typeof fetchSceneStatsFailure>
+export type FetchWeeklySceneStatsRequestAction = ReturnType<typeof fetchWeeklySceneStatsRequest>
+export type FetchWeeklySceneStatsSuccessAction = ReturnType<typeof fetchWeeklySceneStatsSuccess>
+export type FetchWeeklySceneStatsFailureAction = ReturnType<typeof fetchWeeklySceneStatsFailure>
