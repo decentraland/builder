@@ -7,9 +7,10 @@ import SceneStats from './SceneStats'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   stats: getStatsByDeploymentId(state)[ownProps.deployment.id],
-  isLoading: getLoading(state)
-    .filter(action => action.type === FETCH_SCENE_STATS_REQUEST)
-    .some(action => (action as FetchSceneStatsRequestAction).payload.base === ownProps.deployment.base)
+  isLoading: getLoading(state).some(
+    action =>
+      action.type === FETCH_SCENE_STATS_REQUEST && (action as FetchSceneStatsRequestAction).payload.base === ownProps.deployment.base
+  )
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
