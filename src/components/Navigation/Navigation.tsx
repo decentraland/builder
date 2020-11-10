@@ -7,9 +7,9 @@ import { locations } from 'routing/locations'
 
 export default class Navigation extends React.PureComponent<Props> {
   render() {
-    const { activeTab, onNavigate, children } = this.props
+    const { activeTab, onNavigate, isFullscreen, children } = this.props
     return (
-      <Tabs>
+      <Tabs isFullscreen={isFullscreen}>
         {children}
         <Tabs.Tab active={activeTab === NavigationTab.SCENES} onClick={() => onNavigate(locations.root())}>
           {t('navigation.scenes')}

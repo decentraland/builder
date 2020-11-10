@@ -27,6 +27,7 @@ import { ensSaga } from 'modules/ens/sagas'
 import { tileSaga } from 'modules/tile/sagas'
 import { itemSaga } from 'modules/item/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
+import { statsSaga } from 'modules/stats/sagas'
 
 export function* rootSaga() {
   yield all([
@@ -55,6 +56,7 @@ export function* rootSaga() {
     tileSaga(),
     itemSaga(),
     collectionSaga(),
-    ensSaga()
+    ensSaga(),
+    statsSaga()
   ])
 }

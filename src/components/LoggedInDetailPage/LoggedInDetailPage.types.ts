@@ -8,6 +8,7 @@ export type Props = {
   hasNavigation?: boolean
   isPageFullscreen?: boolean
   isFooterFullscreen?: boolean
+  isNavigationFullscreen?: boolean
   isLoading?: boolean
   isLoggingIn: boolean
   isLoggedIn: boolean

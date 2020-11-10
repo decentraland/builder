@@ -187,6 +187,7 @@ export default class LandPage extends React.PureComponent<Props, State> {
         isLoading={isLoading}
         isPageFullscreen={true}
         isFooterFullscreen={view === LandPageView.ATLAS}
+        isNavigationFullscreen={view === LandPageView.ATLAS}
       >
         {this.renderLand()}
       </LoggedInDetailPage>

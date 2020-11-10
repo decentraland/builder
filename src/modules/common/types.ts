@@ -28,6 +28,7 @@ import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/re
 import { ItemState } from 'modules/item/reducer'
 import { CollectionState } from 'modules/collection/reducer'
 import { LocationState } from 'modules/location/reducer'
+import { StatsState } from 'modules/stats/reducer'
 
 export type Vector3 = { x: number; y: number; z: number }
 
@@ -63,6 +64,7 @@ export type RootState = {
   item: ItemState
   collection: CollectionState
   location: LocationState
+  stats: StatsState
 }
 
 export type RootStore = Store<RootState>

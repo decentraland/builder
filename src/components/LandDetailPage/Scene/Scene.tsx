@@ -1,10 +1,10 @@
 import * as React from 'react'
-import Profile from 'components/Profile'
+import { Dropdown, Button, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
+import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
+import SceneStats from 'components/SceneStats'
 import { Props } from './Scene.types'
 import './Scene.css'
-import { Dropdown, Button, Icon } from 'decentraland-ui'
-import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 
 export default class Scene extends React.PureComponent<Props> {
   render() {
@@ -33,12 +33,7 @@ export default class Scene extends React.PureComponent<Props> {
             </div>
           ) : null}
         </div>
-        <div className="stat">
-          <div className="title">
-            <Profile address={deployment.owner} />
-          </div>
-          <div className="secondary-text">Author</div>
-        </div>
+        <SceneStats deployment={deployment} />
         <Dropdown
           trigger={
             <Button basic>

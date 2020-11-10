@@ -51,11 +51,6 @@
   margin-left: 0px;
 }
 
-.LandDetailPage .deployments {
-  max-height: 243px;
-  overflow: auto;
-}
-
 .LandDetailPage .ens-list {
   display: flex;
 }

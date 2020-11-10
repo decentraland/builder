@@ -16,6 +16,7 @@ import { Auth0MigrationResult } from 'modules/auth/types'
 import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
+import { WeeklyStats } from 'modules/stats/types'
 import { authorize, authorizeAuth0 } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
@@ -121,6 +122,22 @@ export type RemoteAsset = {
   metrics: ModelMetrics
   parameters: AssetParameter[]
   actions: AssetAction[]
+}
+
+export type RemoteWeeklyStats = {
+  week: string
+  title: string
+  base: string
+  users: number
+  sessions: number
+  median_session_time: number
+  min_session_time: number
+  average_session_time: number
+  max_session_time: number
+  direct_users: number
+  direct_sessions: number
+  max_concurrent_users: number
+  max_concurrent_users_time: string
 }
 
 /**
@@ -347,6 +364,39 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   }
 
   return { collection, items }
+}
+
+function fromRemoteWeeklyStats(remoteWeeklyStats: RemoteWeeklyStats): WeeklyStats {
+  const {
+    week,
+    title,
+    base,
+    users,
+    sessions,
+    median_session_time,
+    min_session_time,
+    average_session_time,
+    max_session_time,
+    direct_users,
+    direct_sessions,
+    max_concurrent_users,
+    max_concurrent_users_time
+  } = remoteWeeklyStats
+  return {
+    week,
+    title,
+    base,
+    users,
+    sessions,
+    medianSessionTime: median_session_time,
+    minSessionTime: min_session_time,
+    averageSessionTime: average_session_time,
+    maxSessionTime: max_session_time,
+    directUsers: direct_users,
+    directSessions: direct_sessions,
+    maxConcurrentUsers: max_concurrent_users,
+    maxConcurrentUsersTime: max_concurrent_users_time
+  }
 }
 
 export type PoolDeploymentAdditionalFields = {
@@ -590,6 +640,11 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteCollection(collection: Collection) {
     await this.request('delete', `/collections/${collection.id}`, {})
+  }
+
+  async getWeeklyStats(base: string) {
+    const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
+    return fromRemoteWeeklyStats(remoteStats)
   }
 }
 
