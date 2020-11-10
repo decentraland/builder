@@ -94,7 +94,7 @@ function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    const remoteCollection = yield call(() => builder.saveCollection(collection))
+    const { collection: remoteCollection }: { collection: Collection; items: Item[] } = yield call(() => builder.saveCollection(collection))
     const newCollection = { ...collection, ...remoteCollection }
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
