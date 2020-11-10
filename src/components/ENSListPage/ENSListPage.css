@@ -1,58 +1,58 @@
-.NamesPage .ui.pagination {
+.ENSListPage .ui.pagination {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.NamesPage .ui.pagination .item[type='nextItem'],
-.NamesPage .ui.pagination .item[type='prevItem'] {
+.ENSListPage .ui.pagination .item[type='nextItem'],
+.ENSListPage .ui.pagination .item[type='prevItem'] {
   position: absolute;
   background-color: var(--secondary);
 }
 
-.NamesPage .ui.pagination .item[type='prevItem'] {
+.ENSListPage .ui.pagination .item[type='prevItem'] {
   left: 0px;
 }
 
-.NamesPage .ui.pagination .item[type='nextItem'] {
+.ENSListPage .ui.pagination .item[type='nextItem'] {
   right: 0px;
 }
 
-.NamesPage .pagination-section {
+.ENSListPage .pagination-section {
   width: 100%;
 }
 
-.NamesPage .Chip {
+.ENSListPage .Chip {
   padding: 4px;
   height: 14px;
 }
 
-.NamesPage .Chip.grid {
+.ENSListPage .Chip.grid {
   border-radius: 4px 0px 0px 4px;
   margin-left: 20px;
 }
 
-.NamesPage .Chip.atlas {
+.ENSListPage .Chip.atlas {
   border-radius: 0px 4px 4px 0px;
 }
 
-.NamesPage .dcl.tabs {
+.ENSListPage .dcl.tabs {
   margin-bottom: 15px;
 }
 
-.NamesPage .filters {
+.ENSListPage .filters {
   height: 36px;
 }
 
-.NamesPage .filters .ui.header.sub {
+.ENSListPage .filters .ui.header.sub {
   font-weight: 500;
 }
 
-.NamesPage.atlas-view .dcl.tabs {
+.ENSListPage.atlas-view .dcl.tabs {
   margin-bottom: 0px;
 }
 
-.NamesPage.atlas-view .filters {
+.ENSListPage.atlas-view .filters {
   position: absolute;
   left: 0px;
   right: 0px;
@@ -64,7 +64,7 @@
   background-color: rgba(22, 20, 26, 0.8);
 }
 
-.NamesPage .arrow {
+.ENSListPage .arrow {
   width: 30px;
   height: 24px;
   border: solid 1px rgba(115, 110, 125, 0.4);
@@ -74,24 +74,24 @@
   cursor: pointer;
 }
 
-.NamesPage .arrow.prev {
+.ENSListPage .arrow.prev {
   border-radius: 4px 0px 0px 4px;
   margin-left: 24px;
   background-image: url(../../images/back-active.svg);
 }
 
-.NamesPage .arrow.next {
+.ENSListPage .arrow.next {
   border-radius: 0px 4px 4px 0px;
   border-left: none;
   background-image: url(../../images/next-active.svg);
 }
 
-.NamesPage .atlas-wrapper {
+.ENSListPage .atlas-wrapper {
   height: calc(100vh - 186px);
 }
 
-.NamesPage .ui.radio.checkbox:not(.checked) input.hidden ~ label:before,
-.NamesPage .ui.radio.checkbox:not(.checked) input.hidden:focus ~ label:before {
+.ENSListPage .ui.radio.checkbox:not(.checked) input.hidden ~ label:before,
+.ENSListPage .ui.radio.checkbox:not(.checked) input.hidden:focus ~ label:before {
   border: 2px solid var(--secondary-text);
 }
 
@@ -107,6 +107,6 @@
   height: auto !important;
 }
 
-.NamesPage .dcl.center.login-wrapper {
+.ENSListPage .dcl.center.login-wrapper {
   top: 64px;
 }

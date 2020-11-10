@@ -30,7 +30,7 @@ import AvatarPage from 'components/AvatarPage'
 import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
 import ItemEditorPage from 'components/ItemEditorPage'
- import NamesPage from 'components/NamesPage'
+import ENSListPage from 'components/ENSListPage'
 
 import { Props, State } from './Routes.types'
 
@@ -82,7 +82,7 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.callback()} component={LoadingPage} />
             <Route exact path={locations.signIn()} component={SignInPage} />
             <Route exact path={locations.land()} component={LandPage} />
-            <Route exact path={locations.names()} component={NamesPage} />
+            <Route exact path={locations.enslist()} component={ENSListPage} />
             <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Route exact path={locations.landTransfer()} component={LandTransferPage} />
             {env.get('REACT_APP_FF_ENS') ? <Route exact path={locations.landEns()} component={LandEnsPage} /> : null}

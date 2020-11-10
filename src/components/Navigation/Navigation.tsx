@@ -17,7 +17,7 @@ export default class Navigation extends React.PureComponent<Props> {
         <Tabs.Tab active={activeTab === NavigationTab.LAND} onClick={() => onNavigate(locations.land())}>
           {t('navigation.land')}
         </Tabs.Tab>
-        <Tabs.Tab active={activeTab === NavigationTab.NAMES} onClick={() => onNavigate(locations.names())}>
+        <Tabs.Tab active={activeTab === NavigationTab.NAMES} onClick={() => onNavigate(locations.enslist())}>
           {t('navigation.names')}
         </Tabs.Tab>
         {env.get('REACT_APP_FF_WEARABLES') ? (

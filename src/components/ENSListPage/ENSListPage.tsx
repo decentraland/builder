@@ -17,18 +17,18 @@ import {
 } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Props, State } from './NamesPage.types'
+import { Props, State } from './ENSListPage.types'
 import BuilderIcon from 'components/Icon'
 import { SortBy } from 'modules/ui/dashboard/types'
 import { PaginationOptions } from 'routing/utils'
-import './NamesPage.css'
+import './ENSListPage.css'
 import { ENS } from 'modules/ens/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 
 const PAGE_SIZE = 12
 
-export default class NamesPage extends React.PureComponent<Props, State> {
+export default class ENSListPage extends React.PureComponent<Props, State> {
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
 
   renderSortDropdown = () => {
@@ -191,7 +191,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
   render() {
     const { isLoading } = this.props
     return (
-      <LoggedInDetailPage className={`NamesPage view`} activeTab={NavigationTab.NAMES} isLoading={isLoading} isPageFullscreen={true}>
+      <LoggedInDetailPage className={`ENSListPage view`} activeTab={NavigationTab.NAMES} isLoading={isLoading} isPageFullscreen={true}>
         {this.renderEnsList()}
       </LoggedInDetailPage>
     )
@@ -203,7 +203,7 @@ export default class NamesPage extends React.PureComponent<Props, State> {
     return (
       <>
         <Navbar isFullscreen />
-        <Page className={'NamesPage'} isFullscreen>
+        <Page className={'ENSListPage'} isFullscreen>
           <Tabs>
             <Tabs.Tab onClick={() => onNavigate(locations.root())}>{t('navigation.scenes')}</Tabs.Tab>
             <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
