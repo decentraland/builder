@@ -1,26 +1,28 @@
-import { push } from 'connected-react-router'
+import { push, goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import {
   FETCH_ENS_REQUEST,
-  fetchENSRequest,
   SET_ENS_CONTENT_REQUEST,
   setENSContentRequest,
   SET_ENS_RESOLVER_REQUEST,
   setENSResolverRequest,
   FETCH_ENS_LIST_REQUEST
 } from 'modules/ens/actions'
-import { getLandId } from 'modules/location/selectors'
+import { findBySubdomain } from 'modules/ens/utils'
 import { getENSList, getLoading, getError, isWaitingTxSetResolver, isWaitingTxSetLandContent } from 'modules/ens/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './LandEnsPage.types'
-import LandEditPage from './LandEnsPage'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandAssignNamePage.types'
+import LandAssignNamePage from './LandAssignNamePage'
 
-const mapState = (state: RootState): MapStateProps => {
-  const landId = getLandId(state) || ''
+const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
+  const { landId, subdomain } = ownProps.match.params
+  const ensList = getENSList(state)
+
+  const ens = findBySubdomain(ensList, subdomain)!
 
   return {
-    ensList: getENSList(state),
+    ens,
     error: getError(state),
     isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || isWaitingTxSetResolver(state),
     isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || isWaitingTxSetLandContent(state, landId),
@@ -35,8 +37,8 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetENSResolver: ens => dispatch(setENSResolverRequest(ens)),
   onSetENSContent: (ens, land) => dispatch(setENSContentRequest(ens, land)),
-  onFetchENS: (ens, land) => dispatch(fetchENSRequest(ens, land)),
+  onBack: () => dispatch(goBack()),
   onNavigate: path => dispatch(push(path))
 })
 
-export default connect(mapState, mapDispatch)(LandEditPage)
+export default connect(mapState, mapDispatch)(LandAssignNamePage)

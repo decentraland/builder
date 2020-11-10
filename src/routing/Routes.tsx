@@ -21,7 +21,8 @@ import LandPage from 'components/LandPage'
 import LandDetailPage from 'components/LandDetailPage'
 import LandTransferPage from 'components/LandTransferPage'
 import LandEditPage from 'components/LandEditPage'
-import LandEnsPage from 'components/LandEnsPage'
+import LandSelectNamePage from 'components/LandSelectNamePage'
+import LandAssignNamePage from 'components/LandAssignNamePage'
 import LandOperatorPage from 'components/LandOperatorPage'
 import ActivityPage from 'components/ActivityPage'
 import SettingsPage from 'components/SettingsPage'
@@ -85,7 +86,12 @@ export default class Routes extends React.Component<Props, State> {
             {env.get('REACT_APP_FF_ENS') ? <Route exact path={locations.ens()} component={ENSListPage} /> : null}
             <Route exact path={locations.landDetail()} component={LandDetailPage} />
             <Route exact path={locations.landTransfer()} component={LandTransferPage} />
-            {env.get('REACT_APP_FF_ENS') ? <Route exact path={locations.landEns()} component={LandEnsPage} /> : null}
+            {env.get('REACT_APP_FF_ENS') ? (
+              <>
+                <Route exact path={locations.landSelectName()} component={LandSelectNamePage} />
+                <Route exact path={locations.landAssignName()} component={LandAssignNamePage} />
+              </>
+            ) : null}
             <Route exact path={locations.landEdit()} component={LandEditPage} />
             <Route exact path={locations.landOperator()} component={LandOperatorPage} />
             <Route exact path={locations.activity()} component={ActivityPage} />

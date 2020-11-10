@@ -4,10 +4,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isResolverEmpty, isContentEmpty, isEqualContent } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
-import { Props } from './LandSetNameForm.types'
-import './LandSetNameForm.css'
+import { Props } from './LandAssignNameForm.types'
+import './LandAssignNameForm.css'
 
-export default class LandSetNameForm extends React.PureComponent<Props> {
+export default class LandAssignNameForm extends React.PureComponent<Props> {
   handleNavigateToLand = () => {
     const { land, onNavigate } = this.props
     onNavigate(locations.landDetail(land.id))
@@ -24,7 +24,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
   }
 
   handleBack = () => {
-    this.props.onRestartForm()
+    this.props.onBack()
   }
 
   render() {
@@ -45,7 +45,7 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
     const isSetContentButtonDisabled = hasContentError ? false : hasResolverError || !hasResolver || hasContent || isWaitingTxSetContent
 
     return (
-      <Form className="LandSetNameForm">
+      <Form className="LandAssignNameForm">
         <Row>
           <p className="message">{t('land_ens_page.set_name_message')}</p>
         </Row>

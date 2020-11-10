@@ -6,10 +6,10 @@ import { locations } from 'routing/locations'
 import { findBySubdomain } from 'modules/ens/utils'
 import LandProviderPage from 'components/LandProviderPage'
 import LandSelectNameForm from './LandSelectNameForm/LandSelectNameForm'
-import LandSetNameForm from './LandSetNameForm/LandSetNameForm'
-import { Props, State } from './LandEnsPage.types'
+import LandAssignNameForm from './LandAssignNameForm/LandAssignNameForm'
+import { Props, State } from './LandSelectNamePage.types'
 
-export default class LandEnsPage extends React.PureComponent<Props> {
+export default class LandSelectNamePage extends React.PureComponent<Props> {
   state: State = {
     selectedSubdomain: ''
   }
@@ -55,7 +55,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
                 onFetchENS={onFetchENS}
               />
             ) : (
-              <LandSetNameForm
+              <LandAssignNameForm
                 land={land}
                 ens={selectedENS}
                 error={error}
