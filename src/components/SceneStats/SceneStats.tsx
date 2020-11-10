@@ -3,6 +3,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { formatTime } from 'lib/date'
 import Stats from './Stats'
 import { Props } from './SceneStats.types'
+import { Loader } from 'decentraland-ui'
 
 export default class SceneStats extends React.PureComponent<Props> {
   componentWillMount() {
@@ -22,22 +23,19 @@ export default class SceneStats extends React.PureComponent<Props> {
     }
   }
 
+  renderValue = (value: string | null, defaultValue: string = '0') => {
+    const { isLoading } = this.props
+    return !value && isLoading ? <Loader active size="mini" /> : value ? value : defaultValue
+  }
+
   render() {
-    const { stats, isLoading } = this.props
+    const { stats } = this.props
     return (
       <>
-        <Stats label={t('analytics.users')} stats={stats} isLoading={isLoading}>
-          {stats => (stats ? stats.users.toLocaleString() : '0')}
-        </Stats>
-        <Stats label={t('analytics.sessions')} stats={stats} isLoading={isLoading}>
-          {stats => (stats ? stats.sessions.toLocaleString() : '0')}
-        </Stats>
-        <Stats label={t('analytics.median_session_time')} stats={stats} isLoading={isLoading}>
-          {stats => (stats ? formatTime(stats.medianSessionTime) : '0s')}
-        </Stats>
-        <Stats label={t('analytics.max_concurrent_users')} stats={stats} isLoading={isLoading}>
-          {stats => (stats ? stats.maxConcurrentUsers.toLocaleString() : '0')}
-        </Stats>
+        <Stats label={t('analytics.users')}>{this.renderValue(stats && stats.users.toLocaleString())}</Stats>
+        <Stats label={t('analytics.sessions')}>{this.renderValue(stats && stats.sessions.toLocaleString())}</Stats>
+        <Stats label={t('analytics.median_session_time')}>{this.renderValue(stats && formatTime(stats.medianSessionTime), '0s')}</Stats>
+        <Stats label={t('analytics.max_concurrent_users')}>{this.renderValue(stats && stats.maxConcurrentUsers.toLocaleString())}</Stats>
       </>
     )
   }
