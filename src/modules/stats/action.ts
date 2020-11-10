@@ -1,7 +1,7 @@
-// Fetch Stats
-
 import { action } from 'typesafe-actions'
 import { WeeklyStats } from './types'
+
+// Fetch Stats
 
 export const FETCH_SCENE_STATS_REQUEST = '[Request] Fetch scene stats'
 export const FETCH_SCENE_STATS_SUCCESS = '[Success] Fetch scene stats'
