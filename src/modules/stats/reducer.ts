@@ -44,7 +44,10 @@ export function statsReducer(state = INITIAL_STATE, action: StatsReducerAction) 
         error: null,
         data: {
           ...state.data,
-          [base]: stats
+          weekly: {
+            ...state.data.weekly,
+            [base]: stats
+          }
         }
       }
     }
