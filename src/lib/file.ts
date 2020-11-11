@@ -1,6 +1,6 @@
 import { MAX_NAME_LENGTH } from 'modules/asset/utils'
 
-export const MAX_FILE_SIZE = 5000000
+export const MAX_FILE_SIZE = 10000000
 
 export function truncateFileName(name: string) {
   if (name.length <= MAX_NAME_LENGTH) return name
