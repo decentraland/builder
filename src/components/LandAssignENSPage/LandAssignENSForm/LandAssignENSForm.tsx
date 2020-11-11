@@ -4,10 +4,10 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isResolverEmpty, isContentEmpty, isEqualContent } from 'modules/ens/utils'
 import { ENSOrigin } from 'modules/ens/types'
-import { Props } from './LandAssignNameForm.types'
-import './LandAssignNameForm.css'
+import { Props } from './LandAssignENSForm.types'
+import './LandAssignENSForm.css'
 
-export default class LandAssignNameForm extends React.PureComponent<Props> {
+export default class LandAssignENSForm extends React.PureComponent<Props> {
   handleNavigateToLand = () => {
     const { land, onNavigate } = this.props
     onNavigate(locations.landDetail(land.id))
@@ -45,15 +45,15 @@ export default class LandAssignNameForm extends React.PureComponent<Props> {
     const isSetContentButtonDisabled = hasContentError ? false : hasResolverError || !hasResolver || hasContent || isWaitingTxSetContent
 
     return (
-      <Form className="LandAssignNameForm">
+      <Form className="LandAssignENSForm">
         <Row>
-          <p className="message">{t('land_ens_page.set_name_message')}</p>
+          <p className="message">{t('land_assign_ens_page.set_name_message')}</p>
         </Row>
         <Row>
           <div className={isSetResolverButtonDisabled ? 'box box-disabled' : 'box'}>
-            <h3>{t('land_ens_page.set_resolver')}</h3>
+            <h3>{t('land_assign_ens_page.set_resolver')}</h3>
             <div className="message-box">
-              <p>{t('land_ens_page.set_resolver_explanation')}</p>
+              <p>{t('land_assign_ens_page.set_resolver_explanation')}</p>
               <Button
                 type="submit"
                 disabled={isSetResolverButtonDisabled}
@@ -78,9 +78,9 @@ export default class LandAssignNameForm extends React.PureComponent<Props> {
         </Row>
         <Row>
           <div className={isSetContentButtonDisabled ? 'box box-disabled' : 'box'}>
-            <h3>{t('land_ens_page.set_content')}</h3>
+            <h3>{t('land_assign_ens_page.set_content')}</h3>
             <div className="message-box">
-              <p>{t('land_ens_page.set_content_explanation')}</p>
+              <p>{t('land_assign_ens_page.set_content_explanation')}</p>
               <Button
                 type="submit"
                 disabled={isSetContentButtonDisabled}

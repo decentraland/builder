@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
-import { Props } from './Atlas.types'
 import { coordsToId, isCoords, idToCoords, getCenter } from 'modules/land/utils'
 import { RoleType, Land, LandTile } from 'modules/land/types'
-import Popup from './Popup'
 import { locations } from 'routing/locations'
+import Popup from './Popup'
+import { Props } from './Atlas.types'
 import './Atlas.css'
 
 const getCoords = (x: number | string, y: number | string) => `${x},${y}`

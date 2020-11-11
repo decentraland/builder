@@ -1,0 +1,62 @@
+.LandSelectENSForm.ui.form {
+  width: 100%;
+}
+
+.LandSelectENSForm.ui.form .dcl.field .ui.input.revoked input {
+  text-decoration: line-through;
+  color: var(--secondary-text);
+}
+
+.LandSelectENSForm .cancel {
+  margin-right: 16px;
+  margin-left: 0px;
+}
+
+.LandSelectENSForm.ui.form .dcl.field .ui.input input {
+  font-size: 16px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+}
+
+.LandSelectENSForm.ui.form .dcl.field .ui.input.is-revokable input {
+  padding-right: 86px;
+}
+
+.LandSelectENSForm .select-name-container {
+  margin-bottom: 48px;
+}
+
+.LandSelectENSForm .select-message {
+  margin-top: 8px;
+}
+
+.LandSelectENSForm .select-names,
+.LandSelectENSForm .select-names .menu.visible {
+  width: 100%;
+}
+
+.LandSelectENSForm .select-names .ui.dropdown {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--divider);
+  color: var(--secondary-text);
+}
+
+.LandSelectENSForm .select-names .ui.sub.header {
+  text-transform: none;
+}
+
+.LandSelectENSForm .select-names .ui.dropdown .text {
+  flex: 1 0 auto;
+  text-transform: none;
+  color: var(--text);
+}
+
+.LandSelectENSForm .select-names .ui.dropdown > .text:not(.default) {
+  font-size: 21px;
+}
+
+.LandSelectENSForm .select-names .ui.dropdown .dropdown.icon {
+  color: var(--text);
+}

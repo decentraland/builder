@@ -1,21 +1,21 @@
-.LandAssignNameForm .centered {
+.LandAssignENSForm .centered {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.LandAssignNameForm .centered p {
+.LandAssignENSForm .centered p {
   width: 100%;
   text-align: center;
   padding-top: 70px;
 }
 
-.LandAssignNameForm .message {
+.LandAssignENSForm .message {
   padding-top: 0px;
   padding-bottom: 20px;
 }
 
-.LandAssignNameForm .box {
+.LandAssignENSForm .box {
   width: 100%;
   padding: 16px;
   background-color: #242129;
@@ -23,35 +23,35 @@
   border-radious: 8px;
 }
 
-.LandAssignNameForm .box .message-box {
+.LandAssignENSForm .box .message-box {
   display: flex;
   align-items: flex-start;
 }
 
-.LandAssignNameForm .box.box-disabled {
+.LandAssignENSForm .box.box-disabled {
   pointer-events: none;
   opacity: 0.4;
 }
 
-.LandAssignNameForm .box .message button {
+.LandAssignENSForm .box .message button {
   padding: 13px 20px;
 }
 
-.LandAssignNameForm .box p {
+.LandAssignENSForm .box p {
   margin-right: 45px;
 }
 
-.LandAssignNameForm .confirmation-buttons button {
+.LandAssignENSForm .confirmation-buttons button {
   width: 155px;
   margin-top: 50px;
   margin-right: 5px;
 }
 
-.LandAssignNameForm .grey-button {
+.LandAssignENSForm .grey-button {
   background-color: #444 !important;
   padding: 13px 10px;
 }
 
-.LandAssignNameForm i.check.icon {
+.LandAssignENSForm i.check.icon {
   padding-left: 10px;
 }

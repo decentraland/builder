@@ -12,8 +12,8 @@ import {
 } from 'modules/ens/actions'
 import { findBySubdomain } from 'modules/ens/utils'
 import { getENSList, getLoading, getError, isWaitingTxSetResolver, isWaitingTxSetLandContent } from 'modules/ens/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandAssignNamePage.types'
-import LandAssignNamePage from './LandAssignNamePage'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './LandAssignENSPage.types'
+import LandAssignENSPage from './LandAssignENSPage'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { landId, subdomain } = ownProps.match.params
@@ -41,4 +41,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path))
 })
 
-export default connect(mapState, mapDispatch)(LandAssignNamePage)
+export default connect(mapState, mapDispatch)(LandAssignENSPage)

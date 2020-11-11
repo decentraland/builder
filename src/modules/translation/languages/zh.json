@@ -536,25 +536,27 @@
     "total_land": "总土地",
     "empty_land": "空地"
   },
-  "land_ens_page": {
-    "title": "分配名称",
+  "land_assign_ens_page" : {
+    "title":"分配{name}",
     "subtitle": "给...分配一个名字 {land}",
-    "set_content": "设定内容",
-    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
     "set_name_message": "关于他们为什么需要批准的简要说明。",
     "set_resolver": "设置解析器",
     "set_resolver_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "set_content": "设定内容",
+    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。"
+  },
+  "land_select_ens_page": {
+    "title": "分配名称",
+    "subtitle": "给...分配一个名字 {land}",
     "empty_options_message": "您没有可用的名称。 要为您的LAND分配名称，您首先需要声明它。",
     "claim_new_name": "申请新名字",
-    "not_redirected": "如果您未重定向",
-    "select_names": {
-      "title": "我的名字是",
-      "placeholder": "选择一个名字",
-      "message": {
-        "click_to_claim_new_name": "{click_here}申请新名称",
-        "name_assigned": "这个名字已经分配给这片土地"
-      }
-    }
+    "select_name_title": "我的名字是",
+    "select_name_placeholder": "选择一个名字",
+    "click_to_claim_new_name": "{click_here}申请新名称",
+    "name_assigned": "这个名字已经分配给这片土地"
+  },
+  "ipfs_api" : {
+    "not_redirected": "如果您未重定向"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",

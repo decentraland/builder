@@ -22,7 +22,7 @@ export class IpfsAPI {
     </head>
     <body>
       <p>
-        ${t('land_ens_page.not_redirected')}
+        ${t('ipfs_api.not_redirected')}
         <a href="${LAND_POSITION_URL}${coordsToId(x, y)}">
           ${t('global.click_here')}
         </a>.

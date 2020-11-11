@@ -535,25 +535,27 @@
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias"
   },
-  "land_ens_page": {
-    "title": "Asigna un Nombre",
+  "land_assign_ens_page" : {
+    "title": "Asignar {name}",
     "subtitle": "Asigna un nombre a {land}",
-    "set_content": "Establecer Contenido",
-    "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones.",
     "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
     "set_resolver": "Establecer Resolver",
     "set_resolver_explanation": "Explicación sobre porque se necesita aprovar esto.",
+    "set_content": "Establecer Contenido",
+    "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones."
+  },
+  "land_select_ens_page": {
+    "title": "Asigna un Nombre",
+    "subtitle": "Asigna un nombre a {land}",
     "empty_options_message": "No tienes nombres disponibles. Para asignar un nuevo nombre a tu LAND, necesitas reclamar uno",
     "claim_new_name": "Reclamar un nuevo nombre",
-    "not_redirected": "Si no estas siendo redirigido",
-    "select_names": {
-      "title": "Mis nombres",
-      "placeholder": "Selecciona un nombre",
-      "message": {
-        "click_to_claim_new_name": "{click_here} para obtener un nuevo nombre",
-        "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
-      }
-    }
+    "select_name_title": "Mis nombres",
+    "select_name_placeholder": "Selecciona un nombre",
+    "click_to_claim_new_name": "{click_here} para obtener un nuevo nombre",
+    "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
+  },
+  "ipfs_api" : {
+    "not_redirected": "Si no estas siendo redirigido"
   },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",

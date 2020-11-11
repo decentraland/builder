@@ -1,15 +1,15 @@
 import * as React from 'react'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LandAction from 'components/LandAction'
 import LandProviderPage from 'components/LandProviderPage'
-import { Props } from './LandOperatorPage.types'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LandOperatorForm from './LandOperatorForm/LandOperatorForm'
+import { Props } from './LandOperatorPage.types'
 
-export default class LandEditPage extends React.PureComponent<Props> {
+export default class LandOperatorPage extends React.PureComponent<Props> {
   render() {
     const { onSetOperator } = this.props
     return (
-      <LandProviderPage className="LandEditPage">
+      <LandProviderPage>
         {land => (
           <LandAction
             land={land}
