@@ -11,6 +11,8 @@ import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 
+export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
+
 export const getDefaultGroundAsset = (): Asset => ({
   id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
   name: 'Bermuda Grass',
