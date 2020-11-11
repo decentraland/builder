@@ -43,7 +43,7 @@ import { buildDeployData, deploy, ContentFile, makeContentFiles, EntityType } fr
 import { getIdentity } from 'modules/identity/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getName } from 'modules/profile/selectors'
-import { getEmptyDeployment } from './utils'
+import { getEmptyDeployment, UNPUBLISHED_PROJECT_ID } from './utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
 import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
@@ -197,23 +197,6 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     yield put(deployToLandFailure('Unable to Publish: Invalid deployment'))
     return
   }
-  if (!deployment.projectId) {
-    yield put(deployToLandFailure('Unable to Publish: Invalid deployment.projectId'))
-    return
-  }
-
-  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  const project = projects[deployment.projectId]
-  if (!project) {
-    yield put(deployToLandFailure('Unable to Publish: Invalid project'))
-    return
-  }
-
-  const scene: Scene = yield getSceneByProjectId(project.id)
-  if (!scene) {
-    yield put(deployToLandFailure('Unable to Publish: Invalid scene'))
-    return
-  }
 
   const identity: any = yield getIdentity()
   if (!identity) {
@@ -223,7 +206,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
 
   try {
     const { placement } = deployment
-    const [emptyProject, emptyScene] = getEmptyDeployment(project.id)
+    const [emptyProject, emptyScene] = getEmptyDeployment(deployment.projectId || UNPUBLISHED_PROJECT_ID)
     const files: UnwrapPromise<ReturnType<typeof createFiles>> = yield call(() =>
       createFiles({
         project: emptyProject,

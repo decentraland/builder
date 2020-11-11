@@ -4,8 +4,8 @@ import { WeeklyStats } from './types'
 // Fetch Stats
 
 export const FETCH_WEEKLY_SCENE_STATS_REQUEST = '[Request] Fetch weekly scene stats'
-export const FETCH_WEEKLY_SCENE_STATS_SUCCESS = '[Success] Fetch weekly  scene stats'
-export const FETCH_WEEKLY_SCENE_STATS_FAILURE = '[Failure] Fetch weekly  scene stats'
+export const FETCH_WEEKLY_SCENE_STATS_SUCCESS = '[Success] Fetch weekly scene stats'
+export const FETCH_WEEKLY_SCENE_STATS_FAILURE = '[Failure] Fetch weekly scene stats'
 
 export const fetchWeeklySceneStatsRequest = (base: string) => action(FETCH_WEEKLY_SCENE_STATS_REQUEST, { base })
 export const fetchWeeklySceneStatsSuccess = (base: string, stats: WeeklyStats | null) =>
