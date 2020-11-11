@@ -25,6 +25,7 @@ import './ENSListPage.css'
 import { ENS } from 'modules/ens/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import Icon from 'components/Icon'
 
 const PAGE_SIZE = 12
 
@@ -140,7 +141,10 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                       <Table.Row className="TableRow" key={`tableRow${index}`}>
                         <Table.Cell>
                           <Row>
-                            <Column className="name">{ens.subdomain}</Column>
+                            <Column className="name">
+                              {ens.subdomain}
+                              {ens.isAlias ? <Icon name="heart" /> : null}
+                            </Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
@@ -169,7 +173,15 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                                 </Button>
                               ) : null}
                             </Column>
+                            <Column>
+                              {!ens.isAlias ? (
+                                <Button className="ui basic button" onClick={() => alert('must be implemented')}>
+                                  {t('ens_page.button.use_as_alias')}
+                                </Button>
+                              ) : null}
+                            </Column>
                           </Row>
+
                         </Table.Cell>
                       </Table.Row>
                     )

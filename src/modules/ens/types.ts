@@ -4,6 +4,7 @@ export type ENS = {
   subdomain: string
   resolver: string
   content: string
+  isAlias?: boolean
 
   ipfsHash?: string
 

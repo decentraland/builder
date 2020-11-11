@@ -336,7 +336,8 @@
     },
     "button": {
       "assign": "Assign",
-      "re_assign": "Re Assign"
+      "re_assign": "Re Assign",
+      "use_as_alias": "Use as Alias"
     }
   },
   "error_page": {
