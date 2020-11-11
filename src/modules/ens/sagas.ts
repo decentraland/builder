@@ -3,7 +3,7 @@ import { Address } from 'web3x-es/address'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
 import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects'
-import { fromIpfs } from 'content-hash'
+import * as contentHash from 'content-hash'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { ENS as ENSContract } from 'contracts/ENS'
@@ -67,7 +67,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
 
     const resolverContract = new ENSResolver(eth, resolverAddress)
     const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
-    const landHash = fromIpfs(ipfsHash)
+    const landHash = contentHash.fromIpfs(ipfsHash)
 
     const currentContent = yield call(() => resolverContract.methods.contenthash(nodehash).call())
     if (currentContent === Address.ZERO.toString()) {
@@ -138,7 +138,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
     if (land) {
       const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
-      content = `0x${fromIpfs(ipfsHash)}`
+      content = `0x${contentHash.fromIpfs(ipfsHash)}`
     } else {
       content = Address.ZERO.toString()
     }

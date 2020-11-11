@@ -112,7 +112,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
 
       switch (transaction.actionType) {
         case SET_ENS_RESOLVER_SUCCESS: {
-          const { subdomain, resolver } = transaction.payload
+          const { ens, resolver } = transaction.payload
+          const { subdomain } = ens
           return {
             ...state,
             loading: loadingReducer(state.loading, action),
@@ -126,7 +127,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
           }
         }
         case SET_ENS_CONTENT_SUCCESS: {
-          const { subdomain, content, land } = transaction.payload
+          const { ens, content, land } = transaction.payload
+          const { subdomain } = ens
           return {
             ...state,
             loading: loadingReducer(state.loading, action),

@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
 }
+
 .LandSetNameForm .centered p {
   width: 100%;
   text-align: center;
@@ -32,10 +33,6 @@
   opacity: 0.4;
 }
 
-.LandSetNameForm .box .message button {
-  padding: 13px 20px;
-}
-
 .LandSetNameForm .box p {
   margin-right: 45px;
 }
@@ -46,8 +43,9 @@
   margin-right: 5px;
 }
 
-.LandSetNameForm .grey-button {
+.LandSetNameForm .box .message-box .grey-button {
   background-color: #444 !important;
+  padding: 13px 10px;
 }
 
 .LandSetNameForm i.check.icon {

@@ -227,7 +227,7 @@ const Transaction = (props: Props) => {
       )
     }
     case SET_ENS_RESOLVER_SUCCESS: {
-      const { address, subdomain } = tx.payload
+      const { address, ens } = tx.payload
       return (
         <TransactionDetail
           address={address}
@@ -236,7 +236,7 @@ const Transaction = (props: Props) => {
               id="transaction.set_ens_resolver"
               values={{
                 address: <Profile address={address} />,
-                name: subdomain
+                name: ens.subdomain
               }}
             />
           }
