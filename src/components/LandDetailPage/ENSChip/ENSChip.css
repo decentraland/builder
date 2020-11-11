@@ -21,7 +21,7 @@
 }
 
 .Chip.ENSChip.active .ui.loader {
-  left: 111%;
+  left: 113%;
 }
 
 .Chip.ENSChip:not(.active):hover .Icon.minus {

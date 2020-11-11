@@ -137,7 +137,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
               [subdomain]: {
                 ...state.data[subdomain],
                 content,
-                landId: land.id
+                landId: land ? land.id : ''
               }
             }
           }
