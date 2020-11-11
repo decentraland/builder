@@ -47,7 +47,7 @@ function* handleConnectWallet() {
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { subdomain, land } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getCurrentAddress()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const address = from.toString()
     const nodehash = namehash(subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
@@ -111,10 +111,10 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
 }
 
 function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
-  const { subdomain } = action.payload
+  const { ens } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getCurrentAddress()
-    const nodehash = namehash(subdomain)
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const nodehash = namehash(ens.subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
 
     const txHash = yield call(() =>
@@ -123,32 +123,40 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
         .send({ from })
         .getTxHash()
     )
-    yield put(setENSResolverSuccess(subdomain, ENS_RESOLVER_ADDRESS, from.toString(), txHash))
+    yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from.toString(), txHash))
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.RESOLVER }
-    yield put(setENSResolverFailure(subdomain, ensError))
+    yield put(setENSResolverFailure(ens, ensError))
   }
 }
 
 function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
-  const { subdomain, land } = action.payload
+  const { ens, land } = action.payload
   try {
-    const [eth, from]: [Eth, Address] = yield getCurrentAddress()
-    const nodehash = namehash(subdomain)
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    let content = ''
+
+    if (land) {
+      const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
+      content = `0x${contentHash.fromIpfs(ipfsHash)}`
+    } else {
+      content = Address.ZERO.toString()
+    }
+
+    const nodehash = namehash(ens.subdomain)
     const resolverContract = new ENSResolver(eth, Address.fromString(ENS_RESOLVER_ADDRESS))
-    const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
-    const hash = contentHash.fromIpfs(ipfsHash)
 
     const txHash = yield call(() =>
       resolverContract.methods
-        .setContenthash(nodehash, `0x${hash}`)
+        .setContenthash(nodehash, content)
         .send({ from })
         .getTxHash()
     )
-    yield put(setENSContentSuccess(subdomain, hash, land, from.toString(), txHash))
+
+    yield put(setENSContentSuccess(ens, content, land, from.toString(), txHash))
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
-    yield put(setENSContentFailure(subdomain, land, ensError))
+    yield put(setENSContentFailure(ens, land, ensError))
   }
 }
 

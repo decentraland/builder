@@ -553,7 +553,6 @@
     "dissolve_estate": "Dissolve Estate",
     "online_scenes": "Online Scenes",
     "none": "None",
-    "no_names": "No names yet",
     "add_scene": "Add Scene",
     "assigned_names": "Assigned names",
     "description": "Description",
@@ -744,8 +743,9 @@
     "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
     "set_collection_on_sale": "Set the collection {name} on sale",
     "unset_collection_on_sale": "Removed the collection {name} from being on sale",
-    "set_ens_content": "Setting redirection content for the name \"{name}\" on {land_link}.",
-    "set_ens_resolver": "Setting resolver for the name \"{name}\"."
+    "set_ens_resolver": "Setting resolver for the name \"{name}\".",
+    "set_ens_content": "Set redirection content for the name \"{name}\" on {land_link}.",
+    "unset_ens_content": "Removed redirection content for the name \"{name}\"."
   },
   "transfer_page": {
     "title": "Transfer",

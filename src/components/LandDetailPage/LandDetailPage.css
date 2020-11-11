@@ -55,12 +55,6 @@
   display: flex;
 }
 
-.LandDetailPage .ens-list .Chip {
-  padding: 10px 16px;
-  font-size: 15px;
-  background-color: rgba(var(--smart-grey-raw), 0.8);
-}
-
 .LandDetailPage .ens-list .Chip + .Chip {
   margin-left: 16px;
 }

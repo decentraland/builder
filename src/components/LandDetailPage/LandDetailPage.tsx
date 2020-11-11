@@ -1,17 +1,16 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 import { Row, Badge, Section, Narrow, Column, Button, Dropdown, Icon, Header, Empty, Layer, Stats } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { LandType, Land, RoleType } from 'modules/land/types'
+import { Deployment } from 'modules/deployment/types'
 import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
-import { Deployment } from 'modules/deployment/types'
 import LandProviderPage from 'components/LandProviderPage'
-import Chip from 'components/Chip'
 import Back from 'components/Back'
 import Profile from 'components/Profile'
+import ENSChip from './ENSChip'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
@@ -76,11 +75,11 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     return !!deployment && !!hovered && hovered.id === deployment.id
   }
 
-  hoverStrokeLayer = (land: Land): Layer => (x, y) => {
+  getHoverStrokeLayer = (land: Land): Layer => (x, y) => {
     return this.isHovered(x, y) ? { color: STROKE_COLOR[land.role], scale: 1.4 } : null
   }
 
-  hoverFillLayer = (land: Land): Layer => (x, y) => {
+  getHoverFillLayer = (land: Land): Layer => (x, y) => {
     return this.isHovered(x, y) ? { color: FILL_COLOR[land.role], scale: 1.2 } : null
   }
 
@@ -199,7 +198,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             >
               <Atlas
                 landId={land.id}
-                layers={[this.hoverStrokeLayer(land), this.hoverFillLayer(land)]}
+                layers={[this.getHoverStrokeLayer(land), this.getHoverFillLayer(land)]}
                 isDraggable
                 zoom={land.size && land.size >= 1000 ? 0.5 : 1}
                 onHover={this.handleHover(deployments)}
@@ -226,25 +225,20 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </div>
             )}
           </Section>
-          <Section size="large">
-            <Header sub>
-              <Row>
-                <Column>{t('land_detail_page.assigned_names')}</Column>
-                <Column align="right">
-                  <Link to={locations.landEns(land.id)}>{t('land_detail_page.assign_name')}</Link>
-                </Column>
-              </Row>
-            </Header>
-            {ensList.length > 0 ? (
+          {env.get('REACT_APP_FF_ENS') && ensList.length > 0 ? (
+            <Section size="large">
+              <Header sub>
+                <Row>
+                  <Column>{t('land_detail_page.assigned_names')}</Column>
+                </Row>
+              </Header>
               <div className="ens-list">
                 {ensList.map(ens => (
-                  <Chip text={ens.subdomain} />
+                  <ENSChip key={ens.subdomain} ens={ens} />
                 ))}
               </div>
-            ) : (
-              <Empty height={100}>{t('land_detail_page.no_names')}</Empty>
-            )}
-          </Section>
+            </Section>
+          ) : null}
           {land.description ? (
             <Section size="large">
               <Header sub>{t('land_detail_page.description')}</Header>

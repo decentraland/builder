@@ -42,7 +42,7 @@ export default class LandEnsPage extends React.PureComponent<Props> {
         {land => (
           <LandAction
             land={land}
-            title={selectedENS ? t('land_ens_page.assign_name_title', { name: selectedENS.subdomain }) : t('land_ens_page.title')}
+            title={selectedENS ? t('land_ens_page.assign_name_title', { name: selectedSubdomain }) : t('land_ens_page.title')}
             subtitle={<T id="land_ens_page.subtitle" values={{ land: <Link to={locations.landDetail(land.id)}>{land.name}</Link> }} />}
           >
             {!selectedENS ? (
@@ -58,7 +58,6 @@ export default class LandEnsPage extends React.PureComponent<Props> {
               <LandSetNameForm
                 land={land}
                 ens={selectedENS}
-                selectedSubdomain={selectedSubdomain}
                 error={error}
                 isLoading={isLoading}
                 isWaitingTxSetResolver={isWaitingTxSetResolver}

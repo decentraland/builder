@@ -1,9 +1,8 @@
 import { createSelector } from 'reselect'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getPendingTransactions } from 'decentraland-dapps/dist/modules/transaction/selectors'
-import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
-
+import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { RootState } from 'modules/common/types'
+import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems } from 'modules/item/selectors'
 import { isEqual } from 'lib/address'
 import { SET_COLLECTION_MINTERS_SUCCESS } from './actions'
@@ -37,9 +36,6 @@ export const getCollectionItems = (state: RootState, collectionId: string) => {
   return allItems.filter(item => item.collectionId === collectionId)
 }
 
-export const isOnSaleLoading = (state: RootState, address?: string) =>
-  address
-    ? getPendingTransactions(state, address).some(
-        transaction => transaction.actionType === SET_COLLECTION_MINTERS_SUCCESS && isPending(transaction.status)
-      )
-    : false
+export const isOnSaleLoading = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
+  transactions.some(transaction => transaction.actionType === SET_COLLECTION_MINTERS_SUCCESS)
+)

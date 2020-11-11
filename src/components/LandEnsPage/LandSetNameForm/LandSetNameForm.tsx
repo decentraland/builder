@@ -14,13 +14,13 @@ export default class LandSetNameForm extends React.PureComponent<Props> {
   }
 
   handleSetResolver = () => {
-    const { onSetENSResolver, selectedSubdomain } = this.props
-    onSetENSResolver(selectedSubdomain)
+    const { onSetENSResolver, ens } = this.props
+    onSetENSResolver(ens)
   }
 
   handleSetContent = () => {
-    const { onSetENSContent, land, selectedSubdomain } = this.props
-    onSetENSContent(selectedSubdomain, land)
+    const { onSetENSContent, ens, land } = this.props
+    onSetENSContent(ens, land)
   }
 
   handleBack = () => {

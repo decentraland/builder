@@ -1,0 +1,29 @@
+.Chip.ENSChip {
+  padding: 10px 16px;
+  font-size: 15px;
+  background-color: rgba(var(--smart-grey-raw), 0.8);
+  transition: padding 0.2s ease-in;
+  position: relative;
+}
+
+.Chip.ENSChip .Icon.minus {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.1s ease-in;
+  margin-left: 5px;
+  position: absolute;
+  right: -28px;
+}
+
+.Chip.ENSChip.active,
+.Chip.ENSChip:not(.active):hover {
+  padding-right: 35px;
+}
+
+.Chip.ENSChip.active .ui.loader {
+  left: 113%;
+}
+
+.Chip.ENSChip:not(.active):hover .Icon.minus {
+  opacity: 1;
+}

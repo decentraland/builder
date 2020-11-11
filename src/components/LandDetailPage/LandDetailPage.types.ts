@@ -11,10 +11,10 @@ export type Props = {
   parcelsAvailableToBuildEstates: Record<string, boolean>
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
+  projects: ProjectState['data']
   onNavigate: (path: string) => void
   onReplace: (path: string) => void
   onOpenModal: typeof openModal
-  projects: ProjectState['data']
 }
 
 export type State = {
