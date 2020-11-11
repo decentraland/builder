@@ -83,10 +83,24 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     return this.isHovered(x, y) ? { color: FILL_COLOR[land.role], scale: 1.2 } : null
   }
 
+  computeOccupiedLand(land: Land, deployments: Deployment[]) {
+    const { landTiles } = this.props
+    const occupiedTotal = deployments.reduce(
+      (total, deployment) =>
+        total +
+        deployment.parcels.filter(coords => {
+          const tile = landTiles[coords]
+          return !!tile && tile.land.id === land.id
+        }).length,
+      0
+    )
+    return occupiedTotal
+  }
+
   renderDetail(land: Land, deployments: Deployment[]) {
     const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
-    const occupiedTotal = deployments.reduce((total, deployment) => total + deployment.parcels.length, 0)
+    const occupiedTotal = this.computeOccupiedLand(land, deployments)
     const selection = getSelection(land)
     const [x, y] = getCenter(selection)
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
