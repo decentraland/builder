@@ -12,7 +12,7 @@ import {
   FETCH_DOMAIN_LIST_REQUEST
 } from 'modules/ens/actions'
 import { getLandId } from 'modules/location/selectors'
-import { getENSList, getLoading, getError, getIsWaitingTxSetResolver, getIsWaitingTxSetContent } from 'modules/ens/selectors'
+import { getENSList, getLoading, getError, isWaitingTxSetResolver, isWaitingTxSetLandContent } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './LandEnsPage.types'
 import LandEditPage from './LandEnsPage'
 
@@ -22,8 +22,8 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     ensList: getENSList(state),
     error: getError(state),
-    isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || getIsWaitingTxSetResolver(state),
-    isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || getIsWaitingTxSetContent(state, landId),
+    isWaitingTxSetResolver: isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) || isWaitingTxSetResolver(state),
+    isWaitingTxSetContent: isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) || isWaitingTxSetLandContent(state, landId),
     isLoading:
       isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
       isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||

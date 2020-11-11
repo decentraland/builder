@@ -11,4 +11,5 @@ export type DefaultProps = {
 
 export type Props = DefaultProps & {
   onClick?: (event: React.MouseEvent<HTMLElement>) => any
+  onIconClick?: (event: React.MouseEvent<HTMLElement>) => any
 }

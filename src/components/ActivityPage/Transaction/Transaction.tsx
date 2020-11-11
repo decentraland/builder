@@ -86,7 +86,7 @@ const Transaction = (props: Props) => {
           selection={selection}
           text={
             <T
-              id={'transaction.create_estate'}
+              id="transaction.create_estate"
               values={{
                 name: <strong>{name}</strong>
               }}
@@ -121,7 +121,7 @@ const Transaction = (props: Props) => {
           selection={selection}
           text={
             <T
-              id={'transaction.dissolve_estate'}
+              id="transaction.dissolve_estate"
               values={{
                 name: <strong>{name}</strong>
               }}
@@ -233,7 +233,7 @@ const Transaction = (props: Props) => {
           address={address}
           text={
             <T
-              id={'transaction.set_ens_resolver'}
+              id="transaction.set_ens_resolver"
               values={{
                 address: <Profile address={address} />,
                 name: subdomain
@@ -245,19 +245,29 @@ const Transaction = (props: Props) => {
       )
     }
     case SET_ENS_CONTENT_SUCCESS: {
-      const { address, subdomain, land } = tx.payload
+      const { address, ens, land } = tx.payload
       return (
         <TransactionDetail
           address={address}
           text={
-            <T
-              id={'transaction.set_ens_content'}
-              values={{
-                address: <Profile address={address} />,
-                name: subdomain,
-                land_link: <Link to={locations.landDetail(land.id)}>{land.name}</Link>
-              }}
-            />
+            land ? (
+              <T
+                id="transaction.set_ens_content"
+                values={{
+                  address: <Profile address={address} />,
+                  name: ens.subdomain,
+                  land_link: <Link to={locations.landDetail(land.id)}>{land.name}</Link>
+                }}
+              />
+            ) : (
+              <T
+                id="transaction.unset_ens_content"
+                values={{
+                  address: <Profile address={address} />,
+                  name: ens.subdomain
+                }}
+              />
+            )
           }
           tx={tx}
         />

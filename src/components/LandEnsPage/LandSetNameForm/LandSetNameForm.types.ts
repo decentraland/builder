@@ -7,10 +7,9 @@ export type Props = {
   isLoading: boolean
   isWaitingTxSetContent: boolean
   isWaitingTxSetResolver: boolean
-  selectedSubdomain: string
   error: ENSError | null
-  onSetENSResolver: (ens: string) => void
-  onSetENSContent: (ens: string, land: Land) => void
+  onSetENSResolver: (ens: ENS) => void
+  onSetENSContent: (ens: ENS, land: Land) => void
   onRestartForm: () => void
   onNavigate: (path: string) => void
 }

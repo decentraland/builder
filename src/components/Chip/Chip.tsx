@@ -29,14 +29,17 @@ export default class Chip extends React.PureComponent<Props> {
   }
 
   render() {
-    const { text, icon, isActive, isDisabled, onClick } = this.props
+    const { text, icon, isActive, isDisabled, onClick, onIconClick } = this.props
     if (!text && !icon) {
       throw new Error('You need to provide at least one prop: text or icon')
     }
 
     return (
       <div className={this.getClassName()} onClick={isDisabled ? undefined : onClick}>
-        <Row align="center">{text ? <span className="text">{text}</span> : icon ? <Icon name={icon} isActive={isActive} /> : null}</Row>
+        <Row align="center">
+          {text ? <span className="text">{text}</span> : null}
+          {icon ? <Icon name={icon} isActive={isActive} onClick={isDisabled ? undefined : onIconClick} /> : null}
+        </Row>
       </div>
     )
   }

@@ -21,33 +21,33 @@ export const SET_ENS_RESOLVER_REQUEST = '[Request] Set ENS Resolver'
 export const SET_ENS_RESOLVER_SUCCESS = '[Success] Set ENS Resolver'
 export const SET_ENS_RESOLVER_FAILURE = '[Failure] Set ENS Resolver'
 
-export const setENSResolverRequest = (subdomain: string) => action(SET_ENS_RESOLVER_REQUEST, { subdomain })
-export const setENSResolverSuccess = (subdomain: string, resolver: string, address: string, txHash: string) =>
+export const setENSResolverRequest = (ens: ENS) => action(SET_ENS_RESOLVER_REQUEST, { ens })
+export const setENSResolverSuccess = (ens: ENS, resolver: string, address: string, txHash: string) =>
   action(SET_ENS_RESOLVER_SUCCESS, {
-    ...buildTransactionPayload(txHash, { subdomain, resolver, address }),
-    subdomain
+    ...buildTransactionPayload(txHash, { ens, resolver, address }),
+    ens
   })
-export const setENSResolverFailure = (subdomain: string, error: ENSError) => action(SET_ENS_RESOLVER_FAILURE, { subdomain, error })
+export const setENSResolverFailure = (ens: ENS, error: ENSError) => action(SET_ENS_RESOLVER_FAILURE, { ens, error })
 
 export type SetENSResolverRequestAction = ReturnType<typeof setENSResolverRequest>
 export type SetENSResolverSuccessAction = ReturnType<typeof setENSResolverSuccess>
 export type SetENSResolverFailureAction = ReturnType<typeof setENSResolverFailure>
 
-// Set the Content on ENS resolver contract.
+// Set the Content on the ENS resolver contract.
 // The Content is a IPFS hash refering a file. This file is an HTML file with a Redirection to a LAND url.
 export const SET_ENS_CONTENT_REQUEST = '[Request] Set ENS Content'
 export const SET_ENS_CONTENT_SUCCESS = '[Success] Set ENS Content'
 export const SET_ENS_CONTENT_FAILURE = '[Failure] Set ENS Content'
 
-export const setENSContentRequest = (subdomain: string, land: Land) => action(SET_ENS_CONTENT_REQUEST, { subdomain, land })
-export const setENSContentSuccess = (subdomain: string, content: string, land: Land, address: string, txHash: string) =>
+export const setENSContentRequest = (ens: ENS, land?: Land) => action(SET_ENS_CONTENT_REQUEST, { ens, land })
+export const setENSContentSuccess = (ens: ENS, content: string, land: Land | undefined, address: string, txHash: string) =>
   action(SET_ENS_CONTENT_SUCCESS, {
-    ...buildTransactionPayload(txHash, { subdomain, content, land, address }),
-    subdomain,
+    ...buildTransactionPayload(txHash, { ens, content, land, address }),
+    ens,
     land
   })
-export const setENSContentFailure = (subdomain: string, land: Land, error: ENSError) =>
-  action(SET_ENS_CONTENT_FAILURE, { subdomain, land, error })
+export const setENSContentFailure = (ens: ENS, land: Land | undefined, error: ENSError) =>
+  action(SET_ENS_CONTENT_FAILURE, { ens, land, error })
 
 export type SetENSContentRequestAction = ReturnType<typeof setENSContentRequest>
 export type SetENSContentSuccessAction = ReturnType<typeof setENSContentSuccess>

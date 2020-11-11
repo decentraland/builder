@@ -515,7 +515,6 @@
     "dissolve_estate": "解散产业",
     "online_scenes": "在线场景",
     "none": "无",
-    "no_names": "暂无名字",
     "add_scene": "添加场景",
     "assigned_names": "分配名称",
     "description": "描述",
@@ -736,7 +735,8 @@
     "set_collection_on_sale": "设置要出售的收藏集{name}",
     "unset_collection_on_sale": "已将集合{name}从出售中移除",
     "set_ens_resolver": "为名称\"{name}\"设置解析器",
-    "set_ens_content": "在{land_link}上为名称\"{name}\"设置重定向内容。"
+    "set_ens_content": "在{land_link}上为名称\"{name}\"设置重定向内容。",
+    "unset_ens_content": "删除名称\" {name} \"的重定向内容"
   },
   "transfer_page": {
     "title": "转移",
