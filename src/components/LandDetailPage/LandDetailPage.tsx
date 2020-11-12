@@ -225,18 +225,21 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
             {deployments.length === 0 ? (
               <Empty height={100}>{t('land_detail_page.none')}</Empty>
             ) : (
-              <div className="deployments">
-                {deployments.map(deployment => (
-                  <Scene
-                    deployment={deployment}
-                    onMouseEnter={this.handleMouseEnter}
-                    onMouseLeave={this.handleMouseLeave}
-                    onNavigate={onNavigate}
-                    onOpenModal={onOpenModal}
-                    projects={projects}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="deployments">
+                  {deployments.map(deployment => (
+                    <Scene
+                      deployment={deployment}
+                      onMouseEnter={this.handleMouseEnter}
+                      onMouseLeave={this.handleMouseLeave}
+                      onNavigate={onNavigate}
+                      onOpenModal={onOpenModal}
+                      projects={projects}
+                    />
+                  ))}
+                </div>
+                <div className="notice">{t('analytics.notice')}</div>
+              </>
             )}
           </Section>
           {env.get('REACT_APP_FF_ENS') && ensList.length > 0 ? (

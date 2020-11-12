@@ -86,3 +86,9 @@
   font-weight: 600;
   padding: 0px 4px;
 }
+
+.LandDetailPage .deployments + .notice {
+  color: var(--secondary-text);
+  text-align: right;
+  margin-top: 8px;
+}

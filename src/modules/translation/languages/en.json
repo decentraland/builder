@@ -561,7 +561,7 @@
     "total_land": "Total Land",
     "empty_land": "Empty Land"
   },
-  "land_ens_page" : {
+  "land_ens_page": {
     "title": "Assign Name",
     "assign_name_title": "Assign {name}",
     "subtitle": "Assign a name to {land}",
@@ -972,6 +972,7 @@
     "users": "Weekly Users",
     "sessions": "Weekly Sessions",
     "median_session_time": "Med. Session Time",
-    "max_concurrent_users": "Peak Users"
+    "max_concurrent_users": "Peak Users",
+    "notice": "*Metrics are calculated weekly every Monday"
   }
 }

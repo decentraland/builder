@@ -523,7 +523,7 @@
     "total_land": "总土地",
     "empty_land": "空地"
   },
-  "land_ens_page" : {
+  "land_ens_page": {
     "title": "分配名称",
     "subtitle": "给...分配一个名字 {land}",
     "set_content": "设定内容",
@@ -958,6 +958,7 @@
     "users": "每周用户",
     "sessions": "每周会议",
     "median_session_time": "会话时间中位数",
-    "max_concurrent_users": "高峰用户"
+    "max_concurrent_users": "高峰用户",
+    "notice": "*这些指标是每个星期一每周计算一次"
   }
 }

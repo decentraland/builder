@@ -22,3 +22,9 @@
 .SceneDetailPage .dcl.section.medium.no-margin-bottom {
   margin-bottom: 0px;
 }
+
+.SceneDetailPage .deployments + .notice {
+  color: var(--secondary-text);
+  text-align: right;
+  margin-top: 8px;
+}

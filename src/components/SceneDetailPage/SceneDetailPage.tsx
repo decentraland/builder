@@ -77,11 +77,14 @@ export default class SceneDetailPage extends React.PureComponent<Props> {
             {deployments.length === 0 ? (
               <Empty height={100}>{t('scene_detail_page.no_deployments')}</Empty>
             ) : (
-              <div className="deployments">
-                {deployments.map(deployment => (
-                  <DeploymentDetail project={project} deployment={deployment} />
-                ))}
-              </div>
+              <>
+                <div className="deployments">
+                  {deployments.map(deployment => (
+                    <DeploymentDetail project={project} deployment={deployment} />
+                  ))}
+                </div>
+                <div className="notice">{t('analytics.notice')}</div>
+              </>
             )}
           </Section>
           {project.description ? (
