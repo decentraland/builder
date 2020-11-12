@@ -270,7 +270,10 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
       if (id) {
         const [x, y] = idToCoords(id)
         const definition = entity.metadata as SceneDefinition
-        const name = (definition && definition.display && definition.display.title) || 'Unknown'
+        let name = 'Untitled Scene'
+        if (definition && definition.display && definition.display.title && definition.display.title !== 'interactive-text') {
+          name = definition.display.title
+        }
         const thumbnail: string | null = (definition && definition.display && definition.display.navmapThumbnail) || null
         const placement: Placement = {
           point: { x, y },
