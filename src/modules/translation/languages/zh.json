@@ -547,6 +547,11 @@
     "set_content": "设定内容",
     "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。"
   },
+  "ens_select_land_page": {
+    "title": "分配{name}",
+    "subtitle": "您可以将此名称分配给其他任何土地",
+    "land_selected": "选择的土地："
+  },
   "land_select_ens_page": {
     "title": "分配名称",
     "subtitle": "给...分配一个名字 {land}",

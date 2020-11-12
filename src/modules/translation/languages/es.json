@@ -546,6 +546,11 @@
     "set_content": "Establecer Contenido",
     "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones."
   },
+  "ens_select_land_page": {
+    "title": "Asignar {name}",
+    "subtitle": "Podes asignar este nombre a cualquier Land",
+    "land_selected": "Land seleccionada:"
+  },
   "land_select_ens_page": {
     "title": "Asigna un Nombre",
     "subtitle": "Asigna un nombre a {land}",

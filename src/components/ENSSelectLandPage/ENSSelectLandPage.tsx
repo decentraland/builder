@@ -5,6 +5,7 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { coordsToId, locateNextLand } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
+import NotFound from 'components/NotFound'
 import { Props, State } from './ENSSelectLandPage.types'
 import './ENSSelectLandPage.css'
 
@@ -72,20 +73,21 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
   render() {
     const { ens, isLoading, onBack } = this.props
     const { selectedLand } = this.state
-
     return (
       <LoggedInDetailPage className="ENSSelectLandPage">
         {isLoading ? (
           <Loader active size="massive" />
+        ) : !ens ? (
+          <NotFound />
         ) : (
           <>
             <Row>
               <Column>
                 <Section>
                   <Header className="title" size="large">
-                    Assign {ens ? ens.subdomain : 'name'}
+                    {t('ens_select_land_page.title', { name: ens ? ens.subdomain : t('global.name') })}
                   </Header>
-                  <span className="subtitle">You can assign this name to any other of your Lands</span>
+                  <span className="subtitle">{t('ens_select_land_page.subtitle')}</span>
                 </Section>
               </Column>
             </Row>
@@ -105,7 +107,7 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
               <Column grow>
                 {selectedLand ? (
                   <div className="selected-land">
-                    <div className="label">Land selected:</div>
+                    <div className="label">{t('ens_select_land_page.land_selected')}</div>
                     <div className="land">{selectedLand.name}</div>
                   </div>
                 ) : null}
@@ -116,7 +118,7 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
                     {t('global.cancel')}
                   </Button>
                   <Button primary disabled={!selectedLand} onClick={this.handleReassignENS}>
-                    {t('global.add')}
+                    {t('global.continue')}
                   </Button>
                 </div>
               </Column>

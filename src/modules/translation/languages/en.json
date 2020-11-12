@@ -586,6 +586,11 @@
     "set_content": "Set Content",
     "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver."
   },
+  "ens_select_land_page": {
+    "title": "Assign {name}",
+    "subtitle": "You can assign this name to any of your Lands",
+    "land_selected": "Land selected:"
+  },
   "land_select_ens_page": {
     "title": "Assign Name",
     "subtitle": "Assign a name to {land}",
