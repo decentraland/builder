@@ -23,5 +23,5 @@ export type State = {
   hover: Coordinate
   rotation: Rotation
   zoom: number
-  landTarget: string | null
+  currentLandId: string | null
 }

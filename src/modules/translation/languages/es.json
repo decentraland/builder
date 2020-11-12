@@ -1,9 +1,14 @@
 {
+  "atlas": {
+    "locate_land": "Localiza la siguente LAND",
+    "zoom_in": "Acercarse",
+    "zoom_out": "Alejarse"
+  },
+  "add_existing_item_modal": {
+    "title": "Agregar Item",
+    "subtitle": "Selecciona un item que no pertenezca a ninguna colección"
+  },
   "asset_pack": {
-    "add_existing_item_modal": {
-      "title": "Agregar Item",
-      "subtitle": "Selecciona un item que no pertenezca a ninguna colección"
-    },
     "confirm_delete": {
       "action": "Eliminar Asset Pack",
       "back": "Volver",
@@ -218,7 +223,6 @@
       },
       "map": {
         "continue": "Continuar",
-        "locate_land": "Localiza la siguente LAND",
         "no_land_action": "Sube tu Escena al Pool",
         "no_land_warning": "Parece que no posees LAND",
         "occupied_tooltip": "Libera espacio de tu LAND{br}Despublica la Escena desde el dashboard",
@@ -226,9 +230,7 @@
         "placement_active": "Colocando una Escena de {count} LAND en {x},{y}",
         "placement_default": "Selecciona las LANDs donde publicarás tu Escena",
         "reset": "Restablecer",
-        "title": "Publica la Escena",
-        "zoom_in": "Acercarse",
-        "zoom_out": "Alejarse"
+        "title": "Publica la Escena"
       },
       "progress": {
         "creating_files": {

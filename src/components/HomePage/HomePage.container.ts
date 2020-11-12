@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-
+import { isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { locations } from 'routing/locations'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
@@ -16,12 +16,11 @@ import {
   didMigrate,
   needsMigration
 } from 'modules/ui/dashboard/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
-import HomePage from './HomePage'
 import { loginRequest } from 'modules/identity/actions'
-import { isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { loadPoolsRequest } from 'modules/pool/actions'
 import { getPoolList } from 'modules/pool/selectors'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
+import HomePage from './HomePage'
 
 const mapState = (state: RootState): MapStateProps => ({
   projects: getProjects(state),

@@ -10,43 +10,6 @@
   height: 480px;
 }
 
-.LandAtlas .tool-container {
-  position: absolute;
-  z-index: 9999;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.LandAtlas .tool-container .tool,
-.LandAtlas .tool-container .tool-group {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 6px 16px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 26px;
-  cursor: pointer;
-}
-
-.LandAtlas .tool-container .tool-group .tool {
-  background: transparent;
-  padding: unset;
-  border-radius: unset;
-  cursor: pointer;
-}
-
-.LandAtlas .tool-container .tool.locate-land {
-  margin-right: 8px;
-}
-
-.LandAtlas .tool-container .tool-group:last-child .tool:first-child {
-  margin-right: 20px;
-}
-
 .LandAtlas .thumbnail {
   position: absolute;
   z-index: 99999;

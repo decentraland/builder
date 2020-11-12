@@ -1,16 +1,31 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
 import { coordsToId, isCoords, idToCoords, getCenter } from 'modules/land/utils'
 import { RoleType, Land, LandTile } from 'modules/land/types'
 import { locations } from 'routing/locations'
 import Popup from './Popup'
+import Control from './Control'
 import { Props } from './Atlas.types'
 import './Atlas.css'
 
 const getCoords = (x: number | string, y: number | string) => `${x},${y}`
 
 const Atlas: React.FC<Props> = props => {
-  const { landId, atlasTiles, landTiles, emptyTiles, showOwner, showOperator, hasPopup, onNavigate, className, hasLink } = props
+  const {
+    landId,
+    atlasTiles,
+    landTiles,
+    emptyTiles,
+    showOwner,
+    showOperator,
+    showControls,
+    hasPopup,
+    className,
+    hasLink,
+    onNavigate,
+    onLocateLand
+  } = props
 
   const [showPopup, setShowPopup] = useState(false)
   const [hoveredLand, setHoveredLand] = useState<Land | null>(null)
@@ -18,6 +33,7 @@ const Atlas: React.FC<Props> = props => {
   const [mouseY, setMouseY] = useState(-1)
   const [x, setX] = useState(0)
   const [y, setY] = useState(0)
+  const [zoom, setZoom] = useState<number>(props.zoom || 1)
   const timeout = useRef<NodeJS.Timer | null>(null)
 
   let isEstate = false
@@ -129,6 +145,20 @@ const Atlas: React.FC<Props> = props => {
     [landTiles, selection, onNavigate, hasLink]
   )
 
+  const handleLocateLand = useCallback(() => {
+    if (onLocateLand) {
+      onLocateLand()
+    }
+  }, [onLocateLand])
+
+  const handleZoomOut = useCallback(() => {
+    setZoom(zoom - 0.5)
+  }, [zoom, setZoom])
+
+  const handleZoomIn = useCallback(() => {
+    setZoom(zoom + 0.5)
+  }, [zoom, setZoom])
+
   // fade effect
   useEffect(() => {
     if (!showPopup) {
@@ -191,6 +221,7 @@ const Atlas: React.FC<Props> = props => {
         onHover={handleHover}
         onClick={handleClick}
         {...props}
+        zoom={zoom}
         x={props.x || landX}
         y={props.y || landY}
         className={classes.join(' ')}
@@ -198,6 +229,15 @@ const Atlas: React.FC<Props> = props => {
         layers={[landLayer, unoccupiedLayer, ...selectionLayers, ...(props.layers || [])]}
       />
       {hoveredLand ? <Popup x={x} y={y} visible={showPopup} land={hoveredLand} /> : null}
+      {showControls ? (
+        <div className="dcl atlas-control-container">
+          <Control content={t('atlas.locate_land')} icon="locate-land" onClick={handleLocateLand} />
+          <div className="control-group">
+            <Control content={t('atlas.zoom_out')} icon="atlas-zoom-out" onClick={handleZoomOut} />
+            <Control content={t('atlas.zoom_in')} icon="atlas-zoom-in" onClick={handleZoomIn} />
+          </div>
+        </div>
+      ) : null}
     </>
   )
 }

@@ -1,4 +1,9 @@
 {
+  "atlas": {
+    "locate_land": "Locate next LAND",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out"
+  },
   "add_existing_item_modal": {
     "title": "Add Existing Item",
     "subtitle": "Select an item that is not part of a collection yet"
@@ -221,7 +226,6 @@
       },
       "map": {
         "continue": "Continue",
-        "locate_land": "Locate next LAND",
         "no_land_action": "Submit to Scene pool",
         "no_land_warning": "It seems that you don't own any LAND",
         "occupied_tooltip": "You can't publish here{br}It's overlapping with the scene \"{name}\"",
@@ -229,9 +233,7 @@
         "placement_active": "Placing a {count} LAND Scene at {x},{y}",
         "placement_default": "Select the LANDs that will host your Scene",
         "reset": "Reset",
-        "title": "Publish Scene",
-        "zoom_in": "Zoom in",
-        "zoom_out": "Zoom out"
+        "title": "Publish Scene"
       },
       "progress": {
         "creating_files": {

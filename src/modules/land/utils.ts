@@ -7,7 +7,7 @@ import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/c
 import { EstateRegistry } from 'contracts/EstateRegistry'
 import { LANDRegistry } from 'contracts/LANDRegistry'
 import { isZero } from 'lib/address'
-import { Land, LandType, RoleType } from './types'
+import { Land, LandTile, LandType, RoleType } from './types'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
 
@@ -127,4 +127,15 @@ export const splitCoords = (coords: Coord[]): [number[], number[]] => {
 
 export const buildMetadata = (name: string, description = '') => {
   return `0,"${name.replace(/"/g, '\\"')}","${description.replace(/"/g, '\\"')}",`
+}
+
+export function locateNextLand(landTiles: Record<string, LandTile>, currentLandId: string) {
+  const landIds = Object.keys(landTiles)
+
+  const landIndex = landIds.indexOf(currentLandId)
+  const index = landIndex === -1 ? 0 : landIndex
+  const nextIndex = (((index + 1) % landIds.length) + landIds.length) % landIds.length
+
+  const nextLandId = landIds[nextIndex]
+  return landTiles[nextLandId]!.land
 }

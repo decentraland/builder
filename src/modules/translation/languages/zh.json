@@ -1,4 +1,9 @@
 {
+  "atlas": {
+    "locate_land": "定位下一地块",
+    "zoom_in": "放大",
+    "zoom_out": "缩小"
+  },
   "add_existing_item_modal": {
     "title": "添加现有项目",
     "subtitle": "选择一个不属于集合的项目"
@@ -215,7 +220,6 @@
       },
       "map": {
         "continue": "继续",
-        "locate_land": "定位下一地块",
         "no_land_action": "提交到场景池",
         "no_land_warning": "好象您没有任何土地",
         "occupied_tooltip": "清空土地空间{br}从仪表板撤回发布的场景",
@@ -223,9 +227,7 @@
         "placement_active": "在 {x},{y} 布署 {count} 块土地场景 ",
         "placement_default": "选择要发布场景的土地",
         "reset": "重置",
-        "title": "发布场景",
-        "zoom_in": "放大",
-        "zoom_out": "缩小"
+        "title": "发布场景"
       },
       "progress": {
         "creating_files": {
