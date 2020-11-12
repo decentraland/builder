@@ -15,8 +15,8 @@ import { getLands } from 'modules/land/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
   address: getAddress(state),
-  ensByWallet: getENSByWallet(state),
-  landsByWallet: getLands(state),
+  ensList: getENSByWallet(state),
+  lands: getLands(state),
   isLoading: isLoadingType(getLoading(state), FETCH_ENS_LIST_SUCCESS) || isLoggingIn(state),
   isLoggedIn: isLoggedIn(state),
   sortBy: getSortBy(state),

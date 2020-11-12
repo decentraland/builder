@@ -9,8 +9,8 @@ export type Props = {
   sortBy: SortBy
   page: number
   totalPages: number
-  ensByWallet: ENS[]
-  landsByWallet: Land[]
+  ensList: ENS[]
+  lands: Land[]
   isLoggedIn: boolean
   isLoading: boolean
   onNavigate: (path: string) => void
@@ -19,9 +19,6 @@ export type Props = {
 
 export type State = {}
 
-export type MapStateProps = Pick<
-  Props,
-  'address' | 'ensByWallet' | 'landsByWallet' | 'isLoading' | 'isLoggedIn' | 'page' | 'totalPages' | 'sortBy'
->
+export type MapStateProps = Pick<Props, 'address' | 'ensList' | 'lands' | 'isLoading' | 'isLoggedIn' | 'page' | 'totalPages' | 'sortBy'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onPageChange'>
 export type MapDispatch = Dispatch

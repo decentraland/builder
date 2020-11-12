@@ -77,10 +77,10 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderEnsList() {
-    const { ensByWallet, totalPages, page, sortBy } = this.props
+    const { ensList, totalPages, page, sortBy } = this.props
 
-    const total = ensByWallet.length
-    const paginatedItems = ensByWallet
+    const total = ensList.length
+    const paginatedItems = ensList
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
           case SortBy.NEWEST: {
@@ -103,7 +103,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
             <Row height={30}>
               <Column>
                 <Row>
-                  <Header sub>{t('land_page.results', { count: ensByWallet.length.toLocaleString() })}</Header>
+                  <Header sub>{t('land_page.results', { count: ensList.length.toLocaleString() })}</Header>
                   {totalPages > 1 ? (
                     <>
                       <div className="arrow prev" onClick={() => console.log('this.handlePrev')}></div>
@@ -114,7 +114,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right">
                 <Row>
-                  {ensByWallet.length > 1 ? this.renderSortDropdown() : null}
+                  {ensList.length > 1 ? this.renderSortDropdown() : null}
                   <Button basic className="create-scene" onClick={() => alert('must be implemented')}>
                     <BuilderIcon name="add-active" />
                   </Button>
@@ -125,7 +125,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         </div>
         <Container>
           <Section className="table-section">
-            {ensByWallet.length > 0 ? (
+            {ensList.length > 0 ? (
               <Table basic="very">
                 <Table.Header>
                   <Table.Row>
@@ -138,7 +138,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 <Table.Body>
                   {paginatedItems.map((ens: ENS, index) => {
                     return (
-                      <Table.Row className="TableRow" key={`tableRow${index}`}>
+                      <Table.Row className="TableRow" key={index}>
                         <Table.Cell>
                           <Row>
                             <Column className="name">

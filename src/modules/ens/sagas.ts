@@ -159,11 +159,10 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const lands = yield select(getLands)
     const alias = yield select(getName)
 
-    for (let i = 0; i < lands.length; i++) {
-      const land = lands[i]
+    for (let land of lands) {
       const ipfshash = yield call(() => ipfs.uploadRedirectionFile(land))
       const landHash = yield call(() => contentHash.fromIpfs(ipfshash))
-      landHashes[i] = { hash: `0x${landHash}`, id: land.id }
+      landHashes.push({ hash: `0x${landHash}`, id: land.id })
     }
 
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
@@ -172,8 +171,8 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
     const ensList: ENS[] = []
-    for (let i = 0; i < domains.length; i++) {
-      const subdomain = yield call(() => domains[i].toLowerCase())
+    for (let subdomain of domains) {
+      subdomain = subdomain.toLowerCase()
       const name = subdomain.split('.')[0]
       const nodehash = namehash(subdomain)
       const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
@@ -182,8 +181,8 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 
       const resolverContract = new ENSResolver(eth, resolverAddress)
       const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
-      const x = landHashes.find(lh => lh.hash === content)
-      const landId = x ? x.id : undefined
+      const land = landHashes.find(lh => lh.hash === content)
+      const landId = land ? land.id : undefined
 
       ensList.push({
         address,
