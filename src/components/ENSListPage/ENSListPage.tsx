@@ -208,26 +208,4 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
       </LoggedInDetailPage>
     )
   }
-
-  /*
-  render() {
-    const { isLoggedIn, isLoading, onNavigate } = this.props
-    return (
-      <>
-        <Navbar isFullscreen />
-        <Page className={'ENSListPage'} isFullscreen>
-          <Tabs>
-            <Tabs.Tab onClick={() => onNavigate(locations.root())}>{t('navigation.scenes')}</Tabs.Tab>
-            <Tabs.Tab onClick={this.handleNavigateToLand}>{t('navigation.land')}</Tabs.Tab>
-            <Tabs.Tab active>{t('navigation.names')}</Tabs.Tab>
-          </Tabs>
-          {!isLoggedIn ? this.renderLogin() : null}
-          {isLoggedIn && isLoading ? this.renderLoading() : null}
-          {isLoggedIn && !isLoading ? this.renderEnsList() : null}
-        </Page>
-        <Footer />
-      </>
-    )
-  }
-  */
 }

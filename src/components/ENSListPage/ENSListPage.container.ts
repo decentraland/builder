@@ -26,7 +26,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onPageChange: options => dispatch(push(locations.enslist(options)))
+  onPageChange: options => dispatch(push(locations.ens(options)))
 })
 
 export default connect(mapState, mapDispatch)(ENSListPage)
