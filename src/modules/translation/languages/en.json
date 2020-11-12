@@ -973,6 +973,6 @@
     "sessions": "Weekly Sessions",
     "median_session_time": "Med. Session Time",
     "max_concurrent_users": "Peak Users",
-    "notice": "*Metrics are calculated weekly every Monday"
+    "notice": "*Metrics are refreshed weekly every Monday"
   }
 }
