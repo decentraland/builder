@@ -57,6 +57,7 @@ export type IconName =
   | 'plus'
   | 'preview-active'
   | 'preview'
+  | 'profile'
   | 'rotate-active'
   | 'rotate-left'
   | 'rotate-left'

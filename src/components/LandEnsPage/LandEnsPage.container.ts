@@ -9,7 +9,7 @@ import {
   setENSContentRequest,
   SET_ENS_RESOLVER_REQUEST,
   setENSResolverRequest,
-  FETCH_DOMAIN_LIST_REQUEST
+  FETCH_ENS_LIST_REQUEST
 } from 'modules/ens/actions'
 import { getLandId } from 'modules/location/selectors'
 import { getENSList, getLoading, getError, isWaitingTxSetResolver, isWaitingTxSetLandContent } from 'modules/ens/selectors'
@@ -28,7 +28,7 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
       isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
       isLoadingType(getLoading(state), FETCH_ENS_REQUEST) ||
-      isLoadingType(getLoading(state), FETCH_DOMAIN_LIST_REQUEST)
+      isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST)
   }
 }
 

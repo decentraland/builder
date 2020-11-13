@@ -328,6 +328,19 @@
     "title": "Edit",
     "subtitle": "Your are editing {name}."
   },
+  "ens_page": {
+    "table": {
+      "name": "Name",
+      "being_assigned": "Being Assigned",
+      "assigned_to": "Assigned To"
+    },
+    "button": {
+      "assign": "Assign",
+      "re_assign": "Re Assign",
+      "use_as_alias": "Use as Alias"
+    },
+    "items": "{count} {count, plural, one {items} other {items}}"
+  },
   "error_page": {
     "or": "or try",
     "reload": "reloading the page",
@@ -416,7 +429,8 @@
   "navigation": {
     "scenes": "Scenes",
     "land": "Land",
-    "avatar": "Wearables"
+    "avatar": "Wearables",
+    "names": "Names"
   },
   "list": {
     "two": "{first} and {second}",

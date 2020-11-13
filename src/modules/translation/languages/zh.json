@@ -329,6 +329,18 @@
     "support": "联系支持服务",
     "title": "糟糕！"
   },
+  "ens_page": {
+    "table": {
+      "name": "名称",
+      "being_assigned": "被分配",
+      "assigned_to": "分配给"
+    },
+    "button": {
+      "assign": "分配",
+      "re_assign": "重新指定",
+      "use_as_alias": "用作别名"
+    }
+  },
   "estate_editor": {
     "title_edit": "编辑产业",
     "subtitle_edit": "单击以添加或删除包裹",
@@ -407,7 +419,8 @@
   "navigation": {
     "scenes": "场景",
     "land": "土地",
-    "avatar": "头像"
+    "avatar": "头像",
+    "names": "名字"
   },
   "list": {
     "two": "{first} 及 {second}",

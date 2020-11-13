@@ -1,12 +1,12 @@
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
-  FetchDomainListRequestAction,
-  FetchDomainListSuccessAction,
-  FetchDomainListFailureAction,
-  FETCH_DOMAIN_LIST_REQUEST,
-  FETCH_DOMAIN_LIST_SUCCESS,
-  FETCH_DOMAIN_LIST_FAILURE,
+  FetchENSListRequestAction,
+  FetchENSListSuccessAction,
+  FetchENSListFailureAction,
+  FETCH_ENS_LIST_REQUEST,
+  FETCH_ENS_LIST_SUCCESS,
+  FETCH_ENS_LIST_FAILURE,
   FetchENSRequestAction,
   FetchENSSuccessAction,
   FetchENSFailureAction,
@@ -50,14 +50,14 @@ export type ENSReducerAction =
   | SetENSResolverRequestAction
   | SetENSResolverSuccessAction
   | SetENSResolverFailureAction
-  | FetchDomainListRequestAction
-  | FetchDomainListSuccessAction
-  | FetchDomainListFailureAction
+  | FetchENSListRequestAction
+  | FetchENSListSuccessAction
+  | FetchENSListFailureAction
   | FetchTransactionSuccessAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
-    case FETCH_DOMAIN_LIST_REQUEST:
+    case FETCH_ENS_LIST_REQUEST:
     case FETCH_ENS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
     case SET_ENS_RESOLVER_REQUEST:
@@ -68,7 +68,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         loading: loadingReducer(state.loading, action)
       }
     }
-    case FETCH_DOMAIN_LIST_SUCCESS: {
+    case FETCH_ENS_LIST_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -100,7 +100,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
-    case FETCH_DOMAIN_LIST_FAILURE: {
+    case FETCH_ENS_LIST_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

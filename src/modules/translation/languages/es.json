@@ -321,6 +321,18 @@
     "title": "Detalles de la Escena",
     "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
+  "ens_page": {
+    "table": {
+      "name": "Nombre",
+      "being_assigned": "Siendo assignado",
+      "assigned_to": "Asignado a"
+    },
+    "button": {
+      "assign": "Asignar",
+      "re_assign": "Re Asignar",
+      "use_as_alias": "Usar como alias"
+    }
+  },
   "error_page": {
     "or": "o intentar",
     "reload": "recargar la página",
@@ -407,7 +419,8 @@
   "navigation": {
     "scenes": "Escenas",
     "land": "Tierras",
-    "avatar": "Avatar"
+    "avatar": "Avatar",
+    "names": "Nombres"
   },
   "list": {
     "two": "{first} y {second}",
