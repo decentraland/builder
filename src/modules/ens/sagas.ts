@@ -177,7 +177,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
       const nodehash = namehash(subdomain)
       const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
       const resolver = resolverAddress.toString()
-      const isAlias = name.toLowerCase() === alias.toLowerCase() && resolver === Address.ZERO.toString()
+      const isAlias = name.toLowerCase() === alias && alias.toLowerCase() && resolver === Address.ZERO.toString()
 
       const resolverContract = new ENSResolver(eth, resolverAddress)
       const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())

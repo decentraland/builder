@@ -25,7 +25,6 @@ import './ENSListPage.css'
 import { ENS } from 'modules/ens/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import Icon from 'components/Icon'
 
 const PAGE_SIZE = 12
 
@@ -143,7 +142,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             <Column className="name">
                               {ens.subdomain}
-                              {ens.isAlias ? <Icon name="heart" /> : null}
+                              {ens.isAlias ? <BuilderIcon name="heart" /> : null}
                             </Column>
                           </Row>
                         </Table.Cell>
@@ -159,29 +158,28 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column>
-                              {!ens.landId ? (
+                            {!ens.landId ? (
+                              <Column align="right">
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   {t('ens_page.button.assign')}
                                 </Button>
-                              ) : null}
-                            </Column>
-                            <Column>
-                              {ens.landId ? (
+                              </Column>
+                            ) : null}
+                            {ens.landId ? (
+                              <Column align="right">
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   {t('ens_page.button.re_assign')}
                                 </Button>
-                              ) : null}
-                            </Column>
-                            <Column>
-                              {!ens.isAlias ? (
+                              </Column>
+                            ) : null}
+                            {!ens.isAlias ? (
+                              <Column align="right">
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   {t('ens_page.button.use_as_alias')}
                                 </Button>
-                              ) : null}
-                            </Column>
+                              </Column>
+                            ) : null}
                           </Row>
-
                         </Table.Cell>
                       </Table.Row>
                     )
