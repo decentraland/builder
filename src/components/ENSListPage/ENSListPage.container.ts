@@ -8,13 +8,17 @@ import { FETCH_ENS_LIST_REQUEST } from 'modules/ens/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import ENSListPage from './ENSListPage'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getLands } from 'modules/land/selectors'
+import { getLands, getLoading as getLandsLoading } from 'modules/land/selectors'
+import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   address: getAddress(state),
   ensList: getENSByWallet(state),
   lands: getLands(state),
-  isLoading: isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) || isLoggingIn(state),
+  isLoading:
+    isLoadingType(getLandsLoading(state), FETCH_LANDS_REQUEST) ||
+    isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
+    isLoggingIn(state),
   isLoggedIn: isLoggedIn(state)
 })
 
