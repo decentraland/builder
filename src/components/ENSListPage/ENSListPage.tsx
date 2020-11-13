@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Button, Center, Loader, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
-import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Props, State, SortBy } from './ENSListPage.types'
 import BuilderIcon from 'components/Icon'
@@ -35,8 +34,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     )
   }
 
-  handleDropdownChange = () => this.paginate()
-
   paginate = () => {
     const { ensList } = this.props
     const { page, sortBy } = this.state
@@ -57,20 +54,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
       })
       .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
     return sortedEnsList
-  }
-
-  renderLogin() {
-    return (
-      <Center className="login-wrapper">
-        <div className="secondary-text">
-          <T id="land_page.sign_in" values={{ link: <Link to={locations.signIn()}>{t('land_page.sign_in_link')}</Link> }} />
-        </div>
-      </Center>
-    )
-  }
-
-  renderLoading() {
-    return <Loader size="large" active />
   }
 
   renderEnsList() {
@@ -94,7 +77,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               <Column align="right">
                 <Row> {ensList.length > 1 ? this.renderSortDropdown() : null} </Row>
               </Column>
-              <Column align="right" className="claimName" grow={false} shrink>
+              <Column align="right" className="claim-name" grow={false} shrink>
                 <Row>
                   <Button basic onClick={() => alert('must be implemented')}>
                     <BuilderIcon name="add-active" />
