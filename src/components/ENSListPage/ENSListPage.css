@@ -110,3 +110,7 @@
 .ENSListPage .dcl.center.login-wrapper {
   top: 64px;
 }
+
+.ENSListPage .claimName {
+  padding: 10px;
+}

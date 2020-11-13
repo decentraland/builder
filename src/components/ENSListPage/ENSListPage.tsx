@@ -98,9 +98,11 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 </Row>
               </Column>
               <Column align="right">
+                <Row> {ensList.length > 1 ? this.renderSortDropdown() : null} </Row>
+              </Column>
+              <Column align="right" className="claimName" grow={false} shrink>
                 <Row>
-                  {ensList.length > 1 ? this.renderSortDropdown() : null}
-                  <Button basic className="create-scene" onClick={() => alert('must be implemented')}>
+                  <Button basic onClick={() => alert('must be implemented')}>
                     <BuilderIcon name="add-active" />
                   </Button>
                 </Row>
@@ -128,7 +130,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             <Column className="name">
                               {ens.subdomain}
-                              {ens.isAlias ? <BuilderIcon name="heart" /> : null}
+                              {ens.isAlias ? <BuilderIcon name="profile" /> : null}
                             </Column>
                           </Row>
                         </Table.Cell>
@@ -173,18 +175,16 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 </Table.Body>
               </Table>
             ) : null}
+            {total !== null && totalPages !== null && totalPages > 1 && (
+              <Pagination
+                firstItem={null}
+                lastItem={null}
+                totalPages={totalPages}
+                activePage={page}
+                onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
+              />
+            )}
           </Section>
-        </Container>
-        <Container>
-          {total !== null && totalPages !== null && totalPages > 0 && (
-            <Pagination
-              firstItem={null}
-              lastItem={null}
-              totalPages={totalPages}
-              activePage={page}
-              onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
-            />
-          )}
         </Container>
       </>
     )
