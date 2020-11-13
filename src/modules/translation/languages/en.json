@@ -338,7 +338,8 @@
       "assign": "Assign",
       "re_assign": "Re Assign",
       "use_as_alias": "Use as Alias"
-    }
+    },
+    "items": "{count} {count, plural, one {items} other {items}}"
   },
   "error_page": {
     "or": "or try",

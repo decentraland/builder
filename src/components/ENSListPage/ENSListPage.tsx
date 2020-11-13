@@ -88,13 +88,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
             <Row height={30}>
               <Column>
                 <Row>
-                  <Header sub>{t('land_page.results', { count: ensList.length.toLocaleString() })}</Header>
-                  {totalPages > 1 ? (
-                    <>
-                      <div className="arrow prev" onClick={() => console.log('this.handlePrev')}></div>
-                      <div className="arrow next" onClick={() => console.log('this.handleNext')}></div>
-                    </>
-                  ) : null}
+                  <Header sub>{t('ens_page.items', { count: ensList.length.toLocaleString() })}</Header>
                 </Row>
               </Column>
               <Column align="right">
