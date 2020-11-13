@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Address } from 'web3x-es/address'
 import { Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -56,6 +57,13 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     return sortedEnsList
   }
 
+  isAlias(ens: ENS): boolean {
+    const { alias } = this.props
+    const { subdomain, resolver } = ens
+    const name = subdomain.split('.')[0]
+    return alias ? name.toLowerCase() === alias.toLowerCase() && resolver === Address.ZERO.toString() : false
+  }
+
   renderEnsList() {
     const { ensList } = this.props
     const { page } = this.state
@@ -107,7 +115,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             <Column className="name">
                               {ens.subdomain}
-                              {ens.isAlias ? <BuilderIcon name="profile" /> : null}
+                              {this.isAlias(ens) ? <BuilderIcon name="profile" /> : null}
                             </Column>
                           </Row>
                         </Table.Cell>
@@ -137,7 +145,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                                 </Button>
                               </Column>
                             ) : null}
-                            {!ens.isAlias ? (
+                            {!this.isAlias(ens) ? (
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
                                   {t('ens_page.button.use_as_alias')}

@@ -10,8 +10,10 @@ import ENSListPage from './ENSListPage'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getLands, getLoading as getLandsLoading } from 'modules/land/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
+import { getName } from 'modules/profile/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
+  alias: getName(state),
   address: getAddress(state),
   ensList: getENSByWallet(state),
   lands: getLands(state),

@@ -9,6 +9,7 @@ export enum SortBy {
 
 export type Props = {
   address?: string
+  alias?: string | null
   ensList: ENS[]
   lands: Land[]
   isLoggedIn: boolean
@@ -21,6 +22,6 @@ export type State = {
   sortBy: SortBy
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'ensList' | 'lands' | 'isLoading' | 'isLoggedIn'>
+export type MapStateProps = Pick<Props, 'address' | 'alias' | 'ensList' | 'lands' | 'isLoading' | 'isLoggedIn'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch

@@ -31,7 +31,6 @@ import {
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { getName } from 'modules/profile/selectors'
 
 export function* ensSaga() {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
@@ -157,7 +156,6 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   try {
     const landHashes = []
     const lands = yield select(getLands)
-    const alias = yield select(getName)
 
     for (let land of lands) {
       const ipfshash = yield call(() => ipfs.uploadRedirectionFile(land))
@@ -173,11 +171,9 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const ensList: ENS[] = []
     for (let subdomain of domains) {
       subdomain = subdomain.toLowerCase()
-      const name = subdomain.split('.')[0]
       const nodehash = namehash(subdomain)
       const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
       const resolver = resolverAddress.toString()
-      const isAlias = name.toLowerCase() === alias && alias.toLowerCase() && resolver === Address.ZERO.toString()
 
       const resolverContract = new ENSResolver(eth, resolverAddress)
       const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
@@ -189,8 +185,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
         subdomain,
         resolver,
         content,
-        landId,
-        isAlias
+        landId
       })
     }
     yield put(fetchENSListSuccess(ensList))
