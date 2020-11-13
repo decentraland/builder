@@ -1,11 +1,14 @@
-import { takeLatest, put, select } from 'redux-saga/effects'
-import { Personal } from 'web3x-es/personal'
+import { takeLatest, put, select, call } from 'redux-saga/effects'
 import { Eth } from 'web3x-es/eth'
+import { Personal } from 'web3x-es/personal'
 import { Address } from 'web3x-es/address'
 import { bufferToHex } from 'web3x-es/utils'
 import { Account } from 'web3x-es/account'
+import { replace, getLocation } from 'connected-react-router'
+import { Authenticator } from 'dcl-crypto'
 import { env } from 'decentraland-commons'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import {
   enableWalletRequest,
   CONNECT_WALLET_SUCCESS,
@@ -17,8 +20,7 @@ import {
   disconnectWallet,
   CHANGE_ACCOUNT
 } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { Authenticator } from 'dcl-crypto'
-import { replace, getLocation } from 'connected-react-router'
+import { clearAssetPacks } from 'modules/assetPack/actions'
 import { locations } from 'routing/locations'
 import {
   GENERATE_IDENTITY_REQUEST,
@@ -42,7 +44,6 @@ import {
 import { ONE_MONTH_IN_MINUTES, takeRace } from './utils'
 import { isLoggedIn, getCurrentIdentity } from './selectors'
 import { Race } from './types'
-import { clearAssetPacks } from 'modules/assetPack/actions'
 
 export function* identitySaga() {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
@@ -56,7 +57,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
   const { address } = action.payload
 
   try {
-    const eth = Eth.fromCurrentProvider()
+    const eth: Eth | null = yield call(createEth)
     if (!eth) {
       throw new Error('Wallet not found')
     }
