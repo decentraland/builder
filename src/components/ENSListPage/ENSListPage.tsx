@@ -83,7 +83,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 </Row>
               </Column>
               <Column align="right">
-                <Row> {ensList.length > 1 ? this.renderSortDropdown() : null} </Row>
+                <Row>{ensList.length > 1 ? this.renderSortDropdown() : null}</Row>
               </Column>
               <Column align="right" className="claim-name" grow={false} shrink>
                 <Row>
@@ -178,7 +178,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   render() {
     const { isLoading } = this.props
     return (
-      <LoggedInDetailPage className={`ENSListPage view`} activeTab={NavigationTab.NAMES} isLoading={isLoading} isPageFullscreen={true}>
+      <LoggedInDetailPage className="ENSListPage view" activeTab={NavigationTab.NAMES} isLoading={isLoading} isPageFullscreen={true}>
         {this.renderEnsList()}
       </LoggedInDetailPage>
     )
