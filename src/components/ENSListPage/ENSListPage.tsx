@@ -1,26 +1,10 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import {
-  Button,
-  Center,
-  Loader,
-  Table,
-  Row,
-  Column,
-  Header,
-  Section,
-  Container,
-  Pagination,
-  Dropdown,
-  DropdownProps,
-  PaginationProps
-} from 'decentraland-ui'
+import { Button, Center, Loader, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Props, State } from './ENSListPage.types'
+import { Props, State, SortBy } from './ENSListPage.types'
 import BuilderIcon from 'components/Icon'
-import { SortBy } from 'modules/ui/dashboard/types'
-import { PaginationOptions } from 'routing/utils'
 import './ENSListPage.css'
 import { ENS } from 'modules/ens/types'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
@@ -29,10 +13,15 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 const PAGE_SIZE = 12
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
+  state: State = {
+    sortBy: SortBy.NEWEST,
+    page: 1
+  }
+
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
 
   renderSortDropdown = () => {
-    const { sortBy } = this.props
+    const { sortBy } = this.state
     return (
       <Dropdown
         direction="left"
@@ -41,24 +30,33 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
           { value: SortBy.NEWEST, text: t('home_page.sort.newest') },
           { value: SortBy.NAME, text: t('home_page.sort.name') }
         ]}
-        onChange={this.handleDropdownChange}
+        onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
       />
     )
   }
 
-  handlePageChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { activePage }: PaginationProps) =>
-    this.paginate({ page: activePage as number })
+  handleDropdownChange = () => this.paginate()
 
-  handleDropdownChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) =>
-    this.paginate({ sortBy: value as SortBy })
+  paginate = () => {
+    const { ensList } = this.props
+    const { page, sortBy } = this.state
 
-  paginate = (options: PaginationOptions = {}) => {
-    const { page, sortBy } = this.props
-    this.props.onPageChange({
-      page,
-      sortBy,
-      ...options
-    })
+    const sortedEnsList = ensList
+      .sort((a: ENS, b: ENS) => {
+        switch (sortBy) {
+          case SortBy.NEWEST: {
+            return a.address.toLowerCase() > b.address.toLowerCase() ? -1 : 1
+          }
+          case SortBy.NAME: {
+            return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
+          }
+          default: {
+            return 0
+          }
+        }
+      })
+      .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    return sortedEnsList
   }
 
   renderLogin() {
@@ -76,24 +74,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderEnsList() {
-    const { ensList, totalPages, page, sortBy } = this.props
+    const { ensList } = this.props
+    const { page } = this.state
 
     const total = ensList.length
-    const paginatedItems = ensList
-      .sort((a: ENS, b: ENS) => {
-        switch (sortBy) {
-          case SortBy.NEWEST: {
-            return a.address.toLowerCase() > b.address.toLowerCase() ? -1 : 1
-          }
-          case SortBy.NAME: {
-            return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
-          }
-          default: {
-            return 0
-          }
-        }
-      })
-      .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    const totalPages = Math.ceil(total / PAGE_SIZE)
+    const paginatedItems = this.paginate()
 
     return (
       <>
@@ -190,8 +176,14 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
           </Section>
         </Container>
         <Container>
-          {total !== null && totalPages !== null && totalPages > 1 && (
-            <Pagination firstItem={null} lastItem={null} totalPages={totalPages} activePage={page} onPageChange={this.handlePageChange} />
+          {total !== null && totalPages !== null && totalPages > 0 && (
+            <Pagination
+              firstItem={null}
+              lastItem={null}
+              totalPages={totalPages}
+              activePage={page}
+              onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
+            />
           )}
         </Container>
       </>
