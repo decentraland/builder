@@ -1,14 +1,17 @@
 import * as React from 'react'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import Back from 'components/Back'
 import { locations } from 'routing/locations'
+import Back from 'components/Back'
+import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import { MAX_NAME_SIZE, isNameValid } from 'modules/ens/utils'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
-  state: State = {}
+  state: State = {
+    name: ''
+  }
 
   handleClaim = () => {
     console.log('claim', this.state.name)
@@ -18,6 +21,8 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.setState({ name: data.value })
   }
 
+  handleOnAction = () => {}
+
   handleBack = () => {
     this.props.onNavigate(locations.root())
   }
@@ -25,6 +30,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   render() {
     const { onBack } = this.props
     const { name } = this.state
+    const isValid = isNameValid(name)
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -51,13 +57,16 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   label="Name"
                   value={name}
                   message="Names cannot contain non-alphanumeric characters or spaces."
+                  action={`${name.length}/${MAX_NAME_SIZE}`}
+                  error={name.length > 1 && !isValid}
                   onChange={this.handleNameChange}
+                  onAction={this.handleOnAction}
                 />
                 <Row className="actions">
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!name}>
+                  <Button type="submit" primary disabled={!isValid}>
                     {t('global.submit')}
                   </Button>
                 </Row>
