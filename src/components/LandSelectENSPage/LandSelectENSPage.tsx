@@ -22,8 +22,10 @@ export default class LandSelectENSPage extends React.PureComponent<Props> {
         {land => (
           <LandAction
             land={land}
-            title={t('land_ens_page.title')}
-            subtitle={<T id="land_ens_page.subtitle" values={{ land: <Link to={locations.landDetail(land.id)}>{land.name}</Link> }} />}
+            title={t('land_select_ens_page.title')}
+            subtitle={
+              <T id="land_select_ens_page.subtitle" values={{ land: <Link to={locations.landDetail(land.id)}>{land.name}</Link> }} />
+            }
           >
             <LandSelectENSForm
               land={land}
