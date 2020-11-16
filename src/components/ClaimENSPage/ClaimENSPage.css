@@ -32,3 +32,9 @@
   height: 343px;
   width: 240px;
 }
+
+.ClaimENSPage .dcl.field .overlay .ui.button.basic {
+  font-size: 17px;
+  color: var(--secondary-text) !important;
+  cursor: default;
+}
