@@ -7,7 +7,7 @@ export type Props = {
 }
 
 export type State = {
-  name?: string
+  name: string
 }
 
 export type MapStateProps = {}
