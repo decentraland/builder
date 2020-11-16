@@ -33,8 +33,8 @@
   opacity: 0.4;
 }
 
-.LandAssignENSForm .box .message button {
-  padding: 13px 20px;
+.LandAssignENSForm .box .message-box .ui.button {
+  padding: 13px 10px;
 }
 
 .LandAssignENSForm .box p {
@@ -47,9 +47,8 @@
   margin-right: 5px;
 }
 
-.LandAssignENSForm .grey-button {
+.LandAssignENSForm .box .message-box .grey-button {
   background-color: #444 !important;
-  padding: 13px 10px;
 }
 
 .LandAssignENSForm i.check.icon {
