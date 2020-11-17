@@ -25,10 +25,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
   }
 
-  handleReassignENS = (ens: ENS) => {
-    this.props.onNavigate(locations.landAssignENS(ens.landId, ens.subdomain))
-  }
-
   renderSortDropdown = () => {
     const { sortBy } = this.state
     return (
@@ -164,7 +160,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             ) : null}
                             {ens.landId ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => this.handleReassignENS(ens)}>
+                                <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
                                   {t('ens_list_page.button.re_assign')}
                                 </Button>
                               </Column>

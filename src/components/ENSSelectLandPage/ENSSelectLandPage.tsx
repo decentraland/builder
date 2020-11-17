@@ -3,7 +3,8 @@ import { Loader, Row, Column, Section, Header, Button, Narrow } from 'decentrala
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
-import { coordsToId, locateNextLand } from 'modules/land/utils'
+import { Land } from 'modules/land/types'
+import { idToCoords, coordsToId, locateNextLand } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import Back from 'components/Back'
 import NotFound from 'components/NotFound'
@@ -14,11 +15,11 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
   state: State = {}
 
   componentDidUpdate() {
-    const { isLoading } = this.props
+    const { isLoading, ens } = this.props
     const { selectedLand } = this.state
 
-    if (!selectedLand && !isLoading) {
-      this.setState({ selectedLand: this.getFirstLand() })
+    if (!selectedLand && !isLoading && ens) {
+      this.setState({ selectedLand: this.getFirstAvailableLand() })
     }
   }
 
@@ -69,15 +70,29 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
     this.setState({ hoveredLandId: coordsToId(x, y) })
   }
 
-  getFirstLand() {
-    const { landTiles } = this.props
-    const [landTile] = Object.values(landTiles || {})
-    return landTile ? landTile.land : undefined
+  getFirstAvailableLand() {
+    const { ens, landTiles } = this.props
+    const tiles = Object.values(landTiles || {})
+    if (tiles.length === 1) {
+      return tiles[0].land
+    }
+
+    let land: Land | undefined
+    for (const tile of tiles) {
+      if (tile.land.id !== ens!.landId) {
+        land = tile.land
+        break
+      }
+    }
+    return land
   }
 
   render() {
     const { ens, isLoading, onBack } = this.props
     const { selectedLand } = this.state
+
+    const isSameLand = selectedLand && ens && selectedLand.id === ens.landId
+
     return (
       <LoggedInDetailPage className="ENSSelectLandPage" hasNavigation={false}>
         {isLoading ? (
@@ -115,7 +130,9 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
                   {selectedLand ? (
                     <div className="selected-land">
                       <div className="label">{t('ens_select_land_page.land_selected')}</div>
-                      <div className="land">{selectedLand.name}</div>
+                      <div className="land">
+                        {selectedLand.name} ({idToCoords(selectedLand.id)})
+                      </div>
                     </div>
                   ) : null}
                 </Column>
@@ -124,8 +141,8 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
                     <Button secondary onClick={onBack}>
                       {t('global.cancel')}
                     </Button>
-                    <Button primary disabled={!selectedLand} onClick={this.handleReassignENS}>
-                      {t('global.continue')}
+                    <Button primary disabled={!selectedLand || isSameLand} onClick={this.handleReassignENS}>
+                      {isSameLand ? t('ens_select_land_page.already_assigned') : t('global.continue')}
                     </Button>
                   </div>
                 </Column>

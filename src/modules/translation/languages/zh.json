@@ -552,7 +552,8 @@
   "ens_select_land_page": {
     "title": "分配{name}",
     "subtitle": "您可以将此名称分配给其他任何土地",
-    "land_selected": "选择的土地："
+    "land_selected": "选择的土地：",
+    "already_assigned": "已分配"
   },
   "land_select_ens_page": {
     "title": "分配名称",

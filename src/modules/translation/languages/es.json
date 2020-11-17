@@ -551,7 +551,8 @@
   "ens_select_land_page": {
     "title": "Asignar {name}",
     "subtitle": "Podes asignar este nombre a cualquier Land",
-    "land_selected": "Land seleccionada:"
+    "land_selected": "Land seleccionada:",
+    "already_assigned": "Ya asignaddo"
   },
   "land_select_ens_page": {
     "title": "Asigna un Nombre",

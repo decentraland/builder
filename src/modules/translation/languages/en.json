@@ -590,7 +590,8 @@
   "ens_select_land_page": {
     "title": "Assign {name}",
     "subtitle": "You can assign this name to any of your Lands",
-    "land_selected": "Land selected:"
+    "land_selected": "Land selected:",
+    "already_assigned": "Already assigned"
   },
   "land_select_ens_page": {
     "title": "Assign Name",
