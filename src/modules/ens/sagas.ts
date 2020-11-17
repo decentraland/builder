@@ -36,7 +36,6 @@ import { ENS, ENSOrigin, ENSError } from './types'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getData as getProfile } from 'modules/profile/selectors'
 import { Authenticator } from 'dcl-crypto'
 import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
@@ -224,18 +223,23 @@ function* handleChangeProfile(action: ChangeProfileRequestAction) {
     const { selectedName } = action.payload
 
     const address = yield select(getAddress)
-    const profiles = yield select(getProfile)
-    const profile = profiles[address]
 
-    const avatar = profile.avatars[0]
+    const client = new CatalystClient('https://peer.decentraland.org', 'builder')
+    const entities = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()])
+    const profile = entities.length > 0 ? entities[0] : null
+
+    const avatar = profile && profile.metadata && profile.metadata.avatars[0]
     avatar.name = selectedName
     avatar.hasClaimedName = true
 
     // Build entity
-    const content: Map<string, Buffer> = new Map(
-      (profile.content || []).map(({ file, hash }: { file: string; hash: Buffer }) => [file, hash])
+    const content: Map<string, string> = new Map(
+      (profile.content || []).map(({ file, hash }: { file: string; hash: string }) => [file, hash])
     )
-    const deployPreparationData = yield call(() => DeploymentBuilder.buildEntity(EntityType.PROFILE, [address], content, profile))
+    console.log({ profile })
+    const deployPreparationData = yield call(() =>
+      DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, profile.metadata)
+    )
 
     // Request signature
     const eth = Eth.fromCurrentProvider()
@@ -245,7 +249,6 @@ function* handleChangeProfile(action: ChangeProfileRequestAction) {
 
       // Deploy change
       const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-      const client = new CatalystClient('https://peer.decentraland.org', 'builder')
       yield client.deployEntity({ ...deployPreparationData, authChain })
 
       yield put(changeProfileSuccess())

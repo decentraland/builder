@@ -66,8 +66,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   isAlias(ens: ENS): boolean {
     const { alias } = this.props
     const { subdomain } = ens
-    const name = subdomain.split('.')[0]
-    return alias ? name.toLowerCase() === alias.toLowerCase() : false
+    const name = subdomain.split('.')[0].toLowerCase()
+    return alias ? name === alias.toLowerCase() : false
   }
 
   renderEnsList() {
