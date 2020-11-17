@@ -13,7 +13,7 @@ const PAGE_SIZE = 12
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
-    useAsAliasClicked: "",
+    useAsAliasClicked: '',
     sortBy: SortBy.NAME,
     page: 1
   }
@@ -71,8 +71,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderEnsList() {
-    const { ensList } = this.props
-    const { page } = this.state
+    const { ensList, isLoadingUseAsAlias } = this.props
+    const { page, useAsAliasClicked } = this.state
 
     const total = ensList.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -170,7 +170,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                               <Column align="right">
                                 <Button
                                   className="ui basic button"
-                                  loading={this.props.isLoadingUseAsAlias && this.state.useAsAliasClicked === ens.subdomain}
+                                  loading={isLoadingUseAsAlias && useAsAliasClicked === ens.subdomain}
                                   onClick={() => {
                                     const name = ens.subdomain.split('.')[0]
                                     this.setState({ useAsAliasClicked: ens.subdomain })
