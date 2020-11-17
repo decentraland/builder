@@ -330,7 +330,7 @@
     "title": "Edit",
     "subtitle": "Your are editing {name}."
   },
-  "ens_page": {
+  "ens_list_page": {
     "table": {
       "name": "Name",
       "being_assigned": "Being Assigned",
@@ -341,7 +341,8 @@
       "re_assign": "Re Assign",
       "use_as_alias": "Use as Alias"
     },
-    "items": "{count} {count, plural, one {items} other {items}}"
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "alias_popup": "This name is being used by your profile but it can still be assigned"
   },
   "error_page": {
     "or": "or try",

@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Popup } from 'decentraland-ui'
 import Icon from 'components/Icon'
 import { Props } from './Control.types'
-// import './Control.css'
 
 export default class Control extends React.PureComponent<Props> {
   render() {

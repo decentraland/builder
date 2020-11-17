@@ -331,7 +331,7 @@
     "support": "联系支持服务",
     "title": "糟糕！"
   },
-  "ens_page": {
+  "ens_list_page": {
     "table": {
       "name": "名称",
       "being_assigned": "被分配",
@@ -341,7 +341,9 @@
       "assign": "分配",
       "re_assign": "重新指定",
       "use_as_alias": "用作别名"
-    }
+    },
+    "items": "{count} {count, plural, one {项目} other {项目}}",
+    "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
   },
   "estate_editor": {
     "title_edit": "编辑产业",

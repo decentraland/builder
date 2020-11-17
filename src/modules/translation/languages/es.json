@@ -323,7 +323,7 @@
     "title": "Detalles de la Escena",
     "unpublish_needed": "Por favor Despublica tu Escena antes de actualizar los detalles de la misma"
   },
-  "ens_page": {
+  "ens_list_page": {
     "table": {
       "name": "Nombre",
       "being_assigned": "Siendo assignado",
@@ -333,7 +333,9 @@
       "assign": "Asignar",
       "re_assign": "Re Asignar",
       "use_as_alias": "Usar como alias"
-    }
+    },
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
   },
   "error_page": {
     "or": "o intentar",

@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { Loader, Row, Column, Section, Header, Button } from 'decentraland-ui'
+import { Loader, Row, Column, Section, Header, Button, Narrow } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { coordsToId, locateNextLand } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
+import Back from 'components/Back'
 import NotFound from 'components/NotFound'
 import { Props, State } from './ENSSelectLandPage.types'
 import './ENSSelectLandPage.css'
@@ -19,6 +20,10 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
     if (!selectedLand && !isLoading) {
       this.setState({ selectedLand: this.getFirstLand() })
     }
+  }
+
+  handleBack = () => {
+    this.props.onNavigate(locations.root())
   }
 
   handleSelectLand = (x: number, y: number) => {
@@ -74,55 +79,58 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
     const { ens, isLoading, onBack } = this.props
     const { selectedLand } = this.state
     return (
-      <LoggedInDetailPage className="ENSSelectLandPage">
+      <LoggedInDetailPage className="ENSSelectLandPage" hasNavigation={false}>
         {isLoading ? (
           <Loader active size="massive" />
         ) : !ens ? (
           <NotFound />
         ) : (
           <>
-            <Row>
-              <Column>
-                <Section>
-                  <Header className="title" size="large">
-                    {t('ens_select_land_page.title', { name: ens ? ens.subdomain : t('global.name') })}
-                  </Header>
-                  <span className="subtitle">{t('ens_select_land_page.subtitle')}</span>
-                </Section>
-              </Column>
-            </Row>
-            <div className="atlas-wrapper">
-              <Atlas
-                showControls
-                showOwner
-                isDraggable
-                landId={selectedLand ? selectedLand.id : undefined}
-                onClick={this.handleSelectLand}
-                onHover={this.handleOnHover}
-                onLocateLand={this.handleLocateLand}
-                layers={[this.hoverLayer]}
-              />
-            </div>
-            <Row className="atlas-footer">
-              <Column grow>
-                {selectedLand ? (
-                  <div className="selected-land">
-                    <div className="label">{t('ens_select_land_page.land_selected')}</div>
-                    <div className="land">{selectedLand.name}</div>
+            <Back absolute onClick={this.handleBack} />
+            <Narrow>
+              <Row>
+                <Column>
+                  <Section>
+                    <Header className="title" size="large">
+                      {t('ens_select_land_page.title', { name: ens ? ens.subdomain : t('global.name') })}
+                    </Header>
+                    <span className="subtitle">{t('ens_select_land_page.subtitle')}</span>
+                  </Section>
+                </Column>
+              </Row>
+              <div className="atlas-wrapper">
+                <Atlas
+                  showControls
+                  showOwner
+                  isDraggable
+                  landId={selectedLand ? selectedLand.id : undefined}
+                  onClick={this.handleSelectLand}
+                  onHover={this.handleOnHover}
+                  onLocateLand={this.handleLocateLand}
+                  layers={[this.hoverLayer]}
+                />
+              </div>
+              <Row className="atlas-footer">
+                <Column grow>
+                  {selectedLand ? (
+                    <div className="selected-land">
+                      <div className="label">{t('ens_select_land_page.land_selected')}</div>
+                      <div className="land">{selectedLand.name}</div>
+                    </div>
+                  ) : null}
+                </Column>
+                <Column grow={false}>
+                  <div className="actions">
+                    <Button secondary onClick={onBack}>
+                      {t('global.cancel')}
+                    </Button>
+                    <Button primary disabled={!selectedLand} onClick={this.handleReassignENS}>
+                      {t('global.continue')}
+                    </Button>
                   </div>
-                ) : null}
-              </Column>
-              <Column grow={false}>
-                <div className="actions">
-                  <Button secondary onClick={onBack}>
-                    {t('global.cancel')}
-                  </Button>
-                  <Button primary disabled={!selectedLand} onClick={this.handleReassignENS}>
-                    {t('global.continue')}
-                  </Button>
-                </div>
-              </Column>
-            </Row>
+                </Column>
+              </Row>
+            </Narrow>
           </>
         )}
       </LoggedInDetailPage>

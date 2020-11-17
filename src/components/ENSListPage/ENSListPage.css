@@ -1,31 +1,37 @@
+.ENSListPage .TableRow .dcl.column.subdomain-wrapper {
+  display: flex;
+  flex: none;
+  flex-direction: row;
+}
+
+.ENSListPage .subdomain-wrapper .Icon.profile {
+  margin-left: 10px;
+}
+
 .ENSListPage .ui.pagination {
   width: 100%;
   display: flex;
   justify-content: center;
 }
+
 .ENSListPage .ui.pagination .item[type='nextItem'],
 .ENSListPage .ui.pagination .item[type='prevItem'] {
   position: absolute;
   background-color: var(--secondary);
 }
+
 .ENSListPage .ui.pagination .item[type='prevItem'] {
   left: 0px;
 }
+
 .ENSListPage .ui.pagination .item[type='nextItem'] {
   right: 0px;
 }
+
 .ENSListPage .pagination-section {
   width: 100%;
 }
-.ENSListPage .filters {
-  height: 36px;
-}
-.ENSListPage .filters .ui.header.sub {
-  font-weight: 500;
-}
-.ENSListPage .dcl.center.login-wrapper {
-  top: 64px;
-}
+
 .ENSListPage .claim-name {
   padding: 5px 10px;
   margin: 1px;
@@ -33,6 +39,11 @@
   margin-left: 30px;
   border-radius: 4px;
 }
+
 .ENSListPage .claim-name .Icon {
   display: block;
+}
+
+.ui.popup.inverted.alias-popup {
+  height: auto;
 }
