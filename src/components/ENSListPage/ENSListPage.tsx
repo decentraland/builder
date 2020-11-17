@@ -13,7 +13,8 @@ const PAGE_SIZE = 12
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.NEWEST,
+    useAsAliasClicked: "",
+    sortBy: SortBy.NAME,
     page: 1
   }
 
@@ -167,8 +168,16 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             ) : null}
                             {!this.isAlias(ens) ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => alert('must be implemented')}>
-                                  {t('ens_list_page.button.use_as_alias')}
+                                <Button
+                                  className="ui basic button"
+                                  loading={this.props.isLoadingUseAsAlias && this.state.useAsAliasClicked === ens.subdomain}
+                                  onClick={() => {
+                                    const name = ens.subdomain.split('.')[0]
+                                    this.setState({ useAsAliasClicked: ens.subdomain })
+                                    this.props.onChangeProfile(name)
+                                  }}
+                                >
+                                  {t('ens_page.button.use_as_alias')}
                                 </Button>
                               </Column>
                             ) : null}

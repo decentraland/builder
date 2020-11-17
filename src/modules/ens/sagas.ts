@@ -26,11 +26,21 @@ import {
   FetchENSListRequestAction,
   fetchENSListRequest,
   fetchENSListSuccess,
-  fetchENSListFailure
+  fetchENSListFailure,
+  ChangeProfileRequestAction,
+  changeProfileFailure,
+  changeProfileSuccess,
+  CHANGE_PROFILE_REQUEST
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getProfile } from 'modules/profile/selectors'
+import { Authenticator } from 'dcl-crypto'
+import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
+import { EntityType } from 'dcl-catalyst-commons'
+import { Personal } from 'web3x-es/personal'
 
 export function* ensSaga() {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
@@ -38,6 +48,7 @@ export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
+  yield takeEvery(CHANGE_PROFILE_REQUEST, handleChangeProfile)
 }
 
 function* handleConnectWallet() {
@@ -205,5 +216,42 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchENSListFailure(ensError))
+  }
+}
+
+function* handleChangeProfile(action: ChangeProfileRequestAction) {
+  try {
+    const { selectedName } = action.payload
+
+    const address = yield select(getAddress)
+    const profiles = yield select(getProfile)
+    const profile = profiles[address]
+
+    const avatar = profile.avatars[0]
+    avatar.name = selectedName
+    avatar.hasClaimedName = true
+
+    // Build entity
+    const content: Map<string, Buffer> = new Map(
+      (profile.content || []).map(({ file, hash }: { file: string; hash: Buffer }) => [file, hash])
+    )
+    const deployPreparationData = yield call(() => DeploymentBuilder.buildEntity(EntityType.PROFILE, [address], content, profile))
+
+    // Request signature
+    const eth = Eth.fromCurrentProvider()
+    if (eth) {
+      const personal = new Personal(eth.provider)
+      const signature = yield personal.sign(deployPreparationData.entityId, address, '')
+
+      // Deploy change
+      const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
+      const client = new CatalystClient('https://peer.decentraland.org', 'builder')
+      yield client.deployEntity({ ...deployPreparationData, authChain })
+
+      yield put(changeProfileSuccess())
+    }
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(changeProfileFailure(ensError))
   }
 }

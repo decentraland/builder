@@ -65,3 +65,16 @@ export const fetchENSListFailure = (error: ENSError) => action(FETCH_ENS_LIST_FA
 export type FetchENSListRequestAction = ReturnType<typeof fetchENSListRequest>
 export type FetchENSListSuccessAction = ReturnType<typeof fetchENSListSuccess>
 export type FetchENSListFailureAction = ReturnType<typeof fetchENSListFailure>
+
+// Change Profile Name
+export const CHANGE_PROFILE_REQUEST = '[Request] Change Profile'
+export const CHANGE_PROFILE_SUCCESS = '[Success] Change Profile'
+export const CHANGE_PROFILE_FAILURE = '[Failure] Change Profile'
+
+export const changeProfileRequest = (selectedName: string) => action(CHANGE_PROFILE_REQUEST, { selectedName })
+export const changeProfileSuccess = () => action(CHANGE_PROFILE_SUCCESS, {})
+export const changeProfileFailure = (error: ENSError) => action(CHANGE_PROFILE_FAILURE, { error })
+
+export type ChangeProfileRequestAction = ReturnType<typeof changeProfileRequest>
+export type ChangeProfileSuccessAction = ReturnType<typeof changeProfileSuccess>
+export type ChangeProfileFailureAction = ReturnType<typeof changeProfileFailure>

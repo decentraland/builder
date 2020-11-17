@@ -24,7 +24,13 @@ import {
   SetENSResolverFailureAction,
   SET_ENS_RESOLVER_REQUEST,
   SET_ENS_RESOLVER_SUCCESS,
-  SET_ENS_RESOLVER_FAILURE
+  SET_ENS_RESOLVER_FAILURE,
+  ChangeProfileRequestAction,
+  ChangeProfileFailureAction,
+  ChangeProfileSuccessAction,
+  CHANGE_PROFILE_REQUEST,
+  CHANGE_PROFILE_SUCCESS,
+  CHANGE_PROFILE_FAILURE
 } from './actions'
 import { ENS, ENSError } from './types'
 
@@ -54,9 +60,13 @@ export type ENSReducerAction =
   | FetchENSListSuccessAction
   | FetchENSListFailureAction
   | FetchTransactionSuccessAction
+  | ChangeProfileRequestAction
+  | ChangeProfileSuccessAction
+  | ChangeProfileFailureAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
+    case CHANGE_PROFILE_REQUEST:
     case FETCH_ENS_LIST_REQUEST:
     case FETCH_ENS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
@@ -97,6 +107,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case CHANGE_PROFILE_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
@@ -105,6 +116,12 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         ...state,
         loading: loadingReducer(state.loading, action),
         error: { ...action.payload.error }
+      }
+    }
+    case CHANGE_PROFILE_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case FETCH_TRANSACTION_SUCCESS: {

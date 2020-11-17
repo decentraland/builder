@@ -14,14 +14,17 @@ export type Props = {
   lands: Land[]
   isLoggedIn: boolean
   isLoading: boolean
+  isLoadingUseAsAlias: boolean
   onNavigate: (path: string) => void
+  onChangeProfile: (name: string) => void
 }
 
 export type State = {
   page: number
   sortBy: SortBy
+  useAsAliasClicked: string
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'alias' | 'ensList' | 'lands' | 'isLoading' | 'isLoggedIn'>
-export type MapDispatchProps = Pick<Props, 'onNavigate'>
+export type MapStateProps = Pick<Props, 'address' | 'alias' | 'ensList' | 'lands' | 'isLoading' | 'isLoadingUseAsAlias' | 'isLoggedIn'>
+export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onChangeProfile'>
 export type MapDispatch = Dispatch
