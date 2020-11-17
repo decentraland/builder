@@ -5,6 +5,7 @@ import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import {
   FetchItemsRequestAction,
+  fetchItemsRequest,
   fetchItemsSuccess,
   fetchItemsFailure,
   FETCH_ITEMS_REQUEST,
@@ -26,7 +27,6 @@ import {
   deleteItemSuccess,
   deleteItemFailure,
   DELETE_ITEM_REQUEST,
-  fetchItemsRequest,
   SET_COLLECTION,
   SetCollectionAction,
   SET_ITEMS_TOKEN_ID_REQUEST,

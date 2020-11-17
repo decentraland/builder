@@ -185,7 +185,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                             <>
                               <Dropdown.Item
                                 text={t('land_detail_page.assign_name')}
-                                onClick={() => onNavigate(locations.landEns(land.id))}
+                                onClick={() => onNavigate(locations.landSelectENS(land.id))}
                               />
                               <Dropdown.Divider />
                             </>

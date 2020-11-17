@@ -10,6 +10,6 @@ export type Props = {
   error: ENSError | null
   onSetENSResolver: (ens: ENS) => void
   onSetENSContent: (ens: ENS, land: Land) => void
-  onRestartForm: () => void
+  onBack: () => void
   onNavigate: (path: string) => void
 }

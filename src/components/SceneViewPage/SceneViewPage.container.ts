@@ -12,10 +12,9 @@ import { getCurrentScene } from 'modules/scene/selectors'
 import { getCurrentAuthor } from 'modules/profile/selectors'
 import { togglePreview, closeEditor } from 'modules/editor/actions'
 import { openModal } from 'modules/modal/actions'
-
+import { PreviewType } from 'modules/editor/types'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './SceneViewPage.types'
 import SceneViewPage from './SceneViewPage'
-import { PreviewType } from 'modules/editor/types'
 
 const mapState = (state: RootState): MapStateProps => ({
   isPreviewing: isPreviewing(state),

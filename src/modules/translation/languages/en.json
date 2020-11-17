@@ -1,4 +1,9 @@
 {
+  "atlas": {
+    "locate_land": "Locate next LAND",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out"
+  },
   "add_existing_item_modal": {
     "title": "Add Existing Item",
     "subtitle": "Select an item that is not part of a collection yet"
@@ -221,7 +226,6 @@
       },
       "map": {
         "continue": "Continue",
-        "locate_land": "Locate next LAND",
         "no_land_action": "Submit to Scene pool",
         "no_land_warning": "It seems that you don't own any LAND",
         "occupied_tooltip": "You can't publish here{br}It's overlapping with the scene \"{name}\"",
@@ -229,9 +233,7 @@
         "placement_active": "Placing a {count} LAND Scene at {x},{y}",
         "placement_default": "Select the LANDs that will host your Scene",
         "reset": "Reset",
-        "title": "Publish Scene",
-        "zoom_in": "Zoom in",
-        "zoom_out": "Zoom out"
+        "title": "Publish Scene"
       },
       "progress": {
         "creating_files": {
@@ -328,7 +330,7 @@
     "title": "Edit",
     "subtitle": "Your are editing {name}."
   },
-  "ens_page": {
+  "ens_list_page": {
     "table": {
       "name": "Name",
       "being_assigned": "Being Assigned",
@@ -339,7 +341,8 @@
       "re_assign": "Re Assign",
       "use_as_alias": "Use as Alias"
     },
-    "items": "{count} {count, plural, one {items} other {items}}"
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "alias_popup": "This name is being used by your profile but it can still be assigned"
   },
   "error_page": {
     "or": "or try",
@@ -575,26 +578,33 @@
     "total_land": "Total Land",
     "empty_land": "Empty Land"
   },
-  "land_ens_page": {
-    "title": "Assign Name",
-    "assign_name_title": "Assign {name}",
+  "land_assign_ens_page" : {
+    "title": "Assign {name}",
     "subtitle": "Assign a name to {land}",
-    "set_content": "Set Content",
-    "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver.",
     "set_name_message": "In order to set this name to your parcel you first need to send 2 transactions.",
     "set_resolver": "Set Resolver",
     "set_resolver_explanation": "The Resolver is a Smart Contract responsible for the process of translating names into addresses.",
+    "set_content": "Set Content",
+    "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver."
+  },
+  "ens_select_land_page": {
+    "title": "Assign {name}",
+    "subtitle": "You can assign this name to any of your Lands",
+    "land_selected": "Land selected:",
+    "already_assigned": "Already assigned"
+  },
+  "land_select_ens_page": {
+    "title": "Assign Name",
+    "subtitle": "Assign a name to {land}",
     "empty_options_message": "You don't have any available names. To assign a name to your LAND, you first need to claim it.",
     "claim_new_name": "Claim a new name",
-    "not_redirected": "If you are not redirected",
-    "select_names": {
-      "title": "My names",
-      "placeholder": "Choose a name...",
-      "message": {
-        "click_to_claim_new_name": "{click_here} to claim a new name",
-        "name_assigned": "This name has been assigned to this land"
-      }
-    }
+    "select_name_title": "My names",
+    "select_name_placeholder": "Choose a name...",
+    "click_to_claim_new_name": "{click_here} to claim a new name",
+    "name_assigned": "This name has been assigned to this land"
+  },
+  "ipfs_api" : {
+    "not_redirected": "If you are not redirected"
   },
   "migrate_page": {
     "step_one_title": "Migrate your account",

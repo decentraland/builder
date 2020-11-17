@@ -1,14 +1,13 @@
 import * as React from 'react'
-import { Address } from 'web3x-es/address'
-import { Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
+import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { Props, State, SortBy } from './ENSListPage.types'
-import BuilderIcon from 'components/Icon'
-import './ENSListPage.css'
 import { ENS } from 'modules/ens/types'
+import Icon from 'components/Icon'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import { Props, State, SortBy } from './ENSListPage.types'
+import './ENSListPage.css'
 
 const PAGE_SIZE = 12
 
@@ -19,6 +18,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   handleNavigateToLand = () => this.props.onNavigate(locations.land())
+
+  handleClaimENS = () => this.props.onNavigate(locations.claimENS())
+
+  handleAssignENS = (ens: ENS) => {
+    this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
+  }
 
   renderSortDropdown = () => {
     const { sortBy } = this.state
@@ -59,9 +64,9 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
 
   isAlias(ens: ENS): boolean {
     const { alias } = this.props
-    const { subdomain, resolver } = ens
+    const { subdomain } = ens
     const name = subdomain.split('.')[0]
-    return alias ? name.toLowerCase() === alias.toLowerCase() && resolver === Address.ZERO.toString() : false
+    return alias ? name.toLowerCase() === alias.toLowerCase() : false
   }
 
   renderEnsList() {
@@ -76,10 +81,10 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
       <>
         <div className="filters">
           <Container>
-            <Row height={30}>
+            <Row height={36}>
               <Column>
                 <Row>
-                  <Header sub>{t('ens_page.items', { count: ensList.length.toLocaleString() })}</Header>
+                  <Header sub>{t('ens_list_page.items', { count: ensList.length.toLocaleString() })}</Header>
                 </Row>
               </Column>
               <Column align="right">
@@ -87,8 +92,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right" className="claim-name" grow={false} shrink>
                 <Row>
-                  <Button basic onClick={() => alert('must be implemented')}>
-                    <BuilderIcon name="add-active" />
+                  <Button basic onClick={this.handleClaimENS}>
+                    <Icon name="add-active" />
                   </Button>
                 </Row>
               </Column>
@@ -101,9 +106,9 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               <Table basic="very">
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell width="2">{t('ens_page.table.name')}</Table.HeaderCell>
-                    <Table.HeaderCell width="2">{t('ens_page.table.being_assigned')}</Table.HeaderCell>
-                    <Table.HeaderCell width="2">{t('ens_page.table.assigned_to')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_list_page.table.name')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_list_page.table.being_assigned')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_list_page.table.assigned_to')}</Table.HeaderCell>
                     <Table.HeaderCell width="2"></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
@@ -113,9 +118,24 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                       <Table.Row className="TableRow" key={index}>
                         <Table.Cell>
                           <Row>
-                            <Column className="name">
-                              {ens.subdomain}
-                              {this.isAlias(ens) ? <BuilderIcon name="profile" /> : null}
+                            <Column className="subdomain-wrapper">
+                              <div>{ens.subdomain}</div>
+                              {this.isAlias(ens) ? (
+                                <Popup
+                                  className="alias-popup"
+                                  content={t('ens_list_page.alias_popup')}
+                                  position="top center"
+                                  trigger={
+                                    <div>
+                                      <Icon name="profile" />
+                                    </div>
+                                  }
+                                  hideOnScroll={true}
+                                  on="hover"
+                                  inverted
+                                  basic
+                                />
+                              ) : null}
                             </Column>
                           </Row>
                         </Table.Cell>
@@ -133,22 +153,22 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                           <Row>
                             {!ens.landId ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => alert('must be implemented')}>
-                                  {t('ens_page.button.assign')}
+                                <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
+                                  {t('ens_list_page.button.assign')}
                                 </Button>
                               </Column>
                             ) : null}
                             {ens.landId ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => alert('must be implemented')}>
-                                  {t('ens_page.button.re_assign')}
+                                <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
+                                  {t('ens_list_page.button.re_assign')}
                                 </Button>
                               </Column>
                             ) : null}
                             {!this.isAlias(ens) ? (
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => alert('must be implemented')}>
-                                  {t('ens_page.button.use_as_alias')}
+                                  {t('ens_list_page.button.use_as_alias')}
                                 </Button>
                               </Column>
                             ) : null}

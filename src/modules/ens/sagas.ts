@@ -166,8 +166,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const lands = yield select(getLands)
 
     for (let land of lands) {
-      const ipfshash = yield call(() => ipfs.uploadRedirectionFile(land))
-      const landHash = yield call(() => contentHash.fromIpfs(ipfshash))
+      const landHash = yield call(() => ipfs.computeLandHash(land))
       landHashes.push({ hash: `0x${landHash}`, id: land.id })
     }
 
@@ -175,18 +174,24 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const address = from.toString()
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
-
     const ensList: ENS[] = []
     for (let subdomain of domains) {
       subdomain = subdomain.toLowerCase()
+      let landId: string | undefined = undefined
+      let content = '' // TODO: i left this as empty string because it cannot be undefined, probably we can change the type so it can be
+
       const nodehash = namehash(subdomain)
       const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
       const resolver = resolverAddress.toString()
 
-      const resolverContract = new ENSResolver(eth, resolverAddress)
-      const content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
-      const land = landHashes.find(lh => lh.hash === content)
-      const landId = land ? land.id : undefined
+      if (resolver !== Address.ZERO.toString()) {
+        const resolverContract = new ENSResolver(eth, resolverAddress)
+        content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
+        const land = landHashes.find(lh => lh.hash === content)
+        if (land) {
+          landId = land.id
+        }
+      }
 
       ensList.push({
         address,

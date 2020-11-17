@@ -9,8 +9,7 @@ import Icon from 'components/Icon'
 import { IconName } from 'components/Icon/Icon.types'
 import { Rotation, Coordinate } from 'modules/deployment/types'
 import { getParcelOrientation } from 'modules/project/utils'
-import { idToCoords, coordsToId } from 'modules/land/utils'
-
+import { idToCoords, coordsToId, locateNextLand } from 'modules/land/utils'
 import { Props, State } from './LandAtlas.types'
 import './LandAtlas.css'
 
@@ -40,7 +39,7 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
       hover: { x: 0, y: 0 },
       rotation: deployment ? deployment.placement.rotation : 'north',
       zoom: 1,
-      landTarget: deployment
+      currentLandId: deployment
         ? coordsToId(deployment.placement.point.x, deployment.placement.point.y)
         : coords.length > 0
         ? coords[0]
@@ -132,27 +131,13 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   handleLocateLand = () => {
     const { landTiles } = this.props
-    const { landTarget } = this.state
-    const parcelKeys = Object.keys(landTiles)
-    const index = landTarget ? parcelKeys.indexOf(landTarget) : 0
-    const nextIndex = (((index + 1) % parcelKeys.length) + parcelKeys.length) % parcelKeys.length
+    const { currentLandId } = this.state
+    const nextLand = locateNextLand(landTiles, currentLandId || '')
 
     this.analytics.track('Publish to LAND atlas locate')
 
     this.setState({
-      landTarget: parcelKeys[nextIndex]
-    })
-  }
-
-  handleZoomIn = () => {
-    this.setState({
-      zoom: this.state.zoom + 0.5
-    })
-  }
-
-  handleZoomOut = () => {
-    this.setState({
-      zoom: this.state.zoom - 0.5
+      currentLandId: nextLand.id
     })
   }
 
@@ -207,10 +192,10 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
 
   render() {
     const { media, project, landTiles, deployment } = this.props
-    const { placement, rotation, zoom, landTarget } = this.state
+    const { placement, rotation, zoom, currentLandId } = this.state
     const hasPlacement = !!placement
     const parcelCount = Object.keys(landTiles).length
-    const [targetX, targetY] = landTarget ? idToCoords(landTarget) : [0, 0]
+    const [targetX, targetY] = currentLandId ? idToCoords(currentLandId) : [0, 0]
     const target: Coordinate = { x: targetX, y: targetY }
     const overlappedDeployment = this.getOverlappedDeployemnt()
     const conflictingDeployment =
@@ -251,14 +236,9 @@ export default class LandAtlas extends React.PureComponent<Props, State> {
           </div>
         )}
         <div className="atlas-container">
-          <div className="tool-container">
-            {this.renderTool('locate-land', t('deployment_modal.land.map.locate_land'), this.handleLocateLand)}
-            <div className="tool-group">
-              {this.renderTool('atlas-zoom-out', t('deployment_modal.land.map.zoom_out'), this.handleZoomOut)}
-              {this.renderTool('atlas-zoom-in', t('deployment_modal.land.map.zoom_in'), this.handleZoomIn)}
-            </div>
-          </div>
           <Atlas
+            showControls
+            onLocateLand={this.handleLocateLand}
             layers={[this.strokeLayer, this.highlightLayer]}
             onHover={this.handleHover}
             onClick={this.handlePlacement}

@@ -16,8 +16,10 @@ export const locations = {
   landDetail: (landId = ':landId') => `/land/${landId}`,
   landTransfer: (landId = ':landId') => `/land/${landId}/transfer`,
   landEdit: (landId = ':landId') => `/land/${landId}/edit`,
-  landEns: (landId = ':landId') => `/land/${landId}/ens`,
-  claimName: () => '/claim-name',
+  landSelectENS: (landId = ':landId') => `/land/${landId}/select-name`,
+  landAssignENS: (landId = ':landId', subdomain = ':subdomain') => `/land/${landId}/name/${subdomain}/assign`,
+  ensSelectLand: (subdomain = ':subdomain') => `/name/${subdomain}/set-land`,
+  claimENS: () => '/claim-name',
   landOperator: (landId = ':landId') => `/land/${landId}/operator`,
   activity: () => `/activity`,
   settings: () => `/settings`,
@@ -27,5 +29,5 @@ export const locations = {
   collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
   itemEditor: (options: { itemId?: string; collectionId?: string } = {}) =>
     injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection' }, options),
-  ens: (options: PaginationOptions = {}) => injectPagination('/ens', options)
+  ens: (_options: PaginationOptions = {}) => '/names'
 }

@@ -9,10 +9,12 @@ export type Props = Partial<AtlasProps> & {
   landTiles: Record<string, LandTile>
   emptyTiles: Record<string, Tile>
   showOperator?: boolean
+  showControls?: boolean
   landId?: string
   showOwner?: boolean
   hasPopup?: boolean
   hasLink?: boolean
+  onLocateLand?: () => void
   onNavigate: (path: string) => void
 }
 

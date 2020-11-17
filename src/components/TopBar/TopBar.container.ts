@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-
+import { goBack, push } from 'connected-react-router'
 import { RootState } from 'modules/common/types'
 import { getCurrentProject } from 'modules/project/selectors'
 import { getActivePoolGroup } from 'modules/poolGroup/selectors'
@@ -12,7 +12,6 @@ import { isSavingCurrentProject } from 'modules/sync/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 import { hasHistory } from 'modules/location/selectors'
-import { goBack, push } from 'connected-react-router'
 
 const mapState = (state: RootState): MapStateProps => {
   const selectedEntityIds = getSelectedEntityIds(state)

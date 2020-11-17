@@ -1,4 +1,9 @@
 {
+  "atlas": {
+    "locate_land": "定位下一地块",
+    "zoom_in": "放大",
+    "zoom_out": "缩小"
+  },
   "add_existing_item_modal": {
     "title": "添加现有项目",
     "subtitle": "选择一个不属于集合的项目"
@@ -215,7 +220,6 @@
       },
       "map": {
         "continue": "继续",
-        "locate_land": "定位下一地块",
         "no_land_action": "提交到场景池",
         "no_land_warning": "好象您没有任何土地",
         "occupied_tooltip": "清空土地空间{br}从仪表板撤回发布的场景",
@@ -223,9 +227,7 @@
         "placement_active": "在 {x},{y} 布署 {count} 块土地场景 ",
         "placement_default": "选择要发布场景的土地",
         "reset": "重置",
-        "title": "发布场景",
-        "zoom_in": "放大",
-        "zoom_out": "缩小"
+        "title": "发布场景"
       },
       "progress": {
         "creating_files": {
@@ -329,7 +331,7 @@
     "support": "联系支持服务",
     "title": "糟糕！"
   },
-  "ens_page": {
+  "ens_list_page": {
     "table": {
       "name": "名称",
       "being_assigned": "被分配",
@@ -339,7 +341,9 @@
       "assign": "分配",
       "re_assign": "重新指定",
       "use_as_alias": "用作别名"
-    }
+    },
+    "items": "{count} {count, plural, one {项目} other {项目}}",
+    "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
   },
   "estate_editor": {
     "title_edit": "编辑产业",
@@ -536,25 +540,33 @@
     "total_land": "总土地",
     "empty_land": "空地"
   },
-  "land_ens_page": {
-    "title": "分配名称",
+  "land_assign_ens_page" : {
+    "title":"分配{name}",
     "subtitle": "给...分配一个名字 {land}",
-    "set_content": "设定内容",
-    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
     "set_name_message": "关于他们为什么需要批准的简要说明。",
     "set_resolver": "设置解析器",
     "set_resolver_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "set_content": "设定内容",
+    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。"
+  },
+  "ens_select_land_page": {
+    "title": "分配{name}",
+    "subtitle": "您可以将此名称分配给其他任何土地",
+    "land_selected": "选择的土地：",
+    "already_assigned": "已分配"
+  },
+  "land_select_ens_page": {
+    "title": "分配名称",
+    "subtitle": "给...分配一个名字 {land}",
     "empty_options_message": "您没有可用的名称。 要为您的LAND分配名称，您首先需要声明它。",
     "claim_new_name": "申请新名字",
-    "not_redirected": "如果您未重定向",
-    "select_names": {
-      "title": "我的名字是",
-      "placeholder": "选择一个名字",
-      "message": {
-        "click_to_claim_new_name": "{click_here}申请新名称",
-        "name_assigned": "这个名字已经分配给这片土地"
-      }
-    }
+    "select_name_title": "我的名字是",
+    "select_name_placeholder": "选择一个名字",
+    "click_to_claim_new_name": "{click_here}申请新名称",
+    "name_assigned": "这个名字已经分配给这片土地"
+  },
+  "ipfs_api" : {
+    "not_redirected": "如果您未重定向"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",

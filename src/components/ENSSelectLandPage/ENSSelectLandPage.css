@@ -1,0 +1,32 @@
+.ENSSelectLandPage .atlas-wrapper {
+  height: 500px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.ENSSelectLandPage .atlas-footer {
+  margin-top: 20px;
+}
+
+.ENSSelectLandPage .selected-land,
+.ENSSelectLandPage .actions {
+  display: flex;
+}
+
+.ENSSelectLandPage .selected-land .label {
+  color: var(--light-gray);
+  text-transform: capitalize;
+}
+
+.ENSSelectLandPage .selected-land .land {
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+.ENSSelectLandPage .actions .ui.button {
+  padding: 10px 50px;
+}
+
+.ENSSelectLandPage .actions .ui.button + .ui.button {
+  margin-left: 12px;
+}
