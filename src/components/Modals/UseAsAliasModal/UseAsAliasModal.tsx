@@ -12,7 +12,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
   handleSubmit = () => {
     if (!this.state.done) {
       this.setState({ done: true })
-      this.props.onSubmit(this.props.name)
+      this.props.onSubmit(this.props.metadata.name)
     }
   }
 
