@@ -38,3 +38,8 @@
   color: var(--secondary-text) !important;
   cursor: default;
 }
+
+.ClaimENSPage .ui.button.primary .mana {
+  font-size: 13px;
+  line-height: 0;
+}

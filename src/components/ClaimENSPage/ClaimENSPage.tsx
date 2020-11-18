@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button } from 'decentraland-ui'
+import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, isNameValid } from 'modules/ens/utils'
+import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
 
@@ -67,7 +67,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                     {t('global.cancel')}
                   </Button>
                   <Button type="submit" primary disabled={!isValid}>
-                    {t('global.submit')}
+                    Claim <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>
               </Form>
