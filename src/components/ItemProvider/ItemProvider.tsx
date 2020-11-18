@@ -10,8 +10,8 @@ export default class ItemProvider extends React.PureComponent<Props> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, onFetchItem } = this.props
-    if (id && id !== prevProps.id) {
+    const { id, item, onFetchItem } = this.props
+    if (id && id !== prevProps.id && !item) {
       onFetchItem(id)
     }
   }

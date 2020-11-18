@@ -1,6 +1,5 @@
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { FetchItemsSuccessAction, FetchItemSuccessAction, FETCH_ITEMS_SUCCESS, FETCH_ITEM_SUCCESS } from 'modules/item/actions'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -59,8 +58,6 @@ type CollectionReducerAction =
   | DeleteCollectionSuccessAction
   | DeleteCollectionFailureAction
   | FetchTransactionSuccessAction
-  | FetchItemsSuccessAction
-  | FetchItemSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -84,32 +81,6 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
         loading: loadingReducer(state.loading, action),
         error: null
       }
-    }
-    case FETCH_ITEMS_SUCCESS: {
-      const { collections } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          ...toCollectionObject(collections)
-        },
-        loading: loadingReducer(state.loading, action),
-        error: null
-      }
-    }
-    case FETCH_ITEM_SUCCESS: {
-      const { collection } = action.payload
-      return collection
-        ? {
-            ...state,
-            data: {
-              ...state.data,
-              ...toCollectionObject([collection])
-            },
-            loading: loadingReducer(state.loading, action),
-            error: null
-          }
-        : state
     }
     case FETCH_COLLECTION_SUCCESS:
     case SAVE_COLLECTION_SUCCESS: {

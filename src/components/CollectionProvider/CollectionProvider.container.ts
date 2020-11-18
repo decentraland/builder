@@ -6,6 +6,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { isLoggingIn } from 'modules/identity/selectors'
 import { getLoading, getCollection, getCollectionItems } from 'modules/collection/selectors'
 import { FETCH_COLLECTION_REQUEST, fetchCollectionRequest } from 'modules/collection/actions'
+import { fetchCollectionItemsRequest } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionProvider.types'
 import CollectionProvider from './CollectionProvider'
 
@@ -22,7 +23,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onFetchCollection: id => dispatch(fetchCollectionRequest(id))
+  onFetchCollection: id => dispatch(fetchCollectionRequest(id)),
+  onFetchCollectionItems: id => dispatch(fetchCollectionItemsRequest(id))
 })
 
 export default connect(mapState, mapDispatch)(CollectionProvider)
