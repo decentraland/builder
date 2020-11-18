@@ -43,7 +43,11 @@ import {
   SET_ALIAS_REQUEST,
   SetAliasRequestAction,
   setAliasSuccess,
-  setAliasFailure
+  setAliasFailure,
+  CLAIM_NAME_REQUEST,
+  ClaimNameRequestAction,
+  claimNameSuccess,
+  claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 
@@ -54,6 +58,7 @@ export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
+  yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
 }
 
 function* handleConnectWallet() {
@@ -273,5 +278,18 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchENSListFailure(ensError))
+  }
+}
+
+function* handleClaimNameRequest(action: ClaimNameRequestAction) {
+  const { ens, name } = action.payload
+  try {
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const txHash = ''
+    console.log('handleClaimName', ens, name, eth)
+    yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(claimNameFailure(ensError))
   }
 }

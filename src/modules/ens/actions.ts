@@ -78,3 +78,21 @@ export const setAliasFailure = (address: string, error: ENSError) => action(SET_
 export type SetAliasRequestAction = ReturnType<typeof setAliasRequest>
 export type SetAliasSuccessAction = ReturnType<typeof setAliasSuccess>
 export type SetAliasFailureAction = ReturnType<typeof setAliasFailure>
+
+// Claim a new name
+export const CLAIM_NAME_REQUEST = '[Request] Claim Name'
+export const CLAIM_NAME_SUCCESS = '[Success] Claim Name'
+export const CLAIM_NAME_FAILURE = '[Failure] Claim Name'
+
+export const claimNameRequest = (ens: ENS, name: string) => action(CLAIM_NAME_REQUEST, { ens, name })
+export const claimNameSuccess = (ens: ENS, name: string, address: string, txHash: string) =>
+  action(CLAIM_NAME_SUCCESS, {
+    ...buildTransactionPayload(txHash, { ens, name, address }),
+    ens,
+    name
+  })
+export const claimNameFailure = (error: ENSError) => action(CLAIM_NAME_FAILURE, { error })
+
+export type ClaimNameRequestAction = ReturnType<typeof claimNameRequest>
+export type ClaimNameSuccessAction = ReturnType<typeof claimNameSuccess>
+export type ClaimNameFailureAction = ReturnType<typeof claimNameFailure>
