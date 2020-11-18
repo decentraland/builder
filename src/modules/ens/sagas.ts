@@ -293,3 +293,16 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
     yield put(claimNameFailure(ensError))
   }
 }
+
+function* handleClaimNameRequest(action: ClaimNameRequestAction) {
+  const { ens, name } = action.payload
+  try {
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const txHash = ''
+    console.log('handleClaimName', ens, name, eth)
+    yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(claimNameFailure(ensError))
+  }
+}
