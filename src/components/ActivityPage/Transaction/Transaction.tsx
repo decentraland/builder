@@ -18,7 +18,7 @@ import {
   SET_COLLECTION_MANAGERS_SUCCESS,
   PUBLISH_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
-import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, CHANGE_PROFILE_SUCCESS } from 'modules/ens/actions'
+import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS } from 'modules/ens/actions'
 import Profile from 'components/Profile'
 import { Props } from './Transaction.types'
 import TransactionDetail from './TransactionDetail'
@@ -269,16 +269,6 @@ const Transaction = (props: Props) => {
               />
             )
           }
-          tx={tx}
-        />
-      )
-    }
-    case CHANGE_PROFILE_SUCCESS: {
-      const { address } = tx.payload
-      return (
-        <TransactionDetail
-          address={address}
-          text={<T id="transaction.change_profile" values={{ address: <Profile address={address} /> }} />}
           tx={tx}
         />
       )

@@ -249,9 +249,9 @@ function* handleChangeProfile(action: ChangeProfileRequestAction) {
 
       // Deploy change
       const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-      const txHash = yield client.deployEntity({ ...deployPreparationData, authChain })
+      yield client.deployEntity({ ...deployPreparationData, authChain })
 
-      yield put(changeProfileSuccess(txHash))
+      yield put(changeProfileSuccess())
     }
   } catch (error) {
     const ensError: ENSError = { message: error.message }

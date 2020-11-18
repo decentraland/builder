@@ -72,10 +72,7 @@ export const CHANGE_PROFILE_SUCCESS = '[Success] Change Profile'
 export const CHANGE_PROFILE_FAILURE = '[Failure] Change Profile'
 
 export const changeProfileRequest = (selectedName: string) => action(CHANGE_PROFILE_REQUEST, { selectedName })
-export const changeProfileSuccess = (txHash: string) =>
-  action(CHANGE_PROFILE_SUCCESS, {
-    ...buildTransactionPayload(txHash)
-  })
+export const changeProfileSuccess = () => action(CHANGE_PROFILE_SUCCESS, {})
 export const changeProfileFailure = (error: ENSError) => action(CHANGE_PROFILE_FAILURE, { error })
 
 export type ChangeProfileRequestAction = ReturnType<typeof changeProfileRequest>

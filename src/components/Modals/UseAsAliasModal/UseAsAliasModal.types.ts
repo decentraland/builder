@@ -8,7 +8,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  collectionName: string
+  done: boolean
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'isLoading'>

@@ -22,7 +22,6 @@ export type Props = {
 export type State = {
   page: number
   sortBy: SortBy
-  useAsAliasClicked: string
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'alias' | 'ensList' | 'lands' | 'isLoading' | 'isLoggedIn'>
