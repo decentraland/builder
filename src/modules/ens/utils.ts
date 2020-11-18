@@ -1,6 +1,10 @@
 import { Address } from 'web3x-es/address'
+import { fromWei } from 'web3x-es/utils'
 import { Land } from 'modules/land/types'
 import { ENS } from './types'
+
+export const PRICE_IN_WEI = 100000000000000000000 // 100 MANA
+export const PRICE = fromWei(PRICE_IN_WEI.toString(), 'ether')
 
 export const MAX_NAME_SIZE = 15
 

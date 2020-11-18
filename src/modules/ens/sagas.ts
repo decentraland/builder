@@ -28,7 +28,11 @@ import {
   FetchDomainListRequestAction,
   fetchDomainListRequest,
   fetchDomainListSuccess,
-  fetchDomainListFailure
+  fetchDomainListFailure,
+  CLAIM_NAME_REQUEST,
+  ClaimNameRequestAction,
+  claimNameSuccess,
+  claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 
@@ -38,6 +42,7 @@ export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_DOMAIN_LIST_REQUEST, handleFetchDomainListRequest)
+  yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
 }
 
 function* handleConnectWallet() {
@@ -174,5 +179,18 @@ function* handleFetchDomainListRequest(_action: FetchDomainListRequestAction) {
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchDomainListFailure(ensError))
+  }
+}
+
+function* handleClaimNameRequest(action: ClaimNameRequestAction) {
+  const { ens, name } = action.payload
+  try {
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const txHash = ''
+    console.log('handleClaimName', ens, name, eth)
+    yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(claimNameFailure(ensError))
   }
 }
