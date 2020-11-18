@@ -236,7 +236,6 @@ function* handleChangeProfile(action: ChangeProfileRequestAction) {
     const content: Map<string, string> = new Map(
       (profile.content || []).map(({ file, hash }: { file: string; hash: string }) => [file, hash])
     )
-    console.log({ profile })
     const deployPreparationData = yield call(() =>
       DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, profile.metadata)
     )
