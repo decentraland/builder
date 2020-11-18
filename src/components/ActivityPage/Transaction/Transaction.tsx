@@ -278,7 +278,7 @@ const Transaction = (props: Props) => {
       return (
         <TransactionDetail
           address={address}
-          text={<T id="transaction.chage_profile" values={{ address: <Profile address={address} /> }} />}
+          text={<T id="transaction.change_profile" values={{ address: <Profile address={address} /> }} />}
           tx={tx}
         />
       )

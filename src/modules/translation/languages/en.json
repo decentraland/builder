@@ -291,6 +291,11 @@
     },
     "title": "Publish your Scene"
   },
+  "use_as_alias_modal": {
+    "title": "Alias",
+    "subtitle": "Setting a new alias for your profile",
+    "body": "Set {name} as your new alias in the Metaverse! Let other people see your new name when visiting the world. It'll be replace {oldname}"
+  },
   "deployment_contest_modal": {
     "action": "Join the Contest",
     "submit": {

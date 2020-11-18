@@ -71,7 +71,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderEnsList() {
-    const { ensList, isLoadingUseAsAlias } = this.props
+    const { ensList, onOpenModal, alias } = this.props
     const { page, useAsAliasClicked } = this.state
 
     const total = ensList.length
@@ -170,14 +170,14 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                               <Column align="right">
                                 <Button
                                   className="ui basic button"
-                                  loading={isLoadingUseAsAlias && useAsAliasClicked === ens.subdomain}
                                   onClick={() => {
                                     const name = ens.subdomain.split('.')[0]
+                                    const oldname = alias
                                     this.setState({ useAsAliasClicked: ens.subdomain })
-                                    this.props.onChangeProfile(name)
+                                    onOpenModal('UseAsAliasModal', { name, oldname, useAsAliasClicked })
                                   }}
                                 >
-                                  {t('ens_page.button.use_as_alias')}
+                                  {t('ens_list_page.button.use_as_alias')}
                                 </Button>
                               </Column>
                             ) : null}
