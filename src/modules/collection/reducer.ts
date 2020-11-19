@@ -127,6 +127,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
           return {
             ...state,
             data: {
+              ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
                 isPublished: true
@@ -139,6 +140,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
           return {
             ...state,
             data: {
+              ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
                 minters: [...minters]
@@ -151,6 +153,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
           return {
             ...state,
             data: {
+              ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
                 managers: [...managers]
