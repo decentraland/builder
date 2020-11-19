@@ -94,7 +94,7 @@ function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    const { collection: remoteCollection }: { collection: Collection; items: Item[] } = yield call(() => builder.saveCollection(collection))
+    const remoteCollection: Collection = yield call(() => builder.saveCollection(collection))
     const newCollection = { ...collection, ...remoteCollection }
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
@@ -127,6 +127,10 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     const implementation = new ERC721CollectionV2(eth, Address.fromString(ERC721_COLLECTION_ADDRESS))
 
     const data = initializeCollection(implementation, collection, items, from)
+
+    if (!collection.salt) {
+      throw new Error('The collection has no salt 🧂')
+    }
 
     const txHash = yield call(() =>
       factory.methods
