@@ -9,6 +9,7 @@ import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
+
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
@@ -26,20 +27,11 @@ import {
   FetchENSListRequestAction,
   fetchENSListRequest,
   fetchENSListSuccess,
-  fetchENSListFailure,
-  ChangeProfileRequestAction,
-  changeProfileFailure,
-  changeProfileSuccess,
-  CHANGE_PROFILE_REQUEST
+  fetchENSListFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Authenticator } from 'dcl-crypto'
-import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
-import { EntityType } from 'dcl-catalyst-commons'
-import { Personal } from 'web3x-es/personal'
 
 export function* ensSaga() {
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
@@ -47,7 +39,6 @@ export function* ensSaga() {
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
-  yield takeEvery(CHANGE_PROFILE_REQUEST, handleChangeProfile)
 }
 
 function* handleConnectWallet() {
@@ -215,45 +206,5 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchENSListFailure(ensError))
-  }
-}
-
-function* handleChangeProfile(action: ChangeProfileRequestAction) {
-  try {
-    const { selectedName } = action.payload
-
-    const address = yield select(getAddress)
-
-    const client = new CatalystClient('https://peer.decentraland.org', 'builder')
-    const entities = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()])
-    const profile = entities.length > 0 ? entities[0] : null
-
-    const avatar = profile && profile.metadata && profile.metadata.avatars[0]
-    avatar.name = selectedName
-    avatar.hasClaimedName = true
-
-    // Build entity
-    const content: Map<string, string> = new Map(
-      (profile.content || []).map(({ file, hash }: { file: string; hash: string }) => [file, hash])
-    )
-    const deployPreparationData = yield call(() =>
-      DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, profile.metadata)
-    )
-
-    // Request signature
-    const eth = Eth.fromCurrentProvider()
-    if (eth) {
-      const personal = new Personal(eth.provider)
-      const signature = yield personal.sign(deployPreparationData.entityId, address, '')
-
-      // Deploy change
-      const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-      yield client.deployEntity({ ...deployPreparationData, authChain })
-
-      yield put(changeProfileSuccess())
-    }
-  } catch (error) {
-    const ensError: ENSError = { message: error.message }
-    yield put(changeProfileFailure(ensError))
   }
 }

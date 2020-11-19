@@ -4,13 +4,13 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 export type Props = ModalProps & {
   address?: string
   isLoading: boolean
-  onSubmit: (name: string) => void
+  onSubmit: (address: string, name: string) => void
 }
 
 export type State = {
   done: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'address'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch

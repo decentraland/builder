@@ -10,16 +10,17 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
     done: false
   }
   handleSubmit = () => {
-    if (!this.state.done) {
+    const { onSubmit, address, metadata } = this.props
+    if (!this.state.done && address) {
       this.setState({ done: true })
-      this.props.onSubmit(this.props.metadata.name)
+      onSubmit(address, metadata.name)
     }
   }
 
   render() {
     const { onClose, isLoading } = this.props
     const { name, oldname } = this.props.metadata
-    const { done } = this.state
+
     return (
       <Modal name={name} onClose={onClose} size="tiny">
         <ModalNavigation title={t('use_as_alias_modal.title')} subtitle={t('use_as_alias_modal.subtitle')} onClose={onClose} />
@@ -28,7 +29,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
             <p> {t('use_as_alias_modal.body', { name, oldname })} </p>
           </ModalContent>
           <ModalActions>
-            {done && !isLoading ? (
+            {this.state.done && !isLoading ? (
               <Button primary onClick={onClose}>
                 {t('use_as_alias_modal.looks_great')}
               </Button>
