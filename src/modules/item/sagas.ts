@@ -40,8 +40,10 @@ import {
   FETCH_COLLECTION_ITEMS_REQUEST,
   FetchCollectionItemsRequestAction,
   fetchCollectionItemsSuccess,
-  fetchCollectionItemsFailure
+  fetchCollectionItemsFailure,
+  fetchCollectionItemsRequest
 } from './actions'
+import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { getIdentity } from 'modules/identity/utils'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
@@ -65,6 +67,7 @@ export function* itemSaga() {
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
   yield takeLatest(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
+  yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
 }
 
 function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
@@ -207,6 +210,11 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
   } catch (error) {
     yield put(deployItemContentsFailure(collection, item, error.message))
   }
+}
+
+function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
+  const { id } = action.payload
+  yield put(fetchCollectionItemsRequest(id))
 }
 
 export function saveItem(item: Item, contents: Record<string, Blob> = {}) {

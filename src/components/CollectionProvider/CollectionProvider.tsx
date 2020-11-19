@@ -3,23 +3,17 @@ import { Props } from './CollectionProvider.types'
 
 export default class CollectionProvider extends React.PureComponent<Props> {
   componentDidMount() {
-    const { id, collection } = this.props
+    const { id, collection, onFetchCollection } = this.props
     if (id && !collection) {
-      this.fetchCollection(id)
+      onFetchCollection(id)
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, collection } = this.props
+    const { id, collection, onFetchCollection } = this.props
     if (id && id !== prevProps.id && !collection) {
-      this.fetchCollection(id)
+      onFetchCollection(id)
     }
-  }
-
-  fetchCollection(id: string) {
-    const { onFetchCollection, onFetchCollectionItems } = this.props
-    onFetchCollection(id)
-    onFetchCollectionItems(id)
   }
 
   render() {
