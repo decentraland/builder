@@ -204,13 +204,10 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             ...state,
             data: {
               ...state.data,
-              ...items.reduce(
-                (accum, item) => ({
-                  ...accum,
-                  [item.id]: { ...state.data[item.id], ...item, isPublished: true }
-                }),
-                {}
-              )
+              ...items.reduce((accum, item) => {
+                accum[item.id] = { ...state.data[item.id], ...item, isPublished: true }
+                return accum
+              }, {} as ItemState['data'])
             }
           }
         }
@@ -224,11 +221,22 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               ...mints.reduce((accum, mint) => {
                 const item = state.data[mint.item.id]
                 const totalSupply = (item.totalSupply || 0) + 1
-                return {
-                  ...accum,
-                  [item.id]: { ...state.data[item.id], totalSupply }
-                }
-              }, {})
+                accum[item.id] = { ...state.data[item.id], totalSupply }
+                return accum
+              }, {} as ItemState['data'])
+            }
+          }
+        }
+        case SAVE_PUBLISHED_ITEM_SUCCESS: {
+          const item: Item = transaction.payload.item
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              [item.id]: {
+                ...state.data[item.id],
+                ...item
+              }
             }
           }
         }
