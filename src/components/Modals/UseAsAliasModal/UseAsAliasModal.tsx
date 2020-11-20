@@ -6,20 +6,17 @@ import { Props, State } from './UseAsAliasModal.types'
 import './UseAsAliasModal.css'
 
 export default class UseAsAliasModal extends React.PureComponent<Props, State> {
-  state: State = {
-    done: false
-  }
   handleSubmit = () => {
     const { onSubmit, address, metadata } = this.props
-    if (!this.state.done && address) {
-      this.setState({ done: true })
+    if (address) {
       onSubmit(address, metadata.name)
     }
   }
 
   render() {
-    const { onClose, isLoading } = this.props
+    const { onClose, isLoading, usedAsAlias } = this.props
     const { name, oldname } = this.props.metadata
+    const usedAsAliasName = usedAsAlias.length > 0 ? usedAsAlias[0].subdomain.split('.')[0] : ''
 
     return (
       <Modal name={name} onClose={onClose} size="tiny">
@@ -29,7 +26,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
             <p> {t('use_as_alias_modal.body', { name, oldname })} </p>
           </ModalContent>
           <ModalActions>
-            {this.state.done && !isLoading ? (
+            {name === usedAsAliasName && !isLoading ? (
               <Button primary onClick={onClose}>
                 {t('use_as_alias_modal.looks_great')}
               </Button>

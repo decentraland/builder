@@ -20,6 +20,12 @@ export const getENSByWallet = createSelector<RootState, ENS[], string | undefine
   ensList.filter(ens => isEqual(ens.address, address))
 )
 
+export const getENSUsedAsAlias = createSelector<RootState, ENS[], string | undefined, ENS[]>(
+  getENSList,
+  getAddress,
+  (ensList, address = '') => ensList.filter(ens => isEqual(ens.address, address) && ens.isUsedAsAlias)
+)
+
 export const getENSForLand = (state: RootState, landId: string) => {
   const ensList = getENSList(state)
   return ensList.filter(ens => ens.landId === landId)

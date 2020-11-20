@@ -99,8 +99,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
 
       // Deploy change
       const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-      const result = yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
-      console.log({ result })
+      yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
 
       yield put(setAliasSuccess(address, name))
       yield put(changeProfile(address, newEntity.metadata as Profile))

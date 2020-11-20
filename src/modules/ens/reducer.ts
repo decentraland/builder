@@ -158,9 +158,19 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       }
     }
     case SET_ALIAS_SUCCESS: {
+      const { name } = action.payload
+      const domainName = `${name}.dcl.eth`
+
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [domainName]: {
+            ...state.data[domainName],
+            isUsedAsAlias: true
+          }
+        }
       }
     }
     default:

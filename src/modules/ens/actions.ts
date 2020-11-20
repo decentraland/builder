@@ -67,9 +67,9 @@ export type FetchENSListSuccessAction = ReturnType<typeof fetchENSListSuccess>
 export type FetchENSListFailureAction = ReturnType<typeof fetchENSListFailure>
 
 // Set Alias
-export const SET_ALIAS_REQUEST = '[Request] Change Profile'
-export const SET_ALIAS_SUCCESS = '[Success] Change Profile'
-export const SET_ALIAS_FAILURE = '[Failure] Change Profile'
+export const SET_ALIAS_REQUEST = '[Request] Set Alias'
+export const SET_ALIAS_SUCCESS = '[Success] Set Alias'
+export const SET_ALIAS_FAILURE = '[Failure] Set Alias'
 
 export const setAliasRequest = (address: string, name: string) => action(SET_ALIAS_REQUEST, { address, name })
 export const setAliasSuccess = (address: string, name: string) => action(SET_ALIAS_SUCCESS, { address, name })
