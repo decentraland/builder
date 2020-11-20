@@ -73,8 +73,8 @@ export function* collectionSaga() {
 
 function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) {
   try {
-    const { collections, items }: { collections: Collection[]; items: Item[] } = yield call(() => builder.fetchCollections())
-    yield put(fetchCollectionsSuccess(collections, items))
+    const collections: Collection[] = yield call(() => builder.fetchCollections())
+    yield put(fetchCollectionsSuccess(collections))
     yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
     yield put(fetchCollectionsFailure(error.message))
@@ -84,8 +84,8 @@ function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
   const { id } = action.payload
   try {
-    const { collection, items }: { collection: Collection; items: Item[] } = yield call(() => builder.fetchCollection(id))
-    yield put(fetchCollectionSuccess(collection, items))
+    const collection: Collection = yield call(() => builder.fetchCollection(id))
+    yield put(fetchCollectionSuccess(id, collection))
   } catch (error) {
     yield put(fetchCollectionFailure(id, error.message))
   }
@@ -94,7 +94,7 @@ function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    const { collection: remoteCollection }: { collection: Collection; items: Item[] } = yield call(() => builder.saveCollection(collection))
+    const remoteCollection: Collection = yield call(() => builder.saveCollection(collection))
     const newCollection = { ...collection, ...remoteCollection }
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
@@ -127,6 +127,10 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     const implementation = new ERC721CollectionV2(eth, Address.fromString(ERC721_COLLECTION_ADDRESS))
 
     const data = initializeCollection(implementation, collection, items, from)
+
+    if (!collection.salt) {
+      throw new Error('The collection has no salt 🧂')
+    }
 
     const txHash = yield call(() =>
       factory.methods

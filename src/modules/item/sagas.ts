@@ -36,8 +36,14 @@ import {
   DEPLOY_ITEM_CONTENTS_REQUEST,
   deployItemContentsSuccess,
   deployItemContentsFailure,
-  DeployItemContentsRequestAction
+  DeployItemContentsRequestAction,
+  FETCH_COLLECTION_ITEMS_REQUEST,
+  FetchCollectionItemsRequestAction,
+  fetchCollectionItemsSuccess,
+  fetchCollectionItemsFailure,
+  fetchCollectionItemsRequest
 } from './actions'
+import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { getIdentity } from 'modules/identity/utils'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
@@ -53,6 +59,7 @@ import { Item } from './types'
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
+  yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
   yield takeEvery(SAVE_PUBLISHED_ITEM_REQUEST, handleSavePublishedItemRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
@@ -60,12 +67,13 @@ export function* itemSaga() {
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
   yield takeLatest(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
+  yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
 }
 
 function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
   try {
-    const { items, collections }: { items: Item[]; collections: Collection[] } = yield call(() => builder.fetchItems())
-    yield put(fetchItemsSuccess(items, collections))
+    const items: Item[] = yield call(() => builder.fetchItems())
+    yield put(fetchItemsSuccess(items))
   } catch (error) {
     yield put(fetchItemsFailure(error.message))
   }
@@ -74,10 +82,20 @@ function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
 function* handleFetchItemRequest(action: FetchItemRequestAction) {
   const { id } = action.payload
   try {
-    const { item, collection }: { item: Item; collection: Collection | null } = yield call(() => builder.fetchItem(id))
-    yield put(fetchItemSuccess(item, collection))
+    const item: Item = yield call(() => builder.fetchItem(id))
+    yield put(fetchItemSuccess(id, item))
   } catch (error) {
     yield put(fetchItemFailure(id, error.message))
+  }
+}
+
+function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestAction) {
+  const { collectionId } = action.payload
+  try {
+    const items: Item[] = yield call(() => builder.fetchCollectionItems(collectionId))
+    yield put(fetchCollectionItemsSuccess(collectionId, items))
+  } catch (error) {
+    yield put(fetchCollectionItemsFailure(collectionId, error.message))
   }
 }
 
@@ -192,6 +210,11 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
   } catch (error) {
     yield put(deployItemContentsFailure(collection, item, error.message))
   }
+}
+
+function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
+  const { id } = action.payload
+  yield put(fetchCollectionItemsRequest(id))
 }
 
 export function saveItem(item: Item, contents: Record<string, Blob> = {}) {

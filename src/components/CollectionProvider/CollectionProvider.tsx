@@ -10,8 +10,8 @@ export default class CollectionProvider extends React.PureComponent<Props> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { id, onFetchCollection } = this.props
-    if (id && id !== prevProps.id) {
+    const { id, collection, onFetchCollection } = this.props
+    if (id && id !== prevProps.id && !collection) {
       onFetchCollection(id)
     }
   }

@@ -10,8 +10,7 @@ export const FETCH_COLLECTIONS_SUCCESS = '[Success] Fetch Collections'
 export const FETCH_COLLECTIONS_FAILURE = '[Failure] Fetch Collections'
 
 export const fetchCollectionsRequest = () => action(FETCH_COLLECTIONS_REQUEST)
-export const fetchCollectionsSuccess = (collections: Collection[], items: Item[]) =>
-  action(FETCH_COLLECTIONS_SUCCESS, { collections, items })
+export const fetchCollectionsSuccess = (collections: Collection[]) => action(FETCH_COLLECTIONS_SUCCESS, { collections })
 export const fetchCollectionsFailure = (error: string) => action(FETCH_COLLECTIONS_FAILURE, { error })
 
 export type FetchCollectionsRequestAction = ReturnType<typeof fetchCollectionsRequest>
@@ -25,7 +24,7 @@ export const FETCH_COLLECTION_SUCCESS = '[Success] Fetch Collection'
 export const FETCH_COLLECTION_FAILURE = '[Failure] Fetch Collection'
 
 export const fetchCollectionRequest = (id: string) => action(FETCH_COLLECTION_REQUEST, { id })
-export const fetchCollectionSuccess = (collection: Collection, items: Item[]) => action(FETCH_COLLECTION_SUCCESS, { collection, items })
+export const fetchCollectionSuccess = (id: string, collection: Collection) => action(FETCH_COLLECTION_SUCCESS, { id, collection })
 export const fetchCollectionFailure = (id: string, error: string) => action(FETCH_COLLECTION_FAILURE, { id, error })
 
 export type FetchCollectionRequestAction = ReturnType<typeof fetchCollectionRequest>

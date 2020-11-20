@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios'
-import { env, utils } from 'decentraland-commons'
+import { env } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { runMigrations } from 'modules/migrations/utils'
@@ -44,7 +44,6 @@ export type RemoteItem = {
   data: WearableData
   metrics: ModelMetrics
   contents: Record<string, string>
-  collection?: RemoteCollection
   created_at: Date
   updated_at: Date
 }
@@ -59,7 +58,6 @@ export type RemoteCollection = {
   is_approved: boolean
   minters: string[]
   managers: string[]
-  items?: RemoteItem[]
   created_at: Date
   updated_at: Date
 }
@@ -283,7 +281,6 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
-    collection: undefined,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -309,19 +306,14 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     updatedAt: +new Date(remoteItem.created_at)
   }
 
-  let collection: Collection | null = null
-
   if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
   if (remoteItem.blockchain_item_id) item.tokenId = remoteItem.blockchain_item_id
   if (remoteItem.price) item.price = remoteItem.price
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false
-  if (remoteItem.collection) {
-    collection = fromRemoteCollection(utils.omit(remoteItem.collection, ['items'])).collection
-  }
 
-  return { item, collection }
+  return item
 }
 
 function toRemoteCollection(collection: Collection): RemoteCollection {
@@ -355,15 +347,10 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     updatedAt: +new Date(remoteCollection.updated_at)
   }
 
-  let items: Item[] = []
-
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
-  if (remoteCollection.items) {
-    items = remoteCollection.items.map(item => fromRemoteItem(utils.omit(item, ['collection'])).item)
-  }
 
-  return { collection, items }
+  return collection
 }
 
 function fromRemoteWeeklyStats(remoteWeeklyStats: RemoteWeeklyStats): WeeklyStats {
@@ -582,21 +569,17 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchItems() {
     const remoteItems: RemoteItem[] = await this.request('get', `/items`)
-    const collections: Collection[] = []
-    let items: Item[] = []
-    for (const remoteItem of remoteItems) {
-      const { item, collection } = fromRemoteItem(remoteItem)
-      items = items.concat(item)
-      if (collection) {
-        collections.push(collection)
-      }
-    }
-    return { items, collections }
+    return remoteItems.map(fromRemoteItem)
   }
 
   async fetchItem(id: string) {
     const remoteItem: RemoteItem = await this.request('get', `/items/${id}`)
     return fromRemoteItem(remoteItem)
+  }
+
+  async fetchCollectionItems(collectionId: string) {
+    const remoteItems: RemoteItem[] = await this.request('get', `/collections/${collectionId}/items`)
+    return remoteItems.map(fromRemoteItem)
   }
 
   async saveItem(item: Item, contents: Record<string, Blob>) {
@@ -619,13 +602,11 @@ export class BuilderAPI extends BaseAPI {
   async fetchCollections() {
     const remoteCollections: RemoteCollection[] = await this.request('get', `/collections`)
     const collections: Collection[] = []
-    let items: Item[] = []
     for (const remoteCollection of remoteCollections) {
-      const { collection, items: collectionItems } = fromRemoteCollection(remoteCollection)
+      const collection = fromRemoteCollection(remoteCollection)
       collections.push(collection)
-      items = items.concat(collectionItems)
     }
-    return { collections, items } as const
+    return collections
   }
 
   async fetchCollection(id: string) {

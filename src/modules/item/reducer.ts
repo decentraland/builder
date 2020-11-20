@@ -1,14 +1,7 @@
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Mint } from 'modules/collection/types'
-import {
-  FetchCollectionsSuccessAction,
-  FetchCollectionSuccessAction,
-  FETCH_COLLECTIONS_SUCCESS,
-  FETCH_COLLECTION_SUCCESS,
-  PUBLISH_COLLECTION_SUCCESS,
-  MINT_COLLECTION_ITEMS_SUCCESS
-} from 'modules/collection/actions'
+import { PUBLISH_COLLECTION_SUCCESS, MINT_COLLECTION_ITEMS_SUCCESS } from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
   FetchItemsSuccessAction,
@@ -53,7 +46,13 @@ import {
   DeployItemContentsFailureAction,
   DEPLOY_ITEM_CONTENTS_REQUEST,
   DEPLOY_ITEM_CONTENTS_SUCCESS,
-  DEPLOY_ITEM_CONTENTS_FAILURE
+  DEPLOY_ITEM_CONTENTS_FAILURE,
+  FetchCollectionItemsRequestAction,
+  FetchCollectionItemsSuccessAction,
+  FetchCollectionItemsFailureAction,
+  FETCH_COLLECTION_ITEMS_SUCCESS,
+  FETCH_COLLECTION_ITEMS_REQUEST,
+  FETCH_COLLECTION_ITEMS_FAILURE
 } from './actions'
 import { toItemObject } from './utils'
 import { Item } from './types'
@@ -94,13 +93,15 @@ type ItemReducerAction =
   | DeployItemContentsRequestAction
   | DeployItemContentsSuccessAction
   | DeployItemContentsFailureAction
-  | FetchCollectionsSuccessAction
-  | FetchCollectionSuccessAction
+  | FetchCollectionItemsRequestAction
+  | FetchCollectionItemsSuccessAction
+  | FetchCollectionItemsFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
   switch (action.type) {
     case FETCH_ITEMS_REQUEST:
     case FETCH_ITEM_REQUEST:
+    case FETCH_COLLECTION_ITEMS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
     case DEPLOY_ITEM_CONTENTS_REQUEST:
     case SAVE_PUBLISHED_ITEM_REQUEST:
@@ -111,6 +112,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         loading: loadingReducer(state.loading, action)
       }
     }
+    case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
     case SET_ITEMS_TOKEN_ID_SUCCESS: {
       const { items } = action.payload
@@ -151,30 +153,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
-    case FETCH_COLLECTIONS_SUCCESS: {
-      const { items } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          ...toItemObject(items)
-        },
-        loading: loadingReducer(state.loading, action),
-        error: null
-      }
-    }
-    case FETCH_COLLECTION_SUCCESS: {
-      const { items } = action.payload
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          ...toItemObject(items)
-        },
-        loading: loadingReducer(state.loading, action),
-        error: null
-      }
-    }
     case DELETE_ITEM_SUCCESS: {
       const { item } = action.payload
       const newState = {
@@ -189,6 +167,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEMS_FAILURE:
     case FETCH_ITEM_FAILURE:
+    case FETCH_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
     case SAVE_PUBLISHED_ITEM_FAILURE:
     case SAVE_ITEM_FAILURE:
@@ -225,13 +204,10 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
             ...state,
             data: {
               ...state.data,
-              ...items.reduce(
-                (accum, item) => ({
-                  ...accum,
-                  [item.id]: { ...state.data[item.id], ...item, isPublished: true }
-                }),
-                {}
-              )
+              ...items.reduce((accum, item) => {
+                accum[item.id] = { ...state.data[item.id], ...item, isPublished: true }
+                return accum
+              }, {} as ItemState['data'])
             }
           }
         }
@@ -245,11 +221,22 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               ...mints.reduce((accum, mint) => {
                 const item = state.data[mint.item.id]
                 const totalSupply = (item.totalSupply || 0) + 1
-                return {
-                  ...accum,
-                  [item.id]: { ...state.data[item.id], totalSupply }
-                }
-              }, {})
+                accum[item.id] = { ...state.data[item.id], totalSupply }
+                return accum
+              }, {} as ItemState['data'])
+            }
+          }
+        }
+        case SAVE_PUBLISHED_ITEM_SUCCESS: {
+          const item: Item = transaction.payload.item
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              [item.id]: {
+                ...state.data[item.id],
+                ...item
+              }
             }
           }
         }

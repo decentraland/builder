@@ -10,7 +10,7 @@ export const FETCH_ITEMS_SUCCESS = '[Success] Fetch Items'
 export const FETCH_ITEMS_FAILURE = '[Failure] Fetch Items'
 
 export const fetchItemsRequest = () => action(FETCH_ITEMS_REQUEST)
-export const fetchItemsSuccess = (items: Item[], collections: Collection[]) => action(FETCH_ITEMS_SUCCESS, { items, collections })
+export const fetchItemsSuccess = (items: Item[]) => action(FETCH_ITEMS_SUCCESS, { items })
 export const fetchItemsFailure = (error: string) => action(FETCH_ITEMS_FAILURE, { error })
 
 export type FetchItemsRequestAction = ReturnType<typeof fetchItemsRequest>
@@ -24,12 +24,28 @@ export const FETCH_ITEM_SUCCESS = '[Success] Fetch Item'
 export const FETCH_ITEM_FAILURE = '[Failure] Fetch Item'
 
 export const fetchItemRequest = (id: string) => action(FETCH_ITEM_REQUEST, { id })
-export const fetchItemSuccess = (item: Item, collection: Collection | null) => action(FETCH_ITEM_SUCCESS, { item, collection })
+export const fetchItemSuccess = (id: string, item: Item) => action(FETCH_ITEM_SUCCESS, { id, item })
 export const fetchItemFailure = (id: string, error: string) => action(FETCH_ITEM_FAILURE, { id, error })
 
 export type FetchItemRequestAction = ReturnType<typeof fetchItemRequest>
 export type FetchItemSuccessAction = ReturnType<typeof fetchItemSuccess>
 export type FetchItemFailureAction = ReturnType<typeof fetchItemFailure>
+
+// Fetch collection item
+
+export const FETCH_COLLECTION_ITEMS_REQUEST = '[Request] Fetch Collection Items'
+export const FETCH_COLLECTION_ITEMS_SUCCESS = '[Success] Fetch Collection Items'
+export const FETCH_COLLECTION_ITEMS_FAILURE = '[Failure] Fetch Collection Items'
+
+export const fetchCollectionItemsRequest = (collectionId: string) => action(FETCH_COLLECTION_ITEMS_REQUEST, { collectionId })
+export const fetchCollectionItemsSuccess = (collectionId: string, items: Item[]) =>
+  action(FETCH_COLLECTION_ITEMS_SUCCESS, { collectionId, items })
+export const fetchCollectionItemsFailure = (collectionId: string, error: string) =>
+  action(FETCH_COLLECTION_ITEMS_FAILURE, { collectionId, error })
+
+export type FetchCollectionItemsRequestAction = ReturnType<typeof fetchCollectionItemsRequest>
+export type FetchCollectionItemsSuccessAction = ReturnType<typeof fetchCollectionItemsSuccess>
+export type FetchCollectionItemsFailureAction = ReturnType<typeof fetchCollectionItemsFailure>
 
 // Save items
 
