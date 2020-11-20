@@ -24,7 +24,13 @@ import {
   SetENSResolverFailureAction,
   SET_ENS_RESOLVER_REQUEST,
   SET_ENS_RESOLVER_SUCCESS,
-  SET_ENS_RESOLVER_FAILURE
+  SET_ENS_RESOLVER_FAILURE,
+  SET_ALIAS_SUCCESS,
+  SET_ALIAS_FAILURE,
+  SET_ALIAS_REQUEST,
+  SetAliasSuccessAction,
+  SetAliasFailureAction,
+  SetAliasRequestAction
 } from './actions'
 import { ENS, ENSError } from './types'
 
@@ -54,9 +60,13 @@ export type ENSReducerAction =
   | FetchENSListSuccessAction
   | FetchENSListFailureAction
   | FetchTransactionSuccessAction
+  | SetAliasSuccessAction
+  | SetAliasFailureAction
+  | SetAliasRequestAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
+    case SET_ALIAS_REQUEST:
     case FETCH_ENS_LIST_REQUEST:
     case FETCH_ENS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
@@ -97,6 +107,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case SET_ALIAS_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
@@ -144,6 +155,12 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
         default:
           return state
+      }
+    }
+    case SET_ALIAS_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action)
       }
     }
     default:

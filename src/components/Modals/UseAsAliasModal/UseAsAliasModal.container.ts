@@ -4,11 +4,11 @@ import { RootState } from 'modules/common/types'
 import { getLoading } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './UseAsAliasModal.types'
 import UseAsAliasModal from './UseAsAliasModal'
-import { setAliasRequest, CHANGE_PROFILE_REQUEST } from 'modules/profile/actions'
+import { setAliasRequest, SET_ALIAS_REQUEST } from 'modules/ens/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 const mapState = (state: RootState): MapStateProps => ({
-  isLoading: isLoadingType(getLoading(state), CHANGE_PROFILE_REQUEST),
+  isLoading: isLoadingType(getLoading(state), SET_ALIAS_REQUEST),
   address: getAddress(state)
 })
 

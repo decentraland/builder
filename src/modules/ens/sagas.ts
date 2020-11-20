@@ -27,13 +27,26 @@ import {
   FetchENSListRequestAction,
   fetchENSListRequest,
   fetchENSListSuccess,
-  fetchENSListFailure
+  fetchENSListFailure,
+  SET_ALIAS_REQUEST,
+  SetAliasRequestAction,
+  setAliasSuccess,
+  setAliasFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
+import { CatalystClient, DeploymentBuilder, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { EntityType } from 'dcl-catalyst-commons'
+import { env } from 'decentraland-commons'
+import { Avatar } from 'decentraland-ui'
+import { Personal } from 'web3x-es/personal'
+import { Authenticator } from 'dcl-crypto'
+import { changeProfile } from 'modules/profile/actions'
+import { Profile } from 'modules/profile/types'
 
 export function* ensSaga() {
+  yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
@@ -45,6 +58,58 @@ function* handleConnectWallet() {
   yield put(fetchENSListRequest())
 }
 
+function* handleSetAlias(action: SetAliasRequestAction) {
+  const { address, name } = action.payload
+  try {
+    const client = new CatalystClient(env.get('REACT_APP_PEER_URL'), 'builder')
+    const entities: DeploymentWithMetadataContentAndPointers[] = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [
+      address.toLowerCase()
+    ])
+    const entity = entities.length > 0 ? entities[0] : null
+
+    if (!entity) {
+      throw new Error('entity is null')
+    }
+    const avatar = entity && entity.metadata && entity.metadata.avatars[0]
+    const newAvatar: Avatar = {
+      ...avatar,
+      hasClaimedName: true,
+      name
+    }
+
+    const newEntity = {
+      ...entity,
+      metadata: {
+        ...entity.metadata,
+        avatars: [newAvatar, ...entity.metadata.avatars.slice(1)]
+      }
+    }
+    // Build entity
+    const content: Map<string, string> = new Map((newEntity.content || []).map(({ key, hash }) => [key, hash]))
+
+    const deployPreparationData = yield call(() =>
+      DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, newEntity.metadata)
+    )
+
+    // Request signature
+    const eth = Eth.fromCurrentProvider()
+    if (eth) {
+      const personal = new Personal(eth.provider)
+      const signature = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
+
+      // Deploy change
+      const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
+      const result = yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
+      console.log({ result })
+
+      yield put(setAliasSuccess(address, name))
+      yield put(changeProfile(address, newEntity.metadata as Profile))
+    }
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(setAliasFailure(address, ensError))
+  }
+}
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { subdomain, land } = action.payload
   try {
