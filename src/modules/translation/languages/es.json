@@ -288,6 +288,12 @@
     },
     "title": "Publica tu Escena"
   },
+  "use_as_alias_modal": {
+    "title": "Alias",
+    "subtitle": "Establece un nuevo alias para tu perfil",
+    "body": "Establece {name} como tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo. Reemplazará {oldName}",
+    "looks_great": "Se ve muy bien!"
+  },
   "deployment_contest_modal": {
     "action": "Únete al Contest",
     "submit": {
@@ -741,6 +747,7 @@
     "authorizations_title": "Autorizaciones Activas"
   },
   "transaction": {
+    "change_profile": "Tu nombre es usado como alias para {address}",
     "transfer": "Has transferido {name} a {address}.",
     "edit": "Has editado {name}.",
     "set_operator_assigned": "Has asignado {address} como operador de {name}.",
