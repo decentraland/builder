@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
+import { getNameFromDomain } from 'modules/ens/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { Props, State, SortBy } from './ENSListPage.types'
@@ -64,8 +65,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
 
   isAlias(ens: ENS): boolean {
     const { alias } = this.props
-    const { subdomain } = ens
-    const name = subdomain.split('.')[0].toLowerCase()
+    const name = getNameFromDomain(ens.subdomain)
     return alias ? name === alias.toLowerCase() : false
   }
 
@@ -170,7 +170,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                                 <Button
                                   className="ui basic button"
                                   onClick={() => {
-                                    const name = ens.subdomain.split('.')[0]
+                                    const name = getNameFromDomain(ens.subdomain)
                                     onOpenModal('UseAsAliasModal', { name, oldName: alias })
                                   }}
                                 >

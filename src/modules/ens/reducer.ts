@@ -33,6 +33,7 @@ import {
   SetAliasRequestAction
 } from './actions'
 import { ENS, ENSError } from './types'
+import { getNameFromDomain } from './utils'
 
 export type ENSState = {
   data: Record<string, ENS>
@@ -159,7 +160,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     }
     case SET_ALIAS_SUCCESS: {
       const { name } = action.payload
-      const domainName = `${name}.dcl.eth`
+      const domainName = getNameFromDomain(name)
 
       return {
         ...state,

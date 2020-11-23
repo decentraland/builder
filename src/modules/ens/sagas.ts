@@ -9,6 +9,16 @@ import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
+import { getLands } from 'modules/land/selectors'
+import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
+import { CatalystClient, DeploymentBuilder, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { EntityType } from 'dcl-catalyst-commons'
+import { env } from 'decentraland-commons'
+import { Avatar } from 'decentraland-ui'
+import { Personal } from 'web3x-es/personal'
+import { Authenticator } from 'dcl-crypto'
+import { changeProfile } from 'modules/profile/actions'
+import { Profile } from 'modules/profile/types'
 
 import {
   FETCH_ENS_REQUEST,
@@ -34,16 +44,6 @@ import {
   setAliasFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { getLands } from 'modules/land/selectors'
-import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { CatalystClient, DeploymentBuilder, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
-import { EntityType } from 'dcl-catalyst-commons'
-import { env } from 'decentraland-commons'
-import { Avatar } from 'decentraland-ui'
-import { Personal } from 'web3x-es/personal'
-import { Authenticator } from 'dcl-crypto'
-import { changeProfile } from 'modules/profile/actions'
-import { Profile } from 'modules/profile/types'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
