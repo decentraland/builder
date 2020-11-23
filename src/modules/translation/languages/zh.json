@@ -285,6 +285,12 @@
     },
     "title": "正在发布场景"
   },
+  "use_as_alias_modal": {
+    "title": "別名",
+    "subtitle": "為您的個人資料設置新別名",
+    "body": "將{name}設置為Metaverse中的新別名！ 環遊世界時，讓其他人看到您的新名字。 它將替換為{oldName}",
+    "looks_great": "看起來很棒"
+  },
   "deployment_contest_modal": {
     "action": "参加比赛",
     "submit": {
@@ -742,6 +748,7 @@
     "authorizations_title": "活动授权"
   },
   "transaction": {
+    "change_profile": "您的名字用作{address}的別名",
     "transfer": "您已将{name}转移到{address}。",
     "edit": "您已编辑{name}.",
     "set_operator_assigned": "您已将{address}分配为{name}的操作者。",
