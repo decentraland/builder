@@ -540,8 +540,8 @@
     "total_land": "总土地",
     "empty_land": "空地"
   },
-  "land_assign_ens_page" : {
-    "title":"分配{name}",
+  "land_assign_ens_page": {
+    "title": "分配{name}",
     "subtitle": "给...分配一个名字 {land}",
     "set_name_message": "关于他们为什么需要批准的简要说明。",
     "set_resolver": "设置解析器",
@@ -565,7 +565,7 @@
     "click_to_claim_new_name": "{click_here}申请新名称",
     "name_assigned": "这个名字已经分配给这片土地"
   },
-  "ipfs_api" : {
+  "ipfs_api": {
     "not_redirected": "如果您未重定向"
   },
   "migrate_page": {
@@ -985,5 +985,8 @@
     "median_session_time": "会话时间中位数",
     "max_concurrent_users": "高峰用户",
     "notice": "*这些指标是每个星期一每周计算一次"
+  },
+  "maintainance": {
+    "notice": "我们目前正在维护中，我们会很快回来！"
   }
 }

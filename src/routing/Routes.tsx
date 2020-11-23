@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { Responsive } from 'decentraland-ui'
+import { Center, Page, Responsive } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
 
@@ -35,6 +35,9 @@ import ItemEditorPage from 'components/ItemEditorPage'
 import ENSListPage from 'components/ENSListPage'
 
 import { Props, State } from './Routes.types'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -53,6 +56,18 @@ export default class Routes extends React.Component<Props, State> {
     document.body.classList.remove('loading-overlay')
   }
 
+  renderMaintainancePage() {
+    return (
+      <>
+        <Navbar />
+        <Page>
+          <Center>🚧 {t('maintainance.notice')} 🚧</Center>
+        </Page>
+        <Footer />
+      </>
+    )
+  }
+
   renderRoutes() {
     const { hasError, stackTrace } = this.state
 
@@ -60,6 +75,10 @@ export default class Routes extends React.Component<Props, State> {
       return <ErrorPage stackTrace={stackTrace} />
     } else if (window.navigator.userAgent.includes('Edge')) {
       return <UnsupportedBrowserPage />
+    }
+
+    if (env.get('REACT_APP_UNDER_MAINTAINANCE')) {
+      return this.renderMaintainancePage()
     }
 
     return (

@@ -539,7 +539,7 @@
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias"
   },
-  "land_assign_ens_page" : {
+  "land_assign_ens_page": {
     "title": "Asignar {name}",
     "subtitle": "Asigna un nombre a {land}",
     "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
@@ -564,7 +564,7 @@
     "click_to_claim_new_name": "{click_here} para obtener un nuevo nombre",
     "name_assigned": "Este nombre ya ha sido asignado a tu tierra"
   },
-  "ipfs_api" : {
+  "ipfs_api": {
     "not_redirected": "Si no estas siendo redirigido"
   },
   "migrate_page": {
@@ -988,5 +988,8 @@
     "median_session_time": "Tiempo de Sesion",
     "max_concurrent_users": "Usuarios Concurrentes",
     "notice": "*Las metricas se calculan una vez por semana cada Lunes"
+  },
+  "maintainance": {
+    "notice": "Estamos en mantenimiento, volveremos pronto!"
   }
 }
