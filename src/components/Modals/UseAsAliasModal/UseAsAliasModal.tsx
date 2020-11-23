@@ -22,7 +22,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
       <Modal name={name} onClose={onClose} size="tiny">
         <ModalNavigation title={t('use_as_alias_modal.title')} subtitle={t('use_as_alias_modal.subtitle')} onClose={onClose} />
         <ModalContent>
-          <p> {t('use_as_alias_modal.body', { name, oldName })} </p>
+          <p>{t('use_as_alias_modal.body', { name, oldName })}</p>
         </ModalContent>
         <ModalActions>
           {name === usedAsAliasName && !isLoading ? (
