@@ -5,7 +5,6 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { MAX_PARCELS_PER_TX } from 'modules/land/utils'
 import { Props } from './DissolveModal.types'
-import './DissolveModal.css'
 
 export default class DissolveModal extends React.PureComponent<Props, {}> {
   handleConfirm = () => {
@@ -30,10 +29,10 @@ export default class DissolveModal extends React.PureComponent<Props, {}> {
           )}
         </ModalContent>
         <ModalActions>
+          <Button onClick={onClose}>{t('global.cancel')}</Button>
           <Button primary onClick={this.handleConfirm} disabled={isTooBig}>
             {t('global.confirm')}
           </Button>
-          <Button onClick={onClose}>{t('global.cancel')}</Button>
         </ModalActions>
       </Modal>
     )

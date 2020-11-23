@@ -55,6 +55,9 @@ export default class LandTransferPage extends React.PureComponent<Props, State> 
                   </p>
                 </Section>
                 <Row>
+                  <Link className="cancel" to={locations.landDetail(land.id)}>
+                    <Button>{t('global.cancel')}</Button>
+                  </Link>
                   <Button
                     type="submit"
                     primary
@@ -62,9 +65,6 @@ export default class LandTransferPage extends React.PureComponent<Props, State> 
                   >
                     {t('global.submit')}
                   </Button>
-                  <Link className="cancel" to={locations.landDetail(land.id)}>
-                    <Button>{t('global.cancel')}</Button>
-                  </Link>
                 </Row>
               </Form>
             </LandAction>

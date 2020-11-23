@@ -76,12 +76,12 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
           message={hasError ? t('operator_page.invalid_address') : undefined}
         />
         <Row>
-          <Button type="submit" primary disabled={isDisabled} onClick={() => onSetOperator(land, revoked ? null : address)}>
-            {t('global.submit')}
-          </Button>
           <Link className="cancel" to={locations.landDetail(land.id)}>
             <Button>{t('global.cancel')}</Button>
           </Link>
+          <Button type="submit" primary disabled={isDisabled} onClick={() => onSetOperator(land, revoked ? null : address)}>
+            {t('global.submit')}
+          </Button>
         </Row>
       </Form>
     )
