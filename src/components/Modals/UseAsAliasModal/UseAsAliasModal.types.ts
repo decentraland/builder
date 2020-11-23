@@ -6,6 +6,10 @@ export type Props = ModalProps & {
   address?: string
   isLoading: boolean
   usedAsAlias: ENS[]
+  metadata: {
+    oldName: string
+    name: string
+  }
   onSubmit: (address: string, name: string) => void
 }
 

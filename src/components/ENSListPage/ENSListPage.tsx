@@ -171,8 +171,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                                   className="ui basic button"
                                   onClick={() => {
                                     const name = ens.subdomain.split('.')[0]
-                                    const oldname = alias
-                                    onOpenModal('UseAsAliasModal', { name, oldname })
+                                    onOpenModal('UseAsAliasModal', { name, oldName: alias })
                                   }}
                                 >
                                   {t('ens_list_page.button.use_as_alias')}

@@ -15,7 +15,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
 
   render() {
     const { onClose, isLoading, usedAsAlias } = this.props
-    const { name, oldname } = this.props.metadata
+    const { name, oldName } = this.props.metadata
     const usedAsAliasName = usedAsAlias.length > 0 ? usedAsAlias[0].subdomain.split('.')[0] : ''
 
     return (
@@ -23,7 +23,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
         <ModalNavigation title={t('use_as_alias_modal.title')} subtitle={t('use_as_alias_modal.subtitle')} onClose={onClose} />
         <Form onSubmit={this.handleSubmit}>
           <ModalContent>
-            <p> {t('use_as_alias_modal.body', { name, oldname })} </p>
+            <p> {t('use_as_alias_modal.body', { name, oldName })} </p>
           </ModalContent>
           <ModalActions>
             {name === usedAsAliasName && !isLoading ? (
