@@ -4,7 +4,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getNameFromDomain } from 'modules/ens/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Props, State } from './UseAsAliasModal.types'
-import './UseAsAliasModal.css'
 
 export default class UseAsAliasModal extends React.PureComponent<Props, State> {
   handleSubmit = () => {

@@ -13,9 +13,7 @@ export type Props = ModalProps & {
   onSubmit: (address: string, name: string) => void
 }
 
-export type State = {
-  done: boolean
-}
+export type State = {}
 
 export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'usedAsAlias'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
