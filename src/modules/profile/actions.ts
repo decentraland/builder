@@ -1,4 +1,3 @@
-import { Avatar } from 'decentraland-ui'
 import { action } from 'typesafe-actions'
 import { Profile } from './types'
 
@@ -18,10 +17,5 @@ export type LoadProfileFailureAction = ReturnType<typeof loadProfileFailure>
 
 // Change Profile
 export const CHANGE_PROFILE = 'Change Profile'
-
-export const changeProfile = (
-  address: string,
-  profile: Partial<Profile> & { avatars: Partial<Avatar>[]; content?: any[]; metadata?: any[] }
-) => action(CHANGE_PROFILE, { address, profile })
-
+export const changeProfile = (address: string, profile: Profile) => action(CHANGE_PROFILE, { address, profile })
 export type ChangeProfileAction = ReturnType<typeof changeProfile>
