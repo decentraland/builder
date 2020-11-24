@@ -1,15 +1,15 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { getENSUsedAsAlias, getLoading } from 'modules/ens/selectors'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './UseAsAliasModal.types'
-import UseAsAliasModal from './UseAsAliasModal'
+import { getAliases, getLoading } from 'modules/ens/selectors'
 import { setAliasRequest, SET_ALIAS_REQUEST } from 'modules/ens/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './UseAsAliasModal.types'
+import UseAsAliasModal from './UseAsAliasModal'
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoading: isLoadingType(getLoading(state), SET_ALIAS_REQUEST),
-  usedAsAlias: getENSUsedAsAlias(state),
+  aliases: getAliases(state),
   address: getAddress(state)
 })
 

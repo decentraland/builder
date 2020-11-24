@@ -14,9 +14,9 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onClose, isLoading, usedAsAlias } = this.props
+    const { onClose, isLoading, aliases } = this.props
     const { name, oldName } = this.props.metadata
-    const usedAsAliasName = usedAsAlias.length > 0 ? getNameFromDomain(usedAsAlias[0].subdomain) : ''
+    const aliasName = aliases.length > 0 ? getNameFromDomain(aliases[0].subdomain) : ''
 
     return (
       <Modal name={name} onClose={onClose} size="tiny">
@@ -25,7 +25,7 @@ export default class UseAsAliasModal extends React.PureComponent<Props, State> {
           <p>{t('use_as_alias_modal.body', { name, oldName })}</p>
         </ModalContent>
         <ModalActions>
-          {name === usedAsAliasName && !isLoading ? (
+          {name === aliasName && !isLoading ? (
             <Button primary onClick={onClose}>
               {t('use_as_alias_modal.looks_great')}
             </Button>

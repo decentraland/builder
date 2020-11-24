@@ -11,7 +11,6 @@ export type ENS = {
   //   contentId?: string
   //   contentType?: ENSContent {LAND = 'land', (...)}
   landId?: string
-  isUsedAsAlias?: boolean
 }
 
 export type ENSError = {

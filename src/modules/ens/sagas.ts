@@ -13,12 +13,12 @@ import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { CatalystClient, DeploymentBuilder, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
-import { env } from 'decentraland-commons'
 import { Avatar } from 'decentraland-ui'
 import { Personal } from 'web3x-es/personal'
 import { Authenticator } from 'dcl-crypto'
 import { changeProfile } from 'modules/profile/actions'
 import { Profile } from 'modules/profile/types'
+import { PEER_URL } from 'lib/api/peer'
 
 import {
   FETCH_ENS_REQUEST,
@@ -61,7 +61,7 @@ function* handleConnectWallet() {
 function* handleSetAlias(action: SetAliasRequestAction) {
   const { address, name } = action.payload
   try {
-    const client = new CatalystClient(env.get('REACT_APP_PEER_URL'), 'builder')
+    const client = new CatalystClient(PEER_URL, 'builder')
     const entities: DeploymentWithMetadataContentAndPointers[] = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [
       address.toLowerCase()
     ])

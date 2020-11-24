@@ -33,7 +33,6 @@ import {
   SetAliasRequestAction
 } from './actions'
 import { ENS, ENSError } from './types'
-import { getNameFromDomain } from './utils'
 
 export type ENSState = {
   data: Record<string, ENS>
@@ -68,6 +67,7 @@ export type ENSReducerAction =
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
     case SET_ALIAS_REQUEST:
+    case SET_ALIAS_SUCCESS:
     case FETCH_ENS_LIST_REQUEST:
     case FETCH_ENS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
@@ -156,22 +156,6 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
         default:
           return state
-      }
-    }
-    case SET_ALIAS_SUCCESS: {
-      const { name } = action.payload
-      const domainName = getNameFromDomain(name)
-
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        data: {
-          ...state.data,
-          [domainName]: {
-            ...state.data[domainName],
-            isUsedAsAlias: true
-          }
-        }
       }
     }
     default:
