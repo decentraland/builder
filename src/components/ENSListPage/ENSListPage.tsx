@@ -26,6 +26,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
   }
 
+  handleOpenModal = (subdomain: string) => {
+    const { onOpenModal } = this.props
+    const newName = getNameFromDomain(subdomain)
+    onOpenModal('UseAsAliasModal', { newName })
+  }
+
   renderSortDropdown = () => {
     const { sortBy } = this.state
     return (
@@ -70,7 +76,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderEnsList() {
-    const { ensList, onOpenModal } = this.props
+    const { ensList } = this.props
     const { page } = this.state
 
     const total = ensList.length
@@ -169,10 +175,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                               <Column align="right">
                                 <Button
                                   className="ui basic button"
-                                  onClick={() => {
-                                    const newName = getNameFromDomain(ens.subdomain)
-                                    onOpenModal('UseAsAliasModal', { newName })
-                                  }}
+                                  onClick={() => this.handleOpenModal(ens.subdomain)}
                                 >
                                   {t('ens_list_page.button.use_as_alias')}
                                 </Button>
