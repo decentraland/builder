@@ -70,7 +70,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
   }
 
   renderEnsList() {
-    const { ensList, onOpenModal, alias } = this.props
+    const { ensList, onOpenModal } = this.props
     const { page } = this.state
 
     const total = ensList.length
@@ -170,8 +170,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                                 <Button
                                   className="ui basic button"
                                   onClick={() => {
-                                    const name = getNameFromDomain(ens.subdomain)
-                                    onOpenModal('UseAsAliasModal', { name, oldName: alias })
+                                    const newName = getNameFromDomain(ens.subdomain)
+                                    onOpenModal('UseAsAliasModal', { newName })
                                   }}
                                 >
                                   {t('ens_list_page.button.use_as_alias')}

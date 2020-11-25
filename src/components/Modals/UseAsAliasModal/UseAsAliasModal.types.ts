@@ -7,15 +7,15 @@ export type Props = ModalProps & {
   address?: string
   isLoading: boolean
   aliases: ENS[]
+  name: string
   metadata: {
-    oldName: string
-    name: string
+    newName: string
   }
   onSubmit: typeof setAliasRequest
 }
 
 export type State = {}
 
-export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'aliases'>
+export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'aliases' | 'name'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch

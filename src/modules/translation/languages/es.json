@@ -291,7 +291,7 @@
   "use_as_alias_modal": {
     "title": "Alias",
     "subtitle": "Establece un nuevo alias para tu perfil",
-    "body": "Establece {name} como tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo. Reemplazará {oldName}",
+    "body": "Establece {newName} como tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo. Reemplazará {oldName}",
     "looks_great": "Se ve muy bien!"
   },
   "deployment_contest_modal": {
