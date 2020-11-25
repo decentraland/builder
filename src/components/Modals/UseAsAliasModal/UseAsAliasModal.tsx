@@ -3,9 +3,9 @@ import { ModalNavigation, Button, ModalContent, ModalActions } from 'decentralan
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getNameFromDomain } from 'modules/ens/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { Props, State } from './UseAsAliasModal.types'
+import { Props } from './UseAsAliasModal.types'
 
-export default class UseAsAliasModal extends React.PureComponent<Props, State> {
+export default class UseAsAliasModal extends React.PureComponent<Props> {
   handleSubmit = () => {
     const { onSubmit, address } = this.props
     const { newName } = this.props.metadata

@@ -14,8 +14,6 @@ export type Props = ModalProps & {
   onSubmit: typeof setAliasRequest
 }
 
-export type State = {}
-
 export type MapStateProps = Pick<Props, 'isLoading' | 'address' | 'aliases' | 'name'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch
