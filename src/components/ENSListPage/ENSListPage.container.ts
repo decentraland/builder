@@ -11,6 +11,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { getLands, getLoading as getLandsLoading } from 'modules/land/selectors'
 import { FETCH_LANDS_REQUEST } from 'modules/land/actions'
 import { getName } from 'modules/profile/selectors'
+import { openModal } from 'modules/modal/actions'
 
 const mapState = (state: RootState): MapStateProps => ({
   alias: getName(state),
@@ -25,7 +26,8 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onNavigate: path => dispatch(push(path))
+  onNavigate: path => dispatch(push(path)),
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(mapState, mapDispatch)(ENSListPage)

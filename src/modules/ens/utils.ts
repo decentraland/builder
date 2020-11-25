@@ -21,3 +21,11 @@ export function isContentEmpty(ens: ENS) {
 export function isEqualContent(ens: ENS, land: Land) {
   return ens.landId === land.id
 }
+
+export function getDomainFromName(name: string): string {
+  return `${name.toLowerCase()}.dcl.eth`
+}
+
+export function getNameFromDomain(domain: string): string {
+  return domain.split('.')[0]
+}

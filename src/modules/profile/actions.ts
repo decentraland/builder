@@ -14,3 +14,8 @@ export const loadProfileFailure = (address: string, error: string) => action(LOA
 export type LoadProfileRequestAction = ReturnType<typeof loadProfileRequest>
 export type LoadProfileSuccessAction = ReturnType<typeof loadProfileSuccess>
 export type LoadProfileFailureAction = ReturnType<typeof loadProfileFailure>
+
+// Change Profile
+export const CHANGE_PROFILE = 'Change Profile'
+export const changeProfile = (address: string, profile: Profile) => action(CHANGE_PROFILE, { address, profile })
+export type ChangeProfileAction = ReturnType<typeof changeProfile>

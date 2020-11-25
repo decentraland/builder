@@ -6,7 +6,9 @@ import {
   LoadProfileFailureAction,
   LOAD_PROFILE_REQUEST,
   LOAD_PROFILE_SUCCESS,
-  LOAD_PROFILE_FAILURE
+  LOAD_PROFILE_FAILURE,
+  CHANGE_PROFILE,
+  ChangeProfileAction
 } from 'modules/profile/actions'
 
 export type ProfileState = {
@@ -21,7 +23,7 @@ const INITIAL_STATE: ProfileState = {
   error: {}
 }
 
-export type ProfileReducerAction = LoadProfileRequestAction | LoadProfileSuccessAction | LoadProfileFailureAction
+export type ProfileReducerAction = LoadProfileRequestAction | LoadProfileSuccessAction | LoadProfileFailureAction | ChangeProfileAction
 
 export const profileReducer = (state = INITIAL_STATE, action: ProfileReducerAction): ProfileState => {
   switch (action.type) {
@@ -41,6 +43,16 @@ export const profileReducer = (state = INITIAL_STATE, action: ProfileReducerActi
           [address]: profile
         },
         loading: loadingReducer(state.loading, action)
+      }
+    }
+    case CHANGE_PROFILE: {
+      const { address, profile } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [address]: { ...state.data[address], ...profile }
+        }
       }
     }
     default:

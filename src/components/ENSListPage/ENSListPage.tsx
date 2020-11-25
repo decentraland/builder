@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
+import { getNameFromDomain } from 'modules/ens/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { Props, State, SortBy } from './ENSListPage.types'
@@ -13,7 +14,7 @@ const PAGE_SIZE = 12
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.NEWEST,
+    sortBy: SortBy.NAME,
     page: 1
   }
 
@@ -23,6 +24,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
 
   handleAssignENS = (ens: ENS) => {
     this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
+  }
+
+  handleOpenModal = (subdomain: string) => {
+    const { onOpenModal } = this.props
+    const newName = getNameFromDomain(subdomain)
+    onOpenModal('UseAsAliasModal', { newName })
   }
 
   renderSortDropdown = () => {
@@ -64,9 +71,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
 
   isAlias(ens: ENS): boolean {
     const { alias } = this.props
-    const { subdomain } = ens
-    const name = subdomain.split('.')[0]
-    return alias ? name.toLowerCase() === alias.toLowerCase() : false
+    const name = getNameFromDomain(ens.subdomain)
+    return alias ? name === alias.toLowerCase() : false
   }
 
   renderEnsList() {
@@ -167,7 +173,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             ) : null}
                             {!this.isAlias(ens) ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => alert('must be implemented')}>
+                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.subdomain)}>
                                   {t('ens_list_page.button.use_as_alias')}
                                 </Button>
                               </Column>
