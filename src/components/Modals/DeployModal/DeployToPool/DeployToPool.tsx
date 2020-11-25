@@ -9,7 +9,7 @@ import Icon from 'components/Icon'
 import { Props, State } from './DeployToPool.types'
 import './DeployToPool.css'
 
-export default class DeployModal extends React.PureComponent<Props, State> {
+export default class DeployToLand extends React.PureComponent<Props, State> {
   state = {
     isSubmitting: false,
     isSuccess: false

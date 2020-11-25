@@ -210,6 +210,7 @@ export const deploymentReducer = (state = INITIAL_STATE, action: DeploymentReduc
     case FETCH_DEPLOYMENTS_SUCCESS: {
       return {
         ...state,
+        loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
           ...action.payload.deployments.reduce<DataByKey<Deployment>>((obj, deployment) => {

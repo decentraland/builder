@@ -10,7 +10,7 @@ import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { loginRequest } from 'modules/identity/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './DeployToPool.types'
-import DeployModal from './DeployToPool'
+import DeployToLand from './DeployToPool'
 
 const mapState = (state: RootState): MapStateProps => ({
   error: getError(state),
@@ -31,4 +31,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLogin: () => dispatch(loginRequest())
 })
 
-export default connect(mapState, mapDispatch)(DeployModal)
+export default connect(mapState, mapDispatch)(DeployToLand)
