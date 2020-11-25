@@ -30,6 +30,12 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
     }
   }
 
+  handleSetOperator = () => {
+    const { land, onSetOperator } = this.props
+    const { address, revoked } = this.state
+    onSetOperator(land, revoked ? null : address)
+  }
+
   handleChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     this.setState({ address: data.value, dirty: true, revoked: false })
   }
@@ -43,7 +49,7 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { land, onSetOperator } = this.props
+    const { land } = this.props
     const { address, loading, dirty, revoked, editing, initial } = this.state
 
     const isRevokable = editing && isEqual(address, initial)
@@ -76,12 +82,12 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
           message={hasError ? t('operator_page.invalid_address') : undefined}
         />
         <Row>
-          <Button type="submit" primary disabled={isDisabled} onClick={() => onSetOperator(land, revoked ? null : address)}>
-            {t('global.submit')}
-          </Button>
           <Link className="cancel" to={locations.landDetail(land.id)}>
             <Button>{t('global.cancel')}</Button>
           </Link>
+          <Button type="submit" primary disabled={isDisabled} onClick={this.handleSetOperator}>
+            {t('global.submit')}
+          </Button>
         </Row>
       </Form>
     )

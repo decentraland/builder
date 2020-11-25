@@ -232,10 +232,10 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
           </div>
         </div>
         <ModalActions>
+          <Button onClick={this.handleCancel}>{isEditing || !showCreationForm ? t('global.cancel') : t('global.back')}</Button>
           <Button primary disabled={isDisabled} onClick={this.handleSubmit}>
             {isEditing || showCreationForm ? t('global.submit') : t('global.continue')}
           </Button>
-          <Button onClick={this.handleCancel}>{isEditing || !showCreationForm ? t('global.cancel') : t('global.back')}</Button>
         </ModalActions>
       </Modal>
     )

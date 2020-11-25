@@ -44,12 +44,12 @@ export default class LandEditPage extends React.PureComponent<Props, State> {
               <Field label="Name" value={this.getName(land)} onChange={this.handleNameChange} />
               <Field label="Description" value={this.getDescription(land)} onChange={this.handleDescriptionChange} />
               <Row>
-                <Button type="submit" primary disabled={isPristine || !this.getName(land) || land.role !== RoleType.OWNER}>
-                  {t('global.submit')}
-                </Button>
                 <Link className="cancel" to={locations.landDetail(land.id)}>
                   <Button>{t('global.cancel')}</Button>
                 </Link>
+                <Button type="submit" primary disabled={isPristine || !this.getName(land) || land.role !== RoleType.OWNER}>
+                  {t('global.submit')}
+                </Button>
               </Row>
             </Form>
           </LandAction>
