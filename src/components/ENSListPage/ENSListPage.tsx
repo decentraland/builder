@@ -173,10 +173,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             ) : null}
                             {!this.isAlias(ens) ? (
                               <Column align="right">
-                                <Button
-                                  className="ui basic button"
-                                  onClick={() => this.handleOpenModal(ens.subdomain)}
-                                >
+                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.subdomain)}>
                                   {t('ens_list_page.button.use_as_alias')}
                                 </Button>
                               </Column>

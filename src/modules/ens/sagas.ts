@@ -9,6 +9,7 @@ import { EntityType } from 'dcl-catalyst-commons'
 import { Avatar } from 'decentraland-ui'
 import { Personal } from 'web3x-es/personal'
 import { Authenticator } from 'dcl-crypto'
+import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
@@ -45,7 +46,6 @@ import {
   setAliasFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { ModalNavigation, Button, ModalContent, ModalActions } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getNameFromDomain } from 'modules/ens/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { getNameFromDomain } from 'modules/ens/utils'
 import { Props } from './UseAsAliasModal.types'
 
 export default class UseAsAliasModal extends React.PureComponent<Props> {
