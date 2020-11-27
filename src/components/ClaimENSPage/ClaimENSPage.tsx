@@ -1,16 +1,62 @@
 import * as React from 'react'
-import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana } from 'decentraland-ui'
+import { Address } from 'web3x-es/address'
+import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
 import { Props, State } from './ClaimENSPage.types'
+import { createEth } from 'decentraland-dapps/dist/lib/eth'
+
 import './ClaimENSPage.css'
+import { ERC20 as MANAToken } from 'contracts/ERC20'
+import { CONTROLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
+import { Eth } from 'web3x-es/eth'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
-    name: ''
+    name: '',
+    amountApproved: 0,
+    isLoading: false,
+    tx: undefined
+  }
+
+  async componentDidUpdate() {
+    const eth: Eth | null = await createEth()
+    const { address } = this.props
+
+    if (eth && address) {
+      const contractMANA = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+      const allowance: string = await contractMANA.methods
+        .allowance(Address.fromString(address), Address.fromString(CONTROLER_ADDRESS))
+        .call()
+      const amountApproved: number = +allowance
+      this.setState({ amountApproved })
+    }
+    const { tx } = this.state
+    if (tx && tx.status) {
+      this.setState({ isLoading: false, tx: undefined })
+    }
+  }
+
+  handleManaApprove = async () => {
+    const { address } = this.props
+    const eth: Eth | null = await createEth()
+    if (!eth) return
+    const contractMANA = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+
+    let tx
+    if (this.isManaApproved()) {
+      // > 100
+      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 0)
+    } else {
+      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 101)
+    }
+    const txSended = tx.send({ from: Address.fromString(address) })
+    this.setState({ isLoading: true })
+    tx = await txSended.getReceipt()
+    this.setState({ tx })
   }
 
   handleClaim = () => {
@@ -21,10 +67,15 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.setState({ name: data.value })
   }
 
-  handleOnAction = () => {}
+  handleOnAction = () => ({})
 
   handleBack = () => {
     this.props.onNavigate(locations.root())
+  }
+
+  isManaApproved = () => {
+    const { amountApproved } = this.state
+    return amountApproved >= 100
   }
 
   render() {
@@ -53,20 +104,25 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 </span>
               </Section>
               <Form onSubmit={this.handleClaim}>
-                <Field
-                  label="Name"
-                  value={name}
-                  message="Names cannot contain non-alphanumeric characters or spaces."
-                  action={`${name.length}/${MAX_NAME_SIZE}`}
-                  error={name.length > 1 && !isValid}
-                  onChange={this.handleNameChange}
-                  onAction={this.handleOnAction}
-                />
+                <Section>
+                  <Field
+                    label="Name"
+                    value={name}
+                    message="Names cannot contain non-alphanumeric characters or spaces."
+                    action={`${name.length}/${MAX_NAME_SIZE}`}
+                    error={name.length > 1 && !isValid}
+                    onChange={this.handleNameChange}
+                    onAction={this.handleOnAction}
+                  />
+                </Section>
+                <Section>
+                  <Radio toggle checked={this.isManaApproved()} onChange={this.handleManaApprove} label={'MANA approved'} />
+                </Section>
                 <Row className="actions">
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid}>
+                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved()} loading={this.state.isLoading}>
                     Claim <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>

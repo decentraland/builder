@@ -24,6 +24,10 @@
     "ENSResolver": {
       "source": "files",
       "abiFile": "./src/contracts/ENSResolver.json"
+    },
+    "ERC20": {
+      "source": "files",
+      "abiFile": "./src/contracts/ERC20.json"
     }
   }
 }

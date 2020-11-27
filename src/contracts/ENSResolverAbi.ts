@@ -1,4 +1,4 @@
-import { ContractAbi } from 'web3x-es/contract'
+import { ContractAbi} from 'web3x-es/contract';
 export default new ContractAbi([
   {
     "constant": true,
@@ -840,4 +840,4 @@ export default new ContractAbi([
     "name": "ABIChanged",
     "type": "event"
   }
-])
+]);
