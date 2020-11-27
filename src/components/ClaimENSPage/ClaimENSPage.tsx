@@ -5,6 +5,7 @@ import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, B
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
+import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
@@ -13,6 +14,7 @@ import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
 import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
+
 import './ClaimENSPage.css'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
