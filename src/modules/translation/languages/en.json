@@ -593,6 +593,12 @@
       }
     }
   },
+  "claim_name_fat_finger_modal": {
+    "title": "Please, confirm your name",
+    "description": "You choose {name}. Please re-enter the name to double check this is the one you want.",
+    "name_placeholder": "Your unique name",
+    "names_different": "Names do not match"
+  },
   "migrate_page": {
     "step_one_title": "Migrate your account",
     "step_one_message_line_one": "In order to provide a seamless experience across our products, we have switched the Builder's account system from email to wallet based. This means that you will need to connect an Ethereum wallet to store your scenes in the Cloud. If you don't have a wallet you can learn more about how to get one {link}.",

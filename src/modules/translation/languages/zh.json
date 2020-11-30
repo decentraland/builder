@@ -554,6 +554,12 @@
       }
     }
   },
+  "claim_name_fat_finger_modal": {
+    "title": "请确认你的名字",
+    "description": "您选择{name}。 请重新输入名称以仔细检查这是您想要的名称。",
+    "name_placeholder": "您的唯一名字",
+    "names_different": "名称不符"
+  },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
     "step_one_message_line_one": "为了在我们的产品中提供隐秘的体验，我们已将Builder的帐户系统从电子邮件切换为基于钱包的帐户。这意味着您将需要连接一个以太坊钱包，以将场景存储在云中。如果您没有钱包，可以了解更多有关如何获得钱包的信息{link}。",
