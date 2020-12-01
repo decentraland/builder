@@ -1,42 +1,41 @@
 import * as React from 'react'
 import { Address } from 'web3x-es/address'
+import { Eth } from 'web3x-es/eth'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { locations } from 'routing/locations'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
-import { Props, State } from './ClaimENSPage.types'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
-
-import './ClaimENSPage.css'
-import { ERC20 as MANAToken } from 'contracts/ERC20'
+import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
-import { Eth } from 'web3x-es/eth'
+import { Props, State } from './ClaimENSPage.types'
+import './ClaimENSPage.css'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
     amountApproved: 0,
     isLoading: false,
-    tx: undefined
+    receiptTx: undefined
   }
 
   async componentDidUpdate() {
-    const eth: Eth | null = await createEth()
     const { address } = this.props
+    const { receiptTx } = this.state
+
+    const eth: Eth | null = await createEth()
 
     if (eth && address) {
       const contractMANA = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
       const allowance: string = await contractMANA.methods
         .allowance(Address.fromString(address), Address.fromString(CONTROLER_ADDRESS))
         .call()
-      const amountApproved: number = +allowance
-      this.setState({ amountApproved })
+      this.setState({ amountApproved: +allowance })
     }
-    const { tx } = this.state
-    if (tx && tx.status) {
-      this.setState({ isLoading: false, tx: undefined })
+    if (receiptTx && receiptTx.status) {
+      this.setState({ isLoading: false, receiptTx: undefined })
     }
   }
 
@@ -48,15 +47,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
     let tx
     if (this.isManaApproved()) {
-      // > 100
       tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 0)
     } else {
-      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 101)
+      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), '100000000000000000000')
     }
-    const txSended = tx.send({ from: Address.fromString(address) })
+    const receiptTx: ERC20TransactionReceipt = await tx.send({ from: Address.fromString(address) }).getReceipt()
     this.setState({ isLoading: true })
-    tx = await txSended.getReceipt()
-    this.setState({ tx })
+    this.setState({ receiptTx })
   }
 
   handleClaim = () => {
@@ -80,7 +77,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   render() {
     const { onBack } = this.props
-    const { name } = this.state
+    const { name, isLoading } = this.state
     const isValid = isNameValid(name)
 
     return (
@@ -122,7 +119,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved()} loading={this.state.isLoading}>
+                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved()} loading={isLoading}>
                     Claim <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>

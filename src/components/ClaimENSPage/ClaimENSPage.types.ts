@@ -12,7 +12,7 @@ export type State = {
   name: string
   amountApproved: number
   isLoading: boolean
-  tx: ERC20TransactionReceipt | undefined
+  receiptTx: ERC20TransactionReceipt | undefined
 }
 
 export type MapStateProps = Pick<Props, 'address'>
