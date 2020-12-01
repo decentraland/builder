@@ -148,7 +148,7 @@
   },
   "claim_ens_page": {
     "title": "Claim a Name",
-    "subtitle": "You can claim names and assign them to Profiles or Land, and they can also be used as a quick link to access the world.", 
+    "subtitle": "You can claim names and assign them to Profiles or Land, and they can also be used as a quick link to access the world.",
     "form" : {
       "name_label": "Name",
       "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
