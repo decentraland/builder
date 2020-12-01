@@ -64,8 +64,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.setState({ name: data.value })
   }
 
-  handleOnAction = () => ({})
-
   handleBack = () => {
     this.props.onNavigate(locations.root())
   }
@@ -106,7 +104,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                     action={`${name.length}/${MAX_NAME_SIZE}`}
                     error={name.length > 1 && !isValid}
                     onChange={this.handleNameChange}
-                    onAction={this.handleOnAction}
+                    onAction={undefined}
                   />
                 </Section>
                 <Section>
