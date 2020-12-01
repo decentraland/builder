@@ -93,19 +93,16 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
             <Column className="content">
               <Section>
                 <Header className="title" size="large">
-                  Claim a Name
+                  {t('claim_ens_page.title')}
                 </Header>
-                <span className="subtitle">
-                  You can claim names and assign them to Profiles or Land, and they can also be used as a quick link to access the world.
-                  Learn more
-                </span>
+                <span className="subtitle">{t('claim_ens_page.subtitle')}</span>
               </Section>
               <Form onSubmit={this.handleClaim}>
                 <Section>
                   <Field
-                    label="Name"
+                    label={t('claim_ens_page.form.name_label')}
                     value={name}
-                    message="Names cannot contain non-alphanumeric characters or spaces."
+                    message={t('claim_ens_page.form.name_message')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
                     error={name.length > 1 && !isValid}
                     onChange={this.handleNameChange}
@@ -113,14 +110,19 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   />
                 </Section>
                 <Section>
-                  <Radio toggle checked={this.isManaApproved()} onChange={this.handleManaApprove} label={'MANA approved'} />
+                  <Radio
+                    toggle
+                    checked={this.isManaApproved()}
+                    onChange={this.handleManaApprove}
+                    label={t('claim_ens_page.form.radio_label')}
+                  />
                 </Section>
                 <Row className="actions">
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
                   <Button type="submit" primary disabled={!isValid || !this.isManaApproved()} loading={isLoading}>
-                    Claim <Mana>{PRICE.toLocaleString()}</Mana>
+                    {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>
               </Form>
