@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { toBN } from 'web3x-es/utils'
 import { Address } from 'web3x-es/address'
 import { Eth } from 'web3x-es/eth'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
@@ -50,10 +49,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     } catch (error) {
       throw error
     }
-  }
-
-  getTokenAmountToApprove() {
-    return toBN(2).pow(toBN(255))
   }
 
   handleManaApprove = async () => {
