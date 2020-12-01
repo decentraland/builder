@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { toBN } from 'web3x-es/utils'
 import { Address } from 'web3x-es/address'
 import { Eth } from 'web3x-es/eth'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { locations } from 'routing/locations'
+import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
@@ -17,7 +17,7 @@ import './ClaimENSPage.css'
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
-    amountApproved: 0,
+    amountApproved: -1,
     isLoading: false,
     receiptTx: undefined
   }
@@ -40,10 +40,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     }
   }
 
-  getTokenAmountToApprove() {
-    return toBN(2).pow(toBN(255))
-  }
-
   handleManaApprove = async () => {
     const { address } = this.props
     const eth: Eth | null = await createEth()
@@ -54,7 +50,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     if (this.isManaApproved()) {
       tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 0)
     } else {
-      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), this.getTokenAmountToApprove())
+      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), getMaximumValue())
     }
     this.setState({ isLoading: true })
     const receiptTx: ERC20TransactionReceipt = await tx.send({ from: Address.fromString(address) }).getReceipt()
