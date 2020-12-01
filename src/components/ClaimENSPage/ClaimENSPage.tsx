@@ -22,14 +22,18 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     receiptTx: undefined
   }
 
+  async getManaContract() {
+    const eth: Eth | null = await createEth()
+    if (!eth) return
+    return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+  }
+
   async componentDidUpdate() {
     const { address } = this.props
     const { receiptTx } = this.state
 
-    const eth: Eth | null = await createEth()
-
-    if (eth && address) {
-      const contractMANA = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+    const contractMANA = await this.getManaContract()
+    if (contractMANA && address) {
       const allowance: string = await contractMANA.methods
         .allowance(Address.fromString(address), Address.fromString(CONTROLER_ADDRESS))
         .call()
@@ -42,10 +46,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   handleManaApprove = async () => {
     const { address } = this.props
-    const eth: Eth | null = await createEth()
-    if (!eth) return
-    const contractMANA = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+    const contractMANA = await this.getManaContract()
 
+    if (!contractMANA) return
     let tx
     if (this.isManaApproved()) {
       tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 0)
