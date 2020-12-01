@@ -51,8 +51,8 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     } else {
       tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), '100000000000000000000')
     }
-    const receiptTx: ERC20TransactionReceipt = await tx.send({ from: Address.fromString(address) }).getReceipt()
     this.setState({ isLoading: true })
+    const receiptTx: ERC20TransactionReceipt = await tx.send({ from: Address.fromString(address) }).getReceipt()
     this.setState({ receiptTx })
   }
 
