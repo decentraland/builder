@@ -32,15 +32,19 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const { address } = this.props
     const { receiptTx } = this.state
 
-    const contractMANA = await this.getManaContract()
-    if (contractMANA && address) {
-      const allowance: string = await contractMANA.methods
-        .allowance(Address.fromString(address), Address.fromString(CONTROLER_ADDRESS))
-        .call()
-      this.setState({ amountApproved: +allowance })
-    }
-    if (receiptTx && receiptTx.status) {
-      this.setState({ isLoading: false, receiptTx: undefined })
+    try {
+      const contractMANA = await this.getManaContract()
+      if (contractMANA && address) {
+        const allowance: string = await contractMANA.methods
+          .allowance(Address.fromString(address), Address.fromString(CONTROLER_ADDRESS))
+          .call()
+        this.setState({ amountApproved: +allowance })
+      }
+      if (receiptTx && receiptTx.status) {
+        this.setState({ isLoading: false, receiptTx: undefined })
+      }
+    } catch (error) {
+      throw error
     }
   }
 
