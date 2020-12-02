@@ -49,14 +49,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const contractMANA = await this.getManaContract()
 
     if (!contractMANA) return
-    let tx
-    if (this.isManaApproved()) {
-      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), 0)
-    } else {
-      tx = contractMANA.methods.approve(Address.fromString(CONTROLER_ADDRESS), getMaximumValue())
-    }
+
     this.setState({ isLoading: true })
-    const receiptTx: ERC20TransactionReceipt = await tx.send({ from: Address.fromString(address) }).getReceipt()
+    const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
+    const receiptTx: ERC20TransactionReceipt = await contractMANA.methods
+      .approve(Address.fromString(CONTROLER_ADDRESS), manaToApprove)
+      .send({ from: Address.fromString(address) })
+      .getReceipt()
     this.setState({ receiptTx })
   }
 
