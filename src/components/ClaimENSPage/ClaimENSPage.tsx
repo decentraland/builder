@@ -56,6 +56,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const contractMANA = await this.getManaContract()
 
     if (!contractMANA) return
+
     this.setState({ isLoading: true })
     const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
     const receiptTx: ERC20TransactionReceipt = await contractMANA.methods
