@@ -283,8 +283,9 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
             throw new Error(
               t('asset_pack.import.errors.duplicated_asset', {
                 name: truncateFileName(file.name),
-                model: outFile.asset.model,
-                asset: existingAsset.name
+                id: existingAsset.id,
+                existingAsset: existingAsset.name,
+                newAsset: outFile.asset.name
               })
             )
           }

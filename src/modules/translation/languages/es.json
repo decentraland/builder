@@ -82,7 +82,7 @@
       "description_edit": "Añade algunos assets más a tu pack",
       "errors": {
         "duplicated": "Asset duplicado",
-        "duplicated_asset": "{name}: Este Asset Pack ya contiene un asset \"{asset}\" con un archivo \"{model}\"",
+        "duplicated_asset": "{name}: Ya existe un asset en este asset pack llamado \"{existingAsset}\" que tiene el id \"{id}\", por favor cámbiale el id a \"{newAsset}\" por uno diferente",
         "invalid": "Asset inválido",
         "max_file_size": "{name}: El tamaño del archivo excede el límite de {max}mb",
         "missing_extension": "{name}: Extensión de archivo no encontrada",

@@ -82,7 +82,7 @@
       "description_edit": "向您添加更多项目Asset Pack",
       "errors": {
         "duplicated": "重复资产",
-        "duplicated_asset": "{name}: 资产 \"{asset}\" 已经包含一个名为 \"{model}\"",
+        "duplicated_asset": "{name}：此资产包中已经有一个名为\"{existingAsset}\"的资产，其ID为\"{id}\"，请将\"{newAsset}\"的ID更改为另一种",
         "invalid": "无效资产",
         "max_file_size": "{name}: 文件大小超过{max}mb的限制"
       },
