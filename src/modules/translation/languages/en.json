@@ -141,6 +141,17 @@
     "materials": "{count} {count, plural, one {material} other {materials}}",
     "textures": "{count} {count, plural, one {texture} other {textures}}"
   },
+  "claim_ens_page": {
+    "title": "Claim a Name",
+    "subtitle": "You can claim names and assign them to Profiles or Land, and they can also be used as a quick link to access the world.", 
+    "form" : {
+      "name_label": "Name",
+      "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
+      "radio_label": "MANA approved",
+      "claim_button": "Claim ",
+      "need_mana_message": "Authorize the {contract_link} contract to operate MANA on your behalf"
+    }
+  },
   "create_item_modal": {
     "title": "New Item",
     "add_representation": "Add {bodyShape} Repesentation",

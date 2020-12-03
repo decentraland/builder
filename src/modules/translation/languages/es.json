@@ -127,6 +127,17 @@
     "money": "Tirar Billetes",
     "kiss": "Tirar Besos"
   },
+  "claim_ens_page": {
+    "title": "Reclamar un nombre",
+    "subtitle": "Puede reclamar nombres y asignarlos a Perfiles o Tierras, y también se pueden usar como un enlace rápido para acceder al mundo.", 
+    "form" : {
+      "name_label": "Nombre",
+      "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+      "radio_label": "MANA aprobado",
+      "claim_button": "Reclama",
+      "need_mana_message": "Authoriza el contrato {contract_link} a operar MANA en tu nombre"
+    }
+  },
   "create_collection_modal": {
     "title": "Nueva Colección",
     "subtitle": "Ponle un nombre a tu nueva colleción",
