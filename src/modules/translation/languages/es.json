@@ -590,6 +590,12 @@
     "name_placeholder": "Tu nombre único",
     "names_different": "Los nombres no son iguales"
   },
+  "claim_name_fat_finger_modal": {
+    "title": "Por favor, confirme su nombre",
+    "description": "Haz elegido {name}. Por favor, vuelva a ingresar el nombre para asegurarnos que es correcto.",
+    "name_placeholder": "Tu nombre único",
+    "names_different": "Los nombres no son iguales"
+  },
   "migrate_page": {
     "step_one_title": "Migra tu cuenta",
     "step_one_message_line_one": "Con el objetivo de mejor la experiencia de nuestros productos, hemos cambiado el sistema de cuentas de usuario del Builder. Hemos dejado de usar emails y pasado a usar una billetera en su lugar. Esto significa que necesitaras conectar una billetera de Ethereum para almacenar tus escenas en la nube. Si no tienes una billetera y quieres aprender como conseguir una has {link}.",
