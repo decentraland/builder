@@ -280,11 +280,11 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 }
 
 function* handleClaimNameRequest(action: ClaimNameRequestAction) {
-  const { ens, name } = action.payload
+  const { name } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [from]: [Address, Eth] = yield getCurrentAddress()
     const txHash = ''
-    console.log('handleClaimName', ens, name, eth)
+    const ens = {} as ENS
     yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
   } catch (error) {
     const ensError: ENSError = { message: error.message }
