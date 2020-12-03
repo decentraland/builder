@@ -297,9 +297,15 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
 function* handleClaimNameRequest(action: ClaimNameRequestAction) {
   const { name } = action.payload
   try {
-    const [from]: [Address, Eth] = yield getCurrentAddress()
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const ens: ENS = {
+      address: from.toString(),
+      subdomain: `${name}.dcl.eth`,
+      resolver: '',
+      content: ''
+    }
     const txHash = ''
-    const ens = {} as ENS
+    console.log('handleClaimName', name, eth)
     yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
   } catch (error) {
     const ensError: ENSError = { message: error.message }
