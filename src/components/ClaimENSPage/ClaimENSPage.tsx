@@ -10,7 +10,7 @@ import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
 import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
-import { CONTROLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
+import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
 import { EtherscanLink } from 'decentraland-dapps/dist/containers'
@@ -37,7 +37,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
       const contractMANA = await this.getManaContract()
       if (contractMANA && address) {
         const allowance: string = await contractMANA.methods
-          .allowance(Address.fromString(address), Address.fromString(CONTROLER_ADDRESS))
+          .allowance(Address.fromString(address), Address.fromString(CONTROLLER_ADDRESS))
           .call()
         this.setState({ amountApproved: +allowance })
       }
@@ -58,14 +58,16 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: true })
     const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
     const receiptTx: ERC20TransactionReceipt = await contractMANA.methods
-      .approve(Address.fromString(CONTROLER_ADDRESS), manaToApprove)
+      .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
       .send({ from: Address.fromString(address) })
       .getReceipt()
     this.setState({ receiptTx })
   }
 
   handleClaim = () => {
-    console.log('claim', this.state.name)
+    const { onOpenModal } = this.props
+    const { name } = this.state
+    onOpenModal('ClaimNameFatFingerModal', { originalName: name })
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
@@ -123,7 +125,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       id="claim_ens_page.form.need_mana_message"
                       values={{
                         contract_link: (
-                          <EtherscanLink address={CONTROLER_ADDRESS} txHash="">
+                          <EtherscanLink address={CONTROLLER_ADDRESS} txHash="">
                             DCLController
                           </EtherscanLink>
                         )
