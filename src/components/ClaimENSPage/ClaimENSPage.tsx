@@ -124,7 +124,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       values={{
                         contract_link: (
                           <EtherscanLink address={CONTROLER_ADDRESS} txHash="">
-                            DCL CONTROLLER
+                            DCLController
                           </EtherscanLink>
                         )
                       }}
