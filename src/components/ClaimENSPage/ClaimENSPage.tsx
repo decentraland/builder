@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Address } from 'web3x-es/address'
 import { Eth } from 'web3x-es/eth'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
@@ -13,6 +13,7 @@ import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
+import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -117,7 +118,18 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 <Section className="field">
                   <Header sub={true}>MANA Approved</Header>
                   <Radio toggle disabled={isLoading} checked={this.isManaApproved()} onChange={this.handleManaApprove} />
-                  <p className="message">{t('claim_ens_page.form.need_mana_message')}</p>
+                  <p className="message">
+                    <T
+                      id="claim_ens_page.form.need_mana_message"
+                      values={{
+                        contract_link: (
+                          <EtherscanLink address={CONTROLER_ADDRESS} txHash="">
+                            DCL CONTROLLER
+                          </EtherscanLink>
+                        )
+                      }}
+                    />
+                  </p>
                 </Section>
                 <Row className="actions">
                   <Button className="cancel" onClick={onBack}>

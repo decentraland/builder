@@ -135,7 +135,7 @@
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
       "radio_label": "MANA aprobado",
       "claim_button": "Reclama",
-      "need_mana_message": "La aprobación de MANA se necesita para reclamar tu nombre desde nuestro Smart Contract."
+      "need_mana_message": "Authoriza el contrato {contract_link} a operar MANA en tu nombre"
     }
   },
   "create_collection_modal": {

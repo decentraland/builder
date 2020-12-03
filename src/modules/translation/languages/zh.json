@@ -132,7 +132,7 @@
       "name_message": "名称不能包含非字母数字字符或空格。",
       "radio_label": "MANA批准",
       "claim_button": "要求 ",
-      "need_mana_message": "需要MANA批准才能从我们的智能合约中声明您的名字"
+      "feed_mana_message": "授权{contract_link}合同代表您操作MANA"
     }
   },
   "create_collection_modal": {
