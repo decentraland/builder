@@ -4,6 +4,9 @@ import { claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
   address?: string
+  metadata: {
+    originalName: string
+  }
   onClaim: typeof claimNameRequest
 }
 

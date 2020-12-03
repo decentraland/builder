@@ -6,7 +6,7 @@ import { Props, State } from './ClaimNameFatFingerModal.types'
 import './ClaimNameFatFingerModal.css'
 
 export default class ClaimNameFatFingerModal extends React.PureComponent<Props, State> {
-  state = {
+  state: State = {
     currentName: ''
   }
 
