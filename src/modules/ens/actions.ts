@@ -84,7 +84,7 @@ export const CLAIM_NAME_REQUEST = '[Request] Claim Name'
 export const CLAIM_NAME_SUCCESS = '[Success] Claim Name'
 export const CLAIM_NAME_FAILURE = '[Failure] Claim Name'
 
-export const claimNameRequest = (ens: ENS, name: string) => action(CLAIM_NAME_REQUEST, { ens, name })
+export const claimNameRequest = (name: string) => action(CLAIM_NAME_REQUEST, { name })
 export const claimNameSuccess = (ens: ENS, name: string, address: string, txHash: string) =>
   action(CLAIM_NAME_SUCCESS, {
     ...buildTransactionPayload(txHash, { ens, name, address }),
