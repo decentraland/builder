@@ -5,7 +5,16 @@ import { ModelMetrics } from 'modules/scene/types'
 
 export const ASSET_MANIFEST = 'asset.json'
 
-export const CODE_SEPARATOR = 'global.dclamd=loader;'
+/* 
+  This RegEx searches for the beginning of the smart item's bundle, it's a comment that contains '! "src/game.ts" <commit-hash>'
+  We split the code and take everything that comes AFTER this comment
+*/
+export const CODE_SEPARATOR = /\/\*! \"src\/game\.ts\" [a-f0-9]+ \*\//
+
+/* 
+  This separator searches for the end of the smart item's bundle, before the source maps start.
+  We split the code and take everything that comes BEFORE this comment
+*/
 export const SOURCE_MAPS_SEPARATOR = '//# sourceMappingURL'
 
 export function createDefaultImportedFile(id: string, assetPackId: string, file: File): ImportedFile {
@@ -48,7 +57,7 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
     let text = await new Response(blob).text()
 
     // remove ecs and amd loader
-    if (text.includes(CODE_SEPARATOR)) {
+    if (CODE_SEPARATOR.test(text)) {
       text = text.split(CODE_SEPARATOR).pop()!
     }
 

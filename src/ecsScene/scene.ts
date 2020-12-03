@@ -92,7 +92,8 @@ function getScriptInstance(assetId: string) {
           scriptInstances.set(assetId, instance)
           return instance
         })
-        .catch(() => {
+        .catch(error => {
+          console.error(error.message)
           // if something fails, return a dummy script
           console.warn(`Failed to load script for asset id ${assetId}`)
           return {
