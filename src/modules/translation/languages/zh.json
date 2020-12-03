@@ -129,6 +129,17 @@
     "money": "扔钱",
     "kiss": "吻"
   },
+  "claim_ens_page": {
+    "title": "索取名字",
+    "subtitle": "您可以声明名称并将其分配给“个人档案”或“地域”，也可以用作访问世界的快速链接。", 
+    "form" : {
+      "name_label": "名称",
+      "name_message": "名称不能包含非字母数字字符或空格。",
+      "radio_label": "MANA批准",
+      "claim_button": "要求 ",
+      "feed_mana_message": "授权{contract_link}合同代表您操作MANA"
+    }
+  },
   "create_collection_modal": {
     "title": "新系列",
     "subtitle": "为您的新收藏取个名字",
