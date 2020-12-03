@@ -114,13 +114,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                     onAction={undefined}
                   />
                 </Section>
-                <Section>
-                  <Radio
-                    toggle
-                    checked={this.isManaApproved()}
-                    onChange={this.handleManaApprove}
-                    label={t('claim_ens_page.form.radio_label')}
-                  />
+                <Section className="field">
+                  <Header sub={true}>MANA Approved</Header>
+                  <Radio toggle disabled={isLoading} checked={this.isManaApproved()} onChange={this.handleManaApprove} />
+                  <p className="message">{t('claim_ens_page.form.need_mana_message')}</p>
                 </Section>
                 <Row className="actions">
                   <Button className="cancel" onClick={onBack}>

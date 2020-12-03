@@ -148,9 +148,9 @@
       "name_label": "Name",
       "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
       "radio_label": "MANA approved",
-      "claim_button": "Claim "
+      "claim_button": "Claim ",
+      "need_mana_message": "MANA approvement is needed to claim your name from our Smart Contract"
     }
-
   },
   "create_item_modal": {
     "title": "New Item",
