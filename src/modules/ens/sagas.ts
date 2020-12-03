@@ -1,5 +1,6 @@
 import { Eth, SendTx } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
+import { TransactionReceipt } from 'web3x-es/formatters'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
@@ -14,6 +15,7 @@ import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS } from 'modules/common/contracts'
+import { DCLController } from 'contracts/DCLController'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
@@ -50,8 +52,6 @@ import {
   claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { DCLController } from 'contracts/DCLController'
-import { TransactionReceipt } from 'web3x-es/formatters'
 import { GAS_PRICE } from './utils'
 
 export function* ensSaga() {
