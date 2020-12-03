@@ -28,6 +28,10 @@
     "ERC20": {
       "source": "files",
       "abiFile": "./src/contracts/ERC20.json"
+    },
+    "DCLController": {
+      "source": "files",
+      "abiFile": "./src/contracts/DCLController.json"
     }
   }
 }

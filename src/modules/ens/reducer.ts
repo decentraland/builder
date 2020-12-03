@@ -30,7 +30,13 @@ import {
   SET_ALIAS_REQUEST,
   SetAliasSuccessAction,
   SetAliasFailureAction,
-  SetAliasRequestAction
+  SetAliasRequestAction,
+  CLAIM_NAME_REQUEST,
+  ClaimNameRequestAction,
+  ClaimNameFailureAction,
+  ClaimNameSuccessAction,
+  CLAIM_NAME_FAILURE,
+  CLAIM_NAME_SUCCESS
 } from './actions'
 import { ENS, ENSError } from './types'
 
@@ -63,9 +69,13 @@ export type ENSReducerAction =
   | SetAliasSuccessAction
   | SetAliasFailureAction
   | SetAliasRequestAction
+  | ClaimNameRequestAction
+  | ClaimNameFailureAction
+  | ClaimNameSuccessAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
+    case CLAIM_NAME_REQUEST:
     case SET_ALIAS_REQUEST:
     case SET_ALIAS_SUCCESS:
     case FETCH_ENS_LIST_REQUEST:
@@ -108,7 +118,21 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         }
       }
     }
+    case CLAIM_NAME_SUCCESS: {
+      const { ens } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: {
+          ...state.data,
+          [ens.subdomain]: {
+            ...ens
+          }
+        }
+      }
+    }
     case SET_ALIAS_FAILURE:
+    case CLAIM_NAME_FAILURE:
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
