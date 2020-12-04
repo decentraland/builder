@@ -3,6 +3,7 @@ import { Address } from 'web3x-es/address'
 import { Eth } from 'web3x-es/eth'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
@@ -13,7 +14,6 @@ import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 import './ClaimENSPage.css'
-import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -84,9 +84,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onBack } = this.props
+    const { onBack, address } = this.props
     const { name, isLoading } = this.state
     const isValid = isNameValid(name)
+    console.log({ address })
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>

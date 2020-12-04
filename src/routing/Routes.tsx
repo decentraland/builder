@@ -33,12 +33,12 @@ import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
 import ItemEditorPage from 'components/ItemEditorPage'
 import ENSListPage from 'components/ENSListPage'
+import ClaimENSPage from 'components/ClaimENSPage'
 
 import { Props, State } from './Routes.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
-import ClaimENSPage from 'components/ClaimENSPage/ClaimENSPage'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
