@@ -5,7 +5,7 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
 
 export type Props = {
-  address: string
+  address?: string
   onOpenModal: typeof openModal
   onClaim: typeof claimNameRequest
   onNavigate: (path: string) => void
