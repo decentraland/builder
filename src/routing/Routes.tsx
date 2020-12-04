@@ -38,6 +38,7 @@ import { Props, State } from './Routes.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Footer from 'components/Footer'
 import Navbar from 'components/Navbar'
+import ClaimENSPage from 'components/ClaimENSPage/ClaimENSPage'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -113,6 +114,7 @@ export default class Routes extends React.Component<Props, State> {
             {env.get('REACT_APP_FF_ENS')
               ? [
                   <Route exact path={locations.ens()} component={ENSListPage} />,
+                  <Route exact path={locations.claimENS()} component={ClaimENSPage} />,
                   <Route exact path={locations.landSelectENS()} component={LandSelectENSPage} />,
                   <Route exact path={locations.landAssignENS()} component={LandAssignENSPage} />,
                   <Route exact path={locations.ensSelectLand()} component={ENSSelectLandPage} />
