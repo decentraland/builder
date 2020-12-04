@@ -10,12 +10,33 @@ import { DeploymentStatus } from 'modules/deployment/types'
 import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SceneStats from 'components/SceneStats'
+import { RoleType } from 'modules/land/types'
+
+const FILL_COLOR = {
+  [RoleType.OWNER]: '#ff8199',
+  [RoleType.OPERATOR]: '#6ddff7'
+}
+
+const STROKE_COLOR = {
+  [RoleType.OWNER]: '#fcc6d1',
+  [RoleType.OPERATOR]: '#d7f6fc'
+}
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
-  highlightLayer: Layer = (x, y) => {
-    const { deployment } = this.props
+  highlightStrokeLayer: Layer = (x, y) => {
+    const { deployment, landTiles } = this.props
     const id = coordsToId(x, y)
-    return deployment.parcels.some(parcel => parcel === id) ? { color: '#ffffff', scale: 1.1 } : null
+    const tile = landTiles[id]
+    if (!tile) return null
+    return deployment.parcels.some(parcel => parcel === id) ? { color: STROKE_COLOR[tile.land.role], scale: 1.4 } : null
+  }
+
+  highlightFillLayer: Layer = (x, y) => {
+    const { deployment, landTiles } = this.props
+    const id = coordsToId(x, y)
+    const tile = landTiles[id]
+    if (!tile) return null
+    return deployment.parcels.some(parcel => parcel === id) ? { color: FILL_COLOR[tile.land.role], scale: 1.2 } : null
   }
 
   render() {
@@ -32,7 +53,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     return (
       <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
         <div className="atlas-wrapper">
-          <Atlas x={x} y={y} isDraggable={false} zoom={0.75} layers={[this.highlightLayer]} />
+          <Atlas x={x} y={y} isDraggable={false} zoom={0.75} layers={[this.highlightStrokeLayer, this.highlightFillLayer]} />
         </div>
         <div className="stat">
           <div className="title">
