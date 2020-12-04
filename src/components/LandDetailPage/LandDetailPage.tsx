@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { env } from 'decentraland-commons'
 import { LandType, Land, RoleType } from 'modules/land/types'
 import { Deployment } from 'modules/deployment/types'
-import { getSelection, getCenter, coordsToId } from 'modules/land/utils'
+import { getSelection, getCenter, coordsToId, HighlightStrokeColor, HighlightFillColor } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
@@ -14,16 +14,6 @@ import ENSChip from './ENSChip'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
 import './LandDetailPage.css'
-
-const FILL_COLOR = {
-  [RoleType.OWNER]: '#ff8199',
-  [RoleType.OPERATOR]: '#6ddff7'
-}
-
-const STROKE_COLOR = {
-  [RoleType.OWNER]: '#fcc6d1',
-  [RoleType.OPERATOR]: '#d7f6fc'
-}
 
 export default class LandDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -76,11 +66,11 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
   }
 
   getHoverStrokeLayer = (land: Land): Layer => (x, y) => {
-    return this.isHovered(x, y) ? { color: STROKE_COLOR[land.role], scale: 1.4 } : null
+    return this.isHovered(x, y) ? { color: HighlightStrokeColor[land.role], scale: 1.4 } : null
   }
 
   getHoverFillLayer = (land: Land): Layer => (x, y) => {
-    return this.isHovered(x, y) ? { color: FILL_COLOR[land.role], scale: 1.2 } : null
+    return this.isHovered(x, y) ? { color: HighlightFillColor[land.role], scale: 1.2 } : null
   }
 
   computeOccupiedLand(land: Land, deployments: Deployment[]) {

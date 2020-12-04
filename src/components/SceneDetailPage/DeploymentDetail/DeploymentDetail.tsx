@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
 import { Atlas } from 'components/Atlas'
-import { idToCoords, coordsToId } from 'modules/land/utils'
+import { idToCoords, coordsToId, HighlightStrokeColor, HighlightFillColor } from 'modules/land/utils'
 import { Layer, Dropdown, Button, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { getStatus } from 'modules/deployment/utils'
@@ -12,23 +12,13 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SceneStats from 'components/SceneStats'
 import { RoleType } from 'modules/land/types'
 
-const FILL_COLOR = {
-  [RoleType.OWNER]: '#ff8199',
-  [RoleType.OPERATOR]: '#6ddff7'
-}
-
-const STROKE_COLOR = {
-  [RoleType.OWNER]: '#fcc6d1',
-  [RoleType.OPERATOR]: '#d7f6fc'
-}
-
 export default class DeploymentDetail extends React.PureComponent<Props> {
-  getHighlightLayer = (color: Record<RoleType, string>): Layer => (x, y) => {
+  getHighlightLayer = (color: Record<RoleType, string>, scale: number): Layer => (x, y) => {
     const { deployment, landTiles } = this.props
     const id = coordsToId(x, y)
     const tile = landTiles[id]
     if (!tile) return null
-    return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale: 1.2 } : null
+    return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale } : null
   }
 
   render() {
@@ -50,7 +40,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
             y={y}
             isDraggable={false}
             zoom={0.75}
-            layers={[this.getHighlightLayer(STROKE_COLOR), this.getHighlightLayer(FILL_COLOR)]}
+            layers={[this.getHighlightLayer(HighlightStrokeColor, 1.4), this.getHighlightLayer(HighlightFillColor, 1.2)]}
           />
         </div>
         <div className="stat">

@@ -34,7 +34,17 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
 
 export const RoleColor: Record<RoleType, string> = {
   [RoleType.OWNER]: Color.SUMMER_RED,
-  [RoleType.OPERATOR]: '#1FBCFF'
+  [RoleType.OPERATOR]: '#1fbcff'
+}
+
+export const HighlightFillColor = {
+  [RoleType.OWNER]: '#ff8199',
+  [RoleType.OPERATOR]: '#6ddff7'
+}
+
+export const HighlightStrokeColor = {
+  [RoleType.OWNER]: '#fcc6d1',
+  [RoleType.OPERATOR]: '#d7f6fc'
 }
 
 export const getSelection = (land: Land) =>
