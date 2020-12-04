@@ -216,7 +216,7 @@
       "confirmation": {
         "action": "Publish",
         "description": "You are publishing the following Scene to your LANDs:",
-        "location_label": "Published at {coords}",
+        "location_label": "Published at",
         "size_label": "Size",
         "title_label": "Title"
       },

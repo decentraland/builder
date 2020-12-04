@@ -210,7 +210,7 @@
       "confirmation": {
         "action": "发布",
         "description": "您将发布以下场景到土地:",
-        "location_label": "发布到{coords}",
+        "location_label": "发布到",
         "size_label": "大小",
         "title_label": "标题"
       },
