@@ -84,10 +84,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onBack, address } = this.props
+    const { onBack } = this.props
     const { name, isLoading } = this.state
     const isValid = isNameValid(name)
-    console.log({ address })
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
