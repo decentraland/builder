@@ -1,7 +1,6 @@
 Smart Items
 ===
 
-Table Of Contents:
 - [Definition](#definition)
   - [Manifest](#manifest)
     - [Model](#model)
