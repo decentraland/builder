@@ -7,7 +7,7 @@ import { getData as getDeployments } from 'modules/deployment/selectors'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { getTiles } from 'modules/tile/selectors'
 import { FETCH_LANDS_REQUEST } from './actions'
-import { coordsToId, RoleColor, hasNeighbour } from './utils'
+import { coordsToId, colorByRole, hasNeighbour } from './utils'
 import { Land, LandType, LandTile } from './types'
 import { Deployment } from 'modules/deployment/types'
 
@@ -49,7 +49,7 @@ export const getLandTiles = createSelector<
     if (land.type === LandType.PARCEL) {
       const id = coordsToId(land.x!, land.y!)
       result[id] = {
-        color: RoleColor[land.role],
+        color: colorByRole[land.role],
         land
       }
     } else {
@@ -60,7 +60,7 @@ export const getLandTiles = createSelector<
           const tile = tiles[coord]
           if (tile) {
             result[coord] = {
-              color: RoleColor[land.role],
+              color: colorByRole[land.role],
               top: !!tile.top,
               left: !!tile.left,
               topLeft: !!tile.topLeft,

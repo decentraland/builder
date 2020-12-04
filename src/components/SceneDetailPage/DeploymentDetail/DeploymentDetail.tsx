@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
 import { Atlas } from 'components/Atlas'
-import { idToCoords, coordsToId, HighlightStrokeColor, HighlightFillColor } from 'modules/land/utils'
+import { idToCoords, coordsToId, strokeByRole, fillByRole } from 'modules/land/utils'
 import { Layer, Dropdown, Button, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { getStatus } from 'modules/deployment/utils'
@@ -40,7 +40,7 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
             y={y}
             isDraggable={false}
             zoom={0.75}
-            layers={[this.getHighlightLayer(HighlightStrokeColor, 1.4), this.getHighlightLayer(HighlightFillColor, 1.2)]}
+            layers={[this.getHighlightLayer(strokeByRole, 1.4), this.getHighlightLayer(fillByRole, 1.2)]}
           />
         </div>
         <div className="stat">
