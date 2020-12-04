@@ -23,20 +23,12 @@ const STROKE_COLOR = {
 }
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
-  highlightStrokeLayer: Layer = (x, y) => {
+  getHighlightLayer = (color: Record<RoleType, string>): Layer => (x, y) => {
     const { deployment, landTiles } = this.props
     const id = coordsToId(x, y)
     const tile = landTiles[id]
     if (!tile) return null
-    return deployment.parcels.some(parcel => parcel === id) ? { color: STROKE_COLOR[tile.land.role], scale: 1.4 } : null
-  }
-
-  highlightFillLayer: Layer = (x, y) => {
-    const { deployment, landTiles } = this.props
-    const id = coordsToId(x, y)
-    const tile = landTiles[id]
-    if (!tile) return null
-    return deployment.parcels.some(parcel => parcel === id) ? { color: FILL_COLOR[tile.land.role], scale: 1.2 } : null
+    return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale: 1.2 } : null
   }
 
   render() {
@@ -53,7 +45,13 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     return (
       <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
         <div className="atlas-wrapper">
-          <Atlas x={x} y={y} isDraggable={false} zoom={0.75} layers={[this.highlightStrokeLayer, this.highlightFillLayer]} />
+          <Atlas
+            x={x}
+            y={y}
+            isDraggable={false}
+            zoom={0.75}
+            layers={[this.getHighlightLayer(STROKE_COLOR), this.getHighlightLayer(FILL_COLOR)]}
+          />
         </div>
         <div className="stat">
           <div className="title">
