@@ -29,7 +29,6 @@ export enum EXPORT_PATH {
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
   MODELS_FOLDER = 'models',
-  NFT_BASIC_FRAME_FILE = 'models/frames/basic.glb',
   BUNDLED_GAME_FILE = 'bin/game.js'
 }
 
@@ -53,7 +52,7 @@ export async function createFiles(args: {
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
   const { project, scene, point, rotation, thumbnail, author, isDeploy, isEmpty, onProgress } = args
-  const models = await downloadFiles({ scene, onProgress, isDeploy })
+  const files = await downloadFiles({ scene, onProgress, isDeploy })
   const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
 
   return {
@@ -63,7 +62,7 @@ export async function createFiles(args: {
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
     ...createDynamicFiles({ project, scene, point, rotation, thumbnail, author, isEmpty }),
     ...createStaticFiles(),
-    ...models
+    ...files
   }
 }
 
@@ -329,7 +328,6 @@ export async function downloadFiles(args: {
   const mappings: Record<string, string> = {}
 
   let files: Record<string, Blob> = {}
-  const shouldDownloadFrame = Object.values(scene.components).some(component => component.type === ComponentType.NFTShape)
 
   // Track progress
   let progress = 0
@@ -368,18 +366,6 @@ export async function downloadFiles(args: {
     files[file.path] = file.blob
     return files
   }, {})
-
-  if (shouldDownloadFrame) {
-    total++
-    const resp = await fetch('/' + EXPORT_PATH.NFT_BASIC_FRAME_FILE)
-    const blob = await resp.blob()
-    progress++
-    onProgress({ loaded: progress, total })
-    files = {
-      ...files,
-      [EXPORT_PATH.NFT_BASIC_FRAME_FILE]: blob
-    }
-  }
 
   // namespace paths in source files
   const sourceFiles = Object.keys(files).filter(path => path.endsWith('.ts'))
