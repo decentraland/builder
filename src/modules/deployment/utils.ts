@@ -1,15 +1,17 @@
 import path from 'path'
 import uuid from 'uuid'
+import { DeploymentContent } from 'dcl-catalyst-commons'
 const CID = require('cids')
 const MemoryDatastore = require('interface-datastore').MemoryDatastore
 const pull = require('pull-stream')
 const Importer = require('ipfs-unixfs-engine').Importer
 const toBuffer = require('blob-to-buffer')
 import { Asset } from 'modules/asset/types'
-import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, DeploymentStatus } from './types'
+import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, DeploymentStatus, SceneDefinition } from './types'
 import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
+import { PEER_URL } from 'lib/api/peer'
 
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
 
@@ -201,4 +203,20 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
   }
 
   return [project, scene]
+}
+
+export function getThumbnail(definition?: SceneDefinition | null, content?: DeploymentContent[]): string | null {
+  if (!definition || !definition.display || !definition.display.navmapThumbnail) {
+    return null
+  }
+  let thumbnail = definition.display.navmapThumbnail
+  const isUrl = /(\w|\d)+:\/\/.*/i
+  if (!isUrl.test(thumbnail) && content) {
+    const file = content.find(file => file.key === thumbnail)
+    if (file) {
+      thumbnail = `${PEER_URL}/content/contents/${file.hash}`
+    }
+  }
+
+  return thumbnail
 }
