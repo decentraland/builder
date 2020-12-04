@@ -29,7 +29,8 @@ export enum EXPORT_PATH {
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
   MODELS_FOLDER = 'models',
-  BUNDLED_GAME_FILE = 'bin/game.js'
+  BUNDLED_GAME_FILE = 'bin/game.js',
+  THUMBNAIL_FILE = 'scene-thumbnail.png'
 }
 
 export type Mapping = {
@@ -60,7 +61,8 @@ export async function createFiles(args: {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
-    ...createDynamicFiles({ project, scene, point, rotation, thumbnail, author, isEmpty }),
+    [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail),
+    ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty }),
     ...createStaticFiles(),
     ...files
   }
@@ -515,6 +517,19 @@ export function isScript(componentId: string, scene: Scene) {
 
 export function hasScripts(scene: Scene) {
   return Object.values(scene.components).some(component => component.type === ComponentType.Script)
+}
+
+async function createThumbnailBlob(thumbnail: string | null) {
+  if (thumbnail) {
+    try {
+      const resp = await fetch(thumbnail)
+      const blob = await resp.blob()
+      return blob
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+  return new Blob([])
 }
 
 /* Temporary fix until we migrate the Builder to use CID v1 */
