@@ -2,7 +2,24 @@ Smart Items
 ===
 
 Table Of Contents:
-1. Definition
+- [Definition](#definition)
+  - [Manifest](#manifest)
+    - [Model](#model)
+    - [Parameters](#parameters)
+    - [Actions](#actions)
+  - Script
+    - init
+    - spawn
+    - channel
+      - Send Actions
+      - Handle Actions
+      - Sync State
+    - inventory
+- Execution
+  - How to distribute
+  - How to load
+  - How to run
+- Development & Debugging 
 
 # Definition
 
