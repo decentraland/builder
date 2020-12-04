@@ -205,13 +205,21 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
   return [project, scene]
 }
 
+function isUrl(maybeUrl: string) {
+  try {
+    new URL(maybeUrl)
+  } catch (error) {
+    return false
+  }
+  return true
+}
+
 export function getThumbnail(definition?: SceneDefinition | null, content?: DeploymentContent[]): string | null {
   if (!definition || !definition.display || !definition.display.navmapThumbnail) {
     return null
   }
   let thumbnail = definition.display.navmapThumbnail
-  const isUrl = /(\w|\d)+:\/\/.*/i
-  if (!isUrl.test(thumbnail) && content) {
+  if (!isUrl(thumbnail) && content) {
     const file = content.find(file => file.key === thumbnail)
     if (file) {
       thumbnail = `${PEER_URL}/content/contents/${file.hash}`
