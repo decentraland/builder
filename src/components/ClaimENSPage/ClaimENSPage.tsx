@@ -5,7 +5,6 @@ import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, B
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
-import { EtherscanLink } from 'decentraland-dapps/dist/containers'
 import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'

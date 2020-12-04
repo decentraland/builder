@@ -8,7 +8,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './ClaimENSPage.typ
 import ClaimENSPage from './ClaimENSPage'
 
 const mapState = (state: RootState): MapStateProps => ({
-  address: getAddress(state)
+  address: getAddress(state) || ''
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({

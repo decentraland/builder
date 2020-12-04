@@ -3,9 +3,12 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { Center, Page, Responsive } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 import EditorPage from 'components/EditorPage'
 import ErrorPage from 'components/ErrorPage'
 import HomePage from 'components/HomePage'
@@ -36,10 +39,6 @@ import ENSListPage from 'components/ENSListPage'
 import ClaimENSPage from 'components/ClaimENSPage'
 
 import { Props, State } from './Routes.types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import Footer from 'components/Footer'
-import Navbar from 'components/Navbar'
-import ClaimENSPage from 'components/ClaimENSPage/ClaimENSPage'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
