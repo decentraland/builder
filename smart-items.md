@@ -128,7 +128,7 @@ The value of this parameter will be an array of objects (aka `AssetActionValue[]
 - `actionId`: The `id` of the action from that smart item that we want to trigger.
 - `values`: An object that contains the values for the parameters of that action. Since any of those parameters could be of type `actions` this is a recursive definition.
 
-These would be the TypeScript typing for that object:
+These would be the TypeScript typings for that object:
 
 ```ts
 type AssetActionValue = {
