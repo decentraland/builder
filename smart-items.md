@@ -26,7 +26,7 @@ Smart Items are Builder items that can be configured by the user. They may expos
 
 ![example-smart-item](https://user-images.githubusercontent.com/2781777/101214934-a00c0c00-365b-11eb-8a89-c3a2c097729d.gif)
 
-Each smart items contains a manifest (aka `asset.json`) that defines its static characteristics (it's useful to generate UIs to configure it), and a script (aka `item.ts`) that executes its behavior on runtime.
+Each smart items contains a manifest (aka `asset.json`) that defines its configuration parameters (it's useful to generate UIs), and a script (aka `item.ts`) that executes its behavior on runtime.
 
 ## Manifest
 
@@ -36,7 +36,7 @@ Each smart item contains an `asset.json` manifest where it defines its static pr
 - `name`: the name of the smart item
 - `model`: this is a path to the GLFT or GLB that will be used as a placeholder, when the user is in editor mode
 - `parameters`: A list of parameters that will later generate a UI in the builder
-- `actions`: A list of action that can be connected by other smart items
+- `actions`: A list of actions that can be connected by other smart items
 
 ### Model
 
@@ -118,11 +118,37 @@ There are 9 types of parameters, and some of them can have some extra properties
 
 8) `entity`: It will render an entity selector, which is a dropdown with all the entities in the scene with a search filter. The value of this parameter will be a `string` that will consist on the `entity.name` selected by the user.
 
-9) `actions`: This is one of the most important parameters, because it what allows smart items to interact with each other. It will render an action selector, which consists on two dropdowns: The first one will list all the smart items in the scene, and once one is selected, the second dropdown will list all the actions exposed by that smart item. Finally once the action is selected, if the action has `parameters` as well, a UI will be rendered for the user to configure those parameters, that will follow the same rules as the `asset.json` parameters described in this section.
+9) `actions`: This is one of the most important parameters, because it's what allows smart items to interact with each other. It will render an action selector, which consists on two dropdowns: The first one will list all the smart items in the scene, and once one is selected, the second dropdown will list all the actions exposed by that smart item. Finally once the action is selected, if the action has `parameters` as well, a UI will be rendered for the user to configure those parameters, that will follow the same rules as the `asset.json` parameters described in this section.
 
-The `default` value of a parameter of this type can be the `id` of an action from this asset (how to define actions is explained in the next section).
+The `default` value of a parameter of type `actions` can be the `id` of an action from the asset itself (how to define actions is explained in the next section). For example if we have a `Door` smart item, with two actions (`open` and `close`) and a parameter `onClick` of type `actions` we can set its `default` value to be `open`, so by default the door will open when clicked, but it can be changed by removing the action using the UI, like this:
 
-The value of this parameter will be an array of objects (aka `AssetActionValue[]), each object containing the following:
+```
+// asset.json for Door
+{
+  ...
+  "paramters": [
+    {
+      "id": "onClick",
+      "label": "When Clicked",
+      "type": "actions",
+      "default": "open"
+  ],
+  "actions": [
+    {
+      "id": "open",
+      "label": "Open",
+      "parameters": []
+    },
+    {
+      "id": "close",
+      "label": "Close",
+      "parameters": []
+    }
+  ]
+}
+```
+
+The value of this parameter will be an array of objects (aka `AssetActionValue[]`), each object containing the following:
 
 - `entityName`: The `entity.name` of the smart item to which we want to trigger an action from.
 - `actionId`: The `id` of the action from that smart item that we want to trigger.
