@@ -29,8 +29,8 @@ export enum EXPORT_PATH {
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
   MODELS_FOLDER = 'models',
-  NFT_BASIC_FRAME_FILE = 'models/frames/basic.glb',
-  BUNDLED_GAME_FILE = 'bin/game.js'
+  BUNDLED_GAME_FILE = 'bin/game.js',
+  THUMBNAIL_FILE = 'scene-thumbnail.png'
 }
 
 export type Mapping = {
@@ -53,7 +53,7 @@ export async function createFiles(args: {
   onProgress: (args: { loaded: number; total: number }) => void
 }) {
   const { project, scene, point, rotation, thumbnail, author, isDeploy, isEmpty, onProgress } = args
-  const models = await downloadFiles({ scene, onProgress, isDeploy })
+  const files = await downloadFiles({ scene, onProgress, isDeploy })
   const gameFile = await createGameFile({ project, scene, rotation }, isDeploy)
 
   return {
@@ -61,9 +61,10 @@ export async function createFiles(args: {
     [EXPORT_PATH.MANIFEST_FILE]: JSON.stringify(createManifest(project, scene)),
     [EXPORT_PATH.GAME_FILE]: gameFile,
     [EXPORT_PATH.BUNDLED_GAME_FILE]: hasScripts(scene) ? createGameFileBundle(gameFile) : gameFile,
-    ...createDynamicFiles({ project, scene, point, rotation, thumbnail, author, isEmpty }),
+    [EXPORT_PATH.THUMBNAIL_FILE]: await createThumbnailBlob(thumbnail),
+    ...createDynamicFiles({ project, scene, point, rotation, thumbnail: EXPORT_PATH.THUMBNAIL_FILE, author, isEmpty }),
     ...createStaticFiles(),
-    ...models
+    ...files
   }
 }
 
@@ -329,7 +330,6 @@ export async function downloadFiles(args: {
   const mappings: Record<string, string> = {}
 
   let files: Record<string, Blob> = {}
-  const shouldDownloadFrame = Object.values(scene.components).some(component => component.type === ComponentType.NFTShape)
 
   // Track progress
   let progress = 0
@@ -368,18 +368,6 @@ export async function downloadFiles(args: {
     files[file.path] = file.blob
     return files
   }, {})
-
-  if (shouldDownloadFrame) {
-    total++
-    const resp = await fetch('/' + EXPORT_PATH.NFT_BASIC_FRAME_FILE)
-    const blob = await resp.blob()
-    progress++
-    onProgress({ loaded: progress, total })
-    files = {
-      ...files,
-      [EXPORT_PATH.NFT_BASIC_FRAME_FILE]: blob
-    }
-  }
 
   // namespace paths in source files
   const sourceFiles = Object.keys(files).filter(path => path.endsWith('.ts'))
@@ -529,6 +517,19 @@ export function isScript(componentId: string, scene: Scene) {
 
 export function hasScripts(scene: Scene) {
   return Object.values(scene.components).some(component => component.type === ComponentType.Script)
+}
+
+async function createThumbnailBlob(thumbnail: string | null) {
+  if (thumbnail) {
+    try {
+      const resp = await fetch(thumbnail)
+      const blob = await resp.blob()
+      return blob
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+  return new Blob([])
 }
 
 /* Temporary fix until we migrate the Builder to use CID v1 */

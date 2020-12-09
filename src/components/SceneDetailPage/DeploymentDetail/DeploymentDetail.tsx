@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Props } from './DeploymentDetail.types'
 import './DeploymentDetail.css'
 import { Atlas } from 'components/Atlas'
-import { idToCoords, coordsToId } from 'modules/land/utils'
+import { idToCoords, coordsToId, strokeByRole, fillByRole } from 'modules/land/utils'
 import { Layer, Dropdown, Button, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { getStatus } from 'modules/deployment/utils'
@@ -10,12 +10,15 @@ import { DeploymentStatus } from 'modules/deployment/types'
 import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SceneStats from 'components/SceneStats'
+import { RoleType } from 'modules/land/types'
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
-  highlightLayer: Layer = (x, y) => {
-    const { deployment } = this.props
+  getHighlightLayer = (color: Record<RoleType, string>, scale: number): Layer => (x, y) => {
+    const { deployment, landTiles } = this.props
     const id = coordsToId(x, y)
-    return deployment.parcels.some(parcel => parcel === id) ? { color: '#ffffff', scale: 1.1 } : null
+    const tile = landTiles[id]
+    if (!tile) return null
+    return deployment.parcels.some(parcel => parcel === id) ? { color: color[tile.land.role], scale } : null
   }
 
   render() {
@@ -32,7 +35,13 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
     return (
       <div className={`DeploymentDetail ${landId ? 'clickable' : ''}`} onClick={() => landId && onNavigate(locations.landDetail(landId))}>
         <div className="atlas-wrapper">
-          <Atlas x={x} y={y} isDraggable={false} zoom={0.75} layers={[this.highlightLayer]} />
+          <Atlas
+            x={x}
+            y={y}
+            isDraggable={false}
+            zoom={0.75}
+            layers={[this.getHighlightLayer(strokeByRole, 1.4), this.getHighlightLayer(fillByRole, 1.2)]}
+          />
         </div>
         <div className="stat">
           <div className="title">

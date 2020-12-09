@@ -43,7 +43,7 @@ import { buildDeployData, deploy, ContentFile, makeContentFiles, EntityType } fr
 import { getIdentity } from 'modules/identity/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getName } from 'modules/profile/selectors'
-import { getEmptyDeployment, UNPUBLISHED_PROJECT_ID } from './utils'
+import { getEmptyDeployment, getThumbnail, UNPUBLISHED_PROJECT_ID } from './utils'
 import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actions'
 import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
@@ -269,12 +269,13 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
       const id = entity.pointers[0]
       if (id) {
         const [x, y] = idToCoords(id)
+        const content = entity.content
         const definition = entity.metadata as SceneDefinition
         let name = 'Untitled Scene'
         if (definition && definition.display && definition.display.title && definition.display.title !== 'interactive-text') {
           name = definition.display.title
         }
-        const thumbnail: string | null = (definition && definition.display && definition.display.navmapThumbnail) || null
+        const thumbnail: string | null = getThumbnail(definition, content)
         const placement: Placement = {
           point: { x, y },
           rotation: (definition && definition.source && definition.source.rotation) || 'north'

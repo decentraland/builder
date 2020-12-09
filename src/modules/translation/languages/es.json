@@ -213,7 +213,7 @@
       "confirmation": {
         "action": "Publicar",
         "description": "Estas publicando la siguiente Escena en tu LAND:",
-        "location_label": "Publicada en {coords}",
+        "location_label": "Publicada en",
         "size_label": "Tamaño",
         "title_label": "Título"
       },
