@@ -52,7 +52,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   handleManaApprove = async () => {
     const { address } = this.props
-    console.log({ address })
     const contractMANA = await this.getManaContract()
 
     if (!contractMANA || !address) return
@@ -82,7 +81,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   isManaApproved = () => {
     const { amountApproved } = this.state
-    console.log({ amountApproved, address: this.props.address })
     return amountApproved >= 100
   }
 

@@ -3,6 +3,7 @@ import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/Moda
 import { claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
+  isLoading: boolean
   address?: string
   metadata: {
     originalName: string
@@ -11,6 +12,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
+  hasClaimed: boolean
   currentName: string
 }
 

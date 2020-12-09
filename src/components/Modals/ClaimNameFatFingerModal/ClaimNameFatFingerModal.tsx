@@ -7,15 +7,16 @@ import './ClaimNameFatFingerModal.css'
 
 export default class ClaimNameFatFingerModal extends React.PureComponent<Props, State> {
   state: State = {
+    hasClaimed: false,
     currentName: ''
   }
 
   handleClaim = () => {
-    const { onClaim, onClose } = this.props
+    const { onClaim } = this.props
     const { currentName } = this.state
 
     onClaim(currentName)
-    onClose()
+    this.setState({ hasClaimed: true })
   }
 
   handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,18 +24,28 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
     this.setState({ currentName: name.replace(/\s/g, '') })
   }
 
+  handleClose = () => {
+    const { onClose } = this.props
+    this.setState({ hasClaimed: false })
+    onClose()
+  }
+
   render() {
-    const { name, metadata, onClose } = this.props
+    const { name, metadata, isLoading } = this.props
     const { originalName } = metadata
-    const { currentName } = this.state
+    const { currentName, hasClaimed } = this.state
     const areNamesDifferent = currentName !== originalName
     const hasError = areNamesDifferent && currentName.length > 0
     return (
-      <Modal name={name} onClose={onClose}>
-        <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={onClose} />
+      <Modal name={name} onClose={this.handleClose}>
+        <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={this.handleClose} />
         <Modal.Content>
           <div className="details">
-            <T id="claim_name_fat_finger_modal.description" values={{ name: <strong>{originalName}</strong> }} />
+            {!hasClaimed || isLoading ? (
+              <T id="claim_name_fat_finger_modal.description" values={{ name: <strong>{originalName}</strong> }} />
+            ) : (
+              <T id="claim_name_fat_finger_modal.ok_message" values={{ name: <strong>{originalName}</strong> }} />
+            )}
           </div>
           <Field
             placeholder={t('claim_name_fat_finger_modal.name_placeholder')}
@@ -42,15 +53,22 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
             error={hasError}
             message={hasError ? t('claim_name_fat_finger_modal.names_different') : ''}
             onChange={this.handleChangeName}
+            disabled={hasClaimed}
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button secondary onClick={onClose}>
+          <Button secondary onClick={this.handleClose} disabled={hasClaimed}>
             {t('global.cancel')}
           </Button>
-          <Button primary onClick={this.handleClaim} disabled={areNamesDifferent}>
-            {t('global.confirm')}
-          </Button>
+          {hasClaimed ? (
+            <Button primary onClick={this.handleClose} loading={isLoading}>
+              {t('global.done')}
+            </Button>
+          ) : (
+            <Button primary onClick={this.handleClaim} disabled={areNamesDifferent} loading={isLoading}>
+              {t('global.confirm')}
+            </Button>
+          )}
         </Modal.Actions>
       </Modal>
     )

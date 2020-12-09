@@ -587,12 +587,7 @@
   "claim_name_fat_finger_modal": {
     "title": "Por favor, confirme su nombre",
     "description": "Haz elegido {name}. Por favor, vuelva a ingresar el nombre para asegurarnos que es correcto.",
-    "name_placeholder": "Tu nombre único",
-    "names_different": "Los nombres no son iguales"
-  },
-  "claim_name_fat_finger_modal": {
-    "title": "Por favor, confirme su nombre",
-    "description": "Haz elegido {name}. Por favor, vuelva a ingresar el nombre para asegurarnos que es correcto.",
+    "ok_message": "Felicidades el nombre {name} es tuyo.",
     "name_placeholder": "Tu nombre único",
     "names_different": "Los nombres no son iguales"
   },

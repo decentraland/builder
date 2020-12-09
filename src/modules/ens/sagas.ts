@@ -300,7 +300,6 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
       resolver: Address.ZERO.toString(),
       content: Address.ZERO.toString()
     }
-    console.log('handleClaimName', name, ens, eth)
     yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
   } catch (error) {
     const ensError: ENSError = { message: error.message }

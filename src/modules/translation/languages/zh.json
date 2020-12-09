@@ -588,12 +588,7 @@
   "claim_name_fat_finger_modal": {
     "title": "请确认你的名字",
     "description": "您选择{name}。 请重新输入名称以仔细检查这是您想要的名称。",
-    "name_placeholder": "您的唯一名字",
-    "names_different": "名称不符"
-  },
-  "claim_name_fat_finger_modal": {
-    "title": "请确认你的名字",
-    "description": "您选择{name}。 请重新输入名称以仔细检查这是您想要的名称。",
+    "ok_message": "恭喜{name}是您的名字。",
     "name_placeholder": "您的唯一名字",
     "names_different": "名称不符"
   },

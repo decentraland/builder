@@ -625,13 +625,8 @@
   },
   "claim_name_fat_finger_modal": {
     "title": "Please, confirm your name",
-    "description": "You choose {name}. Please re-enter the name to double check this is the one you want.",
-    "name_placeholder": "Your unique name",
-    "names_different": "Names do not match"
-  },
-  "claim_name_fat_finger_modal": {
-    "title": "Please, confirm your name",
-    "description": "You choose {name}. Please re-enter the name to double check this is the one you want.",
+    "description": "You choose {name}. please re-enter the name to double check this is the one you want.",
+    "ok_message": "Congratulations the name {name} is yours.",
     "name_placeholder": "Your unique name",
     "names_different": "Names do not match"
   },
