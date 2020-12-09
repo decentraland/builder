@@ -18,7 +18,7 @@ Smart Items
   - [Distribution](#distribution)
   - [Importing](#importing)
   - [Running](#running)
-- Development & Debugging 
+- [Development & Debugging](#development--debugging)
 
 # Definition
 
