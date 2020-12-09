@@ -30,6 +30,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
   }
 
+  componentDidMount() {
+    this.componentDidUpdate()
+  }
+
   async componentDidUpdate() {
     const { address } = this.props
     const { receiptTx } = this.state
