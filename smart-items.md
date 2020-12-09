@@ -34,6 +34,8 @@ Each smart item contains an `asset.json` manifest where it defines its static pr
 
 - `id`: Just a uuid
 - `name`: the name of the smart item
+- `category`: one of the following categories: `"nature"`, `"structures"` or `"decorations"`
+- `tags`: an array of tags used for search, like `["button", "sci-fi"]`
 - `model`: this is a path to the GLFT or GLB that will be used as a placeholder, when the user is in editor mode
 - `parameters`: A list of parameters that will later generate a UI in the builder
 - `actions`: A list of actions that can be connected by other smart items
@@ -575,3 +577,127 @@ async function main() {
 
 main()
 ```
+
+# Development & Debugging
+
+In order to develop and debug a smart item, you should start creating an empty decentraland project.
+
+First, install/updated the Decentraland CLI if you haven't already:
+
+```
+npm install -g decentraland
+```
+
+Create an empty folder and initialize the project
+
+```
+mkdir my-smart-item
+cd my-smart-item
+dcl init
+```
+
+Install the `decentraland-builder-scripts` package
+
+```
+npm install decentraland-builder-scripts
+```
+
+Add the typings to the `tsconfig.json` file
+
+```
+{
+  "compilerOptions": {
+    "outFile": "./bin/game.js",
+    "allowJs": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "./node_modules/decentraland-builder-scripts/types.d.ts"
+  ],
+  "extends": "./node_modules/decentraland-ecs/types/tsconfig.json"
+}
+```
+
+Create an `asset.json` file where we will write the manifest for our smart item. Let's create a button that can trigger another smart item actions, with a custom hover text.
+
+```
+{
+  "id": "51ff7609-407f-481d-991b-8449ef59b390",
+  "name": "My Button",
+  "tags": ["button"],
+  "category": "decorations",
+  "parameters": [
+    {
+      "id": "onClick",
+      "label": "When clicked",
+      "type": "actions"
+    },
+    {
+      "id": "hoverText",
+      "label": "Hover Text",
+      "type": "text",
+      "default": "Click Me"
+    }
+  ]
+}
+```
+
+Create an `src/item.ts` file where you will create and export default a smart item following the `IScript` interface, for example a Button:
+
+```
+// src/item.ts
+
+export type Props = {
+  hoverText: string
+  onClick?: Actions
+}
+
+export default class Button implements IScript<Props> {
+
+  init() {}
+
+  spawn(host: Entity, props: Props, channel: IChannel) {
+    const button = new Entity()
+    button.setParent(host)
+
+    button.addComponent(new GLTFShape('models/button.glb'))
+
+    button.addComponent(
+      new OnPointerDown(
+        () => channel.sendActions(props.onClick),
+        {
+          button: ActionButton.POINTER,
+          hoverText: props.hoverText',
+          distance: 6
+        }
+      )
+    )
+  }
+}
+```
+
+Now in order to be able to debug our smart item, we can use the `Spawner` helper in the `src/game.ts` file should already be created:
+
+```
+// src/game.ts
+
+import { Spawner } from '../node_modules/decentraland-builder-scripts/spawner'
+import Button, { Props } from './item'
+
+const button = new Button()
+const spawner = new Spawner<Props>(button)
+
+spawner.spawn(
+  'button',
+  new Transform({
+    position: new Vector3(4, 0, 8)
+  }),
+  {
+    hoverText: "Testing"
+  }
+)
+```
+
+Finally we can run `dcl start` and we should be taken to a browser with the Decentraland client running, and we should see our button in the middle of the scene. If we get close to it and hover it we should see the text `"Testing"` that we configured in out `game.ts` file!
+
+If you want to see real world examples of smart items you can always check the [smart items repo](https://github.com/decentraland/smart-items)
