@@ -6,18 +6,18 @@ Smart Items
     - [Model](#model)
     - [Parameters](#parameters)
     - [Actions](#actions)
-  - Script
-    - init
-    - spawn
-    - channel
-      - Send Actions
-      - Handle Actions
-      - Sync State
-    - inventory
-- Execution
-  - How to distribute
-  - How to load
-  - How to run
+  - [Script](#script)
+    - [init](#init)
+    - [spawn](#spawn)
+    - [channel](#channel)
+      - [Send actions](#send-actions)
+      - [Handle actions](#handle-actions)
+      - [Sync state](#sync-state)
+    - [inventory](#inventory)
+- [Execution](#execution)
+  - [Distribution](#distribution)
+  - [Importing](#importing)
+  - [Running](#running)
 - Development & Debugging 
 
 # Definition
@@ -282,3 +282,296 @@ Notice that those actions don't have any parameters, but if we wanted for instan
 Now, if we used Fantasy Lever `onActivate` parameter, we could pick an action from our `Door` smart item, and once we do, the Builder will generate a UI for us to configure the `speed` parameter of that action:
 
 ![example-actions](https://user-images.githubusercontent.com/2781777/101222549-bc627580-3668-11eb-8b1b-7945965e80fd.gif)
+
+## Script
+
+Each smart item contains a script file, which is written in TypeScript using Decentraland's SDK (usually called `item.ts`). This script must do a default export of the following interface:
+
+```ts
+interface IScript<T extends {}> {
+  init(args: { inventory: IInventory }): void
+  spawn(host: Entity, props: T, channel: IChannel): void
+}
+```
+
+This interface exposes the two lifecycles of a smart item, and it can be imported from the `decentraland-builder-scripts` package:
+
+```ts
+import { IScript } from 'decentraland-builder-scripts/types`
+
+type Props = {
+  // some configuration properties for my item
+}
+
+export default class MySmartItem extends IScript<Props> {
+  init({ inventory }) {
+    //...
+  }
+  
+  spawn(host, props, channel) {
+    //...
+  }
+}
+```
+
+### init
+
+The `init` method of a script is called only once, no matter how many instances of the smart item are present in the scene, and should be called as soon as the scene is loaded, providing the required arguments, which consist of an object with an `inventory` instance inside. In order to create an `inventory` instance you can import the implementation from the `decentraland-builder-scripts` package as follows:
+
+```ts
+import { createInventory } from 'decentraland-builder-scripts/inventory'
+
+const inventory = createInventory(UICanvas, UIContainerStack, UIImage) // UICanvas, UIContainerStack and UIImage are globally accesible classes from the SDK
+```
+
+For an smart item developer, the `init` lifecycle is the time to start systems if needed, and also to make use of the `inventory` if necessary (we will dig into how to use the `inventory` in a later section). For example this is a
+
+### spawn
+
+The `spawn` method of a script is called once per instance of the smart item in the scene (for example if I have a scene with 3 `Door` smart item the scene will need to call `Door.spawn(...)` three times, one for each instance). The arguments provided to the `spawn` method are:
+
+- `host`: an SDK `Entity` that the smart item will have at disposal to do whatever it wants. This entity should be already positioned in the right place with a `Transform` component, so the smart item script doesn't need to worry about where in the scene it should be, it can just use that entity (ie, add a `GLTFShape` to it), or create new entities and attach them as children of the `host` entity. The script could also choose not to use this entity at all, for example the `Tools` smart item only starts different systems that can be used as helpers to create some interactivity, but it doesn't appear as _something_ in the scene.
+
+- `props`: these are the values for the [parameters](#parameters) configured by the user (ie, using the Builder UI). So for instance lets say our `Door` smart item has a parameter `isLocked` that is of type `boolean` and is used to determine if the door can be opened or not, and the user used the Builder UI to toggle this parameter on, then when we spawn that smart item from our scene we should provide the argument props as `{ isLocked: true }`.
+
+- `channel`: The channel is an abstraction that's used to orchestrate actions between smart items and across peers in the same scene. In order to spawn a smart item we always need to provide a channel instance (the next section explains how to use the `channel` from within a smart item).
+In order to instantiate a `channel` to be able to `spawn` a smart item, we can use the `createChannel` implementation from `decentraland-builder-scripts`. We will need the following arguments:  
+  - `peerId`: This is an `id` that should be that same for all the channels in the scene, but different between scenes running on different peers (browsers). We can just create a random id when the scene is started and use that one on all our channels for that scene.  
+  - `host`: The `entity` that's used as host for the smart item instance.  
+  - `bus`: a `MessageBus` instance, it should be the same for all the channels in a scene.
+ 
+  Let's see a full example of the life cycles of our `Door` smart item, with two instances on the same scene:  
+  
+  ```ts  
+  /* src/game.ts */
+
+  // import helpers
+  import { createInventory } from 'decentraland-builder-scripts/inventory'
+  import { createChannel } from 'decentraland-builder-scripts/channel'
+
+  // import smart item script
+  import Door from './path/to/door/item.ts`
+
+  // these are the things that we only need 1 for the whole scene
+  const peerId = Math.random().toString() // or create a UUID, or use the user identity, as long as it's unique per user session per scene it will be fine
+  const bus = new MessageBus()
+  const inventory = createInventory(UICanvas, UIContainerStack, UIImage)
+
+  // init the smart items' scripts. If we had other smart items in the scene we would init them all here
+  Door.init({ inventory })
+
+  // now we can spawn the instances for all the smart items in the scene, here we will spawn two door:
+
+  // spawn the front door
+  const frontDoor = new Entity('frontDoor') // create the host entity
+  frontDoor.addComponent(new Transform({ position: new Vector3(4, 0, 2) })) // position the host entity
+  Door.spawn(frontDoor, { isLocked: true }, createChannel(peerId, frontDoor, bus)) // spawn front door
+
+  // spawn the back door
+  const backDoor = new Entity('backDoor') // create the host entity
+  backDoor.addComponent(new Transform({ position: new Vector3(4, 0, 10) }))
+  Door.spawn(backDoor, { isLocked: false }, createChannel(peerId, backDoor, bus))
+  ```  
+    
+### channel
+
+The `channel` is what is used to send and handle actions between smart items and peers connected to the same scene, and also it can be used to sync the initial state of a smart item by requesting data to the other connected peers (if any).
+
+#### Send actions
+
+If we want our smart item to be able to trigger actions from other smart items, we learned we can do so by defining [parameters](#parameters) of type `actions`, for example, let's say we have a `Button` smart item that can trigger actions from other smart items when it's clicked. We could define the following parameters for it:
+
+```
+// asset.json
+{
+  ...
+  name: "Button",
+  paramters: [
+    {
+      id: 'onClick',
+      label: 'When Clicked',
+      type: 'actions'
+    }
+  ]
+}
+```
+
+Then we need to code this actual behaviour into our `item.ts` script file, and we can do so using the `channel.sendActions()` helper:
+
+```ts
+// item.ts
+import { IScript, Actions } from 'decentraland-builder-scripts/types'
+
+type Props = {
+  onClick: Actions
+}
+
+export default class Button extends IScript<Props> {
+  init({ inventory }) {
+    // this item doesn't have systems and doesn't use the invetory so nothing to do here
+  }
+  
+  spawn(host, props, channel) {
+    const button = new Entity() // create entity for the button
+    button.setParent(host) // attach to host to inherit it's position
+    button.addComponent(new GLTFShape('path/to/button.glb')) // add a model to the entity
+    host.addComponent(
+      new OnPointerDown(
+        () => channel.sendActions(props.onClick), // send actions using the channel when button is clicked
+        {
+          button: ActionButton.POINTER,
+          hoverText: 'Press',
+          distance: 6
+        }
+      )
+    )
+    
+  }
+}
+```
+
+#### Handle actions
+
+The `channel` is also the abstraction used to handle an action when it's triggered by another smart item. For example lets go back to the `Door` smart item, it has two actions: `open` and `close`. Those actions can be trigger by any smart item (could be the `Door` instance itself or another smart item, like a Lever that when pulled opens a Door). 
+
+We use the `channel.handleAction` helper for this:
+
+```ts
+// item.ts
+
+export default class Door extends IScript<{ /* ... */ }> {
+  init() { /* ... */  }
+  spawn(host, props, channel) {
+    // ...
+    channel.handleAction('open', ({ sender }) => {
+      // play open animation
+    })
+    
+    channel.handleAction('close', ({ sender }) => {
+      // play open animation
+    })
+  }
+}
+```
+
+This will handle an action when it's broadcasted through a channel using `channel.sendActions(...)` (see [section above](#send-actions)). Since actions that are broadcasted that way will not only reach other smart items in the scene for the current user, but also other users in the scene, the callback that we pass to `channel.handleActions` receives a `sender` that can be used to know if that actions is coming from the same user or a different one. When we open a door we don't care about who opened it, because we want everybody else on the scene to see that the door just opened. But there are other actions that we want to keep just for the player who triggered it, for example, let's say we create an smart item that can be equipped, we want to make sure only the user who triggered that action actually gets the item equipped, so we can do so like this:
+
+```ts
+channel.handleAction('equip', ({ sender }) => {
+  if (sender === channel.id) {
+    // this will only be run by the channel who sent this action
+  }
+})
+```
+
+#### Sync state
+
+We can also use the `channel` to sync the initial state of our smart item instances. For example, let's say a user visit a scene with a Door smart item, and it opens it. Then another users teleports to the scene. The second user will see the Door closed and the first one will see it open. We can use the `channel` to synchronize the state of the second user with fist one by using `channel.request` and `channel.reply` helpers:
+
+```ts
+// item.ts
+
+export default class Door extends IScript<{ /* ... */ }> {
+  isOpen = false
+  toggle(isOpen: boolean) {
+    this.isOpen = isOpen
+    if (isOpen) {
+      // play open animation
+    } else {
+      // play close animation
+    }
+  }
+  init() { /* ... */  }
+  spawn(host, props, channel) {
+    // ...
+    channel.handleAction('open', () => this.toggle(true))
+    channel.handleAction('close', () => this.toggle(false))
+    
+    // sync initial state
+    
+    // this will be executed by the second user, once other user replies back with their value for "isOpen", to update the initial state of its own "isOpen"
+    channel.request<boolean>('isOpen', value => this.toggle(value)) 
+    // this will be executed by the first user replying with their current value for "isOpen"
+    channel.reply<boolean>('isOpen', () => this.isOpen) 
+  }
+}
+```
+
+## inventory
+
+The inventory is an abstraction used to orchestrate the UI space and prevent some smart items to overlap with other when adding stuff to the user's screen. It is specially useful for example for items that can be equipped, and when doing so, they display some image on the screen indicating that the user is carrying it.
+
+It is passed to each smart item via the [init](#init) lifecycle, and it has the following methods:
+
+- `inventory.add(key: string, texture: UITexture): void`: This will add an item to the inventory. You need to provide a `key` that can be used to check if an item is equipped or to remote it, and a `texture`, which is the image used to display this equipped item on screen, it has to be a 256x256px `.png` file, ie:  
+  ```ts
+  const swordImage = new Texture('images/sword.png')
+  inventory.add('sword', swordImage)
+  ```
+
+- `inventory.has(key: string): boolean`: Return either `true` or `false` if a `key` is currently added to the inventory.
+
+- `inventory.remove(key: string): void`: Removes an item from the inventory by `key`.
+
+# Execution
+
+This section aims to explain how smart item scripts are distributed, loaded and executed in runtime.
+
+## Distribution
+
+Smart item's script files are compiled into AMD JavaScript files. That means that the `item.ts` is converted into `.js` file that looks like this:
+
+```js
+define('item', [], () => {
+  class MySmartItem { /* ... */ }
+  // ...
+  return MySmartItem
+})
+```
+
+That file is then uploaded along with all the other scene assets to a Catalyst peer when the scene is deployed.
+If you create a scene with the CLI using `dcl init` and then create a `src/item.ts` file with a smart item in that scene, you can compile it by running `dcl pack` and that will generate an `item.zip` file with all the assets required to distribute that smart item, including the `.js` file in AMD format.
+
+## Importing
+
+In order to import the smart item script in runtime we need to fetch it from the content server and the load it using an AMD loader. 
+We inject this [tiny AMD loader](https://github.com/decentraland/builder/blob/master/src/ecsScene/amd-loader.js.raw) at the begining of the scene file when we deploy it, and then this [remote loader](https://github.com/decentraland/builder/blob/master/src/ecsScene/remote-loader.js.raw) to do the fetching + loading of the module (on next section there's a full example that shows how to use this helper).
+
+## Running
+
+Finally once we have imported the smart item scripts we can [init](#init) them and [spawn](#spawn) all the instances. 
+This is an example the one in the [channel](#channel) section where we spawn two `Door` instances, but instead of importing the scripts from the file system, we load and run them from a deployed scene:
+
+```js
+/* bin/game.js */
+
+/* At the beggining of the scene we inject: the SDK, the AMD loader, and the remote loader helper described in the previous section, and the createChannel and createInvetory helpers from the `decentraland-builder-scripts` package */
+
+async function main() {
+  // load the smart item script
+  const hash = 'Qmabcd' // this is the hash of the smart item script js file in the content server
+  const Door = await getScriptInstance(hash) // this helper comes from the remote loader helper injected at the beginning 
+
+  // these are the things that we only need 1 for the whole scene
+  const peerId = Math.random().toString() // or create a UUID, or use the user identity, as long as it's unique per user session per scene it will be fine
+  const bus = new MessageBus()
+  const inventory = createInventory(UICanvas, UIContainerStack, UIImage)
+
+  // init the smart items' scripts. If we had other smart items in the scene we would init them all here
+  Door.init({ inventory })
+
+  // now we can spawn the instances for all the smart items in the scene, here we will spawn two door:
+
+  // spawn the front door
+  const frontDoor = new Entity('frontDoor') // create the host entity
+  frontDoor.addComponent(new Transform({ position: new Vector3(4, 0, 2) })) // position the host entity
+  Door.spawn(frontDoor, { isLocked: true }, createChannel(peerId, frontDoor, bus)) // spawn front door
+
+  // spawn the back door
+  const backDoor = new Entity('backDoor') // create the host entity
+  backDoor.addComponent(new Transform({ position: new Vector3(4, 0, 10) }))
+  Door.spawn(backDoor, { isLocked: false }, createChannel(peerId, backDoor, bus))
+}
+
+main()
+```
