@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
@@ -13,6 +14,7 @@ const mapState = (state: RootState) => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onNavigate: path => dispatch(push(path)),
   onClaim: name => dispatch(claimNameRequest(name))
 })
 

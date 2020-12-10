@@ -126,6 +126,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         data: {
           ...state.data,
           [ens.subdomain]: {
+            ...state.data[ens.subdomain],
             ...ens
           }
         }

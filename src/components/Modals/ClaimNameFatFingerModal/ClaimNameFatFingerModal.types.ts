@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
+import { claimNameRequest } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
   isLoading: boolean
@@ -9,6 +9,7 @@ export type Props = ModalProps & {
     originalName: string
   }
   onClaim: typeof claimNameRequest
+  onNavigate: (path: string) => void
 }
 
 export type State = {
@@ -17,5 +18,5 @@ export type State = {
 }
 
 export type MapState = Pick<Props, 'address'>
-export type MapDispatch = Dispatch<ClaimNameRequestAction>
-export type MapDispatchProps = Pick<Props, 'onClaim'>
+export type MapDispatch = Dispatch
+export type MapDispatchProps = Pick<Props, 'onClaim' | 'onNavigate'>

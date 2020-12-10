@@ -4,6 +4,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './ClaimNameFatFingerModal.types'
 import './ClaimNameFatFingerModal.css'
+import { locations } from 'routing/locations'
 
 export default class ClaimNameFatFingerModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -29,6 +30,7 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
     this.setState({ hasClaimed: false })
     onClose()
   }
+  handleDone = () => this.props.onNavigate(locations.ens())
 
   render() {
     const { name, metadata, isLoading } = this.props
@@ -61,7 +63,7 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
             {t('global.cancel')}
           </Button>
           {hasClaimed ? (
-            <Button primary onClick={this.handleClose} loading={isLoading}>
+            <Button primary onClick={this.handleDone} loading={isLoading}>
               {t('global.done')}
             </Button>
           ) : (
