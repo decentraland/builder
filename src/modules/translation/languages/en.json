@@ -795,6 +795,7 @@
     "unset_collection_on_sale": "Removed the collection {name} from being on sale",
     "set_ens_resolver": "Setting resolver for the name \"{name}\".",
     "set_ens_content": "Set redirection content for the name \"{name}\" on {land_link}.",
+    "claim_name": "Claim new name: \"{name}\".",
     "unset_ens_content": "Removed redirection content for the name \"{name}\"."
   },
   "transfer_page": {
