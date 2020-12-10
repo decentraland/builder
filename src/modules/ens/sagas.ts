@@ -52,7 +52,7 @@ import {
   claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { GAS_PRICE } from './utils'
+import { GAS_PRICE, getDomainFromName } from './utils'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
@@ -296,7 +296,7 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
 
     const ens: ENS = {
       address: from.toString(),
-      subdomain: `${name}.dcl.eth`,
+      subdomain: getDomainFromName(name),
       resolver: Address.ZERO.toString(),
       content: Address.ZERO.toString()
     }
