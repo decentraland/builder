@@ -4,10 +4,12 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { claimNameRequest } from 'modules/ens/actions'
+import { getENSByWallet } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ClaimENSPage.types'
 import ClaimENSPage from './ClaimENSPage'
 
 const mapState = (state: RootState): MapStateProps => ({
+  ensList: getENSByWallet(state),
   address: getAddress(state) || ''
 })
 

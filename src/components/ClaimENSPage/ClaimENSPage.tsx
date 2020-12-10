@@ -9,7 +9,7 @@ import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameRepeated } from 'modules/ens/utils'
 import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
@@ -89,9 +89,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onBack } = this.props
+    const { onBack, ensList } = this.props
     const { name, isLoading } = this.state
     const isValid = isNameValid(name)
+    const isRepeated = isNameRepeated(name, ensList)
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -115,9 +116,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Field
                     label={t('claim_ens_page.form.name_label')}
                     value={name}
-                    message={t('claim_ens_page.form.name_message')}
+                    message={isRepeated ? t('claim_ens_page.form.repeated_message') : t('claim_ens_page.form.name_message')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
-                    error={name.length > 1 && !isValid}
+                    error={(name.length > 1 && !isValid) || (name.length > 1 && isRepeated)}
                     onChange={this.handleNameChange}
                     onAction={undefined}
                   />
@@ -142,7 +143,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved()} loading={isLoading}>
+                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || isRepeated} loading={isLoading}>
                     {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>
