@@ -52,7 +52,7 @@ import {
   claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { GAS_PRICE, getDomainFromName } from './utils'
+import { getDomainFromName } from './utils'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
@@ -289,9 +289,7 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
   try {
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const controllerContract = new DCLController(eth, Address.fromString(CONTROLLER_ADDRESS))
-    const tx: SendTx<TransactionReceipt> = yield call(() =>
-      controllerContract.methods.register(name, from).send({ from, gasPrice: GAS_PRICE })
-    )
+    const tx: SendTx<TransactionReceipt> = yield call(() => controllerContract.methods.register(name, from).send({ from }))
     const txHash: string = yield call(() => tx.getTxHash())
 
     const ens: ENS = {
