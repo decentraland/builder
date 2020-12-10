@@ -32,12 +32,12 @@
   width: 100%;
 }
 
-.ENSListPage .claim-name {
-  padding: 5px 10px !important;
-  margin: 1px !important;
-  border: 1px solid rgba(115, 110, 125, 0.4) !important;
-  margin-left: 30px !important;
-  border-radius: 4px !important;
+.ENSListPage .dcl.row > .ui.button.basic.claim-name {
+  padding: 5px 10px;
+  margin: 1px;
+  border: 1px solid rgba(115, 110, 125, 0.4);
+  margin-left: 30px;
+  border-radius: 4px;
 }
 
 .ENSListPage .claim-name .Icon {
