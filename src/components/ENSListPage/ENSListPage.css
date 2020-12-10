@@ -33,11 +33,11 @@
 }
 
 .ENSListPage .claim-name {
-  padding: 5px 10px;
-  margin: 1px;
-  border: 1px solid rgba(115, 110, 125, 0.4);
-  margin-left: 30px;
-  border-radius: 4px;
+  padding: 5px 10px !important;
+  margin: 1px !important;
+  border: 1px solid rgba(115, 110, 125, 0.4) !important;
+  margin-left: 30px !important;
+  border-radius: 4px !important;
 }
 
 .ENSListPage .claim-name .Icon {

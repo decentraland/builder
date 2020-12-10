@@ -96,12 +96,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               <Column align="right">
                 <Row>{ensList.length > 1 ? this.renderSortDropdown() : null}</Row>
               </Column>
-              <Column align="right" className="claim-name" grow={false} shrink>
-                <Button basic onClick={this.handleClaimENS}>
-                  <Row>
+              <Column align="right" grow={false} shrink>
+                <Row>
+                  <Button basic className="claim-name" onClick={this.handleClaimENS}>
                     <Icon name="add-active" />
-                  </Row>
-                </Button>
+                  </Button>
+                </Row>
               </Column>
             </Row>
           </Container>
