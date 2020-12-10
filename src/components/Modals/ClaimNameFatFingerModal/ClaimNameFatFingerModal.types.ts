@@ -13,7 +13,6 @@ export type Props = ModalProps & {
 }
 
 export type State = {
-  hasClaimed: boolean
   currentName: string
 }
 
