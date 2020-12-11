@@ -4,7 +4,6 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './ClaimNameFatFingerModal.types'
 import './ClaimNameFatFingerModal.css'
-import { locations } from 'routing/locations'
 
 export default class ClaimNameFatFingerModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -12,11 +11,10 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
   }
 
   handleClaim = () => {
-    const { onClaim, onNavigate } = this.props
+    const { onClaim } = this.props
     const { currentName } = this.state
 
     onClaim(currentName)
-    onNavigate(locations.activity())
   }
 
   handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {

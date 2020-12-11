@@ -53,6 +53,9 @@ import {
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getDomainFromName } from './utils'
+import { locations } from 'routing/locations'
+import { push } from 'connected-react-router'
+import { closeModal } from 'modules/modal/actions'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
@@ -299,6 +302,8 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
       content: Address.ZERO.toString()
     }
     yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
+    yield put(closeModal('ClaimNameFatFingerModal'))
+    yield put(push(locations.activity()))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(claimNameFailure(ensError))

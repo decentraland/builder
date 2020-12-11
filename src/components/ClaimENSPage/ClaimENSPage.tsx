@@ -30,8 +30,15 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
   }
 
-  async componentDidUpdate() {
-    await this.getAllowance()
+  componentWillUnmount() {
+    // fix Warning: Can't perform a React state update on an unmounted component
+    this.setState = (_state, _callback) => {
+      return
+    }
+  }
+
+  componentDidUpdate() {
+    this.getAllowance()
   }
 
   componentDidMount() {
