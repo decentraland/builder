@@ -9,7 +9,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './ClaimENSPage.typ
 import ClaimENSPage from './ClaimENSPage'
 
 const mapState = (state: RootState): MapStateProps => ({
-  ensList: getENSByWallet(state),
+  ensList: getENSByWallet(state), // this need to be replaced by all the ENS
   address: getAddress(state) || ''
 })
 

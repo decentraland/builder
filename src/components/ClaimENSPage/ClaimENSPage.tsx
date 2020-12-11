@@ -96,6 +96,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const { onBack, ensList } = this.props
     const { name, isLoading } = this.state
     const isValid = isNameValid(name)
+
+    // this need to be checked due peformance issues
+    // in the `handleClaim` function before `onOpenModal`
     const isRepeated = isNameRepeated(name, ensList)
 
     return (
