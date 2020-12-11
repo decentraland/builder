@@ -4,8 +4,8 @@ import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
-import { CatalystClient, DeploymentBuilder, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
-import { EntityType } from 'dcl-catalyst-commons'
+import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
+import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { Avatar } from 'decentraland-ui'
 import { Personal } from 'web3x-es/personal'
 import { Authenticator } from 'dcl-crypto'
@@ -64,9 +64,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
   const { address, name } = action.payload
   try {
     const client = new CatalystClient(PEER_URL, 'builder')
-    const entities: DeploymentWithMetadataContentAndPointers[] = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [
-      address.toLowerCase()
-    ])
+    const entities: Entity[] = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()])
     const entity = entities.length > 0 ? entities[0] : null
 
     if (!entity) {
@@ -87,7 +85,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
       }
     }
     // Build entity
-    const content: Map<string, string> = new Map((newEntity.content || []).map(({ key, hash }) => [key, hash]))
+    const content: Map<string, string> = new Map((newEntity.content || []).map(({ file, hash }) => [file, hash]))
 
     const deployPreparationData = yield call(() =>
       DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, newEntity.metadata)
