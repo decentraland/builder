@@ -29,7 +29,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.state.amountApproved === -1) {
       this.getAllowance()
     }
