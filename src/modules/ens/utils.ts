@@ -18,6 +18,11 @@ export const MAX_NAME_SIZE = 15
  *  - emojis
  */
 const nameRegex = new RegExp(`^([a-zA-Z0-9]){2,${MAX_NAME_SIZE}}$`)
+
+export function isNameRepeated(name: string, ensList: ENS[]): boolean {
+  return ensList.some(ens => ens.subdomain === getDomainFromName(name))
+}
+
 export function isNameValid(name: string): boolean {
   return nameRegex.test(name)
 }

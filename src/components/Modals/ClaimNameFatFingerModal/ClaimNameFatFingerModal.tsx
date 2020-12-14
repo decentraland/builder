@@ -11,11 +11,10 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
   }
 
   handleClaim = () => {
-    const { onClaim, onClose } = this.props
+    const { onClaim } = this.props
     const { currentName } = this.state
 
     onClaim(currentName)
-    onClose()
   }
 
   handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,15 +22,20 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
     this.setState({ currentName: name.replace(/\s/g, '') })
   }
 
+  handleClose = () => {
+    const { onClose } = this.props
+    onClose()
+  }
+
   render() {
-    const { name, metadata, onClose } = this.props
+    const { name, metadata, isLoading } = this.props
     const { originalName } = metadata
     const { currentName } = this.state
     const areNamesDifferent = currentName !== originalName
     const hasError = areNamesDifferent && currentName.length > 0
     return (
-      <Modal name={name} onClose={onClose}>
-        <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={onClose} />
+      <Modal name={name} onClose={this.handleClose}>
+        <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={this.handleClose} />
         <Modal.Content>
           <div className="details">
             <T id="claim_name_fat_finger_modal.description" values={{ name: <strong>{originalName}</strong> }} />
@@ -45,10 +49,10 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button secondary onClick={onClose}>
+          <Button secondary onClick={this.handleClose}>
             {t('global.cancel')}
           </Button>
-          <Button primary onClick={this.handleClaim} disabled={areNamesDifferent}>
+          <Button primary onClick={this.handleClaim} disabled={areNamesDifferent} loading={isLoading}>
             {t('global.confirm')}
           </Button>
         </Modal.Actions>

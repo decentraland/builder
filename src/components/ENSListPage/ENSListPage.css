@@ -32,7 +32,7 @@
   width: 100%;
 }
 
-.ENSListPage .claim-name {
+.ENSListPage .dcl.row > .ui.button.basic.claim-name {
   padding: 5px 10px;
   margin: 1px;
   border: 1px solid rgba(115, 110, 125, 0.4);
