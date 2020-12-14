@@ -1,5 +1,6 @@
 import { Eth, SendTx } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
+import { push } from 'connected-react-router'
 import { TransactionReceipt } from 'web3x-es/formatters'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
@@ -54,7 +55,6 @@ import {
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getDomainFromName } from './utils'
 import { locations } from 'routing/locations'
-import { push } from 'connected-react-router'
 import { closeModal } from 'modules/modal/actions'
 
 export function* ensSaga() {
