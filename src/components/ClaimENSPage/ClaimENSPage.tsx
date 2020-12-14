@@ -10,7 +10,7 @@ import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameRepeated } from 'modules/ens/utils'
-import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
+import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 
@@ -20,8 +20,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
     amountApproved: -1,
-    isLoading: false,
-    receiptTx: undefined
+    isLoading: false
   }
 
   async getManaContract() {
@@ -30,24 +29,23 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
   }
 
-  componentWillUnmount() {
-    // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = (_state, _callback) => {
-      return
+  componentWillMount() {
+    if (this.state.amountApproved === -1) {
+      this.getAllowance()
     }
   }
 
-  componentDidUpdate() {
-    this.getAllowance()
-  }
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { address } = this.props
+    const { isLoading } = this.state
 
-  componentDidMount() {
-    this.getAllowance()
+    if (prevState.isLoading !== isLoading || prevProps.address !== address) {
+      this.getAllowance()
+    }
   }
 
   async getAllowance() {
     const { address } = this.props
-    const { receiptTx } = this.state
 
     try {
       const contractMANA = await this.getManaContract()
@@ -56,9 +54,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
           .allowance(Address.fromString(address), Address.fromString(CONTROLLER_ADDRESS))
           .call()
         this.setState({ amountApproved: +allowance })
-      }
-      if (receiptTx && receiptTx.status) {
-        this.setState({ isLoading: false, receiptTx: undefined })
       }
     } catch (error) {
       throw error
@@ -72,12 +67,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     if (!contractMANA || !address) return
 
     this.setState({ isLoading: true })
+
     const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
-    const receiptTx: ERC20TransactionReceipt = await contractMANA.methods
+    await contractMANA.methods
       .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
       .send({ from: Address.fromString(address) })
       .getReceipt()
-    this.setState({ receiptTx })
+    this.setState({ isLoading: false })
   }
 
   handleClaim = () => {
