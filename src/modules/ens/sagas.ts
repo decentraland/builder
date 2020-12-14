@@ -1,5 +1,7 @@
-import { Eth } from 'web3x-es/eth'
+import { Eth, SendTx } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
+import { push } from 'connected-react-router'
+import { TransactionReceipt } from 'web3x-es/formatters'
 import { ipfs } from 'lib/api/ipfs'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
@@ -13,7 +15,8 @@ import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS } from 'modules/common/contracts'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS } from 'modules/common/contracts'
+import { DCLController } from 'contracts/DCLController'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
@@ -50,6 +53,9 @@ import {
   claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
+import { getDomainFromName } from './utils'
+import { locations } from 'routing/locations'
+import { closeModal } from 'modules/modal/actions'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
@@ -284,10 +290,20 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 function* handleClaimNameRequest(action: ClaimNameRequestAction) {
   const { name } = action.payload
   try {
-    const [from]: [Address, Eth] = yield getCurrentAddress()
-    const txHash = ''
-    const ens = {} as ENS
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const controllerContract = new DCLController(eth, Address.fromString(CONTROLLER_ADDRESS))
+    const tx: SendTx<TransactionReceipt> = yield call(() => controllerContract.methods.register(name, from).send({ from }))
+    const txHash: string = yield call(() => tx.getTxHash())
+
+    const ens: ENS = {
+      address: from.toString(),
+      subdomain: getDomainFromName(name),
+      resolver: Address.ZERO.toString(),
+      content: Address.ZERO.toString()
+    }
     yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
+    yield put(closeModal('ClaimNameFatFingerModal'))
+    yield put(push(locations.activity()))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(claimNameFailure(ensError))

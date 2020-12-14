@@ -6,7 +6,7 @@ import { isEqual } from 'lib/address'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getName } from 'modules/profile/selectors'
-import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_REQUEST, SET_ENS_CONTENT_SUCCESS } from './actions'
+import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_REQUEST, SET_ENS_CONTENT_SUCCESS, CLAIM_NAME_SUCCESS } from './actions'
 import { ENS } from './types'
 import { ENSState } from './reducer'
 import { getDomainFromName } from './utils'
@@ -34,6 +34,10 @@ export const getENSForLand = (state: RootState, landId: string) => {
   const ensList = getENSList(state)
   return ensList.filter(ens => ens.landId === landId)
 }
+
+export const isWaitingTxClaimName = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
+  transactions.some(transaction => CLAIM_NAME_SUCCESS === transaction.actionType)
+)
 
 export const isWaitingTxSetResolver = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => SET_ENS_RESOLVER_SUCCESS === transaction.actionType)

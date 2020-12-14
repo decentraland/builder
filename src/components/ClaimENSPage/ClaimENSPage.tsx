@@ -9,18 +9,18 @@ import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, isNameValid, PRICE } from 'modules/ens/utils'
-import { ERC20TransactionReceipt, ERC20 as MANAToken } from 'contracts/ERC20'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameRepeated } from 'modules/ens/utils'
+import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
+
 import './ClaimENSPage.css'
 
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
     amountApproved: -1,
-    isLoading: false,
-    receiptTx: undefined
+    isLoading: false
   }
 
   async getManaContract() {
@@ -29,9 +29,23 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
   }
 
-  async componentDidUpdate() {
+  componentDidMount() {
+    if (this.state.amountApproved === -1) {
+      this.getAllowance()
+    }
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const { address } = this.props
-    const { receiptTx } = this.state
+    const { isLoading } = this.state
+
+    if (prevState.isLoading !== isLoading || prevProps.address !== address) {
+      this.getAllowance()
+    }
+  }
+
+  async getAllowance() {
+    const { address } = this.props
 
     try {
       const contractMANA = await this.getManaContract()
@@ -40,9 +54,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
           .allowance(Address.fromString(address), Address.fromString(CONTROLLER_ADDRESS))
           .call()
         this.setState({ amountApproved: +allowance })
-      }
-      if (receiptTx && receiptTx.status) {
-        this.setState({ isLoading: false, receiptTx: undefined })
       }
     } catch (error) {
       throw error
@@ -53,15 +64,16 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const { address } = this.props
     const contractMANA = await this.getManaContract()
 
-    if (!contractMANA) return
+    if (!contractMANA || !address) return
 
     this.setState({ isLoading: true })
+
     const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
-    const receiptTx: ERC20TransactionReceipt = await contractMANA.methods
+    await contractMANA.methods
       .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
       .send({ from: Address.fromString(address) })
       .getReceipt()
-    this.setState({ receiptTx })
+    this.setState({ isLoading: false })
   }
 
   handleClaim = () => {
@@ -84,9 +96,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onBack } = this.props
+    const { onBack, ensList } = this.props
     const { name, isLoading } = this.state
     const isValid = isNameValid(name)
+
+    // this need to be checked due peformance issues
+    // in the `handleClaim` function before `onOpenModal`
+    const isRepeated = isNameRepeated(name, ensList)
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -110,9 +126,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Field
                     label={t('claim_ens_page.form.name_label')}
                     value={name}
-                    message={t('claim_ens_page.form.name_message')}
+                    message={isRepeated ? t('claim_ens_page.form.repeated_message') : t('claim_ens_page.form.name_message')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
-                    error={name.length > 1 && !isValid}
+                    error={(name.length > 1 && !isValid) || (name.length > 1 && isRepeated)}
                     onChange={this.handleNameChange}
                     onAction={undefined}
                   />
@@ -137,7 +153,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved()} loading={isLoading}>
+                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || isRepeated} loading={isLoading}>
                     {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>

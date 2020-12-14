@@ -138,6 +138,7 @@
     "form" : {
       "name_label": "Nombre",
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+      "repeated_message": "Ya has reclamado este nombre.",
       "radio_label": "MANA aprobado",
       "claim_button": "Reclama",
       "need_mana_message": "Authoriza el contrato {contract_link} a operar MANA en tu nombre"
@@ -587,6 +588,7 @@
   "claim_name_fat_finger_modal": {
     "title": "Por favor, confirme su nombre",
     "description": "Haz elegido {name}. Por favor, vuelva a ingresar el nombre para asegurarnos que es correcto.",
+    "ok_message": "Felicidades el nombre {name} es tuyo.",
     "name_placeholder": "Tu nombre único",
     "names_different": "Los nombres no son iguales"
   },
@@ -784,6 +786,7 @@
     "unset_collection_on_sale": "La colección {name} ya no está a la venta",
     "set_ens_resolver": "Haz asignado el resolver para el nombre \"{name}\".",
     "set_ens_content": "Haz asignado el contenido de redirección para el nombre \"{name}\" en {land_link}.",
+    "claim_name": "Haz reclamado el nombre: \"{name}\".",
     "unset_ens_content": "Haz removido el contenido para el nombre \"{name}\"."
   },
   "transfer_page": {
