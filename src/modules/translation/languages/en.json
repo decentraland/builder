@@ -307,6 +307,7 @@
     "title": "Alias",
     "subtitle": "Setting a new alias for your profile",
     "body": "Set {newName} as your new alias in the Metaverse! Let other people see your new name when visiting the world. It'll replace {oldName}",
+    "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world.",
     "looks_great": "Looks Great!"
   },
   "deployment_contest_modal": {
