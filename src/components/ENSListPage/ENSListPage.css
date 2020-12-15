@@ -1,3 +1,7 @@
+.ENSListPage .TableRow {
+  cursor: default;
+}
+
 .ENSListPage .TableRow .dcl.column.subdomain-wrapper {
   display: flex;
   flex: none;
