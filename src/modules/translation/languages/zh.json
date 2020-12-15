@@ -300,7 +300,7 @@
   "use_as_alias_modal": {
     "title": "別名",
     "subtitle": "為您的個人資料設置新別名",
-    "body": "將{newName}設置為Metaverse中的新別名！ 環遊世界時，讓其他人看到您的新名字。 它將替換為{oldName}",
+    "body": "将{newName}设置为Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。 它将替换{oldName}",
     "looks_great": "看起來很棒"
   },
   "deployment_contest_modal": {
