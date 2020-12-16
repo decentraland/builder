@@ -304,10 +304,10 @@
     "title": "Publish your Scene"
   },
   "use_as_alias_modal": {
-    "title": "Alias",
+    "title": "Use as alias",
     "subtitle": "Setting a new alias for your profile",
     "body": "Set {newName} as your new alias in the Metaverse! Let other people see your new name when visiting the world. It'll replace {oldName}",
-    "looks_great": "Looks Great!"
+    "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world."
   },
   "deployment_contest_modal": {
     "action": "Join the Contest",
@@ -438,6 +438,7 @@
     "revoke": "Revoke",
     "parcel_plural": "parcels",
     "estate_plural": "estates",
+    "set": "Set",
     "settings": "Settings",
     "yes": "Yes",
     "no": "No",
