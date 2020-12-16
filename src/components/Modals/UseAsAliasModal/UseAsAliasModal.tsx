@@ -31,11 +31,11 @@ export default class UseAsAliasModal extends React.PureComponent<Props> {
         <ModalActions>
           {successOnSetAlias ? (
             <Button primary onClick={onClose}>
-              {t('use_as_alias_modal.looks_great')}
+              {t('global.done')}
             </Button>
           ) : (
             <Button primary loading={isLoading} onClick={this.handleSubmit}>
-              {t('global.confirm')}
+              {t('global.set')}
             </Button>
           )}
         </ModalActions>

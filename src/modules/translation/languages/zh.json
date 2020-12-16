@@ -298,7 +298,7 @@
     "title": "正在发布场景"
   },
   "use_as_alias_modal": {
-    "title": "別名",
+    "title": "用作别名",
     "subtitle": "為您的個人資料設置新別名",
     "body": "将{newName}设置为Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。 它将替换{oldName}",
     "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。",
@@ -430,6 +430,7 @@
     "revoke": "撤消",
     "parcel_plural": "地块",
     "estate_plural": "产业",
+    "set": "定",
     "settings": "设定",
     "yes": "是",
     "no": "没有",

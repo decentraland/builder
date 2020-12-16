@@ -301,7 +301,7 @@
     "title": "Publica tu Escena"
   },
   "use_as_alias_modal": {
-    "title": "Alias",
+    "title": "Usar como Alias",
     "subtitle": "Establece un nuevo alias para tu perfil",
     "body": "Establece {newName} como tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo. Reemplazará {oldName}",
     "success": "{name} es tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo.",
@@ -430,6 +430,7 @@
     "revoke": "Revocar",
     "parcel_plural": "parcelas",
     "estate_plural": "estates",
+    "set": "Establecer",
     "settings": "Ajustes",
     "yes": "Si",
     "no": "No",
