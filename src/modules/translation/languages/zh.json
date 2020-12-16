@@ -301,8 +301,7 @@
     "title": "用作别名",
     "subtitle": "為您的個人資料設置新別名",
     "body": "将{newName}设置为Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。 它将替换{oldName}",
-    "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。",
-    "looks_great": "看起來很棒"
+    "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。"
   },
   "deployment_contest_modal": {
     "action": "参加比赛",
