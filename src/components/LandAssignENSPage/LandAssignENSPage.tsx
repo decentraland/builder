@@ -29,7 +29,7 @@ export default class LandAssignENSPage extends React.PureComponent<Props> {
       <LandProviderPage>
         {land =>
           !ens ? (
-            <Loader active size="massive" />
+            <Loader active size="large" />
           ) : (
             <LandAction
               land={land}
