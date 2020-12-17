@@ -14,7 +14,7 @@ const PAGE_SIZE = 12
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.NAME,
+    sortBy: SortBy.ASC,
     page: 1
   }
 
@@ -39,8 +39,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
-          { value: SortBy.NEWEST, text: t('home_page.sort.newest') },
-          { value: SortBy.NAME, text: t('home_page.sort.name') }
+          { value: SortBy.DESC, text: 'DESC' },
+          { value: SortBy.ASC, text: 'ASC' }
         ]}
         onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
       />
@@ -54,10 +54,10 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     const sortedEnsList = ensList
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
-          case SortBy.NEWEST: {
-            return a.address.toLowerCase() > b.address.toLowerCase() ? -1 : 1
+          case SortBy.DESC: {
+            return a.subdomain.toLowerCase() < b.subdomain.toLowerCase() ? 1 : -1
           }
-          case SortBy.NAME: {
+          case SortBy.ASC: {
             return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
           }
           default: {
