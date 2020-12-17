@@ -4,8 +4,8 @@ import { Land } from 'modules/land/types'
 import { openModal } from 'modules/modal/actions'
 
 export enum SortBy {
-  NEWEST = 'newest',
-  NAME = 'name'
+  DESC = 'DESC',
+  ASC = 'ASC'
 }
 
 export type Props = {

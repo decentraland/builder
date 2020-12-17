@@ -352,6 +352,10 @@
       "re_assign": "Re Asignar",
       "use_as_alias": "Usar como alias"
     },
+    "order": {
+      "name_asc": "Nombre ↑",
+      "name_desc": "Nombre ↓"
+    },
     "items": "{count} {count, plural, one {item} other {items}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
   },
