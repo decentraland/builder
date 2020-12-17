@@ -20,7 +20,8 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
     amountApproved: -1,
-    isLoading: false
+    isLoading: false,
+    isRepeated: false
   }
 
   async getManaContract() {
@@ -77,13 +78,23 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   handleClaim = () => {
-    const { onOpenModal } = this.props
+    const { onOpenModal, ensList } = this.props
     const { name } = this.state
-    onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+    const isRepeated = isNameRepeated(name, ensList)
+    if (isRepeated) {
+      this.setState({ isRepeated })
+    } else {
+      onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+    }
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    this.setState({ name: data.value })
+    const { isRepeated } = this.state
+    if (isRepeated) {
+      this.setState({ name: data.value, isRepeated: false })
+    } else {
+      this.setState({ name: data.value })
+    }
   }
 
   handleBack = () => {
@@ -96,13 +107,12 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onBack, ensList } = this.props
-    const { name, isLoading } = this.state
+    const { onBack } = this.props
+    const { name, isLoading, isRepeated } = this.state
     const isValid = isNameValid(name)
 
     // this need to be checked due peformance issues
     // in the `handleClaim` function before `onOpenModal`
-    const isRepeated = isNameRepeated(name, ensList)
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
