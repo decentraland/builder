@@ -9,7 +9,7 @@ import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, PRICE, isNameValid, isNameRepeated } from 'modules/ens/utils'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable } from 'modules/ens/utils'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
@@ -77,10 +77,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.setState({ isLoading: false })
   }
 
-  handleClaim = () => {
-    const { onOpenModal, ensList } = this.props
+  handleClaim = async () => {
+    const { onOpenModal } = this.props
     const { name } = this.state
-    const isRepeated = isNameRepeated(name, ensList)
+    const isRepeated = !(await isNameAvailable(name))
     if (isRepeated) {
       this.setState({ isRepeated })
     } else {

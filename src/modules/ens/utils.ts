@@ -2,6 +2,9 @@ import { Address } from 'web3x-es/address'
 import { fromWei } from 'web3x-es/utils'
 import { Land } from 'modules/land/types'
 import { ENS } from './types'
+import { DCLRegistrar } from 'contracts/DCLRegistrar'
+import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
+import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
 export const PRICE_IN_WEI = 100000000000000000000 // 100 MANA
 export const PRICE = fromWei(PRICE_IN_WEI.toString(), 'ether')
@@ -19,8 +22,10 @@ export const MAX_NAME_SIZE = 15
  */
 const nameRegex = new RegExp(`^([a-zA-Z0-9]){2,${MAX_NAME_SIZE}}$`)
 
-export function isNameRepeated(name: string, ensList: ENS[]): boolean {
-  return ensList.some(ens => ens.subdomain === getDomainFromName(name))
+export async function isNameAvailable(name: string) {
+  const eth = await createEth()
+  const contractDCLRegistrar = new DCLRegistrar(eth!, Address.fromString(REGISTRAR_ADDRESS))
+  return contractDCLRegistrar.methods.available(name).call()
 }
 
 export function isNameValid(name: string): boolean {
