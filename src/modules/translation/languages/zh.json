@@ -360,6 +360,10 @@
       "re_assign": "重新指定",
       "use_as_alias": "用作别名"
     },
+    "order": {
+      "name_asc": "名称 ↑",
+      "name_desc": "名称 ↓"
+    },
     "items": "{count} {count, plural, one {项目} other {项目}}",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
   },
