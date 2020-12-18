@@ -152,7 +152,7 @@
     "form" : {
       "name_label": "Name",
       "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
-      "repeated_message": "This name is no available.",
+      "repeated_message": "This name is not available.",
       "error_message": "There is a network error, please try again",
       "radio_label": "MANA approved",
       "claim_button": "Claim ",
