@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
 import { getNameFromDomain } from 'modules/ens/utils'
@@ -73,6 +74,21 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     const { alias } = this.props
     const name = getNameFromDomain(ens.subdomain)
     return alias ? name === alias.toLowerCase() : false
+  }
+
+  getAssignedToMessage(ens: ENS): string {
+    if (this.isAlias(ens)) {
+      return t('global.avatar')
+    }
+    const { landId } = ens
+    if (!landId) {
+      return ''
+    }
+    if (isCoords(landId)) {
+      return t('ens_list_page.assigned_to_land', { landId })
+    } else {
+      return t('ens_list_page.assigned_to_state', { landId })
+    }
   }
 
   renderEnsList() {
@@ -147,13 +163,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="assignedTo">
-                              {this.isAlias(ens)
-                                ? t('global.avatar')
-                                : ens.landId
-                                ? t('ens_list_page.assigned_to_land', { landId: ens.landId })
-                                : null}
-                            </Column>
+                            <Column className="assignedTo">{this.getAssignedToMessage(ens)}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
@@ -179,7 +189,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             {ens.landId ? (
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
-                                  {t('ens_list_page.button.re_assign')}
+                                  {t('ens_list_page.button.edit')}
                                 </Button>
                               </Column>
                             ) : null}

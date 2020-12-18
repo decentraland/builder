@@ -356,9 +356,10 @@
       "assigned_to": "Assigned To"
     },
     "assigned_to_land": "Land ({landId})",
+    "assigned_to_state": "State ({landId})",
     "button": {
       "assign": "Assign",
-      "re_assign": "Re Assign",
+      "edit": "Edit",
       "use_as_alias": "Use as Alias"
     },
     "order": {
