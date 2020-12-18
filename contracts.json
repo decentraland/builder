@@ -32,6 +32,10 @@
     "DCLController": {
       "source": "files",
       "abiFile": "./src/contracts/DCLController.json"
+    },
+    "DCLRegistrar": {
+      "source": "files",
+      "abiFile": "./src/contracts/DCLRegistrar.json"
     }
   }
 }

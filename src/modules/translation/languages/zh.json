@@ -135,7 +135,8 @@
     "form" : {
       "name_label": "名称",
       "name_message": "名称不能包含非字母数字字符或空格。",
-      "repeated_message": "您已声明此名称。",
+      "repeated_message": "此名称不可用。",
+      "error_message": "网络出现错误，请重试",
       "radio_label": "MANA批准",
       "claim_button": "要求 ",
       "feed_mana_message": "授权{contract_link}合同代表您操作MANA"

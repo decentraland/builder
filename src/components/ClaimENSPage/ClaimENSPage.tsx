@@ -9,7 +9,7 @@ import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, PRICE, isNameValid, isNameRepeated } from 'modules/ens/utils'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength } from 'modules/ens/utils'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
@@ -20,7 +20,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
     amountApproved: -1,
-    isLoading: false
+    isLoading: false,
+    isAvailable: true,
+    isError: false
   }
 
   async getManaContract() {
@@ -80,14 +82,30 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     }
   }
 
-  handleClaim = () => {
+  handleClaim = async () => {
     const { onOpenModal } = this.props
     const { name } = this.state
-    onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+    this.setState({ isLoading: true })
+    try {
+      const isAvailable = await isNameAvailable(name)
+      if (isAvailable) {
+        onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+        this.setState({ isLoading: false })
+      } else {
+        this.setState({ isAvailable: false, isLoading: false })
+      }
+    } catch (error) {
+      this.setState({ isLoading: false, isAvailable: true, isError: true })
+    }
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    this.setState({ name: data.value })
+    const { isAvailable } = this.state
+    if (isAvailable) {
+      this.setState({ name: data.value })
+    } else {
+      this.setState({ name: data.value, isAvailable: true })
+    }
   }
 
   handleBack = () => {
@@ -100,13 +118,12 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { onBack, ensList } = this.props
-    const { name, isLoading } = this.state
+    const { onBack } = this.props
+    const { name, isLoading, isError, isAvailable } = this.state
     const isValid = isNameValid(name)
 
     // this need to be checked due peformance issues
     // in the `handleClaim` function before `onOpenModal`
-    const isRepeated = isNameRepeated(name, ensList)
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -130,9 +147,15 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Field
                     label={t('claim_ens_page.form.name_label')}
                     value={name}
-                    message={isRepeated ? t('claim_ens_page.form.repeated_message') : t('claim_ens_page.form.name_message')}
+                    message={
+                      isError
+                        ? t('claim_ens_page.form.error_message')
+                        : isAvailable
+                        ? t('claim_ens_page.form.name_message')
+                        : t('claim_ens_page.form.repeated_message')
+                    }
                     action={`${name.length}/${MAX_NAME_SIZE}`}
-                    error={(name.length > 1 && !isValid) || (name.length > 1 && isRepeated)}
+                    error={isError || (hasNameMinLength(name) && !isValid) || !isAvailable}
                     onChange={this.handleNameChange}
                     onAction={undefined}
                   />
@@ -157,7 +180,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || isRepeated} loading={isLoading}>
+                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || !isAvailable} loading={isLoading}>
                     {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>
