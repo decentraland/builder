@@ -113,8 +113,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell width="2">{t('ens_list_page.table.name')}</Table.HeaderCell>
-                    <Table.HeaderCell width="2">{t('ens_list_page.table.being_assigned')}</Table.HeaderCell>
                     <Table.HeaderCell width="2">{t('ens_list_page.table.assigned_to')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_list_page.table.link')}</Table.HeaderCell>
                     <Table.HeaderCell width="2"></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
@@ -147,12 +147,24 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="beingAssigned">{ens.landId ? ens.landId : t('global.no')}</Column>
+                            <Column className="assignedTo">
+                              {this.isAlias(ens)
+                                ? t('global.avatar')
+                                : ens.landId
+                                ? t('ens_list_page.assigned_to_land', { landId: ens.landId })
+                                : null}
+                            </Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="assignedTo">{ens.landId ? ens.subdomain : '--'}</Column>
+                            <Column className="link">
+                              {ens.landId ? (
+                                <a href={`https://${ens.subdomain}`}>
+                                  {ens.subdomain} <Icon name="right-round-arrow" />
+                                </a>
+                              ) : null}
+                            </Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>

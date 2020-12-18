@@ -345,7 +345,7 @@
   "ens_list_page": {
     "table": {
       "name": "Nombre",
-      "being_assigned": "Siendo assignado",
+      "link": "Enlace",
       "assigned_to": "Asignado a"
     },
     "button": {
@@ -388,6 +388,7 @@
     "title": "Descargar Escena"
   },
   "global": {
+    "avatar": "Avatar",
     "approved_tx": "Aprobada",
     "back": "volver",
     "blog_post": "blog post",
