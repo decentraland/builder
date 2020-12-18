@@ -139,7 +139,7 @@
       "name_label": "Nombre",
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
       "error_message": "Hay un error de red. Vuelve a intentarlo.",
-      "repeated_message": "Ya has reclamado este nombre.",
+      "repeated_message": "Este nombre no esta disponible.",
       "radio_label": "MANA aprobado",
       "claim_button": "Reclama",
       "need_mana_message": "Authoriza el contrato {contract_link} a operar MANA en tu nombre"
