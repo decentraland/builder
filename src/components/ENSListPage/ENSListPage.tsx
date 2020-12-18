@@ -141,7 +141,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         <Table.Cell>
                           <Row>
                             <Column className="subdomain-wrapper">
-                              <div>{ens.subdomain}</div>
+                              <div>{getNameFromDomain(ens.subdomain)}</div>
                               {this.isAlias(ens) ? (
                                 <Popup
                                   className="alias-popup"
