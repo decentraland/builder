@@ -81,12 +81,17 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const { onOpenModal } = this.props
     const { name } = this.state
     this.setState({ isLoading: true })
-    const isAvailable = await isNameAvailable(name)
-    if (isAvailable) {
-      onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+    try {
+      const isAvailable = await isNameAvailable(name)
+      if (isAvailable) {
+        onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+        this.setState({ isLoading: false })
+      } else {
+        this.setState({ isAvailable: false, isLoading: false })
+      }
+    } catch (error) {
       this.setState({ isLoading: false })
-    } else {
-      this.setState({ isAvailable: false, isLoading: false })
+      throw error
     }
   }
 
