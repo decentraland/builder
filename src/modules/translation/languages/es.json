@@ -348,6 +348,7 @@
       "link": "Enlace",
       "assigned_to": "Asignado a"
     },
+    "assigned_to_land": "Tierra ({landId})",
     "button": {
       "assign": "Asignar",
       "re_assign": "Re Asignar",
