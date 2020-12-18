@@ -4,11 +4,11 @@ import { RootState } from 'modules/common/types'
 import { Project } from 'modules/project/types'
 import { getCurrentProject, getUserProjects } from 'modules/project/selectors'
 import { getLandTiles, getDeploymentsByCoord } from 'modules/land/selectors'
-import { LandTile, RoleType } from 'modules/land/types'
+import { LandTile } from 'modules/land/types'
 import { ProgressStage, DeploymentStatus, Deployment } from './types'
 import { DeploymentState } from './reducer'
 import { getStatus, mergeStatuses } from './utils'
-import { idToCoords, coordsToId } from 'modules/land/utils'
+import { idToCoords, coordsToId, emptyColorByRole } from 'modules/land/utils'
 
 export const getState = (state: RootState) => state.deployment
 export const getData = (state: RootState) => getState(state).data
@@ -81,7 +81,7 @@ export const getEmptyTiles = createSelector<RootState, Record<string, Deployment
       const role = landTiles[id].land.role
       if (!isOccupied) {
         result[id] = {
-          color: role === RoleType.OWNER ? '#ab2039' : '#147eab',
+          color: emptyColorByRole[role],
           scale: 1
         }
       }

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas as AtlasComponent, Layer } from 'decentraland-ui'
-import { coordsToId, isCoords, idToCoords, getCenter } from 'modules/land/utils'
+import { coordsToId, isCoords, idToCoords, getCenter, selectionBorderColorByRole } from 'modules/land/utils'
 import { RoleType, Land, LandTile } from 'modules/land/types'
 import { locations } from 'routing/locations'
 import Popup from './Popup'
@@ -204,15 +204,16 @@ const Atlas: React.FC<Props> = props => {
       const id = coordsToId(x, y)
       return selection.has(id) && id in landTiles
     }
-    const isOwner = (x: number, y: number) => {
+    const getRole = (x: number, y: number) => {
       const id = coordsToId(x, y)
       const tile = landTiles[id]
-      return !!tile && tile.land.role === RoleType.OWNER
+      return tile.land.role
     }
-    const highlightLayer: Layer = (x, y) => (isSelected(x, y) ? { color: isOwner(x, y) ? '#ff8199' : '#6ddff7', scale: 1.2 } : null)
+    const selectionBorderLayer: Layer = (x, y) =>
+      isSelected(x, y) ? { color: selectionBorderColorByRole[getRole(x, y)], scale: 1.2 } : null
     const selectionLandLayer: Layer = (x, y) => (isSelected(x, y) ? landLayer(x, y) : null)
     const selectionUnoccupiedLayer: Layer = (x, y) => (isSelected(x, y) ? unoccupiedLayer(x, y) : null)
-    selectionLayers = [highlightLayer, selectionLandLayer, selectionUnoccupiedLayer]
+    selectionLayers = [selectionBorderLayer, selectionLandLayer, selectionUnoccupiedLayer]
   }
 
   return (

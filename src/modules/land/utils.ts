@@ -34,17 +34,27 @@ export const getCenter = (selection: { x: number; y: number }[]) => {
 
 export const colorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: Color.SUMMER_RED,
-  [RoleType.OPERATOR]: '#1fbcff'
+  [RoleType.OPERATOR]: Color.LUISXVI_VIOLET
 }
 
-export const fillByRole = {
+export const emptyColorByRole: Record<RoleType, string> = {
+  [RoleType.OWNER]: '#ab2039',
+  [RoleType.OPERATOR]: '#8f1d9b'
+}
+
+export const selectionBorderColorByRole: Record<RoleType, string> = {
   [RoleType.OWNER]: '#ff8199',
-  [RoleType.OPERATOR]: '#6ddff7'
+  [RoleType.OPERATOR]: '#d742e8'
 }
 
-export const strokeByRole = {
+export const hoverFillByRole = {
+  [RoleType.OWNER]: '#ff8199',
+  [RoleType.OPERATOR]: '#d742e8'
+}
+
+export const hoverStrokeByRole = {
   [RoleType.OWNER]: '#fcc6d1',
-  [RoleType.OPERATOR]: '#d7f6fc'
+  [RoleType.OPERATOR]: '#ef5eff'
 }
 
 export const getSelection = (land: Land) =>
