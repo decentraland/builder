@@ -91,7 +91,6 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
       }
     } catch (error) {
       this.setState({ isLoading: false })
-      throw error
     }
   }
 
