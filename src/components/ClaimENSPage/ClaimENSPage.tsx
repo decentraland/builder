@@ -92,10 +92,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     const { isAvailable } = this.state
-    if (!isAvailable) {
-      this.setState({ name: data.value, isAvailable: true })
-    } else {
+    if (isAvailable) {
       this.setState({ name: data.value })
+    } else {
+      this.setState({ name: data.value, isAvailable: true })
     }
   }
 
