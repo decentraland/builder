@@ -9,7 +9,7 @@ import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable } from 'modules/ens/utils'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength } from 'modules/ens/utils'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
@@ -151,7 +151,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                         : t('claim_ens_page.form.repeated_message')
                     }
                     action={`${name.length}/${MAX_NAME_SIZE}`}
-                    error={isError || (name.length > 1 && !isValid) || (name.length > 1 && !isAvailable)}
+                    error={isError || (hasNameMinLength(name) && !isValid) || !isAvailable}
                     onChange={this.handleNameChange}
                     onAction={undefined}
                   />

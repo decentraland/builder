@@ -8,8 +8,8 @@ import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
 export const PRICE_IN_WEI = 100000000000000000000 // 100 MANA
 export const PRICE = fromWei(PRICE_IN_WEI.toString(), 'ether')
-
 export const MAX_NAME_SIZE = 15
+export const NAME_MIN_CHARACTERS = 1
 
 /**
  * The name may have a maximum of 15 characters (length === 15).
@@ -26,6 +26,10 @@ export async function isNameAvailable(name: string) {
   const eth = await createEth()
   const contractDCLRegistrar = new DCLRegistrar(eth!, Address.fromString(REGISTRAR_ADDRESS))
   return contractDCLRegistrar.methods.available(name).call()
+}
+
+export function hasNameMinLength(name: string): boolean {
+  return name.length > NAME_MIN_CHARACTERS
 }
 
 export function isNameValid(name: string): boolean {
