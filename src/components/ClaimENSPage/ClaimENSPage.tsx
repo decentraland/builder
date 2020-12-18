@@ -35,12 +35,12 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps: Props, _prevState: State) {
     const { address } = this.props
-    const { isLoading } = this.state
 
-    if (prevState.isLoading !== isLoading || prevProps.address !== address) {
-      this.getAllowance()
+    if (prevProps.address !== address) {
+      this.setState({ isLoading: true })
+      this.getAllowance().then(() => this.setState({ isLoading: false }))
     }
   }
 
@@ -66,14 +66,18 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
     if (!contractMANA || !address) return
 
-    this.setState({ isLoading: true })
-
     const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
-    await contractMANA.methods
-      .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
-      .send({ from: Address.fromString(address) })
-      .getReceipt()
-    this.setState({ isLoading: false })
+    try {
+      this.setState({ isLoading: true })
+
+      await contractMANA.methods
+        .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
+        .send({ from: Address.fromString(address) })
+        .getReceipt()
+      this.setState({ isLoading: false })
+    } catch (error) {
+      this.setState({ isLoading: false })
+    }
   }
 
   handleClaim = () => {
