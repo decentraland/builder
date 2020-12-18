@@ -21,7 +21,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     name: '',
     amountApproved: -1,
     isLoading: false,
-    isRepeated: false
+    isAvailable: true
   }
 
   async getManaContract() {
@@ -80,18 +80,20 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   handleClaim = async () => {
     const { onOpenModal } = this.props
     const { name } = this.state
-    const isRepeated = !(await isNameAvailable(name))
-    if (isRepeated) {
-      this.setState({ isRepeated })
-    } else {
+    this.setState({ isLoading: true })
+    const isAvailable = await isNameAvailable(name)
+    if (isAvailable) {
       onOpenModal('ClaimNameFatFingerModal', { originalName: name })
+      this.setState({ isLoading: false })
+    } else {
+      this.setState({ isAvailable: false, isLoading: false })
     }
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    const { isRepeated } = this.state
-    if (isRepeated) {
-      this.setState({ name: data.value, isRepeated: false })
+    const { isAvailable } = this.state
+    if (!isAvailable) {
+      this.setState({ name: data.value, isAvailable: true })
     } else {
       this.setState({ name: data.value })
     }
@@ -108,7 +110,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   render() {
     const { onBack } = this.props
-    const { name, isLoading, isRepeated } = this.state
+    const { name, isLoading, isAvailable } = this.state
     const isValid = isNameValid(name)
 
     // this need to be checked due peformance issues
@@ -136,9 +138,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Field
                     label={t('claim_ens_page.form.name_label')}
                     value={name}
-                    message={isRepeated ? t('claim_ens_page.form.repeated_message') : t('claim_ens_page.form.name_message')}
+                    message={isAvailable ? t('claim_ens_page.form.name_message') : t('claim_ens_page.form.repeated_message')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
-                    error={(name.length > 1 && !isValid) || (name.length > 1 && isRepeated)}
+                    error={(name.length > 1 && !isValid) || (name.length > 1 && !isAvailable)}
                     onChange={this.handleNameChange}
                     onAction={undefined}
                   />
@@ -163,7 +165,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || isRepeated} loading={isLoading}>
+                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || !isAvailable} loading={isLoading}>
                     {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>
