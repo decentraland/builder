@@ -21,7 +21,8 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     name: '',
     amountApproved: -1,
     isLoading: false,
-    isAvailable: true
+    isAvailable: true,
+    isError: false
   }
 
   async getManaContract() {
@@ -90,7 +91,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
         this.setState({ isAvailable: false, isLoading: false })
       }
     } catch (error) {
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: false, isAvailable: true, isError: true })
     }
   }
 
@@ -114,7 +115,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   render() {
     const { onBack } = this.props
-    const { name, isLoading, isAvailable } = this.state
+    const { name, isLoading, isError, isAvailable } = this.state
     const isValid = isNameValid(name)
 
     // this need to be checked due peformance issues
@@ -142,9 +143,15 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Field
                     label={t('claim_ens_page.form.name_label')}
                     value={name}
-                    message={isAvailable ? t('claim_ens_page.form.name_message') : t('claim_ens_page.form.repeated_message')}
+                    message={
+                      isError
+                        ? t('claim_ens_page.form.error_message')
+                        : isAvailable
+                        ? t('claim_ens_page.form.name_message')
+                        : t('claim_ens_page.form.repeated_message')
+                    }
                     action={`${name.length}/${MAX_NAME_SIZE}`}
-                    error={(name.length > 1 && !isValid) || (name.length > 1 && !isAvailable)}
+                    error={isError || (name.length > 1 && !isValid) || (name.length > 1 && !isAvailable)}
                     onChange={this.handleNameChange}
                     onAction={undefined}
                   />

@@ -18,6 +18,7 @@ export type State = {
   amountApproved: number
   isLoading: boolean
   isAvailable: boolean
+  isError: boolean
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'ensList'>

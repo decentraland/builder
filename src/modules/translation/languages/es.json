@@ -138,6 +138,7 @@
     "form" : {
       "name_label": "Nombre",
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+      "error_message": "Hay un error de red. Vuelve a intentarlo.",
       "repeated_message": "Ya has reclamado este nombre.",
       "radio_label": "MANA aprobado",
       "claim_button": "Reclama",
