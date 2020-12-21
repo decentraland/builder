@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
@@ -10,7 +11,6 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { Props, State, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
-import { Link } from 'react-router-dom'
 
 const PAGE_SIZE = 12
 
