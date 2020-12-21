@@ -352,12 +352,14 @@
   "ens_list_page": {
     "table": {
       "name": "Name",
-      "being_assigned": "Being Assigned",
+      "link": "Link",
       "assigned_to": "Assigned To"
     },
+    "assigned_to_land": "Land ({landId})",
+    "assigned_to_state": "State ({landId})",
     "button": {
       "assign": "Assign",
-      "re_assign": "Re Assign",
+      "edit": "Edit",
       "use_as_alias": "Use as Alias"
     },
     "order": {
@@ -395,6 +397,7 @@
     "title": "Download Scene"
   },
   "global": {
+    "avatar": "Avatar",
     "approved_tx": "Approved",
     "back": "back",
     "blog_post": "blog post",

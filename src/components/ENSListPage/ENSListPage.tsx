@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
 import { getNameFromDomain } from 'modules/ens/utils'
@@ -75,6 +77,21 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     return alias ? name === alias.toLowerCase() : false
   }
 
+  getAssignedToMessage(ens: ENS) {
+    if (this.isAlias(ens)) {
+      return t('global.avatar')
+    }
+    const { landId } = ens
+    if (!landId) {
+      return ''
+    }
+    return (
+      <Link to={locations.landDetail(landId)}>
+        {isCoords(landId) ? t('ens_list_page.assigned_to_land', { landId }) : t('ens_list_page.assigned_to_state', { landId })}
+      </Link>
+    )
+  }
+
   renderEnsList() {
     const { ensList } = this.props
     const { page } = this.state
@@ -113,8 +130,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell width="2">{t('ens_list_page.table.name')}</Table.HeaderCell>
-                    <Table.HeaderCell width="2">{t('ens_list_page.table.being_assigned')}</Table.HeaderCell>
                     <Table.HeaderCell width="2">{t('ens_list_page.table.assigned_to')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_list_page.table.link')}</Table.HeaderCell>
                     <Table.HeaderCell width="2"></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
@@ -125,7 +142,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         <Table.Cell>
                           <Row>
                             <Column className="subdomain-wrapper">
-                              <div>{ens.subdomain}</div>
+                              <div>{getNameFromDomain(ens.subdomain)}</div>
                               {this.isAlias(ens) ? (
                                 <Popup
                                   className="alias-popup"
@@ -147,12 +164,18 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="beingAssigned">{ens.landId ? ens.landId : t('global.no')}</Column>
+                            <Column className="assignedTo">{this.getAssignedToMessage(ens)}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="assignedTo">{ens.landId ? ens.subdomain : '--'}</Column>
+                            <Column className="link">
+                              {ens.landId ? (
+                                <a target="_blank" href={`https://${ens.subdomain}.link`}>
+                                  {ens.subdomain} <Icon name="right-round-arrow" />
+                                </a>
+                              ) : null}
+                            </Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
@@ -167,7 +190,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             {ens.landId ? (
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
-                                  {t('ens_list_page.button.re_assign')}
+                                  {t('ens_list_page.button.edit')}
                                 </Button>
                               </Column>
                             ) : null}
