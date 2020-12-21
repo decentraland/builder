@@ -132,19 +132,6 @@
     "money": "Tirar Billetes",
     "kiss": "Tirar Besos"
   },
-  "claim_ens_page": {
-    "title": "Reclamar un nombre",
-    "subtitle": "Puede reclamar nombres y asignarlos a Perfiles o Tierras, y también se pueden usar como un enlace rápido para acceder al mundo.",
-    "form" : {
-      "name_label": "Nombre",
-      "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
-      "error_message": "Hay un error de red. Vuelve a intentarlo.",
-      "repeated_message": "Este nombre no esta disponible.",
-      "radio_label": "MANA aprobado",
-      "claim_button": "Reclama",
-      "need_mana_message": "Authoriza el contrato {contract_link} a operar MANA en tu nombre"
-    }
-  },
   "create_collection_modal": {
     "title": "Nueva Colección",
     "subtitle": "Ponle un nombre a tu nueva colleción",
@@ -155,6 +142,19 @@
     "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
     "materials": "{count} {count, plural, one {material} other {materiales}}",
     "textures": "{count} {count, plural, one {textura} other {texturas}}"
+  },
+  "claim_ens_page": {
+    "title": "Reclamar un nombre",
+    "subtitle": "Puede reclamar nombres y asignarlos a Perfiles o Tierras, y también se pueden usar como un enlace rápido para acceder al mundo.",
+    "name_label": "Nombre",
+    "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+    "repeated_message": "Este nombre no esta disponible.",
+    "error_message": "Hay un error de red. Vuelve a intentarlo.",
+    "radio_label": "MANA aprobado",
+    "claim_button": "Reclama",
+    "need_mana_message": "Autoriza el contrato {contract_link} a operar MANA en tu nombre",
+    "mana_not_allowed": "Debes autorizar suficiente MANA para reclamar un nuevo nombre",
+    "not_enough_mana": "No tienes suficiente MANA para reclamar un nuevo nombre"
   },
   "create_item_modal": {
     "title": "Nuevo Item",

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { push, goBack } from 'connected-react-router'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
@@ -10,11 +10,11 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './ClaimENSPage.typ
 import ClaimENSPage from './ClaimENSPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const address = getAddress(state) || ''
+  const wallet = getWallet(state)
   const authorization = getAuthorizationByWallet(state)
 
   return {
-    address,
+    wallet,
     allowance: authorization ? authorization.allowance : '0',
     isLoading: !authorization || isLoadingType(getLoading(state), ALLOW_CLAIM_MANA_REQUEST) || isWaitingTxAllowMana(state)
   }

@@ -7,6 +7,12 @@ import {
   FETCH_ENS_LIST_REQUEST,
   FETCH_ENS_LIST_SUCCESS,
   FETCH_ENS_LIST_FAILURE,
+  FetchENSAuthorizationRequestAction,
+  FetchENSAuthorizationSuccessAction,
+  FetchENSAuthorizationFailureAction,
+  FETCH_ENS_AUTHORIZATION_REQUEST,
+  FETCH_ENS_AUTHORIZATION_SUCCESS,
+  FETCH_ENS_AUTHORIZATION_FAILURE,
   FetchENSRequestAction,
   FetchENSSuccessAction,
   FetchENSFailureAction,
@@ -73,6 +79,9 @@ export type ENSReducerAction =
   | FetchENSListRequestAction
   | FetchENSListSuccessAction
   | FetchENSListFailureAction
+  | FetchENSAuthorizationRequestAction
+  | FetchENSAuthorizationSuccessAction
+  | FetchENSAuthorizationFailureAction
   | FetchTransactionSuccessAction
   | SetAliasSuccessAction
   | SetAliasFailureAction
@@ -90,6 +99,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ALIAS_REQUEST:
     case SET_ALIAS_SUCCESS:
     case FETCH_ENS_LIST_REQUEST:
+    case FETCH_ENS_AUTHORIZATION_REQUEST:
     case FETCH_ENS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
     case SET_ENS_RESOLVER_REQUEST:
@@ -104,20 +114,26 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       }
     }
     case FETCH_ENS_LIST_SUCCESS: {
-      const { ensList, authorization, address } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          ...ensList.reduce(
+          ...action.payload.ensList.reduce(
             (obj, ens) => {
               obj[ens.subdomain] = { ...obj[ens.subdomain], ...ens }
               return obj
             },
             { ...state.data }
           )
-        },
+        }
+      }
+    }
+    case FETCH_ENS_AUTHORIZATION_SUCCESS: {
+      const { authorization, address } = action.payload
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
         authorizations: {
           ...state.authorizations,
           [address]: {
@@ -159,6 +175,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
     case FETCH_ENS_LIST_FAILURE:
+    case FETCH_ENS_AUTHORIZATION_FAILURE:
     case ALLOW_CLAIM_MANA_FAILURE: {
       return {
         ...state,

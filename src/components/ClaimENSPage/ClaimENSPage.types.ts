@@ -1,10 +1,11 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction, goBack } from 'connected-react-router'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { allowClaimManaRequest, AllowClaimManaRequestAction, claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
 
 export type Props = {
-  address: string
+  wallet: Wallet | null
   allowance: string
   isLoading: boolean
   onOpenModal: typeof openModal
@@ -21,6 +22,6 @@ export type State = {
   isError: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'allowance' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'wallet' | 'allowance' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onAllowMana' | 'onClaim' | 'onNavigate' | 'onBack'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | AllowClaimManaRequestAction | ClaimNameRequestAction>

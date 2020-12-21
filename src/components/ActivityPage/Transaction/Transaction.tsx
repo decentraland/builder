@@ -19,7 +19,7 @@ import {
   PUBLISH_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
-import { isAllowed } from 'modules/ens/utils'
+import { isEnoughClaimMana } from 'modules/ens/utils'
 import Profile from 'components/Profile'
 import { Props } from './Transaction.types'
 import TransactionDetail from './TransactionDetail'
@@ -280,7 +280,7 @@ const Transaction = (props: Props) => {
         <TransactionDetail
           address={address}
           text={
-            isAllowed(allowance) ? (
+            isEnoughClaimMana(allowance) ? (
               <T id="transaction.allowed_claim_mana" values={{ address: <Profile address={address} /> }} />
             ) : (
               <T id="transaction.disallowed_claim_mana" values={{ address: <Profile address={address} /> }} />

@@ -59,8 +59,7 @@ export const FETCH_ENS_LIST_SUCCESS = '[Success] Fetch ENS List'
 export const FETCH_ENS_LIST_FAILURE = '[Failure] Fetch ENS List'
 
 export const fetchENSListRequest = () => action(FETCH_ENS_LIST_REQUEST, {})
-export const fetchENSListSuccess = (ensList: ENS[], authorization: Authorization, address: string) =>
-  action(FETCH_ENS_LIST_SUCCESS, { ensList, authorization, address })
+export const fetchENSListSuccess = (ensList: ENS[]) => action(FETCH_ENS_LIST_SUCCESS, { ensList })
 export const fetchENSListFailure = (error: ENSError) => action(FETCH_ENS_LIST_FAILURE, { error })
 
 export type FetchENSListRequestAction = ReturnType<typeof fetchENSListRequest>
@@ -97,6 +96,20 @@ export const claimNameFailure = (error: ENSError) => action(CLAIM_NAME_FAILURE, 
 export type ClaimNameRequestAction = ReturnType<typeof claimNameRequest>
 export type ClaimNameSuccessAction = ReturnType<typeof claimNameSuccess>
 export type ClaimNameFailureAction = ReturnType<typeof claimNameFailure>
+
+// Fetch ENS related authorizations
+export const FETCH_ENS_AUTHORIZATION_REQUEST = '[Request] Fetch ENS Authorization'
+export const FETCH_ENS_AUTHORIZATION_SUCCESS = '[Success] Fetch ENS Authorization'
+export const FETCH_ENS_AUTHORIZATION_FAILURE = '[Failure] Fetch ENS Authorization'
+
+export const fetchENSAuthorizationRequest = () => action(FETCH_ENS_AUTHORIZATION_REQUEST, {})
+export const fetchENSAuthorizationSuccess = (authorization: Authorization, address: string) =>
+  action(FETCH_ENS_AUTHORIZATION_SUCCESS, { authorization, address })
+export const fetchENSAuthorizationFailure = (error: ENSError) => action(FETCH_ENS_AUTHORIZATION_FAILURE, { error })
+
+export type FetchENSAuthorizationRequestAction = ReturnType<typeof fetchENSAuthorizationRequest>
+export type FetchENSAuthorizationSuccessAction = ReturnType<typeof fetchENSAuthorizationSuccess>
+export type FetchENSAuthorizationFailureAction = ReturnType<typeof fetchENSAuthorizationFailure>
 
 // Allow MANA to claim names
 export const ALLOW_CLAIM_MANA_REQUEST = '[Request] Allow Claim MANA'

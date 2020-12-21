@@ -78,6 +78,6 @@ export function getNameFromDomain(domain: string): string {
   return domain.split('.')[0]
 }
 
-export function isAllowed(allowance: string) {
-  return Number(allowance) > 100
+export function isEnoughClaimMana(mana: string) {
+  return Number(mana) > 100
 }

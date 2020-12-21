@@ -41,6 +41,11 @@ import {
   SetENSResolverRequestAction,
   setENSResolverSuccess,
   setENSResolverFailure,
+  FETCH_ENS_AUTHORIZATION_REQUEST,
+  FetchENSAuthorizationRequestAction,
+  fetchENSAuthorizationRequest,
+  fetchENSAuthorizationSuccess,
+  fetchENSAuthorizationFailure,
   FETCH_ENS_LIST_REQUEST,
   FetchENSListRequestAction,
   fetchENSListRequest,
@@ -68,12 +73,14 @@ export function* ensSaga() {
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
+  yield takeEvery(FETCH_ENS_AUTHORIZATION_REQUEST, handleFetchAuthorizationRequest)
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
 }
 
 function* handleConnectWallet() {
+  yield put(fetchENSAuthorizationRequest())
   yield put(fetchENSListRequest())
 }
 
@@ -249,6 +256,20 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
   }
 }
 
+function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
+  try {
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+    const allowance: string = yield call(() => manaContract.methods.allowance(from, Address.fromString(CONTROLLER_ADDRESS)).call())
+    const authorization: Authorization = { allowance }
+
+    yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(fetchENSAuthorizationFailure(ensError))
+  }
+}
+
 function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   try {
     const landHashes: { id: string; hash: string }[] = []
@@ -293,11 +314,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
       })
     }
 
-    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
-    const allowance: string = yield call(() => manaContract.methods.allowance(from, Address.fromString(CONTROLLER_ADDRESS)).call())
-    const authorization: Authorization = { allowance }
-
-    yield put(fetchENSListSuccess(ensList, authorization, address))
+    yield put(fetchENSListSuccess(ensList))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchENSListFailure(ensError))
