@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects'
 
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
+import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 
 import { walletSaga } from 'modules/wallet/sagas'
 import { translationSaga } from 'modules/translation/sagas'
@@ -8,7 +9,6 @@ import { assetPackSaga } from 'modules/assetPack/sagas'
 import { modalSaga } from 'modules/modal/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
 import { projectSaga } from 'modules/project/sagas'
-import { profileSaga } from 'modules/profile/sagas'
 import { editorSaga } from 'modules/editor/sagas'
 import { keyboardSaga } from 'modules/keyboard/sagas'
 import { analyticsSaga } from 'modules/analytics/sagas'
@@ -28,6 +28,10 @@ import { tileSaga } from 'modules/tile/sagas'
 import { itemSaga } from 'modules/item/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
 import { statsSaga } from 'modules/stats/sagas'
+
+import { PEER_URL } from 'lib/api/peer'
+
+const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
 
 export function* rootSaga() {
   yield all([

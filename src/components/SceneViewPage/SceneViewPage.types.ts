@@ -1,12 +1,12 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { match } from 'react-router'
+import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 
 import { Project } from 'modules/project/types'
 import { Pool } from 'modules/pool/types'
 import { loadPublicProjectRequest, LoadPublicProjectRequestAction } from 'modules/project/actions'
 import { Scene } from 'modules/scene/types'
-import { Profile } from 'modules/profile/types'
 import { togglePreview, TogglePreviewAction, closeEditor, CloseEditorAction } from 'modules/editor/actions'
 import { likePoolRequest, LikePoolRequestAction } from 'modules/pool/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'

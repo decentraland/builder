@@ -1,2 +1,2 @@
-import Profile from './Profile.container'
+import Profile from './Profile'
 export default Profile

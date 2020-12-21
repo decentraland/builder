@@ -1,19 +1,11 @@
 import { createSelector } from 'reselect'
-
-import { RootState } from 'modules/common/types'
-import { getCurrentProject } from 'modules/project/selectors'
-import { getCurrentPool } from 'modules/pool/selectors'
-import { ProfileState } from './reducer'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Avatar } from 'decentraland-ui'
-
-export const getState: (state: RootState) => ProfileState = state => state.profile
-
-export const getData: (state: RootState) => ProfileState['data'] = state => getState(state).data
-
-export const getError: (state: RootState) => ProfileState['error'] = state => getState(state).error
-
-export const getLoading = (state: RootState) => getState(state).loading
+import { ProfileState } from 'decentraland-dapps/dist/modules/profile/reducer'
+import { getData } from 'decentraland-dapps/dist/modules/profile/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { RootState } from 'modules/common/types'
+import { getCurrentPool } from 'modules/pool/selectors'
+import { getCurrentProject } from 'modules/project/selectors'
 
 export const getCurrentAuthor = createSelector(getCurrentProject, getCurrentPool, getData, (project, pool, profiles) => {
   if (project && project.ethAddress && profiles[project.ethAddress]) {

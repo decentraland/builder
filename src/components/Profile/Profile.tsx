@@ -1,45 +1,16 @@
 import * as React from 'react'
-import { AvatarFace, Blockie, Logo } from 'decentraland-ui'
+import { ProfileProps } from 'decentraland-ui'
+import { Profile as BaseProfile } from 'decentraland-dapps/dist/containers'
 import { isEqual } from 'lib/address'
 import { LAND_POOL_ADDRESS } from 'modules/land/utils'
-import { Props } from './Profile.types'
-import './Profile.css'
 
-export default class Profile extends React.PureComponent<Props> {
-  componentWillMount() {
-    const { avatar, address, onLoadProfile } = this.props
-    if (!avatar) {
-      onLoadProfile(address)
-    }
-  }
-
+export default class Profile extends React.PureComponent<ProfileProps> {
   render() {
-    const { address, avatar, textOnly, imageOnly, size } = this.props
-    const name = (avatar && avatar.name) || address.slice(0, 6)
-
-    if (isEqual(address, LAND_POOL_ADDRESS)) {
-      return (
-        <span className={`Profile decentraland ${size}`} title={address}>
-          <Logo />
-          {imageOnly ? null : <span className="name">Decentraland</span>}
-        </span>
-      )
+    const newProps = { ...this.props }
+    if (isEqual(newProps.address, LAND_POOL_ADDRESS)) {
+      newProps.isDecentraland = true
     }
 
-    if (textOnly) {
-      return name
-    } else {
-      return avatar ? (
-        <span className={`Profile avatar ${size}`} title={address}>
-          <AvatarFace size="tiny" inline avatar={avatar} />
-          {imageOnly ? null : <span className="name">{name}</span>}
-        </span>
-      ) : (
-        <span className={`Profile blockie ${size}`} title={address}>
-          <Blockie seed={address} scale={size === 'large' ? 5 : size === 'huge' ? 7 : 3} />
-          {imageOnly ? null : <span className="name">{name}</span>}
-        </span>
-      )
-    }
+    return <BaseProfile {...newProps} />
   }
 }

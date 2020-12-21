@@ -10,6 +10,8 @@ import { Avatar } from 'decentraland-ui'
 import { Personal } from 'web3x-es/personal'
 import { Authenticator } from 'dcl-crypto'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
+import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
+import { changeProfile } from 'decentraland-dapps/dist/modules/profile/actions'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
@@ -18,8 +20,6 @@ import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { changeProfile } from 'modules/profile/actions'
-import { Profile } from 'modules/profile/types'
 import { PEER_URL } from 'lib/api/peer'
 
 import {
