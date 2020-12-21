@@ -1,15 +1,14 @@
 import { Eth, SendTx } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
-import { push } from 'connected-react-router'
 import { TransactionReceipt } from 'web3x-es/formatters'
-import { ipfs } from 'lib/api/ipfs'
+import { Personal } from 'web3x-es/personal'
 import { namehash } from '@ethersproject/hash'
+import { push } from 'connected-react-router'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { Avatar } from 'decentraland-ui'
-import { Personal } from 'web3x-es/personal'
 import { Authenticator } from 'dcl-crypto'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
@@ -20,6 +19,7 @@ import { DCLController } from 'contracts/DCLController'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
+import { ipfs } from 'lib/api/ipfs'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { changeProfile } from 'modules/profile/actions'
@@ -337,7 +337,7 @@ function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
       manaContract.methods
         .approve(Address.fromString(CONTROLLER_ADDRESS), allowance)
         .send({ from })
-        .getReceipt()
+        .getTxHash()
     )
 
     yield put(allowClaimManaSuccess(allowance, from.toString(), txHash))

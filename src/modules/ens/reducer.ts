@@ -95,7 +95,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_REQUEST:
     case SET_ENS_CONTENT_SUCCESS:
     case SET_ENS_RESOLVER_SUCCESS:
-    case ALLOW_CLAIM_MANA_REQUEST: {
+    case ALLOW_CLAIM_MANA_REQUEST:
+    case ALLOW_CLAIM_MANA_SUCCESS: {
       return {
         ...state,
         error: null,

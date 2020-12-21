@@ -804,8 +804,10 @@
     "unset_collection_on_sale": "Removed the collection {name} from being on sale",
     "set_ens_resolver": "Set resolver for the name \"{name}\".",
     "set_ens_content": "Set redirection content for the name \"{name}\" on {land_link}.",
-    "claim_name": "Claimed new name: \"{name}\".",
-    "unset_ens_content": "Removed redirection content for the name \"{name}\"."
+    "unset_ens_content": "Removed redirection content for the name \"{name}\".",
+    "allowed_claim_mana": "Allowed MANA to claim a new name",
+    "disallowed_claim_mana": "Disallowed MANA to claim a new name",
+    "claim_name": "Claimed new name: \"{name}\"."
   },
   "transfer_page": {
     "title": "Transfer",

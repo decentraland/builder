@@ -134,7 +134,7 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre",
-    "subtitle": "Puede reclamar nombres y asignarlos a Perfiles o Tierras, y también se pueden usar como un enlace rápido para acceder al mundo.", 
+    "subtitle": "Puede reclamar nombres y asignarlos a Perfiles o Tierras, y también se pueden usar como un enlace rápido para acceder al mundo.",
     "form" : {
       "name_label": "Nombre",
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
@@ -795,8 +795,10 @@
     "unset_collection_on_sale": "La colección {name} ya no está a la venta",
     "set_ens_resolver": "Haz asignado el resolver para el nombre \"{name}\".",
     "set_ens_content": "Haz asignado el contenido de redirección para el nombre \"{name}\" en {land_link}.",
-    "claim_name": "Haz reclamado el nombre: \"{name}\".",
-    "unset_ens_content": "Haz removido el contenido para el nombre \"{name}\"."
+    "unset_ens_content": "Haz removido el contenido para el nombre \"{name}\".",
+    "allowed_claim_mana": "Permitió el uso de MANA para reclamar un nuevo nombre",
+    "disallowed_claim_mana": "No permitió el uso de MANA para reclamar un nuevo nombre",
+    "claim_name": "Haz reclamado el nombre: \"{name}\"."
   },
   "transfer_page": {
     "title": "Transferir",

@@ -4,7 +4,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
-import { allowClaimManaRequest, claimNameRequest, FETCH_ENS_LIST_REQUEST, ALLOW_CLAIM_MANA_REQUEST } from 'modules/ens/actions'
+import { allowClaimManaRequest, claimNameRequest, ALLOW_CLAIM_MANA_REQUEST } from 'modules/ens/actions'
 import { getLoading, isWaitingTxAllowMana, getAuthorizationByWallet } from 'modules/ens/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ClaimENSPage.types'
 import ClaimENSPage from './ClaimENSPage'
@@ -16,10 +16,7 @@ const mapState = (state: RootState): MapStateProps => {
   return {
     address,
     allowance: authorization ? authorization.allowance : '0',
-    isLoading:
-      isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
-      isLoadingType(getLoading(state), ALLOW_CLAIM_MANA_REQUEST) ||
-      isWaitingTxAllowMana(state)
+    isLoading: !authorization || isLoadingType(getLoading(state), ALLOW_CLAIM_MANA_REQUEST) || isWaitingTxAllowMana(state)
   }
 }
 
