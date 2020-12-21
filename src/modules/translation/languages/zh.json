@@ -353,12 +353,14 @@
   "ens_list_page": {
     "table": {
       "name": "名称",
-      "being_assigned": "被分配",
+      "link": "链接",
       "assigned_to": "分配给"
     },
+    "assigned_to_land": "土地 ({landId})",
+    "assigned_to_state": "州 ({landId})",
     "button": {
       "assign": "分配",
-      "re_assign": "重新指定",
+      "edit": "修",
       "use_as_alias": "用作别名"
     },
     "order": {
@@ -389,6 +391,7 @@
     "title": "下载场景"
   },
   "global": {
+    "avatar": "头像",
     "approved_tx": "批准的TX",
     "back": "返回",
     "blog_post": "博客",

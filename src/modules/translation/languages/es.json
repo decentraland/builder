@@ -345,12 +345,14 @@
   "ens_list_page": {
     "table": {
       "name": "Nombre",
-      "being_assigned": "Siendo assignado",
+      "link": "Enlace",
       "assigned_to": "Asignado a"
     },
+    "assigned_to_land": "Tierra ({landId})",
+    "assigned_to_state": "Estate ({landId})",
     "button": {
       "assign": "Asignar",
-      "re_assign": "Re Asignar",
+      "edit": "Editar",
       "use_as_alias": "Usar como alias"
     },
     "order": {
@@ -388,6 +390,7 @@
     "title": "Descargar Escena"
   },
   "global": {
+    "avatar": "Avatar",
     "approved_tx": "Aprobada",
     "back": "volver",
     "blog_post": "blog post",

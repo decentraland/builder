@@ -58,6 +58,7 @@ export type IconName =
   | 'preview-active'
   | 'preview'
   | 'profile'
+  | 'right-round-arrow'
   | 'rotate-active'
   | 'rotate-left'
   | 'rotate-left'
