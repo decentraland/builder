@@ -53,7 +53,7 @@ import {
   claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { getDomainFromName } from './utils'
+import { getDefaultProfileEntity, getDomainFromName } from './utils'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
 
@@ -76,11 +76,8 @@ function* handleSetAlias(action: SetAliasRequestAction) {
   try {
     const client = new CatalystClient(PEER_URL, 'builder')
     const entities: Entity[] = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()])
-    const entity = entities.length > 0 ? entities[0] : null
+    const entity = entities.length > 0 ? entities[0] : getDefaultProfileEntity()
 
-    if (!entity) {
-      throw new Error('entity is null')
-    }
     const avatar = entity && entity.metadata && entity.metadata.avatars[0]
     const newAvatar: Avatar = {
       ...avatar,
@@ -90,6 +87,8 @@ function* handleSetAlias(action: SetAliasRequestAction) {
 
     const newEntity = {
       ...entity,
+      userId: address,
+      ethAddress: address,
       metadata: {
         ...entity.metadata,
         avatars: [newAvatar, ...entity.metadata.avatars.slice(1)]
@@ -121,6 +120,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     yield put(setAliasFailure(address, ensError))
   }
 }
+
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { subdomain, land } = action.payload
   try {

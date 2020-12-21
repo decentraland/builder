@@ -5,6 +5,7 @@ import { ENS } from './types'
 import { DCLRegistrar } from 'contracts/DCLRegistrar'
 import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
+import defaultProfile from './default-profile.json'
 
 export const PRICE_IN_WEI = 100000000000000000000 // 100 MANA
 export const PRICE = fromWei(PRICE_IN_WEI.toString(), 'ether')
@@ -21,6 +22,10 @@ export const MIN_NAME_SIZE = 2
  *  - emojis
  */
 const nameRegex = new RegExp(`^([a-zA-Z0-9]){2,${MAX_NAME_SIZE}}$`)
+
+export function getDefaultProfileEntity() {
+  return defaultProfile
+}
 
 export async function isNameAvailable(name: string) {
   const eth = await createEth()
