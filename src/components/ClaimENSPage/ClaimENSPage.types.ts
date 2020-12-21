@@ -1,13 +1,14 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction, goBack } from 'connected-react-router'
-import { ENS } from 'modules/ens/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
-import { claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
+import { allowClaimManaRequest, AllowClaimManaRequestAction, claimNameRequest, ClaimNameRequestAction } from 'modules/ens/actions'
 
 export type Props = {
-  ensList: ENS[]
   address: string
+  allowance: string
+  isLoading: boolean
   onOpenModal: typeof openModal
+  onAllowMana: typeof allowClaimManaRequest
   onClaim: typeof claimNameRequest
   onNavigate: (path: string) => void
   onBack: typeof goBack
@@ -15,12 +16,11 @@ export type Props = {
 
 export type State = {
   name: string
-  amountApproved: number
   isLoading: boolean
   isAvailable: boolean
   isError: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'ensList'>
-export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onClaim' | 'onNavigate' | 'onBack'>
-export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | ClaimNameRequestAction>
+export type MapStateProps = Pick<Props, 'address' | 'allowance' | 'isLoading'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onAllowMana' | 'onClaim' | 'onNavigate' | 'onBack'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | AllowClaimManaRequestAction | ClaimNameRequestAction>

@@ -36,18 +36,26 @@ import {
   ClaimNameFailureAction,
   ClaimNameSuccessAction,
   CLAIM_NAME_FAILURE,
-  CLAIM_NAME_SUCCESS
+  CLAIM_NAME_SUCCESS,
+  ALLOW_CLAIM_MANA_REQUEST,
+  ALLOW_CLAIM_MANA_FAILURE,
+  ALLOW_CLAIM_MANA_SUCCESS,
+  AllowClaimManaRequestAction,
+  AllowClaimManaSuccessAction,
+  AllowClaimManaFailureAction
 } from './actions'
-import { ENS, ENSError } from './types'
+import { ENS, ENSError, Authorization } from './types'
 
 export type ENSState = {
   data: Record<string, ENS>
+  authorizations: Record<string, Authorization>
   loading: LoadingState
   error: ENSError | null
 }
 
 const INITIAL_STATE: ENSState = {
   data: {},
+  authorizations: {},
   loading: [],
   error: null
 }
@@ -72,6 +80,9 @@ export type ENSReducerAction =
   | ClaimNameRequestAction
   | ClaimNameFailureAction
   | ClaimNameSuccessAction
+  | AllowClaimManaRequestAction
+  | AllowClaimManaSuccessAction
+  | AllowClaimManaFailureAction
 
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
@@ -83,7 +94,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_CONTENT_REQUEST:
     case SET_ENS_RESOLVER_REQUEST:
     case SET_ENS_CONTENT_SUCCESS:
-    case SET_ENS_RESOLVER_SUCCESS: {
+    case SET_ENS_RESOLVER_SUCCESS:
+    case ALLOW_CLAIM_MANA_REQUEST: {
       return {
         ...state,
         error: null,
@@ -91,18 +103,25 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
       }
     }
     case FETCH_ENS_LIST_SUCCESS: {
+      const { ensList, authorization, address } = action.payload
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: {
           ...state.data,
-          ...action.payload.ensList.reduce(
+          ...ensList.reduce(
             (obj, ens) => {
               obj[ens.subdomain] = { ...obj[ens.subdomain], ...ens }
               return obj
             },
             { ...state.data }
           )
+        },
+        authorizations: {
+          ...state.authorizations,
+          [address]: {
+            ...authorization
+          }
         }
       }
     }
@@ -138,7 +157,8 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
-    case FETCH_ENS_LIST_FAILURE: {
+    case FETCH_ENS_LIST_FAILURE:
+    case ALLOW_CLAIM_MANA_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -178,6 +198,20 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
                 landId: land ? land.id : ''
               }
             }
+          }
+        }
+        case ALLOW_CLAIM_MANA_SUCCESS: {
+          const { allowance, address } = transaction.payload
+          return {
+            ...state,
+            authorizations: {
+              ...state.authorizations,
+              [address]: {
+                ...state.authorizations[address],
+                allowance
+              }
+            },
+            loading: loadingReducer(state.loading, action)
           }
         }
         default:

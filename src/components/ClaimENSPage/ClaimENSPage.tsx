@@ -1,17 +1,13 @@
 import * as React from 'react'
-import { Address } from 'web3x-es/address'
-import { Eth } from 'web3x-es/eth'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EtherscanLink } from 'decentraland-dapps/dist/containers'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength } from 'modules/ens/utils'
-import { ERC20 as MANAToken } from 'contracts/ERC20'
-import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isAllowed } from 'modules/ens/utils'
+import { CONTROLLER_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 
 import './ClaimENSPage.css'
@@ -19,67 +15,15 @@ import './ClaimENSPage.css'
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
-    amountApproved: -1,
     isLoading: false,
     isAvailable: true,
     isError: false
   }
 
-  async getManaContract() {
-    const eth: Eth | null = await createEth()
-    if (!eth) return
-    return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
-  }
-
-  componentDidMount() {
-    if (this.state.amountApproved === -1) {
-      this.getAllowance()
-    }
-  }
-
-  componentDidUpdate(prevProps: Props, _prevState: State) {
-    const { address } = this.props
-
-    if (prevProps.address !== address) {
-      this.setState({ isLoading: true })
-      this.getAllowance().then(() => this.setState({ isLoading: false }))
-    }
-  }
-
-  async getAllowance() {
-    const { address } = this.props
-
-    try {
-      const contractMANA = await this.getManaContract()
-      if (contractMANA && address) {
-        const allowance: string = await contractMANA.methods
-          .allowance(Address.fromString(address), Address.fromString(CONTROLLER_ADDRESS))
-          .call()
-        this.setState({ amountApproved: +allowance })
-      }
-    } catch (error) {
-      throw error
-    }
-  }
-
   handleManaApprove = async () => {
-    const { address } = this.props
-    const contractMANA = await this.getManaContract()
-
-    if (!contractMANA || !address) return
-
-    const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
-    try {
-      this.setState({ isLoading: true })
-
-      await contractMANA.methods
-        .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
-        .send({ from: Address.fromString(address) })
-        .getReceipt()
-      this.setState({ isLoading: false })
-    } catch (error) {
-      this.setState({ isLoading: false })
-    }
+    const { allowance, onAllowMana } = this.props
+    const manaToAllow = isAllowed(allowance) ? 0 : getMaximumValue()
+    onAllowMana(manaToAllow.toString())
   }
 
   handleClaim = async () => {
@@ -112,18 +56,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.root())
   }
 
-  isManaApproved = () => {
-    const { amountApproved } = this.state
-    return amountApproved >= 100
-  }
-
   render() {
-    const { onBack } = this.props
-    const { name, isLoading, isError, isAvailable } = this.state
-    const isValid = isNameValid(name)
+    const { allowance, onBack } = this.props
+    const { name, isError, isAvailable } = this.state
 
-    // this need to be checked due peformance issues
-    // in the `handleClaim` function before `onOpenModal`
+    const isValid = isNameValid(name)
+    const isLoading = this.props.isLoading || this.state.isLoading
+    const isManaAllowed = isAllowed(allowance)
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -162,7 +101,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 </Section>
                 <Section className="field">
                   <Header sub={true}>MANA Approved</Header>
-                  <Radio toggle disabled={isLoading} checked={this.isManaApproved()} onChange={this.handleManaApprove} />
+                  <Radio toggle disabled={isLoading} checked={isManaAllowed} onChange={this.handleManaApprove} />
                   <p className="message">
                     <T
                       id="claim_ens_page.form.need_mana_message"
@@ -180,7 +119,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || !isAvailable} loading={isLoading}>
+                  <Button type="submit" primary disabled={isManaAllowed || !isValid || !isAvailable} loading={isLoading}>
                     {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
                   </Button>
                 </Row>

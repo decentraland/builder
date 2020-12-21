@@ -15,8 +15,9 @@ import { createEth } from 'decentraland-dapps/dist/lib/eth'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
-import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS } from 'modules/common/contracts'
+import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { DCLController } from 'contracts/DCLController'
+import { ERC20 as MANAToken } from 'contracts/ERC20'
 import { getCurrentAddress } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { getLands } from 'modules/land/selectors'
@@ -24,7 +25,9 @@ import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { changeProfile } from 'modules/profile/actions'
 import { Profile } from 'modules/profile/types'
 import { PEER_URL } from 'lib/api/peer'
-
+import { locations } from 'routing/locations'
+import { Land } from 'modules/land/types'
+import { closeModal } from 'modules/modal/actions'
 import {
   FETCH_ENS_REQUEST,
   FetchENSRequestAction,
@@ -50,12 +53,14 @@ import {
   CLAIM_NAME_REQUEST,
   ClaimNameRequestAction,
   claimNameSuccess,
-  claimNameFailure
+  claimNameFailure,
+  ALLOW_CLAIM_MANA_REQUEST,
+  AllowClaimManaRequestAction,
+  allowClaimManaSuccess,
+  allowClaimManaFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
 import { getDefaultProfileEntity, getDomainFromName, setProfileFromEntity } from './utils'
-import { locations } from 'routing/locations'
-import { closeModal } from 'modules/modal/actions'
 
 export function* ensSaga() {
   yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
@@ -65,6 +70,7 @@ export function* ensSaga() {
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
+  yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
 }
 
 function* handleConnectWallet() {
@@ -245,8 +251,8 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
 function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
   try {
-    const landHashes = []
-    const lands = yield select(getLands)
+    const landHashes: { id: string; hash: string }[] = []
+    const lands: Land[] = yield select(getLands)
 
     for (let land of lands) {
       const landHash = yield call(() => ipfs.computeLandHash(land))
@@ -258,10 +264,11 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
     const ensList: ENS[] = []
+
     for (let subdomain of domains) {
       subdomain = subdomain.toLowerCase()
       let landId: string | undefined = undefined
-      let content = '' // TODO: i left this as empty string because it cannot be undefined, probably we can change the type so it can be
+      let content: string = ''
 
       const nodehash = namehash(subdomain)
       const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
@@ -270,6 +277,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
       if (resolver !== Address.ZERO.toString()) {
         const resolverContract = new ENSResolver(eth, resolverAddress)
         content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
+
         const land = landHashes.find(lh => lh.hash === content)
         if (land) {
           landId = land.id
@@ -284,7 +292,12 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
         landId
       })
     }
-    yield put(fetchENSListSuccess(ensList))
+
+    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+    const allowance: string = yield call(() => manaContract.methods.allowance(from, Address.fromString(CONTROLLER_ADDRESS)).call())
+    const authorization: Authorization = { allowance }
+
+    yield put(fetchENSListSuccess(ensList, authorization, address))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(fetchENSListFailure(ensError))
@@ -305,11 +318,31 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
       resolver: Address.ZERO.toString(),
       content: Address.ZERO.toString()
     }
-    yield put(claimNameSuccess(ens, name, from.toString(), txHash)) // ens: ENS, name: string, address: string, txHash: string
+    yield put(claimNameSuccess(ens, name, from.toString(), txHash))
     yield put(closeModal('ClaimNameFatFingerModal'))
     yield put(push(locations.activity()))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(claimNameFailure(ensError))
+  }
+}
+
+function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
+  const { allowance } = action.payload
+  try {
+    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
+
+    const txHash: string = yield call(() =>
+      manaContract.methods
+        .approve(Address.fromString(CONTROLLER_ADDRESS), allowance)
+        .send({ from })
+        .getReceipt()
+    )
+
+    yield put(allowClaimManaSuccess(allowance, from.toString(), txHash))
+  } catch (error) {
+    const ensError: ENSError = { message: error.message }
+    yield put(allowClaimManaFailure(ensError))
   }
 }

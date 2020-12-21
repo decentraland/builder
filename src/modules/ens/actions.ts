@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Land } from 'modules/land/types'
-import { ENS, ENSError } from './types'
+import { Authorization, ENS, ENSError } from './types'
 
 // Fetch ENS resolver for a land
 export const FETCH_ENS_REQUEST = '[Request] Fetch ENS'
@@ -59,7 +59,8 @@ export const FETCH_ENS_LIST_SUCCESS = '[Success] Fetch ENS List'
 export const FETCH_ENS_LIST_FAILURE = '[Failure] Fetch ENS List'
 
 export const fetchENSListRequest = () => action(FETCH_ENS_LIST_REQUEST, {})
-export const fetchENSListSuccess = (ensList: ENS[]) => action(FETCH_ENS_LIST_SUCCESS, { ensList })
+export const fetchENSListSuccess = (ensList: ENS[], authorization: Authorization, address: string) =>
+  action(FETCH_ENS_LIST_SUCCESS, { ensList, authorization, address })
 export const fetchENSListFailure = (error: ENSError) => action(FETCH_ENS_LIST_FAILURE, { error })
 
 export type FetchENSListRequestAction = ReturnType<typeof fetchENSListRequest>
@@ -96,3 +97,21 @@ export const claimNameFailure = (error: ENSError) => action(CLAIM_NAME_FAILURE, 
 export type ClaimNameRequestAction = ReturnType<typeof claimNameRequest>
 export type ClaimNameSuccessAction = ReturnType<typeof claimNameSuccess>
 export type ClaimNameFailureAction = ReturnType<typeof claimNameFailure>
+
+// Allow MANA to claim names
+export const ALLOW_CLAIM_MANA_REQUEST = '[Request] Allow Claim MANA'
+export const ALLOW_CLAIM_MANA_SUCCESS = '[Success] Allow Claim MANA'
+export const ALLOW_CLAIM_MANA_FAILURE = '[Failure] Allow Claim MANA'
+
+export const allowClaimManaRequest = (allowance: string) => action(ALLOW_CLAIM_MANA_REQUEST, { allowance })
+export const allowClaimManaSuccess = (allowance: string, address: string, txHash: string) =>
+  action(ALLOW_CLAIM_MANA_SUCCESS, {
+    ...buildTransactionPayload(txHash, { allowance, address }),
+    allowance,
+    address
+  })
+export const allowClaimManaFailure = (error: ENSError) => action(ALLOW_CLAIM_MANA_FAILURE, { error })
+
+export type AllowClaimManaRequestAction = ReturnType<typeof allowClaimManaRequest>
+export type AllowClaimManaSuccessAction = ReturnType<typeof allowClaimManaSuccess>
+export type AllowClaimManaFailureAction = ReturnType<typeof allowClaimManaFailure>
