@@ -10,6 +10,7 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { Props, State, SortBy } from './ENSListPage.types'
 import './ENSListPage.css'
+import { Link } from 'react-router-dom'
 
 const PAGE_SIZE = 12
 
@@ -76,7 +77,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     return alias ? name === alias.toLowerCase() : false
   }
 
-  getAssignedToMessage(ens: ENS): string {
+  getAssignedToMessage(ens: ENS) {
     if (this.isAlias(ens)) {
       return t('global.avatar')
     }
@@ -84,11 +85,11 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     if (!landId) {
       return ''
     }
-    if (isCoords(landId)) {
-      return t('ens_list_page.assigned_to_land', { landId })
-    } else {
-      return t('ens_list_page.assigned_to_state', { landId })
-    }
+    return (
+      <Link to={locations.landDetail(landId)}>
+        {isCoords(landId) ? t('ens_list_page.assigned_to_land', { landId }) : t('ens_list_page.assigned_to_state', { landId })}
+      </Link>
+    )
   }
 
   renderEnsList() {
