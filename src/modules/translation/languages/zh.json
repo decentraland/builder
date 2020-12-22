@@ -131,7 +131,7 @@
   },
   "claim_ens_page": {
     "title": "索取名字",
-    "subtitle": "您可以声明名称并将其分配给“个人档案”或“地域”，也可以用作访问世界的快速链接。", 
+    "subtitle": "名称分配使您可以使用以下格式为包裹提供唯一的URL：http://name.dcl.eth.link。 {separator}用户打开http://name.dcl.eth.link后，他们将在{dclWorldLink}中重定向到您的包裹",
     "form" : {
       "name_label": "名称",
       "name_message": "名称不能包含非字母数字字符或空格。",

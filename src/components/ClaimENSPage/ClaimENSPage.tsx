@@ -140,7 +140,19 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 <Header className="title" size="large">
                   {t('claim_ens_page.title')}
                 </Header>
-                <span className="subtitle">{t('claim_ens_page.subtitle')}</span>
+                <span className="subtitle">
+                  <T
+                    id="claim_ens_page.subtitle"
+                    values={{
+                      separator: <br />,
+                      dclWorldLink: (
+                        <a href="http://play.decentraland.org" rel="noopener noreferrer" target="_blank">
+                          Decentraland World
+                        </a>
+                      )
+                    }}
+                  />
+                </span>
               </Section>
               <Form onSubmit={this.handleClaim}>
                 <Section>
