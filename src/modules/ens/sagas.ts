@@ -77,7 +77,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     const client = new CatalystClient(PEER_URL, 'builder')
     const entities: Entity[] = yield client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()])
     const defaultEntity: Entity = yield getDefaultProfileEntity()
-    const entity = entities.length < 0 ? entities[0] : defaultEntity
+    const entity = entities.length > 0 ? entities[0] : defaultEntity
 
     const avatar = entity && entity.metadata && entity.metadata.avatars[0]
     const newAvatar: Avatar = {
