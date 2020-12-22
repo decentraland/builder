@@ -265,8 +265,8 @@ function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestA
 
     yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))
   } catch (error) {
-    const ensError: ENSError = { message: error.message }
-    yield put(fetchENSAuthorizationFailure(ensError))
+    const allowError: ENSError = { message: error.message }
+    yield put(fetchENSAuthorizationFailure(allowError))
   }
 }
 

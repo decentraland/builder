@@ -79,5 +79,5 @@ export function getNameFromDomain(domain: string): string {
 }
 
 export function isEnoughClaimMana(mana: string) {
-  return Number(mana) > 100
+  return Number(mana) >= 100
 }
