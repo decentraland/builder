@@ -134,8 +134,8 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre",
-    "subtitle": "A name assignment allows you have a unique URL for your parcel with the following format: http://name.dcl.eth.link. {separator} Once users open http://name.dcl.eth.link, they will be redirected to your parcel in the {dclWorldLink}",
     "subtitle": "Una asignación de nombre permite tener una URL unica para tu parcela con el siguiente formato: http://name.dcl.eth.link. {separator} Cuando los usuarios accedan a http://name.dcl.eth.link, serán redirijidos a tu parcela en el {dclWorldLink}.", 
+    "world": "Mundo Decentraland",
     "form" : {
       "name_label": "Nombre",
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",

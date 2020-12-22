@@ -132,6 +132,7 @@
   "claim_ens_page": {
     "title": "索取名字",
     "subtitle": "名称分配使您可以使用以下格式为包裹提供唯一的URL：http://name.dcl.eth.link。 {separator}用户打开http://name.dcl.eth.link后，他们将在{dclWorldLink}中重定向到您的包裹",
+    "world": "蒙多 Decentraland",
     "form" : {
       "name_label": "名称",
       "name_message": "名称不能包含非字母数字字符或空格。",

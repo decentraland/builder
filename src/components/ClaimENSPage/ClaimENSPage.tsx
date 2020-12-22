@@ -147,7 +147,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       separator: <br />,
                       dclWorldLink: (
                         <a href="http://play.decentraland.org" rel="noopener noreferrer" target="_blank">
-                          Decentraland World
+                          {t('claim_ens_page.world')}
                         </a>
                       )
                     }}
