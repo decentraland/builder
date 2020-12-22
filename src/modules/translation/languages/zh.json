@@ -363,6 +363,7 @@
       "edit": "修",
       "use_as_alias": "用作别名"
     },
+    "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
     "order": {
       "name_asc": "名称 ↑",
       "name_desc": "名称 ↓"

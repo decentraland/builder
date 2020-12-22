@@ -362,6 +362,7 @@
       "edit": "Edit",
       "use_as_alias": "Use as Alias"
     },
+    "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
     "order": {
       "name_asc": "Name ↑",
       "name_desc": "Name ↓"

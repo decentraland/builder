@@ -356,6 +356,7 @@
       "edit": "Editar",
       "use_as_alias": "Usar como alias"
     },
+    "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "order": {
       "name_asc": "Nombre ↑",
       "name_desc": "Nombre ↓"

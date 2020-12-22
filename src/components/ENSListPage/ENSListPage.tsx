@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
@@ -208,7 +208,17 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                   })}
                 </Table.Body>
               </Table>
-            ) : null}
+            ) : (
+              <Empty height={100}>
+                <T
+                  id="ens_list_page.empty_names"
+                  values={{
+                    br: <br />,
+                    link: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
+                  }}
+                />
+              </Empty>
+            )}
             {total !== null && totalPages !== null && totalPages > 1 && (
               <Pagination
                 firstItem={null}
