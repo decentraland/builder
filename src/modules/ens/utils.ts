@@ -24,8 +24,8 @@ export const MIN_NAME_SIZE = 2
 const nameRegex = new RegExp(`^([a-zA-Z0-9]){2,${MAX_NAME_SIZE}}$`)
 
 export async function setProfileFromEntity(entity: any) {
-  entity.metadata.avatars[0].avatar.snapshots.face = PEER_URL + '/content/contents/' + entity.metadata.avatars[0].avatar.snapshots.face
-  entity.metadata.avatars[0].avatar.snapshots.body = PEER_URL + '/content/contents/' + entity.metadata.avatars[0].avatar.snapshots.body
+  entity.metadata.avatars[0].avatar.snapshots.face = `${PEER_URL}/content/contents/${entity.metadata.avatars[0].avatar.snapshots.face}`
+  entity.metadata.avatars[0].avatar.snapshots.body = `${PEER_URL}/content/contents/${entity.metadata.avatars[0].avatar.snapshots.body}`
   return entity
 }
 
