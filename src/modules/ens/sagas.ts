@@ -64,7 +64,7 @@ import {
   allowClaimManaSuccess,
   allowClaimManaFailure
 } from './actions'
-import { ENS, ENSOrigin, ENSError } from './types'
+import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDefaultProfileEntity, getDomainFromName, setProfileFromEntity } from './utils'
 
 export function* ensSaga() {
