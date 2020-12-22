@@ -53,7 +53,7 @@ import {
   claimNameFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError } from './types'
-import { getDefaultProfileEntity, getDomainFromName } from './utils'
+import { getDefaultProfileEntity, getDomainFromName, setProfileFromEntity } from './utils'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
 
@@ -117,8 +117,9 @@ function* handleSetAlias(action: SetAliasRequestAction) {
       const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
       yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
 
+      const stateEntity = yield call(() => setProfileFromEntity(newEntity))
       yield put(setAliasSuccess(address, name))
-      yield put(changeProfile(address, newEntity.metadata as Profile))
+      yield put(changeProfile(address, stateEntity.metadata as Profile))
     }
   } catch (error) {
     const ensError: ENSError = { message: error.message }
