@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import { getLocation, push } from 'connected-react-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { getData as getProfiles } from 'decentraland-dapps/dist/modules/profile/selectors'
 
 import { RootState } from 'modules/common/types'
-import { getData as getProfiles } from 'modules/profile/selectors'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './UserMenu.types'
 import { logout, loginRequest } from 'modules/identity/actions'
 import UserMenu from './UserMenu'

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 
-import { Profile } from 'modules/profile/types'
+import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 import { LoginRequestAction, LogoutAction, logout, loginRequest } from 'modules/identity/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
 

@@ -99,8 +99,8 @@
 .ui.radio.checkbox.checked.operator-checkbox input.hidden:focus + label:before,
 .ui.radio.checkbox.checked.operator-checkbox input.hidden + label:after,
 .ui.radio.checkbox.checked.operator-checkbox input.hidden:focus + label:after {
-  background-color: rgb(var(--light-blue-raw));
-  border: 2px solid rgb(var(--light-blue-raw));
+  background-color: rgb(var(--luisxvi-violet-raw));
+  border: 2px solid rgb(var(--luisxvi-violet-raw));
 }
 
 .operator-popup {
