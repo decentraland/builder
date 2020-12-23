@@ -148,11 +148,12 @@
   },
   "claim_ens_page": {
     "title": "Claim a Name",
-    "subtitle": "A name assignment allows you have a unique URL for your parcel with the following format: http://name.dcl.eth.link. {separator} Once users open http://name.dcl.eth.link, they will be redirected to your parcel in the {dclWorldLink}",
-    "world": "Decentraland World",
+    "subtitle": "A name assignment allows you have a unique URL for your Land with the following format: http://name.dcl.eth.link. Once users open the link, they will be redirected to it in the {dclWorldLink}",
+    "world": "Decentraland World!",
     "form" : {
       "name_label": "Name",
       "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
+      "name_placeholder": "Your name goes here",
       "repeated_message": "This name is not available.",
       "error_message": "There is a network error, please try again",
       "radio_label": "MANA approved",

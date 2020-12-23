@@ -131,11 +131,12 @@
   },
   "claim_ens_page": {
     "title": "索取名字",
-    "subtitle": "名称分配使您可以使用以下格式为包裹提供唯一的URL：http://name.dcl.eth.link。 {separator}用户打开http://name.dcl.eth.link后，他们将在{dclWorldLink}中重定向到您的包裹",
-    "world": "蒙多 Decentraland",
+    "subtitle": "通过名称分配，您可以使用以下格式为土地指定唯一的URL：http://name.dcl.eth.link。 用户打开链接后，他们将在{dclWorldLink}中重定向到该链接",
+    "world": "蒙多 Decentraland!",
     "form" : {
       "name_label": "名称",
       "name_message": "名称不能包含非字母数字字符或空格。",
+      "name_placeholder": "你的名字在这里",
       "repeated_message": "此名称不可用。",
       "error_message": "网络出现错误，请重试",
       "radio_label": "MANA批准",

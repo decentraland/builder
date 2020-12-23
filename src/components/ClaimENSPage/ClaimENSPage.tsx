@@ -166,6 +166,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                         ? t('claim_ens_page.form.name_message')
                         : t('claim_ens_page.form.repeated_message')
                     }
+                    placeholder={t('claim_ens_page.form.name_placeholder')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
                     error={isError || (hasNameMinLength(name) && !isValid) || !isAvailable}
                     onChange={this.handleNameChange}

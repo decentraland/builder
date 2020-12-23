@@ -134,11 +134,12 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre",
-    "subtitle": "Una asignación de nombre permite tener una URL unica para tu parcela con el siguiente formato: http://name.dcl.eth.link. {separator} Cuando los usuarios accedan a http://name.dcl.eth.link, serán redirijidos a tu parcela en el {dclWorldLink}.", 
-    "world": "Mundo Decentraland",
+    "subtitle": "Una asignación de nombre le permite tener una URL única para su terreno con el siguiente formato: http://name.dcl.eth.link. Una vez que los usuarios abren el enlace, serán redirigidos a él en {dclWorldLink}", 
+    "world": "Mundo Decentraland!",
     "form" : {
       "name_label": "Nombre",
       "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+      "name_placeholder": "Tu nombre va aquí",
       "error_message": "Hay un error de red. Vuelve a intentarlo.",
       "repeated_message": "Este nombre no esta disponible.",
       "radio_label": "MANA aprobado",
