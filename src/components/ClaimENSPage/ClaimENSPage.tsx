@@ -1,17 +1,13 @@
 import * as React from 'react'
-import { Address } from 'web3x-es/address'
-import { Eth } from 'web3x-es/eth'
-import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio } from 'decentraland-ui'
+import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio, Popup } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { EtherscanLink } from 'decentraland-dapps/dist/containers'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { locations } from 'routing/locations'
 import { getMaximumValue } from 'lib/mana'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength } from 'modules/ens/utils'
-import { ERC20 as MANAToken } from 'contracts/ERC20'
-import { CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
+import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
+import { CONTROLLER_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
 
 import './ClaimENSPage.css'
@@ -19,67 +15,15 @@ import './ClaimENSPage.css'
 export default class ClaimENSPage extends React.PureComponent<Props, State> {
   state: State = {
     name: '',
-    amountApproved: -1,
     isLoading: false,
     isAvailable: true,
     isError: false
   }
 
-  async getManaContract() {
-    const eth: Eth | null = await createEth()
-    if (!eth) return
-    return new MANAToken(eth, Address.fromString(MANA_ADDRESS))
-  }
-
-  componentDidMount() {
-    if (this.state.amountApproved === -1) {
-      this.getAllowance()
-    }
-  }
-
-  componentDidUpdate(prevProps: Props, _prevState: State) {
-    const { address } = this.props
-
-    if (prevProps.address !== address) {
-      this.setState({ isLoading: true })
-      this.getAllowance().then(() => this.setState({ isLoading: false }))
-    }
-  }
-
-  async getAllowance() {
-    const { address } = this.props
-
-    try {
-      const contractMANA = await this.getManaContract()
-      if (contractMANA && address) {
-        const allowance: string = await contractMANA.methods
-          .allowance(Address.fromString(address), Address.fromString(CONTROLLER_ADDRESS))
-          .call()
-        this.setState({ amountApproved: +allowance })
-      }
-    } catch (error) {
-      throw error
-    }
-  }
-
   handleManaApprove = async () => {
-    const { address } = this.props
-    const contractMANA = await this.getManaContract()
-
-    if (!contractMANA || !address) return
-
-    const manaToApprove = this.isManaApproved() ? 0 : getMaximumValue()
-    try {
-      this.setState({ isLoading: true })
-
-      await contractMANA.methods
-        .approve(Address.fromString(CONTROLLER_ADDRESS), manaToApprove)
-        .send({ from: Address.fromString(address) })
-        .getReceipt()
-      this.setState({ isLoading: false })
-    } catch (error) {
-      this.setState({ isLoading: false })
-    }
+    const { allowance, onAllowMana } = this.props
+    const manaToAllow = isEnoughClaimMana(allowance) ? 0 : getMaximumValue()
+    onAllowMana(manaToAllow.toString())
   }
 
   handleClaim = async () => {
@@ -102,9 +46,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     const { isAvailable } = this.state
     if (isAvailable) {
-      this.setState({ name: data.value })
+      this.setState({ name: data.value, isError: false })
     } else {
-      this.setState({ name: data.value, isAvailable: true })
+      this.setState({ name: data.value, isAvailable: true, isError: false })
     }
   }
 
@@ -112,18 +56,17 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.root())
   }
 
-  isManaApproved = () => {
-    const { amountApproved } = this.state
-    return amountApproved >= 100
-  }
-
   render() {
-    const { onBack } = this.props
-    const { name, isLoading, isError, isAvailable } = this.state
-    const isValid = isNameValid(name)
+    const { wallet, allowance, onBack } = this.props
+    const { name, isError, isAvailable } = this.state
 
-    // this need to be checked due peformance issues
-    // in the `handleClaim` function before `onOpenModal`
+    const isLoading = this.props.isLoading || this.state.isLoading
+
+    const isValid = isNameValid(name)
+    const isEnoughMana = wallet && isEnoughClaimMana(wallet.mana.toString())
+    const isManaAllowed = isEnoughClaimMana(allowance)
+
+    const isDisabled = !isValid || !isAvailable || !isEnoughMana || !isManaAllowed
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -157,14 +100,14 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
               <Form onSubmit={this.handleClaim}>
                 <Section>
                   <Field
-                    label={t('claim_ens_page.form.name_label')}
+                    label={t('claim_ens_page.name_label')}
                     value={name}
                     message={
                       isError
-                        ? t('claim_ens_page.form.error_message')
+                        ? t('claim_ens_page.error_message')
                         : isAvailable
-                        ? t('claim_ens_page.form.name_message')
-                        : t('claim_ens_page.form.repeated_message')
+                        ? t('claim_ens_page.name_message')
+                        : t('claim_ens_page.repeated_message')
                     }
                     placeholder={t('claim_ens_page.form.name_placeholder')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
@@ -175,10 +118,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 </Section>
                 <Section className="field">
                   <Header sub={true}>MANA Approved</Header>
-                  <Radio toggle disabled={isLoading} checked={this.isManaApproved()} onChange={this.handleManaApprove} />
+                  <Radio toggle disabled={isLoading} checked={isManaAllowed} onChange={this.handleManaApprove} />
                   <p className="message">
                     <T
-                      id="claim_ens_page.form.need_mana_message"
+                      id="claim_ens_page.need_mana_message"
                       values={{
                         contract_link: (
                           <EtherscanLink address={CONTROLLER_ADDRESS} txHash="">
@@ -193,9 +136,29 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <Button className="cancel" onClick={onBack}>
                     {t('global.cancel')}
                   </Button>
-                  <Button type="submit" primary disabled={!isValid || !this.isManaApproved() || !isAvailable} loading={isLoading}>
-                    {t('claim_ens_page.form.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
-                  </Button>
+                  {!isLoading && (!isEnoughMana || !isManaAllowed) ? (
+                    <Popup
+                      className="modal-tooltip"
+                      content={
+                        !isEnoughMana ? t('claim_ens_page.not_enough_mana') : !isManaAllowed ? t('claim_ens_page.mana_not_allowed') : ''
+                      }
+                      position="top center"
+                      trigger={
+                        <div className="popup-button">
+                          <Button type="submit" primary disabled={isDisabled} loading={isLoading}>
+                            {t('claim_ens_page.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
+                          </Button>
+                        </div>
+                      }
+                      hideOnScroll={true}
+                      on="hover"
+                      inverted
+                    />
+                  ) : (
+                    <Button type="submit" primary disabled={isDisabled} loading={isLoading}>
+                      {t('claim_ens_page.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
+                    </Button>
+                  )}
                 </Row>
               </Form>
             </Column>
