@@ -369,7 +369,7 @@
       "name_asc": "Name ↑",
       "name_desc": "Name ↓"
     },
-    "items": "{count} {count, plural, one {item} other {items}}",
+    "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned"
   },
   "error_page": {

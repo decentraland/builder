@@ -1,3 +1,7 @@
+.ENSListPage .filters {
+  margin-top: -1;
+  margin-bottom: 16px;
+}
 .ENSListPage .TableRow {
   cursor: default;
 }
@@ -55,7 +59,7 @@
 }
 
 .ENSListPage .dcl.row > .ui.button.basic.claim-name {
-  padding: 5px 10px;
+  padding: 6px 11px;
   margin: 1px;
   border: 1px solid rgba(115, 110, 125, 0.4);
   margin-left: 30px;

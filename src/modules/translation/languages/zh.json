@@ -370,7 +370,7 @@
       "name_asc": "名称 ↑",
       "name_desc": "名称 ↓"
     },
-    "items": "{count} {count, plural, one {项目} other {项目}}",
+    "items": "{count}结果",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
   },
   "estate_editor": {
