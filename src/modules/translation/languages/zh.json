@@ -140,6 +140,21 @@
     "materials": "{count}个材料",
     "textures": "{count}个纹理"
   },
+  "claim_ens_page": {
+    "title": "索取名字",
+    "subtitle": "通过名称分配，您可以使用以下格式为土地指定唯一的URL：{exampleLink}。 用户打开链接后，他们将在{dclWorldLink}中重定向到该链接",
+    "world": "Decentraland!",
+    "name_label": "名称",
+    "name_message": "名称不能包含非字母数字字符或空格。",
+    "name_placeholder": "你的名字在这里",
+    "repeated_message": "此名称不可用。",
+    "error_message": "网络出现错误，请重试",
+    "radio_label": "MANA批准",
+    "claim_button": "要求 ",
+    "feed_mana_message": "授权{contract_link}合同代表您操作MANA",
+    "mana_not_allowed": "您需要授权足够的MANA才能申请新名称",
+    "not_enough_mana": "您没有足够的MANA来申请新名称"
+  },
   "create_item_modal": {
     "title": "新物品",
     "add_representation": "添加{bodyShape}",
@@ -286,10 +301,10 @@
     "title": "正在发布场景"
   },
   "use_as_alias_modal": {
-    "title": "別名",
+    "title": "用作别名",
     "subtitle": "為您的個人資料設置新別名",
-    "body": "將{newName}設置為Metaverse中的新別名！ 環遊世界時，讓其他人看到您的新名字。 它將替換為{oldName}",
-    "looks_great": "看起來很棒"
+    "body": "将{newName}设置为Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。 它将替换{oldName}",
+    "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。"
   },
   "deployment_contest_modal": {
     "action": "参加比赛",
@@ -340,15 +355,22 @@
   "ens_list_page": {
     "table": {
       "name": "名称",
-      "being_assigned": "被分配",
+      "link": "链接",
       "assigned_to": "分配给"
     },
+    "assigned_to_land": "土地 ({landId})",
+    "assigned_to_state": "州 ({landId})",
     "button": {
       "assign": "分配",
-      "re_assign": "重新指定",
+      "edit": "修",
       "use_as_alias": "用作别名"
     },
-    "items": "{count} {count, plural, one {项目} other {项目}}",
+    "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
+    "order": {
+      "name_asc": "名称 ↑",
+      "name_desc": "名称 ↓"
+    },
+    "items": "{count}结果",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
   },
   "estate_editor": {
@@ -372,6 +394,7 @@
     "title": "下载场景"
   },
   "global": {
+    "avatar": "头像",
     "approved_tx": "批准的TX",
     "back": "返回",
     "blog_post": "博客",
@@ -417,6 +440,7 @@
     "revoke": "撤消",
     "parcel_plural": "地块",
     "estate_plural": "产业",
+    "set": "定",
     "settings": "设定",
     "yes": "是",
     "no": "没有",
@@ -573,6 +597,13 @@
   },
   "ipfs_api": {
     "not_redirected": "如果您未重定向"
+  },
+  "claim_name_fat_finger_modal": {
+    "title": "请确认你的名字",
+    "description": "您选择{name}。 请重新输入名称以仔细检查这是您想要的名称。",
+    "ok_message": "恭喜{name}是您的名字。",
+    "name_placeholder": "您的唯一名字",
+    "names_different": "名称不符"
   },
   "migrate_page": {
     "step_one_title": "迁移您的帐户",
@@ -768,7 +799,10 @@
     "unset_collection_on_sale": "已将集合{name}从出售中移除",
     "set_ens_resolver": "为名称\"{name}\"设置解析器",
     "set_ens_content": "在{land_link}上为名称\"{name}\"设置重定向内容。",
-    "unset_ens_content": "删除名称\" {name} \"的重定向内容"
+    "unset_ens_content": "删除名称\" {name} \"的重定向内容",
+    "allowed_claim_mana": "允许MANA声明新名称",
+    "disallowed_claim_mana": "不允许MANA申请新名称",
+    "claim_name": "声明新名称：\"{name}\"。"
   },
   "transfer_page": {
     "title": "转移",

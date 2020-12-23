@@ -3,9 +3,12 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { Center, Page, Responsive } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import Intercom from 'decentraland-dapps/dist/components/Intercom'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 import EditorPage from 'components/EditorPage'
 import ErrorPage from 'components/ErrorPage'
 import HomePage from 'components/HomePage'
@@ -33,11 +36,9 @@ import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
 import ItemEditorPage from 'components/ItemEditorPage'
 import ENSListPage from 'components/ENSListPage'
+import ClaimENSPage from 'components/ClaimENSPage'
 
 import { Props, State } from './Routes.types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import Footer from 'components/Footer'
-import Navbar from 'components/Navbar'
 
 export default class Routes extends React.Component<Props, State> {
   state = {
@@ -112,18 +113,19 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.sceneDetail()} component={SceneDetailPage} />
             {env.get('REACT_APP_FF_ENS')
               ? [
-                  <Route exact path={locations.ens()} component={ENSListPage} />,
-                  <Route exact path={locations.landSelectENS()} component={LandSelectENSPage} />,
-                  <Route exact path={locations.landAssignENS()} component={LandAssignENSPage} />,
-                  <Route exact path={locations.ensSelectLand()} component={ENSSelectLandPage} />
+                  <Route exact key={1} path={locations.ens()} component={ENSListPage} />,
+                  <Route exact key={2} path={locations.claimENS()} component={ClaimENSPage} />,
+                  <Route exact key={3} path={locations.landSelectENS()} component={LandSelectENSPage} />,
+                  <Route exact key={4} path={locations.landAssignENS()} component={LandAssignENSPage} />,
+                  <Route exact key={5} path={locations.ensSelectLand()} component={ENSSelectLandPage} />
                 ]
               : null}
             {env.get('REACT_APP_FF_WEARABLES')
               ? [
-                  <Route exact path={locations.avatar()} component={AvatarPage} />,
-                  <Route exact path={locations.itemDetail()} component={ItemDetailPage} />,
-                  <Route exact path={locations.collectionDetail()} component={CollectionDetailPage} />,
-                  <Route exact path={locations.itemEditor()} component={ItemEditorPage} />
+                  <Route exact key={1} path={locations.avatar()} component={AvatarPage} />,
+                  <Route exact key={2} path={locations.itemDetail()} component={ItemDetailPage} />,
+                  <Route exact key={3} path={locations.collectionDetail()} component={CollectionDetailPage} />,
+                  <Route exact key={4} path={locations.itemEditor()} component={ItemEditorPage} />
                 ]
               : null}
             <Redirect to={locations.root()} />

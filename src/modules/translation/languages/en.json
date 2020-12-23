@@ -146,6 +146,21 @@
     "materials": "{count} {count, plural, one {material} other {materials}}",
     "textures": "{count} {count, plural, one {texture} other {textures}}"
   },
+  "claim_ens_page": {
+    "title": "Claim a Name",
+    "subtitle": "A name assignment allows you have a unique URL for your Land with the following format: {exampleLink}. Once users open the link, they will be redirected to it in the {dclWorldLink}",
+    "world": "Decentraland World!",
+    "name_label": "Name",
+    "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
+    "name_placeholder": "Your name goes here",
+    "repeated_message": "This name is not available.",
+    "error_message": "There is a network error, please try again",
+    "radio_label": "MANA approved",
+    "claim_button": "Claim ",
+    "need_mana_message": "Authorize the {contract_link} contract to operate MANA on your behalf",
+    "mana_not_allowed": "You need to authorize enough MANA to claim a new name",
+    "not_enough_mana": "You don't have enough MANA to claim a new name"
+  },
   "create_item_modal": {
     "title": "New Item",
     "add_representation": "Add {bodyShape} Repesentation",
@@ -292,10 +307,10 @@
     "title": "Publish your Scene"
   },
   "use_as_alias_modal": {
-    "title": "Alias",
+    "title": "Use as alias",
     "subtitle": "Setting a new alias for your profile",
-    "body": "Set {newName} as your new alias in the Metaverse! Let other people see your new name when visiting the world. It'll be replace {oldName}",
-    "looks_great": "Looks Great!"
+    "body": "Set {newName} as your new alias in the Metaverse! Let other people see your new name when visiting the world. It'll replace {oldName}",
+    "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world."
   },
   "deployment_contest_modal": {
     "action": "Join the Contest",
@@ -339,15 +354,22 @@
   "ens_list_page": {
     "table": {
       "name": "Name",
-      "being_assigned": "Being Assigned",
+      "link": "Link",
       "assigned_to": "Assigned To"
     },
+    "assigned_to_land": "Land ({landId})",
+    "assigned_to_state": "State ({landId})",
     "button": {
       "assign": "Assign",
-      "re_assign": "Re Assign",
+      "edit": "Edit",
       "use_as_alias": "Use as Alias"
     },
-    "items": "{count} {count, plural, one {item} other {items}}",
+    "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
+    "order": {
+      "name_asc": "Name ↑",
+      "name_desc": "Name ↓"
+    },
+    "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned"
   },
   "error_page": {
@@ -378,6 +400,7 @@
     "title": "Download Scene"
   },
   "global": {
+    "avatar": "Avatar",
     "approved_tx": "Approved",
     "back": "back",
     "blog_post": "blog post",
@@ -426,6 +449,7 @@
     "revoke": "Revoke",
     "parcel_plural": "parcels",
     "estate_plural": "estates",
+    "set": "Set",
     "settings": "Settings",
     "yes": "Yes",
     "no": "No",
@@ -612,6 +636,13 @@
   "ipfs_api": {
     "not_redirected": "If you are not redirected"
   },
+  "claim_name_fat_finger_modal": {
+    "title": "Please, confirm your name",
+    "description": "You choose {name}. please re-enter the name to double check this is the one you want.",
+    "ok_message": "Congratulations the name {name} is yours.",
+    "name_placeholder": "Your unique name",
+    "names_different": "Names do not match"
+  },
   "migrate_page": {
     "step_one_title": "Migrate your account",
     "step_one_message_line_one": "In order to provide a seamless experience across our products, we have switched the Builder's account system from email to wallet based. This means that you will need to connect an Ethereum wallet to store your scenes in the Cloud. If you don't have a wallet you can learn more about how to get one {link}.",
@@ -774,9 +805,12 @@
     "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
     "set_collection_on_sale": "Set the collection {name} on sale",
     "unset_collection_on_sale": "Removed the collection {name} from being on sale",
-    "set_ens_resolver": "Setting resolver for the name \"{name}\".",
+    "set_ens_resolver": "Set resolver for the name \"{name}\".",
     "set_ens_content": "Set redirection content for the name \"{name}\" on {land_link}.",
-    "unset_ens_content": "Removed redirection content for the name \"{name}\"."
+    "unset_ens_content": "Removed redirection content for the name \"{name}\".",
+    "allowed_claim_mana": "Allowed MANA to claim a new name",
+    "disallowed_claim_mana": "Disallowed MANA to claim a new name",
+    "claim_name": "Claimed new name: \"{name}\"."
   },
   "transfer_page": {
     "title": "Transfer",

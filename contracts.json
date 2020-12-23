@@ -24,6 +24,18 @@
     "ENSResolver": {
       "source": "files",
       "abiFile": "./src/contracts/ENSResolver.json"
+    },
+    "ERC20": {
+      "source": "files",
+      "abiFile": "./src/contracts/ERC20.json"
+    },
+    "DCLController": {
+      "source": "files",
+      "abiFile": "./src/contracts/DCLController.json"
+    },
+    "DCLRegistrar": {
+      "source": "files",
+      "abiFile": "./src/contracts/DCLRegistrar.json"
     }
   }
 }

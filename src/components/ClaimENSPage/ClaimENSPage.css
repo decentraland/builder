@@ -1,0 +1,45 @@
+.ClaimENSPage .main {
+  margin-top: 60px;
+}
+
+.ClaimENSPage .content {
+  padding: 0 80px;
+}
+
+.ClaimENSPage .ui.header.title {
+  margin-bottom: 0px;
+}
+
+.ClaimENSPage .subtitle {
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.ClaimENSPage .ui.form {
+  width: 100%;
+}
+
+.ClaimENSPage .ui.form .actions {
+  margin-top: 48px;
+}
+
+.ClaimENSPage .popup-button {
+  margin-left: 16px;
+}
+
+.ClaimENSPage .avatar-friends {
+  background-image: url('../../images/avatar-friends.svg');
+  height: 343px;
+  width: 240px;
+}
+
+.ClaimENSPage .dcl.field .overlay .ui.button.basic {
+  font-size: 17px;
+  color: var(--secondary-text) !important;
+  cursor: default;
+}
+
+.ClaimENSPage .ui.button.primary .mana {
+  font-size: 13px;
+  line-height: 0;
+}

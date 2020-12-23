@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Link } from 'react-router-dom'
+import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
 import { getNameFromDomain } from 'modules/ens/utils'
@@ -14,7 +16,7 @@ const PAGE_SIZE = 12
 
 export default class ENSListPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.NAME,
+    sortBy: SortBy.ASC,
     page: 1
   }
 
@@ -39,8 +41,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
-          { value: SortBy.NEWEST, text: t('home_page.sort.newest') },
-          { value: SortBy.NAME, text: t('home_page.sort.name') }
+          { value: SortBy.ASC, text: t('ens_list_page.order.name_asc') },
+          { value: SortBy.DESC, text: t('ens_list_page.order.name_desc') }
         ]}
         onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
       />
@@ -54,10 +56,10 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     const sortedEnsList = ensList
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
-          case SortBy.NEWEST: {
-            return a.address.toLowerCase() > b.address.toLowerCase() ? -1 : 1
+          case SortBy.ASC: {
+            return a.subdomain.toLowerCase() < b.subdomain.toLowerCase() ? 1 : -1
           }
-          case SortBy.NAME: {
+          case SortBy.DESC: {
             return a.subdomain.toLowerCase() > b.subdomain.toLowerCase() ? 1 : -1
           }
           default: {
@@ -75,6 +77,21 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     return alias ? name === alias.toLowerCase() : false
   }
 
+  getAssignedToMessage(ens: ENS) {
+    if (this.isAlias(ens)) {
+      return t('global.avatar')
+    }
+    const { landId } = ens
+    if (!landId) {
+      return ''
+    }
+    return (
+      <Link to={locations.landDetail(landId)}>
+        {isCoords(landId) ? t('ens_list_page.assigned_to_land', { landId }) : t('ens_list_page.assigned_to_state', { landId })}
+      </Link>
+    )
+  }
+
   renderEnsList() {
     const { ensList } = this.props
     const { page } = this.state
@@ -87,20 +104,24 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
       <>
         <div className="filters">
           <Container>
-            <Row height={36}>
+            <Row>
               <Column>
                 <Row>
-                  <Header sub>{t('ens_list_page.items', { count: ensList.length.toLocaleString() })}</Header>
+                  <Header sub className="items-count">
+                    {t('ens_list_page.items', { count: ensList.length.toLocaleString() })}
+                  </Header>
                 </Row>
               </Column>
               <Column align="right">
                 <Row>{ensList.length > 1 ? this.renderSortDropdown() : null}</Row>
               </Column>
-              <Column align="right" className="claim-name" grow={false} shrink>
+              <Column align="right" grow={false} shrink>
                 <Row>
-                  <Button basic onClick={this.handleClaimENS}>
-                    <Icon name="add-active" />
-                  </Button>
+                  <div className="actions">
+                    <Button basic onClick={this.handleClaimENS}>
+                      <Icon name="add-active" />
+                    </Button>
+                  </div>
                 </Row>
               </Column>
             </Row>
@@ -113,8 +134,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell width="2">{t('ens_list_page.table.name')}</Table.HeaderCell>
-                    <Table.HeaderCell width="2">{t('ens_list_page.table.being_assigned')}</Table.HeaderCell>
                     <Table.HeaderCell width="2">{t('ens_list_page.table.assigned_to')}</Table.HeaderCell>
+                    <Table.HeaderCell width="2">{t('ens_list_page.table.link')}</Table.HeaderCell>
                     <Table.HeaderCell width="2"></Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
@@ -125,7 +146,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         <Table.Cell>
                           <Row>
                             <Column className="subdomain-wrapper">
-                              <div>{ens.subdomain}</div>
+                              <div>{getNameFromDomain(ens.subdomain)}</div>
                               {this.isAlias(ens) ? (
                                 <Popup
                                   className="alias-popup"
@@ -147,12 +168,18 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="beingAssigned">{ens.landId ? ens.landId : t('global.no')}</Column>
+                            <Column className="assignedTo">{this.getAssignedToMessage(ens)}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="assignedTo">{ens.landId ? ens.subdomain : '--'}</Column>
+                            <Column className="link">
+                              {ens.landId ? (
+                                <a target="_blank" href={`https://${ens.subdomain}.link`}>
+                                  {ens.subdomain} <Icon name="right-round-arrow" />
+                                </a>
+                              ) : null}
+                            </Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
@@ -167,7 +194,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             {ens.landId ? (
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
-                                  {t('ens_list_page.button.re_assign')}
+                                  {t('ens_list_page.button.edit')}
                                 </Button>
                               </Column>
                             ) : null}
@@ -185,7 +212,19 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                   })}
                 </Table.Body>
               </Table>
-            ) : null}
+            ) : (
+              <Empty className="empty-names" height={200}>
+                <div>
+                  <T
+                    id="ens_list_page.empty_names"
+                    values={{
+                      br: <br />,
+                      link: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
+                    }}
+                  />
+                </div>
+              </Empty>
+            )}
             {total !== null && totalPages !== null && totalPages > 1 && (
               <Pagination
                 firstItem={null}
