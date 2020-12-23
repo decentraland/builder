@@ -107,7 +107,9 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
             <Row>
               <Column>
                 <Row>
-                  <Header sub>{t('ens_list_page.items', { count: ensList.length.toLocaleString() })}</Header>
+                  <Header sub className="items-count">
+                    {t('ens_list_page.items', { count: ensList.length.toLocaleString() })}
+                  </Header>
                 </Row>
               </Column>
               <Column align="right">

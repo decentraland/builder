@@ -53,6 +53,14 @@
 .ENSListPage .pagination-section {
   width: 100%;
 }
+.ENSListPage .ui.sub.header.items-count {
+  flex: 1 0 auto;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}
 
 .ENSListPage .actions {
   display: flex;
