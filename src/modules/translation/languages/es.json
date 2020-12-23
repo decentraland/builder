@@ -145,7 +145,7 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre",
-    "subtitle": "Una asignación de nombre le permite tener una URL única para su terreno con el siguiente formato: {exampleLink}. Una vez que los usuarios abren el enlace, serán redirigidos a él en {dclWorldLink}",
+    "subtitle": "Una asignación de nombre le permite tener una URL única para su tierra con el siguiente formato: {exampleLink}. Una vez que los usuarios abren el enlace, serán redirigidos a él en {dclWorldLink}",
     "world": "Decentraland!",
     "name_label": "Nombre",
     "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
