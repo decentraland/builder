@@ -142,9 +142,11 @@
   },
   "claim_ens_page": {
     "title": "索取名字",
-    "subtitle": "您可以声明名称并将其分配给“个人档案”或“地域”，也可以用作访问世界的快速链接。",
+    "subtitle": "通过名称分配，您可以使用以下格式为土地指定唯一的URL：http://name.dcl.eth.link。 用户打开链接后，他们将在{dclWorldLink}中重定向到该链接",
+    "world": "Decentraland!",
     "name_label": "名称",
     "name_message": "名称不能包含非字母数字字符或空格。",
+    "name_placeholder": "你的名字在这里",
     "repeated_message": "此名称不可用。",
     "error_message": "网络出现错误，请重试",
     "radio_label": "MANA批准",
