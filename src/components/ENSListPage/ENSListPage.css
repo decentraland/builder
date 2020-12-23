@@ -1,6 +1,7 @@
 .ENSListPage .filters {
   margin-bottom: 16px;
 }
+
 .ENSListPage .TableRow {
   cursor: default;
 }
@@ -16,6 +17,7 @@
   line-height: 28px;
   font-size: 17px;
 }
+
 .ENSListPage .Icon.right-round-arrow {
   margin-bottom: -2px;
 }
