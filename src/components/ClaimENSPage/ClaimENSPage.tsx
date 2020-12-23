@@ -83,7 +83,20 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 <Header className="title" size="large">
                   {t('claim_ens_page.title')}
                 </Header>
-                <span className="subtitle">{t('claim_ens_page.subtitle')}</span>
+                <span className="subtitle">
+                  <T
+                    id="claim_ens_page.subtitle"
+                    values={{
+                      exampleLink: <i>http://name.dcl.eth.link</i>,
+                      separator: <br />,
+                      dclWorldLink: (
+                        <a href="http://play.decentraland.org" rel="noopener noreferrer" target="_blank">
+                          {t('claim_ens_page.world')}
+                        </a>
+                      )
+                    }}
+                  />
+                </span>
               </Section>
               <Form onSubmit={this.handleClaim}>
                 <Section>
@@ -97,6 +110,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                         ? t('claim_ens_page.name_message')
                         : t('claim_ens_page.repeated_message')
                     }
+                    placeholder={t('claim_ens_page.name_placeholder')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
                     error={isError || (hasNameMinLength(name) && !isValid) || !isAvailable}
                     onChange={this.handleNameChange}

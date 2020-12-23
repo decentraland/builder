@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
@@ -104,10 +104,12 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
       <>
         <div className="filters">
           <Container>
-            <Row height={36}>
+            <Row>
               <Column>
                 <Row>
-                  <Header sub>{t('ens_list_page.items', { count: ensList.length.toLocaleString() })}</Header>
+                  <Header sub className="items-count">
+                    {t('ens_list_page.items', { count: ensList.length.toLocaleString() })}
+                  </Header>
                 </Row>
               </Column>
               <Column align="right">
@@ -115,9 +117,11 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right" grow={false} shrink>
                 <Row>
-                  <Button basic className="claim-name" onClick={this.handleClaimENS}>
-                    <Icon name="add-active" />
-                  </Button>
+                  <div className="actions">
+                    <Button basic onClick={this.handleClaimENS}>
+                      <Icon name="add-active" />
+                    </Button>
+                  </div>
                 </Row>
               </Column>
             </Row>
@@ -208,7 +212,19 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                   })}
                 </Table.Body>
               </Table>
-            ) : null}
+            ) : (
+              <Empty className="empty-names" height={200}>
+                <div>
+                  <T
+                    id="ens_list_page.empty_names"
+                    values={{
+                      br: <br />,
+                      link: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
+                    }}
+                  />
+                </div>
+              </Empty>
+            )}
             {total !== null && totalPages !== null && totalPages > 1 && (
               <Pagination
                 firstItem={null}

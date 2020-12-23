@@ -145,9 +145,11 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre",
-    "subtitle": "Puede reclamar nombres y asignarlos a Perfiles o Tierras, y también se pueden usar como un enlace rápido para acceder al mundo.",
+    "subtitle": "Una asignación de nombre le permite tener una URL única para su tierra con el siguiente formato: {exampleLink}. Una vez que los usuarios abren el enlace, serán redirigidos a él en {dclWorldLink}",
+    "world": "Decentraland!",
     "name_label": "Nombre",
     "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+    "name_placeholder": "Tu nombre va aquí",
     "repeated_message": "Este nombre no esta disponible.",
     "error_message": "Hay un error de red. Vuelve a intentarlo.",
     "radio_label": "MANA aprobado",
@@ -355,11 +357,12 @@
       "edit": "Editar",
       "use_as_alias": "Usar como alias"
     },
+    "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
     "order": {
       "name_asc": "Nombre ↑",
       "name_desc": "Nombre ↓"
     },
-    "items": "{count} {count, plural, one {item} other {items}}",
+    "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
   },
   "error_page": {
