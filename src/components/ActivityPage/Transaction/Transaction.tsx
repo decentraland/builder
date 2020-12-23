@@ -18,7 +18,8 @@ import {
   SET_COLLECTION_MANAGERS_SUCCESS,
   PUBLISH_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
-import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
+import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
+import { isEnoughClaimMana } from 'modules/ens/utils'
 import Profile from 'components/Profile'
 import { Props } from './Transaction.types'
 import TransactionDetail from './TransactionDetail'
@@ -273,6 +274,22 @@ const Transaction = (props: Props) => {
         />
       )
     }
+    case ALLOW_CLAIM_MANA_SUCCESS: {
+      const { address, allowance } = tx.payload
+      return (
+        <TransactionDetail
+          address={address}
+          text={
+            isEnoughClaimMana(allowance) ? (
+              <T id="transaction.allowed_claim_mana" values={{ address: <Profile address={address} /> }} />
+            ) : (
+              <T id="transaction.disallowed_claim_mana" values={{ address: <Profile address={address} /> }} />
+            )
+          }
+          tx={tx}
+        />
+      )
+    }
     case CLAIM_NAME_SUCCESS: {
       const { address, ens } = tx.payload
       return (
@@ -291,7 +308,6 @@ const Transaction = (props: Props) => {
         />
       )
     }
-
     default:
       return null
   }
