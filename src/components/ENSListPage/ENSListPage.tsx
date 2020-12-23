@@ -115,9 +115,11 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
               </Column>
               <Column align="right" grow={false} shrink>
                 <Row>
-                  <Button basic className="claim-name" onClick={this.handleClaimENS}>
-                    <Icon name="add-active" />
-                  </Button>
+                  <div className="actions">
+                    <Button basic onClick={this.handleClaimENS}>
+                      <Icon name="add-active" />
+                    </Button>
+                  </div>
                 </Row>
               </Column>
             </Row>
