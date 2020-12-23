@@ -77,3 +77,10 @@ export function getDomainFromName(name: string): string {
 export function getNameFromDomain(domain: string): string {
   return domain.split('.')[0]
 }
+
+export function isEnoughClaimMana(mana: string) {
+  // 100 is the minimum amount of MANA the user needs to claim a new Name
+  // We're checking against this instead of 0 when checking the allowance too because
+  // we do not yet support the double transaction needed to set the user's allowance to 0 first and then bump it up to wichever number
+  return Number(mana) >= 100
+}

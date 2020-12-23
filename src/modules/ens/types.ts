@@ -23,3 +23,7 @@ export enum ENSOrigin {
   RESOLVER = 'Resolver',
   CONTENT = 'Content'
 }
+
+export type Authorization = {
+  allowance: string
+}

@@ -149,15 +149,15 @@
   "claim_ens_page": {
     "title": "Claim a Name",
     "subtitle": "You can claim names and assign them to Profiles or Land, and they can also be used as a quick link to access the world.",
-    "form" : {
-      "name_label": "Name",
-      "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
-      "repeated_message": "This name is not available.",
-      "error_message": "There is a network error, please try again",
-      "radio_label": "MANA approved",
-      "claim_button": "Claim ",
-      "need_mana_message": "Authorize the {contract_link} contract to operate MANA on your behalf"
-    }
+    "name_label": "Name",
+    "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
+    "repeated_message": "This name is not available.",
+    "error_message": "There is a network error, please try again",
+    "radio_label": "MANA approved",
+    "claim_button": "Claim ",
+    "need_mana_message": "Authorize the {contract_link} contract to operate MANA on your behalf",
+    "mana_not_allowed": "You need to authorize enough MANA to claim a new name",
+    "not_enough_mana": "You don't have enough MANA to claim a new name"
   },
   "create_item_modal": {
     "title": "New Item",
@@ -804,8 +804,10 @@
     "unset_collection_on_sale": "Removed the collection {name} from being on sale",
     "set_ens_resolver": "Set resolver for the name \"{name}\".",
     "set_ens_content": "Set redirection content for the name \"{name}\" on {land_link}.",
-    "claim_name": "Claimed new name: \"{name}\".",
-    "unset_ens_content": "Removed redirection content for the name \"{name}\"."
+    "unset_ens_content": "Removed redirection content for the name \"{name}\".",
+    "allowed_claim_mana": "Allowed MANA to claim a new name",
+    "disallowed_claim_mana": "Disallowed MANA to claim a new name",
+    "claim_name": "Claimed new name: \"{name}\"."
   },
   "transfer_page": {
     "title": "Transfer",

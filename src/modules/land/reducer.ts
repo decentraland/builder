@@ -1,4 +1,3 @@
-import { Land, Authorization } from './types'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
   FetchLandsRequestAction,
@@ -8,6 +7,7 @@ import {
   FETCH_LANDS_SUCCESS,
   FETCH_LANDS_FAILURE
 } from './actions'
+import { Land, Authorization } from './types'
 
 export type LandState = {
   data: Record<string, Land[]>
