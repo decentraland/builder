@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown } from 'decentraland-ui'
+import { Popup, Button, Table, Row, Column, Header, Section, Container, Pagination, Dropdown, Empty } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isCoords } from 'modules/land/utils'
@@ -104,7 +104,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
       <>
         <div className="filters">
           <Container>
-            <Row height={36}>
+            <Row>
               <Column>
                 <Row>
                   <Header sub>{t('ens_list_page.items', { count: ensList.length.toLocaleString() })}</Header>
@@ -209,7 +209,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 </Table.Body>
               </Table>
             ) : (
-              <div className="empty-names">
+              <Empty className="empty-names" height={200}>
                 <div>
                   <T
                     id="ens_list_page.empty_names"
@@ -219,7 +219,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                     }}
                   />
                 </div>
-              </div>
+              </Empty>
             )}
             {total !== null && totalPages !== null && totalPages > 1 && (
               <Pagination
