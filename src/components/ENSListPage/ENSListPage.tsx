@@ -209,14 +209,18 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 </Table.Body>
               </Table>
             ) : (
-              <Empty height={100}>
-                <T
-                  id="ens_list_page.empty_names"
-                  values={{
-                    br: <br />,
-                    link: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
-                  }}
-                />
+              <Empty height={200}>
+                <div className="empty-names">
+                  <div>
+                    <T
+                      id="ens_list_page.empty_names"
+                      values={{
+                        br: <br />,
+                        link: <Link to={locations.claimENS()}>{t('global.click_here')}</Link>
+                      }}
+                    />
+                  </div>
+                </div>
               </Empty>
             )}
             {total !== null && totalPages !== null && totalPages > 1 && (
