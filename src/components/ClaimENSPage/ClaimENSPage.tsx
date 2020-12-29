@@ -45,15 +45,21 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     const { isAvailable } = this.state
-    if (isAvailable) {
-      this.setState({ name: data.value, isError: false })
-    } else {
-      this.setState({ name: data.value, isAvailable: true, isError: false })
+    if (data.value.length <= MAX_NAME_SIZE) {
+      if (!isAvailable) {
+        this.setState({ name: data.value, isAvailable: true, isError: false })
+      } else {
+        this.setState({ name: data.value, isError: false })
+      }
     }
   }
 
   handleBack = () => {
     this.props.onNavigate(locations.root())
+  }
+
+  handleAction = () => {
+    /* noop */
   }
 
   render() {
@@ -67,6 +73,17 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     const isManaAllowed = isEnoughClaimMana(allowance)
 
     const isDisabled = !isValid || !isAvailable || !isEnoughMana || !isManaAllowed
+
+    let message: string = ''
+    if (isError) {
+      message = t('claim_ens_page.error_message')
+    } else if (!isAvailable) {
+      message = t('claim_ens_page.repeated_message')
+    } else if (name.length <= 2) {
+      message = ''
+    } else if (!isValid) {
+      message = t('claim_ens_page.name_message')
+    }
 
     return (
       <LoggedInDetailPage className="ClaimENSPage" hasNavigation={false}>
@@ -99,22 +116,16 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 </span>
               </Section>
               <Form onSubmit={this.handleClaim}>
-                <Section>
+                <Section className={name.length === MAX_NAME_SIZE ? 'red' : ''}>
                   <Field
                     label={t('claim_ens_page.name_label')}
                     value={name}
-                    message={
-                      isError
-                        ? t('claim_ens_page.error_message')
-                        : isAvailable
-                        ? t('claim_ens_page.name_message')
-                        : t('claim_ens_page.repeated_message')
-                    }
+                    message={message}
                     placeholder={t('claim_ens_page.name_placeholder')}
                     action={`${name.length}/${MAX_NAME_SIZE}`}
                     error={isError || (hasNameMinLength(name) && !isValid) || !isAvailable}
                     onChange={this.handleNameChange}
-                    onAction={undefined}
+                    onAction={this.handleAction}
                   />
                 </Section>
                 <Section className="field">
