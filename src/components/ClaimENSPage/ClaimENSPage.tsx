@@ -58,6 +58,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.root())
   }
 
+  handleAction = () => {
+    /* noop */
+  }
+
   render() {
     const { wallet, allowance, onBack } = this.props
     const { name, isError, isAvailable } = this.state
@@ -121,7 +125,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                     action={`${name.length}/${MAX_NAME_SIZE}`}
                     error={isError || (hasNameMinLength(name) && !isValid) || !isAvailable}
                     onChange={this.handleNameChange}
-                    onAction={() => undefined}
+                    onAction={this.handleAction}
                   />
                 </Section>
                 <Section className="field">
