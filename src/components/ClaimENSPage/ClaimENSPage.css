@@ -33,13 +33,18 @@
   width: 240px;
 }
 
-.ClaimENSPage .dcl.field .overlay .ui.button.basic {
+.ClaimENSPage .dcl.section .dcl.field .overlay .ui.button.basic {
   font-size: 17px;
   color: var(--secondary-text) !important;
   cursor: default;
+}
+
+.ClaimENSPage .dcl.section.red .dcl.field .overlay .ui.button.basic {
+  color: red !important;
 }
 
 .ClaimENSPage .ui.button.primary .mana {
   font-size: 13px;
   line-height: 0;
 }
+
