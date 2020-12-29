@@ -40,7 +40,7 @@
 }
 
 .ClaimENSPage .dcl.section.red .dcl.field .overlay .ui.button.basic {
-  color: red !important;
+  color: var(--error) !important;
 }
 
 .ClaimENSPage .ui.button.primary .mana {
