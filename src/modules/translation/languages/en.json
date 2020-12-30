@@ -147,11 +147,11 @@
     "textures": "{count} {count, plural, one {texture} other {textures}}"
   },
   "claim_ens_page": {
-    "title": "Claim a Name",
-    "subtitle": "A name assignment allows you have a unique URL for your Land with the following format: {exampleLink}. Once users open the link, they will be redirected to it in the {dclWorldLink}",
-    "world": "Decentraland World!",
+    "title": "Claim a unique Name",
+    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels and estates.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}",
+    "world": "Decentraland!",
     "name_label": "Name",
-    "name_message": "Names cannot contain non-alphanumeric characters or spaces.",
+    "name_message": "Names may not exceed 15 characters, contain spaces, or include any non-alphanumeric characters.",
     "name_placeholder": "Your name goes here",
     "repeated_message": "This name is not available.",
     "error_message": "There is a network error, please try again",
@@ -307,9 +307,9 @@
     "title": "Publish your Scene"
   },
   "use_as_alias_modal": {
-    "title": "Use as alias",
-    "subtitle": "Setting a new alias for your profile",
-    "body": "Set {newName} as your new alias in the Metaverse! Let other people see your new name when visiting the world. It'll replace {oldName}",
+    "title": "Assign name to avatar",
+    "subtitle": "Assign a new alias to your avatar",
+    "body": "Use {newName} as your avatar’s new alias. Unique names are a great way to help your friends find you in the Metaverse! This will replace {oldName}.",
     "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world."
   },
   "deployment_contest_modal": {
@@ -611,16 +611,16 @@
   "land_assign_ens_page": {
     "title": "Assign {name}",
     "subtitle": "Assign a name to {land}",
-    "set_name_message": "In order to set this name to your parcel you first need to send 2 transactions.",
+    "set_name_message": "Before you can assign this name to your parcel, you need to submit 2 transactions: one that translates the human readable, alphanumeric name into an Ethereum address and one that creates a hash code linking that generated address to your LAND.",
     "set_resolver": "Set Resolver",
-    "set_resolver_explanation": "The Resolver is a Smart Contract responsible for the process of translating names into addresses.",
+    "set_resolver_explanation": "This translates your name into an Ethereum address.",
     "set_content": "Set Content",
-    "set_content_explanation": "The Content is a hash refering a redirection to your land page that will be saved on your Resolver."
+    "set_content_explanation": "This creates a redirect to your LAND page and stores it in the Resolver."
   },
   "ens_select_land_page": {
     "title": "Assign {name}",
-    "subtitle": "You can assign this name to any of your Lands",
-    "land_selected": "Land selected:",
+    "subtitle": "You can assign this name to any of your parcels or estates.",
+    "land_selected": "Selection:",
     "already_assigned": "Already assigned"
   },
   "land_select_ens_page": {
@@ -637,8 +637,8 @@
     "not_redirected": "If you are not redirected"
   },
   "claim_name_fat_finger_modal": {
-    "title": "Please, confirm your name",
-    "description": "You choose {name}. please re-enter the name to double check this is the one you want.",
+    "title": "Please confirm your new name",
+    "description": "You have chosen {name}. Re-enter your name to confirm your selection.",
     "ok_message": "Congratulations the name {name} is yours.",
     "name_placeholder": "Your unique name",
     "names_different": "Names do not match"
