@@ -573,11 +573,11 @@
   "land_assign_ens_page": {
     "title": "分配{name}",
     "subtitle": "给...分配一个名字 {land}",
-    "set_name_message": "在将这个名称分配给包裹之前，您需要提交2笔交易：一项将人类可读的字母数字名称转换为以太坊地址，另一项创建哈希码将生成的地址链接至您的LAND。",
+    "set_name_message": "在将此名称分配给包裹之前，您需要提交2笔交易：第一笔交易允许您使用您的姓名作为链接，第二笔交易将您的姓名链接到LAND。",
     "set_resolver": "设置解析器",
-    "set_resolver_explanation": "这会将您的名字翻译成以太坊地址。",
+    "set_resolver_explanation": "这样可以将您的名字链接到包裹",
     "set_content": "设定内容",
-    "set_content_explanation": "这将创建一个重定向到您的LAND页面并将其存储在Resolver中。"
+    "set_content_explanation": "这会通过链接到Decentraland's World中的LAND的方式解析您的姓名"
   },
   "ens_select_land_page": {
     "title": "分配{name}",

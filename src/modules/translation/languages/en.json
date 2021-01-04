@@ -611,11 +611,11 @@
   "land_assign_ens_page": {
     "title": "Assign {name}",
     "subtitle": "Assign a name to {land}",
-    "set_name_message": "Before you can assign this name to your parcel, you need to submit 2 transactions: one that translates the human readable, alphanumeric name into an Ethereum address and one that creates a hash code linking that generated address to your LAND.",
+    "set_name_message": "Before you can assign this name to your parcel, you need to submit 2 transactions: The first transaction allows you to use your name as a link and the second transaction links your name to your LAND.",
     "set_resolver": "Set Resolver",
-    "set_resolver_explanation": "This translates your name into an Ethereum address.",
+    "set_resolver_explanation": "This allows your name to be linked to a parcel",
     "set_content": "Set Content",
-    "set_content_explanation": "This creates a redirect to your LAND page and stores it in the Resolver."
+    "set_content_explanation": "This resolves your name with a link to your LAND in the Decentraland's World"
   },
   "ens_select_land_page": {
     "title": "Assign {name}",

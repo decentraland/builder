@@ -572,11 +572,11 @@
   "land_assign_ens_page": {
     "title": "Asignar {name}",
     "subtitle": "Asigna un nombre a {land}",
-    "set_name_message": "Antes de poder asignar este nombre a su paquete, debe enviar 2 transacciones: una que traduzca el nombre alfanumérico legible por humanos en una dirección de Ethereum y otra que cree un código hash que vincule esa dirección generada a su LAND.",
+    "set_name_message": "Antes de poder asignar este nombre a su parcela, debe enviar 2 transacciones: la primera transacción le permite usar su nombre como enlace y la segunda transacción vincula su nombre a su LAND.",
     "set_resolver": "Establecer Resolver",
-    "set_resolver_explanation": "Esto traduce su nombre a una dirección Ethereum.",
+    "set_resolver_explanation": "Esto permite que su nombre esté vinculado a una parcela",
     "set_content": "Establecer Contenido",
-    "set_content_explanation": "Esto crea una redirección a su página LAND y la almacena en el Resolver."
+    "set_content_explanation": "Esto resuelve su nombre con un enlace a su LAND en Decentraland"
   },
   "ens_select_land_page": {
     "title": "Asignar {name}",
