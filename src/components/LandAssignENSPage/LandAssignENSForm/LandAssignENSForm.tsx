@@ -70,7 +70,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                     {!isWaitingTxSetResolver ? <Icon name="check" /> : null}
                   </>
                 ) : (
-                  t('global.send_tx')
+                  t('global.submit')
                 )}
               </Button>
             </div>
@@ -97,7 +97,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                     {!isWaitingTxSetContent ? <Icon name="check" /> : null}
                   </>
                 ) : (
-                  t('global.send_tx')
+                  t('global.submit')
                 )}
               </Button>
             </div>

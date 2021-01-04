@@ -148,7 +148,7 @@
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",
-    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels and estates.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}",
+    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}",
     "world": "Decentraland!",
     "name_label": "Name",
     "name_message": "Names may not exceed 15 characters, contain spaces, or include any non-alphanumeric characters.",
@@ -430,10 +430,9 @@
     "or": "or",
     "project": "Scene",
     "read_more": "Read more",
-    "retry_tx": "Retry Tx",
+    "retry_tx": "Retry",
     "save": "Save",
     "send": "Send",
-    "send_tx": "Send Tx",
     "share": "Share",
     "sign_in_required": "You need to {link} to access this page.",
     "sign_in": "Sign in",
@@ -619,7 +618,7 @@
   },
   "ens_select_land_page": {
     "title": "Assign {name}",
-    "subtitle": "You can assign this name to any of your parcels or estates.",
+    "subtitle": "You can assign this name to any of your parcels.",
     "land_selected": "Selection:",
     "already_assigned": "Already assigned"
   },
