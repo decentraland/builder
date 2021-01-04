@@ -144,11 +144,11 @@
     "textures": "{count} {count, plural, one {textura} other {texturas}}"
   },
   "claim_ens_page": {
-    "title": "Reclamar un nombre",
-    "subtitle": "Una asignación de nombre le permite tener una URL única para su tierra con el siguiente formato: {exampleLink}. Una vez que los usuarios abren el enlace, serán redirigidos a él en {dclWorldLink}",
+    "title": "Reclamar un nombre único",
+    "subtitle": "Se pueden asignar nombres únicos a su avatar para usarlos como un alias, o se pueden asignar a parcelas y propiedades. {br} Asignar un nombre a una parcela o propiedad le permite crear una URL única, como {exampleLink}, por lo que fácilmente podrá enviar personas a su LAND. Cuando alguien siga su nueva URL, será redirigido a su LAND en {dclWorldLink}",
     "world": "Decentraland!",
     "name_label": "Nombre",
-    "name_message": "Los nombres no pueden contener caracteres ni espacios no alfanuméricos.",
+    "name_message": "Los nombres no pueden exceder los 15 caracteres, contener espacios o incluir caracteres no alfanuméricos.",
     "name_placeholder": "Tu nombre va aquí",
     "repeated_message": "Este nombre no esta disponible.",
     "error_message": "Hay un error de red. Vuelve a intentarlo.",
@@ -304,9 +304,9 @@
     "title": "Publica tu Escena"
   },
   "use_as_alias_modal": {
-    "title": "Usar como Alias",
-    "subtitle": "Establece un nuevo alias para tu perfil",
-    "body": "Establece {newName} como tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo. Reemplazará {oldName}",
+    "title": "Establece un nombre a tu avatar",
+    "subtitle": "Establece un nuevo alias para tu avatar",
+    "body": "Usa {newName} como el nuevo alias de tu avatar. ¡Los nombres únicos son una excelente manera de ayudar a tus amigos a encontrarte en Metaverse! Esto reemplazará a {oldName}.",
     "success": "{name} es tu nuevo alias en el Metaverse! Deja que otras personas vean tu nuevo nombre cuando visiten el mundo."
   },
   "deployment_contest_modal": {
@@ -421,10 +421,9 @@
     "or": "o",
     "project": "Escena",
     "read_more": "Leer más",
-    "retry_tx": "Enviar Tx",
+    "retry_tx": "Re Enviar",
     "save": "Salvar",
     "send": "Enviar",
-    "send_tx": "Enviar Tx",
     "share": "Compartir",
     "sign_in_required": "Debes {link} para acceder a esta página.",
     "sign_in": "Iniciar sesión",
@@ -572,16 +571,16 @@
   "land_assign_ens_page": {
     "title": "Asignar {name}",
     "subtitle": "Asigna un nombre a {land}",
-    "set_name_message": "Explicación sobre porque se necesita aprovar esto.",
+    "set_name_message": "Antes de poder asignar este nombre a su parcela, debe enviar 2 transacciones: la primera transacción le permite usar su nombre como enlace y la segunda transacción vincula su nombre a su LAND.",
     "set_resolver": "Establecer Resolver",
-    "set_resolver_explanation": "Explicación sobre porque se necesita aprovar esto.",
+    "set_resolver_explanation": "Esto permite que su nombre esté vinculado a una parcela",
     "set_content": "Establecer Contenido",
-    "set_content_explanation": "En orden para enlazar este nombre a tu parcela, primero necesitas aprobar 2 transacciones."
+    "set_content_explanation": "Esto resuelve su nombre con un enlace a su LAND en Decentraland"
   },
   "ens_select_land_page": {
     "title": "Asignar {name}",
-    "subtitle": "Podes asignar este nombre a cualquier Land",
-    "land_selected": "Land seleccionada:",
+    "subtitle": "Puede asignar este nombre a cualquiera de sus parcelas o propiedades.",
+    "land_selected": "Seleccion:",
     "already_assigned": "Ya asignaddo"
   },
   "land_select_ens_page": {
@@ -598,8 +597,8 @@
     "not_redirected": "Si no estas siendo redirigido"
   },
   "claim_name_fat_finger_modal": {
-    "title": "Por favor, confirme su nombre",
-    "description": "Haz elegido {name}. Por favor, vuelva a ingresar el nombre para asegurarnos que es correcto.",
+    "title": "Por favor, confirme su nuevo nombre",
+    "description": "Has elegido {nombre}. Vuelva a ingresar su nombre para confirmar su selección.",
     "ok_message": "Felicidades el nombre {name} es tuyo.",
     "name_placeholder": "Tu nombre único",
     "names_different": "Los nombres no son iguales"

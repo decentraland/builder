@@ -141,11 +141,11 @@
     "textures": "{count}个纹理"
   },
   "claim_ens_page": {
-    "title": "索取名字",
-    "subtitle": "通过名称分配，您可以使用以下格式为土地指定唯一的URL：{exampleLink}。 用户打开链接后，他们将在{dclWorldLink}中重定向到该链接",
+    "title": "索取唯一名称",
+    "subtitle": "可以将唯一名称分配给您的化身以用作别名，也可以将它们分配给宗地和地产。{br}为宗地或地产分配名称可以使您创建唯一的URL，例如{exampleLink} 轻松将人们送往您的LAND。 当有人使用您的新网址时，他们将在{dclWorldLink}中重定向到您的LAND",
     "world": "Decentraland!",
     "name_label": "名称",
-    "name_message": "名称不能包含非字母数字字符或空格。",
+    "name_message": "名称不得超过15个字符，不得包含空格或任何非字母数字字符。",
     "name_placeholder": "你的名字在这里",
     "repeated_message": "此名称不可用。",
     "error_message": "网络出现错误，请重试",
@@ -301,9 +301,9 @@
     "title": "正在发布场景"
   },
   "use_as_alias_modal": {
-    "title": "用作别名",
-    "subtitle": "為您的個人資料設置新別名",
-    "body": "将{newName}设置为Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。 它将替换{oldName}",
+    "title": "为头像分配名称",
+    "subtitle": "为您的头像分配新的别名",
+    "body": "使用{newName}作为头像的新别名。 唯一名称是帮助您的朋友在Metaverse中找到您的好方法！ 这将替换{oldName}。",
     "success": "{name}是您在Metaverse中的新别名！ 环游世界时，让其他人看到您的新名字。"
   },
   "deployment_contest_modal": {
@@ -421,10 +421,9 @@
     "or": "或",
     "project": "场景",
     "read_more": "阅读更多",
-    "retry_tx": "重试发送",
+    "retry_tx": "重试",
     "save": "保存",
     "send": "发送",
-    "send_tx": "发送Tx",
     "share": "分享",
     "sign_in_required": "您需要{link}才能访问此页面。",
     "sign_in": "登录",
@@ -573,16 +572,16 @@
   "land_assign_ens_page": {
     "title": "分配{name}",
     "subtitle": "给...分配一个名字 {land}",
-    "set_name_message": "关于他们为什么需要批准的简要说明。",
+    "set_name_message": "在将此名称分配给包裹之前，您需要提交2笔交易：第一笔交易允许您使用您的姓名作为链接，第二笔交易将您的姓名链接到LAND。",
     "set_resolver": "设置解析器",
-    "set_resolver_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。",
+    "set_resolver_explanation": "这样可以将您的名字链接到包裹",
     "set_content": "设定内容",
-    "set_content_explanation": "为了将此名称链接到您的包裹，您首先需要批准2笔交易。"
+    "set_content_explanation": "这会通过链接到Decentraland's World中的LAND的方式解析您的姓名"
   },
   "ens_select_land_page": {
     "title": "分配{name}",
-    "subtitle": "您可以将此名称分配给其他任何土地",
-    "land_selected": "选择的土地：",
+    "subtitle": "您可以将此名称分配给您的任何包裹或地产。",
+    "land_selected": "选拔：",
     "already_assigned": "已分配"
   },
   "land_select_ens_page": {
@@ -599,8 +598,8 @@
     "not_redirected": "如果您未重定向"
   },
   "claim_name_fat_finger_modal": {
-    "title": "请确认你的名字",
-    "description": "您选择{name}。 请重新输入名称以仔细检查这是您想要的名称。",
+    "title": "请确认您的新名字",
+    "description": "您已选择{name}。重新输入您的姓名以确认您的选择。",
     "ok_message": "恭喜{name}是您的名字。",
     "name_placeholder": "您的唯一名字",
     "names_different": "名称不符"
