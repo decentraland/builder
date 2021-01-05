@@ -100,6 +100,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     const newAvatar: Avatar = {
       ...avatar,
       hasClaimedName: true,
+      version: avatar.version + 1,
       name
     }
 
