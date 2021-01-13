@@ -6,7 +6,6 @@ import { locations } from 'routing/locations'
 import { isCoords } from 'modules/land/utils'
 import { ENS } from 'modules/ens/types'
 import Icon from 'components/Icon'
-import { getNameFromDomain } from 'modules/ens/utils'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { Props, State, SortBy } from './ENSListPage.types'
@@ -28,9 +27,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.ensSelectLand(ens.subdomain))
   }
 
-  handleOpenModal = (subdomain: string) => {
+  handleOpenModal = (newName: string) => {
     const { onOpenModal } = this.props
-    const newName = getNameFromDomain(subdomain)
     onOpenModal('UseAsAliasModal', { newName })
   }
 
@@ -73,8 +71,9 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
 
   isAlias(ens: ENS): boolean {
     const { alias } = this.props
-    const name = getNameFromDomain(ens.subdomain)
-    return alias ? name === alias.toLowerCase() : false
+    const { name } = ens
+    console.log({ alias, name })
+    return alias ? name === alias : false
   }
 
   getAssignedToMessage(ens: ENS) {
@@ -146,7 +145,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         <Table.Cell>
                           <Row>
                             <Column className="subdomain-wrapper">
-                              <div>{getNameFromDomain(ens.subdomain)}</div>
+                              <div>{ens.name}</div>
                               {this.isAlias(ens) ? (
                                 <Popup
                                   className="alias-popup"
@@ -200,7 +199,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                             ) : null}
                             {!this.isAlias(ens) ? (
                               <Column align="right">
-                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.subdomain)}>
+                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.name)}>
                                   {t('ens_list_page.button.use_as_alias')}
                                 </Button>
                               </Column>

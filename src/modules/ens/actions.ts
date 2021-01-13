@@ -8,7 +8,7 @@ export const FETCH_ENS_REQUEST = '[Request] Fetch ENS'
 export const FETCH_ENS_SUCCESS = '[Success] Fetch ENS'
 export const FETCH_ENS_FAILURE = '[Failure] Fetch ENS'
 
-export const fetchENSRequest = (subdomain: string, land: Land) => action(FETCH_ENS_REQUEST, { subdomain, land })
+export const fetchENSRequest = (name: string, subdomain: string, land: Land) => action(FETCH_ENS_REQUEST, { name, subdomain, land })
 export const fetchENSSuccess = (ens: ENS) => action(FETCH_ENS_SUCCESS, { ens })
 export const fetchENSFailure = (error: ENSError) => action(FETCH_ENS_FAILURE, { error })
 

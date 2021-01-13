@@ -11,7 +11,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onFetchENS: (ens, land) => dispatch(fetchENSRequest(ens, land)),
+  onFetchENS: (name, domain, land) => dispatch(fetchENSRequest(name, domain, land)),
   onNavigate: path => dispatch(push(path))
 })
 
