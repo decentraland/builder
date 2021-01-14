@@ -3,7 +3,7 @@ import { Form, Row, Button, Section, Header, Dropdown, DropdownProps } from 'dec
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
-import { findBySubdomain, getDomainFromName, isEqualContent } from 'modules/ens/utils'
+import { isEqualContent } from 'modules/ens/utils'
 import { Props, State } from './LandSelectENSForm.types'
 import './LandSelectENSForm.css'
 
@@ -15,24 +15,23 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
   handleChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { onFetchENS, land } = this.props
     const selectedName = data.value as string
-    const selectedSubdomain = getDomainFromName(selectedName)
-    onFetchENS(selectedName, selectedSubdomain, land)
+    onFetchENS(selectedName, land)
     this.setState({ selectedName })
   }
 
   handleContinue = () => {
     const { selectedName } = this.state
-    const { onUpdateSubdomain } = this.props
-    onUpdateSubdomain(selectedName)
+    const { onUpdateSubdomain, ensList } = this.props
+    const selectedENS = ensList.find(ens => ens.name === selectedName)!
+    onUpdateSubdomain(selectedENS.subdomain)
   }
 
   render() {
     const { land, ensList, isLoading } = this.props
     const { selectedName } = this.state
-    const selectedSubdomain = getDomainFromName(selectedName)
 
-    const selectOptions = ensList.map(({ name }) => ({ value: name, text: name }))
-    const selectedENS = findBySubdomain(ensList, selectedSubdomain)
+    const selectOptions = ensList.map(({ name, subdomain }) => ({ value: name, text: subdomain }))
+    const selectedENS = ensList.find(ens => ens.name === selectedName)
 
     const isButtonDisabled: boolean = !selectedENS || isEqualContent(selectedENS, land)
 
@@ -58,7 +57,7 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
                   {t('land_select_ens_page.select_name_title')}
                 </Header>
                 <Dropdown
-                  value={selectedSubdomain}
+                  value={selectedName}
                   options={selectOptions}
                   placeholder={t('land_select_ens_page.select_name_placeholder')}
                   onChange={this.handleChange}

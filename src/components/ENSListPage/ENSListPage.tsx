@@ -85,7 +85,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     }
     return (
       <Link to={locations.landDetail(landId)}>
-        {isCoords(landId) ? t('ens_list_page.assigned_to_land', { landId }) : t('ens_list_page.assigned_to_state', { landId })}
+        {isCoords(landId) ? t('ens_list_page.assigned_to_land', { landId }) : t('ens_list_page.assigned_to_estate', { landId })}
       </Link>
     )
   }
@@ -182,6 +182,13 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
+                            {!this.isAlias(ens) ? (
+                              <Column align="right">
+                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.name)}>
+                                  {t('ens_list_page.button.use_as_alias')}
+                                </Button>
+                              </Column>
+                            ) : null}
                             {!ens.landId ? (
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
@@ -193,13 +200,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                               <Column align="right">
                                 <Button className="ui basic button" onClick={() => this.handleAssignENS(ens)}>
                                   {t('ens_list_page.button.edit')}
-                                </Button>
-                              </Column>
-                            ) : null}
-                            {!this.isAlias(ens) ? (
-                              <Column align="right">
-                                <Button className="ui basic button" onClick={() => this.handleOpenModal(ens.subdomain)}>
-                                  {t('ens_list_page.button.use_as_alias')}
                                 </Button>
                               </Column>
                             ) : null}

@@ -142,7 +142,8 @@ function* handleSetAlias(action: SetAliasRequestAction) {
 }
 
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
-  const { name, subdomain, land } = action.payload
+  const { name, land } = action.payload
+  const subdomain = name.toLowerCase() + '.dcl.eth'
   try {
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const address = from.toString()
@@ -154,8 +155,8 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
     if (resolverAddress.toString() === Address.ZERO.toString()) {
       return yield put(
         fetchENSSuccess({
-          address,
           name,
+          address,
           subdomain,
           resolver: Address.ZERO.toString(),
           content: Address.ZERO.toString()
@@ -293,7 +294,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 
     for (let data of domains) {
       const name = data
-      const subdomain = `${data}.dcl.eth`
+      const subdomain = `${data.toLowerCase()}.dcl.eth`
       let landId: string | undefined = undefined
       let content: string = ''
 

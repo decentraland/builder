@@ -30,3 +30,7 @@
 .ENSSelectLandPage .actions .ui.button + .ui.button {
   margin-left: 12px;
 }
+
+.ENSSelectLandPage .react-tile-map-canvas {
+  border-radius: 12px;
+}

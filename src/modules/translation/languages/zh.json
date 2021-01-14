@@ -359,7 +359,7 @@
       "assigned_to": "分配给"
     },
     "assigned_to_land": "土地 ({landId})",
-    "assigned_to_state": "州 ({landId})",
+    "assigned_to_estate": "州 ({landId})",
     "button": {
       "assign": "分配",
       "edit": "修",
