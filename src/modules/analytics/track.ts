@@ -80,11 +80,10 @@ import {
 } from 'modules/collection/actions'
 import {
   AllowClaimManaSuccessAction,
-  ClaimNameSuccessAction,
   SetAliasSuccessAction,
   ALLOW_CLAIM_MANA_SUCCESS,
-  CLAIM_NAME_SUCCESS,
   SET_ALIAS_SUCCESS,
+  CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
   SET_ENS_RESOLVER_SUCCESS
 } from 'modules/ens/actions'
@@ -441,9 +440,10 @@ add(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana', action => {
 })
 
 add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
-  const { payload } = action as ClaimNameSuccessAction
-  const { name, ens } = payload
+  const { payload } = action as FetchTransactionSuccessAction
+  const { name, ens, address } = payload.transaction.payload
   return {
+    address,
     name,
     ens
   }
