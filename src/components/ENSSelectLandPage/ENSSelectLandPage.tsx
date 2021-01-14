@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
 import { Land } from 'modules/land/types'
-import { idToCoords, coordsToId, locateNextLand } from 'modules/land/utils'
+import { coordsToId, locateNextLand } from 'modules/land/utils'
 import { Atlas } from 'components/Atlas'
 import Back from 'components/Back'
 import NotFound from 'components/NotFound'
@@ -131,7 +131,7 @@ export default class ENSSelectLandPage extends React.PureComponent<Props, State>
                     <div className="selected-land">
                       <div className="label">{t('ens_select_land_page.land_selected')}</div>
                       <div className="land">
-                        {selectedLand.name} ({idToCoords(selectedLand.id)})
+                        {selectedLand.name} ({selectedLand.id})
                       </div>
                     </div>
                   ) : null}

@@ -3,34 +3,35 @@ import { Form, Row, Button, Section, Header, Dropdown, DropdownProps } from 'dec
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
-import { findBySubdomain, isEqualContent } from 'modules/ens/utils'
+import { isEqualContent } from 'modules/ens/utils'
 import { Props, State } from './LandSelectENSForm.types'
 import './LandSelectENSForm.css'
 
 export default class LandSelectENSForm extends React.PureComponent<Props, State> {
   state: State = {
-    selectedSubdomain: ''
+    selectedName: ''
   }
 
   handleChange = (_: React.SyntheticEvent, data: DropdownProps) => {
     const { onFetchENS, land } = this.props
-    const selectedSubdomain = data.value as string
-    onFetchENS(selectedSubdomain, land)
-    this.setState({ selectedSubdomain })
+    const selectedName = data.value as string
+    onFetchENS(selectedName, land)
+    this.setState({ selectedName })
   }
 
   handleContinue = () => {
-    const { selectedSubdomain } = this.state
-    const { onUpdateSubdomain } = this.props
-    onUpdateSubdomain(selectedSubdomain)
+    const { selectedName } = this.state
+    const { onUpdateSubdomain, ensList } = this.props
+    const selectedENS = ensList.find(ens => ens.name === selectedName)!
+    onUpdateSubdomain(selectedENS.subdomain)
   }
 
   render() {
     const { land, ensList, isLoading } = this.props
-    const { selectedSubdomain } = this.state
+    const { selectedName } = this.state
 
-    const selectOptions = ensList.map(({ subdomain }) => ({ value: subdomain.toLowerCase(), text: subdomain.toLowerCase() }))
-    const selectedENS = findBySubdomain(ensList, selectedSubdomain)
+    const selectOptions = ensList.map(({ name, subdomain }) => ({ value: name, text: subdomain }))
+    const selectedENS = ensList.find(ens => ens.name === selectedName)
 
     const isButtonDisabled: boolean = !selectedENS || isEqualContent(selectedENS, land)
 
@@ -56,7 +57,7 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
                   {t('land_select_ens_page.select_name_title')}
                 </Header>
                 <Dropdown
-                  value={selectedSubdomain}
+                  value={selectedName}
                   options={selectOptions}
                   placeholder={t('land_select_ens_page.select_name_placeholder')}
                   onChange={this.handleChange}

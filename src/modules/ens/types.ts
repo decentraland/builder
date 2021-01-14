@@ -1,6 +1,7 @@
 export type ENS = {
   address: string
 
+  name: string
   subdomain: string
   resolver: string
   content: string

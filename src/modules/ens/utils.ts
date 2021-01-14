@@ -74,10 +74,6 @@ export function getDomainFromName(name: string): string {
   return `${name.toLowerCase()}.dcl.eth`
 }
 
-export function getNameFromDomain(domain: string): string {
-  return domain.split('.')[0]
-}
-
 export function isEnoughClaimMana(mana: string) {
   // 100 is the minimum amount of MANA the user needs to claim a new Name
   // We're checking against this instead of 0 when checking the allowance too because

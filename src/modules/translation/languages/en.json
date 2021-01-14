@@ -307,8 +307,8 @@
     "title": "Publish your Scene"
   },
   "use_as_alias_modal": {
-    "title": "Assign name to avatar",
-    "subtitle": "Assign a new alias to your avatar",
+    "title": "Use as Alias",
+    "subtitle": "This will be your name in the Metaverse",
     "body": "Use {newName} as your avatar’s new alias. Unique names are a great way to help your friends find you in the Metaverse! This will replace {oldName}.",
     "success": "{name} is your new alias in the Metaverse! Let other people see your new name when visiting the world."
   },
@@ -358,10 +358,10 @@
       "assigned_to": "Assigned To"
     },
     "assigned_to_land": "Land ({landId})",
-    "assigned_to_state": "State ({landId})",
+    "assigned_to_estate": "Estate ({landId})",
     "button": {
-      "assign": "Assign",
-      "edit": "Edit",
+      "assign": "Use as Link",
+      "edit": "Edit Link",
       "use_as_alias": "Use as Alias"
     },
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
@@ -593,7 +593,7 @@
   "land_detail_page": {
     "transfer": "Transfer",
     "set_operator": "Set Operator",
-    "assign_name": "Assign name",
+    "assign_name": "Set link",
     "build_estate": "Build Estate",
     "add_or_remove_parcels": "Add Or Remove Parcels",
     "dissolve_estate": "Dissolve Estate",
@@ -608,23 +608,23 @@
     "empty_land": "Empty Land"
   },
   "land_assign_ens_page": {
-    "title": "Assign {name}",
-    "subtitle": "Assign a name to {land}",
-    "set_name_message": "Before you can assign this name to your parcel, you need to submit 2 transactions: The first transaction allows you to use your name as a link and the second transaction links your name to your LAND.",
+    "title": "Use {name} as link",
+    "subtitle": "This link will take you to {land}",
+    "set_name_message": "Before you can assign this name to your land, you need to submit 2 transactions: The first transaction allows you to use your name as a link and the second transaction links your name to your LAND.",
     "set_resolver": "Set Resolver",
-    "set_resolver_explanation": "This allows your name to be linked to a parcel",
+    "set_resolver_explanation": "This allows your name to be linked to a land",
     "set_content": "Set Content",
-    "set_content_explanation": "This resolves your name with a link to your LAND in the Decentraland's World"
+    "set_content_explanation": "This resolves your name with a link to your land in Decentraland"
   },
   "ens_select_land_page": {
-    "title": "Assign {name}",
-    "subtitle": "You can assign this name to any of your parcels.",
+    "title": "Use {name} as a link",
+    "subtitle": "Select a land where the link should point to:",
     "land_selected": "Selection:",
     "already_assigned": "Already assigned"
   },
   "land_select_ens_page": {
-    "title": "Assign Name",
-    "subtitle": "Assign a name to {land}",
+    "title": "Select a Name",
+    "subtitle": "It will be used as a link to {land}",
     "empty_options_message": "You don't have any available names. To assign a name to your LAND, you first need to claim it.",
     "claim_new_name": "Claim a new name",
     "select_name_title": "My names",

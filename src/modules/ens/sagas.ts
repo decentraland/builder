@@ -142,7 +142,8 @@ function* handleSetAlias(action: SetAliasRequestAction) {
 }
 
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
-  const { subdomain, land } = action.payload
+  const { name, land } = action.payload
+  const subdomain = name.toLowerCase() + '.dcl.eth'
   try {
     const [from, eth]: [Address, Eth] = yield getCurrentAddress()
     const address = from.toString()
@@ -154,6 +155,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
     if (resolverAddress.toString() === Address.ZERO.toString()) {
       return yield put(
         fetchENSSuccess({
+          name,
           address,
           subdomain,
           resolver: Address.ZERO.toString(),
@@ -171,6 +173,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
       return yield put(
         fetchENSSuccess({
           address,
+          name,
           subdomain,
           resolver: resolverAddress.toString(),
           content: Address.ZERO.toString(),
@@ -183,6 +186,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
       return yield put(
         fetchENSSuccess({
           address,
+          name,
           subdomain,
           resolver: ENS_RESOLVER_ADDRESS,
           content: landHash,
@@ -195,6 +199,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
     yield put(
       fetchENSSuccess({
         address,
+        name,
         subdomain,
         resolver: ENS_RESOLVER_ADDRESS,
         content: currentContent || Address.ZERO.toString(),
@@ -287,8 +292,9 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
     const ensList: ENS[] = []
 
-    for (let subdomain of domains) {
-      subdomain = subdomain.toLowerCase()
+    for (let data of domains) {
+      const name = data
+      const subdomain = `${data.toLowerCase()}.dcl.eth`
       let landId: string | undefined = undefined
       let content: string = ''
 
@@ -308,6 +314,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 
       ensList.push({
         address,
+        name,
         subdomain,
         resolver,
         content,
@@ -332,6 +339,7 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
 
     const ens: ENS = {
       address: from.toString(),
+      name: name,
       subdomain: getDomainFromName(name),
       resolver: Address.ZERO.toString(),
       content: Address.ZERO.toString()

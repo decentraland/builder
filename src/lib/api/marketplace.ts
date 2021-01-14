@@ -35,7 +35,7 @@ export class MarketplaceAPI {
       query: getSubdomainQuery(),
       variables: { owner }
     })
-    return data.nfts.map(ntf => `${ntf.ens.subdomain}.dcl.eth`)
+    return data.nfts.map(ntf => `${ntf.ens.subdomain}`)
   }
 }
 

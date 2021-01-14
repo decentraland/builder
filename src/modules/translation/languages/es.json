@@ -351,10 +351,10 @@
       "assigned_to": "Asignado a"
     },
     "assigned_to_land": "Tierra ({landId})",
-    "assigned_to_state": "Estate ({landId})",
+    "assigned_to_estate": "Estate ({landId})",
     "button": {
-      "assign": "Asignar",
-      "edit": "Editar",
+      "assign": "Usar como link",
+      "edit": "Editar link",
       "use_as_alias": "Usar como alias"
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
@@ -554,7 +554,7 @@
   "land_detail_page": {
     "transfer": "Transferir",
     "set_operator": "Configurar Operador",
-    "assign_name": "Asignar nombre",
+    "assign_name": "Configurar link",
     "build_estate": "Construir Estate",
     "add_or_remove_parcels": "Añadir o Quitar Parcelas",
     "dissolve_estate": "Disolver Estate",

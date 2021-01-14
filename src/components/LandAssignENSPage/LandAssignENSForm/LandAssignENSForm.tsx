@@ -8,9 +8,9 @@ import { Props } from './LandAssignENSForm.types'
 import './LandAssignENSForm.css'
 
 export default class LandAssignENSForm extends React.PureComponent<Props> {
-  handleNavigateToLand = () => {
-    const { land, onNavigate } = this.props
-    onNavigate(locations.landDetail(land.id))
+  handleFinish = () => {
+    const { onNavigate } = this.props
+    onNavigate(locations.ens())
   }
 
   handleSetResolver = () => {
@@ -109,7 +109,7 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
           </Button>
           <Button
             disabled={!hasResolver || !hasContent || isLoading || isWaitingTxSetContent || isWaitingTxSetResolver}
-            onClick={this.handleNavigateToLand}
+            onClick={this.handleFinish}
             primary
           >
             {t('global.finish')}
