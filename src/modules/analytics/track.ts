@@ -78,6 +78,16 @@ import {
   SET_COLLECTION_MINTERS_FAILURE,
   SET_COLLECTION_MINTERS_SUCCESS
 } from 'modules/collection/actions'
+import {
+  AllowClaimManaSuccessAction,
+  SetAliasSuccessAction,
+  ALLOW_CLAIM_MANA_SUCCESS,
+  SET_ALIAS_SUCCESS,
+  CLAIM_NAME_SUCCESS,
+  SET_ENS_CONTENT_SUCCESS,
+  SET_ENS_RESOLVER_SUCCESS
+} from 'modules/ens/actions'
+import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -386,5 +396,55 @@ add(SET_COLLECTION_MANAGERS_FAILURE, 'Set collaborators error', action => {
     collection: payload.collection,
     accessList: payload.accessList,
     error: payload.error
+  }
+})
+
+// ENS analytics
+add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
+  const { payload } = action as FetchTransactionSuccessAction
+  const { ens, resolver, address } = payload.transaction.payload
+  return {
+    address,
+    ens,
+    resolver
+  }
+})
+
+add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
+  const { payload } = action as FetchTransactionSuccessAction
+  const { ens, content, land, address } = payload.transaction.payload
+  return {
+    address,
+    ens,
+    content,
+    land
+  }
+})
+
+add(SET_ALIAS_SUCCESS, 'Use as Alias', action => {
+  const { payload } = action as SetAliasSuccessAction
+  const { address, name } = payload
+  return {
+    address,
+    name
+  }
+})
+
+add(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana', action => {
+  const { payload } = action as AllowClaimManaSuccessAction
+  const { allowance, address } = payload
+  return {
+    address,
+    allowance
+  }
+})
+
+add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
+  const { payload } = action as FetchTransactionSuccessAction
+  const { name, ens, address } = payload.transaction.payload
+  return {
+    address,
+    name,
+    ens
   }
 })
