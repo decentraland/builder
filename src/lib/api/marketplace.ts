@@ -31,11 +31,26 @@ export class MarketplaceAPI {
       return []
     }
     const owner = address.toLowerCase()
-    const { data } = await graphClient.query<SubdomainQueryResult>({
-      query: getSubdomainQuery(),
-      variables: { owner }
-    })
-    return data.nfts.map(ntf => `${ntf.ens.subdomain}`)
+    let results: string[] = []
+    let page: string[] = []
+    let offset = 0
+    let nextPage = true
+    while (nextPage) {
+      const { data } = await graphClient.query<SubdomainQueryResult>({
+        query: getSubdomainQuery(),
+        variables: { owner, offset }
+      })
+      console.log(data.nfts.length)
+      page = data.nfts.map(ntf => `${ntf.ens.subdomain}`)
+      if (page.length > 0) {
+        results = [...results, ...page]
+        offset += 1000
+      } else {
+        nextPage = false
+      }
+    }
+    console.log(results.length)
+    return results
   }
 }
 
