@@ -290,37 +290,42 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const address = from.toString()
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
-    const ensList: ENS[] = []
 
-    for (let data of domains) {
-      const name = data
-      const subdomain = `${data.toLowerCase()}.dcl.eth`
-      let landId: string | undefined = undefined
-      let content: string = ''
+    const ensList: ENS[] = yield call(() =>
+      Promise.all(
+        domains.map(async data => {
+          const name = data
+          const subdomain = `${data.toLowerCase()}.dcl.eth`
+          let landId: string | undefined = undefined
+          let content: string = ''
 
-      const nodehash = namehash(subdomain)
-      const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
-      const resolver = resolverAddress.toString()
+          const nodehash = namehash(subdomain)
+          const resolverAddress: Address = await ensContract.methods.resolver(nodehash).call()
+          const resolver = resolverAddress.toString()
 
-      if (resolver !== Address.ZERO.toString()) {
-        const resolverContract = new ENSResolver(eth, resolverAddress)
-        content = yield call(() => resolverContract.methods.contenthash(nodehash).call())
+          if (resolver !== Address.ZERO.toString()) {
+            const resolverContract = new ENSResolver(eth, resolverAddress)
+            content = await resolverContract.methods.contenthash(nodehash).call()
 
-        const land = landHashes.find(lh => lh.hash === content)
-        if (land) {
-          landId = land.id
-        }
-      }
+            const land = landHashes.find(lh => lh.hash === content)
+            if (land) {
+              landId = land.id
+            }
+          }
 
-      ensList.push({
-        address,
-        name,
-        subdomain,
-        resolver,
-        content,
-        landId
-      })
-    }
+          const ens: ENS = {
+            address,
+            name,
+            subdomain,
+            resolver,
+            content,
+            landId
+          }
+
+          return ens
+        })
+      )
+    )
 
     yield put(fetchENSListSuccess(ensList))
   } catch (error) {
