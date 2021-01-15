@@ -40,7 +40,6 @@ export class MarketplaceAPI {
         query: getSubdomainQuery(),
         variables: { owner, offset }
       })
-      console.log(data.nfts.length)
       page = data.nfts.map(ntf => `${ntf.ens.subdomain}`)
       if (page.length > 0) {
         results = [...results, ...page]
@@ -49,7 +48,6 @@ export class MarketplaceAPI {
         nextPage = false
       }
     }
-    console.log(results.length)
     return results
   }
 }
