@@ -5,9 +5,11 @@ import { createClient } from './graph'
 export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_GRAPH_URL', '')
 const graphClient = createClient(MARKETPLACE_URL)
 
+const BATCH_SIZE = 1000
+
 const getSubdomainQuery = () => gql`
   query getUserNames($owner: String, $offset: Int) {
-    nfts(first: 1000, skip: $offset, where: { owner: $owner, category: ens }) {
+    nfts(first: ${BATCH_SIZE}, skip: $offset, where: { owner: $owner, category: ens }) {
       ens {
         subdomain
       }
@@ -41,9 +43,9 @@ export class MarketplaceAPI {
         variables: { owner, offset }
       })
       page = data.nfts.map(ntf => `${ntf.ens.subdomain}`)
-      if (page.length > 0) {
-        results = [...results, ...page]
-        offset += 1000
+      results = [...results, ...page]
+      if (page.length === BATCH_SIZE) {
+        offset += BATCH_SIZE
       } else {
         nextPage = false
       }
