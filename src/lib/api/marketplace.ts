@@ -6,8 +6,8 @@ export const MARKETPLACE_URL = env.get('REACT_APP_MARKETPLACE_GRAPH_URL', '')
 const graphClient = createClient(MARKETPLACE_URL)
 
 const getSubdomainQuery = () => gql`
-  query getUserNames($owner: String) {
-    nfts(where: { owner: $owner, category: ens }) {
+  query getUserNames($owner: String, $offset: Int) {
+    nfts(first: 1000, skip: $offset, where: { owner: $owner, category: ens }) {
       ens {
         subdomain
       }
