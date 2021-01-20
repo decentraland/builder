@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModalNavigation, Field, Button } from 'decentraland-ui'
+import { ModalNavigation, Field, Button, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './ClaimNameFatFingerModal.types'
@@ -36,26 +36,28 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
     return (
       <Modal name={name} onClose={this.handleClose}>
         <ModalNavigation title={t('claim_name_fat_finger_modal.title')} onClose={this.handleClose} />
-        <Modal.Content>
-          <div className="details">
-            <T id="claim_name_fat_finger_modal.description" values={{ name: <strong>{originalName}</strong> }} />
-          </div>
-          <Field
-            placeholder={t('claim_name_fat_finger_modal.name_placeholder')}
-            value={currentName}
-            error={hasError}
-            message={hasError ? t('claim_name_fat_finger_modal.names_different') : ''}
-            onChange={this.handleChangeName}
-          />
-        </Modal.Content>
-        <Modal.Actions>
-          <Button secondary onClick={this.handleClose}>
-            {t('global.cancel')}
-          </Button>
-          <Button primary onClick={this.handleClaim} disabled={areNamesDifferent} loading={isLoading}>
-            {t('global.confirm')}
-          </Button>
-        </Modal.Actions>
+        <Form onSubmit={this.handleClaim}>
+          <Modal.Content>
+            <div className="details">
+              <T id="claim_name_fat_finger_modal.description" values={{ name: <strong>{originalName}</strong> }} />
+            </div>
+            <Field
+              placeholder={t('claim_name_fat_finger_modal.name_placeholder')}
+              value={currentName}
+              error={hasError}
+              message={hasError ? t('claim_name_fat_finger_modal.names_different') : ''}
+              onChange={this.handleChangeName}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button secondary onClick={this.handleClose} type="button">
+              {t('global.cancel')}
+            </Button>
+            <Button primary type="submit" disabled={areNamesDifferent} loading={isLoading}>
+              {t('global.confirm')}
+            </Button>
+          </Modal.Actions>
+        </Form>
       </Modal>
     )
   }
