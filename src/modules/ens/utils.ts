@@ -37,6 +37,7 @@ export async function getDefaultProfileEntity() {
 }
 
 export async function isNameAvailable(name: string) {
+  if (!name) return
   const eth = await createEth()
   const contractDCLRegistrar = new DCLRegistrar(eth!, Address.fromString(REGISTRAR_ADDRESS))
   return contractDCLRegistrar.methods.available(name).call()

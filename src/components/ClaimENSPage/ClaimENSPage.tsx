@@ -27,8 +27,15 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   handleClaim = async () => {
-    const { onOpenModal } = this.props
+    const { wallet, allowance, onOpenModal } = this.props
     const { name } = this.state
+
+    const isValid = isNameValid(name)
+    const isEnoughMana = wallet && isEnoughClaimMana(wallet.mana.toString())
+    const isManaAllowed = isEnoughClaimMana(allowance)
+
+    if (!isValid || !isEnoughMana || !isManaAllowed) return
+
     this.setState({ isLoading: true })
     try {
       const isAvailable = await isNameAvailable(name)
@@ -150,7 +157,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   </p>
                 </Section>
                 <Row className="actions">
-                  <Button className="cancel" onClick={onBack}>
+                  <Button className="cancel" onClick={onBack} type="button">
                     {t('global.cancel')}
                   </Button>
                   {!isLoading && (!isEnoughMana || !isManaAllowed) ? (
