@@ -157,7 +157,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   </p>
                 </Section>
                 <Row className="actions">
-                  <Button className="cancel" onClick={onBack}>
+                  <Button className="cancel" onClick={onBack} type="button">
                     {t('global.cancel')}
                   </Button>
                   {!isLoading && (!isEnoughMana || !isManaAllowed) ? (
