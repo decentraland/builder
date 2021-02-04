@@ -1,15 +1,16 @@
 import * as React from 'react'
 import { Button, Loader, Header, Row } from 'decentraland-ui'
+import { ProviderType } from 'decentraland-connect'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
+import { coordsToId } from 'modules/land/utils'
 import { getDeployment, getStatus } from 'modules/deployment/utils'
 import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
 import { Props, State, DeployToLandView } from './DeployToLand.types'
 import './DeployToLand.css'
-import { coordsToId } from 'modules/land/utils'
 
 export default class DeployToLand extends React.PureComponent<Props, State> {
   state: State = {
@@ -23,7 +24,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.props.onRecord()
-    this.props.onConnect()
+    this.props.onConnect(ProviderType.INJECTED)
   }
 
   componentWillReceiveProps(props: Props) {
@@ -108,7 +109,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   handleConnect = () => {
-    this.props.onConnect()
+    this.props.onConnect(ProviderType.INJECTED)
   }
 
   handleConfirmPlacement = (placement: State['placement'], overrideDeploymentId?: string) => {

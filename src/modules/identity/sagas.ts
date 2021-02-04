@@ -85,7 +85,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
 }
 
 function* handleLogin(action: LoginRequestAction) {
-  const { restoreSession } = action.payload
+  const { restoreSession, providerType } = action.payload
   // Check if we need to generate an identity
   const shouldLogin = yield select(state => !isLoggedIn(state))
   if (shouldLogin && !restoreSession) {
@@ -93,7 +93,7 @@ function* handleLogin(action: LoginRequestAction) {
     const shouldConnectWallet = yield select(state => !isConnected(state))
     if (shouldConnectWallet) {
       // enable wallet
-      yield put(enableWalletRequest())
+      yield put(enableWalletRequest(providerType))
       const enableWallet: Race<EnableWalletSuccessAction, EnableWalletFailureAction> = yield takeRace(
         ENABLE_WALLET_SUCCESS,
         ENABLE_WALLET_FAILURE
