@@ -4,8 +4,8 @@ import { getError as getWalletError, isConnecting, isConnected, getAddress } fro
 import { clearDeploymentRequest } from 'modules/deployment/actions'
 import { openModal } from 'modules/modal/actions'
 import { RootState } from 'modules/common/types'
-import { getData as getDeployments } from 'modules/deployment/selectors'
 import {
+  getData as getDeployments,
   isUploadingAssets,
   getProgress as getUploadProgress,
   isCreatingFiles,
