@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Button, Loader, Header, Row } from 'decentraland-ui'
-import { ProviderType } from 'decentraland-connect'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
