@@ -13,5 +13,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'isConnecting' | 'hasError'>
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onOpenModal'>
+export type MapDispatchProps = Pick<Props, 'onOpenModal'>
 export type MapDispatch = Dispatch<ConnectWalletRequestAction | OpenModalAction>

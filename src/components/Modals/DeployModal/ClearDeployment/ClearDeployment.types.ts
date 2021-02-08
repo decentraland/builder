@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
-import { ConnectWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Deployment } from 'modules/deployment/types'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { clearDeploymentRequest, ClearDeploymentRequestAction } from 'modules/deployment/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
 
@@ -16,6 +16,7 @@ export type Props = SignInProps & {
   ethAddress: string | undefined
   deployment: Deployment | null
   onClose: () => void
+  onOpenModal: typeof openModal
   onClearDeployment: typeof clearDeploymentRequest
 }
 
@@ -38,5 +39,5 @@ export type MapStateProps = Pick<
   | 'deployment'
   | 'deploymentProgress'
 >
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onClearDeployment'>
-export type MapDispatch = Dispatch<ConnectWalletRequestAction | ClearDeploymentRequestAction>
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onClearDeployment'>
+export type MapDispatch = Dispatch<OpenModalAction | ClearDeploymentRequestAction>

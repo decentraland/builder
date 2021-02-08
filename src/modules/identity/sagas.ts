@@ -22,6 +22,7 @@ import {
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { clearAssetPacks } from 'modules/assetPack/actions'
 import { locations } from 'routing/locations'
+import { closeModal } from 'modules/modal/actions'
 import {
   GENERATE_IDENTITY_REQUEST,
   GenerateIdentityRequestAction,
@@ -139,6 +140,7 @@ function* handleLogin(action: LoginRequestAction) {
 
   if (wallet && identity) {
     yield put(loginSuccess(wallet, identity))
+    yield put(closeModal('WalletLoginModal'))
   } else {
     yield put(loginFailure(restoreSession ? 'Failed to restore session' : 'Failed to login'))
   }

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Dropdown, Button, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
-import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import SceneStats from 'components/SceneStats'
+import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
 import { Props } from './Scene.types'
 import './Scene.css'
 
@@ -46,7 +46,9 @@ export default class Scene extends React.PureComponent<Props> {
           <Dropdown.Menu>
             <Dropdown.Item
               text="Unpublish"
-              onClick={() => onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, deploymentId: deployment.id })}
+              onClick={() =>
+                onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, deploymentId: deployment.id } as DeployModalMetadata)
+              }
             />
           </Dropdown.Menu>
         </Dropdown>

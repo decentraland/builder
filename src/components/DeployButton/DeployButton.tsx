@@ -4,7 +4,7 @@ import { Button, Popup } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getExceededMetrics } from 'modules/scene/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
-import { DeployModalMetadata, DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
+import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
 import { Props, DefaultProps } from './DeployButton.types'
 import './DeployButton.css'
 
