@@ -7,7 +7,6 @@ import {
   SET_SYNC
 } from './actions'
 import { CREATE_PROJECT, CreateProjectAction } from 'modules/project/actions'
-import { MigrationSuccessAction, MIGRATION_SUCCESS } from 'modules/auth/actions'
 
 export type DashboardState = {
   didCreate: boolean
@@ -27,12 +26,7 @@ const INITIAL_STATE: DashboardState = {
   didMigrate: false
 }
 
-type DashboardReducerAction =
-  | CreateProjectAction
-  | DismissSignInToastAction
-  | DismissSyncedToastAction
-  | SetSyncAction
-  | MigrationSuccessAction
+type DashboardReducerAction = CreateProjectAction | DismissSignInToastAction | DismissSyncedToastAction | SetSyncAction
 
 export const dashboardReducer = (state = INITIAL_STATE, action: DashboardReducerAction): DashboardState => {
   switch (action.type) {
@@ -55,13 +49,6 @@ export const dashboardReducer = (state = INITIAL_STATE, action: DashboardReducer
       return {
         ...state,
         didDismissSignInToast: true
-      }
-    }
-    case MIGRATION_SUCCESS: {
-      return {
-        ...state,
-        didMigrate: true,
-        needsMigration: false
       }
     }
     default:

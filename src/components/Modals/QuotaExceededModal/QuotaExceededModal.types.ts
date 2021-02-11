@@ -1,17 +1,21 @@
+import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { Project } from 'modules/project/types'
-import { retrySync } from 'modules/sync/actions'
-import { loginRequest } from 'modules/identity/actions'
+import { retrySync, RetrySyncAction } from 'modules/sync/actions'
 
 export type Props = ModalProps & {
   currentProject: Project | null
   isLoggedIn: boolean
+  isLoggingIn: boolean
   errors: Set<string>
   loading: Set<string>
-  onLogin: typeof loginRequest
   onRetry: typeof retrySync
 }
 
-export type MapStateProps = Pick<Props, 'currentProject' | 'errors' | 'loading' | 'isLoggedIn'>
+export type State = {
+  isLoginModalOpen: boolean
+}
 
-export type MapDispatchProps = Pick<Props, 'onLogin' | 'onRetry'>
+export type MapStateProps = Pick<Props, 'currentProject' | 'errors' | 'loading' | 'isLoggedIn' | 'isLoggingIn'>
+export type MapDispatchProps = Pick<Props, 'onRetry'>
+export type MapDispatch = Dispatch<RetrySyncAction>

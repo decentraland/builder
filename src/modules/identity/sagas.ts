@@ -35,12 +35,12 @@ import {
   LOGOUT,
   LogoutAction,
   destroyIdentity,
-  loginFailure,
   GenerateIdentitySuccessAction,
   GenerateIdentityFailureAction,
   GENERATE_IDENTITY_FAILURE,
   loginRequest,
-  loginSuccess
+  loginSuccess,
+  loginFailure
 } from './actions'
 import { ONE_MONTH_IN_MINUTES, takeRace } from './utils'
 import { isLoggedIn, getCurrentIdentity } from './selectors'
@@ -93,6 +93,11 @@ function* handleLogin(action: LoginRequestAction) {
     // Check if we need to connect the wallet
     const shouldConnectWallet = yield select(state => !isConnected(state))
     if (shouldConnectWallet) {
+      if (!providerType) {
+        yield put(loginFailure('Undefined provider type'))
+        return
+      }
+
       // enable wallet
       yield put(enableWalletRequest(providerType))
       const enableWallet: Race<EnableWalletSuccessAction, EnableWalletFailureAction> = yield takeRace(

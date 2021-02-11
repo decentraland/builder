@@ -56,9 +56,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
   }
 
   handleLogin = () => {
-    const { onLogin } = this.props
-
-    onLogin()
+    this.props.onOpenModal('WalletLoginModal')
   }
 
   handleShare = () => {

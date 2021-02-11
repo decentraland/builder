@@ -5,11 +5,9 @@ import { ComponentType, Scene } from 'modules/scene/types'
 import { getEntities, getComponents } from 'modules/scene/selectors'
 import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { getCurrentProject, getLoading as getLoadingProject } from 'modules/project/selectors'
-import { getLoading as getLoadingAuth } from 'modules/auth/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { LOAD_MANIFEST_REQUEST } from 'modules/project/actions'
 import { Project } from 'modules/project/types'
-import { LEGACY_AUTH_REQUEST } from 'modules/auth/actions'
 import { getData as getAssets } from 'modules/asset/selectors'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Asset } from 'modules/asset/types'
@@ -75,17 +73,14 @@ export const getEnabledTools = createSelector<
   }
 })
 
-export const isFetching = createSelector<RootState, Project | null, boolean, LoadingState, LoadingState, boolean>(
+export const isFetching = createSelector<RootState, Project | null, boolean, LoadingState, boolean>(
   getCurrentProject,
   isReady,
   getLoadingProject,
-  getLoadingAuth,
-  (project, _ready, loadingProject, loadingAuth) => {
+  (project, _ready, loadingProject) => {
     if (project) {
       return false
     } else if (isLoadingType(loadingProject, LOAD_MANIFEST_REQUEST)) {
-      return true
-    } else if (isLoadingType(loadingAuth, LEGACY_AUTH_REQUEST)) {
       return true
     }
     return false

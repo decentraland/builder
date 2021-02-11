@@ -6,7 +6,6 @@ import { shareProject, ShareProjectAction } from 'modules/project/actions'
 import { shareScene, ShareAction } from 'modules/ui/share/actions'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 import { deployToPoolRequest, DeployToPoolRequestAction } from 'modules/deployment/actions'
-import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
 
 export type Props = ModalProps & {
   metadata: {}
@@ -20,7 +19,6 @@ export type Props = ModalProps & {
   progress: number
   onOpenModal: typeof openModal
   onUpdate: typeof shareProject
-  onLogin: typeof loginRequest
   onShare: typeof shareScene
   onDeployToPool: typeof deployToPoolRequest
 }
@@ -30,8 +28,8 @@ export type MapStateProps = Pick<
   Props,
   'error' | 'project' | 'poolGroup' | 'isLoading' | 'isLoggedIn' | 'isReady' | 'progress' | 'isSubmitting'
 >
-export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onLogin' | 'onShare' | 'onOpenModal' | 'onDeployToPool'>
-export type MapDispatch = Dispatch<ShareProjectAction | LoginRequestAction | ShareAction | OpenModalAction | DeployToPoolRequestAction>
+export type MapDispatchProps = Pick<Props, 'onUpdate' | 'onShare' | 'onOpenModal' | 'onDeployToPool'>
+export type MapDispatch = Dispatch<ShareProjectAction | ShareAction | OpenModalAction | DeployToPoolRequestAction>
 
 export type State = {
   isSuccess: boolean

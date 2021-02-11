@@ -30,9 +30,8 @@ export default class SyncToast extends React.PureComponent<Props, State> {
   }
 
   handleLogin = () => {
-    const { onLogin } = this.props
     this.analytics.track(SYNC_SIGN_IN_EVENT)
-    onLogin()
+    this.props.onOpenModal('WalletLoginModal')
   }
 
   render() {

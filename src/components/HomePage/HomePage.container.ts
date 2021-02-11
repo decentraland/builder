@@ -6,17 +6,7 @@ import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { isFetching } from 'modules/project/selectors'
 import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
-import {
-  getProjects,
-  getPage,
-  getSortBy,
-  getTotalPages,
-  didSync,
-  didCreate,
-  didMigrate,
-  needsMigration
-} from 'modules/ui/dashboard/selectors'
-import { loginRequest } from 'modules/identity/actions'
+import { getProjects, getPage, getSortBy, getTotalPages, didSync, didCreate } from 'modules/ui/dashboard/selectors'
 import { loadPoolsRequest } from 'modules/pool/actions'
 import { getPoolList } from 'modules/pool/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './HomePage.types'
@@ -31,14 +21,11 @@ const mapState = (state: RootState): MapStateProps => ({
   totalPages: getTotalPages(state),
   didCreate: didCreate(state),
   didSync: didSync(state),
-  didMigrate: didMigrate(state),
-  needsMigration: needsMigration(state),
   isLoggedIn: isLoggedIn(state),
   poolList: getPoolList(state)
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onLogin: () => dispatch(loginRequest()),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onPageChange: options => dispatch(push(locations.root(options))),
   onNavigate: path => dispatch(push(path)),

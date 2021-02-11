@@ -13,7 +13,7 @@ export function isValid(identity?: AuthIdentity | null) {
 export function* getIdentity(): IterableIterator<any> {
   const shouldLogin = yield select(state => !isLoggedIn(state))
   if (shouldLogin) {
-    yield put(loginRequest())
+    yield put(loginRequest(false))
     const login: any = yield takeRace(LOGIN_SUCCESS, LOGIN_FAILURE)
     if (login.success) {
       // wait a sec and retry

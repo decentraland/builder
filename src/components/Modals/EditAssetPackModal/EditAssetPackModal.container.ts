@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { saveAssetPackRequest, deleteAssetPackRequest } from 'modules/assetPack/actions'
 import { getProgress, getError, getFullAssetPacks, isLoading } from 'modules/assetPack/selectors'
 import { getCurrentProject } from 'modules/project/selectors'
-import { loginRequest } from 'modules/identity/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './EditAssetPackModal.types'
 import CustomLayoutModal from './EditAssetPackModal'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   project: getCurrentProject(state),
@@ -19,8 +18,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onCreateAssetPack: (assetPack, contents) => dispatch(saveAssetPackRequest(assetPack, contents)),
-  onDeleteAssetPack: assetPack => dispatch(deleteAssetPackRequest(assetPack)),
-  onLogin: () => dispatch(loginRequest())
+  onDeleteAssetPack: assetPack => dispatch(deleteAssetPackRequest(assetPack))
 })
 
 export default connect(mapState, mapDispatch)(CustomLayoutModal)

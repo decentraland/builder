@@ -6,8 +6,6 @@ import * as routing from 'routing/utils'
 import { RootState } from 'modules/common/types'
 import { getProjectId } from 'modules/location/utils'
 import { getData as gerProjectsData } from 'modules/project/selectors'
-import { getLoading as getAuthLoading } from 'modules/auth/selectors'
-import { LEGACY_AUTH_REQUEST } from 'modules/auth/actions'
 import { LOAD_PROJECTS_REQUEST, LOAD_PUBLIC_PROJECT_REQUEST } from 'modules/project/actions'
 import { PoolState } from './reducer'
 import { LOAD_POOLS_REQUEST } from './actions'
@@ -60,10 +58,8 @@ export const getCurrentPool = createSelector(getProjectId, getData, (projectId, 
 })
 
 export const isFetching = createSelector(
-  getAuthLoading,
   getLoading,
-  (authLoading, projectLoading) =>
-    isLoadingType(authLoading, LEGACY_AUTH_REQUEST) ||
+  projectLoading =>
     isLoadingType(projectLoading, LOAD_PROJECTS_REQUEST) ||
     isLoadingType(projectLoading, LOAD_PUBLIC_PROJECT_REQUEST) ||
     isLoadingType(projectLoading, LOAD_POOLS_REQUEST)

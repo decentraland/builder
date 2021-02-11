@@ -2,14 +2,14 @@ import { connect } from 'react-redux'
 import { getLocation, push } from 'connected-react-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { getData as getProfiles } from 'decentraland-dapps/dist/modules/profile/selectors'
+import { getAddress, getMana } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/common/types'
-import { MapStateProps, MapDispatch, MapDispatchProps } from './UserMenu.types'
-import { logout, loginRequest } from 'modules/identity/actions'
-import UserMenu from './UserMenu'
+import { logout } from 'modules/identity/actions'
 import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
-import { getAddress, getMana } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getTransactions } from 'modules/transaction/selectors'
+import { MapStateProps, MapDispatch, MapDispatchProps } from './UserMenu.types'
+import UserMenu from './UserMenu'
 
 const mapState = (state: RootState): MapStateProps => {
   const address = getAddress(state)
@@ -26,7 +26,6 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onLogout: () => dispatch(logout()),
-  onLogin: () => dispatch(loginRequest()),
   onNavigate: path => dispatch(push(path))
 })
 

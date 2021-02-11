@@ -19,7 +19,6 @@ import { poolReducer as pool } from 'modules/pool/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { mediaReducer as media } from 'modules/media/reducer'
-import { authReducer as auth } from 'modules/auth/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
 import { landReducer as land } from 'modules/land/reducer'
@@ -34,7 +33,6 @@ export function createRootReducer(history: History) {
   return storageReducerWrapper(
     combineReducers<RootState>({
       storage,
-      auth,
       editor,
       translation,
       transaction,

@@ -3,7 +3,6 @@ import { Project } from 'modules/project/types'
 import { deployToPoolRequest, DeployToPoolRequestAction } from 'modules/deployment/actions'
 import { Media } from 'modules/media/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
-import { LoginRequestAction, loginRequest } from 'modules/identity/actions'
 
 export type Props = {
   name: string
@@ -18,7 +17,6 @@ export type Props = {
   media: Media | null
   onDeployToPool: typeof deployToPoolRequest
   onOpenModal: typeof openModal
-  onLogin: typeof loginRequest
   onClose: () => void
 }
 
@@ -36,5 +34,5 @@ export type MapStateProps = Pick<
   Props,
   'project' | 'isRecording' | 'isLoading' | 'isReady' | 'isUploadingRecording' | 'error' | 'media' | 'progress' | 'isLoggedIn'
 >
-export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onLogin' | 'onOpenModal'>
-export type MapDispatch = Dispatch<DeployToPoolRequestAction | LoginRequestAction | OpenModalAction>
+export type MapDispatchProps = Pick<Props, 'onDeployToPool' | 'onOpenModal'>
+export type MapDispatch = Dispatch<DeployToPoolRequestAction | OpenModalAction>

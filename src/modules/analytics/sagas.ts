@@ -30,7 +30,6 @@ import { getSideBarCategories, getSearch } from 'modules/ui/sidebar/selectors'
 import { Project } from 'modules/project/types'
 import { trimAsset } from './track'
 import { handleDelighted } from './delighted'
-import { getSub } from 'modules/auth/selectors'
 import { SyncAction, SYNC } from 'modules/sync/actions'
 import { getLocalProjectIds } from 'modules/sync/selectors'
 import {
@@ -181,13 +180,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const analytics = getAnalytics()
 
   if (analytics) {
-    const ethAddress: string = yield select(getSub)
-
-    if (ethAddress) {
-      analytics.identify(wallet.address, { auth0_id: ethAddress })
-    } else {
-      analytics.identify(wallet.address)
-    }
+    analytics.identify(wallet.address)
   }
 }
 

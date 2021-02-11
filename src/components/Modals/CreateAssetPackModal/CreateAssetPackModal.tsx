@@ -9,6 +9,7 @@ import AssetPackEditor from 'components/AssetPackEditor'
 import { convertToFullAssetPack } from 'modules/assetPack/utils'
 import AssetImporter from 'components/AssetImporter'
 import AssetsEditor from 'components/AssetsEditor'
+import WalletLoginModal from '../WalletLoginModal'
 
 import { Props, State, CreateAssetPackView } from './CreateAssetPackModal.types'
 import './CreateAssetPackModal.css'
@@ -96,9 +97,9 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   handleLogin = () => {
-    const { project, onLogin } = this.props
+    const { project, onOpenModal } = this.props
     if (project) {
-      onLogin()
+      onOpenModal('WalletLoginModal')
     }
   }
 
@@ -214,18 +215,8 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
   }
 
   renderLogin() {
-    return (
-      <>
-        <ModalNavigation title={t('asset_pack.login.title')} subtitle={t('asset_pack.login.description_create')} />
-        <Modal.Content>
-          <Row center>
-            <Button primary onClick={this.handleLogin}>
-              {t('asset_pack.login.action')}
-            </Button>
-          </Row>
-        </Modal.Content>
-      </>
-    )
+    const { name, onClose } = this.props
+    return <WalletLoginModal name={name} onClose={onClose} />
   }
 
   renderExit() {
@@ -247,13 +238,13 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
     const { name } = this.props
     const { view } = this.state
 
+    if (view === CreateAssetPackView.LOGIN) {
+      return this.renderLogin()
+    }
+
     let content
     let className = name
     switch (view) {
-      case CreateAssetPackView.LOGIN:
-        content = this.renderLogin()
-        className += ' narrow'
-        break
       case CreateAssetPackView.IMPORT:
         content = this.renderAssetImport()
         break

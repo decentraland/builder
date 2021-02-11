@@ -4,7 +4,7 @@ import { RawAssetPack, AssetPack } from 'modules/assetPack/types'
 import { saveAssetPackRequest, SaveAssetPackRequestAction } from 'modules/assetPack/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Project } from 'modules/project/types'
-import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export enum CreateAssetPackView {
   LOGIN,
@@ -31,9 +31,9 @@ export type Props = ModalProps & {
   isLoggedIn: boolean
   isLoading: boolean
   onCreateAssetPack: typeof saveAssetPackRequest
-  onLogin: typeof loginRequest
+  onOpenModal: typeof openModal
 }
 
 export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'assetPacks' | 'isLoggedIn' | 'isLoading' | 'ethAddress'>
-export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onLogin'>
-export type MapDispatch = Dispatch<SaveAssetPackRequestAction | LoginRequestAction>
+export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onOpenModal'>
+export type MapDispatch = Dispatch<SaveAssetPackRequestAction | OpenModalAction>

@@ -15,7 +15,6 @@ import { NavigationTab } from 'components/Navigation/Navigation.types'
 import { locations } from 'routing/locations'
 import { PaginationOptions } from 'routing/utils'
 import { Props, DefaultProps } from './HomePage.types'
-import TopBanner from './TopBanner'
 import './HomePage.css'
 
 export default class HomePage extends React.PureComponent<Props> {
@@ -69,79 +68,55 @@ export default class HomePage extends React.PureComponent<Props> {
   }
 
   renderProjects = () => {
-    const { isLoggedIn, didSync, projects, didMigrate, needsMigration } = this.props
+    const { isLoggedIn, didSync, projects } = this.props
 
     if (projects.length > 0) {
       return projects.map(project => <ProjectCard key={project.id} project={project} />)
     } else if (!isLoggedIn && didSync) {
       return (
         <div className="empty-projects">
-          {needsMigration && !didMigrate ? (
-            <div>
-              <T
-                id="home_page.migration"
-                values={{
-                  link: <Link to={locations.migrate()}>{t('home_page.migration_link')}</Link>
-                }}
-              />
-            </div>
-          ) : (
-            <div>
-              <T
-                id="home_page.no_projects_guest"
-                values={{
-                  br: <br />,
-                  sign_in: (
-                    <a href="#" onClick={this.handleLogin}>
-                      {t('user_menu.sign_in')}
-                    </a>
-                  )
-                }}
-              />
-            </div>
-          )}
-        </div>
-      )
-    }
-    return (
-      <div className="empty-projects">
-        {needsMigration && !didMigrate ? (
           <div>
             <T
-              id="home_page.migration"
-              values={{
-                link: <Link to={locations.migrate()}>{t('home_page.migration_link')}</Link>
-              }}
-            />
-          </div>
-        ) : (
-          <div>
-            <T
-              id="home_page.no_projects"
+              id="home_page.no_projects_guest"
               values={{
                 br: <br />,
-                link: (
-                  <a
-                    href="#"
-                    onClick={event => {
-                      event.preventDefault()
-                      this.handleOpenCreateModal()
-                    }}
-                  >
-                    {t('global.click_here')}
+                sign_in: (
+                  <a href="#" onClick={this.handleLogin}>
+                    {t('user_menu.sign_in')}
                   </a>
                 )
               }}
             />
           </div>
-        )}
+        </div>
+      )
+    }
+    return (
+      <div className="empty-projects">
+        <div>
+          <T
+            id="home_page.no_projects"
+            values={{
+              br: <br />,
+              link: (
+                <a
+                  href="#"
+                  onClick={event => {
+                    event.preventDefault()
+                    this.handleOpenCreateModal()
+                  }}
+                >
+                  {t('global.click_here')}
+                </a>
+              )
+            }}
+          />
+        </div>
       </div>
     )
   }
 
-  handleLogin = () => {
-    this.props.onLogin()
-  }
+  handleLogin = () => this.props.onNavigate(locations.signIn())
 
   handleOpenShowcase = () => this.props.onNavigate(locations.poolSearch())
 
@@ -163,7 +138,7 @@ export default class HomePage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { projects, isFetching, totalPages, page, needsMigration, didMigrate, isLoggingIn, poolList } = this.props
+    const { projects, isFetching, totalPages, page, isLoggingIn, poolList } = this.props
     if (isLoggingIn || isFetching) {
       return <LoadingPage />
     }
@@ -172,7 +147,6 @@ export default class HomePage extends React.PureComponent<Props> {
 
     return (
       <>
-        {needsMigration && !didMigrate ? <TopBanner /> : null}
         <Navbar isFullscreen />
         <Page isFullscreen className="HomePage">
           <Navigation activeTab={NavigationTab.SCENES}>

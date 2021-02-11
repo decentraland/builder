@@ -93,12 +93,6 @@
       "title_create": "Create Asset Pack",
       "title_edit": "Edit Asset Pack"
     },
-    "login": {
-      "action": "Sign In",
-      "description_create": "You need to sign in before you create an Asset Pack",
-      "description_edit": "You need to sign in before you edit an Asset Pack",
-      "title": "Sign In"
-    },
     "new_asset_pack": "New Asset Pack",
     "progress": {
       "creating_asset_pack": "Creating Asset Pack",
@@ -191,16 +185,6 @@
     "uri": {
       "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=Introducing my latest creation, now live in Decentraland! View it below and then help me build the Metaverse by adding one of your own.",
       "twitter": "https://twitter.com/intent/tweet?text=Just added a new design to Decentraland via the Builder. Check it out below then create your own. The virtual world’s not gonna build itself you know! {url}&hashtags=builder,virtualworld,gaming"
-    },
-    "sign_in": {
-      "subtitle": "You need to sign in before you share your scene",
-      "title": "Sign in"
-    }
-  },
-  "like_modal": {
-    "sign_in": {
-      "subtitle": "Sign in to show your appreciation.",
-      "title": "Like this scene?"
     }
   },
   "deployment_status": {
@@ -331,10 +315,6 @@
     "success": {
       "title": "Thanks for uploading your Scene!",
       "subtitle": "You will receive an email notification if your scene is selected."
-    },
-    "sign_in": {
-      "subtitle": "You need to sign in before you send your scene to the contest",
-      "title": "Sign in"
     }
   },
   "dissolve_modal": {
@@ -488,13 +468,6 @@
     "subtitle": "With easy-to-use tools and hundreds of 3D items to choose from, the Builder makes world building fun. Let your creativity loose.",
     "templates_title": "Choose the size of your Scene to get started",
     "title": "Build something Cool!",
-    "migration": "You need to {link} your Scenes",
-    "migration_link": "migrate",
-    "migration_banner": "The Builder has switched to wallet based accounts. Use the {link} to migrate your scenes.",
-    "migration_banner_link": "Migration Page",
-    "migration_modal_title": "Migration successful!",
-    "migration_modal_message": "The following items have been migrated:",
-    "migration_modal_dismiss": "Dismiss",
     "results": "{count} {count, plural, one {result} other {results}}",
     "from_scene_pool": "From The Scene Pool"
   },

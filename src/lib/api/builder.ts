@@ -12,12 +12,11 @@ import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
-import { Auth0MigrationResult } from 'modules/auth/types'
 import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
 import { WeeklyStats } from 'modules/stats/types'
-import { authorize, authorizeAuth0 } from './auth'
+import { authorize } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -555,16 +554,6 @@ export class BuilderAPI extends BaseAPI {
   async likePool(pool: string, like: boolean = true) {
     const method = like ? 'put' : 'delete'
     return this.request(method, `/pools/${pool}/likes`)
-  }
-
-  async migrate() {
-    const result = await this.request('post', `/migrate`, null, authorizeAuth0())
-    return result as Auth0MigrationResult
-  }
-
-  async fetchProjectsToMigrate() {
-    const projects = await this.request('get', `/migrate`, null, authorizeAuth0())
-    return projects.map(fromRemoteProject) as Project[]
   }
 
   async fetchItems() {
