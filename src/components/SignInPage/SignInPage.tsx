@@ -8,7 +8,7 @@ import { Props } from './SignInPage.types'
 
 export default class SignInPage extends React.PureComponent<Props> {
   handleOnConnect = (providerType: ProviderType) => {
-    this.props.onConnect(false, providerType)
+    this.props.onConnect(providerType)
   }
 
   render() {

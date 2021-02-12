@@ -12,7 +12,7 @@ export default class WalletLoginModal extends React.PureComponent<Props> {
   }
 
   handleConnect = (providerType: ProviderType) => {
-    this.props.onConnect(false, providerType)
+    this.props.onConnect(providerType)
   }
 
   render() {

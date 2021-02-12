@@ -80,7 +80,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   handleShareWithTwitter = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.TWITTER)
 
   handleLogin = (providerType: ProviderType) => {
-    this.props.onLogin(false, providerType)
+    this.props.onLogin(providerType)
   }
 
   getFacebookLink = () => {

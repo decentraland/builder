@@ -165,7 +165,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const { wallet } = action.payload
   const shouldRestoreSession = yield select(isLoggedIn)
   if (shouldRestoreSession) {
-    yield put(loginRequest(true, wallet.providerType))
+    yield put(loginRequest(wallet.providerType, true))
   }
 }
 
@@ -173,7 +173,7 @@ function* handleChangeAccount(action: ChangeAccountAction) {
   const { wallet } = action.payload
   const shouldRestoreSession = yield select(isLoggedIn)
   if (shouldRestoreSession) {
-    yield put(loginRequest(true, wallet.providerType))
+    yield put(loginRequest(wallet.providerType, true))
   }
   yield put(clearAssetPacks())
 

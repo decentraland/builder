@@ -12,7 +12,7 @@ const mapState = (state: RootState): MapStateProps => ({
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: (refreshSession, providerType) => dispatch(loginRequest(refreshSession, providerType))
+  onConnect: providerType => dispatch(loginRequest(providerType))
 })
 
 export default connect(mapState, mapDispatch)(SignInPage)
