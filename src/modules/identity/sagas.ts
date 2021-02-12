@@ -7,18 +7,20 @@ import { Account } from 'web3x-es/account'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator } from 'dcl-crypto'
 import { env } from 'decentraland-commons'
-import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
+import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
-  enableWalletRequest,
   CONNECT_WALLET_SUCCESS,
   CONNECT_WALLET_FAILURE,
+  ConnectWalletSuccessAction,
+  enableWalletRequest,
   ENABLE_WALLET_SUCCESS,
   ENABLE_WALLET_FAILURE,
   EnableWalletSuccessAction,
   EnableWalletFailureAction,
   disconnectWallet,
-  CHANGE_ACCOUNT
+  CHANGE_ACCOUNT,
+  ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { clearAssetPacks } from 'modules/assetPack/actions'
 import { locations } from 'routing/locations'
@@ -159,17 +161,19 @@ function* handleLogout(_action: LogoutAction) {
   }
 }
 
-function* handleConnectWalletSuccess() {
+function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
+  const { wallet } = action.payload
   const shouldRestoreSession = yield select(isLoggedIn)
   if (shouldRestoreSession) {
-    yield put(loginRequest(true))
+    yield put(loginRequest(true, wallet.providerType))
   }
 }
 
-function* handleChangeAccount() {
+function* handleChangeAccount(action: ChangeAccountAction) {
+  const { wallet } = action.payload
   const shouldRestoreSession = yield select(isLoggedIn)
   if (shouldRestoreSession) {
-    yield put(loginRequest(true))
+    yield put(loginRequest(true, wallet.providerType))
   }
   yield put(clearAssetPacks())
 

@@ -9,7 +9,7 @@ export const LOGIN_REQUEST = '[Request] Login'
 export const LOGIN_SUCCESS = '[Success] Login'
 export const LOGIN_FAILURE = '[Failure] Login'
 
-export const loginRequest = (restoreSession = false, providerType?: ProviderType) => action(LOGIN_REQUEST, { restoreSession, providerType })
+export const loginRequest = (restoreSession = false, providerType: ProviderType) => action(LOGIN_REQUEST, { restoreSession, providerType })
 export const loginSuccess = (wallet: Wallet, identity: AuthIdentity) => action(LOGIN_SUCCESS, { wallet, identity })
 export const loginFailure = (error: string) => action(LOGIN_FAILURE, { error })
 

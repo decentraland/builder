@@ -88,12 +88,6 @@
       },
       "title_edit": "创造Asset Pack"
     },
-    "login": {
-      "action": "登入",
-      "description_create": "您需要先登录，然后才能创建Asset Pack",
-      "description_edit": "您需要先登录，然后才能编辑Asset Pack",
-      "title": "登入"
-    },
     "new_asset_pack": "新的Asset Pack",
     "progress": {
       "creating_asset_pack": "创建Asset Pack",
@@ -185,16 +179,6 @@
     "uri": {
       "facebook": "https://www.facebook.com/sharer/sharer.php?u={url}&description=我的最新作品已经在 Decentraland 中安家了！ 敬请查看，并且添加自己的场景共建虚拟世界。",
       "twitter": "https://twitter.com/intent/tweet?text=刚刚通过 Builder 在 Decentraland 中部署了我的新设计。 敬请查看，也请您创建您自己的场景。 因为虚拟世界也不会凭空而建! {url}&hashtags=builder,virtualworld,gaming"
-    },
-    "sign_in": {
-      "subtitle": "分享场景前请登录",
-      "title": "登录"
-    }
-  },
-  "like_modal": {
-    "sign_in": {
-      "subtitle": "登录以表示赞赏。",
-      "title": "喜欢这个场景吗？"
     }
   },
   "deployment_status": {
@@ -325,10 +309,6 @@
     "success": {
       "title": "感谢您上传场景！",
       "subtitle": "若您的场景入选了，您将接获电邮通知。"
-    },
-    "sign_in": {
-      "subtitle": "将场景发送参赛以前，请先登陆。",
-      "title": "登陆"
     }
   },
   "dissolve_modal": {
@@ -479,13 +459,6 @@
     "subtitle": "易于使用的工具和数以百计的 3D 素材，使得场景设计充满乐趣。快来释放您的创造力吧。",
     "templates_title": "请先选择场景大小",
     "title": "设计酷炫场景！",
-    "migration": "您需要{link}您的场景",
-    "migration_link": "迁移",
-    "migration_banner": "生成器已切换到基于钱包的帐户。使用{link}迁移场景。",
-    "migration_banner_link": "迁移页面",
-    "migration_modal_title": "迁移成功！",
-    "migration_modal_message": "下列项目已迁移：",
-    "migration_modal_dismiss": "解散",
     "results": "{count}结果",
     "from_scene_pool": "自场景池"
   },
