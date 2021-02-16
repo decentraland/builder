@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { retrySync, RetrySyncAction } from 'modules/sync/actions'
 import { dismissSyncedToast, dismissSignInToast, DismissSyncedToastAction, DismissSignInToastAction } from 'modules/ui/dashboard/actions'
-import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
   syncCount: number
@@ -11,7 +11,7 @@ export type Props = {
   didDismissSignInToast: boolean
   didDismissSyncedToast: boolean
   onRetry: typeof retrySync
-  onLogin: typeof loginRequest
+  onOpenModal: typeof openModal
   onDismissSyncedToast: typeof dismissSyncedToast
   onDismissSignInToast: typeof dismissSignInToast
 }
@@ -24,5 +24,5 @@ export type MapStateProps = Pick<
   Props,
   'syncCount' | 'errorCount' | 'projectCount' | 'isLoggedIn' | 'didDismissSignInToast' | 'didDismissSyncedToast'
 >
-export type MapDispatchProps = Pick<Props, 'onRetry' | 'onDismissSyncedToast' | 'onDismissSignInToast' | 'onLogin'>
-export type MapDispatch = Dispatch<RetrySyncAction | DismissSyncedToastAction | DismissSignInToastAction | LoginRequestAction>
+export type MapDispatchProps = Pick<Props, 'onRetry' | 'onOpenModal' | 'onDismissSyncedToast' | 'onDismissSignInToast'>
+export type MapDispatch = Dispatch<RetrySyncAction | OpenModalAction | DismissSyncedToastAction | DismissSignInToastAction>

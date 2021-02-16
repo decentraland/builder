@@ -17,7 +17,6 @@ import { UndoableSceneState } from 'modules/scene/reducer'
 import { EditorState } from 'modules/editor/reducer'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { MediaState } from 'modules/media/reducer'
-import { AuthState } from 'modules/auth/types'
 import { SyncState } from 'modules/sync/types'
 import { PoolState } from 'modules/pool/reducer'
 import { IdentityState } from 'modules/identity/reducer'
@@ -38,7 +37,6 @@ const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
 export type StorageLoadAction = ReturnType<typeof storageLoad>
 
 export type RootState = {
-  auth: AuthState
   transaction: TransactionState
   translation: TranslationState
   storage: StorageState

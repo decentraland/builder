@@ -7,7 +7,7 @@ import './WalletSignIn.css'
 
 export default class WalletSignIn extends React.PureComponent<Props, State> {
   handleConnect = () => {
-    this.props.onConnect!()
+    this.props.onOpenModal('WalletLoginModal')
   }
 
   render() {

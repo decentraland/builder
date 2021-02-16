@@ -1,11 +1,11 @@
 import { Dispatch } from 'redux'
 import { Project } from 'modules/project/types'
-import { LoginRequestAction, loginRequest } from 'modules/identity/actions'
+import { openModal, OpenModalAction } from 'modules/modal/actions'
 
 export type Props = {
   project: Project | null
   isVisible: boolean
-  onLogin: typeof loginRequest
+  onOpenModal: typeof openModal
 }
 
 export type State = {
@@ -13,7 +13,5 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'project'>
-
-export type MapDispatchProps = Pick<Props, 'onLogin'>
-
-export type MapDispatch = Dispatch<LoginRequestAction>
+export type MapDispatchProps = Pick<Props, 'onOpenModal'>
+export type MapDispatch = Dispatch<OpenModalAction>

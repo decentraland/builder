@@ -64,7 +64,7 @@ export default class ItemDrawer extends React.PureComponent<Props, State> {
           {this.isViewingCollectibles() && isConnected && (
             <span className="credit">
               <T
-                id={`itemdrawer.opensea_credit`}
+                id="itemdrawer.opensea_credit"
                 values={{
                   link: (
                     <a href="https://opensea.io" target="_blank" rel="no:opener no:referrer">

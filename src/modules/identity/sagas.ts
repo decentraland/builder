@@ -7,21 +7,24 @@ import { Account } from 'web3x-es/account'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator } from 'dcl-crypto'
 import { env } from 'decentraland-commons'
-import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { createEth } from 'decentraland-dapps/dist/lib/eth'
+import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
-  enableWalletRequest,
   CONNECT_WALLET_SUCCESS,
   CONNECT_WALLET_FAILURE,
+  ConnectWalletSuccessAction,
+  enableWalletRequest,
   ENABLE_WALLET_SUCCESS,
   ENABLE_WALLET_FAILURE,
   EnableWalletSuccessAction,
   EnableWalletFailureAction,
   disconnectWallet,
-  CHANGE_ACCOUNT
+  CHANGE_ACCOUNT,
+  ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { clearAssetPacks } from 'modules/assetPack/actions'
 import { locations } from 'routing/locations'
+import { closeModal } from 'modules/modal/actions'
 import {
   GENERATE_IDENTITY_REQUEST,
   GenerateIdentityRequestAction,
@@ -34,12 +37,12 @@ import {
   LOGOUT,
   LogoutAction,
   destroyIdentity,
-  loginFailure,
   GenerateIdentitySuccessAction,
   GenerateIdentityFailureAction,
   GENERATE_IDENTITY_FAILURE,
   loginRequest,
-  loginSuccess
+  loginSuccess,
+  loginFailure
 } from './actions'
 import { ONE_MONTH_IN_MINUTES, takeRace } from './utils'
 import { isLoggedIn, getCurrentIdentity } from './selectors'
@@ -85,15 +88,20 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
 }
 
 function* handleLogin(action: LoginRequestAction) {
-  const { restoreSession } = action.payload
+  const { restoreSession, providerType } = action.payload
   // Check if we need to generate an identity
   const shouldLogin = yield select(state => !isLoggedIn(state))
   if (shouldLogin && !restoreSession) {
     // Check if we need to connect the wallet
     const shouldConnectWallet = yield select(state => !isConnected(state))
     if (shouldConnectWallet) {
+      if (!providerType) {
+        yield put(loginFailure('Undefined provider type'))
+        return
+      }
+
       // enable wallet
-      yield put(enableWalletRequest())
+      yield put(enableWalletRequest(providerType))
       const enableWallet: Race<EnableWalletSuccessAction, EnableWalletFailureAction> = yield takeRace(
         ENABLE_WALLET_SUCCESS,
         ENABLE_WALLET_FAILURE
@@ -139,6 +147,7 @@ function* handleLogin(action: LoginRequestAction) {
 
   if (wallet && identity) {
     yield put(loginSuccess(wallet, identity))
+    yield put(closeModal('WalletLoginModal'))
   } else {
     yield put(loginFailure(restoreSession ? 'Failed to restore session' : 'Failed to login'))
   }
@@ -152,17 +161,19 @@ function* handleLogout(_action: LogoutAction) {
   }
 }
 
-function* handleConnectWalletSuccess() {
+function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
+  const { wallet } = action.payload
   const shouldRestoreSession = yield select(isLoggedIn)
   if (shouldRestoreSession) {
-    yield put(loginRequest(true))
+    yield put(loginRequest(wallet.providerType, true))
   }
 }
 
-function* handleChangeAccount() {
+function* handleChangeAccount(action: ChangeAccountAction) {
+  const { wallet } = action.payload
   const shouldRestoreSession = yield select(isLoggedIn)
   if (shouldRestoreSession) {
-    yield put(loginRequest(true))
+    yield put(loginRequest(wallet.providerType, true))
   }
   yield put(clearAssetPacks())
 

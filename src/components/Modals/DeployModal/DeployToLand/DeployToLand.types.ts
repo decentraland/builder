@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux'
 import { SignInProps } from 'decentraland-ui'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import { EnableWalletRequestAction, enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Coordinate, Rotation, DeploymentStatus, Deployment } from 'modules/deployment/types'
 import { DeployToLandRequestAction, deployToLandRequest } from 'modules/deployment/actions'
 import { RecordMediaRequestAction, recordMediaRequest } from 'modules/media/actions'
+import { OpenModalAction, openModal } from 'modules/modal/actions'
 import { DeploymentState } from 'modules/deployment/reducer'
 import { Project } from 'modules/project/types'
 import { Media } from 'modules/media/types'
@@ -30,7 +30,7 @@ export type Props = {
   deployments: Deployment[]
   deploymentsByCoord: Record<string, Deployment>
   landTiles: Record<string, LandTile>
-  onConnect: typeof enableWalletRequest
+  onOpenModal: typeof openModal
   onClose: () => void
   onDeploy: typeof deployToLandRequest
   onRecord: typeof recordMediaRequest
@@ -71,12 +71,8 @@ export type MapStateProps = Pick<
   | 'deploymentsByCoord'
   | 'landTiles'
 >
-
-export type MapDispatchProps = Pick<Props, 'onConnect' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
-
-export type MapDispatch = Dispatch<
-  EnableWalletRequestAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction
->
+export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onDeploy' | 'onRecord' | 'onNavigateHome'>
+export type MapDispatch = Dispatch<OpenModalAction | DeployToLandRequestAction | RecordMediaRequestAction | CallHistoryMethodAction>
 
 export enum DeployToLandView {
   NONE = 'NONE',

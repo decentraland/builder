@@ -19,7 +19,6 @@ import UnsupportedBrowserPage from 'components/UnsupportedBrowserPage'
 import SceneViewPage from 'components/SceneViewPage'
 import SceneListPage from 'components/SceneListPage'
 import SignInPage from 'components/SignInPage'
-import MigratePage from 'components/MigratePage'
 import LandPage from 'components/LandPage'
 import LandDetailPage from 'components/LandDetailPage'
 import LandTransferPage from 'components/LandTransferPage'
@@ -98,7 +97,6 @@ export default class Routes extends React.Component<Props, State> {
             <Route exact path={locations.notFound()} component={NotFoundPage} />
             <Route exact path={locations.sceneEditor()} component={EditorPage} />
             <Route exact path={locations.poolSearch()} component={SceneListPage} />
-            <Route exact path={locations.migrate()} component={MigratePage} />
             <Route exact path={locations.sceneView()} component={SceneViewPage} />
             <Route exact path={locations.poolView()} component={SceneViewPage} />
             <Route exact path={locations.callback()} component={LoadingPage} />

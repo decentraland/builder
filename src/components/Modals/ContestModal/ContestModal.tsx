@@ -5,7 +5,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 
-import LoginModal from '../LoginModal'
+import WalletLoginModal from '../WalletLoginModal'
 import { ShareModalType, ShareModalMetadata } from '../ShareModal/ShareModal.types'
 import Countdown from './Countdown/Countdown'
 import { Props, State } from './ContestModal.types'
@@ -37,11 +37,6 @@ export default class ContestModal extends React.PureComponent<Props, State> {
     this.setState({
       isSuccess: false
     })
-  }
-
-  handleLogin = () => {
-    const { onLogin } = this.props
-    onLogin()
   }
 
   handleShare = () => {
@@ -78,15 +73,8 @@ export default class ContestModal extends React.PureComponent<Props, State> {
   }
 
   renderLogin() {
-    return (
-      <LoginModal
-        name={this.props.name}
-        onClose={this.props.onClose}
-        onLogin={this.handleLogin}
-        title={t('deployment_contest_modal.sign_in.title')}
-        subtitle={t(`deployment_contest_modal.sign_in.subtitle`)}
-      />
-    )
+    const { name, onClose } = this.props
+    return <WalletLoginModal name={name} onClose={onClose} />
   }
 
   renderLoading() {

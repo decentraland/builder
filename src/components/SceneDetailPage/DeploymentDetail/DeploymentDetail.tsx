@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { Props } from './DeploymentDetail.types'
-import './DeploymentDetail.css'
-import { Atlas } from 'components/Atlas'
-import { idToCoords, coordsToId, hoverStrokeByRole, hoverFillByRole } from 'modules/land/utils'
 import { Layer, Dropdown, Button, Icon } from 'decentraland-ui'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { idToCoords, coordsToId, hoverStrokeByRole, hoverFillByRole } from 'modules/land/utils'
 import { locations } from 'routing/locations'
 import { getStatus } from 'modules/deployment/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
-import { DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import SceneStats from 'components/SceneStats'
 import { RoleType } from 'modules/land/types'
+import { Atlas } from 'components/Atlas'
+import SceneStats from 'components/SceneStats'
+import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
+import { Props } from './DeploymentDetail.types'
+import './DeploymentDetail.css'
 
 export default class DeploymentDetail extends React.PureComponent<Props> {
   getHighlightLayer = (color: Record<RoleType, string>, scale: number): Layer => (x, y) => {
@@ -63,7 +63,9 @@ export default class DeploymentDetail extends React.PureComponent<Props> {
           <Dropdown.Menu>
             <Dropdown.Item
               text={t('scene_detail_page.actions.unpublish')}
-              onClick={() => onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, deploymentId: deployment.id })}
+              onClick={() =>
+                onOpenModal('DeployModal', { view: DeployModalView.CLEAR_DEPLOYMENT, deploymentId: deployment.id } as DeployModalMetadata)
+              }
             />
           </Dropdown.Menu>
         </Dropdown>

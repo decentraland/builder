@@ -1,9 +1,9 @@
 import * as React from 'react'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { UserMenu as BaseUserMenu, Row, Menu, Icon } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { Props, State } from './UserMenu.types'
 import './UserMenu.css'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 export default class UserMenu extends React.Component<Props, State> {
   render() {

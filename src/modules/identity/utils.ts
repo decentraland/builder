@@ -1,7 +1,8 @@
 import { select, put, race, take, delay } from 'redux-saga/effects'
 import { AuthIdentity } from 'dcl-crypto'
 import { getCurrentIdentity, isLoggedIn } from 'modules/identity/selectors'
-import { loginRequest, LOGIN_SUCCESS, LOGIN_FAILURE } from './actions'
+import { openModal } from 'modules/modal/actions'
+import { LOGIN_SUCCESS, LOGIN_FAILURE } from './actions'
 
 export const ONE_MONTH_IN_MINUTES = 31 * 24 * 60
 
@@ -13,7 +14,7 @@ export function isValid(identity?: AuthIdentity | null) {
 export function* getIdentity(): IterableIterator<any> {
   const shouldLogin = yield select(state => !isLoggedIn(state))
   if (shouldLogin) {
-    yield put(loginRequest())
+    yield put(openModal('WalletLoginModal'))
     const login: any = yield takeRace(LOGIN_SUCCESS, LOGIN_FAILURE)
     if (login.success) {
       // wait a sec and retry

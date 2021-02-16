@@ -11,9 +11,8 @@ import { getError, getProgress, isLoading as isSubmitting } from 'modules/deploy
 import { deployToPoolRequest } from 'modules/deployment/actions'
 import { PoolDeploymentAdditionalFields } from 'lib/api/builder'
 import { isLoggedIn } from 'modules/identity/selectors'
-import { loginRequest } from 'modules/identity/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ContestModal.types'
-import ShareModal from './ContestModal'
+import ContestModal from './ContestModal'
 
 const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
   error: getError(state),
@@ -29,10 +28,9 @@ const mapState = (state: RootState, _ownProps: OwnProps): MapStateProps => ({
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onUpdate: (id: string) => dispatch(shareProject(id)),
-  onLogin: () => dispatch(loginRequest()),
   onShare: (target: ShareTarget) => dispatch(shareScene(target)),
   onDeployToPool: (projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) =>
     dispatch(deployToPoolRequest(projectId, additionalInfo))
 })
 
-export default connect(mapState, mapDispatch)(ShareModal)
+export default connect(mapState, mapDispatch)(ContestModal)

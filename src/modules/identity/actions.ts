@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions'
 import { AuthIdentity } from 'dcl-crypto'
+import { ProviderType } from 'decentraland-connect'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
 // Login
@@ -8,7 +9,7 @@ export const LOGIN_REQUEST = '[Request] Login'
 export const LOGIN_SUCCESS = '[Success] Login'
 export const LOGIN_FAILURE = '[Failure] Login'
 
-export const loginRequest = (restoreSession = false) => action(LOGIN_REQUEST, { restoreSession })
+export const loginRequest = (providerType: ProviderType, restoreSession = false) => action(LOGIN_REQUEST, { restoreSession, providerType })
 export const loginSuccess = (wallet: Wallet, identity: AuthIdentity) => action(LOGIN_SUCCESS, { wallet, identity })
 export const loginFailure = (error: string) => action(LOGIN_FAILURE, { error })
 

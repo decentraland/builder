@@ -2,10 +2,10 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { DeployModalMetadata, DeployModalView } from 'components/Modals/DeployModal/DeployModal.types'
 import { locations } from 'routing/locations'
 import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
+import { DeployModalView, DeployModalMetadata } from 'components/Modals/DeployModal/DeployModal.types'
 import { Props, DefaultProps, State } from './PoolCard.types'
 import './PoolCard.css'
 
@@ -55,9 +55,11 @@ export default class PoolCard extends React.PureComponent<Props, State> {
               <div className="component">
                 <Icon name="scene-parcel" /> {t('public_page.parcel_count', { parcels })}
               </div>
-              {pool.statistics && <div className="component">
-                <Icon name="scene-object" /> {t('public_page.item_count', { items: pool.statistics.transforms })}
-              </div>}
+              {pool.statistics && (
+                <div className="component">
+                  <Icon name="scene-object" /> {t('public_page.item_count', { items: pool.statistics.transforms })}
+                </div>
+              )}
             </div>
           </div>
         </div>

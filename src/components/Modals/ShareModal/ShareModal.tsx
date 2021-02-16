@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { env } from 'decentraland-commons'
 import { Loader, ModalNavigation } from 'decentraland-ui'
-
+import { ProviderType } from 'decentraland-connect'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Icon from 'components/Icon'
 import { ShareTarget } from 'modules/ui/share/types'
-import LoginModal from '../LoginModal'
+import WalletLoginModal from '../WalletLoginModal'
 import { Props, ShareModalType, State } from './ShareModal.types'
 
 import './ShareModal.css'
@@ -37,7 +37,7 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   }
 
   handleClose = () => {
-    this.props.onClose()
+    return this.props.onClose()
   }
 
   handleFocusLink = () => {
@@ -79,9 +79,8 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   handleShareWithFacebook = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.FACEBOOK)
   handleShareWithTwitter = (e: React.MouseEvent<HTMLAnchorElement>) => this.handleShare(e, ShareTarget.TWITTER)
 
-  handleLogin = () => {
-    const { onLogin } = this.props
-    onLogin()
+  handleLogin = (providerType: ProviderType) => {
+    this.props.onLogin(providerType)
   }
 
   getFacebookLink = () => {
@@ -110,15 +109,8 @@ export default class ShareModal extends React.PureComponent<Props, State> {
   }
 
   renderLogin() {
-    return (
-      <LoginModal
-        name={this.props.name}
-        onClose={this.props.onClose}
-        onLogin={this.handleLogin}
-        title={t('share_modal.sign_in.title')}
-        subtitle={t('share_modal.sign_in.subtitle')}
-      />
-    )
+    const { name } = this.props
+    return <WalletLoginModal name={name} onClose={this.handleClose} />
   }
 
   renderLoading() {

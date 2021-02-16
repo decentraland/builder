@@ -54,7 +54,7 @@ export default class ItemDropdown extends React.PureComponent<Props> {
         options={options}
         onChange={this.handleChange}
         scrolling={options.length > 4}
-        disabled={isDisabled}
+        disabled={isDisabled || options.length <= 0}
       />
     )
   }

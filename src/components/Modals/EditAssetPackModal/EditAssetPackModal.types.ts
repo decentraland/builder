@@ -9,7 +9,6 @@ import {
 } from 'modules/assetPack/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { Project } from 'modules/project/types'
-import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
 
 export enum EditAssetPackView {
   IMPORT,
@@ -39,10 +38,9 @@ export type Props = ModalProps & {
   isLoading: boolean
   onCreateAssetPack: typeof saveAssetPackRequest
   onDeleteAssetPack: typeof deleteAssetPackRequest
-  onLogin: typeof loginRequest
 }
 
 export type OwnProps = Pick<Props, 'metadata'>
 export type MapStateProps = Pick<Props, 'project' | 'progress' | 'error' | 'assetPack' | 'ethAddress' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onLogin' | 'onDeleteAssetPack'>
-export type MapDispatch = Dispatch<SaveAssetPackRequestAction | LoginRequestAction | DeleteAssetPackRequestAction>
+export type MapDispatchProps = Pick<Props, 'onCreateAssetPack' | 'onDeleteAssetPack'>
+export type MapDispatch = Dispatch<SaveAssetPackRequestAction | DeleteAssetPackRequestAction>

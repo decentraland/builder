@@ -1,6 +1,5 @@
 import { store } from 'modules/common/store'
 import { RootState } from 'modules/common/types'
-import { getAccessToken } from 'modules/auth/selectors'
 import { getData } from 'modules/identity/selectors'
 import { Authenticator } from 'dcl-crypto'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -32,10 +31,4 @@ export const authorize = (method: string = 'get', path: string = '') => {
     }
   }
   return headers
-}
-
-export const authorizeAuth0 = (accessToken?: string) => {
-  const state = store.getState() as RootState
-  const headers = createHeaders(accessToken || getAccessToken(state)!)
-  return { headers }
 }

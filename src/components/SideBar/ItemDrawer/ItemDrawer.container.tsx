@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
 import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
-
 import { RootState } from 'modules/common/types'
 import {
   getSideBarCategories,
@@ -33,8 +31,6 @@ const mapState = (state: RootState): MapStateProps => {
   }
 }
 
-const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onConnect: () => dispatch(enableWalletRequest())
-})
+const mapDispatch = (_: MapDispatch): MapDispatchProps => ({})
 
 export default connect(mapState, mapDispatch)(ItemDrawer)

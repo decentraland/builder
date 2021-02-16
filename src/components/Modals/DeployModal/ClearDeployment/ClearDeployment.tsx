@@ -28,7 +28,7 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
   }
 
   handleConnect = () => {
-    this.props.onConnect!()
+    this.props.onOpenModal('WalletLoginModal')
   }
 
   renderConnectForm = () => {
@@ -145,16 +145,12 @@ export default class ClearDeployment extends React.PureComponent<Props, State> {
     return <Loader size="big" />
   }
 
-  wrapInModal = (view: JSX.Element) => {
+  render() {
     const { name, onClose } = this.props
     return (
       <Modal name={name} onClose={onClose}>
-        {view}
+        {this.renderView()}
       </Modal>
     )
-  }
-
-  render() {
-    return this.wrapInModal(this.renderView())
   }
 }

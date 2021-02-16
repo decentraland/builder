@@ -1,11 +1,12 @@
 import { Dispatch } from 'redux'
-import { SignInProps } from 'decentraland-ui'
+import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { loginRequest, LoginRequestAction } from 'modules/identity/actions'
 
-export type Props = Omit<SignInProps, 'onConnect'> & {
+export type Props = ModalProps & {
   onConnect: typeof loginRequest
 }
 
-export type MapStateProps = Pick<Props, 'isConnected' | 'isConnecting'>
+export type OwnProps = Pick<Props, 'metadata'>
+export type MapStateProps = {}
 export type MapDispatchProps = Pick<Props, 'onConnect'>
 export type MapDispatch = Dispatch<LoginRequestAction>
