@@ -5,6 +5,7 @@ import { Collection, Mint } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
 export type Props = ModalProps & {
+  ethAddress?: string
   metadata: CreateItemModalMetadata
   collection: Collection
   items: Item[]
@@ -25,7 +26,7 @@ export type State = {
   itemMints: ItemMints
 }
 
-export type MapStateProps = Pick<Props, 'collection' | 'items' | 'totalCollectionItems' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onMint'>
 export type MapDispatch = Dispatch<MintCollectionItemsRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

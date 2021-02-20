@@ -49,3 +49,27 @@ export function toCollectionObject(collections: Collection[]) {
     return obj
   }, {} as Record<string, Collection>)
 }
+
+export function canSeeCollection(collection: Collection, address: string) {
+  return [collection.owner, ...collection.managers, ...collection.minters].some(addr => addr.toLowerCase() === address.toLowerCase())
+}
+
+export function isOwner(collection: Collection, address?: string) {
+  return address && collection.owner.toLowerCase() === address.toLowerCase()
+}
+
+export function isMinter(collection: Collection, address?: string) {
+  return address && collection.minters.some(minter => minter.toLowerCase() === address.toLowerCase())
+}
+
+export function isManager(collection: Collection, address?: string) {
+  return address && collection.managers.some(minter => minter.toLowerCase() === address.toLowerCase())
+}
+
+export function canMintCollectionItems(collection: Collection, address?: string) {
+  return collection.isApproved && (isOwner(collection, address) || isMinter(collection, address))
+}
+
+export function canManageCollectionItems(collection: Collection, address?: string) {
+  return isOwner(collection, address) || isManager(collection, address)
+}

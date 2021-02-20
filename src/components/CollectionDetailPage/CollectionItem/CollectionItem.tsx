@@ -6,7 +6,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { isComplete, isEditable, canMint, getMaxSupply } from 'modules/item/utils'
+import { isComplete, isEditable, canMintItem, getMaxSupply } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
@@ -59,7 +59,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
   }
 
   render() {
-    const { item } = this.props
+    const { collection, item, ethAddress } = this.props
     const data = item.data as WearableData
 
     return (
@@ -106,7 +106,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
             ) : null}
             <Grid.Column>
               <div className="item-actions">
-                {canMint(item) ? (
+                {canMintItem(collection, item, ethAddress) ? (
                   <span onClick={preventDefault(this.handleMintItem)} className="link action">
                     {t('collection_item.mint_item')}
                   </span>

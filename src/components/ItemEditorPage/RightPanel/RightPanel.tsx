@@ -5,7 +5,7 @@ import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { isEqual } from 'lib/address'
-import { getMissingBodyShapeType } from 'modules/item/utils'
+import { getMissingBodyShapeType, canManageItem } from 'modules/item/utils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
@@ -53,10 +53,13 @@ export default class RightPanel extends React.PureComponent<Props> {
   }
 
   render() {
-    const { selectedItemId, address = '' } = this.props
+    const { collection, selectedItemId, address = '' } = this.props
     const selectedItem = this.getSelectedItem()
 
     const isOwner = selectedItem && isEqual(selectedItem.owner, address)
+
+    const canEditItemMetadata = selectedItem && (collection && canManageItem(collection, selectedItem, address)) || (!collection && isOwner)
+    const canEditItemRarity = selectedItem && !selectedItem.isPublished && isOwner
 
     const categories = Object.values(WearableCategory)
     const rarities = Object.values(ItemRarity)
@@ -108,12 +111,12 @@ export default class RightPanel extends React.PureComponent<Props> {
                 </Collapsable>
                 <Collapsable item={selectedItem} label={t('item_editor.right_panel.basics')}>
                   {item => (
-                    <>
+                  <>
                       <Input
                         itemId={item.id}
                         label={t('global.name')}
                         value={item.name}
-                        disabled={item.isPublished || !isOwner}
+                        disabled={!canEditItemMetadata}
                         maxLength={ITEM_NAME_MAX_LENGTH}
                         onChange={name => this.handleChange({ ...item, name })}
                       />
@@ -121,7 +124,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                         itemId={item.id}
                         label={t('global.description')}
                         value={item.description}
-                        disabled={item.isPublished || !isOwner}
+                        disabled={!canEditItemMetadata}
                         maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
                         onChange={description => this.handleChange({ ...item, description })}
                       />
@@ -130,7 +133,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                         label={t('global.category')}
                         value={item.data.category}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
-                        disabled={item.isPublished || !isOwner}
+                        disabled={!canEditItemMetadata}
                         onChange={category => this.handleChange({ ...item, data: { ...item.data, category } })}
                       />
                       <Select<ItemRarity>
@@ -138,7 +141,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                         label={t('global.rarity')}
                         value={item.rarity}
                         options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
-                        disabled={item.isPublished || !isOwner}
+                        disabled={!canEditItemRarity}
                         onChange={rarity => this.handleChange({ ...item, rarity })}
                       />
                     </>
@@ -152,7 +155,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                         label={t('item_editor.right_panel.replaces')}
                         value={item.data.replaces}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
-                        disabled={item.isPublished || !isOwner}
+                        disabled={!canEditItemMetadata}
                         onChange={replaces =>
                           this.handleChange({
                             ...item,
@@ -172,7 +175,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                         label={t('item_editor.right_panel.hides')}
                         value={item.data.hides}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
-                        disabled={item.isPublished || !isOwner}
+                        disabled={!canEditItemMetadata}
                         onChange={hides =>
                           this.handleChange({
                             ...item,
@@ -196,7 +199,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                       itemId={item.id}
                       value={item.data.tags}
                       onChange={tags => this.handleChange({ ...item, data: { ...item.data, tags } })}
-                      isDisabled={item.isPublished || !isOwner}
+                      isDisabled={!canEditItemMetadata}
                     />
                   )}
                 </Collapsable>
