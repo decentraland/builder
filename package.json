@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
+    "@dcl/schemas": "^0.2.0",
     "@svgr/webpack": "2.4.1",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "apollo-boost": "^0.4.8",
@@ -36,7 +37,6 @@
     "decentraland-dapps": "^8.6.1",
     "decentraland-ecs": "6.6.1-20201020183014.commit-bdc29ef",
     "decentraland-experiments": "^1.0.2",
-    "decentraland-ui": "^2.28.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
     "eslint": "5.6.0",
@@ -105,7 +105,7 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "start": "npm run build:scene && concurrently -n \"scene,builder\" \"decentraland-compiler buildScene.json --watch\" \"node scripts/start.js\"",
+    "start": "node scripts/start.js",
     "build:scene": "decentraland-compiler buildScene.json",
     "build:contracts": "npx web3x-codegen",
     "build": "npm run postinstall && npm run build:scene && node scripts/build.js",

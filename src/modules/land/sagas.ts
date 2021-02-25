@@ -6,6 +6,7 @@ import {
   ConnectWalletSuccessAction,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { takeLatest, call, put, takeEvery, all } from 'redux-saga/effects'
 import {
   FETCH_LANDS_REQUEST,
@@ -15,8 +16,8 @@ import {
   fetchLandsRequest,
   TRANSFER_LAND_REQUEST,
   TransferLandRequestAction,
-  transferLandFailure,
   transferLandSuccess,
+  transferLandFailure,
   EDIT_LAND_REQUEST,
   EditLandRequestAction,
   editLandSuccess,
@@ -49,7 +50,7 @@ import { EstateRegistry } from 'contracts/EstateRegistry'
 import { push } from 'connected-react-router'
 import { locations } from 'routing/locations'
 import { closeModal } from 'modules/modal/actions'
-import { getCurrentAddress } from 'modules/wallet/utils'
+import { getWallet } from 'modules/wallet/utils'
 import { splitCoords, buildMetadata } from './utils'
 import { Land, LandType, Authorization } from './types'
 
@@ -69,7 +70,8 @@ export function* landSaga() {
 function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
   const { address, isApproved, type } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const manager = Address.fromString(address)
     switch (type) {
       case LandType.PARCEL: {
@@ -80,7 +82,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(setUpdateManagerSuccess(address, type, isApproved, txHash))
+        yield put(setUpdateManagerSuccess(address, type, isApproved, wallet.chainId, txHash))
         break
       }
       case LandType.ESTATE: {
@@ -91,7 +93,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(setUpdateManagerSuccess(address, type, isApproved, txHash))
+        yield put(setUpdateManagerSuccess(address, type, isApproved, wallet.chainId, txHash))
         break
       }
     }
@@ -108,7 +110,8 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     if (land.type !== LandType.ESTATE) {
       throw new Error(`Invalid LandType: "${land.type}"`)
     }
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
     const tokenIds = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
@@ -118,7 +121,7 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
         .send({ from })
         .getTxHash()
     )
-    yield put(dissolveEstateSuccess(land, txHash))
+    yield put(dissolveEstateSuccess(land, wallet.chainId, txHash))
     yield put(closeModal('DissolveModal'))
     yield put(push(locations.activity()))
   } catch (error) {
@@ -129,7 +132,8 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
 function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
   const { name, description, coords } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const [xs, ys] = splitCoords(coords)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const metadata = buildMetadata(name, description)
@@ -140,7 +144,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
         .getTxHash()
     )
 
-    yield put(createEstateSuccess(name, description, coords, txHash))
+    yield put(createEstateSuccess(name, description, coords, wallet.chainId, txHash))
     yield put(closeModal('EstateEditorModal'))
     yield put(push(locations.activity()))
   } catch (error) {
@@ -151,7 +155,8 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
 function* handleEditEstateRequest(action: EditEstateRequestAction) {
   const { land, toAdd, toRemove } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
 
     if (toAdd.length > 0) {
@@ -162,7 +167,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
           .send({ from })
           .getTxHash()
       )
-      yield put(editEstateSuccess(land, toAdd, 'add', txHash))
+      yield put(editEstateSuccess(land, toAdd, 'add', wallet.chainId, txHash))
     }
 
     if (toRemove.length > 0) {
@@ -174,7 +179,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
           .send({ from })
           .getTxHash()
       )
-      yield put(editEstateSuccess(land, toRemove, 'remove', txHash))
+      yield put(editEstateSuccess(land, toRemove, 'remove', wallet.chainId, txHash))
     }
     yield put(closeModal('EstateEditorModal'))
     yield put(push(locations.activity()))
@@ -187,7 +192,8 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const operator = address ? Address.fromString(address) : Address.ZERO
 
     switch (land.type) {
@@ -200,7 +206,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(setOperatorSuccess(land, address, txHash))
+        yield put(setOperatorSuccess(land, address, wallet.chainId, txHash))
         break
       }
       case LandType.ESTATE: {
@@ -211,7 +217,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(setOperatorSuccess(land, address, txHash))
+        yield put(setOperatorSuccess(land, address, wallet.chainId, txHash))
         break
       }
       default:
@@ -229,7 +235,8 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
   const metadata = buildMetadata(name, description)
 
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
 
     switch (land.type) {
       case LandType.PARCEL: {
@@ -240,7 +247,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(editLandSuccess(land, name, description, txHash))
+        yield put(editLandSuccess(land, name, description, wallet.chainId, txHash))
         break
       }
       case LandType.ESTATE: {
@@ -251,7 +258,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(editLandSuccess(land, name, description, txHash))
+        yield put(editLandSuccess(land, name, description, wallet.chainId, txHash))
         break
       }
       default:
@@ -267,7 +274,8 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
   const { land, address } = action.payload
 
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const to = Address.fromString(address)
 
     switch (land.type) {
@@ -280,7 +288,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(transferLandSuccess(land, address, txHash))
+        yield put(transferLandSuccess(land, address, wallet.chainId, txHash))
         break
       }
       case LandType.ESTATE: {
@@ -291,7 +299,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
             .send({ from })
             .getTxHash()
         )
-        yield put(transferLandSuccess(land, address, txHash))
+        yield put(transferLandSuccess(land, address, wallet.chainId, txHash))
         break
       }
       default:

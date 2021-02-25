@@ -1,11 +1,11 @@
 import { Address } from 'web3x-es/address'
 import { fromWei } from 'web3x-es/utils'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { PEER_URL } from 'lib/api/peer'
 import { DCLRegistrar } from 'contracts/DCLRegistrar'
 import { Land } from 'modules/land/types'
 import { REGISTRAR_ADDRESS } from 'modules/common/contracts'
 import { ENS } from './types'
+import { getEth } from 'modules/wallet/utils'
 
 export const PRICE_IN_WEI = 100000000000000000000 // 100 MANA
 export const PRICE = fromWei(PRICE_IN_WEI.toString(), 'ether')
@@ -36,9 +36,11 @@ export async function getDefaultProfileEntity() {
   return profile[0]
 }
 
-export async function isNameAvailable(name: string) {
-  if (!name) return
-  const eth = await createEth()
+export async function isNameAvailable(name: string): Promise<boolean> {
+  if (!name) {
+    return false
+  }
+  const eth = await getEth()
   const contractDCLRegistrar = new DCLRegistrar(eth!, Address.fromString(REGISTRAR_ADDRESS))
   return contractDCLRegistrar.methods.available(name).call()
 }

@@ -10,16 +10,16 @@ import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { Avatar } from 'decentraland-ui'
 import { Authenticator } from 'dcl-crypto'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 import { changeProfile } from 'decentraland-dapps/dist/modules/profile/actions'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { DCLController } from 'contracts/DCLController'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
-import { getCurrentAddress } from 'modules/wallet/utils'
+import { getWallet, getEth } from 'modules/wallet/utils'
 import { marketplace } from 'lib/api/marketplace'
 import { ipfs } from 'lib/api/ipfs'
 import { getLands } from 'modules/land/selectors'
@@ -121,20 +121,18 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     )
 
     // Request signature
-    const eth: Eth | null = yield call(createEth)
+    const eth: Eth = yield call(getEth)
 
-    if (eth) {
-      const personal = new Personal(eth.provider)
-      const signature = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
+    const personal = new Personal(eth.provider)
+    const signature = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
 
-      // Deploy change
-      const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-      yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
+    // Deploy change
+    const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
+    yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
 
-      const stateEntity = yield call(() => setProfileFromEntity(newEntity))
-      yield put(setAliasSuccess(address, name))
-      yield put(changeProfile(address, stateEntity.metadata as Profile))
-    }
+    const stateEntity = yield call(() => setProfileFromEntity(newEntity))
+    yield put(setAliasSuccess(address, name))
+    yield put(changeProfile(address, stateEntity.metadata as Profile))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(setAliasFailure(address, ensError))
@@ -145,8 +143,8 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
   const { name, land } = action.payload
   const subdomain = name.toLowerCase() + '.dcl.eth'
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
-    const address = from.toString()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const address = wallet.address
     const nodehash = namehash(subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
 
@@ -215,7 +213,8 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
 function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
   const { ens } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const nodehash = namehash(ens.subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
 
@@ -225,7 +224,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
         .send({ from })
         .getTxHash()
     )
-    yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from.toString(), txHash))
+    yield put(setENSResolverSuccess(ens, ENS_RESOLVER_ADDRESS, from.toString(), wallet.chainId, txHash))
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.RESOLVER }
     yield put(setENSResolverFailure(ens, ensError))
@@ -235,7 +234,9 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
 function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
   const { ens, land } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
+
     let content = ''
 
     if (land) {
@@ -255,8 +256,9 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
         .getTxHash()
     )
 
-    yield put(setENSContentSuccess(ens, content, land, from.toString(), txHash))
+    yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
   } catch (error) {
+    console.log(error)
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
     yield put(setENSContentFailure(ens, land, ensError))
   }
@@ -264,7 +266,8 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
 function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
     const allowance: string = yield call(() => manaContract.methods.allowance(from, Address.fromString(CONTROLLER_ADDRESS)).call())
     const authorization: Authorization = { allowance }
@@ -286,8 +289,8 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
       landHashes.push({ hash: `0x${landHash}`, id: land.id })
     }
 
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
-    const address = from.toString()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const address = wallet.address
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
     const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
@@ -337,19 +340,21 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
 function* handleClaimNameRequest(action: ClaimNameRequestAction) {
   const { name } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
+
     const controllerContract = new DCLController(eth, Address.fromString(CONTROLLER_ADDRESS))
     const tx: SendTx<TransactionReceipt> = yield call(() => controllerContract.methods.register(name, from).send({ from }))
     const txHash: string = yield call(() => tx.getTxHash())
 
     const ens: ENS = {
-      address: from.toString(),
+      address: wallet.address,
       name: name,
       subdomain: getDomainFromName(name),
       resolver: Address.ZERO.toString(),
       content: Address.ZERO.toString()
     }
-    yield put(claimNameSuccess(ens, name, from.toString(), txHash))
+    yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, txHash))
     yield put(closeModal('ClaimNameFatFingerModal'))
     yield put(push(locations.activity()))
   } catch (error) {
@@ -361,7 +366,8 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
 function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
   const { allowance } = action.payload
   try {
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
     const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
 
     const txHash: string = yield call(() =>
@@ -371,7 +377,7 @@ function* handleApproveClaimManaRequest(action: AllowClaimManaRequestAction) {
         .getTxHash()
     )
 
-    yield put(allowClaimManaSuccess(allowance, from.toString(), txHash))
+    yield put(allowClaimManaSuccess(allowance, from.toString(), wallet.chainId, txHash))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(allowClaimManaFailure(ensError))

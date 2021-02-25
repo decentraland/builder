@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
 import { Item } from './types'
@@ -69,8 +70,8 @@ export const SAVE_PUBLISHED_ITEM_SUCCESS = '[Success] Save published Item'
 export const SAVE_PUBLISHED_ITEM_FAILURE = '[Failure] Save published Item'
 
 export const savePublishedItemRequest = (item: Item) => action(SAVE_PUBLISHED_ITEM_REQUEST, { item })
-export const savePublishedItemSuccess = (item: Item, txHash: string) =>
-  action(SAVE_PUBLISHED_ITEM_SUCCESS, { item, ...buildTransactionPayload(txHash, { item }) })
+export const savePublishedItemSuccess = (item: Item, chainId: ChainId, txHash: string) =>
+  action(SAVE_PUBLISHED_ITEM_SUCCESS, { item, ...buildTransactionPayload(chainId, txHash, { item }) })
 export const savePublishedItemFailure = (item: Item, error: string) => action(SAVE_PUBLISHED_ITEM_FAILURE, { item, error })
 
 export type SavePublishedItemRequestAction = ReturnType<typeof savePublishedItemRequest>

@@ -3,6 +3,7 @@ import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
   FetchItemsRequestAction,
   fetchItemsRequest,
@@ -44,7 +45,7 @@ import {
   fetchCollectionItemsRequest
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
-import { getCurrentAddress } from 'modules/wallet/utils'
+import { getWallet } from 'modules/wallet/utils'
 import { getIdentity } from 'modules/identity/utils'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
@@ -122,7 +123,8 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new Error("Can't save a published without a collection")
     }
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
-    const [from, eth]: [Address, Eth] = yield getCurrentAddress()
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
@@ -133,7 +135,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
         .getTxHash()
     )
 
-    yield put(savePublishedItemSuccess(item, txHash))
+    yield put(savePublishedItemSuccess(item, wallet.chainId, txHash))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
     yield put(replace(locations.activity()))
   } catch (error) {

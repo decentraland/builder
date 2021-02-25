@@ -8,7 +8,6 @@ export type Props = {
   isLoggedIn: boolean
   isLoggingIn: boolean
   address?: string
-  mana?: number
   profile?: Profile
   onLogout: typeof logout
   pathname: string
@@ -20,9 +19,6 @@ export type State = {
   isOpen: boolean
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'isLoggedIn' | 'isLoggingIn' | 'address' | 'profile' | 'mana' | 'pathname' | 'hasPendingTransactions'
->
+export type MapStateProps = Pick<Props, 'isLoggedIn' | 'isLoggingIn' | 'address' | 'profile' | 'pathname' | 'hasPendingTransactions'>
 export type MapDispatchProps = Pick<Props, 'onLogout' | 'onNavigate'>
 export type MapDispatch = Dispatch<LogoutAction | CallHistoryMethodAction>

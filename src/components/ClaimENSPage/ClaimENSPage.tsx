@@ -27,11 +27,11 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   handleClaim = async () => {
-    const { wallet, allowance, onOpenModal } = this.props
+    const { wallet, mana, allowance, onOpenModal } = this.props
     const { name } = this.state
 
     const isValid = isNameValid(name)
-    const isEnoughMana = wallet && isEnoughClaimMana(wallet.mana.toString())
+    const isEnoughMana = wallet && isEnoughClaimMana(mana.toString())
     const isManaAllowed = isEnoughClaimMana(allowance)
 
     if (!isValid || !isEnoughMana || !isManaAllowed) return
@@ -70,13 +70,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { wallet, allowance, onBack } = this.props
+    const { wallet, mana, allowance, onBack } = this.props
     const { name, isError, isAvailable } = this.state
 
     const isLoading = this.props.isLoading || this.state.isLoading
 
     const isValid = isNameValid(name)
-    const isEnoughMana = wallet && isEnoughClaimMana(wallet.mana.toString())
+    const isEnoughMana = wallet && isEnoughClaimMana(mana.toString())
     const isManaAllowed = isEnoughClaimMana(allowance)
 
     const isDisabled = !isValid || !isAvailable || !isEnoughMana || !isManaAllowed

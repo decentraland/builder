@@ -7,7 +7,6 @@ import { Account } from 'web3x-es/account'
 import { replace, getLocation } from 'connected-react-router'
 import { Authenticator } from 'dcl-crypto'
 import { env } from 'decentraland-commons'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   CONNECT_WALLET_SUCCESS,
@@ -22,9 +21,11 @@ import {
   CHANGE_ACCOUNT,
   ChangeAccountAction
 } from 'decentraland-dapps/dist/modules/wallet/actions'
-import { clearAssetPacks } from 'modules/assetPack/actions'
 import { locations } from 'routing/locations'
+import { clearAssetPacks } from 'modules/assetPack/actions'
 import { closeModal } from 'modules/modal/actions'
+import { getEth } from 'modules/wallet/utils'
+
 import {
   GENERATE_IDENTITY_REQUEST,
   GenerateIdentityRequestAction,
@@ -60,10 +61,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
   const { address } = action.payload
 
   try {
-    const eth: Eth | null = yield call(createEth)
-    if (!eth) {
-      throw new Error('Wallet not found')
-    }
+    const eth: Eth = yield call(getEth)
 
     const account = Account.create()
 

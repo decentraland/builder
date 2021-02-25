@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Land } from 'modules/land/types'
 import { Authorization, ENS, ENSError } from './types'
@@ -22,9 +23,9 @@ export const SET_ENS_RESOLVER_SUCCESS = '[Success] Set ENS Resolver'
 export const SET_ENS_RESOLVER_FAILURE = '[Failure] Set ENS Resolver'
 
 export const setENSResolverRequest = (ens: ENS) => action(SET_ENS_RESOLVER_REQUEST, { ens })
-export const setENSResolverSuccess = (ens: ENS, resolver: string, address: string, txHash: string) =>
+export const setENSResolverSuccess = (ens: ENS, resolver: string, address: string, chainId: ChainId, txHash: string) =>
   action(SET_ENS_RESOLVER_SUCCESS, {
-    ...buildTransactionPayload(txHash, { ens, resolver, address }),
+    ...buildTransactionPayload(chainId, txHash, { ens, resolver, address }),
     ens
   })
 export const setENSResolverFailure = (ens: ENS, error: ENSError) => action(SET_ENS_RESOLVER_FAILURE, { ens, error })
@@ -40,9 +41,16 @@ export const SET_ENS_CONTENT_SUCCESS = '[Success] Set ENS Content'
 export const SET_ENS_CONTENT_FAILURE = '[Failure] Set ENS Content'
 
 export const setENSContentRequest = (ens: ENS, land?: Land) => action(SET_ENS_CONTENT_REQUEST, { ens, land })
-export const setENSContentSuccess = (ens: ENS, content: string, land: Land | undefined, address: string, txHash: string) =>
+export const setENSContentSuccess = (
+  ens: ENS,
+  content: string,
+  land: Land | undefined,
+  address: string,
+  chainId: ChainId,
+  txHash: string
+) =>
   action(SET_ENS_CONTENT_SUCCESS, {
-    ...buildTransactionPayload(txHash, { ens, content, land, address }),
+    ...buildTransactionPayload(chainId, txHash, { ens, content, land, address }),
     ens,
     land
   })
@@ -85,9 +93,9 @@ export const CLAIM_NAME_SUCCESS = '[Success] Claim Name'
 export const CLAIM_NAME_FAILURE = '[Failure] Claim Name'
 
 export const claimNameRequest = (name: string) => action(CLAIM_NAME_REQUEST, { name })
-export const claimNameSuccess = (ens: ENS, name: string, address: string, txHash: string) =>
+export const claimNameSuccess = (ens: ENS, name: string, address: string, chainId: ChainId, txHash: string) =>
   action(CLAIM_NAME_SUCCESS, {
-    ...buildTransactionPayload(txHash, { ens, name, address }),
+    ...buildTransactionPayload(chainId, txHash, { ens, name, address }),
     ens,
     name
   })
@@ -117,9 +125,9 @@ export const ALLOW_CLAIM_MANA_SUCCESS = '[Success] Allow Claim MANA'
 export const ALLOW_CLAIM_MANA_FAILURE = '[Failure] Allow Claim MANA'
 
 export const allowClaimManaRequest = (allowance: string) => action(ALLOW_CLAIM_MANA_REQUEST, { allowance })
-export const allowClaimManaSuccess = (allowance: string, address: string, txHash: string) =>
+export const allowClaimManaSuccess = (allowance: string, address: string, chainId: ChainId, txHash: string) =>
   action(ALLOW_CLAIM_MANA_SUCCESS, {
-    ...buildTransactionPayload(txHash, { allowance, address }),
+    ...buildTransactionPayload(chainId, txHash, { allowance, address }),
     allowance,
     address
   })

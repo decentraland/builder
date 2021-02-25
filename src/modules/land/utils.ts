@@ -2,7 +2,7 @@ import { Coord } from 'react-tile-map'
 import { Color } from 'decentraland-ui'
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
-import { createEth } from 'decentraland-dapps/dist/lib/eth'
+import { getEth } from 'modules/wallet/utils'
 import { LAND_REGISTRY_ADDRESS, ESTATE_REGISTRY_ADDRESS } from 'modules/common/contracts'
 import { EstateRegistry } from 'contracts/EstateRegistry'
 import { LANDRegistry } from 'contracts/LANDRegistry'
@@ -61,10 +61,7 @@ export const getSelection = (land: Land) =>
   land.type === LandType.PARCEL ? [{ x: land.x!, y: land.y! }] : land.parcels!.map(parcel => ({ x: parcel.x, y: parcel.y }))
 
 export const getUpdateOperator = async (land: Land) => {
-  const eth: Eth | null = await createEth()
-  if (!eth) {
-    return null
-  }
+  const eth: Eth = await getEth()
 
   try {
     switch (land.type) {
