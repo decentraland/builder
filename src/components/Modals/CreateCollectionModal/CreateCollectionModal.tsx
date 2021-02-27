@@ -5,7 +5,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State } from './CreateCollectionModal.types'
-import './CreateCollectionModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
   state: State = {
@@ -32,7 +31,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { name, onClose, isLoading } = this.props
+    const { name, onClose, isLoading, error } = this.props
     const { collectionName } = this.state
     const isDisabled = !collectionName || isLoading
     return (
@@ -45,6 +44,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               placeholder={t('create_collection_modal.placeholder')}
               value={collectionName}
               onChange={(_event, props) => this.setState({ collectionName: props.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })}
+              error={!!error}
+              message={error ? error : ''}
             ></Field>
           </ModalContent>
           <ModalActions>

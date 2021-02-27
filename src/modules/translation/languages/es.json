@@ -136,7 +136,8 @@
     "title": "Nueva Colección",
     "subtitle": "Ponle un nombre a tu nueva colleción",
     "label": "Nombre",
-    "placeholder": "Mi colleción"
+    "placeholder": "Mi colleción",
+    "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",

@@ -133,7 +133,8 @@
     "title": "New Collection",
     "subtitle": "Give a name to your new collection",
     "label": "Name",
-    "placeholder": "My collection"
+    "placeholder": "My collection",
+    "error_name_already_in_use": "Name already in use. Try a different one"
   },
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
