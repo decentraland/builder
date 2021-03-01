@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import { Loader, Icon, Layer } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { isPending, getEtherscanHref } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { isPending, getTransactionHref } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { TransactionStatus, Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { formatDistanceToNow } from 'lib/date'
 import { coordsToId, getCenter } from 'modules/land/utils'
@@ -14,9 +14,9 @@ import './TransactionDetail.css'
 
 const getHref = (tx: Transaction) => {
   if (tx.status === null) {
-    return
+    return ''
   }
-  return getEtherscanHref({ txHash: tx.replacedBy || tx.hash })
+  return getTransactionHref({ txHash: tx.replacedBy || tx.hash })
 }
 
 const Image = (props: Props) => {

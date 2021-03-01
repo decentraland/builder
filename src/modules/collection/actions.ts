@@ -1,4 +1,5 @@
 import { action } from 'typesafe-actions'
+import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Item } from 'modules/item/types'
 import { Collection, Mint, Access } from './types'
@@ -66,11 +67,11 @@ export const PUBLISH_COLLECTION_SUCCESS = '[Success] Publish Collection'
 export const PUBLISH_COLLECTION_FAILURE = '[Failure] Publish Collection'
 
 export const publishCollectionRequest = (collection: Collection, items: Item[]) => action(PUBLISH_COLLECTION_REQUEST, { collection, items })
-export const publishCollectionSuccess = (collection: Collection, items: Item[], txHash: string) =>
+export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string) =>
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,
     items,
-    ...buildTransactionPayload(txHash, { collection, items })
+    ...buildTransactionPayload(chainId, txHash, { collection, items })
   })
 export const publishCollectionFailure = (collection: Collection, items: Item[], error: string) =>
   action(PUBLISH_COLLECTION_FAILURE, { collection, items, error })
@@ -87,11 +88,11 @@ export const MINT_COLLECTION_ITEMS_FAILURE = '[Failure] Mint collection items'
 
 export const mintCollectionItemsRequest = (collection: Collection, mints: Mint[]) =>
   action(MINT_COLLECTION_ITEMS_REQUEST, { collection, mints })
-export const mintCollectionItemsSuccess = (collection: Collection, mints: Mint[], txHash: string) =>
+export const mintCollectionItemsSuccess = (collection: Collection, mints: Mint[], chainId: ChainId, txHash: string) =>
   action(MINT_COLLECTION_ITEMS_SUCCESS, {
     collection,
     mints,
-    ...buildTransactionPayload(txHash, { collection, mints })
+    ...buildTransactionPayload(chainId, txHash, { collection, mints })
   })
 export const mintCollectionItemsFailure = (collection: Collection, mints: Mint[], error: string) =>
   action(MINT_COLLECTION_ITEMS_FAILURE, { collection, mints, error })
@@ -108,11 +109,11 @@ export const SET_COLLECTION_MINTERS_FAILURE = '[Failure] Set collection minters'
 
 export const setCollectionMintersRequest = (collection: Collection, accessList: Access[]) =>
   action(SET_COLLECTION_MINTERS_REQUEST, { collection, accessList })
-export const setCollectionMintersSuccess = (collection: Collection, minters: string[], txHash: string) =>
+export const setCollectionMintersSuccess = (collection: Collection, minters: string[], chainId: ChainId, txHash: string) =>
   action(SET_COLLECTION_MINTERS_SUCCESS, {
     collection,
     minters,
-    ...buildTransactionPayload(txHash, { collection, minters })
+    ...buildTransactionPayload(chainId, txHash, { collection, minters })
   })
 export const setCollectionMintersFailure = (collection: Collection, accessList: Access[], error: string) =>
   action(SET_COLLECTION_MINTERS_FAILURE, { collection, accessList, error })
@@ -129,11 +130,11 @@ export const SET_COLLECTION_MANAGERS_FAILURE = '[Failure] Set collection manager
 
 export const setCollectionManagersRequest = (collection: Collection, accessList: Access[]) =>
   action(SET_COLLECTION_MANAGERS_REQUEST, { collection, accessList })
-export const setCollectionManagersSuccess = (collection: Collection, managers: string[], txHash: string) =>
+export const setCollectionManagersSuccess = (collection: Collection, managers: string[], chainId: ChainId, txHash: string) =>
   action(SET_COLLECTION_MANAGERS_SUCCESS, {
     collection,
     managers,
-    ...buildTransactionPayload(txHash, { collection, managers })
+    ...buildTransactionPayload(chainId, txHash, { collection, managers })
   })
 export const setCollectionManagersFailure = (collection: Collection, accessList: Access[], error: string) =>
   action(SET_COLLECTION_MANAGERS_FAILURE, { collection, accessList, error })

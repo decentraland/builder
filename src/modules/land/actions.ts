@@ -1,7 +1,8 @@
 import { action } from 'typesafe-actions'
+import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
-import { Land, LandType, Authorization } from './types'
 import { Coord } from 'decentraland-ui'
+import { Land, LandType, Authorization } from './types'
 import { getSelection } from './utils'
 
 export const FETCH_LANDS_REQUEST = '[Request] Fetch Lands'
@@ -22,11 +23,11 @@ export const TRANSFER_LAND_SUCCESS = '[Success] Transfer Land'
 export const TRANSFER_LAND_FAILURE = '[Failure] Transfer Land'
 
 export const transferLandRequest = (land: Land, address: string) => action(TRANSFER_LAND_REQUEST, { land, address })
-export const transferLandSuccess = (land: Land, address: string, txHash: string) =>
+export const transferLandSuccess = (land: Land, address: string, chainId: ChainId, txHash: string) =>
   action(TRANSFER_LAND_SUCCESS, {
     land,
     address,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       id: land.id,
       name: land.name,
       address,
@@ -44,12 +45,12 @@ export const EDIT_LAND_SUCCESS = '[Success] Edit Land'
 export const EDIT_LAND_FAILURE = '[Failure] Edit Land'
 
 export const editLandRequest = (land: Land, name: string, description: string) => action(EDIT_LAND_REQUEST, { land, name, description })
-export const editLandSuccess = (land: Land, name: string, description: string, txHash: string) =>
+export const editLandSuccess = (land: Land, name: string, description: string, chainId: ChainId, txHash: string) =>
   action(EDIT_LAND_SUCCESS, {
     land,
     name,
     description,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       id: land.id,
       name,
       description,
@@ -68,11 +69,11 @@ export const SET_OPERATOR_SUCCESS = '[Success] Set Operator'
 export const SET_OPERATOR_FAILURE = '[Failure] Set Operator'
 
 export const setOperatorRequest = (land: Land, address: string | null) => action(SET_OPERATOR_REQUEST, { land, address })
-export const setOperatorSuccess = (land: Land, address: string | null, txHash: string) =>
+export const setOperatorSuccess = (land: Land, address: string | null, chainId: ChainId, txHash: string) =>
   action(SET_OPERATOR_SUCCESS, {
     land,
     address,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       id: land.id,
       name: land.name,
       address,
@@ -92,12 +93,12 @@ export const CREATE_ESTATE_FAILURE = '[Failure] Create Estate'
 
 export const createEstateRequest = (name: string, description: string, coords: Coord[]) =>
   action(CREATE_ESTATE_REQUEST, { name, description, coords })
-export const createEstateSuccess = (name: string, description: string, coords: Coord[], txHash: string) =>
+export const createEstateSuccess = (name: string, description: string, coords: Coord[], chainId: ChainId, txHash: string) =>
   action(CREATE_ESTATE_SUCCESS, {
     name,
     description,
     coords,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       name,
       description,
       size: coords.length,
@@ -116,12 +117,12 @@ export const EDIT_ESTATE_SUCCESS = '[Success] Edit Estate'
 export const EDIT_ESTATE_FAILURE = '[Failure] Edit Estate'
 
 export const editEstateRequest = (land: Land, toAdd: Coord[], toRemove: Coord[]) => action(EDIT_ESTATE_REQUEST, { land, toAdd, toRemove })
-export const editEstateSuccess = (land: Land, coords: Coord[], type: 'add' | 'remove', txHash: string) =>
+export const editEstateSuccess = (land: Land, coords: Coord[], type: 'add' | 'remove', chainId: ChainId, txHash: string) =>
   action(EDIT_ESTATE_SUCCESS, {
     land,
     coords,
     type,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       id: land.id,
       name: land.name,
       count: coords.length,
@@ -141,10 +142,10 @@ export const DISSOLVE_ESTATE_SUCCESS = '[Success] Dissolve Estate'
 export const DISSOLVE_ESTATE_FAILURE = '[Failure] Dissolve Estate'
 
 export const dissolveEstateRequest = (land: Land) => action(DISSOLVE_ESTATE_REQUEST, { land })
-export const dissolveEstateSuccess = (land: Land, txHash: string) =>
+export const dissolveEstateSuccess = (land: Land, chainId: ChainId, txHash: string) =>
   action(DISSOLVE_ESTATE_SUCCESS, {
     land,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       id: land.id,
       name: land.name,
       selection: getSelection(land)
@@ -162,12 +163,12 @@ export const SET_UPDATE_MANAGER_FAILURE = '[Failure] Set Update Manager'
 
 export const setUpdateManagerRequest = (address: string, type: LandType, isApproved: boolean) =>
   action(SET_UPDATE_MANAGER_REQUEST, { address, isApproved, type })
-export const setUpdateManagerSuccess = (address: string, type: LandType, isApproved: boolean, txHash: string) =>
+export const setUpdateManagerSuccess = (address: string, type: LandType, isApproved: boolean, chainId: ChainId, txHash: string) =>
   action(SET_UPDATE_MANAGER_SUCCESS, {
     address,
     type,
     isApproved,
-    ...buildTransactionPayload(txHash, {
+    ...buildTransactionPayload(chainId, txHash, {
       address,
       type,
       isApproved

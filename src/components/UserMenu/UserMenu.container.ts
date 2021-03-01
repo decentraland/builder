@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { getLocation, push } from 'connected-react-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { getData as getProfiles } from 'decentraland-dapps/dist/modules/profile/selectors'
-import { getAddress, getMana } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/common/types'
 import { logout } from 'modules/identity/actions'
@@ -15,7 +15,6 @@ const mapState = (state: RootState): MapStateProps => {
   const address = getAddress(state)
   return {
     address,
-    mana: getMana(state),
     profile: getProfiles(state)[address!],
     isLoggedIn: isLoggedIn(state),
     isLoggingIn: isLoggingIn(state),

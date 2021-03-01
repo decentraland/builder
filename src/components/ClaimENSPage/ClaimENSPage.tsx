@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio, Popup } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { EtherscanLink } from 'decentraland-dapps/dist/containers'
-import { locations } from 'routing/locations'
-import { getMaximumValue } from 'lib/mana'
+import { TransactionLink } from 'decentraland-dapps/dist/containers'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
+import { locations } from 'routing/locations'
+import { getMaximumValue } from 'lib/mana'
 import { MAX_NAME_SIZE, PRICE, isNameValid, isNameAvailable, hasNameMinLength, isEnoughClaimMana } from 'modules/ens/utils'
 import { CONTROLLER_ADDRESS } from 'modules/common/contracts'
 import { Props, State } from './ClaimENSPage.types'
@@ -27,11 +27,11 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   handleClaim = async () => {
-    const { wallet, allowance, onOpenModal } = this.props
+    const { wallet, mana, allowance, onOpenModal } = this.props
     const { name } = this.state
 
     const isValid = isNameValid(name)
-    const isEnoughMana = wallet && isEnoughClaimMana(wallet.mana.toString())
+    const isEnoughMana = wallet && isEnoughClaimMana(mana.toString())
     const isManaAllowed = isEnoughClaimMana(allowance)
 
     if (!isValid || !isEnoughMana || !isManaAllowed) return
@@ -70,13 +70,13 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { wallet, allowance, onBack } = this.props
+    const { wallet, mana, allowance, onBack } = this.props
     const { name, isError, isAvailable } = this.state
 
     const isLoading = this.props.isLoading || this.state.isLoading
 
     const isValid = isNameValid(name)
-    const isEnoughMana = wallet && isEnoughClaimMana(wallet.mana.toString())
+    const isEnoughMana = wallet && isEnoughClaimMana(mana.toString())
     const isManaAllowed = isEnoughClaimMana(allowance)
 
     const isDisabled = !isValid || !isAvailable || !isEnoughMana || !isManaAllowed
@@ -148,9 +148,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       id="claim_ens_page.need_mana_message"
                       values={{
                         contract_link: (
-                          <EtherscanLink address={CONTROLLER_ADDRESS} txHash="">
+                          <TransactionLink address={CONTROLLER_ADDRESS} txHash="">
                             DCLController
-                          </EtherscanLink>
+                          </TransactionLink>
                         )
                       }}
                     />
