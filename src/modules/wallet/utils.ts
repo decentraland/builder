@@ -2,11 +2,11 @@ import { call, select } from 'redux-saga/effects'
 import { Eth } from 'web3x-es/eth'
 import { LegacyProviderAdapter } from 'web3x-es/providers'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getProvider, Provider } from 'decentraland-dapps/dist/lib/eth'
+import { getConnectedProvider, Provider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 
 export async function getEth(): Promise<Eth> {
-  const provider: Provider | null = await getProvider()
+  const provider: Provider | null = await getConnectedProvider()
 
   if (!provider) {
     throw new Error('Wallet not found')
