@@ -3,20 +3,6 @@ import { Props, State } from './Input.types'
 import './Input.css'
 
 export default class Input extends React.PureComponent<Props, State> {
-  static defaultProps = {
-    disabled: false
-  }
-
-  state: State = {
-    value: this.props.value || ''
-  }
-
-  componentWillReceiveProps(newProps: Props) {
-    if (newProps.itemId !== this.props.itemId) {
-      this.setState({ value: newProps.value || '' })
-    }
-  }
-
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, onChange, maxLength } = this.props
     const newValue = event.target.value
@@ -27,12 +13,12 @@ export default class Input extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { label, disabled } = this.props
+    const { label, disabled, value } = this.props
 
     return (
       <div className={`Input ${disabled ? 'is-disabled' : ''}`.trim()}>
         <div className="label">{label}</div>
-        <input value={this.state.value} onChange={this.handleChange} disabled={disabled} />
+        <input value={value || ''} onChange={this.handleChange} disabled={disabled} />
       </div>
     )
   }

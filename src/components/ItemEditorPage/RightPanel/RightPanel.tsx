@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, Dropdown } from 'decentraland-ui'
+import { Loader, Dropdown, Row, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
@@ -12,11 +12,24 @@ import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
-import { Props } from './RightPanel.types'
+import { State, Props } from './RightPanel.types'
 import './RightPanel.css'
 
-export default class RightPanel extends React.PureComponent<Props> {
+export default class RightPanel extends React.PureComponent<Props, State> {
   timeout: NodeJS.Timer | null = null
+  state: State = { item: null, isDirty: false }
+
+  componentDidUpdate = (prevProps: Props, _: State) => {
+    // @TODO isDirty should be managed by each property with a utils method
+    if (prevProps.selectedItemId !== this.props.selectedItemId) {
+      return this.setState({ item: null, isDirty: false })
+    }
+
+    const selectedItem = this.getSelectedItem()
+    if (!this.state.item && selectedItem) {
+      return this.setState({ item: selectedItem })
+    }
+  }
 
   getSelectedItem = () => {
     const { items, selectedItemId } = this.props
@@ -25,28 +38,35 @@ export default class RightPanel extends React.PureComponent<Props> {
 
   handleDeleteItem = () => {
     const { onDeleteItem } = this.props
-    onDeleteItem(this.getSelectedItem()!)
+    const { item } = this.state
+    onDeleteItem(item!)
   }
 
   handleAddRepresentationToItem = () => {
     const { onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { addRepresentationTo: this.getSelectedItem()! })
+    const { item } = this.state
+    onOpenModal('CreateItemModal', { addRepresentationTo: item! })
   }
 
   handleChange = (newItem: Item) => {
-    const { onSaveItem } = this.props
-    if (this.timeout) {
-      clearTimeout(this.timeout)
+    this.setState({ item: newItem, isDirty: true })
+  }
+
+  handleOnSaveItem = () => {
+    const { item } = this.state
+    if (item) {
+      this.props.onSaveItem(item, {})
     }
-    this.timeout = setTimeout(() => {
-      this.timeout = null
-      onSaveItem(newItem, {})
-    }, 500)
+  }
+
+  handleOnResetItem = () => {
+    const selectedItem = this.getSelectedItem()
+    return this.setState({ item: selectedItem, isDirty: false })
   }
 
   handleRemoveFromCollection = () => {
     const { onSetCollection } = this.props
-    const item = this.getSelectedItem()
+    const { item } = this.state
     if (item) {
       onSetCollection(item, null)
     }
@@ -54,11 +74,11 @@ export default class RightPanel extends React.PureComponent<Props> {
 
   render() {
     const { collection, selectedItemId, address = '' } = this.props
-    const selectedItem = this.getSelectedItem()
+    const { item: selectedItem, isDirty } = this.state
 
     const isOwner = selectedItem && isEqual(selectedItem.owner, address)
 
-    const canEditItemMetadata = selectedItem && (collection && canManageItem(collection, selectedItem, address)) || (!collection && isOwner)
+    const canEditItemMetadata = (selectedItem && collection && canManageItem(collection, selectedItem, address)) || (!collection && isOwner)
     const canEditItemRarity = selectedItem && !selectedItem.isPublished && isOwner
 
     const categories = Object.values(WearableCategory)
@@ -68,7 +88,7 @@ export default class RightPanel extends React.PureComponent<Props> {
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
           {(item, _collection, isLoading) =>
-            !item && isLoading ? (
+            !item || isLoading ? (
               <Loader size="massive" active />
             ) : (
               <>
@@ -111,7 +131,7 @@ export default class RightPanel extends React.PureComponent<Props> {
                 </Collapsable>
                 <Collapsable item={selectedItem} label={t('item_editor.right_panel.basics')}>
                   {item => (
-                  <>
+                    <>
                       <Input
                         itemId={item.id}
                         label={t('global.name')}
@@ -203,6 +223,14 @@ export default class RightPanel extends React.PureComponent<Props> {
                     />
                   )}
                 </Collapsable>
+                <Row>
+                  <Button secondary disabled={!isDirty} onClick={this.handleOnResetItem}>
+                    {t('global.cancel')}
+                  </Button>
+                  <Button primary disabled={!isDirty} onClick={this.handleOnSaveItem}>
+                    {t('global.submit')}
+                  </Button>
+                </Row>
               </>
             )
           }

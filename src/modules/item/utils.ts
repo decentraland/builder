@@ -179,3 +179,12 @@ export function canMintItem(collection: Collection, item: Item, address?: string
 export function canManageItem(collection: Collection, item: Item, address: string) {
   return isOwner(item, address) || canManageCollectionItems(collection, address)
 }
+
+export function hasMetadataChanged(originalItem: Item, item: Item) {
+  return (
+    originalItem.name !== item.name ||
+    originalItem.description !== item.description ||
+    originalItem.data.category !== item.data.category ||
+    JSON.stringify(originalItem.data.representations) !== JSON.stringify(item.data.representations)
+  )
+}

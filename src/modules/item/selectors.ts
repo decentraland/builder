@@ -17,6 +17,11 @@ export const getItems = createSelector<RootState, ItemState['data'], string | un
   Object.values(itemData)
 )
 
+export const getItem = (state: RootState, itemId: string) => {
+  const items = getItems(state)
+  return items.find(item => item.id === itemId) || null
+}
+
 export const getWalletItems = createSelector<RootState, Item[], string | undefined, Item[]>(getItems, getAddress, (items, address) =>
   items.filter(item => address && isEqual(item.owner, address))
 )
