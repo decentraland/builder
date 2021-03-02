@@ -3,6 +3,7 @@ import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
+import { isEqual } from 'lib/address'
 import {
   Item,
   ItemRarity,
@@ -156,18 +157,23 @@ export function isEditable(item: Item) {
 }
 
 export function isOwner(item: Item, address?: string) {
-  return address && item.owner.toLowerCase() === address.toLowerCase()
+  return address && isEqual(item.owner, address)
 }
 
 export function canSeeItem(collection: Collection, item: Item, address: string) {
-  return canSeeCollection(collection, address) || item.owner.toLowerCase() === address.toLowerCase()
+  return canSeeCollection(collection, address) || isEqual(item.owner, address)
 }
 
 export function canMintItem(collection: Collection, item: Item, address?: string) {
   const totalSupply = item.totalSupply || 0
-  return address && item.isPublished && totalSupply < getMaxSupply(item) && ((isOwner(item, address) || canMintCollectionItems(collection, address)))
+  return (
+    address &&
+    item.isPublished &&
+    totalSupply < getMaxSupply(item) &&
+    (isOwner(item, address) || canMintCollectionItems(collection, address))
+  )
 }
 
 export function canManageItem(collection: Collection, item: Item, address: string) {
-  return (isOwner(item, address) || canManageCollectionItems(collection, address))
+  return isOwner(item, address) || canManageCollectionItems(collection, address)
 }
