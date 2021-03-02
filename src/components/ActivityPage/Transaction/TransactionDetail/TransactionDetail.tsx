@@ -16,7 +16,7 @@ const getHref = (tx: Transaction) => {
   if (tx.status === null) {
     return ''
   }
-  return getTransactionHref({ txHash: tx.replacedBy || tx.hash })
+  return getTransactionHref({ txHash: tx.replacedBy || tx.hash }, tx.chainId)
 }
 
 const Image = (props: Props) => {
