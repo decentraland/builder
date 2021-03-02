@@ -2,6 +2,7 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
+import { ContractName } from 'decentraland-transactions'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
@@ -42,8 +43,8 @@ import {
   MINT_COLLECTION_ITEMS_REQUEST,
   PUBLISH_COLLECTION_SUCCESS
 } from './actions'
-import { getWallet } from 'modules/wallet/utils'
-import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS } from 'modules/common/contracts'
+import { getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
+import { ERC721_COLLECTION_FACTORY_ADDRESS, ERC721_COLLECTION_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { ERC721CollectionFactoryV2 } from 'contracts/ERC721CollectionFactoryV2'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { setItemsTokenIdRequest, deployItemContentsRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
@@ -57,6 +58,8 @@ import { LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { initializeCollection } from './utils'
+import { ERC20 as MANAToken } from 'contracts/ERC20'
+import { getMaximumValue } from 'lib/mana'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -133,16 +136,27 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     if (!collection.salt) {
       throw new Error('The collection has no salt 🧂')
     }
+    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
 
-    const txHash = yield call(() =>
-      factory.methods
-        .createCollection(collection.salt!, data.toString())
-        .send({ from })
-        .getTxHash()
+    console.log({
+      manaContract,
+      factory,
+      data,
+      getMaximumValue
+    })
+
+    const txHash = yield sendWalletMetaTransaction(
+      ContractName.CollectionManager,
+      factory.methods.createCollection(collection.salt!, data.toString()),
+      ERC721_COLLECTION_FACTORY_ADDRESS
     )
+    // const txHash = yield sendWalletMetaTransaction(
+    //   ContractName.MANAToken,
+    //   manaContract.methods.approve(Address.fromString(ERC721_COLLECTION_FACTORY_ADDRESS), getMaximumValue())
+    // )
     const tokenIds: string[] = Object.keys(items)
 
-    yield put(publishCollectionSuccess(collection, items, wallet.chainId, txHash))
+    yield put(publishCollectionSuccess(collection, items, wallet.networks.MATIC.chainId, txHash))
     yield put(setItemsTokenIdRequest(items, tokenIds))
     yield put(replace(locations.activity()))
   } catch (error) {
