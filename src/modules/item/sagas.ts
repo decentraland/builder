@@ -58,7 +58,7 @@ import { LOGIN_SUCCESS } from 'modules/identity/actions'
 import { deployContents } from './export'
 import { Item } from './types'
 import { getItem } from './selectors'
-import { hasMetadataChanged } from './utils'
+import { hasMetadataChanged, getMetadata } from './utils'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -237,6 +237,8 @@ export function saveUnpublishedItem(item: Item, contents: Record<string, Blob> =
 }
 
 export function savePublishedItem(item: Item) {
+  const metadata = getMetadata(item)
   // @TODO: send meta transaction with metadata update
-  console.log('changed: ', item)
+
+  console.log('changed: ', metadata, item.price, item.beneficiary)
 }
