@@ -2,7 +2,6 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
   FetchCollectionsRequestAction,
@@ -101,11 +100,7 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('EditCollectionNameModal'))
   } catch (error) {
-    const errorMessage = error.response.data.error || error.message
-    if (errorMessage === 'Name already in use') {
-      return yield put(saveCollectionFailure(collection, t('create_collection_modal.error_name_already_in_use')))
-    }
-    return yield put(saveCollectionFailure(collection, errorMessage))
+    yield put(saveCollectionFailure(collection, error.response.data.error || error.message))
   }
 }
 

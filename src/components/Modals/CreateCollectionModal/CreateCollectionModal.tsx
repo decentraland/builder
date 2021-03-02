@@ -34,6 +34,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { name, onClose, isLoading, error } = this.props
     const { collectionName } = this.state
     const isDisabled = !collectionName || isLoading
+
+    let errorMessage = error
+    if (error === 'Name already in use') {
+      errorMessage = t('create_collection_modal.error_name_already_in_use')
+    }
+
     return (
       <Modal name={name} onClose={onClose} size="tiny">
         <ModalNavigation title={t('create_collection_modal.title')} subtitle={t('create_collection_modal.subtitle')} onClose={onClose} />
@@ -44,8 +50,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               placeholder={t('create_collection_modal.placeholder')}
               value={collectionName}
               onChange={(_event, props) => this.setState({ collectionName: props.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })}
-              error={!!error}
-              message={error ? error : ''}
+              error={!!errorMessage}
+              message={errorMessage ? errorMessage : ''}
             ></Field>
           </ModalContent>
           <ModalActions>
