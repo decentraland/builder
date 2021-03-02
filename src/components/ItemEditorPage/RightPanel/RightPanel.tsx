@@ -5,7 +5,7 @@ import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { isEqual } from 'lib/address'
-import { getMissingBodyShapeType, canManageItem } from 'modules/item/utils'
+import { getMissingBodyShapeType, canManageItem, hasDataChanged } from 'modules/item/utils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
@@ -20,14 +20,18 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   state: State = { item: null, isDirty: false }
 
   componentDidUpdate = (prevProps: Props, _: State) => {
-    // @TODO isDirty should be managed by each property with a utils method
     if (prevProps.selectedItemId !== this.props.selectedItemId) {
       return this.setState({ item: null, isDirty: false })
     }
 
+    const { item } = this.state
     const selectedItem = this.getSelectedItem()
-    if (!this.state.item && selectedItem) {
+    if (!item && selectedItem) {
       return this.setState({ item: selectedItem })
+    }
+
+    if (selectedItem && item && !hasDataChanged(selectedItem, item)) {
+      return this.setState({ isDirty: false })
     }
   }
 
