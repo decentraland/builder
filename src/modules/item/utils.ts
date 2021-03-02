@@ -2,6 +2,8 @@ import { utils } from 'decentraland-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
+import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
+import { isEqual } from 'lib/address'
 import {
   Item,
   ItemRarity,
@@ -13,20 +15,6 @@ import {
   RARITY_COLOR_LIGHT,
   RARITY_COLOR
 } from './types'
-
-export function isComplete(item: Item) {
-  return !isEditable(item) && !!item.beneficiary && !!item.price
-}
-
-export function isEditable(item: Item) {
-  const data = item.data as WearableData
-  return !item.rarity || !data.category
-}
-
-export function canMint(item: Item) {
-  const totalSupply = item.totalSupply || 0
-  return item.isPublished && totalSupply < getMaxSupply(item)
-}
 
 export function getMaxSupply(item: Item) {
   return RARITY_MAX_SUPPLY[item.rarity!]
@@ -157,4 +145,35 @@ export async function generateImage(item: Item, width = 1024, height = 1024) {
   const blob = future<Blob>()
   canvas.toBlob(result => (result ? blob.resolve(result) : blob.reject(new Error('Error generating image blob'))))
   return blob
+}
+
+export function isComplete(item: Item) {
+  return !isEditable(item) && !!item.beneficiary && !!item.price
+}
+
+export function isEditable(item: Item) {
+  const data = item.data as WearableData
+  return !item.rarity || !data.category
+}
+
+export function isOwner(item: Item, address?: string) {
+  return address && isEqual(item.owner, address)
+}
+
+export function canSeeItem(collection: Collection, item: Item, address: string) {
+  return canSeeCollection(collection, address) || isEqual(item.owner, address)
+}
+
+export function canMintItem(collection: Collection, item: Item, address?: string) {
+  const totalSupply = item.totalSupply || 0
+  return (
+    address &&
+    item.isPublished &&
+    totalSupply < getMaxSupply(item) &&
+    (isOwner(item, address) || canMintCollectionItems(collection, address))
+  )
+}
+
+export function canManageItem(collection: Collection, item: Item, address: string) {
+  return isOwner(item, address) || canManageCollectionItems(collection, address)
 }

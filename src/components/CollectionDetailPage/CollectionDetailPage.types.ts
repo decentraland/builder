@@ -6,6 +6,7 @@ import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
 export type Props = {
+  ethAddress?: string
   collection: Collection | null
   items: Item[]
   isOnSaleLoading: boolean
@@ -15,6 +16,6 @@ export type Props = {
   onDelete: typeof deleteCollectionRequest
 }
 
-export type MapStateProps = Pick<Props, 'collection' | 'items' | 'isOnSaleLoading' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'isOnSaleLoading' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDelete'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction | DeleteCollectionRequestAction>

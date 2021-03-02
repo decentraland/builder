@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 import { mintCollectionItemsRequest, MINT_COLLECTION_ITEMS_REQUEST } from 'modules/collection/actions'
 import { getCollection } from 'modules/collection/selectors'
-import { canMint } from 'modules/item/utils'
-import { getWalletItems, getLoading } from 'modules/item/selectors'
+import { Collection } from 'modules/collection/types'
+import { canMintItem } from 'modules/item/utils'
+import { getAuthorizedItems, getLoading } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './MintItemsModal.types'
 import MintItemsModal from './MintItemsModal'
 
@@ -17,7 +18,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     throw new Error('Invalid collection id or items id to mint')
   }
 
-  const allItems = getWalletItems(state).filter(canMint)
+  const ethAddress = getAddress(state)
+  const allItems = getAuthorizedItems(state)
   let collection: Collection
   let items: Item[]
   let totalCollectionItems: number
@@ -33,11 +35,13 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
   collection = getCollection(state, collectionId)!
 
+
   return {
+    items: items.filter(item => canMintItem(collection, item, ethAddress)),
+    isLoading: isLoadingType(getLoading(state), MINT_COLLECTION_ITEMS_REQUEST),
+    ethAddress,
     collection,
-    items,
     totalCollectionItems,
-    isLoading: isLoadingType(getLoading(state), MINT_COLLECTION_ITEMS_REQUEST)
   }
 }
 

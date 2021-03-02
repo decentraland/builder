@@ -5,7 +5,7 @@ import { Section, Row, Dropdown, Narrow, Column, Header, Button, Icon, Popup, Ra
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { isOnSale } from 'modules/collection/utils'
+import { canMintCollectionItems, isOnSale, isOwner } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -71,8 +71,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { items, isOnSaleLoading, onOpenModal, onNavigate } = this.props
+    const { ethAddress, items, isOnSaleLoading, onOpenModal, onNavigate } = this.props
     const collection = this.props.collection!
+
+    const canMint = canMintCollectionItems(collection, ethAddress)
 
     return (
       <>
@@ -91,72 +93,78 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {collection.isPublished ? (
+                    {isOwner(collection, ethAddress) ? (
                       <>
-                        <Popup
-                          content={
-                            isOnSaleLoading
-                              ? t('global.loading')
-                              : isOnSale(collection)
-                              ? t('collection_detail_page.unset_on_sale_popup')
-                              : t('collection_detail_page.set_on_sale_popup')
-                          }
-                          position="top center"
-                          trigger={
-                            <Radio
-                              toggle
-                              className="on-sale"
-                              checked={isOnSale(collection)}
-                              onChange={this.handleOnSaleChange}
-                              label={t('collection_detail_page.on_sale')}
-                              disabled={isOnSaleLoading}
-                            />
-                          }
-                          hideOnScroll={true}
-                          on="hover"
-                          inverted
-                          flowing
-                        />
-
-                        <Button basic className="action-button" disabled={!collection.isApproved} onClick={this.handleMintItems}>
-                          <Icon name="paper plane" />
-                          <span className="text">{t('collection_detail_page.mint_items')}</span>
-                        </Button>
-                      </>
-                    ) : (
-                      <Button basic className="action-button" onClick={this.handleNewItem}>
-                        <Icon name="plus" />
-                        <span className="text">{t('collection_detail_page.new_item')}</span>
-                      </Button>
-                    )}
-
-                    <Dropdown
-                      trigger={
-                        <Button basic>
-                          <Icon name="ellipsis horizontal" />
-                        </Button>
-                      }
-                      inline
-                      direction="left"
-                    >
-                      <Dropdown.Menu>
                         {collection.isPublished ? (
-                          <Dropdown.Item text={t('collection_detail_page.managers')} onClick={this.handleUpdateManagers} />
-                        ) : (
                           <>
-                            <Dropdown.Item
-                              text={t('collection_detail_page.add_existing_item')}
-                              onClick={() => onOpenModal('AddExistingItemModal', { collectionId: collection!.id })}
+                            <Popup
+                              content={
+                                isOnSaleLoading
+                                  ? t('global.loading')
+                                  : isOnSale(collection)
+                                  ? t('collection_detail_page.unset_on_sale_popup')
+                                  : t('collection_detail_page.set_on_sale_popup')
+                              }
+                              position="top center"
+                              trigger={
+                                <Radio
+                                  toggle
+                                  className="on-sale"
+                                  checked={isOnSale(collection)}
+                                  onChange={this.handleOnSaleChange}
+                                  label={t('collection_detail_page.on_sale')}
+                                  disabled={isOnSaleLoading}
+                                />
+                              }
+                              hideOnScroll={true}
+                              on="hover"
+                              inverted
+                              flowing
                             />
-                            <ConfirmDelete
-                              name={collection.name}
-                              onDelete={this.handleDeleteItem}
-                              trigger={<Dropdown.Item text={t('global.delete')} />}
-                            />
+
+                            <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                              <Icon name="paper plane" />
+                              <span className="text">{t('collection_detail_page.mint_items')}</span>
+                            </Button>
                           </>
+                        ) : (
+                          <Button basic className="action-button" onClick={this.handleNewItem}>
+                            <Icon name="plus" />
+                            <span className="text">{t('collection_detail_page.new_item')}</span>
+                          </Button>
                         )}
-                      </Dropdown.Menu>
-                    </Dropdown>
+                      </>
+                    ) : null}
+
+                    {isOwner(collection, ethAddress) ? (
+                      <Dropdown
+                        trigger={
+                          <Button basic>
+                            <Icon name="ellipsis horizontal" />
+                          </Button>
+                        }
+                        inline
+                        direction="left"
+                      >
+                        <Dropdown.Menu>
+                          {collection.isPublished ? (
+                            <Dropdown.Item text={t('collection_detail_page.managers')} onClick={this.handleUpdateManagers} />
+                          ) : (
+                            <>
+                              <Dropdown.Item
+                                text={t('collection_detail_page.add_existing_item')}
+                                onClick={() => onOpenModal('AddExistingItemModal', { collectionId: collection!.id })}
+                              />
+                              <ConfirmDelete
+                                name={collection.name}
+                                onDelete={this.handleDeleteItem}
+                                trigger={<Dropdown.Item text={t('global.delete')} />}
+                              />
+                            </>
+                          )}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    ) : null}
 
                     {collection.isPublished ? (
                       collection.isApproved ? (
@@ -208,7 +216,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
           {this.hasItems() ? (
             <div className="collection-items">
               {items.map(item => (
-                <CollectionItem key={item.id} item={item} />
+                <CollectionItem key={item.id} collection={collection} item={item} />
               ))}
             </div>
           ) : (

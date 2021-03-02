@@ -3,7 +3,7 @@ import { Loader, ModalNavigation, ModalActions, Form, Button } from 'decentralan
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
-import { canMint } from 'modules/item/utils'
+import { canMintItem } from 'modules/item/utils'
 import { Item } from 'modules/item/types'
 import { Mint } from 'modules/collection/types'
 import ItemDropdown from 'components/ItemDropdown'
@@ -71,8 +71,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   }
 
   filterAddableItems = (item: Item) => {
-    const { collection, items } = this.props
-    return item.collectionId === collection.id && !items.some(_item => _item.id === item.id && canMint(item))
+    const { collection, items, ethAddress } = this.props
+    return item.collectionId === collection.id && !items.some(_item => _item.id === item.id && canMintItem(collection, item, ethAddress))
   }
 
   render() {

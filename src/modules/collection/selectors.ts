@@ -8,6 +8,7 @@ import { isEqual } from 'lib/address'
 import { SET_COLLECTION_MINTERS_SUCCESS } from './actions'
 import { Collection } from './types'
 import { CollectionState } from './reducer'
+import { canSeeCollection } from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -24,6 +25,12 @@ export const getWalletCollections = createSelector<RootState, Collection[], stri
   getCollections,
   getAddress,
   (collections, address) => collections.filter(collection => address && isEqual(collection.owner, address))
+)
+
+export const getAuthorizedCollections = createSelector<RootState, Collection[], string | undefined, Collection[]>(
+  getCollections,
+  getAddress,
+  (collections, address) => collections.filter(collection => address && canSeeCollection(collection, address))
 )
 
 export const getCollection = (state: RootState, collectionId: string) => {

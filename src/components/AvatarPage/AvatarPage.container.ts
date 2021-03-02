@@ -4,7 +4,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { RootState } from 'modules/common/types'
 import { openModal } from 'modules/modal/actions'
 import { getWalletOrphanItems, getLoading as getLoadingItems } from 'modules/item/selectors'
-import { getWalletCollections, getLoading as getLoadingCollections } from 'modules/collection/selectors'
+import { getAuthorizedCollections, getLoading as getLoadingCollections } from 'modules/collection/selectors'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './AvatarPage.types'
@@ -15,7 +15,7 @@ const mapState = (state: RootState): MapStateProps => {
 
   return {
     items,
-    collections: getWalletCollections(state),
+    collections: getAuthorizedCollections(state),
     isLoading:
       isLoadingType(getLoadingItems(state), FETCH_ITEMS_REQUEST) || isLoadingType(getLoadingCollections(state), FETCH_COLLECTIONS_REQUEST)
   }

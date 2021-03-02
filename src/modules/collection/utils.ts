@@ -6,6 +6,7 @@ import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { Item } from 'modules/item/types'
 import { COLLECTION_STORE_ADDRESS } from 'modules/common/contracts'
 import { getRarityIndex, getMetadata } from 'modules/item/utils'
+import { isEqual } from 'lib/address'
 import { InitializeItem, Collection, Access } from './types'
 
 const EMPTY_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -48,4 +49,28 @@ export function toCollectionObject(collections: Collection[]) {
     obj[collection.id] = utils.omit<Collection>(collection, ['items'])
     return obj
   }, {} as Record<string, Collection>)
+}
+
+export function canSeeCollection(collection: Collection, address: string) {
+  return [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
+}
+
+export function isOwner(collection: Collection, address?: string) {
+  return address && isEqual(collection.owner, address)
+}
+
+export function isMinter(collection: Collection, address?: string) {
+  return address && collection.minters.some(minter => isEqual(minter, address))
+}
+
+export function isManager(collection: Collection, address?: string) {
+  return address && collection.managers.some(manager => isEqual(manager, address))
+}
+
+export function canMintCollectionItems(collection: Collection, address?: string) {
+  return collection.isApproved && (isOwner(collection, address) || isMinter(collection, address))
+}
+
+export function canManageCollectionItems(collection: Collection, address?: string) {
+  return isOwner(collection, address) || isManager(collection, address)
 }
