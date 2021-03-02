@@ -11,12 +11,13 @@ export type Props = ModalProps & {
   address?: string
   isLoading: boolean
   onSubmit: typeof saveCollectionRequest
+  error: string | null
 }
 
 export type State = {
   collectionName: string
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'address' | 'isLoading' | 'error'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch<SaveCollectionRequestAction>

@@ -127,7 +127,8 @@
     "title": "新系列",
     "subtitle": "为您的新收藏取个名字",
     "label": "名称",
-    "placeholder": "我的大学"
+    "placeholder": "我的大学",
+    "error_name_already_in_use": "使用中的名称。 尝试其他"
   },
   "model_metrics": {
     "triangles": "{count}个三角形",

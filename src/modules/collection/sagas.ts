@@ -101,7 +101,7 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('EditCollectionNameModal'))
   } catch (error) {
-    yield put(saveCollectionFailure(collection, error.message))
+    yield put(saveCollectionFailure(collection, error.response.data.error || error.message))
   }
 }
 
