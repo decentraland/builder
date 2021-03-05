@@ -17,12 +17,10 @@ export type Collection = {
 }
 
 export type InitializeItem = {
-  rarity: number
-  totalSupply: number
+  rarity: string
   price: BN
   beneficiary: Address
   metadata: string
-  contentHash: string
 }
 
 export type Mint = {

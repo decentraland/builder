@@ -9,6 +9,10 @@
       "source": "files",
       "abiFile": "./src/contracts/EstateRegistry.json"
     },
+    "CollectionManager": {
+      "source": "files",
+      "abiFile": "./src/contracts/CollectionManager.json"
+    },
     "ERC721CollectionFactoryV2": {
       "source": "files",
       "abiFile": "./src/contracts/ERC721CollectionFactoryV2.json"
