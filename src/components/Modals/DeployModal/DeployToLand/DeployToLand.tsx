@@ -23,7 +23,6 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this.props.onRecord()
-    this.handleConnect()
   }
 
   componentWillReceiveProps(props: Props) {

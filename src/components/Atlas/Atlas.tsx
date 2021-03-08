@@ -225,6 +225,8 @@ const Atlas: React.FC<Props> = props => {
         zoom={zoom}
         x={props.x || landX}
         y={props.y || landY}
+        maxX={163}
+        maxY={158}
         className={classes.join(' ')}
         tiles={atlasTiles}
         layers={[landLayer, unoccupiedLayer, ...selectionLayers, ...(props.layers || [])]}

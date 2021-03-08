@@ -9,6 +9,7 @@ p.DeployToLand {
 
 .DeployToLand.connect {
   margin: 0px 24px 24px 24px;
+  text-align: center;
 }
 
 .DeployToLand.connect .ui.button.connect {

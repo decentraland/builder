@@ -172,9 +172,9 @@ export default class SceneViewPage extends React.PureComponent<Props, State> {
             {author && (
               <div className="author">
                 {t('public_page.made_by')}
-                <span className="author-name"> {author.avatars[0].name}</span>
+                <span className="author-name"> {author.avatars.length > 0 ? author.avatars[0].name : t('user_menu.guest')}</span>
                 <div className="avatar">
-                  <img width="24" height="24" src={author.avatars[0].avatar.snapshots.face} />
+                  <img width="24" height="24" src={author.avatars.length > 0 ? author.avatars[0].avatar.snapshots.face : ''} />
                 </div>
               </div>
             )}
