@@ -13,6 +13,7 @@ export type Props = {
   wallet: Wallet
   authorization: Authorization
   authorizations: Authorization[]
+  isLoading: boolean
   hasPendingTransaction: boolean
   onGrant: typeof grantTokenRequest
   onRevoke: typeof revokeTokenRequest
@@ -20,7 +21,7 @@ export type Props = {
   onProceed: () => void
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'authorizations' | 'hasPendingTransaction'>
+export type MapStateProps = Pick<Props, 'wallet' | 'authorizations' | 'isLoading' | 'hasPendingTransaction'>
 export type MapDispatchProps = Pick<Props, 'onGrant' | 'onRevoke'>
 export type MapDispatch = Dispatch<GrantTokenRequestAction | RevokeTokenRequestAction>
 export type OwnProps = Pick<Props, 'open' | 'authorization' | 'onProceed' | 'onCancel'>

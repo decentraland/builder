@@ -1,13 +1,19 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { Authorization } from 'decentraland-dapps/dist/modules/authorization/types'
-import { grantTokenRequest, revokeTokenRequest } from 'decentraland-dapps/dist/modules/authorization/actions'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { getData, getTransactions } from 'decentraland-dapps/dist/modules/authorization/selectors'
+import { getData, getTransactions, getLoading } from 'decentraland-dapps/dist/modules/authorization/selectors'
+import {
+  grantTokenRequest,
+  GRANT_TOKEN_REQUEST,
+  revokeTokenRequest,
+  REVOKE_TOKEN_REQUEST
+} from 'decentraland-dapps/dist/modules/authorization/actions'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
+import { areEqual } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './AuthorizationModal.types'
 import AuthorizationModal from './AuthorizationModal'
-import { areEqual } from 'decentraland-dapps/dist/modules/authorization/utils'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const hasPendingTransaction = getTransactions(state).some(
@@ -17,6 +23,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   return {
     wallet: getWallet(state)!,
     authorizations: getData(state),
+    isLoading: isLoadingType(getLoading(state), GRANT_TOKEN_REQUEST) || isLoadingType(getLoading(state), REVOKE_TOKEN_REQUEST),
     hasPendingTransaction
   }
 }
