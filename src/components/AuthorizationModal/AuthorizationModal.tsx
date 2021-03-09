@@ -10,7 +10,7 @@ import { Props } from './AuthorizationModal.types'
 import './AuthorizationModal.css'
 
 const AuthorizationModal = (props: Props) => {
-  const { open, wallet, authorization, authorizations, hasPendingTransaction, onGrant, onRevoke, onCancel, onProceed } = props
+  const { open, wallet, authorization, authorizations, isLoading, hasPendingTransaction, onGrant, onRevoke, onCancel, onProceed } = props
   const { tokenAddress, authorizedAddress } = authorization
 
   const isAuthorized = hasAuthorization(authorizations, authorization)
@@ -50,7 +50,7 @@ const AuthorizationModal = (props: Props) => {
                 </Link>
               }
             />
-            <Radio checked={isAuthorized} label={tokenSymbol} onClick={handleAuthorizationChange} />
+            <Radio checked={isAuthorized} label={tokenSymbol} onClick={handleAuthorizationChange} disabled={isLoading} />
             <div className="radio-description secondary-text">
               <T
                 id="authorization_modal.authorize"
@@ -69,7 +69,7 @@ const AuthorizationModal = (props: Props) => {
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={onCancel}>{t('global.cancel')}</Button>
-        <Button disabled={!isAuthorized} primary onClick={onProceed}>
+        <Button primary disabled={!isAuthorized || isLoading} onClick={onProceed}>
           {t('global.proceed')}
         </Button>
       </Modal.Actions>

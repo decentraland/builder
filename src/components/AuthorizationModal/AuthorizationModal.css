@@ -47,9 +47,9 @@
 }
 
 .AuthorizationModal .ui.radio.checkbox.checked input.hidden + label:after {
-  top: 0px;
+  top: -1px;
   left: -1px;
-  width: 29px;
+  width: 28px;
   height: 32px;
 }
 
