@@ -4,6 +4,12 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
+  "authorization_modal": {
+    "title": "Authorize {token}",
+    "description": "In order to continue you will need to authorize the {contract} contract to operate {token} tokens on your behalf.{br}This only has to be done once, and you can always manage your authorizations from the {settings_link} page.",
+    "authorize": "Authorize the {contract_link} contract to operate {symbol} on your behalf",
+    "pending_tx": "Transaction pending, click the spinner to go to your activity for a detailed status"
+  },
   "add_existing_item_modal": {
     "title": "Add Existing Item",
     "subtitle": "Select an item that is not part of a collection yet"
