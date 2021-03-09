@@ -7,13 +7,13 @@ import { getData, getTransactions } from 'decentraland-dapps/dist/modules/author
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './AuthorizationModal.types'
 import AuthorizationModal from './AuthorizationModal'
+import { areEqual } from 'decentraland-dapps/dist/modules/authorization/utils'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const { tokenAddress, authorizedAddress } = ownProps.authorization
-
   const hasPendingTransaction = getTransactions(state).some(
-    tx => tx.payload.tokenAddress === tokenAddress && tx.payload.authorizedAddress === authorizedAddress && isPending(tx.status)
+    tx => areEqual(tx.payload.authorization, ownProps.authorization) && isPending(tx.status)
   )
+
   return {
     wallet: getWallet(state)!,
     authorizations: getData(state),

@@ -6,7 +6,7 @@
   },
   "authorization_modal": {
     "title": "Autorizar {token}",
-    "description": "Para poder continuar deberás autorizar al contrato de {contract} a operar tus tokens de {token}.{br}Esto solo debe realizarse una única vez, y siempre puedes gestionar tus autorizaciones desde la pagina de {settings_link}.",
+    "description": "Para poder continuar deberás autorizar al contrato de {contract} a operar tus tokens de {token}. Esto solo debe realizarse una única vez.",
     "authorize": "Autoriza al contrato de {contract_link} a operar {symbol} por tí",
     "pending_tx": "Transaccion pendiente, haz click aquí para ir a tu pantalla de actividad y ver más información"
   },
