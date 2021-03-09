@@ -1,21 +1,22 @@
 import React, { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Modal, Button, Form, CheckboxProps, Radio, Loader, Popup } from 'decentraland-ui'
+import { getContractName } from 'decentraland-transactions'
 import { TransactionLink } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
-import { getContractName, getContractSymbol } from '../../modules/contract/utils'
+import { getContractSymbol } from '../../modules/contract/utils'
 import { Props } from './AuthorizationModal.types'
 import './AuthorizationModal.css'
 
 const AuthorizationModal = (props: Props) => {
-  const { open, wallet, authorization, authorizations, isLoading, hasPendingTransaction, onGrant, onRevoke, onCancel, onProceed } = props
+  const { open, authorization, authorizations, isLoading, hasPendingTransaction, onGrant, onRevoke, onCancel, onProceed } = props
   const { tokenAddress, authorizedAddress } = authorization
 
   const isAuthorized = hasAuthorization(authorizations, authorization)
   const contractName = getContractName(authorizedAddress)
-  const tokenSymbol = getContractSymbol(tokenAddress, wallet.networks.MATIC.chainId)
+  const tokenSymbol = getContractSymbol(tokenAddress)
 
   const handleAuthorizationChange = useCallback(
     (_, data: CheckboxProps) => (data.checked ? onGrant(authorization) : onRevoke(authorization)),
@@ -69,7 +70,7 @@ const AuthorizationModal = (props: Props) => {
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={onCancel}>{t('global.cancel')}</Button>
-        <Button primary disabled={!isAuthorized || isLoading} onClick={onProceed}>
+        <Button primary loading={isLoading} disabled={!isAuthorized} onClick={onProceed}>
           {t('global.proceed')}
         </Button>
       </Modal.Actions>

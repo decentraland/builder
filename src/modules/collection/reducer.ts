@@ -13,6 +13,8 @@ import {
   DeleteCollectionRequestAction,
   DeleteCollectionSuccessAction,
   DeleteCollectionFailureAction,
+  PublishCollectionRequestAction,
+  PublishCollectionFailureAction,
   FETCH_COLLECTIONS_REQUEST,
   FETCH_COLLECTIONS_SUCCESS,
   FETCH_COLLECTIONS_FAILURE,
@@ -25,6 +27,8 @@ import {
   DELETE_COLLECTION_REQUEST,
   DELETE_COLLECTION_FAILURE,
   DELETE_COLLECTION_SUCCESS,
+  PUBLISH_COLLECTION_REQUEST,
+  PUBLISH_COLLECTION_FAILURE,
   PUBLISH_COLLECTION_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
   SET_COLLECTION_MANAGERS_SUCCESS
@@ -57,14 +61,17 @@ type CollectionReducerAction =
   | DeleteCollectionRequestAction
   | DeleteCollectionSuccessAction
   | DeleteCollectionFailureAction
+  | PublishCollectionRequestAction
+  | PublishCollectionFailureAction
   | FetchTransactionSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
     case FETCH_COLLECTIONS_REQUEST:
     case FETCH_COLLECTION_REQUEST:
+    case SAVE_COLLECTION_REQUEST:
     case DELETE_COLLECTION_REQUEST:
-    case SAVE_COLLECTION_REQUEST: {
+    case PUBLISH_COLLECTION_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -111,7 +118,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case FETCH_COLLECTIONS_FAILURE:
     case FETCH_COLLECTION_FAILURE:
     case SAVE_COLLECTION_FAILURE:
-    case DELETE_COLLECTION_FAILURE: {
+    case DELETE_COLLECTION_FAILURE:
+    case PUBLISH_COLLECTION_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

@@ -20,7 +20,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { onClose } = this.props
+    const { isLoading, onClose } = this.props
     return (
       <Modal name={name} className="PublishCollectionModal" size="tiny" onClose={onClose}>
         <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
@@ -30,7 +30,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props> {
           {t('publish_collection_modal.second_paragraph')}
           <div className="divider"></div>
           {t('publish_collection_modal.third_paragraph')}
-          <Button primary fluid onClick={this.handlePublish}>
+          <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
             {t('publish_collection_modal.publish')}
           </Button>
         </Modal.Content>

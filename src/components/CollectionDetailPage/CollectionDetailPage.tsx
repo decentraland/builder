@@ -46,12 +46,14 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   handlePublish = () => {
     const { authorizations, collection, onOpenModal } = this.props
+    let isAuthorizationModalOpen = false
 
     if (hasAuthorization(authorizations, this.getAuthorization())) {
       onOpenModal('PublishCollectionModal', { collectionId: collection!.id })
     } else {
-      this.setState({ isAuthorizationModalOpen: true })
+      isAuthorizationModalOpen = true
     }
+    this.setState({ isAuthorizationModalOpen })
   }
 
   handleEditName = () => {

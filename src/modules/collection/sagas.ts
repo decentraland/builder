@@ -165,6 +165,7 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     yield put(setItemsTokenIdRequest(items, tokenIds))
     yield put(replace(locations.activity()))
   } catch (error) {
+    console.log(error)
     yield put(publishCollectionFailure(collection, items, error.message))
   }
 }
