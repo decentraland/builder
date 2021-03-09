@@ -6,6 +6,7 @@ import { StorageState } from 'decentraland-dapps/dist/modules/storage/reducer'
 import { WalletState } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { ModalState } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { ProfileState } from 'decentraland-dapps/dist/modules/profile/reducer'
+import { AuthorizationState } from 'decentraland-dapps/dist/modules/authorization/reducer'
 import { STORAGE_LOAD } from 'decentraland-dapps/dist/modules/storage/actions'
 
 import { AssetPackState } from 'modules/assetPack/reducer'
@@ -41,6 +42,7 @@ export type RootState = {
   translation: TranslationState
   storage: StorageState
   wallet: WalletState
+  authorization: AuthorizationState
   modal: ModalState
   assetPack: AssetPackState
   asset: AssetState

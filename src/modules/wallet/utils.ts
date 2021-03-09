@@ -4,8 +4,8 @@ import { Eth } from 'web3x-es/eth'
 import { TxSend } from 'web3x-es/contract'
 import { LegacyProviderAdapter } from 'web3x-es/providers'
 import { ContractName, getContract, sendMetaTransaction } from 'decentraland-transactions'
-import { createProvider, getConnectedProvider, Provider } from 'decentraland-dapps/dist/lib/eth'
-import { ProviderType, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { createProvider, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
+import { ProviderType, Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export async function getEth(): Promise<Eth> {
