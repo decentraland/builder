@@ -123,13 +123,14 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   const { collection, items } = action.payload
   try {
-    const [wallet]: [Wallet, Eth] = yield getWallet()
+    if (!collection.salt) {
+      throw new Error('The collection has no salt 🧂')
+    }
+
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
 
     const from = Address.fromString(wallet.address)
     const maticChainId = wallet.networks.MATIC.chainId
-
-    const metaTxProvider = yield call(() => createProvider(ProviderType.NETWORK, maticChainId))
-    const eth = new Eth(metaTxProvider)
 
     const [forwarderAddress, factoryAddress, managerAddress] = [
       ContractName.Forwarder,
@@ -139,10 +140,6 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
       const contract = getContract(contractName, maticChainId)
       return Address.fromString(contract.address)
     })
-
-    if (!collection.salt) {
-      throw new Error('The collection has no salt 🧂')
-    }
 
     const factory = new CollectionManager(eth, managerAddress)
 
@@ -165,7 +162,6 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     yield put(setItemsTokenIdRequest(items, tokenIds))
     yield put(replace(locations.activity()))
   } catch (error) {
-    console.log(error)
     yield put(publishCollectionFailure(collection, items, error.message))
   }
 }
@@ -194,11 +190,10 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
       }
     }
 
-    const txHash = yield call(() =>
-      implementation.methods
-        .setMinters(addresses, values)
-        .send({ from })
-        .getTxHash()
+    const txHash = yield sendWalletMetaTransaction(
+      ContractName.ERC721CollectionV2,
+      implementation.methods.setMinters(addresses, values),
+      collection.contractAddress!
     )
 
     yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), wallet.chainId, txHash))
@@ -232,11 +227,10 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
       }
     }
 
-    const txHash = yield call(() =>
-      implementation.methods
-        .setManagers(addresses, values)
-        .send({ from })
-        .getTxHash()
+    const txHash = yield sendWalletMetaTransaction(
+      ContractName.ERC721CollectionV2,
+      implementation.methods.setManagers(addresses, values),
+      collection.contractAddress!
     )
 
     yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), wallet.chainId, txHash))
