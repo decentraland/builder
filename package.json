@@ -107,7 +107,7 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "npm run build:scene && concurrently -n \"scene,builder\" \"decentraland-compiler buildScene.json --watch\" \"node scripts/start.js\"",
     "build:scene": "decentraland-compiler buildScene.json",
     "build:contracts": "npx web3x-codegen",
     "build": "npm run postinstall && npm run build:scene && node scripts/build.js",
