@@ -7,6 +7,7 @@ import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/
 import { locations } from 'routing/locations'
 import { getContractName, getContractSymbol } from '../../modules/contract/utils'
 import { Props } from './AuthorizationModal.types'
+import './AuthorizationModal.css'
 
 const AuthorizationModal = (props: Props) => {
   const { open, wallet, authorization, authorizations, hasPendingTransaction, onGrant, onRevoke, onCancel, onProceed } = props
@@ -33,19 +34,12 @@ const AuthorizationModal = (props: Props) => {
           id="authorization_modal.description"
           values={{
             contract: contractName,
-            token: tokenSymbol,
-            settings_link: <Link to={locations.settings()}>{t('global.settings')}</Link>,
-            br: (
-              <>
-                <br />
-                <br />
-              </>
-            )
+            token: tokenSymbol
           }}
         />
       </Modal.Description>
       <Modal.Content>
-        <div className="Authorization">
+        <div className="authorization">
           <Form.Field className={hasPendingTransaction ? 'is-pending' : ''}>
             <Popup
               content={t('authorization_modal.pending_tx')}
