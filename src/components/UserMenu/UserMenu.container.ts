@@ -1,31 +1,27 @@
 import { connect } from 'react-redux'
 import { getLocation, push } from 'connected-react-router'
 import { isPending } from 'decentraland-dapps/dist/modules/transaction/utils'
-import { getData as getProfiles } from 'decentraland-dapps/dist/modules/profile/selectors'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-
-import { RootState } from 'modules/common/types'
-import { logout } from 'modules/identity/actions'
-import { isLoggedIn, isLoggingIn } from 'modules/identity/selectors'
-import { getTransactions } from 'modules/transaction/selectors'
+import { isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getTransactions } from '../../modules/transaction/selectors'
+import { RootState } from '../../modules/common/types'
+import { logout } from '../../modules/identity/actions'
+import { locations } from '../../routing/locations'
 import { MapStateProps, MapDispatch, MapDispatchProps } from './UserMenu.types'
 import UserMenu from './UserMenu'
 
 const mapState = (state: RootState): MapStateProps => {
-  const address = getAddress(state)
   return {
-    address,
-    profile: getProfiles(state)[address!],
-    isLoggedIn: isLoggedIn(state),
-    isLoggingIn: isLoggingIn(state),
-    pathname: getLocation(state).pathname,
-    hasPendingTransactions: getTransactions(state).some(tx => isPending(tx.status))
+    isSignedIn: isConnected(state),
+    isSigningIn: isConnecting(state),
+    isActivity: getLocation(state).pathname === locations.activity(),
+    hasActivity: getTransactions(state).some(tx => isPending(tx.status))
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onLogout: () => dispatch(logout()),
-  onNavigate: path => dispatch(push(path))
+  onClickActivity: () => dispatch(push(locations.activity())),
+  onClickSettings: () => dispatch(push(locations.settings())),
+  onSignOut: () => dispatch(logout())
 })
 
 export default connect(mapState, mapDispatch)(UserMenu)

@@ -1,24 +1,10 @@
 import { Dispatch } from 'redux'
-
-import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
-import { LogoutAction, logout } from 'modules/identity/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { UserMenuProps } from 'decentraland-ui'
+import { LogoutAction } from 'modules/identity/actions'
 
-export type Props = {
-  isLoggedIn: boolean
-  isLoggingIn: boolean
-  address?: string
-  profile?: Profile
-  onLogout: typeof logout
-  pathname: string
-  hasPendingTransactions: boolean
-  onNavigate: (path: string) => void
-}
+export type Props = Partial<UserMenuProps>
 
-export type State = {
-  isOpen: boolean
-}
-
-export type MapStateProps = Pick<Props, 'isLoggedIn' | 'isLoggingIn' | 'address' | 'profile' | 'pathname' | 'hasPendingTransactions'>
-export type MapDispatchProps = Pick<Props, 'onLogout' | 'onNavigate'>
-export type MapDispatch = Dispatch<LogoutAction | CallHistoryMethodAction>
+export type MapStateProps = Pick<Props, 'isSignedIn' | 'isSigningIn' | 'isActivity' | 'hasActivity'>
+export type MapDispatchProps = Pick<Props, 'onClickActivity' | 'onClickSettings' | 'onSignOut'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction | LogoutAction>
