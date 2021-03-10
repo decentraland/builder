@@ -4,7 +4,7 @@ import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { ProviderType, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -57,7 +57,6 @@ import { LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
-import { createProvider } from 'decentraland-dapps/dist/lib/eth'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -170,7 +169,6 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
   const { collection, accessList } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
@@ -196,7 +194,7 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
       collection.contractAddress!
     )
 
-    yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), wallet.chainId, txHash))
+    yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), wallet.networks.MATIC.chainId, txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(setCollectionMintersFailure(collection, accessList, error.message))
@@ -207,7 +205,6 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
   const { collection, accessList } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
@@ -233,7 +230,10 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
       collection.contractAddress!
     )
 
-    yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), wallet.chainId, txHash))
+    console.log('set minters', txHash)
+    console.log('set minters', { addresses, values, contractAddress: collection.contractAddress })
+
+    yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), wallet.networks.MATIC.chainId, txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(setCollectionManagersFailure(collection, accessList, error.message))

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader, ModalNavigation, ModalActions, Form, Button } from 'decentraland-ui'
+import { ModalNavigation, ModalActions, Form, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
@@ -88,35 +88,27 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       <Modal name={name} className="MintItemsModal" onClose={onClose}>
         <ModalNavigation title={t('mint_items_modal.title')} onClose={onClose} />
         <Modal.Content>
-          {isLoading ? (
-            <Loader active size="massive" />
-          ) : (
-            <Form>
+          <Form>
+            {isEmpty ? (
+              <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
+            ) : (
+              items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+            )}
+            {isFull ? null : (
+              <ItemDropdown placeholder={t('mint_items_modal.add_item')} onChange={this.handleAddItems} filter={this.filterAddableItems} />
+            )}
+            <ModalActions>
               {isEmpty ? (
-                <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
+                <Button secondary fluid onClick={onClose}>
+                  {t('global.cancel')}
+                </Button>
               ) : (
-                items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+                <Button primary onClick={this.handleMintItems} loading={isLoading}>
+                  {t('global.done')}
+                </Button>
               )}
-              {isFull ? null : (
-                <ItemDropdown
-                  placeholder={t('mint_items_modal.add_item')}
-                  onChange={this.handleAddItems}
-                  filter={this.filterAddableItems}
-                />
-              )}
-              <ModalActions>
-                {isEmpty ? (
-                  <Button secondary fluid onClick={onClose}>
-                    {t('global.cancel')}
-                  </Button>
-                ) : (
-                  <Button primary onClick={this.handleMintItems}>
-                    {t('global.done')}
-                  </Button>
-                )}
-              </ModalActions>
-            </Form>
-          )}
+            </ModalActions>
+          </Form>
         </Modal.Content>
       </Modal>
     )
