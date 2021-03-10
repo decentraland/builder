@@ -1,4 +1,6 @@
 import { all, takeEvery, put } from 'redux-saga/effects'
+import { ChainId } from '@dcl/schemas'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import {
   CHANGE_ACCOUNT,
@@ -10,10 +12,7 @@ import {
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { fetchAuthorizationsRequest } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
-
 import { MANA_ADDRESS } from 'modules/common/contracts'
-import { ChainId } from '@dcl/schemas'
-import { ContractName, getContract } from 'decentraland-transactions/dist'
 
 const baseWalletSaga = createWalletSaga({
   MANA_ADDRESS

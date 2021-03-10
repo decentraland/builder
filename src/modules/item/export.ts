@@ -1,4 +1,3 @@
-import { utils } from 'decentraland-commons'
 import { AuthIdentity } from 'dcl-crypto'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { saveItem } from 'modules/item/sagas'
@@ -6,7 +5,7 @@ import { getCatalystPointer } from 'modules/item/utils'
 import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
 import { PEER_URL } from 'lib/api/peer'
 import { Collection } from 'modules/collection/types'
-import { IMAGE_PATH, Item } from './types'
+import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
@@ -14,8 +13,7 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   const files = await getFiles(item.contents)
   const image = await generateImage(item)
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const metadata = { ...(utils.omit(item, ['contents']) as Omit<Item, 'contents'>), image: IMAGE_PATH }
-  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [pointer], metadata, contentFiles)
+  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [pointer], toCatalystItem(collection, item), contentFiles)
   await deploy(PEER_URL, data)
 
   const newItem = { ...item, inCatalyst: true }
@@ -39,4 +37,27 @@ async function getFiles(contents: Record<string, string>) {
     files[file.path] = file.blob
     return files
   }, {})
+}
+
+function toCatalystItem(collection: Collection, item: Item): CatalystItem {
+  return {
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    collectionAddress: collection.contractAddress!,
+    rarity: item.rarity,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      representations: item.data.representations,
+      category: item.data.category
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }
 }
