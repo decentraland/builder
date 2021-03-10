@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.6",
-    "@dcl/schemas": "^0.2.0",
+    "@dcl/schemas": "^1.1.0",
     "@svgr/webpack": "2.4.1",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "apollo-boost": "^0.4.8",
