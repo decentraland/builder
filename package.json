@@ -37,7 +37,7 @@
     "decentraland-dapps": "^9.6.2",
     "decentraland-ecs": "6.6.1-20201020183014.commit-bdc29ef",
     "decentraland-experiments": "^1.0.2",
-    "decentraland-transactions": "^1.4.1",
+    "decentraland-transactions": "^1.5.0",
     "decentraland-ui": "^3.1.3",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
@@ -107,7 +107,8 @@
     "workbox-webpack-plugin": "3.6.3"
   },
   "scripts": {
-    "start": "npm run build:scene && concurrently -n \"scene,builder\" \"decentraland-compiler buildScene.json --watch\" \"node scripts/start.js\"",
+    "start": "node scripts/start.js",
+    "start:full": "npm run build:scene && concurrently -n \"scene,builder\" \"decentraland-compiler buildScene.json --watch\" \"node scripts/start.js\"",
     "build:scene": "decentraland-compiler buildScene.json",
     "build:contracts": "npx web3x-codegen",
     "build": "npm run postinstall && npm run build:scene && node scripts/build.js",
