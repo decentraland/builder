@@ -21,11 +21,15 @@ export const getWalletItems = createSelector<RootState, Item[], string | undefin
   items.filter(item => address && isEqual(item.owner, address))
 )
 
-export const getAuthorizedItems = createSelector<RootState, Collection[], Item[], string | undefined, Item[]>(getAuthorizedCollections, getItems, getAddress, (collections, items, address) =>
-  items.filter(item => {
-    const collection = collections.filter(collection => collection.id === item.collectionId)[0]
-    return address && canSeeItem(collection, item, address)
-  })
+export const getAuthorizedItems = createSelector<RootState, Collection[], Item[], string | undefined, Item[]>(
+  getAuthorizedCollections,
+  getItems,
+  getAddress,
+  (collections, items, address) =>
+    items.filter(item => {
+      const collection = collections.filter(collection => collection.id === item.collectionId)[0]
+      return address && collection && canSeeItem(collection, item, address)
+    })
 )
 
 export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(getItems, items =>
