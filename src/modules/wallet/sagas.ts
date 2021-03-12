@@ -1,6 +1,7 @@
 import { all, takeEvery, put } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { env } from 'decentraland-commons'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
 import {
   CHANGE_ACCOUNT,
@@ -32,15 +33,17 @@ function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountA
   const { wallet } = action.payload
   const chainId = wallet.networks.MATIC.chainId
 
-  const authorizations: Authorization[] = [
-    {
+  let authorizations: Authorization[] = []
+
+  if (env.get('REACT_APP_FF_WEARABLES')) {
+    authorizations.push({
       type: AuthorizationType.ALLOWANCE,
       address: wallet.address,
       tokenAddress: getContract(ContractName.MANAToken, chainId).address,
       authorizedAddress: getContract(ContractName.CollectionManager, chainId).address,
       chainId: ChainId.MATIC_MUMBAI
-    }
-  ]
+    })
+  }
 
   yield put(fetchAuthorizationsRequest(authorizations))
 }
