@@ -4,8 +4,8 @@ import { Eth } from 'web3x-es/eth'
 import { TxSend } from 'web3x-es/contract'
 import { LegacyProviderAdapter } from 'web3x-es/providers'
 import { ContractName, getContract, sendMetaTransaction } from 'decentraland-transactions'
-import { createProvider, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
-import { ProviderType, Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
+import { getNetworkProvider, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
+import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 export async function getEth(): Promise<Eth> {
@@ -34,7 +34,7 @@ export function* sendWalletMetaTransaction(contractName: ContractName, method: T
   const from = Address.fromString(wallet.address)
   const chainId = wallet.networks.MATIC.chainId
 
-  const metaTxProvider: Provider = yield call(() => createProvider(ProviderType.NETWORK, chainId))
+  const metaTxProvider: Provider = yield call(() => getNetworkProvider(chainId))
   const payload = method.getSendRequestPayload({ from })
   const txData = payload.params[0].data
 
