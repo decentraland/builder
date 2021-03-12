@@ -8,6 +8,7 @@ export type Props = ModalProps & {
   metadata: PublishCollectionModalMetadata
   collection: Collection | null
   items: Item[]
+  isLoading: boolean
   onPublish: typeof publishCollectionRequest
 }
 
@@ -15,7 +16,7 @@ export type PublishCollectionModalMetadata = {
   collectionId: string
 }
 
-export type MapStateProps = Pick<Props, 'collection' | 'items'>
+export type MapStateProps = Pick<Props, 'collection' | 'items' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onPublish'>
 export type MapDispatch = Dispatch<PublishCollectionRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

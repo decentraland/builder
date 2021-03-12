@@ -30,6 +30,6 @@
   overflow: hidden;
 }
 
-.Manager .Profile.blockie .name {
-  display: none;
+.Manager .Profile .name {
+  margin-left: 4px;
 }

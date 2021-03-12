@@ -7,6 +7,7 @@ import { transactionReducer as transaction } from 'decentraland-dapps/dist/modul
 import { walletReducer as wallet } from 'decentraland-dapps/dist/modules/wallet/reducer'
 import { modalReducer as modal } from 'decentraland-dapps/dist/modules/modal/reducer'
 import { profileReducer as profile } from 'decentraland-dapps/dist/modules/profile/reducer'
+import { authorizationReducer as authorization } from 'decentraland-dapps/dist/modules/authorization/reducer'
 
 import { RootState } from 'modules/common/types'
 import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
@@ -37,6 +38,7 @@ export function createRootReducer(history: History) {
       translation,
       transaction,
       wallet,
+      authorization,
       modal,
       assetPack,
       asset,

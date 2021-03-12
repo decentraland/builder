@@ -4,6 +4,12 @@
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
+  "authorization_modal": {
+    "title": "Autorizar {token}",
+    "description": "Para poder continuar deberás autorizar al contrato de {contract} a operar tus tokens de {token}. Esto solo debe realizarse una única vez.",
+    "authorize": "Autoriza al contrato de {contract_link} a operar {symbol} por tí",
+    "pending_tx": "Transaccion pendiente, haz click aquí para ir a tu pantalla de actividad y ver más información"
+  },
   "add_existing_item_modal": {
     "title": "Agregar Item",
     "subtitle": "Selecciona un item que no pertenezca a ninguna colección"

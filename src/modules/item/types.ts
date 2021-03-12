@@ -41,8 +41,8 @@ export enum BodyShapeType {
 }
 
 export enum WearableBodyShape {
-  MALE = 'dcl://base-avatars/BaseMale',
-  FEMALE = 'dcl://base-avatars/BaseFemale'
+  MALE = 'urn:decentraland:off-chain:base-avatars:BaseMale',
+  FEMALE = 'urn:decentraland:off-chain:base-avatars:BaseFemale'
 }
 
 export type WearableRepresentation = {
@@ -91,27 +91,37 @@ export type WearableData = {
   tags: string[]
 }
 
-export type Item = {
+type BaseItem = {
   id: string // uuid
   name: string
   thumbnail: string
-  owner: string
   description: string
+  rarity?: ItemRarity
+  metrics: ModelMetrics
+  createdAt: number
+  updatedAt: number
+}
+
+export type CatalystItem = BaseItem & {
+  i18n: { code: string; text: string }[]
+  data: WearableData
+  image: string
+  collectionAddress: string
+}
+
+export type Item = BaseItem & {
+  type: ItemType
+  owner: string
   collectionId?: string
   tokenId?: string
   price?: string
   beneficiary?: string
-  rarity?: ItemRarity
   totalSupply?: number
   isPublished: boolean
   isApproved: boolean
   inCatalyst: boolean
-  type: ItemType
   data: WearableData
   contents: Record<string, string>
-  metrics: ModelMetrics
-  createdAt: number
-  updatedAt: number
 }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'

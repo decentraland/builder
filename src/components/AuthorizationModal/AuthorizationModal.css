@@ -1,0 +1,64 @@
+.AuthorizationModal .authorization > .field {
+  margin-bottom: 41px !important;
+}
+
+.AuthorizationModal .authorization .ui.checkbox input.hidden + label {
+  font-weight: 700;
+  font-size: 17px;
+  padding-left: 35px;
+}
+
+.AuthorizationModal .authorization .is-pending .ui.checkbox label:before,
+.AuthorizationModal .authorization .is-pending .ui.checkbox label:after {
+  display: none;
+}
+
+.AuthorizationModal .authorization .radio-description {
+  font-size: 15px;
+  margin-left: 35px;
+  margin-top: 5px;
+}
+
+.AuthorizationModal .authorization .is-pending .loader-tooltip {
+  display: inline;
+  position: relative;
+}
+
+.AuthorizationModal .authorization .loader-tooltip {
+  display: none;
+}
+
+.AuthorizationModal .authorization .ui.loader {
+  left: 7px;
+  top: 2px;
+  float: left;
+}
+
+.AuthorizationModal .authorization .ui.mini.loader:after,
+.AuthorizationModal .authorization .ui.mini.loader:before {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.AuthorizationModal .ui.radio.checkbox .box:before,
+.AuthorizationModal .ui.radio.checkbox label:before {
+  width: 24px;
+  height: 24px;
+}
+
+.AuthorizationModal .ui.radio.checkbox.checked input.hidden + label:after {
+  top: -1px;
+  left: -1px;
+  width: 28px;
+  height: 32px;
+}
+
+@media (max-width: 768px) {
+  .AuthorizationModal .authorization .ui.radio.checkbox {
+    margin-bottom: 0px;
+  }
+
+  .AuthorizationModal .authorization .ui.loader {
+    top: 8px;
+  }
+}

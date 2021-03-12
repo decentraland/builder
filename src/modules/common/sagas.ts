@@ -1,5 +1,6 @@
 import { all } from 'redux-saga/effects'
 
+import { authorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
 import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 
@@ -38,6 +39,7 @@ export function* rootSaga() {
     transactionSaga(),
     translationSaga(),
     walletSaga(),
+    authorizationSaga(),
     assetPackSaga(),
     modalSaga(),
     sceneSaga(),

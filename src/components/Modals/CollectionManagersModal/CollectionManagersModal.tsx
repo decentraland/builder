@@ -76,7 +76,7 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
   }
 
   render() {
-    const { onClose } = this.props
+    const { isLoading, onClose } = this.props
     const { managers } = this.state
     return (
       <Modal name={name} className="CollectionManagersModal" onClose={onClose}>
@@ -112,7 +112,7 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
             )}
           </div>
           <ModalActions>
-            <Button primary onClick={this.handleSubmit}>
+            <Button primary onClick={this.handleSubmit} loading={isLoading}>
               {t('global.done')}
             </Button>
           </ModalActions>
