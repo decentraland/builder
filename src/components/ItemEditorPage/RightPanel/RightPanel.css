@@ -29,6 +29,15 @@
   border-radius: 6px;
   padding: 8px;
   align-items: stretch;
+  position: relative;
+}
+
+.RightPanel .details .edit-item-file {
+  position: absolute;
+  z-index: 9;
+  top: 8px;
+  right: 8px;
+  filter: brightness(100);
 }
 
 .RightPanel .details .ItemImage {

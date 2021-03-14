@@ -176,7 +176,8 @@
     "representation_label": "Para que forma de cuerpo es este item?",
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
-    "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item"
+    "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
+    "change_item_file": "Editar representación"
   },
   "edit_collection_name_modal": {
     "title": "Editar Nombre",
@@ -735,7 +736,8 @@
     "size_subtitle": "Elige el tamaño de tu nueva Escena",
     "name_label": "Nombre",
     "description_label": "Descripción",
-    "description_placeholder": "Una descripción..."
+    "description_placeholder": "Una descripción...",
+    "change_item_file": "Editar representation"
   },
   "sync": {
     "error": "{errorCount} {errorCount, plural, one {Escena} other {Escenas}} fallaron al ser guardadas",

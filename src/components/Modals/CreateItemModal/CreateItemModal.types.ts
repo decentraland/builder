@@ -28,7 +28,7 @@ export type State = {
   metrics?: ModelMetrics
   contents?: Record<string, Blob>
   isRepresentation?: boolean
-  addRepresentationTo?: Item
+  item?: Item
   collectionId?: string
   isLoading?: boolean
   error?: string
@@ -36,7 +36,9 @@ export type State = {
 
 export type CreateItemModalMetadata = {
   collectionId?: string
-  addRepresentationTo?: Item
+  item?: Item
+  addRepresentation?: boolean
+  changeItemFile?: boolean
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'isLoading'>

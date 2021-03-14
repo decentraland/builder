@@ -30,7 +30,8 @@ import {
   ItemRarity,
   RARITY_COLOR_LIGHT,
   RARITY_COLOR,
-  ITEM_NAME_MAX_LENGTH
+  ITEM_NAME_MAX_LENGTH,
+  WearableRepresentation
 } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
@@ -38,7 +39,7 @@ import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { getMissingBodyShapeType } from 'modules/item/utils'
+import { getBodyShapeType, getMissingBodyShapeType } from 'modules/item/utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata } from './CreateItemModal.types'
 import './CreateItemModal.css'
 import { getThumbnailType } from './utils'
@@ -54,18 +55,25 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       return state
     }
 
-    const { collectionId, addRepresentationTo } = metadata as CreateItemModalMetadata
+    const { collectionId, item, addRepresentation } = metadata as CreateItemModalMetadata
     state.collectionId = collectionId
 
-    if (addRepresentationTo) {
-      const missingBodyShape = getMissingBodyShapeType(addRepresentationTo)
-      if (missingBodyShape) {
-        state.id = addRepresentationTo.id
-        state.name = addRepresentationTo.name
-        state.bodyShape = missingBodyShape
-        state.isRepresentation = true
-        state.addRepresentationTo = addRepresentationTo
-        state.collectionId = addRepresentationTo.collectionId
+    if (item) {
+      state.id = item.id
+      state.name = item.name
+      state.item = item
+      state.collectionId = item.collectionId
+      state.bodyShape = getBodyShapeType(item)
+      state.category = item.data.category
+      state.rarity = item.rarity
+      state.isRepresentation = false
+
+      if (addRepresentation) {
+        const missingBodyShape = getMissingBodyShapeType(item)
+        if (missingBodyShape) {
+          state.bodyShape = missingBodyShape
+          state.isRepresentation = true
+        }
       }
     }
 
@@ -74,7 +82,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   isAddingRepresentation = () => {
     const { metadata } = this.props
-    return !!(metadata && metadata.addRepresentationTo)
+    return !!(metadata && metadata.item && !metadata.changeItemFile)
   }
 
   filterItemsByBodyShape = (item: Item) => {
@@ -83,7 +91,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = async () => {
-    const { address, onSubmit } = this.props
+    const { address, metadata, onSubmit } = this.props
+
     const {
       id,
       name,
@@ -94,10 +103,20 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       metrics,
       collectionId,
       isRepresentation,
-      addRepresentationTo,
+      item: editedItem,
       category,
       rarity
     } = this.state
+
+    let changeItemFile = false
+    let addRepresentation = false
+    let pristineItem = null
+
+    if (metadata) {
+      changeItemFile = metadata.changeItemFile
+      addRepresentation = metadata.addRepresentation
+      pristineItem = metadata.pristineItem
+    }
 
     if (id && name && model && bodyShape && contents && metrics && category && thumbnail) {
       let item: Item | undefined
@@ -108,19 +127,19 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         contents[THUMBNAIL_PATH] = blob
       }
 
-      // add this item as a representation of an existing item
-      if (isRepresentation && addRepresentationTo) {
+      // Add this item as a representation of an existing item
+      if (isRepresentation && addRepresentation && editedItem) {
         item = {
-          ...addRepresentationTo,
+          ...editedItem,
           data: {
-            ...addRepresentationTo.data,
-            representations: [...addRepresentationTo.data.representations],
-            replaces: [...addRepresentationTo.data.replaces],
-            hides: [...addRepresentationTo.data.hides],
-            tags: [...addRepresentationTo.data.tags]
+            ...editedItem.data,
+            representations: [...editedItem.data.representations],
+            replaces: [...editedItem.data.replaces],
+            hides: [...editedItem.data.hides],
+            tags: [...editedItem.data.tags]
           },
           contents: {
-            ...addRepresentationTo.contents
+            ...editedItem.contents
           },
           updatedAt: +new Date()
         }
@@ -140,8 +159,36 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         for (const path in newContents) {
           item.contents[path] = newContents[path]
         }
+      } else if (pristineItem && changeItemFile) {
+        item = {
+          ...(pristineItem as Item),
+          metrics,
+          contents: await this.computeHashes(contents!),
+          updatedAt: +new Date()
+        }
+
+        const wearableBodyShape = bodyShape === BodyShapeType.MALE ? WearableBodyShape.MALE : WearableBodyShape.FEMALE
+        const representationIndex = pristineItem.data.representations.findIndex(
+          (representation: WearableRepresentation) => representation.bodyShape[0] === wearableBodyShape
+        )
+        const pristineBodyShape = getBodyShapeType(pristineItem)
+        const representations = this.getBodyShapes(bodyShape, model, contents)
+        if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.UNISEX) {
+          // Unisex or Representation changed
+          item.data.representations = representations
+        } else {
+          // Edited representation
+          item.data.representations[representationIndex] = representations[0]
+        }
+
+        // add new contents
+        const newContents = await this.computeHashes(contents!)
+        delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
+        for (const path in newContents) {
+          item.contents[path] = newContents[path]
+        }
       } else {
-        // create new item
+        // create item to save
         item = {
           id,
           name,
@@ -168,27 +215,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           updatedAt: +new Date()
         }
 
-        // add male representation
-        if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
-          item.data.representations.push({
-            bodyShape: [WearableBodyShape.MALE],
-            mainFile: model,
-            contents: Object.keys(contents),
-            overrideHides: [],
-            overrideReplaces: []
-          })
-        }
-
-        // add female representation
-        if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
-          item.data.representations.push({
-            bodyShape: [WearableBodyShape.FEMALE],
-            mainFile: model,
-            contents: Object.keys(contents),
-            overrideHides: [],
-            overrideReplaces: []
-          })
-        }
+        item.data.representations.push(...this.getBodyShapes(bodyShape, model, contents))
       }
 
       onSubmit(item, contents)
@@ -227,6 +254,34 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { image: thumbnail } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
     URL.revokeObjectURL(url)
     this.setState({ thumbnail })
+  }
+
+  getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>) {
+    const representations = []
+
+    // add male representation
+    if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
+      representations.push({
+        bodyShape: [WearableBodyShape.MALE],
+        mainFile: model,
+        contents: Object.keys(contents),
+        overrideHides: [],
+        overrideReplaces: []
+      })
+    }
+
+    // add female representation
+    if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
+      representations.push({
+        bodyShape: [WearableBodyShape.FEMALE],
+        mainFile: model,
+        contents: Object.keys(contents),
+        overrideHides: [],
+        overrideReplaces: []
+      })
+    }
+
+    return representations
   }
 
   renderDropzoneCTA = (open: () => void) => {
@@ -315,6 +370,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   handleDropAccepted = async (acceptedFiles: File[]) => {
     this.setState({ isLoading: true })
 
+    const { metadata } = this.props
+
+    let changeItemFile = false
+    let item = null
+
+    if (metadata) {
+      changeItemFile = metadata.changeItemFile
+      item = metadata.item
+    }
+
     const file = acceptedFiles[0]
     const extension = getExtension(file.name)
 
@@ -327,9 +392,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       const [thumbnail, model, metrics, contents] = await handler(file)
 
       this.setState({
-        id: uuid.v4(),
+        id: changeItemFile ? item!.id : uuid.v4(),
         view: CreateItemView.DETAILS,
-        name: cleanAssetName(file.name),
+        name: changeItemFile ? item!.name : cleanAssetName(file.name),
         thumbnail,
         model,
         metrics,
@@ -354,7 +419,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     this.setState({ name: props.value.slice(0, ITEM_NAME_MAX_LENGTH) })
   }
 
-  handleItemChange = (item: Item) => this.setState({ addRepresentationTo: item })
+  handleItemChange = (item: Item) => this.setState({ item: item })
 
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
@@ -373,20 +438,28 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   handleNo = () => this.setState({ isRepresentation: false })
 
-  renderImportView() {
-    const { onClose } = this.props
+  renderModalTitle = () => {
     const isAddingRepresentation = this.isAddingRepresentation()
     const { bodyShape } = this.state
+    const { metadata } = this.props
+    if (isAddingRepresentation) {
+      return t('create_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+    }
+
+    if (metadata && metadata.changeItemFile) {
+      return t('create_item_modal.change_item_file')
+    }
+
+    return t('create_item_modal.title')
+  }
+
+  renderImportView() {
+    const { onClose } = this.props
+    const title = this.renderModalTitle()
+
     return (
       <>
-        <ModalNavigation
-          title={
-            isAddingRepresentation
-              ? t('create_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-              : t('create_item_modal.title')
-          }
-          onClose={onClose}
-        />
+        <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <FileImport
             accept={['.zip', '.gltf', '.glb']}
@@ -400,7 +473,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderFields() {
-    const { name, category, rarity } = this.state
+    const { name, category, rarity, item } = this.state
     return (
       <>
         <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
@@ -410,6 +483,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           value={rarity}
           options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
           onChange={this.handleRarityChange}
+          disabled={item && item.isPublished}
         />
         <SelectField
           label={t('create_item_modal.category_label')}
@@ -423,24 +497,19 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, isLoading } = this.props
-    const { name, thumbnail, metrics, bodyShape, isRepresentation, addRepresentationTo, category, rarity } = this.state
+    const { onClose, isLoading, metadata } = this.props
+    const { name, thumbnail, metrics, bodyShape, isRepresentation, item, category, rarity } = this.state
     const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape && !!category
     const isDisabled = !isValid || isLoading
     const isAddingRepresentation = this.isAddingRepresentation()
     const thumbnailStyle = rarity
       ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
       : undefined
+    const title = this.renderModalTitle()
+
     return (
       <>
-        <ModalNavigation
-          title={
-            isAddingRepresentation
-              ? t('create_item_modal.add_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-              : t('create_item_modal.title')
-          }
-          onClose={onClose}
-        />
+        <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
             <Column>
@@ -466,7 +535,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                       </Row>
                     </Section>
                   )}
-                  {bodyShape ? (
+                  {bodyShape && (!metadata || !metadata.changeItemFile) ? (
                     <>
                       {bodyShape === BodyShapeType.UNISEX ? (
                         this.renderFields()
@@ -493,7 +562,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                                   : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
                               </Header>
                               <ItemDropdown
-                                value={addRepresentationTo}
+                                value={item}
                                 filter={this.filterItemsByBodyShape}
                                 onChange={this.handleItemChange}
                                 isDisabled={isAddingRepresentation}
@@ -510,7 +579,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               </Row>
               <Row className="actions" align="right">
                 <Button primary onClick={this.handleSubmit} disabled={isDisabled} loading={isLoading}>
-                  {t('global.add')}
+                  {metadata && metadata.changeItemFile ? t('global.save') : t('global.add')}
                 </Button>
               </Row>
             </Column>
@@ -522,10 +591,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   renderRepresentation(type: BodyShapeType) {
     const { bodyShape } = this.state
+    const { metadata } = this.props
     return (
       <div
         className={`option has-icon ${type} ${type === bodyShape ? 'active' : ''}`.trim()}
-        onClick={() => this.setState({ bodyShape: type, isRepresentation: undefined, addRepresentationTo: undefined })}
+        onClick={() =>
+          this.setState({ bodyShape: type, isRepresentation: metadata && metadata.changeItemFile ? false : undefined, item: undefined })
+        }
       >
         {t('body_shapes.' + type)}
       </div>

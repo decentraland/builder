@@ -98,7 +98,7 @@ export function getMetadata(item: Item) {
       const data = item.data as WearableData
       const bodyShapes = getBodyShapes(item)
       return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapes
-        .map(bodyShape => bodyShape.split('/').pop()) // bodyShape is like "dcl://base-avatars/BaseMale" and we just want the "BaseMale" part
+        .map(bodyShape => bodyShape.split(':').pop()) // bodyShape is like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
         .join(',')}`
     }
     default:
@@ -194,6 +194,7 @@ export function hasDataChanged(originalItem: Item, item: Item) {
   return (
     originalItem.name !== item.name ||
     originalItem.description !== item.description ||
+    originalItem.rarity !== item.rarity ||
     JSON.stringify(originalItem.data) !== JSON.stringify(item.data)
   )
 }

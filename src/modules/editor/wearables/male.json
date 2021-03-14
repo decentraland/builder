@@ -1,9 +1,11 @@
 [
   {
-    "id": "dcl://base-avatars/BaseMale",
+    "id": "urn:decentraland:off-chain:base-avatars:BaseMale",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "BaseMale.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -33,7 +35,12 @@
     ],
     "type": "wearable",
     "category": "body_shape",
-    "tags": ["body", "male", "man", "base-wearable"],
+    "tags": [
+      "body",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -53,7 +60,9 @@
     "id": "dcl://base-avatars/eyebrows_00",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "M_EyeBrows_00.png",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -67,7 +76,13 @@
     ],
     "type": "wearable",
     "category": "eyebrows",
-    "tags": ["face", "eyebrows", "male", "man", "base-wearable"],
+    "tags": [
+      "face",
+      "eyebrows",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -87,7 +102,9 @@
     "id": "dcl://base-avatars/eyes_00",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "M_Eyes_00.png",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -101,7 +118,13 @@
     ],
     "type": "wearable",
     "category": "eyes",
-    "tags": ["face", "eyes", "male", "man", "base-wearable"],
+    "tags": [
+      "face",
+      "eyes",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -121,7 +144,9 @@
     "id": "dcl://base-avatars/beard",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "Beard_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -139,7 +164,12 @@
     ],
     "type": "wearable",
     "category": "facial_hair",
-    "tags": ["face", "facial_hair", "man", "base-wearable"],
+    "tags": [
+      "face",
+      "facial_hair",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -159,7 +189,9 @@
     "id": "dcl://base-avatars/sneakers",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "Sneakers_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -179,7 +211,9 @@
         ]
       },
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "Sneakers_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -201,7 +235,14 @@
     ],
     "type": "wearable",
     "category": "feet",
-    "tags": ["shoes", "male", "man", "female", "woman", "base-wearable"],
+    "tags": [
+      "shoes",
+      "male",
+      "man",
+      "female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -221,7 +262,9 @@
     "id": "dcl://base-avatars/casual_hair_01",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "M_Hair_Standard_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -239,7 +282,12 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": ["hair", "male", "man", "base-wearable"],
+    "tags": [
+      "hair",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -260,7 +308,9 @@
     "id": "dcl://base-avatars/brown_pants",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "M_lBody_LongPants_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -282,7 +332,12 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": ["bottom", "male", "man", "base-wearable"],
+    "tags": [
+      "bottom",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -302,7 +357,9 @@
     "id": "dcl://base-avatars/mouth_00",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "M_Mouth_00.png",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -316,7 +373,13 @@
     ],
     "type": "wearable",
     "category": "mouth",
-    "tags": ["face", "mouth", "male", "man", "base-wearable"],
+    "tags": [
+      "face",
+      "mouth",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -336,7 +399,9 @@
     "id": "dcl://base-avatars/green_hoodie",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseMale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseMale"
+        ],
         "mainFile": "M_uBody_Hoodie_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -358,7 +423,12 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": ["top", "male", "man", "base-wearable"],
+    "tags": [
+      "top",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {

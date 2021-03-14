@@ -1,9 +1,11 @@
 [
   {
-    "id": "dcl://base-avatars/BaseFemale",
+    "id": "urn:decentraland:off-chain:base-avatars:BaseFemale",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "BaseFemale.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -33,7 +35,12 @@
     ],
     "type": "wearable",
     "category": "body_shape",
-    "tags": ["body", "male", "man", "base-wearable"],
+    "tags": [
+      "body",
+      "male",
+      "man",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -53,7 +60,9 @@
     "id": "dcl://base-avatars/f_eyebrows_00",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_Eyebrows_00.png",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -67,7 +76,13 @@
     ],
     "type": "wearable",
     "category": "eyebrows",
-    "tags": ["face", "eyebrows", "Female", "woman", "base-wearable"],
+    "tags": [
+      "face",
+      "eyebrows",
+      "Female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -87,7 +102,9 @@
     "id": "dcl://base-avatars/f_eyes_00",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_Eyes_00.png",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -101,7 +118,13 @@
     ],
     "type": "wearable",
     "category": "eyes",
-    "tags": ["face", "eyes", "female", "woman", "base-wearable"],
+    "tags": [
+      "face",
+      "eyes",
+      "female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -121,7 +144,9 @@
     "id": "dcl://base-avatars/bun_shoes",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_BunShoes_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -143,7 +168,12 @@
     ],
     "type": "wearable",
     "category": "feet",
-    "tags": ["shoes", "woman", "women", "base-wearable"],
+    "tags": [
+      "shoes",
+      "woman",
+      "women",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -163,7 +193,9 @@
     "id": "dcl://base-avatars/standard_hair",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_Hair_Standard.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -181,7 +213,12 @@
     ],
     "type": "wearable",
     "category": "hair",
-    "tags": ["hair", "female", "woman", "base-wearable"],
+    "tags": [
+      "hair",
+      "female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -202,7 +239,9 @@
     "id": "dcl://base-avatars/f_jeans",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_lBody_Jeans_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -220,7 +259,12 @@
     ],
     "type": "wearable",
     "category": "lower_body",
-    "tags": ["bottom", "female", "woman", "base-wearable"],
+    "tags": [
+      "bottom",
+      "female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -240,7 +284,9 @@
     "id": "dcl://base-avatars/f_mouth_00",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_Mouth_00.png",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -254,7 +300,13 @@
     ],
     "type": "wearable",
     "category": "mouth",
-    "tags": ["face", "mouth", "female", "woman", "base-wearable"],
+    "tags": [
+      "face",
+      "mouth",
+      "female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {
@@ -274,7 +326,9 @@
     "id": "dcl://base-avatars/f_sweater",
     "representations": [
       {
-        "bodyShapes": ["dcl://base-avatars/BaseFemale"],
+        "bodyShapes": [
+          "urn:decentraland:off-chain:base-avatars:BaseFemale"
+        ],
         "mainFile": "F_uBody_Sweater_01.glb",
         "overrideReplaces": [],
         "overrideHides": [],
@@ -296,7 +350,12 @@
     ],
     "type": "wearable",
     "category": "upper_body",
-    "tags": ["top", "female", "woman", "base-wearable"],
+    "tags": [
+      "top",
+      "female",
+      "woman",
+      "base-wearable"
+    ],
     "baseUrl": "https://content.decentraland.org/contents/",
     "i18n": [
       {

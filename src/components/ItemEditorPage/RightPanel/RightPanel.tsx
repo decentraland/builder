@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
+import BuilderIcon from 'components/Icon'
 import { isEqual } from 'lib/address'
 import { getMissingBodyShapeType, canManageItem, hasDataChanged } from 'modules/item/utils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, WearableCategory } from 'modules/item/types'
@@ -30,8 +31,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       return this.setState({ item: selectedItem })
     }
 
-    if (selectedItem && item && !hasDataChanged(selectedItem, item)) {
-      return this.setState({ isDirty: false })
+    const prevItem = prevProps.items.find(item => item.id === this.props.selectedItemId) || null
+    if (selectedItem && prevItem && hasDataChanged(selectedItem, prevItem)) {
+      return this.setState({ item: selectedItem, isDirty: false })
     }
   }
 
@@ -49,7 +51,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleAddRepresentationToItem = () => {
     const { onOpenModal } = this.props
     const { item } = this.state
-    onOpenModal('CreateItemModal', { addRepresentationTo: item! })
+    onOpenModal('CreateItemModal', { item: item!, addRepresentation: true })
+  }
+
+  handleChangeItemFile = () => {
+    const { onOpenModal } = this.props
+    const { item } = this.state
+    onOpenModal('CreateItemModal', { item: item!, changeItemFile: true })
   }
 
   handleChange = (newItem: Item) => {
@@ -124,6 +132,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 <Collapsable item={selectedItem} label={t('item_editor.right_panel.details')}>
                   {item => (
                     <div className="details">
+                      {canEditItemMetadata && <BuilderIcon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />}
                       <ItemImage item={item} hasBadge={true} badgeSize="small" />
                       <div className="metrics">
                         <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
