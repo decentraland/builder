@@ -20,6 +20,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   timeout: NodeJS.Timer | null = null
   state: State = { item: null, isDirty: false }
 
+  componentDidMount() {
+    const { item } = this.state
+    const selectedItem = this.getSelectedItem()
+    if (!item && selectedItem) {
+      return this.setState({ item: selectedItem })
+    }
+  }
+
   componentDidUpdate = (prevProps: Props, _: State) => {
     if (prevProps.selectedItemId !== this.props.selectedItemId) {
       return this.setState({ item: null, isDirty: false })
