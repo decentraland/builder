@@ -31,7 +31,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
 
   handleAddRepresentationToItem = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { item: item })
+    onOpenModal('CreateItemModal', { item })
   }
 
   renderPage() {
