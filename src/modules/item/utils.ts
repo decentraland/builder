@@ -171,6 +171,7 @@ export function canMintItem(collection: Collection, item: Item, address?: string
   return (
     address &&
     item.isPublished &&
+    item.isApproved &&
     totalSupply < getMaxSupply(item) &&
     (isOwner(item, address) || canMintCollectionItems(collection, address))
   )
@@ -180,11 +181,13 @@ export function canManageItem(collection: Collection, item: Item, address: strin
   return isOwner(item, address) || canManageCollectionItems(collection, address)
 }
 
-export function hasMetadataChanged(originalItem: Item, item: Item) {
+export function hasOnChainDataChanged(originalItem: Item, item: Item) {
   return (
     originalItem.name !== item.name ||
     originalItem.description !== item.description ||
     originalItem.data.category !== item.data.category ||
+    originalItem.price !== item.price ||
+    originalItem.beneficiary !== item.beneficiary ||
     JSON.stringify(originalItem.data.representations) !== JSON.stringify(item.data.representations)
   )
 }

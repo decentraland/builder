@@ -6,7 +6,7 @@ import { getItemId } from 'modules/location/selectors'
 import { isLoggingIn } from 'modules/identity/selectors'
 import { getLoading, getItems } from 'modules/item/selectors'
 import { getCollections } from 'modules/collection/selectors'
-import { FETCH_ITEM_REQUEST, fetchItemRequest, SAVE_ITEM_REQUEST } from 'modules/item/actions'
+import { FETCH_ITEM_REQUEST, fetchItemRequest, SAVE_ITEM_REQUEST, SAVE_PUBLISHED_ITEM_REQUEST } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ItemProvider.types'
 import ItemProvider from './ItemProvider'
 
@@ -29,6 +29,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEM_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST) ||
+      isLoadingType(getLoading(state), SAVE_PUBLISHED_ITEM_REQUEST) ||
       isLoggingIn(state) ||
       isConnecting(state)
   }

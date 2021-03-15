@@ -65,9 +65,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = () => {
+    const { onSaveItem, onSaveItemPublished } = this.props
     const { item } = this.state
+
     if (item) {
-      this.props.onSaveItem(item, {})
+      const pristineItem = this.getSelectedItem()
+      if (pristineItem && pristineItem.isPublished) {
+        onSaveItemPublished(item)
+      } else {
+        onSaveItem(item, {})
+      }
     }
   }
 
@@ -91,7 +98,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const isOwner = selectedItem && isEqual(selectedItem.owner, address)
 
     const canEditItemMetadata = (selectedItem && collection && canManageItem(collection, selectedItem, address)) || (!collection && isOwner)
-    const canEditItemRarity = selectedItem && !selectedItem.isPublished && isOwner
 
     const categories = Object.values(WearableCategory)
     const rarities = Object.values(ItemRarity)
@@ -174,7 +180,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         label={t('global.rarity')}
                         value={item.rarity}
                         options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
-                        disabled={!canEditItemRarity}
+                        disabled={item.isPublished || !canEditItemMetadata}
                         onChange={rarity => this.handleChange({ ...item, rarity })}
                       />
                     </>

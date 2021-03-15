@@ -4,6 +4,8 @@ import {
   DeleteItemRequestAction,
   saveItemRequest,
   SaveItemRequestAction,
+  savePublishedItemRequest,
+  SavePublishedItemRequestAction,
   setCollection,
   SetCollectionAction
 } from 'modules/item/actions'
@@ -17,6 +19,7 @@ export type Props = {
   items: Item[]
   selectedItemId: string | null
   onSaveItem: typeof saveItemRequest
+  onSaveItemPublished: typeof savePublishedItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
   onSetCollection: typeof setCollection
@@ -28,5 +31,7 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'collection' | 'items' | 'selectedItemId'>
-export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | DeleteItemRequestAction | OpenModalAction | SetCollectionAction>
+export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onSaveItemPublished' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection'>
+export type MapDispatch = Dispatch<
+  SaveItemRequestAction | SavePublishedItemRequestAction | DeleteItemRequestAction | OpenModalAction | SetCollectionAction
+>

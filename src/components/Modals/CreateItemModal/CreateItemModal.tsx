@@ -91,7 +91,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = async () => {
-    const { address, metadata, onSubmit } = this.props
+    const { address, metadata, onSave, onSavePublished } = this.props
 
     const {
       id,
@@ -115,7 +115,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (metadata) {
       changeItemFile = metadata.changeItemFile
       addRepresentation = metadata.addRepresentation
-      pristineItem = metadata.pristineItem
+      pristineItem = metadata.item
     }
 
     if (id && name && model && bodyShape && contents && metrics && category && thumbnail) {
@@ -218,7 +218,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item.data.representations.push(...this.getBodyShapes(bodyShape, model, contents))
       }
 
-      onSubmit(item, contents)
+      if (pristineItem && pristineItem.isPublished) {
+        onSavePublished(item)
+      } else {
+        onSave(item, contents)
+      }
     }
   }
 
