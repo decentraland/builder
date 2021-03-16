@@ -53,7 +53,7 @@ import { builder } from 'lib/api/builder'
 import { getCollection } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
-import { LOGIN_SUCCESS } from 'modules/identity/actions'
+import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { deployContents } from './export'
 import { Item } from './types'
 
@@ -71,9 +71,10 @@ export function* itemSaga() {
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
 }
 
-function* handleFetchItemsRequest(_action: FetchItemsRequestAction) {
+function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
+  const { address } = action.payload
   try {
-    const items: Item[] = yield call(() => builder.fetchItems())
+    const items: Item[] = yield call(() => builder.fetchItems(address))
     yield put(fetchItemsSuccess(items))
   } catch (error) {
     yield put(fetchItemsFailure(error.message))
@@ -157,8 +158,9 @@ function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
   }
 }
 
-function* handleLoginSuccess() {
-  yield put(fetchItemsRequest())
+function* handleLoginSuccess(action: LoginSuccessAction) {
+  const { wallet } = action.payload
+  yield put(fetchItemsRequest(wallet.address))
 }
 
 function* handleSetCollection(action: SetCollectionAction) {

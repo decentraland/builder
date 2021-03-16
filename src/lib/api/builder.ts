@@ -556,8 +556,8 @@ export class BuilderAPI extends BaseAPI {
     return this.request(method, `/pools/${pool}/likes`)
   }
 
-  async fetchItems() {
-    const remoteItems: RemoteItem[] = await this.request('get', `/items`)
+  async fetchItems(address?: string) {
+    const remoteItems: RemoteItem[] = address ? await this.request('get', `/${address}/items`) : await this.request('get', `/items`)
     return remoteItems.map(fromRemoteItem)
   }
 
@@ -588,14 +588,12 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/items/${item.id}`, {})
   }
 
-  async fetchCollections() {
-    const remoteCollections: RemoteCollection[] = await this.request('get', `/collections`)
-    const collections: Collection[] = []
-    for (const remoteCollection of remoteCollections) {
-      const collection = fromRemoteCollection(remoteCollection)
-      collections.push(collection)
-    }
-    return collections
+  async fetchCollections(address?: string) {
+    const remoteCollections: RemoteCollection[] = address
+      ? await this.request('get', `/${address}/collections`)
+      : await this.request('get', `/collections`)
+
+    return remoteCollections.map(fromRemoteCollection)
   }
 
   async fetchCollection(id: string) {
@@ -615,6 +613,10 @@ export class BuilderAPI extends BaseAPI {
   async getWeeklyStats(base: string) {
     const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
     return fromRemoteWeeklyStats(remoteStats)
+  }
+
+  async getCommittee(): Promise<string[]> {
+    return this.request('get', '/committee')
   }
 }
 

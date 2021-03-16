@@ -449,7 +449,8 @@
     "scenes": "Scenes",
     "land": "Land",
     "avatar": "Wearables",
-    "names": "Names"
+    "names": "Names",
+    "curation": "Curation"
   },
   "list": {
     "two": "{first} and {second}",
@@ -868,6 +869,21 @@
     "new_item": "New Item",
     "new_collection": "New Collection",
     "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
+  },
+  "curation_page": {
+    "order": {
+      "name_asc": "Name ↑",
+      "name_desc": "Name ↓"
+    },
+    "collections": "{count} {count, plural, one {collection} other {collections}}",
+    "empty_collections": "There are no collections to review yet."
+  },
+  "collection_row": {
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "owner": "Owner",
+    "forum_post": "Forum Post",
+    "approved": "Approved",
+    "rejected": "Rejected"
   },
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",

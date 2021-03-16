@@ -450,7 +450,8 @@
     "scenes": "Escenas",
     "land": "Tierras",
     "avatar": "Avatar",
-    "names": "Nombres"
+    "names": "Nombres",
+    "curation": "Curado"
   },
   "list": {
     "two": "{first} y {second}",

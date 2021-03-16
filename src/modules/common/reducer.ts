@@ -25,8 +25,9 @@ import { identityReducer as identity } from 'modules/identity/reducer'
 import { landReducer as land } from 'modules/land/reducer'
 import { ensReducer as ens } from 'modules/ens/reducer'
 import { tileReducer as tile } from 'modules/tile/reducer'
-import { itemReducer as item } from 'modules/item/reducer'
+import { committeeReducer as committee } from 'modules/committee/reducer'
 import { collectionReducer as collection } from 'modules/collection/reducer'
+import { itemReducer as item } from 'modules/item/reducer'
 import { locationReducer as location } from 'modules/location/reducer'
 import { statsReducer as stats } from 'modules/stats/reducer'
 
@@ -55,8 +56,9 @@ export function createRootReducer(history: History) {
       land,
       ens,
       tile,
-      item,
+      committee,
       collection,
+      item,
       location,
       stats,
       router: connectRouter(history)

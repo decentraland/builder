@@ -51,7 +51,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
     const { ensList } = this.props
     const { page, sortBy } = this.state
 
-    const sortedEnsList = ensList
+    return ensList
       .sort((a: ENS, b: ENS) => {
         switch (sortBy) {
           case SortBy.ASC: {
@@ -66,7 +66,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         }
       })
       .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-    return sortedEnsList
   }
 
   isAlias(ens: ENS): boolean {
@@ -166,7 +165,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                         </Table.Cell>
                         <Table.Cell>
                           <Row>
-                            <Column className="assignedTo">{this.getAssignedToMessage(ens)}</Column>
+                            <Column>{this.getAssignedToMessage(ens)}</Column>
                           </Row>
                         </Table.Cell>
                         <Table.Cell>
@@ -223,7 +222,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                 </div>
               </Empty>
             )}
-            {total !== null && totalPages !== null && totalPages > 1 && (
+            {totalPages > 1 && (
               <Pagination
                 firstItem={null}
                 lastItem={null}
