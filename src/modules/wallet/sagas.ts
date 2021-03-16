@@ -16,7 +16,8 @@ import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/module
 import { MANA_ADDRESS } from 'modules/common/contracts'
 
 const baseWalletSaga = createWalletSaga({
-  MANA_ADDRESS
+  MANA_ADDRESS,
+  CHAIN_ID: env.get('REACT_APP_CHAIN_ID') || ChainId.ETHEREUM_MAINNET
 })
 
 export function* walletSaga() {
