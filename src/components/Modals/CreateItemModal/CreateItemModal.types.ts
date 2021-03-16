@@ -12,6 +12,7 @@ export enum CreateItemView {
 export type Props = ModalProps & {
   address?: string
   metadata: CreateItemModalMetadata
+  error: string | null
   isLoading: boolean
   onSave: typeof saveItemRequest
   onSavePublished: typeof savePublishedItemRequest
@@ -42,6 +43,6 @@ export type CreateItemModalMetadata = {
   changeItemFile?: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSave' | 'onSavePublished'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SavePublishedItemRequestAction>

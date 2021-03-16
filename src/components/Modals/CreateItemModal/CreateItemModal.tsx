@@ -501,7 +501,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, isLoading, metadata } = this.props
+    const { onClose, isLoading, metadata, error } = this.props
     const { name, thumbnail, metrics, bodyShape, isRepresentation, item, category, rarity } = this.state
     const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape && !!category
     const isDisabled = !isValid || isLoading
@@ -582,10 +582,15 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 </Column>
               </Row>
               <Row className="actions" align="right">
-                <Button primary onClick={this.handleSubmit} disabled={isDisabled} loading={isLoading}>
+                <Button primary disabled={isDisabled} loading={isLoading}>
                   {metadata && metadata.changeItemFile ? t('global.save') : t('global.add')}
                 </Button>
               </Row>
+              {error ? (
+                <Row className="error" align="right">
+                  <p>{t('global.error_ocurred')}</p>{' '}
+                </Row>
+              ) : null}
             </Column>
           </Form>
         </Modal.Content>

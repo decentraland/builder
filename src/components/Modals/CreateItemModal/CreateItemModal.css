@@ -110,3 +110,12 @@
   background-size: 12px;
   background-position-x: 12px;
 }
+
+.CreateItemModal .error {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.CreateItemModal .error p {
+  color: var(--primary);
+}

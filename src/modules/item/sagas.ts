@@ -138,7 +138,6 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new Error("Can't save a published without a collection")
     }
 
-
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
     yield put(deployItemContentsRequest(collection, item))
 
@@ -259,7 +258,7 @@ export function saveUnpublishedItem(item: Item, contents: Record<string, Blob> =
 export function* savePublishedItem(eth: Eth, collection: Collection, item: Item) {
   const metadata = getMetadata(item)
   const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
-
+  console.log(item.tokenId, metadata, item.price, item.beneficiary)
   return yield sendWalletMetaTransaction(
     ContractName.ERC721CollectionV2,
     implementation.methods.editItemsData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)], [metadata]),
