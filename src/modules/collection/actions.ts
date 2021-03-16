@@ -10,7 +10,7 @@ export const FETCH_COLLECTIONS_REQUEST = '[Request] Fetch Collections'
 export const FETCH_COLLECTIONS_SUCCESS = '[Success] Fetch Collections'
 export const FETCH_COLLECTIONS_FAILURE = '[Failure] Fetch Collections'
 
-export const fetchCollectionsRequest = () => action(FETCH_COLLECTIONS_REQUEST)
+export const fetchCollectionsRequest = (address?: string) => action(FETCH_COLLECTIONS_REQUEST, { address })
 export const fetchCollectionsSuccess = (collections: Collection[]) => action(FETCH_COLLECTIONS_SUCCESS, { collections })
 export const fetchCollectionsFailure = (error: string) => action(FETCH_COLLECTIONS_FAILURE, { error })
 

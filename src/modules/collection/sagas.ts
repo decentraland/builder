@@ -53,7 +53,7 @@ import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getWalletItems } from 'modules/item/selectors'
-import { LOGIN_SUCCESS } from 'modules/identity/actions'
+import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
@@ -72,9 +72,10 @@ export function* collectionSaga() {
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
 }
 
-function* handleFetchCollectionsRequest(_action: FetchCollectionsRequestAction) {
+function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
+  const { address } = action.payload
   try {
-    const collections: Collection[] = yield call(() => builder.fetchCollections())
+    const collections: Collection[] = yield call(() => builder.fetchCollections(address))
     yield put(fetchCollectionsSuccess(collections))
     yield put(closeModal('CreateCollectionModal'))
   } catch (error) {
@@ -269,8 +270,9 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
   }
 }
 
-function* handleLoginSuccess() {
-  yield put(fetchCollectionsRequest())
+function* handleLoginSuccess(action: LoginSuccessAction) {
+  const { wallet } = action.payload
+  yield put(fetchCollectionsRequest(wallet.address))
 }
 
 function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {

@@ -23,10 +23,11 @@ import { PoolState } from 'modules/pool/reducer'
 import { IdentityState } from 'modules/identity/reducer'
 import { LandState } from 'modules/land/reducer'
 import { ENSState } from 'modules/ens/reducer'
-import { TileState } from 'modules/tile/reducer'
 import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
-import { ItemState } from 'modules/item/reducer'
+import { TileState } from 'modules/tile/reducer'
+import { CommitteeState } from 'modules/committee/reducer'
 import { CollectionState } from 'modules/collection/reducer'
+import { ItemState } from 'modules/item/reducer'
 import { LocationState } from 'modules/location/reducer'
 import { StatsState } from 'modules/stats/reducer'
 
@@ -61,8 +62,9 @@ export type RootState = {
   land: LandState
   ens: ENSState
   tile: TileState
-  item: ItemState
+  committee: CommitteeState
   collection: CollectionState
+  item: ItemState
   location: LocationState
   stats: StatsState
 }

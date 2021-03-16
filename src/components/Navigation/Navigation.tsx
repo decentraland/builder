@@ -7,7 +7,7 @@ import { locations } from 'routing/locations'
 
 export default class Navigation extends React.PureComponent<Props> {
   render() {
-    const { activeTab, onNavigate, isFullscreen, children } = this.props
+    const { activeTab, onNavigate, isFullscreen, isCommitteeMember, children } = this.props
     return (
       <Tabs isFullscreen={isFullscreen}>
         {children}
@@ -23,9 +23,16 @@ export default class Navigation extends React.PureComponent<Props> {
           </Tabs.Tab>
         ) : null}
         {env.get('REACT_APP_FF_WEARABLES') ? (
-          <Tabs.Tab active={activeTab === NavigationTab.AVATAR} onClick={() => onNavigate(locations.avatar())}>
-            {t('navigation.avatar')}
-          </Tabs.Tab>
+          <>
+            <Tabs.Tab active={activeTab === NavigationTab.AVATAR} onClick={() => onNavigate(locations.avatar())}>
+              {t('navigation.avatar')}
+            </Tabs.Tab>
+            {isCommitteeMember ? (
+              <Tabs.Tab active={activeTab === NavigationTab.CURATION} onClick={() => onNavigate(locations.curation())}>
+                {t('navigation.curation')}
+              </Tabs.Tab>
+            ) : null}
+          </>
         ) : null}
       </Tabs>
     )

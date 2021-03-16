@@ -441,7 +441,8 @@
     "scenes": "场景",
     "land": "土地",
     "avatar": "头像",
-    "names": "名字"
+    "names": "名字",
+    "curation": "策展"
   },
   "list": {
     "two": "{first} 及 {second}",
