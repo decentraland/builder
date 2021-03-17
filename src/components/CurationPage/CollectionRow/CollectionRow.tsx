@@ -13,6 +13,7 @@ import { hasReviews } from 'modules/collection/utils'
 export default class CollectionRow extends React.PureComponent<Props> {
   render() {
     const { collection, items } = this.props
+
     return (
       <Link className="CollectionRow" to={locations.collectionDetail(collection.id)}>
         <Grid>
