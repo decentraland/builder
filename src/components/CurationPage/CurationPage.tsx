@@ -2,18 +2,20 @@ import React from 'react'
 import { Row, Column, Header, Section, Container, Dropdown, Pagination, Empty } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
+import { hasReviews } from 'modules/collection/utils'
 import NotFound from 'components/NotFound'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import CollectionRow from './CollectionRow'
-import { Props, State, SortBy } from './CurationPage.types'
+import { Props, State, SortBy, FilterBy } from './CurationPage.types'
 import './CurationPage.css'
 
 const PAGE_SIZE = 12
 
 export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
-    sortBy: SortBy.ASC,
+    sortBy: SortBy.NEWEST,
+    filterBy: FilterBy.ALL_STATUS,
     page: 1
   }
 
@@ -30,29 +32,64 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
-          { value: SortBy.ASC, text: t('curation_page.order.name_asc') },
-          { value: SortBy.DESC, text: t('curation_page.order.name_desc') }
+          { value: SortBy.NEWEST, text: t('curation_page.order.newest') },
+          { value: SortBy.NAME_ASC, text: t('curation_page.order.name_asc') },
+          { value: SortBy.NAME_DESC, text: t('curation_page.order.name_desc') }
         ]}
         onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
       />
     )
   }
 
+  renderFilterDropdown = () => {
+    const { filterBy } = this.state
+    return (
+      <Dropdown
+        direction="left"
+        value={filterBy}
+        options={[
+          { value: FilterBy.ALL_STATUS, text: t('curation_page.filter.all_status') },
+          { value: FilterBy.APPROVED, text: t('curation_page.filter.approved') },
+          { value: FilterBy.REJECTED, text: t('curation_page.filter.rejected') }
+        ]}
+        onChange={(_event, { value }) => this.setState({ filterBy: value as FilterBy })}
+      />
+    )
+  }
+
   paginate = () => {
     const { collections } = this.props
-    const { page, sortBy } = this.state
+    const { page, filterBy, sortBy } = this.state
 
     return collections
       .sort((a: Collection, b: Collection) => {
         switch (sortBy) {
-          case SortBy.ASC: {
+          case SortBy.NEWEST: {
+            return a.createdAt < b.createdAt ? 1 : -1
+          }
+          case SortBy.NAME_ASC: {
             return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1
           }
-          case SortBy.DESC: {
+          case SortBy.NAME_DESC: {
             return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
           }
+
           default: {
             return 0
+          }
+        }
+      })
+      .filter((collection: Collection) => {
+        switch (filterBy) {
+          case FilterBy.APPROVED: {
+            return collection.isApproved
+          }
+          case FilterBy.REJECTED: {
+            return hasReviews(collection) && !collection.isApproved
+          }
+          case FilterBy.ALL_STATUS:
+          default: {
+            return true
           }
         }
       })
@@ -78,7 +115,12 @@ export default class CurationPage extends React.PureComponent<Props, State> {
                 </Row>
               </Column>
               <Column align="right">
-                <Row>{collections.length > 1 ? this.renderSortDropdown() : null}</Row>
+                {collections.length > 1 ? (
+                  <Row>
+                    {this.renderFilterDropdown()}
+                    {this.renderSortDropdown()}
+                  </Row>
+                ) : null}
               </Column>
             </Row>
           </Container>

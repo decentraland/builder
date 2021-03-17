@@ -860,6 +860,27 @@
     "new_collection": "收藏",
     "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
   },
+  "curation_page": {
+    "order": {
+      "newest": "最新",
+      "name_asc": "名称↑",
+      "name_desc": "名称↓"
+    },
+    "filter": {
+      "all_status": "所有状态",
+      "approved": "已批准",
+      "rejected": "拒绝了"
+    },
+    "collections": "{count} {count,复数,一个{collection}其他{collections}}",
+    "empty_collections": "尚无要审查的收藏集。"
+  },
+  "collection_row": {
+    "items": "{count} {count，复数，一个{item}其他{items}}",
+    "owner": "所有者",
+    "forum_post": "论坛帖子",
+    "approved": "已批准",
+    "rejected": "拒绝了"
+  },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",
     "add_representation": "添加{bodyShape}"

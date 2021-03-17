@@ -882,6 +882,27 @@
     "new_collection": "Nueva colección",
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
+  "curation_page": {
+    "order": {
+      "newest": "Reciente",
+      "name_asc": "Nombre ↑",
+      "name_desc": "Nombre ↓"
+    },
+    "filter": {
+      "all_status": "Todos los estados",
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
+    "empty_collections": "Aún no hay colecciones para revisar."
+  },
+  "collection_row": {
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "owner": "Dueño",
+    "forum_post": "Post en el foro",
+    "approved": "Aprobada",
+    "rejected": "Rechazada"
+  },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
     "add_representation": "Agregar representación de {bodyShape}"

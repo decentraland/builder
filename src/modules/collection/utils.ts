@@ -64,3 +64,7 @@ export function canMintCollectionItems(collection: Collection, address?: string)
 export function canManageCollectionItems(collection: Collection, address?: string) {
   return isOwner(collection, address) || isManager(collection, address)
 }
+
+export function hasReviews(collection: Collection) {
+  return collection.updatedAt === collection.createdAt
+}

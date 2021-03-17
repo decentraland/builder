@@ -8,6 +8,7 @@ import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
 import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
+import { hasReviews } from 'modules/collection/utils'
 
 export default class CollectionRow extends React.PureComponent<Props> {
   render() {
@@ -41,11 +42,11 @@ export default class CollectionRow extends React.PureComponent<Props> {
                   <div className="approved action">
                     <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
                   </div>
-                ) : (
+                ) : hasReviews(collection) ? (
                   <div className="rejected action">
                     <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
                   </div>
-                )}
+                ) : null}
               </div>
             </Grid.Column>
           </Grid.Row>

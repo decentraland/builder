@@ -5,8 +5,15 @@ import { fetchCollectionsRequest, FetchCollectionsRequestAction } from 'modules/
 import { fetchItemsRequest, FetchItemsRequestAction } from 'modules/item/actions'
 
 export enum SortBy {
-  DESC = 'DESC',
-  ASC = 'ASC'
+  NEWEST = 'NEWEST',
+  NAME_DESC = 'NAME_DESC',
+  NAME_ASC = 'NAME_ASC'
+}
+
+export enum FilterBy {
+  ALL_STATUS = 'ALL_STATUS',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
 }
 
 export type Props = {
@@ -23,6 +30,7 @@ export type Props = {
 export type State = {
   page: number
   sortBy: SortBy
+  filterBy: FilterBy
 }
 
 export type MapStateProps = Pick<Props, 'wallet' | 'collections' | 'isCommitteeMember' | 'isConnecting' | 'isLoading'>
