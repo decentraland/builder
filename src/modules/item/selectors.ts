@@ -33,7 +33,7 @@ export const getAuthorizedItems = createSelector<RootState, Collection[], Item[]
   (collections, items, address) =>
     items.filter(item => {
       const collection = collections.filter(collection => collection.id === item.collectionId)[0]
-      return address && collection && canSeeItem(collection, item, address)
+      return address && canSeeItem(collection, item, address)
     })
 )
 

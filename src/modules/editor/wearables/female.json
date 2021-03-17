@@ -37,8 +37,8 @@
     "category": "body_shape",
     "tags": [
       "body",
-      "male",
-      "man",
+      "woman",
+      "female",
       "base-wearable"
     ],
     "baseUrl": "https://content.decentraland.org/contents/",
@@ -57,7 +57,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/f_eyebrows_00",
+    "id": "urn:decentraland:off-chain:base-avatars:f_eyebrows_00",
     "representations": [
       {
         "bodyShapes": [
@@ -99,7 +99,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/f_eyes_00",
+    "id": "urn:decentraland:off-chain:base-avatars:f_eyes_00",
     "representations": [
       {
         "bodyShapes": [
@@ -141,7 +141,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/bun_shoes",
+    "id": "urn:decentraland:off-chain:base-avatars:bun_shoes",
     "representations": [
       {
         "bodyShapes": [
@@ -190,7 +190,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/standard_hair",
+    "id": "urn:decentraland:off-chain:base-avatars:standard_hair",
     "representations": [
       {
         "bodyShapes": [
@@ -236,7 +236,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/f_jeans",
+    "id": "urn:decentraland:off-chain:base-avatars:f_jeans",
     "representations": [
       {
         "bodyShapes": [
@@ -281,7 +281,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/f_mouth_00",
+    "id": "urn:decentraland:off-chain:base-avatars:f_mouth_00",
     "representations": [
       {
         "bodyShapes": [
@@ -323,7 +323,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/f_sweater",
+    "id": "urn:decentraland:off-chain:base-avatars:f_sweater",
     "representations": [
       {
         "bodyShapes": [

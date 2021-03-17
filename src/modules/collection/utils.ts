@@ -42,7 +42,7 @@ export function toCollectionObject(collections: Collection[]) {
 }
 
 export function canSeeCollection(collection: Collection, address: string) {
-  return [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
+  return collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
 }
 
 export function isOwner(collection: Collection, address?: string) {

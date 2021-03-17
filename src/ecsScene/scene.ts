@@ -120,6 +120,8 @@ function getAvatar(): Entity {
     avatar.addComponent(avatarShape)
     engine.addEntity(avatar)
   }
+
+  console.log('aaa')
   return avatar
 }
 
@@ -131,6 +133,8 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       break
     }
     case 'Update editor': {
+      console.log('bbbb')
+
       const { scene } = message.payload
       const { components, entities } = scene
 
@@ -212,15 +216,19 @@ async function handleExternalAction(message: { type: string; payload: Record<str
     }
 
     case 'Update avatar': {
+      console.log('ccccc')
+
       const wearables: Wearable[] = message.payload.wearables
       const avatar = getAvatar()
       const avatarShape = avatar.getComponent(AvatarShape)
       const bodyShape = wearables.find(wearable => wearable.category === BODY_SHAPE_CATEGORY)
       const otherWearables = wearables.filter(wearable => wearable.category !== BODY_SHAPE_CATEGORY)
+      console.log(wearables, bodyShape)
       avatarShape.bodyShape = bodyShape ? bodyShape.id : WearableBodyShape.MALE
       avatarShape.wearables = otherWearables.map(wearable => wearable.id)
       avatarShape.expressionTriggerId = message.payload.animation === 'idle' ? 'Idle' : message.payload.animation // the 'idle' animation is the only one that is capitalized :shrug:
       avatarShape.expressionTriggerTimestamp = Date.now()
+      console.log(avatarShape)
       break
     }
   }

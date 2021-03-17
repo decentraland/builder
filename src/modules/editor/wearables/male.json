@@ -57,7 +57,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/eyebrows_00",
+    "id": "urn:decentraland:off-chain:base-avatars:eyebrows_00",
     "representations": [
       {
         "bodyShapes": [
@@ -99,7 +99,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/eyes_00",
+    "id": "urn:decentraland:off-chain:base-avatars:eyes_00",
     "representations": [
       {
         "bodyShapes": [
@@ -141,7 +141,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/beard",
+    "id": "urn:decentraland:off-chain:base-avatars:beard",
     "representations": [
       {
         "bodyShapes": [
@@ -186,7 +186,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/sneakers",
+    "id": "urn:decentraland:off-chain:base-avatars:sneakers",
     "representations": [
       {
         "bodyShapes": [
@@ -259,7 +259,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/casual_hair_01",
+    "id": "urn:decentraland:off-chain:base-avatars:casual_hair_01",
     "representations": [
       {
         "bodyShapes": [
@@ -305,7 +305,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/brown_pants",
+    "id": "urn:decentraland:off-chain:base-avatars:brown_pants",
     "representations": [
       {
         "bodyShapes": [
@@ -354,7 +354,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/mouth_00",
+    "id": "urn:decentraland:off-chain:base-avatars:mouth_00",
     "representations": [
       {
         "bodyShapes": [
@@ -396,7 +396,7 @@
     "rarity": ""
   },
   {
-    "id": "dcl://base-avatars/green_hoodie",
+    "id": "urn:decentraland:off-chain:base-avatars:green_hoodie",
     "representations": [
       {
         "bodyShapes": [
