@@ -21,9 +21,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
                 <CollectionImage collection={collection} />
                 <div className="info">
                   <div className="title">{collection.name}</div>
-                  <div className="subtitle name">
-                    {items.length} {t('collection_row.items', { count: items.length })}
-                  </div>
+                  <div className="subtitle name">{t('collection_row.items', { count: items.length })}</div>
                 </div>
               </div>
             </Grid.Column>

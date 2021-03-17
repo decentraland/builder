@@ -44,13 +44,13 @@
   text-transform: uppercase;
 }
 
-.CollectionRow .image-column{
+.CollectionRow .image-column,
+.CollectionRow .action {
   display: flex;
   align-items: center;
 }
 
 .CollectionRow .action {
-  display: flex;
   justify-content: flex-end;
 }
 
