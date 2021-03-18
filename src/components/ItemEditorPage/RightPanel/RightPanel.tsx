@@ -114,7 +114,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
           {(item, _collection, isLoading) =>
-            !item || isLoading ? (
+            isLoading || (!item && selectedItemId) ? (
               <Loader size="massive" active />
             ) : (
               <>
