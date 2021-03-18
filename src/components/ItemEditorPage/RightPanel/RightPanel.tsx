@@ -13,14 +13,14 @@ import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
-import { State, Props } from './RightPanel.types'
+import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
 
 export default class RightPanel extends React.PureComponent<Props, State> {
   timeout: NodeJS.Timer | null = null
   state: State = { item: null, isDirty: false }
 
-  componentDidMount() {
+  componentDidMount = () => {
     const { item } = this.state
     const selectedItem = this.getSelectedItem()
     if (!item && selectedItem) {
@@ -250,14 +250,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     />
                   )}
                 </Collapsable>
-                {isDirty ? <Row>
-                  <Button secondary onClick={this.handleOnResetItem}>
-                    {t('global.cancel')}
-                  </Button>
-                  <Button primary onClick={this.handleOnSaveItem}>
-                    {t('global.submit')}
-                  </Button>
-                </Row> : null}
+                {isDirty ? (
+                  <Row>
+                    <Button secondary onClick={this.handleOnResetItem}>
+                      {t('global.cancel')}
+                    </Button>
+                    <Button primary onClick={this.handleOnSaveItem}>
+                      {t('global.submit')}
+                    </Button>
+                  </Row>
+                ) : null}
               </>
             )
           }
