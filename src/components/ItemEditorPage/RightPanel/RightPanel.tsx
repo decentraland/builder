@@ -250,14 +250,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                     />
                   )}
                 </Collapsable>
-                <Row>
-                  <Button secondary disabled={!isDirty} onClick={this.handleOnResetItem}>
+                {isDirty ? <Row>
+                  <Button secondary onClick={this.handleOnResetItem}>
                     {t('global.cancel')}
                   </Button>
-                  <Button primary disabled={!isDirty} onClick={this.handleOnSaveItem}>
+                  <Button primary onClick={this.handleOnSaveItem}>
                     {t('global.submit')}
                   </Button>
-                </Row>
+                </Row> : null}
               </>
             )
           }
