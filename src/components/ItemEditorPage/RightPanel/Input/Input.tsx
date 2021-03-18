@@ -1,14 +1,13 @@
 import * as React from 'react'
-import { Props, State } from './Input.types'
+import { Props } from './Input.types'
 import './Input.css'
 
-export default class Input extends React.PureComponent<Props, State> {
+export default class Input extends React.PureComponent<Props> {
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, onChange, maxLength } = this.props
+    const { value, maxLength, onChange } = this.props
     const newValue = event.target.value
     if (value !== newValue) {
-      this.setState({ value: maxLength ? newValue.slice(0, maxLength) : newValue })
-      onChange(newValue)
+      onChange(maxLength ? newValue.slice(0, maxLength) : newValue)
     }
   }
 
