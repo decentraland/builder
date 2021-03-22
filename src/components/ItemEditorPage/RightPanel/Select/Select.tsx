@@ -13,12 +13,6 @@ export default class Select<T extends string> extends React.PureComponent<Props<
     value: this.props.value || ''
   }
 
-  componentWillReceiveProps(newProps: Props<T>) {
-    if (newProps.itemId !== this.props.itemId) {
-      this.setState({ value: newProps.value || '' })
-    }
-  }
-
   handleChange = (_event: React.SyntheticEvent<HTMLElement, Event>, props: DropdownProps) => {
     const { value, onChange } = this.props
     const newValue = props.value as T

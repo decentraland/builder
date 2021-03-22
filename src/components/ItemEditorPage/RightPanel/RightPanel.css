@@ -29,6 +29,15 @@
   border-radius: 6px;
   padding: 8px;
   align-items: stretch;
+  position: relative;
+}
+
+.RightPanel .details .edit-item-file {
+  position: absolute;
+  z-index: 9;
+  top: 8px;
+  right: 8px;
+  filter: brightness(100);
 }
 
 .RightPanel .details .ItemImage {
@@ -83,4 +92,9 @@
   cursor: pointer;
   background-image: url(../../../images/optons-right-panel.svg);
   background-size: 18px;
+}
+
+.RightPanel .edit-buttons {
+  margin: 10px 0;
+  text-align: center;
 }

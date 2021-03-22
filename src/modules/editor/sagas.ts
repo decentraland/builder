@@ -618,7 +618,13 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
 
 function* getDefaultWearables() {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
-  return (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
+  // @TODO: remove this when unity build accepts urn
+  return ((bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]).map(w => ({
+    ...w,
+    id: w.id.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/'),
+    representations: w.representations.map(r => ({ ...r, bodyShapes: r.bodyShapes.map(b => b.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')) })
+    )
+  }))
 }
 
 function* renderAvatar() {

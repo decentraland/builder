@@ -179,13 +179,14 @@ export function createAvatarScene(): Scene {
 }
 
 export function toWearable(item: Item) {
+  // @TODO: remove replaces when unity build accepts urn
   return {
-    id: item.id + '/' + item.updatedAt, // we add the updatedAt suffix to bust the cache
+    id: item.id.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/') + '/' + item.updatedAt, // we add the updatedAt suffix to bust the cache
     type: 'wearable',
     category: item.data.category!,
     baseUrl: getContentsStorageUrl(),
     representations: item.data.representations.map<BodyShapeRespresentation>(representation => ({
-      bodyShapes: representation.bodyShape,
+      bodyShapes: representation.bodyShape.map(shape => shape.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')),
       mainFile: representation.mainFile,
       contents: Object.values(representation.contents).map(path => ({
         file: path,

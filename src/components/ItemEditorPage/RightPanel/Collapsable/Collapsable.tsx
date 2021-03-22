@@ -15,7 +15,7 @@ export default class Collapsable extends React.PureComponent<Props, State> {
     const { item, label, children } = this.props
     const { isCollapsed } = this.state
 
-    const isOpen = item != null && !isCollapsed
+    const isOpen = item !== null && !isCollapsed
 
     return (
       <div className={`Collapsable ${isOpen ? 'is-open' : ''}`.trim()}>

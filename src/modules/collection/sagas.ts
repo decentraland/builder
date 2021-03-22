@@ -229,10 +229,6 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
       implementation.methods.setManagers(addresses, values),
       collection.contractAddress!
     )
-
-    console.log('set minters', txHash)
-    console.log('set minters', { addresses, values, contractAddress: collection.contractAddress })
-
     yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), wallet.networks.MATIC.chainId, txHash))
     yield put(replace(locations.activity()))
   } catch (error) {

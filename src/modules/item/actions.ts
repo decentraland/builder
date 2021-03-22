@@ -70,8 +70,10 @@ export const SAVE_PUBLISHED_ITEM_SUCCESS = '[Success] Save published Item'
 export const SAVE_PUBLISHED_ITEM_FAILURE = '[Failure] Save published Item'
 
 export const savePublishedItemRequest = (item: Item) => action(SAVE_PUBLISHED_ITEM_REQUEST, { item })
-export const savePublishedItemSuccess = (item: Item, chainId: ChainId, txHash: string) =>
-  action(SAVE_PUBLISHED_ITEM_SUCCESS, { item, ...buildTransactionPayload(chainId, txHash, { item }) })
+export const savePublishedItemSuccess = (item: Item, chainId: ChainId, txHash?: string) => {
+  const payload = txHash ? buildTransactionPayload(chainId, txHash, { item }) : {}
+  return action(SAVE_PUBLISHED_ITEM_SUCCESS, { item, ...payload })
+}
 export const savePublishedItemFailure = (item: Item, error: string) => action(SAVE_PUBLISHED_ITEM_FAILURE, { item, error })
 
 export type SavePublishedItemRequestAction = ReturnType<typeof savePublishedItemRequest>

@@ -17,9 +17,14 @@ export default new ContractAbi([
       {
         "components": [
           {
-            "internalType": "enum ERC721BaseCollectionV2.RARITY",
+            "internalType": "string",
             "name": "rarity",
-            "type": "uint8"
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxSupply",
+            "type": "uint256"
           },
           {
             "internalType": "uint256",
@@ -176,9 +181,40 @@ export default new ContractAbi([
         "internalType": "uint256",
         "name": "_issuedId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_caller",
+        "type": "address"
       }
     ],
     "name": "Issue",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "relayerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "functionSignature",
+        "type": "bytes"
+      }
+    ],
+    "name": "MetaTransactionExecuted",
     "type": "event"
   },
   {
@@ -343,9 +379,9 @@ export default new ContractAbi([
       },
       {
         "indexed": false,
-        "internalType": "bool",
+        "internalType": "uint256",
         "name": "_value",
-        "type": "bool"
+        "type": "uint256"
       }
     ],
     "name": "SetItemMinter",
@@ -387,25 +423,6 @@ export default new ContractAbi([
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "_metadata",
-        "type": "string"
-      }
-    ],
-    "name": "UpdateItemMetadata",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "_itemId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "_price",
         "type": "uint256"
@@ -415,19 +432,25 @@ export default new ContractAbi([
         "internalType": "address",
         "name": "_beneficiary",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_metadata",
+        "type": "string"
       }
     ],
-    "name": "UpdateItemSalesData",
+    "name": "UpdateItemData",
     "type": "event"
   },
   {
     "inputs": [],
-    "name": "GRACE_PERIOD",
+    "name": "COLLECTION_HASH",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -490,14 +513,9 @@ export default new ContractAbi([
       {
         "components": [
           {
-            "internalType": "enum ERC721BaseCollectionV2.RARITY",
+            "internalType": "string",
             "name": "rarity",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totalSupply",
-            "type": "uint256"
+            "type": "string"
           },
           {
             "internalType": "uint256",
@@ -513,14 +531,9 @@ export default new ContractAbi([
             "internalType": "string",
             "name": "metadata",
             "type": "string"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "contentHash",
-            "type": "bytes32"
           }
         ],
-        "internalType": "struct ERC721BaseCollectionV2.Item[]",
+        "internalType": "struct ERC721BaseCollectionV2.ItemParam[]",
         "name": "_items",
         "type": "tuple[]"
       }
@@ -661,21 +674,16 @@ export default new ContractAbi([
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "domainSeparator",
+    "outputs": [
       {
-        "internalType": "uint256[]",
-        "name": "_itemIds",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "string[]",
-        "name": "_metadatas",
-        "type": "string[]"
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
-    "name": "editItemsMetadata",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -694,9 +702,14 @@ export default new ContractAbi([
         "internalType": "address[]",
         "name": "_beneficiaries",
         "type": "address[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_metadatas",
+        "type": "string[]"
       }
     ],
-    "name": "editItemsSalesData",
+    "name": "editItemsData",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -728,6 +741,45 @@ export default new ContractAbi([
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "functionSignature",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "sigR",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "sigS",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "sigV",
+        "type": "uint8"
+      }
+    ],
+    "name": "executeMetaTransaction",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -745,33 +797,8 @@ export default new ContractAbi([
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "enum ERC721BaseCollectionV2.RARITY",
-        "name": "_rarity",
-        "type": "uint8"
-      }
-    ],
-    "name": "getRarityName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum ERC721BaseCollectionV2.RARITY",
-        "name": "_rarity",
-        "type": "uint8"
-      }
-    ],
-    "name": "getRarityValue",
+    "inputs": [],
+    "name": "getChainId",
     "outputs": [
       {
         "internalType": "uint256",
@@ -780,6 +807,25 @@ export default new ContractAbi([
       }
     ],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getNonce",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -833,6 +879,11 @@ export default new ContractAbi([
         "type": "string"
       },
       {
+        "internalType": "string",
+        "name": "_baseURI",
+        "type": "string"
+      },
+      {
         "internalType": "address",
         "name": "_creator",
         "type": "address"
@@ -843,21 +894,21 @@ export default new ContractAbi([
         "type": "bool"
       },
       {
-        "internalType": "string",
-        "name": "_baseURI",
-        "type": "string"
+        "internalType": "bool",
+        "name": "_isApproved",
+        "type": "bool"
+      },
+      {
+        "internalType": "contract IRarities",
+        "name": "_rarities",
+        "type": "address"
       },
       {
         "components": [
           {
-            "internalType": "enum ERC721BaseCollectionV2.RARITY",
+            "internalType": "string",
             "name": "rarity",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totalSupply",
-            "type": "uint256"
+            "type": "string"
           },
           {
             "internalType": "uint256",
@@ -873,14 +924,9 @@ export default new ContractAbi([
             "internalType": "string",
             "name": "metadata",
             "type": "string"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "contentHash",
-            "type": "bytes32"
           }
         ],
-        "internalType": "struct ERC721BaseCollectionV2.Item[]",
+        "internalType": "struct ERC721BaseCollectionV2.ItemParam[]",
         "name": "_items",
         "type": "tuple[]"
       }
@@ -982,24 +1028,6 @@ export default new ContractAbi([
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_beneficiary",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_itemId",
-        "type": "uint256"
-      }
-    ],
-    "name": "issueToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address[]",
         "name": "_beneficiaries",
         "type": "address[]"
@@ -1055,9 +1083,9 @@ export default new ContractAbi([
     "name": "itemMinters",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "uint256",
         "name": "",
-        "type": "bool"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1074,9 +1102,14 @@ export default new ContractAbi([
     "name": "items",
     "outputs": [
       {
-        "internalType": "enum ERC721BaseCollectionV2.RARITY",
+        "internalType": "string",
         "name": "rarity",
-        "type": "uint8"
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxSupply",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
@@ -1167,6 +1200,19 @@ export default new ContractAbi([
   },
   {
     "inputs": [],
+    "name": "rarities",
+    "outputs": [
+      {
+        "internalType": "contract IRarities",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1191,29 +1237,6 @@ export default new ContractAbi([
       }
     ],
     "name": "rescueItems",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_tokenIds",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "safeBatchTransferFrom",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1390,9 +1413,9 @@ export default new ContractAbi([
         "type": "address[]"
       },
       {
-        "internalType": "bool[]",
+        "internalType": "uint256[]",
         "name": "_values",
-        "type": "bool[]"
+        "type": "uint256[]"
       }
     ],
     "name": "setItemsMinters",

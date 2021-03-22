@@ -173,7 +173,8 @@
     "representation_label": "Which body shape does it represent?",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
-    "adding_representation": "This will be added as {bodyShape} for the following item"
+    "adding_representation": "This will be added as {bodyShape} for the following item",
+    "change_item_file": "Edit representation"
   },
   "edit_collection_name_modal": {
     "title": "Edit Collection Name",

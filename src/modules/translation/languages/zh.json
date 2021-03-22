@@ -167,7 +167,8 @@
     "representation_label": "它代表哪种身材？",
     "existing_item": "这是现有项目的一部分吗？",
     "pick_item": "选择没有{bodyShape}的商品",
-    "adding_representation": "这将添加为以下项目的{body Shape}"
+    "adding_representation": "这将添加为以下项目的{body Shape}",
+    "change_item_file": "编辑制图表达"
   },
   "edit_collection_name_modal": {
     "title": "编辑集合名称",

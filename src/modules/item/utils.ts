@@ -98,7 +98,7 @@ export function getMetadata(item: Item) {
       const data = item.data as WearableData
       const bodyShapes = getBodyShapes(item)
       return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapes
-        .map(bodyShape => bodyShape.split('/').pop()) // bodyShape is like "dcl://base-avatars/BaseMale" and we just want the "BaseMale" part
+        .map(bodyShape => bodyShape.split(':').pop()) // bodyShape is like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
         .join(',')}`
     }
     default:
@@ -171,6 +171,7 @@ export function canMintItem(collection: Collection, item: Item, address?: string
   return (
     address &&
     item.isPublished &&
+    item.isApproved &&
     totalSupply < getMaxSupply(item) &&
     (isOwner(item, address) || canMintCollectionItems(collection, address))
   )
@@ -178,4 +179,16 @@ export function canMintItem(collection: Collection, item: Item, address?: string
 
 export function canManageItem(collection: Collection, item: Item, address: string) {
   return isOwner(item, address) || canManageCollectionItems(collection, address)
+}
+
+export function hasOnChainDataChanged(originalItem: Item, item: Item) {
+  return (
+    originalItem.name !== item.name ||
+    originalItem.description !== item.description ||
+    originalItem.data.category !== item.data.category ||
+    originalItem.price !== item.price ||
+    originalItem.beneficiary !== item.beneficiary ||
+    originalItem.rarity !== item.rarity ||
+    JSON.stringify(originalItem.data) !== JSON.stringify(item.data)
+  )
 }

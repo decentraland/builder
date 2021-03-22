@@ -40,12 +40,12 @@ configureAnalytics({
 // @ts-ignore: Dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   ? // prettier-ignore
-    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-      stateSanitizer: (state: RootState) => {
-        const { scene: _, ...newState } = state
-        return newState
-      }
-    })
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+    stateSanitizer: (state: RootState) => {
+      const { scene: _, ...newState } = state
+      return newState
+    }
+  })
   : compose
 
 const history = createBrowserHistory()
@@ -141,7 +141,7 @@ if (env.isDevelopment()) {
   _window.getState = store.getState
 }
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
   const syncCount = getLoadingSet(store.getState() as RootState).size
   return syncCount > 0 || null
 }
