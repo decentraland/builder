@@ -129,7 +129,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
 function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction) {
   const { item } = action.payload
   try {
-    const originalItem = yield select(state => getItem(state, item.id))
+    const originalItem: Item = yield select(state => getItem(state, item.id))
 
     if (!originalItem.isPublished) {
       throw new Error('Item must be published to save it')
@@ -156,7 +156,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    let txHash
+    let txHash: string | undefined
 
     if (hasOnChainDataChanged(originalItem, item)) {
       // The user has only changed the item file

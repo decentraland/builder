@@ -188,15 +188,6 @@ export function hasOnChainDataChanged(originalItem: Item, item: Item) {
     originalItem.data.category !== item.data.category ||
     originalItem.price !== item.price ||
     originalItem.beneficiary !== item.beneficiary ||
-    JSON.stringify(originalItem.data.representations) !== JSON.stringify(item.data.representations)
-  )
-}
-
-/// @dev We use this method to check if the data of the item has changed.
-export function hasDataChanged(originalItem: Item, item: Item) {
-  return (
-    originalItem.name !== item.name ||
-    originalItem.description !== item.description ||
     originalItem.rarity !== item.rarity ||
     JSON.stringify(originalItem.data) !== JSON.stringify(item.data)
   )

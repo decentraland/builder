@@ -16,10 +16,10 @@ import { openModal, OpenModalAction } from 'modules/modal/actions'
 export type Props = {
   address?: string
   collection: Collection | null
-  items: Item[]
+  selectedItem: Item | null
   selectedItemId: string | null
   onSaveItem: typeof saveItemRequest
-  onSaveItemPublished: typeof savePublishedItemRequest
+  onSavePublishedItem: typeof savePublishedItemRequest
   onDeleteItem: typeof deleteItemRequest
   onOpenModal: typeof openModal
   onSetCollection: typeof setCollection
@@ -30,8 +30,8 @@ export type State = {
   isDirty: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'collection' | 'items' | 'selectedItemId'>
-export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onSaveItemPublished' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection'>
+export type MapStateProps = Pick<Props, 'address' | 'collection' | 'selectedItem' | 'selectedItemId'>
+export type MapDispatchProps = Pick<Props, 'onSaveItem' | 'onSavePublishedItem' | 'onDeleteItem' | 'onOpenModal' | 'onSetCollection'>
 export type MapDispatch = Dispatch<
   SaveItemRequestAction | SavePublishedItemRequestAction | DeleteItemRequestAction | OpenModalAction | SetCollectionAction
 >

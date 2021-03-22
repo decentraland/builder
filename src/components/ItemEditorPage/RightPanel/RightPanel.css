@@ -93,3 +93,8 @@
   background-image: url(../../../images/optons-right-panel.svg);
   background-size: 18px;
 }
+
+.RightPanel .edit-buttons {
+  margin: 10px 0;
+  text-align: center;
+}
