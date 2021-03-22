@@ -37,6 +37,6 @@ export const getAuthorizedItems = createSelector<RootState, Collection[], Item[]
     })
 )
 
-export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(getItems, items =>
+export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(getAuthorizedItems, items =>
   items.filter(item => item.collectionId === undefined)
 )
