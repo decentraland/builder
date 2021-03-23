@@ -353,10 +353,6 @@
       "use_as_alias": "Use as Alias"
     },
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
-    "order": {
-      "name_asc": "Name ↑",
-      "name_desc": "Name ↓"
-    },
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned"
   },
@@ -444,13 +440,19 @@
     "category": "Category",
     "rarity": "Rarity",
     "published": "Published",
-    "description": "Description"
+    "description": "Description",
+    "order": {
+      "newest": "Newest",
+      "name_asc": "Name ↑",
+      "name_desc": "Name ↓"
+    }
   },
   "navigation": {
     "scenes": "Scenes",
     "land": "Land",
     "avatar": "Wearables",
-    "names": "Names"
+    "names": "Names",
+    "curation": "Curation"
   },
   "list": {
     "two": "{first} and {second}",
@@ -869,6 +871,22 @@
     "new_item": "New Item",
     "new_collection": "New Collection",
     "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
+  },
+  "curation_page": {
+    "filter": {
+      "all_status": "All status",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "collections": "{count} {count, plural, one {collection} other {collections}}",
+    "empty_collections": "There are no collections to review yet."
+  },
+  "collection_row": {
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "owner": "Owner",
+    "forum_post": "Forum Post",
+    "approved": "Approved",
+    "rejected": "Rejected"
   },
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",

@@ -354,10 +354,6 @@
       "use_as_alias": "用作别名"
     },
     "empty_names": "看来您没有任何名称。{br} {link}开始使用。",
-    "order": {
-      "name_asc": "名称 ↑",
-      "name_desc": "名称 ↓"
-    },
     "items": "{count}结果",
     "alias_popup": "您的个人资料正在使用此名称，但仍可以分配"
   },
@@ -435,13 +431,19 @@
     "category": "类别",
     "rarity": "稀有度",
     "published": "已发表",
-    "description": "描述"
+    "description": "描述",
+    "order": {
+      "newest": "最新",
+      "name_asc": "名称↑",
+      "name_desc": "名称↓"
+    }
   },
   "navigation": {
     "scenes": "场景",
     "land": "土地",
     "avatar": "头像",
-    "names": "名字"
+    "names": "名字",
+    "curation": "策展"
   },
   "list": {
     "two": "{first} 及 {second}",
@@ -858,6 +860,22 @@
     "new_item": "项目",
     "new_collection": "收藏",
     "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
+  },
+  "curation_page": {
+    "filter": {
+      "all_status": "所有状态",
+      "approved": "已批准",
+      "rejected": "拒绝了"
+    },
+    "collections": "{count} {count,复数,一个{collection}其他{collections}}",
+    "empty_collections": "尚无要审查的收藏集。"
+  },
+  "collection_row": {
+    "items": "{count} {count，复数，一个{item}其他{items}}",
+    "owner": "所有者",
+    "forum_post": "论坛帖子",
+    "approved": "已批准",
+    "rejected": "拒绝了"
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",

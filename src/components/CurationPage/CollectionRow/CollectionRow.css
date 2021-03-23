@@ -1,0 +1,72 @@
+.CollectionRow .ui.grid {
+  padding: 8px 0;
+  color: var(--text);
+  border-bottom: 1px solid var(--divider);
+}
+
+.CollectionRow .ui.grid:hover {
+  background-color: rgba(36, 33, 41, 0.4);
+  color: var(--text);
+}
+
+.CollectionRow .ui.grid > .row {
+  align-items: center;
+  font-size: 15px;
+}
+
+.CollectionRow .CollectionImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex: none;
+}
+
+.CollectionRow .info {
+  width: calc(100% - 80px);
+  margin-left: 20px;
+}
+
+.CollectionRow .name {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.CollectionRow .title {
+  font-weight: 500;
+}
+
+.CollectionRow .subtitle {
+  margin-top: 2px;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+}
+
+.CollectionRow .image-column,
+.CollectionRow .action {
+  display: flex;
+  align-items: center;
+}
+
+.CollectionRow .action {
+  justify-content: flex-end;
+}
+
+.CollectionRow .actions .action-text {
+  margin-right: 5px;
+}
+
+.CollectionRow .actions .action.approved {
+  text-align: right;
+  color: rgb(var(--light-blue-raw));
+}
+
+.CollectionRow .actions .action.rejected {
+  color: var(--secondary-text);
+}
+
+.CollectionRow .actions .action.rejected .Icon.close {
+  filter: brightness(0.5);
+}

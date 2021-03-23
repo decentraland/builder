@@ -25,8 +25,9 @@ import { identitySaga } from 'modules/identity/sagas'
 import { landSaga } from 'modules/land/sagas'
 import { ensSaga } from 'modules/ens/sagas'
 import { tileSaga } from 'modules/tile/sagas'
-import { itemSaga } from 'modules/item/sagas'
+import { committeeSaga } from 'modules/committee/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
+import { itemSaga } from 'modules/item/sagas'
 import { statsSaga } from 'modules/stats/sagas'
 
 import { PEER_URL } from 'lib/api/peer'
@@ -58,8 +59,9 @@ export function* rootSaga() {
     identitySaga(),
     landSaga(),
     tileSaga(),
-    itemSaga(),
+    committeeSaga(),
     collectionSaga(),
+    itemSaga(),
     ensSaga(),
     statsSaga()
   ])

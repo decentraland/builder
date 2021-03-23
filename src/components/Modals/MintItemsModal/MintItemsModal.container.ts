@@ -4,7 +4,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { Item } from 'modules/item/types'
 import { mintCollectionItemsRequest, MINT_COLLECTION_ITEMS_REQUEST } from 'modules/collection/actions'
-import { getCollection } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
 import { canMintItem } from 'modules/item/utils'
 import { getAuthorizedItems, getLoading } from 'modules/item/selectors'
@@ -19,15 +19,15 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   }
 
   const ethAddress = getAddress(state)
-  const allItems = getAuthorizedItems(state)
   let collection: Collection
   let items: Item[]
   let totalCollectionItems: number
 
   if (collectionId) {
-    items = allItems.filter(item => item.collectionId === collectionId)
+    items = getCollectionItems(state, collectionId)
     totalCollectionItems = items.length
   } else {
+    const allItems = getAuthorizedItems(state)
     items = allItems.filter(item => itemIds.includes(item.id))
     collectionId = items[0].collectionId
     totalCollectionItems = allItems.filter(item => item.collectionId === collectionId).length
@@ -35,13 +35,12 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
   collection = getCollection(state, collectionId)!
 
-
   return {
     items: items.filter(item => canMintItem(collection, item, ethAddress)),
     isLoading: isLoadingType(getLoading(state), MINT_COLLECTION_ITEMS_REQUEST),
     ethAddress,
     collection,
-    totalCollectionItems,
+    totalCollectionItems
   }
 }
 

@@ -57,6 +57,7 @@ export type RemoteCollection = {
   is_approved: boolean
   minters: string[]
   managers: string[]
+  reviewed_at: Date
   created_at: Date
   updated_at: Date
 }
@@ -179,7 +180,7 @@ function fromRemotePool(remotePool: RemotePool): Pool {
 
   pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
   pool.isPublic = true
-  ;(pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
+    ; (pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
 
   if (remotePool.parcels) {
     pool.statistics = {
@@ -326,6 +327,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     managers: collection.managers,
     contract_address: collection.contractAddress || null,
     salt: collection.salt || null,
+    reviewed_at: new Date(collection.reviewedAt),
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
   }
@@ -342,6 +344,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
+    reviewedAt: +new Date(remoteCollection.reviewed_at),
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }
@@ -556,8 +559,8 @@ export class BuilderAPI extends BaseAPI {
     return this.request(method, `/pools/${pool}/likes`)
   }
 
-  async fetchItems() {
-    const remoteItems: RemoteItem[] = await this.request('get', `/items`)
+  async fetchItems(address?: string) {
+    const remoteItems: RemoteItem[] = address ? await this.request('get', `/${address}/items`) : await this.request('get', `/items`)
     return remoteItems.map(fromRemoteItem)
   }
 
@@ -588,14 +591,12 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/items/${item.id}`, {})
   }
 
-  async fetchCollections() {
-    const remoteCollections: RemoteCollection[] = await this.request('get', `/collections`)
-    const collections: Collection[] = []
-    for (const remoteCollection of remoteCollections) {
-      const collection = fromRemoteCollection(remoteCollection)
-      collections.push(collection)
-    }
-    return collections
+  async fetchCollections(address?: string) {
+    const remoteCollections: RemoteCollection[] = address
+      ? await this.request('get', `/${address}/collections`)
+      : await this.request('get', `/collections`)
+
+    return remoteCollections.map(fromRemoteCollection)
   }
 
   async fetchCollection(id: string) {
@@ -615,6 +616,10 @@ export class BuilderAPI extends BaseAPI {
   async getWeeklyStats(base: string) {
     const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
     return fromRemoteWeeklyStats(remoteStats)
+  }
+
+  async getCommittee(): Promise<string[]> {
+    return this.request('get', '/committee')
   }
 }
 

@@ -12,6 +12,7 @@ export type Collection = {
   isApproved: boolean
   minters: string[]
   managers: string[]
+  reviewedAt: number
   createdAt: number
   updatedAt: number
 }

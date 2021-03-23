@@ -356,10 +356,6 @@
       "use_as_alias": "Usar como alias"
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
-    "order": {
-      "name_asc": "Nombre ↑",
-      "name_desc": "Nombre ↓"
-    },
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
   },
@@ -445,13 +441,19 @@
     "category": "Categoría",
     "rarity": "Rareza",
     "published": "Publicado",
-    "description": "Descripción"
+    "description": "Descripción",
+    "order": {
+      "newest": "Reciente",
+      "name_asc": "Nombre ↑",
+      "name_desc": "Nombre ↓"
+    }
   },
   "navigation": {
     "scenes": "Escenas",
     "land": "Tierras",
     "avatar": "Avatar",
-    "names": "Nombres"
+    "names": "Nombres",
+    "curation": "Curado"
   },
   "list": {
     "two": "{first} y {second}",
@@ -880,6 +882,22 @@
     "new_item": "Nuevo item",
     "new_collection": "Nueva colección",
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
+  },
+  "curation_page": {
+    "filter": {
+      "all_status": "Todos los estados",
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
+    "empty_collections": "Aún no hay colecciones para revisar."
+  },
+  "collection_row": {
+    "items": "{count} {count, plural, one {item} other {items}}",
+    "owner": "Dueño",
+    "forum_post": "Post en el foro",
+    "approved": "Aprobada",
+    "rejected": "Rechazada"
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
