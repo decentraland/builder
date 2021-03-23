@@ -39,8 +39,8 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
-          { value: SortBy.ASC, text: t('ens_list_page.order.name_asc') },
-          { value: SortBy.DESC, text: t('ens_list_page.order.name_desc') }
+          { value: SortBy.ASC, text: t('global.order.name_asc') },
+          { value: SortBy.DESC, text: t('global.order.name_desc') }
         ]}
         onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
       />

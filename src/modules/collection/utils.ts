@@ -66,5 +66,5 @@ export function canManageCollectionItems(collection: Collection, address?: strin
 }
 
 export function hasReviews(collection: Collection) {
-  return collection.updatedAt !== collection.createdAt
+  return collection.reviewedAt !== collection.createdAt
 }

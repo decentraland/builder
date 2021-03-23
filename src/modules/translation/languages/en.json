@@ -353,10 +353,6 @@
       "use_as_alias": "Use as Alias"
     },
     "empty_names": "It looks like you don't have any Names.{br} {link} to get started.",
-    "order": {
-      "name_asc": "Name ↑",
-      "name_desc": "Name ↓"
-    },
     "items": "{count} {count, plural, one {result} other {results}}",
     "alias_popup": "This name is being used by your profile but it can still be assigned"
   },
@@ -444,7 +440,12 @@
     "category": "Category",
     "rarity": "Rarity",
     "published": "Published",
-    "description": "Description"
+    "description": "Description",
+    "order": {
+      "newest": "Newest",
+      "name_asc": "Name ↑",
+      "name_desc": "Name ↓"
+    }
   },
   "navigation": {
     "scenes": "Scenes",
@@ -872,11 +873,6 @@
     "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
   },
   "curation_page": {
-    "order": {
-      "newest": "Newest",
-      "name_asc": "Name ↑",
-      "name_desc": "Name ↓"
-    },
     "filter": {
       "all_status": "All status",
       "approved": "Approved",

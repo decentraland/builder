@@ -32,9 +32,9 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         direction="left"
         value={sortBy}
         options={[
-          { value: SortBy.NEWEST, text: t('curation_page.order.newest') },
-          { value: SortBy.NAME_ASC, text: t('curation_page.order.name_asc') },
-          { value: SortBy.NAME_DESC, text: t('curation_page.order.name_desc') }
+          { value: SortBy.NEWEST, text: t('global.order.newest') },
+          { value: SortBy.NAME_ASC, text: t('global.order.name_asc') },
+          { value: SortBy.NAME_DESC, text: t('global.order.name_desc') }
         ]}
         onChange={(_event, { value }) => this.setState({ sortBy: value as SortBy })}
       />

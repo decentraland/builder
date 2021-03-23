@@ -356,10 +356,6 @@
       "use_as_alias": "Usar como alias"
     },
     "empty_names": "No tienes ningun nombre aún.{br} {link} para comenzar.",
-    "order": {
-      "name_asc": "Nombre ↑",
-      "name_desc": "Nombre ↓"
-    },
     "items": "{count} {count, plural, one {resultado} other {resultados}}",
     "alias_popup": "Este nombre está siendo usado por tu perfil pero igual puede ser asignado"
   },
@@ -445,7 +441,12 @@
     "category": "Categoría",
     "rarity": "Rareza",
     "published": "Publicado",
-    "description": "Descripción"
+    "description": "Descripción",
+    "order": {
+      "newest": "Reciente",
+      "name_asc": "Nombre ↑",
+      "name_desc": "Nombre ↓"
+    }
   },
   "navigation": {
     "scenes": "Escenas",
@@ -883,11 +884,6 @@
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "curation_page": {
-    "order": {
-      "newest": "Reciente",
-      "name_asc": "Nombre ↑",
-      "name_desc": "Nombre ↓"
-    },
     "filter": {
       "all_status": "Todos los estados",
       "approved": "Aprobado",
