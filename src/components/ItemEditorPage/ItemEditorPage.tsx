@@ -8,6 +8,8 @@ import './ItemEditorPage.css'
 
 export default class ItemEditorPage extends React.PureComponent<Props> {
   render() {
+    console.log('--------------------------------', this.props, '--------------------------------')
+
     return (
       <>
         <div className="ItemEditorPage">
