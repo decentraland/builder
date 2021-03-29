@@ -1,4 +1,13 @@
+:root {
+  --item-editor-panel-width: 360px;
+}
+
 .ItemEditorPage {
+  height: 100%;
+  width: 100%;
+}
+
+.ItemEditorPage .content {
   display: flex;
   position: relative;
   height: 100%;

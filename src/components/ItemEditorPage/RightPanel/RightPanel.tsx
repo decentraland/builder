@@ -240,8 +240,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 ) : null}
               </>
             )
-          }
-          }
+          }}
         </ItemProvider>
       </div>
     )

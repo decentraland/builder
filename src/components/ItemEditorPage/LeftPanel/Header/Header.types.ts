@@ -9,12 +9,13 @@ export type Props = {
   address?: string
   collection?: Collection
   isLoggedIn: boolean
+  isReviewing: boolean
   onOpenModal: typeof openModal
   onNavigate: (path: string) => void
   onDeleteCollection: typeof deleteCollectionRequest
   onDeleteItem: typeof deleteItemRequest
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn'>
+export type MapStateProps = Pick<Props, 'address' | 'collection' | 'isLoggedIn' | 'isReviewing'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal' | 'onDeleteCollection' | 'onDeleteItem'>
 export type MapDispatch = Dispatch<OpenModalAction | CallHistoryMethodAction | DeleteCollectionRequestAction | DeleteItemRequestAction>

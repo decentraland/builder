@@ -970,6 +970,10 @@
   },
   "item_editor": {
     "open": "Open editor",
+    "top_panel": {
+      "reject": "Reject",
+      "approve": "Approve"
+    },
     "left_panel": {
       "title": "My Items",
       "actions": {

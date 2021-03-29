@@ -1,5 +1,5 @@
 .RightPanel {
-  width: 360px;
+  width: var(--item-editor-panel-width);
   flex: none;
   background-color: #242229;
   border-left: 1px solid rgba(115, 110, 125, 0.3);
