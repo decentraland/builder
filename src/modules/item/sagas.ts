@@ -2,7 +2,8 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, all, race } from 'redux-saga/effects'
-import { ContractName } from 'decentraland-transactions'
+import { AuthIdentity } from 'dcl-crypto'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
@@ -157,14 +158,22 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const maticChainId = wallet.networks.MATIC.chainId
     let txHash: string | undefined
 
     if (hasOnChainDataChanged(originalItem, item)) {
       // The user has only changed the item file
-      txHash = yield savePublishedItem(eth, collection, item)
+      const metadata = getMetadata(item)
+      const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+
+      const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
+      txHash = yield sendWalletMetaTransaction(
+        contract,
+        implementation.methods.editItemsData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)], [metadata])
+      )
     }
 
-    yield put(savePublishedItemSuccess(item, wallet.networks.MATIC.chainId, txHash))
+    yield put(savePublishedItemSuccess(item, maticChainId, txHash))
     yield put(closeModal('CreateItemModal'))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
 
@@ -235,12 +244,12 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
   const { collection, item } = action.payload
 
   try {
-    const identity = yield getIdentity()
+    const identity: AuthIdentity | undefined = yield getIdentity()
     if (!identity) {
       throw new Error('Invalid identity')
     }
 
-    const deployedItem = yield deployContents(identity, collection, item)
+    const deployedItem: Item = yield deployContents(identity, collection, item)
 
     yield put(deployItemContentsSuccess(collection, deployedItem))
   } catch (error) {
@@ -255,15 +264,4 @@ function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
 
 export function saveUnpublishedItem(item: Item, contents: Record<string, Blob> = {}) {
   return builder.saveItem(item, contents)
-}
-
-export function* savePublishedItem(eth: Eth, collection: Collection, item: Item) {
-  const metadata = getMetadata(item)
-  const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
-
-  return yield sendWalletMetaTransaction(
-    ContractName.ERC721CollectionV2,
-    implementation.methods.editItemsData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)], [metadata]),
-    collection.contractAddress!
-  )
 }

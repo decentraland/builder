@@ -978,6 +978,20 @@
   },
   "item_editor": {
     "open": "Abrir editor",
+    "top_panel": {
+      "reject": {
+        "title": "Rechazar Colección",
+        "subtitle": "No es lo suficientemente buena?",
+        "tx_pending": "Esperando a que se confirme la transacción de rechazo",
+        "action": "Rechazar"
+      },
+      "approve": {
+        "title": "Aprobar Colección",
+        "subtitle": "Si cree que esta colección está a la altura de los estándares de Decentraland, apruébala!",
+        "tx_pending": "Esperando a que se confirme la transacción de aprobación",
+        "action": "Aprobar"
+      }
+    },
     "left_panel": {
       "title": "Mis Items",
       "actions": {

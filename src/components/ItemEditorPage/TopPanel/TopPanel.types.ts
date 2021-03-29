@@ -1,20 +1,19 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
-import {
-  approveCollectionRequest,
-  ApproveCollectionRequestAction,
-  rejectCollectionRequest,
-  RejectCollectionRequestAction
-} from 'modules/collection/actions'
 
 export type Props = {
   isReviewing: boolean
+  isCommitteeMember: boolean
   selectedCollectionId: string | null
-  onReject: typeof rejectCollectionRequest
-  onApprove: typeof approveCollectionRequest
   onNavigate: (path: string) => void
 }
 
-export type MapStateProps = Pick<Props, 'isReviewing' | 'selectedCollectionId'>
-export type MapDispatchProps = Pick<Props, 'onReject' | 'onApprove' | 'onNavigate'>
-export type MapDispatch = Dispatch<ApproveCollectionRequestAction | RejectCollectionRequestAction | CallHistoryMethodAction>
+export type State = {
+  currentVeredict?: boolean
+  isApproveModalOpen: boolean
+  isRejectModalOpen: boolean
+}
+
+export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'>
+export type MapDispatchProps = Pick<Props, 'onNavigate'>
+export type MapDispatch = Dispatch<CallHistoryMethodAction>

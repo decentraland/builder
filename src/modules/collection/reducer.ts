@@ -15,6 +15,10 @@ import {
   DeleteCollectionFailureAction,
   PublishCollectionRequestAction,
   PublishCollectionFailureAction,
+  ApproveCollectionRequestAction,
+  ApproveCollectionFailureAction,
+  RejectCollectionRequestAction,
+  RejectCollectionFailureAction,
   FETCH_COLLECTIONS_REQUEST,
   FETCH_COLLECTIONS_SUCCESS,
   FETCH_COLLECTIONS_FAILURE,
@@ -30,6 +34,12 @@ import {
   PUBLISH_COLLECTION_REQUEST,
   PUBLISH_COLLECTION_FAILURE,
   PUBLISH_COLLECTION_SUCCESS,
+  APPROVE_COLLECTION_REQUEST,
+  APPROVE_COLLECTION_FAILURE,
+  APPROVE_COLLECTION_SUCCESS,
+  REJECT_COLLECTION_REQUEST,
+  REJECT_COLLECTION_FAILURE,
+  REJECT_COLLECTION_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
   SET_COLLECTION_MANAGERS_SUCCESS
 } from './actions'
@@ -63,6 +73,10 @@ type CollectionReducerAction =
   | DeleteCollectionFailureAction
   | PublishCollectionRequestAction
   | PublishCollectionFailureAction
+  | ApproveCollectionRequestAction
+  | ApproveCollectionFailureAction
+  | RejectCollectionRequestAction
+  | RejectCollectionFailureAction
   | FetchTransactionSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
@@ -71,7 +85,9 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case FETCH_COLLECTION_REQUEST:
     case SAVE_COLLECTION_REQUEST:
     case DELETE_COLLECTION_REQUEST:
-    case PUBLISH_COLLECTION_REQUEST: {
+    case PUBLISH_COLLECTION_REQUEST:
+    case APPROVE_COLLECTION_REQUEST:
+    case REJECT_COLLECTION_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -119,7 +135,9 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case FETCH_COLLECTION_FAILURE:
     case SAVE_COLLECTION_FAILURE:
     case DELETE_COLLECTION_FAILURE:
-    case PUBLISH_COLLECTION_FAILURE: {
+    case PUBLISH_COLLECTION_FAILURE:
+    case APPROVE_COLLECTION_FAILURE:
+    case REJECT_COLLECTION_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -134,11 +152,40 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
           const { collection } = transaction.payload
           return {
             ...state,
+            loading: loadingReducer(state.loading, action),
             data: {
               ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
                 isPublished: true
+              }
+            }
+          }
+        }
+        case APPROVE_COLLECTION_SUCCESS: {
+          const { collection } = transaction.payload
+          return {
+            ...state,
+            loading: loadingReducer(state.loading, { type: transaction.actionType }),
+            data: {
+              ...state.data,
+              [collection.id]: {
+                ...state.data[collection.id],
+                isApproved: true
+              }
+            }
+          }
+        }
+        case REJECT_COLLECTION_SUCCESS: {
+          const { collection } = transaction.payload
+          return {
+            ...state,
+            loading: loadingReducer(state.loading, { type: transaction.actionType }),
+            data: {
+              ...state.data,
+              [collection.id]: {
+                ...state.data[collection.id],
+                isApproved: false
               }
             }
           }

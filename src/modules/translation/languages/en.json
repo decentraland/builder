@@ -971,8 +971,18 @@
   "item_editor": {
     "open": "Open editor",
     "top_panel": {
-      "reject": "Reject",
-      "approve": "Approve"
+      "reject": {
+        "title": "Reject Collection",
+        "subtitle": "I guess it's just not good enough, huh?",
+        "tx_pending": "Waiting for reject transaction to confirm",
+        "action": "Reject"
+      },
+      "approve": {
+        "title": "Approve Collection",
+        "subtitle": "If you feel this collection its up to Decentraland standards, approve it!",
+        "tx_pending": "Waiting for approve transaction to confirm",
+        "action": "Approve"
+      }
     },
     "left_panel": {
       "title": "My Items",

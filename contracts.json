@@ -13,6 +13,10 @@
       "source": "files",
       "abiFile": "./src/contracts/CollectionManager.json"
     },
+    "Committee": {
+      "source": "files",
+      "abiFile": "./src/contracts/Committee.json"
+    },
     "ERC721CollectionFactoryV2": {
       "source": "files",
       "abiFile": "./src/contracts/ERC721CollectionFactoryV2.json"

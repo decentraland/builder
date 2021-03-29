@@ -957,6 +957,20 @@
   },
   "item_editor": {
     "open": "打开编辑器",
+    "top_panel": {
+      "reject": {
+        "title": "拒绝收藏",
+        "subtitle": "我想还不够，是吧？",
+        "tx_pending": "等待拒绝交易确认",
+        "action": "拒绝"
+      },
+      "approve": {
+        "title": "批准收藏",
+        "subtitle": "如果您觉得此收藏符合Decentraland标准，请批准它！",
+        "tx_pending": "等待批准交易以确认",
+        "action": "批准"
+      }
+    },
     "left_panel": {
       "title": "我的物品",
       "actions": {

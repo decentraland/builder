@@ -1,0 +1,22 @@
+.ReviewModal.ui.modal {
+  text-align: center;
+}
+
+.ReviewModal .loading {
+  position: relative;
+  min-height: 80px;
+  margin-bottom: 38px;
+}
+
+.ReviewModal .loading .ui.loader {
+  margin-top: 20px;
+}
+
+.ReviewModal .actions {
+  flex-direction: column;
+}
+
+.ReviewModal.ui.modal .actions > .ui.button {
+  margin-left: 0;
+  margin-top: 10px;
+}

@@ -13,22 +13,19 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './TopBar.types'
 import TopBar from './TopBar'
 import { hasHistory } from 'modules/location/selectors'
 
-const mapState = (state: RootState): MapStateProps => {
-  const selectedEntityIds = getSelectedEntityIds(state)
-  return {
-    gizmo: getGizmo(state),
-    currentProject: getCurrentProject(state),
-    currentPoolGroup: getActivePoolGroup(state),
-    metrics: getCurrentMetrics(state),
-    selectedEntityIds: selectedEntityIds,
-    isLoading: !isReady(state) || isLoading(state),
-    isPreviewing: isPreviewing(state),
-    isUploading: isSavingCurrentProject(state),
-    isSidebarOpen: isSidebarOpen(state),
-    enabledTools: getEnabledTools(state),
-    hasHistory: hasHistory(state)
-  }
-}
+const mapState = (state: RootState): MapStateProps => ({
+  gizmo: getGizmo(state),
+  currentProject: getCurrentProject(state),
+  currentPoolGroup: getActivePoolGroup(state),
+  metrics: getCurrentMetrics(state),
+  selectedEntityIds: getSelectedEntityIds(state),
+  isLoading: !isReady(state) || isLoading(state),
+  isPreviewing: isPreviewing(state),
+  isUploading: isSavingCurrentProject(state),
+  isSidebarOpen: isSidebarOpen(state),
+  enabledTools: getEnabledTools(state),
+  hasHistory: hasHistory(state)
+})
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSetGizmo: gizmo => dispatch(setGizmo(gizmo)),

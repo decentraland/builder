@@ -41,11 +41,20 @@ import {
   mintCollectionItemsSuccess,
   mintCollectionItemsFailure,
   MINT_COLLECTION_ITEMS_REQUEST,
+  ApproveCollectionRequestAction,
+  approveCollectionSuccess,
+  approveCollectionFailure,
+  APPROVE_COLLECTION_REQUEST,
+  RejectCollectionRequestAction,
+  rejectCollectionSuccess,
+  rejectCollectionFailure,
+  REJECT_COLLECTION_REQUEST,
   PUBLISH_COLLECTION_SUCCESS
 } from './actions'
-import { getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
+import { getMethodData, getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
 import { CollectionManager } from 'contracts/CollectionManager'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
+import { Committee } from 'contracts/Committee'
 import { setItemsTokenIdRequest, deployItemContentsRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
@@ -66,7 +75,9 @@ export function* collectionSaga() {
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
   yield takeEvery(SET_COLLECTION_MINTERS_REQUEST, handleSetCollectionMintersRequest)
   yield takeEvery(SET_COLLECTION_MANAGERS_REQUEST, handleSetCollectionManagersRequest)
-  yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintColectionItems)
+  yield takeEvery(MINT_COLLECTION_ITEMS_REQUEST, handleMintCollectionItemsRequest)
+  yield takeEvery(APPROVE_COLLECTION_REQUEST, handleApproveCollectionRequest)
+  yield takeEvery(REJECT_COLLECTION_REQUEST, handleRejectCollectionRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -132,22 +143,17 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     const from = Address.fromString(wallet.address)
     const maticChainId = wallet.networks.MATIC.chainId
 
-    const [forwarderAddress, factoryAddress, managerAddress] = [
-      ContractName.Forwarder,
-      ContractName.CollectionFactory,
-      ContractName.CollectionManager
-    ].map(contractName => {
-      const contract = getContract(contractName, maticChainId)
-      return Address.fromString(contract.address)
-    })
+    const forwarder = getContract(ContractName.Forwarder, maticChainId)
+    const factory = getContract(ContractName.CollectionFactory, maticChainId)
+    const manager = getContract(ContractName.CollectionManager, maticChainId)
 
-    const factory = new CollectionManager(eth, managerAddress)
+    const collectionManager = new CollectionManager(eth, Address.fromString(manager.address))
 
-    const txHash = yield sendWalletMetaTransaction(
-      ContractName.CollectionManager,
-      factory.methods.createCollection(
-        forwarderAddress,
-        factoryAddress,
+    const txHash: string = yield sendWalletMetaTransaction(
+      manager,
+      collectionManager.methods.createCollection(
+        Address.fromString(forwarder.address),
+        Address.fromString(factory.address),
         collection.salt!,
         collection.name,
         getCollectionSymbol(collection),
@@ -173,6 +179,7 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
+    const maticChainId = wallet.networks.MATIC.chainId
     const addresses: Address[] = []
     const values: boolean[] = []
 
@@ -189,13 +196,10 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
       }
     }
 
-    const txHash = yield sendWalletMetaTransaction(
-      ContractName.ERC721CollectionV2,
-      implementation.methods.setMinters(addresses, values),
-      collection.contractAddress!
-    )
+    const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
+    const txHash: string = yield sendWalletMetaTransaction(contract, implementation.methods.setMinters(addresses, values))
 
-    yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), wallet.networks.MATIC.chainId, txHash))
+    yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(setCollectionMintersFailure(collection, accessList, error.message))
@@ -206,7 +210,7 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
   const { collection, accessList } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-
+    const maticChainId = wallet.networks.MATIC.chainId
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
     const addresses: Address[] = []
@@ -225,19 +229,17 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
       }
     }
 
-    const txHash = yield sendWalletMetaTransaction(
-      ContractName.ERC721CollectionV2,
-      implementation.methods.setManagers(addresses, values),
-      collection.contractAddress!
-    )
-    yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), wallet.networks.MATIC.chainId, txHash))
+    const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
+    const txHash: string = yield sendWalletMetaTransaction(contract, implementation.methods.setManagers(addresses, values))
+
+    yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), maticChainId, txHash))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(setCollectionManagersFailure(collection, accessList, error.message))
   }
 }
 
-function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
+function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAction) {
   const { collection, mints } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
@@ -255,7 +257,7 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
       }
     }
 
-    const txHash = yield call(() =>
+    const txHash: string = yield call(() =>
       implementation.methods
         .issueTokens(beneficiaries, tokenIds)
         .send({ from })
@@ -267,6 +269,32 @@ function* handleMintColectionItems(action: MintCollectionItemsRequestAction) {
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(mintCollectionItemsFailure(collection, mints, error.message))
+  }
+}
+
+function* handleApproveCollectionRequest(action: ApproveCollectionRequestAction) {
+  const { collection } = action.payload
+  try {
+    const [wallet]: [Wallet] = yield getWallet()
+    const maticChainId = wallet.networks.MATIC.chainId
+
+    const txHash: string = yield changeCollectionStatus(collection, true)
+    yield put(approveCollectionSuccess(collection, maticChainId, txHash))
+  } catch (error) {
+    yield put(approveCollectionFailure(collection, error.message))
+  }
+}
+
+function* handleRejectCollectionRequest(action: RejectCollectionRequestAction) {
+  const { collection } = action.payload
+  try {
+    const [wallet]: [Wallet] = yield getWallet()
+    const maticChainId = wallet.networks.MATIC.chainId
+
+    const txHash: string = yield changeCollectionStatus(collection, false)
+    yield put(rejectCollectionSuccess(collection, maticChainId, txHash))
+  } catch (error) {
+    yield put(rejectCollectionFailure(collection, error.message))
   }
 }
 
@@ -283,8 +311,8 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
       case PUBLISH_COLLECTION_SUCCESS: {
         // We re-fetch the collection from the store to get the updated version
         const collectionId = transaction.payload.collection.id
-        const collection = yield select(state => getCollection(state, collectionId))
-        const items = yield select(state => getCollectionItems(state, collectionId))
+        const collection: Collection = yield select(state => getCollection(state, collectionId))
+        const items: Item[] = yield select(state => getCollectionItems(state, collectionId))
 
         yield deployItems(collection, items)
         break
@@ -323,4 +351,30 @@ function* deployItems(collection: Collection, items: Item[]) {
       yield put(deployItemContentsRequest(collection, item))
     }
   }
+}
+
+function* changeCollectionStatus(collection: Collection, isApproved: boolean) {
+  const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+
+  const from = Address.fromString(wallet.address)
+  const maticChainId = wallet.networks.MATIC.chainId
+  const contract = getContract(ContractName.Committee, maticChainId)
+
+  const committee = new Committee(eth, Address.fromString(contract.address))
+  const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+
+  const manager = getContract(ContractName.CollectionManager, maticChainId)
+  const forwarder = getContract(ContractName.Forwarder, maticChainId)
+  const data = getMethodData(implementation.methods.setApproved(isApproved), from)
+
+  const txHash: string = yield sendWalletMetaTransaction(
+    contract,
+    committee.methods.manageCollection(
+      Address.fromString(manager.address),
+      Address.fromString(forwarder.address),
+      Address.fromString(collection.contractAddress!),
+      data
+    )
+  )
+  return txHash
 }
