@@ -1,7 +1,6 @@
 import { AuthIdentity } from 'dcl-crypto'
-import { getContentsStorageUrl } from 'lib/api/builder'
+import { builder, getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
-import { saveUnpublishedItem } from 'modules/item/sagas'
 import { getCatalystPointer } from 'modules/item/utils'
 import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
@@ -19,7 +18,7 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   // @TODO: Revisit this because if it is in the catalyst we shouldn't update it
   const newItem = { ...item, inCatalyst: true }
   if (!item.isPublished) {
-    await saveUnpublishedItem(newItem)
+    await builder.saveItem(newItem, {})
   }
 
   return newItem

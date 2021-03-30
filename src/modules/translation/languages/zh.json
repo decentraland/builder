@@ -958,6 +958,14 @@
   "item_editor": {
     "open": "打开编辑器",
     "top_panel": {
+      "veredict_received": "判决书已收到",
+      "veredict_received_successfully": "我们已成功收到您的判决！",
+      "veredict_explanation": "你能告诉我们为什么吗？",
+      "go_to_forum": "请转到相关论坛讨论，并让创建者知道您的决定。",
+      "forum_link": "论坛链接",
+      "discussion": "讨论",
+      "keep_reviewing": "继续审核",
+      "back_to_curation": "回到策展",
       "reject": {
         "title": "拒绝收藏",
         "subtitle": "我想还不够，是吧？",

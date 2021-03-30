@@ -25,8 +25,9 @@ import { identitySaga } from 'modules/identity/sagas'
 import { landSaga } from 'modules/land/sagas'
 import { ensSaga } from 'modules/ens/sagas'
 import { tileSaga } from 'modules/tile/sagas'
-import { committeeSaga } from 'modules/committee/sagas'
 import { collectionSaga } from 'modules/collection/sagas'
+import { committeeSaga } from 'modules/committee/sagas'
+import { forumSaga } from 'modules/forum/sagas'
 import { itemSaga } from 'modules/item/sagas'
 import { statsSaga } from 'modules/stats/sagas'
 
@@ -59,8 +60,9 @@ export function* rootSaga() {
     identitySaga(),
     landSaga(),
     tileSaga(),
-    committeeSaga(),
     collectionSaga(),
+    committeeSaga(),
+    forumSaga(),
     itemSaga(),
     ensSaga(),
     statsSaga()

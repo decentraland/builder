@@ -971,6 +971,14 @@
   "item_editor": {
     "open": "Open editor",
     "top_panel": {
+      "veredict_received": "Verdict received",
+      "veredict_received_successfully": "We received your verdict successfully!",
+      "veredict_explanation": "Can you tell us why?",
+      "go_to_forum": "Please go to related forum discussion and let the creator know your decision.",
+      "forum_link": "Forum link",
+      "discussion": "Discussion",
+      "keep_reviewing": "Keep reviewing",
+      "back_to_curation": "Back to curation",
       "reject": {
         "title": "Reject Collection",
         "subtitle": "I guess it's just not good enough, huh?",

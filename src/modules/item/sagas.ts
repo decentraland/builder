@@ -118,7 +118,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
       throw new Error('Item should not be published to save it')
     }
 
-    yield call(() => saveUnpublishedItem(itemWithUpdatedDate, contents))
+    yield call(() => builder.saveItem(itemWithUpdatedDate, contents))
 
     yield put(saveItemSuccess(itemWithUpdatedDate, contents))
     yield put(closeModal('CreateItemModal'))
@@ -229,7 +229,7 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
         ...item,
         tokenId
       }
-      saves.push(call(() => saveUnpublishedItem(newItem)))
+      saves.push(call(() => builder.saveItem(newItem, {})))
       newItems.push(newItem)
     }
 
@@ -260,8 +260,4 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
   const { id } = action.payload
   yield put(fetchCollectionItemsRequest(id))
-}
-
-export function saveUnpublishedItem(item: Item, contents: Record<string, Blob> = {}) {
-  return builder.saveItem(item, contents)
 }

@@ -17,6 +17,7 @@ import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
 import { WeeklyStats } from 'modules/stats/types'
 import { authorize } from './auth'
+import { ForumPost } from 'modules/forum/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -57,6 +58,7 @@ export type RemoteCollection = {
   is_approved: boolean
   minters: string[]
   managers: string[]
+  forum_link?: string
   reviewed_at: Date
   created_at: Date
   updated_at: Date
@@ -180,7 +182,7 @@ function fromRemotePool(remotePool: RemotePool): Pool {
 
   pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
   pool.isPublic = true
-    ; (pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
+  ;(pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
 
   if (remotePool.parcels) {
     pool.statistics = {
@@ -321,12 +323,13 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     id: collection.id,
     name: collection.name,
     eth_address: collection.owner,
+    salt: collection.salt || null,
+    contract_address: collection.contractAddress || null,
     is_published: collection.isPublished,
     is_approved: collection.isApproved,
     minters: collection.minters,
     managers: collection.managers,
-    contract_address: collection.contractAddress || null,
-    salt: collection.salt || null,
+    forum_link: collection.forumLink,
     reviewed_at: new Date(collection.reviewedAt),
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
@@ -344,6 +347,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
+    forumLink: remoteCollection.forum_link,
     reviewedAt: +new Date(remoteCollection.reviewed_at),
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
@@ -620,6 +624,10 @@ export class BuilderAPI extends BaseAPI {
 
   async getCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
+  }
+
+  async createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
+    return this.request('post', `/collections/${collection.id}/post`, { forumPost })
   }
 }
 

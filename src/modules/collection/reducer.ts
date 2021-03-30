@@ -1,5 +1,6 @@
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { CreateCollectionForumPostSuccessAction, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -87,6 +88,7 @@ type CollectionReducerAction =
   | MintCollectionItemsRequestAction
   | MintCollectionItemsSuccessAction
   | MintCollectionItemsFailureAction
+  | CreateCollectionForumPostSuccessAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -141,6 +143,19 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       }
       delete newState.data[collection.id]
       return newState
+    }
+    case CREATE_COLLECTION_FORUM_POST_SUCCESS: {
+      const { collection, forumLink } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collection.id]: {
+            ...state.data[collection.id],
+            forumLink
+          }
+        }
+      }
     }
     case FETCH_COLLECTIONS_FAILURE:
     case FETCH_COLLECTION_FAILURE:

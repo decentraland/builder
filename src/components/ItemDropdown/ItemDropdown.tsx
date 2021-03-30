@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Dropdown, DropdownItemProps, DropdownProps, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { getContentsStorageUrl } from 'lib/api/builder'
+import { getThumbnailURL } from 'modules/item/utils'
 import { Props } from './ItemDropdown.types'
 import './ItemDropdown.css'
 
@@ -14,7 +14,7 @@ export default class ItemDropdown extends React.PureComponent<Props> {
       options.push({
         value: item.id,
         text: item.name,
-        image: getContentsStorageUrl(item.contents[item.thumbnail])
+        image: getThumbnailURL(item)
       })
     }
     return options
@@ -32,7 +32,7 @@ export default class ItemDropdown extends React.PureComponent<Props> {
     const { value, placeholder } = this.props
     return value ? (
       <Row className="selected-item">
-        <img src={getContentsStorageUrl(value.contents[value.thumbnail])} />
+        <img src={getThumbnailURL(value)} />
         <div className="name">{value.name}</div>
       </Row>
     ) : options.length > 0 ? (

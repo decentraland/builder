@@ -52,9 +52,11 @@ import {
   PUBLISH_COLLECTION_SUCCESS
 } from './actions'
 import { getMethodData, getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
+import { buildCollectionForumPost } from 'modules/forum/utils'
 import { CollectionManager } from 'contracts/CollectionManager'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { Committee } from 'contracts/Committee'
+import { createCollectionForumPostRequest } from 'modules/forum/actions'
 import { setItemsTokenIdRequest, deployItemContentsRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
@@ -312,6 +314,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         const items: Item[] = yield select(state => getCollectionItems(state, collectionId))
 
         yield deployItems(collection, items)
+        yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items)))
         break
       }
       default: {
