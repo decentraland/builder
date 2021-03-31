@@ -11,7 +11,7 @@ import './Header.css'
 export default class Header extends React.PureComponent<Props> {
   handleHome = () => {
     const { onNavigate } = this.props
-    onNavigate(locations.avatar())
+    onNavigate(locations.collections())
   }
 
   handleBack = () => {

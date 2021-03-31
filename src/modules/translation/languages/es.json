@@ -451,7 +451,7 @@
   "navigation": {
     "scenes": "Escenas",
     "land": "Tierras",
-    "avatar": "Avatar",
+    "collections": "Colecciones",
     "names": "Nombres",
     "curation": "Curado"
   },
@@ -876,7 +876,7 @@
     "sign_in_required": "Necesitas {sign_in} para acceder a esta página.",
     "sign_in": "Iniciar sesión"
   },
-  "avatar_page": {
+  "collections_page": {
     "results": "{count} {count, plural, one {resultado} other {resultados}}",
     "no_items": "Sin items",
     "new_item": "Nuevo item",

@@ -22,7 +22,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props> {
   render() {
     const { isLoading, onClose } = this.props
     return (
-      <Modal name={name} className="PublishCollectionModal" size="tiny" onClose={onClose}>
+      <Modal className="PublishCollectionModal" size="tiny" onClose={onClose}>
         <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
         <Modal.Content>
           {t('publish_collection_modal.first_paragraph')}

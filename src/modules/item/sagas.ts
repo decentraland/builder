@@ -181,9 +181,9 @@ function* handleDeleteItemRequest(action: DeleteItemRequestAction) {
   try {
     yield call(() => builder.deleteItem(item))
     yield put(deleteItemSuccess(item))
-    const itemIdInUriParam = yield select(getItemId)
+    const itemIdInUriParam: string = yield select(getItemId)
     if (itemIdInUriParam === item.id) {
-      yield put(replace(locations.avatar()))
+      yield put(replace(locations.collections()))
     }
   } catch (error) {
     yield put(deleteItemFailure(item, error.message))

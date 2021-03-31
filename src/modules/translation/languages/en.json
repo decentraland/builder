@@ -450,7 +450,7 @@
   "navigation": {
     "scenes": "Scenes",
     "land": "Land",
-    "avatar": "Wearables",
+    "collections": "Collections",
     "names": "Names",
     "curation": "Curation"
   },
@@ -865,7 +865,7 @@
     "connect_error": "Could not connect wallet",
     "title": "Connect your wallet to sign in."
   },
-  "avatar_page": {
+  "collections_page": {
     "results": "{count} {count, plural, one {result} other {results}}",
     "no_items": "No items",
     "new_item": "New Item",

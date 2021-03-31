@@ -46,7 +46,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
       <>
         <Section>
           <Row>
-            <Back absolute onClick={() => onNavigate(locations.avatar())} />
+            <Back absolute onClick={() => onNavigate(locations.collections())} />
             <Narrow>
               <Row className="page-header">
                 <Column>

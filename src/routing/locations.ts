@@ -23,7 +23,7 @@ export const locations = {
   activity: () => `/activity`,
   settings: () => `/settings`,
   sceneDetail: (projectId = ':projectId') => `/scenes/${projectId}`,
-  avatar: () => '/avatar',
+  collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
   collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
   itemEditor: (options: { itemId?: string; collectionId?: string } = {}) =>

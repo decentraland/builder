@@ -8,10 +8,10 @@ import Icon from 'components/Icon'
 import { locations } from 'routing/locations'
 import ItemCard from './ItemCard'
 import CollectionCard from './CollectionCard'
-import { Props } from './AvatarPage.types'
-import './AvatarPage.css'
+import { Props } from './CollectionsPage.types'
+import './CollectionsPage.css'
 
-export default class AvatarPage extends React.PureComponent<Props> {
+export default class CollectionsPage extends React.PureComponent<Props> {
   handleNewItem = () => {
     this.props.onOpenModal('CreateItemModal', {})
   }
@@ -36,7 +36,7 @@ export default class AvatarPage extends React.PureComponent<Props> {
             <Row height={30}>
               <Column>
                 <Row>
-                  <Header sub>{t('avatar_page.results', { count })}</Header>
+                  <Header sub>{t('collections_page.results', { count })}</Header>
                 </Row>
               </Column>
               <Column align="right">
@@ -51,8 +51,8 @@ export default class AvatarPage extends React.PureComponent<Props> {
                     direction="left"
                   >
                     <Dropdown.Menu>
-                      <Dropdown.Item text={t('avatar_page.new_item')} onClick={this.handleNewItem} />
-                      <Dropdown.Item text={t('avatar_page.new_collection')} onClick={this.handleNewCollection} />
+                      <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
+                      <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
                     </Dropdown.Menu>
                   </Dropdown>
                   <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
@@ -77,15 +77,15 @@ export default class AvatarPage extends React.PureComponent<Props> {
           ) : (
             <div className="empty">
               <Header className="title" size="large">
-                {t('avatar_page.no_items')}
+                {t('collections_page.no_items')}
               </Header>
-              <div className="empty-description">{t('avatar_page.empty_description')}</div>
+              <div className="empty-description">{t('collections_page.empty_description')}</div>
               <div className="create-new-wrapper">
                 <div className="create-new create-new-item" onClick={this.handleNewItem}>
-                  <div className="text">{t('avatar_page.new_item')}</div>
+                  <div className="text">{t('collections_page.new_item')}</div>
                 </div>
                 <div className="create-new create-new-collection" onClick={this.handleNewCollection}>
-                  <div className="text">{t('avatar_page.new_collection')}</div>
+                  <div className="text">{t('collections_page.new_collection')}</div>
                 </div>
               </div>
             </div>
@@ -98,7 +98,7 @@ export default class AvatarPage extends React.PureComponent<Props> {
   render() {
     const { isLoading } = this.props
     return (
-      <LoggedInDetailPage className="AvatarPage" activeTab={NavigationTab.AVATAR} isLoading={isLoading}>
+      <LoggedInDetailPage className="CollectionsPage" activeTab={NavigationTab.COLLECTIONS} isLoading={isLoading}>
         {this.renderPage()}
       </LoggedInDetailPage>
     )
