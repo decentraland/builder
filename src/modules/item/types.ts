@@ -46,7 +46,7 @@ export enum WearableBodyShape {
 }
 
 export type WearableRepresentation = {
-  bodyShape: WearableBodyShape[]
+  bodyShapes: WearableBodyShape[]
   mainFile: string
   contents: string[]
   overrideReplaces: WearableCategory[]

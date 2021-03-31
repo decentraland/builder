@@ -47,7 +47,7 @@ export function getBodyShapeType(item: Item) {
 export function getBodyShapes(item: Item) {
   const bodyShapes = new Set<WearableBodyShape>()
   for (const representation of item.data.representations) {
-    for (const bodyShape of representation.bodyShape) {
+    for (const bodyShape of representation.bodyShapes) {
       bodyShapes.add(bodyShape)
     }
   }
@@ -67,7 +67,7 @@ export function getMissingBodyShapeType(item: Item) {
 }
 
 export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
-  return item.data.representations.some(representation => representation.bodyShape.includes(bodyShape))
+  return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
 export function getRarityIndex(rarity: ItemRarity) {

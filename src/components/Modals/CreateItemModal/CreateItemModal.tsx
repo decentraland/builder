@@ -146,7 +146,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
         // add new representation
         item.data.representations.push({
-          bodyShape: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
+          bodyShapes: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
           mainFile: model,
           contents: Object.keys(contents),
           overrideHides: [],
@@ -169,7 +169,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
         const wearableBodyShape = bodyShape === BodyShapeType.MALE ? WearableBodyShape.MALE : WearableBodyShape.FEMALE
         const representationIndex = pristineItem.data.representations.findIndex(
-          (representation: WearableRepresentation) => representation.bodyShape[0] === wearableBodyShape
+          (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
         )
         const pristineBodyShape = getBodyShapeType(pristineItem)
         const representations = this.getBodyShapes(bodyShape, model, contents)
@@ -260,13 +260,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     this.setState({ thumbnail })
   }
 
-  getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>) {
-    const representations = []
+  getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
+    const representations: WearableRepresentation[] = []
 
     // add male representation
     if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
       representations.push({
-        bodyShape: [WearableBodyShape.MALE],
+        bodyShapes: [WearableBodyShape.MALE],
         mainFile: model,
         contents: Object.keys(contents),
         overrideHides: [],
@@ -277,7 +277,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     // add female representation
     if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
       representations.push({
-        bodyShape: [WearableBodyShape.FEMALE],
+        bodyShapes: [WearableBodyShape.FEMALE],
         mainFile: model,
         contents: Object.keys(contents),
         overrideHides: [],
