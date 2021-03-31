@@ -186,7 +186,7 @@ export function toWearable(item: Item) {
     category: item.data.category!,
     baseUrl: getContentsStorageUrl(),
     representations: item.data.representations.map<BodyShapeRespresentation>(representation => ({
-      bodyShapes: representation.bodyShape.map(shape => shape.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')),
+      bodyShapes: representation.bodyShapes.map(shape => shape.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')),
       mainFile: representation.mainFile,
       contents: Object.values(representation.contents).map(path => ({
         file: path,
