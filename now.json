@@ -35,6 +35,7 @@
       "REACT_APP_BUILDER_SERVER_URL": "https://builder-api.decentraland.io/v1",
       "REACT_APP_ERC721_COLLECTION_BASE_URI": "https://peer.decentraland.zone/lambdas/collections/standard/erc721/",
       "REACT_APP_FF_WEARABLES": "1",
+      "REACT_APP_FF_WEARABLES_PUBLISH": "1",
       "REACT_APP_FF_ENS": "1",
       "REACT_APP_CLAIM_NAME_URL": "https://avatars.decentraland.zone/avatar",
       "REACT_APP_LAND_POSITION_URL": "https://play.decentraland.org?position=",

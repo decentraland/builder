@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { env } from 'decentraland-commons'
 import { Section, Row, Dropdown, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -87,7 +88,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   canPublish() {
     const { items } = this.props
-    return this.hasItems() && items.every(isComplete)
+    return env.get('REACT_APP_FF_WEARABLES_PUBLISH') && this.hasItems() && items.every(isComplete)
   }
 
   hasItems() {
