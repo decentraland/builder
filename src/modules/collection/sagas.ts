@@ -111,9 +111,9 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
   try {
     yield call(() => builder.deleteCollection(collection))
     yield put(deleteCollectionSuccess(collection))
-    const collectionIdInUriParam = yield select(getCollectionId)
+    const collectionIdInUriParam: string = yield select(getCollectionId)
     if (collectionIdInUriParam === collection.id) {
-      yield put(replace(locations.avatar()))
+      yield put(replace(locations.collections()))
     }
   } catch (error) {
     yield put(deleteCollectionFailure(collection, error.message))

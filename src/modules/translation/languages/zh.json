@@ -441,7 +441,7 @@
   "navigation": {
     "scenes": "场景",
     "land": "土地",
-    "avatar": "头像",
+    "collections": "馆藏",
     "names": "名字",
     "curation": "策展"
   },
@@ -854,7 +854,7 @@
     "sign_in_required": "您需要{sign_in}才能访问此页面。",
     "sign_in": "登入"
   },
-  "avatar_page": {
+  "collections_page": {
     "results": "{count} {count，复数，一个{result}其他{results}}",
     "no_items": "有项目",
     "new_item": "项目",

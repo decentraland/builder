@@ -7,8 +7,8 @@ import { getWalletOrphanItems, getLoading as getLoadingItems } from 'modules/ite
 import { getAuthorizedCollections, getLoading as getLoadingCollections } from 'modules/collection/selectors'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './AvatarPage.types'
-import AvatarPage from './AvatarPage'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionsPage.types'
+import CollectionsPage from './CollectionsPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const items = getWalletOrphanItems(state)
@@ -26,4 +26,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
-export default connect(mapState, mapDispatch)(AvatarPage)
+export default connect(mapState, mapDispatch)(CollectionsPage)

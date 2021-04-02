@@ -32,7 +32,7 @@ import LandOperatorPage from 'components/LandOperatorPage'
 import ActivityPage from 'components/ActivityPage'
 import SettingsPage from 'components/SettingsPage'
 import SceneDetailPage from 'components/SceneDetailPage'
-import AvatarPage from 'components/AvatarPage'
+import CollectionsPage from 'components/CollectionsPage'
 import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
 import ItemEditorPage from 'components/ItemEditorPage'
@@ -121,7 +121,7 @@ export default class Routes extends React.Component<Props, State> {
               : null}
             {env.get('REACT_APP_FF_WEARABLES')
               ? [
-                  <Route exact key={1} path={locations.avatar()} component={AvatarPage} />,
+                  <Route exact key={1} path={locations.collections()} component={CollectionsPage} />,
                   <Route exact key={2} path={locations.itemDetail()} component={ItemDetailPage} />,
                   <Route exact key={3} path={locations.collectionDetail()} component={CollectionDetailPage} />,
                   <Route exact key={4} path={locations.itemEditor()} component={ItemEditorPage} />,

@@ -1,8 +1,8 @@
-.AvatarPage .ui.cards {
+.CollectionsPage .ui.cards {
   margin: 0px;
 }
 
-.AvatarPage .ui.cards > .empty {
+.CollectionsPage .ui.cards > .empty {
   margin-top: 28px;
   padding: 112px 0;
   width: 100%;
@@ -15,21 +15,21 @@
   font-size: 17px;
 }
 
-.AvatarPage .ui.cards > .empty .header.title {
+.CollectionsPage .ui.cards > .empty .header.title {
   margin: 0;
 }
 
-.AvatarPage .ui.cards > .empty .empty-description {
+.CollectionsPage .ui.cards > .empty .empty-description {
   margin: 8px auto 34px;
   width: 500px;
 }
 
-.AvatarPage .ui.cards > .empty .create-new-wrapper {
+.CollectionsPage .ui.cards > .empty .create-new-wrapper {
   display: flex;
   justify-content: center;
 }
 
-.AvatarPage .ui.cards > .empty .create-new {
+.CollectionsPage .ui.cards > .empty .create-new {
   width: 240px;
   height: 204px;
   position: relative;
@@ -39,11 +39,11 @@
   cursor: pointer;
 }
 
-.AvatarPage .ui.cards > .empty .create-new:first-child {
+.CollectionsPage .ui.cards > .empty .create-new:first-child {
   margin-right: 24px;
 }
 
-.AvatarPage .ui.cards > .empty .create-new > .text {
+.CollectionsPage .ui.cards > .empty .create-new > .text {
   position: absolute;
   flex: 1 1;
   color: #fff;
@@ -51,31 +51,31 @@
   width: 100%;
 }
 
-.AvatarPage .ui.cards > .empty .create-new-item {
+.CollectionsPage .ui.cards > .empty .create-new-item {
   background-image: url('../../images/hat.svg');
   background-repeat: no-repeat;
 }
-.AvatarPage .ui.cards > .empty .create-new-collection {
+.CollectionsPage .ui.cards > .empty .create-new-collection {
   background-image: url('../../images/folder-hat.svg');
   background-repeat: no-repeat;
 }
 
-.AvatarPage .ui.cards .ui.card {
+.CollectionsPage .ui.cards .ui.card {
   width: 248px;
   background-color: transparent;
   box-shadow: none;
 }
 
-.AvatarPage .card .CollectionImage {
+.CollectionsPage .card .CollectionImage {
   height: 248px;
 }
 
-.AvatarPage .card .image-wrapper {
+.CollectionsPage .card .image-wrapper {
   height: 248px;
   padding: 15px;
 }
 
-.AvatarPage .filters .dcl.row.actions .ui.dropdown .ui.button {
+.CollectionsPage .filters .dcl.row.actions .ui.dropdown .ui.button {
   width: 16px;
   height: 16px;
   box-sizing: content-box;
@@ -84,15 +84,15 @@
   border: solid 1px var(--gray);
 }
 
-.AvatarPage .filters .dcl.row.actions .ui.button.open-editor {
+.CollectionsPage .filters .dcl.row.actions .ui.button.open-editor {
   padding: 6px 13px;
 }
 
-.AvatarPage .filters .dcl.row.actions .ui.button.open-editor:hover {
+.CollectionsPage .filters .dcl.row.actions .ui.button.open-editor:hover {
   transform: translateY(0px);
 }
 
-.AvatarPage .is-card {
+.CollectionsPage .is-card {
   transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
   box-shadow: none;
   transform: translateY(0px);
@@ -100,15 +100,15 @@
   margin-right: 24px;
 }
 
-.AvatarPage .is-card:nth-child(4n) {
+.CollectionsPage .is-card:nth-child(4n) {
   margin-right: 0px;
 }
 
-.AvatarPage .is-card:hover {
+.CollectionsPage .is-card:hover {
   transform: translateY(-4px);
 }
 
-.AvatarPage .is-card .is-image {
+.CollectionsPage .is-card .is-image {
   transition: box-shadow 0.2s ease-in-out;
   height: 248px;
   width: 248px;
@@ -116,17 +116,17 @@
   border-radius: 8px !important;
 }
 
-.AvatarPage .is-card:hover .is-image {
+.CollectionsPage .is-card:hover .is-image {
   box-shadow: var(--shadow-2);
 }
 
-.AvatarPage .is-card .is-image .is-image {
+.CollectionsPage .is-card .is-image .is-image {
   border-radius: 0px !important;
   box-shadow: none;
 }
 
 @media (max-width: 1200px) {
-  .AvatarPage .is-card .is-image {
+  .CollectionsPage .is-card .is-image {
     width: 215px;
     height: 215px;
   }

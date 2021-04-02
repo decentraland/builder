@@ -32,7 +32,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
               <>
                 <Header />
                 <div className="empty">
-                  <div className="subtitle">{t('avatar_page.empty_description')}</div>
+                  <div className="subtitle">{t('collections_page.empty_description')}</div>
                 </div>
               </>
             ) : (

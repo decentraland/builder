@@ -4,7 +4,7 @@ import { CallHistoryMethodAction } from 'connected-react-router'
 export enum NavigationTab {
   SCENES = 'scenes',
   LAND = 'land',
-  AVATAR = 'avatar',
+  COLLECTIONS = 'collection',
   NAMES = 'names',
   CURATION = 'curation'
 }

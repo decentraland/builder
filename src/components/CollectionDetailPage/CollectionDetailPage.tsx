@@ -105,7 +105,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
       <>
         <Section className={collection.isPublished ? 'is-published' : ''}>
           <Row>
-            <Back absolute onClick={() => onNavigate(locations.avatar())} />
+            <Back absolute onClick={() => onNavigate(locations.collections())} />
             <Narrow>
               <Row>
                 <Column className="header-column">
