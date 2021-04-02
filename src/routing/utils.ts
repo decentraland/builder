@@ -1,15 +1,23 @@
-export type PaginationOptions = { page?: number; sortBy?: string, sortOrder?: 'asc' | 'desc' }
+export type PaginationOptions = { page?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' }
 
-export function injectParams(location: string, keys: { [key: string]: string } = {}, options: { [key: string]: any }) {
+export function injectParams(location: string, keys: { [key: string]: string } = {}, options?: { [key: string]: any }) {
+  if (!options) {
+    return addParams(location)
+  }
+
+  const url: URL = new URL(window.location.href)
+  const currentParams: URLSearchParams = url.searchParams
   const params: string[] = []
+
   for (const [key, param] of Object.entries(keys)) {
-    switch (typeof options[key]) {
+    const value = options[key] || currentParams.get(param)
+    switch (typeof value) {
       case 'string':
-        params.push(`${param}=${options[key]}`)
+        params.push(`${param}=${value}`)
         break
       case 'number':
-        if (!Number.isFinite(options[key])) {
-          params.push(`${param}=${options[key]}`)
+        if (!Number.isFinite(value)) {
+          params.push(`${param}=${value}`)
         }
         break
       default:
@@ -20,7 +28,11 @@ export function injectParams(location: string, keys: { [key: string]: string } =
   return addParams(location, params.join('&'))
 }
 
-export function injectPagination(location: string, options: PaginationOptions) {
+export function injectPagination(location: string, options?: PaginationOptions) {
+  if (!options) {
+    return addParams(location)
+  }
+
   const params = []
   if (options.page) {
     params.push(`page=${options.page}`)
@@ -35,7 +47,7 @@ export function injectPagination(location: string, options: PaginationOptions) {
   return addParams(location, params.join('&'))
 }
 
-function addParams(location: string, qs: string | null) {
+function addParams(location: string, qs: string | null = null) {
   if (qs) {
     const questionMarkPosition = location.indexOf('?')
     if (questionMarkPosition === -1) {
