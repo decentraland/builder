@@ -15,3 +15,7 @@
   align-items: stretch;
   justify-content: flex-start;
 }
+
+.ItemEditorPage .TopPanel ~ .content {
+  height: calc(100% - var(--top-panel-height));
+}

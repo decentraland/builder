@@ -96,5 +96,10 @@
 
 .RightPanel .edit-buttons {
   margin: 10px 0;
-  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+
+.RightPanel .edit-buttons .ui.button + .ui.button {
+  margin-left: 20px;
 }

@@ -1,7 +1,11 @@
+:root {
+  --top-panel-height: 56px;
+}
+
 .TopPanel {
   display: flex;
   align-items: center;
-  min-height: 56px;
+  height: var(--top-panel-height);
   position: relative;
 }
 
