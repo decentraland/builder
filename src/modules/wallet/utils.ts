@@ -3,7 +3,7 @@ import { Address } from 'web3x-es/address'
 import { Eth } from 'web3x-es/eth'
 import { TxSend } from 'web3x-es/contract'
 import { LegacyProviderAdapter } from 'web3x-es/providers'
-import { ContractName, getContract, sendMetaTransaction } from 'decentraland-transactions'
+import { ContractData, sendMetaTransaction } from 'decentraland-transactions'
 import { getNetworkProvider, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -18,7 +18,7 @@ export async function getEth(): Promise<Eth> {
 }
 
 export function* getWallet() {
-  const eth = yield call(getEth)
+  const eth: Eth = yield call(getEth)
 
   const wallet: Wallet | null = yield select(getBaseWallet)
   if (!wallet) {
@@ -27,22 +27,19 @@ export function* getWallet() {
 
   return [wallet, eth]
 }
-export function* sendWalletMetaTransaction(contractName: ContractName, method: TxSend<any>, address?: string) {
+export function* sendWalletMetaTransaction(contract: ContractData, method: TxSend<any>) {
   const [wallet, eth]: [Wallet, Eth] = yield call(getWallet)
+  const from = Address.fromString(wallet.address)
   const provider = eth.provider
 
-  const from = Address.fromString(wallet.address)
-  const chainId = wallet.networks.MATIC.chainId
+  const metaTxProvider: Provider = yield call(() => getNetworkProvider(contract.chainId))
+  const txData = getMethodData(method, from)
 
-  const metaTxProvider: Provider = yield call(() => getNetworkProvider(chainId))
-  const payload = method.getSendRequestPayload({ from })
-  const txData = payload.params[0].data
-
-  const contract = getContract(contractName, chainId)
-  if (address) {
-    contract.address = address
-  }
-
-  const txHash = yield call(() => sendMetaTransaction(provider, metaTxProvider, txData, contract))
+  const txHash: string = yield call(() => sendMetaTransaction(provider, metaTxProvider, txData, contract))
   return txHash
+}
+
+export function getMethodData(method: TxSend<any>, from: Address): string {
+  const payload = method.getSendRequestPayload({ from })
+  return payload.params[0].data
 }

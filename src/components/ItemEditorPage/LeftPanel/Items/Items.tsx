@@ -3,9 +3,9 @@ import { Header, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
+import SidebarItem from './SidebarItem'
 import { Props } from './Items.types'
 import './Items.css'
-import SidebarItem from './SidebarItem'
 
 export default class Items extends React.PureComponent<Props> {
   isVisible = (item: Item) => {

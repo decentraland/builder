@@ -1,8 +1,21 @@
+:root {
+  --item-editor-panel-width: 360px;
+}
+
 .ItemEditorPage {
+  height: 100%;
+  width: 100%;
+}
+
+.ItemEditorPage > .content {
   display: flex;
   position: relative;
   height: 100%;
   width: 100%;
   align-items: stretch;
   justify-content: flex-start;
+}
+
+.ItemEditorPage .TopPanel ~ .content {
+  height: calc(100% - var(--top-panel-height));
 }

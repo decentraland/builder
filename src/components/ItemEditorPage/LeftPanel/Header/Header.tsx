@@ -95,7 +95,7 @@ export default class Header extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection } = this.props
-    return <Row className="Header">{collection ? this.renderSelectedCollection() : this.renderHeader()}</Row>
+    const { isReviewing, collection } = this.props
+    return isReviewing ? null : <Row className="Header">{collection ? this.renderSelectedCollection() : this.renderHeader()}</Row>
   }
 }

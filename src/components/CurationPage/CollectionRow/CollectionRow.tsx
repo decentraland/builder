@@ -15,7 +15,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
     const { collection, items } = this.props
 
     return (
-      <Link className="CollectionRow" to={locations.collectionDetail(collection.id)}>
+      <Link className="CollectionRow" to={locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' })}>
         <Grid>
           <Grid.Row>
             <Grid.Column width={5}>

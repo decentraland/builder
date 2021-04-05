@@ -1,5 +1,5 @@
 .LeftPanel {
-  width: 360px;
+  width: var(--item-editor-panel-width);
   flex: none;
   background-color: var(--void);
   position: relative;

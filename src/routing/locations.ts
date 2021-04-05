@@ -1,9 +1,11 @@
 import { PaginationOptions, injectPagination, injectParams } from './utils'
 
+type ItemEditorParams = { itemId?: string; collectionId?: string; isReviewing?: string }
+
 export const locations = {
   root: (options: PaginationOptions = {}) => injectPagination('/', options),
   sceneEditor: (projectId = ':projectId') => `/scene-editor/${projectId}`,
-  poolSearch: (options: PaginationOptions = {}) =>
+  poolSearch: (options?: PaginationOptions) =>
     injectParams(injectPagination('/pools', options), { group: 'group', ethAddress: 'eth_address' }, options),
   poolView: (projectId = ':projectId', type = ':type(pool)') => `/view/${type}/${projectId}`,
   sceneView: (projectId = ':projectId') => `/view/${projectId}`,
@@ -26,8 +28,8 @@ export const locations = {
   collections: () => '/collections',
   itemDetail: (itemId = ':itemId') => `/items/${itemId}`,
   collectionDetail: (collectionId = ':collectionId') => `/collections/${collectionId}`,
-  itemEditor: (options: { itemId?: string; collectionId?: string } = {}) =>
-    injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection' }, options),
+  itemEditor: (options?: ItemEditorParams) =>
+    injectParams(`/item-editor`, { itemId: 'item', collectionId: 'collection', isReviewing: 'reviewing' }, options),
   ens: () => '/names',
   curation: () => '/curation'
 }
