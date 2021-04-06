@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { Dropdown, DropdownProps, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-// import ViewPort from 'components/ViewPort'
-// import { AvatarAnimation, PreviewType } from 'modules/editor/types'
-import { AvatarAnimation } from 'modules/editor/types'
+import ViewPort from 'components/ViewPort'
+import { AvatarAnimation, PreviewType } from 'modules/editor/types'
 import { WearableBodyShape } from 'modules/item/types'
 import { Props } from './CenterPanel.types'
 import './CenterPanel.css'
@@ -28,7 +27,7 @@ export default class CenterPanel extends React.PureComponent<Props> {
     const { bodyShape, avatarAnimation } = this.props
     return (
       <div className="CenterPanel">
-        {/* <ViewPort type={PreviewType.WEARABLE} /> */}
+        <ViewPort type={PreviewType.WEARABLE} />
         <div className="dropdowns">
           <Dropdown
             className="body-shape"
