@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { publishCollectionRequest, PublishCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
-import { Item } from 'modules/item/types'
+import { Item, Rarity } from 'modules/item/types'
 
 export type Props = ModalProps & {
   metadata: PublishCollectionModalMetadata
@@ -10,6 +10,10 @@ export type Props = ModalProps & {
   items: Item[]
   isLoading: boolean
   onPublish: typeof publishCollectionRequest
+}
+
+export type State = {
+  rarities: Rarity[]
 }
 
 export type PublishCollectionModalMetadata = {

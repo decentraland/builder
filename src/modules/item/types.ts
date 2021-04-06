@@ -124,6 +124,12 @@ export type Item = BaseItem & {
   contents: Record<string, string>
 }
 
+export type Rarity = {
+  name: ItemRarity
+  price: string
+  maxSupply: string
+}
+
 export const THUMBNAIL_PATH = 'thumbnail.png'
 export const IMAGE_PATH = 'image.png'
 export const ITEM_NAME_MAX_LENGTH = 32

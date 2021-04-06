@@ -20,7 +20,7 @@ export function* handleConnectWallet() {
 
 function* handleFetchCommitteeMembersMembersRequest() {
   try {
-    const committee: Account[] = yield call(() => builder.getCommittee())
+    const committee: Account[] = yield call(() => builder.fetchCommittee())
     const members = committee.map(account => account.address)
     yield put(fetchCommitteeMembersSuccess(members))
   } catch (error) {
