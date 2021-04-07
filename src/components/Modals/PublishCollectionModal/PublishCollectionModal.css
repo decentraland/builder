@@ -39,7 +39,7 @@
 .PublishCollectionModal .items-breakdown .item.total {
   border-top: 1px solid var(--secondary-text);
   color: var(--secondary-text);
-  padding: 20px 20px 10px 20px;
+  padding: 20px 20px 0;
 }
 
 .PublishCollectionModal .items-breakdown .item i.item-rarity {

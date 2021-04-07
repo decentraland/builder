@@ -436,7 +436,8 @@
       "newest": "最新",
       "name_asc": "名称↑",
       "name_desc": "名称↓"
-    }
+    },
+    "total": "全部的"
   },
   "navigation": {
     "scenes": "场景",
@@ -931,6 +932,7 @@
     "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
     "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
     "third_paragraph": "您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
+    "items_breakdown_title": "您正在发布{items}个项目。 负责发布馆藏的MANA将交给DAO",
     "publish": "发布"
   },
   "sell_collection_modal": {
