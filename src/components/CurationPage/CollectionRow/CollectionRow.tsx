@@ -3,12 +3,12 @@ import { Grid, Icon as UIIcon } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
+import { hasReviews } from 'modules/collection/utils'
 import Icon from 'components/Icon'
 import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
 import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
-import { hasReviews } from 'modules/collection/utils'
 
 export default class CollectionRow extends React.PureComponent<Props> {
   render() {
@@ -37,7 +37,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
               <div className="title">{t('collection_row.forum_post')}</div>
               <div className="subtitle">
                 {collection.forumLink ? (
-                  <a href={collection.forumLink} rel="noopener noreferrer" target="_blank">
+                  <a href={collection.forumLink} rel="noopener noreferrer" target="_blank" onClick={event => event.stopPropagation()}>
                     {t('collection_row.visit')}
                   </a>
                 ) : (
