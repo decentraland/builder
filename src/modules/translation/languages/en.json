@@ -884,7 +884,9 @@
   "collection_row": {
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
+    "visit": "Visit",
     "forum_post": "Forum Post",
+    "no_forum_post": "Not posted",
     "approved": "Approved",
     "rejected": "Rejected"
   },

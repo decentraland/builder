@@ -895,7 +895,9 @@
   "collection_row": {
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
+    "visit": "Visitar",
     "forum_post": "Post en el foro",
+    "no_forum_post": "No hay post",
     "approved": "Aprobada",
     "rejected": "Rechazada"
   },

@@ -35,7 +35,15 @@ export default class CollectionRow extends React.PureComponent<Props> {
             </Grid.Column>
             <Grid.Column width={4}>
               <div className="title">{t('collection_row.forum_post')}</div>
-              <div className="subtitle">FORUM LINK</div>
+              <div className="subtitle">
+                {collection.forumLink ? (
+                  <a href={collection.forumLink} rel="noopener noreferrer" target="_blank">
+                    {t('collection_row.visit')}
+                  </a>
+                ) : (
+                  t('collection_row.no_forum_post')
+                )}
+              </div>
             </Grid.Column>
             <Grid.Column width={3}>
               <div className="actions">
