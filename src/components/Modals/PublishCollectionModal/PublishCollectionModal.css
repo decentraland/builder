@@ -11,7 +11,8 @@
 }
 
 .PublishCollectionModal .loader-wrapper {
-  height: 60px;
+  height: 80px;
+  position: relative;
 }
 
 .PublishCollectionModal .divider {
@@ -24,7 +25,7 @@
 
 .PublishCollectionModal .items-breakdown {
   padding: 20px 0;
-  margin: 20px 0;
+  margin: 30px 0;
   border-radius: 10px;
   background-color: var(--background);
 }
@@ -42,6 +43,10 @@
   padding: 20px 20px 0;
 }
 
+.PublishCollectionModal .items-breakdown .item.total .mana {
+  color: #fff;
+}
+
 .PublishCollectionModal .items-breakdown .item i.item-rarity {
   height: 10px;
   width: 10px;
@@ -52,4 +57,8 @@
 
 .PublishCollectionModal .ui.button {
   margin-top: 60px;
+}
+
+.PublishCollectionModal .ui.button.proceed {
+  margin-top: 0;
 }

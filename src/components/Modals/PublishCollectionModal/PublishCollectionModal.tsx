@@ -56,7 +56,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
       <>
         {isFetchingRarities ? (
           <div className="loader-wrapper">
-            <Loader size="small" active={isFetchingRarities} />
+            <Loader size="big" active={isFetchingRarities} />
           </div>
         ) : (
           <>
@@ -82,7 +82,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 </div>
               </div>
             </div>
-            <Button primary fluid onClick={this.handleProceed}>
+            <Button className="proceed" primary fluid onClick={this.handleProceed}>
               {t('global.proceed')}
             </Button>
           </>
