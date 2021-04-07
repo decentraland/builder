@@ -945,7 +945,7 @@
     "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
     "second_paragraph": "You will not be able to add or delete items after you publish your collection",
     "third_paragraph": "You will be able to see your items in the marketplace but they will available for sale once the collection is validated by the DAO",
-    "items_breakdown_title": "You are publishing {items} items. The MANA charged for publishing the collections will go to the DAO",
+    "items_breakdown_title": "You are publishing {items} items. The MANA for publishing the collections will go to the DAO",
     "publish": "Publish"
   },
   "mint_items_modal": {
