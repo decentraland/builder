@@ -243,7 +243,6 @@ function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAct
   const { collection, mints } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
 
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
     const beneficiaries: Address[] = []
@@ -257,14 +256,12 @@ function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAct
       }
     }
 
-    const txHash: string = yield call(() =>
-      implementation.methods
-        .issueTokens(beneficiaries, tokenIds)
-        .send({ from })
-        .getTxHash()
-    )
+    const maticChainId = wallet.networks.MATIC.chainId
+    const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
 
-    yield put(mintCollectionItemsSuccess(collection, mints, wallet.chainId, txHash))
+    const txHash: string = yield sendWalletMetaTransaction(contract, implementation.methods.issueTokens(beneficiaries, tokenIds))
+
+    yield put(mintCollectionItemsSuccess(collection, mints, maticChainId, txHash))
     yield put(closeModal('MintItemsModal'))
     yield put(replace(locations.activity()))
   } catch (error) {

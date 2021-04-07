@@ -41,7 +41,13 @@ import {
   REJECT_COLLECTION_FAILURE,
   REJECT_COLLECTION_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
-  SET_COLLECTION_MANAGERS_SUCCESS
+  SET_COLLECTION_MANAGERS_SUCCESS,
+  MINT_COLLECTION_ITEMS_SUCCESS,
+  MINT_COLLECTION_ITEMS_REQUEST,
+  MINT_COLLECTION_ITEMS_FAILURE,
+  MintCollectionItemsFailureAction,
+  MintCollectionItemsRequestAction,
+  MintCollectionItemsSuccessAction
 } from './actions'
 import { toCollectionObject } from './utils'
 import { Collection } from './types'
@@ -78,6 +84,9 @@ type CollectionReducerAction =
   | RejectCollectionRequestAction
   | RejectCollectionFailureAction
   | FetchTransactionSuccessAction
+  | MintCollectionItemsRequestAction
+  | MintCollectionItemsSuccessAction
+  | MintCollectionItemsFailureAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -87,7 +96,9 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case DELETE_COLLECTION_REQUEST:
     case PUBLISH_COLLECTION_REQUEST:
     case APPROVE_COLLECTION_REQUEST:
-    case REJECT_COLLECTION_REQUEST: {
+    case REJECT_COLLECTION_REQUEST:
+    case MINT_COLLECTION_ITEMS_REQUEST:
+    case MINT_COLLECTION_ITEMS_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -137,7 +148,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case DELETE_COLLECTION_FAILURE:
     case PUBLISH_COLLECTION_FAILURE:
     case APPROVE_COLLECTION_FAILURE:
-    case REJECT_COLLECTION_FAILURE: {
+    case REJECT_COLLECTION_FAILURE:
+    case MINT_COLLECTION_ITEMS_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
