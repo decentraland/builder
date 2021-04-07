@@ -12,7 +12,7 @@ import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
 import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
-import { Item, ItemType, ItemRarity, WearableData } from 'modules/item/types'
+import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
 import { WeeklyStats } from 'modules/stats/types'
@@ -182,7 +182,7 @@ function fromRemotePool(remotePool: RemotePool): Pool {
 
   pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
   pool.isPublic = true
-  ;(pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
+    ; (pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
 
   if (remotePool.parcels) {
     pool.statistics = {
@@ -617,17 +617,21 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/collections/${collection.id}`, {})
   }
 
-  async getWeeklyStats(base: string) {
+  async fetchWeeklyStats(base: string) {
     const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
     return fromRemoteWeeklyStats(remoteStats)
   }
 
-  async getCommittee(): Promise<string[]> {
+  async fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }
 
   async createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
     return this.request('post', `/collections/${collection.id}/post`, { forumPost })
+  }
+
+  async fetchRarities(): Promise<Rarity[]> {
+    return this.request('get', '/rarities')
   }
 }
 
