@@ -115,8 +115,7 @@ export function toItemObject(items: Item[]) {
 
 export async function generateImage(item: Item, width = 1024, height = 1024) {
   // fetch thumbnail
-  const thumbnailUrl = getContentsStorageUrl(item.contents[item.thumbnail])
-  const thumbnail = await fetch(thumbnailUrl).then(response => response.blob())
+  const thumbnail = await fetch(getThumbnailURL(item)).then(response => response.blob())
 
   // create canvas
   const canvas = document.createElement('canvas')
@@ -191,4 +190,8 @@ export function hasOnChainDataChanged(originalItem: Item, item: Item) {
     originalItem.rarity !== item.rarity ||
     JSON.stringify(originalItem.data) !== JSON.stringify(item.data)
   )
+}
+
+export function getThumbnailURL(item: Item) {
+  return getContentsStorageUrl(item.contents[item.thumbnail])
 }

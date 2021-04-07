@@ -895,7 +895,9 @@
   "collection_row": {
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
+    "visit": "Visitar",
     "forum_post": "Post en el foro",
+    "no_forum_post": "No hay post",
     "approved": "Aprobada",
     "rejected": "Rechazada"
   },
@@ -979,6 +981,14 @@
   "item_editor": {
     "open": "Abrir editor",
     "top_panel": {
+      "veredict_received": "Veredicto recibido",
+      "veredict_received_successfully": "Recibimos tu veredicto correctamente!",
+      "veredict_explanation": "Puedes contarnos por qué?",
+      "go_to_forum": "Por favor visita la discusión asocida y explícale al creador el por qué de tu decisión.",
+      "forum_link": "Link al foro",
+      "discussion": "Discusión",
+      "keep_reviewing": "Continua verificando",
+      "back_to_curation": "Volver a curar",
       "reject": {
         "title": "Rechazar Colección",
         "subtitle": "No es lo suficientemente buena?",

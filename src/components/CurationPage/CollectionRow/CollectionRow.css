@@ -40,6 +40,7 @@
 
 .CollectionRow .subtitle {
   margin-top: 2px;
+  display: block;
   color: var(--secondary-text);
   text-transform: uppercase;
 }
