@@ -617,7 +617,7 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/collections/${collection.id}`, {})
   }
 
-  async getWeeklyStats(base: string) {
+  async fetchWeeklyStats(base: string) {
     const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
     return fromRemoteWeeklyStats(remoteStats)
   }

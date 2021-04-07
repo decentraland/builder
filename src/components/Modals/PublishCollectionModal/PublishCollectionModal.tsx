@@ -35,21 +35,24 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     const { items } = this.props
     const { rarities, isFetchingRarities } = this.state
 
-    const itemsByRarity: Record<string, { name: ItemRarity; count: number; price: number }> = {}
+    const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
     let totalPrice = 0
 
-    if (rarities.length > 0) {
-      items.forEach(item => {
-        const rarity = rarities.find(r => r.name === item.rarity)!
-        if (!itemsByRarity[rarity.name]) {
-          itemsByRarity[rarity.name] = { name: rarity.name, count: 0, price: 0 }
-        }
+    for (const item of items) {
+      const rarity = rarities.find(rarity => rarity.name === item.rarity)
 
-        const rarityPrice = fromWei(rarity.price, 'ether')
-        itemsByRarity[rarity.name].count++
-        itemsByRarity[rarity.name].price += parseInt(rarityPrice, 10)
-        totalPrice += parseInt(rarityPrice, 10)
-      })
+      if (!rarity) {
+        continue
+      }
+
+      if (!itemsByRarity[rarity.id]) {
+        itemsByRarity[rarity.id] = { id: rarity.id, name: rarity.name, count: 0, price: 0 }
+      }
+
+      const rarityPrice = parseInt(fromWei(rarity.price, 'ether'), 10)
+      itemsByRarity[rarity.name].count++
+      itemsByRarity[rarity.name].price += rarityPrice
+      totalPrice += rarityPrice
     }
 
     return (
@@ -62,19 +65,17 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           <>
             {t('publish_collection_modal.items_breakdown_title', { items: items.length })}
             <div className="items-breakdown">
-              {Object.values(itemsByRarity).map(itemByRarity => {
-                return (
-                  <div className="item" key={itemByRarity.name}>
-                    <div>
-                      <i className="item-rarity" style={{ backgroundColor: RARITY_COLOR[itemByRarity.name] }}></i>
-                      {itemByRarity.count} {itemByRarity.name}
-                    </div>
-                    <div>
-                      <Mana>{itemByRarity.price}</Mana>
-                    </div>
+              {Object.values(itemsByRarity).map(itemByRarity => (
+                <div className="item" key={itemByRarity.name}>
+                  <div>
+                    <i className="item-rarity" style={{ backgroundColor: RARITY_COLOR[itemByRarity.id] }}></i>
+                    {itemByRarity.count} {itemByRarity.name}
                   </div>
-                )
-              })}
+                  <div>
+                    <Mana>{itemByRarity.price}</Mana>
+                  </div>
+                </div>
+              ))}
               <div className="item total">
                 <div>{t('global.total')}</div>
                 <div>

@@ -44,7 +44,7 @@
 }
 
 .PublishCollectionModal .items-breakdown .item.total .mana {
-  color: #fff;
+  color: var(--text);
 }
 
 .PublishCollectionModal .items-breakdown .item i.item-rarity {

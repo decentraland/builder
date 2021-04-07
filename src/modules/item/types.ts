@@ -125,6 +125,7 @@ export type Item = BaseItem & {
 }
 
 export type Rarity = {
+  id: ItemRarity
   name: ItemRarity
   price: string
   maxSupply: string

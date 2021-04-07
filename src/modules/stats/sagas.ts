@@ -15,7 +15,7 @@ export function* statsSaga() {
 function* handleFetchSceneStatsRequest(action: FetchWeeklySceneStatsRequestAction) {
   const { base } = action.payload
   try {
-    const stats: WeeklyStats = yield call(() => builder.getWeeklyStats(base))
+    const stats: WeeklyStats = yield call(() => builder.fetchWeeklyStats(base))
     yield put(fetchWeeklySceneStatsSuccess(base, stats))
   } catch (error) {
     yield put(fetchWeeklySceneStatsFailure(base, error.message))
