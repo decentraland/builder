@@ -102,7 +102,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
           {(remoteItem, _collection, isLoading) => {
-            const item = (selectedItem || remoteItem) as Item
+            const item = (remoteItem || selectedItem) as Item
             const isOwner = this.isOwner(item)
             const canEditItemMetadata = this.canEditItemMetadata(item)
 

@@ -327,9 +327,10 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
 }
 
 function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
-  const allItems: Item[] = yield select(getWalletItems)
+  let allItems: Item[] = yield select(getWalletItems)
   if (allItems.length === 0) {
     yield take(FETCH_ITEMS_SUCCESS)
+    allItems = yield select(getWalletItems)
   }
 
   try {

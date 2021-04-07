@@ -43,7 +43,7 @@ async function getFiles(contents: Record<string, string>) {
 
 function toCatalystItem(collection: Collection, item: Item): CatalystItem {
   return {
-    id: item.id,
+    id: item.tokenId!,
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,

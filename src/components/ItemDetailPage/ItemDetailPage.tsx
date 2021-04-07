@@ -41,6 +41,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     const data = item.data as WearableData
 
     const missingBodyShape = getMissingBodyShapeType(item)
+    const hasActions = missingBodyShape !== null || !item.isPublished
 
     return (
       <>
@@ -58,43 +59,39 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {item.isPublished ? (
-                      <Button secondary compact disabled={true}>
-                        {t('global.published')}
-                      </Button>
-                    ) : (
-                      <>
-                        <Dropdown
-                          trigger={
-                            <Button basic>
-                              <Icon name="ellipsis horizontal" />
-                            </Button>
-                          }
-                          inline
-                          direction="left"
-                        >
-                          <Dropdown.Menu>
-                            {missingBodyShape !== null ? (
-                              <Dropdown.Item
-                                text={t('item_detail_page.add_representation', {
-                                  bodyShape: t(`body_shapes.${missingBodyShape}`).toLowerCase()
-                                })}
-                                onClick={this.handleAddRepresentationToItem}
-                              />
-                            ) : null}
+                    {hasActions ? (
+                      <Dropdown
+                        trigger={
+                          <Button basic>
+                            <Icon name="ellipsis horizontal" />
+                          </Button>
+                        }
+                        inline
+                        direction="left"
+                      >
+                        <Dropdown.Menu>
+                          {missingBodyShape !== null ? (
+                            <Dropdown.Item
+                              text={t('item_detail_page.add_representation', {
+                                bodyShape: t(`body_shapes.${missingBodyShape}`).toLowerCase()
+                              })}
+                              onClick={this.handleAddRepresentationToItem}
+                            />
+                          ) : null}
+                          {!item.isPublished ? (
                             <ConfirmDelete
                               name={item.name}
                               onDelete={this.handleDeleteItem}
                               trigger={<Dropdown.Item text={t('global.delete')} />}
                             />
-                          </Dropdown.Menu>
-                        </Dropdown>
+                          ) : null}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    ) : null}
 
-                        <Button primary compact onClick={this.handleEditItem}>
-                          {t('global.edit')}
-                        </Button>
-                      </>
-                    )}
+                    <Button primary compact onClick={this.handleEditItem}>
+                      {t('global.edit')}
+                    </Button>
                   </Row>
                 </Column>
               </Row>
