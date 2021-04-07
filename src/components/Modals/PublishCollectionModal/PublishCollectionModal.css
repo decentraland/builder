@@ -7,7 +7,11 @@
 }
 
 .PublishCollectionModal.ui.modal > .content {
-  padding: 0 60px 30px;
+  padding: 0 20px 20px;
+}
+
+.PublishCollectionModal .loader-wrapper {
+  height: 60px;
 }
 
 .PublishCollectionModal .divider {
@@ -16,6 +20,34 @@
   height: 1px;
   border: 2px solid var(--primary);
   border-radius: 2px;
+}
+
+.PublishCollectionModal .items-breakdown {
+  padding: 20px 0;
+  margin: 20px 0;
+  border-radius: 10px;
+  background-color: var(--background);
+}
+
+.PublishCollectionModal .items-breakdown .item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px 20px;
+  text-transform: capitalize;
+}
+
+.PublishCollectionModal .items-breakdown .item.total {
+  border-top: 1px solid var(--secondary-text);
+  color: var(--secondary-text);
+  padding: 20px 20px 10px 20px;
+}
+
+.PublishCollectionModal .items-breakdown .item i.item-rarity {
+  height: 10px;
+  width: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-right: 10px;
 }
 
 .PublishCollectionModal .ui.button {

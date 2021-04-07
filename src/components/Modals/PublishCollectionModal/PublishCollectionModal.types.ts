@@ -13,7 +13,9 @@ export type Props = ModalProps & {
 }
 
 export type State = {
+  step: number
   rarities: Rarity[]
+  isFetchingRarities: boolean
 }
 
 export type PublishCollectionModalMetadata = {
