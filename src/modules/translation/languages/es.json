@@ -953,7 +953,7 @@
     "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
     "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar",
     "third_paragraph": "Podrás ver tus items en el marketplace pero serán puestos en venta luego de ser validados por la DAO",
-    "items_breakdown_title": "Estas por publicar {items} items. El MANA usado por publicar la collección será enviado a la DAO",
+    "items_breakdown_title": "Estas por publicar {items} items. El fee de MANA por publicar la collección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
     "publish": "Publish"
   },
   "sell_collection_modal": {

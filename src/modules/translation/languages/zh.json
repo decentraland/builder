@@ -932,7 +932,7 @@
     "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
     "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
     "third_paragraph": "您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
-    "items_breakdown_title": "您正在发布{items}个项目。 发布收藏的MANA将提交给DAO",
+    "items_breakdown_title": "您即将发布{items}个项目。 每个系列的MANA费用都由Decentraland DAO负责，用于通过赠款，活动和奖励来支持社区的发展。",
     "publish": "发布"
   },
   "sell_collection_modal": {
