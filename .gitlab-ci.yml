@@ -6,6 +6,8 @@ build:
     - staging
     - release
   script:
+    - apk update
+    - apk add git
     - ./setupEnv.sh
     - npm install && npm run build
     - dcl-lock-sync
