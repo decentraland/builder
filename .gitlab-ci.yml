@@ -9,7 +9,7 @@ build:
     - apt-get update
     - apt-get install git
     - ./setupEnv.sh
-    - npm install && npm run build
+    - npm ci && npm run build
     - dcl-lock-sync
     - cd .ci && npm install && dcl-up website-builder
     - dcl-sync-release && cd ..
