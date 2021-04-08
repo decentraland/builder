@@ -7,7 +7,7 @@ build:
     - release
   script:
     - ./setupEnv.sh
-    - npm ci && npm run build
+    - npm i && npm run build
     - dcl-lock-sync
     - cd .ci && npm install && dcl-up website-builder
     - dcl-sync-release && cd ..
