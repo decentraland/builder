@@ -198,6 +198,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
+                reviewedAt: new Date(),
                 isApproved: true
               }
             }
@@ -212,6 +213,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
+                reviewedAt: new Date(),
                 isApproved: false
               }
             }
