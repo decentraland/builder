@@ -16,7 +16,7 @@ export function isOnSale(collection: Collection) {
 }
 
 export function getCollectionBaseURI() {
-  return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
+  return `${env.get('REACT_APP_PEER_URL', '')}/lambdas/collections/standard/erc721/`
 }
 
 export function getCollectionSymbol(collection: Collection) {
