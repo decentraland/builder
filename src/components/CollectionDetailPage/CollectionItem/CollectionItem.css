@@ -14,10 +14,15 @@
   font-size: 15px;
 }
 
-.CollectionItem .ui.grid > .row > .column.avatar-column {
+.CollectionItem .ui.grid.equal.width > .row > .column {
   display: flex;
-  align-items: center;
   padding-left: 0;
+  flex-direction: column;
+}
+
+.CollectionItem .ui.grid.equal.width > .row > .column.avatar-column {
+  flex-direction: inherit;
+  align-items: center;
 }
 
 .CollectionItem .ItemImage.image-wrapper {
@@ -91,4 +96,5 @@
 .CollectionItem .dcl.mana.ui.header {
   font-size: 15px;
   font-weight: normal;
+  line-height: 0;
 }
