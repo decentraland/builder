@@ -952,7 +952,8 @@
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目",
-    "no_items": "您没有可用于\"{name}\"的项目"
+    "no_items": "您没有可用于\"{name}\"的项目",
+    "mint": "铸币"
   },
   "collection_image": {
     "no_items": "没有项目"

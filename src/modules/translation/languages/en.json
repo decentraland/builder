@@ -951,7 +951,8 @@
   "mint_items_modal": {
     "title": "Mint Items",
     "add_item": "Add Item",
-    "no_items": "You have no items available to mint for \"{name}\""
+    "no_items": "You have no items available to mint for \"{name}\"",
+    "mint": "Mint"
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",

@@ -14,22 +14,22 @@ export default class SellCollectionModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { metadata, onClose } = this.props
+    const { metadata, isLoading, onClose } = this.props
     return (
-      <Modal name={name} className="SellCollectionModal" size="tiny" onClose={onClose}>
+      <Modal className="SellCollectionModal" size="tiny" onClose={onClose}>
         <ModalNavigation title={t('sell_collection_modal.title')} onClose={onClose} />
         <Modal.Content>
           {metadata.isOnSale ? (
             <>
               {t('sell_collection_modal.turn_on_description')}
-              <Button primary fluid onClick={this.handleSell}>
+              <Button primary fluid onClick={this.handleSell} loading={isLoading}>
                 {t('sell_collection_modal.turn_on')}
               </Button>
             </>
           ) : (
             <>
               {t('sell_collection_modal.turn_off_description')}
-              <Button primary fluid onClick={this.handleSell}>
+              <Button primary fluid onClick={this.handleSell} loading={isLoading}>
                 {t('sell_collection_modal.turn_off')}
               </Button>
             </>

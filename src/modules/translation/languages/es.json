@@ -967,7 +967,8 @@
   "mint_items_modal": {
     "title": "Crear Items",
     "add_item": "Agregar Item",
-    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\"",
+    "mint": "Crear"
   },
   "collection_managers_modal": {
     "title": "Colaboradores",

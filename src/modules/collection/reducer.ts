@@ -41,14 +41,24 @@ import {
   REJECT_COLLECTION_REQUEST,
   REJECT_COLLECTION_FAILURE,
   REJECT_COLLECTION_SUCCESS,
+  SET_COLLECTION_MINTERS_REQUEST,
   SET_COLLECTION_MINTERS_SUCCESS,
+  SET_COLLECTION_MINTERS_FAILURE,
+  SetCollectionMintersRequestAction,
+  SetCollectionMintersSuccessAction,
+  SetCollectionMintersFailureAction,
+  SET_COLLECTION_MANAGERS_REQUEST,
   SET_COLLECTION_MANAGERS_SUCCESS,
-  MINT_COLLECTION_ITEMS_SUCCESS,
+  SET_COLLECTION_MANAGERS_FAILURE,
+  SetCollectionManagersRequestAction,
+  SetCollectionManagersSuccessAction,
+  SetCollectionManagersFailureAction,
   MINT_COLLECTION_ITEMS_REQUEST,
+  MINT_COLLECTION_ITEMS_SUCCESS,
   MINT_COLLECTION_ITEMS_FAILURE,
-  MintCollectionItemsFailureAction,
   MintCollectionItemsRequestAction,
-  MintCollectionItemsSuccessAction
+  MintCollectionItemsSuccessAction,
+  MintCollectionItemsFailureAction
 } from './actions'
 import { toCollectionObject } from './utils'
 import { Collection } from './types'
@@ -85,6 +95,12 @@ type CollectionReducerAction =
   | RejectCollectionRequestAction
   | RejectCollectionFailureAction
   | FetchTransactionSuccessAction
+  | SetCollectionMintersRequestAction
+  | SetCollectionMintersSuccessAction
+  | SetCollectionMintersFailureAction
+  | SetCollectionManagersRequestAction
+  | SetCollectionManagersSuccessAction
+  | SetCollectionManagersFailureAction
   | MintCollectionItemsRequestAction
   | MintCollectionItemsSuccessAction
   | MintCollectionItemsFailureAction
@@ -99,6 +115,10 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case PUBLISH_COLLECTION_REQUEST:
     case APPROVE_COLLECTION_REQUEST:
     case REJECT_COLLECTION_REQUEST:
+    case SET_COLLECTION_MINTERS_REQUEST:
+    case SET_COLLECTION_MINTERS_SUCCESS:
+    case SET_COLLECTION_MANAGERS_REQUEST:
+    case SET_COLLECTION_MANAGERS_SUCCESS:
     case MINT_COLLECTION_ITEMS_REQUEST:
     case MINT_COLLECTION_ITEMS_SUCCESS: {
       return {
@@ -164,6 +184,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case PUBLISH_COLLECTION_FAILURE:
     case APPROVE_COLLECTION_FAILURE:
     case REJECT_COLLECTION_FAILURE:
+    case SET_COLLECTION_MINTERS_FAILURE:
+    case SET_COLLECTION_MANAGERS_FAILURE:
     case MINT_COLLECTION_ITEMS_FAILURE: {
       return {
         ...state,
