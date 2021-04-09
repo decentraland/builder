@@ -1,18 +1,19 @@
 import { AuthIdentity } from 'dcl-crypto'
+import { ChainId } from '@dcl/schemas'
 import { builder, getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
-import { getCatalystPointer } from 'modules/item/utils'
+import { getCatalystURN } from 'modules/item/utils'
 import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
-export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
-  const pointer = getCatalystPointer(collection, item)
-  const files = await getFiles(item.contents)
-  const image = await generateImage(item)
+export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item, chainId: ChainId) {
+  const urn = getCatalystURN(collection, item, chainId)
+  const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [pointer], toCatalystItem(collection, item), contentFiles)
+  const catalystItem = toCatalystItem(collection, item, chainId)
+  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [urn], catalystItem, contentFiles)
   await deploy(PEER_URL, data)
 
   // @TODO: Revisit this because if it is in the catalyst we shouldn't update it
@@ -41,9 +42,9 @@ async function getFiles(contents: Record<string, string>) {
   }, {})
 }
 
-function toCatalystItem(collection: Collection, item: Item): CatalystItem {
+function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {
   return {
-    id: item.tokenId!,
+    id: getCatalystURN(collection, item, chainId),
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,
