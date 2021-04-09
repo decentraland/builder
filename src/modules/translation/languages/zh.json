@@ -882,7 +882,8 @@
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",
-    "add_representation": "添加{bodyShape}"
+    "add_representation": "添加{bodyShape}",
+    "change_item_file": "编辑制图表达"
   },
   "collection_detail_page": {
     "new_item": "新项目",

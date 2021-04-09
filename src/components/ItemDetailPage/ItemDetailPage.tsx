@@ -29,9 +29,14 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onDelete(item!)
   }
 
+  handleChangeItemFile = () => {
+    const { item, onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { item, changeItemFile: true })
+  }
+
   handleAddRepresentationToItem = () => {
     const { item, onOpenModal } = this.props
-    onOpenModal('CreateItemModal', { item })
+    onOpenModal('CreateItemModal', { item, addRepresentation: true })
   }
 
   renderPage() {
@@ -70,6 +75,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                         direction="left"
                       >
                         <Dropdown.Menu>
+                          <Dropdown.Item text={t('item_detail_page.change_item_file')} onClick={this.handleChangeItemFile} />
                           {missingBodyShape !== null ? (
                             <Dropdown.Item
                               text={t('item_detail_page.add_representation', {
