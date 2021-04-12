@@ -1,18 +1,21 @@
-import { env, utils } from 'decentraland-commons'
 import { Address } from 'web3x-es/address'
 import { toBN } from 'web3x-es/utils'
+import { env, utils } from 'decentraland-commons'
+import { ContractName, getContract } from 'decentraland-transactions'
 import { Item } from 'modules/item/types'
-import { COLLECTION_STORE_ADDRESS } from 'modules/common/contracts'
 import { getMetadata } from 'modules/item/utils'
 import { isEqual } from 'lib/address'
 import { InitializeItem, Collection, Access } from './types'
+import { ChainId } from '@dcl/schemas'
 
-export function setOnSale(collection: Collection, isOnSale: boolean): Access[] {
-  return [{ address: COLLECTION_STORE_ADDRESS, hasAccess: isOnSale, collection }]
+export function setOnSale(collection: Collection, chainId: ChainId, isOnSale: boolean): Access[] {
+  const { address } = getContract(ContractName.CollectionStore, chainId)
+  return [{ address, hasAccess: isOnSale, collection }]
 }
 
-export function isOnSale(collection: Collection) {
-  return collection.minters.includes(COLLECTION_STORE_ADDRESS)
+export function isOnSale(collection: Collection, chainId: ChainId) {
+  const { address } = getContract(ContractName.CollectionStore, chainId)
+  return collection.minters.includes(address)
 }
 
 export function getCollectionBaseURI() {
