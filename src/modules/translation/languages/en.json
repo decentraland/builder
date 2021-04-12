@@ -404,6 +404,7 @@
     "items": "items",
     "learn_more": "Learn more",
     "loading": "Loading",
+    "mint": "Mint",
     "new": "New",
     "new_scene": "New scene",
     "delete": "Delete",
@@ -951,8 +952,7 @@
   "mint_items_modal": {
     "title": "Mint Items",
     "add_item": "Add Item",
-    "no_items": "You have no items available to mint for \"{name}\"",
-    "mint": "Mint"
+    "no_items": "You have no items available to mint for \"{name}\""
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",

@@ -406,6 +406,7 @@
     "items": "objetos",
     "learn_more": "Más información",
     "loading": "Cargando",
+    "mint": "Crear",
     "new": "Nuevo",
     "new_scene": "Nueva escena",
     "delete": "Borrar",
@@ -967,8 +968,7 @@
   "mint_items_modal": {
     "title": "Crear Items",
     "add_item": "Agregar Item",
-    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\"",
-    "mint": "Crear"
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
   },
   "collection_managers_modal": {
     "title": "Colaboradores",

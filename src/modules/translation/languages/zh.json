@@ -396,6 +396,7 @@
     "items": "模型",
     "learn_more": "更多",
     "loading": "装载",
+    "mint": "铸币",
     "new": "新",
     "new_scene": "新场景",
     "delete": "删除",
@@ -952,8 +953,7 @@
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目",
-    "no_items": "您没有可用于\"{name}\"的项目",
-    "mint": "铸币"
+    "no_items": "您没有可用于\"{name}\"的项目"
   },
   "collection_image": {
     "no_items": "没有项目"

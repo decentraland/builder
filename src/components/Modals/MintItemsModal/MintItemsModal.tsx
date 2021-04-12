@@ -87,6 +87,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
     const isEmpty = items.length === 0
     const isFull = items.length === totalCollectionItems
+    const isDisabled = this.isDisabled()
 
     return (
       <Modal className="MintItemsModal" onClose={onClose}>
@@ -107,8 +108,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   {t('global.cancel')}
                 </Button>
               ) : (
-                <Button primary onClick={this.handleMintItems} loading={isLoading} disabled={this.isDisabled()}>
-                  {t('mint_items_modal.mint')}
+                <Button primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled}>
+                  {t('global.mint')}
                 </Button>
               )}
             </ModalActions>
