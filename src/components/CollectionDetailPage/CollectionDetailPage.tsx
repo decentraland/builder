@@ -7,7 +7,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
-import { canMintCollectionItems, isOnSale, isOwner } from 'modules/collection/utils'
+import { canMintCollectionItems, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -101,6 +101,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     const collection = this.props.collection!
 
     const canMint = canMintCollectionItems(collection, wallet.address)
+    const isOnSale = isCollectionOnSale(collection, wallet)
 
     return (
       <>
@@ -127,7 +128,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                               content={
                                 isOnSaleLoading
                                   ? t('global.loading')
-                                  : isOnSale(collection)
+                                  : isOnSale
                                   ? t('collection_detail_page.unset_on_sale_popup')
                                   : t('collection_detail_page.set_on_sale_popup')
                               }
@@ -136,7 +137,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                                 <Radio
                                   toggle
                                   className="on-sale"
-                                  checked={isOnSale(collection)}
+                                  checked={isOnSale}
                                   onChange={this.handleOnSaleChange}
                                   label={t('collection_detail_page.on_sale')}
                                   disabled={isOnSaleLoading}
