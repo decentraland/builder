@@ -1,5 +1,6 @@
-import { ChainId, getChainName } from '@dcl/schemas'
+import { ChainId, Network, getChainName } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
+import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
@@ -21,11 +22,12 @@ export function getMaxSupply(item: Item) {
   return RARITY_MAX_SUPPLY[item.rarity!]
 }
 
-export function getCatalystPointer(collection: Collection, item: Item) {
+export function getCatalystItemURN(collection: Collection, item: Item, chainId: ChainId) {
   if (!collection.contractAddress || !item.tokenId) {
-    throw new Error('You need the collection and item to be published to get the catalyst entity id')
+    throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
-  const chainName = getChainName(ChainId.MATIC_MUMBAI)!.toLowerCase()
+  const config = getChainConfiguration(chainId)
+  const chainName = getChainName(config.networkMapping[Network.MATIC])
   return `urn:decentraland:${chainName}:collections-v2:${collection.contractAddress}:${item.tokenId}`
 }
 

@@ -93,7 +93,7 @@ export default class MintableItem extends React.PureComponent<Props> {
               <span className="stock">
                 {t('item.supply')} {this.getSupply(mints)}/{getMaxSupply(item)}
               </span>
-              <Icon name="plus" className="remove-item" onClick={this.handleAddNewMint} />
+              <Icon name="plus" className="item-action" onClick={this.handleAddNewMint} />
             </div>
           </Column>
         </Row>
@@ -117,7 +117,7 @@ export default class MintableItem extends React.PureComponent<Props> {
               error={!this.isValidAmount(amount)}
               onChange={this.getChangeAmountHandler(index)}
             />
-            <Icon name="minus" className="remove-item" onClick={this.getRemoveMintHandler(index)} />
+            {mints.length > 1 ? <Icon name="minus" className="item-action" onClick={this.getRemoveMintHandler(index)} /> : null}
           </Section>
         ))}
       </div>

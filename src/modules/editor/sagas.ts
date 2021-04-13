@@ -622,17 +622,20 @@ function* getDefaultWearables() {
   return ((bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]).map(w => ({
     ...w,
     id: w.id.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/'),
-    representations: w.representations.map(r => ({ ...r, bodyShapes: r.bodyShapes.map(b => b.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')) })
-    )
+    representations: w.representations.map(r => ({
+      ...r,
+      bodyShapes: r.bodyShapes.map(b => b.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/'))
+    }))
   }))
 }
 
 function* renderAvatar() {
-  if (yield select(isReady)) {
+  const isEditorReady: boolean = yield select(isReady)
+  if (isEditorReady) {
     const visibleItems: Item[] = yield select(getVisibleItems)
-    const defaultWearables = yield getDefaultWearables()
+    const defaultWearables: Wearable[] = yield getDefaultWearables()
     const wearables = mergeWearables(defaultWearables, visibleItems.map(toWearable))
-    const animation = yield select(getAvatarAnimation)
+    const animation: AvatarAnimation = yield select(getAvatarAnimation)
     yield call(async () => {
       editorWindow.editor.addWearablesToCatalog(wearables)
       editorWindow.editor.sendExternalAction(updateAvatar(wearables, animation))
@@ -641,7 +644,7 @@ function* renderAvatar() {
 }
 
 function* bustCache() {
-  const defaultWearables = yield getDefaultWearables()
+  const defaultWearables: Wearable[] = yield getDefaultWearables()
   editorWindow.editor.addWearablesToCatalog(defaultWearables)
   editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, AvatarAnimation.IDLE))
   yield delay(32)

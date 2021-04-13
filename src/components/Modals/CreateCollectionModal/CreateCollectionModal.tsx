@@ -57,7 +57,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             ></Field>
           </ModalContent>
           <ModalActions>
-            <Button primary disabled={isDisabled} loading={isLoading} onClick={this.handleSubmit}>
+            <Button primary disabled={isDisabled} loading={isLoading}>
               {t('global.create')}
             </Button>
           </ModalActions>

@@ -11,6 +11,12 @@ import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
 export default class CollectionRow extends React.PureComponent<Props> {
+  handleNavigateToForum = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    const { collection } = this.props
+    window.open(collection.forumLink!, '_blank')
+    event.preventDefault()
+  }
+
   render() {
     const { collection, items } = this.props
 
@@ -37,9 +43,9 @@ export default class CollectionRow extends React.PureComponent<Props> {
               <div className="title">{t('collection_row.forum_post')}</div>
               <div className="subtitle">
                 {collection.forumLink ? (
-                  <a href={collection.forumLink} rel="noopener noreferrer" target="_blank" onClick={event => event.stopPropagation()}>
+                  <span className="link" onClick={this.handleNavigateToForum}>
                     {t('collection_row.visit')}
-                  </a>
+                  </span>
                 ) : (
                   t('collection_row.no_forum_post')
                 )}

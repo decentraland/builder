@@ -53,12 +53,12 @@ const scriptInstances = new Map<string, IScript<any>>()
 
 @Component('org.decentraland.staticEntity')
 // @ts-ignore
-export class StaticEntity { }
+export class StaticEntity {}
 
 @Component('org.decentraland.script')
 // @ts-ignore
 export class Script {
-  constructor(public assetId: string, public src: string, public values: AssetParameterValues) { }
+  constructor(public assetId: string, public src: string, public values: AssetParameterValues) {}
 }
 
 const editorComponents: Record<string, any> = {}
@@ -84,23 +84,23 @@ function getScriptInstance(assetId: string) {
   return instance
     ? Promise.resolve(instance)
     : scriptPromises
-      .get(assetId)!
-      .then(code => eval(code))
-      .then(() => load(assetId))
-      .then(Item => {
-        const instance = new Item()
-        scriptInstances.set(assetId, instance)
-        return instance
-      })
-      .catch(error => {
-        console.error(error.message)
-        // if something fails, return a dummy script
-        console.warn(`Failed to load script for asset id ${assetId}`)
-        return {
-          init() { },
-          spawn() { }
-        }
-      })
+        .get(assetId)!
+        .then(code => eval(code))
+        .then(() => load(assetId))
+        .then(Item => {
+          const instance = new Item()
+          scriptInstances.set(assetId, instance)
+          return instance
+        })
+        .catch(error => {
+          console.error(error.message)
+          // if something fails, return a dummy script
+          console.warn(`Failed to load script for asset id ${assetId}`)
+          return {
+            init() {},
+            spawn() {}
+          }
+        })
 }
 
 // avatar
@@ -112,14 +112,16 @@ function getAvatar(): Entity {
     avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
     const avatarShape = new AvatarShape()
     // @TODO: Remove replace when unity accepts urn
-    avatarShape.bodyShape = ('urn:decentraland:off-chain:base-avatars:BaseMale').replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
+    avatarShape.bodyShape = 'urn:decentraland:off-chain:base-avatars:BaseMale'.replace(
+      'urn:decentraland:off-chain:base-avatars:',
+      'dcl://base-avatars/'
+    )
     avatarShape.skinColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
     avatarShape.hairColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
     avatarShape.eyeColor = new Color4(0.8671875, 0.6953125, 0.5625, 1)
     avatarShape.name = 'Builder Avatar'
     avatarShape.wearables = []
     avatar.addComponent(avatarShape)
-    engine.addEntity(avatar)
   }
 
   return avatar
@@ -224,6 +226,10 @@ async function handleExternalAction(message: { type: string; payload: Record<str
       avatarShape.wearables = otherWearables.map(wearable => wearable.id)
       avatarShape.expressionTriggerId = message.payload.animation === 'idle' ? 'Idle' : message.payload.animation // the 'idle' animation is the only one that is capitalized :shrug:
       avatarShape.expressionTriggerTimestamp = Date.now()
+
+      if (!avatar.isAddedToEngine()) {
+        engine.addEntity(avatar)
+      }
       break
     }
   }
@@ -290,7 +296,7 @@ function createEntities(entities: Record<string, EntityDefinition>) {
 
     if (!entity) {
       entity = new Entity(builderEntity.name)
-        ; (entity as any).uuid = id
+      ;(entity as any).uuid = id
 
       if (!builderEntity.disableGizmos) {
         entity.addComponentOrReplace(gizmo)

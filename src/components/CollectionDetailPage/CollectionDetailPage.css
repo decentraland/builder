@@ -7,33 +7,30 @@
   width: 100%;
 }
 
-.CollectionDetailPage .header-row .name {
+.CollectionDetailPage .header-row .ui.header.name {
   max-width: calc(100% - 40px);
+  line-height: 29px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .CollectionDetailPage .edit-collection-name {
+  display: none;
   margin-left: 16px;
-  transform: scale(1.2);
+  margin-bottom: 2px;
 }
 
-.CollectionDetailPage .header-row:hover {
+.CollectionDetailPage .section:not(.is-published) .header-row:hover .edit-collection-name {
+  display: inline-block;
+}
+
+.CollectionDetailPage .section:not(.is-published) .header-row:hover {
   cursor: pointer;
 }
 
 .CollectionDetailPage .is-published .edit-collection-name {
   display: none;
-}
-
-.CollectionDetailPage .is-published .header-row:hover {
-  cursor: default;
-}
-
-.CollectionDetailPage .header-row:not(:hover) .edit-collection-name {
-  filter: saturate(0.1);
-  opacity: 0.4;
 }
 
 .CollectionDetailPage .ui.toggle.on-sale {

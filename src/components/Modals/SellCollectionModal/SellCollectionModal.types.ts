@@ -6,6 +6,7 @@ import { Collection } from 'modules/collection/types'
 export type Props = ModalProps & {
   metadata: PublishCollectionModalMetadata
   collection: Collection
+  isLoading: boolean
   isOnSale: boolean
   onSetMinters: typeof setCollectionMintersRequest
 }
@@ -15,7 +16,7 @@ export type PublishCollectionModalMetadata = {
   isOnSale: boolean
 }
 
-export type MapStateProps = Pick<Props, 'collection'>
+export type MapStateProps = Pick<Props, 'collection' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSetMinters'>
 export type MapDispatch = Dispatch<SetCollectionMintersRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

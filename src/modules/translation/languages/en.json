@@ -404,6 +404,7 @@
     "items": "items",
     "learn_more": "Learn more",
     "loading": "Loading",
+    "mint": "Mint",
     "new": "New",
     "new_scene": "New scene",
     "delete": "Delete",
@@ -894,7 +895,7 @@
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",
     "add_representation": "Add {bodyShape} representation",
-    "published": "Published"
+    "change_item_file": "Edit representation"
   },
   "collection_detail_page": {
     "new_item": "New Item",

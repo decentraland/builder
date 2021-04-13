@@ -70,6 +70,10 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     return !!mint.address && mint.amount && mint.amount > 0
   }
 
+  isDisabled() {
+    return Object.values(this.state.itemMints).every(mints => mints.every(mint => !mint.amount || !mint.address))
+  }
+
   filterAddableItems = (item: Item) => {
     const { collection, items, ethAddress } = this.props
     return item.collectionId === collection.id && !items.some(_item => _item.id === item.id && canMintItem(collection, item, ethAddress))
@@ -83,9 +87,10 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
     const isEmpty = items.length === 0
     const isFull = items.length === totalCollectionItems
+    const isDisabled = this.isDisabled()
 
     return (
-      <Modal name={name} className="MintItemsModal" onClose={onClose}>
+      <Modal className="MintItemsModal" onClose={onClose}>
         <ModalNavigation title={t('mint_items_modal.title')} onClose={onClose} />
         <Modal.Content>
           <Form>
@@ -103,8 +108,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   {t('global.cancel')}
                 </Button>
               ) : (
-                <Button primary onClick={this.handleMintItems} loading={isLoading}>
-                  {t('global.done')}
+                <Button primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled}>
+                  {t('global.mint')}
                 </Button>
               )}
             </ModalActions>

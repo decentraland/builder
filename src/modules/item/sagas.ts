@@ -2,9 +2,11 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, all, race } from 'redux-saga/effects'
+import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
+import { getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
   FetchItemsRequestAction,
@@ -249,7 +251,8 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
       throw new Error('Invalid identity')
     }
 
-    const deployedItem: Item = yield deployContents(identity, collection, item)
+    const chainId: ChainId = yield select(getChainId)
+    const deployedItem: Item = yield deployContents(identity, collection, item, chainId)
 
     yield put(deployItemContentsSuccess(collection, deployedItem))
   } catch (error) {

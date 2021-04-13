@@ -66,6 +66,10 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     onSetManagers(collection, accessList)
   }
 
+  isDisabled() {
+    return this.state.managers.every(manager => !manager)
+  }
+
   removeManagerAtIndex(index: number) {
     const { managers } = this.state
     return [...managers.slice(0, index), ...managers.slice(index + 1)]
@@ -79,7 +83,7 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     const { isLoading, onClose } = this.props
     const { managers } = this.state
     return (
-      <Modal name={name} className="CollectionManagersModal" onClose={onClose}>
+      <Modal className="CollectionManagersModal" onClose={onClose}>
         <ModalNavigation title={t('collection_managers_modal.title')} onClose={onClose} />
         <Modal.Content>
           <div className="managers">
@@ -111,11 +115,13 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
               </div>
             )}
           </div>
-          <ModalActions>
-            <Button primary onClick={this.handleSubmit} loading={isLoading}>
-              {t('global.done')}
-            </Button>
-          </ModalActions>
+          {managers.length ? (
+            <ModalActions>
+              <Button primary onClick={this.handleSubmit} loading={isLoading} disabled={this.isDisabled()}>
+                {t('global.add')}
+              </Button>
+            </ModalActions>
+          ) : null}
         </Modal.Content>
       </Modal>
     )

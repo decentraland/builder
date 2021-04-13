@@ -406,6 +406,7 @@
     "items": "objetos",
     "learn_more": "Más información",
     "loading": "Cargando",
+    "mint": "Crear",
     "new": "Nuevo",
     "new_scene": "Nueva escena",
     "delete": "Borrar",
@@ -904,7 +905,8 @@
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",
-    "add_representation": "Agregar representación de {bodyShape}"
+    "add_representation": "Agregar representación de {bodyShape}",
+    "change_item_file": "Editar representación"
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",

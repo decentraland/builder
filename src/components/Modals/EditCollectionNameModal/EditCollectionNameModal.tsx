@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ModalNavigation, ModalContent, ModalActions, Button, Field, InputOnChangeData } from 'decentraland-ui'
+import { ModalNavigation, ModalContent, ModalActions, Button, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
@@ -33,14 +33,16 @@ export default class EditCollectionNameModal extends React.PureComponent<Props, 
           subtitle={t('edit_collection_name_modal.subtitle')}
           onClose={onClose}
         />
-        <ModalContent>
-          <Field label={t('global.name')} value={name} onChange={this.handleNameChange} />
-        </ModalContent>
-        <ModalActions>
-          <Button primary onClick={this.handleSubmit} loading={isLoading} disabled={!name}>
-            {t('edit_collection_name_modal.submit')}
-          </Button>
-        </ModalActions>
+        <Form onSubmit={this.handleSubmit}>
+          <ModalContent>
+            <Field label={t('global.name')} value={name} onChange={this.handleNameChange} />
+          </ModalContent>
+          <ModalActions>
+            <Button primary loading={isLoading} disabled={!name}>
+              {t('edit_collection_name_modal.submit')}
+            </Button>
+          </ModalActions>
+        </Form>
       </Modal>
     )
   }
