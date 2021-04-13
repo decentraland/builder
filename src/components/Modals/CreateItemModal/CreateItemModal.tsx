@@ -245,8 +245,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     let thumbnail = image
 
     const hasCustomThumbnail = THUMBNAIL_PATH in contents
-    if (hasCustomThumbnail) {
-      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH])
+    const isPngModel = model.endsWith('.png')
+    if (hasCustomThumbnail || isPngModel) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model])
     }
 
     return [thumbnail, model, metrics, contents]
@@ -255,7 +256,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   async updateThumbnail(category: WearableCategory) {
     const { model, contents } = this.state
     const url = URL.createObjectURL(contents![model!])
-    const { image: thumbnail } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
+    const isPngModel = model && model.endsWith('.png')
+
+    let thumbnail
+    if (contents && (hasCustomThumbnail || isPngModel)) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
+    } else {
+      const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+      thumbnail = image
+    }
     URL.revokeObjectURL(url)
     this.setState({ thumbnail })
   }
@@ -302,7 +312,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           values={{
             models_link: (
               <span className="link" onClick={this.handleOpenDocs}>
-                GLB, GLTF, ZIP
+                GLB, GLTF, PNG, ZIP
               </span>
             ),
             action: (
@@ -349,7 +359,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       return contents
     }, {})
 
-    const modelPath = fileNames.find(fileName => fileName.endsWith('gltf') || fileName.endsWith('glb'))
+    const modelPath = fileNames.find(
+      fileName =>
+        fileName.endsWith('gltf') || fileName.endsWith('glb') || (fileName.indexOf(THUMBNAIL_PATH) === -1 && fileName.endsWith('png'))
+    )
 
     if (!modelPath) {
       throw new Error('Missing model file')
@@ -466,7 +479,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <FileImport
-            accept={['.zip', '.gltf', '.glb']}
+            accept={['.zip', '.gltf', '.glb', '.png']}
             onAcceptedFiles={this.handleDropAccepted}
             onRejectedFiles={this.handleDropRejected}
             renderAction={this.renderDropzoneCTA}
