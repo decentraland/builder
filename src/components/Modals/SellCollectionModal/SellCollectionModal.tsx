@@ -10,7 +10,7 @@ import './SellCollectionModal.css'
 export default class SellCollectionModal extends React.PureComponent<Props> {
   handleSell = () => {
     const { collection, wallet, metadata, onSetMinters } = this.props
-    onSetMinters(collection, setOnSale(collection, wallet.chainId, metadata.isOnSale))
+    onSetMinters(collection, setOnSale(collection, wallet, metadata.isOnSale))
   }
 
   render() {

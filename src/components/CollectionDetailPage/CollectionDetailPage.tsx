@@ -101,7 +101,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     const collection = this.props.collection!
 
     const canMint = canMintCollectionItems(collection, wallet.address)
-    const isOnSale = isCollectionOnSale(collection, wallet.chainId)
+    const isOnSale = isCollectionOnSale(collection, wallet)
 
     return (
       <>

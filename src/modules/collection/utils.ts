@@ -2,19 +2,19 @@ import { Address } from 'web3x-es/address'
 import { toBN } from 'web3x-es/utils'
 import { env, utils } from 'decentraland-commons'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
 import { getMetadata } from 'modules/item/utils'
 import { isEqual } from 'lib/address'
 import { InitializeItem, Collection, Access } from './types'
-import { ChainId } from '@dcl/schemas'
 
-export function setOnSale(collection: Collection, chainId: ChainId, isOnSale: boolean): Access[] {
-  const { address } = getContract(ContractName.CollectionStore, chainId)
+export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
+  const { address } = getContract(ContractName.CollectionStore, wallet.networks.MATIC.chainId)
   return [{ address, hasAccess: isOnSale, collection }]
 }
 
-export function isOnSale(collection: Collection, chainId: ChainId) {
-  const { address } = getContract(ContractName.CollectionStore, chainId)
+export function isOnSale(collection: Collection, wallet: Wallet) {
+  const { address } = getContract(ContractName.CollectionStore, wallet.networks.MATIC.chainId)
   return collection.minters.includes(address)
 }
 
