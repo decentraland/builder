@@ -238,15 +238,29 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
-    const url = URL.createObjectURL(contents[model])
-    const { image, info: metrics } = await getModelData(url, { width: 1024, height: 1024 })
-    URL.revokeObjectURL(url)
+    let thumbnail: string = ''
+    let metrics: ModelMetrics
 
-    let thumbnail = image
+    if (this.isPNGModel(model)) {
+      metrics = {
+        triangles: 0,
+        materials: 0,
+        textures: 1,
+        meshes: 0,
+        bodies: 0,
+        entities: 1
+      }
+    } else {
+      const url = URL.createObjectURL(contents[model])
+      const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
+      URL.revokeObjectURL(url)
 
-    const hasCustomThumbnail = THUMBNAIL_PATH in contents
-    if (hasCustomThumbnail) {
-      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH])
+      thumbnail = image
+      metrics = info
+    }
+
+    if (this.hasCustomImage(model, contents)) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model])
     }
 
     return [thumbnail, model, metrics, contents]
@@ -255,7 +269,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   async updateThumbnail(category: WearableCategory) {
     const { model, contents } = this.state
     const url = URL.createObjectURL(contents![model!])
-    const { image: thumbnail } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+
+    let thumbnail
+    if (contents && this.hasCustomImage(model, contents)) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
+    } else {
+      const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+      thumbnail = image
+    }
     URL.revokeObjectURL(url)
     this.setState({ thumbnail })
   }
@@ -288,6 +309,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return representations
   }
 
+  hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
+    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
+
+    return hasCustomThumbnail || this.isPNGModel(model)
+  }
+
+  isPNGModel = (model?: string) => {
+    return model && model.endsWith('.png')
+  }
+
   renderDropzoneCTA = (open: () => void) => {
     const { isLoading } = this.state
     return (
@@ -302,7 +333,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           values={{
             models_link: (
               <span className="link" onClick={this.handleOpenDocs}>
-                GLB, GLTF, ZIP
+                GLB, GLTF, PNG, ZIP
               </span>
             ),
             action: (
@@ -349,7 +380,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       return contents
     }, {})
 
-    const modelPath = fileNames.find(fileName => fileName.endsWith('gltf') || fileName.endsWith('glb'))
+    const modelPath = fileNames.find(
+      fileName =>
+        fileName.endsWith('gltf') || fileName.endsWith('glb') || (fileName.indexOf(THUMBNAIL_PATH) === -1 && fileName.endsWith('png'))
+    )
 
     if (!modelPath) {
       throw new Error('Missing model file')
@@ -466,7 +500,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <FileImport
-            accept={['.zip', '.gltf', '.glb']}
+            accept={['.zip', '.gltf', '.glb', '.png']}
             onAcceptedFiles={this.handleDropAccepted}
             onRejectedFiles={this.handleDropRejected}
             renderAction={this.renderDropzoneCTA}
