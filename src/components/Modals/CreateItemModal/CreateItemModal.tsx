@@ -238,15 +238,28 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
-    const url = URL.createObjectURL(contents[model])
-    const { image, info: metrics } = await getModelData(url, { width: 1024, height: 1024 })
-    URL.revokeObjectURL(url)
+    let thumbnail: string = ''
+    let metrics: ModelMetrics
 
-    let thumbnail = image
+    if (this.isPNGModel(model)) {
+      metrics = {
+        triangles: 0,
+        materials: 0,
+        textures: 1,
+        meshes: 0,
+        bodies: 0,
+        entities: 1
+      }
+    } else {
+      const url = URL.createObjectURL(contents[model])
+      const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
+      URL.revokeObjectURL(url)
 
-    const hasCustomThumbnail = THUMBNAIL_PATH in contents
-    const isPngModel = model.endsWith('.png')
-    if (hasCustomThumbnail || isPngModel) {
+      thumbnail = image
+      metrics = info
+    }
+
+    if (this.hasCustomImage(model, contents)) {
       thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model])
     }
 
@@ -256,11 +269,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   async updateThumbnail(category: WearableCategory) {
     const { model, contents } = this.state
     const url = URL.createObjectURL(contents![model!])
-    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
-    const isPngModel = model && model.endsWith('.png')
 
     let thumbnail
-    if (contents && (hasCustomThumbnail || isPngModel)) {
+    if (contents && this.hasCustomImage(model, contents)) {
       thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
     } else {
       const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
@@ -296,6 +307,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
 
     return representations
+  }
+
+  hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
+    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
+
+    return hasCustomThumbnail || this.isPNGModel(model)
+  }
+
+  isPNGModel = (model?: string) => {
+    return model && model.endsWith('.png')
   }
 
   renderDropzoneCTA = (open: () => void) => {
