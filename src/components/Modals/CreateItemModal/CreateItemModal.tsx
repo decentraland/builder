@@ -40,7 +40,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
 import { getBodyShapeType, getMissingBodyShapeType } from 'modules/item/utils'
-import { getThumbnailType } from './utils'
+import { getCategories, getRarities, getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
@@ -311,12 +311,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
     const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
-
     return hasCustomThumbnail || this.isPNGModel(model)
   }
 
-  isPNGModel = (model?: string) => {
-    return model && model.endsWith('.png')
+  isPNGModel = (model: string = '') => {
+    return model.endsWith('.png')
   }
 
   renderDropzoneCTA = (open: () => void) => {
@@ -511,7 +510,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderFields() {
-    const { name, category, rarity, item } = this.state
+    const { name, category, rarity, contents, item } = this.state
+
+    const categories = getCategories(contents)
+
     return (
       <>
         <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
@@ -519,7 +521,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           label={t('create_item_modal.rarity_label')}
           placeholder={t('create_item_modal.rarity_placeholder')}
           value={rarity}
-          options={Object.values(ItemRarity).map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+          options={getRarities()}
           onChange={this.handleRarityChange}
           disabled={item && item.isPublished}
         />
@@ -527,7 +529,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           label={t('create_item_modal.category_label')}
           placeholder={t('create_item_modal.category_placeholder')}
           value={category}
-          options={Object.values(WearableCategory).map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+          options={categories}
           onChange={this.handleCategoryChange}
         />
       </>
