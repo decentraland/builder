@@ -511,10 +511,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   renderFields() {
     const { name, category, rarity, contents, item } = this.state
 
-    if (item) {
-      console.log(item.contents)
-    }
-
     const rarities = getRarities().map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
     const categories = getCategories(contents).map(value => ({ value, text: t(`wearable.category.${value}`) }))
 
