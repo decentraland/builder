@@ -243,11 +243,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
     if (this.isPNGModel(model)) {
       metrics = {
-        triangles: 0,
-        materials: 0,
+        triangles: 100,
+        materials: 1,
         textures: 1,
-        meshes: 0,
-        bodies: 0,
+        meshes: 1,
+        bodies: 1,
         entities: 1
       }
     } else {
