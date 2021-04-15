@@ -39,8 +39,8 @@ import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { getBodyShapeType, getMissingBodyShapeType } from 'modules/item/utils'
-import { getCategories, getRarities, getThumbnailType } from './utils'
+import { getBodyShapeType, getMissingBodyShapeType, getRarities, getCategories, isComplexFile } from 'modules/item/utils'
+import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
@@ -380,8 +380,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }, {})
 
     const modelPath = fileNames.find(
-      fileName =>
-        fileName.endsWith('gltf') || fileName.endsWith('glb') || (fileName.indexOf(THUMBNAIL_PATH) === -1 && fileName.endsWith('png'))
+      fileName => isComplexFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && fileName.endsWith('png'))
     )
 
     if (!modelPath) {
@@ -512,7 +511,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   renderFields() {
     const { name, category, rarity, contents, item } = this.state
 
-    const categories = getCategories(contents)
+    if (item) {
+      console.log(item.contents)
+    }
+
+    const rarities = getRarities().map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
+    const categories = getCategories(contents).map(value => ({ value, text: t(`wearable.category.${value}`) }))
 
     return (
       <>
@@ -521,7 +525,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           label={t('create_item_modal.rarity_label')}
           placeholder={t('create_item_modal.rarity_placeholder')}
           value={rarity}
-          options={getRarities()}
+          options={rarities}
           onChange={this.handleRarityChange}
           disabled={item && item.isPublished}
         />

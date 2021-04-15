@@ -15,7 +15,8 @@ import {
   BodyShapeType,
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
-  RARITY_COLOR
+  RARITY_COLOR,
+  WearableCategory
 } from './types'
 
 export function getMaxSupply(item: Item) {
@@ -196,4 +197,21 @@ export function hasOnChainDataChanged(originalItem: Item, item: Item) {
 
 export function getThumbnailURL(item: Item) {
   return getContentsStorageUrl(item.contents[item.thumbnail])
+}
+
+export function getRarities() {
+  return Object.values(ItemRarity)
+}
+
+export function getCategories(contents: Record<string, any> | undefined = {}) {
+  const SIMPLE_WEARABLE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
+  const fileNames = Object.keys(contents)
+
+  return fileNames.some(isComplexFile)
+    ? Object.values(WearableCategory).filter(category => !SIMPLE_WEARABLE_CATEGORIES.includes(category))
+    : SIMPLE_WEARABLE_CATEGORIES
+}
+
+export function isComplexFile(fileName: string) {
+  return fileName.endsWith('.gltf') || fileName.endsWith('.glb')
 }
