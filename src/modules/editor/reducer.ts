@@ -1,3 +1,5 @@
+import { Color4 } from 'decentraland-ecs'
+
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
 import {
@@ -8,7 +10,7 @@ import {
 } from 'modules/project/actions'
 import { WearableBodyShape } from 'modules/item/types'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
-import { hasBodyShape } from 'modules/item/utils'
+import { getEyeColors, getHairColors, getSkinColors, hasBodyShape } from 'modules/item/utils'
 import {
   SetGizmoAction,
   TogglePreviewAction,
@@ -41,7 +43,9 @@ import {
   SetItemsAction,
   SET_ITEMS,
   SetAvatarAnimationAction,
-  SET_AVATAR_ANIMATION
+  SET_AVATAR_ANIMATION,
+  SetAvatarColorAction,
+  SET_AVATAR_COLOR
 } from './actions'
 import { AvatarAnimation, Gizmo } from './types'
 
@@ -65,6 +69,9 @@ export type EditorState = {
   }
   bodyShape: WearableBodyShape
   avatarAnimation: AvatarAnimation
+  skinColor: Color4
+  eyeColor: Color4
+  hairColor: Color4
   visibleItemIds: string[]
 }
 
@@ -88,6 +95,9 @@ const INITIAL_STATE: EditorState = {
   },
   bodyShape: WearableBodyShape.FEMALE,
   avatarAnimation: AvatarAnimation.IDLE,
+  skinColor: getSkinColors()[0],
+  eyeColor: getEyeColors()[0],
+  hairColor: getHairColors()[0],
   visibleItemIds: []
 }
 
@@ -113,6 +123,7 @@ export type EditorReducerAction =
   | SetAvatarAnimationAction
   | SetItemsAction
   | DeleteItemSuccessAction
+  | SetAvatarColorAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -246,6 +257,12 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         avatarAnimation: action.payload.animation
+      }
+    }
+    case SET_AVATAR_COLOR: {
+      return {
+        ...state,
+        [action.payload.key]: action.payload.value
       }
     }
     case SET_ITEMS: {

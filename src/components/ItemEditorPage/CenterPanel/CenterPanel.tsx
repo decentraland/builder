@@ -1,8 +1,10 @@
 import * as React from 'react'
+import { Color4 } from 'decentraland-ecs'
 import { Dropdown, DropdownProps, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ViewPort from 'components/ViewPort'
 import { AvatarAnimation, PreviewType } from 'modules/editor/types'
+import { getSkinColors, getEyeColors, getHairColors } from 'modules/item/utils'
 import { WearableBodyShape } from 'modules/item/types'
 import { Props } from './CenterPanel.types'
 import './CenterPanel.css'
@@ -23,12 +25,46 @@ export default class CenterPanel extends React.PureComponent<Props> {
     onSetAvatarAnimation(value as AvatarAnimation)
   }
 
+  handleChangeAvatarColor = (key: 'skinColor' | 'eyeColor' | 'hairColor', value: Color4) => {
+    const { onSetAvatarColor } = this.props
+    onSetAvatarColor(key, value)
+  }
+
   render() {
     const { bodyShape, avatarAnimation } = this.props
     return (
       <div className="CenterPanel">
         <ViewPort type={PreviewType.WEARABLE} />
         <div className="dropdowns">
+          <div className="tones">
+            {getHairColors().map((color: Color4) => (
+              <i
+                key={color.toHexString()}
+                style={{ background: color.toHexString() }}
+                onClick={() => this.handleChangeAvatarColor('hairColor', color)}
+              />
+            ))}
+          </div>
+
+          <div className="tones">
+            {getEyeColors().map((color: Color4) => (
+              <i
+                key={color.toHexString()}
+                style={{ background: color.toHexString() }}
+                onClick={() => this.handleChangeAvatarColor('eyeColor', color)}
+              />
+            ))}
+          </div>
+
+          <div className="tones">
+            {getSkinColors().map((color: Color4) => (
+              <i
+                key={color.toHexString()}
+                style={{ background: color.toHexString() }}
+                onClick={() => this.handleChangeAvatarColor('skinColor', color)}
+              />
+            ))}
+          </div>
           <Dropdown
             className="body-shape"
             value={bodyShape}

@@ -5,7 +5,7 @@ import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
 import { AvatarAnimation, Gizmo, OpenEditorOptions, PreviewType } from './types'
 import { Item, WearableBodyShape } from 'modules/item/types'
-import { Wearable } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
 
 // Bind keyboard shortcuts
 
@@ -228,9 +228,18 @@ export const setAvatarAnimation = (animation: AvatarAnimation) => action(SET_AVA
 
 export type SetAvatarAnimationAction = ReturnType<typeof setAvatarAnimation>
 
+// Set avatar color
+export const SET_AVATAR_COLOR = 'Set avatar color'
+
+export const setAvatarColor = (key: 'skinColor' | 'eyeColor' | 'hairColor', value: Color4) => action(SET_AVATAR_COLOR, { key, value })
+
+export type SetAvatarColorAction = ReturnType<typeof setAvatarColor>
+
 // Update wearables
 export const UPDATE_AVATAR = 'Update avatar'
 
-export const updateAvatar = (wearables: Wearable[], animation?: AvatarAnimation) => action(UPDATE_AVATAR, { wearables, animation })
+export const updateAvatar = (wearables: Wearable[], skinColor: Color4, eyeColor: Color4, hairColor: Color4, animation?: AvatarAnimation) =>
+  action(UPDATE_AVATAR, { wearables, animation, skinColor, eyeColor, hairColor })
 
 export type UpdateAvatarAction = ReturnType<typeof updateAvatar>
+

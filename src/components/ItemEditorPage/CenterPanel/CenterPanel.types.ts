@@ -5,7 +5,9 @@ import {
   setAvatarAnimation,
   SetAvatarAnimationAction,
   setBodyShape,
-  SetBodyShapeAction
+  SetBodyShapeAction,
+  setAvatarColor,
+  SetAvatarColorAction
 } from 'modules/editor/actions'
 import { AvatarAnimation } from 'modules/editor/types'
 import { Item, WearableBodyShape } from 'modules/item/types'
@@ -15,10 +17,11 @@ export type Props = {
   onSetBodyShape: typeof setBodyShape
   avatarAnimation: AvatarAnimation
   onSetAvatarAnimation: typeof setAvatarAnimation
+  onSetAvatarColor: typeof setAvatarColor
   visibleItems: Item[]
   onClose: typeof closeEditor
 }
 
 export type MapStateProps = Pick<Props, 'bodyShape' | 'avatarAnimation' | 'visibleItems'>
-export type MapDispatchProps = Pick<Props, 'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation'>
-export type MapDispatch = Dispatch<CloseEditorAction | SetBodyShapeAction | SetAvatarAnimationAction>
+export type MapDispatchProps = Pick<Props, 'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetAvatarColor'>
+export type MapDispatch = Dispatch<CloseEditorAction | SetBodyShapeAction | SetAvatarAnimationAction | SetAvatarColorAction>

@@ -53,7 +53,9 @@ import {
   SET_AVATAR_ANIMATION,
   SetAvatarAnimationAction,
   SetItemsAction,
-  setBodyShape
+  setBodyShape,
+  SET_AVATAR_COLOR,
+  SetAvatarColorAction
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -100,7 +102,10 @@ import {
   isMultiselectEnabled,
   getBodyShape,
   getVisibleItems,
-  getAvatarAnimation
+  getAvatarAnimation,
+  getSkinColor,
+  getEyeColor,
+  getHairColor
 } from './selectors'
 
 import {
@@ -125,10 +130,10 @@ import { Item, WearableBodyShape } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
 import maleAvatar from './wearables/male.json'
 import femaleAvatar from './wearables/female.json'
-import { Wearable } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
 import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
-import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
+import { getBodyShapes, getEyeColors, getHairColors, getSkinColors, hasBodyShape } from 'modules/item/utils'
 
 const editorWindow = window as EditorWindow
 
@@ -156,6 +161,7 @@ export function* editorSaga() {
   yield takeLatest(SET_ITEMS, handleSetItems)
   yield takeLatest(SET_AVATAR_ANIMATION, handleSetAvatarAnimation)
   yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
+  yield takeLatest(SET_AVATAR_COLOR, handleSetAvatarColor)
 }
 
 function* pollEditor(scene: Scene) {
@@ -636,17 +642,24 @@ function* renderAvatar() {
     const defaultWearables: Wearable[] = yield getDefaultWearables()
     const wearables = mergeWearables(defaultWearables, visibleItems.map(toWearable))
     const animation: AvatarAnimation = yield select(getAvatarAnimation)
+    const skinColor: Color4 = yield select(getSkinColor)
+    const eyeColor: Color4 = yield select(getEyeColor)
+    const hairColor: Color4 = yield select(getHairColor)
+
     yield call(async () => {
       editorWindow.editor.addWearablesToCatalog(wearables)
-      editorWindow.editor.sendExternalAction(updateAvatar(wearables, animation))
+      editorWindow.editor.sendExternalAction(updateAvatar(wearables, skinColor, eyeColor, hairColor, animation))
     })
   }
 }
 
 function* bustCache() {
   const defaultWearables: Wearable[] = yield getDefaultWearables()
+  const skinColor: Color4 = getSkinColors()[0]
+  const eyeColor: Color4 = getEyeColors()[0]
+  const hairColor: Color4 = getHairColors()[0]
   editorWindow.editor.addWearablesToCatalog(defaultWearables)
-  editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, AvatarAnimation.IDLE))
+  editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, skinColor, eyeColor, hairColor, AvatarAnimation.IDLE))
   yield delay(32)
 }
 
@@ -663,5 +676,9 @@ function* handleSetBodyShape(_action: SetBodyShapeAction) {
 }
 
 function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
+  yield renderAvatar()
+}
+
+function* handleSetAvatarColor(_action: SetAvatarColorAction) {
   yield renderAvatar()
 }
