@@ -4,110 +4,256 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
-import BuilderIcon from 'components/Icon'
+import Icon from 'components/Icon'
 import { isEqual } from 'lib/address'
 import { getMissingBodyShapeType, canManageItem, getRarities, getCategories } from 'modules/item/utils'
-import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, WearableCategory } from 'modules/item/types'
+import { computeHashes } from 'modules/deployment/contentUtils'
+import {
+  Item,
+  ItemRarity,
+  ITEM_DESCRIPTION_MAX_LENGTH,
+  ITEM_NAME_MAX_LENGTH,
+  THUMBNAIL_PATH,
+  WearableCategory,
+  WearableData
+} from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
-import { Props, State } from './RightPanel.types'
+import { Props } from './RightPanel.types'
 import './RightPanel.css'
 
+export type State = {
+  name: string
+  description: string
+  thumbnail: string
+  rarity?: ItemRarity
+  contents: Record<string, Blob>
+  data?: WearableData
+  isDirty: boolean
+}
+
 export default class RightPanel extends React.PureComponent<Props, State> {
-  state: State = { item: null, isDirty: false }
+  state: State = this.getInitialState()
+  thumbnailInput = React.createRef<HTMLInputElement>()
+
+  componentDidMount = () => {
+    const { selectedItem } = this.props
+
+    if (selectedItem) {
+      this.setItem(selectedItem)
+    }
+  }
 
   componentDidUpdate = (prevProps: Props) => {
-    const { item } = this.state
     const { selectedItemId, selectedItem } = this.props
 
-    if (item && prevProps.selectedItemId !== selectedItemId) {
-      return this.setState({ item: null, isDirty: false })
+    if (prevProps.selectedItemId !== selectedItemId) {
+      return this.setState(this.getInitialState())
     }
 
-    if (!item && selectedItem) {
-      return this.setState({ item: selectedItem, isDirty: false })
+    if (!prevProps.selectedItem && selectedItem) {
+      return this.setItem(selectedItem)
+    }
+  }
+
+  setItem(item: Item) {
+    this.setState({
+      name: item.name,
+      description: item.description,
+      rarity: item.rarity,
+      data: item.data,
+      isDirty: false
+    })
+  }
+
+  getInitialState(): State {
+    return {
+      name: '',
+      description: '',
+      thumbnail: '',
+      rarity: undefined,
+      contents: {},
+      data: undefined,
+      isDirty: false
     }
   }
 
   handleDeleteItem = () => {
     const { onDeleteItem } = this.props
-    const { item } = this.state
-    onDeleteItem(item!)
+    const { selectedItem } = this.props
+    onDeleteItem(selectedItem!)
   }
 
   handleAddRepresentationToItem = () => {
     const { onOpenModal } = this.props
-    const { item } = this.state
-    onOpenModal('CreateItemModal', { item, addRepresentation: true })
+    const { selectedItem } = this.props
+    onOpenModal('CreateItemModal', { selectedItem, addRepresentation: true })
   }
 
   handleChangeItemFile = () => {
     const { onOpenModal } = this.props
-    const { item } = this.state
-    onOpenModal('CreateItemModal', { item, changeItemFile: true })
+    const { selectedItem } = this.props
+    onOpenModal('CreateItemModal', { selectedItem, changeItemFile: true })
   }
 
-  handleChange = (newItem: Item) => {
-    this.setState({ item: newItem, isDirty: true })
+  handleChangeName = (name: string) => {
+    this.setState({ name, isDirty: true })
   }
 
-  handleOnSaveItem = () => {
+  handleChangeDescription = (description: string) => {
+    this.setState({ description, isDirty: true })
+  }
+
+  handleChangeRarity = (rarity: ItemRarity) => {
+    this.setState({ rarity, isDirty: true })
+  }
+
+  handleChangeCategory = (category: WearableCategory) => {
+    const { data } = this.state
+    this.setState({
+      data: {
+        ...data!,
+        category
+      },
+      isDirty: true
+    })
+  }
+
+  handleChangeReplaces = (replaces: WearableCategory[]) => {
+    const { data } = this.state
+
+    this.setState({
+      data: {
+        ...this.state.data!,
+        replaces,
+        representations: data!.representations.map(representation => ({
+          ...representation,
+          overrideReplaces: replaces
+        }))
+      },
+      isDirty: true
+    })
+  }
+
+  handleChangeHides = (hides: WearableCategory[]) => {
+    const { data } = this.state
+
+    this.setState({
+      data: {
+        ...this.state.data!,
+        hides,
+        representations: data!.representations.map(representation => ({
+          ...representation,
+          overrideHides: hides
+        }))
+      },
+      isDirty: true
+    })
+  }
+
+  handleChangeTags = (tags: string[]) => {
+    const { data } = this.state
+    this.setState({
+      data: {
+        ...data!,
+        tags
+      },
+      isDirty: true
+    })
+  }
+
+  handleOnSaveItem = async () => {
     const { selectedItem, onSaveItem, onSavePublishedItem } = this.props
-    const { item } = this.state
+    const { name, description, rarity, contents, data, isDirty } = this.state
 
-    if (item) {
+    if (isDirty && selectedItem) {
+      const item: Item = {
+        ...selectedItem,
+        name,
+        description,
+        rarity,
+        data: data!,
+        contents: await computeHashes(contents)
+      }
       if (selectedItem && selectedItem.isPublished) {
         onSavePublishedItem(item)
       } else {
-        onSaveItem(item, {})
+        onSaveItem(item, contents)
       }
       this.setState({ isDirty: false })
     }
   }
 
   handleOnResetItem = () => {
-    const { selectedItem } = this.props
-    return this.setState({ item: selectedItem, isDirty: false })
+    return this.setState(this.getInitialState())
   }
 
   handleRemoveFromCollection = () => {
-    const { onSetCollection } = this.props
-    const { item } = this.state
-    if (item) {
-      onSetCollection(item, null)
+    const { selectedItem, onSetCollection } = this.props
+    if (selectedItem) {
+      onSetCollection(selectedItem, null)
     }
   }
 
-  canEditItemMetadata(item: Item) {
+  handleOpenThumbnailDialog = () => {
+    if (this.thumbnailInput.current) {
+      this.thumbnailInput.current.click()
+    }
+  }
+
+  handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target
+
+    const MAX_THUMBNAIL_SIZE = 5000000
+
+    if (files && files.length > 0) {
+      const file = files[0]
+      if (file.size > MAX_THUMBNAIL_SIZE) {
+        alert(
+          t('asset_pack.edit_assetpack.errors.thumbnail_size', {
+            count: MAX_THUMBNAIL_SIZE
+          })
+        )
+        return
+      }
+      const thumbnail = URL.createObjectURL(file)
+
+      this.setState({
+        thumbnail,
+        contents: { [THUMBNAIL_PATH]: file },
+        isDirty: true
+      })
+    }
+  }
+
+  canEditItemMetadata(item: Item | null) {
     const { collection, address = '' } = this.props
     return (item && collection && canManageItem(collection, item, address)) || (!collection && this.isOwner(item))
   }
 
-  isOwner(item: Item) {
+  isOwner(item: Item | null) {
     const { address = '' } = this.props
     return item && isEqual(item.owner, address)
   }
 
   render() {
     const { selectedItemId } = this.props
-    const { item: selectedItem, isDirty } = this.state
-
+    const { name, description, thumbnail, rarity, data, isDirty } = this.state
     const rarities = getRarities()
 
     return (
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
-          {(remoteItem, _collection, isLoading) => {
-            const item = (remoteItem || selectedItem) as Item
+          {(item, _collection, isLoading) => {
             const isOwner = this.isOwner(item)
             const canEditItemMetadata = this.canEditItemMetadata(item)
 
             const categories = item ? getCategories(item.contents) : []
 
-            return isLoading || (!remoteItem && selectedItemId) ? (
+            return isLoading || !item || !data ? (
               <Loader size="massive" active />
             ) : (
               <>
@@ -127,11 +273,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         {item.collectionId ? (
                           <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                         ) : null}
-                        <ConfirmDelete
-                          name={item.name}
-                          onDelete={this.handleDeleteItem}
-                          trigger={<Dropdown.Item text={t('global.delete')} />}
-                        />
+                        <ConfirmDelete name={name} onDelete={this.handleDeleteItem} trigger={<Dropdown.Item text={t('global.delete')} />} />
                       </Dropdown.Menu>
                     </Dropdown>
                   ) : null}
@@ -139,8 +281,20 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 <Collapsable item={item} label={t('item_editor.right_panel.details')}>
                   {item => (
                     <div className="details">
-                      {canEditItemMetadata && <BuilderIcon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />}
-                      <ItemImage item={item} hasBadge={true} badgeSize="small" />
+                      {canEditItemMetadata && <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />}
+                      <div className="thumbnail-container">
+                        <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                        <div className="thumbnail-edit-container">
+                          <input
+                            type="file"
+                            ref={this.thumbnailInput}
+                            onChange={this.handleThumbnailChange}
+                            accept="image/png, image/jpeg"
+                          />
+                          <div className="thumbnail-edit-background"></div>
+                          <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                        </div>
+                      </div>
                       <div className="metrics">
                         <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
                         <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
@@ -155,34 +309,34 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       <Input
                         itemId={item.id}
                         label={t('global.name')}
-                        value={item.name}
+                        value={name}
                         disabled={!canEditItemMetadata}
                         maxLength={ITEM_NAME_MAX_LENGTH}
-                        onChange={name => this.handleChange({ ...item, name })}
+                        onChange={this.handleChangeName}
                       />
                       <Input
                         itemId={item.id}
                         label={t('global.description')}
-                        value={item.description}
+                        value={description}
                         disabled={!canEditItemMetadata}
                         maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
-                        onChange={description => this.handleChange({ ...item, description })}
+                        onChange={this.handleChangeDescription}
                       />
                       <Select<WearableCategory>
                         itemId={item.id}
                         label={t('global.category')}
-                        value={item.data.category}
+                        value={data!.category}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
-                        onChange={category => this.handleChange({ ...item, data: { ...item.data, category } })}
+                        onChange={this.handleChangeCategory}
                       />
                       <Select<ItemRarity>
                         itemId={item.id}
                         label={t('global.rarity')}
-                        value={item.rarity}
+                        value={rarity}
                         options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
                         disabled={item.isPublished || !canEditItemMetadata}
-                        onChange={rarity => this.handleChange({ ...item, rarity })}
+                        onChange={this.handleChangeRarity}
                       />
                     </>
                   )}
@@ -193,55 +347,24 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       <MultiSelect<WearableCategory>
                         itemId={item.id}
                         label={t('item_editor.right_panel.replaces')}
-                        value={item.data.replaces}
+                        value={data!.replaces}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
-                        onChange={replaces =>
-                          this.handleChange({
-                            ...item,
-                            data: {
-                              ...item.data,
-                              replaces,
-                              representations: item.data.representations.map(representation => ({
-                                ...representation,
-                                overrideReplaces: replaces
-                              }))
-                            }
-                          })
-                        }
+                        onChange={this.handleChangeReplaces}
                       />
                       <MultiSelect<WearableCategory>
                         itemId={item.id}
                         label={t('item_editor.right_panel.hides')}
-                        value={item.data.hides}
+                        value={data!.hides}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
-                        onChange={hides =>
-                          this.handleChange({
-                            ...item,
-                            data: {
-                              ...item.data,
-                              hides,
-                              representations: item.data.representations.map(representation => ({
-                                ...representation,
-                                overrideHides: hides
-                              }))
-                            }
-                          })
-                        }
+                        onChange={this.handleChangeHides}
                       />
                     </>
                   )}
                 </Collapsable>
                 <Collapsable item={item} label={t('item_editor.right_panel.tags')}>
-                  {item => (
-                    <Tags
-                      itemId={item.id}
-                      value={item.data.tags}
-                      onChange={tags => this.handleChange({ ...item, data: { ...item.data, tags } })}
-                      isDisabled={!canEditItemMetadata}
-                    />
-                  )}
+                  {item => <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />}
                 </Collapsable>
                 {isDirty ? (
                   <div className="edit-buttons">

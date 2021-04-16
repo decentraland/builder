@@ -5,13 +5,13 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
+import { Pool } from 'modules/pool/types'
 import { isRemoteURL } from 'modules/media/utils'
 import { getProjectDimensions } from 'modules/project/utils'
 import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
-import { Pool } from 'modules/pool/types'
 
 export default class ProjectCard extends React.PureComponent<Props, State> {
   static defaultProps: DefaultProps = {

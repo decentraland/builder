@@ -83,6 +83,17 @@ export class ControllerEntityFactory {
   }
 }
 
+export async function computeHashes(contents: Record<string, Blob>) {
+  const contentsAsHashes: Record<string, string> = {}
+  for (const path in contents) {
+    const blob = contents[path]
+    const file = await makeContentFile(path, blob)
+    const cid = await calculateBufferHash(file.content)
+    contentsAsHashes[path] = cid
+  }
+  return contentsAsHashes
+}
+
 export async function calculateHashes(files: ContentFile[]): Promise<Map<ContentFilePath, ContentFileHash>> {
   const entries: Promise<[ContentFilePath, ContentFileHash]>[] = Array.from(files).map(file => {
     return calculateBufferHash(file.content).then<[ContentFilePath, ContentFileHash]>(hash => [file.name, hash])

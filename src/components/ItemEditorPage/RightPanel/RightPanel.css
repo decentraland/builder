@@ -48,6 +48,43 @@
   border-radius: 6px;
 }
 
+.RightPanel .details .thumbnail-container {
+  position: relative;
+}
+
+.RightPanel .details .thumbnail-container .Icon.camera {
+  position: absolute;
+  top: 40%;
+  left: 36%;
+  cursor: pointer;
+}
+
+.RightPanel .details .thumbnail-container .thumbnail-edit-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--background);
+  opacity: 0.4;
+  width: 100%;
+  height: 100%;
+}
+
+.RightPanel .details .thumbnail-edit-container {
+  display: none;
+}
+
+.RightPanel .details .thumbnail-container:hover .thumbnail-edit-container {
+  display: block;
+}
+
+.RightPanel .details .thumbnail-container input[type='file'] {
+  display: none;
+}
+
+.RightPanel .details .metrics {
+  margin-top: 24px;
+}
+
 .RightPanel .details .metrics {
   margin-left: 20px;
   display: flex;

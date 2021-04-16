@@ -34,7 +34,7 @@ import {
   WearableRepresentation
 } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
-import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
+import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
@@ -146,7 +146,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         })
 
         // add new contents
-        const newContents = await this.computeHashes(contents!)
+        const newContents = await computeHashes(contents!)
         delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
         for (const path in newContents) {
           item.contents[path] = newContents[path]
@@ -155,7 +155,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item = {
           ...(pristineItem as Item),
           metrics,
-          contents: await this.computeHashes(contents!),
+          contents: await computeHashes(contents!),
           updatedAt: +new Date()
         }
 
@@ -174,7 +174,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
 
         // add new contents
-        const newContents = await this.computeHashes(contents!)
+        const newContents = await computeHashes(contents!)
         delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
         for (const path in newContents) {
           item.contents[path] = newContents[path]
@@ -202,7 +202,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           owner: address!,
           metrics,
-          contents: await this.computeHashes(contents!),
+          contents: await computeHashes(contents!),
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
@@ -390,17 +390,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return getMissingBodyShapeType(item) === bodyShape
   }
 
-  async computeHashes(contents: Record<string, Blob>) {
-    const contentsAsHashes: Record<string, string> = {}
-    for (const path in contents) {
-      const blob = contents[path]
-      const file = await makeContentFile(path, blob)
-      const cid = await calculateBufferHash(file.content)
-      contentsAsHashes[path] = cid
-    }
-    return contentsAsHashes
-  }
-
   async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
     let thumbnail: string = ''
     let metrics: ModelMetrics
@@ -484,7 +473,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   renderDropzoneCTA = (open: () => void) => {
     const { isLoading } = this.state
-    console.log('OPEN ', open)
     return (
       <>
         {isLoading ? (
