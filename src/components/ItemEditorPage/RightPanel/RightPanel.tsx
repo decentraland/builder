@@ -6,7 +6,7 @@ import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import BuilderIcon from 'components/Icon'
 import { isEqual } from 'lib/address'
-import { getMissingBodyShapeType, canManageItem } from 'modules/item/utils'
+import { getMissingBodyShapeType, canManageItem, getRarities, getCategories } from 'modules/item/utils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
@@ -95,8 +95,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const { selectedItemId } = this.props
     const { item: selectedItem, isDirty } = this.state
 
-    const categories = Object.values(WearableCategory)
-    const rarities = Object.values(ItemRarity)
+    const rarities = getRarities()
 
     return (
       <div className="RightPanel">
@@ -105,6 +104,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             const item = (remoteItem || selectedItem) as Item
             const isOwner = this.isOwner(item)
             const canEditItemMetadata = this.canEditItemMetadata(item)
+
+            const categories = item ? getCategories(item.contents) : []
 
             return isLoading || (!remoteItem && selectedItemId) ? (
               <Loader size="massive" active />
