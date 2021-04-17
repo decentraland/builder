@@ -34,6 +34,7 @@ import {
   WearableRepresentation
 } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
+import { getModelData2 } from 'lib/getModelData2'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
@@ -252,7 +253,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
     } else {
       const url = URL.createObjectURL(contents[model])
-      const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
+      const { image, info } = await getModelData2(url, { width: 1024, height: 1024, extension: model.split('.')[1] })
       URL.revokeObjectURL(url)
 
       thumbnail = image
@@ -274,7 +275,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (contents && this.hasCustomImage(model, contents)) {
       thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
     } else {
-      const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+      getModelData.toString()
+      const { image } = await getModelData2(url, { thumbnailType: getThumbnailType(category), extension: model!.split('.')[1] })
       thumbnail = image
     }
     URL.revokeObjectURL(url)
