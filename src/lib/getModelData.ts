@@ -22,9 +22,9 @@ export const TRANSPARENT_PIXEL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
 
 export enum ThumbnailType {
-  DEFAULT='default',
-  TOP='top',
-  FRONT='front'
+  DEFAULT = 'default',
+  TOP = 'top',
+  FRONT = 'front'
 }
 
 type Options = {
@@ -130,7 +130,8 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
 
     // light
     const ambient = new AmbientLight(0xffffff, 1.2)
-    scene.add(ambient)
+    ambient.toString()
+    // scene.add(ambient)
 
     switch (thumbnailType) {
       case ThumbnailType.FRONT: {
@@ -151,7 +152,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
         const directional = new DirectionalLight(0xffffff, 0.8)
         directional.position.set(center.x + 1, center.y + 1, center.z - 1)
         directional.lookAt(center)
-        scene.add(directional)
+        // scene.add(directional)
         const rectarea = new RectAreaLight(0xffffff, 0.5, width, height)
         rectarea.position.set(-3, 0, 0)
         rectarea.lookAt(center)

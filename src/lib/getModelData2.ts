@@ -1,6 +1,8 @@
 import * as BABYLON from '@babylonjs/core'
 import '@babylonjs/loaders'
 
+import { ModelMetrics } from 'modules/scene/types'
+
 type Options = {
   width: number
   height: number
@@ -22,6 +24,10 @@ const defaults: Options = {
   extension: 'gltf'
 }
 
+// transparent 1x1 pixel
+export const TRANSPARENT_PIXEL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
+
 export async function getModelData2(url: string, options: Partial<Options> = {}) {
   // add defaults to options
   const { width, height, extension } = {
@@ -38,9 +44,8 @@ export async function getModelData2(url: string, options: Partial<Options> = {})
     preserveDrawingBuffer: true,
     stencil: true
   })
-  // GLTFFileLoader.IncrementalLoading = false
-  // console.log(OBJFileLoader.name)
-  // Create a basic BJS Scene object
+
+  // Create a BJS Scene object
   let scene = new BABYLON.Scene(engine)
   scene.autoClear = true
   scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
@@ -54,41 +59,57 @@ export async function getModelData2(url: string, options: Partial<Options> = {})
   // Create a built-in "sphere" shape; its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation
   // var sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, scene, false, BABYLON.Mesh.FRONTSIDE);
   // let ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene, false)
-  // Return the created scene
-  scene = await new Promise<BABYLON.Scene>((res, rej) => BABYLON.SceneLoader.Append(url, '', scene, res, null, rej, '.' + extension))
-  prepareCamera(scene, pluginName)
-  prepareLighting(scene)
 
-  const image = await new Promise<string>((res, _) =>
-    scene.onReadyObservable.addOnce(() => {
-      for (let material of scene.materials) {
-        if (material.name.toLowerCase().includes('hair_mat')) {
-          material.alpha = 0
-          scene.removeMaterial(material)
+  try {
+    // Return the created scene
+    scene = await new Promise<BABYLON.Scene>((res, rej) => BABYLON.SceneLoader.Append(url, '', scene, res, null, rej, '.' + extension))
+    prepareCamera(scene, pluginName)
+    prepareLighting(scene)
+
+    const image = await new Promise<string>((res, _) =>
+      scene.onReadyObservable.addOnce(() => {
+        for (let material of scene.materials) {
+          if (material.name.toLowerCase().includes('hair_mat')) {
+            material.alpha = 0
+            scene.removeMaterial(material)
+          }
         }
-      }
 
-      for (let texture of scene.textures) {
-        if (texture.name.toLowerCase().includes('hair_mat')) {
-          texture.dispose()
-          scene.removeTexture(texture)
+        for (let texture of scene.textures) {
+          if (texture.name.toLowerCase().includes('hair_mat')) {
+            texture.dispose()
+            scene.removeTexture(texture)
+          }
         }
-      }
 
-      BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, scene.activeCamera!, 1024, res, undefined, undefined, true)
-    })
-  )
+        BABYLON.Tools.CreateScreenshotUsingRenderTarget(engine, scene.activeCamera!, 1024, res, undefined, undefined, true)
+      })
+    )
 
-  return {
-    info: {
+    return {
+      info: {
+        triangles: 0,
+        materials: scene.textures.length,
+        textures: scene.textures.length,
+        meshes: scene.meshes.length,
+        bodies: 0,
+        entities: 1
+      },
+      image
+    }
+  } catch (e) {
+    // could not render model, default to 0 metrics and default thumnail
+    const info: ModelMetrics = {
       triangles: 0,
       materials: 0,
       textures: 0,
       meshes: 0,
       bodies: 0,
       entities: 1
-    },
-    image
+    }
+
+    const image = TRANSPARENT_PIXEL
+    return { info, image }
   }
 }
 
@@ -102,6 +123,8 @@ function prepareCamera(scene: BABYLON.Scene, pluginName: string) {
     if (pluginName === 'gltf') {
       // glTF assets use a +Z forward convention while the default camera faces +Z. Rotate the camera to look at the front of the asset.
       camera.alpha += Math.PI
+      camera.alpha += 0.75
+      camera.beta += -0.5
     }
 
     // Enable camera's behaviors
@@ -138,5 +161,20 @@ function prepareCamera(scene: BABYLON.Scene, pluginName: string) {
 }
 
 function prepareLighting(scene: BABYLON.Scene) {
-  scene.createDefaultLight()
+  const light = new BABYLON.HemisphericLight(
+    'HemiLight',
+    new BABYLON.Vector3(scene.meshes[0].position.x, scene.meshes[0].position.y + 1, scene.meshes[0].position.z),
+    scene
+  )
+  light.intensity = 1.2
+  light.groundColor = new BABYLON.Color3(1, 1, 1)
+
+  // scene.meshes[0].position
+  // const light2 = new BABYLON.DirectionalLight(
+  //   'directLight',
+  //   new BABYLON.Vector3(scene.meshes[0].position.x + 1, scene.meshes[0].position.y + 1, scene.meshes[0].position.z - 1),
+  //   scene
+  // )
+  // light2.specular = new BABYLON.Color3(1, 1, 1)
+  // light2.intensity = 0.8
 }

@@ -253,6 +253,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
     } else {
       const url = URL.createObjectURL(contents[model])
+      // const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
       const { image, info } = await getModelData2(url, { width: 1024, height: 1024, extension: model.split('.')[1] })
       URL.revokeObjectURL(url)
 
