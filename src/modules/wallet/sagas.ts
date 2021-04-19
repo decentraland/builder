@@ -17,7 +17,7 @@ import { MANA_ADDRESS } from 'modules/common/contracts'
 
 const baseWalletSaga = createWalletSaga({
   MANA_ADDRESS,
-  CHAIN_ID: env.get('REACT_APP_CHAIN_ID') || ChainId.ETHEREUM_MAINNET
+  CHAIN_ID: env.get('REACT_APP_CHAIN_ID') || ChainId.ETHEREUM_GOERLI
 })
 
 export function* walletSaga() {
@@ -33,18 +33,19 @@ function* customWalletSaga() {
 function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountAction | ChangeNetworkAction) {
   const { wallet } = action.payload
   const chainId = wallet.networks.MATIC.chainId
+  const authorizations: Authorization[] = []
 
-  let authorizations: Authorization[] = []
+  try {
+    if (env.get('REACT_APP_FF_WEARABLES')) {
+      authorizations.push({
+        type: AuthorizationType.ALLOWANCE,
+        address: wallet.address,
+        tokenAddress: getContract(ContractName.MANAToken, chainId).address,
+        authorizedAddress: getContract(ContractName.CollectionManager, chainId).address,
+        chainId: ChainId.MATIC_MUMBAI
+      })
+    }
 
-  if (env.get('REACT_APP_FF_WEARABLES')) {
-    authorizations.push({
-      type: AuthorizationType.ALLOWANCE,
-      address: wallet.address,
-      tokenAddress: getContract(ContractName.MANAToken, chainId).address,
-      authorizedAddress: getContract(ContractName.CollectionManager, chainId).address,
-      chainId: ChainId.MATIC_MUMBAI
-    })
-  }
-
-  yield put(fetchAuthorizationsRequest(authorizations))
+    yield put(fetchAuthorizationsRequest(authorizations))
+  } catch (error) {}
 }
