@@ -1,30 +1,22 @@
 import { Eth, SendTx } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { TransactionReceipt } from 'web3x-es/formatters'
-import { Personal } from 'web3x-es/personal'
 import { namehash } from '@ethersproject/hash'
 import { push } from 'connected-react-router'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
-import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
-import { Entity, EntityType } from 'dcl-catalyst-commons'
-import { Avatar } from 'decentraland-ui'
-import { Authenticator } from 'dcl-crypto'
-import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
-import { changeProfile } from 'decentraland-dapps/dist/modules/profile/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { FETCH_ENS_LIST_SUCCESS } from 'decentraland-dapps/dist/modules/ens/actions'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
 import { ENS_ADDRESS, ENS_RESOLVER_ADDRESS, CONTROLLER_ADDRESS, MANA_ADDRESS } from 'modules/common/contracts'
 import { DCLController } from 'contracts/DCLController'
 import { ERC20 as MANAToken } from 'contracts/ERC20'
-import { getWallet, getEth } from 'modules/wallet/utils'
-import { marketplace } from 'lib/api/marketplace'
+import { getWallet } from 'modules/wallet/utils'
 import { ipfs } from 'lib/api/ipfs'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
-import { PEER_URL } from 'lib/api/peer'
 import { locations } from 'routing/locations'
 import { Land } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
@@ -46,15 +38,10 @@ import {
   fetchENSAuthorizationRequest,
   fetchENSAuthorizationSuccess,
   fetchENSAuthorizationFailure,
-  FETCH_ENS_LIST_REQUEST,
   FetchENSListRequestAction,
   fetchENSListRequest,
   fetchENSListSuccess,
   fetchENSListFailure,
-  SET_ALIAS_REQUEST,
-  SetAliasRequestAction,
-  setAliasSuccess,
-  setAliasFailure,
   CLAIM_NAME_REQUEST,
   ClaimNameRequestAction,
   claimNameSuccess,
@@ -65,16 +52,16 @@ import {
   allowClaimManaFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
-import { getDefaultProfileEntity, getDomainFromName, setProfileFromEntity } from './utils'
+import { getDomainFromName } from './utils'
+import { getENSByWallet } from './selectors'
 
 export function* ensSaga() {
-  yield takeLatest(SET_ALIAS_REQUEST, handleSetAlias)
+  yield takeEvery(FETCH_ENS_LIST_SUCCESS, handleFetchENSListRequest)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
   yield takeEvery(SET_ENS_CONTENT_REQUEST, handleSetENSContentRequest)
   yield takeEvery(FETCH_ENS_AUTHORIZATION_REQUEST, handleFetchAuthorizationRequest)
-  yield takeEvery(FETCH_ENS_LIST_REQUEST, handleFetchENSListRequest)
   yield takeEvery(CLAIM_NAME_REQUEST, handleClaimNameRequest)
   yield takeEvery(ALLOW_CLAIM_MANA_REQUEST, handleApproveClaimManaRequest)
 }
@@ -82,61 +69,6 @@ export function* ensSaga() {
 function* handleConnectWallet() {
   yield put(fetchENSAuthorizationRequest())
   yield put(fetchENSListRequest())
-}
-
-function* handleSetAlias(action: SetAliasRequestAction) {
-  const { address, name } = action.payload
-  try {
-    const client = new CatalystClient(PEER_URL, 'builder')
-    const entities: Entity[] = yield call(() => client.fetchEntitiesByPointers(EntityType.PROFILE, [address.toLowerCase()]))
-    let entity: Entity
-    if (entities.length > 0) {
-      entity = entities[0]
-    } else {
-      entity = yield call(() => getDefaultProfileEntity())
-    }
-
-    const avatar = entity && entity.metadata && entity.metadata.avatars[0]
-    const newAvatar: Avatar = {
-      ...avatar,
-      hasClaimedName: true,
-      version: avatar.version + 1,
-      name
-    }
-
-    const newEntity = {
-      ...entity,
-      userId: address,
-      ethAddress: address,
-      metadata: {
-        ...entity.metadata,
-        avatars: [newAvatar, ...entity.metadata.avatars.slice(1)]
-      }
-    }
-    // Build entity
-    const content: Map<string, string> = new Map((newEntity.content || []).map(({ file, hash }) => [file, hash]))
-
-    const deployPreparationData = yield call(() =>
-      DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, newEntity.metadata)
-    )
-
-    // Request signature
-    const eth: Eth = yield call(getEth)
-
-    const personal = new Personal(eth.provider)
-    const signature = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
-
-    // Deploy change
-    const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
-    yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
-
-    const stateEntity = yield call(() => setProfileFromEntity(newEntity))
-    yield put(setAliasSuccess(address, name))
-    yield put(changeProfile(address, stateEntity.metadata as Profile))
-  } catch (error) {
-    const ensError: ENSError = { message: error.message }
-    yield put(setAliasFailure(address, ensError))
-  }
 }
 
 function* handleFetchENSRequest(action: FetchENSRequestAction) {
@@ -292,19 +224,16 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
     const address = wallet.address
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
-    const domains: string[] = yield call(() => marketplace.fetchENSList(address))
+    const previousEnsList: ENS[] = yield select(getENSByWallet)
 
     const ensList: ENS[] = yield call(() =>
       Promise.all(
-        domains.map(async data => {
-          const name = data
-          const subdomain = `${data.toLowerCase()}.dcl.eth`
-          let landId: string | undefined = undefined
-          let content: string = ''
+        previousEnsList.map(async ens => {
+          let { name, subdomain, content, resolver, landId } = ens
 
           const nodehash = namehash(subdomain)
           const resolverAddress: Address = await ensContract.methods.resolver(nodehash).call()
-          const resolver = resolverAddress.toString()
+          resolver = resolverAddress.toString()
 
           if (resolver !== Address.ZERO.toString()) {
             const resolverContract = new ENSResolver(eth, resolverAddress)
@@ -316,7 +245,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
             }
           }
 
-          const ens: ENS = {
+          const newEns: ENS = {
             address,
             name,
             subdomain,
@@ -325,7 +254,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
             landId
           }
 
-          return ens
+          return newEns
         })
       )
     )

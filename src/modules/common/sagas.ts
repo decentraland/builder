@@ -30,6 +30,7 @@ import { committeeSaga } from 'modules/committee/sagas'
 import { forumSaga } from 'modules/forum/sagas'
 import { itemSaga } from 'modules/item/sagas'
 import { statsSaga } from 'modules/stats/sagas'
+import { ensSaga as aliasSaga } from 'decentraland-dapps/dist/modules/ens/sagas'
 
 import { PEER_URL } from 'lib/api/peer'
 
@@ -64,6 +65,7 @@ export function* rootSaga() {
     committeeSaga(),
     forumSaga(),
     itemSaga(),
+    aliasSaga(),
     ensSaga(),
     statsSaga()
   ])

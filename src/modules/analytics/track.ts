@@ -80,13 +80,13 @@ import {
 } from 'modules/collection/actions'
 import {
   AllowClaimManaSuccessAction,
-  SetAliasSuccessAction,
   ALLOW_CLAIM_MANA_SUCCESS,
-  SET_ALIAS_SUCCESS,
   CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
   SET_ENS_RESOLVER_SUCCESS
 } from 'modules/ens/actions'
+import { SetAliasSuccessAction, SET_ALIAS_SUCCESS } from 'decentraland-dapps/dist/modules/ens/actions'
+
 import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {

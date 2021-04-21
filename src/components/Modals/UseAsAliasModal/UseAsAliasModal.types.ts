@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
+import { setAliasRequest } from 'decentraland-dapps/dist/modules/ens/actions'
 import { ENS } from 'modules/ens/types'
-import { setAliasRequest } from 'modules/ens/actions'
 
 export type Props = ModalProps & {
   address?: string
