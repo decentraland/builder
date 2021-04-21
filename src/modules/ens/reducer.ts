@@ -1,12 +1,12 @@
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
-  FetchENSListRequestAction,
-  FetchENSListSuccessAction,
-  FetchENSListFailureAction,
-  FETCH_ENS_LIST_REQUEST,
-  FETCH_ENS_LIST_SUCCESS,
-  FETCH_ENS_LIST_FAILURE,
+  FillENSListRequestAction,
+  FillENSListSuccessAction,
+  FillENSListFailureAction,
+  FILL_ENS_LIST_REQUEST,
+  FILL_ENS_LIST_SUCCESS,
+  FILL_ENS_LIST_FAILURE,
   FetchENSAuthorizationRequestAction,
   FetchENSAuthorizationSuccessAction,
   FetchENSAuthorizationFailureAction,
@@ -70,9 +70,9 @@ export type ENSReducerAction =
   | SetENSResolverRequestAction
   | SetENSResolverSuccessAction
   | SetENSResolverFailureAction
-  | FetchENSListRequestAction
-  | FetchENSListSuccessAction
-  | FetchENSListFailureAction
+  | FillENSListRequestAction
+  | FillENSListSuccessAction
+  | FillENSListFailureAction
   | FetchENSAuthorizationRequestAction
   | FetchENSAuthorizationSuccessAction
   | FetchENSAuthorizationFailureAction
@@ -87,7 +87,7 @@ export type ENSReducerAction =
 export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAction): ENSState {
   switch (action.type) {
     case CLAIM_NAME_REQUEST:
-    case FETCH_ENS_LIST_REQUEST:
+    case FILL_ENS_LIST_REQUEST:
     case FETCH_ENS_AUTHORIZATION_REQUEST:
     case FETCH_ENS_REQUEST:
     case SET_ENS_CONTENT_REQUEST:
@@ -102,7 +102,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
         loading: loadingReducer(state.loading, action)
       }
     }
-    case FETCH_ENS_LIST_SUCCESS: {
+    case FILL_ENS_LIST_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -162,7 +162,7 @@ export function ensReducer(state: ENSState = INITIAL_STATE, action: ENSReducerAc
     case SET_ENS_RESOLVER_FAILURE:
     case SET_ENS_CONTENT_FAILURE:
     case FETCH_ENS_FAILURE:
-    case FETCH_ENS_LIST_FAILURE:
+    case FILL_ENS_LIST_FAILURE:
     case FETCH_ENS_AUTHORIZATION_FAILURE:
     case ALLOW_CLAIM_MANA_FAILURE: {
       return {

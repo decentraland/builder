@@ -6,7 +6,7 @@ import { push } from 'connected-react-router'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { FETCH_ENS_LIST_SUCCESS } from 'decentraland-dapps/dist/modules/ens/actions'
+import { fetchENSListRequest, FETCH_ENS_LIST_SUCCESS } from 'decentraland-dapps/dist/modules/ens/actions'
 
 import { ENS as ENSContract } from 'contracts/ENS'
 import { ENSResolver } from 'contracts/ENSResolver'
@@ -38,10 +38,6 @@ import {
   fetchENSAuthorizationRequest,
   fetchENSAuthorizationSuccess,
   fetchENSAuthorizationFailure,
-  FetchENSListRequestAction,
-  fetchENSListRequest,
-  fetchENSListSuccess,
-  fetchENSListFailure,
   CLAIM_NAME_REQUEST,
   ClaimNameRequestAction,
   claimNameSuccess,
@@ -49,14 +45,17 @@ import {
   ALLOW_CLAIM_MANA_REQUEST,
   AllowClaimManaRequestAction,
   allowClaimManaSuccess,
-  allowClaimManaFailure
+  allowClaimManaFailure,
+  FillENSListRequestAction,
+  fillENSListSuccess,
+  fillENSListFailure
 } from './actions'
 import { ENS, ENSOrigin, ENSError, Authorization } from './types'
 import { getDomainFromName } from './utils'
-import { getENSByWallet } from './selectors'
+import { marketplace } from 'lib/api/marketplace'
 
 export function* ensSaga() {
-  yield takeEvery(FETCH_ENS_LIST_SUCCESS, handleFetchENSListRequest)
+  yield takeEvery(FETCH_ENS_LIST_SUCCESS, handleFillENSListRequest)
   yield takeLatest(FETCH_LANDS_SUCCESS, handleConnectWallet)
   yield takeEvery(FETCH_ENS_REQUEST, handleFetchENSRequest)
   yield takeEvery(SET_ENS_RESOLVER_REQUEST, handleSetENSResolverRequest)
@@ -211,7 +210,7 @@ function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestA
   }
 }
 
-function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
+function* handleFillENSListRequest(_action: FillENSListRequestAction) {
   try {
     const landHashes: { id: string; hash: string }[] = []
     const lands: Land[] = yield select(getLands)
@@ -224,16 +223,18 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
     const address = wallet.address
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
-    const previousEnsList: ENS[] = yield select(getENSByWallet)
+    const domains: string[] = yield call(() => marketplace.fetchENSList(address))
 
     const ensList: ENS[] = yield call(() =>
       Promise.all(
-        previousEnsList.map(async ens => {
-          let { name, subdomain, content, resolver, landId } = ens
+        domains.map(async name => {
+          const subdomain = `${name.toLowerCase()}.dcl.eth`
+          let landId: string | undefined = undefined
+          let content: string = ''
 
           const nodehash = namehash(subdomain)
           const resolverAddress: Address = await ensContract.methods.resolver(nodehash).call()
-          resolver = resolverAddress.toString()
+          const resolver = resolverAddress.toString()
 
           if (resolver !== Address.ZERO.toString()) {
             const resolverContract = new ENSResolver(eth, resolverAddress)
@@ -259,10 +260,10 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
       )
     )
 
-    yield put(fetchENSListSuccess(ensList))
+    yield put(fillENSListSuccess(ensList))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
-    yield put(fetchENSListFailure(ensError))
+    yield put(fillENSListFailure(ensError))
   }
 }
 

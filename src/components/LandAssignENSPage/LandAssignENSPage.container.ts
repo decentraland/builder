@@ -1,6 +1,7 @@
 import { push, goBack } from 'connected-react-router'
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { FETCH_ENS_LIST_REQUEST } from 'decentraland-dapps/dist/modules/ens/actions'
 import { RootState } from 'modules/common/types'
 import {
   FETCH_ENS_REQUEST,
@@ -8,7 +9,7 @@ import {
   setENSContentRequest,
   SET_ENS_RESOLVER_REQUEST,
   setENSResolverRequest,
-  FETCH_ENS_LIST_REQUEST
+  FILL_ENS_LIST_REQUEST
 } from 'modules/ens/actions'
 import { findBySubdomain } from 'modules/ens/utils'
 import { getENSList, getLoading, getError, isWaitingTxSetResolver, isWaitingTxSetLandContent } from 'modules/ens/selectors'
@@ -30,7 +31,8 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
       isLoadingType(getLoading(state), SET_ENS_RESOLVER_REQUEST) ||
       isLoadingType(getLoading(state), SET_ENS_CONTENT_REQUEST) ||
       isLoadingType(getLoading(state), FETCH_ENS_REQUEST) ||
-      isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST)
+      isLoadingType(getLoading(state), FETCH_ENS_LIST_REQUEST) ||
+      isLoadingType(getLoading(state), FILL_ENS_LIST_REQUEST)
   }
 }
 

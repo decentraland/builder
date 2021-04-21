@@ -62,17 +62,17 @@ export type SetENSContentSuccessAction = ReturnType<typeof setENSContentSuccess>
 export type SetENSContentFailureAction = ReturnType<typeof setENSContentFailure>
 
 // Get a ENS List (list of names) owned by the current account
-export const FETCH_ENS_LIST_REQUEST = '[Request] Fetch ENS List'
-export const FETCH_ENS_LIST_SUCCESS = '[Success] Fetch ENS List'
-export const FETCH_ENS_LIST_FAILURE = '[Failure] Fetch ENS List'
+export const FILL_ENS_LIST_REQUEST = '[Request] Fill ENS List'
+export const FILL_ENS_LIST_SUCCESS = '[Success] Fill ENS List'
+export const FILL_ENS_LIST_FAILURE = '[Failure] Fill ENS List'
 
-export const fetchENSListRequest = () => action(FETCH_ENS_LIST_REQUEST, {})
-export const fetchENSListSuccess = (ensList: ENS[]) => action(FETCH_ENS_LIST_SUCCESS, { ensList })
-export const fetchENSListFailure = (error: ENSError) => action(FETCH_ENS_LIST_FAILURE, { error })
+export const fillENSListRequest = () => action(FILL_ENS_LIST_REQUEST, {})
+export const fillENSListSuccess = (ensList: ENS[]) => action(FILL_ENS_LIST_SUCCESS, { ensList })
+export const fillENSListFailure = (error: ENSError) => action(FILL_ENS_LIST_FAILURE, { error })
 
-export type FetchENSListRequestAction = ReturnType<typeof fetchENSListRequest>
-export type FetchENSListSuccessAction = ReturnType<typeof fetchENSListSuccess>
-export type FetchENSListFailureAction = ReturnType<typeof fetchENSListFailure>
+export type FillENSListRequestAction = ReturnType<typeof fillENSListRequest>
+export type FillENSListSuccessAction = ReturnType<typeof fillENSListSuccess>
+export type FillENSListFailureAction = ReturnType<typeof fillENSListFailure>
 
 // Claim a new name
 export const CLAIM_NAME_REQUEST = '[Request] Claim Name'
