@@ -1,0 +1,25 @@
+.AvatarColorDropdown.ui.dropdown .color {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  border-radius: 30px;
+}
+
+.AvatarColorDropdown.ui.dropdown.visible .colors-menu {
+  background-color: var(--dark-two);
+  display: flex !important;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+.AvatarColorDropdown.ui.dropdown.visible .colors-menu > .item {
+  min-width: 30px;
+  display: flex;
+  justify-content: center;
+  flex: 0 14%;
+}
+
+.AvatarColorDropdown.ui.dropdown .colors-menu .item:hover {
+  background-color: var(--gray);
+  border-radius: 5px;
+}

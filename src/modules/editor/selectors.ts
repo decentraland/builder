@@ -31,6 +31,10 @@ export const getEntitiesOutOfBoundaries = (state: RootState) => getState(state).
 export const areEntitiesOutOfBoundaries = (state: RootState) => getState(state).entitiesOutOfBoundaries.length > 0
 export const getBodyShape = (state: RootState) => getState(state).bodyShape
 export const getAvatarAnimation = (state: RootState) => getState(state).avatarAnimation
+export const getSkinColor = (state: RootState) => getState(state).skinColor
+export const getEyeColor = (state: RootState) => getState(state).eyeColor
+export const getHairColor = (state: RootState) => getState(state).hairColor
+
 export const getVisibleItemIds = (state: RootState) => getState(state).visibleItemIds
 export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {
   const mappings = Object.values(assets).reduce<Record<string, string>>((mappings, asset) => {

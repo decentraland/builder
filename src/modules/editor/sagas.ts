@@ -1,5 +1,5 @@
-// @ts-ignore
-import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
+import { Color4, Wearable } from 'decentraland-ecs'
+import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
 import { getSearch } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
@@ -52,8 +52,10 @@ import {
   SetBodyShapeAction,
   SET_AVATAR_ANIMATION,
   SetAvatarAnimationAction,
-  SetItemsAction,
-  setBodyShape
+  setBodyShape,
+  SET_SKIN_COLOR,
+  SET_EYE_COLOR,
+  SET_HAIR_COLOR
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -100,35 +102,39 @@ import {
   isMultiselectEnabled,
   getBodyShape,
   getVisibleItems,
-  getAvatarAnimation
+  getAvatarAnimation,
+  getSkinColor,
+  getEyeColor,
+  getHairColor
 } from './selectors'
-
 import {
   getNewEditorScene,
   resizeScreenshot,
-  THUMBNAIL_WIDTH,
-  THUMBNAIL_HEIGHT,
   snapScale,
-  POSITION_GRID_RESOLUTION,
-  SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION,
+  getEyeColors,
+  getHairColors,
+  getSkinColors,
   createReadyOnlyScene,
   areEqualTransforms,
   createAvatarProject,
   toWearable,
-  mergeWearables
+  mergeWearables,
+  THUMBNAIL_WIDTH,
+  THUMBNAIL_HEIGHT,
+  POSITION_GRID_RESOLUTION,
+  SCALE_GRID_RESOLUTION,
+  ROTATION_GRID_RESOLUTION
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
-import maleAvatar from './wearables/male.json'
-import femaleAvatar from './wearables/female.json'
-import { Wearable } from 'decentraland-ecs'
 import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
+import maleAvatar from './wearables/male.json'
+import femaleAvatar from './wearables/female.json'
 
 const editorWindow = window as EditorWindow
 
@@ -152,10 +158,13 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
-  yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
-  yield takeLatest(SET_ITEMS, handleSetItems)
   yield takeLatest(SET_AVATAR_ANIMATION, handleSetAvatarAnimation)
   yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
+  yield takeLatest(SET_ITEMS, renderAvatar)
+  yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
+  yield takeLatest(SET_SKIN_COLOR, renderAvatar)
+  yield takeLatest(SET_EYE_COLOR, renderAvatar)
+  yield takeLatest(SET_HAIR_COLOR, renderAvatar)
 }
 
 function* pollEditor(scene: Scene) {
@@ -636,22 +645,25 @@ function* renderAvatar() {
     const defaultWearables: Wearable[] = yield getDefaultWearables()
     const wearables = mergeWearables(defaultWearables, visibleItems.map(toWearable))
     const animation: AvatarAnimation = yield select(getAvatarAnimation)
+    const skinColor: Color4 = yield select(getSkinColor)
+    const eyeColor: Color4 = yield select(getEyeColor)
+    const hairColor: Color4 = yield select(getHairColor)
+
     yield call(async () => {
       editorWindow.editor.addWearablesToCatalog(wearables)
-      editorWindow.editor.sendExternalAction(updateAvatar(wearables, animation))
+      editorWindow.editor.sendExternalAction(updateAvatar(wearables, skinColor, eyeColor, hairColor, animation))
     })
   }
 }
 
 function* bustCache() {
   const defaultWearables: Wearable[] = yield getDefaultWearables()
+  const skinColor: Color4 = getSkinColors()[0]
+  const eyeColor: Color4 = getEyeColors()[0]
+  const hairColor: Color4 = getHairColors()[0]
   editorWindow.editor.addWearablesToCatalog(defaultWearables)
-  editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, AvatarAnimation.IDLE))
+  editorWindow.editor.sendExternalAction(updateAvatar(defaultWearables, skinColor, eyeColor, hairColor, AvatarAnimation.IDLE))
   yield delay(32)
-}
-
-function* handleSetItems(_action: SetItemsAction) {
-  yield renderAvatar()
 }
 
 function* handleSetBodyShape(_action: SetBodyShapeAction) {

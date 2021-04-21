@@ -1034,6 +1034,11 @@
       "uncommon": "Uncommon",
       "common": "Common"
     },
+    "color": {
+      "skin": "Skin color",
+      "eye": "Eye color",
+      "hair": "Hair color"
+    },
     "category": {
       "body_shape": "Body Shape",
       "earring": "Earring",

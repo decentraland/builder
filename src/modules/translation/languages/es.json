@@ -1043,6 +1043,11 @@
       "uncommon": "Poco común",
       "common": "Común"
     },
+    "color": {
+      "skin": "Color de piel",
+      "eye": "Color de ojos",
+      "hair": "Color de pelo"
+    },
     "category": {
       "body_shape": "Cuerpo",
       "earring": "Aros",
