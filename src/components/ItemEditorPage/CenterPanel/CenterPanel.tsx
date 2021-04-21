@@ -116,24 +116,30 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               />
             </div>
 
-            <AvatarColorDropdown
-              currentTone={skinColor}
-              tones={getSkinColors()}
-              label={t('wearable.color.skin')}
-              onChange={this.handleSkinColorChange}
-            />
-            <AvatarColorDropdown
-              currentTone={eyeColor}
-              tones={getEyeColors()}
-              label={t('wearable.color.eye')}
-              onChange={this.handleEyeColorChange}
-            />
-            <AvatarColorDropdown
-              currentTone={hairColor}
-              tones={getHairColors()}
-              label={t('wearable.color.hair')}
-              onChange={this.handleHairColorChange}
-            />
+            <div className="dropdown-container">
+              <AvatarColorDropdown
+                currentColor={skinColor}
+                colors={getSkinColors()}
+                label={t('wearable.color.skin')}
+                onChange={this.handleSkinColorChange}
+              />
+            </div>
+            <div className="dropdown-container">
+              <AvatarColorDropdown
+                currentColor={eyeColor}
+                colors={getEyeColors()}
+                label={t('wearable.color.eye')}
+                onChange={this.handleEyeColorChange}
+              />
+            </div>
+            <div className="dropdown-container">
+              <AvatarColorDropdown
+                currentColor={hairColor}
+                colors={getHairColors()}
+                label={t('wearable.color.hair')}
+                onChange={this.handleHairColorChange}
+              />
+            </div>
           </div>
         </div>
       </div>
