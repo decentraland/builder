@@ -32,6 +32,10 @@ export type Props = {
   onClose: typeof closeEditor
 }
 
+export type State = {
+  isShowingAvatarAttributes: boolean
+}
+
 export type MapStateProps = Pick<Props, 'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems'>
 export type MapDispatchProps = Pick<
   Props,

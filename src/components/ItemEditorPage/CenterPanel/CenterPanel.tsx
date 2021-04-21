@@ -1,17 +1,14 @@
 import * as React from 'react'
 import { Color4 } from 'decentraland-ecs'
-import { Dropdown, DropdownProps, DropdownItemProps, Popup, Icon } from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ViewPort from 'components/ViewPort'
 import { AvatarAnimation, PreviewType } from 'modules/editor/types'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/utils'
 import { WearableBodyShape } from 'modules/item/types'
-import { Props } from './CenterPanel.types'
+import AvatarColorDropdown from './AvatarColorDropdown'
+import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
-
-type State = {
-  isShowingAvatarAttributes: boolean
-}
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
@@ -139,58 +136,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
             />
           </div>
         </div>
-      </div>
-    )
-  }
-}
-
-type AvatarColorDropdownProps = {
-  currentTone: Color4
-  tones: Color4[]
-  label: string
-  onChange: (color: Color4) => void
-}
-export class AvatarColorDropdown extends React.PureComponent<AvatarColorDropdownProps> {
-  handleAvatarColorChange = (_event: React.SyntheticEvent<HTMLDivElement>, data: DropdownItemProps) => {
-    const { currentTone, tones, onChange } = this.props
-    if (currentTone.toHexString() !== data.value) {
-      const newColor = tones.find(tone => tone.toHexString() === data.value)
-      onChange(newColor!)
-    }
-  }
-
-  renderItem = (color: Color4, index: number) => {
-    const hexString = color.toHexString()
-    return (
-      <Dropdown.Item key={index} value={hexString} onClick={this.handleAvatarColorChange}>
-        <i className="tone" style={{ background: hexString }} />
-      </Dropdown.Item>
-    )
-  }
-
-  render() {
-    const { currentTone, tones, label } = this.props
-
-    const currentHexString = currentTone.toHexString()
-    return (
-      <div className="dropdown-container">
-        <Dropdown
-          inline
-          direction="right"
-          className="Select tones"
-          value={currentHexString}
-          trigger={
-            <>
-              <div className="label">{label}</div>
-              <div className="value">
-                <i className="tone" style={{ background: currentHexString }} />
-              </div>
-              <div className="handle" />
-            </>
-          }
-        >
-          <Dropdown.Menu className="tones-menu">{tones.map(this.renderItem)}</Dropdown.Menu>
-        </Dropdown>
       </div>
     )
   }
