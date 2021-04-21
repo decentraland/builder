@@ -1,5 +1,5 @@
-// @ts-ignore
-import { takeLatest, select, put, call, delay, take, race } from 'redux-saga/effects'
+import { Color4, Wearable } from 'decentraland-ecs'
+import { takeLatest, select, put, call, delay, take } from 'redux-saga/effects'
 import { getSearch } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import {
@@ -107,33 +107,34 @@ import {
   getEyeColor,
   getHairColor
 } from './selectors'
-
 import {
   getNewEditorScene,
   resizeScreenshot,
-  THUMBNAIL_WIDTH,
-  THUMBNAIL_HEIGHT,
   snapScale,
-  POSITION_GRID_RESOLUTION,
-  SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION,
+  getEyeColors,
+  getHairColors,
+  getSkinColors,
   createReadyOnlyScene,
   areEqualTransforms,
   createAvatarProject,
   toWearable,
-  mergeWearables
+  mergeWearables,
+  THUMBNAIL_WIDTH,
+  THUMBNAIL_HEIGHT,
+  POSITION_GRID_RESOLUTION,
+  SCALE_GRID_RESOLUTION,
+  ROTATION_GRID_RESOLUTION
 } from './utils'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
-import maleAvatar from './wearables/male.json'
-import femaleAvatar from './wearables/female.json'
-import { Color4, Wearable } from 'decentraland-ecs'
 import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
-import { getBodyShapes, getEyeColors, getHairColors, getSkinColors, hasBodyShape } from 'modules/item/utils'
+import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
+import maleAvatar from './wearables/male.json'
+import femaleAvatar from './wearables/female.json'
 
 const editorWindow = window as EditorWindow
 
