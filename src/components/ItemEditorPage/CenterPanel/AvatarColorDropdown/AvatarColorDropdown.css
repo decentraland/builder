@@ -8,18 +8,15 @@
 .AvatarColorDropdown.ui.dropdown.visible .colors-menu {
   background-color: var(--dark-two);
   display: flex !important;
-  /* flex-wrap: wrap; */
-  /* justify-content: center; */
+  flex-wrap: wrap;
   padding: 0;
 }
 
 .AvatarColorDropdown.ui.dropdown.visible .colors-menu > .item {
   min-width: 30px;
   display: flex;
-  /* justify-content: center;
-  text-align: center; */
-  flex: 0 13%;
-  /* padding: 10px !important; */
+  justify-content: center;
+  flex: 0 14%;
 }
 
 .AvatarColorDropdown.ui.dropdown .colors-menu .item:hover {
