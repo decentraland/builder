@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux'
+import { Color4 } from 'decentraland-ecs'
 import {
   closeEditor,
   CloseEditorAction,
@@ -14,14 +15,17 @@ import { Item, WearableBodyShape } from 'modules/item/types'
 
 export type Props = {
   bodyShape: WearableBodyShape
-  onSetBodyShape: typeof setBodyShape
+  skinColor: Color4
+  eyeColor: Color4
+  hairColor: Color4
   avatarAnimation: AvatarAnimation
+  visibleItems: Item[]
+  onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setAvatarAnimation
   onSetAvatarColor: typeof setAvatarColor
-  visibleItems: Item[]
   onClose: typeof closeEditor
 }
 
-export type MapStateProps = Pick<Props, 'bodyShape' | 'avatarAnimation' | 'visibleItems'>
+export type MapStateProps = Pick<Props, 'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems'>
 export type MapDispatchProps = Pick<Props, 'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetAvatarColor'>
 export type MapDispatch = Dispatch<CloseEditorAction | SetBodyShapeAction | SetAvatarAnimationAction | SetAvatarColorAction>

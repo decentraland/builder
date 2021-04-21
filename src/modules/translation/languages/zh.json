@@ -1022,6 +1022,11 @@
       "uncommon": "罕见",
       "common": "常见"
     },
+    "color": {
+      "skin": "肤色",
+      "eye": "眼睛的颜色",
+      "hair": "发色"
+    },
     "category": {
       "body_shape": "身材",
       "earring": "耳环",

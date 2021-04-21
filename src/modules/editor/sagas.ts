@@ -52,10 +52,10 @@ import {
   SetBodyShapeAction,
   SET_AVATAR_ANIMATION,
   SetAvatarAnimationAction,
-  SetItemsAction,
   setBodyShape,
-  SET_AVATAR_COLOR,
-  SetAvatarColorAction
+  SET_AVATAR_COLOR
+  // SetItemsAction,
+  // SetAvatarColorAction,
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -157,11 +157,11 @@ export function* editorSaga() {
   yield takeLatest(TOGGLE_SNAP_TO_GRID, handleToggleSnapToGrid)
   yield takeLatest(PREFETCH_ASSET, handlePrefetchAsset)
   yield takeLatest(CREATE_EDITOR_SCENE, handleCreateEditorScene)
-  yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
-  yield takeLatest(SET_ITEMS, handleSetItems)
   yield takeLatest(SET_AVATAR_ANIMATION, handleSetAvatarAnimation)
   yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
-  yield takeLatest(SET_AVATAR_COLOR, handleSetAvatarColor)
+  yield takeLatest(SET_ITEMS, renderAvatar)
+  yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
+  yield takeLatest(SET_AVATAR_COLOR, renderAvatar)
 }
 
 function* pollEditor(scene: Scene) {
@@ -663,10 +663,6 @@ function* bustCache() {
   yield delay(32)
 }
 
-function* handleSetItems(_action: SetItemsAction) {
-  yield renderAvatar()
-}
-
 function* handleSetBodyShape(_action: SetBodyShapeAction) {
   yield bustCache() // without this, the representation of the wearables get cached when the body shape changes
 
@@ -676,9 +672,5 @@ function* handleSetBodyShape(_action: SetBodyShapeAction) {
 }
 
 function* handleSetAvatarAnimation(_action: SetAvatarAnimationAction) {
-  yield renderAvatar()
-}
-
-function* handleSetAvatarColor(_action: SetAvatarColorAction) {
   yield renderAvatar()
 }
