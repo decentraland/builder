@@ -580,14 +580,17 @@ export class BuilderAPI extends BaseAPI {
 
   async saveItem(item: Item, contents: Record<string, Blob>) {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+    await this.saveItemContents(item, contents)
+  }
 
+  async saveItemContents(item: Item, contents: Record<string, Blob>) {
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
       for (let path in contents) {
         formData.append(item.contents[path], contents[path])
       }
 
-      await this.request('post', `/items/${item.id}/files`, formData)
+      return await this.request('post', `/items/${item.id}/files`, formData)
     }
   }
 

@@ -8,32 +8,14 @@ import Icon from 'components/Icon'
 import { isEqual } from 'lib/address'
 import { getMissingBodyShapeType, canManageItem, getRarities, getCategories } from 'modules/item/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
-import {
-  Item,
-  ItemRarity,
-  ITEM_DESCRIPTION_MAX_LENGTH,
-  ITEM_NAME_MAX_LENGTH,
-  THUMBNAIL_PATH,
-  WearableCategory,
-  WearableData
-} from 'modules/item/types'
+import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, THUMBNAIL_PATH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
 import Input from './Input'
 import Select from './Select'
 import MultiSelect from './MultiSelect'
 import Tags from './Tags'
-import { Props } from './RightPanel.types'
+import { Props, State } from './RightPanel.types'
 import './RightPanel.css'
-
-export type State = {
-  name: string
-  description: string
-  thumbnail: string
-  rarity?: ItemRarity
-  contents: Record<string, Blob>
-  data?: WearableData
-  isDirty: boolean
-}
 
 export default class RightPanel extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -51,15 +33,17 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const { selectedItemId, selectedItem } = this.props
 
     if (prevProps.selectedItemId !== selectedItemId) {
-      return this.setState(this.getInitialState())
-    }
-
-    if (!prevProps.selectedItem && selectedItem) {
-      return this.setItem(selectedItem)
+      if (selectedItem) {
+        this.setItem(selectedItem)
+      } else {
+        this.setState(this.getInitialState())
+      }
+    } else if (!prevProps.selectedItem && selectedItem) {
+      this.setItem(selectedItem)
     }
   }
 
-  setItem(item: Item) {
+  async setItem(item: Item) {
     this.setState({
       name: item.name,
       description: item.description,
@@ -88,15 +72,13 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleAddRepresentationToItem = () => {
-    const { onOpenModal } = this.props
-    const { selectedItem } = this.props
-    onOpenModal('CreateItemModal', { selectedItem, addRepresentation: true })
+    const { selectedItem, onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { item: selectedItem, addRepresentation: true })
   }
 
   handleChangeItemFile = () => {
-    const { onOpenModal } = this.props
-    const { selectedItem } = this.props
-    onOpenModal('CreateItemModal', { selectedItem, changeItemFile: true })
+    const { selectedItem, onOpenModal } = this.props
+    onOpenModal('CreateItemModal', { item: selectedItem, changeItemFile: true })
   }
 
   handleChangeName = (name: string) => {
@@ -170,19 +152,22 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const { name, description, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
+      const itemContents = {
+        ...selectedItem.contents,
+        ...(await computeHashes(contents))
+      }
       const item: Item = {
         ...selectedItem,
         name,
         description,
         rarity,
         data: data!,
-        contents: await computeHashes(contents)
+        contents: itemContents
       }
-      if (selectedItem && selectedItem.isPublished) {
-        onSavePublishedItem(item)
-      } else {
-        onSaveItem(item, contents)
-      }
+      const onSave = selectedItem && selectedItem.isPublished ? onSavePublishedItem : onSaveItem
+      console.log('Right panel, save item', item)
+      console.log('Right panel, state', this.state)
+      onSave(item, contents)
       this.setState({ isDirty: false })
     }
   }
@@ -281,20 +266,26 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 <Collapsable item={item} label={t('item_editor.right_panel.details')}>
                   {item => (
                     <div className="details">
-                      {canEditItemMetadata && <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />}
-                      <div className="thumbnail-container">
+                      {canEditItemMetadata ? (
+                        <>
+                          <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />
+                          <div className="thumbnail-container">
+                            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                            <div className="thumbnail-edit-container">
+                              <input
+                                type="file"
+                                ref={this.thumbnailInput}
+                                onChange={this.handleThumbnailChange}
+                                accept="image/png, image/jpeg"
+                              />
+                              <div className="thumbnail-edit-background"></div>
+                              <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                            </div>
+                          </div>
+                        </>
+                      ) : (
                         <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                        <div className="thumbnail-edit-container">
-                          <input
-                            type="file"
-                            ref={this.thumbnailInput}
-                            onChange={this.handleThumbnailChange}
-                            accept="image/png, image/jpeg"
-                          />
-                          <div className="thumbnail-edit-background"></div>
-                          <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                        </div>
-                      </div>
+                      )}
                       <div className="metrics">
                         <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
                         <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>

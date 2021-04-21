@@ -210,11 +210,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item.data.representations.push(...this.getBodyShapes(bodyShape, model, contents))
       }
 
-      if (pristineItem && pristineItem.isPublished) {
-        onSavePublished(item)
-      } else {
-        onSave(item, contents)
-      }
+      const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
+      onSaveItem(item, contents)
     }
   }
 
@@ -307,10 +304,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         model,
         metrics,
         contents,
-        error: ''
+        error: '',
+        isLoading: false
       })
     } catch (error) {
-      this.setState({ error: error.message })
+      this.setState({ error: error.message, isLoading: false })
     }
   }
 
@@ -472,7 +470,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDropzoneCTA = (open: () => void) => {
-    const { isLoading } = this.state
+    const { error, isLoading } = this.state
     return (
       <>
         {isLoading ? (
@@ -495,6 +493,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             )
           }}
         />
+        {error ? (
+          <Row className="error" align="center">
+            <p>{t('global.error_ocurred')}</p>
+          </Row>
+        ) : null}
       </>
     )
   }

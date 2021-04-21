@@ -9,12 +9,15 @@ import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item, chainId: ChainId) {
-  const urn = getCatalystItemURN(collection, item, chainId)
-  const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
-  const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const catalystItem = toCatalystItem(collection, item, chainId)
-  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [urn], catalystItem, contentFiles)
-  await deploy(PEER_URL, data)
+  if (Object.keys(item.contents).length > 0) {
+    const urn = getCatalystItemURN(collection, item, chainId)
+    const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
+    const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
+    const catalystItem = toCatalystItem(collection, item, chainId)
+    const [data] = await buildDeployData(EntityType.WEARABLE, identity, [urn], catalystItem, contentFiles)
+
+    await deploy(PEER_URL, data)
+  }
 
   // @TODO: Revisit this because if it is in the catalyst we shouldn't update it
   const newItem = { ...item, inCatalyst: true }
@@ -25,8 +28,9 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   return newItem
 }
 
-async function getFiles(contents: Record<string, string>) {
+export async function getFiles(contents: Record<string, string>) {
   const promises = Object.keys(contents).map(path => {
+    console.log('getFiles path', path)
     const url = getContentsStorageUrl(contents[path])
 
     return fetch(url)

@@ -24,8 +24,8 @@
 
 .CreateItemModal .preview .thumbnail-container .Icon.camera {
   position: absolute;
-  bottom: 0;
-  right: 20px;
+  bottom: 10px;
+  right: 10px;
 }
 
 .CreateItemModal .preview .thumbnail-container input[type='file'] {

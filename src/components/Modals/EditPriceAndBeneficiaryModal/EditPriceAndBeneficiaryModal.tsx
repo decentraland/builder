@@ -44,7 +44,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     }
 
     if (item!.isPublished) {
-      onSavePublished(newItem)
+      onSavePublished(newItem, {})
     } else {
       onSave(newItem, {})
     }
