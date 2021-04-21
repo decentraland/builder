@@ -3,7 +3,7 @@ import { action } from 'typesafe-actions'
 import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
-import { AvatarAnimation, AvatarColor, Gizmo, OpenEditorOptions, PreviewType } from './types'
+import { AvatarAnimation, Gizmo, OpenEditorOptions, PreviewType } from './types'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { Color4, Wearable } from 'decentraland-ecs'
 
@@ -228,12 +228,26 @@ export const setAvatarAnimation = (animation: AvatarAnimation) => action(SET_AVA
 
 export type SetAvatarAnimationAction = ReturnType<typeof setAvatarAnimation>
 
-// Set avatar color
-export const SET_AVATAR_COLOR = 'Set avatar color'
+// Set skin color
+export const SET_SKIN_COLOR = 'Set skin color'
 
-export const setAvatarColor = (key: AvatarColor, value: Color4) => action(SET_AVATAR_COLOR, { key, value })
+export const setSkinColor = (skinColor: Color4) => action(SET_SKIN_COLOR, { skinColor })
 
-export type SetAvatarColorAction = ReturnType<typeof setAvatarColor>
+export type SetSkinColorAction = ReturnType<typeof setSkinColor>
+
+// Set eye color
+export const SET_EYE_COLOR = 'Set eye color'
+
+export const setEyeColor = (eyeColor: Color4) => action(SET_EYE_COLOR, { eyeColor })
+
+export type SetEyeColorAction = ReturnType<typeof setEyeColor>
+
+// Set hair color
+export const SET_HAIR_COLOR = 'Set hair color'
+
+export const setHairColor = (hairColor: Color4) => action(SET_HAIR_COLOR, { hairColor })
+
+export type SetHairColorAction = ReturnType<typeof setHairColor>
 
 // Update wearables
 export const UPDATE_AVATAR = 'Update avatar'

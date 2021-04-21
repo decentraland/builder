@@ -60,9 +60,3 @@ export enum AvatarAnimation {
   MONEY = 'money',
   KISS = 'kiss'
 }
-
-export enum AvatarColor {
-  SKIN = 'skinColor',
-  EYE = 'eyeColor',
-  HAIR = 'hairColor'
-}

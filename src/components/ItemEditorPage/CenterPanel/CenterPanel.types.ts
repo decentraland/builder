@@ -7,8 +7,12 @@ import {
   SetAvatarAnimationAction,
   setBodyShape,
   SetBodyShapeAction,
-  setAvatarColor,
-  SetAvatarColorAction
+  setSkinColor,
+  SetSkinColorAction,
+  setEyeColor,
+  SetEyeColorAction,
+  setHairColor,
+  SetHairColorAction
 } from 'modules/editor/actions'
 import { AvatarAnimation } from 'modules/editor/types'
 import { Item, WearableBodyShape } from 'modules/item/types'
@@ -22,10 +26,17 @@ export type Props = {
   visibleItems: Item[]
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setAvatarAnimation
-  onSetAvatarColor: typeof setAvatarColor
+  onSetSkinColor: typeof setSkinColor
+  onSetEyeColor: typeof setEyeColor
+  onSetHairColor: typeof setHairColor
   onClose: typeof closeEditor
 }
 
 export type MapStateProps = Pick<Props, 'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems'>
-export type MapDispatchProps = Pick<Props, 'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetAvatarColor'>
-export type MapDispatch = Dispatch<CloseEditorAction | SetBodyShapeAction | SetAvatarAnimationAction | SetAvatarColorAction>
+export type MapDispatchProps = Pick<
+  Props,
+  'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetSkinColor' | 'onSetEyeColor' | 'onSetHairColor'
+>
+export type MapDispatch = Dispatch<
+  CloseEditorAction | SetBodyShapeAction | SetAvatarAnimationAction | SetSkinColorAction | SetEyeColorAction | SetHairColorAction
+>

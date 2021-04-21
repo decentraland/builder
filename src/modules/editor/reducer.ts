@@ -45,8 +45,12 @@ import {
   SET_ITEMS,
   SetAvatarAnimationAction,
   SET_AVATAR_ANIMATION,
-  SetAvatarColorAction,
-  SET_AVATAR_COLOR
+  SetSkinColorAction,
+  SET_SKIN_COLOR,
+  SetEyeColorAction,
+  SET_EYE_COLOR,
+  SetHairColorAction,
+  SET_HAIR_COLOR
 } from './actions'
 import { AvatarAnimation, Gizmo } from './types'
 
@@ -124,7 +128,9 @@ export type EditorReducerAction =
   | SetAvatarAnimationAction
   | SetItemsAction
   | DeleteItemSuccessAction
-  | SetAvatarColorAction
+  | SetSkinColorAction
+  | SetEyeColorAction
+  | SetHairColorAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -260,10 +266,22 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
         avatarAnimation: action.payload.animation
       }
     }
-    case SET_AVATAR_COLOR: {
+    case SET_SKIN_COLOR: {
       return {
         ...state,
-        [action.payload.key]: action.payload.value
+        skinColor: action.payload.skinColor
+      }
+    }
+    case SET_EYE_COLOR: {
+      return {
+        ...state,
+        eyeColor: action.payload.eyeColor
+      }
+    }
+    case SET_HAIR_COLOR: {
+      return {
+        ...state,
+        hairColor: action.payload.hairColor
       }
     }
     case SET_ITEMS: {

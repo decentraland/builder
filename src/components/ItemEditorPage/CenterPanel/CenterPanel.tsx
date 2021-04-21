@@ -3,7 +3,7 @@ import { Color4 } from 'decentraland-ecs'
 import { Dropdown, DropdownProps, DropdownItemProps, Popup, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ViewPort from 'components/ViewPort'
-import { AvatarAnimation, AvatarColor, PreviewType } from 'modules/editor/types'
+import { AvatarAnimation, PreviewType } from 'modules/editor/types'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/utils'
 import { WearableBodyShape } from 'modules/item/types'
 import { Props } from './CenterPanel.types'
@@ -37,9 +37,19 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     onSetAvatarAnimation(value as AvatarAnimation)
   }
 
-  handleAvatarColorChange = (key: AvatarColor, color: Color4) => {
-    const { onSetAvatarColor } = this.props
-    onSetAvatarColor(key, color)
+  handleSkinColorChange = (color: Color4) => {
+    const { onSetSkinColor } = this.props
+    onSetSkinColor(color)
+  }
+
+  handleEyeColorChange = (color: Color4) => {
+    const { onSetEyeColor } = this.props
+    onSetEyeColor(color)
+  }
+
+  handleHairColorChange = (color: Color4) => {
+    const { onSetHairColor } = this.props
+    onSetHairColor(color)
   }
 
   renderSelectTrigger(label: string, value: string) {
@@ -113,19 +123,19 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               currentTone={skinColor}
               tones={getSkinColors()}
               label={t('wearable.color.skin')}
-              onChange={color => this.handleAvatarColorChange(AvatarColor.SKIN, color)}
+              onChange={this.handleSkinColorChange}
             />
             <AvatarColorDropdown
               currentTone={eyeColor}
               tones={getEyeColors()}
               label={t('wearable.color.eye')}
-              onChange={color => this.handleAvatarColorChange(AvatarColor.EYE, color)}
+              onChange={this.handleEyeColorChange}
             />
             <AvatarColorDropdown
               currentTone={hairColor}
               tones={getHairColors()}
               label={t('wearable.color.hair')}
-              onChange={color => this.handleAvatarColorChange(AvatarColor.HAIR, color)}
+              onChange={this.handleHairColorChange}
             />
           </div>
         </div>

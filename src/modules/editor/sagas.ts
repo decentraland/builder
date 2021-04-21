@@ -53,9 +53,9 @@ import {
   SET_AVATAR_ANIMATION,
   SetAvatarAnimationAction,
   setBodyShape,
-  SET_AVATAR_COLOR
-  // SetItemsAction,
-  // SetAvatarColorAction,
+  SET_SKIN_COLOR,
+  SET_EYE_COLOR,
+  SET_HAIR_COLOR
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -162,7 +162,9 @@ export function* editorSaga() {
   yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
   yield takeLatest(SET_ITEMS, renderAvatar)
   yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
-  yield takeLatest(SET_AVATAR_COLOR, renderAvatar)
+  yield takeLatest(SET_SKIN_COLOR, renderAvatar)
+  yield takeLatest(SET_EYE_COLOR, renderAvatar)
+  yield takeLatest(SET_HAIR_COLOR, renderAvatar)
 }
 
 function* pollEditor(scene: Scene) {
