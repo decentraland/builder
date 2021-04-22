@@ -60,6 +60,7 @@ function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): C
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
+    contents: item.contents,
     metrics: item.metrics,
     createdAt: Date.now(),
     updatedAt: Date.now()

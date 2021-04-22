@@ -143,7 +143,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     }
 
     const item: Item = { ...actionItem, updatedAt: Date.now() }
-    yield call(() => builder.saveItemContents(item, contents)) // TODO: Content mapping wont be updated
+    yield call(() => builder.saveItemContents(item, contents))
 
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
     yield put(deployItemContentsRequest(collection, item))

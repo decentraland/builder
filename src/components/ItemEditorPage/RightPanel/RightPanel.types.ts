@@ -32,6 +32,7 @@ export type State = {
   rarity?: ItemRarity
   contents: Record<string, Blob>
   data?: WearableData
+  hasItem: boolean
   isDirty: boolean
 }
 

@@ -49,6 +49,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       description: item.description,
       rarity: item.rarity,
       data: item.data,
+      hasItem: true,
       isDirty: false
     })
   }
@@ -61,6 +62,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       rarity: undefined,
       contents: {},
       data: undefined,
+      hasItem: false,
       isDirty: false
     }
   }
@@ -224,7 +226,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   render() {
     const { selectedItemId } = this.props
-    const { name, description, thumbnail, rarity, data, isDirty } = this.state
+    const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
     return (
@@ -235,8 +237,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             const canEditItemMetadata = this.canEditItemMetadata(item)
 
             const categories = item ? getCategories(item.contents) : []
+            const isItemLoading = selectedItemId && (!item || !hasItem)
 
-            return isLoading || !item || !data ? (
+            return isLoading || isItemLoading ? (
               <Loader size="massive" active />
             ) : (
               <>
