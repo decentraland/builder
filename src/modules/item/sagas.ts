@@ -142,12 +142,9 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new Error("Can't save a published without a collection")
     }
 
-    const result: Object = yield call(() => builder.saveItemContents(actionItem, contents))
-    console.log('************* save contents **********************')
-    console.log({ result, actionItem })
-    console.log('************* save contents **********************')
+    const item: Item = { ...actionItem, updatedAt: Date.now() }
+    yield call(() => builder.saveItemContents(item, contents)) // TODO: Content mapping wont be updated
 
-    const item: Item = { ...actionItem }
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
     yield put(deployItemContentsRequest(collection, item))
 
@@ -262,7 +259,6 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
 
     yield put(deployItemContentsSuccess(collection, deployedItem))
   } catch (error) {
-    console.log(3, error)
     yield put(deployItemContentsFailure(collection, item, error.message))
   }
 }

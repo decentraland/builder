@@ -21,7 +21,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
   thumbnailInput = React.createRef<HTMLInputElement>()
 
-  componentDidMount = () => {
+  componentDidMount() {
     const { selectedItem } = this.props
 
     if (selectedItem) {
@@ -29,7 +29,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate = (prevProps: Props) => {
+  componentDidUpdate(prevProps: Props) {
     const { selectedItemId, selectedItem } = this.props
 
     if (prevProps.selectedItemId !== selectedItemId) {
@@ -43,7 +43,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  async setItem(item: Item) {
+  setItem(item: Item) {
     this.setState({
       name: item.name,
       description: item.description,
@@ -165,8 +165,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         contents: itemContents
       }
       const onSave = selectedItem && selectedItem.isPublished ? onSavePublishedItem : onSaveItem
-      console.log('Right panel, save item', item)
-      console.log('Right panel, state', this.state)
       onSave(item, contents)
       this.setState({ isDirty: false })
     }

@@ -52,10 +52,6 @@ export const SIDEBAR_CATEGORIES: Record<CategoryName, Category> = {
   }
 }
 
-export const sortByName = (a: AssetPack, b: AssetPack) => {
-  return new Date(a.createdAt!) > new Date(b.createdAt!) ? 1 : -1
-}
-
 export const sortByOrder = (a: AssetPack, b: AssetPack) => {
   const indexA = ASSET_PACK_ORDER.findIndex(name => isSameAssetPack(a.title, name))
   const indexB = ASSET_PACK_ORDER.findIndex(name => isSameAssetPack(b.title, name))

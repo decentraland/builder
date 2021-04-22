@@ -590,7 +590,7 @@ export class BuilderAPI extends BaseAPI {
         formData.append(item.contents[path], contents[path])
       }
 
-      return await this.request('post', `/items/${item.id}/files`, formData)
+      return this.request('post', `/items/${item.id}/files`, formData)
     }
   }
 

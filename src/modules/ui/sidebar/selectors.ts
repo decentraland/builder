@@ -11,7 +11,8 @@ import { Asset } from 'modules/asset/types'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getData as getAssetPacks } from 'modules/assetPack/selectors'
 import { AssetPack } from 'modules/assetPack/types'
-import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, sortByName, sortByOrder } from './utils'
+import { SIDEBAR_CATEGORIES, COLLECTIBLE_ASSET_PACK_ID, sortByOrder } from './utils'
+import { sortByCreatedAt } from 'lib/sort'
 
 export const getState: (state: RootState) => SidebarState = state => state.ui.sidebar
 
@@ -163,7 +164,7 @@ export const getSidebarAssetPacks = createSelector<RootState, AssetPackState['da
       }
     }
 
-    return [...defaultAssetPacks.sort(sortByOrder), ...userAssetPacks.sort(sortByName), ...collectibles]
+    return [...defaultAssetPacks.sort(sortByOrder), ...userAssetPacks.sort(sortByCreatedAt), ...collectibles]
   }
 )
 
