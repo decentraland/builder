@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Header, Section } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { sortByName } from 'lib/sort'
 import { Item } from 'modules/item/types'
 import { hasBodyShape } from 'modules/item/utils'
 import SidebarItem from './SidebarItem'
@@ -31,7 +32,7 @@ export default class Items extends React.PureComponent<Props> {
     return (
       <Section className="Items">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.items')}</Header> : null}
-        {items.map(item => (
+        {items.sort(sortByName).map(item => (
           <SidebarItem
             key={item.id}
             item={item}

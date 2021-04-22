@@ -22,8 +22,8 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onSaveItem: item => dispatch(saveItemRequest(item, {})),
-  onSavePublishedItem: item => dispatch(savePublishedItemRequest(item)),
+  onSaveItem: (item, contents) => dispatch(saveItemRequest(item, contents)),
+  onSavePublishedItem: (item, contents) => dispatch(savePublishedItemRequest(item, contents)),
   onDeleteItem: item => dispatch(deleteItemRequest(item)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId))

@@ -131,7 +131,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
 }
 
 function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction) {
-  const { item } = action.payload
+  const { item, contents } = action.payload
   try {
     const originalItem: Item = yield select(state => getItem(state, item.id))
 
@@ -142,6 +142,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new Error("Can't save a published without a collection")
     }
 
+    yield call(() => builder.saveItemContents(item, contents))
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
     yield put(deployItemContentsRequest(collection, item))
 
@@ -183,7 +184,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       yield put(replace(locations.activity()))
     }
   } catch (error) {
-    yield put(savePublishedItemFailure(item, error.message))
+    yield put(savePublishedItemFailure(item, contents, error.message))
   }
 }
 

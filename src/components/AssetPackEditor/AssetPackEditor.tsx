@@ -12,7 +12,7 @@ import Icon from 'components/Icon'
 import { Props, State } from './AssetPackEditor.types'
 import './AssetPackEditor.css'
 
-export default class AseetPackEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
+export default class AssetPackEditor<T extends MixedAssetPack = RawAssetPack> extends React.PureComponent<Props<T>, State> {
   thumbnailInput = React.createRef<HTMLInputElement>()
 
   analytics = getAnalytics()

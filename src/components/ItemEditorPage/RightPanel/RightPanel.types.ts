@@ -9,7 +9,7 @@ import {
   setCollection,
   SetCollectionAction
 } from 'modules/item/actions'
-import { Item } from 'modules/item/types'
+import { Item, ItemRarity, WearableData } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { openModal, OpenModalAction } from 'modules/modal/actions'
 
@@ -26,7 +26,13 @@ export type Props = {
 }
 
 export type State = {
-  item: Item | null
+  name: string
+  description: string
+  thumbnail: string
+  rarity?: ItemRarity
+  contents: Record<string, Blob>
+  data?: WearableData
+  hasItem: boolean
   isDirty: boolean
 }
 

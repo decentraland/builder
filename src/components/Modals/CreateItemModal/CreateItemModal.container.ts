@@ -15,7 +15,7 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSave: (item, contents) => dispatch(saveItemRequest(item, contents)),
-  onSavePublished: item => dispatch(savePublishedItemRequest(item))
+  onSavePublished: (item, contents) => dispatch(savePublishedItemRequest(item, contents))
 })
 
 export default connect(mapState, mapDispatch)(CreateItemModal)

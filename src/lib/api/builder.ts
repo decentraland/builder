@@ -182,7 +182,7 @@ function fromRemotePool(remotePool: RemotePool): Pool {
 
   pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
   pool.isPublic = true
-    ; (pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
+  ;(pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
 
   if (remotePool.parcels) {
     pool.statistics = {
@@ -580,14 +580,17 @@ export class BuilderAPI extends BaseAPI {
 
   async saveItem(item: Item, contents: Record<string, Blob>) {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+    await this.saveItemContents(item, contents)
+  }
 
+  async saveItemContents(item: Item, contents: Record<string, Blob>) {
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
       for (let path in contents) {
         formData.append(item.contents[path], contents[path])
       }
 
-      await this.request('post', `/items/${item.id}/files`, formData)
+      return this.request('post', `/items/${item.id}/files`, formData)
     }
   }
 

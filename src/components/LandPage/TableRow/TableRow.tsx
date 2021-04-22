@@ -4,11 +4,11 @@ import { Table, Column, Row } from 'decentraland-ui'
 import { Atlas } from 'components/Atlas'
 import Profile from 'components/Profile'
 import InlineList from '../InlineList'
-import { Props } from './TableRow.types'
 import { coordsToId, getCoords, LAND_POOL_ADDRESS } from 'modules/land/utils'
-import './TableRow.css'
 import { isEqual } from 'lib/address'
 import { locations } from 'routing/locations'
+import { Props } from './TableRow.types'
+import './TableRow.css'
 
 const sortLandPoolLast = (a: string, b: string) => {
   if (isEqual(a, LAND_POOL_ADDRESS)) {

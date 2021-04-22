@@ -118,7 +118,10 @@ export function toItemObject(items: Item[]) {
 
 export async function generateImage(item: Item, width = 1024, height = 1024) {
   // fetch thumbnail
-  const thumbnail = await fetch(getThumbnailURL(item)).then(response => response.blob())
+  const response = await fetch(getThumbnailURL(item))
+  if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
+
+  const thumbnail = await response.blob()
 
   // create canvas
   const canvas = document.createElement('canvas')

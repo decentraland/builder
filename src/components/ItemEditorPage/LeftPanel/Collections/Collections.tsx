@@ -4,6 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import SidebarCollection from './SidebarCollection'
 import { Props } from './Collections.types'
 import './Collections.css'
+import { sortByName } from 'lib/sort'
 
 export default class Collections extends React.PureComponent<Props> {
   render() {
@@ -13,7 +14,7 @@ export default class Collections extends React.PureComponent<Props> {
     return (
       <Section className="Collections">
         {hasHeader ? <Header sub>{t('item_editor.left_panel.collections')}</Header> : null}
-        {collections.map(collection => (
+        {collections.sort(sortByName).map(collection => (
           <SidebarCollection
             key={collection.id}
             collection={collection}

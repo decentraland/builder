@@ -34,9 +34,10 @@ import {
   WearableRepresentation
 } from 'modules/item/types'
 import { getModelData } from 'lib/getModelData'
-import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
+import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
+import Icon from 'components/Icon'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
 import { getBodyShapeType, getMissingBodyShapeType, getRarities, getCategories, isComplexFile } from 'modules/item/utils'
@@ -46,6 +47,7 @@ import './CreateItemModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
+  thumbnailInput = React.createRef<HTMLInputElement>()
 
   getInitialState() {
     const { metadata } = this.props
@@ -78,16 +80,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
 
     return state
-  }
-
-  isAddingRepresentation = () => {
-    const { metadata } = this.props
-    return !!(metadata && metadata.item && !metadata.changeItemFile)
-  }
-
-  filterItemsByBodyShape = (item: Item) => {
-    const { bodyShape } = this.state
-    return getMissingBodyShapeType(item) === bodyShape
   }
 
   handleSubmit = async () => {
@@ -154,7 +146,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         })
 
         // add new contents
-        const newContents = await this.computeHashes(contents!)
+        const newContents = await computeHashes(contents!)
         delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
         for (const path in newContents) {
           item.contents[path] = newContents[path]
@@ -163,7 +155,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item = {
           ...(pristineItem as Item),
           metrics,
-          contents: await this.computeHashes(contents!),
+          contents: await computeHashes(contents!),
           updatedAt: +new Date()
         }
 
@@ -182,7 +174,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
 
         // add new contents
-        const newContents = await this.computeHashes(contents!)
+        const newContents = await computeHashes(contents!)
         delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
         for (const path in newContents) {
           item.contents[path] = newContents[path]
@@ -210,7 +202,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           owner: address!,
           metrics,
-          contents: await this.computeHashes(contents!),
+          contents: await computeHashes(contents!),
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
@@ -218,132 +210,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item.data.representations.push(...this.getBodyShapes(bodyShape, model, contents))
       }
 
-      if (pristineItem && pristineItem.isPublished) {
-        onSavePublished(item)
-      } else {
-        onSave(item, contents)
-      }
+      const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
+      onSaveItem(item, contents)
     }
-  }
-
-  async computeHashes(contents: Record<string, Blob>) {
-    const contentsAsHashes: Record<string, string> = {}
-    for (const path in contents) {
-      const blob = contents[path]
-      const file = await makeContentFile(path, blob)
-      const cid = await calculateBufferHash(file.content)
-      contentsAsHashes[path] = cid
-    }
-    return contentsAsHashes
-  }
-
-  async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
-    let thumbnail: string = ''
-    let metrics: ModelMetrics
-
-    if (this.isPNGModel(model)) {
-      metrics = {
-        triangles: 100,
-        materials: 1,
-        textures: 1,
-        meshes: 1,
-        bodies: 1,
-        entities: 1
-      }
-    } else {
-      const url = URL.createObjectURL(contents[model])
-      const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
-      URL.revokeObjectURL(url)
-
-      thumbnail = image
-      metrics = info
-    }
-
-    if (this.hasCustomImage(model, contents)) {
-      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model])
-    }
-
-    return [thumbnail, model, metrics, contents]
-  }
-
-  async updateThumbnail(category: WearableCategory) {
-    const { model, contents } = this.state
-    const url = URL.createObjectURL(contents![model!])
-
-    let thumbnail
-    if (contents && this.hasCustomImage(model, contents)) {
-      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
-    } else {
-      const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
-      thumbnail = image
-    }
-    URL.revokeObjectURL(url)
-    this.setState({ thumbnail })
-  }
-
-  getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
-    const representations: WearableRepresentation[] = []
-
-    // add male representation
-    if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
-      representations.push({
-        bodyShapes: [WearableBodyShape.MALE],
-        mainFile: model,
-        contents: Object.keys(contents),
-        overrideHides: [],
-        overrideReplaces: []
-      })
-    }
-
-    // add female representation
-    if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
-      representations.push({
-        bodyShapes: [WearableBodyShape.FEMALE],
-        mainFile: model,
-        contents: Object.keys(contents),
-        overrideHides: [],
-        overrideReplaces: []
-      })
-    }
-
-    return representations
-  }
-
-  hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
-    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
-    return hasCustomThumbnail || this.isPNGModel(model)
-  }
-
-  isPNGModel = (model: string = '') => {
-    return model.endsWith('.png')
-  }
-
-  renderDropzoneCTA = (open: () => void) => {
-    const { isLoading } = this.state
-    return (
-      <>
-        {isLoading ? (
-          <div className="overlay">
-            <Loader active size="big" />
-          </div>
-        ) : null}
-        <T
-          id="asset_pack.import.cta"
-          values={{
-            models_link: (
-              <span className="link" onClick={this.handleOpenDocs}>
-                GLB, GLTF, PNG, ZIP
-              </span>
-            ),
-            action: (
-              <span className="action" onClick={open}>
-                {t('import_modal.upload_manually')}
-              </span>
-            )
-          }}
-        />
-      </>
-    )
   }
 
   handleZipFile = async (file: File) => {
@@ -435,10 +304,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         model,
         metrics,
         contents,
-        error: ''
+        error: '',
+        isLoading: false
       })
     } catch (error) {
-      this.setState({ error: error.message })
+      this.setState({ error: error.message, isLoading: false })
     }
   }
 
@@ -470,9 +340,167 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     this.setState({ rarity })
   }
 
+  handleOpenThumbnailDialog = () => {
+    if (this.thumbnailInput.current) {
+      this.thumbnailInput.current.click()
+    }
+  }
+
+  handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { contents } = this.state
+    const { files } = event.target
+
+    const MAX_THUMBNAIL_SIZE = 5000000
+
+    if (files && files.length > 0) {
+      const file = files[0]
+      if (file.size > MAX_THUMBNAIL_SIZE) {
+        alert(
+          t('asset_pack.edit_assetpack.errors.thumbnail_size', {
+            count: MAX_THUMBNAIL_SIZE
+          })
+        )
+        return
+      }
+      const thumbnail = URL.createObjectURL(file)
+
+      this.setState({
+        thumbnail,
+        contents: {
+          ...contents,
+          [THUMBNAIL_PATH]: file
+        }
+      })
+    }
+  }
+
   handleYes = () => this.setState({ isRepresentation: true })
 
   handleNo = () => this.setState({ isRepresentation: false })
+
+  isAddingRepresentation = () => {
+    const { metadata } = this.props
+    return !!(metadata && metadata.item && !metadata.changeItemFile)
+  }
+
+  filterItemsByBodyShape = (item: Item) => {
+    const { bodyShape } = this.state
+    return getMissingBodyShapeType(item) === bodyShape
+  }
+
+  async processModel(model: string, contents: Record<string, Blob>): Promise<[string, string, ModelMetrics, Record<string, Blob>]> {
+    let thumbnail: string = ''
+    let metrics: ModelMetrics
+
+    if (this.isPNGModel(model)) {
+      metrics = {
+        triangles: 100,
+        materials: 1,
+        textures: 1,
+        meshes: 1,
+        bodies: 1,
+        entities: 1
+      }
+    } else {
+      const url = URL.createObjectURL(contents[model])
+      const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
+      URL.revokeObjectURL(url)
+
+      thumbnail = image
+      metrics = info
+    }
+
+    if (this.hasCustomImage(model, contents)) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model])
+    }
+
+    return [thumbnail, model, metrics, contents]
+  }
+
+  async updateThumbnail(category: WearableCategory) {
+    const { model, contents } = this.state
+    const url = URL.createObjectURL(contents![model!])
+
+    let thumbnail
+    if (contents && this.hasCustomImage(model, contents)) {
+      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
+    } else {
+      const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+      thumbnail = image
+    }
+    URL.revokeObjectURL(url)
+    this.setState({ thumbnail })
+  }
+
+  getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
+    const representations: WearableRepresentation[] = []
+
+    // add male representation
+    if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
+      representations.push({
+        bodyShapes: [WearableBodyShape.MALE],
+        mainFile: model,
+        contents: Object.keys(contents),
+        overrideHides: [],
+        overrideReplaces: []
+      })
+    }
+
+    // add female representation
+    if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
+      representations.push({
+        bodyShapes: [WearableBodyShape.FEMALE],
+        mainFile: model,
+        contents: Object.keys(contents),
+        overrideHides: [],
+        overrideReplaces: []
+      })
+    }
+
+    return representations
+  }
+
+  hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
+    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
+    return hasCustomThumbnail || this.isPNGModel(model)
+  }
+
+  isPNGModel = (model: string = '') => {
+    return model.endsWith('.png')
+  }
+
+  renderDropzoneCTA = (open: () => void) => {
+    const { error, isLoading } = this.state
+    return (
+      <>
+        {isLoading ? (
+          <div className="overlay">
+            <Loader active size="big" />
+          </div>
+        ) : null}
+        <T
+          id="asset_pack.import.cta"
+          values={{
+            models_link: (
+              <span className="link" onClick={this.handleOpenDocs}>
+                GLB, GLTF, PNG, ZIP
+              </span>
+            ),
+            action: (
+              <span className="action" onClick={open}>
+                {t('import_modal.upload_manually')}
+              </span>
+            )
+          }}
+        />
+        {error ? (
+          <Row className="error" align="center">
+            <p>{t('global.error_ocurred')}</p>
+          </Row>
+        ) : null}
+      </>
+    )
+  }
 
   renderModalTitle = () => {
     const isAddingRepresentation = this.isAddingRepresentation()
@@ -555,7 +583,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             <Column>
               <Row className="details">
                 <Column className="preview" width={192} grow={false}>
-                  <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
+                  <div className="thumbnail-container">
+                    <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
+                    <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                    <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                  </div>
                   {metrics ? (
                     <div className="metrics">
                       <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
