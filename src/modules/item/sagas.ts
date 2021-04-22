@@ -131,9 +131,9 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
 }
 
 function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction) {
-  const { item: actionItem, contents } = action.payload
+  const { item, contents } = action.payload
   try {
-    const originalItem: Item = yield select(state => getItem(state, actionItem.id))
+    const originalItem: Item = yield select(state => getItem(state, item.id))
 
     if (!originalItem.isPublished) {
       throw new Error('Item must be published to save it')
@@ -142,9 +142,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new Error("Can't save a published without a collection")
     }
 
-    const item: Item = { ...actionItem, updatedAt: Date.now() }
     yield call(() => builder.saveItemContents(item, contents))
-
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
     yield put(deployItemContentsRequest(collection, item))
 
@@ -186,7 +184,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       yield put(replace(locations.activity()))
     }
   } catch (error) {
-    yield put(savePublishedItemFailure(actionItem, contents, error.message))
+    yield put(savePublishedItemFailure(item, contents, error.message))
   }
 }
 
