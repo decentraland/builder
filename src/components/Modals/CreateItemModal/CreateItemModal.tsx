@@ -403,7 +403,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
     } else {
       const url = URL.createObjectURL(contents[model])
-      const { image, info } = await getModelDataBabylon(url, { width: 1024, height: 1024 })
+      const { image, info } = await getModelDataBabylon(url, { width: 1024, height: 1024, extension: model.split('.').pop() })
       URL.revokeObjectURL(url)
 
       thumbnail = image
@@ -425,7 +425,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (contents && this.hasCustomImage(model, contents)) {
       thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
     } else {
-      const { image } = await getModelDataBabylon(url, { thumbnailType: getThumbnailType(category) })
+      const { image } = await getModelDataBabylon(url, {
+        thumbnailType: getThumbnailType(category),
+        extension: model ? model.split('.').pop() : undefined
+      })
       thumbnail = image
     }
     URL.revokeObjectURL(url)

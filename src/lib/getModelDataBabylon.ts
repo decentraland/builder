@@ -1,6 +1,6 @@
 import {
   BoundingInfo,
-  Color3,
+  Camera,
   Color4,
   DirectionalLight,
   Engine,
@@ -9,11 +9,14 @@ import {
   Scene,
   SceneLoader,
   SpotLight,
+  TargetCamera,
   Tools,
   Vector3
 } from '@babylonjs/core'
+import '@babylonjs/loaders'
 import future from 'fp-future'
 import { ModelMetrics } from 'modules/scene/types'
+import { getModelData } from './getModelData'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
@@ -28,6 +31,7 @@ export enum ThumbnailType {
 type Options = {
   width: number
   height: number
+  extension: string
   mappings?: Record<string, string>
   thumbnailType: ThumbnailType
 }
@@ -35,6 +39,7 @@ type Options = {
 const defaults: Options = {
   width: 512,
   height: 512,
+  extension: 'glb',
   thumbnailType: ThumbnailType.DEFAULT
 }
 
@@ -61,7 +66,7 @@ function refreshBoundingInfo(parent: Mesh) {
 
 export async function getModelDataBabylon(url: string, options: Partial<Options> = {}) {
   // add defaults to options
-  const { width, height, mappings, thumbnailType } = {
+  const { width, height, mappings, extension, thumbnailType } = {
     ...defaults,
     ...options
   }
@@ -84,14 +89,22 @@ export async function getModelDataBabylon(url: string, options: Partial<Options>
 
   try {
     // Load GLTF
-    let scene = new Scene(engine)
-    scene.autoClear = true
-    scene.clearColor = new Color4(0, 0, 0, 0)
+    const root = new Scene(engine)
+    root.autoClear = true
+    root.clearColor = new Color4(0, 0, 0, 0)
     const loadModel = future<Scene>()
-    SceneLoader.Append(url, '', scene, scene => scene.onReadyObservable.addOnce(() => loadModel.resolve(scene)), null, null, '.glb')
-    scene = await loadModel
-    scene.getBoundingBoxRenderer().frontColor = Color3.Red()
-    scene.getBoundingBoxRenderer().backColor = Color3.Yellow()
+    SceneLoader.Append(url, '', root, scene => scene.onReadyObservable.addOnce(() => loadModel.resolve(scene)), null, null, '.' + extension)
+    const scene = await loadModel
+
+    // Setup Camera
+    var camera = new TargetCamera('targetCamera', new Vector3(-2, 2, 2), scene)
+    camera.mode = Camera.ORTHOGRAPHIC_CAMERA
+    camera.orthoTop = 1
+    camera.orthoBottom = -1
+    camera.orthoLeft = -1
+    camera.orthoRight = 1
+    camera.setTarget(Vector3.Zero())
+    camera.attachControl(canvas, true)
 
     // Setup lights
     var directional = new DirectionalLight('directional', new Vector3(0, 0, -1), scene)
@@ -132,28 +145,21 @@ export async function getModelDataBabylon(url: string, options: Partial<Options>
     const center = parent.getBoundingInfo().boundingBox.center
     center.multiplyInPlace(normalized)
     parent.position.subtractInPlace(center)
-    parent.showBoundingBox = true
 
     // render
     const render = future<string>()
-    Tools.CreateScreenshotUsingRenderTarget(engine, scene.activeCamera!, 1024, data => render.resolve(data), undefined, undefined, true)
+    Tools.CreateScreenshotUsingRenderTarget(engine, camera, 1024, data => render.resolve(data), undefined, undefined, true)
     const image = await render
 
     // remove dom element
     document.body.removeChild(canvas)
 
     // return data
-    const info: ModelMetrics = {
-      triangles: 0,
-      materials: 0,
-      textures: 0,
-      meshes: 0,
-      bodies: 0,
-      entities: 1
-    }
+    const { info } = await getModelData(url, options)
 
     return { info, image }
   } catch (e) {
+    console.error(e)
     // could not render model, default to 0 metrics and default thumnail
     const info: ModelMetrics = {
       triangles: 0,
