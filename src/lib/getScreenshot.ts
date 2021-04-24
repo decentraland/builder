@@ -19,10 +19,6 @@ import { defaults, Options, ThumbnailType } from './getModelData'
 
 function refreshBoundingInfo(parent: Mesh) {
   var children = parent.getChildren().filter(mesh => mesh.id !== '__root__')
-  console.log(
-    children,
-    children.map(child => child.id)
-  )
   if (children.length > 0) {
     const child = children[0] as Mesh
     var boundingInfo = child.getBoundingInfo()
@@ -100,7 +96,6 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   var parent = new Mesh('parent', scene)
   for (const mesh of scene.meshes) {
     if (mesh !== parent) {
-      console.log(mesh.id)
       mesh.parent = parent
     }
   }
