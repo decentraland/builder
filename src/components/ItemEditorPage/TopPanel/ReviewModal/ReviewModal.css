@@ -2,13 +2,13 @@
   text-align: center;
 }
 
-.ReviewModal .loading {
+.ReviewModal .loading-transaction {
   position: relative;
   min-height: 80px;
   margin-bottom: 40px;
 }
 
-.ReviewModal .loading .ui.loader {
+.ReviewModal .loading-transaction .ui.loader {
   margin-top: 25px;
 }
 
