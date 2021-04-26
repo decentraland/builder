@@ -11,7 +11,7 @@ import {
 import { WearableBodyShape } from 'modules/item/types'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
-import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/utils'
+import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/colors'
 import {
   SetGizmoAction,
   TogglePreviewAction,

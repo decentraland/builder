@@ -111,9 +111,6 @@ import {
   getNewEditorScene,
   resizeScreenshot,
   snapScale,
-  getEyeColors,
-  getHairColors,
-  getSkinColors,
   createReadyOnlyScene,
   areEqualTransforms,
   createAvatarProject,
@@ -125,6 +122,7 @@ import {
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION
 } from './utils'
+import { getEyeColors, getHairColors, getSkinColors } from './colors'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
