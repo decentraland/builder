@@ -14,8 +14,9 @@ export default class Tags extends React.PureComponent<Props, State> {
   }
 
   componentWillReceiveProps(newProps: Props) {
-    if (newProps.itemId !== this.props.itemId) {
-      this.setState({ value: newProps.value })
+    const { itemId, value } = newProps
+    if (itemId !== this.props.itemId || value !== this.state.value) {
+      this.setState({ value })
     }
   }
 
@@ -71,9 +72,6 @@ export default class Tags extends React.PureComponent<Props, State> {
                 onClick={event => {
                   this.handleRemove(value)
                   event.stopPropagation()
-                  event.nativeEvent.stopPropagation()
-                  event.preventDefault()
-                  event.nativeEvent.preventDefault()
                 }}
               />
             </div>

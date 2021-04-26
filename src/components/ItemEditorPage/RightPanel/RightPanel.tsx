@@ -173,7 +173,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnResetItem = () => {
-    return this.setState(this.getInitialState())
+    const { selectedItem } = this.props
+    if (selectedItem) {
+      this.setItem(selectedItem)
+    }
   }
 
   handleRemoveFromCollection = () => {
