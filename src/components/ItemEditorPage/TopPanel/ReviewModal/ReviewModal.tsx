@@ -104,7 +104,7 @@ export default class ReviewModal extends React.PureComponent<Props> {
         {hasPendingTransaction ? (
           <>
             <Modal.Header>{t(`${i18nKey}.title`)}</Modal.Header>
-            <div className="loading">
+            <div className="loading-transaction">
               <div className="danger-text">{t(`${i18nKey}.tx_pending`)}</div>
               <Loader active size="large" />
             </div>
