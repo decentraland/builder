@@ -14,8 +14,9 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
   }
 
   componentWillReceiveProps(newProps: Props<T>) {
-    if (newProps.itemId !== this.props.itemId) {
-      this.setState({ value: newProps.value })
+    const { itemId, value } = newProps
+    if (itemId !== this.props.itemId || value !== this.state.value) {
+      this.setState({ value })
     }
   }
 
@@ -57,9 +58,6 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
                   onClick={event => {
                     this.handleRemove(value)
                     event.stopPropagation()
-                    event.nativeEvent.stopPropagation()
-                    event.preventDefault()
-                    event.nativeEvent.preventDefault()
                   }}
                 />
               </div>
@@ -82,6 +80,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
         trigger={this.renderTrigger()}
         inline
         direction="right"
+        value={value}
         scrolling={options.length > 4}
         options={options.filter(option => !value.includes(option.value))}
         disabled={disabled}

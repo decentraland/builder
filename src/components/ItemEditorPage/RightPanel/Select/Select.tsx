@@ -4,13 +4,20 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './Select.types'
 import './Select.css'
 
-export default class Select<T extends string> extends React.PureComponent<Props<T>, State> {
+export default class Select<T extends string> extends React.PureComponent<Props<T>, State<T>> {
   static defaultProps = {
     disabled: false
   }
 
-  state: State = {
-    value: this.props.value || ''
+  state: State<T> = {
+    value: this.props.value
+  }
+
+  componentWillReceiveProps(newProps: Props<T>) {
+    const { itemId, value } = newProps
+    if (itemId !== this.props.itemId || value !== this.state.value) {
+      this.setState({ value })
+    }
   }
 
   handleChange = (_event: React.SyntheticEvent<HTMLElement, Event>, props: DropdownProps) => {

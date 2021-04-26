@@ -1,12 +1,12 @@
 export type Props<T extends string> = {
   itemId: string
   label: string
-  value: T | null | undefined
+  value: T | undefined
   options: { value: T; text: string }[]
   disabled?: boolean
   onChange: (newValue: T) => void
 }
 
-export type State = {
-  value: string
+export type State<T> = {
+  value: T | undefined
 }
