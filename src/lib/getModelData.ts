@@ -16,33 +16,43 @@ import {
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { ModelMetrics } from 'modules/scene/types'
+import { getScreenshot } from './getScreenshot'
 
 // transparent 1x1 pixel
 export const TRANSPARENT_PIXEL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII='
 
 export enum ThumbnailType {
-  DEFAULT='default',
-  TOP='top',
-  FRONT='front'
+  DEFAULT = 'default',
+  TOP = 'top',
+  FRONT = 'front'
 }
 
-type Options = {
+export enum EngineType {
+  THREE = 'three',
+  BABYLON = 'babylon'
+}
+
+export type Options = {
   width: number
   height: number
-  mappings?: Record<string, string>
+  extension: string
+  engine: EngineType
   thumbnailType: ThumbnailType
+  mappings?: Record<string, string>
 }
 
-const defaults: Options = {
+export const defaults: Options = {
   width: 512,
   height: 512,
+  extension: '.glb',
+  engine: EngineType.THREE,
   thumbnailType: ThumbnailType.DEFAULT
 }
 
 export async function getModelData(url: string, options: Partial<Options> = {}) {
   // add defaults to options
-  const { width, height, mappings, thumbnailType } = {
+  const { width, height, mappings, engine, thumbnailType } = {
     ...defaults,
     ...options
   }
@@ -175,7 +185,7 @@ export async function getModelData(url: string, options: Partial<Options> = {}) 
       bodies,
       entities: 1
     }
-    const image = renderer.domElement.toDataURL()
+    const image = engine === EngineType.THREE ? renderer.domElement.toDataURL() : await getScreenshot(url, options)
 
     return { info, image }
   } catch (e) {

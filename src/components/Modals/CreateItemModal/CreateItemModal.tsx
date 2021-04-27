@@ -33,7 +33,7 @@ import {
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation
 } from 'modules/item/types'
-import { getModelData } from 'lib/getModelData'
+import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
@@ -403,7 +403,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
     } else {
       const url = URL.createObjectURL(contents[model])
-      const { image, info } = await getModelData(url, { width: 1024, height: 1024 })
+      const { image, info } = await getModelData(url, {
+        width: 1024,
+        height: 1024,
+        extension: getExtension(model) || undefined,
+        engine: EngineType.BABYLON
+      })
       URL.revokeObjectURL(url)
 
       thumbnail = image
@@ -425,7 +430,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (contents && this.hasCustomImage(model, contents)) {
       thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
     } else {
-      const { image } = await getModelData(url, { thumbnailType: getThumbnailType(category) })
+      const { image } = await getModelData(url, {
+        thumbnailType: getThumbnailType(category),
+        extension: (model && getExtension(model)) || undefined,
+        engine: EngineType.BABYLON
+      })
       thumbnail = image
     }
     URL.revokeObjectURL(url)
