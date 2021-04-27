@@ -18,21 +18,32 @@ import future from 'fp-future'
 import { defaults, Options, ThumbnailType } from './getModelData'
 
 function refreshBoundingInfo(parent: Mesh) {
-  var children = parent.getChildren().filter(mesh => mesh.id !== '__root__')
+  const children = parent.getChildren().filter(mesh => mesh.id !== '__root__')
+
   if (children.length > 0) {
     const child = children[0] as Mesh
-    var boundingInfo = child.getBoundingInfo()
-    var min = boundingInfo.minimum.add(child.position)
-    var max = boundingInfo.maximum.add(child.position)
-    for (var i = 1; i < children.length; i++) {
+    // child.showBoundingBox = true
+    let boundingInfo = child.getBoundingInfo()
+
+    let min = boundingInfo.boundingBox.minimumWorld.add(child.position)
+    let max = boundingInfo.boundingBox.maximumWorld.add(child.position)
+
+    for (let i = 1; i < children.length; i++) {
       const child = children[i] as Mesh
+      // child.showBoundingBox = true
       boundingInfo = child.getBoundingInfo()
-      min = Vector3.Minimize(min, boundingInfo.minimum.add(child.position))
-      max = Vector3.Maximize(max, boundingInfo.maximum.add(child.position))
+      const siblingMin = boundingInfo.boundingBox.minimumWorld.add(child.position)
+      const siblingMax = boundingInfo.boundingBox.maximumWorld.add(child.position)
+
+      min = Vector3.Minimize(min, siblingMin)
+      max = Vector3.Maximize(max, siblingMax)
     }
+
     parent.setBoundingInfo(new BoundingInfo(min, max))
   }
 }
+
+const hideMaterialList = ['hair_mat', 'avatarskin_mat']
 
 export async function getScreenshot(url: string, options: Partial<Options> = {}) {
   // add defaults to options
@@ -85,10 +96,10 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   camera.attachControl(canvas, true)
 
   // Setup lights
-  var directional = new DirectionalLight('directional', new Vector3(0, 0, -1), scene)
-  directional.intensity = 2
+  var directional = new DirectionalLight('directional', new Vector3(0, 0, 1), scene)
+  directional.intensity = 3
   var hemispherical = new HemisphericLight('hemispherical', new Vector3(0, 1, 0), scene)
-  hemispherical.intensity = 1
+  hemispherical.intensity = 2
   var spot = new SpotLight('spot', new Vector3(-2, 2, 2), new Vector3(2, -2, -2), Math.PI / 2, 1000, scene)
   spot.intensity = 2
 
@@ -96,31 +107,37 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   var parent = new Mesh('parent', scene)
   for (const mesh of scene.meshes) {
     if (mesh !== parent) {
-      mesh.parent = parent
+      mesh.setParent(parent)
     }
   }
 
   // Clean up
-  for (let material of scene.materials) {
-    if (material.name.toLowerCase().includes('hair_mat')) {
-      material.alpha = 0
-      scene.removeMaterial(material)
+  for (const materialName of hideMaterialList) {
+    for (let material of scene.materials) {
+      if (material.name.toLowerCase().includes(materialName)) {
+        material.alpha = 0
+        scene.removeMaterial(material)
+      }
     }
-  }
-  for (let texture of scene.textures) {
-    if (texture.name.toLowerCase().includes('hair_mat')) {
-      texture.dispose()
-      scene.removeTexture(texture)
+    for (let texture of scene.textures) {
+      if (texture.name.toLowerCase().includes(materialName)) {
+        texture.dispose()
+        scene.removeTexture(texture)
+      }
     }
   }
 
   // resize and center
   refreshBoundingInfo(parent)
-  const size = parent.getBoundingInfo().boundingBox.extendSize.length()
-  const normalized = new Vector3(1 / size, 1 / size, 1 / size)
-  parent.scaling.multiplyInPlace(normalized)
-  const center = parent.getBoundingInfo().boundingBox.center
-  center.multiplyInPlace(normalized)
+  const bounds = parent.getBoundingInfo().boundingBox.extendSize
+
+  const size = bounds.length()
+
+  const scale = new Vector3(1 / size, 1 / size, 1 / size)
+
+  parent.scaling = scale
+  const center = parent.getBoundingInfo().boundingBox.center.multiply(scale)
+
   parent.position.subtractInPlace(center)
 
   // render
