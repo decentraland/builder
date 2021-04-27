@@ -2,6 +2,7 @@ import * as React from 'react'
 import { basename } from 'path'
 import uuid from 'uuid'
 import JSZip from 'jszip'
+import future from 'fp-future'
 import {
   ModalNavigation,
   Loader,
@@ -416,7 +417,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
 
     if (this.hasCustomImage(model, contents)) {
-      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model])
+      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model])
     }
 
     return [thumbnail, model, metrics, contents]
@@ -428,7 +429,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
     let thumbnail
     if (contents && this.hasCustomImage(model, contents)) {
-      thumbnail = await blobToDataURL(contents[THUMBNAIL_PATH] || contents[model!])
+      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!])
     } else {
       const { image } = await getModelData(url, {
         thumbnailType: getThumbnailType(category),
@@ -439,6 +440,25 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
     URL.revokeObjectURL(url)
     this.setState({ thumbnail })
+  }
+
+  async processImage(blob: Blob) {
+    // load blob into image
+    const image = new Image()
+    const loadFuture = future()
+    image.onload = loadFuture.resolve
+    image.src = await blobToDataURL(blob)
+    await loadFuture
+
+    // render image into canvas, with a 128px padding from the top. This is to center the textures into the square thumbnail.
+    const canvas = document.createElement('canvas')
+    canvas.width = 512
+    canvas.height = 512
+    document.body.appendChild(canvas)
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(image, 0, 128, canvas.width, canvas.height)
+
+    return canvas.toDataURL()
   }
 
   getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
