@@ -8,6 +8,7 @@ import 'decentraland-ui/lib/dark-theme.css'
 import './components/Grid.css'
 import './components/Dropdown.css'
 import './components/Field.css'
+import './components/Popup.css'
 
 // Custom theme
 import './theme.css'

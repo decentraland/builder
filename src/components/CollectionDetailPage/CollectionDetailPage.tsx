@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { env } from 'decentraland-commons'
-import { Section, Row, Dropdown, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
+import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
@@ -10,12 +10,12 @@ import { locations } from 'routing/locations'
 import { canMintCollectionItems, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
-import ConfirmDelete from 'components/ConfirmDelete'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { AuthorizationModal } from 'components/AuthorizationModal'
+import ContextMenu from './ContextMenu'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
@@ -25,11 +25,6 @@ const STORAGE_KEY = 'dcl-collection-notice'
 export default class CollectionDetailPage extends React.PureComponent<Props, State> {
   state = { isAuthorizationModalOpen: false }
 
-  handleUpdateManagers = () => {
-    const { collection, onOpenModal } = this.props
-    onOpenModal('CollectionManagersModal', { collectionId: collection!.id })
-  }
-
   handleMintItems = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('MintItemsModal', { collectionId: collection!.id })
@@ -38,11 +33,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   handleNewItem = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('CreateItemModal', { collectionId: collection!.id })
-  }
-
-  handleDeleteItem = () => {
-    const { collection, onDelete } = this.props
-    onDelete(collection!)
   }
 
   handlePublish = () => {
@@ -72,6 +62,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     }
   }
 
+  handleGoBack = () => {
+    this.props.onNavigate(locations.collections())
+  }
+
   getAuthorization(): Authorization {
     const { wallet } = this.props
     const chainId = wallet.networks.MATIC.chainId
@@ -97,7 +91,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   }
 
   renderPage() {
-    const { wallet, items, isOnSaleLoading, onOpenModal, onNavigate } = this.props
+    const { wallet, items, isOnSaleLoading } = this.props
     const collection = this.props.collection!
 
     const canMint = canMintCollectionItems(collection, wallet.address)
@@ -107,7 +101,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
       <>
         <Section className={collection.isPublished ? 'is-published' : ''}>
           <Row>
-            <Back absolute onClick={() => onNavigate(locations.collections())} />
+            <Back absolute onClick={this.handleGoBack} />
             <Narrow>
               <Row>
                 <Column className="header-column">
@@ -163,35 +157,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                       </>
                     ) : null}
 
-                    {isOwner(collection, wallet.address) ? (
-                      <Dropdown
-                        trigger={
-                          <Button basic>
-                            <Icon name="ellipsis horizontal" />
-                          </Button>
-                        }
-                        inline
-                        direction="left"
-                      >
-                        <Dropdown.Menu>
-                          {collection.isPublished ? (
-                            <Dropdown.Item text={t('collection_detail_page.managers')} onClick={this.handleUpdateManagers} />
-                          ) : (
-                            <>
-                              <Dropdown.Item
-                                text={t('collection_detail_page.add_existing_item')}
-                                onClick={() => onOpenModal('AddExistingItemModal', { collectionId: collection!.id })}
-                              />
-                              <ConfirmDelete
-                                name={collection.name}
-                                onDelete={this.handleDeleteItem}
-                                trigger={<Dropdown.Item text={t('global.delete')} />}
-                              />
-                            </>
-                          )}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    ) : null}
+                    {isOwner(collection, wallet.address) ? <ContextMenu collection={collection} /> : null}
 
                     {collection.isPublished ? (
                       collection.isApproved ? (

@@ -56,24 +56,12 @@
   white-space: nowrap;
 }
 
-.CollectionDetailPage .actions .ui.dropdown {
-  border: 1px solid var(--gray);
-  border-radius: 5px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-left: 0;
-}
-
 .CollectionDetailPage .actions .ui.button.action-button + .ui.dropdown {
   margin-left: 0;
 }
 
 .CollectionDetailPage .actions .ui.button.action-button > .text {
   color: var(--text);
-}
-
-.CollectionDetailPage .actions .ui.dropdown .icon.ellipsis {
-  margin: auto !important;
 }
 
 .CollectionDetailPage .actions .ui.button.compact {
