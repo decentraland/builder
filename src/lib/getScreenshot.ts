@@ -97,11 +97,13 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
 
   // Setup lights
   var directional = new DirectionalLight('directional', new Vector3(0, 0, 1), scene)
-  directional.intensity = 3
-  var hemispherical = new HemisphericLight('hemispherical', new Vector3(0, 1, 0), scene)
-  hemispherical.intensity = 2
+  directional.intensity = 1
+  var top = new HemisphericLight('top', new Vector3(0, -1, 0), scene)
+  top.intensity = 1
+  var bottom = new HemisphericLight('bottom', new Vector3(0, 1, 0), scene)
+  bottom.intensity = 1
   var spot = new SpotLight('spot', new Vector3(-2, 2, 2), new Vector3(2, -2, -2), Math.PI / 2, 1000, scene)
-  spot.intensity = 2
+  spot.intensity = 1
 
   // Setup parent
   var parent = new Mesh('parent', scene)
@@ -130,14 +132,10 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   // resize and center
   refreshBoundingInfo(parent)
   const bounds = parent.getBoundingInfo().boundingBox.extendSize
-
   const size = bounds.length()
-
   const scale = new Vector3(1 / size, 1 / size, 1 / size)
-
   parent.scaling = scale
   const center = parent.getBoundingInfo().boundingBox.center.multiply(scale)
-
   parent.position.subtractInPlace(center)
 
   // render
