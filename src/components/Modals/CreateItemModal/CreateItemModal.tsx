@@ -406,7 +406,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       const { image, info } = await getModelData(url, {
         width: 1024,
         height: 1024,
-        extension: model.split('.').pop(),
+        extension: getExtension(model) || undefined,
         engine: EngineType.BABYLON
       })
       URL.revokeObjectURL(url)
@@ -432,7 +432,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     } else {
       const { image } = await getModelData(url, {
         thumbnailType: getThumbnailType(category),
-        extension: model ? model.split('.').pop() : undefined,
+        extension: (model && getExtension(model)) || undefined,
         engine: EngineType.BABYLON
       })
       thumbnail = image

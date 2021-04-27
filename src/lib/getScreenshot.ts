@@ -67,9 +67,10 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   const root = new Scene(engine)
   root.autoClear = true
   root.clearColor = new Color4(0, 0, 0, 0)
-  const loadModel = future<Scene>()
-  SceneLoader.Append(url, '', root, scene => scene.onReadyObservable.addOnce(() => loadModel.resolve(scene)), null, null, '.' + extension)
-  const scene = await loadModel
+  const sceneFuture = future<Scene>()
+  const sceneResolver = (scene: Scene) => scene.onReadyObservable.addOnce(() => sceneFuture.resolve(scene))
+  SceneLoader.Append(url, '', root, sceneResolver, null, null, extension)
+  const scene = await sceneFuture
 
   // Setup Camera
   var camera = new TargetCamera('targetCamera', new Vector3(0, 0, 0), scene)
@@ -139,9 +140,10 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   parent.position.subtractInPlace(center)
 
   // render
-  const render = future<string>()
-  Tools.CreateScreenshotUsingRenderTarget(engine, camera, 1024, data => render.resolve(data), undefined, undefined, true)
-  const image = await render
+  const imageFuture = future<string>()
+  const imageResolver = (data: string) => imageFuture.resolve(data)
+  Tools.CreateScreenshotUsingRenderTarget(engine, camera, 1024, imageResolver, undefined, undefined, true)
+  const image = await imageFuture
 
   // remove dom element
   document.body.removeChild(canvas)
