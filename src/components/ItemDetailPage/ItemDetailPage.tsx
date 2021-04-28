@@ -6,7 +6,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
-import { getMaxSupply, getMissingBodyShapeType } from 'modules/item/utils'
+import { getBodyShapeType, getMaxSupply, getMissingBodyShapeType } from 'modules/item/utils'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
@@ -116,6 +116,10 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   <div className="value">{t(`wearable.category.${data.category}`)}</div>
                 </Section>
               ) : null}
+              <Section>
+                <div className="subtitle">{t('item.representation')}</div>
+                <div className="value">{t(`body_shapes.${getBodyShapeType(item)}`)}</div>
+              </Section>
               {item.rarity ? (
                 <Section>
                   <div className="subtitle">{t('item.rarity')}</div>

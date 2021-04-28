@@ -917,6 +917,7 @@
   "item": {
     "category": "类别",
     "rarity": "稀有度",
+    "representation": "表示",
     "price": "价钱",
     "beneficiary": "受益人",
     "supply": "供应",

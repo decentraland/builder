@@ -32,7 +32,7 @@ export function getCatalystItemURN(collection: Collection, item: Item, chainId: 
   return `urn:decentraland:${chainName}:collections-v2:${collection.contractAddress}:${item.tokenId}`
 }
 
-export function getBodyShapeType(item: Item) {
+export function getBodyShapeType(item: Item): BodyShapeType {
   const bodyShapes = getBodyShapes(item)
   const hasMale = bodyShapes.includes(WearableBodyShape.MALE)
   const hasFemale = bodyShapes.includes(WearableBodyShape.FEMALE)
@@ -73,6 +73,11 @@ export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
+export function extractBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {
+  // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
+  return wearableBodyShape.split(':').pop() as BodyShapeType
+}
+
 export function getRarityIndex(rarity: ItemRarity) {
   return {
     [ItemRarity.COMMON]: 0,
@@ -99,10 +104,10 @@ export function getMetadata(item: Item) {
   switch (item.type) {
     case ItemType.WEARABLE: {
       const data = item.data as WearableData
-      const bodyShapes = getBodyShapes(item)
-      return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapes
-        .map(bodyShape => bodyShape.split(':').pop()) // bodyShape is like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
-        .join(',')}`
+      const bodyShapeTypes = getBodyShapes(item)
+        .map(extractBodyShapeType)
+        .join(',')
+      return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapeTypes}`
     }
     default:
       return `${version}:${type}:${slug}`

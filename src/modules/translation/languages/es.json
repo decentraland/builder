@@ -939,6 +939,7 @@
   "item": {
     "category": "Categoría",
     "rarity": "Rareza",
+    "representation": "Representación",
     "price": "Precio",
     "beneficiary": "Beneficiario",
     "supply": "Suministro",
