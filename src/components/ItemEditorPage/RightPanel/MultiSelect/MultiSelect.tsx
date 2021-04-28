@@ -81,7 +81,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
         inline
         direction="right"
         value={value}
-        scrolling={options.length > 4}
+        scrolling={false}
         options={options.filter(option => !value.includes(option.value))}
         disabled={disabled}
         onChange={this.handleChange}

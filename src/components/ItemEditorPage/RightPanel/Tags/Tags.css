@@ -1,11 +1,13 @@
 .Tags {
-  height: 38px;
   border: 1px solid rgba(115, 110, 125, 0.4);
   border-radius: 6px;
-  display: flex;
-  align-items: center;
-  padding: 0px 12px;
+  padding: 8px 12px 2px;
   margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.Tags.blank {
+  padding: 10px 12px;
 }
 
 .Tags.is-disabled {
@@ -13,34 +15,26 @@
 }
 
 .Tags .label {
-  flex: none;
   margin-right: 20px;
   color: var(--secondary-text);
 }
 
 .Tags .values {
-  flex: none;
   display: flex;
-  overflow: auto;
-  margin-right: 4px;
-  max-width: 100%;
-}
-
-.Tags .values .placeholder {
-  color: var(--secondary-text);
+  flex-wrap: wrap;
 }
 
 .Tags .values .value {
-  background-color: #37333d;
+  background-color: var(--smart-grey);
   padding: 2px 8px;
+  margin-bottom: 6px;
+  margin-right: 10px;
   border-radius: 4px;
-  flex: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
 }
 
 .Tags .values .value .remove {
-  flex: none;
   width: 12px;
   height: 12px;
   background-image: url(../../../../icons/close.svg);
@@ -51,19 +45,15 @@
   cursor: pointer;
 }
 
-.Tags .values .value + .value {
-  margin-left: 4px;
-}
-
-.Tags.blank .values {
-  margin-right: 0px;
-}
-
 .Tags input {
-  flex: 1 1 auto;
   color: var(--text);
   background: none;
   border: none;
   outline: none;
-  min-width: 20px;
+  flex-grow: 1;
+  margin-bottom: 6px;
+}
+
+.Tags.blank input {
+  margin: 2px 0;
 }
