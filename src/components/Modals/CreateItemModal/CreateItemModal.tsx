@@ -417,7 +417,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
 
     if (this.hasCustomImage(model, contents)) {
-      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model])
+      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
     }
 
     return [thumbnail, model, metrics, contents]
@@ -429,7 +429,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
     let thumbnail
     if (contents && this.hasCustomImage(model, contents)) {
-      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!])
+      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!], category)
     } else {
       const { image } = await getModelData(url, {
         thumbnailType: getThumbnailType(category),
@@ -442,7 +442,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     this.setState({ thumbnail })
   }
 
-  async processImage(blob: Blob) {
+  async processImage(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
     // load blob into image
     const image = new Image()
     const loadFuture = future()
@@ -450,13 +450,26 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     image.src = await blobToDataURL(blob)
     await loadFuture
 
-    // render image into canvas, with a 128px padding from the top. This is to center the textures into the square thumbnail.
+    let padding = 128
+    switch (category) {
+      case WearableCategory.EYEBROWS:
+        padding = 160
+        break
+      case WearableCategory.MOUTH:
+        padding = 160
+        break
+      case WearableCategory.EYES:
+        padding = 128
+        break
+    }
+
+    // render image into canvas, with a padding from the top. This is to center the textures into the square thumbnail.
     const canvas = document.createElement('canvas')
     canvas.width = 512
     canvas.height = 512
     document.body.appendChild(canvas)
     const ctx = canvas.getContext('2d')!
-    ctx.drawImage(image, 0, 128, canvas.width, canvas.height)
+    ctx.drawImage(image, 0, padding, canvas.width, canvas.height)
 
     return canvas.toDataURL()
   }
