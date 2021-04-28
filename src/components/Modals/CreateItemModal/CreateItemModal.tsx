@@ -467,10 +467,15 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const canvas = document.createElement('canvas')
     canvas.width = 512
     canvas.height = 512
+    canvas.style.visibility = 'hidden'
     document.body.appendChild(canvas)
     const ctx = canvas.getContext('2d')!
     ctx.drawImage(image, 0, padding, canvas.width, canvas.height)
 
+    // remove canvas
+    document.body.removeChild(canvas)
+
+    // return image
     return canvas.toDataURL()
   }
 
