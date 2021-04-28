@@ -887,19 +887,23 @@
     "change_item_file": "编辑制图表达"
   },
   "collection_detail_page": {
-    "new_item": "新项目",
+    "new_item": "新物品",
     "add_existing_item": "添加现有项目",
     "mint_items": "薄荷项目",
-    "on_sale": "特价",
-    "on_sale_popup": "这将使您的收藏可以在自动售货机中出售。",
-    "notice": "发布",
+    "on_sale": "特价中",
+    "forum_post": "论坛帖子",
+    "copy_address": "复制地址",
+    "unpublished": "该收藏集仍在审核中",
+    "set_on_sale_popup": "这样一来，您的收藏就可以在自动售货机上出售。",
+    "unset_on_sale_popup": "此收藏集可以在世界上的自动售货机上购买。",
     "publish": "发布",
     "managers": "合作者",
-    "click_here": "单击此处",
-    "start_adding_items": "看起来不错！现在您可以开始向收藏中添加项目了",
-    "cant_remove": "发布后，您将无法删除或向收藏夹添加项目",
-    "set_on_sale_popup": "这样一来，您的收藏就可以在自动售货机上出售。",
-    "unset_on_sale_popup": "该系列可在世界上的自动售货机上购买。"
+    "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
+    "click_here": "点击这里",
+    "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
+    "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
+    "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
+    "under_review": "审核中"
   },
   "collection_item": {
     "set_price": "设定价格",

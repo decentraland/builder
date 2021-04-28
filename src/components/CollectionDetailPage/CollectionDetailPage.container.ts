@@ -7,7 +7,7 @@ import { RootState } from 'modules/common/types'
 import { getCollectionId } from 'modules/location/selectors'
 import { getCollection, getCollectionItems, isOnSaleLoading, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getLoading as getLoadingItem } from 'modules/item/selectors'
-import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST, deleteCollectionRequest } from 'modules/collection/actions'
+import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionDetailPage.types'
@@ -32,8 +32,7 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
-  onDelete: collection => dispatch(deleteCollectionRequest(collection))
+  onOpenModal: (name, metadata) => dispatch(openModal(name, metadata))
 })
 
 export default connect(mapState, mapDispatch)(CollectionDetailPage)

@@ -1,0 +1,4 @@
+.ui.inverted.left.center.popup::before,
+.ui.inverted.right.center.popup::before {
+  background: var(--popup);
+}

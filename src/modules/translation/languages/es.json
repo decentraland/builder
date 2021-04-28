@@ -913,6 +913,9 @@
     "add_existing_item": "Agregar item existente",
     "mint_items": "Crear Items",
     "on_sale": "En venta",
+    "forum_post": "Post en el foro",
+    "copy_address": "Copiar dirección",
+    "unpublished": "Esta colleción aún no está verificada",
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida dentro del mundo.",
     "unset_on_sale_popup": "Esta colección está disponibles para la compra dentro del mundo.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
@@ -920,7 +923,9 @@
     "publish": "Publicar",
     "managers": "Colaboradores",
     "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
-    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
+    "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
+    "under_review": "No verificada"
   },
   "collection_item": {
     "set_price": "agregar precio",
