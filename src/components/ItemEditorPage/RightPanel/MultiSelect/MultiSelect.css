@@ -11,10 +11,26 @@
   padding: 10px 12px;
 }
 
+.MultiSelect.ui.disabled.dropdown {
+  pointer-events: all;
+}
+
 .MultiSelect.ui.dropdown.inline .label {
   margin-bottom: 6px;
   margin-right: 20px;
   color: var(--secondary-text);
+  display: flex;
+  align-items: center;
+}
+
+.MultiSelect.ui.dropdown.inline .label .info {
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-image: url(../../../../images/info.svg);
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .MultiSelect.ui.dropdown.inline .values {

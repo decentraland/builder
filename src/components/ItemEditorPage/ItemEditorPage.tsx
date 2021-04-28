@@ -1,7 +1,7 @@
 import * as React from 'react'
 import TopPanel from './TopPanel'
 import LeftPanel from './LeftPanel'
-import CenterPanel from './CenterPanel'
+// import CenterPanel from './CenterPanel'
 import RightPanel from './RightPanel'
 import { Props } from './ItemEditorPage.types'
 import './ItemEditorPage.css'
@@ -14,7 +14,7 @@ export default class ItemEditorPage extends React.PureComponent<Props> {
           <TopPanel />
           <div className="content">
             <LeftPanel />
-            <CenterPanel />
+            {/* <CenterPanel /> */}
             <RightPanel />
           </div>
         </div>

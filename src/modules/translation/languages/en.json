@@ -1019,7 +1019,9 @@
       "basics": "Basics",
       "overrides": "Overrides",
       "replaces": "Replaces",
+      "replaces_info": "Replaces one section o the wearable with another",
       "hides": "Hides",
+      "hides_info": "Hides one section o the wearable with another",
       "tags": "Tags",
       "select_placeholder": "Select an option"
     }

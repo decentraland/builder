@@ -342,6 +342,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       <MultiSelect<WearableCategory>
                         itemId={item.id}
                         label={t('item_editor.right_panel.replaces')}
+                        info={t('item_editor.right_panel.replaces_info')}
                         value={data!.replaces}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
@@ -350,6 +351,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       <MultiSelect<WearableCategory>
                         itemId={item.id}
                         label={t('item_editor.right_panel.hides')}
+                        info={t('item_editor.right_panel.hides_info')}
                         value={data!.hides}
                         options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
