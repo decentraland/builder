@@ -314,7 +314,9 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         const items: Item[] = yield select(state => getCollectionItems(state, collectionId))
 
         yield deployItems(collection, items)
-        yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items)))
+        if (!collection.forumLink) {
+          yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items)))
+        }
         break
       }
       default: {
