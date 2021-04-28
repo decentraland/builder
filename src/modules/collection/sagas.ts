@@ -109,7 +109,27 @@ function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    const remoteCollection: Collection = yield call(() => builder.saveCollection(collection))
+    const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const from = Address.fromString(wallet.address)
+    const implementation = new ERC721CollectionV2(eth)
+
+    const data = getMethodData(
+      implementation.methods.initialize(
+        collection.name,
+        getCollectionSymbol(collection),
+        getCollectionBaseURI(),
+        from,
+        true, // should complete
+        false, // is approved
+        Address.fromString(''), // Rarities address
+        items.map(toInitializeItem)
+      ),
+      from
+    )
+
+    const remoteCollection: Collection = yield call(() => builder.saveCollection(collection, data))
     const newCollection = { ...collection, ...remoteCollection }
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
@@ -340,7 +360,7 @@ function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) 
 
     for (const collection of collections) {
       if (!collection.isPublished) continue
-      const items = allItems.filter(item => item.collectionId === collection.id)
+      const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
       yield deployItems(collection, items)
     }
   } catch (error) {

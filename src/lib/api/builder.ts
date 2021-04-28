@@ -611,8 +611,11 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
-  async saveCollection(collection: Collection) {
-    const remoteCollection = await this.request('put', `/collections/${collection.id}`, { collection: toRemoteCollection(collection) })
+  async saveCollection(collection: Collection, data: string) {
+    const remoteCollection = await this.request('put', `/collections/${collection.id}`, {
+      collection: toRemoteCollection(collection),
+      data
+    })
     return fromRemoteCollection(remoteCollection)
   }
 
