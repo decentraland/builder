@@ -1,4 +1,5 @@
 import * as React from 'react'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import { Dropdown, Button, Icon, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
@@ -92,11 +93,9 @@ export default class ContextMenu extends React.PureComponent<Props> {
             position="right center"
             disabled={collection.isPublished}
             trigger={
-              <Dropdown.Item
-                disabled={!collection.isPublished}
-                text={t('collection_detail_page.view_on_etherscan')}
-                onClick={this.handleNavigateToAddress}
-              />
+              <CopyToClipboard text={collection.contractAddress!}>
+                <Dropdown.Item disabled={!collection.isPublished} text={t('collection_detail_page.copy_address')} />
+              </CopyToClipboard>
             }
             hideOnScroll={true}
             on="hover"

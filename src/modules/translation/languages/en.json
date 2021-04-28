@@ -903,7 +903,8 @@
     "mint_items": "Mint Items",
     "on_sale": "On sale",
     "forum_post": "Forum post",
-    "view_on_etherscan": "View on Etherscan",
+    "copy_address": "Copy address",
+    "unpublished": "This collection is still under review",
     "set_on_sale_popup": "This will allow your collection to be sold on in-world vending machines.",
     "unset_on_sale_popup": "This collection is available for purchase on in-world vending machines.",
     "publish": "Publish",
@@ -912,7 +913,6 @@
     "click_here": "Click here",
     "start_adding_items": "Looking good! now you can start adding items to your collection.",
     "cant_remove": "You will not be able to remove or add items to your collection once its published.",
-    "unpublished": "This collection is still under review",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
     "under_review": "Under Review"
   },
