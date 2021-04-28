@@ -7,6 +7,7 @@ build:
     - release
   script:
     - ./setupEnv.sh
+    - export NODE_OPTIONS="--max-old-space-size=8192"
     - npm ci && npm run build
     - dcl-lock-sync
     - cd .ci && npm install && dcl-up website-builder
