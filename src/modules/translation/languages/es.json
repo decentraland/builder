@@ -1028,7 +1028,9 @@
       "basics": "Básico",
       "overrides": "Avanzado",
       "replaces": "Remplaza",
+      "replaces_info": "Cuando un usuario equipa tu item, cualquier otro item de la categoría que selecciones no estará equipado. Los usuarios deben volver a equiparlos después de retirar tu item.",
       "hides": "Oculta",
+      "hides_info": "Cuando un usuario equipa tu item, cualquier otro item de la categoría que selecciones permanecerá equipado, pero no se renderizará. Los usuarios solo verán reaparecer sus otros elementos después de eliminar su elemento.",
       "tags": "Etiquetas",
       "select_placeholder": "Selecciona una opción"
     }

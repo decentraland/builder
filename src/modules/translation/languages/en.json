@@ -1019,9 +1019,9 @@
       "basics": "Basics",
       "overrides": "Overrides",
       "replaces": "Replaces",
-      "replaces_info": "Replaces one section o the wearable with another",
+      "replaces_info": "When a user equips your item, any other items in the category you select will be unequipped. Users must reequip them after removing your item.",
       "hides": "Hides",
-      "hides_info": "Hides one section o the wearable with another",
+      "hides_info": "When a user equips your item, any other items in the category you select will stay equipped, but they won't be rendered. Users will only see their other items reappear after removing your item.",
       "tags": "Tags",
       "select_placeholder": "Select an option"
     }

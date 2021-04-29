@@ -83,3 +83,7 @@
 .MultiSelect.ui.dropdown.inline.blank .handle {
   margin-bottom: 0;
 }
+
+.ui.popup.inverted.info-popup {
+  height: auto;
+}

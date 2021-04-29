@@ -49,7 +49,9 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
       <>
         <div className="label">
           {label}
-          {info ? <Popup content={info} position="top center" trigger={<i className="info" />} on="hover" inverted flowing /> : null}
+          {info ? (
+            <Popup className="info-popup" content={info} position="top center" trigger={<i className="info" />} on="hover" inverted />
+          ) : null}
         </div>
         <div className="values">
           {value.length > 0 ? (
