@@ -37,7 +37,7 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   const hasMale = bodyShapes.includes(WearableBodyShape.MALE)
   const hasFemale = bodyShapes.includes(WearableBodyShape.FEMALE)
   if (hasMale && hasFemale) {
-    return BodyShapeType.UNISEX
+    return BodyShapeType.BOTH
   } else if (hasMale) {
     return BodyShapeType.MALE
   } else if (hasFemale) {

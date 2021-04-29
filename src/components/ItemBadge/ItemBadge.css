@@ -33,6 +33,6 @@
   background-size: 40%;
 }
 
-.ItemBadge.unisex:before {
+.ItemBadge.both:before {
   background-image: url('../../images/unisex.svg');
 }

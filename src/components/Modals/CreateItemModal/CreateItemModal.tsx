@@ -166,7 +166,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         )
         const pristineBodyShape = getBodyShapeType(pristineItem)
         const representations = this.getBodyShapes(bodyShape, model, contents)
-        if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.UNISEX) {
+        if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
           // Unisex or Representation changed
           item.data.representations = representations
         } else {
@@ -483,7 +483,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const representations: WearableRepresentation[] = []
 
     // add male representation
-    if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.UNISEX) {
+    if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [WearableBodyShape.MALE],
         mainFile: model,
@@ -494,7 +494,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
 
     // add female representation
-    if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.UNISEX) {
+    if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [WearableBodyShape.FEMALE],
         mainFile: model,
@@ -648,7 +648,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                     <Section>
                       <Header sub>{t('create_item_modal.representation_label')}</Header>
                       <Row>
-                        {this.renderRepresentation(BodyShapeType.UNISEX)}
+                        {this.renderRepresentation(BodyShapeType.BOTH)}
                         {this.renderRepresentation(BodyShapeType.MALE)}
                         {this.renderRepresentation(BodyShapeType.FEMALE)}
                       </Row>
@@ -656,7 +656,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                   )}
                   {bodyShape && (!metadata || !metadata.changeItemFile) ? (
                     <>
-                      {bodyShape === BodyShapeType.UNISEX ? (
+                      {bodyShape === BodyShapeType.BOTH ? (
                         this.renderFields()
                       ) : (
                         <>

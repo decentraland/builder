@@ -35,7 +35,7 @@ export enum WearableCategory {
 export const BODY_SHAPE_CATEGORY = 'body_shape'
 
 export enum BodyShapeType {
-  UNISEX = 'unisex',
+  BOTH = 'both',
   MALE = 'male',
   FEMALE = 'female'
 }

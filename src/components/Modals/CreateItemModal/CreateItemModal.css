@@ -111,7 +111,7 @@
   background-color: var(--primary);
 }
 
-.CreateItemModal .option.has-icon.unisex {
+.CreateItemModal .option.has-icon.both {
   background-image: url(../../../images/unisex.svg);
 }
 

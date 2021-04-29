@@ -120,7 +120,7 @@
     "top_banner_right": " "
   },
   "body_shapes": {
-    "unisex": "Unisex",
+    "both": "Both",
     "male": "Male",
     "female": "Female",
     "null": "None"
