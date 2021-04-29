@@ -45,6 +45,11 @@ export enum WearableBodyShape {
   FEMALE = 'urn:decentraland:off-chain:base-avatars:BaseFemale'
 }
 
+export enum WearableBodyShapeType {
+  MALE = 'BaseMale',
+  FEMALE = 'BaseFemale'
+}
+
 export type WearableRepresentation = {
   bodyShapes: WearableBodyShape[]
   mainFile: string

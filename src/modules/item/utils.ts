@@ -16,7 +16,8 @@ import {
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
   RARITY_COLOR,
-  WearableCategory
+  WearableCategory,
+  WearableBodyShapeType
 } from './types'
 
 export function getMaxSupply(item: Item) {
@@ -73,9 +74,18 @@ export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
-export function extractBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {
+export function toWearableBodyShapeType(wearableBodyShape: WearableBodyShape) {
   // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
-  return wearableBodyShape.split(':').pop() as BodyShapeType
+  return wearableBodyShape.split(':').pop() as WearableBodyShapeType
+}
+
+export function toBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {
+  switch (wearableBodyShape) {
+    case WearableBodyShape.MALE:
+      return BodyShapeType.MALE
+    case WearableBodyShape.FEMALE:
+      return BodyShapeType.FEMALE
+  }
 }
 
 export function getRarityIndex(rarity: ItemRarity) {
@@ -105,7 +115,7 @@ export function getMetadata(item: Item) {
     case ItemType.WEARABLE: {
       const data = item.data as WearableData
       const bodyShapeTypes = getBodyShapes(item)
-        .map(extractBodyShapeType)
+        .map(toWearableBodyShapeType)
         .join(',')
       return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapeTypes}`
     }
