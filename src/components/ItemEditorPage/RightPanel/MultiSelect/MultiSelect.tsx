@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Dropdown, DropdownProps } from 'decentraland-ui'
+import { Dropdown, DropdownProps, Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Props, State } from './MultiSelect.types'
 import './MultiSelect.css'
@@ -38,7 +38,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
   }
 
   renderTrigger() {
-    const { label, options } = this.props
+    const { label, info, options } = this.props
     const { value } = this.state
     const labels = options.reduce((obj, option) => {
       obj[option.value] = option.text
@@ -47,7 +47,12 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
 
     return (
       <>
-        <div className="label">{label}</div>
+        <div className="label">
+          {label}
+          {info ? (
+            <Popup className="info-popup" content={info} position="top center" trigger={<i className="info" />} on="hover" inverted />
+          ) : null}
+        </div>
         <div className="values">
           {value.length > 0 ? (
             value.map(value => (
@@ -81,7 +86,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
         inline
         direction="right"
         value={value}
-        scrolling={options.length > 4}
+        scrolling={false}
         options={options.filter(option => !value.includes(option.value))}
         disabled={disabled}
         onChange={this.handleChange}

@@ -76,8 +76,8 @@ export default class Tags extends React.PureComponent<Props, State> {
               />
             </div>
           ))}
+          <input value={draft} onChange={this.handleChange} onKeyDown={this.handleKeyDown} onBlur={this.handleAdd} disabled={isDisabled} />
         </div>
-        <input value={draft} onChange={this.handleChange} onKeyDown={this.handleKeyDown} onBlur={this.handleAdd} disabled={isDisabled} />
       </div>
     )
   }
