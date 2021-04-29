@@ -112,8 +112,10 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const maticChainId = wallet.networks.MATIC.chainId
     const from = Address.fromString(wallet.address)
-    const implementation = new ERC721CollectionV2(eth)
+    const rarities = getContract(ContractName.Rarities, maticChainId)
+    const implementation = new ERC721CollectionV2(eth, Address.fromString('0x2C3212DEae0554E253e91cBa2B36A6ee888483C6'))
 
     const data = getMethodData(
       implementation.methods.initialize(
@@ -123,7 +125,7 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
         from,
         true, // should complete
         false, // is approved
-        Address.fromString(''), // Rarities address
+        Address.fromString(rarities.address), // Rarities address
         items.map(toInitializeItem)
       ),
       from
@@ -135,7 +137,8 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('EditCollectionNameModal'))
   } catch (error) {
-    yield put(saveCollectionFailure(collection, error.response.data.error || error.message))
+    console.log(error)
+    yield put(saveCollectionFailure(collection, error.message))
   }
 }
 
