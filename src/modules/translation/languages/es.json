@@ -124,7 +124,7 @@
     "top_banner_right": " "
   },
   "body_shapes": {
-    "unisex": "Unisex",
+    "both": "Ambos",
     "male": "Hombre",
     "female": "Mujer"
   },
@@ -939,6 +939,7 @@
   "item": {
     "category": "Categoría",
     "rarity": "Rareza",
+    "representation": "Representación",
     "price": "Precio",
     "beneficiary": "Beneficiario",
     "supply": "Suministro",

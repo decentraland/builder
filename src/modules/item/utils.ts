@@ -16,7 +16,8 @@ import {
   RARITY_MAX_SUPPLY,
   RARITY_COLOR_LIGHT,
   RARITY_COLOR,
-  WearableCategory
+  WearableCategory,
+  WearableBodyShapeType
 } from './types'
 
 export function getMaxSupply(item: Item) {
@@ -32,12 +33,12 @@ export function getCatalystItemURN(collection: Collection, item: Item, chainId: 
   return `urn:decentraland:${chainName}:collections-v2:${collection.contractAddress}:${item.tokenId}`
 }
 
-export function getBodyShapeType(item: Item) {
+export function getBodyShapeType(item: Item): BodyShapeType {
   const bodyShapes = getBodyShapes(item)
   const hasMale = bodyShapes.includes(WearableBodyShape.MALE)
   const hasFemale = bodyShapes.includes(WearableBodyShape.FEMALE)
   if (hasMale && hasFemale) {
-    return BodyShapeType.UNISEX
+    return BodyShapeType.BOTH
   } else if (hasMale) {
     return BodyShapeType.MALE
   } else if (hasFemale) {
@@ -73,6 +74,20 @@ export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
   return item.data.representations.some(representation => representation.bodyShapes.includes(bodyShape))
 }
 
+export function toWearableBodyShapeType(wearableBodyShape: WearableBodyShape) {
+  // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
+  return wearableBodyShape.split(':').pop() as WearableBodyShapeType
+}
+
+export function toBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {
+  switch (wearableBodyShape) {
+    case WearableBodyShape.MALE:
+      return BodyShapeType.MALE
+    case WearableBodyShape.FEMALE:
+      return BodyShapeType.FEMALE
+  }
+}
+
 export function getRarityIndex(rarity: ItemRarity) {
   return {
     [ItemRarity.COMMON]: 0,
@@ -99,10 +114,10 @@ export function getMetadata(item: Item) {
   switch (item.type) {
     case ItemType.WEARABLE: {
       const data = item.data as WearableData
-      const bodyShapes = getBodyShapes(item)
-      return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapes
-        .map(bodyShape => bodyShape.split(':').pop()) // bodyShape is like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
-        .join(',')}`
+      const bodyShapeTypes = getBodyShapes(item)
+        .map(toWearableBodyShapeType)
+        .join(',')
+      return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapeTypes}`
     }
     default:
       return `${version}:${type}:${slug}`

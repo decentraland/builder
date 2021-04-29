@@ -35,7 +35,7 @@ export enum WearableCategory {
 export const BODY_SHAPE_CATEGORY = 'body_shape'
 
 export enum BodyShapeType {
-  UNISEX = 'unisex',
+  BOTH = 'both',
   MALE = 'male',
   FEMALE = 'female'
 }
@@ -43,6 +43,11 @@ export enum BodyShapeType {
 export enum WearableBodyShape {
   MALE = 'urn:decentraland:off-chain:base-avatars:BaseMale',
   FEMALE = 'urn:decentraland:off-chain:base-avatars:BaseFemale'
+}
+
+export enum WearableBodyShapeType {
+  MALE = 'BaseMale',
+  FEMALE = 'BaseFemale'
 }
 
 export type WearableRepresentation = {

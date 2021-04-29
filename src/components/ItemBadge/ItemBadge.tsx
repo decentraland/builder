@@ -8,6 +8,7 @@ import './ItemBadge.css'
 export default class ItemBadge extends React.PureComponent<Props> {
   render() {
     const { item, size } = this.props
-    return <div title={t('body_shapes.' + getBodyShapeType(item))} className={`ItemBadge ${getBodyShapeType(item)} ${size || 'normal'}`} />
+    const bodyShape = getBodyShapeType(item)
+    return <div title={t(`body_shapes.${bodyShape}`)} className={`ItemBadge ${bodyShape} ${size || 'normal'}`} />
   }
 }
