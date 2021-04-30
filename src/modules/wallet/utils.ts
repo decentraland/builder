@@ -27,6 +27,7 @@ export function* getWallet() {
 
   return [wallet, eth]
 }
+
 export function* sendWalletMetaTransaction(contract: ContractData, method: TxSend<any>) {
   const [wallet, eth]: [Wallet, Eth] = yield call(getWallet)
   const from = Address.fromString(wallet.address)

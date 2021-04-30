@@ -27,13 +27,12 @@ export function getCollectionSymbol(collection: Collection) {
   return 'DCL-' + vowelLessName.toUpperCase()
 }
 
-// TODO: check getRarityIndex
 export function toInitializeItem(item: Item): InitializeItem {
   return {
+    metadata: getMetadata(item),
     rarity: item.rarity!.toLowerCase(),
-    price: toBN(item.price!),
-    beneficiary: Address.fromString(item.beneficiary!),
-    metadata: getMetadata(item)
+    price: toBN(item.price || 0),
+    beneficiary: item.beneficiary ? Address.fromString(item.beneficiary) : Address.ZERO
   }
 }
 

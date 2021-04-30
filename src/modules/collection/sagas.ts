@@ -49,7 +49,8 @@ import {
   rejectCollectionSuccess,
   rejectCollectionFailure,
   REJECT_COLLECTION_REQUEST,
-  PUBLISH_COLLECTION_SUCCESS
+  PUBLISH_COLLECTION_SUCCESS,
+  saveCollectionRequest
 } from './actions'
 import { getMethodData, getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -57,7 +58,13 @@ import { CollectionManager } from 'contracts/CollectionManager'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { Committee } from 'contracts/Committee'
 import { createCollectionForumPostRequest } from 'modules/forum/actions'
-import { setItemsTokenIdRequest, deployItemContentsRequest, FETCH_ITEMS_SUCCESS } from 'modules/item/actions'
+import {
+  setItemsTokenIdRequest,
+  deployItemContentsRequest,
+  FETCH_ITEMS_SUCCESS,
+  SAVE_ITEM_SUCCESS,
+  SaveItemSuccessAction
+} from 'modules/item/actions'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
@@ -72,6 +79,7 @@ import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './u
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
+  yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
   yield takeEvery(PUBLISH_COLLECTION_REQUEST, handlePublishCollectionRequest)
@@ -106,16 +114,47 @@ function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
   }
 }
 
+function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
+  const { item } = action.payload
+  if (item.collectionId && !item.isPublished) {
+    const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+    yield put(saveCollectionRequest(collection))
+  }
+}
+
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    const remoteCollection: Collection = yield call(() => builder.saveCollection(collection))
+    const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+
+    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const maticChainId = wallet.networks.MATIC.chainId
+    const from = Address.fromString(wallet.address)
+    const rarities = getContract(ContractName.Rarities, maticChainId)
+
+    const implementation = new ERC721CollectionV2(eth, Address.ZERO)
+    const data = getMethodData(
+      implementation.methods.initialize(
+        collection.name,
+        getCollectionSymbol(collection),
+        getCollectionBaseURI(),
+        from,
+        true, // should complete
+        false, // is approved
+        Address.fromString(rarities.address),
+        items.map(toInitializeItem)
+      ),
+      from
+    )
+
+    const remoteCollection: Collection = yield call(() => builder.saveCollection(collection, data))
     const newCollection = { ...collection, ...remoteCollection }
+
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
     yield put(closeModal('EditCollectionNameModal'))
   } catch (error) {
-    yield put(saveCollectionFailure(collection, error.response.data.error || error.message))
+    yield put(saveCollectionFailure(collection, error.message))
   }
 }
 
@@ -340,7 +379,7 @@ function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) 
 
     for (const collection of collections) {
       if (!collection.isPublished) continue
-      const items = allItems.filter(item => item.collectionId === collection.id)
+      const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
       yield deployItems(collection, items)
     }
   } catch (error) {
