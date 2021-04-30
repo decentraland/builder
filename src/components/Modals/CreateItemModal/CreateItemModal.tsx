@@ -29,8 +29,6 @@ import {
   BodyShapeType,
   WearableCategory,
   ItemRarity,
-  RARITY_COLOR_LIGHT,
-  RARITY_COLOR,
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation
 } from 'modules/item/types'
@@ -41,7 +39,14 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { getBodyShapeType, getMissingBodyShapeType, getRarities, getCategories, isComplexFile } from 'modules/item/utils'
+import {
+  getBodyShapeType,
+  getMissingBodyShapeType,
+  getRarities,
+  getCategories,
+  isComplexFile,
+  getBackgroundStyle
+} from 'modules/item/utils'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata } from './CreateItemModal.types'
 import './CreateItemModal.css'
@@ -611,15 +616,27 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     )
   }
 
+  isDisabled() {
+    const { isLoading } = this.props
+    return !this.isValid() || isLoading
+  }
+
+  isValid() {
+    const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation } = this.state
+    const required: (string | ModelMetrics | Item | undefined)[] = isRepresentation
+      ? [item]
+      : [name, thumbnail, metrics, bodyShape, category, rarity]
+
+    return required.every(prop => prop !== undefined)
+  }
+
   renderDetailsView() {
     const { onClose, isLoading, metadata, error } = this.props
-    const { name, thumbnail, metrics, bodyShape, isRepresentation, item, category, rarity } = this.state
-    const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape && !!category
-    const isDisabled = !isValid || isLoading
+    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
+
+    const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
-    const thumbnailStyle = rarity
-      ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
-      : undefined
+    const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
 
     return (

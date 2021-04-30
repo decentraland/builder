@@ -5,7 +5,8 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { builder } from 'lib/api/builder'
 import { fromWei } from 'web3x-es/utils'
-import { RARITY_COLOR, ItemRarity } from 'modules/item/types'
+import { ItemRarity } from 'modules/item/types'
+import { getBackgroundStyle } from 'modules/item/utils'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
 
@@ -68,7 +69,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               {Object.values(itemsByRarity).map(itemByRarity => (
                 <div className="item" key={itemByRarity.name}>
                   <div>
-                    <i className="item-rarity" style={{ backgroundColor: RARITY_COLOR[itemByRarity.id] }}></i>
+                    <i className="item-rarity" style={getBackgroundStyle(itemByRarity.id)}></i>
                     {itemByRarity.count} {itemByRarity.name}
                   </div>
                   <div>
