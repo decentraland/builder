@@ -18,23 +18,23 @@ export type Props = ModalProps & {
   onSavePublished: typeof savePublishedItemRequest
 }
 
-export type State = {
-  view: CreateItemView
-  id?: string
-  name?: string
-  category?: WearableCategory
-  rarity?: ItemRarity
-  bodyShape?: BodyShapeType
-  thumbnail?: string
-  model?: string
-  metrics?: ModelMetrics
-  contents?: Record<string, Blob>
-  isRepresentation?: boolean
-  item?: Item
-  collectionId?: string
-  isLoading?: boolean
-  error?: string
+export type StateData = {
+  id: string
+  name: string
+  category: WearableCategory
+  rarity: ItemRarity
+  bodyShape: BodyShapeType
+  thumbnail: string
+  model: string
+  metrics: ModelMetrics
+  contents: Record<string, Blob>
+  isRepresentation: boolean
+  item: Item
+  collectionId: string
+  isLoading: boolean
+  error: string
 }
+export type State = { view: CreateItemView } & Partial<StateData>
 
 export type CreateItemModalMetadata = {
   collectionId?: string
