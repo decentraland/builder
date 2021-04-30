@@ -258,7 +258,6 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
     yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
   } catch (error) {
-    console.log(error)
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
     yield put(setENSContentFailure(ens, land, ensError))
   }
