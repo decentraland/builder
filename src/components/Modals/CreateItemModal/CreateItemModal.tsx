@@ -29,8 +29,6 @@ import {
   BodyShapeType,
   WearableCategory,
   ItemRarity,
-  RARITY_COLOR_LIGHT,
-  RARITY_COLOR,
   ITEM_NAME_MAX_LENGTH,
   WearableRepresentation
 } from 'modules/item/types'
@@ -41,9 +39,16 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension, MAX_FILE_SIZE } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { getBodyShapeType, getMissingBodyShapeType, getRarities, getCategories, isComplexFile } from 'modules/item/utils'
+import {
+  getBodyShapeType,
+  getMissingBodyShapeType,
+  getRarities,
+  getCategories,
+  isComplexFile,
+  getBackgroundStyle
+} from 'modules/item/utils'
 import { getThumbnailType } from './utils'
-import { Props, State, CreateItemView, CreateItemModalMetadata } from './CreateItemModal.types'
+import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
@@ -85,21 +90,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   handleSubmit = async () => {
     const { address, metadata, onSave, onSavePublished } = this.props
-
-    const {
-      id,
-      name,
-      model,
-      thumbnail,
-      bodyShape,
-      contents,
-      metrics,
-      collectionId,
-      isRepresentation,
-      item: editedItem,
-      category,
-      rarity
-    } = this.state
+    const { id } = this.state
 
     let changeItemFile = false
     let addRepresentation = false
@@ -111,7 +102,21 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       pristineItem = metadata.item
     }
 
-    if (id && name && model && bodyShape && contents && metrics && category && thumbnail) {
+    if (id && this.isValid()) {
+      const {
+        name,
+        model,
+        thumbnail,
+        bodyShape,
+        contents,
+        metrics,
+        collectionId,
+        isRepresentation,
+        item: editedItem,
+        category,
+        rarity
+      } = this.state as StateData
+
       let item: Item | undefined
 
       const blob = dataURLToBlob(thumbnail)
@@ -121,7 +126,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
 
       // Add this item as a representation of an existing item
-      if (isRepresentation && addRepresentation && editedItem) {
+      if ((isRepresentation || addRepresentation) && editedItem) {
         item = {
           ...editedItem,
           data: {
@@ -318,15 +323,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     this.setState({ error: 'Invalid files' })
   }
 
-  handleOpenDocs = () => {
-    window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
-  }
+  handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
 
-  handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
+  handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) =>
     this.setState({ name: props.value.slice(0, ITEM_NAME_MAX_LENGTH) })
-  }
 
-  handleItemChange = (item: Item) => this.setState({ item: item })
+  handleItemChange = (item: Item) => this.setState({ item: item, category: item.data.category, rarity: item.rarity })
 
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
@@ -611,15 +613,27 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     )
   }
 
+  isDisabled(): boolean {
+    const { isLoading } = this.props
+    return !this.isValid() || isLoading
+  }
+
+  isValid(): boolean {
+    const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation } = this.state
+    const required: (string | ModelMetrics | Item | undefined)[] = isRepresentation
+      ? [item]
+      : [name, thumbnail, metrics, bodyShape, category, rarity]
+
+    return required.every(prop => prop !== undefined)
+  }
+
   renderDetailsView() {
     const { onClose, isLoading, metadata, error } = this.props
-    const { name, thumbnail, metrics, bodyShape, isRepresentation, item, category, rarity } = this.state
-    const isValid = !!name && !!thumbnail && !!metrics && !!bodyShape && !!category
-    const isDisabled = !isValid || isLoading
+    const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
+
+    const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
-    const thumbnailStyle = rarity
-      ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
-      : undefined
+    const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
 
     return (

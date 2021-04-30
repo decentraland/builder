@@ -100,6 +100,12 @@ export function getRarityIndex(rarity: ItemRarity) {
   }[rarity]
 }
 
+export function getBackgroundStyle(rarity?: ItemRarity) {
+  return rarity
+    ? { backgroundImage: `radial-gradient(${RARITY_COLOR_LIGHT[rarity]}, ${RARITY_COLOR[rarity]})` }
+    : { backgroundColor: 'var(--secondary)' }
+}
+
 // Metadata looks like this:
 // - Common: version:item_type:representation_id
 // - Wearables: version:item_type:representation_id:category:bodyshapes
