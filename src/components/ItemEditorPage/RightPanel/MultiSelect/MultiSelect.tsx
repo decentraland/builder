@@ -23,10 +23,18 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
   handleChange = (_event: React.SyntheticEvent<HTMLElement, Event>, props: DropdownProps) => {
     const { onChange } = this.props
     const { value } = this.state
-    if (!value.includes(props.value as T)) {
-      const newValue = [...this.state.value, props.value as T]
-      this.setState({ value: newValue })
-      onChange(newValue)
+    const changeValues = props.value as T[]
+    const newValues = [...value]
+
+    for (const changedValue of changeValues) {
+      if (!value.includes(changedValue)) {
+        newValues.push(changedValue)
+      }
+    }
+
+    if (newValues.length !== value.length) {
+      this.setState({ value: newValues })
+      onChange(newValues)
     }
   }
 
@@ -79,18 +87,20 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
   render() {
     const { options, disabled } = this.props
     const { value } = this.state
+    console.log('MultiSelect', value)
     return (
       <Dropdown
-        className={`MultiSelect ${value.length > 0 ? '' : 'blank'}`.trim()}
-        trigger={this.renderTrigger()}
         inline
         multiple
+        className={`MultiSelect ${value.length > 0 ? '' : 'blank'}`.trim()}
+        trigger={this.renderTrigger()}
         direction="right"
         value={value}
         scrolling={false}
         options={options.filter(option => !value.includes(option.value))}
         disabled={disabled}
         onChange={this.handleChange}
+        closeOnChange={true}
       />
     )
   }
