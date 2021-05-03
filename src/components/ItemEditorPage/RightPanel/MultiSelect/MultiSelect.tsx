@@ -87,7 +87,6 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
   render() {
     const { options, disabled } = this.props
     const { value } = this.state
-    console.log('MultiSelect', value)
     return (
       <Dropdown
         inline
