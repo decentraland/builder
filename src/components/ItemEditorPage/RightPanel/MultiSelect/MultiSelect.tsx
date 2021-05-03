@@ -84,6 +84,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
         className={`MultiSelect ${value.length > 0 ? '' : 'blank'}`.trim()}
         trigger={this.renderTrigger()}
         inline
+        multiple
         direction="right"
         value={value}
         scrolling={false}

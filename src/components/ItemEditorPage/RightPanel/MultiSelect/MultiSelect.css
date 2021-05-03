@@ -81,6 +81,7 @@
 
 .MultiSelect.ui.dropdown.inline.blank .label,
 .MultiSelect.ui.dropdown.inline.blank .handle {
+  padding: 0;
   margin-bottom: 0;
 }
 

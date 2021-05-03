@@ -17,9 +17,8 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
 
   await deploy(PEER_URL, data)
 
-  // @TODO: Revisit this because if it is in the catalyst we shouldn't update it
   const newItem = { ...item, inCatalyst: true }
-  if (!item.isPublished) {
+  if (!item.inCatalyst) {
     await builder.saveItem(newItem, {})
   }
 
