@@ -82,10 +82,6 @@
 }
 
 .RightPanel .details .metrics {
-  margin-top: 24px;
-}
-
-.RightPanel .details .metrics {
   margin-left: 20px;
   display: flex;
   flex-direction: column;

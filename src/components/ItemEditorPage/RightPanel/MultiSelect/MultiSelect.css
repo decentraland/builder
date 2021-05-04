@@ -3,7 +3,7 @@
   border-radius: 6px;
   display: flex;
   align-items: center;
-  padding: 8px 12px 2px;
+  padding: 4px 12px 4px 0;
   margin-bottom: 8px;
 }
 
@@ -16,8 +16,9 @@
 }
 
 .MultiSelect.ui.dropdown.inline .label {
-  margin-bottom: 6px;
-  margin-right: 20px;
+  margin-bottom: 0;
+  margin-right: 10px;
+  padding: 6px 12px;
   color: var(--secondary-text);
   display: flex;
   align-items: center;
@@ -35,7 +36,9 @@
 
 .MultiSelect.ui.dropdown.inline .values {
   flex: 1 auto;
-  text-align: right;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
 }
 
 .MultiSelect.ui.dropdown.inline .values .placeholder {
@@ -46,7 +49,8 @@
 .MultiSelect.ui.dropdown.inline .values .value {
   background-color: var(--smart-grey);
   padding: 2px 8px;
-  margin-bottom: 6px;
+  margin-top: 3px;
+  margin-bottom: 3px;
   margin-right: 10px;
   border-radius: 4px;
   display: inline-flex;
@@ -81,6 +85,7 @@
 
 .MultiSelect.ui.dropdown.inline.blank .label,
 .MultiSelect.ui.dropdown.inline.blank .handle {
+  padding: 0;
   margin-bottom: 0;
 }
 

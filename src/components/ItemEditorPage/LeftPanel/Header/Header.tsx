@@ -67,9 +67,7 @@ export default class Header extends React.PureComponent<Props> {
               <ConfirmDelete name={collection.name} onDelete={this.handleDelete} trigger={<Dropdown.Item text={t('global.delete')} />} />
             </Dropdown.Menu>
           </Dropdown>
-        ) : (
-          <div className="block" />
-        )}
+        ) : null}
       </>
     ) : null
   }

@@ -125,6 +125,10 @@
   background-position-x: 12px;
 }
 
+.CreateItemModal .dcl.field {
+  margin: 0;
+}
+
 .CreateItemModal .error {
   margin-top: 10px;
   width: 100%;

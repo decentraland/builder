@@ -131,7 +131,17 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           ...editedItem,
           data: {
             ...editedItem.data,
-            representations: [...editedItem.data.representations],
+            representations: [
+              ...editedItem.data.representations,
+              // add new representation
+              {
+                bodyShapes: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
+                mainFile: model,
+                contents: Object.keys(contents),
+                overrideHides: [],
+                overrideReplaces: []
+              }
+            ],
             replaces: [...editedItem.data.replaces],
             hides: [...editedItem.data.hides],
             tags: [...editedItem.data.tags]
@@ -142,15 +152,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           updatedAt: +new Date()
         }
 
-        // add new representation
-        item.data.representations.push({
-          bodyShapes: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
-          mainFile: model,
-          contents: Object.keys(contents),
-          overrideHides: [],
-          overrideReplaces: []
-        })
-
         // add new contents
         const newContents = await computeHashes(contents!)
         delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
@@ -160,6 +161,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       } else if (pristineItem && changeItemFile) {
         item = {
           ...(pristineItem as Item),
+          data: {
+            ...pristineItem.data,
+            category
+          },
+          name,
           metrics,
           contents: await computeHashes(contents!),
           updatedAt: +new Date()
@@ -204,7 +210,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             replaces: [],
             hides: [],
             tags: [],
-            representations: []
+            representations: [...this.getBodyShapes(bodyShape, model, contents)]
           },
           owner: address!,
           metrics,
@@ -212,8 +218,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
-
-        item.data.representations.push(...this.getBodyShapes(bodyShape, model, contents))
       }
 
       const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
@@ -588,25 +592,27 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   renderFields() {
     const { name, category, rarity, contents, item } = this.state
 
-    const rarities = getRarities().map(value => ({ value, text: t(`wearable.rarity.${value}`) }))
-    const categories = getCategories(contents).map(value => ({ value, text: t(`wearable.category.${value}`) }))
+    const rarities = getRarities()
+    const categories = getCategories(contents)
 
     return (
       <>
         <Field className="name" label={t('create_item_modal.name_label')} value={name} onChange={this.handleNameChange} />
+        {!item || !item.isPublished ? (
+          <SelectField
+            label={t('create_item_modal.rarity_label')}
+            placeholder={t('create_item_modal.rarity_placeholder')}
+            value={rarity}
+            options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+            onChange={this.handleRarityChange}
+          />
+        ) : null}
         <SelectField
-          label={t('create_item_modal.rarity_label')}
-          placeholder={t('create_item_modal.rarity_placeholder')}
-          value={rarity}
-          options={rarities}
-          onChange={this.handleRarityChange}
-          disabled={item && item.isPublished}
-        />
-        <SelectField
+          required
           label={t('create_item_modal.category_label')}
           placeholder={t('create_item_modal.category_placeholder')}
-          value={category}
-          options={categories}
+          value={categories.includes(category!) ? category : undefined}
+          options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
           onChange={this.handleCategoryChange}
         />
       </>
@@ -707,7 +713,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                         </>
                       )}
                     </>
-                  ) : null}
+                  ) : (
+                    this.renderFields()
+                  )}
                 </Column>
               </Row>
               <Row className="actions" align="right">

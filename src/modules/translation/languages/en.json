@@ -165,7 +165,7 @@
   "create_item_modal": {
     "title": "New Item",
     "add_representation": "Add {bodyShape} Repesentation",
-    "name_label": "Add a name to your new item",
+    "name_label": "Add a name to your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
     "rarity_label": "How rare is this item?",
