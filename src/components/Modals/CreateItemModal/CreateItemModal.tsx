@@ -45,7 +45,8 @@ import {
   getRarities,
   getCategories,
   isComplexFile,
-  getBackgroundStyle
+  getBackgroundStyle,
+  isWearablePngFile
 } from 'modules/item/utils'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
@@ -259,7 +260,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }, {})
 
     const modelPath = fileNames.find(
-      fileName => isComplexFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && fileName.endsWith('png'))
+      fileName => isComplexFile(fileName) || isWearablePngFile(fileName)
     )
 
     if (!modelPath) {
