@@ -165,7 +165,6 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     let txHash: string | undefined
 
     if (hasOnChainDataChanged(originalItem, item)) {
-      // The user has only changed the item file
       const metadata = getMetadata(item)
       const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 

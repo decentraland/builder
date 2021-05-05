@@ -1,4 +1,6 @@
 import * as React from 'react'
+import equal from 'fast-deep-equal'
+import { utils } from 'decentraland-commons'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
@@ -84,69 +86,58 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleChangeName = (name: string) => {
-    this.setState({ name, isDirty: true })
+    this.setState({ name, isDirty: this.isDirty({ name }) })
   }
 
   handleChangeDescription = (description: string) => {
-    this.setState({ description, isDirty: true })
+    this.setState({ description, isDirty: this.isDirty({ description }) })
   }
 
   handleChangeRarity = (rarity: ItemRarity) => {
-    this.setState({ rarity, isDirty: true })
+    this.setState({ rarity, isDirty: this.isDirty({ rarity }) })
   }
 
   handleChangeCategory = (category: WearableCategory) => {
-    const { data } = this.state
-    this.setState({
-      data: {
-        ...data!,
-        category
-      },
-      isDirty: true
-    })
+    const data = {
+      ...this.state.data!,
+      category
+    }
+    this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
   handleChangeReplaces = (replaces: WearableCategory[]) => {
-    const { data } = this.state
+    const data = {
+      ...this.state.data!,
+      replaces,
+      representations: this.state.data!.representations.map(representation => ({
+        ...representation,
+        overrideReplaces: replaces
+      }))
+    }
 
-    this.setState({
-      data: {
-        ...this.state.data!,
-        replaces,
-        representations: data!.representations.map(representation => ({
-          ...representation,
-          overrideReplaces: replaces
-        }))
-      },
-      isDirty: true
-    })
+    this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
   handleChangeHides = (hides: WearableCategory[]) => {
-    const { data } = this.state
+    const data = {
+      ...this.state.data!,
+      hides,
+      representations: this.state.data!.representations.map(representation => ({
+        ...representation,
+        overrideHides: hides
+      }))
+    }
 
-    this.setState({
-      data: {
-        ...this.state.data!,
-        hides,
-        representations: data!.representations.map(representation => ({
-          ...representation,
-          overrideHides: hides
-        }))
-      },
-      isDirty: true
-    })
+    this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
   handleChangeTags = (tags: string[]) => {
-    const { data } = this.state
-    this.setState({
-      data: {
-        ...data!,
-        tags
-      },
-      isDirty: true
-    })
+    const data = {
+      ...this.state.data!,
+      tags
+    }
+
+    this.setState({ data, isDirty: this.isDirty({ data }) })
   }
 
   handleOnSaveItem = async () => {
@@ -225,6 +216,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   isOwner(item: Item | null) {
     const { address = '' } = this.props
     return item && isEqual(item.owner, address)
+  }
+
+  isDirty(newState: Partial<State> = {}) {
+    const { hasItem } = this.state
+
+    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
+    const stateItem = utils.pick<Item>({ ...this.state, ...newState }, editableItemAttributes)
+    const item = utils.pick(this.props.selectedItem!, editableItemAttributes)
+
+    return hasItem ? !equal(stateItem, item) : false
   }
 
   render() {

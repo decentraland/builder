@@ -38,7 +38,7 @@
   flex: 1 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .MultiSelect.ui.dropdown.inline .values .placeholder {
