@@ -217,8 +217,7 @@ export function hasOnChainDataChanged(originalItem: Item, item: Item) {
     originalItem.data.category !== item.data.category ||
     originalItem.price !== item.price ||
     originalItem.beneficiary !== item.beneficiary ||
-    originalItem.rarity !== item.rarity ||
-    JSON.stringify(originalItem.data) !== JSON.stringify(item.data)
+    originalItem.rarity !== item.rarity
   )
 }
 
