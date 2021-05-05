@@ -140,3 +140,4 @@ export const THUMBNAIL_PATH = 'thumbnail.png'
 export const IMAGE_PATH = 'image.png'
 export const ITEM_NAME_MAX_LENGTH = 32
 export const ITEM_DESCRIPTION_MAX_LENGTH = 64
+export const ITEM_EXTENSIONS = ['.zip', '.gltf', '.glb', '.png']

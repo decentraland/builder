@@ -22,6 +22,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { cleanAssetName } from 'modules/asset/utils'
 import { blobToDataURL, dataURLToBlob } from 'modules/media/utils'
 import {
+  ITEM_EXTENSIONS,
   THUMBNAIL_PATH,
   Item,
   ItemType,
@@ -44,8 +45,9 @@ import {
   getMissingBodyShapeType,
   getRarities,
   getCategories,
-  isComplexFile,
-  getBackgroundStyle
+  getBackgroundStyle,
+  isModelPath,
+  isImageFile
 } from 'modules/item/utils'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
@@ -258,9 +260,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       return contents
     }, {})
 
-    const modelPath = fileNames.find(
-      fileName => isComplexFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && fileName.endsWith('png'))
-    )
+    const modelPath = fileNames.find(isModelPath)
 
     if (!modelPath) {
       throw new Error('Missing model file')
@@ -399,7 +399,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     let thumbnail: string = ''
     let metrics: ModelMetrics
 
-    if (this.isPNGModel(model)) {
+    if (isImageFile(model)) {
       metrics = {
         triangles: 100,
         materials: 1,
@@ -515,11 +515,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
     const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
-    return hasCustomThumbnail || this.isPNGModel(model)
-  }
-
-  isPNGModel = (model: string = '') => {
-    return model.endsWith('.png')
+    return hasCustomThumbnail || isImageFile(model!)
   }
 
   renderDropzoneCTA = (open: () => void) => {
@@ -579,7 +575,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <FileImport
-            accept={['.zip', '.gltf', '.glb', '.png']}
+            accept={ITEM_EXTENSIONS}
             onAcceptedFiles={this.handleDropAccepted}
             onRejectedFiles={this.handleDropRejected}
             renderAction={this.renderDropzoneCTA}

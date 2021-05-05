@@ -17,7 +17,8 @@ import {
   RARITY_COLOR_LIGHT,
   RARITY_COLOR,
   WearableCategory,
-  WearableBodyShapeType
+  WearableBodyShapeType,
+  THUMBNAIL_PATH
 } from './types'
 
 export function getMaxSupply(item: Item) {
@@ -239,6 +240,16 @@ export function getCategories(contents: Record<string, any> | undefined = {}) {
     : SIMPLE_WEARABLE_CATEGORIES
 }
 
+export function isImageFile(fileName: string) {
+  return fileName.endsWith('.png')
+}
+
 export function isComplexFile(fileName: string) {
   return fileName.endsWith('.gltf') || fileName.endsWith('.glb')
+}
+
+export function isModelPath(fileName: string) {
+  fileName = fileName.toLowerCase()
+  const isMask = fileName.includes('_mask')
+  return isComplexFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
 }
