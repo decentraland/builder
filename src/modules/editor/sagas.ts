@@ -126,9 +126,9 @@ import { getEyeColors, getHairColors, getSkinColors } from './colors'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
+import { SAVE_ITEM_SUCCESS, SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
 import { Item, WearableBodyShape } from 'modules/item/types'
 import { getItems } from 'modules/item/selectors'
-import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
 import { AssetPackState } from 'modules/assetPack/reducer'
 import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
 import maleAvatar from './wearables/male.json'
@@ -160,6 +160,7 @@ export function* editorSaga() {
   yield takeLatest(SET_BODY_SHAPE, handleSetBodyShape)
   yield takeLatest(SET_ITEMS, renderAvatar)
   yield takeLatest(SAVE_ITEM_SUCCESS, renderAvatar)
+  yield takeLatest(SAVE_PUBLISHED_ITEM_SUCCESS, renderAvatar)
   yield takeLatest(SET_SKIN_COLOR, renderAvatar)
   yield takeLatest(SET_EYE_COLOR, renderAvatar)
   yield takeLatest(SET_HAIR_COLOR, renderAvatar)

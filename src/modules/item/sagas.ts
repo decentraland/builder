@@ -113,26 +113,27 @@ function* handleFetchCollectionItemsRequest(action: FetchCollectionItemsRequestA
 }
 
 function* handleSaveItemRequest(action: SaveItemRequestAction) {
-  const { item, contents } = action.payload
+  const { item: actionItem, contents } = action.payload
   try {
-    const itemWithUpdatedDate = { ...item, updatedAt: Date.now() }
-    if (itemWithUpdatedDate.isPublished) {
+    const item = { ...actionItem, updatedAt: Date.now() }
+    if (item.isPublished) {
       throw new Error('Item should not be published to save it')
     }
 
-    yield call(() => builder.saveItem(itemWithUpdatedDate, contents))
+    yield call(() => builder.saveItem(item, contents))
 
-    yield put(saveItemSuccess(itemWithUpdatedDate, contents))
+    yield put(saveItemSuccess(item, contents))
     yield put(closeModal('CreateItemModal'))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
   } catch (error) {
-    yield put(saveItemFailure(item, contents, error.message))
+    yield put(saveItemFailure(actionItem, contents, error.message))
   }
 }
 
 function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction) {
-  const { item, contents } = action.payload
+  const { item: actionItem, contents } = action.payload
   try {
+    const item = { ...actionItem, updatedAt: Date.now() }
     const originalItem: Item = yield select(state => getItem(state, item.id))
 
     if (!originalItem.isPublished) {
@@ -183,7 +184,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       yield put(replace(locations.activity()))
     }
   } catch (error) {
-    yield put(savePublishedItemFailure(item, contents, error.message))
+    yield put(savePublishedItemFailure(actionItem, contents, error.message))
   }
 }
 
