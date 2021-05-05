@@ -1,10 +1,11 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, all, race } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -48,10 +49,7 @@ import {
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
   fetchCollectionItemsRequest,
-  DeployItemContentsSuccessAction,
-  DeployItemContentsFailureAction,
-  DEPLOY_ITEM_CONTENTS_SUCCESS,
-  DEPLOY_ITEM_CONTENTS_FAILURE
+  SAVE_PUBLISHED_ITEM_SUCCESS
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
@@ -80,6 +78,7 @@ export function* itemSaga() {
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
   yield takeLatest(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
+  yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
 }
 
 function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
@@ -135,30 +134,13 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
   try {
     const item = { ...actionItem, updatedAt: Date.now() }
     const originalItem: Item = yield select(state => getItem(state, item.id))
+    const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
 
     if (!originalItem.isPublished) {
       throw new Error('Item must be published to save it')
     }
     if (!originalItem.collectionId) {
       throw new Error("Can't save a published without a collection")
-    }
-
-    yield call(() => builder.saveItemContents(item, contents))
-    const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
-    yield put(deployItemContentsRequest(collection, item))
-
-    const {
-      failure
-    }: {
-      success: DeployItemContentsSuccessAction | null
-      failure: DeployItemContentsFailureAction | null
-    } = yield race({
-      success: take(DEPLOY_ITEM_CONTENTS_SUCCESS),
-      failure: take(DEPLOY_ITEM_CONTENTS_FAILURE)
-    })
-
-    if (failure) {
-      throw new Error('Failed to upload items to the content server')
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
@@ -174,15 +156,13 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
         contract,
         implementation.methods.editItemsData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)], [metadata])
       )
+    } else {
+      yield put(deployItemContentsRequest(collection, item))
     }
 
     yield put(savePublishedItemSuccess(item, maticChainId, txHash))
     yield put(closeModal('CreateItemModal'))
     yield put(closeModal('EditPriceAndBeneficiaryModal'))
-
-    if (txHash) {
-      yield put(replace(locations.activity()))
-    }
   } catch (error) {
     yield put(savePublishedItemFailure(actionItem, contents, error.message))
   }
@@ -264,4 +244,24 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
   const { id } = action.payload
   yield put(fetchCollectionItemsRequest(id))
+}
+
+function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
+  const transaction = action.payload.transaction
+
+  try {
+    switch (transaction.actionType) {
+      case SAVE_PUBLISHED_ITEM_SUCCESS: {
+        const { item } = transaction.payload
+        const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+        yield put(deployItemContentsRequest(collection, item))
+        break
+      }
+      default: {
+        break
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
