@@ -240,11 +240,16 @@ export function getCategories(contents: Record<string, any> | undefined = {}) {
     : SIMPLE_WEARABLE_CATEGORIES
 }
 
+export function isImageFile(fileName: string) {
+  return fileName.endsWith('.png')
+}
+
 export function isComplexFile(fileName: string) {
   return fileName.endsWith('.gltf') || fileName.endsWith('.glb')
 }
 
-export function isItemPNGFile(fileName: string) {
-  const name = fileName.toLowerCase()
-  return name.indexOf(THUMBNAIL_PATH) === -1 && !name.includes('_mask') && fileName.endsWith('.png')
+export function isModelPath(fileName: string) {
+  fileName = fileName.toLowerCase()
+  const isMask = fileName.includes('_mask')
+  return isComplexFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
 }
