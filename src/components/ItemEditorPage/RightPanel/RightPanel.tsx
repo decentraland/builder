@@ -56,16 +56,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     })
   }
 
-  isDirty(newState: Partial<State> = {}) {
-    const { hasItem } = this.state
-
-    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
-    const stateItem = utils.pick<Item>({ ...this.state, ...newState }, editableItemAttributes)
-    const item = utils.pick(this.props.selectedItem!, editableItemAttributes)
-
-    return hasItem ? !equal(stateItem, item) : false
-  }
-
   getInitialState(): State {
     return {
       name: '',
@@ -226,6 +216,16 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   isOwner(item: Item | null) {
     const { address = '' } = this.props
     return item && isEqual(item.owner, address)
+  }
+
+  isDirty(newState: Partial<State> = {}) {
+    const { hasItem } = this.state
+
+    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
+    const stateItem = utils.pick<Item>({ ...this.state, ...newState }, editableItemAttributes)
+    const item = utils.pick(this.props.selectedItem!, editableItemAttributes)
+
+    return hasItem ? !equal(stateItem, item) : false
   }
 
   render() {
