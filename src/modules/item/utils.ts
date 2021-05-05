@@ -244,7 +244,7 @@ export function isComplexFile(fileName: string) {
   return fileName.endsWith('.gltf') || fileName.endsWith('.glb')
 }
 
-export function isWearablePngFile(fileName: string) {
+export function isItemPNGFile(fileName: string) {
   const name = fileName.toLowerCase()
   return name.indexOf(THUMBNAIL_PATH) === -1 && !name.includes('_mask') && fileName.endsWith('.png')
 }
