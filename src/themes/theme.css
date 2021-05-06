@@ -70,7 +70,3 @@
 .ui.popup.status {
   height: auto;
 }
-
-.dcl.navbar .dcl.user-menu .dcl.mana .symbol {
-  color: var(--text);
-}
