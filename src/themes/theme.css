@@ -70,12 +70,3 @@
 .ui.popup.status {
   height: auto;
 }
-
-/* TODO: this removes the Matic Mana balance from the navbar. Remove this once we launch on Matic. */
-.dcl.navbar .dcl.user-menu .dcl.mana .symbol {
-  color: var(--text);
-}
-
-.dcl.navbar .dcl.user-menu .dcl.mana + .dcl.mana {
-  display: none;
-}
