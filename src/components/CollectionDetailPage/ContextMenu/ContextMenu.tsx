@@ -85,8 +85,8 @@ export default class ContextMenu extends React.PureComponent<Props> {
                   onClick={this.handleNavigateToForum}
                 />
               ) : (
-                <Dropdown.Item onClick={this.handlePostToForum} disabled={isForumPostLoading || true}>
-                  {true || isForumPostLoading ? (
+                <Dropdown.Item onClick={this.handlePostToForum} disabled={isForumPostLoading}>
+                  {isForumPostLoading ? (
                     <div>
                       {t('context_menu.posting')}&nbsp;&nbsp;
                       <Loader size="mini" active inline />
