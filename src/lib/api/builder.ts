@@ -347,7 +347,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
-    forumLink: remoteCollection.forum_link,
+    forumLink: '', //remoteCollection.forum_link,
     reviewedAt: +new Date(remoteCollection.reviewed_at),
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)

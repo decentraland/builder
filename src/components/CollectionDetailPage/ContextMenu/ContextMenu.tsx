@@ -72,10 +72,7 @@ export default class ContextMenu extends React.PureComponent<Props> {
           )}
 
           <Popup
-            content={
-              !collection.isPublished ? t('context_menu.unpublished') : !collection.forumLink ? t('context_menu.not_posted') : undefined
-            }
-            disabled={collection.isPublished || !!collection.forumLink}
+            content={!collection.isPublished ? t('context_menu.unpublished') : !collection.forumLink ? t('context_menu.not_posted') : ''}
             position="right center"
             trigger={
               !collection.isPublished || collection.forumLink ? (
