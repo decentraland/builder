@@ -72,7 +72,10 @@ export default class ContextMenu extends React.PureComponent<Props> {
           )}
 
           <Popup
-            content={!collection.isPublished ? t('context_menu.unpublished') : !collection.forumLink ? t('context_menu.not_posted') : ''}
+            content={
+              !collection.isPublished ? t('context_menu.unpublished') : !collection.forumLink ? t('context_menu.not_posted') : undefined
+            }
+            disabled={collection.isPublished || !!collection.forumLink}
             position="right center"
             trigger={
               !collection.isPublished || collection.forumLink ? (
@@ -82,8 +85,8 @@ export default class ContextMenu extends React.PureComponent<Props> {
                   onClick={this.handleNavigateToForum}
                 />
               ) : (
-                <Dropdown.Item onClick={this.handlePostToForum} disabled={isForumPostLoading}>
-                  {isForumPostLoading ? (
+                <Dropdown.Item onClick={this.handlePostToForum} disabled={isForumPostLoading || true}>
+                  {true || isForumPostLoading ? (
                     <div>
                       {t('context_menu.posting')}&nbsp;&nbsp;
                       <Loader size="mini" active inline />
