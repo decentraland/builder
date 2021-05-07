@@ -84,7 +84,11 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
     const { managers } = this.state
     return (
       <Modal className="CollectionManagersModal" onClose={onClose}>
-        <ModalNavigation title={t('collection_managers_modal.title')} onClose={onClose} />
+        <ModalNavigation
+          title={t('collection_managers_modal.title')}
+          subtitle={t('collection_managers_modal.subtitle')}
+          onClose={onClose}
+        />
         <Modal.Content>
           <div className="managers">
             {managers.length > 0 ? (

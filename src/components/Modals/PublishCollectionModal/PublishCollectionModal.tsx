@@ -86,7 +86,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               </div>
             </div>
             <Button className="proceed" primary fluid onClick={this.handleProceed}>
-              {t('global.proceed')}
+              {t('global.next')}
             </Button>
           </>
         )}
@@ -103,7 +103,10 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
         <div className="divider"></div>
         {t('publish_collection_modal.second_paragraph')}
         <div className="divider"></div>
-        {t('publish_collection_modal.third_paragraph')}
+        {t('publish_collection_modal.third_paragraph')}{' '}
+        <a href="#" rel="noopener noreferrer" target="_blank">
+          {t('global.learn_more')}
+        </a>
         <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
           {t('publish_collection_modal.publish')}
         </Button>

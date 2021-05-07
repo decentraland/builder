@@ -140,7 +140,7 @@
   },
   "create_collection_modal": {
     "title": "Nueva Colección",
-    "subtitle": "Ponle un nombre a tu nueva colleción",
+    "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
     "label": "Nombre",
     "placeholder": "Mi colleción",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
@@ -173,7 +173,7 @@
     "category_placeholder": "Selecciona una categoria",
     "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
-    "representation_label": "Para que forma de cuerpo es este item?",
+    "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
     "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
@@ -498,7 +498,7 @@
     "description": "¡Puedes cargar Escenas exportadas desde otras instancias del Builder!",
     "invalid_file": "Archivo inválido",
     "title": "Importar Escena",
-    "upload_manually": "Súbelas manualmente"
+    "upload_manually": "Busca en tu computadora"
   },
   "itemdrawer": {
     "opensea_credit": "Impulsado por {link}",
@@ -917,7 +917,7 @@
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
     "click_here": "Clickea aquí",
     "publish": "Publicar",
-    "start_adding_items": "̉¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
     "under_review": "No verificada"
@@ -965,7 +965,7 @@
     "title": "Publicar Collección",
     "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
     "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar",
-    "third_paragraph": "Podrás ver tus items en el marketplace pero serán puestos en venta luego de ser validados por la DAO",
+    "third_paragraph": "Los items de la colección aparecerán en Marketplace, pero no se pueden vender hasta que sean aprobados.",
     "items_breakdown_title": "Estas por publicar {items} items. El fee de MANA por publicar la collección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
     "publish": "Publish"
   },
@@ -983,6 +983,7 @@
   },
   "collection_managers_modal": {
     "title": "Colaboradores",
+    "subtitle": "Si has colaborado con otros creadores, agrega sus direcciones de ETH aquí",
     "add_manager": "Agregar Colaborador",
     "no_managers": "No hay colaboradores, comienza por",
     "adding_one": "agregar uno!"
