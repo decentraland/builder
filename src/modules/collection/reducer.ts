@@ -1,6 +1,13 @@
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { CreateCollectionForumPostSuccessAction, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
+import {
+  CreateCollectionForumPostRequestAction,
+  CreateCollectionForumPostSuccessAction,
+  CreateCollectionForumPostFailureAction,
+  CREATE_COLLECTION_FORUM_POST_REQUEST,
+  CREATE_COLLECTION_FORUM_POST_SUCCESS,
+  CREATE_COLLECTION_FORUM_POST_FAILURE
+} from 'modules/forum/actions'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -104,7 +111,9 @@ type CollectionReducerAction =
   | MintCollectionItemsRequestAction
   | MintCollectionItemsSuccessAction
   | MintCollectionItemsFailureAction
+  | CreateCollectionForumPostRequestAction
   | CreateCollectionForumPostSuccessAction
+  | CreateCollectionForumPostFailureAction
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
@@ -120,7 +129,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case SET_COLLECTION_MANAGERS_REQUEST:
     case SET_COLLECTION_MANAGERS_SUCCESS:
     case MINT_COLLECTION_ITEMS_REQUEST:
-    case MINT_COLLECTION_ITEMS_SUCCESS: {
+    case MINT_COLLECTION_ITEMS_SUCCESS:
+    case CREATE_COLLECTION_FORUM_POST_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -186,7 +196,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case REJECT_COLLECTION_FAILURE:
     case SET_COLLECTION_MINTERS_FAILURE:
     case SET_COLLECTION_MANAGERS_FAILURE:
-    case MINT_COLLECTION_ITEMS_FAILURE: {
+    case MINT_COLLECTION_ITEMS_FAILURE:
+    case CREATE_COLLECTION_FORUM_POST_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
