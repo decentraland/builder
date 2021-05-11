@@ -8,7 +8,7 @@ import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Icon from 'components/Icon'
 import { isEqual } from 'lib/address'
-import { getMissingBodyShapeType, canManageItem, getRarities, getCategories } from 'modules/item/utils'
+import { getMissingBodyShapeType, canManageItem, getRarities, getWearableCategories, getOverridesCategories } from 'modules/item/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, THUMBNAIL_PATH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
@@ -240,7 +240,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             const isOwner = this.isOwner(item)
             const canEditItemMetadata = this.canEditItemMetadata(item)
 
-            const categories = item ? getCategories(item.contents) : []
+            const wearableCategories = item ? getWearableCategories(item.contents) : []
+            const overrideCategories = item ? getOverridesCategories(item.contents) : []
             const isItemLoading = selectedItemId && (!item || !hasItem)
 
             return isLoading || isItemLoading ? (
@@ -322,7 +323,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         itemId={item.id}
                         label={t('global.category')}
                         value={data!.category}
-                        options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                        options={wearableCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
                         onChange={this.handleChangeCategory}
                       />
@@ -345,7 +346,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         label={t('item_editor.right_panel.replaces')}
                         info={t('item_editor.right_panel.replaces_info')}
                         value={data!.replaces}
-                        options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                        options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
                         onChange={this.handleChangeReplaces}
                       />
@@ -354,7 +355,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         label={t('item_editor.right_panel.hides')}
                         info={t('item_editor.right_panel.hides_info')}
                         value={data!.hides}
-                        options={categories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                        options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                         disabled={!canEditItemMetadata}
                         onChange={this.handleChangeHides}
                       />

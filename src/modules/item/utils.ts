@@ -230,13 +230,21 @@ export function getRarities() {
   return Object.values(ItemRarity)
 }
 
-export function getCategories(contents: Record<string, any> | undefined = {}) {
+function getCategories(contents: Record<string, any> | undefined = {}) {
   const SIMPLE_WEARABLE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
   const fileNames = Object.keys(contents)
 
   return fileNames.some(isComplexFile)
     ? Object.values(WearableCategory).filter(category => !SIMPLE_WEARABLE_CATEGORIES.includes(category))
     : SIMPLE_WEARABLE_CATEGORIES
+}
+
+export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
+  return getCategories(contents).filter(category => category === WearableCategory.HEAD)
+}
+
+export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
+  return getCategories(contents)
 }
 
 export function isImageFile(fileName: string) {
