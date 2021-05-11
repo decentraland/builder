@@ -79,6 +79,7 @@ import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './u
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
+  yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
   yield takeLatest(SAVE_ITEM_SUCCESS, handleSaveItemSuccess)
   yield takeEvery(SAVE_COLLECTION_REQUEST, handleSaveCollectionRequest)
   yield takeEvery(DELETE_COLLECTION_REQUEST, handleDeleteCollectionRequest)
@@ -90,7 +91,6 @@ export function* collectionSaga() {
   yield takeEvery(REJECT_COLLECTION_REQUEST, handleRejectCollectionRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
-  yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
 }
 
 function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
@@ -341,6 +341,26 @@ function* handleLoginSuccess(action: LoginSuccessAction) {
   yield put(fetchCollectionsRequest(wallet.address))
 }
 
+function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
+  let allItems: Item[] = yield select(getWalletItems)
+  if (allItems.length === 0) {
+    yield take(FETCH_ITEMS_SUCCESS)
+    allItems = yield select(getWalletItems)
+  }
+
+  try {
+    const { collections } = action.payload
+
+    for (const collection of collections) {
+      if (!collection.isPublished) continue
+      const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+      yield deployItems(collection, items)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
   const transaction = action.payload.transaction
 
@@ -361,26 +381,6 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
       default: {
         break
       }
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
-  let allItems: Item[] = yield select(getWalletItems)
-  if (allItems.length === 0) {
-    yield take(FETCH_ITEMS_SUCCESS)
-    allItems = yield select(getWalletItems)
-  }
-
-  try {
-    const { collections } = action.payload
-
-    for (const collection of collections) {
-      if (!collection.isPublished) continue
-      const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
-      yield deployItems(collection, items)
     }
   } catch (error) {
     console.error(error)
