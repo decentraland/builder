@@ -23,6 +23,7 @@ export enum WearableCategory {
   FEET = 'feet',
   HAIR = 'hair',
   HAT = 'hat',
+  HEAD = 'head',
   HELMET = 'helmet',
   LOWER_BODY = 'lower_body',
   MASK = 'mask',

@@ -44,7 +44,7 @@ import {
   getBodyShapeType,
   getMissingBodyShapeType,
   getRarities,
-  getCategories,
+  getWearableCategories,
   getBackgroundStyle,
   isModelPath,
   isImageFile
@@ -589,7 +589,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { name, category, rarity, contents, item } = this.state
 
     const rarities = getRarities()
-    const categories = getCategories(contents)
+    const categories = getWearableCategories(contents)
 
     return (
       <>
