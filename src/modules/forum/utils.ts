@@ -1,15 +1,16 @@
 import { Item } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
-import { ForumPost } from './types'
 import { locations } from 'routing/locations'
 import { getThumbnailURL } from 'modules/item/utils'
+import { shorten } from 'lib/address'
+import { ForumPost } from './types'
 
 export function buildCollectionForumPost(collection: Collection, items: Item[]): ForumPost {
   const collectionURL = window.location.origin + locations.itemEditor({ collectionId: collection.id })
 
   // We only post in English
   return {
-    title: `A new wearables collection created by ${collection.name} is ready for review!`,
+    title: `Collection '${collection.name}' created by ${shorten(collection.owner)} is ready for review!`,
     raw: `# ${collection.name}
 
   [View entire collection](${collectionURL})
