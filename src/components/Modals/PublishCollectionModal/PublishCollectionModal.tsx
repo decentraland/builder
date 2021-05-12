@@ -9,6 +9,7 @@ import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
+import { Network } from '@dcl/schemas'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
   state: State = { step: 1, rarities: [], isFetchingRarities: true }
@@ -73,14 +74,14 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                     {itemByRarity.count} {itemByRarity.name}
                   </div>
                   <div>
-                    <Mana>{itemByRarity.price}</Mana>
+                    <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
                   </div>
                 </div>
               ))}
               <div className="item total">
                 <div>{t('global.total')}</div>
                 <div>
-                  <Mana>{totalPrice}</Mana>
+                  <Mana network={Network.MATIC}>{totalPrice}</Mana>
                 </div>
               </div>
             </div>
