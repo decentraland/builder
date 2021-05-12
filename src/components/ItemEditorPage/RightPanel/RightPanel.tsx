@@ -371,7 +371,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       {t('global.cancel')}
                     </Button>
                     <Button primary onClick={this.handleOnSaveItem}>
-                      {t('global.submit')}
+                      {t('global.save')}
                     </Button>
                   </div>
                 ) : null}
