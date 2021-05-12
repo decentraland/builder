@@ -240,7 +240,7 @@ function getCategories(contents: Record<string, any> | undefined = {}) {
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
-  return getCategories(contents).filter(category => category === WearableCategory.HEAD)
+  return getCategories(contents).filter(category => category !== WearableCategory.HEAD)
 }
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
