@@ -111,7 +111,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                   <T
                     id="claim_ens_page.subtitle"
                     values={{
-                      exampleLink: <i>https://name.dcl.eth.link</i>,
+                      exampleLink: <i>https://name.dcl.eth</i>,
                       br: (
                         <>
                           <br />
