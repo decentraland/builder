@@ -9,12 +9,13 @@ export type Props = {
   collection: Collection
   items: Item[]
   isForumPostLoading: boolean
+  name: string
   onOpenModal: typeof openModal
   onPostToForum: typeof createCollectionForumPostRequest
   onDelete: typeof deleteCollectionRequest
 }
 
 export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'isForumPostLoading' | 'items'>
+export type MapStateProps = Pick<Props, 'items' | 'name' | 'isForumPostLoading'>
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPostToForum' | 'onDelete'>
 export type MapDispatch = Dispatch<OpenModalAction | CreateCollectionForumPostRequestAction | DeleteCollectionRequestAction>

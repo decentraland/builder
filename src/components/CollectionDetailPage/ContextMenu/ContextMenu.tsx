@@ -16,9 +16,9 @@ export default class ContextMenu extends React.PureComponent<Props> {
   }
 
   handlePostToForum = () => {
-    const { collection, items, onPostToForum } = this.props
+    const { collection, items, name, onPostToForum } = this.props
     if (!collection.forumLink) {
-      onPostToForum(collection, buildCollectionForumPost(collection, items))
+      onPostToForum(collection, buildCollectionForumPost(collection, items, name))
     }
   }
 

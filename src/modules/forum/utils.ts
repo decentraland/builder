@@ -5,12 +5,12 @@ import { getThumbnailURL } from 'modules/item/utils'
 import { shorten } from 'lib/address'
 import { ForumPost } from './types'
 
-export function buildCollectionForumPost(collection: Collection, items: Item[]): ForumPost {
+export function buildCollectionForumPost(collection: Collection, items: Item[], ownerName: string = ''): ForumPost {
   const collectionURL = window.location.origin + locations.itemEditor({ collectionId: collection.id })
 
   // We only post in English
   return {
-    title: `Collection '${collection.name}' created by ${shorten(collection.owner)} is ready for review!`,
+    title: `Collection '${collection.name}' created by ${ownerName || shorten(collection.owner)} is ready for review!`,
     raw: `# ${collection.name}
 
   [View entire collection](${collectionURL})
