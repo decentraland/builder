@@ -71,6 +71,7 @@ import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getWalletItems } from 'modules/item/selectors'
+import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
@@ -374,7 +375,8 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
 
         yield deployItems(collection, items)
         if (!collection.forumLink) {
-          yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items)))
+          const name: string | null = yield select(getName)
+          yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items, name || '')))
         }
         break
       }
