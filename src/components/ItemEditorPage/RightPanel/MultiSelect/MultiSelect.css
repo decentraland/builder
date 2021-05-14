@@ -24,14 +24,8 @@
   align-items: center;
 }
 
-.MultiSelect.ui.dropdown.inline .label .info {
-  width: 16px;
-  height: 16px;
+.MultiSelect.ui.dropdown.inline .label .Info {
   margin-left: 5px;
-  cursor: pointer;
-  background-image: url(../../../../images/info.svg);
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
 .MultiSelect.ui.dropdown.inline .values {
@@ -87,8 +81,4 @@
 .MultiSelect.ui.dropdown.inline.blank .handle {
   padding: 0;
   margin-bottom: 0;
-}
-
-.ui.popup.inverted.info-popup {
-  height: auto;
 }

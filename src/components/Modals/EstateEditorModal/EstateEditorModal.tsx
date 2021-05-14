@@ -3,6 +3,7 @@ import { ModalNavigation, ModalActions, Button, Layer, Coord, Field } from 'dece
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Atlas } from 'components/Atlas'
+import Info from 'components/Info'
 import {
   getCenter,
   getSelection,
@@ -225,7 +226,7 @@ export default class EstateEditorModal extends React.PureComponent<Props, State>
             ) : null}
             {needsTwoTxs ? (
               <div className="message info">
-                <div className="icon" />
+                <Info />
                 {t('estate_editor.needs_two_txs', { toAdd: coordsToAdd.length, toRemove: coordsToRemove.length })}
               </div>
             ) : null}

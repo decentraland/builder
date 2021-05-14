@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData } from 'decentraland-ui'
+import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromWei, toWei } from 'web3x-es/utils'
 
+import Info from 'components/Info'
 import { isValid } from 'lib/address'
 import { addSymbol } from 'lib/mana'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
+import './EditPriceAndBeneficiaryModal.css'
 
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
   state: State = {}
@@ -82,7 +84,14 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               error={!this.isValidPrice()}
             />
             <Field
-              label={t('edit_price_and_beneficiary_modal.beneficiary_label')}
+              label={
+                (
+                  <>
+                    {t('edit_price_and_beneficiary_modal.beneficiary_label')}
+                    <Info content={t('edit_price_and_beneficiary_modal.beneficiary_popup')} />
+                  </>
+                ) as FieldProps['label']
+              }
               type="address"
               placeholder="0x..."
               value={beneficiary}

@@ -934,7 +934,8 @@
   "edit_price_and_beneficiary_modal": {
     "title": "设置{name}的价格和地址",
     "price_label": "价格",
-    "beneficiary_label": "受益人"
+    "beneficiary_label": "受益人",
+    "beneficiary_popup": "这是出售该物品时将获得MANA的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
   },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"

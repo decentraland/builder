@@ -945,7 +945,8 @@
   "edit_price_and_beneficiary_modal": {
     "title": "Set price and address for {name}",
     "price_label": "Price",
-    "beneficiary_label": "Beneficiary"
+    "beneficiary_label": "Beneficiary",
+    "beneficiary_popup": "This is the wallet address that will receive MANA when this item is sold. You can set a different beneficiary address for each item in a collection."
   },
   "confirm_delete": {
     "content": "Are you sure you want to delete \"{name}\"?"
