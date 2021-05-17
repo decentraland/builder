@@ -12,11 +12,11 @@ import './AuthorizationModal.css'
 
 const AuthorizationModal = (props: Props) => {
   const { open, authorization, authorizations, isLoading, hasPendingTransaction, onGrant, onRevoke, onCancel, onProceed } = props
-  const { tokenAddress, authorizedAddress } = authorization
+  const { contractAddress, authorizedAddress } = authorization
 
   const isAuthorized = hasAuthorization(authorizations, authorization)
   const contractName = getContractName(authorizedAddress)
-  const tokenSymbol = getContractSymbol(tokenAddress)
+  const tokenSymbol = getContractSymbol(contractAddress)
 
   const handleAuthorizationChange = useCallback(
     (_, data: CheckboxProps) => (data.checked ? onGrant(authorization) : onRevoke(authorization)),

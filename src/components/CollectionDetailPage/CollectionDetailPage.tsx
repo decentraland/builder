@@ -69,12 +69,13 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   getAuthorization(): Authorization {
     const { wallet } = this.props
     const chainId = wallet.networks.MATIC.chainId
-    const tokenAddress = getContract(ContractName.MANAToken, chainId).address
+    const contractAddress = getContract(ContractName.MANAToken, chainId).address
     const authorizedAddress = getContract(ContractName.CollectionManager, chainId).address
     return {
       type: AuthorizationType.ALLOWANCE,
       address: wallet.address,
-      tokenAddress,
+      contractName: ContractName.ERC721CollectionV2,
+      contractAddress,
       authorizedAddress,
       chainId
     }
