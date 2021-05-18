@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { Network } from '@dcl/schemas'
+import { env } from 'decentraland-commons'
 import { ModalNavigation, Button, Mana, Loader } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { builder } from 'lib/api/builder'
 import { fromWei } from 'web3x-es/utils'
@@ -9,7 +11,6 @@ import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
-import { Network } from '@dcl/schemas'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
   state: State = { step: 1, rarities: [], isFetchingRarities: true }
@@ -34,7 +35,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items } = this.props
+    const { items, wallet } = this.props
     const { rarities, isFetchingRarities } = this.state
 
     const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
@@ -57,6 +58,8 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
       totalPrice += rarityPrice
     }
 
+    const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana <= 0
+
     return (
       <>
         {isFetchingRarities ? (
@@ -65,7 +68,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           </div>
         ) : (
           <>
-            {t('publish_collection_modal.items_breakdown_title', { items: items.length })}
+            {t('publish_collection_modal.items_breakdown_title', { count: items.length })}
             <div className="items-breakdown">
               {Object.values(itemsByRarity).map(itemByRarity => (
                 <div className="item" key={itemByRarity.name}>
@@ -85,9 +88,34 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 </div>
               </div>
             </div>
-            <Button className="proceed" primary fluid onClick={this.handleProceed}>
+            <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA}>
               {t('global.next')}
             </Button>
+            {hasInsufficientMANA ? (
+              <small className="not-enough-mana-notice">
+                <T
+                  id="publish_collection_modal.not_enogh_mana"
+                  values={{
+                    symbol: (
+                      <span>
+                        <Mana network={Network.MATIC} inline /> MANA
+                      </span>
+                    )
+                  }}
+                />
+                <br />
+                <T
+                  id="publish_collection_modal.get_mana"
+                  values={{
+                    link: (
+                      <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                        Account
+                      </a>
+                    )
+                  }}
+                />
+              </small>
+            ) : null}
           </>
         )}
       </>
