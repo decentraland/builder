@@ -131,7 +131,7 @@
   },
   "create_collection_modal": {
     "title": "新系列",
-    "subtitle": "为您的新收藏取个名字",
+    "subtitle": "输入新收藏的描述性名称",
     "label": "名称",
     "placeholder": "我的大学",
     "error_name_already_in_use": "使用中的名称。 尝试其他"
@@ -164,7 +164,7 @@
     "category_placeholder": "选择一个类别",
     "rarity_label": "这件商品有多稀有？",
     "rarity_placeholder": "选择稀有",
-    "representation_label": "它代表哪种身材？",
+    "representation_label": "选择您的项目的身体形状",
     "existing_item": "这是现有项目的一部分吗？",
     "pick_item": "选择没有{bodyShape}的商品",
     "adding_representation": "这将添加为以下项目的{body Shape}",
@@ -481,7 +481,7 @@
     "description": "您可以导入使用 Builder 设计的任何场景！",
     "invalid_file": "无效文件",
     "title": "导入场景",
-    "upload_manually": "手动导入"
+    "upload_manually": "浏览您的电脑"
   },
   "itemdrawer": {
     "opensea_credit": "由{link}提供支持",
@@ -861,7 +861,7 @@
     "no_items": "有项目",
     "new_item": "项目",
     "new_collection": "收藏",
-    "empty_description": "尚无项目或收藏集，开始创建它们并为metaverse装扮时尚"
+    "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {
     "filter": {
@@ -934,7 +934,8 @@
   "edit_price_and_beneficiary_modal": {
     "title": "设置{name}的价格和地址",
     "price_label": "价格",
-    "beneficiary_label": "受益人"
+    "beneficiary_label": "受益人",
+    "beneficiary_popup": "这是出售该物品时将获得MANA的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"
   },
   "confirm_delete": {
     "content": "您确定要删除\"{name}\"吗?"
@@ -943,7 +944,7 @@
     "title": "发布收藏",
     "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
     "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
-    "third_paragraph": "您将能够在市场上看到您的商品，但是一旦DAO验证了馆藏，它们就可以出售了",
+    "third_paragraph": "您收藏中的物品将出现在市场中，但只有获得批准，才能出售。",
     "items_breakdown_title": "您即将发布{items}个项目。 每个系列的MANA费用都由Decentraland DAO负责，用于通过赠款，活动和奖励来支持社区的发展。",
     "publish": "发布"
   },
@@ -956,6 +957,7 @@
   },
   "collection_managers_modal": {
     "title": "合作者",
+    "subtitle": "如果您在制作此收藏集时与其他创作者合作，请输入他们的ETH地址",
     "add_manager": "添加协作者",
     "no_managers": "还没有合作者，首先",
     "adding_one": "加一个！"

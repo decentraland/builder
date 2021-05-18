@@ -34,14 +34,13 @@
   margin-right: 8px;
 }
 
-.EstateEditorModal .message.warning .icon {
-  background-image: url(../../../images/save-error.svg);
+.EstateEditorModal .Info {
+  margin-top: 1px;
+  margin-right: 8px;
 }
 
-.EstateEditorModal .message.info .icon {
-  background-image: url(../../../images/info.svg);
-  background-size: contain;
-  background-position: center;
+.EstateEditorModal .message.warning .icon {
+  background-image: url(../../../images/save-error.svg);
 }
 
 .EstateEditorModal .dcl.modal-navigation {

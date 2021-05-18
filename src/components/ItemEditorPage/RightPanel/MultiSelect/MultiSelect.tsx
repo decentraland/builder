@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Dropdown, DropdownProps, Popup } from 'decentraland-ui'
+import { Dropdown, DropdownProps } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import Info from 'components/Info'
 import { Props, State } from './MultiSelect.types'
 import './MultiSelect.css'
 
@@ -57,9 +58,7 @@ export default class MultiSelect<T extends string> extends React.PureComponent<P
       <>
         <div className="label">
           {label}
-          {info ? (
-            <Popup className="info-popup" content={info} position="top center" trigger={<i className="info" />} on="hover" inverted />
-          ) : null}
+          {info ? <Info content={info} /> : null}
         </div>
         <div className="values">
           {value.length > 0 ? (

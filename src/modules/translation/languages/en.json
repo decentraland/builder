@@ -137,7 +137,7 @@
   },
   "create_collection_modal": {
     "title": "New Collection",
-    "subtitle": "Give a name to your new collection",
+    "subtitle": "Enter a descriptive name for your new collection",
     "label": "Name",
     "placeholder": "My collection",
     "error_name_already_in_use": "Name already in use. Try a different one"
@@ -165,12 +165,12 @@
   "create_item_modal": {
     "title": "New Item",
     "add_representation": "Add {bodyShape} Repesentation",
-    "name_label": "Add a name to your item",
+    "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
     "rarity_label": "How rare is this item?",
     "rarity_placeholder": "Select a rarity",
-    "representation_label": "Which body shape does it represent?",
+    "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
     "pick_item": "Pick an item that doesn't have a {bodyShape}",
     "adding_representation": "This will be added as {bodyShape} for the following item",
@@ -490,7 +490,7 @@
     "description": "You can import any Scene made with the Builder!",
     "invalid_file": "Invalid file",
     "title": "Import Scene",
-    "upload_manually": "Import Manually"
+    "upload_manually": "Browse your computer"
   },
   "itemdrawer": {
     "opensea_credit": "Powered by {link}",
@@ -872,7 +872,7 @@
     "no_items": "No items",
     "new_item": "New Item",
     "new_collection": "New Collection",
-    "empty_description": "You have no Items or Collections yet, start creating them and dress the metaverse with style"
+    "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {
     "filter": {
@@ -906,8 +906,8 @@
     "publish": "Publish",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
-    "start_adding_items": "Looking good! now you can start adding items to your collection.",
-    "cant_remove": "You will not be able to remove or add items to your collection once its published.",
+    "start_adding_items": "Looking good! Start adding items to your new collection",
+    "cant_remove": "You will not be able to add or remove items after publishing your collection.",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
     "under_review": "Under Review"
   },
@@ -945,16 +945,17 @@
   "edit_price_and_beneficiary_modal": {
     "title": "Set price and address for {name}",
     "price_label": "Price",
-    "beneficiary_label": "Beneficiary"
+    "beneficiary_label": "Beneficiary",
+    "beneficiary_popup": "This is the wallet address that will receive MANA when this item is sold. You can set a different beneficiary address for each item in a collection."
   },
   "confirm_delete": {
     "content": "Are you sure you want to delete \"{name}\"?"
   },
   "publish_collection_modal": {
     "title": "Publish Collection",
-    "first_paragraph": "You are about to publish your collection, keep in mind the following things:",
-    "second_paragraph": "You will not be able to add or delete items after you publish your collection",
-    "third_paragraph": "You will be able to see your items in the marketplace but they will available for sale once the collection is validated by the DAO",
+    "first_paragraph": "Before you publish your collection, please remember:",
+    "second_paragraph": "After publishing, you cannot add or remove items from your collection.",
+    "third_paragraph": "Items in your collection will appear in the Marketplace, but they cannot be sold until they are approved.",
     "items_breakdown_title": "You are about to publish {items} items. The MANA fee for each collection goes to the Decentraland DAO, where it is used to support the growth of the community through grants, events, and prizes.",
     "publish": "Publish"
   },
@@ -972,6 +973,7 @@
   },
   "collection_managers_modal": {
     "title": "Collaborators",
+    "subtitle": "If you collaborated with other creators when making this collection, enter their ETH address",
     "add_manager": "Add Collaborator",
     "no_managers": "No collaborators yet, start by",
     "adding_one": "adding one!"

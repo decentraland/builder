@@ -716,7 +716,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               </Row>
               <Row className="actions" align="right">
                 <Button primary disabled={isDisabled} loading={isLoading}>
-                  {metadata && metadata.changeItemFile ? t('global.save') : t('global.add')}
+                  {metadata && metadata.changeItemFile ? t('global.save') : t('global.create')}
                 </Button>
               </Row>
               {error ? (
