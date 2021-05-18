@@ -74,7 +74,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     return {
       type: AuthorizationType.ALLOWANCE,
       address: wallet.address,
-      contractName: ContractName.ERC721CollectionV2,
+      contractName: ContractName.MANAToken,
       contractAddress,
       authorizedAddress,
       chainId
