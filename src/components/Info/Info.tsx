@@ -8,7 +8,6 @@ export default class Info extends React.PureComponent<Props> {
     const { className = '', content = '' } = this.props
     return (
       <Popup
-        open
         className="info-popup"
         content={content}
         position="top center"
