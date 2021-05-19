@@ -28,6 +28,7 @@ import { Props, State } from './SettingsPage.types'
 import './SettingsPage.css'
 
 const BUY_MANA_URL = env.get('REACT_APP_BUY_MANA_URL', '')
+const ACCOUNT_URL = env.get('REACT_APP_ACCOUNT_URL', '')
 
 export default class SettingsPage extends React.PureComponent<Props, State> {
   timeoutId: NodeJS.Timer | null = null
@@ -87,9 +88,9 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
                   <div className="address">{isMobile() ? shorten(wallet.address!) : wallet.address}</div>
                   <CopyToClipboard text={wallet.address} onCopy={this.handleOnCopy}>
                     {hasCopiedText ? (
-                      <span className="copy-text">{t('settings_page.copied')}</span>
+                      <span>{t('settings_page.copied')}</span>
                     ) : (
-                      <span className="copy-text link">{t('settings_page.copy_address')}</span>
+                      <span className="link">{t('settings_page.copy_address')}</span>
                     )}
                   </CopyToClipboard>
                 </div>
@@ -106,7 +107,7 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
                     {parseInt(wallet.networks.ETHEREUM.mana.toFixed(0), 10).toLocaleString()}
                   </Mana>
                   {BUY_MANA_URL ? (
-                    <a className="buy-more" href={BUY_MANA_URL} target="_blank" rel="noopener noreferrer">
+                    <a className="buy-more link" href={BUY_MANA_URL} target="_blank" rel="noopener noreferrer">
                       {t('settings_page.buy_more_mana')}
                     </a>
                   ) : null}
@@ -116,9 +117,9 @@ export default class SettingsPage extends React.PureComponent<Props, State> {
                   <Mana network={Network.MATIC} inline>
                     {parseInt(wallet.networks.MATIC.mana.toFixed(0), 10).toLocaleString()}
                   </Mana>
-                  {BUY_MANA_URL ? (
-                    <a className="buy-more" href={BUY_MANA_URL} target="_blank" rel="noopener noreferrer">
-                      {t('settings_page.get_more')}
+                  {ACCOUNT_URL ? (
+                    <a className="buy-more link" href={ACCOUNT_URL} target="_blank" rel="noopener noreferrer">
+                      {t('settings_page.get_more_mana')}
                     </a>
                   ) : null}
                 </div>
