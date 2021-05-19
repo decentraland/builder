@@ -1,5 +1,7 @@
 import { AnyAction } from 'redux'
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
+import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
   EDITOR_UNDO,
@@ -26,7 +28,6 @@ import {
   SetOperatorSuccessAction,
   SET_OPERATOR_SUCCESS,
   CREATE_ESTATE_SUCCESS,
-  CreateEstateSuccessAction,
   EditEstateSuccessAction,
   EDIT_ESTATE_SUCCESS,
   DISSOLVE_ESTATE_SUCCESS,
@@ -35,59 +36,46 @@ import {
   SetUpdateManagerSuccessAction
 } from 'modules/land/actions'
 import {
-  DeleteItemFailureAction,
-  DeleteItemSuccessAction,
   DELETE_ITEM_FAILURE,
   DELETE_ITEM_SUCCESS,
-  DeployItemContentsFailureAction,
   DeployItemContentsSuccessAction,
   DEPLOY_ITEM_CONTENTS_FAILURE,
   DEPLOY_ITEM_CONTENTS_SUCCESS,
   SaveItemFailureAction,
   SaveItemSuccessAction,
-  SavePublishedItemFailureAction,
-  SavePublishedItemSuccessAction,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
   SAVE_PUBLISHED_ITEM_FAILURE,
   SAVE_PUBLISHED_ITEM_SUCCESS
 } from 'modules/item/actions'
 import {
-  DeleteCollectionFailureAction,
-  DeleteCollectionSuccessAction,
+  APPROVE_COLLECTION_FAILURE,
+  APPROVE_COLLECTION_SUCCESS,
   DELETE_COLLECTION_FAILURE,
   DELETE_COLLECTION_SUCCESS,
-  MintCollectionItemsFailureAction,
-  MintCollectionItemsSuccessAction,
   MINT_COLLECTION_ITEMS_FAILURE,
   MINT_COLLECTION_ITEMS_SUCCESS,
   PublishCollectionFailureAction,
   PublishCollectionSuccessAction,
   PUBLISH_COLLECTION_FAILURE,
   PUBLISH_COLLECTION_SUCCESS,
-  SaveCollectionFailureAction,
-  SaveCollectionSuccessAction,
+  REJECT_COLLECTION_FAILURE,
+  REJECT_COLLECTION_SUCCESS,
   SAVE_COLLECTION_FAILURE,
   SAVE_COLLECTION_SUCCESS,
-  SetCollectionManagersFailureAction,
-  SetCollectionManagersSuccessAction,
-  SetCollectionMintersFailureAction,
-  SetCollectionMintersSuccessAction,
   SET_COLLECTION_MANAGERS_FAILURE,
   SET_COLLECTION_MANAGERS_SUCCESS,
   SET_COLLECTION_MINTERS_FAILURE,
   SET_COLLECTION_MINTERS_SUCCESS
 } from 'modules/collection/actions'
 import {
-  AllowClaimManaSuccessAction,
-  SetAliasSuccessAction,
   ALLOW_CLAIM_MANA_SUCCESS,
   SET_ALIAS_SUCCESS,
   CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
   SET_ENS_RESOLVER_SUCCESS
 } from 'modules/ens/actions'
-import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -118,7 +106,11 @@ function trimProject(action: AnyAction) {
   }
 }
 
-// item actions
+// Authorizations
+addPayload(GRANT_TOKEN_SUCCESS, 'Authorize')
+addPayload(REVOKE_TOKEN_SUCCESS, 'Unauthorize')
+
+// scene item actions
 addPayload(DROP_ITEM, 'Drop item', trimAsset)
 addPayload(RESET_ITEM, 'Reset item')
 addPayload(DUPLICATE_ITEM, 'Duplicate item')
@@ -199,10 +191,7 @@ add(
 )
 
 // Create Estate
-add(CREATE_ESTATE_SUCCESS, 'Create estate', action => {
-  const { payload } = action as CreateEstateSuccessAction
-  return payload
-})
+addPayload(CREATE_ESTATE_SUCCESS, 'Create estate')
 
 // Edit Estate
 add(
@@ -242,14 +231,12 @@ add(
 )
 
 // Item Editor
-
 add(SAVE_ITEM_SUCCESS, 'Save item', action => {
   const { payload } = action as SaveItemSuccessAction
   return {
     item: payload.item
   }
 })
-
 add(SAVE_ITEM_FAILURE, 'Save item error', action => {
   const { payload } = action as SaveItemFailureAction
   return {
@@ -258,35 +245,11 @@ add(SAVE_ITEM_FAILURE, 'Save item error', action => {
   }
 })
 
-add(DELETE_ITEM_SUCCESS, 'Delete item', action => {
-  const { payload } = action as DeleteItemSuccessAction
-  return {
-    itemId: payload.item.id
-  }
-})
+addPayload(DELETE_ITEM_SUCCESS, 'Delete item')
+addPayload(DELETE_ITEM_FAILURE, 'Delete item error')
 
-add(DELETE_ITEM_FAILURE, 'Delete item error', action => {
-  const { payload } = action as DeleteItemFailureAction
-  return {
-    item: payload.item,
-    error: payload.error
-  }
-})
-
-add(SAVE_PUBLISHED_ITEM_SUCCESS, 'Edit item on chain', action => {
-  const { payload } = action as SavePublishedItemSuccessAction
-  return {
-    item: payload.item
-  }
-})
-
-add(SAVE_PUBLISHED_ITEM_FAILURE, 'Edit item on chain error', action => {
-  const { payload } = action as SavePublishedItemFailureAction
-  return {
-    item: payload.item,
-    error: payload.error
-  }
-})
+addPayload(SAVE_PUBLISHED_ITEM_SUCCESS, 'Edit item on chain')
+add(SAVE_PUBLISHED_ITEM_FAILURE, 'Edit item on chain error')
 
 add(DEPLOY_ITEM_CONTENTS_SUCCESS, 'Deploy item contents', action => {
   const { payload } = action as DeployItemContentsSuccessAction
@@ -294,44 +257,13 @@ add(DEPLOY_ITEM_CONTENTS_SUCCESS, 'Deploy item contents', action => {
     item: payload.item
   }
 })
+addPayload(DEPLOY_ITEM_CONTENTS_FAILURE, 'Deploy item contents error')
 
-add(DEPLOY_ITEM_CONTENTS_FAILURE, 'Deploy item contents error', action => {
-  const { payload } = action as DeployItemContentsFailureAction
-  return {
-    item: payload.item,
-    error: payload.error
-  }
-})
+addPayload(SAVE_COLLECTION_SUCCESS, 'Save collection')
+addPayload(SAVE_COLLECTION_FAILURE, 'Save collection error')
 
-add(SAVE_COLLECTION_SUCCESS, 'Save collection', action => {
-  const { payload } = action as SaveCollectionSuccessAction
-  return {
-    collection: payload.collection
-  }
-})
-
-add(SAVE_COLLECTION_FAILURE, 'Save collection error', action => {
-  const { payload } = action as SaveCollectionFailureAction
-  return {
-    collection: payload.collection,
-    error: payload.error
-  }
-})
-
-add(DELETE_COLLECTION_SUCCESS, 'Delete collection', action => {
-  const { payload } = action as DeleteCollectionSuccessAction
-  return {
-    collection: payload.collection
-  }
-})
-
-add(DELETE_COLLECTION_FAILURE, 'Delete collection error', action => {
-  const { payload } = action as DeleteCollectionFailureAction
-  return {
-    collection: payload.collection,
-    error: payload.error
-  }
-})
+addPayload(DELETE_COLLECTION_SUCCESS, 'Delete collection')
+addPayload(DELETE_COLLECTION_FAILURE, 'Delete collection error')
 
 add(PUBLISH_COLLECTION_SUCCESS, 'Publish collection', action => {
   const { payload } = action as PublishCollectionSuccessAction
@@ -339,7 +271,6 @@ add(PUBLISH_COLLECTION_SUCCESS, 'Publish collection', action => {
     collection: payload.collection
   }
 })
-
 add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {
   const { payload } = action as PublishCollectionFailureAction
   return {
@@ -348,56 +279,23 @@ add(PUBLISH_COLLECTION_FAILURE, 'Publish collection error', action => {
   }
 })
 
-add(MINT_COLLECTION_ITEMS_SUCCESS, 'Mint items', action => {
-  const { payload } = action as MintCollectionItemsSuccessAction
-  return {
-    collection: payload.collection,
-    mints: payload.mints
-  }
-})
+addPayload(MINT_COLLECTION_ITEMS_SUCCESS, 'Mint items')
+addPayload(MINT_COLLECTION_ITEMS_FAILURE, 'Mint items error')
 
-add(MINT_COLLECTION_ITEMS_FAILURE, 'Mint items error', action => {
-  const { payload } = action as MintCollectionItemsFailureAction
-  return {
-    collection: payload.collection,
-    mints: payload.mints,
-    error: payload.error
-  }
-})
+addPayload(SET_COLLECTION_MINTERS_SUCCESS, 'Set minters')
+addPayload(SET_COLLECTION_MINTERS_FAILURE, 'Set minters error')
 
-add(SET_COLLECTION_MINTERS_SUCCESS, 'Set minters', action => {
-  const { payload } = action as SetCollectionMintersSuccessAction
-  return {
-    collection: payload.collection,
-    minters: payload.minters
-  }
-})
+addPayload(SET_COLLECTION_MANAGERS_SUCCESS, 'Set collaborators')
+addPayload(SET_COLLECTION_MANAGERS_FAILURE, 'Set collaborators error')
 
-add(SET_COLLECTION_MINTERS_FAILURE, 'Set minters error', action => {
-  const { payload } = action as SetCollectionMintersFailureAction
-  return {
-    collection: payload.collection,
-    accessList: payload.accessList,
-    error: payload.error
-  }
-})
+addPayload(APPROVE_COLLECTION_SUCCESS, 'Approve collection')
+addPayload(APPROVE_COLLECTION_FAILURE, 'Approve collection error')
 
-add(SET_COLLECTION_MANAGERS_SUCCESS, 'Set collaborators', action => {
-  const { payload } = action as SetCollectionManagersSuccessAction
-  return {
-    collection: payload.collection,
-    collaborators: payload.managers
-  }
-})
+addPayload(REJECT_COLLECTION_SUCCESS, 'Reject collection')
+addPayload(REJECT_COLLECTION_FAILURE, 'Reject collection error')
 
-add(SET_COLLECTION_MANAGERS_FAILURE, 'Set collaborators error', action => {
-  const { payload } = action as SetCollectionManagersFailureAction
-  return {
-    collection: payload.collection,
-    accessList: payload.accessList,
-    error: payload.error
-  }
-})
+addPayload(CREATE_COLLECTION_FORUM_POST_SUCCESS, 'Create forum post')
+addPayload(CREATE_COLLECTION_FORUM_POST_FAILURE, 'Create forum post error')
 
 // ENS analytics
 add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
@@ -421,23 +319,9 @@ add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
   }
 })
 
-add(SET_ALIAS_SUCCESS, 'Use as Alias', action => {
-  const { payload } = action as SetAliasSuccessAction
-  const { address, name } = payload
-  return {
-    address,
-    name
-  }
-})
+addPayload(SET_ALIAS_SUCCESS, 'Use as Alias')
 
-add(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana', action => {
-  const { payload } = action as AllowClaimManaSuccessAction
-  const { allowance, address } = payload
-  return {
-    address,
-    allowance
-  }
-})
+addPayload(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana')
 
 add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
   const { payload } = action as FetchTransactionSuccessAction
