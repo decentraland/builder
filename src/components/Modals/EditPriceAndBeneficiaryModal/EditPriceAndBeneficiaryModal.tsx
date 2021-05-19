@@ -1,18 +1,20 @@
 import * as React from 'react'
-import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps } from 'decentraland-ui'
+import { Network } from '@dcl/schemas'
+import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps, Mana } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { fromWei, toWei } from 'web3x-es/utils'
 
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
-import { addSymbol } from 'lib/mana'
 import { Item } from 'modules/item/types'
 import { Props, State } from './EditPriceAndBeneficiaryModal.types'
 import './EditPriceAndBeneficiaryModal.css'
 
 export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Props, State> {
-  state: State = {}
+  state: State = {
+    isFree: false
+  }
 
   constructor(props: Props) {
     super(props)
@@ -20,10 +22,23 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     const { item } = this.props
     if (item) {
       this.state = {
+        ...this.state,
         price: item.price ? fromWei(item.price, 'ether') : undefined,
-        beneficiary: item.beneficiary
+        beneficiary: item.beneficiary || item.owner
       }
     }
+  }
+
+  handleIsFreeToggle = () => {
+    const isFree = !this.state.isFree
+    const price = isFree ? '0' : undefined
+    this.setState({ isFree, price })
+  }
+
+  handleIsGiftToggle = () => {
+    const { item } = this.props
+    const beneficiary = this.isGift() ? item.owner : undefined
+    this.setState({ beneficiary })
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
@@ -57,32 +72,59 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     return !this.isValidPrice() || !this.isValidBeneficiary() || isLoading
   }
 
+  isGift() {
+    const { item } = this.props
+    const { beneficiary } = this.state
+    return beneficiary !== item.owner
+  }
+
   isValidPrice() {
     const { price } = this.state
-    return !price || Number(price) >= 0
+    return Number(price) >= 0
   }
 
   isValidBeneficiary() {
-    const { beneficiary } = this.state
-    return !!beneficiary && isValid(beneficiary)
+    const { beneficiary = '' } = this.state
+    return isValid(beneficiary)
   }
 
   render() {
     const { name, item, isLoading, onClose } = this.props
-    const { price = '', beneficiary = '' } = this.state
+    const { isFree, price = '', beneficiary = '' } = this.state
+    const isGift = this.isGift()
 
     return (
       <Modal name={name} size="tiny" onClose={onClose}>
-        <ModalNavigation title={t('edit_price_and_beneficiary_modal.title', { name: item ? item.name : '...' })} onClose={onClose} />
+        <ModalNavigation
+          title={t('edit_price_and_beneficiary_modal.title', { name: item.name })}
+          subtitle={
+            <div className="actions">
+              <Button size="mini" onClick={this.handleIsGiftToggle} active={!isGift}>
+                {t('edit_price_and_beneficiary_modal.for_me')}
+              </Button>
+              <Button size="mini" onClick={this.handleIsFreeToggle} active={isFree}>
+                {t('edit_price_and_beneficiary_modal.free')}
+              </Button>
+            </div>
+          }
+          onClose={onClose}
+        />
+
         <Form onSubmit={this.handleSubmit}>
           <ModalContent>
-            <Field
-              label={t('edit_price_and_beneficiary_modal.price_label')}
-              placeholder={addSymbol(100)}
-              value={price}
-              onChange={this.handlePriceChange}
-              error={!this.isValidPrice()}
-            />
+            {!isFree ? (
+              <Field
+                className="price-field"
+                label={t('edit_price_and_beneficiary_modal.price_label')}
+                placeholder={100}
+                value={price}
+                onChange={this.handlePriceChange}
+                error={!!price && !this.isValidPrice()}
+              >
+                <Mana network={Network.MATIC} inline />
+                <input />
+              </Field>
+            ) : null}
             <Field
               label={
                 (

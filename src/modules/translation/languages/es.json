@@ -431,9 +431,8 @@
     "proceed": "Proceder",
     "address": "Dirección",
     "balance": "Balance",
+    "balances": "Balances",
     "revoke": "Revocar",
-    "parcel_plural": "parcelas",
-    "estate_plural": "estates",
     "set": "Establecer",
     "settings": "Ajustes",
     "yes": "Si",
@@ -933,6 +932,7 @@
     "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí"
   },
   "collection_item": {
+    "free": "Gratis",
     "set_price": "agregar precio",
     "done": "Terminado",
     "edit_item": "editar",
@@ -955,6 +955,8 @@
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Asignar un precio y un beneficiario para {name}",
+    "for_me": "Soy el beneficiario",
+    "free": "Hacerlo gratuito",
     "price_label": "Precio",
     "beneficiary_label": "Beneficiario",
     "beneficiary_popup": "Esta es la dirección de la billetera que recibirá MANA cuando se venda este item. Puede establecer una dirección de beneficiario diferente para cada item de una colección."

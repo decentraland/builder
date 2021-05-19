@@ -28,13 +28,11 @@ export default class ShareButton extends React.PureComponent<Props> {
     const { isLoading } = this.props
 
     return (
-      <span className="ShareButton tool">
-        <span>
-          <Button size="mini" onClick={this.handleClick} disabled={isLoading}>
-            {t('global.share')}
-          </Button>
-        </span>
-      </span>
+      <div className="ShareButton tool">
+        <Button size="mini" onClick={this.handleClick} disabled={isLoading}>
+          {t('global.share')}
+        </Button>
+      </div>
     )
   }
 }

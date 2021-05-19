@@ -1,7 +1,8 @@
-import { Authorization, LandType } from 'modules/land/types'
 import { Dispatch } from 'redux'
-import { SetUpdateManagerRequestAction, setUpdateManagerRequest } from 'modules/land/actions'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Authorization, LandType } from 'modules/land/types'
+import { SetUpdateManagerRequestAction, setUpdateManagerRequest } from 'modules/land/actions'
 
 export type State = {
   hasCopiedText: boolean
@@ -10,13 +11,12 @@ export type State = {
 }
 
 export type Props = {
-  mana?: number
-  address?: string
+  wallet: Wallet | null
   authorizations: Authorization[]
   onNavigate: (path: string) => void
   onSetUpdateManager: typeof setUpdateManagerRequest
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'mana' | 'authorizations'>
+export type MapStateProps = Pick<Props, 'wallet' | 'authorizations'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onSetUpdateManager'>
 export type MapDispatch = Dispatch<SetUpdateManagerRequestAction | CallHistoryMethodAction>

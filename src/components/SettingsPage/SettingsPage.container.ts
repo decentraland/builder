@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import { getAddress, getMana } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { RootState } from 'modules/common/types'
 import { getAuthorizations } from 'modules/land/selectors'
@@ -9,8 +9,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './SettingsPage.typ
 import SettingsPage from './SettingsPage'
 
 const mapState = (state: RootState): MapStateProps => ({
-  address: getAddress(state),
-  mana: getMana(state),
+  wallet: getWallet(state),
   authorizations: getAuthorizations(state)
 })
 

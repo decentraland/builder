@@ -1,4 +1,16 @@
 /* -----------------------------
+    Form input
+ ----------------------------- */
+
+.ui.form .dcl.field.address.has-label .dcl.blockie {
+  top: 25px;
+}
+
+.ui.form .dcl.field .ui.input > input {
+  padding-bottom: 8px;
+}
+
+/* -----------------------------
     Rounded input
  ----------------------------- */
 

@@ -1,3 +1,17 @@
+.EditPriceAndBeneficiaryModal.ui.modal .actions .ui.active.button {
+  background-color: rgba(var(--bluish-steel-raw), 0.4);
+  color: var(--text-on-secondary);
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .dcl.field .ui.input.price-field .dcl.mana.inline {
+  position: absolute;
+  top: 6px;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .dcl.field .ui.input.price-field > input {
+  padding-left: 18px;
+}
+
 .EditPriceAndBeneficiaryModal .Info {
   width: 11px;
   height: 11px;

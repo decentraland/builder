@@ -1,4 +1,5 @@
 import React from 'react'
+import { Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button, Mana } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
@@ -43,9 +44,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return item.price ? (
       <>
-        <div>
-          <Mana>{fromWei(item.price, 'ether')}</Mana>
-        </div>
+        <div>{item.price === '0' ? t('collection_item.free') : <Mana network={Network.MATIC}>{fromWei(item.price, 'ether')}</Mana>}</div>
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : !isEditable(item) ? (
