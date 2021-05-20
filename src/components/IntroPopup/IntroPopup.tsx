@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Button, Column, Header, Popup } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { env } from 'decentraland-commons'
 import { Props, State } from './IntroPopup.types'
 import './IntroPopup.css'
 
@@ -44,7 +45,11 @@ export default class IntroPopup extends PureComponent<Props, State> {
                       </a>
                     ),
                     account_link: (
-                      <a href="https://account.decentraland.org" target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={env.get('REACT_APP_ACCOUNT_URL', 'https://account.decentraland.org')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {t('intro_popup.account_link')}
                       </a>
                     ),
