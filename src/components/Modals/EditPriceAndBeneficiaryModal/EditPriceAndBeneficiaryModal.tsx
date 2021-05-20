@@ -1,9 +1,10 @@
 import * as React from 'react'
+import { Address } from 'web3x-es/address'
+import { fromWei, toWei } from 'web3x-es/utils'
 import { Network } from '@dcl/schemas'
 import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps, Mana } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { fromWei, toWei } from 'web3x-es/utils'
 
 import Info from 'components/Info'
 import { isValid } from 'lib/address'
@@ -31,14 +32,15 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
   handleIsFreeToggle = () => {
     const isFree = !this.state.isFree
+    const beneficiary = isFree ? Address.ZERO.toString() : undefined
     const price = isFree ? '0' : undefined
-    this.setState({ isFree, price })
+    this.setState({ isFree, price, beneficiary })
   }
 
   handleIsGiftToggle = () => {
     const { item } = this.props
     const beneficiary = this.isGift() ? item.owner : undefined
-    this.setState({ beneficiary })
+    this.setState({ beneficiary, isFree: false })
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
@@ -112,19 +114,18 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
         <Form onSubmit={this.handleSubmit}>
           <ModalContent>
-            {!isFree ? (
-              <Field
-                className="price-field"
-                label={t('edit_price_and_beneficiary_modal.price_label')}
-                placeholder={100}
-                value={price}
-                onChange={this.handlePriceChange}
-                error={!!price && !this.isValidPrice()}
-              >
-                <Mana network={Network.MATIC} inline />
-                <input />
-              </Field>
-            ) : null}
+            <Field
+              className="price-field"
+              label={t('edit_price_and_beneficiary_modal.price_label')}
+              placeholder={100}
+              value={price}
+              onChange={this.handlePriceChange}
+              disabled={isFree}
+              error={!!price && !this.isValidPrice()}
+            >
+              <Mana network={Network.MATIC} inline />
+              <input />
+            </Field>
             <Field
               label={
                 (
@@ -137,6 +138,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
               type="address"
               placeholder="0x..."
               value={beneficiary}
+              disabled={isFree}
               onChange={this.handleBeneficiaryChange}
               error={!!beneficiary && !this.isValidBeneficiary()}
             />

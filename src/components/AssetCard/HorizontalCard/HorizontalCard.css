@@ -4,7 +4,7 @@
   align-items: center;
   padding: 8px 12px;
   border-radius: 4px;
-  background: rgba(var(--bluish-steel-raw), 0.4);
+  background: var(--light-blue-steel);
 }
 
 .AssetCard.horizontal:hover {

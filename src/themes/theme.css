@@ -17,6 +17,7 @@
   --dark-gray: rgba(22, 20, 26, 0.48);
 
   --light-blue-raw: 0, 217, 255;
+  --light-blue-steel: rgba(var(--bluish-steel-raw), 0.4);
 
   /**
   * Component variables

@@ -1,6 +1,6 @@
 .Input {
   height: 38px;
-  border: 1px solid rgba(115, 110, 125, 0.4);
+  border: 1px solid var(--gray);
   border-radius: 6px;
   display: flex;
   align-items: center;

@@ -46,7 +46,7 @@
 }
 
 .SidebarCollection:hover > a {
-  background: rgba(var(--bluish-steel-raw), 0.4);
+  background: var(--light-blue-steel);
 }
 
 .SidebarCollection.is-selected > a {
