@@ -88,9 +88,9 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
      * Into this:
      * ["require", "exports", "namespace/myDependency"]
      */
-    text = text.replace(/\[\\?\"require\\?\", \\?\"exports\\?\", ([\w|\\|\/|\"|,|\s]*)/g, (match, dependencies) => {
+    text = text.replace(/\[\\?\"require\\?\", \\?\"exports\\?\", ([\w|\\|\/|\"|,|\s|@]*)/g, (match, dependencies) => {
       let code = match.slice(0, -dependencies.length) // remove previous dependencies
-      const newDependencies = dependencies.replace(/\\?\"(.*?)\\?\"/g, `\\\"${namespace}/$1\\\"`) // adds the namespace to each dependency
+      const newDependencies = dependencies.replace(/\\?\"(\w.*?)\\?\"/g, `\\\"${namespace}/$1\\\"`) // adds the namespace to each dependency
       return code + newDependencies
     })
 
