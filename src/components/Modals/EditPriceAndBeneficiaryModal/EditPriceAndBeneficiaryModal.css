@@ -3,12 +3,17 @@
   color: var(--text-on-secondary);
 }
 
-.EditPriceAndBeneficiaryModal .ui.form .dcl.field .ui.input.price-field .dcl.mana.inline {
-  position: absolute;
-  top: 6px;
+.EditPriceAndBeneficiaryModal .ui.form .price-field {
+  position: relative;
 }
 
-.EditPriceAndBeneficiaryModal .ui.form .dcl.field .ui.input.price-field > input {
+.EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.mana.inline {
+  position: absolute;
+  top: 24px;
+  margin: 0;
+}
+
+.EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.field .ui.input > input {
   padding-left: 18px;
 }
 

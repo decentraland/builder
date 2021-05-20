@@ -24,7 +24,7 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     if (item) {
       this.state = {
         ...this.state,
-        price: item.price ? fromWei(item.price, 'ether') : undefined,
+        price: this.getItemPrice(),
         beneficiary: item.beneficiary || item.owner
       }
     }
@@ -40,7 +40,8 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   handleIsGiftToggle = () => {
     const { item } = this.props
     const beneficiary = this.isGift() ? item.owner : undefined
-    this.setState({ beneficiary, isFree: false })
+    const price = this.getItemPrice()
+    this.setState({ beneficiary, price, isFree: false })
   }
 
   handlePriceChange = (_event: React.ChangeEvent<HTMLInputElement>, props: InputOnChangeData) => {
@@ -69,6 +70,11 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
     }
   }
 
+  getItemPrice() {
+    const { item } = this.props
+    return item.price ? fromWei(item.price, 'ether') : undefined
+  }
+
   isDisabled() {
     const { isLoading } = this.props
     return !this.isValidPrice() || !this.isValidBeneficiary() || isLoading
@@ -81,8 +87,9 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   }
 
   isValidPrice() {
-    const { price } = this.state
-    return Number(price) >= 0
+    const { price, beneficiary } = this.state
+    const numberPrice = Number(price)
+    return Number(numberPrice) > 0 || (numberPrice === 0 && beneficiary === Address.ZERO.toString())
   }
 
   isValidBeneficiary() {
@@ -114,18 +121,17 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
 
         <Form onSubmit={this.handleSubmit}>
           <ModalContent>
-            <Field
-              className="price-field"
-              label={t('edit_price_and_beneficiary_modal.price_label')}
-              placeholder={100}
-              value={price}
-              onChange={this.handlePriceChange}
-              disabled={isFree}
-              error={!!price && !this.isValidPrice()}
-            >
+            <div className="price-field">
+              <Field
+                label={t('edit_price_and_beneficiary_modal.price_label')}
+                placeholder={100}
+                value={price}
+                onChange={this.handlePriceChange}
+                disabled={isFree}
+                error={!!price && !this.isValidPrice()}
+              />
               <Mana network={Network.MATIC} inline />
-              <input />
-            </Field>
+            </div>
             <Field
               label={
                 (
