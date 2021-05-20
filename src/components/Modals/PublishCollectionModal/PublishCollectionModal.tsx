@@ -58,7 +58,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
       totalPrice += rarityPrice
     }
 
-    const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana <= 0
+    const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < totalPrice
 
     return (
       <>
