@@ -13,6 +13,10 @@
   margin: 0;
 }
 
+.EditPriceAndBeneficiaryModal .ui.form .price-field .disabled + .dcl.mana.inline {
+  opacity: 0.45;
+}
+
 .EditPriceAndBeneficiaryModal .ui.form .price-field .dcl.field .ui.input > input {
   padding-left: 18px;
 }
