@@ -421,9 +421,8 @@
     "proceed": "继续",
     "address": "地址",
     "balance": "余额",
+    "balances": "天平",
     "revoke": "撤消",
-    "parcel_plural": "地块",
-    "estate_plural": "产业",
     "set": "定",
     "settings": "设定",
     "yes": "是",
@@ -760,6 +759,7 @@
     "copy_address": "复制地址",
     "copied": "已复制",
     "buy_more_mana": "购买更多",
+    "get_more_mana": "获得更多",
     "authorizations_title": "活动授权"
   },
   "transaction": {
@@ -911,6 +911,7 @@
     "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
   },
   "collection_item": {
+    "free": "自由",
     "set_price": "设定价格",
     "done": "完成",
     "edit_item": "编辑",
@@ -933,6 +934,8 @@
   },
   "edit_price_and_beneficiary_modal": {
     "title": "设置{name}的价格和地址",
+    "for_me": "我是受益人",
+    "free": "免费",
     "price_label": "价格",
     "beneficiary_label": "受益人",
     "beneficiary_popup": "这是出售该物品时将获得MANA的钱包地址。 您可以为集合中的每个项目设置不同的收款人地址。"

@@ -23,9 +23,7 @@
   font-size: 21px;
 }
 
-.SettingsPage .copy-text,
-.SettingsPage .link,
-.SettingsPage .buy-more {
+.SettingsPage .link {
   color: var(--primary);
   text-transform: uppercase;
 }
@@ -38,6 +36,12 @@
 .SettingsPage .dcl.mana.inline {
   font-size: 21px;
   margin-bottom: 0;
+}
+
+.SettingsPage .dcl.mana.inline .matic {
+  width: 0.7em;
+  background-position: 100%;
+  background-repeat: no-repeat;
 }
 
 .SettingsPage .buy-more {

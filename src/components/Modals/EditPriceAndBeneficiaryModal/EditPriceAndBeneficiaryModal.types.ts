@@ -4,7 +4,7 @@ import { Item } from 'modules/item/types'
 import { saveItemRequest, SaveItemRequestAction, savePublishedItemRequest, SavePublishedItemRequestAction } from 'modules/item/actions'
 
 export type Props = ModalProps & {
-  item: Item | null
+  item: Item
   isLoading: boolean
   metadata: EditPriceAndBeneficiaryModalMetadata
   onSave: typeof saveItemRequest
@@ -14,6 +14,7 @@ export type Props = ModalProps & {
 export type State = {
   price?: string
   beneficiary?: string
+  isFree: boolean
 }
 
 export type EditPriceAndBeneficiaryModalMetadata = {

@@ -430,9 +430,8 @@
     "proceed": "Proceed",
     "address": "Address",
     "balance": "Balance",
+    "balances": "Balances",
     "revoke": "Revoke",
-    "parcel_plural": "parcels",
-    "estate_plural": "estates",
     "set": "Set",
     "settings": "Settings",
     "yes": "Yes",
@@ -768,6 +767,7 @@
     "copy_address": "Copy Address",
     "copied": "Copied",
     "buy_more_mana": "Buy More",
+    "get_more_mana": "Get More",
     "authorizations_title": "Active Authorizations"
   },
   "transaction": {
@@ -922,6 +922,7 @@
     "not_posted": "The collection wasn't posted to the forum. You can retry here"
   },
   "collection_item": {
+    "free": "Free",
     "set_price": "set price",
     "done": "Done",
     "edit_item": "edit",
@@ -944,6 +945,8 @@
   },
   "edit_price_and_beneficiary_modal": {
     "title": "Set price and address for {name}",
+    "for_me": "I'm the beneficiary",
+    "free": "Make it free",
     "price_label": "Price",
     "beneficiary_label": "Beneficiary",
     "beneficiary_popup": "This is the wallet address that will receive MANA when this item is sold. You can set a different beneficiary address for each item in a collection."

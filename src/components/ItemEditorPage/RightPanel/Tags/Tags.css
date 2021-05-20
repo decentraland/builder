@@ -1,5 +1,5 @@
 .Tags {
-  border: 1px solid rgba(115, 110, 125, 0.4);
+  border: 1px solid var(--gray);
   border-radius: 6px;
   padding: 8px 12px 2px;
   margin-bottom: 8px;

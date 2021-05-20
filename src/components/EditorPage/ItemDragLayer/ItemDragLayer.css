@@ -19,7 +19,7 @@
 }
 
 .ItemDragLayer .thumbnail.empty {
-  background: rgba(var(--bluish-steel-raw), 0.4);
+  background: var(--light-blue-steel);
 }
 
 .ItemDragLayer .thumbnail.empty:after {

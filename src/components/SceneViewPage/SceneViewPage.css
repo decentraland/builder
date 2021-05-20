@@ -28,7 +28,7 @@
   height: fit-content;
   z-index: 0;
   height: 600px;
-  background: rgba(var(--bluish-steel-raw), 0.4);
+  background: var(--light-blue-steel);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -109,7 +109,7 @@
   height: 24px;
   border-radius: 12px;
   margin-left: 12px;
-  background: rgba(var(--bluish-steel-raw), 0.4);
+  background: var(--light-blue-steel);
   display: inline-block;
   vertical-align: bottom;
 }
