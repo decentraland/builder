@@ -956,8 +956,10 @@
     "first_paragraph": "Before you publish your collection, please remember:",
     "second_paragraph": "After publishing, you cannot add or remove items from your collection.",
     "third_paragraph": "Items in your collection will appear in the Marketplace, but they cannot be sold until they are approved.",
-    "items_breakdown_title": "You are about to publish {items} items. The MANA fee for each collection goes to the Decentraland DAO, where it is used to support the growth of the community through grants, events, and prizes.",
-    "publish": "Publish"
+    "items_breakdown_title": "You are about to publish {count, plural, one {item} other {items}} items. The MANA fee for each collection goes to the Decentraland DAO, where it is used to support the growth of the community through grants, events, and prizes.",
+    "publish": "Publish",
+    "not_enogh_mana": "You don't have enough {symbol} to publish this collection.",
+    "get_mana": "You can get more using the {link} dapp."
   },
   "mint_items_modal": {
     "title": "Mint Items",
@@ -1086,5 +1088,9 @@
   },
   "maintainance": {
     "notice": "We're currently under maintainance, we'll be back soon!"
+  },
+  "networks": {
+    "ethereum": "Ethereum",
+    "matic": "Polygon"
   }
 }

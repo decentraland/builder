@@ -945,8 +945,10 @@
     "first_paragraph": "您将要发布您的收藏集，请注意以下几点：",
     "second_paragraph": "发布收藏集后，您将无法添加或删除项目",
     "third_paragraph": "您收藏中的物品将出现在市场中，但只有获得批准，才能出售。",
-    "items_breakdown_title": "您即将发布{items}个项目。 每个系列的MANA费用都由Decentraland DAO负责，用于通过赠款，活动和奖励来支持社区的发展。",
-    "publish": "发布"
+    "items_breakdown_title": "您即将发布{count}个项目。 每个系列的MANA费用都由Decentraland DAO负责，用于通过赠款，活动和奖励来支持社区的发展。",
+    "publish": "发布",
+    "not_enogh_mana": "您没有足够的{symbol} 来发布此收藏集。",
+    "get_mana": "您可以使用{link} dapp获得更多信息。"
   },
   "sell_collection_modal": {
     "title": "您想出售您的物品吗？",
@@ -1075,5 +1077,9 @@
   },
   "maintainance": {
     "notice": "我们目前正在维护中，我们会很快回来！"
+  },
+  "networks": {
+    "ethereum": "Ethereum",
+    "matic": "Polygon"
   }
 }

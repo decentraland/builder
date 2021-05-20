@@ -62,3 +62,12 @@
 .PublishCollectionModal .ui.button.proceed {
   margin-top: 0;
 }
+
+.PublishCollectionModal .not-enough-mana-notice {
+  margin-top: 20px;
+  display: inline-block;
+}
+
+.PublishCollectionModal .not-enough-mana-notice .dcl.mana .symbol {
+  padding-right: 0;
+}
