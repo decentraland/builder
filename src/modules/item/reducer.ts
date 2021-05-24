@@ -220,7 +220,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
               ...state.data,
               ...mints.reduce((accum, mint) => {
                 const item = state.data[mint.item.id]
-                const totalSupply = (item.totalSupply || 0) + 1
+                const totalSupply = (item.totalSupply || 0) + mint.amount
                 accum[item.id] = { ...state.data[item.id], totalSupply }
                 return accum
               }, {} as ItemState['data'])
