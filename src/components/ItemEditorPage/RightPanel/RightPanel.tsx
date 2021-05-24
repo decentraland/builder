@@ -38,7 +38,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps: Props) {
     const { selectedItemId, selectedItem } = this.props
 
     if (prevProps.selectedItemId !== selectedItemId) {
