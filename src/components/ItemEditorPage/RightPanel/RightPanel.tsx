@@ -47,10 +47,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       } else {
         this.setState(this.getInitialState())
       }
-    } else if (selectedItem && !prevProps.selectedItem) {
+    } else if (selectedItem && (!prevProps.selectedItem || this.hasSavedItem())) {
       this.setItem(selectedItem)
-    } else if (!this.state.isDirty && this.hasStateItemChanged(this.state, selectedItem!)) {
-      this.setItem(selectedItem!)
     }
   }
 
@@ -230,6 +228,12 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     const { hasItem } = this.state
 
     return hasItem ? this.hasStateItemChanged({ ...this.state, ...newState }, selectedItem!) : false
+  }
+
+  hasSavedItem() {
+    const { selectedItem } = this.props
+    const { isDirty } = this.state
+    return selectedItem && !isDirty && this.hasStateItemChanged(this.state, selectedItem)
   }
 
   hasStateItemChanged(state: Partial<State>, item: Item) {
