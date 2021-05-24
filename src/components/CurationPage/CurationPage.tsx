@@ -136,16 +136,16 @@ export default class CurationPage extends React.PureComponent<Props, State> {
                 </div>
               </Empty>
             )}
-            {totalPages > 1 && (
-              <Pagination
-                firstItem={null}
-                lastItem={null}
-                totalPages={totalPages}
-                activePage={page}
-                onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
-              />
-            )}
           </Section>
+          {totalPages > 1 && (
+            <Pagination
+              firstItem={null}
+              lastItem={null}
+              totalPages={totalPages}
+              activePage={page}
+              onPageChange={(_event, props) => this.setState({ page: +props.activePage! })}
+            />
+          )}
         </Container>
       </>
     )
