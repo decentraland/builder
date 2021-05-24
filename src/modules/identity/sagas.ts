@@ -5,7 +5,7 @@ import { Address } from 'web3x-es/address'
 import { bufferToHex } from 'web3x-es/utils'
 import { Account } from 'web3x-es/account'
 import { replace, getLocation } from 'connected-react-router'
-import { Authenticator } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { env } from 'decentraland-commons'
 import { getData as getWallet, isConnected, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
@@ -58,11 +58,9 @@ export function* identitySaga() {
 }
 
 function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
-  const { address } = action.payload
-
+  const address = action.payload.address.toLowerCase()
   try {
     const eth: Eth = yield call(getEth)
-
     const account = Account.create()
 
     const payload = {
@@ -75,7 +73,7 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
 
     const personal = new Personal(eth.provider)
 
-    const identity = yield Authenticator.initializeAuthChain(address, payload, expiration, message =>
+    const identity: AuthIdentity = yield Authenticator.initializeAuthChain(address, payload, expiration, message =>
       personal.sign(message, Address.fromString(address), '')
     )
 
