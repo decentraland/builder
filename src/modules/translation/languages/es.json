@@ -447,7 +447,9 @@
       "name_asc": "Nombre ↑",
       "name_desc": "Nombre ↓"
     },
-    "total": "Total"
+    "total": "Total",
+    "parcel_plural": "Parcelas",
+    "estate_plural": "Estates"
   },
   "navigation": {
     "scenes": "Escenas",

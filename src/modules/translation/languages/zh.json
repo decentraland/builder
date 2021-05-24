@@ -437,7 +437,9 @@
       "name_asc": "名称↑",
       "name_desc": "名称↓"
     },
-    "total": "全部的"
+    "total": "全部的",
+    "parcel_plural": "包裹",
+    "estate_plural": "庄园"
   },
   "navigation": {
     "scenes": "场景",
