@@ -38,7 +38,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const { selectedItemId, selectedItem } = this.props
 
     if (prevProps.selectedItemId !== selectedItemId) {
@@ -47,8 +47,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       } else {
         this.setState(this.getInitialState())
       }
-    } else if (!prevProps.selectedItem && selectedItem) {
+    } else if (selectedItem && !prevProps.selectedItem) {
       this.setItem(selectedItem)
+    } else if (!this.state.isDirty && this.hasStateItemChanged(this.state, selectedItem!)) {
+      this.setItem(selectedItem!)
     }
   }
 
@@ -224,13 +226,15 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   isDirty(newState: Partial<State> = {}) {
+    const { selectedItem } = this.props
     const { hasItem } = this.state
 
-    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
-    const stateItem = utils.pick<Item>({ ...this.state, ...newState }, editableItemAttributes)
-    const item = utils.pick(this.props.selectedItem!, editableItemAttributes)
+    return hasItem ? this.hasStateItemChanged({ ...this.state, ...newState }, selectedItem!) : false
+  }
 
-    return hasItem ? !equal(stateItem, item) : false
+  hasStateItemChanged(state: Partial<State>, item: Item) {
+    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
+    return !equal(utils.pick<Item>(state, editableItemAttributes), utils.pick(item, editableItemAttributes))
   }
 
   render() {

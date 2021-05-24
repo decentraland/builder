@@ -165,6 +165,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           ...(pristineItem as Item),
           data: {
             ...pristineItem.data,
+            replaces: [],
+            hides: [],
             category
           },
           name,
@@ -721,7 +723,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               </Row>
               {error ? (
                 <Row className="error" align="right">
-                  <p>{t('global.error_ocurred')}</p>{' '}
+                  <p>{t('global.error_ocurred')}</p>
                 </Row>
               ) : null}
             </Column>
