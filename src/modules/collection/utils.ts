@@ -15,7 +15,7 @@ export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: bool
 
 export function isOnSale(collection: Collection, wallet: Wallet) {
   const { address } = getContract(ContractName.CollectionStore, wallet.networks.MATIC.chainId)
-  return collection.minters.includes(address)
+  return collection.minters.includes(address.toLowerCase())
 }
 
 export function getCollectionBaseURI() {
