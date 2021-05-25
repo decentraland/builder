@@ -82,7 +82,6 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
               <Icon name="user" />
             </div>
             <Popup
-              className="disabled-animation-tooltip"
               content={t('item_editor.center_panel.disabled_animation_dropdown')}
               disabled
               position="top center"

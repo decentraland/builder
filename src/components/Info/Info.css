@@ -1,5 +1,4 @@
 .ui.popup.inverted.info-popup {
-  height: auto;
   z-index: 3001; /* Over modals, which have a z-index of 3000 */
 }
 

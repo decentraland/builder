@@ -180,12 +180,7 @@ export async function generateImage(item: Item, width = 1024, height = 1024) {
 }
 
 export function isComplete(item: Item) {
-  return !isEditable(item) && !!item.beneficiary && !!item.price
-}
-
-export function isEditable(item: Item) {
-  const data = item.data as WearableData
-  return !item.rarity || !data.category
+  return item.beneficiary !== undefined && item.price !== undefined
 }
 
 export function isOwner(item: Item, address?: string) {

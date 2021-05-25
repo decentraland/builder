@@ -146,7 +146,6 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                               <div>{ens.name}</div>
                               {this.isAlias(ens) ? (
                                 <Popup
-                                  className="alias-popup"
                                   content={t('ens_list_page.alias_popup')}
                                   position="top center"
                                   trigger={

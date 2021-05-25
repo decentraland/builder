@@ -1,14 +1,21 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { utils } from 'decentraland-commons'
-import { Loader, Dropdown, Button } from 'decentraland-ui'
+import { Popup, Loader, Dropdown, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
 import ConfirmDelete from 'components/ConfirmDelete'
 import Icon from 'components/Icon'
-import { isEqual } from 'lib/address'
-import { getMissingBodyShapeType, canManageItem, getRarities, getWearableCategories, getOverridesCategories } from 'modules/item/utils'
+import {
+  getMissingBodyShapeType,
+  canManageItem,
+  getRarities,
+  getWearableCategories,
+  getOverridesCategories,
+  isOwner
+} from 'modules/item/utils'
+import { isEditable } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, THUMBNAIL_PATH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
@@ -210,12 +217,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   canEditItemMetadata(item: Item | null) {
     const { collection, address = '' } = this.props
-    return (item && collection && canManageItem(collection, item, address)) || (!collection && this.isOwner(item))
-  }
-
-  isOwner(item: Item | null) {
-    const { address = '' } = this.props
-    return item && isEqual(item.owner, address)
+    if (!item) {
+      return false
+    }
+    return collection ? isEditable(collection) && canManageItem(collection, item, address) : isOwner(item, address)
   }
 
   isDirty(newState: Partial<State> = {}) {
@@ -229,15 +234,14 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId } = this.props
+    const { selectedItemId, address } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
     return (
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
-          {(item, _collection, isLoading) => {
-            const isOwner = this.isOwner(item)
+          {(item, collection, isLoading) => {
             const canEditItemMetadata = this.canEditItemMetadata(item)
 
             const wearableCategories = item ? getWearableCategories(item.contents) : []
@@ -250,7 +254,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               <>
                 <div className="header">
                   <div className="title">{t('item_editor.right_panel.properties')}</div>
-                  {isOwner && item && !item.isPublished ? (
+                  {item && isOwner(item, address) && !item.isPublished ? (
                     <Dropdown trigger={<div className="actions" />} inline direction="left">
                       <Dropdown.Menu>
                         {getMissingBodyShapeType(item) !== null ? (
@@ -365,6 +369,21 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 <Collapsable item={item} label={t('item_editor.right_panel.tags')}>
                   {item => <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />}
                 </Collapsable>
+                {collection && !isEditable(collection) ? (
+                  <Popup
+                    content={t('item_editor.right_panel.request_for_changes_explanation', { name: collection.name })}
+                    position="top center"
+                    trigger={
+                      <a className="forum-link" href={collection.forumLink} target="_blank" rel="noopener noreferrer">
+                        {t('item_editor.right_panel.request_for_changes')}
+                      </a>
+                    }
+                    hideOnScroll={true}
+                    on="hover"
+                    inverted
+                    basic
+                  />
+                ) : null}
                 {isDirty ? (
                   <div className="edit-buttons">
                     <Button secondary onClick={this.handleOnResetItem}>

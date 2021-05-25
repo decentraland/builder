@@ -2,3 +2,8 @@
 .ui.inverted.right.center.popup::before {
   background: var(--popup);
 }
+
+.ui.popup,
+.ui.inverted.popup {
+  height: auto;
+}

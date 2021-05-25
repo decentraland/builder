@@ -37,7 +37,6 @@ export default class DeploymentStatus extends React.PureComponent<Props> {
 
     return (
       <Popup
-        className="status"
         position="bottom left"
         content={tooltip}
         trigger={

@@ -65,9 +65,4 @@
 
 .ui.popup.modal-tooltip {
   z-index: 999999999999999;
-  height: auto;
-}
-
-.ui.popup.status {
-  height: auto;
 }

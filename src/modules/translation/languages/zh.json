@@ -1028,7 +1028,9 @@
       "hides": "皮",
       "hides_info": "当用户装备您的物品时，您选择的类别中的所有其他物品将保持装备状态，但不会被渲染。 用户仅会在删除您的商品后看到他们的其他商品。 ",
       "tags": "标签",
-      "select_placeholder": "选择一个选项"
+      "select_placeholder": "选择一个选项",
+      "request_for_changes": "要求变更",
+      "request_for_changes_explanation": "如果您想更改{name}，请先请求委员会成员拒绝。"
     }
   },
   "wearable": {
