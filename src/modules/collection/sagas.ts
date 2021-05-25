@@ -227,7 +227,9 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
 
     const newMinters = new Set(collection.minters)
 
-    for (const { address, hasAccess } of accessList) {
+    for (const data of accessList) {
+      const address = data.address.toLowerCase()
+      const hasAccess = data.hasAccess
       addresses.push(Address.fromString(address))
       values.push(hasAccess)
 
