@@ -165,6 +165,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           ...(pristineItem as Item),
           data: {
             ...pristineItem.data,
+            replaces: [],
+            hides: [],
             category
           },
           name,
@@ -283,9 +285,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   handleDropAccepted = async (acceptedFiles: File[]) => {
-    this.setState({ isLoading: true })
-
     const { metadata } = this.props
+    const { isRepresentation, category } = this.state
 
     let changeItemFile = false
     let item = null
@@ -299,6 +300,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const extension = getExtension(file.name)
 
     try {
+      this.setState({ isLoading: true })
+
       if (!extension) {
         throw new Error('Wrong extension')
       }
@@ -315,6 +318,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         metrics,
         contents,
         error: '',
+        category: isRepresentation ? category : undefined,
         isLoading: false
       })
     } catch (error) {
@@ -622,6 +626,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   isValid(): boolean {
     const { name, thumbnail, metrics, bodyShape, category, rarity, item, isRepresentation } = this.state
+
     const required: (string | ModelMetrics | Item | undefined)[] = isRepresentation
       ? [item]
       : [name, thumbnail, metrics, bodyShape, category, rarity]
@@ -721,7 +726,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               </Row>
               {error ? (
                 <Row className="error" align="right">
-                  <p>{t('global.error_ocurred')}</p>{' '}
+                  <p>{t('global.error_ocurred')}</p>
                 </Row>
               ) : null}
             </Column>

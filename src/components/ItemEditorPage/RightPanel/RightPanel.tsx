@@ -47,7 +47,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       } else {
         this.setState(this.getInitialState())
       }
-    } else if (!prevProps.selectedItem && selectedItem) {
+    } else if (selectedItem && (!prevProps.selectedItem || this.hasSavedItem())) {
       this.setItem(selectedItem)
     }
   }
@@ -224,31 +224,40 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   isDirty(newState: Partial<State> = {}) {
+    const { selectedItem } = this.props
     const { hasItem } = this.state
 
-    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
-    const stateItem = utils.pick<Item>({ ...this.state, ...newState }, editableItemAttributes)
-    const item = utils.pick(this.props.selectedItem!, editableItemAttributes)
+    return hasItem ? this.hasStateItemChanged({ ...this.state, ...newState }, selectedItem!) : false
+  }
 
-    return hasItem ? !equal(stateItem, item) : false
+  hasSavedItem() {
+    const { selectedItem } = this.props
+    const { isDirty } = this.state
+    return selectedItem && !isDirty && this.hasStateItemChanged(this.state, selectedItem)
+  }
+
+  hasStateItemChanged(state: Partial<State>, item: Item) {
+    const editableItemAttributes = ['name', 'description', 'rarity', 'data']
+    return !equal(utils.pick<Item>(state, editableItemAttributes), utils.pick(item, editableItemAttributes))
   }
 
   render() {
-    const { selectedItemId, address } = this.props
+    const { selectedItemId, address, isLoading } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
     return (
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
-          {(item, collection, isLoading) => {
+          {(item, collection, isItemLoading) => {
             const canEditItemMetadata = this.canEditItemMetadata(item)
 
             const wearableCategories = item ? getWearableCategories(item.contents) : []
             const overrideCategories = item ? getOverridesCategories(item.contents) : []
-            const isItemLoading = selectedItemId && (!item || !hasItem)
 
-            return isLoading || isItemLoading ? (
+            const hasSelectedItemChanged = selectedItemId && (!item || !hasItem)
+
+            return isLoading || isItemLoading || hasSelectedItemChanged ? (
               <Loader size="massive" active />
             ) : (
               <>
