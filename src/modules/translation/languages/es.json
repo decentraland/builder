@@ -1052,7 +1052,9 @@
       "hides": "Oculta",
       "hides_info": "Cuando un usuario equipa tu item, cualquier otro item de la categoría que selecciones permanecerá equipado, pero no se renderizará. Los usuarios solo verán reaparecer sus otros elementos después de eliminar su elemento.",
       "tags": "Etiquetas",
-      "select_placeholder": "Selecciona una opción"
+      "select_placeholder": "Selecciona una opción",
+      "request_for_changes": "Solicitud de cambios",
+      "request_for_changes_explanation": "Si desea realizar cambios en {name}, solicite autorización a un miembro del comité en el foro"
     }
   },
   "wearable": {

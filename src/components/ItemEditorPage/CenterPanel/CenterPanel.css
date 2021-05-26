@@ -58,7 +58,3 @@
 .CenterPanel .footer .avatar-attributes.active {
   margin-bottom: 0;
 }
-
-.ui.popup.disabled-animation-tooltip {
-  height: auto;
-}

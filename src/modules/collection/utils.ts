@@ -59,6 +59,10 @@ export function isManager(collection: Collection, address?: string) {
   return address && collection.managers.some(manager => isEqual(manager, address))
 }
 
+export function isEditable(collection: Collection) {
+  return !collection.isApproved
+}
+
 export function canMintCollectionItems(collection: Collection, address?: string) {
   return collection.isApproved && (isOwner(collection, address) || isMinter(collection, address))
 }

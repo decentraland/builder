@@ -62,7 +62,6 @@ export default class DeployButton extends React.PureComponent<Props> {
     return (
       <span className="DeployButton tool">
         <Popup
-          className="publish-disabled"
           content={this.renderPopupContent()}
           position="bottom center"
           disabled={isPopupDisabled}

@@ -7,7 +7,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { isComplete, isEditable, canMintItem, getMaxSupply } from 'modules/item/utils'
+import { isComplete, canMintItem, getMaxSupply } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
@@ -36,7 +36,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
   hasActions() {
     const { item } = this.props
-    return item.isPublished || isComplete(item) || isEditable(item)
+    return item.isPublished || isComplete(item)
   }
 
   renderPrice() {
@@ -47,14 +47,14 @@ export default class CollectionItem extends React.PureComponent<Props> {
         <div>{item.price === '0' ? t('collection_item.free') : <Mana network={Network.MATIC}>{fromWei(item.price, 'ether')}</Mana>}</div>
         <div className="subtitle">{t('item.price')}</div>
       </>
-    ) : !isEditable(item) ? (
+    ) : (
       <>
         <div className="link" onClick={preventDefault(this.handleEditPriceAndBeneficiary)}>
           {t('collection_item.set_price')}
         </div>
         <div className="subtitle">{t('item.price')}</div>
       </>
-    ) : null
+    )
   }
 
   render() {
@@ -113,11 +113,11 @@ export default class CollectionItem extends React.PureComponent<Props> {
                   <div className="done action">
                     {t('collection_item.done')} <Icon name="check" />
                   </div>
-                ) : isEditable(item) ? (
+                ) : (
                   <span onClick={preventDefault(this.handleNavigateToEditor)} className="link action">
                     {t('collection_item.edit_item')}
                   </span>
-                ) : null}
+                )}
                 <Dropdown
                   trigger={
                     <Button basic>

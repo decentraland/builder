@@ -102,3 +102,18 @@
   margin-top: 24px;
   margin-bottom: 24px;
 }
+
+.ui.popup.inverted.publish-disabled {
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 20px;
+  z-index: 999999999999999;
+}
+
+.ui.popup.inverted.publish-disabled:first-line {
+  color: white;
+}
+
+.ui.visible.popup.inverted.publish-disabled:before {
+  right: 40px; /* The arrow needs to be in the middle of the button - kinda */
+}

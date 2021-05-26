@@ -24,7 +24,6 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
           <ItemImage item={item} />
           <div className="name">{item.name}</div>
           <Popup
-            className="invalid-representation-popup"
             content={t('item_editor.left_panel.invalid_representation_tooltip', {
               bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()}</b>
             })}

@@ -87,10 +87,6 @@
   display: block;
 }
 
-.ui.popup.inverted.alias-popup {
-  height: auto;
-}
-
 .ENSListPage .ui.dropdown {
   margin-right: 20px;
 }
