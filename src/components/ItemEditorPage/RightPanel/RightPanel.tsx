@@ -242,21 +242,22 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address } = this.props
+    const { selectedItemId, address, isLoading } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
     return (
       <div className="RightPanel">
         <ItemProvider id={selectedItemId}>
-          {(item, collection, isLoading) => {
+          {(item, collection, isItemLoading) => {
             const canEditItemMetadata = this.canEditItemMetadata(item)
 
             const wearableCategories = item ? getWearableCategories(item.contents) : []
             const overrideCategories = item ? getOverridesCategories(item.contents) : []
-            const isItemLoading = selectedItemId && (!item || !hasItem)
 
-            return isLoading || isItemLoading ? (
+            const hasSelectedItemChanged = selectedItemId && (!item || !hasItem)
+
+            return isLoading || isItemLoading || hasSelectedItemChanged ? (
               <Loader size="massive" active />
             ) : (
               <>
