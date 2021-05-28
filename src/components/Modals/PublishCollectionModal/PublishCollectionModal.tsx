@@ -132,7 +132,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
         {t('publish_collection_modal.second_paragraph')}
         <div className="divider"></div>
         {t('publish_collection_modal.third_paragraph')}{' '}
-        <a href="#" rel="noopener noreferrer" target="_blank">
+        <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
           {t('global.learn_more')}
         </a>
         <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
