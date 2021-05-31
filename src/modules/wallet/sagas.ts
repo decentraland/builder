@@ -43,7 +43,7 @@ function* handleWalletChange(action: ConnectWalletSuccessAction | ChangeAccountA
         contractAddress: getContract(ContractName.MANAToken, chainId).address,
         contractName: ContractName.MANAToken,
         authorizedAddress: getContract(ContractName.CollectionManager, chainId).address,
-        chainId: ChainId.MATIC_MUMBAI
+        chainId
       })
     }
 
