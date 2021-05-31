@@ -38,7 +38,7 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
-import { getExtension, MAX_FILE_SIZE } from 'lib/file'
+import { getExtension } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
 import {
   getBodyShapeType,
@@ -47,7 +47,8 @@ import {
   getWearableCategories,
   getBackgroundStyle,
   isModelPath,
-  isImageFile
+  isImageFile,
+  MAX_FILE_SIZE
 } from 'modules/item/utils'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
