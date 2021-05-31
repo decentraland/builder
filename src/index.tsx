@@ -5,8 +5,9 @@ import { ConnectedRouter } from 'connected-react-router'
 import { DragDropContextProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
-import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import ModalProvider from 'decentraland-dapps/dist/providers/ModalProvider'
+import ToastProvider from 'decentraland-dapps/dist/providers/ToastProvider'
+import TranslationProvider from 'decentraland-dapps/dist/providers/TranslationProvider'
 import WalletProvider from 'decentraland-dapps/dist/providers/WalletProvider'
 
 import { store, history } from 'modules/common/store'
@@ -26,9 +27,11 @@ ReactDOM.render(
       <TranslationProvider locales={Object.keys(languages)}>
         <WalletProvider>
           <ModalProvider components={modals}>
-            <ConnectedRouter history={history}>
-              <Routes />
-            </ConnectedRouter>
+            <ToastProvider>
+              <ConnectedRouter history={history}>
+                <Routes />
+              </ConnectedRouter>
+            </ToastProvider>
           </ModalProvider>
         </WalletProvider>
       </TranslationProvider>
