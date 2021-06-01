@@ -168,7 +168,13 @@
     "existing_item": "这是现有项目的一部分吗？",
     "pick_item": "选择没有{bodyShape}的商品",
     "adding_representation": "这将添加为以下项目的{body Shape}",
-    "change_item_file": "编辑制图表达"
+    "change_item_file": "编辑制图表达",
+    "error": {
+      "file_too_big": "该文件太大，无法上传。 最大尺寸为 {size}。",
+      "wrong_extension": "该文件的扩展名无效。",
+      "invalid_files": "文件似乎无效或损坏，请检查并重试。",
+      "missing_model_file": "无法归档有效的模型文件。 "
+    }
   },
   "edit_collection_name_modal": {
     "title": "编辑集合名称",

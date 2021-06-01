@@ -177,7 +177,13 @@
     "existing_item": "Es parte de un item existente?",
     "pick_item": "Elige un item que no sea para un cuerpo con {bodyShape}",
     "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
-    "change_item_file": "Editar representación"
+    "change_item_file": "Editar representación",
+    "error": {
+      "file_too_big": "El archivo es demasiado grande para cargarlo. El tamaño máximo es {size}.",
+      "wrong_extension": "El archivo tiene una extensión inválida.",
+      "invalid_files": "Parece que los archivos no son válidos o están dañados, revíselos y vuelva a intentarlo.",
+      "missing_model_file": "No se pudo presentar un archivo de modelo válido."
+    }
   },
   "edit_collection_name_modal": {
     "title": "Editar Nombre",

@@ -130,10 +130,6 @@
 }
 
 .CreateItemModal .error {
-  margin-top: 10px;
+  margin-top: 15px;
   width: 100%;
-}
-
-.CreateItemModal .error p {
-  color: var(--primary);
 }
