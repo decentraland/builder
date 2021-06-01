@@ -50,6 +50,7 @@ import {
   isImageFile,
   MAX_FILE_SIZE
 } from 'modules/item/utils'
+import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from './errors'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
 import './CreateItemModal.css'
@@ -248,7 +249,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           const blob = await file.async('blob')
 
           if (blob.size > MAX_FILE_SIZE) {
-            throw new Error('File too big')
+            throw new FileTooBigError()
           }
 
           return {
@@ -266,7 +267,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const modelPath = fileNames.find(isModelPath)
 
     if (!modelPath) {
-      throw new Error('Missing model file')
+      throw new MissingModelFileError()
     }
 
     return this.processModel(modelPath, contents)
@@ -274,7 +275,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   handleModelFile = async (file: File) => {
     if (file.size > MAX_FILE_SIZE) {
-      throw new Error('File too big')
+      throw new FileTooBigError()
     }
 
     const modelPath = file.name
@@ -304,7 +305,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       this.setState({ isLoading: true })
 
       if (!extension) {
-        throw new Error('Wrong extension')
+        throw new WrongExtensionError()
       }
 
       const handler = extension === '.zip' ? this.handleZipFile : this.handleModelFile
@@ -329,7 +330,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   handleDropRejected = async (rejectedFiles: File[]) => {
     console.warn('rejected', rejectedFiles)
-    this.setState({ error: 'Invalid files' })
+    const error = new InvalidFilesError()
+    this.setState({ error: error.message })
   }
 
   handleOpenDocs = () => window.open('https://docs.decentraland.org/3d-modeling/3d-models/', '_blank')
@@ -549,7 +551,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         />
         {error ? (
           <Row className="error" align="center">
-            <p>{t('global.error_ocurred')}</p>
+            <p className="danger-text">{error}</p>
           </Row>
         ) : null}
       </>
@@ -727,7 +729,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               </Row>
               {error ? (
                 <Row className="error" align="right">
-                  <p>{t('global.error_ocurred')}</p>
+                  <p className="danger-text">{error}</p>
                 </Row>
               ) : null}
             </Column>
