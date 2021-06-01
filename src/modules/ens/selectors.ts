@@ -29,11 +29,19 @@ export const getENSByWallet = createSelector<RootState, ENS[], string | undefine
   ensList.filter(ens => isEqual(ens.address, address))
 )
 
-export const getAuthorizationByWallet = createSelector<RootState, ENSState['authorizations'], string | undefined, Authorization>(
-  getAuthorizations,
-  getAddress,
-  (authorizations, address = '') => authorizations[address]
-)
+export const getAuthorizationByWallet = createSelector<
+  RootState,
+  ENSState['authorizations'],
+  string | undefined,
+  Authorization | undefined
+>(getAuthorizations, getAddress, (authorizations, address = '') => {
+  for (const authAddress in authorizations) {
+    if (isEqual(authAddress, address)) {
+      return authorizations[authAddress]
+    }
+  }
+  return undefined
+})
 
 export const getAliases = createSelector<RootState, ENS[], string | undefined, string | null, ENS[]>(
   getENSList,
