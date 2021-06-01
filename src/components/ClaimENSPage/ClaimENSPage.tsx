@@ -170,7 +170,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       trigger={
                         <div className="popup-button">
                           <Button type="submit" primary disabled={isDisabled} loading={isLoading}>
-                            {t('claim_ens_page.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
+                            {t('claim_ens_page.claim_button')} <Mana inline>{PRICE.toLocaleString()}</Mana>
                           </Button>
                         </div>
                       }
@@ -180,7 +180,7 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                     />
                   ) : (
                     <Button type="submit" primary disabled={isDisabled} loading={isLoading}>
-                      {t('claim_ens_page.claim_button')} <Mana>{PRICE.toLocaleString()}</Mana>
+                      {t('claim_ens_page.claim_button')} <Mana inline>{PRICE.toLocaleString()}</Mana>
                     </Button>
                   )}
                 </Row>

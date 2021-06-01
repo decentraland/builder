@@ -43,8 +43,11 @@
   color: var(--error) !important;
 }
 
-.ClaimENSPage .ui.button.primary .mana {
+.ClaimENSPage .ui.button.primary .dcl.mana {
   font-size: 13px;
   line-height: 0;
 }
 
+.ClaimENSPage .ui.button.primary:not(.loading) .dcl.mana .symbol {
+  color: var(--text);
+}

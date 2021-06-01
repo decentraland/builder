@@ -73,7 +73,8 @@ import {
   SET_ALIAS_SUCCESS,
   CLAIM_NAME_SUCCESS,
   SET_ENS_CONTENT_SUCCESS,
-  SET_ENS_RESOLVER_SUCCESS
+  SET_ENS_RESOLVER_SUCCESS,
+  ClaimNameSuccessAction
 } from 'modules/ens/actions'
 import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
 
@@ -324,10 +325,9 @@ addPayload(SET_ALIAS_SUCCESS, 'Use as Alias')
 addPayload(ALLOW_CLAIM_MANA_SUCCESS, 'Allow Claim Mana')
 
 add(CLAIM_NAME_SUCCESS, 'Claim Name', action => {
-  const { payload } = action as FetchTransactionSuccessAction
-  const { name, ens, address } = payload.transaction.payload
+  const { payload } = action as ClaimNameSuccessAction
+  const { name, ens } = payload
   return {
-    address,
     name,
     ens
   }
