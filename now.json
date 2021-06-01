@@ -36,6 +36,7 @@
       "REACT_APP_FF_WEARABLES_PUBLISH": "1",
       "REACT_APP_FF_ENS": "1",
       "REACT_APP_LAND_POSITION_URL": "https://play.decentraland.org?position=",
+      "REACT_APP_TRANSACTIONS_API_URL": "https://transactions-api.decentraland.io/v1",
       "REACT_APP_ACCOUNT_URL": "https://account.decentraland.org",
       "REACT_APP_DISCORD_URL": "https://dcl.gg/discord",
       "REACT_APP_IPFS_URL": "https://ipfs.infura.io:5001/api/v0/add?pin=false",

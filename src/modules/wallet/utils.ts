@@ -3,10 +3,13 @@ import { Address } from 'web3x-es/address'
 import { Eth } from 'web3x-es/eth'
 import { TxSend } from 'web3x-es/contract'
 import { LegacyProviderAdapter } from 'web3x-es/providers'
+import { env } from 'decentraland-commons'
 import { ContractData, sendMetaTransaction } from 'decentraland-transactions'
 import { getNetworkProvider, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+
+const TRANSACTIONS_API_URL = env.get<string | undefined>('REACT_APP_TRANSACTIONS_API_URL')
 
 export async function getEth(): Promise<Eth> {
   const provider: Provider | null = await getConnectedProvider()
@@ -36,7 +39,9 @@ export function* sendWalletMetaTransaction(contract: ContractData, method: TxSen
   const metaTxProvider: Provider = yield call(() => getNetworkProvider(contract.chainId))
   const txData = getMethodData(method, from)
 
-  const txHash: string = yield call(() => sendMetaTransaction(provider, metaTxProvider, txData, contract))
+  const txHash: string = yield call(() =>
+    sendMetaTransaction(provider, metaTxProvider, txData, contract, { serverURL: TRANSACTIONS_API_URL })
+  )
   return txHash
 }
 
