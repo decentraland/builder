@@ -173,7 +173,7 @@
       "file_too_big": "该文件太大，无法上传。 最大尺寸为 {size}。",
       "wrong_extension": "该文件的扩展名无效。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
-      "missing_model_file": "无法归档有效的模型文件。 "
+      "missing_model_file": "找不到有效的模型文件。"
     }
   },
   "edit_collection_name_modal": {
