@@ -181,7 +181,7 @@
     "error": {
       "file_too_big": "El archivo es demasiado grande para cargarlo. El tamaño máximo es {size}.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
-      "invalid_files": "Parece que los archivos no son válidos o están dañados, revíselos y vuelva a intentarlo.",
+      "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",
       "missing_model_file": "No se pudo encontrar un archivo de modelo válido."
     }
   },
