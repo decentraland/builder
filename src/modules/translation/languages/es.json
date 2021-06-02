@@ -783,8 +783,6 @@
     "authorization_action": "Autorizar a {address} para que pueda operar tus {type}.",
     "copy_address": "Copiar direccion",
     "copied": "Copiada",
-    "buy_more_mana": "Comprar Más",
-    "get_more_mana": "Obtener Más",
     "authorizations_title": "Autorizaciones Activas"
   },
   "transaction": {

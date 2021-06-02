@@ -766,8 +766,6 @@
     "authorization_action": "授权{address}代表您操作所有{type}。",
     "copy_address": "复制地址",
     "copied": "已复制",
-    "buy_more_mana": "购买更多",
-    "get_more_mana": "获得更多",
     "authorizations_title": "活动授权"
   },
   "transaction": {
