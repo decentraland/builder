@@ -425,6 +425,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       })
       URL.revokeObjectURL(url)
 
+      // for some reason the renderer reports 2x the amount of textures for wearble items
+      info.textures = Math.round(info.textures / 2)
+
       thumbnail = image
       metrics = info
     }
