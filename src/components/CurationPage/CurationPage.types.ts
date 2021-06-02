@@ -1,8 +1,7 @@
-import { Dispatch } from 'redux'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Collection } from 'modules/collection/types'
-import { fetchCollectionsRequest, FetchCollectionsRequestAction } from 'modules/collection/actions'
-import { fetchItemsRequest, FetchItemsRequestAction } from 'modules/item/actions'
+import { fetchCollectionsRequest } from 'modules/collection/actions'
+import { fetchItemsRequest } from 'modules/item/actions'
 
 export enum SortBy {
   NEWEST = 'NEWEST',
@@ -34,5 +33,3 @@ export type State = {
 }
 
 export type MapStateProps = Pick<Props, 'wallet' | 'collections' | 'isCommitteeMember' | 'isConnecting' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onFetchCollections' | 'onFetchItems'>
-export type MapDispatch = Dispatch<FetchCollectionsRequestAction | FetchItemsRequestAction>

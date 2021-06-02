@@ -19,12 +19,6 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     page: 1
   }
 
-  componentDidMount() {
-    const { onFetchCollections, onFetchItems } = this.props
-    onFetchCollections()
-    onFetchItems()
-  }
-
   renderSortDropdown = () => {
     const { sortBy } = this.state
     return (

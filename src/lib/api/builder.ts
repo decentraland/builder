@@ -182,7 +182,9 @@ function fromRemotePool(remotePool: RemotePool): Pool {
 
   pool.thumbnail = `${BUILDER_SERVER_URL}/projects/${remotePool.id}/media/preview.png`
   pool.isPublic = true
-  ;(pool.groups = remotePool.groups || []), (pool.likes = remotePool.likes || 0), (pool.like = !!remotePool.like)
+  pool.groups = remotePool.groups || []
+  pool.likes = remotePool.likes || 0
+  pool.like = !!remotePool.like
 
   if (remotePool.parcels) {
     pool.statistics = {
