@@ -774,8 +774,6 @@
     "authorization_action": "Authorize {address} to operate all your {type} on your behalf.",
     "copy_address": "Copy Address",
     "copied": "Copied",
-    "buy_more_mana": "Buy More",
-    "get_more_mana": "Get More",
     "authorizations_title": "Active Authorizations"
   },
   "transaction": {

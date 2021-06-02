@@ -9,7 +9,7 @@ import { getNetworkProvider, getConnectedProvider } from 'decentraland-dapps/dis
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-const TRANSACTIONS_API_URL = env.get<string | undefined>('REACT_APP_TRANSACTIONS_API_URL')
+export const TRANSACTIONS_API_URL = env.get<string | undefined>('REACT_APP_TRANSACTIONS_API_URL')
 
 export async function getEth(): Promise<Eth> {
   const provider: Provider | null = await getConnectedProvider()
