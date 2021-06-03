@@ -6,7 +6,7 @@ import { makeContentFile, getCID } from 'modules/deployment/utils'
 export const MAX_TAGS = 15
 export const MAX_NAME_LENGTH = 30
 export const MIN_NAME_LENGTH = 3
-export const MAX_FILE_SIZE = 10000000
+export const MAX_FILE_SIZE = 10485760 // 10MB
 
 export function isNFT(asset: Asset) {
   return asset.assetPackId === COLLECTIBLE_ASSET_PACK_ID

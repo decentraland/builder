@@ -21,7 +21,7 @@ import {
   THUMBNAIL_PATH
 } from './types'
 
-export const MAX_FILE_SIZE = 2000000
+export const MAX_FILE_SIZE = 2097152 // 2MB
 
 export function getMaxSupply(item: Item) {
   return RARITY_MAX_SUPPLY[item.rarity!]

@@ -6,8 +6,8 @@ import { getName } from 'modules/profile/selectors'
 import { openModal } from 'modules/modal/actions'
 import { createCollectionForumPostRequest, CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { getCollectionItems, getLoading } from 'modules/collection/selectors'
-import { MapDispatchProps, MapDispatch, MapStateProps, OwnProps } from './ContextMenu.types'
-import ContextMenu from './ContextMenu'
+import { MapDispatchProps, MapDispatch, MapStateProps, OwnProps } from './CollectionMenu.types'
+import CollectionMenu from './CollectionMenu'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   items: getCollectionItems(state, ownProps.collection.id),
@@ -21,4 +21,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onDelete: collection => dispatch(deleteCollectionRequest(collection))
 })
 
-export default connect(mapState, mapDispatch)(ContextMenu)
+export default connect(mapState, mapDispatch)(CollectionMenu)

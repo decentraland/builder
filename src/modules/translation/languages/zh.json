@@ -59,7 +59,7 @@
       "errors": {
         "max_title_length": "Asset Pack标题最多只能包含{count}个字符",
         "min_title_length": "Asset Pack名称的长度必须至少为{count}个字符",
-        "thumbnail_size": "图像文件大小必须小于 {count}个字节"
+        "thumbnail_size": "图像文件大小必须小于 {size}"
       },
       "items": {
         "empty": "这Asset Pack个西是空的",
@@ -908,7 +908,7 @@
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
     "under_review": "审核中"
   },
-  "context_menu": {
+  "collection_menu": {
     "add_existing_item": "添加现有项目",
     "forum_post": "论坛帖子",
     "copy_address": "复制地址",

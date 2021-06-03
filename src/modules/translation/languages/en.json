@@ -60,7 +60,7 @@
       "errors": {
         "max_title_length": "Asset Pack titles can only be up to {count} characters long",
         "min_title_length": "Asset Pack titles must be at least {count} characters long",
-        "thumbnail_size": "Image file size must be less than {count} bytes"
+        "thumbnail_size": "Image file size must be less than {size}"
       },
       "items": {
         "empty": "This Asset Pack is empty",
@@ -919,7 +919,7 @@
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
     "under_review": "Under Review"
   },
-  "context_menu": {
+  "collection_menu": {
     "add_existing_item": "Add Existing Item",
     "forum_post": "Forum post",
     "copy_address": "Copy address",

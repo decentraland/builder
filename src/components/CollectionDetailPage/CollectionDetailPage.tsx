@@ -15,7 +15,7 @@ import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { AuthorizationModal } from 'components/AuthorizationModal'
-import ContextMenu from './ContextMenu'
+import CollectionMenu from './CollectionMenu'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
@@ -158,7 +158,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                       </>
                     ) : null}
 
-                    {isOwner(collection, wallet.address) ? <ContextMenu collection={collection} /> : null}
+                    {isOwner(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
 
                     {collection.isPublished ? (
                       collection.isApproved ? (
