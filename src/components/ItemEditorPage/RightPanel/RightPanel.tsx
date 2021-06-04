@@ -255,12 +255,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             const wearableCategories = item ? getWearableCategories(item.contents) : []
             const overrideCategories = item ? getOverridesCategories(item.contents) : []
 
-            const loading = isLoading || isItemLoading
-            const hasSelectedItemChanged = selectedItemId && (!item || !hasItem)
-
-            return loading || hasSelectedItemChanged ? (
+            return isLoading || isItemLoading ? (
               <Loader size="massive" active />
-            ) : (
+            ) : hasItem || !selectedItemId ? (
               <>
                 <div className="header">
                   <div className="title">{t('item_editor.right_panel.properties')}</div>
@@ -405,7 +402,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                   </div>
                 ) : null}
               </>
-            )
+            ) : null
           }}
         </ItemProvider>
       </div>
