@@ -6,6 +6,7 @@ import { buildCollectionForumPost } from 'modules/forum/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionMenu.types'
 import './CollectionMenu.css'
+import { isOwner } from 'modules/collection/utils'
 
 export default class CollectionMenu extends React.PureComponent<Props> {
   handleNavigateToForum = () => {
@@ -45,7 +46,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, isForumPostLoading } = this.props
+    const { collection, wallet, isForumPostLoading } = this.props
     return (
       <Dropdown
         className="CollectionMenu"
@@ -59,7 +60,9 @@ export default class CollectionMenu extends React.PureComponent<Props> {
       >
         <Dropdown.Menu>
           {collection.isPublished ? (
-            <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
+            isOwner(collection, wallet.address) ? (
+              <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
+            ) : null
           ) : (
             <>
               <Dropdown.Item text={t('collection_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
@@ -106,6 +109,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
             inverted
             flowing
           />
+
           <Popup
             content={t('collection_menu.unpublished')}
             position="right center"

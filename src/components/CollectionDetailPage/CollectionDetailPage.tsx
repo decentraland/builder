@@ -7,7 +7,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
-import { canMintCollectionItems, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
+import { canMintCollectionItems, canSeeCollection, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
@@ -115,50 +115,48 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {isOwner(collection, wallet.address) ? (
+                    {collection.isPublished ? (
                       <>
-                        {collection.isPublished ? (
-                          <>
-                            <Popup
-                              content={
-                                isOnSaleLoading
-                                  ? t('global.loading')
-                                  : isOnSale
-                                  ? t('collection_detail_page.unset_on_sale_popup')
-                                  : t('collection_detail_page.set_on_sale_popup')
-                              }
-                              position="top center"
-                              trigger={
-                                <Radio
-                                  toggle
-                                  className="on-sale"
-                                  checked={isOnSale}
-                                  onChange={this.handleOnSaleChange}
-                                  label={t('collection_detail_page.on_sale')}
-                                  disabled={isOnSaleLoading}
-                                />
-                              }
-                              hideOnScroll={true}
-                              on="hover"
-                              inverted
-                              flowing
-                            />
+                        {isOwner(collection, wallet.address) ? (
+                          <Popup
+                            content={
+                              isOnSaleLoading
+                                ? t('global.loading')
+                                : isOnSale
+                                ? t('collection_detail_page.unset_on_sale_popup')
+                                : t('collection_detail_page.set_on_sale_popup')
+                            }
+                            position="top center"
+                            trigger={
+                              <Radio
+                                toggle
+                                className="on-sale"
+                                checked={isOnSale}
+                                onChange={this.handleOnSaleChange}
+                                label={t('collection_detail_page.on_sale')}
+                                disabled={isOnSaleLoading}
+                              />
+                            }
+                            hideOnScroll={true}
+                            on="hover"
+                            inverted
+                            flowing
+                          />
+                        ) : null}
 
-                            <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
-                              <Icon name="paper plane" />
-                              <span className="text">{t('collection_detail_page.mint_items')}</span>
-                            </Button>
-                          </>
-                        ) : (
-                          <Button basic className="action-button" onClick={this.handleNewItem}>
-                            <Icon name="plus" />
-                            <span className="text">{t('collection_detail_page.new_item')}</span>
-                          </Button>
-                        )}
+                        <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                          <Icon name="paper plane" />
+                          <span className="text">{t('collection_detail_page.mint_items')}</span>
+                        </Button>
                       </>
-                    ) : null}
+                    ) : (
+                      <Button basic className="action-button" onClick={this.handleNewItem}>
+                        <Icon name="plus" />
+                        <span className="text">{t('collection_detail_page.new_item')}</span>
+                      </Button>
+                    )}
 
-                    {isOwner(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
+                    {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
 
                     {collection.isPublished ? (
                       collection.isApproved ? (

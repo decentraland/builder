@@ -255,9 +255,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
             const wearableCategories = item ? getWearableCategories(item.contents) : []
             const overrideCategories = item ? getOverridesCategories(item.contents) : []
 
+            const loading = isLoading || isItemLoading
             const hasSelectedItemChanged = selectedItemId && (!item || !hasItem)
 
-            return isLoading || isItemLoading || hasSelectedItemChanged ? (
+            return loading || hasSelectedItemChanged ? (
               <Loader size="massive" active />
             ) : (
               <>
