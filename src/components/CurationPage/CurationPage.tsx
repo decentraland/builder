@@ -149,12 +149,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     const { isCommitteeMember, isConnecting, isLoading } = this.props
 
     return (
-      <LoggedInDetailPage
-        className="CurationPage"
-        activeTab={NavigationTab.CURATION}
-        isLoading={isConnecting || isLoading}
-        isPageFullscreen={true}
-      >
+      <LoggedInDetailPage className="CurationPage" activeTab={NavigationTab.CURATION} isLoading={isConnecting || isLoading}>
         {isCommitteeMember ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )

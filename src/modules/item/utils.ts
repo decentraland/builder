@@ -190,7 +190,7 @@ export function isOwner(item: Item, address?: string) {
 }
 
 export function canSeeItem(collection: Collection, item: Item, address: string) {
-  return canSeeCollection(collection, address) || isEqual(item.owner, address)
+  return canSeeCollection(collection, address) || isOwner(item, address)
 }
 
 export function canMintItem(collection: Collection, item: Item, address?: string) {

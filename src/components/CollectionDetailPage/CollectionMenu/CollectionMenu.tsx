@@ -3,10 +3,10 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { Dropdown, Button, Icon, Popup, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
+import { isOwner as isCollectionOwner } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionMenu.types'
 import './CollectionMenu.css'
-import { isOwner } from 'modules/collection/utils'
 
 export default class CollectionMenu extends React.PureComponent<Props> {
   handleNavigateToForum = () => {
@@ -47,6 +47,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
 
   render() {
     const { collection, wallet, isForumPostLoading } = this.props
+    const isOwner = isCollectionOwner(collection, wallet.address)
     return (
       <Dropdown
         className="CollectionMenu"
@@ -60,7 +61,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
       >
         <Dropdown.Menu>
           {collection.isPublished ? (
-            isOwner(collection, wallet.address) ? (
+            isOwner ? (
               <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
             ) : null
           ) : (
@@ -91,7 +92,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
                   text={t('collection_menu.forum_post')}
                   onClick={this.handleNavigateToForum}
                 />
-              ) : (
+              ) : isOwner ? (
                 <Dropdown.Item onClick={this.handlePostToForum} disabled={isForumPostLoading}>
                   {isForumPostLoading ? (
                     <div>
@@ -102,7 +103,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
                     t('collection_menu.post_to_forum')
                   )}
                 </Dropdown.Item>
-              )
+              ) : null
             }
             hideOnScroll={true}
             on="hover"

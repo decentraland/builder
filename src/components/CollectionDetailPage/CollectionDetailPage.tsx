@@ -66,6 +66,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     this.props.onNavigate(locations.collections())
   }
 
+  handleCloseAuthorizationModal = () => {
+    this.setState({ isAuthorizationModalOpen: false })
+  }
+
   getAuthorization(): Authorization {
     const { wallet } = this.props
     const chainId = wallet.networks.MATIC.chainId
@@ -89,6 +93,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   hasItems() {
     const { items } = this.props
     return items.length > 0
+  }
+
+  hasAccess() {
+    const { wallet, collection } = this.props
+    return collection !== null && canSeeCollection(collection, wallet.address)
   }
 
   renderPage() {
@@ -226,11 +235,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
       </>
     )
   }
-
-  handleCloseAuthorizationModal = () => {
-    this.setState({ isAuthorizationModalOpen: false })
-  }
-
   renderAuthorizationModal() {
     const { isAuthorizationModalOpen } = this.state
 
@@ -245,10 +249,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { isLoading, collection } = this.props
+    const { isLoading } = this.props
+    const hasAccess = this.hasAccess()
     return (
-      <LoggedInDetailPage className="CollectionDetailPage" hasNavigation={false} isLoading={isLoading}>
-        {collection === null ? <NotFound /> : this.renderPage()}
+      <LoggedInDetailPage className="CollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
+        {hasAccess ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )
   }

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getItemId } from 'modules/location/selectors'
 import { getCollection } from 'modules/collection/selectors'
@@ -18,6 +19,7 @@ const mapState = (state: RootState): MapStateProps => {
   const collection = item && item.collectionId ? getCollection(state, item.collectionId) : null
 
   return {
+    wallet: getWallet(state)!,
     item,
     collection,
     isLoading: isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) || isLoadingType(getLoading(state), DELETE_ITEM_REQUEST)

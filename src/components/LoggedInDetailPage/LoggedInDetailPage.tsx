@@ -39,6 +39,7 @@ export default class LoggedInDetailPage extends React.PureComponent<Props> {
       children
     } = this.props
     const isLoading = isLoggingIn || this.props.isLoading
+
     return (
       <>
         <Navbar isFullscreen />
