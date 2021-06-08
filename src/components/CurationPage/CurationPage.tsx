@@ -19,12 +19,6 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     page: 1
   }
 
-  componentDidMount() {
-    const { onFetchCollections, onFetchItems } = this.props
-    onFetchCollections()
-    onFetchItems()
-  }
-
   renderSortDropdown = () => {
     const { sortBy } = this.state
     return (
@@ -155,12 +149,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
     const { isCommitteeMember, isConnecting, isLoading } = this.props
 
     return (
-      <LoggedInDetailPage
-        className="CurationPage"
-        activeTab={NavigationTab.CURATION}
-        isLoading={isConnecting || isLoading}
-        isPageFullscreen={true}
-      >
+      <LoggedInDetailPage className="CurationPage" activeTab={NavigationTab.CURATION} isLoading={isConnecting || isLoading}>
         {isCommitteeMember ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )

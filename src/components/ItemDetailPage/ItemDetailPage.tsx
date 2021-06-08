@@ -6,7 +6,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
-import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType } from 'modules/item/utils'
+import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, canSeeItem, isOwner } from 'modules/item/utils'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
@@ -37,6 +37,14 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   handleAddRepresentationToItem = () => {
     const { item, onOpenModal } = this.props
     onOpenModal('CreateItemModal', { item, addRepresentation: true })
+  }
+
+  hasAccess() {
+    const { wallet, collection, item } = this.props
+    if (item === null) {
+      return false
+    }
+    return collection ? canSeeItem(collection, item, wallet.address) : isOwner(item, wallet.address)
   }
 
   renderPage() {
@@ -105,7 +113,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Narrow>
-          {collection === null ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
+          {collection ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
 
           <div className="item-data">
             <ItemImage item={item} hasBadge={true} />
@@ -166,10 +174,11 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
   }
 
   render() {
-    const { isLoading, item } = this.props
+    const { isLoading } = this.props
+    const hasAccess = this.hasAccess()
     return (
-      <LoggedInDetailPage className="ItemDetailPage" hasNavigation={false} isLoading={isLoading}>
-        {item === null ? <NotFound /> : this.renderPage()}
+      <LoggedInDetailPage className="ItemDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
+        {hasAccess ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )
   }

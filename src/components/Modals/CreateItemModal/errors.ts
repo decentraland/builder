@@ -1,9 +1,10 @@
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { toMB } from 'lib/file'
 import { MAX_FILE_SIZE } from 'modules/item/utils'
 
 export class FileTooBigError extends Error {
   constructor() {
-    super(t('create_item_modal.error.file_too_big', { size: `${MAX_FILE_SIZE / 1000}MB` }))
+    super(t('create_item_modal.error.file_too_big', { size: `${toMB(MAX_FILE_SIZE)}MB` }))
   }
 }
 

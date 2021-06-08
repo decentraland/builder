@@ -4,7 +4,7 @@ import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/sel
 import { getBodyShape, getVisibleItems } from 'modules/editor/selectors'
 import { setItems } from 'modules/editor/actions'
 import { getItems, getWalletOrphanItems } from 'modules/item/selectors'
-import { getWalletCollections } from 'modules/collection/selectors'
+import { getAuthorizedCollections } from 'modules/collection/selectors'
 import { setCollection } from 'modules/item/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './LeftPanel.types'
 import LeftPanel from './LeftPanel'
@@ -12,7 +12,7 @@ import LeftPanel from './LeftPanel'
 const mapState = (state: RootState): MapStateProps => ({
   items: getItems(state),
   orphanItems: getWalletOrphanItems(state),
-  collections: getWalletCollections(state),
+  collections: getAuthorizedCollections(state),
   selectedItemId: getSelectedItemId(state),
   selectedCollectionId: getSelectedCollectionId(state),
   visibleItems: getVisibleItems(state),

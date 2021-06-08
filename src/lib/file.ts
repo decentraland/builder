@@ -12,3 +12,7 @@ export function getExtension(fileName: string) {
   const extension = matches ? matches[0] : null
   return extension
 }
+
+export function toMB(bytes: number) {
+  return bytes / 1024 / 1024
+}

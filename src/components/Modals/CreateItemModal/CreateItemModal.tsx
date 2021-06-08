@@ -38,7 +38,7 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
-import { getExtension } from 'lib/file'
+import { getExtension, toMB } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
 import {
   getBodyShapeType,
@@ -364,14 +364,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { contents } = this.state
     const { files } = event.target
 
-    const MAX_THUMBNAIL_SIZE = 5000000
+    const MAX_THUMBNAIL_SIZE = 51200 // 50MB
 
     if (files && files.length > 0) {
       const file = files[0]
       if (file.size > MAX_THUMBNAIL_SIZE) {
         alert(
           t('asset_pack.edit_assetpack.errors.thumbnail_size', {
-            count: MAX_THUMBNAIL_SIZE
+            size: `${toMB(MAX_THUMBNAIL_SIZE)}MB`
           })
         )
         return

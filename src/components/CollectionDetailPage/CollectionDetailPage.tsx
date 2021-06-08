@@ -7,7 +7,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
-import { canMintCollectionItems, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
+import { canMintCollectionItems, canSeeCollection, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
@@ -15,7 +15,7 @@ import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { AuthorizationModal } from 'components/AuthorizationModal'
-import ContextMenu from './ContextMenu'
+import CollectionMenu from './CollectionMenu'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './CollectionDetailPage.types'
 import './CollectionDetailPage.css'
@@ -66,6 +66,10 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
     this.props.onNavigate(locations.collections())
   }
 
+  handleCloseAuthorizationModal = () => {
+    this.setState({ isAuthorizationModalOpen: false })
+  }
+
   getAuthorization(): Authorization {
     const { wallet } = this.props
     const chainId = wallet.networks.MATIC.chainId
@@ -89,6 +93,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   hasItems() {
     const { items } = this.props
     return items.length > 0
+  }
+
+  hasAccess() {
+    const { wallet, collection } = this.props
+    return collection !== null && canSeeCollection(collection, wallet.address)
   }
 
   renderPage() {
@@ -115,50 +124,48 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {isOwner(collection, wallet.address) ? (
+                    {collection.isPublished ? (
                       <>
-                        {collection.isPublished ? (
-                          <>
-                            <Popup
-                              content={
-                                isOnSaleLoading
-                                  ? t('global.loading')
-                                  : isOnSale
-                                  ? t('collection_detail_page.unset_on_sale_popup')
-                                  : t('collection_detail_page.set_on_sale_popup')
-                              }
-                              position="top center"
-                              trigger={
-                                <Radio
-                                  toggle
-                                  className="on-sale"
-                                  checked={isOnSale}
-                                  onChange={this.handleOnSaleChange}
-                                  label={t('collection_detail_page.on_sale')}
-                                  disabled={isOnSaleLoading}
-                                />
-                              }
-                              hideOnScroll={true}
-                              on="hover"
-                              inverted
-                              flowing
-                            />
+                        {isOwner(collection, wallet.address) ? (
+                          <Popup
+                            content={
+                              isOnSaleLoading
+                                ? t('global.loading')
+                                : isOnSale
+                                ? t('collection_detail_page.unset_on_sale_popup')
+                                : t('collection_detail_page.set_on_sale_popup')
+                            }
+                            position="top center"
+                            trigger={
+                              <Radio
+                                toggle
+                                className="on-sale"
+                                checked={isOnSale}
+                                onChange={this.handleOnSaleChange}
+                                label={t('collection_detail_page.on_sale')}
+                                disabled={isOnSaleLoading}
+                              />
+                            }
+                            hideOnScroll={true}
+                            on="hover"
+                            inverted
+                            flowing
+                          />
+                        ) : null}
 
-                            <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
-                              <Icon name="paper plane" />
-                              <span className="text">{t('collection_detail_page.mint_items')}</span>
-                            </Button>
-                          </>
-                        ) : (
-                          <Button basic className="action-button" onClick={this.handleNewItem}>
-                            <Icon name="plus" />
-                            <span className="text">{t('collection_detail_page.new_item')}</span>
-                          </Button>
-                        )}
+                        <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                          <Icon name="paper plane" />
+                          <span className="text">{t('collection_detail_page.mint_items')}</span>
+                        </Button>
                       </>
-                    ) : null}
+                    ) : (
+                      <Button basic className="action-button" onClick={this.handleNewItem}>
+                        <Icon name="plus" />
+                        <span className="text">{t('collection_detail_page.new_item')}</span>
+                      </Button>
+                    )}
 
-                    {isOwner(collection, wallet.address) ? <ContextMenu collection={collection} /> : null}
+                    {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
 
                     {collection.isPublished ? (
                       collection.isApproved ? (
@@ -228,11 +235,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
       </>
     )
   }
-
-  handleCloseAuthorizationModal = () => {
-    this.setState({ isAuthorizationModalOpen: false })
-  }
-
   renderAuthorizationModal() {
     const { isAuthorizationModalOpen } = this.state
 
@@ -247,10 +249,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   }
 
   render() {
-    const { isLoading, collection } = this.props
+    const { isLoading } = this.props
+    const hasAccess = this.hasAccess()
     return (
-      <LoggedInDetailPage className="CollectionDetailPage" hasNavigation={false} isLoading={isLoading}>
-        {collection === null ? <NotFound /> : this.renderPage()}
+      <LoggedInDetailPage className="CollectionDetailPage" hasNavigation={!hasAccess && !isLoading} isLoading={isLoading}>
+        {hasAccess ? this.renderPage() : <NotFound />}
       </LoggedInDetailPage>
     )
   }

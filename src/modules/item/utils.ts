@@ -21,7 +21,7 @@ import {
   THUMBNAIL_PATH
 } from './types'
 
-export const MAX_FILE_SIZE = 2000000
+export const MAX_FILE_SIZE = 2097152 // 2MB
 
 export function getMaxSupply(item: Item) {
   return RARITY_MAX_SUPPLY[item.rarity!]
@@ -190,7 +190,7 @@ export function isOwner(item: Item, address?: string) {
 }
 
 export function canSeeItem(collection: Collection, item: Item, address: string) {
-  return canSeeCollection(collection, address) || isEqual(item.owner, address)
+  return canSeeCollection(collection, address) || isOwner(item, address)
 }
 
 export function canMintItem(collection: Collection, item: Item, address?: string) {

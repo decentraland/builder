@@ -59,7 +59,7 @@
       "errors": {
         "max_title_length": "El titulo del Asset Pack sólo puede contener un máximo de {count} caracteres",
         "min_title_length": "El titulo del Asset Pack debe contener al menos {count} caracteres",
-        "thumbnail_size": "El tamaño de la imagen debe ser menor a {count} bytes"
+        "thumbnail_size": "El tamaño de la imagen debe ser menor a {size}"
       },
       "items": {
         "empty": "Este Asset Pack se encuentra vacío",
@@ -928,11 +928,11 @@
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
     "under_review": "No verificada"
   },
-  "context_menu": {
+  "collection_menu": {
     "add_existing_item": "Agregar item existente",
     "forum_post": "Post en el foro",
     "copy_address": "Copiar dirección",
-    "unpublished": "Esta colleción aún no está verificada",
+    "unpublished": "Esta colleción aún no está publicada",
     "managers": "Colaboradores",
     "post_to_forum": "Post al foro",
     "posting": "Posteando",
