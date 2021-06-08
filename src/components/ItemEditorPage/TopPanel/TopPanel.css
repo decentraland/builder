@@ -30,11 +30,6 @@
   font-size: 15px;
 }
 
-.TopPanel .JumpIn {
-  width: 22px;
-  height: 22px;
-}
-
 .TopPanel .actions {
   width: var(--item-editor-panel-width);
   text-align: right;
