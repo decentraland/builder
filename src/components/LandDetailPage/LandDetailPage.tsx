@@ -10,6 +10,7 @@ import { locations } from 'routing/locations'
 import LandProviderPage from 'components/LandProviderPage'
 import Back from 'components/Back'
 import Profile from 'components/Profile'
+import JumpIn from 'components/JumpIn'
 import ENSChip from './ENSChip'
 import Scene from './Scene'
 import { Props, State } from './LandDetailPage.types'
@@ -91,8 +92,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
     const { ensList, parcelsAvailableToBuildEstates, projects, onNavigate, onOpenModal } = this.props
     const { hovered, mouseX, mouseY, showTooltip } = this.state
     const occupiedTotal = this.computeOccupiedLand(land, deployments)
-    const selection = getSelection(land)
-    const [x, y] = getCenter(selection)
+
     const canBuildEstate = parcelsAvailableToBuildEstates[land.id]
     const isAtlasClickable = showTooltip && hovered && hovered.projectId && hovered.projectId in projects
 
@@ -122,12 +122,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
                     ) : (
                       <Badge color="#37333D">{land.size!} LAND</Badge>
                     )}
-                    <a
-                      className="jump-in"
-                      target="_blank"
-                      rel="no:opener no:referrer"
-                      href={`https://play.decentraland.org?position=${coordsToId(x, y)}`}
-                    />
+                    <JumpIn land={land} />
                   </Row>
                 </Column>
                 {land.role === RoleType.OWNER ? (

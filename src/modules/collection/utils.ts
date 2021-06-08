@@ -18,6 +18,11 @@ export function isOnSale(collection: Collection, wallet: Wallet) {
   return collection.minters.includes(address.toLowerCase())
 }
 
+export function getExplorerURL(id: string) {
+  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
+  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}`
+}
+
 export function getCollectionBaseURI() {
   return `${env.get('REACT_APP_PEER_URL', '')}/lambdas/collections/standard/erc721/`
 }
