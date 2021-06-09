@@ -42,7 +42,6 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
-import { calculateFilesSize, getFiles } from 'modules/item/export'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -55,7 +54,7 @@ import {
   resizeImage,
   isImageCategory
 } from 'modules/item/utils'
-import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError, ItemTooBigError } from './errors'
+import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
 import './CreateItemModal.css'
@@ -111,8 +110,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       addRepresentation = metadata.addRepresentation
       pristineItem = metadata.item
     }
-
-    this.setState({ error: '', isLoading: true })
 
     if (id && this.isValid()) {
       const {
@@ -231,31 +228,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item.contents[path] = computedHashes[path]
       }
 
-      const finalSize = await this.calculateFinalSize(item.contents, computedHashes, contents)
-      if (finalSize > MAX_FILE_SIZE) {
-        const error = new ItemTooBigError()
-        return this.setState({ error: error.message, isLoading: false })
-      }
-
       const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
       onSaveItem(item, contents)
     }
-  }
-
-  async calculateFinalSize(
-    hashes: Record<string, string>,
-    newHashes: Record<string, string>,
-    newContents: Record<string, Blob>
-  ): Promise<number> {
-    const filesToDownload: Record<string, string> = {}
-    for (const fileName in hashes) {
-      if (!newHashes[fileName] || hashes[fileName] !== newHashes[fileName]) {
-        filesToDownload[fileName] = hashes[fileName]
-      }
-    }
-
-    const blobs = await getFiles(filesToDownload)
-    return calculateFilesSize(blobs) + calculateFilesSize(newContents)
   }
 
   handleZipFile = async (file: File) => {
@@ -668,16 +643,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, metadata } = this.props
+    const { onClose, metadata, error, isLoading } = this.props
     const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
     const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
-
-    const error = this.props.error || this.state.error
-    const isLoading = this.props.isLoading || this.state.isLoading
 
     return (
       <>

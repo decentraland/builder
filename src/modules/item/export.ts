@@ -3,7 +3,7 @@ import { ChainId } from '@dcl/schemas'
 import { builder, getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { getCatalystItemURN } from 'modules/item/utils'
-import { buildDeployData, deploy, makeContentFiles, EntityType } from 'modules/deployment/contentUtils'
+import { buildDeployData, deploy, makeContentFiles, EntityType, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
@@ -64,6 +64,26 @@ export async function getFiles(contents: Record<string, string>) {
     files[file.path] = file.blob
     return files
   }, {})
+}
+
+export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
+  const newHashes = await computeHashes(newContents)
+  const filesToDownload: Record<string, string> = {}
+  for (const fileName in item.contents) {
+    if (!newHashes[fileName] || item.contents[fileName] !== newHashes[fileName]) {
+      filesToDownload[fileName] = item.contents[fileName]
+    }
+  }
+
+  const blobs = await getFiles(filesToDownload)
+
+  let imageSize = 0
+  try {
+    const image = await generateImage(item)
+    imageSize = image.size
+  } catch (error) {}
+
+  return imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
 }
 
 export function calculateFilesSize(files: Record<string, Blob>) {

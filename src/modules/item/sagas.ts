@@ -61,10 +61,11 @@ import { getCollection } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { deployContents } from './export'
+import { deployContents, calculateFinalSize } from './export'
 import { Item } from './types'
 import { getItem } from './selectors'
-import { hasOnChainDataChanged, getMetadata } from './utils'
+import { ItemTooBigError } from './errors'
+import { hasOnChainDataChanged, getMetadata, MAX_FILE_SIZE } from './utils'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -119,6 +120,11 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
       throw new Error('Item should not be published to save it')
     }
 
+    const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+    if (finalSize > MAX_FILE_SIZE) {
+      throw new ItemTooBigError()
+    }
+
     yield call(() => builder.saveItem(item, contents))
 
     yield put(saveItemSuccess(item, contents))
@@ -141,6 +147,10 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     }
     if (!originalItem.collectionId) {
       throw new Error("Can't save a published without a collection")
+    }
+    const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+    if (finalSize > MAX_FILE_SIZE) {
+      throw new ItemTooBigError()
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()

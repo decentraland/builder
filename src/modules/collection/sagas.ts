@@ -77,6 +77,9 @@ import { Item } from 'modules/item/types'
 import { getWalletItems } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { calculateFinalSize, getFiles } from 'modules/item/export'
+import { MAX_FILE_SIZE } from 'modules/item/utils'
+import { ItemTooBigError } from 'modules/item/errors'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
@@ -180,6 +183,14 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   let { collection, items } = action.payload
   try {
+    for (const item of items) {
+      const contents: Record<string, Blob> = yield call(() => getFiles(item.contents))
+      const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+      if (finalSize > MAX_FILE_SIZE) {
+        throw new ItemTooBigError()
+      }
+    }
+
     // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
     // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
     yield put(saveCollectionRequest(collection))

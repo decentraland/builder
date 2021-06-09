@@ -39,7 +39,6 @@ export function* sendWalletMetaTransaction(contract: ContractData, method: TxSen
   const metaTxProvider: Provider = yield call(() => getNetworkProvider(contract.chainId))
   const txData = getMethodData(method, from)
 
-  console.log('TRANSACTIONS_API_URL', TRANSACTIONS_API_URL)
   const txHash: string = yield call(() =>
     sendMetaTransaction(provider, metaTxProvider, txData, contract, { serverURL: TRANSACTIONS_API_URL })
   )

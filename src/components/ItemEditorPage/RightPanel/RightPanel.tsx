@@ -55,6 +55,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
   setItem(item: Item) {
     this.setState({
+      thumbnail: '',
       name: item.name,
       description: item.description,
       rarity: item.rarity,
@@ -168,6 +169,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       const onSave = selectedItem && selectedItem.isPublished ? onSavePublishedItem : onSaveItem
       onSave(item, contents)
       this.setState({ isDirty: false })
+      this.handleOnResetItem()
     }
   }
 
@@ -234,170 +236,181 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isLoading, isConnected } = this.props
+    const { selectedItemId, address, isLoading, isConnected, error } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
     return (
       <div className="RightPanel">
-        {isConnected ?
-        <ItemProvider id={selectedItemId}>
-          {(item, collection, isItemLoading) => {
-            const canEditItemMetadata = this.canEditItemMetadata(item)
+        {isConnected ? (
+          <ItemProvider id={selectedItemId}>
+            {(item, collection, isItemLoading) => {
+              const canEditItemMetadata = this.canEditItemMetadata(item)
 
-            const wearableCategories = item ? getWearableCategories(item.contents) : []
-            const overrideCategories = item ? getOverridesCategories(item.contents) : []
+              const wearableCategories = item ? getWearableCategories(item.contents) : []
+              const overrideCategories = item ? getOverridesCategories(item.contents) : []
 
-            return isLoading || isItemLoading ? (
-              <Loader size="massive" active />
-            ) : hasItem || !selectedItemId ? (
-              <>
-                <div className="header">
-                  <div className="title">{t('item_editor.right_panel.properties')}</div>
-                  {item && isOwner(item, address) && !item.isPublished ? (
-                    <Dropdown trigger={<div className="actions" />} inline direction="left">
-                      <Dropdown.Menu>
-                        {getMissingBodyShapeType(item) !== null ? (
-                          <Dropdown.Item
-                            text={t('item_detail_page.add_representation', {
-                              bodyShape: t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()
-                            })}
-                            onClick={this.handleAddRepresentationToItem}
+              return isLoading || isItemLoading ? (
+                <Loader size="massive" active />
+              ) : hasItem || !selectedItemId ? (
+                <>
+                  <div className="header">
+                    <div className="title">{t('item_editor.right_panel.properties')}</div>
+                    {item && isOwner(item, address) && !item.isPublished ? (
+                      <Dropdown trigger={<div className="actions" />} inline direction="left">
+                        <Dropdown.Menu>
+                          {getMissingBodyShapeType(item) !== null ? (
+                            <Dropdown.Item
+                              text={t('item_detail_page.add_representation', {
+                                bodyShape: t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()
+                              })}
+                              onClick={this.handleAddRepresentationToItem}
+                            />
+                          ) : null}
+                          {item.collectionId ? (
+                            <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
+                          ) : null}
+                          <ConfirmDelete
+                            name={name}
+                            onDelete={this.handleDeleteItem}
+                            trigger={<Dropdown.Item text={t('global.delete')} />}
                           />
-                        ) : null}
-                        {item.collectionId ? (
-                          <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
-                        ) : null}
-                        <ConfirmDelete name={name} onDelete={this.handleDeleteItem} trigger={<Dropdown.Item text={t('global.delete')} />} />
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  ) : null}
-                </div>
-                <Collapsable item={item} label={t('item_editor.right_panel.details')}>
-                  {item => (
-                    <div className="details">
-                      {canEditItemMetadata ? (
-                        <>
-                          <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />
-                          <div className="thumbnail-container">
-                            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                            <div className="thumbnail-edit-container">
-                              <input
-                                type="file"
-                                ref={this.thumbnailInput}
-                                onChange={this.handleThumbnailChange}
-                                accept="image/png, image/jpeg"
-                              />
-                              <div className="thumbnail-edit-background"></div>
-                              <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                      )}
-                      <div className="metrics">
-                        <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
-                        <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
-                        <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
-                      </div>
-                    </div>
-                  )}
-                </Collapsable>
-                <Collapsable item={item} label={t('item_editor.right_panel.basics')}>
-                  {item => (
-                    <>
-                      <Input
-                        itemId={item.id}
-                        label={t('global.name')}
-                        value={name}
-                        disabled={!canEditItemMetadata}
-                        maxLength={ITEM_NAME_MAX_LENGTH}
-                        onChange={this.handleChangeName}
-                      />
-                      <Input
-                        itemId={item.id}
-                        label={t('global.description')}
-                        value={description}
-                        disabled={!canEditItemMetadata}
-                        maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
-                        onChange={this.handleChangeDescription}
-                      />
-                      <Select<WearableCategory>
-                        itemId={item.id}
-                        label={t('global.category')}
-                        value={data!.category}
-                        options={wearableCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
-                        disabled={!canEditItemMetadata}
-                        onChange={this.handleChangeCategory}
-                      />
-                      <Select<ItemRarity>
-                        itemId={item.id}
-                        label={t('global.rarity')}
-                        value={rarity}
-                        options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
-                        disabled={item.isPublished || !canEditItemMetadata}
-                        onChange={this.handleChangeRarity}
-                      />
-                    </>
-                  )}
-                </Collapsable>
-                <Collapsable item={item} label={t('item_editor.right_panel.overrides')}>
-                  {item => (
-                    <>
-                      <MultiSelect<WearableCategory>
-                        itemId={item.id}
-                        label={t('item_editor.right_panel.replaces')}
-                        info={t('item_editor.right_panel.replaces_info')}
-                        value={data!.replaces}
-                        options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
-                        disabled={!canEditItemMetadata}
-                        onChange={this.handleChangeReplaces}
-                      />
-                      <MultiSelect<WearableCategory>
-                        itemId={item.id}
-                        label={t('item_editor.right_panel.hides')}
-                        info={t('item_editor.right_panel.hides_info')}
-                        value={data!.hides}
-                        options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
-                        disabled={!canEditItemMetadata}
-                        onChange={this.handleChangeHides}
-                      />
-                    </>
-                  )}
-                </Collapsable>
-                <Collapsable item={item} label={t('item_editor.right_panel.tags')}>
-                  {item => <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />}
-                </Collapsable>
-                {collection && !isEditable(collection) ? (
-                  <Popup
-                    content={t('item_editor.right_panel.request_for_changes_explanation', { name: collection.name })}
-                    position="top center"
-                    trigger={
-                      <a className="forum-link" href={collection.forumLink} target="_blank" rel="noopener noreferrer">
-                        {t('item_editor.right_panel.request_for_changes')}
-                      </a>
-                    }
-                    hideOnScroll={true}
-                    on="hover"
-                    inverted
-                    basic
-                  />
-                ) : null}
-                {isDirty ? (
-                  <div className="edit-buttons">
-                    <Button secondary onClick={this.handleOnResetItem}>
-                      {t('global.cancel')}
-                    </Button>
-                    <Button primary onClick={this.handleOnSaveItem}>
-                      {t('global.save')}
-                    </Button>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    ) : null}
                   </div>
-                ) : null}
-              </>
-            ) : null
-          }}
-        </ItemProvider> : null}
+                  <Collapsable item={item} label={t('item_editor.right_panel.details')}>
+                    {item => (
+                      <div className="details">
+                        {canEditItemMetadata ? (
+                          <>
+                            <Icon name="edit" className="edit-item-file" onClick={this.handleChangeItemFile} />
+                            <div className="thumbnail-container">
+                              <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                              <div className="thumbnail-edit-container">
+                                <input
+                                  type="file"
+                                  ref={this.thumbnailInput}
+                                  onChange={this.handleThumbnailChange}
+                                  accept="image/png, image/jpeg"
+                                />
+                                <div className="thumbnail-edit-background"></div>
+                                <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                        )}
+                        <div className="metrics">
+                          <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
+                          <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
+                          <div className="metric textures">{t('model_metrics.textures', { count: item.metrics.textures })}</div>
+                        </div>
+                      </div>
+                    )}
+                  </Collapsable>
+                  <Collapsable item={item} label={t('item_editor.right_panel.basics')}>
+                    {item => (
+                      <>
+                        <Input
+                          itemId={item.id}
+                          label={t('global.name')}
+                          value={name}
+                          disabled={!canEditItemMetadata}
+                          maxLength={ITEM_NAME_MAX_LENGTH}
+                          onChange={this.handleChangeName}
+                        />
+                        <Input
+                          itemId={item.id}
+                          label={t('global.description')}
+                          value={description}
+                          disabled={!canEditItemMetadata}
+                          maxLength={ITEM_DESCRIPTION_MAX_LENGTH}
+                          onChange={this.handleChangeDescription}
+                        />
+                        <Select<WearableCategory>
+                          itemId={item.id}
+                          label={t('global.category')}
+                          value={data!.category}
+                          options={wearableCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                          disabled={!canEditItemMetadata}
+                          onChange={this.handleChangeCategory}
+                        />
+                        <Select<ItemRarity>
+                          itemId={item.id}
+                          label={t('global.rarity')}
+                          value={rarity}
+                          options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+                          disabled={item.isPublished || !canEditItemMetadata}
+                          onChange={this.handleChangeRarity}
+                        />
+                      </>
+                    )}
+                  </Collapsable>
+                  <Collapsable item={item} label={t('item_editor.right_panel.overrides')}>
+                    {item => (
+                      <>
+                        <MultiSelect<WearableCategory>
+                          itemId={item.id}
+                          label={t('item_editor.right_panel.replaces')}
+                          info={t('item_editor.right_panel.replaces_info')}
+                          value={data!.replaces}
+                          options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                          disabled={!canEditItemMetadata}
+                          onChange={this.handleChangeReplaces}
+                        />
+                        <MultiSelect<WearableCategory>
+                          itemId={item.id}
+                          label={t('item_editor.right_panel.hides')}
+                          info={t('item_editor.right_panel.hides_info')}
+                          value={data!.hides}
+                          options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                          disabled={!canEditItemMetadata}
+                          onChange={this.handleChangeHides}
+                        />
+                      </>
+                    )}
+                  </Collapsable>
+                  <Collapsable item={item} label={t('item_editor.right_panel.tags')}>
+                    {item => (
+                      <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
+                    )}
+                  </Collapsable>
+                  {collection && !isEditable(collection) ? (
+                    <Popup
+                      content={t('item_editor.right_panel.request_for_changes_explanation', { name: collection.name })}
+                      position="top center"
+                      trigger={
+                        <a className="forum-link" href={collection.forumLink} target="_blank" rel="noopener noreferrer">
+                          {t('item_editor.right_panel.request_for_changes')}
+                        </a>
+                      }
+                      hideOnScroll={true}
+                      on="hover"
+                      inverted
+                      basic
+                    />
+                  ) : null}
+                  {isDirty ? (
+                    <div className="edit-buttons">
+                      <Button secondary onClick={this.handleOnResetItem}>
+                        {t('global.cancel')}
+                      </Button>
+                      <Button primary onClick={this.handleOnSaveItem}>
+                        {t('global.save')}
+                      </Button>
+                    </div>
+                  ) : error ? (
+                    <p className="danger-text">
+                      {t('global.error_ocurred')}: {error}
+                    </p>
+                  ) : null}
+                </>
+              ) : null
+            }}
+          </ItemProvider>
+        ) : null}
       </div>
     )
   }
