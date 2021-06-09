@@ -143,7 +143,7 @@ export function toItemObject(items: Item[]) {
   }, {} as Record<string, Item>)
 }
 
-export async function generateImage(item: Item, width = 1024, height = 1024) {
+export async function generateImage(item: Item, width = 256, height = 256) {
   // fetch thumbnail
   const response = await fetch(getThumbnailURL(item))
   if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
@@ -169,6 +169,31 @@ export async function generateImage(item: Item, width = 1024, height = 1024) {
   // render item
   const img = document.createElement('img')
   const url = URL.createObjectURL(thumbnail)
+  const load = future()
+  img.onload = load.resolve
+  img.src = url
+  await load // wait for image to load
+  URL.revokeObjectURL(url)
+  context.drawImage(img, 0, 0, width, height)
+
+  const blob = future<Blob>()
+  canvas.toBlob(result => (result ? blob.resolve(result) : blob.reject(new Error('Error generating image blob'))))
+  return blob
+}
+
+export async function resizeImage(image: Blob, width = 256, height = 256) {
+  // create canvas
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const context = canvas.getContext('2d')
+
+  // fail
+  if (!context) return image
+
+  // render item
+  const img = document.createElement('img')
+  const url = URL.createObjectURL(image)
   const load = future()
   img.onload = load.resolve
   img.src = url

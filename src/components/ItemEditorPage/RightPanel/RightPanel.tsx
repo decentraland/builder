@@ -13,7 +13,8 @@ import {
   getRarities,
   getWearableCategories,
   getOverridesCategories,
-  isOwner
+  isOwner,
+  resizeImage
 } from 'modules/item/utils'
 import { isEditable } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
@@ -193,19 +194,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target
 
-    const MAX_THUMBNAIL_SIZE = 5000000
-
     if (files && files.length > 0) {
       const file = files[0]
-      if (file.size > MAX_THUMBNAIL_SIZE) {
-        alert(
-          t('asset_pack.edit_assetpack.errors.thumbnail_size', {
-            count: MAX_THUMBNAIL_SIZE
-          })
-        )
-        return
-      }
-      const thumbnail = URL.createObjectURL(file)
+      const resizedFile = await resizeImage(file)
+      const thumbnail = URL.createObjectURL(resizedFile)
 
       this.setState({
         thumbnail,

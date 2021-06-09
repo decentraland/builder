@@ -38,7 +38,7 @@ import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
-import { getExtension, toMB } from 'lib/file'
+import { getExtension } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
 import {
   getBodyShapeType,
@@ -48,7 +48,8 @@ import {
   getBackgroundStyle,
   isModelPath,
   isImageFile,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE,
+  resizeImage
 } from 'modules/item/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from './errors'
 import { getThumbnailType } from './utils'
@@ -360,23 +361,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
   }
 
-  handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { contents } = this.state
     const { files } = event.target
 
-    const MAX_THUMBNAIL_SIZE = 51200 // 50MB
-
     if (files && files.length > 0) {
       const file = files[0]
-      if (file.size > MAX_THUMBNAIL_SIZE) {
-        alert(
-          t('asset_pack.edit_assetpack.errors.thumbnail_size', {
-            size: `${toMB(MAX_THUMBNAIL_SIZE)}MB`
-          })
-        )
-        return
-      }
-      const thumbnail = URL.createObjectURL(file)
+      const resizedFile = await resizeImage(file)
+      const thumbnail = URL.createObjectURL(resizedFile)
 
       this.setState({
         thumbnail,
@@ -418,8 +410,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     } else {
       const url = URL.createObjectURL(contents[model])
       const { image, info } = await getModelData(url, {
-        width: 1024,
-        height: 1024,
+        width: 256,
+        height: 256,
         extension: getExtension(model) || undefined,
         engine: EngineType.BABYLON
       })
