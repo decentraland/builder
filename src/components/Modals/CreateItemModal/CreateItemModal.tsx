@@ -31,14 +31,16 @@ import {
   WearableCategory,
   ItemRarity,
   ITEM_NAME_MAX_LENGTH,
-  WearableRepresentation
+  WearableRepresentation,
+  MODEL_EXTENSIONS,
+  IMAGE_EXTENSIONS
 } from 'modules/item/types'
 import { EngineType, getModelData } from 'lib/getModelData'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
-import { getExtension, toMB } from 'lib/file'
+import { getExtension } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
 import {
   getBodyShapeType,
@@ -48,7 +50,9 @@ import {
   getBackgroundStyle,
   isModelPath,
   isImageFile,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE,
+  resizeImage,
+  isImageCategory
 } from 'modules/item/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from './errors'
 import { getThumbnailType } from './utils'
@@ -360,23 +364,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
   }
 
-  handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { contents } = this.state
     const { files } = event.target
 
-    const MAX_THUMBNAIL_SIZE = 51200 // 50MB
-
     if (files && files.length > 0) {
       const file = files[0]
-      if (file.size > MAX_THUMBNAIL_SIZE) {
-        alert(
-          t('asset_pack.edit_assetpack.errors.thumbnail_size', {
-            size: `${toMB(MAX_THUMBNAIL_SIZE)}MB`
-          })
-        )
-        return
-      }
-      const thumbnail = URL.createObjectURL(file)
+      const resizedFile = await resizeImage(file)
+      const thumbnail = URL.createObjectURL(resizedFile)
 
       this.setState({
         thumbnail,
@@ -418,8 +413,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     } else {
       const url = URL.createObjectURL(contents[model])
       const { image, info } = await getModelData(url, {
-        width: 1024,
-        height: 1024,
+        width: 256,
+        height: 256,
         extension: getExtension(model) || undefined,
         engine: EngineType.BABYLON
       })
@@ -432,7 +427,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       metrics = info
     }
 
-    if (this.hasCustomImage(model, contents)) {
+    if (isImageFile(model!)) {
       thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
     }
 
@@ -441,21 +436,24 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   async updateThumbnail(category: WearableCategory) {
     const { model, contents } = this.state
-    const url = URL.createObjectURL(contents![model!])
 
-    let thumbnail
-    if (contents && this.hasCustomImage(model, contents)) {
-      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!], category)
-    } else {
-      const { image } = await getModelData(url, {
-        thumbnailType: getThumbnailType(category),
-        extension: (model && getExtension(model)) || undefined,
-        engine: EngineType.BABYLON
-      })
-      thumbnail = image
+    const isCustom = !!contents && THUMBNAIL_PATH in contents
+    if (!isCustom) {
+      let thumbnail
+      if (contents && isImageFile(model!)) {
+        thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!], category)
+      } else {
+        const url = URL.createObjectURL(contents![model!])
+        const { image } = await getModelData(url, {
+          thumbnailType: getThumbnailType(category),
+          extension: (model && getExtension(model)) || undefined,
+          engine: EngineType.BABYLON
+        })
+        thumbnail = image
+        URL.revokeObjectURL(url)
+      }
+      this.setState({ thumbnail })
     }
-    URL.revokeObjectURL(url)
-    this.setState({ thumbnail })
   }
 
   async processImage(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
@@ -529,7 +527,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDropzoneCTA = (open: () => void) => {
-    const { error, isLoading } = this.state
+    const { metadata } = this.props
+    const { changeItemFile } = metadata as CreateItemModalMetadata
+    const { error, isLoading, isRepresentation, category } = this.state
     return (
       <>
         {isLoading ? (
@@ -542,7 +542,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           values={{
             models_link: (
               <span className="link" onClick={this.handleOpenDocs}>
-                GLB, GLTF, PNG, ZIP
+                {isRepresentation || changeItemFile ? (isImageCategory(category!) ? 'PNG, ZIP' : 'GLB, GLTF, ZIP') : 'GLB, GLTF, PNG, ZIP'}
               </span>
             ),
             action: (
@@ -577,7 +577,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderImportView() {
-    const { onClose } = this.props
+    const { onClose, metadata } = this.props
+    const { changeItemFile } = metadata as CreateItemModalMetadata
+    const { isRepresentation, category } = this.state
     const title = this.renderModalTitle()
 
     return (
@@ -585,7 +587,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <FileImport
-            accept={ITEM_EXTENSIONS}
+            accept={
+              isRepresentation || changeItemFile ? (isImageCategory(category!) ? IMAGE_EXTENSIONS : MODEL_EXTENSIONS) : ITEM_EXTENSIONS
+            }
             onAcceptedFiles={this.handleDropAccepted}
             onRejectedFiles={this.handleDropRejected}
             renderAction={this.renderDropzoneCTA}
@@ -659,8 +663,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 <Column className="preview" width={192} grow={false}>
                   <div className="thumbnail-container">
                     <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
-                    <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                    <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                    {isRepresentation ? null : (
+                      <>
+                        <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                        <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                      </>
+                    )}
                   </div>
                   {metrics ? (
                     <div className="metrics">
