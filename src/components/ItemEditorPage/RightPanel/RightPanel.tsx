@@ -248,7 +248,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
 
     return (
       <div className="RightPanel">
-        { isConnected ?
+        {isConnected ?
         <ItemProvider id={selectedItemId}>
           {(item, collection, isItemLoading) => {
             const canEditItemMetadata = this.canEditItemMetadata(item)
@@ -405,7 +405,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               </>
             ) : null
           }}
-        </ItemProvider> : null }
+        </ItemProvider> : null}
       </div>
     )
   }
