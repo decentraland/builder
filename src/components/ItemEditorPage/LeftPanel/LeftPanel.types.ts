@@ -5,6 +5,7 @@ import { setItems, SetItemsAction } from 'modules/editor/actions'
 import { setCollection, SetCollectionAction } from 'modules/item/actions'
 
 export type Props = {
+  isConnected: boolean
   items: Item[]
   orphanItems: Item[]
   collections: Collection[]
@@ -18,7 +19,7 @@ export type Props = {
 
 export type MapStateProps = Pick<
   Props,
-  'items' | 'orphanItems' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape'
+  'items' | 'orphanItems' | 'collections' | 'selectedItemId' | 'selectedCollectionId' | 'visibleItems' | 'bodyShape' | 'isConnected'
 >
 export type MapDispatchProps = Pick<Props, 'onSetItems' | 'onSetCollection'>
 export type MapDispatch = Dispatch<SetItemsAction | SetCollectionAction>

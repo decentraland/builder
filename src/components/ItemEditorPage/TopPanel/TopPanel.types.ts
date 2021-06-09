@@ -4,6 +4,7 @@ import { ChainId } from '@dcl/schemas'
 
 export type Props = {
   chainId?: ChainId
+  isConnected: boolean
   isReviewing: boolean
   isCommitteeMember: boolean
   selectedCollectionId: string | null
@@ -16,6 +17,6 @@ export type State = {
   isRejectModalOpen: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId'>
+export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId' | 'isConnected'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

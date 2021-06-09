@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
+import { isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { getSelectedCollectionId, getSelectedItemId } from 'modules/location/selectors'
 import { getBodyShape, getVisibleItems } from 'modules/editor/selectors'
 import { setItems } from 'modules/editor/actions'
@@ -10,6 +11,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './LeftPanel.types'
 import LeftPanel from './LeftPanel'
 
 const mapState = (state: RootState): MapStateProps => ({
+  isConnected: isConnected(state),
   items: getItems(state),
   orphanItems: getWalletOrphanItems(state),
   collections: getAuthorizedCollections(state),

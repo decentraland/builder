@@ -87,9 +87,9 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isCommitteeMember, isReviewing, selectedCollectionId } = this.props
+    const { isCommitteeMember, isReviewing, selectedCollectionId, isConnected } = this.props
 
-    return isCommitteeMember && isReviewing ? (
+    return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
           {(collection, _collectionItems, isLoading) =>

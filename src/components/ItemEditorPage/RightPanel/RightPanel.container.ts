@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
 import { getItem, getLoading } from 'modules/item/selectors'
@@ -28,6 +28,7 @@ const mapState = (state: RootState): MapStateProps => {
     collection: selectedItemId && selectedItem && selectedItem.collectionId ? getCollection(state, selectedItem.collectionId) : null,
     selectedItem,
     selectedItemId,
+    isConnected: isConnected(state),
     isLoading:
       isLoadingType(getLoading(state), DEPLOY_ITEM_CONTENTS_REQUEST) ||
       getPendingTransactions(state).some(tx => tx.actionType === SAVE_PUBLISHED_ITEM_SUCCESS)
