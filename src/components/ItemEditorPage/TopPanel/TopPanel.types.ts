@@ -1,7 +1,9 @@
 import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
+import { ChainId } from '@dcl/schemas'
 
 export type Props = {
+  chainId?: ChainId
   isReviewing: boolean
   isCommitteeMember: boolean
   selectedCollectionId: string | null
@@ -14,6 +16,6 @@ export type State = {
   isRejectModalOpen: boolean
 }
 
-export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId'>
+export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId'>
 export type MapDispatchProps = Pick<Props, 'onNavigate'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction>

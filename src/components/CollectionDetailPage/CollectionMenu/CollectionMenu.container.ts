@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getWallet, getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { deleteCollectionRequest } from 'modules/collection/actions'
 import { getName } from 'modules/profile/selectors'
@@ -14,6 +14,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   wallet: getWallet(state)!,
   items: getCollectionItems(state, ownProps.collection.id),
   name: getName(state) || '',
+  chainId: getChainId(state),
   isForumPostLoading: isLoadingType(getLoading(state), CREATE_COLLECTION_FORUM_POST_REQUEST)
 })
 

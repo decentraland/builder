@@ -32,6 +32,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   renderPage(collection: Collection) {
     const { isApproveModalOpen, isRejectModalOpen } = this.state
+    const { chainId } = this.props
 
     return (
       <>
@@ -40,7 +41,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         </div>
         <div className="title">
           {collection.name}
-          <JumpIn size="small" collection={collection} />
+          <JumpIn size="small" collection={collection} chainId={chainId} />
         </div>
         <div className="actions">
           {hasReviews(collection) ? (

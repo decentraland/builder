@@ -17,8 +17,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
   }
 
   handleNavigateToExplorer = () => {
-    const { collection } = this.props
-    this.navigateTo(getExplorerURL(collection.id), '_blank')
+    const { collection, chainId } = this.props
+    this.navigateTo(getExplorerURL(collection, chainId), '_blank')
   }
 
   handlePostToForum = () => {
