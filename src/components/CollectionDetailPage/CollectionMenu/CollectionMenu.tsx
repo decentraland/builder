@@ -51,7 +51,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, wallet, isForumPostLoading, isCommitteeMember } = this.props
+    const { collection, wallet, isForumPostLoading } = this.props
     const isOwner = isCollectionOwner(collection, wallet.address)
     return (
       <Dropdown
@@ -65,6 +65,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
         direction="left"
       >
         <Dropdown.Menu>
+          <Dropdown.Item text={t('collection_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+
           {collection.isPublished ? (
             isOwner ? (
               <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
@@ -130,10 +132,6 @@ export default class CollectionMenu extends React.PureComponent<Props> {
             inverted
             flowing
           />
-
-          {isCommitteeMember && collection.isPublished ? (
-            <Dropdown.Item text={t('collection_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
-          ) : null}
         </Dropdown.Menu>
       </Dropdown>
     )
