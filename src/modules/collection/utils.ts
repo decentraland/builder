@@ -19,7 +19,8 @@ export function isOnSale(collection: Collection, wallet: Wallet) {
 }
 
 export function getExplorerURL(id: string) {
-  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
+  // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars
+  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '').replace('.org', '.zone')
   return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}`
 }
 

@@ -46,7 +46,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, wallet, isForumPostLoading } = this.props
+    const { collection, wallet, isForumPostLoading, isCommitteeMember } = this.props
     const isOwner = isCollectionOwner(collection, wallet.address)
     return (
       <Dropdown
@@ -125,6 +125,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
             inverted
             flowing
           />
+
+          {isCommitteeMember && collection.isPublished ? <Dropdown.Item text={t('collection_menu.see_in_world')} /> : null}
         </Dropdown.Menu>
       </Dropdown>
     )

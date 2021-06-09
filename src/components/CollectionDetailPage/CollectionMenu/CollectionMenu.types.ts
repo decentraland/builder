@@ -8,9 +8,10 @@ import { Item } from 'modules/item/types'
 
 export type Props = {
   collection: Collection
-  items: Item[]
   wallet: Wallet
+  items: Item[]
   name: string
+  isCommitteeMember: boolean
   isForumPostLoading: boolean
   onOpenModal: typeof openModal
   onPostToForum: typeof createCollectionForumPostRequest
@@ -18,6 +19,6 @@ export type Props = {
 }
 
 export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'name' | 'isForumPostLoading'>
+export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'name' | 'isForumPostLoading' | 'isCommitteeMember'>
 export type MapDispatchProps = Pick<Props, 'onOpenModal' | 'onPostToForum' | 'onDelete'>
 export type MapDispatch = Dispatch<OpenModalAction | CreateCollectionForumPostRequestAction | DeleteCollectionRequestAction>
