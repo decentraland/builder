@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig, AxiosError } from 'axios'
 import { env } from 'decentraland-commons'
 import { BaseAPI, APIParam } from 'decentraland-dapps/dist/lib/api'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
@@ -416,7 +416,7 @@ export type PoolFilters = {
 // API
 
 export class BuilderAPI extends BaseAPI {
-  request(method: AxiosRequestConfig['method'], path: string, params?: APIParam | null, config?: AxiosRequestConfig) {
+  async request(method: AxiosRequestConfig['method'], path: string, params?: APIParam | null, config?: AxiosRequestConfig) {
     let authConfig = {}
     let headers = {}
     if (config) {
@@ -431,7 +431,16 @@ export class BuilderAPI extends BaseAPI {
       ...authHeaders
     }
     authConfig = { ...authConfig, headers }
-    return super.request(method, path, params, authConfig)
+
+    try {
+      const response = await super.request(method, path, params, authConfig)
+      return response
+    } catch (error) {
+      if (this.isAxiosError(error) && error.response) {
+        error.message = error.response.data.error
+      }
+      throw error
+    }
   }
 
   async deployToPool(projectId: string, additionalInfo: PoolDeploymentAdditionalFields | null = null) {
@@ -640,6 +649,10 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchRarities(): Promise<Rarity[]> {
     return this.request('get', '/rarities')
+  }
+
+  private isAxiosError(error: any): error is AxiosError {
+    return error.isAxiosError
   }
 }
 
