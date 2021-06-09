@@ -1,7 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -50,7 +50,11 @@ import {
   rejectCollectionFailure,
   REJECT_COLLECTION_REQUEST,
   PUBLISH_COLLECTION_SUCCESS,
-  saveCollectionRequest
+  saveCollectionRequest,
+  SAVE_COLLECTION_SUCCESS,
+  SAVE_COLLECTION_FAILURE,
+  SaveCollectionFailureAction,
+  SaveCollectionSuccessAction
 } from './actions'
 import { getMethodData, getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
@@ -174,10 +178,28 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 }
 
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-  const { collection, items } = action.payload
+  let { collection, items } = action.payload
   try {
     if (!collection.salt) {
       throw new Error('The collection has no salt 🧂')
+    }
+
+    // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
+    // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
+    yield put(saveCollectionRequest(collection))
+
+    const saveCollection: {
+      success: SaveCollectionSuccessAction
+      failure: SaveCollectionFailureAction
+    } = yield race({
+      success: take(SAVE_COLLECTION_SUCCESS),
+      failure: take(SAVE_COLLECTION_FAILURE)
+    })
+
+    if (saveCollection.success) {
+      collection = saveCollection.success.payload.collection
+    } else {
+      throw saveCollection.failure.payload.error
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
