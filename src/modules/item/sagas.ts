@@ -122,7 +122,8 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
 
     const finalSize: number = yield call(() => calculateFinalSize(item, contents))
     if (finalSize > MAX_FILE_SIZE) {
-      throw new ItemTooBigError()
+      console.warn(new ItemTooBigError().message)
+      // throw new ItemTooBigError()
     }
 
     yield call(() => builder.saveItem(item, contents))
@@ -148,9 +149,11 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     if (!originalItem.collectionId) {
       throw new Error("Can't save a published without a collection")
     }
+
     const finalSize: number = yield call(() => calculateFinalSize(item, contents))
     if (finalSize > MAX_FILE_SIZE) {
-      throw new ItemTooBigError()
+      console.warn(new ItemTooBigError().message)
+      // throw new ItemTooBigError()
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()

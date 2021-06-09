@@ -1107,6 +1107,10 @@
     "meta_transaction_failure": {
       "title": "元交易",
       "body": "发送元交易时出错。{br}请重试或加入我们的{discord_link}以获取支持。"
+    },
+    "deploy_item_failure": {
+      "title": "项目错误",
+      "body": "无法从 \"{collectionName}\" 上传项目 \"{itemName}\"。{br}商品尺寸过大，允许的最大尺寸为 {size}"
     }
   }
 }

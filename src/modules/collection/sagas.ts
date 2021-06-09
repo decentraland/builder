@@ -79,7 +79,6 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { calculateFinalSize, getFiles } from 'modules/item/export'
 import { MAX_FILE_SIZE } from 'modules/item/utils'
-import { ItemTooBigError } from 'modules/item/errors'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
@@ -180,17 +179,25 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
   }
 }
 
+;(window as any).calculateCollectionSize = async (items: Item[]) => {
+  for (const item of items) {
+    ;(window as any).calculateSize(item)
+  }
+}
+;(window as any).calculateSize = async (item: Item) => {
+  console.log('Saga size check. Item', item)
+  const contents: Record<string, Blob> = await getFiles(item.contents)
+  const finalSize: number = await calculateFinalSize(item, contents)
+  console.log('final size', finalSize, 'Contents', item.contents, 'files', contents)
+  console.log('Check: finalSize > MAX_FILE_SIZE', finalSize, '>', MAX_FILE_SIZE)
+  if (finalSize > MAX_FILE_SIZE) {
+    console.warn('Too big')
+  }
+}
+
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   let { collection, items } = action.payload
   try {
-    for (const item of items) {
-      const contents: Record<string, Blob> = yield call(() => getFiles(item.contents))
-      const finalSize: number = yield call(() => calculateFinalSize(item, contents))
-      if (finalSize > MAX_FILE_SIZE) {
-        throw new ItemTooBigError()
-      }
-    }
-
     // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
     // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
     yield put(saveCollectionRequest(collection))

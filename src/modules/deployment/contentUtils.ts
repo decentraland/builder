@@ -180,6 +180,11 @@ export async function deploy(contentServerUrl: string, data: DeployData) {
   }
 
   const deployResponse = await fetch(`${contentServerUrl}/content/entities`, { method: 'POST', body: form })
+  if (!deployResponse.ok) {
+    const blob = await deployResponse.blob()
+    const message = await blob.text()
+    throw new Error(message)
+  }
   const { creationTimestamp } = await deployResponse.json()
   return creationTimestamp
 }

@@ -77,13 +77,18 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
 
   const blobs = await getFiles(filesToDownload)
 
+  console.log('util size check. Item', item)
+
   let imageSize = 0
   try {
     const image = await generateImage(item)
     imageSize = image.size
   } catch (error) {}
 
-  return imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
+  const finalSize = imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
+  console.log('final size', finalSize, 'Contents', item.contents, 'files', { ...blobs, ...newContents })
+  console.log('Check: finalSize > MAX_FILE_SIZE', finalSize, '>', 2097152)
+  return finalSize
 }
 
 export function calculateFilesSize(files: Record<string, Blob>) {

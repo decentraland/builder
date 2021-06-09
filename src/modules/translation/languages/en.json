@@ -1118,6 +1118,10 @@
     "meta_transaction_failure": {
       "title": "Meta transaction",
       "body": "There was an error sending the meta transaction.{br}Please try again or join our {discord_link} to get support."
+    },
+    "deploy_item_failure": {
+      "title": "Error on Item",
+      "body": "Fail to upload the item \"{itemName}\" from \"{collectionName}\".{br}The item size is too big for the max size of {size}"
     }
   }
 }
