@@ -180,10 +180,6 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   let { collection, items } = action.payload
   try {
-    if (!collection.salt) {
-      throw new Error('The collection has no salt 🧂')
-    }
-
     // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
     // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
     yield put(saveCollectionRequest(collection))
@@ -200,6 +196,10 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
       collection = saveCollection.success.payload.collection
     } else {
       throw saveCollection.failure.payload.error
+    }
+
+    if (!collection.salt) {
+      throw new Error('The collection has no salt 🧂')
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
