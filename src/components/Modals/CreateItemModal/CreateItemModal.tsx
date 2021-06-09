@@ -663,8 +663,12 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                 <Column className="preview" width={192} grow={false}>
                   <div className="thumbnail-container">
                     <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
+                    {isRepresentation ? null : (
+                      <>
                         <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
                         <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                      </>
+                    )}
                   </div>
                   {metrics ? (
                     <div className="metrics">
