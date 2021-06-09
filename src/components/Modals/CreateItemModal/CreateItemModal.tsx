@@ -232,7 +232,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
 
       const finalSize = await this.calculateFinalSize(item.contents, computedHashes, contents)
-      if (finalSize > 0 || finalSize > MAX_FILE_SIZE) {
+      if (finalSize > MAX_FILE_SIZE) {
         const error = new ItemTooBigError()
         return this.setState({ error: error.message, isLoading: false })
       }
@@ -668,14 +668,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, isLoading, metadata } = this.props
+    const { onClose, metadata } = this.props
     const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
     const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
+
     const error = this.props.error || this.state.error
+    const isLoading = this.props.isLoading || this.state.isLoading
 
     return (
       <>
