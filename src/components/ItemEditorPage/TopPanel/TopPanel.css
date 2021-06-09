@@ -21,6 +21,9 @@
 }
 
 .TopPanel .title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 1 auto;
   text-align: center;
   font-weight: 600;

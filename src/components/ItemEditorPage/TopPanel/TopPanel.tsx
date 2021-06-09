@@ -5,6 +5,7 @@ import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
 import { hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
+import JumpIn from 'components/JumpIn'
 import ReviewModal from './ReviewModal'
 import { ReviewType } from './ReviewModal/ReviewModal.types'
 import { Props, State } from './TopPanel.types'
@@ -31,13 +32,17 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
   renderPage(collection: Collection) {
     const { isApproveModalOpen, isRejectModalOpen } = this.state
+    const { chainId } = this.props
 
     return (
       <>
         <div className="actions">
           <div className="back" onClick={this.handleBack} />
         </div>
-        <div className="title">{collection.name}</div>
+        <div className="title">
+          {collection.name}
+          <JumpIn size="small" collection={collection} chainId={chainId} />
+        </div>
         <div className="actions">
           {hasReviews(collection) ? (
             collection.isApproved ? (

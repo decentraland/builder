@@ -4,7 +4,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAnalytics } from 'decentraland-dapps/dist/modules/analytics/utils'
 import { DeploymentStatus } from 'modules/deployment/types'
-import { coordsToId } from 'modules/land/utils'
+import { coordsToId, getExplorerURL } from 'modules/land/utils'
 import { getDeployment, getStatus } from 'modules/deployment/utils'
 import Icon from 'components/Icon'
 import LandAtlas from './LandAtlas'
@@ -258,6 +258,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
 
   renderSuccess = () => {
     const { placement } = this.state
+    const { x, y } = placement!.point
     return (
       <div className="DeployToLand success">
         <div className="modal-header">
@@ -268,13 +269,7 @@ export default class DeployToLand extends React.PureComponent<Props, State> {
         </Header>
         <p className="modal-subtitle">{t('deployment_modal.land.success.description')}</p>
         <div className="actions">
-          <Button
-            size="small"
-            primary
-            href={`https://play.decentraland.org?position=${placement!.point.x},${placement!.point.y}`}
-            target="_blank"
-            rel="no:opener no:referrer"
-          >
+          <Button size="small" primary href={getExplorerURL(x, y)} target="_blank" rel="no:opener no:referrer">
             {t('deployment_modal.land.success.jump_in')}
           </Button>
 

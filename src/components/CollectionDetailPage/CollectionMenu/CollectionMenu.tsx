@@ -3,7 +3,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { Dropdown, Button, Icon, Popup, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
-import { isOwner as isCollectionOwner } from 'modules/collection/utils'
+import { getExplorerURL, isOwner as isCollectionOwner } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionMenu.types'
 import './CollectionMenu.css'
@@ -14,6 +14,11 @@ export default class CollectionMenu extends React.PureComponent<Props> {
     if (collection.isPublished && collection.forumLink) {
       this.navigateTo(collection.forumLink, '_blank')
     }
+  }
+
+  handleNavigateToExplorer = () => {
+    const { collection, chainId } = this.props
+    this.navigateTo(getExplorerURL(collection, chainId), '_blank')
   }
 
   handlePostToForum = () => {
@@ -60,6 +65,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
         direction="left"
       >
         <Dropdown.Menu>
+          <Dropdown.Item text={t('collection_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+
           {collection.isPublished ? (
             isOwner ? (
               <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />

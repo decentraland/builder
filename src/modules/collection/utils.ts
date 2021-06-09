@@ -1,6 +1,8 @@
 import { Address } from 'web3x-es/address'
 import { toBN } from 'web3x-es/utils'
 import { env, utils } from 'decentraland-commons'
+import { ChainId, Network, getChainName } from '@dcl/schemas'
+import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
@@ -16,6 +18,27 @@ export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: bool
 export function isOnSale(collection: Collection, wallet: Wallet) {
   const { address } = getContract(ContractName.CollectionStore, wallet.networks.MATIC.chainId)
   return collection.minters.includes(address.toLowerCase())
+}
+
+export function getExplorerURL(collection: Collection, chainId?: ChainId) {
+  if (!collection.contractAddress || !chainId) {
+    throw new Error('You need the collection and item to be published to get the catalyst urn')
+  }
+
+  let id = collection.id
+  if (collection.isPublished) {
+    const config = getChainConfiguration(chainId)
+    const chainName = getChainName(config.networkMapping[Network.MATIC])
+    if (!chainName) {
+      throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
+    }
+
+    id = `urn:decentraland:${chainName.toLowerCase()}:collections-v2:${collection.contractAddress}`
+  }
+
+  // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars
+  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '').replace('.org', '.zone')
+  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}`
 }
 
 export function getCollectionBaseURI() {

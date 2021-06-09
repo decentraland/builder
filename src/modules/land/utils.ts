@@ -1,4 +1,5 @@
 import { Coord } from 'react-tile-map'
+import { env } from 'decentraland-commons'
 import { Color } from 'decentraland-ui'
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
@@ -10,9 +11,7 @@ import { isZero } from 'lib/address'
 import { Land, LandTile, LandType, RoleType } from './types'
 
 export const LAND_POOL_ADDRESS = '0xDc13378daFca7Fe2306368A16BCFac38c80BfCAD'
-
 export const MAX_PARCELS_PER_TX = 20
-
 export const SEPARATOR = ','
 
 export const coordsToId = (x: string | number, y: string | number) => x + SEPARATOR + y
@@ -155,4 +154,9 @@ export function locateNextLand(landTiles: Record<string, LandTile>, currentLandI
 
   const nextLandId = landIds[nextIndex]
   return landTiles[nextLandId]!.land
+}
+
+export function getExplorerURL(x: string | number, y: string | number) {
+  const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '')
+  return `${EXPLORER_URL}?position=${coordsToId(x, y)}`
 }
