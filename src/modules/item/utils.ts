@@ -18,6 +18,7 @@ import {
   RARITY_COLOR,
   WearableCategory,
   WearableBodyShapeType,
+  IMAGE_CATEGORIES,
   THUMBNAIL_PATH
 } from './types'
 
@@ -252,13 +253,17 @@ export function getRarities() {
   return Object.values(ItemRarity)
 }
 
-function getCategories(contents: Record<string, any> | undefined = {}) {
-  const SIMPLE_WEARABLE_CATEGORIES = [WearableCategory.EYEBROWS, WearableCategory.EYES, WearableCategory.MOUTH]
-  const fileNames = Object.keys(contents)
+export function isImageCategory(category: WearableCategory) {
+  return IMAGE_CATEGORIES.includes(category)
+}
 
-  return fileNames.some(isComplexFile)
-    ? Object.values(WearableCategory).filter(category => !SIMPLE_WEARABLE_CATEGORIES.includes(category))
-    : SIMPLE_WEARABLE_CATEGORIES
+export function isModelCategory(category: WearableCategory) {
+  return !isImageCategory(category)
+}
+
+function getCategories(contents: Record<string, any> | undefined = {}) {
+  const fileNames = Object.keys(contents)
+  return fileNames.some(isModelFile) ? Object.values(WearableCategory).filter(category => isModelCategory(category)) : IMAGE_CATEGORIES
 }
 
 export function getWearableCategories(contents: Record<string, any> | undefined = {}) {
@@ -270,15 +275,17 @@ export function getOverridesCategories(contents: Record<string, any> | undefined
 }
 
 export function isImageFile(fileName: string) {
-  return fileName.endsWith('.png')
+  return fileName.toLowerCase().endsWith('.png')
 }
 
-export function isComplexFile(fileName: string) {
+export function isModelFile(fileName: string) {
+  fileName = fileName.toLowerCase()
   return fileName.endsWith('.gltf') || fileName.endsWith('.glb')
 }
 
 export function isModelPath(fileName: string) {
   fileName = fileName.toLowerCase()
+  // we ignore PNG files that end with "_mask", since those are auxiliary
   const isMask = fileName.includes('_mask')
-  return isComplexFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
+  return isModelFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
 }
