@@ -83,7 +83,7 @@ export class ControllerEntityFactory {
   }
 }
 
-export async function computeHashes(contents: Record<string, Blob>) {
+export async function computeHashes(contents: Record<string, Blob>): Promise<Record<string, string>> {
   const contentsAsHashes: Record<string, string> = {}
   for (const path in contents) {
     const blob = contents[path]

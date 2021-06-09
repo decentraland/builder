@@ -179,6 +179,7 @@
     "adding_representation": "Esto será agregado como {bodyShape} para el siguiente item",
     "change_item_file": "Editar representación",
     "error": {
+      "item_too_big": "El item entero es demasiado grande para cargarlo. El tamaño máximo de todos los archivos (contando el thumbnail) es {size}.",
       "file_too_big": "El archivo es demasiado grande para cargarlo. El tamaño máximo es {size}.",
       "wrong_extension": "El archivo tiene una extensión inválida.",
       "invalid_files": "Los archivos parecen no ser válidos o estar dañados. Por favor revíselos y vuelva a intentarlo.",

@@ -54,10 +54,11 @@ import {
   resizeImage,
   isImageCategory
 } from 'modules/item/utils'
-import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from './errors'
+import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError, ItemTooBigError } from './errors'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
 import './CreateItemModal.css'
+import { calculateFilesSize, getFiles } from 'modules/item/export'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -102,13 +103,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
     let changeItemFile = false
     let addRepresentation = false
-    let pristineItem = null
+    let pristineItem: Item | null = null
+    let computedHashes: Record<string, string> = {}
 
     if (metadata) {
       changeItemFile = metadata.changeItemFile
       addRepresentation = metadata.addRepresentation
       pristineItem = metadata.item
     }
+
+    this.setState({ error: '', isLoading: true })
 
     if (id && this.isValid()) {
       const {
@@ -132,6 +136,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       if (blob && !hasCustomThumbnail) {
         contents[THUMBNAIL_PATH] = blob
       }
+
+      // compute new contents
+      computedHashes = await computeHashes(contents!)
 
       // Add this item as a representation of an existing item
       if ((isRepresentation || addRepresentation) && editedItem) {
@@ -160,12 +167,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           updatedAt: +new Date()
         }
 
-        // add new contents
-        const newContents = await computeHashes(contents!)
-        delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
-        for (const path in newContents) {
-          item.contents[path] = newContents[path]
-        }
+        delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
       } else if (pristineItem && changeItemFile) {
         item = {
           ...(pristineItem as Item),
@@ -195,12 +197,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           item.data.representations[representationIndex] = representations[0]
         }
 
-        // add new contents
-        const newContents = await computeHashes(contents!)
-        delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
-        for (const path in newContents) {
-          item.contents[path] = newContents[path]
-        }
+        delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
       } else {
         // create item to save
         item = {
@@ -224,15 +221,41 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           owner: address!,
           metrics,
-          contents: await computeHashes(contents!),
+          contents: {},
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
       }
 
+      for (const path in computedHashes) {
+        item.contents[path] = computedHashes[path]
+      }
+
+      const finalSize = await this.calculateFinalSize(item.contents, computedHashes, contents)
+      if (finalSize > 0 || finalSize > MAX_FILE_SIZE) {
+        const error = new ItemTooBigError()
+        return this.setState({ error: error.message, isLoading: false })
+      }
+
       const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
       onSaveItem(item, contents)
     }
+  }
+
+  async calculateFinalSize(
+    hashes: Record<string, string>,
+    newHashes: Record<string, string>,
+    newContents: Record<string, Blob>
+  ): Promise<number> {
+    const filesToDownload: Record<string, string> = {}
+    for (const fileName in hashes) {
+      if (!newHashes[fileName] || hashes[fileName] !== newHashes[fileName]) {
+        filesToDownload[fileName] = hashes[fileName]
+      }
+    }
+
+    const blobs = await getFiles(filesToDownload)
+    return calculateFilesSize(blobs) + calculateFilesSize(newContents)
   }
 
   handleZipFile = async (file: File) => {
@@ -645,13 +668,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, isLoading, metadata, error } = this.props
+    const { onClose, isLoading, metadata } = this.props
     const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
 
     const isDisabled = this.isDisabled()
     const isAddingRepresentation = this.isAddingRepresentation()
     const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
+    const error = this.props.error || this.state.error
 
     return (
       <>

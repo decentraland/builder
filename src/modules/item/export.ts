@@ -25,23 +25,6 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   return newItem
 }
 
-export async function getFiles(contents: Record<string, string>) {
-  const promises = Object.keys(contents).map(path => {
-    const url = getContentsStorageUrl(contents[path])
-
-    return fetch(url)
-      .then(resp => resp.blob())
-      .then(blob => ({ path, blob }))
-  })
-
-  const results = await Promise.all(promises)
-
-  return results.reduce<Record<string, Blob>>((files, file) => {
-    files[file.path] = file.blob
-    return files
-  }, {})
-}
-
 function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {
   return {
     id: getCatalystItemURN(collection, item, chainId),
@@ -64,4 +47,25 @@ function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): C
     createdAt: Date.now(),
     updatedAt: Date.now()
   }
+}
+
+export async function getFiles(contents: Record<string, string>) {
+  const promises = Object.keys(contents).map(path => {
+    const url = getContentsStorageUrl(contents[path])
+
+    return fetch(url)
+      .then(resp => resp.blob())
+      .then(blob => ({ path, blob }))
+  })
+
+  const results = await Promise.all(promises)
+
+  return results.reduce<Record<string, Blob>>((files, file) => {
+    files[file.path] = file.blob
+    return files
+  }, {})
+}
+
+export function calculateFilesSize(files: Record<string, Blob>) {
+  return Object.values(files).reduce((total, blob) => blob.size + total, 0)
 }
