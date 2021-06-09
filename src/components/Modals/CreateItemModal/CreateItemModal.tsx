@@ -424,7 +424,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       metrics = info
     }
 
-    if (this.hasCustomImage(model, contents)) {
+    if (isImageFile(model!)) {
       thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
     }
 
@@ -433,21 +433,24 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
   async updateThumbnail(category: WearableCategory) {
     const { model, contents } = this.state
-    const url = URL.createObjectURL(contents![model!])
 
-    let thumbnail
-    if (contents && this.hasCustomImage(model, contents)) {
-      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!], category)
-    } else {
-      const { image } = await getModelData(url, {
-        thumbnailType: getThumbnailType(category),
-        extension: (model && getExtension(model)) || undefined,
-        engine: EngineType.BABYLON
-      })
-      thumbnail = image
+    const isCustom = !!contents && THUMBNAIL_PATH in contents
+    if (!isCustom) {
+      let thumbnail
+      if (contents && isImageFile(model!)) {
+        thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!], category)
+      } else {
+        const url = URL.createObjectURL(contents![model!])
+        const { image } = await getModelData(url, {
+          thumbnailType: getThumbnailType(category),
+          extension: (model && getExtension(model)) || undefined,
+          engine: EngineType.BABYLON
+        })
+        thumbnail = image
+        URL.revokeObjectURL(url)
+      }
+      this.setState({ thumbnail })
     }
-    URL.revokeObjectURL(url)
-    this.setState({ thumbnail })
   }
 
   async processImage(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
