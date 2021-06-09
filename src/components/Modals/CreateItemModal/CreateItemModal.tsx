@@ -42,6 +42,7 @@ import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
 import { ModelMetrics } from 'modules/scene/types'
+import { calculateFilesSize, getFiles } from 'modules/item/export'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -58,7 +59,6 @@ import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFi
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
 import './CreateItemModal.css'
-import { calculateFilesSize, getFiles } from 'modules/item/export'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
