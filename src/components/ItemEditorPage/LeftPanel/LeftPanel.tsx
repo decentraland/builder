@@ -19,11 +19,12 @@ export default class LeftPanel extends React.PureComponent<Props> {
       visibleItems,
       onSetItems,
       bodyShape,
-      onSetCollection
+      onSetCollection,
+      isConnected
     } = this.props
     return (
       <div className="LeftPanel">
-        <CollectionProvider id={selectedCollectionId}>
+        { isConnected ? <CollectionProvider id={selectedCollectionId}>
           {(collection, collectionItems, isLoading) => {
             const listItems = selectedCollectionId ? collectionItems : orphanItems
             return !collection && isLoading ? (
@@ -59,7 +60,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
               </>
             )
           }}
-        </CollectionProvider>
+        </CollectionProvider> : null }
       </div>
     )
   }

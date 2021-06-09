@@ -76,7 +76,7 @@ export function* itemSaga() {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
-  yield takeLatest(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
+  yield takeEvery(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
 }
@@ -146,6 +146,9 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
     const maticChainId = wallet.networks.MATIC.chainId
     let txHash: string | undefined
+
+    // Items should be uploaded to the builder server in order to be available to be added to the catalysts
+    yield call(() => builder.saveItemContents(item, contents))
 
     if (hasOnChainDataChanged(originalItem, item)) {
       const metadata = getMetadata(item)
