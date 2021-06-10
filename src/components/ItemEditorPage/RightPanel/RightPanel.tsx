@@ -401,7 +401,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                         {t('global.save')}
                       </Button>
                     </div>
-                  ) : error ? (
+                  ) : error && selectedItemId ? (
                     <p className="danger-text">
                       {t('global.error_ocurred')}: {error}
                     </p>
