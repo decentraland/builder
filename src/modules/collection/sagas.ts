@@ -179,22 +179,6 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
   }
 }
 
-;(window as any).calculateCollectionSize = async (items: Item[]) => {
-  for (const item of items) {
-    ;(window as any).calculateSize(item)
-  }
-}
-;(window as any).calculateSize = async (item: Item) => {
-  console.log('Saga size check. Item', item)
-  const contents: Record<string, Blob> = await getFiles(item.contents)
-  const finalSize: number = await calculateFinalSize(item, contents)
-  console.log('final size', finalSize, 'Contents', item.contents, 'files', contents)
-  console.log('Check: finalSize > MAX_FILE_SIZE', finalSize, '>', MAX_FILE_SIZE)
-  if (finalSize > MAX_FILE_SIZE) {
-    console.warn('Too big')
-  }
-}
-
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
   let { collection, items } = action.payload
   try {
