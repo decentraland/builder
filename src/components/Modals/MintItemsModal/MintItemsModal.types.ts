@@ -24,6 +24,7 @@ export type ItemMints = Record<string, Partial<Mint>[]> // itemId: Beneficiary[]
 export type State = {
   items: Item[]
   itemMints: ItemMints
+  error: string | null
 }
 
 export type MapStateProps = Pick<Props, 'ethAddress' | 'collection' | 'items' | 'totalCollectionItems' | 'isLoading'>

@@ -978,6 +978,7 @@
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目",
+    "limit_reached": "每笔交易只能铸造 {max} 件物品",
     "no_items": "您没有可用于\"{name}\"的项目"
   },
   "collection_image": {

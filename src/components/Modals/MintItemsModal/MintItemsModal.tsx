@@ -1,15 +1,16 @@
 import * as React from 'react'
-import { ModalNavigation, ModalActions, Form, Button } from 'decentraland-ui'
+import { ModalNavigation, ModalActions, Form, Button, Row } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
-import { canMintItem } from 'modules/item/utils'
+import { canMintItem, MAX_NFTS_PER_MINT } from 'modules/item/utils'
 import { Item } from 'modules/item/types'
 import { Mint } from 'modules/collection/types'
 import ItemDropdown from 'components/ItemDropdown'
 import { Props, State, ItemMints } from './MintItemsModal.types'
 import MintableItem from './MintableItem'
 import './MintItemsModal.css'
+
 
 export default class MintItemsModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
@@ -20,7 +21,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     for (const item of items) {
       itemMints[item.id] = this.buildMints(item)
     }
-    return { items: [], itemMints }
+    return { items: [], itemMints, error: null }
   }
 
   buildMints(item: Item): Partial<Mint>[] {
@@ -33,7 +34,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       itemMints: {
         ...itemMints,
         [item.id]: mints
-      }
+      },
+      error: null
     })
   }
 
@@ -42,12 +44,21 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     const { itemMints } = this.state
     const mints: Mint[] = []
 
+    let total = 0
     for (const itemMint of Object.values(itemMints)) {
       for (const mint of itemMint) {
         if (this.isValidMint(mint)) {
           mints.push(mint as Mint)
+          total += mint.amount!
         }
       }
+    }
+
+    if (total > MAX_NFTS_PER_MINT) {
+      this.setState({error: t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })})
+      return
+    } else {
+      this.setState({error: null})
     }
 
     if (mints.length > 0) {
@@ -81,7 +92,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
   render() {
     const { collection, totalCollectionItems, isLoading, onClose } = this.props
-    const { itemMints } = this.state
+    const { itemMints, error } = this.state
 
     const items = this.props.items.concat(this.state.items)
 
@@ -108,11 +119,14 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   {t('global.cancel')}
                 </Button>
               ) : (
-                <Button primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled}>
+                <Button primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled || !!error}>
                   {t('global.mint')}
                 </Button>
               )}
             </ModalActions>
+            {error ? <Row className="error" align="right">
+                <p className="danger-text">{error}</p>
+            </Row> : null}
           </Form>
         </Modal.Content>
       </Modal>

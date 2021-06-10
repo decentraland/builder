@@ -35,6 +35,6 @@
   text-align: center;
 }
 
-.MintItemsModal .empty ~ .actions {
-  margin-top: 40px;
+.MintItemsModal .dcl.row {
+  margin-top: 10px;
 }

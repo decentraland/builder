@@ -993,6 +993,7 @@
   "mint_items_modal": {
     "title": "Crear Items",
     "add_item": "Agregar Item",
+    "limit_reached": "Solo puede crear {max} items por transaction",
     "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
   },
   "collection_managers_modal": {
