@@ -180,7 +180,7 @@ export async function createGameFile(args: { project: Project; scene: Scene; rot
       for (const componentId of entity.components) {
         const component = components[componentId]
         // placeholder gltfs and scripts are skipped
-        if (!isScript(componentId, scene) && !isPlaceholder(componentId, scene)) {
+        if (component && !isScript(componentId, scene) && !isPlaceholder(componentId, scene)) {
           ecsEntity.addComponent(component)
         }
       }
