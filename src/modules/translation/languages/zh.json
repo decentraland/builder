@@ -170,6 +170,7 @@
     "adding_representation": "这将添加为以下项目的{body Shape}",
     "change_item_file": "编辑制图表达",
     "error": {
+      "item_too_big": "整个项目太大，无法上传。 所有文件（包括缩略图）的最大大小为 {size}。",
       "file_too_big": "该文件太大，无法上传。 最大尺寸为 {size}。",
       "wrong_extension": "该文件的扩展名无效。",
       "invalid_files": "文件似乎无效或损坏，请检查并重试。",
@@ -1106,6 +1107,10 @@
     "meta_transaction_failure": {
       "title": "元交易",
       "body": "发送元交易时出错。{br}请重试或加入我们的{discord_link}以获取支持。"
+    },
+    "deploy_item_failure": {
+      "title": "项目错误",
+      "body": "无法从 \"{collectionName}\" 上传项目 \"{itemName}\"。{br}商品尺寸过大，允许的最大尺寸为 {size}"
     }
   }
 }

@@ -54,7 +54,7 @@ import {
   resizeImage,
   isImageCategory
 } from 'modules/item/utils'
-import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from './errors'
+import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType } from './utils'
 import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
 import './CreateItemModal.css'
@@ -102,7 +102,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
     let changeItemFile = false
     let addRepresentation = false
-    let pristineItem = null
+    let pristineItem: Item | null = null
+    let computedHashes: Record<string, string> = {}
 
     if (metadata) {
       changeItemFile = metadata.changeItemFile
@@ -133,6 +134,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         contents[THUMBNAIL_PATH] = blob
       }
 
+      // compute new contents
+      computedHashes = await computeHashes(contents!)
+
       // Add this item as a representation of an existing item
       if ((isRepresentation || addRepresentation) && editedItem) {
         item = {
@@ -160,12 +164,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           updatedAt: +new Date()
         }
 
-        // add new contents
-        const newContents = await computeHashes(contents!)
-        delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
-        for (const path in newContents) {
-          item.contents[path] = newContents[path]
-        }
+        delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
       } else if (pristineItem && changeItemFile) {
         item = {
           ...(pristineItem as Item),
@@ -195,12 +194,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           item.data.representations[representationIndex] = representations[0]
         }
 
-        // add new contents
-        const newContents = await computeHashes(contents!)
-        delete newContents[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
-        for (const path in newContents) {
-          item.contents[path] = newContents[path]
-        }
+        delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
       } else {
         // create item to save
         item = {
@@ -224,10 +218,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           owner: address!,
           metrics,
-          contents: await computeHashes(contents!),
+          contents: {},
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
+      }
+
+      for (const path in computedHashes) {
+        item.contents[path] = computedHashes[path]
       }
 
       const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
@@ -645,7 +643,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   renderDetailsView() {
-    const { onClose, isLoading, metadata, error } = this.props
+    const { onClose, metadata, error, isLoading } = this.props
     const { thumbnail, metrics, bodyShape, isRepresentation, item, rarity } = this.state
 
     const isDisabled = this.isDisabled()

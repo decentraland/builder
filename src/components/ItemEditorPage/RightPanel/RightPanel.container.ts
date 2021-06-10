@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { getItem, getLoading } from 'modules/item/selectors'
+import { getItem, getLoading, getError as getItemError } from 'modules/item/selectors'
 import {
   deleteItemRequest,
   DEPLOY_ITEM_CONTENTS_REQUEST,
@@ -28,6 +28,7 @@ const mapState = (state: RootState): MapStateProps => {
     collection: selectedItemId && selectedItem && selectedItem.collectionId ? getCollection(state, selectedItem.collectionId) : null,
     selectedItem,
     selectedItemId,
+    error: getItemError(state),
     isConnected: isConnected(state),
     isLoading:
       isLoadingType(getLoading(state), DEPLOY_ITEM_CONTENTS_REQUEST) ||
