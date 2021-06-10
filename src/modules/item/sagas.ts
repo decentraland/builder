@@ -122,8 +122,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
 
     const finalSize: number = yield call(() => calculateFinalSize(item, contents))
     if (finalSize > MAX_FILE_SIZE) {
-      console.warn(new ItemTooBigError().message)
-      // throw new ItemTooBigError()
+      throw new ItemTooBigError()
     }
 
     yield call(() => builder.saveItem(item, contents))
@@ -152,8 +151,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
 
     const finalSize: number = yield call(() => calculateFinalSize(item, contents))
     if (finalSize > MAX_FILE_SIZE) {
-      console.warn(new ItemTooBigError().message)
-      // throw new ItemTooBigError()
+      throw new ItemTooBigError()
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
