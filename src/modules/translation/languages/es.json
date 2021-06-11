@@ -997,12 +997,20 @@
     "limit_reached": "Solo puede crear {max} items por transaction",
     "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
   },
-  "collection_managers_modal": {
-    "title": "Colaboradores",
-    "subtitle": "Si has colaborado con otros creadores, agrega sus direcciones de ETH aquí",
-    "add_manager": "Agregar Colaborador",
-    "no_managers": "No hay colaboradores, comienza por",
-    "adding_one": "agregar uno!"
+  "manage_collection_role_modal": {
+    "manager": {
+      "title": "Colaboradores",
+      "subtitle": "Si has colaborado con otros creadores, agrega sus direcciones de ETH aquí",
+      "add_new": "Agregar Colaborador",
+      "empty": "No hay colaboradores aún, empieza"
+    },
+    "minter": {
+      "title": "Creadores",
+      "subtitle": "Enter the ETH address you want to allow for minting your items",
+      "add_new": "Agregar Creador",
+      "empty": "No hay creadores aún, empieza"
+    },
+    "adding_one": "agregando uno!"
   },
   "collection_image": {
     "no_items": "No Items"

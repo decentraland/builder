@@ -1,0 +1,35 @@
+.Role {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
+.Role:hover {
+  background-color: rgba(22, 20, 26, 0.5);
+}
+
+.Role .info {
+  flex: 1 1 auto;
+  display: flex;
+}
+
+.Role .action {
+  display: none;
+  font-size: 13px;
+}
+
+.Role:hover .action {
+  display: block;
+}
+
+.Role .Profile {
+  width: 120px;
+  margin-right: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.Role .Profile .name {
+  margin-left: 4px;
+}

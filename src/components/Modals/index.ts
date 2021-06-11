@@ -1,6 +1,7 @@
 export { default as AddExistingItemModal } from './AddExistingItemModal'
 export { default as ClaimNameFatFingerModal } from './ClaimNameFatFingerModal'
 export { default as CollectionManagersModal } from './CollectionManagersModal'
+export { default as ManageCollectionRoleModal } from './ManageCollectionRoleModal'
 export { default as ContestModal } from './ContestModal'
 export { default as CreateAssetPackModal } from './CreateAssetPackModal'
 export { default as CreateCollectionModal } from './CreateCollectionModal'

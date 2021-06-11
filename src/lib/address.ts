@@ -1,3 +1,7 @@
+export const includes = (addresses: string[], address: string) => {
+  return addresses.some(_address => isEqual(_address, address))
+}
+
 export const isEqual = (addr1: string, addr2: string) => {
   return addr1.toLowerCase() === addr2.toLowerCase()
 }

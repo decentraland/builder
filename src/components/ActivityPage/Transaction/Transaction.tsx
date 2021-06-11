@@ -19,7 +19,9 @@ import {
   PUBLISH_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
+import { getSaleAddress } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
+import { includes } from 'lib/address'
 import Profile from 'components/Profile'
 import { Props } from './Transaction.types'
 import TransactionDetail from './TransactionDetail'
@@ -199,24 +201,6 @@ const Transaction = (props: Props) => {
         />
       )
     }
-    case SET_COLLECTION_MINTERS_SUCCESS: {
-      // We're only setting the Collection Store as minter to allow sales for now
-      const { collection, minters } = tx.payload
-      return (
-        <TransactionDetail
-          collection={collection}
-          text={
-            <T
-              id={minters.length > 0 ? 'transaction.set_collection_on_sale' : 'transaction.unset_collection_on_sale'}
-              values={{
-                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
-              }}
-            />
-          }
-          tx={tx}
-        />
-      )
-    }
     case SET_COLLECTION_MANAGERS_SUCCESS: {
       const { collection, managers } = tx.payload
       const managersCountDifference = managers.length - collection.managers.length
@@ -229,6 +213,35 @@ const Transaction = (props: Props) => {
               values={{
                 name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
                 count: Math.abs(managersCountDifference)
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
+    case SET_COLLECTION_MINTERS_SUCCESS: {
+      const { chainId } = tx
+      const { collection, minters } = tx.payload
+
+      const mintersCountDifference = minters.length - collection.minters.length
+      const saleAddress = getSaleAddress(chainId)
+      let translationId = ''
+
+      if (includes(minters, saleAddress) || includes(collection.minters, saleAddress)) {
+        translationId = mintersCountDifference > 0 ? 'transaction.set_collection_on_sale' : 'transaction.unset_collection_on_sale'
+      } else {
+        translationId = mintersCountDifference > 0 ? 'transaction.added_collection_minters' : 'transaction.removed_collection_minters'
+      }
+      return (
+        <TransactionDetail
+          collection={collection}
+          text={
+            <T
+              id={translationId}
+              values={{
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
+                count: Math.abs(mintersCountDifference)
               }}
             />
           }
