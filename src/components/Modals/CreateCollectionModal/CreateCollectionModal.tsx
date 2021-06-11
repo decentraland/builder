@@ -1,12 +1,12 @@
 import * as React from 'react'
 import uuid from 'uuid'
-import { ModalNavigation, Button, Form, Field, ModalContent, ModalActions } from 'decentraland-ui'
+import { ModalNavigation, Button, Form, Field, ModalContent, ModalActions, InputOnChangeData } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State } from './CreateCollectionModal.types'
 
-export default class CreateItemModal extends React.PureComponent<Props, State> {
+export default class CreateCollectionModal extends React.PureComponent<Props, State> {
   state: State = {
     collectionName: ''
   }
@@ -32,6 +32,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
   }
 
+  handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    this.setState({ collectionName: data.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })
+  }
+
   render() {
     const { name, onClose, isLoading, error } = this.props
     const { collectionName } = this.state
@@ -51,7 +55,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               label={t('create_collection_modal.label')}
               placeholder={t('create_collection_modal.placeholder')}
               value={collectionName}
-              onChange={(_event, props) => this.setState({ collectionName: props.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })}
+              onChange={this.handleNameChange}
               error={!!errorMessage}
               message={errorMessage ? errorMessage : ''}
             ></Field>

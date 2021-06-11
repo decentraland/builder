@@ -1113,5 +1113,18 @@
       "title": "项目错误",
       "body": "无法从 \"{collectionName}\" 上传项目 \"{itemName}\"。{br}商品尺寸过大，允许的最大尺寸为 {size}"
     }
+  },
+  "sagas": {
+    "collection": {
+      "invalid_character": "无效字符！ 名称中不允许使用 \":\"",
+      "missing_salt": "集合没有盐"
+    },
+    "item": {
+      "Invalid identity": "无效身份",
+      "invalid_character": "无效字符！ 名称或描述中不允许使用 \":\"",
+      "cant_save_published": "不应发布项目以保存它",
+      "cant_persist_unpublished": "必须发布项目才能使用事务保存",
+      "cant_save_without_collection": "没有收藏就无法保存已发布"
+    }
   }
 }

@@ -20,8 +20,8 @@ export function isOnSale(collection: Collection, wallet: Wallet) {
   return collection.minters.includes(address.toLowerCase())
 }
 
-export function getExplorerURL(collection: Collection, chainId?: ChainId) {
-  if (!collection.contractAddress || !chainId) {
+export function getExplorerURL(collection: Collection, chainId: ChainId) {
+  if (!collection.contractAddress) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
 

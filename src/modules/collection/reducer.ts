@@ -1,3 +1,4 @@
+import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import {
@@ -83,6 +84,7 @@ const INITIAL_STATE: CollectionState = {
 }
 
 type CollectionReducerAction =
+  | LocationChangeAction
   | FetchCollectionsRequestAction
   | FetchCollectionsSuccessAction
   | FetchCollectionsFailureAction
@@ -117,6 +119,12 @@ type CollectionReducerAction =
 
 export function collectionReducer(state: CollectionState = INITIAL_STATE, action: CollectionReducerAction) {
   switch (action.type) {
+    case LOCATION_CHANGE: {
+      return {
+        ...state,
+        error: null
+      }
+    }
     case FETCH_COLLECTIONS_REQUEST:
     case FETCH_COLLECTION_REQUEST:
     case SAVE_COLLECTION_REQUEST:
