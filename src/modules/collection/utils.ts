@@ -97,9 +97,3 @@ export function canManageCollectionItems(collection: Collection, address?: strin
 export function hasReviews(collection: Collection) {
   return collection.reviewedAt !== collection.createdAt
 }
-
-export function isValidText(text: string) {
-  const invalidCharacters = [':']
-  const invalidCharactersRegex = new RegExp(invalidCharacters.join('|'))
-  return text.search(invalidCharactersRegex) === -1
-}

@@ -70,6 +70,7 @@ import {
   SAVE_ITEM_SUCCESS,
   SaveItemSuccessAction
 } from 'modules/item/actions'
+import { isValidText } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { builder } from 'lib/api/builder'
@@ -80,7 +81,7 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
-import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem, isValidText } from './utils'
+import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
