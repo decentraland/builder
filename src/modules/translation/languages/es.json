@@ -1135,5 +1135,18 @@
       "title": "Error en el Item",
       "body": "Error al cargar el item \"{itemName}\" de \"{collectionName}\".{br}El tamaño del item es demasiado grande y el tamaño máximo permitido es {size} "
     }
+  },
+  "sagas": {
+    "collection": {
+      "invalid_character": "¡Carácter invalido! El \":\" no está permitido en los nombres",
+      "missing_salt": "La colección no tiene salt"
+    },
+    "item": {
+      "Invalid identity": "Identidad inválida",
+      "invalid_character": "¡Carácter invalido! El \":\" no está permitido en nombres o descripciones",
+      "cant_save_published": "El item no debe publicarse para guardarlo.",
+      "cant_persist_unpublished": "El item debe estar publicado para guardar usando una transacción",
+      "cant_save_without_collection": "No se puede guardar una publicación sin una colección"
+    }
   }
 }

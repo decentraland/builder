@@ -3,6 +3,7 @@ import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
@@ -79,7 +80,7 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
-import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
+import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem, isValidText } from './utils'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -130,6 +131,10 @@ function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
+    if (!isValidText(collection.name)) {
+      throw new Error(t('sagas.collection.invalid_character'))
+    }
+
     const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
@@ -199,7 +204,7 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     }
 
     if (!collection.salt) {
-      throw new Error('The collection has no salt 🧂')
+      throw new Error(t('sagas.item.missing_salt'))
     }
 
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()

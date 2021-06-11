@@ -1124,5 +1124,18 @@
       "title": "Error on Item",
       "body": "Fail to upload the item \"{itemName}\" from \"{collectionName}\".{br}The item size is too big for the max size of {size}"
     }
+  },
+  "sagas": {
+    "collection": {
+      "invalid_character": "Invalid character! The \":\" is not allowed in names",
+      "missing_salt": "The collection has no salt"
+    },
+    "item": {
+      "Invalid identity": "Invalid Identity",
+      "invalid_character": "Invalid character! The \":\" is not allowed in names or descriptions",
+      "cant_save_published": "Item should not be published to save it",
+      "cant_persist_unpublished": "Item must be published to save using a transaction",
+      "cant_save_without_collection": "Can't save a published without a collection"
+    }
   }
 }

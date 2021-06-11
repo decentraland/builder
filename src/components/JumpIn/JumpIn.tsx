@@ -10,7 +10,7 @@ export default class JumpIn extends React.PureComponent<Props> {
 
     let url = ''
 
-    if (collection) {
+    if (collection && chainId) {
       url = getCollectionURL(collection, chainId)
     } else if (land) {
       const selection = getSelection(land)

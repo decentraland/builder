@@ -5,6 +5,7 @@ import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/
 import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -65,7 +66,7 @@ import { deployContents, calculateFinalSize } from './export'
 import { Item } from './types'
 import { getItem } from './selectors'
 import { ItemTooBigError } from './errors'
-import { hasOnChainDataChanged, getMetadata, MAX_FILE_SIZE } from './utils'
+import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE } from './utils'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -116,10 +117,13 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
   const { item: actionItem, contents } = action.payload
   try {
     const item = { ...actionItem, updatedAt: Date.now() }
-    if (item.isPublished) {
-      throw new Error('Item should not be published to save it')
-    }
 
+    if (!isValidText(item.name) || !isValidText(item.description)) {
+      throw new Error(t('sagas.item.invalid_character'))
+    }
+    if (item.isPublished) {
+      throw new Error(t('sagas.item.cant_save_published'))
+    }
     const finalSize: number = yield call(() => calculateFinalSize(item, contents))
     if (finalSize > MAX_FILE_SIZE) {
       throw new ItemTooBigError()
@@ -142,11 +146,14 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
     const originalItem: Item = yield select(state => getItem(state, item.id))
     const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
 
+    if (!isValidText(item.name) || !isValidText(item.description)) {
+      throw new Error(t('sagas.item.invalid_character'))
+    }
     if (!originalItem.isPublished) {
-      throw new Error('Item must be published to save it')
+      throw new Error(t('sagas.item.cant_persist_unpublished'))
     }
     if (!originalItem.collectionId) {
-      throw new Error("Can't save a published without a collection")
+      throw new Error(t('sagas.item.cant_save_without_collection'))
     }
 
     const finalSize: number = yield call(() => calculateFinalSize(item, contents))
@@ -243,7 +250,7 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
   try {
     const identity: AuthIdentity | undefined = yield getIdentity()
     if (!identity) {
-      throw new Error('Invalid identity')
+      throw new Error(t('sagas.item.invalid_identity'))
     }
 
     const chainId: ChainId = yield select(getChainId)

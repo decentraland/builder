@@ -290,3 +290,9 @@ export function isModelPath(fileName: string) {
   const isMask = fileName.includes('_mask')
   return isModelFile(fileName) || (fileName.indexOf(THUMBNAIL_PATH) === -1 && !isMask && isImageFile(fileName))
 }
+
+export function isValidText(text: string) {
+  const invalidCharacters = [':']
+  const invalidCharactersRegex = new RegExp(invalidCharacters.join('|'))
+  return text.search(invalidCharactersRegex) === -1
+}
