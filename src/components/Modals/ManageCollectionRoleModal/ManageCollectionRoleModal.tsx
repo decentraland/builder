@@ -99,9 +99,6 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   haveRoleChanged() {
-    console.log('props roles', this.props.metadata.roles)
-    console.log('state roles', this.state.roles)
-
     return this.props.metadata.roles.length !== this.state.roles.filter(role => !!role).length
   }
 
