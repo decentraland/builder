@@ -72,7 +72,7 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   isDisabled() {
-    return this.state.roles.every(role => !role)
+    return !this.haveRoleChanged() && this.state.roles.every(role => !role)
   }
 
   removeRoleAtIndex(index: number) {
@@ -102,10 +102,15 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
     }
   }
 
+  haveRoleChanged() {
+    return this.props.metadata.roles.length !== this.state.roles.length
+  }
+
   render() {
     const { metadata, isLoading, onClose } = this.props
     const { roles } = this.state
     const { type } = metadata
+
     return (
       <Modal className="ManageCollectionRoleModal" onClose={onClose}>
         <ModalNavigation
@@ -143,10 +148,10 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
               </div>
             )}
           </div>
-          {roles.length ? (
+          {this.haveRoleChanged() ? (
             <ModalActions>
               <Button primary onClick={this.handleSubmit} loading={isLoading} disabled={this.isDisabled()}>
-                {t('global.add')}
+                {t('global.confirm')}
               </Button>
             </ModalActions>
           ) : null}
