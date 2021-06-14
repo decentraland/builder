@@ -1,3 +1,7 @@
+.EditPriceAndBeneficiaryModal.ui.modal .dcl.modal-navigation-title {
+  padding-right: 15px;
+}
+
 .EditPriceAndBeneficiaryModal.ui.modal .actions .ui.active.button {
   background-color: rgba(var(--bluish-steel-raw), 0.8);
   color: var(--text-on-secondary);

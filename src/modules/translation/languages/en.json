@@ -952,7 +952,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Set price and address for {name}",
+    "title": "Set price and address for \"{name}\"",
     "for_me": "I'm the beneficiary",
     "free": "Make it free",
     "price_label": "Price",

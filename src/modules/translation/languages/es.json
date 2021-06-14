@@ -963,7 +963,7 @@
     }
   },
   "edit_price_and_beneficiary_modal": {
-    "title": "Asignar un precio y un beneficiario para {name}",
+    "title": "Asignar un precio y un beneficiario para \"{name}\"",
     "for_me": "Soy el beneficiario",
     "free": "Hacerlo gratuito",
     "price_label": "Precio",
