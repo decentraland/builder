@@ -399,6 +399,7 @@
     "error_ocurred": "出错了",
     "eth_address": "ETH 地址",
     "finish": "完",
+    "free": "自由",
     "here": "这里",
     "items": "模型",
     "learn_more": "更多",
@@ -919,7 +920,6 @@
     "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
   },
   "collection_item": {
-    "free": "自由",
     "set_price": "设定价格",
     "done": "完成",
     "edit_item": "编辑",

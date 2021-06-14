@@ -407,6 +407,7 @@
     "error_ocurred": "An error ocurred",
     "eth_address": "ETH address",
     "finish": "Finish",
+    "free": "Free",
     "here": "here",
     "items": "items",
     "learn_more": "Learn more",
@@ -930,7 +931,6 @@
     "not_posted": "The collection wasn't posted to the forum. You can retry here"
   },
   "collection_item": {
-    "free": "Free",
     "set_price": "set price",
     "done": "Done",
     "edit_item": "edit",

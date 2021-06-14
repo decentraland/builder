@@ -1,3 +1,4 @@
+import { Address } from 'web3x-es/address'
 import { ChainId, Network, getChainName } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
 import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
@@ -273,6 +274,10 @@ export function getWearableCategories(contents: Record<string, any> | undefined 
 
 export function getOverridesCategories(contents: Record<string, any> | undefined = {}) {
   return getCategories(contents)
+}
+
+export function isFree(item: Item) {
+  return item.price === '0' && item.beneficiary === Address.ZERO.toString()
 }
 
 export function isImageFile(fileName: string) {
