@@ -409,6 +409,7 @@
     "error_ocurred": "Ha ocurrido un error",
     "eth_address": "ETH address",
     "finish": "Finalizar",
+    "free": "Gratis",
     "here": "aquí",
     "items": "objetos",
     "learn_more": "Más información",
@@ -941,7 +942,6 @@
     "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí"
   },
   "collection_item": {
-    "free": "Gratis",
     "set_price": "agregar precio",
     "done": "Terminado",
     "edit_item": "editar",

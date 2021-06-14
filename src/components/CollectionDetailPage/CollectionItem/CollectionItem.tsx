@@ -7,7 +7,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { isComplete, canMintItem, getMaxSupply } from 'modules/item/utils'
+import { isComplete, isFree, canMintItem, getMaxSupply } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
@@ -44,7 +44,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return item.price ? (
       <>
-        <div>{item.price === '0' ? t('collection_item.free') : <Mana network={Network.MATIC}>{fromWei(item.price, 'ether')}</Mana>}</div>
+        <div>{isFree(item) ? t('global.free') : <Mana network={Network.MATIC}>{fromWei(item.price, 'ether')}</Mana>}</div>
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : (

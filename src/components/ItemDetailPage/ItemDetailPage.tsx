@@ -6,7 +6,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
-import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, canSeeItem, isOwner } from 'modules/item/utils'
+import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, canSeeItem, isOwner, isFree } from 'modules/item/utils'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
@@ -138,18 +138,27 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   <div className="value">{item.rarity}</div>
                 </Section>
               ) : null}
-              {item.price ? (
+              {isFree(item) ? (
                 <Section>
                   <div className="subtitle">{t('item.price')}</div>
-                  <div className="value">{fromWei(item.price, 'ether')}</div>
+                  <div className="value">{t('global.free')}</div>
                 </Section>
-              ) : null}
-              {item.beneficiary ? (
-                <Section>
-                  <div className="subtitle">{t('item.beneficiary')}</div>
-                  <div className="value">{item.beneficiary}</div>
-                </Section>
-              ) : null}
+              ) : (
+                <>
+                  {item.price ? (
+                    <Section>
+                      <div className="subtitle">{t('item.price')}</div>
+                      <div className="value">{fromWei(item.price, 'ether')}</div>
+                    </Section>
+                  ) : null}
+                  {item.beneficiary ? (
+                    <Section>
+                      <div className="subtitle">{t('item.beneficiary')}</div>
+                      <div className="value">{item.beneficiary}</div>
+                    </Section>
+                  ) : null}
+                </>
+              )}
               {item.isPublished ? (
                 <Section>
                   <div className="subtitle">{t('item.supply')}</div>
