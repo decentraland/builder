@@ -246,18 +246,15 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
   const { collection, accessList } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-
+    const maticChainId = wallet.networks.MATIC.chainId
     const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
 
-    const maticChainId = wallet.networks.MATIC.chainId
     const addresses: Address[] = []
     const values: boolean[] = []
 
     const newMinters = new Set(collection.minters)
 
-    for (const data of accessList) {
-      const address = data.address.toLowerCase()
-      const hasAccess = data.hasAccess
+    for (const { address, hasAccess } of accessList) {
       addresses.push(Address.fromString(address))
       values.push(hasAccess)
 

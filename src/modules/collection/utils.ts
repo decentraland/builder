@@ -71,19 +71,19 @@ export function toCollectionObject(collections: Collection[]) {
 }
 
 export function canSeeCollection(collection: Collection, address: string) {
-  return collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
+  return !!collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
 }
 
 export function isOwner(collection: Collection, address?: string) {
-  return address && isEqual(collection.owner, address)
+  return !!address && isEqual(collection.owner, address)
 }
 
 export function isMinter(collection: Collection, address?: string) {
-  return address && collection.minters.some(minter => isEqual(minter, address))
+  return !!address && collection.minters.some(minter => isEqual(minter, address))
 }
 
 export function isManager(collection: Collection, address?: string) {
-  return address && collection.managers.some(manager => isEqual(manager, address))
+  return !!address && collection.managers.some(manager => isEqual(manager, address))
 }
 
 export function isEditable(collection: Collection) {

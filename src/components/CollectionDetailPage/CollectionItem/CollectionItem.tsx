@@ -7,7 +7,7 @@ import { fromWei } from 'web3x-es/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { isComplete, isFree, canMintItem, getMaxSupply } from 'modules/item/utils'
+import { isComplete, isFree, canMintItem, canManageItem, getMaxSupply } from 'modules/item/utils'
 import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
@@ -131,11 +131,15 @@ export default class CollectionItem extends React.PureComponent<Props> {
                 >
                   <Dropdown.Menu>
                     <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
-                    {item.price ? (
-                      <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
-                    ) : null}
-                    {!item.isPublished ? (
-                      <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
+                    {canManageItem(collection, item, ethAddress) ? (
+                      <>
+                        {item.price ? (
+                          <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />
+                        ) : null}
+                        {!item.isPublished ? (
+                          <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
+                        ) : null}
+                      </>
                     ) : null}
                   </Dropdown.Menu>
                 </Dropdown>

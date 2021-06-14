@@ -40,7 +40,7 @@ export default class EmptyRole extends React.PureComponent<Props, State> {
           placeholder="0x..."
           error={!!address && !isValid(address)}
         />
-        <Button basic className="action link" onClick={this.handleAdd}>
+        <Button basic className="action link">
           {t('global.add')}
         </Button>
         <span className="action link" onClick={this.handleCancel}>

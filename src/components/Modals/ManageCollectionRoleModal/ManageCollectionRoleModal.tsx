@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
 import { isValid } from 'lib/address'
-import { getSaleAddress } from 'modules/collection/utils'
+import { getSaleAddress, setOnSale, isOnSale } from 'modules/collection/utils'
 import { Access, RoleType } from 'modules/collection/types'
 import { isEqual } from 'lib/address'
 import Role from './Role'
@@ -13,15 +13,13 @@ import { Props, State } from './ManageCollectionRoleModal.types'
 import './ManageCollectionRoleModal.css'
 
 export default class ManageCollectionRoleModal extends React.PureComponent<Props, State> {
-  state: State = this.getInitialState()
+  state: State = { roles: this.getStartRoles() }
 
-  getInitialState(): State {
+  getStartRoles() {
     const { metadata } = this.props
     const roles = new Set(metadata.roles)
     roles.delete(this.getSaleAddress())
-    return {
-      roles: Array.from(roles)
-    }
+    return Array.from(roles)
   }
 
   handleAddNewRole = () => {
@@ -35,6 +33,7 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
     if (this.isValidRole(role)) {
       const roles = this.removeRoleAtIndex(index)
       roles.push(role.toLowerCase())
+
       this.setState({ roles })
     }
   }
@@ -86,8 +85,12 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   setRoles(accessList: Access[]) {
-    const { metadata, collection, onSetManagers, onSetMinters } = this.props
+    const { wallet, metadata, collection, onSetManagers, onSetMinters } = this.props
     const { type } = metadata
+
+    // Restore the store access to the collection, removed on the first `state`
+    accessList.push(...setOnSale(collection, wallet, isOnSale(collection, wallet)))
+
     switch (type) {
       case RoleType.MANAGER:
         return onSetManagers(collection, accessList)
@@ -98,8 +101,8 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
     }
   }
 
-  haveRoleChanged() {
-    return this.props.metadata.roles.length !== this.state.roles.filter(role => !!role).length
+  hasRoleChanged() {
+    return this.getStartRoles().length !== this.state.roles.filter(role => !!role).length
   }
 
   render() {
@@ -145,7 +148,7 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
             )}
           </div>
           <ModalActions>
-            <Button primary onClick={this.handleSubmit} loading={isLoading} disabled={!this.haveRoleChanged()}>
+            <Button primary onClick={this.handleSubmit} loading={isLoading} disabled={!this.hasRoleChanged()}>
               {t('global.confirm')}
             </Button>
           </ModalActions>

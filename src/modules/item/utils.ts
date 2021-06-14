@@ -214,17 +214,17 @@ export function isComplete(item: Item) {
 }
 
 export function isOwner(item: Item, address?: string) {
-  return address && isEqual(item.owner, address)
+  return !!address && isEqual(item.owner, address)
 }
 
-export function canSeeItem(collection: Collection, item: Item, address: string) {
+export function canSeeItem(collection: Collection, item: Item, address: string): boolean {
   return canSeeCollection(collection, address) || isOwner(item, address)
 }
 
-export function canMintItem(collection: Collection, item: Item, address?: string) {
+export function canMintItem(collection: Collection, item: Item, address?: string): boolean {
   const totalSupply = item.totalSupply || 0
   return (
-    address &&
+    !!address &&
     item.isPublished &&
     item.isApproved &&
     totalSupply < getMaxSupply(item) &&
@@ -232,7 +232,7 @@ export function canMintItem(collection: Collection, item: Item, address?: string
   )
 }
 
-export function canManageItem(collection: Collection, item: Item, address: string) {
+export function canManageItem(collection: Collection, item: Item, address?: string): boolean {
   return isOwner(item, address) || canManageCollectionItems(collection, address)
 }
 

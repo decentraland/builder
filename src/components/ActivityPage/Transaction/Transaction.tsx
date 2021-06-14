@@ -228,7 +228,11 @@ const Transaction = (props: Props) => {
       const saleAddress = getSaleAddress(chainId)
       let translationId = ''
 
-      if (includes(minters, saleAddress) || includes(collection.minters, saleAddress)) {
+      const hadSaleAccess = includes(collection.minters, saleAddress)
+      const hasNewSaleAccess = includes(minters, saleAddress)
+      const hasModifiedSaleAccess = (hadSaleAccess && !hasNewSaleAccess) || (!hadSaleAccess && hasNewSaleAccess)
+
+      if (hasModifiedSaleAccess) {
         translationId = mintersCountDifference > 0 ? 'transaction.set_collection_on_sale' : 'transaction.unset_collection_on_sale'
       } else {
         translationId = mintersCountDifference > 0 ? 'transaction.added_collection_minters' : 'transaction.removed_collection_minters'
