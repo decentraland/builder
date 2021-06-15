@@ -2,6 +2,7 @@ import * as React from 'react'
 import { ModalNavigation, ModalActions, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import equal from 'fast-deep-equal'
 
 import { isValid } from 'lib/address'
 import { getSaleAddress, setOnSale, isOnSale } from 'modules/collection/utils'
@@ -88,13 +89,12 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
     const { wallet, metadata, collection, onSetManagers, onSetMinters } = this.props
     const { type } = metadata
 
-    // Restore the store access to the collection, removed on the first `state`
-    accessList.push(...setOnSale(collection, wallet, isOnSale(collection, wallet)))
-
     switch (type) {
       case RoleType.MANAGER:
         return onSetManagers(collection, accessList)
       case RoleType.MINTER:
+        // Restore the store access to the collection, removed on the first `state`
+        accessList.push(...setOnSale(collection, wallet, isOnSale(collection, wallet)))
         return onSetMinters(collection, accessList)
       default:
         throw new Error(`Invalid role type ${type}`)
@@ -102,7 +102,9 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   hasRoleChanged() {
-    return this.getStartRoles().length !== this.state.roles.filter(role => !!role).length
+    const startRoles = this.getStartRoles().sort()
+    const newRoles = this.state.roles.filter(role => !!role).sort()
+    return !equal(startRoles, newRoles)
   }
 
   render() {

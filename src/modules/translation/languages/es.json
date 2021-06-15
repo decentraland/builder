@@ -938,6 +938,7 @@
     "see_in_world": "Ver en el mundo",
     "unpublished": "Esta colleción aún no está publicada",
     "managers": "Colaboradores",
+    "minters": "Creadores",
     "post_to_forum": "Post al foro",
     "posting": "Posteando",
     "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí"
@@ -1006,7 +1007,7 @@
     },
     "minter": {
       "title": "Creadores",
-      "subtitle": "Enter the ETH address you want to allow for minting your items",
+      "subtitle": "Agrega la dirección de ETH para permitir la creación de tus items",
       "add_new": "Agregar Creador",
       "empty": "No hay creadores aún, empieza"
     },
