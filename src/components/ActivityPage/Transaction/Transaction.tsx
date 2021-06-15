@@ -22,6 +22,7 @@ import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUC
 import { getSaleAddress } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
+import { difference } from 'lib/array'
 import Profile from 'components/Profile'
 import { Props } from './Transaction.types'
 import TransactionDetail from './TransactionDetail'
@@ -224,16 +225,20 @@ const Transaction = (props: Props) => {
       const { chainId } = tx
       const { collection, minters } = tx.payload
 
-      const mintersCountDifference = minters.length - collection.minters.length
+      const addedMinters = difference(minters, collection.minters)
+      const removedMinters = difference(collection.minters, minters)
+      const mintersCountDifference = collection.minters.length - minters.length
+
       const saleAddress = getSaleAddress(chainId)
+
+      const hadSaleAccess = includes(removedMinters, saleAddress)
+      const hasNewSaleAccess = includes(addedMinters, saleAddress)
+
       let translationId = ''
-
-      const hadSaleAccess = includes(collection.minters, saleAddress)
-      const hasNewSaleAccess = includes(minters, saleAddress)
-      const hasModifiedSaleAccess = (hadSaleAccess && !hasNewSaleAccess) || (!hadSaleAccess && hasNewSaleAccess)
-
-      if (hasModifiedSaleAccess) {
-        translationId = mintersCountDifference > 0 ? 'transaction.set_collection_on_sale' : 'transaction.unset_collection_on_sale'
+      if (hadSaleAccess) {
+        translationId = 'transaction.unset_collection_on_sale'
+      } else if (hasNewSaleAccess) {
+        translationId = 'transaction.set_collection_on_sale'
       } else {
         translationId = mintersCountDifference > 0 ? 'transaction.added_collection_minters' : 'transaction.removed_collection_minters'
       }

@@ -5,7 +5,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import equal from 'fast-deep-equal'
 
 import { isValid } from 'lib/address'
-import { getSaleAddress, setOnSale, isOnSale } from 'modules/collection/utils'
+import { getSaleAddress } from 'modules/collection/utils'
 import { Access, RoleType } from 'modules/collection/types'
 import { isEqual } from 'lib/address'
 import Role from './Role'
@@ -14,9 +14,9 @@ import { Props, State } from './ManageCollectionRoleModal.types'
 import './ManageCollectionRoleModal.css'
 
 export default class ManageCollectionRoleModal extends React.PureComponent<Props, State> {
-  state: State = { roles: this.getStartRoles() }
+  state: State = { roles: this.getOriginalRoles() }
 
-  getStartRoles() {
+  getOriginalRoles() {
     const { metadata } = this.props
     const roles = new Set(metadata.roles)
     roles.delete(this.getSaleAddress())
@@ -53,9 +53,9 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   handleSubmit = () => {
-    const { collection, metadata } = this.props
+    const { collection } = this.props
     const { roles } = this.state
-    const originalRoles = metadata.roles
+    const originalRoles = this.getOriginalRoles()
 
     const accessList: Access[] = []
     for (const role of originalRoles) {
@@ -86,15 +86,13 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   setRoles(accessList: Access[]) {
-    const { wallet, metadata, collection, onSetManagers, onSetMinters } = this.props
+    const { metadata, collection, onSetManagers, onSetMinters } = this.props
     const { type } = metadata
 
     switch (type) {
       case RoleType.MANAGER:
         return onSetManagers(collection, accessList)
       case RoleType.MINTER:
-        // Restore the store access to the collection, removed on the first `state`
-        accessList.push(...setOnSale(collection, wallet, isOnSale(collection, wallet)))
         return onSetMinters(collection, accessList)
       default:
         throw new Error(`Invalid role type ${type}`)
@@ -102,9 +100,9 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
   }
 
   hasRoleChanged() {
-    const startRoles = this.getStartRoles().sort()
+    const originalRoles = this.getOriginalRoles().sort()
     const newRoles = this.state.roles.filter(role => !!role).sort()
-    return !equal(startRoles, newRoles)
+    return !equal(originalRoles, newRoles)
   }
 
   render() {
