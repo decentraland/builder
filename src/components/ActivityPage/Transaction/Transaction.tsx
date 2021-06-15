@@ -177,13 +177,22 @@ const Transaction = (props: Props) => {
     }
     case MINT_COLLECTION_ITEMS_SUCCESS: {
       const { collection, mints } = tx.payload
+
+      const isSingleMint = mints.length === 1
+      const item = mints[0].item
+      const transactionDetailData = isSingleMint ? { item } : { collection }
       return (
         <TransactionDetail
-          collection={collection}
+          {...transactionDetailData}
           text={
             <T
-              id="transaction.collection_items_minted"
-              values={{ name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>, count: mints.length }}
+              id={isSingleMint ? 'transaction.collection_item_minted' : 'transaction.collection_items_minted'}
+              values={{
+                collectionName: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
+                itemName: <Link to={locations.itemDetail(item.id)}>{item.name}</Link>,
+                amount: mints[0].amount,
+                count: mints.length
+              }}
             />
           }
           tx={tx}
