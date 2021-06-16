@@ -7,17 +7,21 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
 import { getMetadata } from 'modules/item/utils'
-import { isEqual } from 'lib/address'
+import { isEqual, includes } from 'lib/address'
 import { InitializeItem, Collection, Access } from './types'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
-  const { address } = getContract(ContractName.CollectionStore, wallet.networks.MATIC.chainId)
+  const address = getSaleAddress(wallet.networks.MATIC.chainId)
   return [{ address, hasAccess: isOnSale, collection }]
 }
 
 export function isOnSale(collection: Collection, wallet: Wallet) {
-  const { address } = getContract(ContractName.CollectionStore, wallet.networks.MATIC.chainId)
-  return collection.minters.includes(address.toLowerCase())
+  const address = getSaleAddress(wallet.networks.MATIC.chainId)
+  return includes(collection.minters, address)
+}
+
+export function getSaleAddress(chainId: ChainId) {
+  return getContract(ContractName.CollectionStore, chainId).address.toLowerCase()
 }
 
 export function getExplorerURL(collection: Collection, chainId: ChainId) {
@@ -67,19 +71,19 @@ export function toCollectionObject(collections: Collection[]) {
 }
 
 export function canSeeCollection(collection: Collection, address: string) {
-  return collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
+  return !!collection && [collection.owner, ...collection.managers, ...collection.minters].some(addr => isEqual(addr, address))
 }
 
 export function isOwner(collection: Collection, address?: string) {
-  return address && isEqual(collection.owner, address)
+  return !!address && isEqual(collection.owner, address)
 }
 
 export function isMinter(collection: Collection, address?: string) {
-  return address && collection.minters.some(minter => isEqual(minter, address))
+  return !!address && collection.minters.some(minter => isEqual(minter, address))
 }
 
 export function isManager(collection: Collection, address?: string) {
-  return address && collection.managers.some(manager => isEqual(manager, address))
+  return !!address && collection.managers.some(manager => isEqual(manager, address))
 }
 
 export function isEditable(collection: Collection) {

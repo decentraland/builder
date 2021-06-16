@@ -786,8 +786,8 @@
     "saved_published_item": "您编辑了项目{name}",
     "collection_item_minted": "为集合 {collectionName} 铸造了 {itemName} {amount, plural, one {一次} other {{amount} 次}}",
     "collection_items_minted": "为{name}收集了{count}个项目",
-    "added_collection_managers": "在集合{name}上添加了{count} {count，plural，one {collaborator} other {collaborators}}",
-    "removed_collection_managers": "删除了集合{name}的{count} {count，plural，one {collaborator} other {collaborators}}",
+    "updated_collection_managers": "更新了集合 {name} 管理器",
+    "updated_collection_minters": "更新了集合 {name} 铸币厂",
     "set_collection_on_sale": "设置要出售的收藏集{name}",
     "unset_collection_on_sale": "已将集合{name}从出售中移除",
     "set_ens_resolver": "为名称\"{name}\"设置解析器",
@@ -916,6 +916,7 @@
     "see_in_world": "见世面",
     "unpublished": "此合集尚未发布",
     "managers": "合作者",
+    "minters": "铸币厂",
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
     "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
@@ -969,11 +970,20 @@
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
     "turn_off": "关掉"
   },
-  "collection_managers_modal": {
-    "title": "合作者",
-    "subtitle": "如果您在制作此收藏集时与其他创作者合作，请输入他们的ETH地址",
-    "add_manager": "添加协作者",
-    "no_managers": "还没有合作者，首先",
+  "collection_managers_modal": {},
+  "manage_collection_role_modal": {
+    "manager": {
+      "title": "合作者",
+      "subtitle": "如果您在制作此收藏集时与其他创作者合作，请输入他们的ETH地址",
+      "add_new": "添加协作者",
+      "empty": "还没有合作者，首先"
+    },
+    "minter": {
+      "title": "铸币厂",
+      "subtitle": "输入您要允许铸造您的物品的 ETH 地址",
+      "add_new": "添加铸币厂",
+      "empty": "还没有铸币机，开始吧"
+    },
     "adding_one": "加一个！"
   },
   "mint_items_modal": {

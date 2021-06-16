@@ -3,6 +3,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { Dropdown, Button, Icon, Popup, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
+import { RoleType } from 'modules/collection/types'
 import { getExplorerURL, isOwner as isCollectionOwner } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionMenu.types'
@@ -32,7 +33,12 @@ export default class CollectionMenu extends React.PureComponent<Props> {
 
   handleUpdateManagers = () => {
     const { collection, onOpenModal } = this.props
-    onOpenModal('CollectionManagersModal', { collectionId: collection.id })
+    onOpenModal('ManageCollectionRoleModal', { type: RoleType.MANAGER, collectionId: collection.id, roles: collection.managers })
+  }
+
+  handleUpdateMinters = () => {
+    const { collection, onOpenModal } = this.props
+    onOpenModal('ManageCollectionRoleModal', { type: RoleType.MINTER, collectionId: collection.id, roles: collection.minters })
   }
 
   handleAddExistingItem = () => {
@@ -71,7 +77,10 @@ export default class CollectionMenu extends React.PureComponent<Props> {
 
           {collection.isPublished ? (
             isOwner ? (
-              <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
+              <>
+                <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
+                <Dropdown.Item text={t('collection_menu.minters')} onClick={this.handleUpdateMinters} />
+              </>
             ) : null
           ) : (
             <>

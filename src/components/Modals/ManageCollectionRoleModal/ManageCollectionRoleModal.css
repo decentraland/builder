@@ -1,0 +1,30 @@
+.ManageCollectionRoleModal .roles {
+  background-color: var(--dark-gray);
+  border-radius: 8px;
+  padding: 20px 25px;
+}
+
+.ManageCollectionRoleModal .empty-roles-list {
+  padding: 40px;
+  text-align: center;
+}
+
+.ManageCollectionRoleModal .empty-roles-list .link {
+  text-transform: none;
+}
+
+.ManageCollectionRoleModal .add-roles {
+  margin-top: 24px;
+  margin-left: 10px;
+  font-size: 13px;
+}
+
+.ManageCollectionRoleModal .link {
+  text-transform: uppercase;
+}
+
+.ManageCollectionRoleModal .actions {
+  margin-top: 50px;
+  width: 100%;
+  text-align: right;
+}

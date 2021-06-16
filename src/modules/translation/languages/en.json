@@ -794,8 +794,8 @@
     "saved_published_item": "You edited the item {name}",
     "collection_item_minted": "Minted {itemName} for the collection {collectionName} {amount, plural, one {once} other {{amount} times}}",
     "collection_items_minted": "Minted {count} items for the collection {collectionName}",
-    "added_collection_managers": "Added {count} {count, plural, one {collaborator} other {collaborators}} on the collection {name}",
-    "removed_collection_managers": "Removed {count} {count, plural, one {collaborator} other {collaborators}} for the collection {name}",
+    "updated_collection_managers": "Updated the collection's {name} managers",
+    "updated_collection_minters": "Updated the collection's {name} minters",
     "set_collection_on_sale": "Set the collection {name} on sale",
     "unset_collection_on_sale": "Removed the collection {name} from being on sale",
     "set_ens_resolver": "Set resolver for the name \"{name}\".",
@@ -927,6 +927,7 @@
     "see_in_world": "See in world",
     "unpublished": "This collection not published yet",
     "managers": "Collaborators",
+    "minters": "Minters",
     "post_to_forum": "Post to forum",
     "posting": "Posting",
     "not_posted": "The collection wasn't posted to the forum. You can retry here"
@@ -986,11 +987,19 @@
     "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
     "turn_off": "Turn Off"
   },
-  "collection_managers_modal": {
-    "title": "Collaborators",
-    "subtitle": "If you collaborated with other creators when making this collection, enter their ETH address",
-    "add_manager": "Add Collaborator",
-    "no_managers": "No collaborators yet, start by",
+  "manage_collection_role_modal": {
+    "manager": {
+      "title": "Collaborators",
+      "subtitle": "If you collaborated with other creators when making this collection, enter their ETH address",
+      "add_new": "Add Collaborator",
+      "empty": "No collaborators yet, start by"
+    },
+    "minter": {
+      "title": "Minters",
+      "subtitle": "Enter the ETH address you want to allow for minting your items",
+      "add_new": "Add Minter",
+      "empty": "No minters yet, start by"
+    },
     "adding_one": "adding one!"
   },
   "collection_image": {

@@ -18,6 +18,11 @@ export type Collection = {
   updatedAt: number
 }
 
+export enum RoleType {
+  MANAGER = 'manager',
+  MINTER = 'minter'
+}
+
 export type InitializeItem = {
   rarity: string
   price: BN
