@@ -248,7 +248,17 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
               const wearableCategories = item ? getWearableCategories(item.contents) : []
-              const overrideCategories = item ? getOverridesCategories(item.contents) : []
+              let overrideCategories = item ? getOverridesCategories(item.contents) : []
+              let hidesCategories = [...overrideCategories]
+              let replaces: WearableCategory[] = []
+              let hides: WearableCategory[] = []
+
+              if (data) {
+                replaces = data.replaces
+                hides = data.hides
+                overrideCategories = overrideCategories.filter(category => !hides.includes(category))
+                hidesCategories = hidesCategories.filter(category => !replaces.includes(category))
+              }
 
               return isLoading || isItemLoading ? (
                 <Loader size="massive" active />
@@ -355,7 +365,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           itemId={item.id}
                           label={t('item_editor.right_panel.replaces')}
                           info={t('item_editor.right_panel.replaces_info')}
-                          value={data!.replaces}
+                          value={replaces}
                           options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeReplaces}
@@ -364,8 +374,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           itemId={item.id}
                           label={t('item_editor.right_panel.hides')}
                           info={t('item_editor.right_panel.hides_info')}
-                          value={data!.hides}
-                          options={overrideCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
+                          value={hides}
+                          options={hidesCategories.map(value => ({ value, text: t(`wearable.category.${value}`) }))}
                           disabled={!canEditItemMetadata}
                           onChange={this.handleChangeHides}
                         />
