@@ -203,17 +203,15 @@ const Transaction = (props: Props) => {
       )
     }
     case SET_COLLECTION_MANAGERS_SUCCESS: {
-      const { collection, managers } = tx.payload
-      const managersCountDifference = managers.length - collection.managers.length
+      const { collection } = tx.payload
       return (
         <TransactionDetail
           collection={collection}
           text={
             <T
-              id={managersCountDifference > 0 ? 'transaction.added_collection_managers' : 'transaction.removed_collection_managers'}
+              id="transaction.updated_collection_managers"
               values={{
-                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
-                count: Math.abs(managersCountDifference)
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
               }}
             />
           }
@@ -227,7 +225,6 @@ const Transaction = (props: Props) => {
 
       const addedMinters = difference(minters, collection.minters)
       const removedMinters = difference(collection.minters, minters)
-      const mintersCountDifference = collection.minters.length - minters.length
 
       const saleAddress = getSaleAddress(chainId)
 
@@ -240,7 +237,7 @@ const Transaction = (props: Props) => {
       } else if (hasNewSaleAccess) {
         translationId = 'transaction.set_collection_on_sale'
       } else {
-        translationId = mintersCountDifference > 0 ? 'transaction.added_collection_minters' : 'transaction.removed_collection_minters'
+        translationId = 'transaction.updated_collection_minters'
       }
       return (
         <TransactionDetail
@@ -249,8 +246,7 @@ const Transaction = (props: Props) => {
             <T
               id={translationId}
               values={{
-                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
-                count: Math.abs(mintersCountDifference)
+                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
               }}
             />
           }
