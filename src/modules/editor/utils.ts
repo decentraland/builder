@@ -208,3 +208,7 @@ export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
   }
   return Object.values(wearables)
 }
+
+export const pickRandom = <T>(array: T[]): T => {
+  return array[(Math.random() * array.length) | 0]
+}

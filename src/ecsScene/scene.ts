@@ -7,7 +7,7 @@ import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
 import { AssetParameterValues } from 'modules/asset/types'
 import { BODY_SHAPE_CATEGORY, WearableBodyShape } from 'modules/item/types'
-import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/colors'
+import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
 
 const { Gizmos, SmartItem } = require('decentraland-ecs') as any
 declare var dcl: DecentralandInterface

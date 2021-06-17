@@ -4,7 +4,7 @@ import { Scene } from 'modules/scene/types'
 import { Asset } from 'modules/asset/types'
 import { Project } from 'modules/project/types'
 import { AvatarAnimation, Gizmo, OpenEditorOptions, PreviewType } from './types'
-import { Item, WearableBodyShape } from 'modules/item/types'
+import { Item, WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { Color4, Wearable } from 'decentraland-ecs'
 
 // Bind keyboard shortcuts
@@ -248,6 +248,14 @@ export const SET_HAIR_COLOR = 'Set hair color'
 export const setHairColor = (hairColor: Color4) => action(SET_HAIR_COLOR, { hairColor })
 
 export type SetHairColorAction = ReturnType<typeof setHairColor>
+
+// Set default wearable
+export const SET_BASE_WEARABLE = 'Set base wearable'
+
+export const setBaseWearable = (category: WearableCategory, bodyShape: WearableBodyShape, wearable: Wearable | null) =>
+  action(SET_BASE_WEARABLE, { category, bodyShape, wearable })
+
+export type SetBaseWearableAction = ReturnType<typeof setBaseWearable>
 
 // Update wearables
 export const UPDATE_AVATAR = 'Update avatar'
