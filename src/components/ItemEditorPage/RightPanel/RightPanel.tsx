@@ -264,10 +264,10 @@ export default class RightPanel extends React.PureComponent<Props, State> {
               let hides: WearableCategory[] = []
 
               if (data) {
-                overrideCategories = actionableCategories.filter(category => !hides.includes(category))
-                hidesCategories = actionableCategories.filter(category => !replaces.includes(category))
-                replaces = data.replaces.filter(category => actionableCategories.includes(category))
                 hides = data.hides.filter(category => actionableCategories.includes(category))
+                replaces = data.replaces.filter(category => actionableCategories.includes(category))
+                hidesCategories = actionableCategories.filter(category => !replaces.includes(category))
+                overrideCategories = actionableCategories.filter(category => !hides.includes(category))
               }
 
               return isLoading || isItemLoading ? (
