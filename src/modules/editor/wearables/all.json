@@ -579,141 +579,6 @@
     "baseUrl": "https://peer.decentraland.org/content/contents/"
   },
   {
-    "id": "urn:decentraland:off-chain:base-avatars:casual_hair_01",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_Standard_01.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard_01.glb",
-            "hash": "QmbNhNwZhiLPsGrB6kdFN38vjvqfWkbEUYtWsMs5MBw992"
-          },
-          {
-            "file": "M_Hair_Standard_01.glb",
-            "hash": "QmZJ5S2Y4u85bT5xvFiNkzdJix44bpo8Xh659BK6EnA6QJ"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_Standard_01.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard_01.glb",
-            "hash": "QmbNhNwZhiLPsGrB6kdFN38vjvqfWkbEUYtWsMs5MBw992"
-          },
-          {
-            "file": "M_Hair_Standard_01.glb",
-            "hash": "QmZJ5S2Y4u85bT5xvFiNkzdJix44bpo8Xh659BK6EnA6QJ"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
-    "id": "urn:decentraland:off-chain:base-avatars:casual_hair_02",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_Standard_02.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard_02.glb",
-            "hash": "QmUYLQ7WyqWoKkqjcaxDvyAw8o9Bx4vxrZ32ATTTpPuh4m"
-          },
-          {
-            "file": "M_Hair_Standard_02.glb",
-            "hash": "QmZJVX8t63xFLnG3FmYb1B2A9nJTayvGdqvRgHBytYnovs"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_Standard_02.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard_02.glb",
-            "hash": "QmUYLQ7WyqWoKkqjcaxDvyAw8o9Bx4vxrZ32ATTTpPuh4m"
-          },
-          {
-            "file": "M_Hair_Standard_02.glb",
-            "hash": "QmZJVX8t63xFLnG3FmYb1B2A9nJTayvGdqvRgHBytYnovs"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
-    "id": "urn:decentraland:off-chain:base-avatars:casual_hair_03",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_Standard_03.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard_03.glb",
-            "hash": "QmP7miF2Hf36HDk6654EH9V1SQE4kGJY4QtaiFLfaUtjjA"
-          },
-          {
-            "file": "M_Hair_Standard_03.glb",
-            "hash": "QmbMTFKC97QQvYWwTuUfXKzb9t4KGF83MdZLMiCUL9TzEA"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_Standard_03.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard_03.glb",
-            "hash": "QmP7miF2Hf36HDk6654EH9V1SQE4kGJY4QtaiFLfaUtjjA"
-          },
-          {
-            "file": "M_Hair_Standard_03.glb",
-            "hash": "QmbMTFKC97QQvYWwTuUfXKzb9t4KGF83MdZLMiCUL9TzEA"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
     "id": "urn:decentraland:off-chain:base-avatars:chin_beard",
     "representations": [
       {
@@ -1312,51 +1177,6 @@
     "type": "wearable",
     "category": "lower_body",
     "tags": ["bottom", "female", "woman", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
-    "id": "urn:decentraland:off-chain:base-avatars:double_bun",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_DoubleBun.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_DoubleBun.glb",
-            "hash": "QmUsEmzVSYDg7rG2SZqods8a8Lse7UGMv81cFfJYtYcRFa"
-          },
-          {
-            "file": "M_Hair_DoubleBun.glb",
-            "hash": "Qmc9d5YXQkv64rFbquPDYZ46suGqADWLdhUmMyFQWRZkdy"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_DoubleBun.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_DoubleBun.glb",
-            "hash": "QmUsEmzVSYDg7rG2SZqods8a8Lse7UGMv81cFfJYtYcRFa"
-          },
-          {
-            "file": "M_Hair_DoubleBun.glb",
-            "hash": "Qmc9d5YXQkv64rFbquPDYZ46suGqADWLdhUmMyFQWRZkdy"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
     "baseUrl": "https://peer.decentraland.org/content/contents/"
   },
   {
@@ -3911,43 +3731,6 @@
     "baseUrl": "https://peer.decentraland.org/content/contents/"
   },
   {
-    "id": "urn:decentraland:off-chain:base-avatars:hair_undere",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "Hair_Anime_Long.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "Hair_Anime_Long.glb",
-            "hash": "QmWevUuq88hWEusbRmEPuhtkFAL3GBnv8CveWBTyzniTxl"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "Hair_Anime_Long.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "Hair_Anime_Long.glb",
-            "hash": "QmWevUuq88hWEusbRmEPuhtkFAL3GBnv8CveWBTyzniTxl"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
     "id": "urn:decentraland:off-chain:base-avatars:handlebar",
     "representations": [
       {
@@ -4139,51 +3922,6 @@
     "type": "wearable",
     "category": "lower_body",
     "tags": ["bottom", "male", "man", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
-    "id": "urn:decentraland:off-chain:base-avatars:keanu_hair",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_Keanu.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Keanu.glb",
-            "hash": "QmREAoxPiLDxGk5jp4KJv5nnnYXAqZthLp1Pq275LDrCYV"
-          },
-          {
-            "file": "M_Hair_Keanu.glb",
-            "hash": "QmNipGPgPstsiGqDBFe869P7yJR8q7Px5itMSJzV76ZZSd"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_Keanu.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Keanu.glb",
-            "hash": "QmREAoxPiLDxGk5jp4KJv5nnnYXAqZthLp1Pq275LDrCYV"
-          },
-          {
-            "file": "M_Hair_Keanu.glb",
-            "hash": "QmNipGPgPstsiGqDBFe869P7yJR8q7Px5itMSJzV76ZZSd"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
     "baseUrl": "https://peer.decentraland.org/content/contents/"
   },
   {
@@ -4528,51 +4266,6 @@
     "type": "wearable",
     "category": "feet",
     "tags": ["shoes", "male", "man", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
-    "id": "urn:decentraland:off-chain:base-avatars:modern_hair",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_ModernHair.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_ModernHair.glb",
-            "hash": "Qmcyp5GC7SPFd4am5iRfT1mURKB8QFdqx98U3L5QXZ6Pdd"
-          },
-          {
-            "file": "M_Hair_ModernHair.glb",
-            "hash": "QmU7UPSktkuWFECxpH5LxNUAjVYVNvojUaRZrJkN5w5A1i"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_ModernHair.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_ModernHair.glb",
-            "hash": "Qmcyp5GC7SPFd4am5iRfT1mURKB8QFdqx98U3L5QXZ6Pdd"
-          },
-          {
-            "file": "M_Hair_ModernHair.glb",
-            "hash": "QmU7UPSktkuWFECxpH5LxNUAjVYVNvojUaRZrJkN5w5A1i"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
     "baseUrl": "https://peer.decentraland.org/content/contents/"
   },
   {
@@ -6313,51 +6006,6 @@
     "type": "wearable",
     "category": "earring",
     "tags": ["accesories", "female", "woman", "base-wearable"],
-    "baseUrl": "https://peer.decentraland.org/content/contents/"
-  },
-  {
-    "id": "urn:decentraland:off-chain:base-avatars:standard_hair",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseFemale"],
-        "mainFile": "F_Hair_Standard.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard.glb",
-            "hash": "QmYyFDw2ooW9X2Q4cKGSfA6EfAxmJ8pSP35EmM2m3B72yv"
-          },
-          {
-            "file": "M_Hair_Standard.glb",
-            "hash": "QmNRnVkGQmU27cbZpznSnDYYZb5AFWajcNsEUzwWc861vs"
-          }
-        ]
-      },
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "M_Hair_Standard.glb",
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmYktkLr5rnn9zPPARkavhVowvTNTih8uWq8BVscTGxtZd"
-          },
-          {
-            "file": "F_Hair_Standard.glb",
-            "hash": "QmYyFDw2ooW9X2Q4cKGSfA6EfAxmJ8pSP35EmM2m3B72yv"
-          },
-          {
-            "file": "M_Hair_Standard.glb",
-            "hash": "QmNRnVkGQmU27cbZpznSnDYYZb5AFWajcNsEUzwWc861vs"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "hair",
-    "tags": ["hair", "base-wearable"],
     "baseUrl": "https://peer.decentraland.org/content/contents/"
   },
   {

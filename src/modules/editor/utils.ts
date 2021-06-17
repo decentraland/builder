@@ -212,3 +212,31 @@ export function mergeWearables(avatar: Wearable[], apply: Wearable[]) {
 export const pickRandom = <T>(array: T[]): T => {
   return array[(Math.random() * array.length) | 0]
 }
+
+/*
+Converts stuff like "f_jeans_00" into "Jeans"
+*/
+export const getName = (wearable: Wearable) => {
+  let name = wearable.id.split(':').pop()!
+  if (name.startsWith('f_') || name.startsWith('m_')) {
+    // remove prefixes f_ and m_
+    name = name.slice(2)
+  }
+  const parts = name
+    .split('_')
+    .map(part => {
+      const isNumeric = !isNaN(+part)
+      if (isNumeric) {
+        /* numeric parts are like 00, 01, 02. This ignores the 00, and parses the other ones adding them +1, like:
+        hair_00 -> hair
+        hair_01 -> hair 2
+        hair_02 -> hair 3
+      */
+        return +part > 0 ? (+part).toString() : null
+      } else {
+        return part
+      }
+    })
+    .filter(part => !!part) as string[] // filter out ignored parts
+  return parts.map(part => part[0].toUpperCase() + part.slice(1)).join(' ') // capitalize + join
+}

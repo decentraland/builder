@@ -11,7 +11,7 @@ import {
 import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
-import { getEyeColors, getHairColors, getWearable, getSkinColors } from 'modules/editor/avatar'
+import { getEyeColors, getHairColors, getWearables, getSkinColors } from 'modules/editor/avatar'
 import {
   SetGizmoAction,
   TogglePreviewAction,
@@ -80,12 +80,7 @@ export type EditorState = {
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
-  baseWearables: Record<
-    WearableBodyShape,
-    {
-      [WearableCategory.HAIR]: Wearable | null
-    }
-  >
+  baseWearables: Record<WearableBodyShape, Record<string, Wearable | null>>
   visibleItemIds: string[]
 }
 
@@ -114,10 +109,10 @@ const INITIAL_STATE: EditorState = {
   hairColor: pickRandom(getHairColors()),
   baseWearables: {
     [WearableBodyShape.FEMALE]: {
-      [WearableCategory.HAIR]: pickRandom(getWearable(WearableCategory.HAIR, WearableBodyShape.FEMALE))
+      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.FEMALE))
     },
     [WearableBodyShape.MALE]: {
-      [WearableCategory.HAIR]: pickRandom(getWearable(WearableCategory.HAIR, WearableBodyShape.MALE))
+      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.MALE))
     }
   },
   visibleItemIds: []

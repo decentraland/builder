@@ -456,7 +456,8 @@
     },
     "total": "Total",
     "parcel_plural": "Parcels",
-    "estate_plural": "Estates"
+    "estate_plural": "Estates",
+    "none": "None"
   },
   "navigation": {
     "scenes": "Scenes",

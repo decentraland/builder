@@ -1,14 +1,15 @@
 import * as React from 'react'
-import { Color4 } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
 import { Dropdown, DropdownProps, Popup, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ViewPort from 'components/ViewPort'
 import { AvatarAnimation, PreviewType } from 'modules/editor/types'
 import { getSkinColors, getEyeColors, getHairColors } from 'modules/editor/avatar'
-import { WearableBodyShape } from 'modules/item/types'
+import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import AvatarColorDropdown from './AvatarColorDropdown'
 import { Props, State } from './CenterPanel.types'
 import './CenterPanel.css'
+import AvatarWearableDropdown from './AvatarWearableDropdown'
 
 export default class CenterPanel extends React.PureComponent<Props, State> {
   state = {
@@ -49,6 +50,11 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
     onSetHairColor(color)
   }
 
+  handleWearableChange = (category: WearableCategory, bodyShape: WearableBodyShape, wearable: Wearable | null) => {
+    const { onSetBaseWearable } = this.props
+    onSetBaseWearable(category, bodyShape, wearable)
+  }
+
   renderSelectTrigger(label: string, value: string) {
     return (
       <>
@@ -70,7 +76,7 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { bodyShape, skinColor, eyeColor, hairColor, avatarAnimation } = this.props
+    const { bodyShape, skinColor, eyeColor, hairColor, avatarAnimation, baseWearables } = this.props
     const { isShowingAvatarAttributes } = this.state
 
     return (
@@ -137,6 +143,16 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                 colors={getHairColors()}
                 label={t('wearable.color.hair')}
                 onChange={this.handleHairColorChange}
+              />
+            </div>
+            <div className="dropdown-container">
+              <AvatarWearableDropdown
+                wearable={baseWearables[WearableCategory.HAIR]}
+                category={WearableCategory.HAIR}
+                bodyShape={bodyShape}
+                label={t('wearable.category.hair')}
+                onChange={this.handleWearableChange}
+                isNullable
               />
             </div>
           </div>

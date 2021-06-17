@@ -55,7 +55,8 @@ import {
   setBodyShape,
   SET_SKIN_COLOR,
   SET_EYE_COLOR,
-  SET_HAIR_COLOR
+  SET_HAIR_COLOR,
+  SET_BASE_WEARABLE
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -121,7 +122,8 @@ import {
   THUMBNAIL_HEIGHT,
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION
+  ROTATION_GRID_RESOLUTION,
+  getName
 } from './utils'
 import { getEyeColors, getHairColors, getSkinColors } from './avatar'
 import { getCurrentPool } from 'modules/pool/selectors'
@@ -165,6 +167,7 @@ export function* editorSaga() {
   yield takeLatest(SET_SKIN_COLOR, renderAvatar)
   yield takeLatest(SET_EYE_COLOR, renderAvatar)
   yield takeLatest(SET_HAIR_COLOR, renderAvatar)
+  yield takeLatest(SET_BASE_WEARABLE, renderAvatar)
 }
 
 function* pollEditor(scene: Scene) {
@@ -631,6 +634,7 @@ function* getDefaultWearables() {
   const wearables = Object.values(baseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
   const extras = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
   console.log(wearables.map(wearable => wearable.category))
+  console.log(wearables.map(wearable => getName(wearable)))
   console.log(extras)
   for (const extra of extras) {
     if (!wearables.some(wearable => wearable.category === extra.category)) {
