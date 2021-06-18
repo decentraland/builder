@@ -36,7 +36,7 @@ export default class AvatarWearableDropdown extends React.PureComponent<Props> {
         trigger={
           <>
             <div className="label">{label}</div>
-            <div className="value">{selected ? selected.text : 'None'}</div>
+            <div className="value">{selected ? selected.text : t('global.none')}</div>
             <div className="handle" />
           </>
         }
