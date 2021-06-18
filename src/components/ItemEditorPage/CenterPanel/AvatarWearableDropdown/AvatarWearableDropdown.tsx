@@ -1,10 +1,9 @@
 import React from 'react'
 import { Dropdown, DropdownItemProps, DropdownProps } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Props } from './AvatarWearableDropdown.types'
-import './AvatarWearableDropdown.css'
 import { findWearable, getWearables } from 'modules/editor/avatar'
 import { getName } from 'modules/editor/utils'
+import { Props } from './AvatarWearableDropdown.types'
 
 export default class AvatarWearableDropdown extends React.PureComponent<Props> {
   handleAvatarChangeWearable = (_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
