@@ -122,8 +122,7 @@ import {
   THUMBNAIL_HEIGHT,
   POSITION_GRID_RESOLUTION,
   SCALE_GRID_RESOLUTION,
-  ROTATION_GRID_RESOLUTION,
-  getName
+  ROTATION_GRID_RESOLUTION
 } from './utils'
 import { getEyeColors, getHairColors, getSkinColors } from './avatar'
 import { getCurrentPool } from 'modules/pool/selectors'
@@ -633,12 +632,8 @@ function* getDefaultWearables() {
   const baseWearables: ReturnType<typeof getBaseWearables> = yield select(getBaseWearables)
   const wearables = Object.values(baseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
   const extras = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
-  console.log(wearables.map(wearable => wearable.category))
-  console.log(wearables.map(wearable => getName(wearable)))
-  console.log(extras)
   for (const extra of extras) {
     if (!wearables.some(wearable => wearable.category === extra.category)) {
-      console.log('push', extra.category, extra)
       wearables.push(extra)
     }
   }

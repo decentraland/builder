@@ -110,11 +110,15 @@ const INITIAL_STATE: EditorState = {
   baseWearables: {
     [WearableBodyShape.FEMALE]: {
       [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.FEMALE)),
-      [WearableCategory.FACIAL_HAIR]: null
+      [WearableCategory.FACIAL_HAIR]: null,
+      [WearableCategory.UPPER_BODY]: pickRandom(getWearables(WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
+      [WearableCategory.LOWER_BODY]: pickRandom(getWearables(WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
     },
     [WearableBodyShape.MALE]: {
       [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.MALE)),
-      [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE))
+      [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
+      [WearableCategory.UPPER_BODY]: pickRandom(getWearables(WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
+      [WearableCategory.LOWER_BODY]: pickRandom(getWearables(WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
     }
   },
   visibleItemIds: []
