@@ -227,7 +227,7 @@ export const getName = (wearable: Wearable) => {
     .map(part => {
       const isNumeric = !isNaN(+part)
       if (isNumeric) {
-        /* numeric parts are like 00, 01, 02. This ignores the 00, and parses the other ones adding them +1, like:
+        /* numeric parts are like 00, 01, 02. This ignores the 00, and parses the other ones, like:
         hair_00 -> hair
         hair_01 -> hair 2
         hair_02 -> hair 3
