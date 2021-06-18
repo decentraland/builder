@@ -155,6 +155,16 @@ export default class CenterPanel extends React.PureComponent<Props, State> {
                 isNullable
               />
             </div>
+            <div className="dropdown-container">
+              <AvatarWearableDropdown
+                wearable={baseWearables[WearableCategory.FACIAL_HAIR]}
+                category={WearableCategory.FACIAL_HAIR}
+                bodyShape={bodyShape}
+                label={t('wearable.category.facial_hair')}
+                onChange={this.handleWearableChange}
+                isNullable
+              />
+            </div>
           </div>
         </div>
       </div>

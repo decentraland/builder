@@ -102,17 +102,19 @@ const INITIAL_STATE: EditorState = {
     progress: 0,
     total: 0
   },
-  bodyShape: WearableBodyShape.FEMALE,
+  bodyShape: pickRandom(Object.values(WearableBodyShape)),
   avatarAnimation: AvatarAnimation.IDLE,
   skinColor: pickRandom(getSkinColors()),
   eyeColor: pickRandom(getEyeColors()),
   hairColor: pickRandom(getHairColors()),
   baseWearables: {
     [WearableBodyShape.FEMALE]: {
-      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.FEMALE))
+      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.FEMALE)),
+      [WearableCategory.FACIAL_HAIR]: null
     },
     [WearableBodyShape.MALE]: {
-      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.MALE))
+      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.MALE)),
+      [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE))
     }
   },
   visibleItemIds: []

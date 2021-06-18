@@ -118,44 +118,6 @@
     "rarity": ""
   },
   {
-    "id": "urn:decentraland:off-chain:base-avatars:beard",
-    "representations": [
-      {
-        "bodyShapes": ["urn:decentraland:off-chain:base-avatars:BaseMale"],
-        "mainFile": "Beard_01.glb",
-        "overrideReplaces": [],
-        "overrideHides": [],
-        "contents": [
-          {
-            "file": "AvatarWearables_TX.png",
-            "hash": "QmRaHnacT5G7oLYTYGsRWZtLXzXuTNEq7gWAcvXRSxfwEU"
-          },
-          {
-            "file": "Beard_01.glb",
-            "hash": "QmY2eXCDj9arFjXD7ofoVLfJvKqJdXVm7zA9o9Macp7mTv"
-          }
-        ]
-      }
-    ],
-    "type": "wearable",
-    "category": "facial_hair",
-    "tags": ["face", "facial_hair", "man", "base-wearable"],
-    "baseUrl": "https://content.decentraland.org/contents/",
-    "i18n": [
-      {
-        "code": "en",
-        "text": "Beard"
-      },
-      {
-        "code": "es",
-        "text": "Barba"
-      }
-    ],
-    "thumbnail": "QmRiGkR84p6CNXgKuic7iMswsAqb9TeV9gBrMFeRFpnxcm",
-    "description": "",
-    "rarity": ""
-  },
-  {
     "id": "urn:decentraland:off-chain:base-avatars:sneakers",
     "representations": [
       {
