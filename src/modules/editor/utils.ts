@@ -3,6 +3,7 @@ import { EditorScene, UnityKeyboardEvent } from 'modules/editor/types'
 import { Project } from 'modules/project/types'
 import { getSceneDefinition } from 'modules/project/export'
 import { getContentsStorageUrl } from 'lib/api/builder'
+import { capitalize } from 'lib/text'
 import { Vector3 } from 'modules/common/types'
 import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { TRANSPARENT_PIXEL } from 'lib/getModelData'
@@ -214,29 +215,28 @@ export const pickRandom = <T>(array: T[]): T => {
 }
 
 /*
-Converts stuff like "f_jeans_00" into "Jeans"
-*/
+ * Converts stuff like "f_jeans_00" into "Jeans"
+ */
 export const getName = (wearable: Wearable) => {
   let name = wearable.id.split(':').pop()!
   if (name.startsWith('f_') || name.startsWith('m_')) {
-    // remove prefixes f_ and m_
+    // Remove prefixes f_ and m_
     name = name.slice(2)
   }
-  const parts = name
+  return name
     .split('_')
-    .map(part => {
-      const isNumeric = !isNaN(+part)
-      if (isNumeric) {
-        /* numeric parts are like 00, 01, 02. This ignores the 00, and parses the other ones, like:
-        hair_00 -> hair
-        hair_01 -> hair 2
-        hair_02 -> hair 3
-      */
-        return +part > 0 ? (+part).toString() : null
-      } else {
-        return part
-      }
+    .map(strPart => {
+      const part = Number(strPart)
+      const isNumeric = !isNaN(part)
+      /*
+       * Numeric parts are like 00, 01, 02. This ignores the 00, and parses the other ones, like:
+       * hair_00 -> hair
+       * hair_01 -> hair 2
+       * hair_02 -> hair 3
+       */
+      return !isNumeric || part <= 0 ? strPart : null
     })
-    .filter(part => !!part) as string[] // filter out ignored parts
-  return parts.map(part => part[0].toUpperCase() + part.slice(1)).join(' ') // capitalize + join
+    .filter(part => part != null) // Filter out ignored parts
+    .map(part => capitalize(part!))
+    .join(' ')
 }
