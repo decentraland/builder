@@ -34,6 +34,7 @@ export const getAvatarAnimation = (state: RootState) => getState(state).avatarAn
 export const getSkinColor = (state: RootState) => getState(state).skinColor
 export const getEyeColor = (state: RootState) => getState(state).eyeColor
 export const getHairColor = (state: RootState) => getState(state).hairColor
+export const getBaseWearables = (state: RootState) => getState(state).baseWearables
 
 export const getVisibleItemIds = (state: RootState) => getState(state).visibleItemIds
 export const getSceneMappings = createSelector<RootState, DataByKey<Asset>, Record<string, string>>(getAssets, assets => {

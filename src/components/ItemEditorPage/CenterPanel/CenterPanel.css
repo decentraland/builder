@@ -44,7 +44,7 @@
   transition: margin-bottom 0.2s ease-in-out;
   background-color: var(--dark-two);
   padding: 16px 16px 4px;
-  margin-bottom: -112px;
+  margin-bottom: -204px;
 }
 
 .CenterPanel .footer .avatar-attributes .dropdown-container {
@@ -57,4 +57,8 @@
 
 .CenterPanel .footer .avatar-attributes.active {
   margin-bottom: 0;
+}
+
+.CenterPanel .footer .ui.dropdown .menu {
+  background-color: var(--smart-grey);
 }

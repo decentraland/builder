@@ -1,4 +1,4 @@
-import { Color4 } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
 
 import { LOAD_ASSET_PACKS_SUCCESS, LoadAssetPacksSuccessAction } from 'modules/assetPack/actions'
 import { DELETE_ITEM, DeleteItemAction } from 'modules/scene/actions'
@@ -8,10 +8,10 @@ import {
   ExportProjectRequestAction,
   ExportProjectSuccessAction
 } from 'modules/project/actions'
-import { WearableBodyShape } from 'modules/item/types'
+import { WearableBodyShape, WearableCategory } from 'modules/item/types'
 import { DeleteItemSuccessAction, DELETE_ITEM_SUCCESS } from 'modules/item/actions'
 import { hasBodyShape } from 'modules/item/utils'
-import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/colors'
+import { getEyeColors, getHairColors, getWearables, getSkinColors } from 'modules/editor/avatar'
 import {
   SetGizmoAction,
   TogglePreviewAction,
@@ -50,9 +50,12 @@ import {
   SetEyeColorAction,
   SET_EYE_COLOR,
   SetHairColorAction,
-  SET_HAIR_COLOR
+  SET_HAIR_COLOR,
+  SetBaseWearableAction,
+  SET_BASE_WEARABLE
 } from './actions'
 import { AvatarAnimation, Gizmo } from './types'
+import { pickRandom } from './utils'
 
 export type EditorState = {
   gizmo: Gizmo
@@ -77,6 +80,7 @@ export type EditorState = {
   skinColor: Color4
   eyeColor: Color4
   hairColor: Color4
+  baseWearables: Record<WearableBodyShape, Record<string, Wearable | null>>
   visibleItemIds: string[]
 }
 
@@ -98,11 +102,25 @@ const INITIAL_STATE: EditorState = {
     progress: 0,
     total: 0
   },
-  bodyShape: WearableBodyShape.FEMALE,
+  bodyShape: pickRandom(Object.values(WearableBodyShape)),
   avatarAnimation: AvatarAnimation.IDLE,
-  skinColor: getSkinColors()[0],
-  eyeColor: getEyeColors()[0],
-  hairColor: getHairColors()[0],
+  skinColor: pickRandom(getSkinColors()),
+  eyeColor: pickRandom(getEyeColors()),
+  hairColor: pickRandom(getHairColors()),
+  baseWearables: {
+    [WearableBodyShape.FEMALE]: {
+      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.FEMALE)),
+      [WearableCategory.FACIAL_HAIR]: null,
+      [WearableCategory.UPPER_BODY]: pickRandom(getWearables(WearableCategory.UPPER_BODY, WearableBodyShape.FEMALE)),
+      [WearableCategory.LOWER_BODY]: pickRandom(getWearables(WearableCategory.LOWER_BODY, WearableBodyShape.FEMALE))
+    },
+    [WearableBodyShape.MALE]: {
+      [WearableCategory.HAIR]: pickRandom(getWearables(WearableCategory.HAIR, WearableBodyShape.MALE)),
+      [WearableCategory.FACIAL_HAIR]: pickRandom(getWearables(WearableCategory.FACIAL_HAIR, WearableBodyShape.MALE)),
+      [WearableCategory.UPPER_BODY]: pickRandom(getWearables(WearableCategory.UPPER_BODY, WearableBodyShape.MALE)),
+      [WearableCategory.LOWER_BODY]: pickRandom(getWearables(WearableCategory.LOWER_BODY, WearableBodyShape.MALE))
+    }
+  },
   visibleItemIds: []
 }
 
@@ -131,6 +149,7 @@ export type EditorReducerAction =
   | SetSkinColorAction
   | SetEyeColorAction
   | SetHairColorAction
+  | SetBaseWearableAction
 
 export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction): EditorState => {
   switch (action.type) {
@@ -282,6 +301,19 @@ export const editorReducer = (state = INITIAL_STATE, action: EditorReducerAction
       return {
         ...state,
         hairColor: action.payload.hairColor
+      }
+    }
+    case SET_BASE_WEARABLE: {
+      const { category, bodyShape, wearable } = action.payload
+      return {
+        ...state,
+        baseWearables: {
+          ...state.baseWearables,
+          [bodyShape]: {
+            ...state.baseWearables[bodyShape],
+            [category]: wearable
+          }
+        }
       }
     }
     case SET_ITEMS: {

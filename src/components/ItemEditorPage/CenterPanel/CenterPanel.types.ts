@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { Color4 } from 'decentraland-ecs'
+import { Color4, Wearable } from 'decentraland-ecs'
 import {
   closeEditor,
   CloseEditorAction,
@@ -12,10 +12,12 @@ import {
   setEyeColor,
   SetEyeColorAction,
   setHairColor,
-  SetHairColorAction
+  SetHairColorAction,
+  setBaseWearable,
+  SetBaseWearableAction
 } from 'modules/editor/actions'
 import { AvatarAnimation } from 'modules/editor/types'
-import { Item, WearableBodyShape } from 'modules/item/types'
+import { Item, WearableBodyShape, WearableCategory } from 'modules/item/types'
 
 export type Props = {
   bodyShape: WearableBodyShape
@@ -23,12 +25,14 @@ export type Props = {
   eyeColor: Color4
   hairColor: Color4
   avatarAnimation: AvatarAnimation
+  baseWearables: Record<WearableCategory, Wearable | null>
   visibleItems: Item[]
   onSetBodyShape: typeof setBodyShape
   onSetAvatarAnimation: typeof setAvatarAnimation
   onSetSkinColor: typeof setSkinColor
   onSetEyeColor: typeof setEyeColor
   onSetHairColor: typeof setHairColor
+  onSetBaseWearable: typeof setBaseWearable
   onClose: typeof closeEditor
 }
 
@@ -36,11 +40,20 @@ export type State = {
   isShowingAvatarAttributes: boolean
 }
 
-export type MapStateProps = Pick<Props, 'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems'>
+export type MapStateProps = Pick<
+  Props,
+  'bodyShape' | 'skinColor' | 'eyeColor' | 'hairColor' | 'avatarAnimation' | 'visibleItems' | 'baseWearables'
+>
 export type MapDispatchProps = Pick<
   Props,
-  'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetSkinColor' | 'onSetEyeColor' | 'onSetHairColor'
+  'onClose' | 'onSetBodyShape' | 'onSetAvatarAnimation' | 'onSetSkinColor' | 'onSetEyeColor' | 'onSetHairColor' | 'onSetBaseWearable'
 >
 export type MapDispatch = Dispatch<
-  CloseEditorAction | SetBodyShapeAction | SetAvatarAnimationAction | SetSkinColorAction | SetEyeColorAction | SetHairColorAction
+  | CloseEditorAction
+  | SetBodyShapeAction
+  | SetAvatarAnimationAction
+  | SetSkinColorAction
+  | SetEyeColorAction
+  | SetHairColorAction
+  | SetBaseWearableAction
 >

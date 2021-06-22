@@ -55,7 +55,8 @@ import {
   setBodyShape,
   SET_SKIN_COLOR,
   SET_EYE_COLOR,
-  SET_HAIR_COLOR
+  SET_HAIR_COLOR,
+  SET_BASE_WEARABLE
 } from 'modules/editor/actions'
 import {
   PROVISION_SCENE,
@@ -105,7 +106,8 @@ import {
   getAvatarAnimation,
   getSkinColor,
   getEyeColor,
-  getHairColor
+  getHairColor,
+  getBaseWearables
 } from './selectors'
 import {
   getNewEditorScene,
@@ -122,7 +124,7 @@ import {
   SCALE_GRID_RESOLUTION,
   ROTATION_GRID_RESOLUTION
 } from './utils'
-import { getEyeColors, getHairColors, getSkinColors } from './colors'
+import { getEyeColors, getHairColors, getSkinColors } from './avatar'
 import { getCurrentPool } from 'modules/pool/selectors'
 import { Pool } from 'modules/pool/types'
 import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
@@ -164,6 +166,7 @@ export function* editorSaga() {
   yield takeLatest(SET_SKIN_COLOR, renderAvatar)
   yield takeLatest(SET_EYE_COLOR, renderAvatar)
   yield takeLatest(SET_HAIR_COLOR, renderAvatar)
+  yield takeLatest(SET_BASE_WEARABLE, renderAvatar)
 }
 
 function* pollEditor(scene: Scene) {
@@ -626,8 +629,17 @@ function handleEntitiesOutOfBoundaries(args: { entities: string[] }) {
 
 function* getDefaultWearables() {
   const bodyShape: WearableBodyShape = yield select(getBodyShape)
+  const baseWearables: ReturnType<typeof getBaseWearables> = yield select(getBaseWearables)
+  const wearables = Object.values(baseWearables[bodyShape]).filter(wearable => wearable !== null) as Wearable[]
+  const extras = (bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]
+  for (const extra of extras) {
+    if (!wearables.some(wearable => wearable.category === extra.category)) {
+      wearables.push(extra)
+    }
+  }
+
   // @TODO: remove this when unity build accepts urn
-  return ((bodyShape === WearableBodyShape.MALE ? maleAvatar : femaleAvatar) as Wearable[]).map(w => ({
+  return wearables.map(w => ({
     ...w,
     id: w.id.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/'),
     representations: w.representations.map(r => ({

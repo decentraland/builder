@@ -117,7 +117,8 @@
   "body_shapes": {
     "both": "两个都",
     "male": "男",
-    "female": "女"
+    "female": "女",
+    "null": "没有任何"
   },
   "avatar_animations": {
     "idle": "闲",
@@ -447,7 +448,8 @@
     },
     "total": "全部的",
     "parcel_plural": "包裹",
-    "estate_plural": "庄园"
+    "estate_plural": "庄园",
+    "none": "没有任何"
   },
   "navigation": {
     "scenes": "场景",
