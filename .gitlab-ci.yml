@@ -8,6 +8,7 @@ build:
   script:
     - ./setupEnv.sh
     - export NODE_OPTIONS="--max-old-space-size=8192"
+    - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
     - npm ci && npm run build
     - dcl-lock-sync
     - cd .ci && npm install && dcl-up website-builder
