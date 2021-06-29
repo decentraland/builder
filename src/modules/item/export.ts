@@ -8,7 +8,7 @@ import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
-const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 // We use 5 seconds before to let the subgraph index the collection creation
+const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item, chainId: ChainId) {
   const urn = getCatalystItemURN(collection, item, chainId)
@@ -83,7 +83,7 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   try {
     const image = await generateImage(item)
     imageSize = image.size
-  } catch (error) { }
+  } catch (error) {}
 
   const finalSize = imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
   return finalSize

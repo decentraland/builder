@@ -61,7 +61,7 @@ export class Entity {
     public readonly timestamp: Timestamp,
     public readonly content?: Map<ContentFilePath, ContentFileHash>,
     public readonly metadata?: any
-  ) { }
+  ) {}
 }
 
 export class ControllerEntityFactory {
@@ -164,9 +164,9 @@ export function entityToFile(entity: Entity, fileName?: string): ContentFile {
     !copy.content || !(copy.content instanceof Map)
       ? copy.content
       : // @ts-ignore
-      Array.from<[string, string]>(copy.content.entries()).map<{ file: string; hash: string }>(([key, value]) => {
-        return { file: key, hash: value }
-      })
+        Array.from<[string, string]>(copy.content.entries()).map<{ file: string; hash: string }>(([key, value]) => {
+          return { file: key, hash: value }
+        })
   delete copy.id
   return { name: fileName || 'name', content: Buffer.from(JSON.stringify(copy)) }
 }
