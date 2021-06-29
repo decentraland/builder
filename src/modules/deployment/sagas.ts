@@ -1,4 +1,5 @@
 import { CatalystClient, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { EntityType } from 'dcl-catalyst-commons'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -39,7 +40,7 @@ import { objectURLToBlob } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
 import { PEER_URL } from 'lib/api/peer'
 import { builder, getPreviewUrl } from 'lib/api/builder'
-import { buildDeployData, deploy, ContentFile, makeContentFiles, EntityType } from './contentUtils'
+import { makeContentFiles } from './contentUtils'
 import { getIdentity } from 'modules/identity/utils'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { getName } from 'modules/profile/selectors'
@@ -48,6 +49,7 @@ import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actio
 import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
 import { getCoordsByEstateId } from 'modules/land/selectors'
+import { Authenticator } from 'dcl-crypto'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -161,15 +163,20 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
-    const contentFiles: ContentFile[] = yield call(() => makeContentFiles(files))
+    const contentFiles: Map<string, Buffer> = yield call(() => makeContentFiles(files))
     const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-    const [data] = yield call(() =>
-      buildDeployData(EntityType.SCENE, identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles)
-    )
-    yield call(() => deploy(PEER_URL, data))
+    const client = new CatalystClient(PEER_URL, 'Builder')
+    const { entityId, files: hashedFiles } = yield call(() => client.buildEntity({
+      type: EntityType.SCENE,
+      pointers: [...sceneDefinition.scene.parcels],
+      metadata: sceneDefinition,
+      files: contentFiles,
+    }))
+    const authChain = Authenticator.signPayload(identity, entityId)
+    yield call(() =>  client.deployEntity({ entityId, files: hashedFiles, authChain }))
     // generate new deployment
     const deployment: Deployment = {
-      id: data.entityId,
+      id: entityId,
       placement,
       owner: yield select(getAddress) || '',
       timestamp: +new Date(),
@@ -220,12 +227,17 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
         onProgress: handleProgress(ProgressStage.CREATE_FILES)
       })
     )
-    const contentFiles: ContentFile[] = yield call(() => makeContentFiles(files))
+    const contentFiles: Map<string, Buffer> = yield call(() => makeContentFiles(files))
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
-    const [data] = yield call(() =>
-      buildDeployData(EntityType.SCENE, identity, [...sceneDefinition.scene.parcels], sceneDefinition, contentFiles)
-    )
-    yield call(() => deploy(PEER_URL, data))
+    const client = new CatalystClient(PEER_URL, 'Builder')
+    const { entityId, files: hashedFiles } = yield call(() => client.buildEntity({
+      type: EntityType.SCENE,
+      pointers: [...sceneDefinition.scene.parcels],
+      metadata: sceneDefinition,
+      files: contentFiles,
+    }))
+    const authChain = Authenticator.signPayload(identity, entityId)
+    yield call(() =>  client.deployEntity({ entityId, files: hashedFiles, authChain }))
     yield put(clearDeploymentSuccess(deploymentId))
   } catch (error) {
     yield put(clearDeploymentFailure(deploymentId, error.message))

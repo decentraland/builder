@@ -1,9 +1,11 @@
-import { AuthIdentity } from 'dcl-crypto'
+import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { ChainId } from '@dcl/schemas'
+import { CatalystClient } from 'dcl-catalyst-client'
+import { EntityType } from 'dcl-catalyst-commons'
 import { builder, getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { getCatalystItemURN } from 'modules/item/utils'
-import { buildDeployData, deploy, makeContentFiles, EntityType, computeHashes } from 'modules/deployment/contentUtils'
+import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
@@ -15,9 +17,17 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
   const catalystItem = toCatalystItem(collection, item, chainId)
-  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [urn], catalystItem, contentFiles, ITEM_DEPLOYMENT_DELTA_TIMESTAMP)
+  const client = new CatalystClient(PEER_URL, 'Builder')
+  const { entityId, files: hashedFiles } = await client.buildEntity({
+    type: EntityType.WEARABLE,
+    pointers: [urn],
+    metadata: catalystItem,
+    files: contentFiles,
+    timestamp: Date.now() - ITEM_DEPLOYMENT_DELTA_TIMESTAMP * 1000
+  })
+  const authChain = Authenticator.signPayload(identity, entityId)
 
-  await deploy(PEER_URL, data)
+  await client.deployEntity({ entityId, files: hashedFiles, authChain })
 
   const newItem = { ...item, inCatalyst: true }
   if (!item.inCatalyst) {
