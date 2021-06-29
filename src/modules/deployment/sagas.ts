@@ -272,7 +272,7 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
     const catalyst = new CatalystClient(PEER_URL, 'builder')
 
     const entities: DeploymentWithMetadataContentAndPointers[] = yield call(() =>
-      coords.length > 0 ? catalyst.fetchAllDeployments({ pointers: coords, onlyCurrentlyPointed: true }) : []
+      coords.length > 0 ? catalyst.fetchAllDeployments({ filters: { pointers: coords, onlyCurrentlyPointed: true }}) : []
     )
     const deployments = new Map<string, Deployment>()
     for (const entity of entities
