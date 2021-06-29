@@ -1,10 +1,7 @@
 import { Hashing, ContentFile } from 'dcl-catalyst-commons'
 const toBuffer = require('blob-to-buffer')
 
-export const ENTITY_FILE_NAME = 'entity.json'
-
 export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
-
 
 export async function computeHashes(contents: Record<string, Blob>): Promise<Record<string, string>> {
   const contentsAsHashes: Record<string, string> = {}

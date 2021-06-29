@@ -23,7 +23,7 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
     pointers: [urn],
     metadata: catalystItem,
     files: contentFiles,
-    timestamp: Date.now() - ITEM_DEPLOYMENT_DELTA_TIMESTAMP * 1000
+    timestamp: Date.now() - ITEM_DEPLOYMENT_DELTA_TIMESTAMP
   })
   const authChain = Authenticator.signPayload(identity, entityId)
 
