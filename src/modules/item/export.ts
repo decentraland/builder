@@ -83,7 +83,7 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   try {
     const image = await generateImage(item)
     imageSize = image.size
-  } catch (error) {}
+  } catch (error) { }
 
   const finalSize = imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
   return finalSize
