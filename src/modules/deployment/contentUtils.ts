@@ -112,13 +112,14 @@ export async function buildDeployData(
   pointers: Pointer[],
   metadata: any,
   files: ContentFile[] = [],
+  timestampDelta: number = 0,
   afterEntity?: ControllerEntity
 ): Promise<[DeployData, ControllerEntity]> {
   const content: Map<ContentFilePath, ContentFileHash> = await calculateHashes(files)
   const [entity, entityFile] = await buildControllerEntityAndFile(
     type,
     pointers,
-    (afterEntity ? afterEntity.timestamp : Date.now()) + 1,
+    (afterEntity ? afterEntity.timestamp : Date.now()) + timestampDelta,
     content,
     metadata
   )

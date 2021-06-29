@@ -8,12 +8,14 @@ import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
+const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
+
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item, chainId: ChainId) {
   const urn = getCatalystItemURN(collection, item, chainId)
   const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
   const catalystItem = toCatalystItem(collection, item, chainId)
-  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [urn], catalystItem, contentFiles)
+  const [data] = await buildDeployData(EntityType.WEARABLE, identity, [urn], catalystItem, contentFiles, ITEM_DEPLOYMENT_DELTA_TIMESTAMP)
 
   await deploy(PEER_URL, data)
 
