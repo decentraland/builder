@@ -12,7 +12,7 @@ function initContext() {
       /* */
     })
 
-    define('🍉', ['require', 'exports', '@decentraland/EnvironmentAPI'], (require, exports, EnvironmentAPI) => {
+    define('__bootstrap', ['require', 'exports', '@decentraland/EnvironmentAPI'], (require, exports, EnvironmentAPI) => {
       // Object.defineProperty(exports, '__esModule', { value: true })
       EnvironmentAPI.getBootstrapData().then(({ baseUrl }) => {
         resolve(baseUrl)
