@@ -57,7 +57,7 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   }
 }
 
-export function getBodyShapes(item: Item) {
+export function getBodyShapes(item: Item): WearableBodyShape[] {
   const bodyShapes = new Set<WearableBodyShape>()
   for (const representation of item.data.representations) {
     for (const bodyShape of representation.bodyShapes) {
@@ -243,7 +243,8 @@ export function hasOnChainDataChanged(originalItem: Item, item: Item) {
     originalItem.data.category !== item.data.category ||
     originalItem.price !== item.price ||
     originalItem.beneficiary !== item.beneficiary ||
-    originalItem.rarity !== item.rarity
+    originalItem.rarity !== item.rarity ||
+    JSON.stringify(getBodyShapes(originalItem)) !== JSON.stringify(getBodyShapes(item))
   )
 }
 
