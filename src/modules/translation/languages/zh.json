@@ -1011,6 +1011,7 @@
       "discussion": "讨论",
       "keep_reviewing": "继续审核",
       "back_to_curation": "回到策展",
+      "waiting_for_upload": "集合中的某些项目仍在上传中。 请尽快回来查看以继续策展。",
       "reject": {
         "title": "拒绝收藏",
         "subtitle": "我想还不够，是吧？",

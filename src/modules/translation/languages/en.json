@@ -1020,6 +1020,7 @@
       "discussion": "Discussion",
       "keep_reviewing": "Keep reviewing",
       "back_to_curation": "Back to curation",
+      "waiting_for_upload": "Some items in the collection are still being uploaded. Please check back soon to proceed with the curation.",
       "reject": {
         "title": "Reject Collection",
         "subtitle": "I guess it's just not good enough, huh?",
