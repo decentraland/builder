@@ -9,6 +9,7 @@ import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'mod
 import { TRANSPARENT_PIXEL } from 'lib/getModelData'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { Item } from 'modules/item/types'
+import { base64ArrayBuffer } from './base64'
 
 const script = require('raw-loader!../../ecsScene/scene.js')
 
@@ -20,8 +21,9 @@ export const SCALE_GRID_RESOLUTION = 0.5
 export const SCALE_MIN_LIMIT = 0.001
 
 export function getNewEditorScene(project: Project): EditorScene {
+  const encoder = new TextEncoder()
   const mappings = {
-    'game.js': `data:application/javascript;base64,${btoa(script)}`,
+    'game.js': `data:application/javascript;base64,${base64ArrayBuffer(encoder.encode(script))}`,
     'scene.json': 'Qm' // stub required by the client
   }
 

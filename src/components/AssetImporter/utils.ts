@@ -70,6 +70,7 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
         .split(SOURCE_MAPS_SEPARATOR)
       text = parts.shift()! + text.slice(-padding)
     }
+
     /** Namespace module definitions
      * It converts this:
      * define("myModule", ...
@@ -104,8 +105,8 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
       text = text.replace(new RegExp(path, 'g'), `${namespace}/${path}`)
     }
 
-    // Remove extra /src
-    text = text.replace(/src\//g, '')
+    // Remove extra src/
+    text = text.replace(/src(\/|\\)/g, '')
 
     contents[scriptPath] = new Blob([text], {
       type: 'text/plain'
