@@ -228,7 +228,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         item.contents[path] = computedHashes[path]
       }
 
-      const onSaveItem = pristineItem && pristineItem.isPublished ? onSavePublished : onSave
+      const baseItem = editedItem || pristineItem
+      const onSaveItem = baseItem && baseItem.isPublished ? onSavePublished : onSave
       onSaveItem(item, contents)
     }
   }
