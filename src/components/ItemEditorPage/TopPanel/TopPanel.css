@@ -35,6 +35,10 @@
   text-align: right;
 }
 
+.TopPanel .actions .button-container {
+  display: inline-block;
+}
+
 .TopPanel .actions .ui.button {
   padding-top: 8px;
   padding-bottom: 8px;
