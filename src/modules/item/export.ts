@@ -18,12 +18,13 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
   const catalystItem = toCatalystItem(collection, item, chainId)
   const client = new CatalystClient(PEER_URL, 'Builder')
+  const status = await client.fetchContentStatus()
   const { entityId, files: hashedFiles } = await client.buildEntity({
     type: EntityType.WEARABLE,
     pointers: [urn],
     metadata: catalystItem,
     files: contentFiles,
-    timestamp: Date.now() - ITEM_DEPLOYMENT_DELTA_TIMESTAMP
+    timestamp: status.currentTime - ITEM_DEPLOYMENT_DELTA_TIMESTAMP
   })
   const authChain = Authenticator.signPayload(identity, entityId)
 
