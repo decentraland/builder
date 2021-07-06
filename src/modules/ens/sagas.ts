@@ -6,7 +6,7 @@ import { namehash } from '@ethersproject/hash'
 import { push } from 'connected-react-router'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
-import { CatalystClient, DeploymentBuilder } from 'dcl-catalyst-client'
+import { CatalystClient, DeploymentBuilder, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { Avatar } from 'decentraland-ui'
 import { Authenticator } from 'dcl-crypto'
@@ -104,10 +104,8 @@ function* handleSetAlias(action: SetAliasRequestAction) {
       name
     }
 
-    const newEntity = {
+    const newEntity: Entity = {
       ...entity,
-      userId: address,
-      ethAddress: address,
       metadata: {
         ...entity.metadata,
         avatars: [newAvatar, ...entity.metadata.avatars.slice(1)]
@@ -116,7 +114,7 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     // Build entity
     const content: Map<string, string> = new Map((newEntity.content || []).map(({ file, hash }) => [file, hash]))
 
-    const deployPreparationData = yield call(() =>
+    const deployPreparationData: DeploymentPreparationData = yield call(() =>
       DeploymentBuilder.buildEntityWithoutNewFiles(EntityType.PROFILE, [address], content, newEntity.metadata)
     )
 
@@ -124,13 +122,13 @@ function* handleSetAlias(action: SetAliasRequestAction) {
     const eth: Eth = yield call(getEth)
 
     const personal = new Personal(eth.provider)
-    const signature = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
+    const signature: string = yield personal.sign(deployPreparationData.entityId, Address.fromString(address), '')
 
     // Deploy change
     const authChain = Authenticator.createSimpleAuthChain(deployPreparationData.entityId, address, signature)
     yield call(() => client.deployEntity({ ...deployPreparationData, authChain }))
 
-    const stateEntity = yield call(() => setProfileFromEntity(newEntity))
+    const stateEntity = setProfileFromEntity(newEntity)
     yield put(setAliasSuccess(address, name))
     yield put(changeProfile(address, stateEntity.metadata as Profile))
   } catch (error) {
@@ -151,7 +149,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
     const resolverAddress: Address = yield call(() => ensContract.methods.resolver(nodehash).call())
 
     if (resolverAddress.toString() === Address.ZERO.toString()) {
-      return yield put(
+      yield put(
         fetchENSSuccess({
           name,
           address,
@@ -160,15 +158,16 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
           content: Address.ZERO.toString()
         })
       )
+      return
     }
 
     const resolverContract = new ENSResolver(eth, resolverAddress)
-    const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
+    const ipfsHash: string = yield call(() => ipfs.uploadRedirectionFile(land))
     const landHash = contentHash.fromIpfs(ipfsHash)
 
-    const currentContent = yield call(() => resolverContract.methods.contenthash(nodehash).call())
+    const currentContent: string = yield call(() => resolverContract.methods.contenthash(nodehash).call())
     if (currentContent === Address.ZERO.toString()) {
-      return yield put(
+      yield put(
         fetchENSSuccess({
           address,
           name,
@@ -178,10 +177,11 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
           ipfsHash
         })
       )
+      return
     }
 
     if (`0x${landHash}` === currentContent) {
-      return yield put(
+      yield put(
         fetchENSSuccess({
           address,
           name,
@@ -192,6 +192,7 @@ function* handleFetchENSRequest(action: FetchENSRequestAction) {
           landId: land.id
         })
       )
+      return
     }
 
     yield put(
@@ -218,7 +219,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
     const nodehash = namehash(ens.subdomain)
     const ensContract = new ENSContract(eth, Address.fromString(ENS_ADDRESS))
 
-    const txHash = yield call(() =>
+    const txHash: string = yield call(() =>
       ensContract.methods
         .setResolver(nodehash, Address.fromString(ENS_RESOLVER_ADDRESS))
         .send({ from })
@@ -240,7 +241,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     let content = ''
 
     if (land) {
-      const ipfsHash = yield call(() => ipfs.uploadRedirectionFile(land))
+      const ipfsHash: string = yield call(() => ipfs.uploadRedirectionFile(land))
       content = `0x${contentHash.fromIpfs(ipfsHash)}`
     } else {
       content = Address.ZERO.toString()
@@ -249,7 +250,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     const nodehash = namehash(ens.subdomain)
     const resolverContract = new ENSResolver(eth, Address.fromString(ENS_RESOLVER_ADDRESS))
 
-    const txHash = yield call(() =>
+    const txHash: string = yield call(() =>
       resolverContract.methods
         .setContenthash(nodehash, content)
         .send({ from })
@@ -284,7 +285,7 @@ function* handleFetchENSListRequest(_action: FetchENSListRequestAction) {
     const lands: Land[] = yield select(getLands)
 
     for (let land of lands) {
-      const landHash = yield call(() => ipfs.computeLandHash(land))
+      const landHash: string = yield call(() => ipfs.computeLandHash(land))
       landHashes.push({ hash: `0x${landHash}`, id: land.id })
     }
 

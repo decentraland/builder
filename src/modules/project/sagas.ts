@@ -39,7 +39,7 @@ import {
   DELETE_PROJECT,
   DeleteProjectAction
 } from 'modules/project/actions'
-import { Project } from 'modules/project/types'
+import { Project, Manifest } from 'modules/project/types'
 import { Scene } from 'modules/scene/types'
 import { getData as getProjects } from 'modules/project/selectors'
 import { getData as getScenes } from 'modules/scene/selectors'
@@ -92,7 +92,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 
   const { rows, cols } = template
 
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
 
   const project: Project = {
     id: uuidv4(),
@@ -122,7 +122,7 @@ function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateActio
 function* handleDuplicateProject(action: DuplicateProjectAction) {
   const { project } = action.payload
 
-  const scene = yield getSceneByProjectId(project.id)
+  const scene: Scene = yield getSceneByProjectId(project.id)
 
   let thumbnail = project.thumbnail
 
@@ -188,13 +188,13 @@ function* handleShareProject(action: ShareProjectAction) {
 
 function* handleExportProject(action: ExportProjectRequestAction) {
   const { project } = action.payload
-  const scene = yield getSceneByProjectId(project.id)
+  const scene: Scene = yield getSceneByProjectId(project.id)
 
   let zip = new JSZip()
   let sanitizedName = project.title.replace(/\s/g, '_')
   yield put(setExportProgress({ loaded: 0, total: 0 }))
-  const author = yield select(getName)
-  const files = yield call(() =>
+  const author: string = yield select(getName)
+  const files: Record<string, Blob | string> = yield call(() =>
     createFiles({
       project,
       scene,
@@ -208,7 +208,7 @@ function* handleExportProject(action: ExportProjectRequestAction) {
   )
 
   for (const filename of Object.keys(files)) {
-    zip.file(filename, files[filename as keyof typeof files])
+    zip.file(filename, files[filename])
   }
 
   yield call(async () => {
@@ -263,7 +263,7 @@ function* handleLoadProjectsRequest() {
 function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
   const { id, type } = action.payload
   try {
-    const manifest = yield call(() => builder.fetchManifest(id, type))
+    const manifest: Manifest<Project> = yield call(() => builder.fetchManifest(id, type))
     yield put(loadManifestSuccess(manifest))
   } catch (e) {
     yield put(loadManifestFailure(e.message))

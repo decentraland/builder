@@ -115,26 +115,30 @@ function* handleDeleteProjectRequest(action: DeleteProjectRequestAction) {
 }
 
 function* handleCreateProject(action: CreateProjectAction) {
-  if (yield select(isLoggedIn)) {
+  const isLoggedInResult: boolean = yield select(isLoggedIn)
+  if (isLoggedInResult) {
     yield put(saveProjectRequest(action.payload.project))
   }
 }
 
 function* handleSetProject(action: SetProjectAction) {
-  if (yield select(isLoggedIn)) {
+  const isLoggedInResult: boolean = yield select(isLoggedIn)
+  if (isLoggedInResult) {
     yield put(saveProjectRequest(action.payload.project))
   }
 }
 
 function* handleDeleteProject(action: DeleteProjectAction) {
-  if (yield select(isLoggedIn)) {
+  const isLoggedInResult: boolean = yield select(isLoggedIn)
+  if (isLoggedInResult) {
     yield put(deleteProjectRequest(action.payload.project.id))
   }
 }
 
 function* handleProvisionScene(action: ProvisionSceneAction) {
   if (action.payload.init) return
-  if (yield select(isLoggedIn)) {
+  const isLoggedInResult: boolean = yield select(isLoggedIn)
+  if (isLoggedInResult) {
     const project: Project | null = yield select(getCurrentProject)
     if (project) {
       yield put(saveProjectRequest(project))

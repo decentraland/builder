@@ -461,7 +461,8 @@ function* handleFixLegacyNamespacesRequest(action: FixLegacyNamespacesRequestAct
       // if there's no asset pack but there are mappings, we generate a dummy asset from the mappings
       if ('mappings' in gltfShape.data) {
         const contents: Record<string, string> = {}
-        const mappings = gltfShape.data['mappings'] as Record<string, string>
+        // TODO: Type this correctly, mappings does not appear anywhere in ComponentDefinition
+        const mappings: Record<string, string> = (gltfShape.data as Record<string, any>)['mappings']
         for (const namespacedPath of Object.keys(mappings)) {
           const path = namespacedPath // remove the namespace
             .split('/') // ['<uuid>', 'folder', 'Model.gltf']

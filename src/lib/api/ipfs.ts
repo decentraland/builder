@@ -47,7 +47,7 @@ export class IpfsAPI {
     return json.Hash
   }
 
-  computeLandHash = async (land: Land) => {
+  computeLandHash = async (land: Land): Promise<string> => {
     const blob = this.generateRedirectionFile(land)
     const ipfsHash = await blobToCID(blob, INDEX_FILE_PATH)
     const hash = await contentHash.fromIpfs(ipfsHash)
