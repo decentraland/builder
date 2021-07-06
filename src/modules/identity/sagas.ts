@@ -86,10 +86,10 @@ function* handleGenerateIdentityRequest(action: GenerateIdentityRequestAction) {
 function* handleLogin(action: LoginRequestAction) {
   const { restoreSession, providerType } = action.payload
   // Check if we need to generate an identity
-  const shouldLogin = yield select(state => !isLoggedIn(state))
+  const shouldLogin: boolean = yield select(state => !isLoggedIn(state))
   if (shouldLogin && !restoreSession) {
     // Check if we need to connect the wallet
-    const shouldConnectWallet = yield select(state => !isConnected(state))
+    const shouldConnectWallet: boolean = yield select(state => !isConnected(state))
     if (shouldConnectWallet) {
       if (!providerType) {
         yield put(loginFailure('Undefined provider type'))
@@ -121,10 +121,10 @@ function* handleLogin(action: LoginRequestAction) {
     }
 
     // Check if we need  to generate a new identity
-    const identity = yield select(getCurrentIdentity)
+    const identity: AuthIdentity = yield select(getCurrentIdentity)
     if (!identity) {
       // Generate a new identity
-      const address = yield select(getAddress)
+      const address: string = yield select(getAddress)
       yield put(generateIdentityRequest(address))
       const generateIdentity: Race<GenerateIdentitySuccessAction, GenerateIdentityFailureAction> = yield takeRace(
         GENERATE_IDENTITY_SUCCESS,
@@ -150,7 +150,7 @@ function* handleLogin(action: LoginRequestAction) {
 }
 
 function* handleLogout(_action: LogoutAction) {
-  const address = yield select(getAddress)
+  const address: string | undefined = yield select(getAddress)
   if (address) {
     yield put(disconnectWallet())
     yield put(destroyIdentity(address))
@@ -159,7 +159,7 @@ function* handleLogout(_action: LogoutAction) {
 
 function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
   const { wallet } = action.payload
-  const shouldRestoreSession = yield select(isLoggedIn)
+  const shouldRestoreSession: boolean = yield select(isLoggedIn)
   if (shouldRestoreSession) {
     yield put(loginRequest(wallet.providerType, true))
   }
@@ -167,7 +167,7 @@ function* handleConnectWalletSuccess(action: ConnectWalletSuccessAction) {
 
 function* handleChangeAccount(action: ChangeAccountAction) {
   const { wallet } = action.payload
-  const shouldRestoreSession = yield select(isLoggedIn)
+  const shouldRestoreSession: boolean = yield select(isLoggedIn)
   if (shouldRestoreSession) {
     yield put(loginRequest(wallet.providerType, true))
   }

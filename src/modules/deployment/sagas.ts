@@ -1,4 +1,5 @@
 import { CatalystClient, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { EntityType } from 'dcl-catalyst-commons'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
@@ -49,7 +50,6 @@ import { FETCH_LANDS_SUCCESS, FetchLandsSuccessAction } from 'modules/land/actio
 import { LandType } from 'modules/land/types'
 import { coordsToId, idToCoords } from 'modules/land/utils'
 import { getCoordsByEstateId } from 'modules/land/selectors'
-import { Authenticator } from 'dcl-crypto'
 
 type UnwrapPromise<T> = T extends PromiseLike<infer U> ? U : T
 
@@ -121,7 +121,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     return
   }
 
-  const identity: any = yield getIdentity()
+  const identity: AuthIdentity = yield getIdentity()
   if (!identity) {
     yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
     return
@@ -131,7 +131,8 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
 
   // upload media if logged in
   let previewUrl: string | null = null
-  if (yield select(isLoggedIn)) {
+  const isLoggedInResult: boolean = yield select(isLoggedIn)
+  if (isLoggedInResult) {
     const media: Media | null = yield select(getMedia)
     if (media) {
       const north: Blob = yield call(() => objectURLToBlob(media.north))
@@ -151,7 +152,7 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   }
 
   try {
-    const files = yield call(() =>
+    const files: Record<string, string> = yield call(() =>
       createFiles({
         project,
         scene,
@@ -166,14 +167,16 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
     const contentFiles: Map<string, Buffer> = yield call(() => makeContentFiles(files))
     const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const client = new CatalystClient(PEER_URL, 'Builder')
-    const { entityId, files: hashedFiles } = yield call(() => client.buildEntity({
-      type: EntityType.SCENE,
-      pointers: [...sceneDefinition.scene.parcels],
-      metadata: sceneDefinition,
-      files: contentFiles,
-    }))
+    const { entityId, files: hashedFiles } = yield call(() =>
+      client.buildEntity({
+        type: EntityType.SCENE,
+        pointers: [...sceneDefinition.scene.parcels],
+        metadata: sceneDefinition,
+        files: contentFiles
+      })
+    )
     const authChain = Authenticator.signPayload(identity, entityId)
-    yield call(() =>  client.deployEntity({ entityId, files: hashedFiles, authChain }))
+    yield call(() => client.deployEntity({ entityId, files: hashedFiles, authChain }))
     // generate new deployment
     const deployment: Deployment = {
       id: entityId,
@@ -205,7 +208,7 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     return
   }
 
-  const identity: any = yield getIdentity()
+  const identity: AuthIdentity = yield getIdentity()
   if (!identity) {
     yield put(deployToLandFailure('Unable to Publish: Invalid identity'))
     return
@@ -230,14 +233,16 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
     const contentFiles: Map<string, Buffer> = yield call(() => makeContentFiles(files))
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const client = new CatalystClient(PEER_URL, 'Builder')
-    const { entityId, files: hashedFiles } = yield call(() => client.buildEntity({
-      type: EntityType.SCENE,
-      pointers: [...sceneDefinition.scene.parcels],
-      metadata: sceneDefinition,
-      files: contentFiles,
-    }))
+    const { entityId, files: hashedFiles } = yield call(() =>
+      client.buildEntity({
+        type: EntityType.SCENE,
+        pointers: [...sceneDefinition.scene.parcels],
+        metadata: sceneDefinition,
+        files: contentFiles
+      })
+    )
     const authChain = Authenticator.signPayload(identity, entityId)
-    yield call(() =>  client.deployEntity({ entityId, files: hashedFiles, authChain }))
+    yield call(() => client.deployEntity({ entityId, files: hashedFiles, authChain }))
     yield put(clearDeploymentSuccess(deploymentId))
   } catch (error) {
     yield put(clearDeploymentFailure(deploymentId, error.message))
@@ -253,7 +258,7 @@ function* handleFetchLandsSuccess(action: FetchLandsSuccessAction) {
         break
       }
       case LandType.ESTATE: {
-        const coordsByEstateId = yield select(getCoordsByEstateId)
+        const coordsByEstateId: ReturnType<typeof getCoordsByEstateId> = yield select(getCoordsByEstateId)
         if (land.id in coordsByEstateId) {
           for (const coord of coordsByEstateId[land.id]) {
             coords.push(coord)
@@ -272,7 +277,7 @@ function* handleFetchDeploymentsRequest(action: FetchDeploymentsRequestAction) {
     const catalyst = new CatalystClient(PEER_URL, 'builder')
 
     const entities: DeploymentWithMetadataContentAndPointers[] = yield call(() =>
-      coords.length > 0 ? catalyst.fetchAllDeployments({ filters: { pointers: coords, onlyCurrentlyPointed: true }}) : []
+      coords.length > 0 ? catalyst.fetchAllDeployments({ filters: { pointers: coords, onlyCurrentlyPointed: true } }) : []
     )
     const deployments = new Map<string, Deployment>()
     for (const entity of entities

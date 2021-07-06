@@ -71,7 +71,8 @@ import {
   syncSceneAssetsRequest,
   FIX_LEGACY_NAMESPACES_SUCCESS,
   FixLegacyNamespacesSuccessAction,
-  SYNC_SCENE_ASSETS_SUCCESS
+  SYNC_SCENE_ASSETS_SUCCESS,
+  syncSceneAssetsSuccess
 } from 'modules/scene/actions'
 import { bindKeyboardShortcuts, unbindKeyboardShortcuts } from 'modules/keyboard/actions'
 import { editProjectThumbnail } from 'modules/project/actions'
@@ -170,8 +171,8 @@ export function* editorSaga() {
 }
 
 function* pollEditor(scene: Scene) {
-  let metrics
-  let entities
+  let metrics: ModelMetrics
+  let entities: number
 
   do {
     entities = Object.values(scene.entities).length
@@ -227,7 +228,7 @@ function* handleProvisionScene(action: ProvisionSceneAction) {
 }
 
 function* handleHistory() {
-  const scene = yield select(getCurrentScene)
+  const scene: Scene = yield select(getCurrentScene)
   yield renderScene(scene)
   yield put(takeScreenshot())
 }
@@ -235,7 +236,8 @@ function* handleHistory() {
 function* renderScene(scene: Scene) {
   if (scene) {
     const mappings: ReturnType<typeof getSceneMappings> = yield select(getSceneMappings)
-    if (yield select(isReadOnly)) {
+    const isReadOnlyResult: boolean = yield select(isReadOnly)
+    if (isReadOnlyResult) {
       scene = createReadyOnlyScene(scene)
     }
     yield call(() => editorWindow.editor.sendExternalAction(updateEditor(scene.id, { ...scene }, mappings)))
@@ -343,7 +345,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
   yield call(() => editorWindow.editor.on('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
 
   if (type === PreviewType.WEARABLE) {
-    const search = yield select(getSearch)
+    const search: ReturnType<typeof getSearch> = yield select(getSearch)
     const itemId = new URLSearchParams(search).get('item')
     const items: Item[] = yield select(getItems)
     const item = items.find(item => item.id === itemId)
@@ -392,7 +394,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
     if (project) {
       // load asset packs
-      const areLoaded = yield select(hasLoadedAssetPacks)
+      const areLoaded: boolean = yield select(hasLoadedAssetPacks)
       if (!areLoaded) {
         yield put(loadAssetPacksRequest())
       }
@@ -411,7 +413,7 @@ function* handleOpenEditor(action: OpenEditorAction) {
 
       // sync scene assets
       yield put(syncSceneAssetsRequest(scene))
-      const syncSuccessAction = yield take(SYNC_SCENE_ASSETS_SUCCESS)
+      const syncSuccessAction: ReturnType<typeof syncSceneAssetsSuccess> = yield take(SYNC_SCENE_ASSETS_SUCCESS)
       scene = syncSuccessAction.payload.scene
 
       yield put(setEditorReadOnly(isReadOnly))
@@ -440,14 +442,16 @@ function* handleCloseEditor() {
   yield call(() => editorWindow.editor.off('ready', handleEditorReadyChange))
   yield call(() => editorWindow.editor.off('gizmoSelected', handleGizmoSelected))
   yield call(() => editorWindow.editor.off('entitiesOutOfBoundaries', handleEntitiesOutOfBoundaries))
-  if (yield select(isReady)) {
+  const isReadyResult: boolean = yield select(isReady)
+  if (isReadyResult) {
     yield call(() => editorWindow.editor.sendExternalAction(closeEditor()))
   }
   yield put(unbindEditorKeyboardShortcuts())
 }
 
 function* handleSetGizmo(action: SetGizmoAction) {
-  if (yield select(isReady)) {
+  const isReadyResult: boolean = yield select(isReady)
+  if (isReadyResult) {
     yield call(() => editorWindow.editor.selectGizmo(action.payload.gizmo))
   }
 }
@@ -479,7 +483,7 @@ function* handleTogglePreview(action: TogglePreviewAction) {
     }
 
     yield handleResetCamera()
-    const scene = yield select(getCurrentScene)
+    const scene: Scene = yield select(getCurrentScene)
     yield renderScene(scene)
   } else {
     editor.setCameraPosition({ x, y: 1.5, z })
@@ -503,7 +507,7 @@ function* handleSetEditorReady(action: SetEditorReadyAction) {
   if (project) {
     if (isReady) {
       try {
-        let scene = yield getSceneByProjectId(project.id)
+        let scene: Scene = yield getSceneByProjectId(project.id)
         yield handleEditorReady(scene)
       } catch (error) {
         console.error(error)
@@ -569,10 +573,10 @@ function* handleScreenshot(_: TakeScreenshotAction) {
     // rendering leeway
     yield delay(2000)
 
-    const screenshot = yield call(() => editorWindow.editor.takeScreenshot())
+    const screenshot: string = yield call(() => editorWindow.editor.takeScreenshot())
     if (!screenshot) return
 
-    const thumbnail = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
+    const thumbnail: string | null = yield call(() => resizeScreenshot(screenshot, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT))
     if (!thumbnail) return
 
     yield put(editProjectThumbnail(currentProject.id, thumbnail))

@@ -15,7 +15,7 @@ export function* translationSaga() {
 }
 
 function* handleStorageLoad() {
-  const currentLocale = yield select(getLocale)
+  const currentLocale: Locale = yield select(getLocale)
 
   const urlParams = new URLSearchParams(window.location.search)
   const locale = urlParams.get('locale')

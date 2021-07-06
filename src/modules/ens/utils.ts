@@ -1,3 +1,4 @@
+import { Entity } from 'dcl-catalyst-commons'
 import { Address } from 'web3x-es/address'
 import { fromWei } from 'web3x-es/utils'
 import { PEER_URL } from 'lib/api/peer'
@@ -23,7 +24,7 @@ export const MIN_NAME_SIZE = 2
  */
 const nameRegex = new RegExp(`^([a-zA-Z0-9]){2,${MAX_NAME_SIZE}}$`)
 
-export async function setProfileFromEntity(entity: any) {
+export function setProfileFromEntity(entity: Entity): Entity {
   entity.metadata.avatars[0].avatar.snapshots.face = `${PEER_URL}/content/contents/${entity.metadata.avatars[0].avatar.snapshots.face}`
   entity.metadata.avatars[0].avatar.snapshots.body = `${PEER_URL}/content/contents/${entity.metadata.avatars[0].avatar.snapshots.body}`
   return entity

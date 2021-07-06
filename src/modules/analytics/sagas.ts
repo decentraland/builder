@@ -141,7 +141,7 @@ function handleConnectWallet(action: ConnectWalletSuccessAction) {
 function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   // Do not change this event name format
   track('[Success] Deploy to LAND pool', { project_id: project.id, eth_address: ethAddress })
 }
@@ -149,7 +149,7 @@ function* handleDeployToPoolSuccess(_: DeployToPoolSuccessAction) {
 function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   // Do not change this event name format
   track('[Success] Deploy to LAND', { project_id: project.id, eth_address: ethAddress })
 }
@@ -157,7 +157,7 @@ function* handleDeployToLandSuccess(_: DeployToLandSuccessAction) {
 function* handleClearDeploymentSuccess(_: ClearDeploymentSuccessAction) {
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   // Do not change this event name format
   track('[Success] Clear Deployment', { project_id: project.id, eth_address: ethAddress })
 }
@@ -203,7 +203,7 @@ function* handleSaveAssetPackSuccess(action: SaveAssetPackSuccessAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   track('[Success] Save AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }
 
@@ -211,7 +211,7 @@ function* handleDeleteAssetPackSuccess(action: DeleteAssetPackSuccessAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   track('[Success] Delete AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }
 
@@ -219,7 +219,7 @@ function* handleSaveAssetPackFailure(action: SaveAssetPackFailureAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   track('[Failure] Save AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }
 
@@ -227,6 +227,6 @@ function* handleDeleteAssetPackFailure(action: DeleteAssetPackFailureAction) {
   const { assetPack } = action.payload
   const project: Project | null = yield select(getCurrentProject)
   if (!project) return
-  const ethAddress = yield select(getAddress)
+  const ethAddress: string = yield select(getAddress)
   track('[Failure] Delete AssetPack', { project_id: project.id, eth_address: ethAddress, assetPack })
 }

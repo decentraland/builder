@@ -76,7 +76,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
     switch (type) {
       case LandType.PARCEL: {
         const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const txHash = yield call(() =>
+        const txHash: string = yield call(() =>
           landRegistry.methods
             .setUpdateManager(from, manager, isApproved)
             .send({ from })
@@ -87,7 +87,7 @@ function* handleSetUpdateManagerRequest(action: SetUpdateManagerRequestAction) {
       }
       case LandType.ESTATE: {
         const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash = yield call(() =>
+        const txHash: string = yield call(() =>
           estateRegistry.methods
             .setUpdateManager(from, manager, isApproved)
             .send({ from })
@@ -114,8 +114,8 @@ function* handleDissolveEstateRequest(action: DissolveEstateRequestAction) {
     const from = Address.fromString(wallet.address)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-    const tokenIds = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
-    const txHash = yield call(() =>
+    const tokenIds: string[] = yield all(land.parcels!.map(parcel => landRegistry.methods.encodeTokenId(parcel.x, parcel.y).call()))
+    const txHash: string = yield call(() =>
       estateRegistry.methods
         .transferManyLands(land.id, tokenIds, from)
         .send({ from })
@@ -137,7 +137,7 @@ function* handleCreateEstateRequest(action: CreateEstateRequestAction) {
     const [xs, ys] = splitCoords(coords)
     const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
     const metadata = buildMetadata(name, description)
-    const txHash = yield call(() =>
+    const txHash: string = yield call(() =>
       landRegistry.methods
         .createEstateWithMetadata(xs, ys, from, metadata)
         .send({ from })
@@ -161,7 +161,7 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
 
     if (toAdd.length > 0) {
       const [xsToAdd, ysToAdd] = splitCoords(toAdd)
-      const txHash = yield call(() =>
+      const txHash: string = yield call(() =>
         landRegistry.methods
           .transferManyLandToEstate(xsToAdd, ysToAdd, land.id)
           .send({ from })
@@ -172,8 +172,8 @@ function* handleEditEstateRequest(action: EditEstateRequestAction) {
 
     if (toRemove.length > 0) {
       const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-      const tokenIds = yield all(toRemove.map(({ x, y }) => landRegistry.methods.encodeTokenId(x, y).call()))
-      const txHash = yield call(() =>
+      const tokenIds: string[] = yield all(toRemove.map(({ x, y }) => landRegistry.methods.encodeTokenId(x, y).call()))
+      const txHash: string = yield call(() =>
         estateRegistry.methods
           .transferManyLands(land.id, tokenIds, from)
           .send({ from })
@@ -199,8 +199,8 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
     switch (land.type) {
       case LandType.PARCEL: {
         const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const tokenId = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
-        const txHash = yield call(() =>
+        const tokenId: string = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
+        const txHash: string = yield call(() =>
           landRegistry.methods
             .setUpdateOperator(tokenId, operator)
             .send({ from })
@@ -211,7 +211,7 @@ function* handleSetOperatorRequest(action: SetOperatorRequestAction) {
       }
       case LandType.ESTATE: {
         const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash = yield call(() =>
+        const txHash: string = yield call(() =>
           estateRegistry.methods
             .setUpdateOperator(land.id, operator)
             .send({ from })
@@ -241,7 +241,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
     switch (land.type) {
       case LandType.PARCEL: {
         const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const txHash = yield call(() =>
+        const txHash: string = yield call(() =>
           landRegistry.methods
             .updateLandData(land.x!, land.y!, metadata)
             .send({ from })
@@ -252,7 +252,7 @@ function* handleEditLandRequest(action: EditLandRequestAction) {
       }
       case LandType.ESTATE: {
         const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash = yield call(() =>
+        const txHash: string = yield call(() =>
           estateRegistry.methods
             .updateMetadata(land.id, metadata)
             .send({ from })
@@ -281,8 +281,8 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
     switch (land.type) {
       case LandType.PARCEL: {
         const landRegistry = new LANDRegistry(eth, Address.fromString(LAND_REGISTRY_ADDRESS))
-        const id = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
-        const txHash = yield call(() =>
+        const id: string = yield call(() => landRegistry.methods.encodeTokenId(land.x!, land.y!).call())
+        const txHash: string = yield call(() =>
           landRegistry.methods
             .transferFrom(from, to, id)
             .send({ from })
@@ -293,7 +293,7 @@ function* handleTransferLandRequest(action: TransferLandRequestAction) {
       }
       case LandType.ESTATE: {
         const estateRegistry = new EstateRegistry(eth, Address.fromString(ESTATE_REGISTRY_ADDRESS))
-        const txHash = yield call(() =>
+        const txHash: string = yield call(() =>
           estateRegistry.methods
             .transferFrom(from, to, land.id)
             .send({ from })

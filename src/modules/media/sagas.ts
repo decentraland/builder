@@ -34,14 +34,14 @@ export function* handleTakePictures() {
   const zoom = (side - 1) * 32
   const canvas: HTMLCanvasElement = yield call(() => editorWindow.editor.getDCLCanvas())
   const previewAngle = Math.PI / 1.5
-  const shots: Omit<RawMedia, 'preview'> = {
+  const screenshots: Omit<RawMedia, 'preview'> = {
     north: null,
     east: null,
     south: null,
     west: null
   }
 
-  let preview
+  let preview: Blob | null
 
   // Prepare the canvas for recording
   canvas.classList.add('recording')
@@ -54,13 +54,13 @@ export function* handleTakePictures() {
   editorWindow.editor.setCameraPosition({ x: (rows * PARCEL_SIZE) / 2, y: 2, z: (cols * PARCEL_SIZE) / 2 })
 
   yield put(recordMediaProgress(0))
-  shots.north = yield takeEditorScreenshot(Rotation.NORTH)
+  screenshots.north = yield takeEditorScreenshot(Rotation.NORTH)
   yield put(recordMediaProgress(20))
-  shots.east = yield takeEditorScreenshot(Rotation.EAST)
+  screenshots.east = yield takeEditorScreenshot(Rotation.EAST)
   yield put(recordMediaProgress(40))
-  shots.south = yield takeEditorScreenshot(Rotation.SOUTH)
+  screenshots.south = yield takeEditorScreenshot(Rotation.SOUTH)
   yield put(recordMediaProgress(60))
-  shots.west = yield takeEditorScreenshot(Rotation.WEST)
+  screenshots.west = yield takeEditorScreenshot(Rotation.WEST)
   yield put(recordMediaProgress(80))
   preview = yield takeEditorScreenshot(previewAngle)
   yield put(recordMediaProgress(100))
@@ -68,11 +68,11 @@ export function* handleTakePictures() {
   // Cleanup
   canvas.classList.remove('recording')
 
-  yield put(recordMediaSuccess({ ...shots, preview }))
+  yield put(recordMediaSuccess({ ...screenshots, preview }))
 }
 
 function* takeEditorScreenshot(angle: number) {
   editorWindow.editor.setCameraRotation(angle, Math.PI / 6)
-  const shot = yield call(() => editorWindow.editor.takeScreenshot())
-  return dataURLToBlob(shot)
+  const screenshot: string = yield call(() => editorWindow.editor.takeScreenshot())
+  return dataURLToBlob(screenshot)
 }
