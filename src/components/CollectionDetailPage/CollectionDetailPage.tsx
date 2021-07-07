@@ -7,7 +7,7 @@ import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
-import { canMintCollectionItems, canSeeCollection, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
+import { canMintCollectionItems, canSeeCollection, getCollectionEditorURL, isOnSale as isCollectionOnSale, isOwner } from 'modules/collection/utils'
 import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
@@ -206,7 +206,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
               id="collection_detail_page.notice"
               values={{
                 editor_link: (
-                  <Link to={locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })}>
+                  <Link to={getCollectionEditorURL(collection, items)}>
                     {t('collection_detail_page.click_here')}
                   </Link>
                 )

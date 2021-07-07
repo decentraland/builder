@@ -9,6 +9,7 @@ import { Item } from 'modules/item/types'
 import { getMetadata } from 'modules/item/utils'
 import { isEqual, includes } from 'lib/address'
 import { InitializeItem, Collection, Access } from './types'
+import { locations } from 'routing/locations'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
@@ -22,6 +23,10 @@ export function isOnSale(collection: Collection, wallet: Wallet) {
 
 export function getSaleAddress(chainId: ChainId) {
   return getContract(ContractName.CollectionStore, chainId).address.toLowerCase()
+}
+
+export function getCollectionEditorURL(collection: Collection, items: Item[]): string {
+  return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
 export function getExplorerURL(collection: Collection, chainId: ChainId) {

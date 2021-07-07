@@ -4,7 +4,7 @@ import { Dropdown, Button, Icon, Popup, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
 import { RoleType } from 'modules/collection/types'
-import { getExplorerURL, isOwner as isCollectionOwner } from 'modules/collection/utils'
+import { getCollectionEditorURL, getExplorerURL, isOwner as isCollectionOwner } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionMenu.types'
 import './CollectionMenu.css'
@@ -22,6 +22,11 @@ export default class CollectionMenu extends React.PureComponent<Props> {
     if (chainId) {
       this.navigateTo(getExplorerURL(collection, chainId), '_blank')
     }
+  }
+
+  handleNavigateToEditor = () => {
+    const { collection, items, onNavigate } = this.props
+    onNavigate(getCollectionEditorURL(collection, items))
   }
 
   handlePostToForum = () => {
@@ -74,6 +79,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
       >
         <Dropdown.Menu>
           <Dropdown.Item text={t('collection_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+          <Dropdown.Item text={t('collection_menu.open_in_editor')} onClick={this.handleNavigateToEditor} />
 
           {collection.isPublished ? (
             isOwner ? (
