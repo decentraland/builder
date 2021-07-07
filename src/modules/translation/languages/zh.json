@@ -921,7 +921,8 @@
     "minters": "铸币厂",
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
-    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
+    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
+    "open_in_editor": "在编辑器中打开"
   },
   "collection_item": {
     "set_price": "设定价格",
