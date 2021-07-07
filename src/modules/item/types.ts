@@ -104,7 +104,6 @@ type BaseItem = {
   description: string
   rarity?: ItemRarity
   metrics: ModelMetrics
-  contents: Record<string, string>
   createdAt: number
   updatedAt: number
 }
@@ -127,6 +126,7 @@ export type Item = BaseItem & {
   isPublished: boolean
   isApproved: boolean
   inCatalyst: boolean
+  contents: Record<string, string>
   data: WearableData
 }
 
