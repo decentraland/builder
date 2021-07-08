@@ -1,7 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, all, delay } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -268,23 +268,13 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
 function* handleRetryDeployItemContentRequest(action: DeployItemContentsFailureAction) {
   const { collection, item, error } = action.payload
 
-  if (!error || isItemSizeError(error)) {
+  if (isItemSizeError(error)) {
     return
   }
 
-  try {
-    const identity: AuthIdentity | undefined = yield getIdentity()
-    if (!identity) {
-      throw new Error(t('sagas.item.invalid_identity'))
-    }
+  yield delay(5000) // wait five seconds
 
-    const chainId: ChainId = yield select(getChainId)
-    const deployedItem: Item = yield deployContents(identity, collection, item, chainId)
-
-    yield put(deployItemContentsSuccess(collection, deployedItem))
-  } catch (error) {
-    yield put(deployItemContentsFailure(collection, item, error.message))
-  }
+  yield put(deployItemContentsRequest(collection, item))
 }
 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {

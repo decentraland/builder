@@ -39,7 +39,7 @@ function* handleMetaTransactionFailure(action: PayloadAction<any, { error: strin
 
 function* handleDeployItemFailure(action: DeployItemContentsFailureAction) {
   const { item, collection, error } = action.payload
-  if (error && isItemSizeError(error)) {
+  if (isItemSizeError(error)) {
     yield put(showToast(getDeployItemFailureToast(item, collection)))
   }
 }
