@@ -153,10 +153,7 @@ export default class ENSListPage extends React.PureComponent<Props, State> {
                                       <Icon name="profile" />
                                     </div>
                                   }
-                                  hideOnScroll={true}
                                   on="hover"
-                                  inverted
-                                  basic
                                 />
                               ) : null}
                             </Column>

@@ -136,3 +136,7 @@
 .RightPanel .edit-buttons .ui.button + .ui.button {
   margin-left: 20px;
 }
+
+.RightPanel .danger-text {
+  word-break: break-word;
+}
