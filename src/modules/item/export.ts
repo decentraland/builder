@@ -30,12 +30,7 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
 
   await client.deployEntity({ entityId, files: hashedFiles, authChain })
 
-  const newItem = { ...item, inCatalyst: true }
-  if (!item.inCatalyst) {
-    await builder.saveItem(newItem, {})
-  }
-
-  return newItem
+  return { ...item, inCatalyst: true }
 }
 
 function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {

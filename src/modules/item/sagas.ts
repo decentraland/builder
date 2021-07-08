@@ -50,7 +50,9 @@ import {
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
   fetchCollectionItemsRequest,
-  SAVE_PUBLISHED_ITEM_SUCCESS
+  SAVE_PUBLISHED_ITEM_SUCCESS,
+  DEPLOY_ITEM_CONTENTS_FAILURE,
+  DeployItemContentsFailureAction
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
@@ -66,7 +68,7 @@ import { deployContents, calculateFinalSize } from './export'
 import { Item } from './types'
 import { getItem } from './selectors'
 import { ItemTooBigError } from './errors'
-import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE } from './utils'
+import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE } from './utils'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -81,6 +83,7 @@ export function* itemSaga() {
   yield takeEvery(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
+  yield takeLatest(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContentRequest)
 }
 
 function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
@@ -246,6 +249,28 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
 
 function* handleDeployItemContentsRequest(action: DeployItemContentsRequestAction) {
   const { collection, item } = action.payload
+
+  try {
+    const identity: AuthIdentity | undefined = yield getIdentity()
+    if (!identity) {
+      throw new Error(t('sagas.item.invalid_identity'))
+    }
+
+    const chainId: ChainId = yield select(getChainId)
+    const deployedItem: Item = yield deployContents(identity, collection, item, chainId)
+
+    yield put(deployItemContentsSuccess(collection, deployedItem))
+  } catch (error) {
+    yield put(deployItemContentsFailure(collection, item, error.message))
+  }
+}
+
+function* handleRetryDeployItemContentRequest(action: DeployItemContentsFailureAction) {
+  const { collection, item, error } = action.payload
+
+  if (!error || isItemSizeError(error)) {
+    return
+  }
 
   try {
     const identity: AuthIdentity | undefined = yield getIdentity()
