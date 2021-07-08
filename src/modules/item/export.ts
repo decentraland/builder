@@ -34,6 +34,11 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
 }
 
 function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {
+  // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
+  const representations = item.data.representations.map(representation => ({
+    ...representation,
+    contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
+  }))
   return {
     id: getCatalystItemURN(collection, item, chainId),
     name: item.name,
@@ -45,12 +50,11 @@ function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): C
       replaces: item.data.replaces,
       hides: item.data.hides,
       tags: item.data.tags,
-      representations: item.data.representations,
-      category: item.data.category
+      category: item.data.category,
+      representations
     },
     image: IMAGE_PATH,
     thumbnail: THUMBNAIL_PATH,
-    contents: item.contents,
     metrics: item.metrics,
     createdAt: Date.now(),
     updatedAt: Date.now()
