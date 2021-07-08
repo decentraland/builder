@@ -15,8 +15,6 @@ export default class CollectionBadge extends React.PureComponent<Props> {
         trigger={<div className="CollectionBadge" title="published" />}
         hideOnScroll={true}
         on="hover"
-        inverted
-        basic
       />
     ) : null
   }

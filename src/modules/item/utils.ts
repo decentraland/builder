@@ -302,3 +302,7 @@ export function isValidText(text: string) {
   const invalidCharactersRegex = new RegExp(invalidCharacters.join('|'))
   return text.search(invalidCharactersRegex) === -1
 }
+
+export function isItemSizeError(error: string) {
+  return error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1
+}

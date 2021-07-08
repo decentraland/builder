@@ -406,10 +406,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                           {t('item_editor.right_panel.request_for_changes')}
                         </a>
                       }
-                      hideOnScroll={true}
                       on="hover"
-                      inverted
-                      basic
                     />
                   ) : null}
                   {isDirty ? (

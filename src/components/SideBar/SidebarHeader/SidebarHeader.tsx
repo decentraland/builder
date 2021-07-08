@@ -76,8 +76,6 @@ export default class SidebarHeader extends React.PureComponent<Props> {
             content={t('asset_pack.title_create')}
             position="top right"
             on="hover"
-            basic
-            inverted
             trigger={<OwnIcon name="add" onClick={this.handleCreateAssetPack} />}
           />
         ) : null}

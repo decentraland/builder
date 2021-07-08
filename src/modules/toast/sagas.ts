@@ -11,6 +11,7 @@ import {
   SET_COLLECTION_MINTERS_FAILURE
 } from 'modules/collection/actions'
 import { DeployItemContentsFailureAction, DEPLOY_ITEM_CONTENTS_FAILURE, SAVE_PUBLISHED_ITEM_FAILURE } from 'modules/item/actions'
+import { isItemSizeError } from 'modules/item/utils'
 import { getDeployItemFailureToast, getMetaTransactionFailureToast } from './toasts'
 
 export function* toastSaga() {
@@ -38,7 +39,7 @@ function* handleMetaTransactionFailure(action: PayloadAction<any, { error: strin
 
 function* handleDeployItemFailure(action: DeployItemContentsFailureAction) {
   const { item, collection, error } = action.payload
-  if (error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1) {
+  if (isItemSizeError(error)) {
     yield put(showToast(getDeployItemFailureToast(item, collection)))
   }
 }

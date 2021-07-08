@@ -2,7 +2,7 @@ import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { ChainId } from '@dcl/schemas'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
-import { builder, getContentsStorageUrl } from 'lib/api/builder'
+import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { getCatalystItemURN } from 'modules/item/utils'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
@@ -30,12 +30,7 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
 
   await client.deployEntity({ entityId, files: hashedFiles, authChain })
 
-  const newItem = { ...item, inCatalyst: true }
-  if (!item.inCatalyst) {
-    await builder.saveItem(newItem, {})
-  }
-
-  return newItem
+  return { ...item, inCatalyst: true }
 }
 
 function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {
@@ -94,7 +89,7 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   try {
     const image = await generateImage(item)
     imageSize = image.size
-  } catch (error) { }
+  } catch (error) {}
 
   const finalSize = imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
   return finalSize

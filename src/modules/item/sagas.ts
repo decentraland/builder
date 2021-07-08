@@ -1,7 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, all } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, all, delay } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -50,7 +50,9 @@ import {
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
   fetchCollectionItemsRequest,
-  SAVE_PUBLISHED_ITEM_SUCCESS
+  SAVE_PUBLISHED_ITEM_SUCCESS,
+  DEPLOY_ITEM_CONTENTS_FAILURE,
+  DeployItemContentsFailureAction
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
@@ -66,7 +68,7 @@ import { deployContents, calculateFinalSize } from './export'
 import { Item } from './types'
 import { getItem } from './selectors'
 import { ItemTooBigError } from './errors'
-import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE } from './utils'
+import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE } from './utils'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -81,6 +83,7 @@ export function* itemSaga() {
   yield takeEvery(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
+  yield takeLatest(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContentRequest)
 }
 
 function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
@@ -260,6 +263,18 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
   } catch (error) {
     yield put(deployItemContentsFailure(collection, item, error.message))
   }
+}
+
+function* handleRetryDeployItemContentRequest(action: DeployItemContentsFailureAction) {
+  const { collection, item, error } = action.payload
+
+  if (isItemSizeError(error)) {
+    return
+  }
+
+  yield delay(5000) // wait five seconds
+
+  yield put(deployItemContentsRequest(collection, item))
 }
 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
