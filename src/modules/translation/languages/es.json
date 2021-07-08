@@ -982,7 +982,7 @@
     "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
     "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar",
     "third_paragraph": "Los items de la colección aparecerán en Marketplace, pero no se pueden vender hasta que sean aprobados.",
-    "items_breakdown_title": "Estas por publicar {count} items. El fee de MANA por publicar la collección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
+    "items_breakdown_title": "Estas por publicar {count} {count, plural, one {item} other {items}}. El fee de MANA por publicar la collección será enviado a la DAO, donde va a ser usado para soportar grants, eventos y premios",
     "publish": "Publicar",
     "not_enogh_mana": "No tienes suficiente {symbol} para publicar la collección.",
     "get_mana": "Puedes obtener más usando la {link} dapp."
