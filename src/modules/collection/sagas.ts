@@ -6,6 +6,7 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   FetchCollectionsRequestAction,
   FetchCollectionsSuccessAction,
@@ -81,7 +82,7 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
-import { getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -417,6 +418,11 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
 }
 
 function* deployItems(collection: Collection, items: Item[]) {
+  const address: string | undefined = yield select(getAddress)
+  if (!isOwner(collection, address)) {
+    return
+  }
+
   for (const item of items) {
     if (!item.inCatalyst) {
       yield put(deployItemContentsRequest(collection, item))
