@@ -786,6 +786,8 @@
     "set_manager_assigned": "您已将{地址}分配、为所有{type}的运算符。",
     "set_manager_revoked": "您已撤销{address}为所有{type}的操作员。",
     "collection_published": "发布了收藏集{name}",
+    "collection_approved": "批准了集合{name}",
+    "collection_rejected": "拒绝收藏{name}",
     "saved_published_item": "您编辑了项目{name}",
     "collection_item_minted": "为集合 {collectionName} 铸造了 {itemName} {amount, plural, one {一次} other {{amount} 次}}",
     "collection_items_minted": "为{name}收集了{count}个项目",
