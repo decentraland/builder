@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { Props, ReviewType } from './ReviewModal.types'
@@ -106,6 +106,14 @@ export default class ReviewModal extends React.PureComponent<Props> {
             <Modal.Header>{t(`${i18nKey}.title`)}</Modal.Header>
             <div className="loading-transaction">
               <div className="danger-text">{t(`${i18nKey}.tx_pending`)}</div>
+              <small className="danger-text">
+                <T
+                  id="item_editor.top_panel.visit_activity"
+                  values={{
+                    activity_link: <Link to={locations.activity()}>{t('global.activity')}</Link>
+                  }}
+                />
+              </small>
               <Loader active size="large" />
             </div>
           </>

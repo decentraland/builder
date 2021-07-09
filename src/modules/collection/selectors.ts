@@ -5,7 +5,7 @@ import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { getItems } from 'modules/item/selectors'
 import { isEqual } from 'lib/address'
-import { SET_COLLECTION_MINTERS_SUCCESS } from './actions'
+import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection } from './types'
 import { CollectionState } from './reducer'
 import { canSeeCollection } from './utils'
@@ -45,4 +45,8 @@ export const getCollectionItems = (state: RootState, collectionId: string) => {
 
 export const isOnSaleLoading = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => transaction.actionType === SET_COLLECTION_MINTERS_SUCCESS)
+)
+
+export const hasPendingCurationTransaction = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
+  transactions.some(transaction => [APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS].includes(transaction.actionType))
 )

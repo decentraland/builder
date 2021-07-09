@@ -395,6 +395,7 @@
   },
   "global": {
     "avatar": "Avatar",
+    "activity": "Actividad",
     "approved_tx": "Aprobada",
     "back": "volver",
     "blog_post": "blog post",
@@ -1027,6 +1028,7 @@
       "veredict_received": "Veredicto recibido",
       "veredict_received_successfully": "Recibimos tu veredicto correctamente!",
       "veredict_explanation": "Puedes contarnos por qué?",
+      "visit_activity": "Puedes visitar tu {activity_link} para monitoriear la transacción",
       "go_to_forum": "Por favor visita la discusión asocida y explícale al creador el por qué de tu decisión.",
       "forum_link": "Link al foro",
       "discussion": "Discusión",

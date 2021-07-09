@@ -5,25 +5,18 @@ import {
   approveCollectionRequest,
   rejectCollectionRequest,
   APPROVE_COLLECTION_REQUEST,
-  APPROVE_COLLECTION_SUCCESS,
-  REJECT_COLLECTION_REQUEST,
-  REJECT_COLLECTION_SUCCESS
+  REJECT_COLLECTION_REQUEST
 } from 'modules/collection/actions'
-import { getLoading as getLoadingCollection } from 'modules/collection/selectors'
-import { getPendingTransactions } from 'modules/transaction/selectors'
+import { getLoading as getLoadingCollection, hasPendingCurationTransaction } from 'modules/collection/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ReviewModal.types'
 import ReviewModal from './ReviewModal'
 
 const mapState = (state: RootState): MapStateProps => {
-  const hasPendingTransaction = getPendingTransactions(state).some(tx =>
-    [APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS].includes(tx.actionType)
-  )
-
   return {
     isLoading:
       isLoadingType(getLoadingCollection(state), APPROVE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingCollection(state), REJECT_COLLECTION_REQUEST),
-    hasPendingTransaction
+    hasPendingTransaction: hasPendingCurationTransaction(state)
   }
 }
 

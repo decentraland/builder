@@ -16,7 +16,9 @@ import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
   SET_COLLECTION_MANAGERS_SUCCESS,
-  PUBLISH_COLLECTION_SUCCESS
+  PUBLISH_COLLECTION_SUCCESS,
+  APPROVE_COLLECTION_SUCCESS,
+  REJECT_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
 import { getSaleAddress } from 'modules/collection/utils'
@@ -163,14 +165,25 @@ const Transaction = (props: Props) => {
         />
       )
     }
-    case PUBLISH_COLLECTION_SUCCESS: {
+    case PUBLISH_COLLECTION_SUCCESS:
+    case APPROVE_COLLECTION_SUCCESS:
+    case REJECT_COLLECTION_SUCCESS:
+    case SET_COLLECTION_MANAGERS_SUCCESS: {
       const { collection } = tx.payload
+
+      const translationKey = {
+        [PUBLISH_COLLECTION_SUCCESS]: 'collection_published',
+        [APPROVE_COLLECTION_SUCCESS]: 'collection_approved',
+        [REJECT_COLLECTION_SUCCESS]: 'collection_rejected',
+        [SET_COLLECTION_MANAGERS_SUCCESS]: 'updated_collection_managers'
+      }[tx.actionType]
+
       return (
         <TransactionDetail
           collection={collection}
           text={
             <T
-              id="transaction.collection_published"
+              id={`transaction.${translationKey}`}
               values={{ name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link> }}
             />
           }
@@ -195,23 +208,6 @@ const Transaction = (props: Props) => {
                 itemName: <Link to={locations.itemDetail(item.id)}>{item.name}</Link>,
                 amount: mints[0].amount,
                 count: mints.length
-              }}
-            />
-          }
-          tx={tx}
-        />
-      )
-    }
-    case SET_COLLECTION_MANAGERS_SUCCESS: {
-      const { collection } = tx.payload
-      return (
-        <TransactionDetail
-          collection={collection}
-          text={
-            <T
-              id="transaction.updated_collection_managers"
-              values={{
-                name: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>
               }}
             />
           }

@@ -387,6 +387,7 @@
   },
   "global": {
     "avatar": "头像",
+    "activity": "活动",
     "approved_tx": "批准的TX",
     "back": "返回",
     "blog_post": "博客",
@@ -1007,6 +1008,7 @@
       "veredict_received": "判决书已收到",
       "veredict_received_successfully": "我们已成功收到您的判决！",
       "veredict_explanation": "你能告诉我们为什么吗？",
+      "visit_activity": "您可以检查您的 {activity_link} 以监控交易",
       "go_to_forum": "请转到相关论坛讨论，并让创建者知道您的决定。",
       "forum_link": "论坛链接",
       "discussion": "讨论",
