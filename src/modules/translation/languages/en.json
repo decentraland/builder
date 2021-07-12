@@ -1019,7 +1019,7 @@
       "veredict_received": "Verdict received",
       "veredict_received_successfully": "We received your verdict successfully!",
       "veredict_explanation": "Can you tell us why?",
-      "visit_activity": "You can check the your {activity_link} to monitor the transaction",
+      "visit_activity": "You can check your {activity_link} to monitor the transaction",
       "go_to_forum": "Please go to related forum discussion and let the creator know your decision.",
       "forum_link": "Forum link",
       "discussion": "Discussion",
