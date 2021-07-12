@@ -5,11 +5,15 @@
 .ReviewModal .loading-transaction {
   position: relative;
   min-height: 80px;
-  margin-bottom: 40px;
+  margin-bottom: 65px;
+}
+
+.ReviewModal .loading-transaction .danger-text {
+  margin-bottom: 10px;
 }
 
 .ReviewModal .loading-transaction .ui.loader {
-  margin-top: 25px;
+  margin-top: 50px;
 }
 
 .ReviewModal .actions {
