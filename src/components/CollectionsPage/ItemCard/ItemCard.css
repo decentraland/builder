@@ -37,6 +37,14 @@
   border: 1px solid var(--primary);
 }
 
+.ItemCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
+  display: inline-block;
+}
+
+.ItemCard .options-dropdown.ui.dropdown > .dropdown.icon {
+  display: none;
+}
+
 @media (max-width: 1200px) {
   .ItemCard .content .text {
     max-width: 215px;

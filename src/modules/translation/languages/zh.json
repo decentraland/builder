@@ -473,6 +473,12 @@
       "export_project": "场景导出",
       "unpublish": "撤消发布"
     },
+    "item_actions": {
+      "delete": "删除项目"
+    },
+    "collection_actions": {
+      "delete": "删除收藏"
+    },
     "sort": {
       "name": "名称",
       "newest": "最新",
@@ -664,6 +670,10 @@
   "project_card": {
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
+  },
+  "item_card": {
+    "confirm_delete_content": "您确定要删除项目\"{name}\"吗？ 此操作不可逆转！",
+    "confirm_delete_header": "删除 \"{name}\""
   },
   "project_fields": {
     "description_field_label": "描述或说胆",
@@ -999,7 +1009,9 @@
     "no_items": "没有项目"
   },
   "collection_card": {
-    "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}"
+    "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}",
+    "confirm_delete_content": "您确定要删除您的收藏集 \"{name}\" 吗？ 此操作不可逆！",
+    "confirm_delete_header": "删除收藏"
   },
   "item_editor": {
     "open": "打开编辑器",
