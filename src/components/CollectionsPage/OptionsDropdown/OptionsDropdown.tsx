@@ -1,5 +1,6 @@
 import React from 'react'
 import { Dropdown } from 'decentraland-ui'
+import classnames from 'classnames'
 import { preventDefault } from 'lib/preventDefault'
 import { Props } from './OptionsDropdown.types'
 import styles from './OptionsDropdown.module.css'
@@ -12,7 +13,7 @@ const OptionsDropdown = (props: Props) => {
   }
 
   return (
-    <Dropdown className={classes.join(' ')} direction="left" onClick={preventDefault()}>
+    <Dropdown className={classnames(styles.OptionsDropdown, className)} direction="left" onClick={preventDefault()}>
       <Dropdown.Menu>
         {options.map((option, index) => (
           <Dropdown.Item key={index} text={option.text} onClick={option.handler} />
