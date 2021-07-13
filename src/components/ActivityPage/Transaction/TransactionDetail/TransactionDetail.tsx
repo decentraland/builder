@@ -13,10 +13,11 @@ import { Props } from './TransactionDetail.types'
 import './TransactionDetail.css'
 
 const getHref = (tx: Transaction) => {
-  if (tx.status === null) {
+  const txHash = tx.replacedBy || tx.hash
+  if (!txHash) {
     return ''
   }
-  return getTransactionHref({ txHash: tx.replacedBy || tx.hash }, tx.chainId)
+  return getTransactionHref({ txHash }, tx.chainId)
 }
 
 const Image = (props: Props) => {
