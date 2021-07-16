@@ -120,7 +120,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const fileNames: string[] = []
 
     zip.forEach(fileName => {
-      if (fileName === EXPORT_PATH.MANIFEST_FILE || fileName === EXPORT_PATH.GAME_FILE) {
+      if (fileName === EXPORT_PATH.MANIFEST_FILE) {
         this.analytics.track('Asset Importer Error Scene File')
         throw new Error(
           t('asset_pack.import.errors.scene_file', {
@@ -170,8 +170,6 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
       id = manifestParsed.id
     } else if (script) {
       id = uuidv4()
-    } else if (model) {
-      id = getSHA256(`${assetPackId}/${basename(model)}`)
     } else {
       this.analytics.track('Asset Importer Error Missing Model')
       throw new Error(
@@ -223,7 +221,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
 
   handleModelFile = (file: File) => {
     const { assetPackId } = this.state
-    const id = getSHA256(`${assetPackId}/${file.name}`)
+    const id = uuidv4()
 
     if (file.size > MAX_FILE_SIZE) {
       this.analytics.track('Asset Importer Error Max File Size')
@@ -292,8 +290,8 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
         }
       } catch (e) {
         outFile = {
+          id: uuidv4(),
           asset: outFile ? outFile!.asset : null,
-          id: getSHA256(file.name),
           fileName: file.name,
           error: e.message || t('asset_pack.import.errors.invalid')
         } as ImportedFile
