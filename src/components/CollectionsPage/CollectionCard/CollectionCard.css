@@ -33,11 +33,11 @@
 }
 
 .CollectionCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
-  display: inline-block;
+  visibility: visible;
 }
 
 .CollectionCard .options-dropdown.ui.dropdown > .dropdown.icon {
-  display: none;
+  visibility: hidden;
 }
 
 @media (max-width: 1200px) {

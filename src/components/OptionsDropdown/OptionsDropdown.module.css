@@ -8,7 +8,7 @@
 
 .OptionsDropdown:global(.ui.dropdown) > :global(.dropdown.icon):before {
   content: '…';
-  color: black;
+  color: var(--shadows);
 }
 
 .OptionsDropdown:global(.ui.dropdown) > :global(.dropdown.icon) {
@@ -19,6 +19,6 @@
 }
 
 .OptionsDropdown :global(.dropdown.icon):hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--translusent-gray);
   border-radius: 4px;
 }

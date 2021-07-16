@@ -38,11 +38,11 @@
 }
 
 .ItemCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
-  display: inline-block;
+  visibility: visible;
 }
 
 .ItemCard .options-dropdown.ui.dropdown > .dropdown.icon {
-  display: none;
+  visibility: hidden;
 }
 
 @media (max-width: 1200px) {
