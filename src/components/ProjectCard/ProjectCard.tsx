@@ -77,16 +77,16 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
       <>
         {Overlay}
         <DeploymentStatus projectId={project.id} className="deployment-status" />
-        {/* {isFromScenePool ? null : ( */}
-        <OptionsDropdown
-          className="options-dropdown"
-          options={[
-            { text: t('home_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
-            { text: t('home_page.project_actions.export_project'), handler: this.handleExportScene },
-            { text: t('home_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
-          ]}
-        />
-        {/* )} */}
+        {isFromScenePool ? null : (
+          <OptionsDropdown
+            className="options-dropdown"
+            options={[
+              { text: t('home_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+              { text: t('home_page.project_actions.export_project'), handler: this.handleExportScene },
+              { text: t('home_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+            ]}
+          />
+        )}
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{project.title}</div>

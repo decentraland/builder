@@ -21,10 +21,7 @@ const ItemCard = (props: Props & CollectedProps) => {
     <>
       {connectDragSource(
         <div className={`ItemCard is-card ${isDragging ? 'is-dragging' : ''}`}>
-          <OptionsDropdown
-            className={'options-dropdown'}
-            options={[{ text: t('home_page.item_actions.delete'), handler: handleDeleteConfirmation }]}
-          />
+          <OptionsDropdown className={'options-dropdown'} options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]} />
           <Link to={locations.itemDetail(item.id)}>
             <ItemImage item={item} />
             <Card.Content>

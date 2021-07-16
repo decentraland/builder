@@ -473,9 +473,6 @@
       "export_project": "场景导出",
       "unpublish": "撤消发布"
     },
-    "item_actions": {
-      "delete": "删除项目"
-    },
     "sort": {
       "name": "名称",
       "newest": "最新",

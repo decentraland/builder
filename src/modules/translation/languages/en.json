@@ -481,9 +481,6 @@
       "export_project": "Download",
       "unpublish": "Unpublish"
     },
-    "item_actions": {
-      "delete": "Delete"
-    },
     "sort": {
       "name": "Name",
       "newest": "Newest",

@@ -7,8 +7,8 @@
 }
 
 .OptionsDropdown:global(.ui.dropdown) > :global(.dropdown.icon):before {
-  content: '…' !important;
-  color: black !important;
+  content: '…';
+  color: black;
 }
 
 .OptionsDropdown:global(.ui.dropdown) > :global(.dropdown.icon) {

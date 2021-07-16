@@ -482,9 +482,6 @@
       "export_project": "Descargar Escena",
       "unpublish": "Despublicar"
     },
-    "item_actions": {
-      "delete": "Borrar"
-    },
     "sort": {
       "name": "Nombre",
       "newest": "Más Nuevas",
