@@ -120,7 +120,7 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
     const fileNames: string[] = []
 
     zip.forEach(fileName => {
-      if (fileName === EXPORT_PATH.MANIFEST_FILE || fileName === EXPORT_PATH.GAME_FILE) {
+      if (fileName === EXPORT_PATH.MANIFEST_FILE) {
         this.analytics.track('Asset Importer Error Scene File')
         throw new Error(
           t('asset_pack.import.errors.scene_file', {
