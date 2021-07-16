@@ -28,6 +28,7 @@ import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
 import { GENERATE_IDENTITY_SUCCESS, DESTROY_IDENTITY, LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 import { fetchTilesRequest } from 'modules/tile/actions'
+import { isDevelopment } from 'lib/environment'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -54,7 +55,7 @@ const rootReducer = createRootReducer(history)
 const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware()
 const loggerMiddleware = createLogger({
-  predicate: () => env.isDevelopment(),
+  predicate: () => isDevelopment,
   collapsed: () => true
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
@@ -136,7 +137,7 @@ const store = createStore(rootReducer, enhancer)
 sagasMiddleware.run(rootSaga)
 loadStorageMiddleware(store)
 
-if (env.isDevelopment()) {
+if (isDevelopment) {
   const _window = window as any
   _window.getState = store.getState
 }

@@ -37,6 +37,7 @@ import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
 import ItemEditorPage from 'components/ItemEditorPage'
 import CurationPage from 'components/CurationPage'
+import { isDevelopment } from 'lib/environment'
 
 import { Props, State } from './Routes.types'
 
@@ -72,7 +73,7 @@ export default class Routes extends React.Component<Props, State> {
   renderRoutes() {
     const { hasError, stackTrace } = this.state
 
-    if (env.isDevelopment() && hasError) {
+    if (isDevelopment && hasError) {
       return <ErrorPage stackTrace={stackTrace} />
     } else if (window.navigator.userAgent.includes('Edge')) {
       return <UnsupportedBrowserPage />

@@ -1,8 +1,9 @@
 import { env } from 'decentraland-commons'
+import { isProduction } from 'lib/environment'
 
 const HOTJAR_ID = parseInt(env.get('REACT_APP_HOTJAR_ID', ''), 10)
 
-if (!env.isDevelopment() && HOTJAR_ID) {
+if (isProduction && HOTJAR_ID) {
   const hotjarWindow = window as any
   hotjarWindow.h._hjSettings = { hjid: HOTJAR_ID, hjsv: 6 }
 
