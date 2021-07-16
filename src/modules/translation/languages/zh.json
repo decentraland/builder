@@ -476,9 +476,6 @@
     "item_actions": {
       "delete": "删除项目"
     },
-    "collection_actions": {
-      "delete": "删除收藏"
-    },
     "sort": {
       "name": "名称",
       "newest": "最新",

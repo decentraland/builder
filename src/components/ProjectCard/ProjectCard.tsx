@@ -1,15 +1,15 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Dropdown, Confirm, Button } from 'decentraland-ui'
+import { Confirm, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-import { preventDefault } from 'lib/preventDefault'
-import { Pool } from 'modules/pool/types'
+// import { Pool } from 'modules/pool/types'
 import { isRemoteURL } from 'modules/media/utils'
 import { getProjectDimensions } from 'modules/project/utils'
 import DeploymentStatus from 'components/DeploymentStatus'
 import Icon from 'components/Icon'
+import { OptionsDropdown } from 'components/OptionsDropdown'
 import { Props, DefaultProps, State } from './ProjectCard.types'
 import './ProjectCard.css'
 
@@ -55,7 +55,8 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   render() {
     const { project, items, onClick, isUploading, hasError } = this.props
     const { isDeleting } = this.state
-    const isFromScenePool = 'likes' in (project as Pool)
+    // const isFromScenePool = 'likes' in (project as Pool)
+    const isFromScenePool = false
 
     let style = {}
     let classes = 'ProjectCard'
@@ -76,15 +77,16 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
       <>
         {Overlay}
         <DeploymentStatus projectId={project.id} className="deployment-status" />
-        {isFromScenePool ? null : (
-          <Dropdown direction="left" onClick={preventDefault()}>
-            <Dropdown.Menu>
-              <Dropdown.Item text={t('home_page.project_actions.duplicate_project')} onClick={this.handleDuplicateProject} />
-              <Dropdown.Item text={t('home_page.project_actions.export_project')} onClick={this.handleExportScene} />
-              <Dropdown.Item text={t('home_page.project_actions.delete_project')} onClick={this.handleConfirmDeleteProject} />
-            </Dropdown.Menu>
-          </Dropdown>
-        )}
+        {/* {isFromScenePool ? null : ( */}
+        <OptionsDropdown
+          className="options-dropdown"
+          options={[
+            { text: t('home_page.project_actions.duplicate_project'), handler: this.handleDuplicateProject },
+            { text: t('home_page.project_actions.export_project'), handler: this.handleExportScene },
+            { text: t('home_page.project_actions.delete_project'), handler: this.handleConfirmDeleteProject }
+          ]}
+        />
+        {/* )} */}
         <div className="project-data">
           <div className="title-wrapper">
             <div className="title">{project.title}</div>

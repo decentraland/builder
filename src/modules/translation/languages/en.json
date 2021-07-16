@@ -484,9 +484,6 @@
     "item_actions": {
       "delete": "Delete"
     },
-    "collection_actions": {
-      "delete": "Delete"
-    },
     "sort": {
       "name": "Name",
       "newest": "Newest",

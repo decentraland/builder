@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button, Card, Confirm } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { OptionsDropdown } from '../OptionsDropdown'
+import { OptionsDropdown } from '../../OptionsDropdown'
 import { locations } from 'routing/locations'
 import ItemImage from 'components/ItemImage'
 import { Props } from './ItemCard.types'

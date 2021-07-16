@@ -72,6 +72,14 @@
   z-index: 999;
 }
 
+/* .ProjectCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
+  display: inline-block;
+}
+
+.ProjectCard .options-dropdown.ui.dropdown > .dropdown.icon {
+  display: none;
+} */
+/* 
 .ProjectCard .ui.dropdown {
   display: inline-block;
 }
@@ -81,8 +89,8 @@
 }
 .ProjectCard:hover .ui.dropdown > .dropdown.icon {
   display: inline-block;
-}
-
+} */
+/* 
 .ProjectCard .ui.dropdown .icon:hover {
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
@@ -93,7 +101,7 @@
   line-height: 2px;
   font-size: 24px;
   height: 0.7em;
-}
+} */
 
 .ProjectCard .ui.dropdown > .dropdown.icon:before {
   content: '…';

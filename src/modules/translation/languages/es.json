@@ -485,9 +485,6 @@
     "item_actions": {
       "delete": "Borrar"
     },
-    "collection_actions": {
-      "delete": "Borrar"
-    },
     "sort": {
       "name": "Nombre",
       "newest": "Más Nuevas",
