@@ -4,7 +4,7 @@ let _rollbarConfig = {
   accessToken: env.get('REACT_APP_ROLLBAR_ACCESS_TOKEN', ''),
   captureUncaught: true,
   payload: {
-    environment: env.get('NODE_ENV'),
+    environment: env.get('REACT_APP_ENVIRONMENT'),
     client: {
       javascript: {
         code_version: env.get('REACT_APP_VERSION', '')
