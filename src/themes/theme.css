@@ -51,6 +51,9 @@
   --facebook: #4267b2;
   --twitter: #1da1f2;
 
+  /* Dropdowns */
+  --translusent-gray: rgba(255, 255, 255, 0.08);
+
   /* Colors to be moved to decentraland ui */
   --smart-grey-raw: 55, 51, 61;
   --smart-grey: #37333d;

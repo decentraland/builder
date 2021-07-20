@@ -681,6 +681,10 @@
     "confirm_delete_content": "¿Seguro que quieres borrar tu Escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },
+  "item_card": {
+    "confirm_delete_content": "¿Seguro que quieres borrar tu item \"{name}\"? Esta operación es ireversible",
+    "confirm_delete_header": "Borrar \"{name}\""
+  },
   "project_fields": {
     "description_field_label": "Descripción",
     "description_field_placeholder": "Sin descripción",
@@ -1022,7 +1026,9 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "subtitle": "Colección · {count} {count, plural, one {item} other {items}}"
+    "subtitle": "Colección · {count} {count, plural, one {item} other {items}}",
+    "confirm_delete_content": "¿Seguro que quieres borrar tu colección \"{name}\"? Esta operación es ireversible",
+    "confirm_delete_header": "Borrar \"{name}\""
   },
   "item_editor": {
     "open": "Abrir editor",

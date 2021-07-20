@@ -673,6 +673,10 @@
     "confirm_delete_content": "Are you sure you want to delete your Scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },
+  "item_card": {
+    "confirm_delete_content": "Are you sure you want to delete your item \"{name}\"? This operation is not reversible",
+    "confirm_delete_header": "Delete \"{name}\""
+  },
   "project_fields": {
     "description_field_label": "Description",
     "description_field_placeholder": "No description",
@@ -1011,7 +1015,9 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "subtitle": "Collection · {count} {count, plural, one {item} other {items}}"
+    "subtitle": "Collection · {count} {count, plural, one {item} other {items}}",
+    "confirm_delete_content": "Are you sure you want to delete your collection \"{name}\"? This operation is not reversible",
+    "confirm_delete_header": "Delete \"{name}\""
   },
   "item_editor": {
     "open": "Open editor",
