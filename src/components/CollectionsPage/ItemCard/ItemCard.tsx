@@ -16,6 +16,10 @@ const ItemCard = (props: Props & CollectedProps) => {
   const [isDeleting, setIsDeleting] = React.useState(false)
   const handleCancelDeleteItem = React.useCallback(() => setIsDeleting(false), [setIsDeleting])
   const handleDeleteConfirmation = React.useCallback(() => setIsDeleting(true), [setIsDeleting])
+  const handleDeleteItem = React.useCallback(() => {
+    setIsDeleting(false)
+    onDeleteItem()
+  }, [setIsDeleting, onDeleteItem])
 
   return (
     <>
@@ -41,7 +45,7 @@ const ItemCard = (props: Props & CollectedProps) => {
         confirmButton={<Button primary>{t('global.confirm')}</Button>}
         cancelButton={<Button secondary>{t('global.cancel')}</Button>}
         onCancel={handleCancelDeleteItem}
-        onConfirm={onDeleteItem}
+        onConfirm={handleDeleteItem}
       />
     </>
   )

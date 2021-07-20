@@ -4,7 +4,7 @@ import { Confirm, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { locations } from 'routing/locations'
-// import { Pool } from 'modules/pool/types'
+import { Pool } from 'modules/pool/types'
 import { isRemoteURL } from 'modules/media/utils'
 import { getProjectDimensions } from 'modules/project/utils'
 import DeploymentStatus from 'components/DeploymentStatus'
@@ -55,8 +55,7 @@ export default class ProjectCard extends React.PureComponent<Props, State> {
   render() {
     const { project, items, onClick, isUploading, hasError } = this.props
     const { isDeleting } = this.state
-    // const isFromScenePool = 'likes' in (project as Pool)
-    const isFromScenePool = false
+    const isFromScenePool = 'likes' in (project as Pool)
 
     let style = {}
     let classes = 'ProjectCard'

@@ -17,6 +17,10 @@ const CollectionCard = (props: Props & CollectedProps) => {
   const [isDeleting, setIsDeleting] = React.useState(false)
   const handleCancelDeleteCollection = React.useCallback(() => setIsDeleting(false), [setIsDeleting])
   const handleDeleteConfirmation = React.useCallback(() => setIsDeleting(true), [setIsDeleting])
+  const handleDeleteCollection = React.useCallback(() => {
+    setIsDeleting(false)
+    onDeleteCollection()
+  }, [setIsDeleting, onDeleteCollection])
 
   return (
     <>
@@ -42,7 +46,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
         confirmButton={<Button primary>{t('global.confirm')}</Button>}
         cancelButton={<Button secondary>{t('global.cancel')}</Button>}
         onCancel={handleCancelDeleteCollection}
-        onConfirm={onDeleteCollection}
+        onConfirm={handleDeleteCollection}
       />
     </>
   )
