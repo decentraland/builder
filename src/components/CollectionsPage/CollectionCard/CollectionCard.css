@@ -32,6 +32,10 @@
   border: 1px solid var(--primary) !important;
 }
 
+.CollectionCard .empty-collection-options .icon:before {
+  color: var(--text) !important;
+}
+
 .CollectionCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
   visibility: visible;
 }

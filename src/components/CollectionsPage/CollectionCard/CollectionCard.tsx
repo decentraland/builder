@@ -2,6 +2,7 @@ import * as React from 'react'
 import { DropTarget } from 'react-dnd'
 import { Link } from 'react-router-dom'
 import { Button, Card, Confirm } from 'decentraland-ui'
+import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import CollectionBadge from 'components/CollectionBadge'
 import CollectionImage from 'components/CollectionImage'
@@ -26,7 +27,10 @@ const CollectionCard = (props: Props & CollectedProps) => {
     <>
       {connectDropTarget(
         <div className={`CollectionCard is-card ${isOver && canDrop ? 'is-over' : ''}`}>
-          <OptionsDropdown className="options-dropdown" options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]} />
+          <OptionsDropdown
+            className={classNames({ 'empty-collection-options': items.length === 0 }, 'options-dropdown')}
+            options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
+          />
           <Link to={locations.collectionDetail(collection.id)}>
             <CollectionImage collection={collection} />
             <Card.Content>
