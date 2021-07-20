@@ -111,6 +111,7 @@ export type RemoteAssetPack = {
 
 export type RemoteAsset = {
   id: string
+  legacy_id: string | null
   asset_pack_id: string
   name: string
   model: string
@@ -224,6 +225,7 @@ function fromRemoteAssetPack(remoteAssetPack: RemoteAssetPack): FullAssetPack {
 function toRemoteAsset(asset: Asset): RemoteAsset {
   return {
     id: asset.id,
+    legacy_id: asset.legacyId || null,
     asset_pack_id: asset.assetPackId,
     name: asset.name,
     model: asset.model.replace(`${asset.assetPackId}/`, ''),
@@ -241,6 +243,7 @@ function toRemoteAsset(asset: Asset): RemoteAsset {
 function fromRemoteAsset(remoteAsset: RemoteAsset): Asset {
   return {
     id: remoteAsset.id,
+    legacyId: remoteAsset.legacy_id,
     assetPackId: remoteAsset.asset_pack_id,
     name: remoteAsset.name,
     model: remoteAsset.model,

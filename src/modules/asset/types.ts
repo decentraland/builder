@@ -55,6 +55,7 @@ export enum AssetParameterType {
 
 export type BaseAsset = {
   id: string
+  legacyId?: string | null
   name: string
   model: string
   script: string | null

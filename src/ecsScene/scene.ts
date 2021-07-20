@@ -39,6 +39,12 @@ let scriptBaseUrl: string | null = null
 const scriptPromises = new Map<string, Promise<string>>()
 const scriptInstances = new Map<string, IScript<any>>()
 
+/*
+After the migration of the assets table to use UUIDs and remove duplicates, we recreated all the assets' ids, and the legacy one was stored as a new property. 
+This property is needed to load the AMD modules, since they have been namespaced with the old asset id, and has been uploaded to S3 (so the DB migration did not update them).
+*/
+const legacyIds = new Map<string, string>()
+
 @Component('org.decentraland.staticEntity')
 // @ts-ignore
 export class StaticEntity {}
@@ -74,7 +80,10 @@ function getScriptInstance(assetId: string) {
     : scriptPromises
         .get(assetId)!
         .then(code => eval(code))
-        .then(() => load(assetId))
+        .then(
+          // if this asset has a legacy id, use that one instead to load the AMD module
+          () => load(legacyIds.get(assetId) || assetId)
+        )
         .then(Item => {
           const instance = new Item()
           scriptInstances.set(assetId, instance)
@@ -255,6 +264,10 @@ function createComponent(component: AnyComponent, scene: Scene) {
           const url = scriptBaseUrl + src
           const promise = fetch(url).then(resp => resp.text())
           scriptPromises.set(assetId, promise)
+          // store the legacy id so we can retrieve it when loading the AMD module
+          if (asset.legacyId) {
+            legacyIds.set(assetId, asset.legacyId)
+          }
         }
         break
       }
