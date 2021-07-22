@@ -11,7 +11,7 @@ import { ContentIdentifier, ContentServiceFile, ContentManifest, Deployment, Dep
 import { Project } from 'modules/project/types'
 import { Scene, ComponentType } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
-import { PEER_URL } from 'lib/api/peer'
+import { getCatalystContentUrl } from 'lib/api/peer'
 
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
 
@@ -222,7 +222,7 @@ export function getThumbnail(definition?: SceneDefinition | null, content?: Depl
   if (!isUrl(thumbnail) && content) {
     const file = content.find(file => file.key === thumbnail)
     if (file) {
-      thumbnail = `${PEER_URL}/content/contents/${file.hash}`
+      thumbnail = getCatalystContentUrl(file.hash)
     }
   }
 
