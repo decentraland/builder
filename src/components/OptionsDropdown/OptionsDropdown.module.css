@@ -1,0 +1,24 @@
+.OptionsDropdown:global(.ui.dropdown) {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  z-index: 10000000;
+  display: inline-block;
+}
+
+.OptionsDropdown:global(.ui.dropdown) > :global(.dropdown.icon):before {
+  content: '…';
+  color: var(--shadows);
+}
+
+.OptionsDropdown:global(.ui.dropdown) > :global(.dropdown.icon) {
+  padding: 0 3px;
+  line-height: 2px;
+  font-size: 24px;
+  height: 0.7em;
+}
+
+.OptionsDropdown :global(.dropdown.icon):hover {
+  background-color: var(--translusent-gray);
+  border-radius: 4px;
+}

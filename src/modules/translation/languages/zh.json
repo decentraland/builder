@@ -666,6 +666,10 @@
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },
+  "item_card": {
+    "confirm_delete_content": "您确定要删除项目\"{name}\"吗？ 此操作不可逆转！",
+    "confirm_delete_header": "删除 \"{name}\""
+  },
   "project_fields": {
     "description_field_label": "描述或说胆",
     "description_field_placeholder": "没有说明",
@@ -1002,7 +1006,9 @@
     "no_items": "没有项目"
   },
   "collection_card": {
-    "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}"
+    "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}",
+    "confirm_delete_content": "您确定要删除您的收藏集 \"{name}\" 吗？ 此操作不可逆！",
+    "confirm_delete_header": "删除收藏"
   },
   "item_editor": {
     "open": "打开编辑器",

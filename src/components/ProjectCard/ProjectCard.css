@@ -61,43 +61,20 @@
   opacity: 0.3;
 }
 
-.ProjectCard .ui.dropdown {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  display: none;
-}
-
 .ProjectCard:hover {
   z-index: 999;
 }
 
-.ProjectCard .ui.dropdown {
-  display: inline-block;
+.ProjectCard:hover .options-dropdown.ui.dropdown > .dropdown.icon {
+  visibility: visible;
 }
 
-.ProjectCard .ui.dropdown > .dropdown.icon {
-  display: none;
-}
-.ProjectCard:hover .ui.dropdown > .dropdown.icon {
-  display: inline-block;
+.ProjectCard .options-dropdown.ui.dropdown > .dropdown.icon {
+  visibility: hidden;
 }
 
-.ProjectCard .ui.dropdown .icon:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-}
-
-.ProjectCard .ui.dropdown > .dropdown.icon {
-  padding: 0 3px;
-  line-height: 2px;
-  font-size: 24px;
-  height: 0.7em;
-}
-
-.ProjectCard .ui.dropdown > .dropdown.icon:before {
-  content: '…';
-  color: var(--text);
+.ProjectCard .options-dropdown .icon:before {
+  color: var(--text) !important;
 }
 
 .ProjectCard.has-thumbnail {
