@@ -149,7 +149,7 @@ export function toItemObject(items: Item[]) {
 
 export async function generateImage(item: Item, width = 256, height = 256) {
   // fetch thumbnail
-  const response = await fetch(getThumbnailURL(item))
+  const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]))
   if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
 
   const thumbnail = await response.blob()
