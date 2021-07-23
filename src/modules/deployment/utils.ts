@@ -16,7 +16,7 @@ import { getCatalystContentUrl } from 'lib/api/peer'
 export const UNPUBLISHED_PROJECT_ID = 'unpublished-project'
 
 export const getDefaultGroundAsset = (): Asset => ({
-  id: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
+  id: 'c9b17021-765c-4d9a-9966-ce93a9c323d1',
   name: 'Bermuda Grass',
   thumbnail: getContentsStorageUrl('QmexuPHcbEtQCR11dPXxKZmRjGuY4iTooPJYfST7hW71DE'),
   model: 'FloorBaseGrass_01/FloorBaseGrass_01.glb',
@@ -151,7 +151,7 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
         id: '25783992-5e2f-4879-b734-eda41c0cc4c0',
         type: ComponentType.GLTFShape,
         data: {
-          assetId: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf'
+          assetId: 'c9b17021-765c-4d9a-9966-ce93a9c323d1'
         }
       },
       '49c32fc6-d7f7-4dba-bc55-7a89b898594a': {
@@ -197,7 +197,7 @@ export const getEmptyDeployment = (projectId: string): [Project, Scene] => {
       textures: 10
     },
     ground: {
-      assetId: 'da1fed3c954172146414a66adfa134f7a5e1cb49c902713481bf2fe94180c2cf',
+      assetId: 'c9b17021-765c-4d9a-9966-ce93a9c323d1',
       componentId: '25783992-5e2f-4879-b734-eda41c0cc4c0'
     }
   }
