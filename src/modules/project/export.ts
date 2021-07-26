@@ -14,7 +14,7 @@ import { Project, Manifest } from 'modules/project/types'
 import { Scene, ComponentType, ComponentDefinition } from 'modules/scene/types'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getParcelOrientation } from './utils'
-import { Asset, AssetParameterValues } from 'modules/asset/types'
+import { AssetParameterValues } from 'modules/asset/types'
 import { migrations } from 'modules/migrations/manifest'
 import { makeContentFile, calculateBufferHash } from 'modules/deployment/contentUtils'
 
@@ -133,7 +133,7 @@ export async function createGameFile(args: { project: Project; scene: Scene; rot
       case ComponentType.GLTFShape: {
         const { assetId } = (component as ComponentDefinition<ComponentType.GLTFShape>).data
         const asset = scene.assets[assetId]
-        components[component.id] = new ECS.GLTFShape(getPath(asset, asset.model))
+        components[component.id] = new ECS.GLTFShape(buildAssetPath(asset.id, asset.model))
         break
       }
       case ComponentType.NFTShape: {
@@ -338,7 +338,7 @@ export async function downloadFiles(args: {
   // Gather mappings
   for (const asset of Object.values(scene.assets)) {
     for (const path of Object.keys(asset.contents)) {
-      const localPath = getPath(asset, path)
+      const localPath = buildAssetPath(asset.id, path)
       const remotePath = getContentsStorageUrl(asset.contents[path])
       mappings[localPath] = remotePath
     }
@@ -531,8 +531,8 @@ async function createThumbnailBlob(thumbnail: string | null) {
   return new Blob([])
 }
 
-function getPath(asset: Asset, path: string) {
-  return `${EXPORT_PATH.ASSETS_FOLDER}/${asset.id}/${path}`
+export function buildAssetPath(namespace: string, path: string) {
+  return `${EXPORT_PATH.ASSETS_FOLDER}/${namespace}/${path}`
 }
 
 /* Temporary fix until we migrate the Builder to use CID v1 */

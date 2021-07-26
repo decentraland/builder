@@ -2,6 +2,7 @@ import { cleanAssetName } from 'modules/asset/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { ImportedFile } from './AssetImporter.types'
 import { ModelMetrics } from 'modules/scene/types'
+import { buildAssetPath } from 'modules/project/export'
 
 export const ASSET_MANIFEST = 'asset.json'
 
@@ -97,12 +98,12 @@ export async function prepareScript(scriptPath: string, namespace: string, conte
 
     /** Namespace mappings
      *  It converts this:
-     *  new GLTFShape("models/Door.gltf")
+     *  new GLTFShape("path/to/model.gltf")
      *  Into this:
-     *  new GLTFShape("namespace/models/Door.gltf")
+     *  new GLTFShape("assets/:namespace/path/to/model.gltf")
      */
     for (const path of Object.keys(contents)) {
-      text = text.replace(new RegExp(path, 'g'), `${namespace}/${path}`)
+      text = text.replace(new RegExp(path, 'g'), buildAssetPath(namespace, path))
     }
 
     // Remove extra src/
