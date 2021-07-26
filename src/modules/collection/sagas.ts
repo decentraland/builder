@@ -74,6 +74,7 @@ import {
 import { isValidText } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
+import { sortByCreatedAt } from 'lib/sort'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
@@ -230,7 +231,7 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
         getCollectionSymbol(collection),
         getCollectionBaseURI(),
         from,
-        items.map(toInitializeItem)
+        items.sort(sortByCreatedAt).map(toInitializeItem)
       )
     )
 
