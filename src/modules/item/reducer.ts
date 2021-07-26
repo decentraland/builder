@@ -135,6 +135,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case FETCH_ITEMS_FAILURE:
+    case FETCH_ITEM_FAILURE:
+    case FETCH_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
     case DEPLOY_ITEM_CONTENTS_FAILURE:
     case SAVE_PUBLISHED_ITEM_FAILURE:
@@ -172,19 +174,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
       delete newState.data[item.id]
       return newState
-    }
-    case FETCH_ITEMS_FAILURE:
-    case FETCH_ITEM_FAILURE:
-    case FETCH_COLLECTION_ITEMS_FAILURE:
-    case SET_ITEMS_TOKEN_ID_FAILURE:
-    case SAVE_PUBLISHED_ITEM_FAILURE:
-    case SAVE_ITEM_FAILURE:
-    case DELETE_ITEM_FAILURE: {
-      return {
-        ...state,
-        loading: loadingReducer(state.loading, action),
-        error: action.payload.error
-      }
     }
     case SET_COLLECTION: {
       const { item, collectionId } = action.payload

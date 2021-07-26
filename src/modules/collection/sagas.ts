@@ -233,10 +233,8 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
         items.map(toInitializeItem)
       )
     )
-    const tokenIds: string[] = Object.keys(items)
 
     yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
-    yield put(setItemsTokenIdRequest(items, tokenIds))
     yield put(replace(locations.activity()))
   } catch (error) {
     yield put(publishCollectionFailure(collection, items, error.message))
@@ -401,7 +399,12 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         const collection: Collection = yield select(state => getCollection(state, collectionId))
         const items: Item[] = yield select(state => getCollectionItems(state, collectionId))
 
+        if (items.some(item => !item.tokenId)) {
+          yield put(setItemsTokenIdRequest(collection, items))
+        }
+
         yield deployItems(collection, items)
+
         if (!collection.forumLink) {
           const name: string | null = yield select(getName)
           yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items, name || '')))
