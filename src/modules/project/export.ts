@@ -28,7 +28,6 @@ export enum EXPORT_PATH {
   DOCKER_FILE = 'Dockerfile',
   DCLIGNORE_FILE = '.dclignore',
   TSCONFIG_FILE = 'tsconfig.json',
-  ASSETS_FOLDER = 'assets',
   BUNDLED_GAME_FILE = 'bin/game.js',
   THUMBNAIL_FILE = 'scene-thumbnail.png'
 }
@@ -532,7 +531,7 @@ async function createThumbnailBlob(thumbnail: string | null) {
 }
 
 export function buildAssetPath(namespace: string, path: string) {
-  return `${EXPORT_PATH.ASSETS_FOLDER}/${namespace}/${path}`
+  return `${namespace}/${path}`
 }
 
 /* Temporary fix until we migrate the Builder to use CID v1 */
