@@ -1,7 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, all, delay } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -37,9 +37,12 @@ import {
   SET_COLLECTION,
   SetCollectionAction,
   SET_ITEMS_TOKEN_ID_REQUEST,
+  SET_ITEMS_TOKEN_ID_FAILURE,
+  setItemsTokenIdRequest,
   setItemsTokenIdSuccess,
   setItemsTokenIdFailure,
   SetItemsTokenIdRequestAction,
+  SetItemsTokenIdFailureAction,
   deployItemContentsRequest,
   DEPLOY_ITEM_CONTENTS_REQUEST,
   deployItemContentsSuccess,
@@ -60,7 +63,7 @@ import { getIdentity } from 'modules/identity/utils'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
-import { getCollection } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -83,7 +86,9 @@ export function* itemSaga() {
   yield takeEvery(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
-  yield takeLatest(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContentRequest)
+
+  yield takeLatest(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
+  yield takeLatest(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
 }
 
 function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
@@ -225,26 +230,25 @@ function* handleSetCollection(action: SetCollectionAction) {
 }
 
 function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
-  const { items, tokenIds } = action.payload
+  const { collection, items } = action.payload
 
   try {
-    const saves = []
-    const newItems = []
-    for (const [index, item] of items.entries()) {
-      const tokenId = tokenIds[index]
-      const newItem = {
-        ...item,
-        tokenId
-      }
-      saves.push(call(() => builder.saveItem(newItem, {})))
-      newItems.push(newItem)
-    }
-
-    yield all(saves)
-    yield put(setItemsTokenIdSuccess(newItems, tokenIds))
+    const { items: newItems }: { items: Item[] } = yield call(() => builder.publishCollection(collection.id))
+    yield put(setItemsTokenIdSuccess(newItems))
   } catch (error) {
-    yield put(setItemsTokenIdFailure(items, error.message))
+    yield put(setItemsTokenIdFailure(collection, items, error.message))
   }
+}
+
+function* handleRetrySetItemsTokenId(action: SetItemsTokenIdFailureAction) {
+  const { collection } = action.payload
+
+  yield delay(5000) // wait five seconds
+
+  // Refresh data from state
+  const newCollection: Collection = yield select(state => getCollection(state, collection.id))
+  const newItems: Item[] = yield select(state => getCollectionItems(state, collection.id))
+  yield put(setItemsTokenIdRequest(newCollection, newItems))
 }
 
 function* handleDeployItemContentsRequest(action: DeployItemContentsRequestAction) {
@@ -265,7 +269,7 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
   }
 }
 
-function* handleRetryDeployItemContentRequest(action: DeployItemContentsFailureAction) {
+function* handleRetryDeployItemContent(action: DeployItemContentsFailureAction) {
   const { collection, item, error } = action.payload
 
   if (isItemSizeError(error)) {
@@ -274,7 +278,10 @@ function* handleRetryDeployItemContentRequest(action: DeployItemContentsFailureA
 
   yield delay(5000) // wait five seconds
 
-  yield put(deployItemContentsRequest(collection, item))
+  // Refresh data from state
+  const newCollection: Collection = yield select(state => getCollection(state, collection.id))
+  const newItem: Item = yield select(state => getItem(state, item.id))
+  yield put(deployItemContentsRequest(newCollection, newItem))
 }
 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
