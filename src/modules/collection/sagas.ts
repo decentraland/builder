@@ -9,7 +9,6 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   FetchCollectionsRequestAction,
-  FetchCollectionsSuccessAction,
   fetchCollectionsRequest,
   fetchCollectionsSuccess,
   fetchCollectionsFailure,
@@ -79,6 +78,7 @@ import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
 import { getWalletItems } from 'modules/item/selectors'
+import { getWalletCollections } from 'modules/collection/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
@@ -369,7 +369,7 @@ function* handleLoginSuccess(action: LoginSuccessAction) {
   yield put(fetchCollectionsRequest(wallet.address))
 }
 
-function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) {
+function* handleRequestCollectionSuccess() {
   let allItems: Item[] = yield select(getWalletItems)
   if (allItems.length === 0) {
     yield take(FETCH_ITEMS_SUCCESS)
@@ -377,11 +377,13 @@ function* handleRequestCollectionSuccess(action: FetchCollectionsSuccessAction) 
   }
 
   try {
-    const { collections } = action.payload
+    const collections: Collection[] = yield select(getWalletCollections)
 
     for (const collection of collections) {
       if (!collection.isPublished) continue
       const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+
+      yield publishCollection(collection, items)
       yield deployItems(collection, items)
     }
   } catch (error) {
@@ -400,10 +402,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         const collection: Collection = yield select(state => getCollection(state, collectionId))
         const items: Item[] = yield select(state => getCollectionItems(state, collectionId))
 
-        if (items.some(item => !item.tokenId)) {
-          yield put(setItemsTokenIdRequest(collection, items))
-        }
-
+        yield publishCollection(collection, items)
         yield deployItems(collection, items)
 
         if (!collection.forumLink) {
@@ -418,6 +417,17 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
     }
   } catch (error) {
     console.error(error)
+  }
+}
+
+function* publishCollection(collection: Collection, items: Item[]) {
+  const address: string | undefined = yield select(getAddress)
+  if (!isOwner(collection, address)) {
+    return
+  }
+
+  if (items.some(item => !item.tokenId)) {
+    yield put(setItemsTokenIdRequest(collection, items))
   }
 }
 

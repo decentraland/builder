@@ -628,7 +628,7 @@ export class BuilderAPI extends BaseAPI {
   async publishCollection(collectionId: string) {
     const { collection, items }: { collection: RemoteCollection; items: RemoteItem[] } = await this.request(
       'post',
-      `/collection/${collectionId}/publish`
+      `/collections/${collectionId}/publish`
     )
     return {
       collection: fromRemoteCollection(collection),
