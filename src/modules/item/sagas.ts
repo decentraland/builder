@@ -63,7 +63,7 @@ import { getIdentity } from 'modules/identity/utils'
 import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
-import { getCollection } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -241,10 +241,14 @@ function* handleSetItemsTokenIdRequest(action: SetItemsTokenIdRequestAction) {
 }
 
 function* handleRetrySetItemsTokenId(action: SetItemsTokenIdFailureAction) {
-  const { collection, items } = action.payload
+  const { collection } = action.payload
 
   yield delay(5000) // wait five seconds
-  yield put(setItemsTokenIdRequest(collection, items))
+
+  // Refresh data from state
+  const newCollection: Collection = yield select(state => getCollection(state, collection.id))
+  const newItems: Item[] = yield select(state => getCollectionItems(state, collection.id))
+  yield put(setItemsTokenIdRequest(newCollection, newItems))
 }
 
 function* handleDeployItemContentsRequest(action: DeployItemContentsRequestAction) {
@@ -273,7 +277,11 @@ function* handleRetryDeployItemContent(action: DeployItemContentsFailureAction) 
   }
 
   yield delay(5000) // wait five seconds
-  yield put(deployItemContentsRequest(collection, item))
+
+  // Refresh data from state
+  const newCollection: Collection = yield select(state => getCollection(state, collection.id))
+  const newItem: Item = yield select(state => getItem(state, item.id))
+  yield put(deployItemContentsRequest(newCollection, newItem))
 }
 
 function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
