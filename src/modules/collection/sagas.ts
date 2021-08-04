@@ -379,10 +379,9 @@ function* handleRequestCollectionSuccess() {
   try {
     const collections: Collection[] = yield select(getWalletCollections)
 
-    // TODO: This is done synchronously, is this something we can / want to change?
     for (const collection of collections) {
       if (!collection.isPublished) continue
-      yield postProcessCollectionTransaction(collection)
+      yield finishCollectionPublishing(collection)
     }
   } catch (error) {
     console.error(error)
@@ -398,7 +397,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         // We re-fetch the collection from the store to get the updated version
         const collectionId = transaction.payload.collection.id
         const collection: Collection = yield select(state => getCollection(state, collectionId))
-        yield postProcessCollectionTransaction(collection)
+        yield finishCollectionPublishing(collection)
         break
       }
       default: {
@@ -411,13 +410,13 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
 }
 
 /**
- * Post proccesses a collection that was published to the blockchain by singaling the
+ * Proccesses a collection that was published to the blockchain by singaling the
  * builder server that the collecton has been published, setting the item ids,
- * deploys the item entities to the Catalyst sever and creates the forum post.
+ * deploys the item entities to the Catalyst server and creates the forum post.
  *
  * @param collection - The collection to post process.
  */
-function* postProcessCollectionTransaction(collection: Collection) {
+function* finishCollectionPublishing(collection: Collection) {
   const avatarName: string | null = yield select(getName)
   const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
 
@@ -430,7 +429,7 @@ function* postProcessCollectionTransaction(collection: Collection) {
 }
 
 /**
- * Publishes a collection, stablishing ids for the items and their blockain id.
+ * Publishes a collection, establishing ids for the items and their blockchain ids.
  *
  * @param collection - The collection that owns the items to be set as published.
  * @param items - The items to be set as published.
@@ -447,7 +446,7 @@ function* publishCollection(collection: Collection, items: Item[]) {
 }
 
 /**
- * Deploys the item entities of the items of a collection to the Catalyst.
+ * Deploys the item entities for each collection item to the Catalyst.
  *
  * @param collection - The collection that owns the items to be deployed.
  * @param items - The items to be deployed as antities to the Catalyst.
