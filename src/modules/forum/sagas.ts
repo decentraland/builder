@@ -24,8 +24,8 @@ function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestA
     const forumLink: string = yield call([builder, 'createCollectionForumPost'], collection, forumPost)
     yield put(createCollectionForumPostSuccess(collection, forumLink))
   } catch (error) {
-    const forumPostAlreadyExists = error?.response?.status === 409
-    const forumLink = error?.response?.data?.data?.forum_link
+    const forumPostAlreadyExists = error.response?.status === 409
+    const forumLink = error.response?.data?.data?.forum_link
     if (forumPostAlreadyExists && forumLink) {
       yield put(createCollectionForumPostSuccess(collection, forumLink))
     }
