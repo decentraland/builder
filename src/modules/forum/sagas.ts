@@ -21,7 +21,6 @@ export function* forumSaga() {
 function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestAction) {
   const { collection, forumPost } = action.payload
   try {
-    // TODO: An infinite retry here will hang the for loop that post processes collections
     const forumLink: string = yield call([builder, 'createCollectionForumPost'], collection, forumPost)
     yield put(createCollectionForumPostSuccess(collection, forumLink))
   } catch (error) {

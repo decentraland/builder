@@ -415,7 +415,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
  * builder server that the collecton has been published, setting the item ids,
  * deploys the item entities to the Catalyst sever and creates the forum post.
  *
- * @param collection The collection to post process.
+ * @param collection - The collection to post process.
  */
 function* postProcessCollectionTransaction(collection: Collection) {
   const avatarName: string | null = yield select(getName)
