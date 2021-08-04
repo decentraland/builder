@@ -8,6 +8,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
 import { getMetadata } from 'modules/item/utils'
 import { isEqual, includes } from 'lib/address'
+import { sortByCreatedAt } from 'lib/sort'
 import { InitializeItem, Collection, Access } from './types'
 import { locations } from 'routing/locations'
 
@@ -57,6 +58,10 @@ export function getCollectionBaseURI() {
 export function getCollectionSymbol(collection: Collection) {
   const vowelLessName = collection.name.replace(/a|e|i|o|u|\s/g, '')
   return 'DCL-' + vowelLessName.toUpperCase()
+}
+
+export function toInitializeItems(items: Item[]): InitializeItem[] {
+  return items.sort(sortByCreatedAt).map(toInitializeItem)
 }
 
 export function toInitializeItem(item: Item): InitializeItem {
