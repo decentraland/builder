@@ -73,7 +73,6 @@ import {
 import { isValidText } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
-import { sortByCreatedAt } from 'lib/sort'
 import { builder } from 'lib/api/builder'
 import { closeModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
@@ -83,7 +82,7 @@ import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol, toInitializeItem } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, toInitializeItems } from './utils'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -155,7 +154,7 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
         true, // should complete
         false, // is approved
         Address.fromString(rarities.address),
-        items.map(toInitializeItem)
+        toInitializeItems(items)
       ),
       from
     )
@@ -231,7 +230,7 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
         getCollectionSymbol(collection),
         getCollectionBaseURI(),
         from,
-        items.sort(sortByCreatedAt).map(toInitializeItem)
+        toInitializeItems(items)
       )
     )
 
