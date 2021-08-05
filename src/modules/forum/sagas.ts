@@ -1,6 +1,5 @@
-import { takeEvery, call, put } from 'redux-saga/effects'
+import { takeEvery, call, put, delay } from 'redux-saga/effects'
 import { builder } from 'lib/api/builder'
-import { delay } from 'dcl-catalyst-commons'
 import {
   createCollectionForumPostFailure,
   CreateCollectionForumPostFailureAction,
@@ -11,7 +10,7 @@ import {
   CREATE_COLLECTION_FORUM_POST_REQUEST
 } from './actions'
 
-const RETRY_DELAY = '5000'
+const RETRY_DELAY = 5000
 
 export function* forumSaga() {
   yield takeEvery(CREATE_COLLECTION_FORUM_POST_REQUEST, handleCreateForumPostRequest)
@@ -22,15 +21,17 @@ function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestA
   const { collection, forumPost } = action.payload
   try {
     const forumLink: string = yield call([builder, 'createCollectionForumPost'], collection, forumPost)
-    yield put(createCollectionForumPostSuccess(collection, forumLink))
+    return put(createCollectionForumPostSuccess(collection, forumLink))
   } catch (error) {
-    const forumPostAlreadyExists = error.response?.status === 409
-    const forumLink = error.response?.data?.data?.forum_link
-    if (forumPostAlreadyExists && forumLink) {
-      yield put(createCollectionForumPostSuccess(collection, forumLink))
-    } else {
-      yield put(createCollectionForumPostFailure(collection, forumPost, error.message))
+    if (builder.isAxiosError(error) && error.response) {
+      const forumPostAlreadyExists = error.response.status === 409
+      const forumLink = error.response.data?.data?.forum_link
+      if (forumPostAlreadyExists && forumLink) {
+        return put(createCollectionForumPostSuccess(collection, forumLink))
+      }
     }
+
+    return put(createCollectionForumPostFailure(collection, forumPost, error.message))
   }
 }
 
@@ -43,6 +44,6 @@ function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestA
 function* handleCreateForumPostFailure(action: CreateCollectionForumPostFailureAction) {
   const { collection, forumPost } = action.payload
 
-  yield call(delay, RETRY_DELAY)
+  yield delay(RETRY_DELAY)
   yield put(createCollectionForumPostRequest(collection, forumPost))
 }

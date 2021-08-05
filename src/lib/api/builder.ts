@@ -665,7 +665,7 @@ export class BuilderAPI extends BaseAPI {
     return this.request('get', '/rarities')
   }
 
-  private isAxiosError(error: any): error is AxiosError {
+  isAxiosError(error: any): error is AxiosError {
     return error.isAxiosError
   }
 }

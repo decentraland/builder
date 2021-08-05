@@ -87,9 +87,8 @@ export function* itemSaga() {
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
 
-  // TODO: Why do we have take latest here? What if there are multiple failures waiting to be handled?
-  yield takeLatest(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
-  yield takeLatest(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
+  yield takeEvery(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
+  yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
 }
 
 function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
