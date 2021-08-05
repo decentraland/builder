@@ -28,8 +28,9 @@ function* handleCreateForumPostRequest(action: CreateCollectionForumPostRequestA
     const forumLink = error.response?.data?.data?.forum_link
     if (forumPostAlreadyExists && forumLink) {
       yield put(createCollectionForumPostSuccess(collection, forumLink))
+    } else {
+      yield put(createCollectionForumPostFailure(collection, forumPost, error.message))
     }
-    yield put(createCollectionForumPostFailure(collection, forumPost, error.message))
   }
 }
 
