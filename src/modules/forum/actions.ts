@@ -15,8 +15,8 @@ export const createCollectionForumPostSuccess = (collection: Collection, forumLi
     collection,
     forumLink
   })
-export const createCollectionForumPostFailure = (collection: Collection, error: string) =>
-  action(CREATE_COLLECTION_FORUM_POST_FAILURE, { collection, error })
+export const createCollectionForumPostFailure = (collection: Collection, forumPost: ForumPost, error: string) =>
+  action(CREATE_COLLECTION_FORUM_POST_FAILURE, { collection, forumPost, error })
 
 export type CreateCollectionForumPostRequestAction = ReturnType<typeof createCollectionForumPostRequest>
 export type CreateCollectionForumPostSuccessAction = ReturnType<typeof createCollectionForumPostSuccess>

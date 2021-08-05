@@ -310,6 +310,7 @@ module.exports = function(webpackEnv) {
                 customize: require.resolve('babel-preset-react-app/webpack-overrides'),
 
                 plugins: [
+                  [require.resolve("@babel/plugin-proposal-optional-chaining")],
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -340,6 +341,7 @@ module.exports = function(webpackEnv) {
                 configFile: false,
                 compact: false,
                 presets: [[require.resolve('babel-preset-react-app/dependencies'), { helpers: true }]],
+                plugins: [[require.resolve("@babel/plugin-proposal-optional-chaining")]],
                 cacheDirectory: true,
                 cacheCompression: isEnvProduction,
 

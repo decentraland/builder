@@ -380,10 +380,7 @@ function* handleRequestCollectionSuccess() {
 
     for (const collection of collections) {
       if (!collection.isPublished) continue
-      const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
-
-      yield publishCollection(collection, items)
-      yield deployItems(collection, items)
+      yield finishCollectionPublishing(collection)
     }
   } catch (error) {
     console.error(error)
@@ -399,15 +396,7 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
         // We re-fetch the collection from the store to get the updated version
         const collectionId = transaction.payload.collection.id
         const collection: Collection = yield select(state => getCollection(state, collectionId))
-        const items: Item[] = yield select(state => getCollectionItems(state, collectionId))
-
-        yield publishCollection(collection, items)
-        yield deployItems(collection, items)
-
-        if (!collection.forumLink) {
-          const name: string | null = yield select(getName)
-          yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items, name || '')))
-        }
+        yield finishCollectionPublishing(collection)
         break
       }
       default: {
@@ -419,6 +408,31 @@ function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
   }
 }
 
+/**
+ * Proccesses a collection that was published to the blockchain by singaling the
+ * builder server that the collecton has been published, setting the item ids,
+ * deploys the item entities to the Catalyst server and creates the forum post.
+ *
+ * @param collection - The collection to post process.
+ */
+function* finishCollectionPublishing(collection: Collection) {
+  const avatarName: string | null = yield select(getName)
+  const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
+
+  yield publishCollection(collection, items)
+  yield deployItems(collection, items)
+
+  if (!collection.forumLink) {
+    yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items, avatarName || '')))
+  }
+}
+
+/**
+ * Publishes a collection, establishing ids for the items and their blockchain ids.
+ *
+ * @param collection - The collection that owns the items to be set as published.
+ * @param items - The items to be set as published.
+ */
 function* publishCollection(collection: Collection, items: Item[]) {
   const address: string | undefined = yield select(getAddress)
   if (!isOwner(collection, address)) {
@@ -430,6 +444,12 @@ function* publishCollection(collection: Collection, items: Item[]) {
   }
 }
 
+/**
+ * Deploys the item entities for each collection item to the Catalyst.
+ *
+ * @param collection - The collection that owns the items to be deployed.
+ * @param items - The items to be deployed as antities to the Catalyst.
+ */
 function* deployItems(collection: Collection, items: Item[]) {
   const address: string | undefined = yield select(getAddress)
   if (!isOwner(collection, address)) {
