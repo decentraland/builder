@@ -25,6 +25,11 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     this.setState({ rarities, isFetchingRarities: false })
   }
 
+  // TODO: rename this
+  handleNextStep = () => {
+    this.setState({ step: 3 })
+  }
+
   handlePublish = () => {
     const { collection, items, onPublish } = this.props
     onPublish(collection!, items)
@@ -35,7 +40,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items, wallet } = this.props
+    const { items, wallet, onClose } = this.props
     const { rarities, isFetchingRarities } = this.state
 
     const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
@@ -62,93 +67,149 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
     return (
       <>
-        {isFetchingRarities ? (
-          <div className="loader-wrapper">
-            <Loader size="big" active={isFetchingRarities} />
-          </div>
-        ) : (
-          <>
-            {t('publish_collection_modal.items_breakdown_title', { count: items.length })}
-            <div className="items-breakdown">
-              {Object.values(itemsByRarity).map(itemByRarity => (
-                <div className="item" key={itemByRarity.name}>
-                  <div>
-                    <i className="item-rarity" style={getBackgroundStyle(itemByRarity.id)}></i>
-                    {itemByRarity.count} {itemByRarity.name}
+        <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
+        <Modal.Content>
+          {isFetchingRarities ? (
+            <div className="loader-wrapper">
+              <Loader size="big" active={isFetchingRarities} />
+            </div>
+          ) : (
+            <>
+              {t('publish_collection_modal.items_breakdown_title', { count: items.length })}
+              <div className="items-breakdown">
+                {Object.values(itemsByRarity).map(itemByRarity => (
+                  <div className="item" key={itemByRarity.name}>
+                    <div>
+                      <i className="item-rarity" style={getBackgroundStyle(itemByRarity.id)}></i>
+                      {itemByRarity.count} {itemByRarity.name}
+                    </div>
+                    <div>
+                      <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
+                    </div>
                   </div>
+                ))}
+                <div className="item total">
+                  <div>{t('global.total')}</div>
                   <div>
-                    <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
+                    <Mana network={Network.MATIC}>{totalPrice}</Mana>
                   </div>
-                </div>
-              ))}
-              <div className="item total">
-                <div>{t('global.total')}</div>
-                <div>
-                  <Mana network={Network.MATIC}>{totalPrice}</Mana>
                 </div>
               </div>
-            </div>
-            <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA}>
-              {t('global.next')}
-            </Button>
-            {hasInsufficientMANA ? (
-              <small className="not-enough-mana-notice">
-                <T
-                  id="publish_collection_modal.not_enogh_mana"
-                  values={{
-                    symbol: (
-                      <span>
-                        <Mana network={Network.MATIC} inline /> MANA
-                      </span>
-                    )
-                  }}
-                />
-                <br />
-                <T
-                  id="publish_collection_modal.get_mana"
-                  values={{
-                    link: (
-                      <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                        Account
-                      </a>
-                    )
-                  }}
-                />
-              </small>
-            ) : null}
-          </>
-        )}
+              <Button className="proceed" primary fluid onClick={this.handleProceed}>
+                {t('global.next')}
+              </Button>
+              {hasInsufficientMANA ? (
+                <small className="not-enough-mana-notice">
+                  <T
+                    id="publish_collection_modal.not_enogh_mana"
+                    values={{
+                      symbol: (
+                        <span>
+                          <Mana network={Network.MATIC} inline /> MANA
+                        </span>
+                      )
+                    }}
+                  />
+                  <br />
+                  <T
+                    id="publish_collection_modal.get_mana"
+                    values={{
+                      link: (
+                        <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                          Account
+                        </a>
+                      )
+                    }}
+                  />
+                </small>
+              ) : null}
+            </>
+          )}
+        </Modal.Content>
       </>
     )
   }
 
   renderSecondStep = () => {
-    const { isLoading } = this.props
+    const { isLoading, onClose } = this.props
 
     return (
       <>
-        {t('publish_collection_modal.first_paragraph')}
-        <div className="divider"></div>
-        {t('publish_collection_modal.second_paragraph')}
-        <div className="divider"></div>
-        {t('publish_collection_modal.third_paragraph')}{' '}
-        <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
-          {t('global.learn_more')}
-        </a>
-        <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
-          {t('publish_collection_modal.publish')}
-        </Button>
+        <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
+        <Modal.Content>
+          {t('publish_collection_modal.first_paragraph')}
+          <div className="divider"></div>
+          {t('publish_collection_modal.second_paragraph')}
+          <div className="divider"></div>
+          {t('publish_collection_modal.third_paragraph')}{' '}
+          <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
+            {t('global.learn_more')}
+          </a>
+          <Button primary fluid onClick={this.handleNextStep} loading={isLoading}>
+            {t('global.next')}
+          </Button>
+        </Modal.Content>
+      </>
+    )
+  }
+
+  renderStep = () => {
+    const { step } = this.state
+    switch (step) {
+      case 1:
+        return this.renderFirstStep()
+      case 2:
+        return this.renderSecondStep()
+      case 3:
+        return this.renderThridStep()
+      default:
+        throw new Error('Step not found')
+    }
+  }
+
+  renderThridStep = () => {
+    const { isLoading, onClose } = this.props
+
+    return (
+      <>
+        <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
+        <Modal.Content class={'someClass'}>
+          <p>{t('publish_collection_modal.tos_title')}</p>
+          <p>
+            <T
+              id="publish_collection_modal.tos_first_condition"
+              values={{
+                terms_of_use: (
+                  <span>
+                    <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
+                      {t('publish_collection_modal.terms_of_use')}
+                    </a>
+                  </span>
+                ),
+                content_policy: (
+                  <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
+                    {t('publish_collection_modal.content_policy')}
+                  </a>
+                )
+              }}
+            />
+          </p>
+          <p>{t('publish_collection_modal.tos_second_condition')}</p>
+          <p>{t('publish_collection_modal.tos_third_condition')}</p>
+          <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
+            {t('publish_collection_modal.publish')}
+          </Button>
+        </Modal.Content>
       </>
     )
   }
 
   render() {
     const { onClose } = this.props
-    const { step } = this.state
+
     return (
       <Modal className="PublishCollectionModal" size="tiny" onClose={onClose}>
-        <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
-        <Modal.Content>{step === 1 ? this.renderFirstStep() : this.renderSecondStep()}</Modal.Content>
+        {this.renderStep()}
       </Modal>
     )
   }

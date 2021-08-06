@@ -71,3 +71,9 @@
 .PublishCollectionModal .not-enough-mana-notice .dcl.mana .symbol {
   padding-right: 0;
 }
+
+.PublishCollectionModal .someClass {
+  background-color: black;
+  color: white;
+  border-radius: 3px;
+}
