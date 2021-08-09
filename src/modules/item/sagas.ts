@@ -87,8 +87,8 @@ export function* itemSaga() {
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
 
-  yield takeLatest(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
-  yield takeLatest(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
+  yield takeEvery(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
+  yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
 }
 
 function* handleFetchItemsRequest(action: FetchItemsRequestAction) {
