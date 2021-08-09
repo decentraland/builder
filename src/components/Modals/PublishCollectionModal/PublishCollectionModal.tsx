@@ -14,7 +14,7 @@ import './PublishCollectionModal.css'
 import { emailRegex } from 'lib/validators'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
-  state: State = { step: 1, rarities: [], isFetchingRarities: true, email: undefined }
+  state: State = { step: 1, rarities: [], isFetchingRarities: true, email: undefined, emailFocus: false }
 
   async componentDidMount() {
     const { collection, onClose } = this.props
@@ -38,6 +38,14 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
   handleEmailChange = (_: unknown, data: InputOnChangeData): void => {
     this.setState({ email: data.value })
+  }
+
+  handleEmailFocus = () => {
+    this.setState({ emailFocus: true })
+  }
+
+  handleEmailBlur = () => {
+    this.setState({ emailFocus: false })
   }
 
   handleProceed = () => {
@@ -73,7 +81,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
-        <Modal.Content>
+        <Modal.Content className="first-step">
           {isFetchingRarities ? (
             <div className="loader-wrapper">
               <Loader size="big" active={isFetchingRarities} />
@@ -141,7 +149,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
-        <Modal.Content>
+        <Modal.Content className="second-step">
           {t('publish_collection_modal.first_paragraph')}
           <div className="divider"></div>
           {t('publish_collection_modal.second_paragraph')}
@@ -174,13 +182,14 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
   renderThridStep = () => {
     const { isLoading, onClose } = this.props
-    const { email } = this.state
-    const emailHasErrors = emailRegex.test(email ?? '')
+    const { email, emailFocus } = this.state
+    const hasValidEmail = emailRegex.test(email ?? '')
+    const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
 
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
-        <Modal.Content>
+        <Modal.Content className="third-step">
           <div className="tos">
             <p>{t('publish_collection_modal.tos_title')}</p>
             <p>
@@ -205,15 +214,17 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           </div>
           <Field
             label={t('global.email')}
-            placeholder={'anEmail@decentraland.org'}
+            placeholder={'email@decentraland.org'}
+            onFocus={this.handleEmailFocus}
+            onBlur={this.handleEmailBlur}
             onChange={this.handleEmailChange}
-            error={emailHasErrors}
-            message={emailHasErrors ? 'Error' : undefined}
+            error={showEmailError}
+            message={showEmailError ? t('publish_collection_modal.invalid_email') : undefined}
             value={email}
           />
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
-          <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
+          <Button primary fluid onClick={this.handlePublish} disabled={!hasValidEmail} loading={isLoading}>
             {t('publish_collection_modal.publish')}
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>

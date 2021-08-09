@@ -984,6 +984,7 @@
     "tos_first_condition": "1: The submitted Wearable/s is in full compliance with the {terms_of_use} and {content_policy}, which I acknowledge and accept.",
     "tos_second_condition": "2: I have sufficient Intellectual Property Rights over the submitted Wearable/s.",
     "tos_third_condition": "3: I acknowledge that the DAO may refuse to mint the Wearable/s based on infringements to the Content Policy and Terms of Use. I also acknowledge that the proposal fee won’t be reimbursed in case of rejection.",
+    "invalid_email": "The given email is not valid.",
     "terms_of_use": "Terms of Use",
     "content_policy": "Content Policy",
     "accept_by_publishing": "By clicking Publish you are accepting our terms",

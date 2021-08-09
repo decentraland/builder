@@ -6,7 +6,8 @@
   padding-top: 48px;
 }
 
-.PublishCollectionModal.ui.modal > .content {
+.PublishCollectionModal.ui.modal > .first-step,
+.PublishCollectionModal.ui.modal > .second-step {
   padding: 0 20px 20px;
 }
 
@@ -72,7 +73,24 @@
   padding-right: 0;
 }
 
-.PublishCollectionModal .tos {
+.PublishCollectionModal .tos > p:not(:last-child) {
+  margin-bottom: 25px;
+}
+
+/* Third step content */
+
+.PublishCollectionModal .third-step.content {
+  padding: 0;
+}
+
+.PublishCollectionModal .third-step.content .dcl.field {
+  margin-top: 50px;
+  margin-left: 40px;
+  margin-right: 40px;
+  width: auto;
+}
+
+.PublishCollectionModal .third-step.content .tos {
   background-color: var(--dark-gray);
   font-size: 15px;
   padding: 15px;
@@ -81,12 +99,15 @@
   border-radius: 3px;
 }
 
-.PublishCollectionModal .tos > p:not(:last-child) {
-  margin-bottom: 25px;
+.PublishCollectionModal .third-step.content .ui.input > input {
+  text-align: center;
 }
+
+/* Third step Footer */
 
 .PublishCollectionModal .third-step-footer {
   display: flex;
+  flex-direction: column;
 }
 
 .PublishCollectionModal .third-step-footer > p {
@@ -94,5 +115,10 @@
   margin-top: 20px;
   font-size: 15px;
   text-align: center;
-  flex-direction: column;
+}
+
+.PublishCollectionModal.ui.modal .actions.third-step-footer > button {
+  margin-left: 40px;
+  margin-right: 40px;
+  width: auto;
 }
