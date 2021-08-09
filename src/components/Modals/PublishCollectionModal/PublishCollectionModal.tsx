@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Network } from '@dcl/schemas'
 import { env } from 'decentraland-commons'
-import { ModalNavigation, Button, Mana, Loader } from 'decentraland-ui'
+import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -11,9 +11,10 @@ import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
+import { emailRegex } from 'lib/validators'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
-  state: State = { step: 1, rarities: [], isFetchingRarities: true }
+  state: State = { step: 1, rarities: [], isFetchingRarities: true, email: undefined }
 
   async componentDidMount() {
     const { collection, onClose } = this.props
@@ -33,6 +34,10 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   handlePublish = () => {
     const { collection, items, onPublish } = this.props
     onPublish(collection!, items)
+  }
+
+  handleEmailChange = (_: unknown, data: InputOnChangeData): void => {
+    this.setState({ email: data.value })
   }
 
   handleProceed = () => {
@@ -169,37 +174,50 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
   renderThridStep = () => {
     const { isLoading, onClose } = this.props
+    const { email } = this.state
+    const emailHasErrors = emailRegex.test(email ?? '')
 
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
-        <Modal.Content class={'someClass'}>
-          <p>{t('publish_collection_modal.tos_title')}</p>
-          <p>
-            <T
-              id="publish_collection_modal.tos_first_condition"
-              values={{
-                terms_of_use: (
-                  <span>
+        <Modal.Content>
+          <div className="tos">
+            <p>{t('publish_collection_modal.tos_title')}</p>
+            <p>
+              <T
+                id="publish_collection_modal.tos_first_condition"
+                values={{
+                  terms_of_use: (
                     <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
                       {t('publish_collection_modal.terms_of_use')}
                     </a>
-                  </span>
-                ),
-                content_policy: (
-                  <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
-                    {t('publish_collection_modal.content_policy')}
-                  </a>
-                )
-              }}
-            />
-          </p>
-          <p>{t('publish_collection_modal.tos_second_condition')}</p>
-          <p>{t('publish_collection_modal.tos_third_condition')}</p>
+                  ),
+                  content_policy: (
+                    <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
+                      {t('publish_collection_modal.content_policy')}
+                    </a>
+                  )
+                }}
+              />
+            </p>
+            <p>{t('publish_collection_modal.tos_second_condition')}</p>
+            <p>{t('publish_collection_modal.tos_third_condition')}</p>
+          </div>
+          <Field
+            label={t('global.email')}
+            placeholder={'anEmail@decentraland.org'}
+            onChange={this.handleEmailChange}
+            error={emailHasErrors}
+            message={emailHasErrors ? 'Error' : undefined}
+            value={email}
+          />
+        </Modal.Content>
+        <Modal.Actions className="third-step-footer">
           <Button primary fluid onClick={this.handlePublish} loading={isLoading}>
             {t('publish_collection_modal.publish')}
           </Button>
-        </Modal.Content>
+          <p>{t('publish_collection_modal.accept_by_publishing')}</p>
+        </Modal.Actions>
       </>
     )
   }

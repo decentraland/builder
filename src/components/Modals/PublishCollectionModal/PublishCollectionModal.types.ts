@@ -16,6 +16,7 @@ export type Props = ModalProps & {
 
 export type State = {
   step: number
+  email?: string
   rarities: Rarity[]
   isFetchingRarities: boolean
 }

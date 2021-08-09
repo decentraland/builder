@@ -55,7 +55,7 @@
   margin-right: 10px;
 }
 
-.PublishCollectionModal .ui.button {
+.PublishCollectionModal .content .ui.button {
   margin-top: 60px;
 }
 
@@ -72,8 +72,27 @@
   padding-right: 0;
 }
 
-.PublishCollectionModal .someClass {
-  background-color: black;
-  color: white;
+.PublishCollectionModal .tos {
+  background-color: var(--dark-gray);
+  font-size: 15px;
+  padding: 15px;
+  text-align: left;
+  color: var(--text);
   border-radius: 3px;
+}
+
+.PublishCollectionModal .tos > p:not(:last-child) {
+  margin-bottom: 25px;
+}
+
+.PublishCollectionModal .third-step-footer {
+  display: flex;
+}
+
+.PublishCollectionModal .third-step-footer > p {
+  color: var(--secondary-text);
+  margin-top: 20px;
+  font-size: 15px;
+  text-align: center;
+  flex-direction: column;
 }
