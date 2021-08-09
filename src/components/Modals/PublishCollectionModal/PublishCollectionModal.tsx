@@ -108,7 +108,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                   </div>
                 </div>
               </div>
-              <Button className="proceed" primary fluid onClick={this.handleProceed}>
+              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA}>
                 {t('global.next')}
               </Button>
               {hasInsufficientMANA ? (
@@ -144,7 +144,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderSecondStep = () => {
-    const { isLoading, onClose } = this.props
+    const { onClose } = this.props
 
     return (
       <>
@@ -158,7 +158,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
             {t('global.learn_more')}
           </a>
-          <Button primary fluid onClick={this.handleNextStep} loading={isLoading}>
+          <Button primary fluid onClick={this.handleNextStep}>
             {t('global.next')}
           </Button>
         </Modal.Content>
