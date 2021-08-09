@@ -51,7 +51,7 @@ export function getExplorerURL(collection: Collection, chainId: ChainId) {
 }
 
 export function getCollectionBaseURI() {
-  return `${env.get('REACT_APP_PEER_URL', '')}/lambdas/collections/standard/erc721/`
+  return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
 }
 
 export function getCollectionSymbol(collection: Collection) {
