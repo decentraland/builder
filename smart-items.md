@@ -128,7 +128,7 @@ The `default` value of a parameter of type `actions` can be the `id` of an actio
 // asset.json for Door
 {
   ...
-  "paramters": [
+  "parameters": [
     {
       "id": "onClick",
       "label": "When Clicked",
@@ -173,7 +173,7 @@ For example, the Fantasy Lever smart item has an `onActivate` parameter that is 
 ```
 // asset.json for Fantasy Lever
 {
-  "paramters": [
+  "parameters": [
     {
       "id": "onActivate",
       "label": "When Activated",
@@ -388,7 +388,7 @@ If we want our smart item to be able to trigger actions from other smart items, 
 {
   ...
   name: "Button",
-  paramters: [
+  parameters: [
     {
       id: 'onClick',
       label: 'When Clicked',
