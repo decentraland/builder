@@ -71,7 +71,7 @@ There are 9 types of parameters, and some of them can have some extra properties
 // asset.json
 {
   ...
-  "paramters": [
+  "parameters": [
     {
       "id": "speed",
       "label": "Speed",
@@ -89,7 +89,7 @@ There are 9 types of parameters, and some of them can have some extra properties
 
 ```
 {
-  "paramters": [
+  "parameters": [
     {
       "id": "size",
       "label": "T-Shirt Size",
