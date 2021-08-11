@@ -778,6 +778,9 @@
     "authorizations_title": "活动授权"
   },
   "transaction": {
+    "approved": "已批准",
+    "not_approved": "未批准",
+    "approve_token": "您{action} {contract}合同代表您操作{token}。",
     "change_profile": "您的名字用作{address}的別名",
     "transfer": "您已将{name}转移到{address}。",
     "edit": "您已编辑{name}.",

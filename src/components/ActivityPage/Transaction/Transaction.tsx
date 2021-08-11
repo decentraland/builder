@@ -1,6 +1,14 @@
 import React from 'react'
-import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
+import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getContractName } from 'decentraland-transactions'
+import {
+  GrantTokenSuccessAction,
+  RevokeTokenSuccessAction,
+  GRANT_TOKEN_SUCCESS,
+  REVOKE_TOKEN_SUCCESS
+} from 'decentraland-dapps/dist/modules/authorization/actions'
+import { TransactionLink } from 'decentraland-dapps/dist/containers'
 import { locations } from 'routing/locations'
 import {
   TRANSFER_LAND_SUCCESS,
@@ -26,12 +34,43 @@ import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
 import { difference } from 'lib/array'
 import Profile from 'components/Profile'
-import { Props } from './Transaction.types'
 import TransactionDetail from './TransactionDetail'
+import { Props } from './Transaction.types'
 
 const Transaction = (props: Props) => {
   const { tx } = props
   switch (tx.actionType) {
+    case GRANT_TOKEN_SUCCESS:
+    case REVOKE_TOKEN_SUCCESS: {
+      const { authorization } = tx.payload as GrantTokenSuccessAction['payload'] | RevokeTokenSuccessAction['payload']
+      const authorizedName = getContractName(authorization.authorizedAddress)
+      const contractName = getContractName(authorization.contractAddress)
+      const action = tx.actionType === GRANT_TOKEN_SUCCESS ? t('transaction.approved') : t('transaction.unapproved')
+      return (
+        <TransactionDetail
+          address={authorization.address}
+          text={
+            <T
+              id="transaction.approve_token"
+              values={{
+                action,
+                contract: (
+                  <TransactionLink chainId={authorization.chainId} address={authorization.authorizedAddress} txHash="">
+                    {authorizedName}
+                  </TransactionLink>
+                ),
+                token: (
+                  <TransactionLink chainId={authorization.chainId} address={authorization.contractAddress} txHash="">
+                    {contractName}
+                  </TransactionLink>
+                )
+              }}
+            />
+          }
+          tx={tx}
+        />
+      )
+    }
     case TRANSFER_LAND_SUCCESS: {
       const { name, address, selection } = tx.payload
       return (
