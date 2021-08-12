@@ -48,7 +48,7 @@ export function getExplorerURL(collection: Collection, chainId: ChainId) {
 
   // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars
   const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '').replace('.org', '.zone')
-  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}`
+  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}&NETWORK=ropsten`
 }
 
 export function getCollectionBaseURI() {
