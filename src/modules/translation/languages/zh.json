@@ -887,11 +887,11 @@
       "approved": "已批准",
       "rejected": "拒绝了"
     },
-    "collections": "{count} {count,复数,一个{collection}其他{collections}}",
+    "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
     "empty_collections": "尚无要审查的收藏集。"
   },
   "collection_row": {
-    "items": "{count} {count，复数，一个{item}其他{items}}",
+    "items": "{count} 项",
     "owner": "所有者",
     "visit": "访问",
     "published_time_title": "自收藏出版以来的时间",

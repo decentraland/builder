@@ -52,7 +52,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
                 )}
               </div>
             </Grid.Column>
-            <Grid.Column width={3}>
+            <Grid.Column width={2}>
               <div className="title">{t('collection_row.published_time_title')}</div>
               <div className="subtitle">{formatDistanceToNow(new Date(collection.createdAt))}</div>
             </Grid.Column>
