@@ -915,6 +915,7 @@
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
     "visit": "Visitar",
+    "published_time_title": "Tiempo desde su publicación",
     "forum_post": "Post en el foro",
     "no_forum_post": "No hay post",
     "approved": "Aprobada",

@@ -894,6 +894,7 @@
     "items": "{count} {count，复数，一个{item}其他{items}}",
     "owner": "所有者",
     "visit": "访问",
+    "published_time_title": "自收藏出版以来的时间",
     "forum_post": "论坛帖子",
     "no_forum_post": "尚未发布到论坛",
     "approved": "已批准",

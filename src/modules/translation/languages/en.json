@@ -904,6 +904,7 @@
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
     "visit": "Visit",
+    "published_time_title": "Time since published",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
     "approved": "Approved",

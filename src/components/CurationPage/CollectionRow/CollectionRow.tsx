@@ -7,6 +7,7 @@ import { hasReviews } from 'modules/collection/utils'
 import Icon from 'components/Icon'
 import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
+import { formatDistanceToNow } from 'lib/date'
 import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
@@ -50,6 +51,10 @@ export default class CollectionRow extends React.PureComponent<Props> {
                   t('collection_row.no_forum_post')
                 )}
               </div>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              <div className="title">{t('collection_row.published_time_title')}</div>
+              <div className="subtitle">{formatDistanceToNow(new Date(collection.createdAt))}</div>
             </Grid.Column>
             <Grid.Column width={3}>
               <div className="actions">

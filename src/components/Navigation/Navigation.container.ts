@@ -6,7 +6,7 @@ import { MapStateProps, MapDispatchProps, MapDispatch } from './Navigation.types
 import Navigation from './Navigation'
 
 const mapState = (state: RootState): MapStateProps => ({
-  isCommitteeMember: isWalletCommitteeMember(state)
+  isCommitteeMember: isWalletCommitteeMember(state) || true
 })
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
