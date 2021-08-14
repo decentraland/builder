@@ -894,7 +894,7 @@
     "items": "{count} 项",
     "owner": "所有者",
     "visit": "访问",
-    "published_time_title": "自收藏出版以来的时间",
+    "publication_date": "出版日期",
     "forum_post": "论坛帖子",
     "no_forum_post": "尚未发布到论坛",
     "approved": "已批准",
