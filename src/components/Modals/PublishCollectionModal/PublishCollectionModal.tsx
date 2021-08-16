@@ -9,9 +9,9 @@ import { builder } from 'lib/api/builder'
 import { fromWei } from 'web3x-es/utils'
 import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
+import { emailRegex } from 'lib/validators'
 import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
-import { emailRegex } from 'lib/validators'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
   state: State = { step: 1, rarities: [], isFetchingRarities: true, email: undefined, emailFocus: false }
@@ -31,9 +31,9 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     this.setState({ step: 3 })
   }
 
-  handlePublish = () => {
+  handlePublish = (email: string) => {
     const { collection, items, onPublish } = this.props
-    onPublish(collection!, items)
+    onPublish(collection!, items, email)
   }
 
   handleEmailChange = (_: unknown, data: InputOnChangeData): void => {
@@ -197,12 +197,12 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
                 id="publish_collection_modal.tos_first_condition"
                 values={{
                   terms_of_use: (
-                    <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
+                    <a href="https://decentraland.org/terms/" rel="noopener noreferrer" target="_blank">
                       {t('publish_collection_modal.terms_of_use')}
                     </a>
                   ),
                   content_policy: (
-                    <a href="https://docs.decentraland.org/wearables/publishing-wearables" rel="noopener noreferrer" target="_blank">
+                    <a href="https://decentraland.org/content/" rel="noopener noreferrer" target="_blank">
                       {t('publish_collection_modal.content_policy')}
                     </a>
                   )
@@ -224,7 +224,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           />
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
-          <Button primary fluid onClick={this.handlePublish} disabled={!hasValidEmail} loading={isLoading}>
+          <Button primary fluid onClick={() => this.handlePublish(email!)} disabled={!hasValidEmail} loading={isLoading}>
             {t('publish_collection_modal.publish')}
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>

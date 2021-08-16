@@ -19,7 +19,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onPublish: (collection, items) => dispatch(publishCollectionRequest(collection, items))
+  onPublish: (collection, items, email) => dispatch(publishCollectionRequest(collection, items, email))
 })
 
 export default connect(mapState, mapDispatch)(PublishCollectionModal)
