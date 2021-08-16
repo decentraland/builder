@@ -26,7 +26,6 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     this.setState({ rarities, isFetchingRarities: false })
   }
 
-  // TODO: rename this
   handleNextStep = () => {
     this.setState({ step: 3 })
   }
