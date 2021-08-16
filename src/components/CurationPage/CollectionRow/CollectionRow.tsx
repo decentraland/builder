@@ -1,4 +1,5 @@
 import React from 'react'
+import { format } from 'date-fns'
 import { Grid, Icon as UIIcon } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -7,6 +8,7 @@ import { hasReviews } from 'modules/collection/utils'
 import Icon from 'components/Icon'
 import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
+import { formatDistanceToNow } from 'lib/date'
 import { Props } from './CollectionRow.types'
 import './CollectionRow.css'
 
@@ -19,6 +21,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
 
   render() {
     const { collection, items } = this.props
+    const createdAtDate = new Date(collection.createdAt)
 
     return (
       <Link className="CollectionRow" to={locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' })}>
@@ -49,6 +52,12 @@ export default class CollectionRow extends React.PureComponent<Props> {
                 ) : (
                   t('collection_row.no_forum_post')
                 )}
+              </div>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              <div className="title">{t('collection_row.publication_date')}</div>
+              <div className="subtitle" title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>
+                {formatDistanceToNow(createdAtDate, { addSuffix: true })}
               </div>
             </Grid.Column>
             <Grid.Column width={3}>
