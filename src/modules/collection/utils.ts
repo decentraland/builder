@@ -46,13 +46,13 @@ export function getExplorerURL(collection: Collection, chainId: ChainId) {
     id = `urn:decentraland:${chainName.toLowerCase()}:collections-v2:${collection.contractAddress}`
   }
 
-  // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars
+  // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars. Also, we use `ropsten` for the NETWORK because it is the only working network for .zone
   const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '').replace('.org', '.zone')
-  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}`
+  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}&NETWORK=ropsten`
 }
 
 export function getCollectionBaseURI() {
-  return `${env.get('REACT_APP_PEER_URL', '')}/lambdas/collections/standard/erc721/`
+  return env.get('REACT_APP_ERC721_COLLECTION_BASE_URI', '')
 }
 
 export function getCollectionSymbol(collection: Collection) {

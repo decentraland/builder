@@ -6,8 +6,11 @@ import zh from 'date-fns/locale/zh-CN'
 
 const locales: Record<string, Locale> = {
   en,
+  'en-EN': en,
   es,
-  zh
+  'es-ES': es,
+  zh,
+  'zh-CN': zh
 }
 
 export function formatDistanceToNow(
