@@ -894,9 +894,11 @@
   "curation_page": {
     "filter": {
       "all_status": "All status",
+      "not_reviewed": "Not reviewed",
       "approved": "Approved",
       "rejected": "Rejected"
     },
+    "search_placeholder": "Search between {count} results by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
     "empty_collections": "There are no collections to review yet."
   },

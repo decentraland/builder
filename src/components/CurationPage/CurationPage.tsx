@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Column, Header, Section, Container, Dropdown, Pagination, Empty } from 'decentraland-ui'
+import { Row, Column, Section, Container, Dropdown, Pagination, Empty, TextFilter } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Collection } from 'modules/collection/types'
 import { hasReviews } from 'modules/collection/utils'
@@ -16,6 +16,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   state: State = {
     sortBy: SortBy.NEWEST,
     filterBy: FilterBy.ALL_STATUS,
+    searchText: '',
     page: 1
   }
 
@@ -43,6 +44,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         value={filterBy}
         options={[
           { value: FilterBy.ALL_STATUS, text: t('curation_page.filter.all_status') },
+          { value: FilterBy.NOT_REVIWED, text: t('curation_page.filter.not_reviewed') },
           { value: FilterBy.APPROVED, text: t('curation_page.filter.approved') },
           { value: FilterBy.REJECTED, text: t('curation_page.filter.rejected') }
         ]}
@@ -53,9 +55,31 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
   paginate = () => {
     const { collections } = this.props
-    const { page, filterBy, sortBy } = this.state
+    const { page, filterBy, sortBy, searchText } = this.state
 
     return collections
+      .filter(
+        (collection: Collection) =>
+          collection.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          collection.owner.toLowerCase().includes(searchText.toLowerCase())
+      )
+      .filter((collection: Collection) => {
+        switch (filterBy) {
+          case FilterBy.APPROVED: {
+            return collection.isApproved
+          }
+          case FilterBy.REJECTED: {
+            return hasReviews(collection) && !collection.isApproved
+          }
+          case FilterBy.NOT_REVIWED: {
+            return !hasReviews(collection)
+          }
+          case FilterBy.ALL_STATUS:
+          default: {
+            return true
+          }
+        }
+      })
       .sort((a: Collection, b: Collection) => {
         switch (sortBy) {
           case SortBy.NEWEST: {
@@ -73,26 +97,16 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           }
         }
       })
-      .filter((collection: Collection) => {
-        switch (filterBy) {
-          case FilterBy.APPROVED: {
-            return collection.isApproved
-          }
-          case FilterBy.REJECTED: {
-            return hasReviews(collection) && !collection.isApproved
-          }
-          case FilterBy.ALL_STATUS:
-          default: {
-            return true
-          }
-        }
-      })
       .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  }
+
+  handleSearchChange = (value: string): void => {
+    this.setState({ searchText: value })
   }
 
   renderPage() {
     const { collections } = this.props
-    const { page } = this.state
+    const { page, searchText } = this.state
 
     const total = collections.length
     const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -104,8 +118,12 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           <Container>
             <Row>
               <Column>
-                <Row>
-                  <Header sub>{t('curation_page.collections', { count: collections.length })}</Header>
+                <Row className="text-filter-row">
+                  <TextFilter
+                    value={searchText}
+                    onChange={this.handleSearchChange}
+                    placeholder={t('curation_page.search_placeholder', { count: collections.length })}
+                  />
                 </Row>
               </Column>
               <Column align="right">
