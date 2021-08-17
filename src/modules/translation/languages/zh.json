@@ -884,9 +884,11 @@
   "curation_page": {
     "filter": {
       "all_status": "所有状态",
+      "not_reviewed": "尚未审核",
       "approved": "已批准",
       "rejected": "拒绝了"
     },
+    "search_placeholder": "按名称或所有者地址在 {count} 个结果之间搜索...",
     "collections": "{count} {count, plural, one {个合集} other {个收藏}}",
     "empty_collections": "尚无要审查的收藏集。"
   },
