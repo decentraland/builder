@@ -942,6 +942,7 @@
     "open_in_editor": "在编辑器中打开"
   },
   "item": {
+    "blockchain_id": "区块链ID",
     "category": "类别",
     "rarity": "稀有度",
     "representation": "表示",

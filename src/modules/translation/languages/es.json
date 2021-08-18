@@ -963,6 +963,7 @@
     "open_in_editor": "Abrir en el editor"
   },
   "item": {
+    "blockchain_id": "ID en la Blockchain",
     "category": "Categoría",
     "rarity": "Rareza",
     "representation": "Representación",

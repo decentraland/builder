@@ -118,6 +118,12 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           <div className="item-data">
             <ItemImage item={item} hasBadge={true} />
             <div className="sections">
+              {item.isPublished && (
+                <Section>
+                  <div className="subtitle">{t('item.blockchain_id')}</div>
+                  <div className="value">{item.tokenId}</div>
+                </Section>
+              )}
               {data.category ? (
                 <Section>
                   <div className="subtitle">{t('item.category')}</div>
