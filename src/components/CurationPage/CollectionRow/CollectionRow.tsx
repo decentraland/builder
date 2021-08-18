@@ -42,7 +42,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
                 <Profile textOnly address={collection.owner} />
               </div>
             </Grid.Column>
-            <Grid.Column width={4}>
+            <Grid.Column width={2}>
               <div className="title">{t('collection_row.forum_post')}</div>
               <div className="subtitle">
                 {collection.forumLink ? (
@@ -60,7 +60,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
                 {formatDistanceToNow(createdAtDate, { addSuffix: true })}
               </div>
             </Grid.Column>
-            <Grid.Column width={3}>
+            <Grid.Column width={2}>
               <div className="actions">
                 {collection.isApproved ? (
                   <div className="approved action">
