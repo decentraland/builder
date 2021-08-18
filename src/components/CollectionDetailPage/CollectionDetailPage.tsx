@@ -196,7 +196,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                         />
                       )
                     ) : (
-                      <Button primary compact onClick={this.handlePublish}>
+                      <Button disabled={!this.canPublish()} primary compact onClick={this.handlePublish}>
                         {t('collection_detail_page.publish')}
                       </Button>
                     )}

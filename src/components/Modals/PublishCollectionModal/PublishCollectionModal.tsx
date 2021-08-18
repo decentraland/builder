@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Network } from '@dcl/schemas'
 import { env } from 'decentraland-commons'
-import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData } from 'decentraland-ui'
+import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -165,28 +165,14 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     )
   }
 
-  renderStep = () => {
-    const { step } = this.state
-    switch (step) {
-      case 1:
-        return this.renderFirstStep()
-      case 2:
-        return this.renderSecondStep()
-      case 3:
-        return this.renderThridStep()
-      default:
-        throw new Error('Step not found')
-    }
-  }
-
-  renderThridStep = () => {
+  renderThirdStep = () => {
     const { isLoading, onClose } = this.props
     const { email, emailFocus } = this.state
     const hasValidEmail = emailRegex.test(email ?? '')
     const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
 
     return (
-      <>
+      <Form>
         <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
         <Modal.Content className="third-step">
           <div className="tos">
@@ -228,8 +214,22 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>
         </Modal.Actions>
-      </>
+      </Form>
     )
+  }
+
+  renderStep = () => {
+    const { step } = this.state
+    switch (step) {
+      case 1:
+        return this.renderFirstStep()
+      case 2:
+        return this.renderSecondStep()
+      case 3:
+        return this.renderThirdStep()
+      default:
+        throw new Error('Step not found')
+    }
   }
 
   render() {
