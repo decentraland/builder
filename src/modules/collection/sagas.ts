@@ -1,7 +1,7 @@
 import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -185,7 +185,7 @@ function* handleDeleteCollectionRequest(action: DeleteCollectionRequestAction) {
 }
 
 function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
-  let { collection, items } = action.payload
+  let { collection, items, email } = action.payload
   try {
     // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
     // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
@@ -219,6 +219,8 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
     const manager = getContract(ContractName.CollectionManager, maticChainId)
 
     const collectionManager = new CollectionManager(eth, Address.fromString(manager.address))
+
+    yield retry(10, 500, builder.saveTOS, collection, email)
 
     const txHash: string = yield sendWalletMetaTransaction(
       manager,

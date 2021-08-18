@@ -644,6 +644,10 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCollection(remoteCollection)
   }
 
+  saveTOS = async (collection: Collection, email: string): Promise<void> => {
+    return this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
+  }
+
   async deleteCollection(collection: Collection) {
     await this.request('delete', `/collections/${collection.id}`, {})
   }

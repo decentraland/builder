@@ -66,7 +66,8 @@ export const PUBLISH_COLLECTION_REQUEST = '[Request] Publish Collection'
 export const PUBLISH_COLLECTION_SUCCESS = '[Success] Publish Collection'
 export const PUBLISH_COLLECTION_FAILURE = '[Failure] Publish Collection'
 
-export const publishCollectionRequest = (collection: Collection, items: Item[]) => action(PUBLISH_COLLECTION_REQUEST, { collection, items })
+export const publishCollectionRequest = (collection: Collection, items: Item[], email: string) =>
+  action(PUBLISH_COLLECTION_REQUEST, { collection, items, email })
 export const publishCollectionSuccess = (collection: Collection, items: Item[], chainId: ChainId, txHash: string) =>
   action(PUBLISH_COLLECTION_SUCCESS, {
     collection,
