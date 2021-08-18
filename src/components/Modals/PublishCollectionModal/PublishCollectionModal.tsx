@@ -30,9 +30,10 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     this.setState({ step: 3 })
   }
 
-  handlePublish = (email: string) => {
+  handlePublish = () => {
     const { collection, items, onPublish } = this.props
-    onPublish(collection!, items, email)
+    const { email } = this.state
+    onPublish(collection!, items, email!)
   }
 
   handleEmailChange = (_: unknown, data: InputOnChangeData): void => {
@@ -172,7 +173,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
     const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
 
     return (
-      <Form>
+      <Form onSubmit={this.handlePublish}>
         <ModalNavigation title={t('publish_collection_modal.title_tos')} onClose={onClose} />
         <Modal.Content className="third-step">
           <div className="tos">
@@ -209,7 +210,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           />
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
-          <Button primary fluid onClick={() => this.handlePublish(email!)} disabled={!hasValidEmail} loading={isLoading}>
+          <Button primary fluid disabled={!hasValidEmail} loading={isLoading}>
             {t('publish_collection_modal.publish')}
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>
