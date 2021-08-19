@@ -952,6 +952,7 @@
     "open_in_editor": "Open in editor"
   },
   "item": {
+    "blockchain_id": "Blockchain ID",
     "category": "Category",
     "rarity": "Rarity",
     "representation": "Representation",
