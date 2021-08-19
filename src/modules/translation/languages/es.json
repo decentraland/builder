@@ -909,7 +909,7 @@
       "approved": "Aprobado",
       "rejected": "Rechazado"
     },
-    "search_placeholder": "Busca entre {count} resultados por nombre o por la dirección del dueño...",
+    "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
     "empty_collections": "Aún no hay colecciones para revisar."
   },

@@ -898,7 +898,7 @@
       "approved": "Approved",
       "rejected": "Rejected"
     },
-    "search_placeholder": "Search between {count} results by name or owner address...",
+    "search_placeholder": "Search between {count} {count, plural, one {result} other {results}} by name or owner address...",
     "collections": "{count} {count, plural, one {collection} other {collections}}",
     "empty_collections": "There are no collections to review yet."
   },
