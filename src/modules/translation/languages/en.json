@@ -785,6 +785,9 @@
     "authorizations_title": "Active Authorizations"
   },
   "transaction": {
+    "approved": "approved",
+    "unapproved": "unapproved",
+    "approve_token": "You {action} the {contract} contract to operate {token} on your behalf.",
     "change_profile": "Your name is used as alias for {address}",
     "transfer": "You transferred {name} to {address}.",
     "edit": "You edited {name}.",
