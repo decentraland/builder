@@ -106,7 +106,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
    */
   prefixContents = (bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> => {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
-      if (key !== THUMBNAIL_PATH) {
+      if (key === THUMBNAIL_PATH) {
         newContents[THUMBNAIL_PATH] = contents[key]
       } else {
         newContents[`${bodyShape.toString()}:${key}`] = contents[key]
@@ -153,17 +153,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         contents[THUMBNAIL_PATH] = blob
       }
 
-      console.log('Content keys', Object.keys(contents))
       const prefixedContents = this.prefixContents(bodyShape, contents)
-      console.log('Prefixed content keys', Object.keys(prefixedContents))
 
       // compute new contents
       computedHashes = await computeHashes(prefixedContents)
 
       // Add this item as a representation of an existing item
       if ((isRepresentation || addRepresentation) && editedItem) {
-        console.log('Adding a new representation')
-        console.log('Old item', editedItem)
         item = {
           ...editedItem,
           data: {
@@ -190,10 +186,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
 
         delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
-        console.log('New item', item)
       } else if (pristineItem && changeItemFile) {
-        console.log('Changing item file')
-        console.log('Old item', pristineItem)
         item = {
           ...(pristineItem as Item),
           data: {
@@ -225,7 +218,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
 
         delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
-        console.log('New item', item)
       } else {
         // create item to save
         item = {
@@ -253,7 +245,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
-        console.log('New item (without the computed hashes)', item)
       }
 
       for (const path in computedHashes) {
@@ -356,7 +347,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
       const [thumbnail, model, metrics, contents] = await handler(file)
-      console.log('Thumbnail generated', thumbnail)
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
