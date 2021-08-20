@@ -96,6 +96,25 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return state
   }
 
+  /**
+   * Creates a new contents record with the names of the contents blobs record prefixed.
+   * The names need to be prefixed so they won't collide with other
+   * pre-uploaded models. The name of the content is the name of the uploaded file.
+   *
+   * @param bodyShape - The body shaped used to prefix the content names.
+   * @param contents - The contents which keys are going to be prefixed.
+   */
+  prefixContents = (bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> => {
+    return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
+      if (key !== THUMBNAIL_PATH) {
+        newContents[THUMBNAIL_PATH] = contents[key]
+      } else {
+        newContents[`${bodyShape.toString()}:${key}`] = contents[key]
+      }
+      return newContents
+    }, {})
+  }
+
   handleSubmit = async () => {
     const { address, metadata, onSave, onSavePublished } = this.props
     const { id } = this.state
@@ -134,11 +153,17 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         contents[THUMBNAIL_PATH] = blob
       }
 
+      console.log('Content keys', Object.keys(contents))
+      const prefixedContents = this.prefixContents(bodyShape, contents)
+      console.log('Prefixed content keys', Object.keys(prefixedContents))
+
       // compute new contents
-      computedHashes = await computeHashes(contents!)
+      computedHashes = await computeHashes(prefixedContents)
 
       // Add this item as a representation of an existing item
       if ((isRepresentation || addRepresentation) && editedItem) {
+        console.log('Adding a new representation')
+        console.log('Old item', editedItem)
         item = {
           ...editedItem,
           data: {
@@ -149,7 +174,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               {
                 bodyShapes: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
                 mainFile: model,
-                contents: Object.keys(contents),
+                contents: Object.keys(prefixedContents),
                 overrideHides: [],
                 overrideReplaces: []
               }
@@ -165,7 +190,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
 
         delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
+        console.log('New item', item)
       } else if (pristineItem && changeItemFile) {
+        console.log('Changing item file')
+        console.log('Old item', pristineItem)
         item = {
           ...(pristineItem as Item),
           data: {
@@ -176,16 +204,18 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           name,
           metrics,
-          contents: await computeHashes(contents!),
+          contents: await computeHashes(prefixedContents),
           updatedAt: +new Date()
         }
 
+        // TODO: GetWearableBodyShape
         const wearableBodyShape = bodyShape === BodyShapeType.MALE ? WearableBodyShape.MALE : WearableBodyShape.FEMALE
         const representationIndex = pristineItem.data.representations.findIndex(
           (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
         )
         const pristineBodyShape = getBodyShapeType(pristineItem)
-        const representations = this.getBodyShapes(bodyShape, model, contents)
+        const representations = this.buildRepresentations(bodyShape, model, prefixedContents)
+        // We can't change only one of its reprentations? This crashes the editor
         if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
           // Unisex or Representation changed
           item.data.representations = representations
@@ -195,6 +225,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
 
         delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
+        console.log('New item', item)
       } else {
         // create item to save
         item = {
@@ -214,7 +245,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             replaces: [],
             hides: [],
             tags: [],
-            representations: [...this.getBodyShapes(bodyShape, model, contents)]
+            representations: [...this.buildRepresentations(bodyShape, model, prefixedContents)]
           },
           owner: address!,
           metrics,
@@ -222,6 +253,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
+        console.log('New item (without the computed hashes)', item)
       }
 
       for (const path in computedHashes) {
@@ -230,11 +262,17 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
       const baseItem = editedItem || pristineItem
       const onSaveItem = baseItem && baseItem.isPublished ? onSavePublished : onSave
-      onSaveItem(item, contents)
+      onSaveItem(item, prefixedContents)
     }
   }
 
-  handleZipFile = async (file: File) => {
+  /**
+   * Unzip files and procceses the model files.
+   * One of the models will be taken into consideration if multiple models are uploaded.
+   *
+   * @param file - The ZIP file.
+   */
+  handleZippedModelFiles = async (file: File) => {
     const zip: JSZip = await JSZip.loadAsync(file)
     const fileNames: string[] = []
 
@@ -276,6 +314,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return this.processModel(modelPath, contents)
   }
 
+  /**
+   * Processes a model file.
+   *
+   * @param file - The model file.
+   */
   handleModelFile = async (file: File) => {
     if (file.size > MAX_FILE_SIZE) {
       throw new FileTooBigError()
@@ -311,8 +354,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         throw new WrongExtensionError()
       }
 
-      const handler = extension === '.zip' ? this.handleZipFile : this.handleModelFile
+      const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
       const [thumbnail, model, metrics, contents] = await handler(file)
+      console.log('Thumbnail generated', thumbnail)
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
@@ -426,8 +470,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       metrics = info
     }
 
-    if (isImageFile(model!)) {
-      thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
+    if (isImageFile(model)) {
+      thumbnail = await this.generateWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
     }
 
     return [thumbnail, model, metrics, contents]
@@ -440,7 +484,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (!isCustom) {
       let thumbnail
       if (contents && isImageFile(model!)) {
-        thumbnail = await this.processImage(contents[THUMBNAIL_PATH] || contents[model!], category)
+        thumbnail = await this.generateWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
       } else {
         const url = URL.createObjectURL(contents![model!])
         const { image } = await getModelData(url, {
@@ -455,7 +499,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
   }
 
-  async processImage(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
+  /**
+   * Converts an image blob of a wearable into a fixed 512x512 image encoded as data url.
+   * This function also adds some padding according to the category of the wearable.
+   *
+   * @param blob - The blob of the image.
+   * @param category - The category of the wearable.
+   */
+  async generateWearableThumbnail(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
     // load blob into image
     const image = new Image()
     const loadFuture = future()
@@ -492,7 +543,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return canvas.toDataURL()
   }
 
-  getBodyShapes(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
+  buildRepresentations(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
     const representations: WearableRepresentation[] = []
 
     // add male representation
