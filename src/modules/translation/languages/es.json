@@ -905,9 +905,11 @@
   "curation_page": {
     "filter": {
       "all_status": "Todos los estados",
+      "not_reviewed": "No revisado",
       "approved": "Aprobado",
       "rejected": "Rechazado"
     },
+    "search_placeholder": "Busca entre {count} {count, plural, one {resultado} other {resultados} por nombre o por la dirección del dueño...",
     "collections": "{count} {count, plural, one {colecccion} other {coleccciones}}",
     "empty_collections": "Aún no hay colecciones para revisar."
   },

@@ -1,3 +1,11 @@
 .CurationPage .filters {
   margin-bottom: 10px;
 }
+
+.CurationPage .text-filter {
+  width: 100%;
+}
+
+.CurationPage .filters .text-filter-row {
+  width: 100%;
+}

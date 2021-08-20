@@ -12,6 +12,7 @@ export enum SortBy {
 export enum FilterBy {
   ALL_STATUS = 'ALL_STATUS',
   APPROVED = 'APPROVED',
+  NOT_REVIWED = 'NOT_REVIEWED',
   REJECTED = 'REJECTED'
 }
 
@@ -30,6 +31,7 @@ export type State = {
   page: number
   sortBy: SortBy
   filterBy: FilterBy
+  searchText: string
 }
 
 export type MapStateProps = Pick<Props, 'wallet' | 'collections' | 'isCommitteeMember' | 'isConnecting' | 'isLoading'>
