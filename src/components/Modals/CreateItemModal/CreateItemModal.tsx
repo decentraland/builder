@@ -208,7 +208,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         )
         const pristineBodyShape = getBodyShapeType(pristineItem)
         const representations = this.buildRepresentations(bodyShape, model, prefixedContents)
-        // We can't change only one of its reprentations? This crashes the editor
         if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
           // Unisex or Representation changed
           item.data.representations = representations
