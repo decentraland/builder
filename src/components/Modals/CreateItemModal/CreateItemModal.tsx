@@ -201,7 +201,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           updatedAt: +new Date()
         }
 
-        // TODO: GetWearableBodyShape
         const wearableBodyShape = bodyShape === BodyShapeType.MALE ? WearableBodyShape.MALE : WearableBodyShape.FEMALE
         const representationIndex = pristineItem.data.representations.findIndex(
           (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
