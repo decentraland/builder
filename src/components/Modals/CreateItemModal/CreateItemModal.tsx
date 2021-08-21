@@ -56,7 +56,7 @@ import {
 } from 'modules/item/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType } from './utils'
-import { Props, State, CreateItemView, CreateItemModalMetadata, StateData } from './CreateItemModal.types'
+import { Props, State, CreateItemView, CreateItemModalMetadata, StateData, SortedContent } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
@@ -104,15 +104,29 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
    * @param bodyShape - The body shaped used to prefix the content names.
    * @param contents - The contents which keys are going to be prefixed.
    */
-  prefixContents = (bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> => {
+  prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
-      if (key === THUMBNAIL_PATH) {
-        newContents[THUMBNAIL_PATH] = contents[key]
-      } else {
-        newContents[`${bodyShape.toString()}:${key}`] = contents[key]
-      }
+      newContents[`${bodyShape}:${key}`] = contents[key]
       return newContents
     }, {})
+  }
+
+  /**
+   * Sorts the content into "male", "female" and "all" taking into consideration the body shape.
+   * All contains the item thumbnail and both male and female representations according to the shape.
+   * If the body representation is male, "female" will be an empty object and viceversa.
+   *
+   * @param bodyShape - The body shaped used to sort the content.
+   * @param contents - The contents to be sorted.
+   */
+  sortContent = (bodyShape: BodyShapeType, contents: Record<string, Blob>): SortedContent => {
+    const male =
+      bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.MALE ? this.prefixContents(BodyShapeType.MALE, contents) : {}
+    const female =
+      bodyShape === BodyShapeType.BOTH || bodyShape === BodyShapeType.FEMALE ? this.prefixContents(BodyShapeType.FEMALE, contents) : {}
+    const all = { [THUMBNAIL_PATH]: contents[THUMBNAIL_PATH], ...male, ...female }
+
+    return { male, female, all }
   }
 
   handleSubmit = async () => {
@@ -122,7 +136,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     let changeItemFile = false
     let addRepresentation = false
     let pristineItem: Item | null = null
-    let computedHashes: Record<string, string> = {}
 
     if (metadata) {
       changeItemFile = metadata.changeItemFile
@@ -153,10 +166,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         contents[THUMBNAIL_PATH] = blob
       }
 
-      const prefixedContents = this.prefixContents(bodyShape, contents)
-
-      // compute new contents
-      computedHashes = await computeHashes(prefixedContents)
+      const sortedContents = this.sortContent(bodyShape, contents)
 
       // Add this item as a representation of an existing item
       if ((isRepresentation || addRepresentation) && editedItem) {
@@ -170,7 +180,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
               {
                 bodyShapes: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
                 mainFile: model,
-                contents: Object.keys(prefixedContents),
+                contents: Object.keys(BodyShapeType.MALE ? sortedContents.male : sortedContents.female),
                 overrideHides: [],
                 overrideReplaces: []
               }
@@ -180,12 +190,11 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             tags: [...editedItem.data.tags]
           },
           contents: {
-            ...editedItem.contents
+            ...editedItem.contents,
+            ...(await computeHashes(BodyShapeType.MALE ? sortedContents.male : sortedContents.female))
           },
           updatedAt: +new Date()
         }
-
-        delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
       } else if (pristineItem && changeItemFile) {
         item = {
           ...(pristineItem as Item),
@@ -197,7 +206,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           name,
           metrics,
-          contents: await computeHashes(prefixedContents),
+          contents: await computeHashes(sortedContents.all),
           updatedAt: +new Date()
         }
 
@@ -206,7 +215,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           (representation: WearableRepresentation) => representation.bodyShapes[0] === wearableBodyShape
         )
         const pristineBodyShape = getBodyShapeType(pristineItem)
-        const representations = this.buildRepresentations(bodyShape, model, prefixedContents)
+        const representations = this.buildRepresentations(bodyShape, model, sortedContents)
         if (representations.length === 2 || representationIndex === -1 || pristineBodyShape === BodyShapeType.BOTH) {
           // Unisex or Representation changed
           item.data.representations = representations
@@ -214,8 +223,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           // Edited representation
           item.data.representations[representationIndex] = representations[0]
         }
-
-        delete computedHashes[THUMBNAIL_PATH] // we do not override the old thumbnail with the new one from this representation
       } else {
         // create item to save
         item = {
@@ -235,23 +242,19 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             replaces: [],
             hides: [],
             tags: [],
-            representations: [...this.buildRepresentations(bodyShape, model, prefixedContents)]
+            representations: [...this.buildRepresentations(bodyShape, model, sortedContents)]
           },
           owner: address!,
           metrics,
-          contents: {},
+          contents: await computeHashes(sortedContents.all),
           createdAt: +new Date(),
           updatedAt: +new Date()
         }
       }
 
-      for (const path in computedHashes) {
-        item.contents[path] = computedHashes[path]
-      }
-
       const baseItem = editedItem || pristineItem
       const onSaveItem = baseItem && baseItem.isPublished ? onSavePublished : onSave
-      onSaveItem(item, prefixedContents)
+      onSaveItem(item, sortedContents.all)
     }
   }
 
@@ -531,7 +534,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return canvas.toDataURL()
   }
 
-  buildRepresentations(bodyShape: BodyShapeType, model: string, contents: Record<string, Blob>): WearableRepresentation[] {
+  buildRepresentations(bodyShape: BodyShapeType, model: string, contents: SortedContent): WearableRepresentation[] {
     const representations: WearableRepresentation[] = []
 
     // add male representation
@@ -539,7 +542,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       representations.push({
         bodyShapes: [WearableBodyShape.MALE],
         mainFile: model,
-        contents: Object.keys(contents),
+        contents: Object.keys(contents.male),
         overrideHides: [],
         overrideReplaces: []
       })
@@ -550,7 +553,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       representations.push({
         bodyShapes: [WearableBodyShape.FEMALE],
         mainFile: model,
-        contents: Object.keys(contents),
+        contents: Object.keys(contents.female),
         overrideHides: [],
         overrideReplaces: []
       })
