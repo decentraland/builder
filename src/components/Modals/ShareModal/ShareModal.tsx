@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { env } from 'decentraland-commons'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import { Loader, ModalNavigation } from 'decentraland-ui'
 import { ProviderType } from 'decentraland-connect'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -16,6 +17,7 @@ const SHARE_SCENE_URL = env.get('REACT_APP_SHARE_SCENE_URL', '')
 export default class ShareModal extends React.PureComponent<Props, State> {
   state: State = {
     copied: false,
+    copiedTimer: undefined,
     type: ShareModalType.PROJECT,
     id: null
   }
@@ -46,19 +48,11 @@ export default class ShareModal extends React.PureComponent<Props, State> {
     }
   }
 
-  handleCopyLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    if (this.input.current) {
-      const input = this.input.current
-      input.select()
-      document.execCommand('copy')
-      const selection = document.getSelection()
-      if (selection) {
-        selection.removeAllRanges()
-        input.blur()
-        this.setState({ copied: true })
-      }
-      this.props.onShare(ShareTarget.LINK)
+  handleCopyLink = () => {
+    const { copiedTimer } = this.state
+    if (copiedTimer === undefined) {
+      const newCopiedTimer = setTimeout(() => this.setState({ copied: false, copiedTimer: undefined }), 2000)
+      this.setState({ copied: true, copiedTimer: newCopiedTimer })
     }
   }
 
@@ -158,9 +152,9 @@ export default class ShareModal extends React.PureComponent<Props, State> {
           </div>
           <div className="copy-group">
             <input ref={this.input} className="copy-input" readOnly={true} value={this.getShareLink()} onFocus={this.handleFocusLink} />
-            <a className="copy-button" onClick={this.handleCopyLink} href={this.getShareLink()}>
-              {copied ? t(`share_modal.copied`) : t(`share_modal.copy`)}
-            </a>
+            <CopyToClipboard text={this.getShareLink()} onCopy={this.handleCopyLink}>
+              <span className="copy-button">{copied ? t(`share_modal.copied`) : t(`share_modal.copy`)}</span>
+            </CopyToClipboard>
           </div>
         </div>
       </Modal>
