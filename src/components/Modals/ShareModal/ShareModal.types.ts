@@ -17,6 +17,7 @@ export type Props = ModalProps & {
 
 export type State = {
   copied: boolean
+  copiedTimer: ReturnType<typeof setTimeout> | undefined
   type: ShareModalType
   id: string | null
 }
