@@ -38,6 +38,13 @@ export default class ShareModal extends React.PureComponent<Props, State> {
     }
   }
 
+  componentWillUnmount() {
+    const { copiedTimer } = this.state
+    if (copiedTimer !== undefined) {
+      clearTimeout(copiedTimer)
+    }
+  }
+
   handleClose = () => {
     return this.props.onClose()
   }
@@ -50,10 +57,12 @@ export default class ShareModal extends React.PureComponent<Props, State> {
 
   handleCopyLink = () => {
     const { copiedTimer } = this.state
-    if (copiedTimer === undefined) {
-      const newCopiedTimer = setTimeout(() => this.setState({ copied: false, copiedTimer: undefined }), 2000)
-      this.setState({ copied: true, copiedTimer: newCopiedTimer })
+    if (copiedTimer !== undefined) {
+      clearTimeout(copiedTimer)
     }
+
+    const newCopiedTimer = setTimeout(() => this.setState({ copied: false, copiedTimer: undefined }), 2000)
+    this.setState({ copied: true, copiedTimer: newCopiedTimer })
   }
 
   handleShare = (e: React.MouseEvent<HTMLAnchorElement>, target: ShareTarget) => {
