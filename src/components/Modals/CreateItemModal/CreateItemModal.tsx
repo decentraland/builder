@@ -106,7 +106,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
    */
   prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
-      newContents[`${bodyShape}:${key}`] = contents[key]
+      newContents[`${bodyShape}/${key}`] = contents[key]
       return newContents
     }, {})
   }
