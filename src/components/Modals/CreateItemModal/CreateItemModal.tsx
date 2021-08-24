@@ -97,6 +97,16 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Prefixes the content name by adding the adding the body shape name to it.
+   *
+   * @param bodyShape - The body shaped used to prefix the content name.
+   * @param contentKey - The content key or name to be prefixed.
+   */
+  prefixContentName(bodyShape: BodyShapeType, contentKey: string): string {
+    return `${bodyShape}/${contentKey}`
+  }
+
+  /**
    * Creates a new contents record with the names of the contents blobs record prefixed.
    * The names need to be prefixed so they won't collide with other
    * pre-uploaded models. The name of the content is the name of the uploaded file.
@@ -106,7 +116,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
    */
   prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
-      newContents[`${bodyShape}/${key}`] = contents[key]
+      newContents[this.prefixContentName(bodyShape, key)] = contents[key]
       return newContents
     }, {})
   }
@@ -170,6 +180,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
 
       // Add this item as a representation of an existing item
       if ((isRepresentation || addRepresentation) && editedItem) {
+        const hashedContents = await computeHashes(bodyShape === BodyShapeType.MALE ? sortedContents.male : sortedContents.female)
         item = {
           ...editedItem,
           data: {
@@ -177,13 +188,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             representations: [
               ...editedItem.data.representations,
               // add new representation
-              {
-                bodyShapes: bodyShape === BodyShapeType.MALE ? [WearableBodyShape.MALE] : [WearableBodyShape.FEMALE],
-                mainFile: model,
-                contents: Object.keys(BodyShapeType.MALE ? sortedContents.male : sortedContents.female),
-                overrideHides: [],
-                overrideReplaces: []
-              }
+              ...this.buildRepresentations(bodyShape, model, sortedContents)
             ],
             replaces: [...editedItem.data.replaces],
             hides: [...editedItem.data.hides],
@@ -191,7 +196,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           contents: {
             ...editedItem.contents,
-            ...(await computeHashes(BodyShapeType.MALE ? sortedContents.male : sortedContents.female))
+            ...hashedContents
           },
           updatedAt: +new Date()
         }
@@ -472,6 +477,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { model, contents } = this.state
 
     const isCustom = !!contents && THUMBNAIL_PATH in contents
+    // TODO: Only executes if custom? why?
     if (!isCustom) {
       let thumbnail
       if (contents && isImageFile(model!)) {
@@ -541,7 +547,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (bodyShape === BodyShapeType.MALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [WearableBodyShape.MALE],
-        mainFile: model,
+        mainFile: this.prefixContentName(BodyShapeType.MALE, model),
         contents: Object.keys(contents.male),
         overrideHides: [],
         overrideReplaces: []
@@ -552,7 +558,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     if (bodyShape === BodyShapeType.FEMALE || bodyShape === BodyShapeType.BOTH) {
       representations.push({
         bodyShapes: [WearableBodyShape.FEMALE],
-        mainFile: model,
+        mainFile: this.prefixContentName(BodyShapeType.FEMALE, model),
         contents: Object.keys(contents.female),
         overrideHides: [],
         overrideReplaces: []
@@ -560,11 +566,6 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     }
 
     return representations
-  }
-
-  hasCustomImage = (model?: string, contents?: Record<string, Blob>) => {
-    const hasCustomThumbnail = contents && THUMBNAIL_PATH in contents
-    return hasCustomThumbnail || isImageFile(model!)
   }
 
   renderDropzoneCTA = (open: () => void) => {
