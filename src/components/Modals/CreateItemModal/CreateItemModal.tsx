@@ -473,11 +473,17 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     return [thumbnail, model, metrics, contents]
   }
 
+  /**
+   * Updates the item's thumbnail if the user didn't provide a custom one before
+   * (either a thumbnail.png file in the zip file or uploading a custom one via the
+   * edit icon in the UI).
+   *
+   * @param category - The category of the wearable.
+   */
   async updateThumbnail(category: WearableCategory) {
     const { model, contents } = this.state
 
     const isCustom = !!contents && THUMBNAIL_PATH in contents
-    // Only update the thumbnail if the user didn't provide a custom one
     if (!isCustom) {
       let thumbnail
       if (contents && isImageFile(model!)) {
