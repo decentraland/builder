@@ -4,7 +4,6 @@ const toBuffer = require('blob-to-buffer')
 export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
 
 export async function computeHashes(contents: Record<string, Blob>): Promise<Record<string, string>> {
-  console.log('Going to compute hashes for', contents)
   const contentsAsHashes: Record<string, string> = {}
   for (const path in contents) {
     const blob = contents[path]
