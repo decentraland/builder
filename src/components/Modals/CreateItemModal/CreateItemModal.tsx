@@ -477,7 +477,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const { model, contents } = this.state
 
     const isCustom = !!contents && THUMBNAIL_PATH in contents
-    // TODO: Only executes if custom? why?
+    // Only update the thumbnail if the user didn't provide a custom one
     if (!isCustom) {
       let thumbnail
       if (contents && isImageFile(model!)) {
