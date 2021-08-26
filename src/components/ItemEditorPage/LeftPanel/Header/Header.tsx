@@ -21,7 +21,7 @@ export default class Header extends React.PureComponent<Props> {
 
   handleNewItem = () => {
     const { onOpenModal } = this.props
-    onOpenModal('CreateItemModal')
+    onOpenModal('CreateItemModal', { changeItemFile: false })
   }
 
   handleNewCollection = () => {
