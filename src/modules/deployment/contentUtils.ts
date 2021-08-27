@@ -18,6 +18,7 @@ export async function calculateBufferHash(buffer: Buffer): Promise<string> {
   return Hashing.calculateBufferHash(buffer)
 }
 
+
 export async function makeContentFiles(files: Record<string, string | Blob>): Promise<Map<string, Buffer>> {
   const makeRequests = []
   for (const fileName of Object.keys(files)) {

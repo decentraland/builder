@@ -43,8 +43,6 @@ export type CreateItemModalMetadata = {
   changeItemFile?: boolean
 }
 
-export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
-
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSave' | 'onSavePublished'>
 export type MapDispatch = Dispatch<SaveItemRequestAction | SavePublishedItemRequestAction>
