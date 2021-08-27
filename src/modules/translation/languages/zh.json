@@ -991,7 +991,7 @@
   },
   "sell_collection_modal": {
     "title": "您想出售您的物品吗？",
-    "turn_on_description": "通过打开此开关，您的收藏将可以在 Decentraland 市场上购买。",
+    "turn_on_description": "通过打开此开关，您的收藏将可以在自动售货机中购买。",
     "turn_on": "打开",
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
     "turn_off": "关掉"
