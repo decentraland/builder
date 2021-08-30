@@ -28,7 +28,7 @@ export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
 
 export function getMaxSupply(item: Item) {
-  return RARITY_MAX_SUPPLY[item.rarity!]
+  return getMaxSupplyForRarity(item.rarity!)
 }
 
 export function getMaxSupplyForRarity(rarity: ItemRarity) {
