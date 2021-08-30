@@ -169,7 +169,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Section>
                   <div className="subtitle">{t('item.supply')}</div>
                   <div className="value">
-                    {item.totalSupply}/{getMaxSupply(item.rarity!)}
+                    {item.totalSupply}/{getMaxSupply(item)}
                   </div>
                 </Section>
               ) : null}

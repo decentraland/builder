@@ -27,7 +27,11 @@ import {
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
 
-export function getMaxSupply(rarity: ItemRarity) {
+export function getMaxSupply(item: Item) {
+  return RARITY_MAX_SUPPLY[item.rarity!]
+}
+
+export function getMaxSupplyForRarity(rarity: ItemRarity) {
   return RARITY_MAX_SUPPLY[rarity]
 }
 
@@ -228,7 +232,7 @@ export function canMintItem(collection: Collection, item: Item, address?: string
     !!address &&
     item.isPublished &&
     item.isApproved &&
-    totalSupply < getMaxSupply(item.rarity!) &&
+    totalSupply < getMaxSupply(item) &&
     (isOwner(item, address) || canMintCollectionItems(collection, address))
   )
 }
