@@ -163,7 +163,7 @@
     "name_label": "给您的新商品起个名字",
     "category_label": "这个项目是什么类别？",
     "category_placeholder": "选择一个类别",
-    "rarity_label": "这件商品有多稀有？",
+    "rarity_label": "这件商品有多稀有？（供应）",
     "rarity_placeholder": "选择稀有",
     "representation_label": "选择您的项目的身体形状",
     "existing_item": "这是现有项目的一部分吗？",
