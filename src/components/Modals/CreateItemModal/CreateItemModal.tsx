@@ -52,7 +52,8 @@ import {
   isImageFile,
   MAX_FILE_SIZE,
   resizeImage,
-  isImageCategory
+  isImageCategory,
+  getMaxSupplyForRarity
 } from 'modules/item/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType } from './utils'
@@ -612,7 +613,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             label={t('create_item_modal.rarity_label')}
             placeholder={t('create_item_modal.rarity_placeholder')}
             value={rarity}
-            options={rarities.map(value => ({ value, text: t(`wearable.rarity.${value}`) }))}
+            options={rarities.map(value => ({ value, text: `${t(`wearable.rarity.${value}`)} (${getMaxSupplyForRarity(value)})` }))}
             onChange={this.handleRarityChange}
           />
         ) : null}
