@@ -31,6 +31,10 @@ export function getMaxSupply(item: Item) {
   return RARITY_MAX_SUPPLY[item.rarity!]
 }
 
+export function getMaxSupplyForRarity(rarity: ItemRarity) {
+  return RARITY_MAX_SUPPLY[rarity]
+}
+
 export function getCatalystItemURN(collection: Collection, item: Item, chainId: ChainId) {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
