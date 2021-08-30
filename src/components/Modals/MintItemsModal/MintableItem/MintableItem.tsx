@@ -62,7 +62,7 @@ export default class MintableItem extends React.PureComponent<Props> {
 
   isValidSupply(supply: number) {
     const { item } = this.props
-    return supply >= 0 && supply <= getMaxSupply(item)
+    return supply >= 0 && supply <= getMaxSupply(item.rarity!)
   }
 
   getSupply(mints: Props['mints']) {
@@ -91,7 +91,7 @@ export default class MintableItem extends React.PureComponent<Props> {
           <Column align="right">
             <div className="item-header">
               <span className="stock">
-                {t('item.supply')} {this.getSupply(mints)}/{getMaxSupply(item)}
+                {t('item.supply')} {this.getSupply(mints)}/{getMaxSupply(item.rarity!)}
               </span>
               <Icon name="plus" className="item-action" onClick={this.handleAddNewMint} />
             </div>

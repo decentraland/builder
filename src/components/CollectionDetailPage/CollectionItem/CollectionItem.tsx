@@ -97,7 +97,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
               <Grid.Column>
                 <>
                   <div>
-                    {item.totalSupply}/{getMaxSupply(item)}
+                    {item.totalSupply}/{getMaxSupply(item.rarity!)}
                   </div>
                   <div className="subtitle">{t('item.supply')}</div>
                 </>
