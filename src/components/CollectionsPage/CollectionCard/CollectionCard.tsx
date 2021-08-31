@@ -27,10 +27,12 @@ const CollectionCard = (props: Props & CollectedProps) => {
     <>
       {connectDropTarget(
         <div className={`CollectionCard is-card ${isOver && canDrop ? 'is-over' : ''}`}>
-          <OptionsDropdown
-            className={classNames({ 'empty-collection-options': items.length === 0 }, 'options-dropdown')}
-            options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
-          />
+          {!collection.isPublished && (
+            <OptionsDropdown
+              className={classNames({ 'empty-collection-options': items.length === 0 }, 'options-dropdown')}
+              options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
+            />
+          )}
           <Link to={locations.collectionDetail(collection.id)}>
             <CollectionImage collection={collection} />
             <Card.Content>
