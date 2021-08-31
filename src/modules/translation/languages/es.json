@@ -152,7 +152,7 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre único",
-    "subtitle": "Se pueden asignar nombres únicos a su avatar para usarlos como un alias, o se pueden asignar a parcelas y propiedades. {br} Asignar un nombre a una parcela o propiedad le permite crear una URL única, como {exampleLink}, por lo que fácilmente podrá enviar personas a su LAND. Cuando alguien siga su nueva URL, será redirigido a su LAND en {dclWorldLink}",
+    "subtitle": "Se pueden asignar nombres únicos a su avatar para usarlos como un alias, o se pueden asignar a parcelas y propiedades. {br} Asignar un nombre a una parcela o propiedad le permite crear una URL única, como {exampleLink}, por lo que fácilmente podrá enviar personas a su LAND. Cuando alguien siga su nueva URL, será redirigido a su LAND en {dclWorldLink}{br} Ten en cuenta que solo podrás reclamar nombres con MANA en la red de Ethereum.",
     "world": "Decentraland!",
     "name_label": "Nombre",
     "name_message": "Los nombres no pueden exceder los 15 caracteres, contener espacios o incluir caracteres no alfanuméricos.",
