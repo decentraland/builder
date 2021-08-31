@@ -144,7 +144,7 @@
   },
   "claim_ens_page": {
     "title": "索取唯一名称",
-    "subtitle": "可以将唯一名称分配给您的化身以用作别名，也可以将它们分配给宗地和地产。{br}为宗地或地产分配名称可以使您创建唯一的URL，例如{exampleLink} 轻松将人们送往您的LAND。 当有人使用您的新网址时，他们将在{dclWorldLink}中重定向到您的LAND{br} 请记住，您只能在以太坊网络上使用 MANA 来声明名称。",
+    "subtitle": "可以将唯一名称分配给您的化身以用作别名，也可以将它们分配给宗地和地产。{br}为宗地或地产分配名称可以使您创建唯一的URL，例如{exampleLink} 轻松将人们送往您的LAND。 当有人使用您的新网址时，他们将在{dclWorldLink}中重定向到您的LAND{br} 名称仅在以太坊中提供，并且只能使用以太坊 MANA {symbol} 进行认领",
     "world": "Decentraland!",
     "name_label": "名称",
     "name_message": "名称不得超过15个字符，不得包含空格或任何非字母数字字符。",
