@@ -1012,7 +1012,7 @@
   },
   "sell_collection_modal": {
     "title": "Quieres vender tus items?",
-    "turn_on_description": "Al activar esta opción tu colección estará en venta dentro del mundo.",
+    "turn_on_description": "Al activar esta opción tu colección estará en venta en el mercado de Decentraland.",
     "turn_on": "Activar",
     "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
     "turn_off": "Desactivar"

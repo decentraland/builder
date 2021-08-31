@@ -1007,7 +1007,7 @@
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",
-    "turn_on_description": "By turning this switch on your collection will be available for purchase in in-world vending machines.",
+    "turn_on_description": "By turning this switch on your collection will be available for purchase in the Decentraland Marketplace.",
     "turn_on": "Turn On",
     "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
     "turn_off": "Turn Off"
