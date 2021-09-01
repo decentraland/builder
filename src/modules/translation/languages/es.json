@@ -579,7 +579,11 @@
     "owner": "Dueño",
     "operators": "Operadores",
     "total_land": "Tierras Totales",
-    "empty_land": "Tierras Vacias"
+    "empty_land": "Tierras Vacias",
+    "clear_ens_content": {
+      "title": "Estás seguro?",
+      "text": "Desasignar el nombre va a causar que {link} ya no te lleve a {land}. Deseas proceder?"
+    }
   },
   "land_assign_ens_page": {
     "title": "Asignar {name}",
