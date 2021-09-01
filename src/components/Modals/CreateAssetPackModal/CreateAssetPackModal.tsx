@@ -63,7 +63,7 @@ export default class CreateAssetPackModal extends React.PureComponent<Props, Sta
       view = CreateAssetPackView.SUCCESS
     } else if (progress.stage !== ProgressStage.NONE && !error) {
       view = CreateAssetPackView.PROGRESS
-    } else if (error) {
+    } else if (view !== CreateAssetPackView.EXIT && error) {
       view = CreateAssetPackView.EDIT_ASSET_PACK
     }
 
