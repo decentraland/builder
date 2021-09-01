@@ -3,7 +3,7 @@ import { Address } from 'web3x-es/address'
 import { TransactionReceipt } from 'web3x-es/formatters'
 import { Personal } from 'web3x-es/personal'
 import { namehash } from '@ethersproject/hash'
-import { push } from 'connected-react-router'
+import { push, replace } from 'connected-react-router'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { CatalystClient, DeploymentBuilder, DeploymentPreparationData } from 'dcl-catalyst-client'
@@ -258,6 +258,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     )
 
     yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
+    yield put(replace(locations.activity()))
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
     yield put(setENSContentFailure(ens, land, ensError))
