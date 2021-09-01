@@ -149,7 +149,7 @@
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",
-    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}",
+    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}{br} Names are only available in Ethereum, and can only be claimed with Ethereum MANA {symbol}",
     "world": "Decentraland!",
     "name_label": "Name",
     "name_message": "Names may not exceed 15 characters, contain spaces, or include any non-alphanumeric characters.",
@@ -168,7 +168,7 @@
     "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
-    "rarity_label": "How rare is this item?",
+    "rarity_label": "How rare is this item? (Supply)",
     "rarity_placeholder": "Select a rarity",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
