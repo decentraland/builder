@@ -40,7 +40,7 @@ export const SET_ENS_CONTENT_REQUEST = '[Request] Set ENS Content'
 export const SET_ENS_CONTENT_SUCCESS = '[Success] Set ENS Content'
 export const SET_ENS_CONTENT_FAILURE = '[Failure] Set ENS Content'
 
-export const setENSContentRequest = (ens: ENS, land?: Land, redirect?: boolean) => action(SET_ENS_CONTENT_REQUEST, { ens, land, redirect })
+export const setENSContentRequest = (ens: ENS, land?: Land) => action(SET_ENS_CONTENT_REQUEST, { ens, land })
 export const setENSContentSuccess = (
   ens: ENS,
   content: string,

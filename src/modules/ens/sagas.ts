@@ -233,7 +233,7 @@ function* handleSetENSResolverRequest(action: SetENSResolverRequestAction) {
 }
 
 function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
-  const { ens, land, redirect } = action.payload
+  const { ens, land } = action.payload
   try {
     const [wallet, eth]: [Wallet, Eth] = yield getWallet()
     const from = Address.fromString(wallet.address)
@@ -259,7 +259,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
     yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
 
-    if (redirect) {
+    if (!land) {
       yield put(replace(locations.activity()))
     }
   } catch (error) {

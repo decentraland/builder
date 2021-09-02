@@ -15,7 +15,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onUnsetENSContent: ens => dispatch(setENSContentRequest(ens, undefined, true))
+  onUnsetENSContent: ens => dispatch(setENSContentRequest(ens))
 })
 
 export default connect(mapState, mapDispatch)(ENSChip)
