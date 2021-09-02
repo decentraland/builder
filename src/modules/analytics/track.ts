@@ -76,6 +76,7 @@ import {
   ClaimNameSuccessAction
 } from 'modules/ens/actions'
 import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
+import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -299,10 +300,8 @@ addPayload(CREATE_COLLECTION_FORUM_POST_FAILURE, 'Create forum post error')
 
 // ENS analytics
 add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
-  // TODO: Use correct Type
-  const { payload } = action as any
-  // TODO: See why _watch_tx is being received instead of .transaction
-  const { ens, resolver, address } = payload['_watch_tx'].payload
+  const { payload } = getTransactionFromAction(action)
+  const { ens, resolver, address } = payload
   return {
     address,
     ens,
@@ -311,10 +310,8 @@ add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
 })
 
 add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
-  // TODO: Use correct Type
-  const { payload } = action as any
-  // TODO: See why _watch_tx is being received instead of .transaction
-  const { ens, content, land, address } = payload['_watch_tx'].payload
+  const { payload } = getTransactionFromAction(action)
+  const { ens, content, land, address } = payload
   return {
     address,
     ens,
