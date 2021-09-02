@@ -1,5 +1,5 @@
 import BN from 'bn.js'
-import { Address } from 'web3x-es/address'
+import { Address } from 'web3x/address'
 import { Item } from 'modules/item/types'
 
 export type Collection = {

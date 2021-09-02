@@ -1,4 +1,4 @@
-import { Address } from 'web3x-es/address'
+import { Address } from 'web3x/address'
 import { ChainId, getURNProtocol } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
 import future from 'fp-future'

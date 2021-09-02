@@ -1,5 +1,5 @@
-import { Eth } from 'web3x-es/eth'
-import { Address } from 'web3x-es/address'
+import { Eth } from 'web3x/eth'
+import { Address } from 'web3x/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
 import { ChainId } from '@dcl/schemas'

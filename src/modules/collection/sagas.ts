@@ -1,5 +1,5 @@
-import { Eth } from 'web3x-es/eth'
-import { Address } from 'web3x-es/address'
+import { Eth } from 'web3x/eth'
+import { Address } from 'web3x/address'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'

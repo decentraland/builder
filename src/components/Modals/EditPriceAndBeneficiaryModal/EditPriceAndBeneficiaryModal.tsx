@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Address } from 'web3x-es/address'
-import { fromWei, toWei } from 'web3x-es/utils'
+import { Address } from 'web3x/address'
+import { fromWei, toWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
 import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps, Mana } from 'decentraland-ui'
 import Modal from 'decentraland-dapps/dist/containers/Modal'

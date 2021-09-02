@@ -1,5 +1,5 @@
-import { Address } from 'web3x-es/address'
-import { toBN } from 'web3x-es/utils'
+import { Address } from 'web3x/address'
+import { toBN } from 'web3x/utils'
 import { env, utils } from 'decentraland-commons'
 import { ChainId, getURNProtocol } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'

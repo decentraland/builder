@@ -1,8 +1,8 @@
 import BN from 'bn.js'
-import { Address } from 'web3x-es/address'
-import { EventLog, TransactionReceipt } from 'web3x-es/formatters'
-import { Contract, ContractOptions, TxCall, TxSend, EventSubscriptionFactory } from 'web3x-es/contract'
-import { Eth } from 'web3x-es/eth'
+import { Address } from 'web3x/address'
+import { EventLog, TransactionReceipt } from 'web3x/formatters'
+import { Contract, ContractOptions, TxCall, TxSend, EventSubscriptionFactory } from 'web3x/contract'
+import { Eth } from 'web3x/eth'
 import abi from './DCLRegistrarAbi'
 export type ApprovalEvent = {
   owner: Address
