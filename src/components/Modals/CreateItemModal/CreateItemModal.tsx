@@ -117,6 +117,10 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
    */
   prefixContents(bodyShape: BodyShapeType, contents: Record<string, Blob>): Record<string, Blob> {
     return Object.keys(contents).reduce((newContents: Record<string, Blob>, key: string) => {
+      // Do not include the thumbnail in each of the body shapes
+      if (key === THUMBNAIL_PATH) {
+        return newContents
+      }
       newContents[this.prefixContentName(bodyShape, key)] = contents[key]
       return newContents
     }, {})
