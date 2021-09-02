@@ -5,6 +5,7 @@ import { isLoadingContentBySubdomain, isPendingContentBySubdomain } from 'module
 import { setENSContentRequest } from 'modules/ens/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './ENSChip.types'
 import ENSChip from './ENSChip'
+import { locations } from 'routing/locations'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { ens } = ownProps
@@ -15,7 +16,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onNavigate: path => dispatch(push(path)),
-  onUnsetENSContent: ens => dispatch(setENSContentRequest(ens))
+  onUnsetENSContent: ens => dispatch(setENSContentRequest(ens, undefined, locations.activity()))
 })
 
 export default connect(mapState, mapDispatch)(ENSChip)
