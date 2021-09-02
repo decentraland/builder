@@ -92,7 +92,7 @@ export async function getFiles(contents: Record<string, string>): Promise<Record
  * @param blobs - The record of names->blobs.
  */
 function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Array<Blob> {
-  const uniqueFileHases: Array<string> = uniq(Object.values({ ...hashes }))
+  const uniqueFileHases: Array<string> = uniq(Object.values(hashes))
   const inverseFileHashesRecord = Object.keys(hashes).reduce((obj: Record<string, string>, key: string) => {
     obj[hashes[key]] = key
     return obj
