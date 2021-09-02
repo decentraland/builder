@@ -260,7 +260,7 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
     yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
 
     if (redirect) {
-      yield put(replace(redirect))
+      yield put(replace(locations.activity()))
     }
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
