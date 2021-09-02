@@ -104,7 +104,8 @@ export const assetPackReducer = (state = INITIAL_STATE, action: AssetPackReducer
     case SAVE_ASSET_PACK_FAILURE: {
       return {
         ...state,
-        error: action.payload.error
+        error: action.payload.error,
+        loading: loadingReducer(state.loading, action)
       }
     }
     case DELETE_ASSET_PACK_SUCCESS: {
