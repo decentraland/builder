@@ -53,7 +53,7 @@ export default class ClaimNameFatFingerModal extends React.PureComponent<Props, 
             <Button secondary onClick={this.handleClose} type="button">
               {t('global.cancel')}
             </Button>
-            <Button primary type="submit" disabled={areNamesDifferent} loading={isLoading}>
+            <Button primary type="submit" disabled={areNamesDifferent || isLoading} loading={isLoading}>
               {t('global.confirm')}
             </Button>
           </Modal.Actions>
