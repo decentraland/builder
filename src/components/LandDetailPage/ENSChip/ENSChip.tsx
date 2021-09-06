@@ -7,16 +7,14 @@ import './ENSChip.css'
 
 export default class ENSChip extends React.PureComponent<Props> {
   handleOnClick = () => {
-    this.props.onNavigate(locations.activity())
-  }
-
-  handleOnIconClick = () => {
-    const { ens, onUnsetENSContent } = this.props
-    onUnsetENSContent(ens)
+    const { isLoading, onNavigate } = this.props
+    if (isLoading) {
+      onNavigate(locations.activity())
+    }
   }
 
   render() {
-    const { ens, isLoading } = this.props
+    const { ens, isLoading, onIconClick } = this.props
 
     return (
       <Chip
@@ -33,8 +31,8 @@ export default class ENSChip extends React.PureComponent<Props> {
         }
         isActive={isLoading}
         icon={isLoading ? '' : 'minus'}
-        onClick={isLoading ? this.handleOnClick : undefined}
-        onIconClick={this.handleOnIconClick}
+        onClick={this.handleOnClick}
+        onIconClick={onIconClick}
       />
     )
   }

@@ -564,7 +564,11 @@
     "owner": "持有者",
     "operators": "操作者",
     "total_land": "总土地",
-    "empty_land": "空地"
+    "empty_land": "空地",
+    "unset_ens_content": {
+      "title": "是否确定？",
+      "text": "取消分配链接将导致 {link} 不再带您到 {land} 。你想继续吗？"
+    }
   },
   "land_assign_ens_page": {
     "title": "分配{name}",

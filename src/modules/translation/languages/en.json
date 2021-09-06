@@ -601,7 +601,11 @@
     "owner": "Owner",
     "operators": "Operators",
     "total_land": "Total Land",
-    "empty_land": "Empty Land"
+    "empty_land": "Empty Land",
+    "unset_ens_content": {
+      "title": "Are you sure?",
+      "text": "Unassigning the link will cause {link} not to take you to {land} anymore. Do you want to proceed?"
+    }
   },
   "land_assign_ens_page": {
     "title": "Use {name} as link",
