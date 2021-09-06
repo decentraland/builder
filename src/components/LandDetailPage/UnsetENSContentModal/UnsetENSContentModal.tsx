@@ -11,10 +11,10 @@ class UnsetENSContentModal extends React.PureComponent<Props> {
 
     return (
       <Modal size="tiny" open={open}>
-        <Modal.Header>{t('land_detail_page.clear_ens_content.title')}</Modal.Header>
+        <Modal.Header>{t('land_detail_page.unset_ens_content.title')}</Modal.Header>
         <Modal.Content>
           <T
-            id="land_detail_page.clear_ens_content.text"
+            id="land_detail_page.unset_ens_content.text"
             values={{ link: ens.subdomain, land: <Link to={locations.landDetail(land.id)}>{land.name}</Link> }}
           />
         </Modal.Content>

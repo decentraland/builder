@@ -580,7 +580,7 @@
     "operators": "Operadores",
     "total_land": "Tierras Totales",
     "empty_land": "Tierras Vacias",
-    "clear_ens_content": {
+    "unset_ens_content": {
       "title": "Estás seguro?",
       "text": "Desasignar el nombre va a causar que {link} ya no te lleve a {land}. Deseas proceder?"
     }
