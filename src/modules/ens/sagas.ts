@@ -256,10 +256,10 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
         .send({ from })
         .getTxHash()
     )
-
     yield put(setENSContentSuccess(ens, content, land, from.toString(), wallet.chainId, txHash))
 
     if (!land) {
+      yield put(closeModal('UnsetENSContentModal'))
       yield put(replace(locations.activity()))
     }
   } catch (error) {

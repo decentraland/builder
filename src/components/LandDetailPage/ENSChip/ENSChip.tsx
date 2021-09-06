@@ -2,63 +2,38 @@ import * as React from 'react'
 import { Loader } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
-import { Props, State } from './ENSChip.types'
-import UnsetENSContentModal from '../UnsetENSContentModal'
+import { Props } from './ENSChip.types'
 import './ENSChip.css'
 
-export default class ENSChip extends React.PureComponent<Props, State> {
-  state: State = {
-    showConfirmationModal: false
-  }
-
+export default class ENSChip extends React.PureComponent<Props> {
   handleOnClick = () => {
-    this.props.onNavigate(locations.activity())
-  }
-
-  handleOnIconClick = () => {
-    this.setState({ showConfirmationModal: true })
-  }
-
-  handleCancel = () => {
-    this.setState({ showConfirmationModal: false })
-  }
-
-  handleConfirm = () => {
-    const { ens, onUnsetENSContent } = this.props
-    onUnsetENSContent(ens)
-    this.setState({ showConfirmationModal: false })
+    const { isLoading, onNavigate } = this.props
+    if (isLoading) {
+      onNavigate(locations.activity())
+    }
   }
 
   render() {
-    const { land, ens, isLoading } = this.props
+    const { ens, isLoading, onIconClick } = this.props
 
     return (
-      <>
-        <Chip
-          className="ENSChip"
-          text={
-            isLoading ? (
-              <>
-                {ens.subdomain}
-                <Loader active size="tiny" />
-              </>
-            ) : (
-              ens.subdomain
-            )
-          }
-          isActive={isLoading}
-          icon={isLoading ? '' : 'minus'}
-          onClick={isLoading ? this.handleOnClick : undefined}
-          onIconClick={this.handleOnIconClick}
-        />
-        <UnsetENSContentModal
-          land={land}
-          ens={ens}
-          open={this.state.showConfirmationModal}
-          onCancel={this.handleCancel}
-          onConfirm={this.handleConfirm}
-        />
-      </>
+      <Chip
+        className="ENSChip"
+        text={
+          isLoading ? (
+            <>
+              {ens.subdomain}
+              <Loader active size="tiny" />
+            </>
+          ) : (
+            ens.subdomain
+          )
+        }
+        isActive={isLoading}
+        icon={isLoading ? '' : 'minus'}
+        onClick={this.handleOnClick}
+        onIconClick={onIconClick}
+      />
     )
   }
 }

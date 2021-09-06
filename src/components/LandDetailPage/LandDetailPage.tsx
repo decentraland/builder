@@ -236,7 +236,7 @@ export default class LandDetailPage extends React.PureComponent<Props, State> {
               </Header>
               <div className="ens-list">
                 {ensList.map(ens => (
-                  <ENSChip land={land} key={ens.subdomain} ens={ens} />
+                  <ENSChip key={ens.subdomain} ens={ens} onIconClick={() => onOpenModal('UnsetENSContentModal', { ens, land })}/>
                 ))}
               </div>
             </Section>
