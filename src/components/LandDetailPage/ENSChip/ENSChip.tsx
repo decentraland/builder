@@ -3,8 +3,8 @@ import { Loader } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import Chip from 'components/Chip'
 import { Props, State } from './ENSChip.types'
-import './ENSChip.css'
 import UnsetENSContentModal from '../UnsetENSContentModal'
+import './ENSChip.css'
 
 export default class ENSChip extends React.PureComponent<Props, State> {
   state: State = {
