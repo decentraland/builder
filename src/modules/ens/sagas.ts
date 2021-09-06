@@ -3,7 +3,6 @@ import { Address } from 'web3x-es/address'
 import { TransactionReceipt } from 'web3x-es/formatters'
 import { Personal } from 'web3x-es/personal'
 import { namehash } from '@ethersproject/hash'
-import { push, replace } from 'connected-react-router'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
 import { CatalystClient, DeploymentBuilder, DeploymentPreparationData } from 'dcl-catalyst-client'
@@ -25,7 +24,6 @@ import { ipfs } from 'lib/api/ipfs'
 import { getLands } from 'modules/land/selectors'
 import { FETCH_LANDS_SUCCESS } from 'modules/land/actions'
 import { PEER_URL } from 'lib/api/peer'
-import { locations } from 'routing/locations'
 import { Land } from 'modules/land/types'
 import { closeModal } from 'modules/modal/actions'
 import {
@@ -260,7 +258,6 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
     if (!land) {
       yield put(closeModal('UnsetENSContentModal'))
-      yield put(replace(locations.activity()))
     }
   } catch (error) {
     const ensError: ENSError = { message: error.message, code: error.code, origin: ENSOrigin.CONTENT }
@@ -360,7 +357,6 @@ function* handleClaimNameRequest(action: ClaimNameRequestAction) {
     }
     yield put(claimNameSuccess(ens, name, wallet.address, wallet.chainId, txHash))
     yield put(closeModal('ClaimNameFatFingerModal'))
-    yield put(push(locations.activity()))
   } catch (error) {
     const ensError: ENSError = { message: error.message }
     yield put(claimNameFailure(ensError))
