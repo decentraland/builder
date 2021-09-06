@@ -65,7 +65,7 @@ export async function getFiles(contents: Record<string, string>) {
   const promises = Object.keys(contents).map(path => {
     const url = getContentsStorageUrl(contents[path])
 
-    return fetch(url)
+    return fetch(url, { headers: { pragma: 'no-cache', 'cache-control': 'no-cache' } })
       .then(resp => resp.blob())
       .then(blob => ({ path, blob }))
   })
