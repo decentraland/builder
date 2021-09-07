@@ -3,7 +3,6 @@ import { ChainId } from '@dcl/schemas'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
-import { uniq } from 'lib/array'
 import { PEER_URL } from 'lib/api/peer'
 import { getCatalystItemURN } from 'modules/item/utils'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
@@ -92,7 +91,7 @@ export async function getFiles(contents: Record<string, string>): Promise<Record
  * @param blobs - The record of names->blobs.
  */
 function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Array<Blob> {
-  const uniqueFileHases: Array<string> = uniq(Object.values(hashes))
+  const uniqueFileHases: Array<string> = [...new Set(Object.values(hashes))]
   const inverseFileHashesRecord = Object.keys(hashes).reduce((obj: Record<string, string>, key: string) => {
     obj[hashes[key]] = key
     return obj
