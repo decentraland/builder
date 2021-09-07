@@ -152,7 +152,7 @@
   },
   "claim_ens_page": {
     "title": "Reclamar un nombre único",
-    "subtitle": "Se pueden asignar nombres únicos a su avatar para usarlos como un alias, o se pueden asignar a parcelas y propiedades. {br} Asignar un nombre a una parcela o propiedad le permite crear una URL única, como {exampleLink}, por lo que fácilmente podrá enviar personas a su LAND. Cuando alguien siga su nueva URL, será redirigido a su LAND en {dclWorldLink}",
+    "subtitle": "Se pueden asignar nombres únicos a su avatar para usarlos como un alias, o se pueden asignar a parcelas y propiedades. {br} Asignar un nombre a una parcela o propiedad le permite crear una URL única, como {exampleLink}, por lo que fácilmente podrá enviar personas a su LAND. Cuando alguien siga su nueva URL, será redirigido a su LAND en {dclWorldLink}{br} Los nombres estan disponibles solo en Ethereum, y solo pueden ser reclamados con MANA de Ethereum {symbol}",
     "world": "Decentraland!",
     "name_label": "Nombre",
     "name_message": "Los nombres no pueden exceder los 15 caracteres, contener espacios o incluir caracteres no alfanuméricos.",
@@ -579,7 +579,11 @@
     "owner": "Dueño",
     "operators": "Operadores",
     "total_land": "Tierras Totales",
-    "empty_land": "Tierras Vacias"
+    "empty_land": "Tierras Vacias",
+    "unset_ens_content": {
+      "title": "Estás seguro?",
+      "text": "Desasignar el nombre va a causar que {link} ya no te lleve a {land}. Deseas proceder?"
+    }
   },
   "land_assign_ens_page": {
     "title": "Asignar {name}",
@@ -611,7 +615,7 @@
   },
   "claim_name_fat_finger_modal": {
     "title": "Por favor, confirme su nuevo nombre",
-    "description": "Has elegido {nombre}. Vuelva a ingresar su nombre para confirmar su selección.",
+    "description": "Has elegido {name}. Vuelva a ingresar su nombre para confirmar su selección.",
     "ok_message": "Felicidades el nombre {name} es tuyo.",
     "name_placeholder": "Tu nombre único",
     "names_different": "Los nombres no son iguales"

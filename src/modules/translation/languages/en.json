@@ -149,7 +149,7 @@
   },
   "claim_ens_page": {
     "title": "Claim a unique Name",
-    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}",
+    "subtitle": "Unique names can be assigned to your avatar for use as an alias, or they can be assigned to parcels.{br} Assigning a name to a parcel or estate allows you to create a unique URL, like {exampleLink}, making it easy to send people to your LAND. When someone follows your new URL, they will be redirected to your LAND in {dclWorldLink}{br} Names are only available in Ethereum, and can only be claimed with Ethereum MANA {symbol}",
     "world": "Decentraland!",
     "name_label": "Name",
     "name_message": "Names may not exceed 15 characters, contain spaces, or include any non-alphanumeric characters.",
@@ -601,7 +601,11 @@
     "owner": "Owner",
     "operators": "Operators",
     "total_land": "Total Land",
-    "empty_land": "Empty Land"
+    "empty_land": "Empty Land",
+    "unset_ens_content": {
+      "title": "Are you sure?",
+      "text": "Unassigning the link will cause {link} not to take you to {land} anymore. Do you want to proceed?"
+    }
   },
   "land_assign_ens_page": {
     "title": "Use {name} as link",

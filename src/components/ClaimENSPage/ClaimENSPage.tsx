@@ -122,7 +122,8 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                         <a href="http://play.decentraland.org" rel="noopener noreferrer" target="_blank">
                           {t('claim_ens_page.world')}
                         </a>
-                      )
+                      ),
+                      symbol: <Mana size="small" />
                     }}
                   />
                 </span>

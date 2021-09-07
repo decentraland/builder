@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux'
 import { add } from 'decentraland-dapps/dist/modules/analytics/utils'
-import { FetchTransactionSuccessAction } from 'decentraland-dapps/dist/modules/transaction/actions'
+import { getTransactionFromAction } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { GRANT_TOKEN_SUCCESS, REVOKE_TOKEN_SUCCESS } from 'decentraland-dapps/dist/modules/authorization/actions'
 import { DROP_ITEM, RESET_ITEM, DUPLICATE_ITEM, SET_GROUND, AddItemAction, DropItemAction, SetGroundAction } from 'modules/scene/actions'
 import {
@@ -300,8 +300,8 @@ addPayload(CREATE_COLLECTION_FORUM_POST_FAILURE, 'Create forum post error')
 
 // ENS analytics
 add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
-  const { payload } = action as FetchTransactionSuccessAction
-  const { ens, resolver, address } = payload.transaction.payload
+  const { payload } = getTransactionFromAction(action)
+  const { ens, resolver, address } = payload
   return {
     address,
     ens,
@@ -310,8 +310,8 @@ add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
 })
 
 add(SET_ENS_CONTENT_SUCCESS, 'Set ENS Content', action => {
-  const { payload } = action as FetchTransactionSuccessAction
-  const { ens, content, land, address } = payload.transaction.payload
+  const { payload } = getTransactionFromAction(action)
+  const { ens, content, land, address } = payload
   return {
     address,
     ens,
