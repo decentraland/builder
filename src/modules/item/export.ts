@@ -4,6 +4,7 @@ import { CatalystClient } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
+import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getCatalystItemURN } from 'modules/item/utils'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
@@ -61,11 +62,17 @@ function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): C
   }
 }
 
-export async function getFiles(contents: Record<string, string>) {
+/**
+ * Downloads item contents.
+ * Commonly used to download already uploaded representations of an item.
+ *
+ * @param contents - The record of contents to be fetched.
+ */
+export async function getFiles(contents: Record<string, string>): Promise<Record<string, Blob>> {
   const promises = Object.keys(contents).map(path => {
     const url = getContentsStorageUrl(contents[path])
 
-    return fetch(url, { headers: { pragma: 'no-cache', 'cache-control': 'no-cache' } })
+    return fetch(url, { headers: NO_CACHE_HEADERS })
       .then(resp => resp.blob())
       .then(blob => ({ path, blob }))
   })
@@ -78,6 +85,27 @@ export async function getFiles(contents: Record<string, string>) {
   }, {})
 }
 
+/**
+ * Gets an array of unique files based on their hashes.
+ *
+ * @param hashes - The record of names->hashes.
+ * @param blobs - The record of names->blobs.
+ */
+function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Array<Blob> {
+  const uniqueFileHases: Array<string> = [...new Set(Object.values(hashes))]
+  const inverseFileHashesRecord = Object.keys(hashes).reduce((obj: Record<string, string>, key: string) => {
+    obj[hashes[key]] = key
+    return obj
+  }, {})
+  return uniqueFileHases.map(hash => blobs[inverseFileHashesRecord[hash]])
+}
+
+/**
+ * Calculates the final size (with the already stored content and the new one) of the contents of an item.
+ *
+ * @param item - An item that might or not have already uploaded content.
+ * @param newContents - The new content that is going to be added to the item.
+ */
 export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
   const newHashes = await computeHashes(newContents)
   const filesToDownload: Record<string, string> = {}
@@ -95,10 +123,16 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
     imageSize = image.size
   } catch (error) {}
 
-  const finalSize = imageSize + calculateFilesSize(blobs) + calculateFilesSize(newContents)
+  const uniqueFiles = getUniqueFiles({ ...newHashes, ...filesToDownload }, { ...newContents, ...blobs })
+  const finalSize = imageSize + calculateFilesSize(uniqueFiles)
   return finalSize
 }
 
-export function calculateFilesSize(files: Record<string, Blob>) {
-  return Object.values(files).reduce((total, blob) => blob.size + total, 0)
+/**
+ * Sums the sizes of an array of blobs.
+ *
+ * @param files - An array of blobs.
+ */
+function calculateFilesSize(files: Array<Blob>) {
+  return files.reduce((total, blob) => blob.size + total, 0)
 }

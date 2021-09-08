@@ -1,3 +1,4 @@
+import { NO_CACHE_HEADERS } from 'lib/headers'
 import { makeContentFile, getCID } from 'modules/deployment/utils'
 
 export function isDataUrl(url: string): boolean {
@@ -22,7 +23,7 @@ export function dataURLToBlob(dataUrl: string): Blob | null {
 }
 
 export async function objectURLToBlob(objectURL: string): Promise<Blob> {
-  return fetch(objectURL).then(res => res.blob())
+  return fetch(objectURL, { headers: NO_CACHE_HEADERS }).then(res => res.blob())
 }
 
 export async function blobToCID(blob: Blob, path: string) {
