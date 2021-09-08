@@ -22,7 +22,7 @@ export function dataURLToBlob(dataUrl: string): Blob | null {
 }
 
 export async function objectURLToBlob(objectURL: string): Promise<Blob> {
-  return fetch(objectURL).then(res => res.blob())
+  return fetch(objectURL, { headers: { pragma: 'no-cache', 'cache-control': 'no-cache' } }).then(res => res.blob())
 }
 
 export async function blobToCID(blob: Blob, path: string) {
