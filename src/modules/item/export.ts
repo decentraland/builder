@@ -102,8 +102,9 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
 
 /**
  * Calculates the final size (with the already stored content and the new one) of the contents of an item.
+ * All the files in newContents must also be in the item's contents in both name and hash.
  *
- * @param item - An item that might or not have already uploaded content.
+ * @param item - An item that contains the old and the new hahsed content.
  * @param newContents - The new content that is going to be added to the item.
  */
 export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
@@ -124,8 +125,7 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   } catch (error) {}
 
   const uniqueFiles = getUniqueFiles({ ...newHashes, ...filesToDownload }, { ...newContents, ...blobs })
-  const finalSize = imageSize + calculateFilesSize(uniqueFiles)
-  return finalSize
+  return imageSize + calculateFilesSize(uniqueFiles)
 }
 
 /**
