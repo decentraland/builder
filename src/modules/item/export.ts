@@ -13,11 +13,11 @@ import { generateImage } from './utils'
 
 const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
 
-export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item, chainId: ChainId) {
-  const urn = getCatalystItemURN(collection, item, chainId)
+export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
+  const urn = getCatalystItemURN(collection, item)
   const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const catalystItem = toCatalystItem(collection, item, chainId)
+  const catalystItem = toCatalystItem(collection, item)
   const client = new CatalystClient(PEER_URL, 'Builder')
   const status = await client.fetchContentStatus()
   const { entityId, files: hashedFiles } = await client.buildEntity({
@@ -34,14 +34,14 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   return { ...item, inCatalyst: true }
 }
 
-function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {
+function toCatalystItem(collection: Collection, item: Item): CatalystItem {
   // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
   const representations = item.data.representations.map(representation => ({
     ...representation,
     contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
   }))
   return {
-    id: getCatalystItemURN(collection, item, chainId),
+    id: getCatalystItemURN(collection, item),
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,

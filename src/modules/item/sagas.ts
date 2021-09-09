@@ -260,8 +260,7 @@ function* handleDeployItemContentsRequest(action: DeployItemContentsRequestActio
       throw new Error(t('sagas.item.invalid_identity'))
     }
 
-    const chainId: ChainId = yield select(getChainId)
-    const deployedItem: Item = yield deployContents(identity, collection, item, chainId)
+    const deployedItem: Item = yield deployContents(identity, collection, item)
 
     yield put(deployItemContentsSuccess(collection, deployedItem))
   } catch (error) {

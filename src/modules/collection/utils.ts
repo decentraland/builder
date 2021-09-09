@@ -1,7 +1,7 @@
 import { Address } from 'web3x-es/address'
 import { toBN } from 'web3x-es/utils'
 import { env, utils } from 'decentraland-commons'
-import { ChainId, getURNProtocol } from '@dcl/schemas'
+import { ChainId, getURNProtocol, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
@@ -10,6 +10,7 @@ import { isEqual, includes } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
 import { InitializeItem, Collection, Access } from './types'
 import { locations } from 'routing/locations'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
@@ -29,14 +30,14 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
   return locations.itemEditor({ collectionId: collection.id, itemId: items.length > 0 ? items[0].id : undefined })
 }
 
-export function getExplorerURL(collection: Collection, chainId: ChainId) {
+export function getExplorerURL(collection: Collection) {
   if (!collection.contractAddress) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
 
   let id = collection.id
   if (collection.isPublished) {
-    id = `urn:decentraland:${getURNProtocol(chainId)}:collections-v2:${collection.contractAddress}`
+    id = `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${collection.contractAddress}`
   }
 
   // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars. Also, we use `ropsten` for the NETWORK because it is the only working network for .zone
