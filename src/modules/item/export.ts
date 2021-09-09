@@ -1,5 +1,4 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-import { ChainId } from '@dcl/schemas'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'

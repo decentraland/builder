@@ -3,6 +3,7 @@ import { toBN } from 'web3x-es/utils'
 import { env, utils } from 'decentraland-commons'
 import { ChainId, getURNProtocol, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
 import { getMetadata } from 'modules/item/utils'
@@ -10,7 +11,6 @@ import { isEqual, includes } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
 import { InitializeItem, Collection, Access } from './types'
 import { locations } from 'routing/locations'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
   const address = getSaleAddress(wallet.networks.MATIC.chainId)
