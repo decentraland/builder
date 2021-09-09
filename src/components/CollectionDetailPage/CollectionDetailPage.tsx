@@ -1,8 +1,11 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { Network } from '@dcl/schemas'
 import { env } from 'decentraland-commons'
 import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
 import { ContractName, getContract } from 'decentraland-transactions'
+import { ChainButton, ChainCheck } from 'decentraland-dapps/dist/containers'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
@@ -138,19 +141,22 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                               isOnSaleLoading
                                 ? t('global.loading')
                                 : isOnSale
-                                ? t('collection_detail_page.unset_on_sale_popup')
-                                : t('collection_detail_page.set_on_sale_popup')
+                                  ? t('collection_detail_page.unset_on_sale_popup')
+                                  : t('collection_detail_page.set_on_sale_popup')
                             }
                             position="top center"
                             trigger={
-                              <Radio
-                                toggle
-                                className="on-sale"
-                                checked={isOnSale}
-                                onChange={this.handleOnSaleChange}
-                                label={t('collection_detail_page.on_sale')}
-                                disabled={isOnSaleLoading}
-                              />
+                              <ChainCheck chainId={getChainIdByNetwork(Network.MATIC)}>{
+                                isEnabled =>
+                                  <Radio
+                                    toggle
+                                    className="on-sale"
+                                    checked={isOnSale}
+                                    onChange={this.handleOnSaleChange}
+                                    label={t('collection_detail_page.on_sale')}
+                                    disabled={isOnSaleLoading || !isEnabled}
+                                  />
+                              }</ChainCheck>
                             }
                             hideOnScroll={true}
                             on="hover"
@@ -165,11 +171,11 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                         </Button>
                       </>
                     ) : (
-                      <Button basic className="action-button" onClick={this.handleNewItem}>
-                        <Icon name="plus" />
-                        <span className="text">{t('collection_detail_page.new_item')}</span>
-                      </Button>
-                    )}
+                        <Button basic className="action-button" onClick={this.handleNewItem}>
+                          <Icon name="plus" />
+                          <span className="text">{t('collection_detail_page.new_item')}</span>
+                        </Button>
+                      )}
 
                     {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
 
@@ -179,27 +185,27 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                           {t('global.published')}
                         </Button>
                       ) : (
-                        <Popup
-                          content={t('collection_detail_page.cant_mint')}
-                          position="top center"
-                          trigger={
-                            <div className="popup-button">
-                              <Button secondary compact disabled={true}>
-                                {t('collection_detail_page.under_review')}
-                              </Button>
-                            </div>
-                          }
-                          hideOnScroll={true}
-                          on="hover"
-                          inverted
-                          flowing
-                        />
-                      )
+                          <Popup
+                            content={t('collection_detail_page.cant_mint')}
+                            position="top center"
+                            trigger={
+                              <div className="popup-button">
+                                <Button secondary compact disabled={true}>
+                                  {t('collection_detail_page.under_review')}
+                                </Button>
+                              </div>
+                            }
+                            hideOnScroll={true}
+                            on="hover"
+                            inverted
+                            flowing
+                          />
+                        )
                     ) : (
-                      <Button disabled={!this.canPublish()} primary compact onClick={this.handlePublish}>
-                        {t('collection_detail_page.publish')}
-                      </Button>
-                    )}
+                        <ChainButton disabled={!this.canPublish()} primary compact onClick={this.handlePublish} chainId={getChainIdByNetwork(Network.MATIC)}>
+                          {t('collection_detail_page.publish')}
+                        </ChainButton>
+                      )}
                   </Row>
                 </Column>
               </Row>
@@ -223,15 +229,15 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
               ))}
             </div>
           ) : (
-            <div className="empty">
-              <div className="sparkles" />
-              <div>
-                {t('collection_detail_page.start_adding_items')}
-                <br />
-                {t('collection_detail_page.cant_remove')}
+              <div className="empty">
+                <div className="sparkles" />
+                <div>
+                  {t('collection_detail_page.start_adding_items')}
+                  <br />
+                  {t('collection_detail_page.cant_remove')}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </Narrow>
         {this.renderAuthorizationModal()}
       </>
