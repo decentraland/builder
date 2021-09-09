@@ -1,4 +1,3 @@
-import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
@@ -177,7 +176,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       const metadata = getMetadata(item)
       const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
       txHash = yield call(sendTransaction, contract, collection =>
-        collection.editItemsData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)], [metadata])
+        collection.editItemsData([item.tokenId!], [item.price!], [item.beneficiary!], [metadata])
       )
     } else {
       yield put(deployItemContentsRequest(collection, item))

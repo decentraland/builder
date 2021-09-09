@@ -1,12 +1,11 @@
-import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
-import { Contract } from 'ethers'
+import { Contract, constants, providers } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   FetchCollectionsRequestAction,
@@ -60,8 +59,6 @@ import {
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
-import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
-import { Committee } from 'contracts/Committee'
 import { createCollectionForumPostRequest } from 'modules/forum/actions'
 import {
   setItemsTokenIdRequest,
@@ -84,7 +81,7 @@ import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { isOwner, getCollectionBaseURI, getCollectionSymbol, toInitializeItems } from './utils'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Network } from '@dcl/schemas'
 
 export function* collectionSaga() {
@@ -136,34 +133,39 @@ function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
+    console.log('validate text')
     if (!isValidText(collection.name)) {
       throw new Error(t('sagas.collection.invalid_character'))
     }
 
+    console.log('get items')
     const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
-
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const maticChainId = wallet.networks.MATIC.chainId
-    const from = Address.fromString(wallet.address)
+    console.log('get cosas')
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
     const rarities = getContract(ContractName.Rarities, maticChainId)
-
-    const implementation = new ERC721CollectionV2(eth, Address.ZERO)
-    const data = getMethodData(
-      implementation.methods.initialize(
-        collection.name,
-        getCollectionSymbol(collection),
-        getCollectionBaseURI(),
-        from,
-        true, // should complete
-        false, // is approved
-        Address.fromString(rarities.address),
-        toInitializeItems(items)
-      ),
-      from
+    const from: string = yield select(getAddress)
+    const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
+    console.log('provider')
+    const provider: Provider = yield call(getNetworkProvider, maticChainId)
+    console.log('instantiate')
+    const collectionV2 = new Contract(rarities.address, abi, new providers.Web3Provider(provider))
+    console.log('populate')
+    debugger
+    const promise = collectionV2.populateTransaction.initialize(
+      collection.name,
+      getCollectionSymbol(collection),
+      getCollectionBaseURI(),
+      from,
+      true, // should complete
+      false, // is approved
+      rarities.address,
+      toInitializeItems(items)
     )
-
+    console.log('get data')
+    const data = yield getMethodData(promise)
+    console.log('save')
     const remoteCollection: Collection = yield call(() => builder.saveCollection(collection, data))
-    const newCollection = { ...collection, ...remoteCollection }
+    const newCollection = { ...collectionV2, ...remoteCollection }
 
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
