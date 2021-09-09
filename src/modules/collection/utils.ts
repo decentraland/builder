@@ -1,8 +1,7 @@
 import { Address } from 'web3x-es/address'
 import { toBN } from 'web3x-es/utils'
 import { env, utils } from 'decentraland-commons'
-import { ChainId, Network, getChainName } from '@dcl/schemas'
-import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
+import { ChainId, getURNProtocol } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
@@ -37,13 +36,7 @@ export function getExplorerURL(collection: Collection, chainId: ChainId) {
 
   let id = collection.id
   if (collection.isPublished) {
-    const config = getChainConfiguration(chainId)
-    const chainName = getChainName(config.networkMapping[Network.MATIC])
-    if (!chainName) {
-      throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
-    }
-
-    id = `urn:decentraland:${chainName.toLowerCase().replace('polygon', 'matic')}:collections-v2:${collection.contractAddress}`
+    id = `urn:decentraland:${getURNProtocol(chainId)}:collections-v2:${collection.contractAddress}`
   }
 
   // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars. Also, we use `ropsten` for the NETWORK because it is the only working network for .zone

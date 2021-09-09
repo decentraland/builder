@@ -1,7 +1,6 @@
 import { Address } from 'web3x-es/address'
-import { ChainId, Network, getChainName } from '@dcl/schemas'
+import { ChainId, getURNProtocol } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
-import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
@@ -39,14 +38,7 @@ export function getCatalystItemURN(collection: Collection, item: Item, chainId: 
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
-  const config = getChainConfiguration(chainId)
-  const chainName = getChainName(config.networkMapping[Network.MATIC])
-  if (!chainName) {
-    throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
-  }
-  return `urn:decentraland:${chainName.toLowerCase().replace('polygon', 'matic')}:collections-v2:${collection.contractAddress}:${
-    item.tokenId
-  }`
+  return `urn:decentraland:${getURNProtocol(chainId)}:collections-v2:${collection.contractAddress}:${item.tokenId}`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
