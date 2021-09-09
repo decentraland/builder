@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import SquaresGrid from 'components/SquaresGrid'
 import Icon from 'components/Icon'
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 import { getExceededMetrics } from 'modules/scene/utils'
 import { getDimensions } from 'lib/layout'
 import { Props, State } from './Metrics.types'

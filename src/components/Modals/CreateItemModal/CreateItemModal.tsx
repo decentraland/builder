@@ -41,7 +41,7 @@ import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,

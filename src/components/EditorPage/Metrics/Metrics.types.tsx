@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 
 export type Props = {
   rows: number

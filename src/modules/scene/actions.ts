@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
-import { Vector3 } from 'modules/common/types'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
-import { Scene, ModelMetrics, ComponentType, ComponentData } from './types'
+import { Scene, ComponentType, ComponentData } from './types'
+import { ModelMetrics, Vector3 } from 'modules/models/types'
 import { Project } from 'modules/project/types'
 
 // Create a scene (doesn't trigger ECS re-render)

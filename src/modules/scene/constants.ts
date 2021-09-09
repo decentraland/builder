@@ -1,4 +1,5 @@
-import { ModelMetrics, ComponentType } from './types'
+import { ComponentType } from './types'
+import { ModelMetrics } from 'modules/models/types'
 
 export const EMPTY_SCENE_METRICS: ModelMetrics = {
   triangles: 0,

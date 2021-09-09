@@ -4,10 +4,11 @@ import { LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { isEqual } from 'lib/address'
-import { RootState, Vector3 } from 'modules/common/types'
+import { RootState } from 'modules/common/types'
 import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/utils'
 import { Project } from 'modules/project/types'
+import { Vector3 } from 'modules/models/types'
 import { PARCEL_SIZE } from './utils'
 import { LOAD_PUBLIC_PROJECT_REQUEST } from './actions'
 

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 import { saveItemRequest, SaveItemRequestAction, savePublishedItemRequest, SavePublishedItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemRarity, WearableCategory } from 'modules/item/types'
 
