@@ -4,6 +4,7 @@ import { CatalystClient } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
+import { NO_CACHE_HEADERS } from 'lib/headers'
 import { getCatalystItemURN } from 'modules/item/utils'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
@@ -71,7 +72,7 @@ export async function getFiles(contents: Record<string, string>): Promise<Record
   const promises = Object.keys(contents).map(path => {
     const url = getContentsStorageUrl(contents[path])
 
-    return fetch(url, { headers: { pragma: 'no-cache', 'cache-control': 'no-cache' } })
+    return fetch(url, { headers: NO_CACHE_HEADERS })
       .then(resp => resp.blob())
       .then(blob => ({ path, blob }))
   })

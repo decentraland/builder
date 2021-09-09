@@ -4,7 +4,7 @@ import { EntityType } from 'dcl-catalyst-commons'
 import { utils } from 'decentraland-commons'
 import { Omit } from 'decentraland-dapps/dist/lib/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { takeLatest, put, select, call, take } from 'redux-saga/effects'
+import { takeLatest, put, select, call, take, all } from 'redux-saga/effects'
 import { getData as getDeployments } from 'modules/deployment/selectors'
 import { getCurrentProject, getData as getProjects } from 'modules/project/selectors'
 import { Deployment, SceneDefinition, Placement } from 'modules/deployment/types'
@@ -135,11 +135,13 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   if (isLoggedInResult) {
     const media: Media | null = yield select(getMedia)
     if (media) {
-      const north: Blob = yield call(() => objectURLToBlob(media.north))
-      const east: Blob = yield call(() => objectURLToBlob(media.east))
-      const south: Blob = yield call(() => objectURLToBlob(media.south))
-      const west: Blob = yield call(() => objectURLToBlob(media.west))
-      const thumbnail: Blob = yield call(() => objectURLToBlob(media.preview))
+      const [north, east, south, west, thumbnail]: Array<Blob> = yield all([
+        call(objectURLToBlob, media.north),
+        call(objectURLToBlob, media.east),
+        call(objectURLToBlob, media.south),
+        call(objectURLToBlob, media.west),
+        call(objectURLToBlob, media.preview)
+      ])
 
       yield call(() =>
         builder.uploadMedia(project.id, thumbnail, { north, east, south, west }, handleProgress(ProgressStage.UPLOAD_RECORDING))
@@ -152,19 +154,18 @@ function* handleDeployToLandRequest(action: DeployToLandRequestAction) {
   }
 
   try {
-    const files: Record<string, string> = yield call(() =>
-      createFiles({
-        project,
-        scene,
-        point: placement.point,
-        rotation: placement.rotation,
-        author,
-        thumbnail: previewUrl,
-        isDeploy: true,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES)
-      })
-    )
-    const contentFiles: Map<string, Buffer> = yield call(() => makeContentFiles(files))
+    const files: Record<string, string> = yield call(createFiles, {
+      project,
+      scene,
+      point: placement.point,
+      rotation: placement.rotation,
+      author,
+      thumbnail: previewUrl,
+      isDeploy: true,
+      onProgress: handleProgress(ProgressStage.CREATE_FILES)
+    })
+
+    const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
     const sceneDefinition: SceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const client = new CatalystClient(PEER_URL, 'Builder')
     const { entityId, files: hashedFiles } = yield call(() =>
@@ -217,20 +218,18 @@ function* handleClearDeploymentRequest(action: ClearDeploymentRequestAction) {
   try {
     const { placement } = deployment
     const [emptyProject, emptyScene] = getEmptyDeployment(deployment.projectId || UNPUBLISHED_PROJECT_ID)
-    const files: UnwrapPromise<ReturnType<typeof createFiles>> = yield call(() =>
-      createFiles({
-        project: emptyProject,
-        scene: emptyScene,
-        point: placement.point,
-        rotation: placement.rotation,
-        thumbnail: null,
-        author: null,
-        isDeploy: true,
-        isEmpty: true,
-        onProgress: handleProgress(ProgressStage.CREATE_FILES)
-      })
-    )
-    const contentFiles: Map<string, Buffer> = yield call(() => makeContentFiles(files))
+    const files: UnwrapPromise<ReturnType<typeof createFiles>> = yield call(createFiles, {
+      project: emptyProject,
+      scene: emptyScene,
+      point: placement.point,
+      rotation: placement.rotation,
+      thumbnail: null,
+      author: null,
+      isDeploy: true,
+      isEmpty: true,
+      onProgress: handleProgress(ProgressStage.CREATE_FILES)
+    })
+    const contentFiles: Map<string, Buffer> = yield call(makeContentFiles, files)
     const sceneDefinition = JSON.parse(files[EXPORT_PATH.SCENE_FILE])
     const client = new CatalystClient(PEER_URL, 'Builder')
     const { entityId, files: hashedFiles } = yield call(() =>

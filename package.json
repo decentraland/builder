@@ -41,7 +41,7 @@
     "decentraland-ecs": "^6.6.1-20201020183014.commit-bdc29ef",
     "decentraland-experiments": "^1.0.2",
     "decentraland-transactions": "^1.22.2",
-    "decentraland-ui": "^3.9.0",
+    "decentraland-ui": "^3.11.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
     "eslint": "5.6.0",
