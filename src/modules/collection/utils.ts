@@ -43,7 +43,7 @@ export function getExplorerURL(collection: Collection, chainId: ChainId) {
       throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
     }
 
-    id = `urn:decentraland:${chainName.toLowerCase()}:collections-v2:${collection.contractAddress}`
+    id = `urn:decentraland:${chainName.toLowerCase().replace('polygon', 'matic')}:collections-v2:${collection.contractAddress}`
   }
 
   // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars. Also, we use `ropsten` for the NETWORK because it is the only working network for .zone

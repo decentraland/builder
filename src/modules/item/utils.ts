@@ -44,7 +44,9 @@ export function getCatalystItemURN(collection: Collection, item: Item, chainId: 
   if (!chainName) {
     throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
   }
-  return `urn:decentraland:${chainName.toLowerCase()}:collections-v2:${collection.contractAddress}:${item.tokenId}`
+  return `urn:decentraland:${chainName.toLowerCase().replace('polygon', 'matic')}:collections-v2:${collection.contractAddress}:${
+    item.tokenId
+  }`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
