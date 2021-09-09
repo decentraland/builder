@@ -37,7 +37,6 @@ export function getMaxSupplyForRarity(rarity: ItemRarity) {
 export function getURNPrefix(chainId: ChainId) {
   let urn = 'urn:decentraland:'
   switch (chainId) {
-    case ChainId.ETHEREUM_MAINNET:
     case ChainId.ETHEREUM_GOERLI:
       return urn + 'goerli:'
     case ChainId.ETHEREUM_KOVAN:
