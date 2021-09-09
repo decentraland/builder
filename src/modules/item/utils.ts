@@ -1,7 +1,6 @@
 import { Address } from 'web3x-es/address'
-import { ChainId, Network, getChainName } from '@dcl/schemas'
+import { ChainId } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
-import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
@@ -35,16 +34,33 @@ export function getMaxSupplyForRarity(rarity: ItemRarity) {
   return RARITY_MAX_SUPPLY[rarity]
 }
 
+export function getURNPrefix(chainId: ChainId) {
+  let urn = 'urn:decentraland:'
+  switch (chainId) {
+    case ChainId.ETHEREUM_MAINNET:
+    case ChainId.ETHEREUM_GOERLI:
+      return urn + 'goerli:'
+    case ChainId.ETHEREUM_KOVAN:
+      return urn + 'kovan:'
+    case ChainId.ETHEREUM_MAINNET:
+      return urn + 'mainnet:'
+    case ChainId.ETHEREUM_RINKEBY:
+      return urn + 'rinkeby:'
+    case ChainId.ETHEREUM_ROPSTEN:
+      return urn + 'ropsten:'
+    case ChainId.MATIC_MAINNET:
+      return urn + 'matic:'
+    case ChainId.MATIC_MUMBAI:
+      return urn + 'mumbai:'
+  }
+}
+
 export function getCatalystItemURN(collection: Collection, item: Item, chainId: ChainId) {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
-  const config = getChainConfiguration(chainId)
-  const chainName = getChainName(config.networkMapping[Network.MATIC])
-  if (!chainName) {
-    throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
-  }
-  return `urn:decentraland:${chainName.toLowerCase()}:collections-v2:${collection.contractAddress}:${item.tokenId}`
+  const prefix = getURNPrefix(chainId)
+  return `${prefix}:collections-v2:${collection.contractAddress}:${item.tokenId}`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
