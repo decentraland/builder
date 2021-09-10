@@ -2,7 +2,7 @@ import { action } from 'typesafe-actions'
 import { ChainId } from '@dcl/schemas'
 import { buildTransactionPayload } from 'decentraland-dapps/dist/modules/transaction/utils'
 import { Collection } from 'modules/collection/types'
-import { Item } from './types'
+import { Item, Rarity } from './types'
 
 // Fetch items
 
@@ -131,3 +131,17 @@ export const deployItemContentsFailure = (collection: Collection, item: Item, er
 export type DeployItemContentsRequestAction = ReturnType<typeof deployItemContentsRequest>
 export type DeployItemContentsSuccessAction = ReturnType<typeof deployItemContentsSuccess>
 export type DeployItemContentsFailureAction = ReturnType<typeof deployItemContentsFailure>
+
+// Fetch rarities
+
+export const FETCH_RARITIES_REQUEST = '[Request] Fetch Rarities'
+export const FETCH_RARITIES_SUCCESS = '[Success] Fetch Rarities'
+export const FETCH_RARITIES_FAILURE = '[Failure] Fetch Rarities'
+
+export const fetchRaritiesRequest = () => action(FETCH_RARITIES_REQUEST)
+export const fetchRaritiesSuccess = (rarities: Rarity[]) => action(FETCH_RARITIES_SUCCESS, { rarities })
+export const fetchRaritiesFailure = (error: string) => action(FETCH_RARITIES_FAILURE, { error })
+
+export type FetchRaritiesRequestAction = ReturnType<typeof fetchRaritiesRequest>
+export type FetchRaritiesSuccessAction = ReturnType<typeof fetchRaritiesSuccess>
+export type FetchRaritiesFailureAction = ReturnType<typeof fetchRaritiesFailure>

@@ -5,7 +5,6 @@ import { ModalNavigation, Button, Mana, Loader, Field, InputOnChangeData, Form }
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { builder } from 'lib/api/builder'
 import { fromWei } from 'web3x-es/utils'
 import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
@@ -14,16 +13,17 @@ import { Props, State } from './PublishCollectionModal.types'
 import './PublishCollectionModal.css'
 
 export default class PublishCollectionModal extends React.PureComponent<Props, State> {
-  state: State = { step: 1, rarities: [], isFetchingRarities: true, email: undefined, emailFocus: false }
+  state: State = { step: 1, email: undefined, emailFocus: false }
 
   async componentDidMount() {
-    const { collection, onClose } = this.props
+    const { collection, onClose, onFetchRarities, rarities } = this.props
     if (!collection) {
       onClose()
     }
 
-    const rarities = await builder.fetchRarities()
-    this.setState({ rarities, isFetchingRarities: false })
+    if (rarities.length === 0) {
+      onFetchRarities()
+    }
   }
 
   handleNextStep = () => {
@@ -53,8 +53,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items, wallet, onClose } = this.props
-    const { rarities, isFetchingRarities } = this.state
+    const { items, wallet, onClose, rarities, isFetchingRarities } = this.props
 
     const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
     let totalPrice = 0
