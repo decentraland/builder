@@ -9,7 +9,7 @@ import { ProjectState } from 'modules/project/reducer'
 import { getProjectId } from 'modules/location/utils'
 import { Project } from 'modules/project/types'
 import { Vector3 } from 'modules/models/types'
-import { PARCEL_SIZE } from './utils'
+import { PARCEL_SIZE } from './constants'
 import { LOAD_PUBLIC_PROJECT_REQUEST } from './actions'
 
 export const getState: (state: RootState) => ProjectState = state => state.project

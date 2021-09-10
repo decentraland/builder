@@ -33,11 +33,10 @@ import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
 
 import { PEER_URL } from 'lib/api/peer'
-import { BuilderAPI } from 'lib/api/builder'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
 
-export function* rootSaga(builderAPI: BuilderAPI) {
+export function* rootSaga() {
   yield all([
     analyticsSaga(),
     assetPackSaga(),

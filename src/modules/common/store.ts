@@ -29,7 +29,6 @@ import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/u
 import { GENERATE_IDENTITY_SUCCESS, DESTROY_IDENTITY, LOGIN_SUCCESS, LOGIN_FAILURE } from 'modules/identity/actions'
 import { fetchTilesRequest } from 'modules/tile/actions'
 import { isDevelopment } from 'lib/environment'
-import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
 const builderVersion = require('../../../package.json').version
 
 configureAnalytics({
@@ -135,9 +134,7 @@ const middleware = applyMiddleware(...middlewares)
 const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer)
 
-const builderAPI = new BuilderAPI(BUILDER_SERVER_URL)
-
-sagasMiddleware.run(rootSaga, builderAPI)
+sagasMiddleware.run(rootSaga)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {
