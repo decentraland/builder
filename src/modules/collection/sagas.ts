@@ -1,5 +1,4 @@
-import { Address } from 'web3x-es/address'
-import { Contract, constants, providers } from 'ethers'
+import { Contract, providers } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -239,13 +238,13 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
   try {
     const maticChainId = getChainIdByNetwork(Network.MATIC)
 
-    const addresses: Address[] = []
+    const addresses: string[] = []
     const values: boolean[] = []
 
     const newMinters = new Set(collection.minters)
 
     for (const { address, hasAccess } of accessList) {
-      addresses.push(Address.fromString(address))
+      addresses.push(address)
       values.push(hasAccess)
 
       if (hasAccess) {
@@ -270,13 +269,13 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
   try {
     const maticChainId = getChainIdByNetwork(Network.MATIC)
 
-    const addresses: Address[] = []
+    const addresses: string[] = []
     const values: boolean[] = []
 
     const newManagers = new Set(collection.managers)
 
     for (const { address, hasAccess } of accessList) {
-      addresses.push(Address.fromString(address))
+      addresses.push(address)
       values.push(hasAccess)
 
       if (hasAccess) {
@@ -301,11 +300,11 @@ function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAct
   try {
     const maticChainId = getChainIdByNetwork(Network.MATIC)
 
-    const beneficiaries: Address[] = []
+    const beneficiaries: string[] = []
     const tokenIds: string[] = []
 
     for (const mint of mints) {
-      const beneficiary = Address.fromString(mint.address)
+      const beneficiary = mint.address
       for (let i = 0; i < mint.amount; i++) {
         beneficiaries.push(beneficiary)
         tokenIds.push(mint.item.tokenId!)
@@ -460,12 +459,7 @@ function* changeCollectionStatus(collection: Collection, isApproved: boolean) {
   const data: string = yield getMethodData(implementation.populateTransaction.setApproved(isApproved))
 
   const txHash: string = yield call(sendTransaction, contract, committee =>
-    committee.manageCollection(
-      Address.fromString(manager.address),
-      Address.fromString(forwarder.address),
-      Address.fromString(collection.contractAddress!),
-      data
-    )
+    committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, data)
   )
   return txHash
 }
