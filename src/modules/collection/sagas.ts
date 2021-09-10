@@ -1,4 +1,4 @@
-import { Contract, providers } from 'ethers'
+import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -6,6 +6,9 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
   fetchCollectionsRequest,
@@ -79,9 +82,6 @@ import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { isOwner, getCollectionBaseURI, getCollectionSymbol, toInitializeItems } from './utils'
-import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
-import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
-import { Network } from '@dcl/schemas'
 
 export function* collectionSaga() {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -141,7 +141,11 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     const from: string = yield select(getAddress)
     const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
     const provider: Provider = yield call(getNetworkProvider, maticChainId)
-    const collectionV2 = new Contract(rarities.address, abi, new providers.Web3Provider(provider))
+    const collectionV2 = new Contract(
+      constants.AddressZero, // using zero address here since we just want the implementation of the ERC721CollectionV2 to generate the `data` of the initialize method
+      abi,
+      new providers.Web3Provider(provider)
+    )
     const data = yield getMethodData(
       collectionV2.populateTransaction.initialize(
         collection.name,

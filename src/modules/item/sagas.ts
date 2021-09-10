@@ -7,6 +7,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import {
   FetchItemsRequestAction,
   fetchItemsRequest,
@@ -67,7 +68,6 @@ import { Item } from './types'
 import { getItem } from './selectors'
 import { ItemTooBigError } from './errors'
 import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE } from './utils'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
 export function* itemSaga() {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
