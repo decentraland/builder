@@ -133,39 +133,30 @@ function* handleSaveItemSuccess(action: SaveItemSuccessAction) {
 function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    console.log('validate text')
     if (!isValidText(collection.name)) {
       throw new Error(t('sagas.collection.invalid_character'))
     }
-
-    console.log('get items')
     const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
-    console.log('get cosas')
     const maticChainId = getChainIdByNetwork(Network.MATIC)
     const rarities = getContract(ContractName.Rarities, maticChainId)
     const from: string = yield select(getAddress)
     const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
-    console.log('provider')
     const provider: Provider = yield call(getNetworkProvider, maticChainId)
-    console.log('instantiate')
     const collectionV2 = new Contract(rarities.address, abi, new providers.Web3Provider(provider))
-    console.log('populate')
-    debugger
-    const promise = collectionV2.populateTransaction.initialize(
-      collection.name,
-      getCollectionSymbol(collection),
-      getCollectionBaseURI(),
-      from,
-      true, // should complete
-      false, // is approved
-      rarities.address,
-      toInitializeItems(items)
+    const data = yield getMethodData(
+      collectionV2.populateTransaction.initialize(
+        collection.name,
+        getCollectionSymbol(collection),
+        getCollectionBaseURI(),
+        from,
+        true, // should complete
+        false, // is approved
+        rarities.address,
+        toInitializeItems(items)
+      )
     )
-    console.log('get data')
-    const data = yield getMethodData(promise)
-    console.log('save')
     const remoteCollection: Collection = yield call(() => builder.saveCollection(collection, data))
-    const newCollection = { ...collectionV2, ...remoteCollection }
+    const newCollection = { ...collection, ...remoteCollection }
 
     yield put(saveCollectionSuccess(newCollection))
     yield put(closeModal('CreateCollectionModal'))
