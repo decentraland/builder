@@ -1,4 +1,5 @@
 import { Address } from 'web3x-es/address'
+import { toBN } from 'web3x/utils'
 import { ChainId, getURNProtocol } from '@dcl/schemas'
 import { utils } from 'decentraland-commons'
 import future from 'fp-future'
@@ -20,8 +21,10 @@ import {
   WearableCategory,
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
-  THUMBNAIL_PATH
+  THUMBNAIL_PATH,
+  InitializeItem
 } from './types'
+import { sortByCreatedAt } from 'lib/sort'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -304,4 +307,17 @@ export function isValidText(text: string) {
 
 export function isItemSizeError(error: string) {
   return error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1
+}
+
+export function toInitializeItems(items: Item[]): InitializeItem[] {
+  return items.sort(sortByCreatedAt).map(toInitializeItem)
+}
+
+export function toInitializeItem(item: Item): InitializeItem {
+  return {
+    metadata: getMetadata(item),
+    rarity: item.rarity!.toLowerCase(),
+    price: toBN(item.price || 0),
+    beneficiary: item.beneficiary ? Address.fromString(item.beneficiary) : Address.ZERO
+  }
 }

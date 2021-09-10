@@ -1,3 +1,5 @@
+import { Address } from 'web3x-es/address'
+import BN from 'bn.js'
 import { ModelMetrics } from 'modules/scene/types'
 
 export enum ItemType {
@@ -135,6 +137,13 @@ export type Rarity = {
   name: ItemRarity
   price: string
   maxSupply: string
+}
+
+export type InitializeItem = {
+  rarity: string
+  price: BN
+  beneficiary: Address
+  metadata: string
 }
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
