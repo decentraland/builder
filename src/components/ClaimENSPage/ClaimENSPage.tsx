@@ -190,9 +190,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       inverted
                     />
                   ) : (
-                      <Button type="submit" primary disabled={isDisabled} loading={isLoading}>
+                      <ChainButton type="submit" primary disabled={isDisabled} loading={isLoading} chainId={getChainIdByNetwork(Network.ETHEREUM)}>
                         {t('claim_ens_page.claim_button')} <Mana inline>{PRICE.toLocaleString()}</Mana>
-                      </Button>
+                      </ChainButton>
                     )}
                 </Row>
               </Form>
