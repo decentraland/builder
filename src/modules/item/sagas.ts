@@ -130,7 +130,7 @@ function* handleSaveItemRequest(action: SaveItemRequestAction) {
     if (item.isPublished) {
       throw new Error(t('sagas.item.cant_save_published'))
     }
-    const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+    const finalSize: number = yield call(calculateFinalSize, item, contents)
     if (finalSize > MAX_FILE_SIZE) {
       throw new ItemTooBigError()
     }
@@ -162,7 +162,7 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new Error(t('sagas.item.cant_save_without_collection'))
     }
 
-    const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+    const finalSize: number = yield call(calculateFinalSize, item, contents)
     if (finalSize > MAX_FILE_SIZE) {
       throw new ItemTooBigError()
     }
