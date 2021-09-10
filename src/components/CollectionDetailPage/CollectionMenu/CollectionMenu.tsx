@@ -18,10 +18,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
   }
 
   handleNavigateToExplorer = () => {
-    const { collection, chainId } = this.props
-    if (chainId) {
-      this.navigateTo(getExplorerURL(collection, chainId), '_blank')
-    }
+    const { collection } = this.props
+    this.navigateTo(getExplorerURL(collection), '_blank')
   }
 
   handleNavigateToEditor = () => {
@@ -89,23 +87,23 @@ export default class CollectionMenu extends React.PureComponent<Props> {
               </>
             ) : null
           ) : (
-            <>
-              <Dropdown.Item text={t('collection_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
-              <ConfirmDelete
-                name={collection.name}
-                onDelete={this.handleDeleteItem}
-                trigger={<Dropdown.Item text={t('global.delete')} />}
-              />
-            </>
-          )}
+              <>
+                <Dropdown.Item text={t('collection_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
+                <ConfirmDelete
+                  name={collection.name}
+                  onDelete={this.handleDeleteItem}
+                  trigger={<Dropdown.Item text={t('global.delete')} />}
+                />
+              </>
+            )}
 
           <Popup
             content={
               !collection.isPublished
                 ? t('collection_menu.unpublished')
                 : !collection.forumLink
-                ? t('collection_menu.not_posted')
-                : undefined
+                  ? t('collection_menu.not_posted')
+                  : undefined
             }
             disabled={collection.isPublished || !!collection.forumLink}
             position="right center"
@@ -124,8 +122,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
                       <Loader size="mini" active inline />
                     </div>
                   ) : (
-                    t('collection_menu.post_to_forum')
-                  )}
+                      t('collection_menu.post_to_forum')
+                    )}
                 </Dropdown.Item>
               ) : null
             }

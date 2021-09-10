@@ -1,6 +1,7 @@
 import { Address } from 'web3x-es/address'
-import { toBN } from 'web3x/utils'
-import { ChainId, getURNProtocol } from '@dcl/schemas'
+import { toBN } from 'web3x-es/utils'
+import { getURNProtocol, Network } from '@dcl/schemas'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -37,11 +38,13 @@ export function getMaxSupplyForRarity(rarity: ItemRarity) {
   return RARITY_MAX_SUPPLY[rarity]
 }
 
-export function getCatalystItemURN(collection: Collection, item: Item, chainId: ChainId) {
+export function getCatalystItemURN(collection: Collection, item: Item) {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
-  return `urn:decentraland:${getURNProtocol(chainId)}:collections-v2:${collection.contractAddress}:${item.tokenId}`
+  return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${collection.contractAddress}:${
+    item.tokenId
+  }`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
