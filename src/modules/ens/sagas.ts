@@ -2,6 +2,7 @@ import { Eth, SendTx } from 'web3x/eth'
 import { Address } from 'web3x/address'
 import { TransactionReceipt } from 'web3x/formatters'
 import { Personal } from 'web3x/personal'
+import { Contract, providers } from 'ethers'
 import { namehash } from '@ethersproject/hash'
 import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as contentHash from 'content-hash'
@@ -9,6 +10,10 @@ import { CatalystClient, DeploymentBuilder, DeploymentPreparationData } from 'dc
 import { Entity, EntityType } from 'dcl-catalyst-commons'
 import { Avatar } from 'decentraland-ui'
 import { Authenticator } from 'dcl-crypto'
+import { Network } from '@dcl/schemas'
+import { ContractName, getContract } from 'decentraland-transactions'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Profile } from 'decentraland-dapps/dist/modules/profile/types'
 import { changeProfile } from 'decentraland-dapps/dist/modules/profile/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
@@ -267,10 +272,12 @@ function* handleSetENSContentRequest(action: SetENSContentRequestAction) {
 
 function* handleFetchAuthorizationRequest(_action: FetchENSAuthorizationRequestAction) {
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const from = Address.fromString(wallet.address)
-    const manaContract = new MANAToken(eth, Address.fromString(MANA_ADDRESS))
-    const allowance: string = yield call(() => manaContract.methods.allowance(from, Address.fromString(CONTROLLER_ADDRESS)).call())
+    const from: string = yield select(getAddress)
+    const chainId = getChainIdByNetwork(Network.ETHEREUM)
+    const contract = getContract(ContractName.MANAToken, chainId)
+    const provider = yield call(getNetworkProvider, chainId)
+    const mana = new Contract(contract.address, contract.abi, new providers.Web3Provider(provider))
+    const allowance: string = yield call(mana.allowance, from, CONTROLLER_ADDRESS)
     const authorization: Authorization = { allowance }
 
     yield put(fetchENSAuthorizationSuccess(authorization, from.toString()))

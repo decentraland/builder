@@ -1,11 +1,9 @@
 import { call, select } from 'redux-saga/effects'
-import { Address } from 'web3x/address'
+import { PopulatedTransaction } from 'ethers'
 import { Eth } from 'web3x/eth'
-import { TxSend } from 'web3x/contract'
-import { LegacyProviderAdapter } from 'web3x/providers'
+import { LegacyProviderAdapter } from 'web3x-es/providers'
 import { env } from 'decentraland-commons'
-import { ContractData, sendMetaTransaction } from 'decentraland-transactions'
-import { getNetworkProvider, getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
+import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getData as getBaseWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
@@ -31,21 +29,7 @@ export function* getWallet() {
   return [wallet, eth]
 }
 
-export function* sendWalletMetaTransaction(contract: ContractData, method: TxSend<any>) {
-  const [wallet, eth]: [Wallet, Eth] = yield call(getWallet)
-  const from = Address.fromString(wallet.address)
-  const provider = eth.provider
-
-  const metaTxProvider: Provider = yield call(() => getNetworkProvider(contract.chainId))
-  const txData = getMethodData(method, from)
-
-  const txHash: string = yield call(() =>
-    sendMetaTransaction(provider, metaTxProvider, txData, contract, { serverURL: TRANSACTIONS_API_URL })
-  )
-  return txHash
-}
-
-export function getMethodData(method: TxSend<any>, from: Address): string {
-  const payload = method.getSendRequestPayload({ from })
-  return payload.params[0].data
+export async function getMethodData(populatedTransactionPromise: Promise<PopulatedTransaction>) {
+  const populatedTransaction = await populatedTransactionPromise
+  return populatedTransaction.data!
 }

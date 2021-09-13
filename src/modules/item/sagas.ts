@@ -1,13 +1,13 @@
-import { Eth } from 'web3x/eth'
-import { Address } from 'web3x/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
+import { Network } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import {
   FetchItemsRequestAction,
   fetchItemsRequest,
@@ -56,9 +56,7 @@ import {
   DeployItemContentsFailureAction
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
-import { getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
 import { getIdentity } from 'modules/identity/utils'
-import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
 import { locations } from 'routing/locations'
 import { builder } from 'lib/api/builder'
 import { getCollection, getCollectionItems } from 'modules/collection/selectors'
@@ -167,21 +165,17 @@ function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction)
       throw new ItemTooBigError()
     }
 
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const maticChainId = wallet.networks.MATIC.chainId
     let txHash: string | undefined
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
 
     // Items should be uploaded to the builder server in order to be available to be added to the catalysts
     yield call(() => builder.saveItemContents(item, contents))
 
     if (hasOnChainDataChanged(originalItem, item)) {
       const metadata = getMetadata(item)
-      const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
-
       const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-      txHash = yield sendWalletMetaTransaction(
-        contract,
-        implementation.methods.editItemsData([item.tokenId!], [item.price!], [Address.fromString(item.beneficiary!)], [metadata])
+      txHash = yield call(sendTransaction, contract, collection =>
+        collection.editItemsData([item.tokenId!], [item.price!], [item.beneficiary!], [metadata])
       )
     } else {
       yield put(deployItemContentsRequest(collection, item))
