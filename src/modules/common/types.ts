@@ -32,10 +32,6 @@ import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/re
 import { UIState } from 'modules/ui/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
 
-export type Vector3 = { x: number; y: number; z: number }
-
-export type Quaternion = { x: number; y: number; z: number; w: number }
-
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
 export type StorageLoadAction = ReturnType<typeof storageLoad>
 

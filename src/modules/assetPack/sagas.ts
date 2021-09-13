@@ -1,4 +1,4 @@
-import { call, put, takeLatest, all } from 'redux-saga/effects'
+import { call, put, takeLatest, all, select } from 'redux-saga/effects'
 
 import {
   LOAD_ASSET_PACKS_REQUEST,
@@ -16,7 +16,6 @@ import {
   deleteAssetPackFailure,
   deleteAssetPackSuccess
 } from 'modules/assetPack/actions'
-import { store } from 'modules/common/store'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
 import { builder } from 'lib/api/builder'
@@ -29,11 +28,11 @@ export function* assetPackSaga() {
   yield takeLatest(DELETE_ASSET_PACK_REQUEST, handleDeleteAssetPack)
 }
 
-const handleAssetContentsUploadProgress = (total: number) => () => {
+function* handleAssetContentsUploadProgress(total: number) {
   // Calculate the increment step, it will be truncated
   const increment = ((1 / total) * 100) | 0
   // Get the existing progress
-  const existingProgress = getProgress(store.getState() as any)
+  const existingProgress = yield select(getProgress)
   // Calculate the current file based on the existing progress
   const currentFile = existingProgress.value / increment + 1
   // Calculate the new value based on the existing progress and the increment
@@ -41,7 +40,7 @@ const handleAssetContentsUploadProgress = (total: number) => () => {
   // If this is the last file, just map it to 100
   const progress = currentFile !== total ? newValue : 100
 
-  store.dispatch(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
+  yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
 }
 
 function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
@@ -71,7 +70,7 @@ function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
     yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
 
     const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
-    const onProgress = handleAssetContentsUploadProgress(updatableAssets.length)
+    const onProgress = yield handleAssetContentsUploadProgress(updatableAssets.length)
     const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress))
 
     if (uploadEffects.length > 0) {

@@ -3,7 +3,8 @@ import { RootState } from 'modules/common/types'
 import { SceneState } from 'modules/scene/reducer'
 import { getCurrentProject } from 'modules/project/selectors'
 import { Project } from 'modules/project/types'
-import { ComponentDefinition, ComponentType, Scene, AnyComponent, ModelMetrics, ShapeComponent } from './types'
+import { ModelMetrics } from 'modules/models/types'
+import { ComponentDefinition, ComponentType, Scene, AnyComponent, ShapeComponent } from './types'
 import { EMPTY_SCENE_METRICS, ShapeComponents } from './constants'
 
 export const getState: (state: RootState) => SceneState = state => state.scene.present
