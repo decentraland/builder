@@ -1,12 +1,12 @@
 import { createSelector } from 'reselect'
 import { RootState } from 'modules/common/types'
-import { ItemState } from './reducer'
-import { Item } from './types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { isEqual } from 'lib/address'
-import { canSeeItem } from './utils'
 import { Collection } from 'modules/collection/types'
 import { getAuthorizedCollections } from 'modules/collection/selectors'
+import { ItemState } from './reducer'
+import { Item, Rarity } from './types'
+import { canSeeItem } from './utils'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -40,3 +40,7 @@ export const getAuthorizedItems = createSelector<RootState, Collection[], Item[]
 export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(getAuthorizedItems, items =>
   items.filter(item => item.collectionId === undefined)
 )
+
+export const getRarities = (state: RootState): Rarity[] => {
+  return getState(state).rarities
+}

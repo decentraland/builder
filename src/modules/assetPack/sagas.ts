@@ -18,84 +18,84 @@ import {
 } from 'modules/assetPack/actions'
 import { getProgress } from 'modules/assetPack/selectors'
 import { FullAssetPack, ProgressStage } from 'modules/assetPack/types'
-import { builder } from 'lib/api/builder'
 import { isRemoteURL } from 'modules/media/utils'
 import { selectAssetPack, selectCategory } from 'modules/ui/sidebar/actions'
+import { BuilderAPI } from 'lib/api/builder'
 
-export function* assetPackSaga() {
+export function* assetPackSaga(builder: BuilderAPI) {
   yield takeLatest(LOAD_ASSET_PACKS_REQUEST, handleLoadAssetPacks)
   yield takeLatest(SAVE_ASSET_PACK_REQUEST, handleSaveAssetPack)
   yield takeLatest(DELETE_ASSET_PACK_REQUEST, handleDeleteAssetPack)
-}
 
-function* handleAssetContentsUploadProgress(total: number) {
-  // Calculate the increment step, it will be truncated
-  const increment = ((1 / total) * 100) | 0
-  // Get the existing progress
-  const existingProgress = yield select(getProgress)
-  // Calculate the current file based on the existing progress
-  const currentFile = existingProgress.value / increment + 1
-  // Calculate the new value based on the existing progress and the increment
-  const newValue = existingProgress.value + increment
-  // If this is the last file, just map it to 100
-  const progress = currentFile !== total ? newValue : 100
+  function* handleAssetContentsUploadProgress(total: number) {
+    // Calculate the increment step, it will be truncated
+    const increment = ((1 / total) * 100) | 0
+    // Get the existing progress
+    const existingProgress = yield select(getProgress)
+    // Calculate the current file based on the existing progress
+    const currentFile = existingProgress.value / increment + 1
+    // Calculate the new value based on the existing progress and the increment
+    const newValue = existingProgress.value + increment
+    // If this is the last file, just map it to 100
+    const progress = currentFile !== total ? newValue : 100
 
-  yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
-}
-
-function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
-  try {
-    const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
-    yield put(loadAssetPacksSuccess(assetPacks))
-  } catch (error) {
-    yield put(loadAssetPacksFailure(error.message))
+    yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, progress))
   }
-}
 
-function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
-  const { assetPack, contents } = action.payload
-
-  try {
-    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
-    yield call(() => builder.saveAssetPack(assetPack))
-
-    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
-
-    if (!isRemoteURL(assetPack.thumbnail)) {
-      yield call(() => builder.saveAssetPackThumbnail(assetPack))
+  function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
+    try {
+      const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
+      yield put(loadAssetPacksSuccess(assetPacks))
+    } catch (error) {
+      yield put(loadAssetPacksFailure(error.message))
     }
-
-    yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
-
-    yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
-
-    const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
-    const onProgress = yield handleAssetContentsUploadProgress(updatableAssets.length)
-    const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress))
-
-    if (uploadEffects.length > 0) {
-      yield all(uploadEffects)
-    } else {
-      yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 100))
-    }
-
-    yield put(saveAssetPackSuccess(assetPack))
-    yield put(setProgress(ProgressStage.NONE, 0))
-    yield put(loadAssetPacksRequest())
-  } catch (e) {
-    yield put(saveAssetPackFailure(assetPack, e.message))
   }
-}
 
-function* handleDeleteAssetPack(action: DeleteAssetPackRequestAction) {
-  const { assetPack } = action.payload
+  function* handleSaveAssetPack(action: SaveAssetPackRequestAction) {
+    const { assetPack, contents } = action.payload
 
-  try {
-    yield call(() => builder.deleteAssetPack(assetPack))
-    yield put(deleteAssetPackSuccess(assetPack))
-    yield put(selectAssetPack(null))
-    yield put(selectCategory(null))
-  } catch (e) {
-    yield put(deleteAssetPackFailure(assetPack, e.message))
+    try {
+      yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 0))
+      yield call(() => builder.saveAssetPack(assetPack))
+
+      yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 50))
+
+      if (!isRemoteURL(assetPack.thumbnail)) {
+        yield call(() => builder.saveAssetPackThumbnail(assetPack))
+      }
+
+      yield put(setProgress(ProgressStage.CREATE_ASSET_PACK, 100))
+
+      yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 0))
+
+      const updatableAssets = assetPack.assets.filter(asset => Object.keys(contents[asset.id]).length > 0)
+      const onProgress = yield handleAssetContentsUploadProgress(updatableAssets.length)
+      const uploadEffects = updatableAssets.map(asset => builder.saveAssetContents(asset, contents[asset.id]).then(onProgress))
+
+      if (uploadEffects.length > 0) {
+        yield all(uploadEffects)
+      } else {
+        yield put(setProgress(ProgressStage.UPLOAD_CONTENTS, 100))
+      }
+
+      yield put(saveAssetPackSuccess(assetPack))
+      yield put(setProgress(ProgressStage.NONE, 0))
+      yield put(loadAssetPacksRequest())
+    } catch (e) {
+      yield put(saveAssetPackFailure(assetPack, e.message))
+    }
+  }
+
+  function* handleDeleteAssetPack(action: DeleteAssetPackRequestAction) {
+    const { assetPack } = action.payload
+
+    try {
+      yield call(() => builder.deleteAssetPack(assetPack))
+      yield put(deleteAssetPackSuccess(assetPack))
+      yield put(selectAssetPack(null))
+      yield put(selectCategory(null))
+    } catch (e) {
+      yield put(deleteAssetPackFailure(assetPack, e.message))
+    }
   }
 }

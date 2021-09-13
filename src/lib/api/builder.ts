@@ -16,9 +16,9 @@ import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/t
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
 import { WeeklyStats } from 'modules/stats/types'
+import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
-import { authorize } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -420,6 +420,13 @@ export type PoolFilters = {
 // API
 
 export class BuilderAPI extends BaseAPI {
+  private authorization: Authorization
+
+  constructor(url: string, authorization: Authorization) {
+    super(url)
+    this.authorization = authorization
+  }
+
   async request(method: AxiosRequestConfig['method'], path: string, params?: APIParam | null, config?: AxiosRequestConfig) {
     let authConfig = {}
     let headers = {}
@@ -429,7 +436,7 @@ export class BuilderAPI extends BaseAPI {
         headers = { ...config.headers }
       }
     }
-    const authHeaders = authorize(method, path)
+    const authHeaders = this.authorization.createAuthHeaders(method, path)
     headers = {
       ...headers,
       ...authHeaders
@@ -674,5 +681,3 @@ export class BuilderAPI extends BaseAPI {
     return error.isAxiosError
   }
 }
-
-export const builder = new BuilderAPI(BUILDER_SERVER_URL)

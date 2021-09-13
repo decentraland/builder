@@ -50,7 +50,7 @@ import { store } from 'modules/common/store'
 import { closeModal } from 'modules/modal/actions'
 import { isRemoteURL } from 'modules/media/utils'
 import { getSceneByProjectId } from 'modules/scene/utils'
-import { builder } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
 import { saveProjectRequest } from 'modules/sync/actions'
 import { Gizmo } from 'modules/editor/types'
 import { Pool } from 'modules/pool/types'
@@ -62,7 +62,7 @@ import { getDefaultGroundAsset } from 'modules/deployment/utils'
 import { didUpdateLayout, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 
-export function* projectSaga() {
+export function* projectSaga(builder: BuilderAPI) {
   yield takeLatest(CREATE_PROJECT_FROM_TEMPLATE, handleCreateProjectFromTemplate)
   yield takeLatest(DUPLICATE_PROJECT, handleDuplicateProject)
   yield takeLatest(EDIT_PROJECT, handleEditProject)
@@ -74,204 +74,204 @@ export function* projectSaga() {
   yield takeLatest(LOAD_MANIFEST_REQUEST, handleLoadProjectRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
-}
 
-function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
-  const { template } = action.payload
-  const { title, description, onSuccess } = action.meta
+  function* handleCreateProjectFromTemplate(action: CreateProjectFromTemplateAction) {
+    const { template } = action.payload
+    const { title, description, onSuccess } = action.meta
 
-  const scene: Scene = {
-    id: uuidv4(),
-    entities: {},
-    components: {},
-    assets: {},
-    metrics: EMPTY_SCENE_METRICS,
-    limits: EMPTY_SCENE_METRICS,
-    ground: null
-  }
+    const scene: Scene = {
+      id: uuidv4(),
+      entities: {},
+      components: {},
+      assets: {},
+      metrics: EMPTY_SCENE_METRICS,
+      limits: EMPTY_SCENE_METRICS,
+      ground: null
+    }
 
-  const { rows, cols } = template
+    const { rows, cols } = template
 
-  const ethAddress: string = yield select(getAddress)
+    const ethAddress: string = yield select(getAddress)
 
-  const project: Project = {
-    id: uuidv4(),
-    title: title || t('global.new_scene'),
-    description: description || '',
-    thumbnail: '',
-    isPublic: false,
-    layout: {
-      rows,
-      cols
-    },
-    sceneId: scene.id,
-    ethAddress: ethAddress || null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
+    const project: Project = {
+      id: uuidv4(),
+      title: title || t('global.new_scene'),
+      description: description || '',
+      thumbnail: '',
+      isPublic: false,
+      layout: {
+        rows,
+        cols
+      },
+      sceneId: scene.id,
+      ethAddress: ethAddress || null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
 
-  yield put(createScene(scene))
-  yield put(createProject(project))
+    yield put(createScene(scene))
+    yield put(createProject(project))
 
-  if (onSuccess) {
-    onSuccess(project, scene)
-    yield put(setGround(project.id, getDefaultGroundAsset()))
-  }
-}
-
-function* handleDuplicateProject(action: DuplicateProjectAction) {
-  const { project } = action.payload
-
-  const scene: Scene = yield getSceneByProjectId(project.id)
-
-  let thumbnail = project.thumbnail
-
-  if (thumbnail && isRemoteURL(thumbnail)) {
-    thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
-  }
-
-  const newScene = { ...scene, id: uuidv4() }
-  const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString(), thumbnail }
-
-  yield put(createScene(newScene))
-  yield put(createProject(newProject))
-  yield put(push(locations.root()))
-}
-
-function* handleEditProject(action: EditProjectAction) {
-  const { id, project } = action.payload
-  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  const targetProject = projects[id]
-
-  if (!targetProject || !project) return
-
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[targetProject.sceneId]
-
-  if (!scene) return
-
-  const shouldApplyLayout = didUpdateLayout(project, targetProject)
-  const newProject = { ...targetProject, ...project }
-
-  yield put(setProject(newProject))
-
-  if (shouldApplyLayout) {
-    yield put(setEditorReady(false))
-    yield put(createEditorScene(newProject))
-    yield take(SET_EDITOR_READY)
-    yield put(applyLayout(newProject))
-    yield put(ActionCreators.clearHistory())
-    yield put(takeScreenshot())
-  }
-}
-
-function* handleShareProject(action: ShareProjectAction) {
-  const { id } = action.payload
-
-  const scene: Scene = yield getSceneByProjectId(id)
-  if (!scene) return
-
-  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  const project = projects[id]
-  if (!project) return
-
-  if (!project.isPublic) {
-    const newProject = { ...project, isPublic: true }
-    yield put(setProject(newProject))
-  }
-  yield put(setGizmo(Gizmo.NONE))
-  yield put(takeScreenshot())
-  yield race([take(EDIT_PROJECT_THUMBNAIL), delay(1000)])
-
-  yield put(saveProjectRequest(project, false))
-}
-
-function* handleExportProject(action: ExportProjectRequestAction) {
-  const { project } = action.payload
-  const scene: Scene = yield getSceneByProjectId(project.id)
-
-  let zip = new JSZip()
-  let sanitizedName = project.title.replace(/\s/g, '_')
-  yield put(setExportProgress({ loaded: 0, total: 0 }))
-  const author: string = yield select(getName)
-  const files: Record<string, Blob | string> = yield call(() =>
-    createFiles({
-      project,
-      scene,
-      point: { x: 0, y: 0 },
-      rotation: 'east',
-      isDeploy: false,
-      thumbnail: null,
-      author,
-      onProgress: progress => store.dispatch(setExportProgress(progress))
-    })
-  )
-
-  for (const filename of Object.keys(files)) {
-    zip.file(filename, files[filename])
-  }
-
-  const artifact = yield call(zip.generateAsync, { type: 'blob' })
-  saveAs(artifact, `${sanitizedName}.zip`)
-
-  yield put(closeModal('ExportModal'))
-  yield put(exportProjectSuccess())
-}
-
-function* handleImportProject(action: ImportProjectAction) {
-  const { projects } = action.payload
-
-  for (let saved of projects) {
-    if (saved.scene && saved.project) {
-      yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, ethAddress: yield select(getAddress) }))])
+    if (onSuccess) {
+      onSuccess(project, scene)
+      yield put(setGround(project.id, getDefaultGroundAsset()))
     }
   }
-}
 
-function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
-  const { id, type } = action.payload
-  try {
-    const project: Project | Pool = yield call(() => builder.fetchPublicProject(id, type))
-    yield put(loadPublicProjectSuccess(project, type))
-    if (project) {
-      if (project.ethAddress) {
-        yield put(loadProfileRequest(project.ethAddress))
+  function* handleDuplicateProject(action: DuplicateProjectAction) {
+    const { project } = action.payload
+
+    const scene: Scene = yield getSceneByProjectId(project.id)
+
+    let thumbnail = project.thumbnail
+
+    if (thumbnail && isRemoteURL(thumbnail)) {
+      thumbnail = yield call(() => getImageAsDataUrl(project.thumbnail))
+    }
+
+    const newScene = { ...scene, id: uuidv4() }
+    const newProject = { ...project, sceneId: newScene.id, id: uuidv4(), createdAt: new Date().toISOString(), thumbnail }
+
+    yield put(createScene(newScene))
+    yield put(createProject(newProject))
+    yield put(push(locations.root()))
+  }
+
+  function* handleEditProject(action: EditProjectAction) {
+    const { id, project } = action.payload
+    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+    const targetProject = projects[id]
+
+    if (!targetProject || !project) return
+
+    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const scene = scenes[targetProject.sceneId]
+
+    if (!scene) return
+
+    const shouldApplyLayout = didUpdateLayout(project, targetProject)
+    const newProject = { ...targetProject, ...project }
+
+    yield put(setProject(newProject))
+
+    if (shouldApplyLayout) {
+      yield put(setEditorReady(false))
+      yield put(createEditorScene(newProject))
+      yield take(SET_EDITOR_READY)
+      yield put(applyLayout(newProject))
+      yield put(ActionCreators.clearHistory())
+      yield put(takeScreenshot())
+    }
+  }
+
+  function* handleShareProject(action: ShareProjectAction) {
+    const { id } = action.payload
+
+    const scene: Scene = yield getSceneByProjectId(id)
+    if (!scene) return
+
+    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+    const project = projects[id]
+    if (!project) return
+
+    if (!project.isPublic) {
+      const newProject = { ...project, isPublic: true }
+      yield put(setProject(newProject))
+    }
+    yield put(setGizmo(Gizmo.NONE))
+    yield put(takeScreenshot())
+    yield race([take(EDIT_PROJECT_THUMBNAIL), delay(1000)])
+
+    yield put(saveProjectRequest(project, false))
+  }
+
+  function* handleExportProject(action: ExportProjectRequestAction) {
+    const { project } = action.payload
+    const scene: Scene = yield getSceneByProjectId(project.id)
+
+    let zip = new JSZip()
+    let sanitizedName = project.title.replace(/\s/g, '_')
+    yield put(setExportProgress({ loaded: 0, total: 0 }))
+    const author: string = yield select(getName)
+    const files: Record<string, Blob | string> = yield call(() =>
+      createFiles({
+        project,
+        scene,
+        point: { x: 0, y: 0 },
+        rotation: 'east',
+        isDeploy: false,
+        thumbnail: null,
+        author,
+        onProgress: progress => store.dispatch(setExportProgress(progress))
+      })
+    )
+
+    for (const filename of Object.keys(files)) {
+      zip.file(filename, files[filename])
+    }
+
+    const artifact = yield call(zip.generateAsync, { type: 'blob' })
+    saveAs(artifact, `${sanitizedName}.zip`)
+
+    yield put(closeModal('ExportModal'))
+    yield put(exportProjectSuccess())
+  }
+
+  function* handleImportProject(action: ImportProjectAction) {
+    const { projects } = action.payload
+
+    for (let saved of projects) {
+      if (saved.scene && saved.project) {
+        yield all([put(createScene(saved.scene)), put(createProject({ ...saved.project, ethAddress: yield select(getAddress) }))])
       }
     }
-  } catch (e) {
-    yield put(loadPublicProjectFailure(e.message))
   }
-}
 
-function* handleLoadProjectsRequest() {
-  try {
-    const projects: Project[] = yield call(() => builder.fetchProjects())
-    const record: ModelById<Project> = {}
-
-    for (let project of projects) {
-      record[project.id] = project
+  function* handleLoadPublicProject(action: LoadPublicProjectRequestAction) {
+    const { id, type } = action.payload
+    try {
+      const project: Project | Pool = yield call(() => builder.fetchPublicProject(id, type))
+      yield put(loadPublicProjectSuccess(project, type))
+      if (project) {
+        if (project.ethAddress) {
+          yield put(loadProfileRequest(project.ethAddress))
+        }
+      }
+    } catch (e) {
+      yield put(loadPublicProjectFailure(e.message))
     }
-
-    yield put(loadProjectsSuccess(record))
-  } catch (e) {
-    yield put(loadProjectsFailure(e.message))
   }
-}
 
-function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
-  const { id, type } = action.payload
-  try {
-    const manifest: Manifest<Project> = yield call(() => builder.fetchManifest(id, type))
-    yield put(loadManifestSuccess(manifest))
-  } catch (e) {
-    yield put(loadManifestFailure(e.message))
+  function* handleLoadProjectsRequest() {
+    try {
+      const projects: Project[] = yield call(() => builder.fetchProjects())
+      const record: ModelById<Project> = {}
+
+      for (let project of projects) {
+        record[project.id] = project
+      }
+
+      yield put(loadProjectsSuccess(record))
+    } catch (e) {
+      yield put(loadProjectsFailure(e.message))
+    }
   }
-}
 
-function* handleLoginSuccess(_action: LoginSuccessAction) {
-  yield put(loadProjectsRequest())
-}
+  function* handleLoadProjectRequest(action: LoadManifestRequestAction) {
+    const { id, type } = action.payload
+    try {
+      const manifest: Manifest<Project> = yield call(() => builder.fetchManifest(id, type))
+      yield put(loadManifestSuccess(manifest))
+    } catch (e) {
+      yield put(loadManifestFailure(e.message))
+    }
+  }
 
-function* handleDeleteProject(_action: DeleteProjectAction) {
-  yield put(push(locations.root()))
+  function* handleLoginSuccess(_action: LoginSuccessAction) {
+    yield put(loadProjectsRequest())
+  }
+
+  function* handleDeleteProject(_action: DeleteProjectAction) {
+    yield put(push(locations.root()))
+  }
 }

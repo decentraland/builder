@@ -37,11 +37,11 @@ import {
 } from './actions'
 import { getLocalProjectIds, getFailedProjectIds } from './selectors'
 import { forEach, saveProject, saveThumbnail } from './utils'
-import { builder } from 'lib/api/builder'
+import { BuilderAPI } from 'lib/api/builder'
 import { isLoggedIn } from 'modules/identity/selectors'
 import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 
-export function* syncSaga() {
+export function* syncSaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SYNC, handleSync)
   yield takeLatest(RETRY_SYNC, handleRetrySync)
@@ -52,96 +52,96 @@ export function* syncSaga() {
   yield takeLatest(DELETE_PROJECT, handleDeleteProject)
   yield takeLatest(PROVISION_SCENE, handleProvisionScene)
   yield takeLatest(SAVE_PROJECT_SUCCESS, handleSaveProjectSuccess)
-}
 
-function* handleLoginSuccess(_action: LoginSuccessAction) {
-  yield put(sync())
-}
-
-function* handleSync(_action: SyncAction) {
-  // sync projects
-  const localProjectIds: string[] = yield select(getLocalProjectIds)
-  const projects: DataByKey<Project> = yield select(getProjects)
-  yield forEach<Project>(localProjectIds, projects, project => saveProjectRequest(project))
-}
-
-function* handleRetrySync(_action: RetrySyncAction) {
-  // retry projects
-  const failedProjectIds: string[] = yield select(getFailedProjectIds)
-  const projects: DataByKey<Project> = yield select(getProjects)
-  yield forEach<Project>(failedProjectIds, projects, project => saveProjectRequest(project))
-}
-
-function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
-  const project = action.payload.project
-  const debounce = action.payload.debounce
-  const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
-  const scene = scenes[project.sceneId]
-
-  try {
-    yield call(() => saveProject(project.id, project, scene, debounce))
-    yield put(saveProjectSuccess(project))
-  } catch (e) {
-    yield put(saveProjectFailure(project, e))
+  function* handleLoginSuccess(_action: LoginSuccessAction) {
+    yield put(sync())
   }
-}
 
-function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
-  const projects: ReturnType<typeof getProjects> = yield select(getProjects)
-  let project = projects[action.payload.project.id]
-  if (!project) return
-  if (!project.thumbnail) {
-    const action: EditProjectThumbnailAction = yield take(EDIT_PROJECT_THUMBNAIL)
-    project = {
-      ...project,
-      thumbnail: action.payload.thumbnail
+  function* handleSync(_action: SyncAction) {
+    // sync projects
+    const localProjectIds: string[] = yield select(getLocalProjectIds)
+    const projects: DataByKey<Project> = yield select(getProjects)
+    yield forEach<Project>(localProjectIds, projects, project => saveProjectRequest(project))
+  }
+
+  function* handleRetrySync(_action: RetrySyncAction) {
+    // retry projects
+    const failedProjectIds: string[] = yield select(getFailedProjectIds)
+    const projects: DataByKey<Project> = yield select(getProjects)
+    yield forEach<Project>(failedProjectIds, projects, project => saveProjectRequest(project))
+  }
+
+  function* handleSaveProjectRequest(action: SaveProjectRequestAction) {
+    const project = action.payload.project
+    const debounce = action.payload.debounce
+    const scenes: ReturnType<typeof getScenes> = yield select(getScenes)
+    const scene = scenes[project.sceneId]
+
+    try {
+      yield call(() => saveProject(project.id, project, scene, builder, debounce))
+      yield put(saveProjectSuccess(project))
+    } catch (e) {
+      yield put(saveProjectFailure(project, e))
     }
   }
-  try {
-    saveThumbnail(project.id, project)
-  } catch (e) {
-    console.error(e)
-  }
-}
 
-function* handleDeleteProjectRequest(action: DeleteProjectRequestAction) {
-  const { id } = action.payload
-  try {
-    yield call(() => builder.deleteProject(id))
-    yield put(deleteProjectSuccess(id))
-  } catch (e) {
-    yield put(deleteProjectFailure(id, e))
+  function* handleSaveProjectSuccess(action: SaveProjectSuccessAction) {
+    const projects: ReturnType<typeof getProjects> = yield select(getProjects)
+    let project = projects[action.payload.project.id]
+    if (!project) return
+    if (!project.thumbnail) {
+      const action: EditProjectThumbnailAction = yield take(EDIT_PROJECT_THUMBNAIL)
+      project = {
+        ...project,
+        thumbnail: action.payload.thumbnail
+      }
+    }
+    try {
+      saveThumbnail(project.id, project, builder)
+    } catch (e) {
+      console.error(e)
+    }
   }
-}
 
-function* handleCreateProject(action: CreateProjectAction) {
-  const isLoggedInResult: boolean = yield select(isLoggedIn)
-  if (isLoggedInResult) {
-    yield put(saveProjectRequest(action.payload.project))
+  function* handleDeleteProjectRequest(action: DeleteProjectRequestAction) {
+    const { id } = action.payload
+    try {
+      yield call(() => builder.deleteProject(id))
+      yield put(deleteProjectSuccess(id))
+    } catch (e) {
+      yield put(deleteProjectFailure(id, e))
+    }
   }
-}
 
-function* handleSetProject(action: SetProjectAction) {
-  const isLoggedInResult: boolean = yield select(isLoggedIn)
-  if (isLoggedInResult) {
-    yield put(saveProjectRequest(action.payload.project))
+  function* handleCreateProject(action: CreateProjectAction) {
+    const isLoggedInResult: boolean = yield select(isLoggedIn)
+    if (isLoggedInResult) {
+      yield put(saveProjectRequest(action.payload.project))
+    }
   }
-}
 
-function* handleDeleteProject(action: DeleteProjectAction) {
-  const isLoggedInResult: boolean = yield select(isLoggedIn)
-  if (isLoggedInResult) {
-    yield put(deleteProjectRequest(action.payload.project.id))
+  function* handleSetProject(action: SetProjectAction) {
+    const isLoggedInResult: boolean = yield select(isLoggedIn)
+    if (isLoggedInResult) {
+      yield put(saveProjectRequest(action.payload.project))
+    }
   }
-}
 
-function* handleProvisionScene(action: ProvisionSceneAction) {
-  if (action.payload.init) return
-  const isLoggedInResult: boolean = yield select(isLoggedIn)
-  if (isLoggedInResult) {
-    const project: Project | null = yield select(getCurrentProject)
-    if (project) {
-      yield put(saveProjectRequest(project))
+  function* handleDeleteProject(action: DeleteProjectAction) {
+    const isLoggedInResult: boolean = yield select(isLoggedIn)
+    if (isLoggedInResult) {
+      yield put(deleteProjectRequest(action.payload.project.id))
+    }
+  }
+
+  function* handleProvisionScene(action: ProvisionSceneAction) {
+    if (action.payload.init) return
+    const isLoggedInResult: boolean = yield select(isLoggedIn)
+    if (isLoggedInResult) {
+      const project: Project | null = yield select(getCurrentProject)
+      if (project) {
+        yield put(saveProjectRequest(project))
+      }
     }
   }
 }

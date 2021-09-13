@@ -53,19 +53,27 @@ import {
   FetchCollectionItemsFailureAction,
   FETCH_COLLECTION_ITEMS_SUCCESS,
   FETCH_COLLECTION_ITEMS_REQUEST,
-  FETCH_COLLECTION_ITEMS_FAILURE
+  FETCH_COLLECTION_ITEMS_FAILURE,
+  FETCH_RARITIES_REQUEST,
+  FetchRaritiesRequestAction,
+  FETCH_RARITIES_SUCCESS,
+  FetchRaritiesSuccessAction,
+  FetchRaritiesFailureAction,
+  FETCH_RARITIES_FAILURE
 } from './actions'
 import { toItemObject } from './utils'
-import { Item } from './types'
+import { Item, Rarity } from './types'
 
 export type ItemState = {
   data: Record<string, Item>
+  rarities: Rarity[]
   loading: LoadingState
   error: string | null
 }
 
 const INITIAL_STATE: ItemState = {
   data: {},
+  rarities: [],
   loading: [],
   error: null
 }
@@ -98,8 +106,11 @@ type ItemReducerAction =
   | FetchCollectionItemsRequestAction
   | FetchCollectionItemsSuccessAction
   | FetchCollectionItemsFailureAction
+  | FetchRaritiesRequestAction
+  | FetchRaritiesSuccessAction
+  | FetchRaritiesFailureAction
 
-export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction) {
+export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
     case LOCATION_CHANGE: {
       return {
@@ -108,6 +119,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case FETCH_ITEMS_REQUEST:
+    case FETCH_RARITIES_REQUEST:
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
@@ -134,6 +146,15 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         error: null
       }
     }
+    case FETCH_RARITIES_SUCCESS: {
+      const { rarities } = action.payload
+      return {
+        ...state,
+        rarities,
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
     case FETCH_ITEMS_FAILURE:
     case FETCH_ITEM_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
@@ -141,6 +162,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case DEPLOY_ITEM_CONTENTS_FAILURE:
     case SAVE_PUBLISHED_ITEM_FAILURE:
     case SAVE_ITEM_FAILURE:
+    case FETCH_RARITIES_FAILURE:
     case DELETE_ITEM_FAILURE: {
       return {
         ...state,
@@ -166,6 +188,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case DELETE_ITEM_SUCCESS: {
       const { item } = action.payload
       const newState = {
+        ...state,
         data: {
           ...state.data
         },
