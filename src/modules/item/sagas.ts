@@ -2,13 +2,11 @@ import { Eth } from 'web3x-es/eth'
 import { Address } from 'web3x-es/address'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
-import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
-import { getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import {
   FetchItemsRequestAction,
@@ -143,7 +141,7 @@ export function* itemSaga(builder: BuilderAPI) {
       if (item.isPublished) {
         throw new Error(t('sagas.item.cant_save_published'))
       }
-      const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+      const finalSize: number = yield call(calculateFinalSize, item, contents)
       if (finalSize > MAX_FILE_SIZE) {
         throw new ItemTooBigError()
       }
@@ -175,7 +173,7 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(t('sagas.item.cant_save_without_collection'))
       }
 
-      const finalSize: number = yield call(() => calculateFinalSize(item, contents))
+      const finalSize: number = yield call(calculateFinalSize, item, contents)
       if (finalSize > MAX_FILE_SIZE) {
         throw new ItemTooBigError()
       }
@@ -271,8 +269,7 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(t('sagas.item.invalid_identity'))
       }
 
-      const chainId: ChainId = yield select(getChainId)
-      const deployedItem: Item = yield deployContents(identity, collection, item, chainId)
+      const deployedItem: Item = yield deployContents(identity, collection, item)
 
       yield put(deployItemContentsSuccess(collection, deployedItem))
     } catch (error) {

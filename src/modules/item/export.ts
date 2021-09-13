@@ -1,5 +1,4 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
-import { ChainId } from '@dcl/schemas'
 import { CatalystClient } from 'dcl-catalyst-client'
 import { EntityType } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
@@ -13,11 +12,11 @@ import { generateImage } from './utils'
 
 const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
 
-export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item, chainId: ChainId) {
-  const urn = getCatalystItemURN(collection, item, chainId)
+export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
+  const urn = getCatalystItemURN(collection, item)
   const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const catalystItem = toCatalystItem(collection, item, chainId)
+  const catalystItem = toCatalystItem(collection, item)
   const client = new CatalystClient(PEER_URL, 'Builder')
   const status = await client.fetchContentStatus()
   const { entityId, files: hashedFiles } = await client.buildEntity({
@@ -34,14 +33,14 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   return { ...item, inCatalyst: true }
 }
 
-function toCatalystItem(collection: Collection, item: Item, chainId: ChainId): CatalystItem {
+function toCatalystItem(collection: Collection, item: Item): CatalystItem {
   // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
   const representations = item.data.representations.map(representation => ({
     ...representation,
     contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
   }))
   return {
-    id: getCatalystItemURN(collection, item, chainId),
+    id: getCatalystItemURN(collection, item),
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,
@@ -102,8 +101,9 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
 
 /**
  * Calculates the final size (with the already stored content and the new one) of the contents of an item.
+ * All the files in newContents must also be in the item's contents in both name and hash.
  *
- * @param item - An item that might or not have already uploaded content.
+ * @param item - An item that contains the old and the new hahsed content.
  * @param newContents - The new content that is going to be added to the item.
  */
 export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
@@ -124,8 +124,7 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   } catch (error) {}
 
   const uniqueFiles = getUniqueFiles({ ...newHashes, ...filesToDownload }, { ...newContents, ...blobs })
-  const finalSize = imageSize + calculateFilesSize(uniqueFiles)
-  return finalSize
+  return imageSize + calculateFilesSize(uniqueFiles)
 }
 
 /**
