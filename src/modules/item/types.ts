@@ -1,5 +1,3 @@
-import { Address } from 'web3x-es/address'
-import BN from 'bn.js'
 import { ModelMetrics } from 'modules/scene/types'
 
 export enum ItemType {
