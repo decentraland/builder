@@ -1,7 +1,7 @@
 import { call, select } from 'redux-saga/effects'
 import { PopulatedTransaction } from 'ethers'
 import { Eth } from 'web3x/eth'
-import { LegacyProviderAdapter } from 'web3x-es/providers'
+import { LegacyProviderAdapter } from 'web3x/providers'
 import { env } from 'decentraland-commons'
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet, Provider } from 'decentraland-dapps/dist/modules/wallet/types'
