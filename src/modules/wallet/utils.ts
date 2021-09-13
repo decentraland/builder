@@ -29,10 +29,7 @@ export function* getWallet() {
   return [wallet, eth]
 }
 
-export function* getMethodData(populatedTransactionPromise: Promise<PopulatedTransaction>) {
-  const data: string = yield call(async () => {
-    const populatedTransaction = await populatedTransactionPromise
-    return populatedTransaction.data!
-  })
-  return data
+export async function getMethodData(populatedTransactionPromise: Promise<PopulatedTransaction>) {
+  const populatedTransaction = await populatedTransactionPromise
+  return populatedTransaction.data!
 }

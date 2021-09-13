@@ -146,7 +146,8 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
       abi,
       new providers.Web3Provider(provider)
     )
-    const data = yield getMethodData(
+    const data = yield call(
+      getMethodData,
       collectionV2.populateTransaction.initialize(
         collection.name,
         getCollectionSymbol(collection),
@@ -460,7 +461,7 @@ function* changeCollectionStatus(collection: Collection, isApproved: boolean) {
 
   const manager = getContract(ContractName.CollectionManager, maticChainId)
   const forwarder = getContract(ContractName.Forwarder, maticChainId)
-  const data: string = yield getMethodData(implementation.populateTransaction.setApproved(isApproved))
+  const data: string = yield call(getMethodData, implementation.populateTransaction.setApproved(isApproved))
 
   const txHash: string = yield call(sendTransaction, contract, committee =>
     committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, data)
