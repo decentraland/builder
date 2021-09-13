@@ -6,7 +6,7 @@ import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 
 import { builder } from 'lib/api/builder'
-import { fromWei } from 'web3x-es/utils'
+import { fromWei } from 'web3x/utils'
 import { ItemRarity } from 'modules/item/types'
 import { getBackgroundStyle } from 'modules/item/utils'
 import { emailRegex } from 'lib/validators'

@@ -1,34 +1,30 @@
-import BN from "bn.js"
-import { Address } from "web3x-es/address"
-import { EventLog, TransactionReceipt } from "web3x-es/formatters"
-import { Contract, ContractOptions, TxCall, TxSend, EventSubscriptionFactory } from "web3x-es/contract"
-import { Eth } from "web3x-es/eth"
-import abi from "./ENSAbi"
+import BN from 'bn.js'
+import { Address } from 'web3x/address'
+import { EventLog, TransactionReceipt } from 'web3x/formatters'
+import { Contract, ContractOptions, TxCall, TxSend, EventSubscriptionFactory } from 'web3x/contract'
+import { Eth } from 'web3x/eth'
+import abi from './ENSAbi'
 export type TransferEvent = {
-  node: string;
-  owner: Address;
+  node: string
+  owner: Address
 }
 export type NewOwnerEvent = {
-  node: string;
-  label: string;
-  owner: Address;
+  node: string
+  label: string
+  owner: Address
 }
 export type NewResolverEvent = {
-  node: string;
-  resolver: Address;
+  node: string
+  resolver: Address
 }
 export type NewTTLEvent = {
-  node: string;
-  ttl: string;
+  node: string
+  ttl: string
 }
-export interface TransferEventLog extends EventLog<TransferEvent, "Transfer"> {
-}
-export interface NewOwnerEventLog extends EventLog<NewOwnerEvent, "NewOwner"> {
-}
-export interface NewResolverEventLog extends EventLog<NewResolverEvent, "NewResolver"> {
-}
-export interface NewTTLEventLog extends EventLog<NewTTLEvent, "NewTTL"> {
-}
+export interface TransferEventLog extends EventLog<TransferEvent, 'Transfer'> {}
+export interface NewOwnerEventLog extends EventLog<NewOwnerEvent, 'NewOwner'> {}
+export interface NewResolverEventLog extends EventLog<NewResolverEvent, 'NewResolver'> {}
+export interface NewTTLEventLog extends EventLog<NewTTLEvent, 'NewTTL'> {}
 interface ENSEvents {
   Transfer: EventSubscriptionFactory<TransferEventLog>
   NewOwner: EventSubscriptionFactory<NewOwnerEventLog>
@@ -47,8 +43,7 @@ interface ENSTxEventLogs {
   NewResolver: NewResolverEventLog[]
   NewTTL: NewTTLEventLog[]
 }
-export interface ENSTransactionReceipt extends TransactionReceipt<ENSTxEventLogs> {
-}
+export interface ENSTransactionReceipt extends TransactionReceipt<ENSTxEventLogs> {}
 interface ENSMethods {
   resolver(node: string): TxCall<Address>
   owner(node: string): TxCall<Address>
@@ -65,7 +60,7 @@ export interface ENSDefinition {
 }
 export class ENS extends Contract<ENSDefinition> {
   constructor(eth: Eth, address?: Address, options?: ContractOptions) {
-      super(eth, abi, address, options)
-    }
+    super(eth, abi, address, options)
+  }
 }
 export let ENSAbi = abi

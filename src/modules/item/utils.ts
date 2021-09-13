@@ -1,5 +1,5 @@
-import { Address } from 'web3x-es/address'
-import { toBN } from 'web3x-es/utils'
+import { Address } from 'web3x/address'
+import { constants } from 'ethers'
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
@@ -317,10 +317,5 @@ export function toInitializeItems(items: Item[]): InitializeItem[] {
 }
 
 export function toInitializeItem(item: Item): InitializeItem {
-  return {
-    metadata: getMetadata(item),
-    rarity: item.rarity!.toLowerCase(),
-    price: toBN(item.price || 0),
-    beneficiary: item.beneficiary ? Address.fromString(item.beneficiary) : Address.ZERO
-  }
+  return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }

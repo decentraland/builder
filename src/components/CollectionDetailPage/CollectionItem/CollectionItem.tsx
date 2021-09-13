@@ -3,7 +3,7 @@ import { Network } from '@dcl/schemas'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button, Mana } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
-import { fromWei } from 'web3x-es/utils'
+import { fromWei } from 'web3x/utils'
 
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'

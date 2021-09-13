@@ -1,7 +1,7 @@
 import { Item } from 'modules/item/types'
 
 export type Collection = {
-  id: string // uuid
+  id: string
   name: string
   owner: string
   contractAddress?: string

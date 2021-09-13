@@ -1,12 +1,14 @@
-import { Eth } from 'web3x-es/eth'
-import { Address } from 'web3x-es/address'
+import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
-import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
+import { Provider, Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getChainIdByNetwork, getNetworkProvider } from 'decentraland-dapps/dist/lib/eth'
+import { Network } from '@dcl/schemas'
 import {
   FetchCollectionsRequestAction,
   fetchCollectionsRequest,
@@ -57,11 +59,8 @@ import {
   SaveCollectionFailureAction,
   SaveCollectionSuccessAction
 } from './actions'
-import { getMethodData, getWallet, sendWalletMetaTransaction } from 'modules/wallet/utils'
+import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
-import { CollectionManager } from 'contracts/CollectionManager'
-import { ERC721CollectionV2 } from 'contracts/ERC721CollectionV2'
-import { Committee } from 'contracts/Committee'
 import { createCollectionForumPostRequest } from 'modules/forum/actions'
 import {
   setItemsTokenIdRequest,
@@ -136,29 +135,30 @@ function* handleSaveCollectionRequest(action: SaveCollectionRequestAction) {
     if (!isValidText(collection.name)) {
       throw new Error(t('sagas.collection.invalid_character'))
     }
-
     const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
-
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const maticChainId = wallet.networks.MATIC.chainId
-    const from = Address.fromString(wallet.address)
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
     const rarities = getContract(ContractName.Rarities, maticChainId)
-
-    const implementation = new ERC721CollectionV2(eth, Address.ZERO)
-    const data = getMethodData(
-      implementation.methods.initialize(
+    const from: string = yield select(getAddress)
+    const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
+    const provider: Provider = yield call(getNetworkProvider, maticChainId)
+    const collectionV2 = new Contract(
+      constants.AddressZero, // using zero address here since we just want the implementation of the ERC721CollectionV2 to generate the `data` of the initialize method
+      abi,
+      new providers.Web3Provider(provider)
+    )
+    const data = yield call(
+      getMethodData,
+      collectionV2.populateTransaction.initialize(
         collection.name,
         getCollectionSymbol(collection),
         getCollectionBaseURI(),
         from,
         true, // should complete
         false, // is approved
-        Address.fromString(rarities.address),
+        rarities.address,
         toInitializeItems(items)
-      ),
-      from
+      )
     )
-
     const remoteCollection: Collection = yield call(() => builder.saveCollection(collection, data))
     const newCollection = { ...collection, ...remoteCollection }
 
@@ -209,24 +209,19 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
       throw new Error(t('sagas.item.missing_salt'))
     }
 
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-
-    const from = Address.fromString(wallet.address)
-    const maticChainId = wallet.networks.MATIC.chainId
+    const from: string = yield select(getAddress)
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
 
     const forwarder = getContract(ContractName.Forwarder, maticChainId)
     const factory = getContract(ContractName.CollectionFactory, maticChainId)
     const manager = getContract(ContractName.CollectionManager, maticChainId)
 
-    const collectionManager = new CollectionManager(eth, Address.fromString(manager.address))
-
     yield retry(10, 500, builder.saveTOS, collection, email)
 
-    const txHash: string = yield sendWalletMetaTransaction(
-      manager,
-      collectionManager.methods.createCollection(
-        Address.fromString(forwarder.address),
-        Address.fromString(factory.address),
+    const txHash: string = yield call(sendTransaction, manager, collectionManager =>
+      collectionManager.createCollection(
+        forwarder.address,
+        factory.address,
         collection.salt!,
         collection.name,
         getCollectionSymbol(collection),
@@ -246,17 +241,15 @@ function* handlePublishCollectionRequest(action: PublishCollectionRequestAction)
 function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestAction) {
   const { collection, accessList } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const maticChainId = wallet.networks.MATIC.chainId
-    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
 
-    const addresses: Address[] = []
+    const addresses: string[] = []
     const values: boolean[] = []
 
     const newMinters = new Set(collection.minters)
 
     for (const { address, hasAccess } of accessList) {
-      addresses.push(Address.fromString(address))
+      addresses.push(address)
       values.push(hasAccess)
 
       if (hasAccess) {
@@ -267,7 +260,7 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
     }
 
     const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-    const txHash: string = yield sendWalletMetaTransaction(contract, implementation.methods.setMinters(addresses, values))
+    const txHash: string = yield sendTransaction(contract, collection => collection.setMinters(addresses, values))
 
     yield put(setCollectionMintersSuccess(collection, Array.from(newMinters), maticChainId, txHash))
     yield put(replace(locations.activity()))
@@ -279,17 +272,15 @@ function* handleSetCollectionMintersRequest(action: SetCollectionMintersRequestA
 function* handleSetCollectionManagersRequest(action: SetCollectionManagersRequestAction) {
   const { collection, accessList } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-    const maticChainId = wallet.networks.MATIC.chainId
-    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
 
-    const addresses: Address[] = []
+    const addresses: string[] = []
     const values: boolean[] = []
 
     const newManagers = new Set(collection.managers)
 
     for (const { address, hasAccess } of accessList) {
-      addresses.push(Address.fromString(address))
+      addresses.push(address)
       values.push(hasAccess)
 
       if (hasAccess) {
@@ -300,7 +291,7 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
     }
 
     const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-    const txHash: string = yield sendWalletMetaTransaction(contract, implementation.methods.setManagers(addresses, values))
+    const txHash: string = yield call(sendTransaction, contract, collection => collection.setManagers(addresses, values))
 
     yield put(setCollectionManagersSuccess(collection, Array.from(newManagers), maticChainId, txHash))
     yield put(replace(locations.activity()))
@@ -312,24 +303,21 @@ function* handleSetCollectionManagersRequest(action: SetCollectionManagersReques
 function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAction) {
   const { collection, mints } = action.payload
   try {
-    const [wallet, eth]: [Wallet, Eth] = yield getWallet()
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
 
-    const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
-    const beneficiaries: Address[] = []
+    const beneficiaries: string[] = []
     const tokenIds: string[] = []
 
     for (const mint of mints) {
-      const beneficiary = Address.fromString(mint.address)
+      const beneficiary = mint.address
       for (let i = 0; i < mint.amount; i++) {
         beneficiaries.push(beneficiary)
         tokenIds.push(mint.item.tokenId!)
       }
     }
 
-    const maticChainId = wallet.networks.MATIC.chainId
     const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-
-    const txHash: string = yield sendWalletMetaTransaction(contract, implementation.methods.issueTokens(beneficiaries, tokenIds))
+    const txHash: string = yield call(sendTransaction, contract, collection => collection.issueTokens(beneficiaries, tokenIds))
 
     yield put(mintCollectionItemsSuccess(collection, mints, maticChainId, txHash))
     yield put(closeModal('MintItemsModal'))
@@ -342,8 +330,7 @@ function* handleMintCollectionItemsRequest(action: MintCollectionItemsRequestAct
 function* handleApproveCollectionRequest(action: ApproveCollectionRequestAction) {
   const { collection } = action.payload
   try {
-    const [wallet]: [Wallet] = yield getWallet()
-    const maticChainId = wallet.networks.MATIC.chainId
+    const maticChainId = getChainIdByNetwork(Network.MATIC)
 
     const txHash: string = yield changeCollectionStatus(collection, true)
     yield put(approveCollectionSuccess(collection, maticChainId, txHash))
@@ -466,27 +453,18 @@ function* deployItems(collection: Collection, items: Item[]) {
 }
 
 function* changeCollectionStatus(collection: Collection, isApproved: boolean) {
-  const [wallet, eth]: [Wallet, Eth] = yield getWallet()
-
-  const from = Address.fromString(wallet.address)
-  const maticChainId = wallet.networks.MATIC.chainId
+  const maticChainId = getChainIdByNetwork(Network.MATIC)
   const contract = getContract(ContractName.Committee, maticChainId)
 
-  const committee = new Committee(eth, Address.fromString(contract.address))
-  const implementation = new ERC721CollectionV2(eth, Address.fromString(collection.contractAddress!))
+  const { abi } = getContract(ContractName.ERC721CollectionV2, maticChainId)
+  const implementation = new Contract(collection.contractAddress!, abi)
 
   const manager = getContract(ContractName.CollectionManager, maticChainId)
   const forwarder = getContract(ContractName.Forwarder, maticChainId)
-  const data = getMethodData(implementation.methods.setApproved(isApproved), from)
+  const data: string = yield call(getMethodData, implementation.populateTransaction.setApproved(isApproved))
 
-  const txHash: string = yield sendWalletMetaTransaction(
-    contract,
-    committee.methods.manageCollection(
-      Address.fromString(manager.address),
-      Address.fromString(forwarder.address),
-      Address.fromString(collection.contractAddress!),
-      data
-    )
+  const txHash: string = yield call(sendTransaction, contract, committee =>
+    committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, data)
   )
   return txHash
 }
