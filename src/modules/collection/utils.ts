@@ -58,7 +58,7 @@ export function toInitializeItems(items: Item[]): InitializeItem[] {
 }
 
 export function toInitializeItem(item: Item): InitializeItem {
-  return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ? item.beneficiary : constants.AddressZero, getMetadata(item)]
+  return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }
 
 export function toCollectionObject(collections: Collection[]) {
