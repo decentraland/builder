@@ -22,7 +22,7 @@ import { Project } from 'modules/project/types'
 import { migrations } from 'modules/migrations/store'
 import { createRootReducer } from './reducer'
 import { rootSaga } from './sagas'
-import { RootState } from './types'
+import { RootState, RootStore } from './types'
 import { Scene } from 'modules/scene/types'
 import { getLoadingSet } from 'modules/sync/selectors'
 import { DISMISS_SIGN_IN_TOAST, DISMISS_SYNCED_TOAST, SET_SYNC } from 'modules/ui/dashboard/actions'
@@ -135,7 +135,7 @@ const middlewares = [historyMiddleware, sagasMiddleware, loggerMiddleware, stora
 const middleware = applyMiddleware(...middlewares)
 
 const enhancer = composeEnhancers(middleware)
-const store = createStore(rootReducer, enhancer)
+const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
 
@@ -148,7 +148,7 @@ if (isDevelopment) {
 }
 
 window.onbeforeunload = function() {
-  const syncCount = getLoadingSet(store.getState() as RootState).size
+  const syncCount = getLoadingSet(store.getState()).size
   return syncCount > 0 || null
 }
 

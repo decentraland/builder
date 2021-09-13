@@ -1,21 +1,20 @@
 import { Authenticator } from 'dcl-crypto'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { RootState } from 'modules/common/types'
+import { RootStore } from 'modules/common/types'
 import { getData } from 'modules/identity/selectors'
 
 const AUTH_CHAIN_HEADER_PREFIX = 'x-identity-auth-chain-'
 
-// TODO type this
 export class Authorization {
-  private store: any
+  private store: RootStore
 
-  constructor(store: any) {
+  constructor(store: RootStore) {
     this.store = store
   }
 
   createAuthHeaders(method: string = 'get', path: string = '') {
     const headers: Record<string, string> = {}
-    const state = this.store.getState() as RootState
+    const state = this.store.getState()
     const address = getAddress(state)
     if (address) {
       const identities = getData(state)
