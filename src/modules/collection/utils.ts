@@ -1,5 +1,4 @@
-import { Address } from 'web3x-es/address'
-import { toBN } from 'web3x-es/utils'
+import { constants } from 'ethers'
 import { env, utils } from 'decentraland-commons'
 import { ChainId, getURNProtocol, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -59,12 +58,7 @@ export function toInitializeItems(items: Item[]): InitializeItem[] {
 }
 
 export function toInitializeItem(item: Item): InitializeItem {
-  return {
-    metadata: getMetadata(item),
-    rarity: item.rarity!.toLowerCase(),
-    price: toBN(item.price || 0),
-    beneficiary: item.beneficiary ? Address.fromString(item.beneficiary) : Address.ZERO
-  }
+  return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }
 
 export function toCollectionObject(collections: Collection[]) {

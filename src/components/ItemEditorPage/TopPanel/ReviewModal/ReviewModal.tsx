@@ -1,5 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Network } from '@dcl/schemas'
+import { ChainButton } from 'decentraland-dapps/dist/containers'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
@@ -47,9 +50,14 @@ export default class ReviewModal extends React.PureComponent<Props> {
         <Modal.Header>{t(`${i18nKey}.title`)}</Modal.Header>
         <Modal.Content>{t(`${i18nKey}.subtitle`)}</Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={this.handleReview} loading={isLoading}>
+          <ChainButton
+            primary
+            onClick={this.handleReview}
+            loading={isLoading}
+            chainId={getChainIdByNetwork(Network.MATIC)}
+          >
             {t(`${i18nKey}.action`)}
-          </Button>
+          </ChainButton>
           <Button onClick={this.handleClose}>{t('global.cancel')}</Button>
         </Modal.Actions>
       </>
@@ -122,8 +130,8 @@ export default class ReviewModal extends React.PureComponent<Props> {
         ) : type === ReviewType.REJECT && !collection.isApproved ? (
           this.renderRejected()
         ) : (
-          this.renderReview()
-        )}
+                this.renderReview()
+              )}
       </Modal>
     )
   }

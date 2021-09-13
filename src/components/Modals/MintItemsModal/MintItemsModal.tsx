@@ -1,5 +1,8 @@
 import * as React from 'react'
 import { ModalNavigation, ModalActions, Form, Button, Row } from 'decentraland-ui'
+import { Network } from '@dcl/schemas'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { ChainButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
@@ -55,10 +58,10 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
     }
 
     if (total > MAX_NFTS_PER_MINT) {
-      this.setState({error: t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT })})
+      this.setState({ error: t('mint_items_modal.limit_reached', { max: MAX_NFTS_PER_MINT }) })
       return
     } else {
-      this.setState({error: null})
+      this.setState({ error: null })
     }
 
     if (mints.length > 0) {
@@ -108,8 +111,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
             {isEmpty ? (
               <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
             ) : (
-              items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
-            )}
+                items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+              )}
             {isFull ? null : (
               <ItemDropdown placeholder={t('mint_items_modal.add_item')} onChange={this.handleAddItems} filter={this.filterAddableItems} />
             )}
@@ -119,13 +122,13 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   {t('global.cancel')}
                 </Button>
               ) : (
-                <Button primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled || !!error}>
-                  {t('global.mint')}
-                </Button>
-              )}
+                  <ChainButton primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled || !!error} chainId={getChainIdByNetwork(Network.MATIC)}>
+                    {t('global.mint')}
+                  </ChainButton>
+                )}
             </ModalActions>
             {error ? <Row className="error" align="right">
-                <p className="danger-text">{error}</p>
+              <p className="danger-text">{error}</p>
             </Row> : null}
           </Form>
         </Modal.Content>

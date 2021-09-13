@@ -45,5 +45,5 @@ function* handleDeployItemFailure(action: DeployItemContentsFailureAction) {
 }
 
 function isUserDeniedSignature(message: string = '') {
-  return message.indexOf('User denied message signature') !== -1
+  return message.indexOf('User denied') !== -1
 }

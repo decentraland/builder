@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Modal, Button, Form, CheckboxProps, Radio, Loader, Popup } from 'decentraland-ui'
 import { getContractName } from 'decentraland-transactions'
-import { TransactionLink } from 'decentraland-dapps/dist/containers'
+import { ChainCheck, TransactionLink } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
@@ -51,7 +51,16 @@ const AuthorizationModal = (props: Props) => {
                 </Link>
               }
             />
-            <Radio checked={isAuthorized} label={tokenSymbol} onClick={handleAuthorizationChange} disabled={isLoading} />
+            <ChainCheck chainId={authorization.chainId}>
+              {isEnabled => (
+                <Radio
+                  checked={isAuthorized}
+                  label={tokenSymbol}
+                  onClick={handleAuthorizationChange}
+                  disabled={isLoading || !isEnabled}
+                />
+              )}
+            </ChainCheck>
             <div className="radio-description secondary-text">
               <T
                 id="authorization_modal.authorize"
