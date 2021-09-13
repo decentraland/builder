@@ -1,5 +1,5 @@
-import { Vector3, Quaternion } from 'modules/common/types'
 import { Asset, AssetParameterValues } from 'modules/asset/types'
+import { ModelMetrics, Vector3, Quaternion } from 'modules/models/types'
 
 export type EntityDefinition = {
   id: string
@@ -42,15 +42,6 @@ export type ComponentDefinition<T extends ComponentType> = {
   id: string
   type: T
   data: ComponentData[T]
-}
-
-export type ModelMetrics = {
-  triangles: number
-  materials: number
-  meshes: number
-  bodies: number
-  entities: number
-  textures: number
 }
 
 export type Scene = {

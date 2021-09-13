@@ -6,7 +6,7 @@ import { runMigrations } from 'modules/migrations/utils'
 import { migrations } from 'modules/migrations/manifest'
 import { Project, Manifest } from 'modules/project/types'
 import { Asset, AssetAction, AssetParameter } from 'modules/asset/types'
-import { Scene, ModelMetrics } from 'modules/scene/types'
+import { Scene } from 'modules/scene/types'
 import { FullAssetPack } from 'modules/assetPack/types'
 import { dataURLToBlob, isDataUrl, objectURLToBlob } from 'modules/media/utils'
 import { createManifest } from 'modules/project/export'
@@ -16,8 +16,13 @@ import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/t
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
 import { WeeklyStats } from 'modules/stats/types'
+<<<<<<< HEAD
 import { Authorization } from './auth'
+=======
+>>>>>>> 896a60a29072929ff556bc3152f039102458d2b2
 import { ForumPost } from 'modules/forum/types'
+import { ModelMetrics } from 'modules/models/types'
+import { authorize } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 

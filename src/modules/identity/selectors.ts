@@ -2,9 +2,12 @@ import { createSelector } from 'reselect'
 import { AuthIdentity } from 'dcl-crypto'
 import { isConnecting, getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { isValid } from './utils'
 import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { GENERATE_IDENTITY_REQUEST } from './actions'
+
+function isValid(identity?: AuthIdentity | null) {
+  return !!identity && Date.now() < +new Date(identity.expiration)
+}
 
 export const getState = (state: RootState) => state.identity
 export const getData = (state: RootState) => getState(state).data

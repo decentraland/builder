@@ -1,4 +1,4 @@
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 
 export const GROUND_CATEGORY = 'ground'
 

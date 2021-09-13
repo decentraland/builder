@@ -1,6 +1,6 @@
 import { Entity } from 'dcl-catalyst-commons'
-import { Address } from 'web3x-es/address'
-import { fromWei } from 'web3x-es/utils'
+import { Address } from 'web3x/address'
+import { fromWei } from 'web3x/utils'
 import { PEER_URL, getCatalystContentUrl } from 'lib/api/peer'
 import { DCLRegistrar } from 'contracts/DCLRegistrar'
 import { Land } from 'modules/land/types'

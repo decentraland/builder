@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
 import { Wearable } from 'decentraland-ecs'
-import { Vector3 } from 'modules/common/types'
+import { Vector3 } from 'modules/models/types'
 import {
   UpdateEditorAction,
   SetEditorReadyAction,

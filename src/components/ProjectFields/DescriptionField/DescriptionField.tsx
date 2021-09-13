@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Field, FieldProps } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
-import { MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH } from 'modules/project/utils'
+import { MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH } from 'modules/project/constants'
 
 export default class DescriptionField extends React.PureComponent<FieldProps> {
   render() {

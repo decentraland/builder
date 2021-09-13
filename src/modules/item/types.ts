@@ -1,4 +1,4 @@
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 
 export enum ItemType {
   WEARABLE = 'wearable'
@@ -136,6 +136,8 @@ export type Rarity = {
   price: string
   maxSupply: string
 }
+
+export type InitializeItem = [string, string, string, string]
 
 export const THUMBNAIL_PATH = 'thumbnail.png'
 export const IMAGE_PATH = 'image.png'

@@ -1,4 +1,5 @@
-import { Address } from 'web3x-es/address'
+import { Address } from 'web3x/address'
+import { constants } from 'ethers'
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
@@ -21,8 +22,10 @@ import {
   WearableCategory,
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
-  THUMBNAIL_PATH
+  THUMBNAIL_PATH,
+  InitializeItem
 } from './types'
+import { sortByCreatedAt } from 'lib/sort'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -307,4 +310,12 @@ export function isValidText(text: string) {
 
 export function isItemSizeError(error: string) {
   return error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1
+}
+
+export function toInitializeItems(items: Item[]): InitializeItem[] {
+  return items.sort(sortByCreatedAt).map(toInitializeItem)
+}
+
+export function toInitializeItem(item: Item): InitializeItem {
+  return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }
