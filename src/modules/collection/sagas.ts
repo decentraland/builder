@@ -464,7 +464,7 @@ export function* collectionSaga(builder: BuilderAPI) {
     const data: string = yield call(getMethodData, implementation.populateTransaction.setApproved(isApproved))
 
     const txHash: string = yield call(sendTransaction, contract, committee =>
-      committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, data)
+      committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
     )
     return txHash
   }
