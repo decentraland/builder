@@ -1,4 +1,4 @@
-import { Address } from 'web3x-es/address'
+import { Address } from 'web3x/address'
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'

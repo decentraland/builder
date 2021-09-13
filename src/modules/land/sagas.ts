@@ -1,5 +1,5 @@
-import { Eth } from 'web3x-es/eth'
-import { Address } from 'web3x-es/address'
+import { Eth } from 'web3x/eth'
+import { Address } from 'web3x/address'
 import {
   CONNECT_WALLET_SUCCESS,
   CHANGE_ACCOUNT,

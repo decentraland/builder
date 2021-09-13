@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Section, Row, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
-import { fromWei } from 'web3x-es/utils'
+import { fromWei } from 'web3x/utils'
 
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'

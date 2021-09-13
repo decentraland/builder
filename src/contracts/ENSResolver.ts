@@ -1,89 +1,77 @@
-import BN from "bn.js"
-import { Address } from "web3x-es/address"
-import { EventLog, TransactionReceipt } from "web3x-es/formatters"
-import { Contract, ContractOptions, TxCall, TxSend, EventSubscriptionFactory } from "web3x-es/contract"
-import { Eth } from "web3x-es/eth"
-import abi from "./ENSResolverAbi"
+import BN from 'bn.js'
+import { Address } from 'web3x/address'
+import { EventLog, TransactionReceipt } from 'web3x/formatters'
+import { Contract, ContractOptions, TxCall, TxSend, EventSubscriptionFactory } from 'web3x/contract'
+import { Eth } from 'web3x/eth'
+import abi from './ENSResolverAbi'
 export type AuthorisationChangedEvent = {
-  node: string;
-  owner: Address;
-  target: Address;
-  isAuthorised: boolean;
+  node: string
+  owner: Address
+  target: Address
+  isAuthorised: boolean
 }
 export type TextChangedEvent = {
-  node: string;
-  indexedKey: string;
-  key: string;
+  node: string
+  indexedKey: string
+  key: string
 }
 export type PubkeyChangedEvent = {
-  node: string;
-  x: string;
-  y: string;
+  node: string
+  x: string
+  y: string
 }
 export type NameChangedEvent = {
-  node: string;
-  name: string;
+  node: string
+  name: string
 }
 export type InterfaceChangedEvent = {
-  node: string;
-  interfaceID: string;
-  implementer: Address;
+  node: string
+  interfaceID: string
+  implementer: Address
 }
 export type DNSRecordChangedEvent = {
-  node: string;
-  name: string;
-  resource: string;
-  record: string;
+  node: string
+  name: string
+  resource: string
+  record: string
 }
 export type DNSRecordDeletedEvent = {
-  node: string;
-  name: string;
-  resource: string;
+  node: string
+  name: string
+  resource: string
 }
 export type DNSZoneClearedEvent = {
-  node: string;
+  node: string
 }
 export type ContenthashChangedEvent = {
-  node: string;
-  hash: string;
+  node: string
+  hash: string
 }
 export type AddrChangedEvent = {
-  node: string;
-  a: Address;
+  node: string
+  a: Address
 }
 export type AddressChangedEvent = {
-  node: string;
-  coinType: string;
-  newAddress: string;
+  node: string
+  coinType: string
+  newAddress: string
 }
 export type ABIChangedEvent = {
-  node: string;
-  contentType: string;
+  node: string
+  contentType: string
 }
-export interface AuthorisationChangedEventLog extends EventLog<AuthorisationChangedEvent, "AuthorisationChanged"> {
-}
-export interface TextChangedEventLog extends EventLog<TextChangedEvent, "TextChanged"> {
-}
-export interface PubkeyChangedEventLog extends EventLog<PubkeyChangedEvent, "PubkeyChanged"> {
-}
-export interface NameChangedEventLog extends EventLog<NameChangedEvent, "NameChanged"> {
-}
-export interface InterfaceChangedEventLog extends EventLog<InterfaceChangedEvent, "InterfaceChanged"> {
-}
-export interface DNSRecordChangedEventLog extends EventLog<DNSRecordChangedEvent, "DNSRecordChanged"> {
-}
-export interface DNSRecordDeletedEventLog extends EventLog<DNSRecordDeletedEvent, "DNSRecordDeleted"> {
-}
-export interface DNSZoneClearedEventLog extends EventLog<DNSZoneClearedEvent, "DNSZoneCleared"> {
-}
-export interface ContenthashChangedEventLog extends EventLog<ContenthashChangedEvent, "ContenthashChanged"> {
-}
-export interface AddrChangedEventLog extends EventLog<AddrChangedEvent, "AddrChanged"> {
-}
-export interface AddressChangedEventLog extends EventLog<AddressChangedEvent, "AddressChanged"> {
-}
-export interface ABIChangedEventLog extends EventLog<ABIChangedEvent, "ABIChanged"> {
-}
+export interface AuthorisationChangedEventLog extends EventLog<AuthorisationChangedEvent, 'AuthorisationChanged'> {}
+export interface TextChangedEventLog extends EventLog<TextChangedEvent, 'TextChanged'> {}
+export interface PubkeyChangedEventLog extends EventLog<PubkeyChangedEvent, 'PubkeyChanged'> {}
+export interface NameChangedEventLog extends EventLog<NameChangedEvent, 'NameChanged'> {}
+export interface InterfaceChangedEventLog extends EventLog<InterfaceChangedEvent, 'InterfaceChanged'> {}
+export interface DNSRecordChangedEventLog extends EventLog<DNSRecordChangedEvent, 'DNSRecordChanged'> {}
+export interface DNSRecordDeletedEventLog extends EventLog<DNSRecordDeletedEvent, 'DNSRecordDeleted'> {}
+export interface DNSZoneClearedEventLog extends EventLog<DNSZoneClearedEvent, 'DNSZoneCleared'> {}
+export interface ContenthashChangedEventLog extends EventLog<ContenthashChangedEvent, 'ContenthashChanged'> {}
+export interface AddrChangedEventLog extends EventLog<AddrChangedEvent, 'AddrChanged'> {}
+export interface AddressChangedEventLog extends EventLog<AddressChangedEvent, 'AddressChanged'> {}
+export interface ABIChangedEventLog extends EventLog<ABIChangedEvent, 'ABIChanged'> {}
 interface ENSResolverEvents {
   AuthorisationChanged: EventSubscriptionFactory<AuthorisationChangedEventLog>
   TextChanged: EventSubscriptionFactory<TextChangedEventLog>
@@ -126,17 +114,19 @@ interface ENSResolverTxEventLogs {
   AddressChanged: AddressChangedEventLog[]
   ABIChanged: ABIChangedEventLog[]
 }
-export interface ENSResolverTransactionReceipt extends TransactionReceipt<ENSResolverTxEventLogs> {
-}
+export interface ENSResolverTransactionReceipt extends TransactionReceipt<ENSResolverTxEventLogs> {}
 interface ENSResolverMethods {
   supportsInterface(interfaceID: string): TxCall<boolean>
   setDNSRecords(node: string, data: string): TxSend<ENSResolverTransactionReceipt>
   setText(node: string, key: string, value: string): TxSend<ENSResolverTransactionReceipt>
   interfaceImplementer(node: string, interfaceID: string): TxCall<Address>
-  ABI(node: string, contentTypes: number | string | BN): TxCall<{
-      0: string;
-      1: string;
-    }>
+  ABI(
+    node: string,
+    contentTypes: number | string | BN
+  ): TxCall<{
+    0: string
+    1: string
+  }>
   setPubkey(node: string, x: string, y: string): TxSend<ENSResolverTransactionReceipt>
   setContenthash(node: string, hash: string): TxSend<ENSResolverTransactionReceipt>
   addr(node: string): TxCall<Address>
@@ -150,12 +140,14 @@ interface ENSResolverMethods {
   dnsRecord(node: string, name: string, resource: number | string | BN): TxCall<string>
   clearDNSZone(node: string): TxSend<ENSResolverTransactionReceipt>
   contenthash(node: string): TxCall<string>
-  pubkey(node: string): TxCall<{
-      "x": string;
-      0: string;
-      "y": string;
-      1: string;
-    }>
+  pubkey(
+    node: string
+  ): TxCall<{
+    x: string
+    0: string
+    y: string
+    1: string
+  }>
   setAddr(node: string, a: Address): TxSend<ENSResolverTransactionReceipt>
   setInterface(node: string, interfaceID: string, implementer: Address): TxSend<ENSResolverTransactionReceipt>
   addr(node: string, coinType: number | string | BN): TxCall<string>
@@ -168,7 +160,7 @@ export interface ENSResolverDefinition {
 }
 export class ENSResolver extends Contract<ENSResolverDefinition> {
   constructor(eth: Eth, address?: Address, options?: ContractOptions) {
-      super(eth, abi, address, options)
-    }
+    super(eth, abi, address, options)
+  }
 }
 export let ENSResolverAbi = abi
