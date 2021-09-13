@@ -137,6 +137,8 @@ export type Rarity = {
   maxSupply: string
 }
 
+export type InitializeItem = [string, string, string, string]
+
 export const THUMBNAIL_PATH = 'thumbnail.png'
 export const IMAGE_PATH = 'image.png'
 export const ITEM_NAME_MAX_LENGTH = 32

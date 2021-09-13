@@ -21,8 +21,6 @@ export enum RoleType {
   MINTER = 'minter'
 }
 
-export type InitializeItem = [string, string, string, string]
-
 export type Mint = {
   address: string
   amount: number
