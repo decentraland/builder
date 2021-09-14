@@ -116,6 +116,7 @@
     "build:ci": "npm run lint && npm run build",
     "postbuild": "node scripts/postbuild.js",
     "test": "node scripts/test.js",
+    "test:coverage": "npm run test -- --coverage",
     "lint": "tslint --project tsconfig.json -e '*.json' -c tslint.json 'src/**/*.ts{,x}'",
     "postinstall": "node ./scripts/postinstall.js",
     "bundle:svg": "npx svg-sprite -D src/components/Icon --css-dimensions \"\" --cs icons.svg --css --css-dest . --css-bust false --css-prefix \".Icon.%s\" --css-render-css src/icons/*.svg"
