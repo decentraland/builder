@@ -14,7 +14,7 @@ jobs:
       - name: Install
         run: npm ci
       - name: Test
-        run: npm test:coverage
+        run: npm run test:coverage
         if: ${{ always() }}
       - name: report coverage
         uses: coverallsapp/github-action@master
