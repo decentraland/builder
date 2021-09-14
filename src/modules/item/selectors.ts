@@ -13,9 +13,7 @@ export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 
-export const getItems = createSelector<RootState, ItemState['data'], string | undefined, Item[]>(getData, getAddress, itemData =>
-  Object.values(itemData)
-)
+export const getItems = createSelector<RootState, ItemState['data'], Item[]>(getData, itemData => Object.values(itemData))
 
 export const getItem = (state: RootState, itemId: string) => {
   const items = getItems(state)
@@ -30,11 +28,16 @@ export const getAuthorizedItems = createSelector<RootState, Collection[], Item[]
   getAuthorizedCollections,
   getItems,
   getAddress,
-  (collections, items, address) =>
-    items.filter(item => {
+  (collections, items, address) => {
+    if (!address) {
+      return []
+    }
+
+    return items.filter(item => {
       const collection = collections.filter(collection => collection.id === item.collectionId)[0]
-      return address && canSeeItem(collection, item, address)
+      return canSeeItem(collection, item, address)
     })
+  }
 )
 
 export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(getAuthorizedItems, items =>
