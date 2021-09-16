@@ -193,8 +193,6 @@ export function* itemSaga(builder: BuilderAPI) {
       }
 
       yield put(savePublishedItemSuccess(item, maticChainId, txHash))
-      yield put(closeModal('CreateItemModal'))
-      yield put(closeModal('EditPriceAndBeneficiaryModal'))
     } catch (error) {
       yield put(savePublishedItemFailure(actionItem, contents, error.message))
     }
