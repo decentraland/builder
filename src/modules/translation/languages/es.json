@@ -171,7 +171,7 @@
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
-    "rarity_label": "Cuál es la rareza de este item? (Suministro)",
+    "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
@@ -1108,6 +1108,7 @@
     }
   },
   "wearable": {
+    "supply": "{formatted} {count, plural, one {unidad} other {unidades}}",
     "rarity": {
       "unique": "Único",
       "mythic": "Mítico",
