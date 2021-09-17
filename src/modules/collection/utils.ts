@@ -5,7 +5,7 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item } from 'modules/item/types'
 import { isEqual, includes } from 'lib/address'
-import { Collection, Access } from './types'
+import { Collection, Access, Mint } from './types'
 import { locations } from 'routing/locations'
 
 export function setOnSale(collection: Collection, wallet: Wallet, isOnSale: boolean): Access[] {
@@ -87,4 +87,10 @@ export function canManageCollectionItems(collection: Collection, address?: strin
 
 export function hasReviews(collection: Collection) {
   return collection.reviewedAt !== collection.createdAt
+}
+
+export function getTotalAmountOfMintedItems(mints: Mint[]) {
+  return mints.reduce((total, mint) => {
+    return (total += mint.amount)
+  }, 0)
 }

@@ -800,7 +800,7 @@
     "collection_approved": "批准了集合{name}",
     "collection_rejected": "拒绝收藏{name}",
     "saved_published_item": "您编辑了项目{name}",
-    "collection_item_minted": "为集合 {collectionName} 铸造了 {itemName} {amount, plural, one {一次} other {{amount} 次}}",
+    "collection_item_minted": "为集合 {collectionName} 铸造了 {itemName} {count, plural, one {一次} other {{count} 次}}",
     "collection_items_minted": "为{name}收集了{count}个项目",
     "updated_collection_managers": "更新了集合 {name} 管理器",
     "updated_collection_minters": "更新了集合 {name} 铸币厂",
