@@ -136,19 +136,14 @@ export function* itemSaga(builder: BuilderAPI) {
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
       }
-      if (item.isPublished) {
-        throw new Error(t('sagas.item.cant_save_published'))
-      }
       const finalSize: number = yield call(calculateFinalSize, item, contents)
       if (finalSize > MAX_FILE_SIZE) {
         throw new ItemTooBigError()
       }
 
-      yield call(() => builder.saveItem(item, contents))
+      yield call(builder.saveItem, item, contents)
 
       yield put(saveItemSuccess(item, contents))
-      yield put(closeModal('CreateItemModal'))
-      yield put(closeModal('EditPriceAndBeneficiaryModal'))
     } catch (error) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
@@ -189,7 +184,7 @@ export function* itemSaga(builder: BuilderAPI) {
           collection.editItemsData([item.tokenId!], [item.price!], [item.beneficiary!], [metadata])
         )
       } else {
-        yield put(deployItemContentsRequest(collection, item))
+        yield put(saveItemRequest(item, contents))
       }
 
       yield put(savePublishedItemSuccess(item, maticChainId, txHash))
