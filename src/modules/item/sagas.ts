@@ -175,7 +175,7 @@ export function* itemSaga(builder: BuilderAPI) {
       const maticChainId = getChainIdByNetwork(Network.MATIC)
 
       // Items should be uploaded to the builder server in order to be available to be added to the catalysts
-      yield call(() => builder.saveItemContents(item, contents))
+      yield call(builder.saveItemContents, item, contents)
 
       if (hasOnChainDataChanged(originalItem, item)) {
         const metadata = getMetadata(item)
