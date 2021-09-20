@@ -1,6 +1,6 @@
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
-import { Network } from '@dcl/schemas'
+import { ChainId, Network } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -62,13 +62,13 @@ import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/
 import { getIdentity } from 'modules/identity/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI } from 'lib/api/builder'
-import { getCollection, getCollectionItems } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems, getCollections } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { deployContents, calculateFinalSize } from './export'
 import { Item, Rarity } from './types'
-import { getItem } from './selectors'
+import { getItem, getItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE } from './utils'
 
@@ -153,11 +153,16 @@ export function* itemSaga(builder: BuilderAPI) {
     const { item: actionItem, contents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
-      const originalItem: Item = yield select(state => getItem(state, item.id))
-      const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+      const items: ReturnType<typeof getItems> = yield select(getItems)
+      const collections: ReturnType<typeof getCollections> = yield select(getCollections)
+      const originalItem = items.find(_item => _item.id === item.id)
+      const collection = collections.find(_collection => _collection.id === item.collectionId)
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
+      }
+      if (!originalItem || !collection) {
+        throw new Error(t('sagas.item.not_found'))
       }
       if (!originalItem.isPublished) {
         throw new Error(t('sagas.item.cant_persist_unpublished'))
@@ -172,7 +177,7 @@ export function* itemSaga(builder: BuilderAPI) {
       }
 
       let txHash: string | undefined
-      const maticChainId = getChainIdByNetwork(Network.MATIC)
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
       // Items should be uploaded to the builder server in order to be available to be added to the catalysts
       yield call(builder.saveItemContents, item, contents)

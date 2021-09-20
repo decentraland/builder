@@ -1175,11 +1175,12 @@
       "missing_salt": "The collection has no salt"
     },
     "item": {
-      "Invalid identity": "Invalid Identity",
+      "invalid_identity": "Invalid Identity",
       "invalid_character": "Invalid character! The \":\" is not allowed in names or descriptions",
       "cant_save_published": "Item should not be published to save it",
       "cant_persist_unpublished": "Item must be published to save using a transaction",
-      "cant_save_without_collection": "Can't save a published without a collection"
+      "cant_save_without_collection": "Can't save a published item without a collection",
+      "not_found": "Not found"
     }
   }
 }
