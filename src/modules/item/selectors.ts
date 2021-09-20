@@ -25,9 +25,9 @@ export const getWalletItems = createSelector<RootState, Item[], string | undefin
 )
 
 export const getAuthorizedItems = createSelector<RootState, Collection[], Item[], string | undefined, Item[]>(
-  getAuthorizedCollections,
-  getItems,
-  getAddress,
+  state => getAuthorizedCollections(state),
+  state => getItems(state),
+  state => getAddress(state),
   (collections, items, address) => {
     if (!address) {
       return []
