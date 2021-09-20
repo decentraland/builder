@@ -10,7 +10,7 @@ import { call, select } from 'redux-saga/effects'
 import { Collection } from 'modules/collection/types'
 import { getItems } from './selectors'
 import { getCollections } from 'modules/collection/selectors'
-import { ChainId, WearableBodyShape, WearableCategory } from '@dcl/schemas'
+import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 
@@ -70,10 +70,11 @@ describe('Item sagas', () => {
     it('should throw if file size is larger than 2 MB', () => {
       const item = {
         name: 'valid name',
-        description: 'valid description'
+        description: 'valid description',
+        updatedAt
       } as Item
       return expectSaga(itemSaga, builderAPI)
-        .provide([[matchers.call.fn(calculateFinalSize), Promise.resolve(MAX_FILE_SIZE + 1)]])
+        .provide([[call(calculateFinalSize, item, contents), Promise.resolve(MAX_FILE_SIZE + 1)]])
         .put(
           saveItemFailure(
             item,
@@ -94,7 +95,7 @@ describe('Item sagas', () => {
 
       return expectSaga(itemSaga, builderAPI)
         .provide([
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)],
+          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
           [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
         ])
         .put(saveItemSuccess(item, contents))
@@ -111,7 +112,7 @@ describe('Item sagas', () => {
       } as Item
       return expectSaga(itemSaga, builderAPI)
         .provide([
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)],
+          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
           [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
         ])
         .put(saveItemSuccess(item, contents))
@@ -139,8 +140,8 @@ describe('Item sagas', () => {
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)],
-          [matchers.call.fn(getChainIdByNetwork), ChainId.MATIC_MAINNET]
+          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET]
         ])
         .put(saveItemRequest(item, contents))
         .put(savePublishedItemSuccess(item, ChainId.MATIC_MAINNET))
@@ -185,8 +186,8 @@ describe('Item sagas', () => {
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
-          [matchers.call.fn(calculateFinalSize), Promise.resolve(1)],
-          [matchers.call.fn(getChainIdByNetwork), ChainId.MATIC_MAINNET],
+          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
           [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
         ])
         .put(savePublishedItemSuccess(newItem, ChainId.MATIC_MAINNET, txHash))
