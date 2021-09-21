@@ -90,7 +90,5 @@ export function hasReviews(collection: Collection) {
 }
 
 export function getTotalAmountOfMintedItems(mints: Mint[]) {
-  return mints.reduce((total, mint) => {
-    return (total += mint.amount)
-  }, 0)
+  return mints.reduce((total, mint) => total + mint.amount, 0)
 }
