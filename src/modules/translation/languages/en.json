@@ -807,7 +807,7 @@
     "collection_approved": "Approved the collection {name}",
     "collection_rejected": "Rejected the collection {name}",
     "saved_published_item": "You edited the item {name}",
-    "collection_item_minted": "Minted {itemName} for the collection {collectionName} {amount, plural, one {once} other {{amount} times}}",
+    "collection_item_minted": "Minted {itemName} for the collection {collectionName} {count, plural, one {once} other {{count} times}}",
     "collection_items_minted": "Minted {count} items for the collection {collectionName}",
     "updated_collection_managers": "Updated the collection's {name} managers",
     "updated_collection_minters": "Updated the collection's {name} minters",
