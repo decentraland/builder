@@ -168,7 +168,7 @@
     "name_label": "Enter a name for your item",
     "category_label": "What's the category of this item?",
     "category_placeholder": "Select a category",
-    "rarity_label": "How rare is this item? (Supply)",
+    "rarity_label": "How rare is this item?",
     "rarity_placeholder": "Select a rarity",
     "representation_label": "Select the body shape for your item",
     "existing_item": "Is this part of an existing item?",
@@ -1097,6 +1097,7 @@
     }
   },
   "wearable": {
+    "supply": "{formatted} {count, plural, one {unit} other {units}}",
     "rarity": {
       "unique": "Unique",
       "mythic": "Mythic",
@@ -1174,11 +1175,12 @@
       "missing_salt": "The collection has no salt"
     },
     "item": {
-      "Invalid identity": "Invalid Identity",
+      "invalid_identity": "Invalid Identity",
       "invalid_character": "Invalid character! The \":\" is not allowed in names or descriptions",
       "cant_save_published": "Item should not be published to save it",
       "cant_persist_unpublished": "Item must be published to save using a transaction",
-      "cant_save_without_collection": "Can't save a published without a collection"
+      "cant_save_without_collection": "Can't save a published item without a collection",
+      "not_found": "Not found"
     }
   }
 }

@@ -600,12 +600,12 @@ export class BuilderAPI extends BaseAPI {
     return remoteItems.map(fromRemoteItem)
   }
 
-  async saveItem(item: Item, contents: Record<string, Blob>) {
+  saveItem = async (item: Item, contents: Record<string, Blob>) => {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
     await this.saveItemContents(item, contents)
   }
 
-  async saveItemContents(item: Item, contents: Record<string, Blob>) {
+  saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
       for (let path in contents) {

@@ -171,7 +171,7 @@
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
-    "rarity_label": "Cuál es la rareza de este item? (Suministro)",
+    "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
@@ -1108,6 +1108,7 @@
     }
   },
   "wearable": {
+    "supply": "{formatted} {count, plural, one {unidad} other {unidades}}",
     "rarity": {
       "unique": "Único",
       "mythic": "Mítico",
@@ -1185,11 +1186,12 @@
       "missing_salt": "La colección no tiene salt"
     },
     "item": {
-      "Invalid identity": "Identidad inválida",
+      "invalid_identity": "Identidad inválida",
       "invalid_character": "¡Carácter invalido! El \":\" no está permitido en nombres o descripciones",
       "cant_save_published": "El item no debe publicarse para guardarlo.",
       "cant_persist_unpublished": "El item debe estar publicado para guardar usando una transacción",
-      "cant_save_without_collection": "No se puede guardar una publicación sin una colección"
+      "cant_save_without_collection": "No se puede guardar una publicación sin una colección",
+      "not_found": "No se encontró"
     }
   }
 }

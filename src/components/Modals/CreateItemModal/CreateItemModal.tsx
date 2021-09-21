@@ -665,7 +665,14 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
             label={t('create_item_modal.rarity_label')}
             placeholder={t('create_item_modal.rarity_placeholder')}
             value={rarity}
-            options={rarities.map(value => ({ value, text: `${t(`wearable.rarity.${value}`)} (${getMaxSupplyForRarity(value)})` }))}
+            options={rarities.map(value => ({
+              value,
+              label: t(`wearable.supply`, {
+                count: getMaxSupplyForRarity(value),
+                formatted: getMaxSupplyForRarity(value).toLocaleString()
+              }),
+              text: t(`wearable.rarity.${value}`)
+            }))}
             onChange={this.handleRarityChange}
           />
         ) : null}
@@ -746,43 +753,43 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                       {bodyShape === BodyShapeType.BOTH ? (
                         this.renderFields()
                       ) : (
-                        <>
-                          {isAddingRepresentation ? null : (
-                            <Section>
-                              <Header sub>{t('create_item_modal.existing_item')}</Header>
-                              <Row>
-                                <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
-                                  {t('global.yes')}
-                                </div>
-                                <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
-                                  {t('global.no')}
-                                </div>
-                              </Row>
-                            </Section>
-                          )}
-                          {isRepresentation === undefined ? null : isRepresentation ? (
-                            <Section>
-                              <Header sub>
-                                {isAddingRepresentation
-                                  ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                                  : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
-                              </Header>
-                              <ItemDropdown
-                                value={item}
-                                filter={this.filterItemsByBodyShape}
-                                onChange={this.handleItemChange}
-                                isDisabled={isAddingRepresentation}
-                              />
-                            </Section>
-                          ) : (
-                            this.renderFields()
-                          )}
-                        </>
-                      )}
+                          <>
+                            {isAddingRepresentation ? null : (
+                              <Section>
+                                <Header sub>{t('create_item_modal.existing_item')}</Header>
+                                <Row>
+                                  <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
+                                    {t('global.yes')}
+                                  </div>
+                                  <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
+                                    {t('global.no')}
+                                  </div>
+                                </Row>
+                              </Section>
+                            )}
+                            {isRepresentation === undefined ? null : isRepresentation ? (
+                              <Section>
+                                <Header sub>
+                                  {isAddingRepresentation
+                                    ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                                    : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                                </Header>
+                                <ItemDropdown
+                                  value={item}
+                                  filter={this.filterItemsByBodyShape}
+                                  onChange={this.handleItemChange}
+                                  isDisabled={isAddingRepresentation}
+                                />
+                              </Section>
+                            ) : (
+                                this.renderFields()
+                              )}
+                          </>
+                        )}
                     </>
                   ) : (
-                    this.renderFields()
-                  )}
+                      this.renderFields()
+                    )}
                 </Column>
               </Row>
               <Row className="actions" align="right">

@@ -242,15 +242,7 @@ export function canManageItem(collection: Collection, item: Item, address?: stri
 }
 
 export function hasOnChainDataChanged(originalItem: Item, item: Item) {
-  return (
-    originalItem.name !== item.name ||
-    originalItem.description !== item.description ||
-    originalItem.data.category !== item.data.category ||
-    originalItem.price !== item.price ||
-    originalItem.beneficiary !== item.beneficiary ||
-    originalItem.rarity !== item.rarity ||
-    JSON.stringify(getBodyShapes(originalItem)) !== JSON.stringify(getBodyShapes(item))
-  )
+  return originalItem.price !== item.price || originalItem.beneficiary !== item.beneficiary
 }
 
 export function getThumbnailURL(item: Item) {
