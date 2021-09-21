@@ -26,6 +26,7 @@ import {
   InitializeItem
 } from './types'
 import { sortByCreatedAt } from 'lib/sort'
+import { NO_CACHE_HEADERS } from 'lib/headers'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -58,7 +59,7 @@ export function getBodyShapeType(item: Item): BodyShapeType {
   } else if (hasFemale) {
     return BodyShapeType.FEMALE
   } else {
-    throw new Error(`Couldn\'t find a valid representantion: ${JSON.stringify(item.data.representations, null, 2)}`)
+    throw new Error(`Couldn\'t find a valid representation: ${JSON.stringify(item.data.representations, null, 2)}`)
   }
 }
 
@@ -153,7 +154,7 @@ export function toItemObject(items: Item[]) {
 
 export async function generateImage(item: Item, width = 256, height = 256) {
   // fetch thumbnail
-  const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]))
+  const response = await fetch(getContentsStorageUrl(item.contents[item.thumbnail]), { headers: NO_CACHE_HEADERS })
   if (!response.ok) throw new Error(`Error generating the image: ${response.statusText}`)
 
   const thumbnail = await response.blob()
