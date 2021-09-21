@@ -1,9 +1,9 @@
 import { all } from 'redux-saga/effects'
 
-import { createAuthorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
 import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
 
+import { authorizationSaga } from 'decentraland-dapps/dist/modules/authorization/sagas'
 import { analyticsSaga } from 'modules/analytics/sagas'
 import { assetPackSaga } from 'modules/assetPack/sagas'
 import { assetSaga } from 'modules/asset/sagas'
@@ -31,39 +31,37 @@ import { toastSaga } from 'modules/toast/sagas'
 import { translationSaga } from 'modules/translation/sagas'
 import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
-
 import { PEER_URL } from 'lib/api/peer'
-import { TRANSACTIONS_API_URL } from 'modules/wallet/utils'
+import { BuilderAPI } from 'lib/api/builder'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
-const authorizationSaga = createAuthorizationSaga({ metaTransactionServerUrl: TRANSACTIONS_API_URL })
 
-export function* rootSaga() {
+export function* rootSaga(builderAPI: BuilderAPI) {
   yield all([
     analyticsSaga(),
-    assetPackSaga(),
+    assetPackSaga(builderAPI),
     assetSaga(),
     authorizationSaga(),
-    collectionSaga(),
-    committeeSaga(),
-    deploymentSaga(),
+    collectionSaga(builderAPI),
+    committeeSaga(builderAPI),
+    deploymentSaga(builderAPI),
     editorSaga(),
     ensSaga(),
-    forumSaga(),
+    forumSaga(builderAPI),
     identitySaga(),
-    itemSaga(),
+    itemSaga(builderAPI),
     keyboardSaga(),
     landSaga(),
     locationSaga(),
     mediaSaga(),
     modalSaga(),
-    poolGroupSaga(),
-    poolSaga(),
+    poolGroupSaga(builderAPI),
+    poolSaga(builderAPI),
     profileSaga(),
-    projectSaga(),
+    projectSaga(builderAPI),
     sceneSaga(),
-    statsSaga(),
-    syncSaga(),
+    statsSaga(builderAPI),
+    syncSaga(builderAPI),
     tileSaga(),
     toastSaga(),
     transactionSaga(),

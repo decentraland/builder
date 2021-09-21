@@ -1,5 +1,3 @@
-import { Vector3 } from 'modules/common/types'
-import { Scene, ModelMetrics, ComponentType, ComponentDefinition, AnyComponent, EntityDefinition } from './types'
 import { select, put, race, take } from 'redux-saga/effects'
 import {
   loadManifestRequest,
@@ -14,6 +12,8 @@ import { getData as getScenes } from 'modules/scene/selectors'
 import { SCRIPT_INSTANCE_NAME } from 'modules/project/export'
 import { AssetParameter, AssetParameterValues, AssetParameterType, AssetActionValue, Asset, GROUND_CATEGORY } from 'modules/asset/types'
 import { PreviewType } from 'modules/editor/types'
+import { ModelMetrics, Vector3 } from 'modules/models/types'
+import { Scene, ComponentType, ComponentDefinition, AnyComponent, EntityDefinition } from './types'
 
 /**
  * Returns a new random position bound to y: 0

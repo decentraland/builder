@@ -1,9 +1,7 @@
-import BN from 'bn.js'
-import { Address } from 'web3x-es/address'
 import { Item } from 'modules/item/types'
 
 export type Collection = {
-  id: string // uuid
+  id: string
   name: string
   owner: string
   contractAddress?: string
@@ -21,13 +19,6 @@ export type Collection = {
 export enum RoleType {
   MANAGER = 'manager',
   MINTER = 'minter'
-}
-
-export type InitializeItem = {
-  rarity: string
-  price: BN
-  beneficiary: Address
-  metadata: string
 }
 
 export type Mint = {

@@ -1,7 +1,7 @@
 import { cleanAssetName } from 'modules/asset/utils'
 import { CategoryName } from 'modules/ui/sidebar/utils'
 import { ImportedFile } from './AssetImporter.types'
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 import { buildAssetPath } from 'modules/project/export'
 
 export const ASSET_MANIFEST = 'asset.json'

@@ -1,4 +1,4 @@
-import { ContractAbi } from 'web3x-es/contract'
+import { ContractAbi } from 'web3x/contract'
 export default new ContractAbi([
   {
     constant: true,

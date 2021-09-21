@@ -1,8 +1,10 @@
 import * as React from 'react'
-import { Address } from 'web3x-es/address'
-import { fromWei, toWei } from 'web3x-es/utils'
+import { Address } from 'web3x/address'
+import { fromWei, toWei } from 'web3x/utils'
 import { Network } from '@dcl/schemas'
 import { ModalNavigation, ModalContent, ModalActions, Form, Field, Button, InputOnChangeData, FieldProps, Mana } from 'decentraland-ui'
+import { ChainButton } from 'decentraland-dapps/dist/containers'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 
@@ -150,9 +152,9 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
             />
           </ModalContent>
           <ModalActions>
-            <Button primary disabled={this.isDisabled()} loading={isLoading}>
+            <ChainButton primary disabled={this.isDisabled()} loading={isLoading} chainId={getChainIdByNetwork(Network.MATIC)}>
               {t('global.submit')}
-            </Button>
+            </ChainButton>
           </ModalActions>
         </Form>
       </Modal>

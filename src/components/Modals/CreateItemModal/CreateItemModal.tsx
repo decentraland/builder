@@ -41,7 +41,7 @@ import FileImport from 'components/FileImport'
 import ItemDropdown from 'components/ItemDropdown'
 import Icon from 'components/Icon'
 import { getExtension } from 'lib/file'
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 import {
   getBodyShapeType,
   getMissingBodyShapeType,
@@ -205,6 +205,9 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           },
           updatedAt: +new Date()
         }
+
+        // Do not change the thumbnail when adding a new representation
+        delete sortedContents.all[THUMBNAIL_PATH]
       } else if (pristineItem && changeItemFile) {
         item = {
           ...(pristineItem as Item),
@@ -392,7 +395,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   handleCategoryChange = (_event: React.SyntheticEvent<HTMLElement, Event>, { value }: DropdownProps) => {
     const category = value as WearableCategory
     if (this.state.category !== category) {
-      this.updateThumbnail(category)
+      this.updateThumbnailByCategory(category)
       this.setState({ category })
     }
   }
@@ -454,6 +457,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         bodies: 1,
         entities: 1
       }
+
+      thumbnail = await this.convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
     } else {
       const url = URL.createObjectURL(contents[model])
       const { image, info } = await getModelData(url, {
@@ -471,28 +476,22 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       metrics = info
     }
 
-    if (isImageFile(model)) {
-      thumbnail = await this.generateWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model], this.state.category)
-    }
-
     return [thumbnail, model, metrics, contents]
   }
 
   /**
-   * Updates the item's thumbnail if the user didn't provide a custom one before
-   * (either a thumbnail.png file in the zip file or uploading a custom one via the
-   * edit icon in the UI).
+   * Updates the item's thumbnail if the user changes the category of the item.
    *
    * @param category - The category of the wearable.
    */
-  async updateThumbnail(category: WearableCategory) {
+  async updateThumbnailByCategory(category: WearableCategory) {
     const { model, contents } = this.state
 
     const isCustom = !!contents && THUMBNAIL_PATH in contents
     if (!isCustom) {
       let thumbnail
       if (contents && isImageFile(model!)) {
-        thumbnail = await this.generateWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
+        thumbnail = await this.convertImageIntoWearableThumbnail(contents[THUMBNAIL_PATH] || contents[model!], category)
       } else {
         const url = URL.createObjectURL(contents![model!])
         const { image } = await getModelData(url, {
@@ -514,7 +513,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
    * @param blob - The blob of the image.
    * @param category - The category of the wearable.
    */
-  async generateWearableThumbnail(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
+  async convertImageIntoWearableThumbnail(blob: Blob, category: WearableCategory = WearableCategory.EYES) {
     // load blob into image
     const image = new Image()
     const loadFuture = future()

@@ -1,7 +1,8 @@
-import { Address } from 'web3x-es/address'
-import { ChainId, Network, getChainName } from '@dcl/schemas'
+import { Address } from 'web3x/address'
+import { constants } from 'ethers'
+import { getURNProtocol, Network } from '@dcl/schemas'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
-import { getChainConfiguration } from 'decentraland-dapps/dist/lib/chainConfiguration'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { getCatalystContentUrl } from 'lib/api/peer'
@@ -21,8 +22,10 @@ import {
   WearableCategory,
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
-  THUMBNAIL_PATH
+  THUMBNAIL_PATH,
+  InitializeItem
 } from './types'
+import { sortByCreatedAt } from 'lib/sort'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -35,16 +38,13 @@ export function getMaxSupplyForRarity(rarity: ItemRarity) {
   return RARITY_MAX_SUPPLY[rarity]
 }
 
-export function getCatalystItemURN(collection: Collection, item: Item, chainId: ChainId) {
+export function getCatalystItemURN(collection: Collection, item: Item) {
   if (!collection.contractAddress || !item.tokenId) {
     throw new Error('You need the collection and item to be published to get the catalyst urn')
   }
-  const config = getChainConfiguration(chainId)
-  const chainName = getChainName(config.networkMapping[Network.MATIC])
-  if (!chainName) {
-    throw new Error(`Could not find a valid chain name for network ${Network.MATIC} on config ${JSON.stringify(config.networkMapping)}`)
-  }
-  return `urn:decentraland:${chainName.toLowerCase()}:collections-v2:${collection.contractAddress}:${item.tokenId}`
+  return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${collection.contractAddress}:${
+    item.tokenId
+  }`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
@@ -310,4 +310,12 @@ export function isValidText(text: string) {
 
 export function isItemSizeError(error: string) {
   return error.search('The deployment is too big. The maximum allowed size per pointer is') !== -1
+}
+
+export function toInitializeItems(items: Item[]): InitializeItem[] {
+  return items.sort(sortByCreatedAt).map(toInitializeItem)
+}
+
+export function toInitializeItem(item: Item): InitializeItem {
+  return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }

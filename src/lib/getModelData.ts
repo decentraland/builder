@@ -15,7 +15,7 @@ import {
 } from 'three'
 import { basename } from 'path'
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
-import { ModelMetrics } from 'modules/scene/types'
+import { ModelMetrics } from 'modules/models/types'
 import { getScreenshot } from './getScreenshot'
 
 // transparent 1x1 pixel
