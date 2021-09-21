@@ -139,15 +139,9 @@ export async function getScreenshot(url: string, options: Partial<Options> = {})
   const center = parent.getBoundingInfo().boundingBox.center.multiply(scale)
   parent.position.subtractInPlace(center)
 
-  // render
-  const imageFuture = future<string>()
-  const imageResolver = (data: string) => imageFuture.resolve(data)
-  Tools.CreateScreenshotUsingRenderTarget(engine, camera, 1024, imageResolver, undefined, undefined, true)
-  const image = await imageFuture
-
   // remove dom element
   document.body.removeChild(canvas)
 
-  // return image
-  return image
+  // render
+  return Tools.CreateScreenshotUsingRenderTargetAsync(engine, camera, { width, height }, undefined, undefined, true)
 }
