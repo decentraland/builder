@@ -816,7 +816,7 @@
     "collection_approved": "Collección {name} aprobada",
     "collection_rejected": "Collección {name} rechazada",
     "saved_published_item": "Has editado el item {name}",
-    "collection_item_minted": "Item {itemName} creado para la colección {collectionName} {amount, plural, one {una vez} other {{amount} veces}}",
+    "collection_item_minted": "Item {itemName} creado para la colección {collectionName} {count, plural, one {una vez} other {{count} veces}}",
     "collection_items_minted": "{count} items creados para la colleción {name}",
     "updated_collection_managers": "Actualizados los colaboradores de la colección {name}",
     "updated_collection_minters": "Actualizados los emisores de la colección {name}",

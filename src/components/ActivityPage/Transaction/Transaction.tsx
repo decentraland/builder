@@ -29,7 +29,7 @@ import {
   REJECT_COLLECTION_SUCCESS
 } from 'modules/collection/actions'
 import { SET_ENS_RESOLVER_SUCCESS, SET_ENS_CONTENT_SUCCESS, ALLOW_CLAIM_MANA_SUCCESS, CLAIM_NAME_SUCCESS } from 'modules/ens/actions'
-import { getSaleAddress } from 'modules/collection/utils'
+import { getSaleAddress, getTotalAmountOfMintedItems } from 'modules/collection/utils'
 import { isEnoughClaimMana } from 'modules/ens/utils'
 import { includes } from 'lib/address'
 import { difference } from 'lib/array'
@@ -245,8 +245,7 @@ const Transaction = (props: Props) => {
               values={{
                 collectionName: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link>,
                 itemName: <Link to={locations.itemDetail(item.id)}>{item.name}</Link>,
-                amount: mints[0].amount,
-                count: mints.length
+                count: getTotalAmountOfMintedItems(mints)
               }}
             />
           }
