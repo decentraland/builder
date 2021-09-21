@@ -14,7 +14,6 @@ import { Props, State, ItemMints } from './MintItemsModal.types'
 import MintableItem from './MintableItem'
 import './MintItemsModal.css'
 
-
 export default class MintItemsModal extends React.PureComponent<Props, State> {
   state: State = this.getInitialState()
 
@@ -90,7 +89,16 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
 
   filterAddableItems = (item: Item) => {
     const { collection, items, ethAddress } = this.props
-    return item.collectionId === collection.id && !items.some(_item => _item.id === item.id && canMintItem(collection, item, ethAddress))
+    const { items: selectedItems } = this.state
+
+    const itemBelongsToCollection = item.collectionId === collection.id
+    const itemIsNotAlreadySelected = !selectedItems.some(_item => _item.id === item.id)
+
+    return (
+      itemBelongsToCollection &&
+      !items.some(_item => _item.id === item.id && canMintItem(collection, item, ethAddress)) &&
+      itemIsNotAlreadySelected
+    )
   }
 
   render() {
@@ -111,8 +119,8 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
             {isEmpty ? (
               <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
             ) : (
-                items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
-              )}
+              items.map(item => <MintableItem key={item.id} item={item} mints={itemMints[item.id]} onChange={this.handleMintsChange} />)
+            )}
             {isFull ? null : (
               <ItemDropdown placeholder={t('mint_items_modal.add_item')} onChange={this.handleAddItems} filter={this.filterAddableItems} />
             )}
@@ -122,14 +130,22 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   {t('global.cancel')}
                 </Button>
               ) : (
-                  <ChainButton primary onClick={this.handleMintItems} loading={isLoading} disabled={isDisabled || !!error} chainId={getChainIdByNetwork(Network.MATIC)}>
-                    {t('global.mint')}
-                  </ChainButton>
-                )}
+                <ChainButton
+                  primary
+                  onClick={this.handleMintItems}
+                  loading={isLoading}
+                  disabled={isDisabled || !!error}
+                  chainId={getChainIdByNetwork(Network.MATIC)}
+                >
+                  {t('global.mint')}
+                </ChainButton>
+              )}
             </ModalActions>
-            {error ? <Row className="error" align="right">
-              <p className="danger-text">{error}</p>
-            </Row> : null}
+            {error ? (
+              <Row className="error" align="right">
+                <p className="danger-text">{error}</p>
+              </Row>
+            ) : null}
           </Form>
         </Modal.Content>
       </Modal>
