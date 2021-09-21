@@ -79,7 +79,9 @@ export default class SingleAssetEditor<T extends RawAsset | Asset> extends React
 
     const { image } = await getModelData(mappings[asset.model], {
       mappings,
-      thumbnailType: ground ? ThumbnailType.TOP : ThumbnailType.DEFAULT
+      thumbnailType: ground ? ThumbnailType.TOP : ThumbnailType.DEFAULT,
+      width: 512,
+      height: 512
     })
     revokeMappingsObjectURL(mappings)
 
