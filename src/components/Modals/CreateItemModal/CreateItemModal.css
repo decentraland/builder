@@ -8,6 +8,17 @@
   width: 100%;
 }
 
+.CreateItemModal .file-details {
+  padding: 24px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.CreateItemModal .file-details .total-size {
+  color: var(--primary);
+}
+
 .CreateItemModal .preview {
   padding: 24px;
 }

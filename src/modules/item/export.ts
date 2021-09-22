@@ -90,13 +90,17 @@ export async function getFiles(contents: Record<string, string>): Promise<Record
  * @param hashes - The record of names->hashes.
  * @param blobs - The record of names->blobs.
  */
-function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Array<Blob> {
-  const uniqueFileHases: Array<string> = [...new Set(Object.values(hashes))]
+function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Blob>): Record<string, Blob> {
+  const uniqueFileHashes: Array<string> = [...new Set(Object.values(hashes))]
   const inverseFileHashesRecord = Object.keys(hashes).reduce((obj: Record<string, string>, key: string) => {
     obj[hashes[key]] = key
     return obj
   }, {})
-  return uniqueFileHases.map(hash => blobs[inverseFileHashesRecord[hash]])
+
+  return uniqueFileHashes.reduce(
+    (acc, hash) => ({ ...acc, [inverseFileHashesRecord[hash]]: blobs[inverseFileHashesRecord[hash]] }),
+    {} as Record<string, Blob>
+  )
 }
 
 /**
@@ -106,7 +110,7 @@ function getUniqueFiles(hashes: Record<string, string>, blobs: Record<string, Bl
  * @param item - An item that contains the old and the new hahsed content.
  * @param newContents - The new content that is going to be added to the item.
  */
-export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>): Promise<number> {
+export async function calculateFinalSize(item: Item, newContents: Record<string, Blob>) {
   const newHashes = await computeHashes(newContents)
   const filesToDownload: Record<string, string> = {}
   for (const fileName in item.contents) {
@@ -124,7 +128,15 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
   } catch (error) {}
 
   const uniqueFiles = getUniqueFiles({ ...newHashes, ...filesToDownload }, { ...newContents, ...blobs })
-  return imageSize + calculateFilesSize(uniqueFiles)
+  // uniqueFiles.reduce((acc, file) => ({ ...acc, [file.tex]: file.size }), {})
+  // return imageSize + calculateFilesSize(uniqueFiles)
+  return {
+    total: imageSize + calculateFilesSize(Object.values(uniqueFiles)),
+    files: {
+      ...Object.keys(uniqueFiles).reduce((acc, path) => ({ ...acc, [path]: uniqueFiles[path].size }), {}),
+      imageWithBackground: imageSize
+    }
+  }
 }
 
 /**

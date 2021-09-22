@@ -15,7 +15,10 @@ import {
   Header,
   InputOnChangeData,
   SelectField,
-  DropdownProps
+  DropdownProps,
+  Table,
+  TableCell,
+  Icon as DCLIcon
 } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
@@ -707,97 +710,137 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     const thumbnailStyle = getBackgroundStyle(rarity)
     const title = this.renderModalTitle()
 
+    const total = 234423 + 23442 + 245535
+    const files: Record<string, number> = {
+      'femaleHat.glb': 23442,
+      'maleHat.glb': 245535,
+      'thumbnail.png': 54532,
+      'auto-generated-content.png': 12222
+    }
+
     return (
       <>
         <ModalNavigation title={title} onClose={onClose} />
         <Modal.Content>
           <Form onSubmit={this.handleSubmit} disabled={isDisabled}>
-            <Column>
-              <Row className="details">
-                <Column className="preview" width={192} grow={false}>
-                  <div className="thumbnail-container">
-                    <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
-                    {isRepresentation ? null : (
+            <Row className="details">
+              <Column className="preview" width={192} grow={false}>
+                <div className="thumbnail-container">
+                  <img className="thumbnail" src={thumbnail || undefined} style={thumbnailStyle} />
+                  {isRepresentation ? null : (
+                    <>
+                      <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
+                      <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                    </>
+                  )}
+                </div>
+                {metrics ? (
+                  <div className="metrics">
+                    <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
+                    <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
+                    <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
+                  </div>
+                ) : null}
+              </Column>
+              <Column className="data" grow={true}>
+                {isAddingRepresentation ? null : (
+                  <Section>
+                    <Header sub>{t('create_item_modal.representation_label')}</Header>
+                    <Row>
+                      {this.renderRepresentation(BodyShapeType.BOTH)}
+                      {this.renderRepresentation(BodyShapeType.MALE)}
+                      {this.renderRepresentation(BodyShapeType.FEMALE)}
+                    </Row>
+                  </Section>
+                )}
+                {bodyShape && (!metadata || !metadata.changeItemFile) ? (
+                  <>
+                    {bodyShape === BodyShapeType.BOTH ? (
+                      this.renderFields()
+                    ) : (
                       <>
-                        <Icon name="camera" onClick={this.handleOpenThumbnailDialog} />
-                        <input type="file" ref={this.thumbnailInput} onChange={this.handleThumbnailChange} accept="image/png, image/jpeg" />
+                        {isAddingRepresentation ? null : (
+                          <Section>
+                            <Header sub>{t('create_item_modal.existing_item')}</Header>
+                            <Row>
+                              <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
+                                {t('global.yes')}
+                              </div>
+                              <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
+                                {t('global.no')}
+                              </div>
+                            </Row>
+                          </Section>
+                        )}
+                        {isRepresentation === undefined ? null : isRepresentation ? (
+                          <Section>
+                            <Header sub>
+                              {isAddingRepresentation
+                                ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                                : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                            </Header>
+                            <ItemDropdown
+                              value={item}
+                              filter={this.filterItemsByBodyShape}
+                              onChange={this.handleItemChange}
+                              isDisabled={isAddingRepresentation}
+                            />
+                          </Section>
+                        ) : (
+                          this.renderFields()
+                        )}
                       </>
                     )}
-                  </div>
-                  {metrics ? (
-                    <div className="metrics">
-                      <div className="metric triangles">{t('model_metrics.triangles', { count: metrics.triangles })}</div>
-                      <div className="metric materials">{t('model_metrics.materials', { count: metrics.materials })}</div>
-                      <div className="metric textures">{t('model_metrics.textures', { count: metrics.textures })}</div>
-                    </div>
-                  ) : null}
-                </Column>
-                <Column className="data" grow={true}>
-                  {isAddingRepresentation ? null : (
-                    <Section>
-                      <Header sub>{t('create_item_modal.representation_label')}</Header>
-                      <Row>
-                        {this.renderRepresentation(BodyShapeType.BOTH)}
-                        {this.renderRepresentation(BodyShapeType.MALE)}
-                        {this.renderRepresentation(BodyShapeType.FEMALE)}
-                      </Row>
-                    </Section>
-                  )}
-                  {bodyShape && (!metadata || !metadata.changeItemFile) ? (
-                    <>
-                      {bodyShape === BodyShapeType.BOTH ? (
-                        this.renderFields()
-                      ) : (
-                        <>
-                          {isAddingRepresentation ? null : (
-                            <Section>
-                              <Header sub>{t('create_item_modal.existing_item')}</Header>
-                              <Row>
-                                <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
-                                  {t('global.yes')}
-                                </div>
-                                <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
-                                  {t('global.no')}
-                                </div>
-                              </Row>
-                            </Section>
-                          )}
-                          {isRepresentation === undefined ? null : isRepresentation ? (
-                            <Section>
-                              <Header sub>
-                                {isAddingRepresentation
-                                  ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                                  : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
-                              </Header>
-                              <ItemDropdown
-                                value={item}
-                                filter={this.filterItemsByBodyShape}
-                                onChange={this.handleItemChange}
-                                isDisabled={isAddingRepresentation}
-                              />
-                            </Section>
-                          ) : (
-                            this.renderFields()
-                          )}
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    this.renderFields()
-                  )}
-                </Column>
-              </Row>
-              <Row className="actions" align="right">
-                <Button primary disabled={isDisabled} loading={isLoading}>
-                  {metadata && metadata.changeItemFile ? t('global.save') : t('global.create')}
-                </Button>
-              </Row>
-              {error ? (
-                <Row className="error" align="right">
-                  <p className="danger-text">{error}</p>
+                  </>
+                ) : (
+                  this.renderFields()
+                )}
+              </Column>
+            </Row>
+            <Row className="details file-details">
+              <Column>
+                <Row>
+                  <Header size="medium" className="title">
+                    Files detail
+                  </Header>
                 </Row>
-              ) : null}
-            </Column>
+                <Table basic="very" columns={2} compact collapsing={false}>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell width="4">File name</Table.HeaderCell>
+                      <Table.HeaderCell width="2">Size</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {Object.keys(files).map((filePath, index) => (
+                      <Table.Row key={index}>
+                        <Table.Cell>
+                          <DCLIcon name="file outline" />
+                          {filePath}
+                        </Table.Cell>
+                        <TableCell>{(files[filePath] / 1024).toFixed(2)} kB</TableCell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                  <Table.Footer>
+                    <Table.Row>
+                      <Table.Cell></Table.Cell>
+                      <Table.Cell className="total-size">{(total / 1024).toFixed(2)} kB / 2048 kB (Limit)</Table.Cell>
+                    </Table.Row>
+                  </Table.Footer>
+                </Table>
+              </Column>
+            </Row>
+            <Row className="actions" align="right">
+              <Button primary disabled={isDisabled} loading={isLoading}>
+                {metadata && metadata.changeItemFile ? t('global.save') : t('global.create')}
+              </Button>
+            </Row>
+            {error ? (
+              <Row className="error" align="right">
+                <p className="danger-text">{error}</p>
+              </Row>
+            ) : null}
           </Form>
         </Modal.Content>
       </>

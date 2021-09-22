@@ -139,8 +139,8 @@ export function* itemSaga(builder: BuilderAPI) {
       if (item.isPublished) {
         throw new Error(t('sagas.item.cant_save_published'))
       }
-      const finalSize: number = yield call(calculateFinalSize, item, contents)
-      if (finalSize > MAX_FILE_SIZE) {
+      const finalSize: { total: number; files: Record<string, number> } = yield call(calculateFinalSize, item, contents)
+      if (finalSize.total > MAX_FILE_SIZE) {
         throw new ItemTooBigError()
       }
 
@@ -171,8 +171,8 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(t('sagas.item.cant_save_without_collection'))
       }
 
-      const finalSize: number = yield call(calculateFinalSize, item, contents)
-      if (finalSize > MAX_FILE_SIZE) {
+      const finalSize: { total: number; files: Record<string, number> } = yield call(calculateFinalSize, item, contents)
+      if (finalSize.total > MAX_FILE_SIZE) {
         throw new ItemTooBigError()
       }
 
