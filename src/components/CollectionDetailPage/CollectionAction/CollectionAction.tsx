@@ -36,7 +36,7 @@ const CollectionAction = ({ wallet, collection, items, authorizations, onPublish
 
   const handlePublish = () => {
     const hasAuth = hasAuthorization(authorizations, getAuthorization())
-    if (hasAuth) onPublish(collection.id)
+    if (hasAuth) onPublish()
     setIsAuthModalOpen(!hasAuth)
   }
 
