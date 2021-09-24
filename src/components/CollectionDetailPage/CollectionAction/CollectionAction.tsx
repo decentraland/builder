@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { Network } from '@dcl/schemas'
 import { ChainButton } from 'decentraland-dapps/dist/containers'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -44,17 +44,17 @@ const CollectionAction = ({ wallet, collection, items, authorizations, onPublish
     setIsAuthModalOpen(false)
   }
 
-  const button = useMemo(() => {
-    if (collection.isPublished) {
-      if (collection.isApproved) {
-        return (
-          <Button secondary compact disabled={true}>
-            {t('global.published')}
-          </Button>
-        )
-      }
+  let button: ReactNode
 
-      return (
+  if (collection.isPublished) {
+    if (collection.isApproved) {
+      button = (
+        <Button secondary compact disabled={true}>
+          {t('global.published')}
+        </Button>
+      )
+    } else {
+      button = (
         <Popup
           content={t('collection_detail_page.cant_mint')}
           position="top center"
@@ -72,13 +72,13 @@ const CollectionAction = ({ wallet, collection, items, authorizations, onPublish
         />
       )
     }
-
-    return (
+  } else {
+    button = (
       <ChainButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} chainId={getChainIdByNetwork(Network.MATIC)}>
         {t('collection_detail_page.publish')}
       </ChainButton>
     )
-  }, [collection])
+  }
 
   return (
     <>
