@@ -571,9 +571,14 @@ export class BuilderAPI extends BaseAPI {
     }
   }
 
-  async fetchAssetPacks() {
-    const remotePacks: RemoteAssetPack[] = await this.request('get', `/assetPacks`)
-    return remotePacks.map(fromRemoteAssetPack)
+  async fetchAssetPacks(address?: string): Promise<FullAssetPack[]> {
+    const promisesOfRemoteAssetPacks: Array<Promise<RemoteAssetPack[]>> = [this.request('get', '/assetPacks?owner=default')]
+    if (address) {
+      promisesOfRemoteAssetPacks.push(this.request('get', `/assetPacks?owner=${address}`))
+    }
+
+    const assetPacks: RemoteAssetPack[][] = await Promise.all(promisesOfRemoteAssetPacks)
+    return assetPacks.reduce((acc, curr) => acc.concat(curr), []).map(fromRemoteAssetPack)
   }
 
   async deleteAssetPack(assetPack: FullAssetPack) {

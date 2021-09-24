@@ -1,5 +1,6 @@
 import { call, put, takeLatest, all, select } from 'redux-saga/effects'
 
+import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   LOAD_ASSET_PACKS_REQUEST,
   loadAssetPacksSuccess,
@@ -44,7 +45,8 @@ export function* assetPackSaga(builder: BuilderAPI) {
 
   function* handleLoadAssetPacks(_: LoadAssetPacksRequestAction) {
     try {
-      const assetPacks: FullAssetPack[] = yield call(() => builder.fetchAssetPacks())
+      const wallet: ReturnType<typeof getWallet> = yield select(getWallet)
+      const assetPacks: FullAssetPack[] = yield call([builder, 'fetchAssetPacks'], wallet?.address)
       yield put(loadAssetPacksSuccess(assetPacks))
     } catch (error) {
       yield put(loadAssetPacksFailure(error.message))
