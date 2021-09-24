@@ -68,3 +68,7 @@
 .SidebarItem > a:not(.is-selected):hover {
   background: var(--light-blue-steel);
 }
+
+.SidebarItem .ItemStatus {
+  margin-right: 6px;
+}

@@ -24,6 +24,7 @@ import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import { AuthorizationModal } from 'components/AuthorizationModal'
+import CollectionStatus from 'components/CollectionStatus'
 import CollectionMenu from './CollectionMenu'
 import CollectionItem from './CollectionItem'
 import { Props, State } from './CollectionDetailPage.types'
@@ -126,7 +127,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 <Column className="header-column">
                   <Row className="header-row" onClick={this.handleEditName}>
                     <Header size="huge" className="name">
-                      {collection.name}
+                      {collection.isPublished ? <CollectionStatus collection={collection} /> : null}{collection.name}
                     </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>

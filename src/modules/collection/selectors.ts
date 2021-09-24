@@ -3,12 +3,13 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { RootState } from 'modules/common/types'
 import { getPendingTransactions } from 'modules/transaction/selectors'
-import { getItems } from 'modules/item/selectors'
+import { getItems, getStatusByItemId } from 'modules/item/selectors'
+import { Item, SyncStatus } from 'modules/item/types'
 import { isEqual } from 'lib/address'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection } from './types'
 import { CollectionState } from './reducer'
-import { canSeeCollection } from './utils'
+import { canSeeCollection, getMostRelevantStauts } from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -49,4 +50,23 @@ export const isOnSaleLoading = createSelector<RootState, Transaction[], boolean>
 
 export const hasPendingCurationTransaction = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => [APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS].includes(transaction.actionType))
+)
+
+export const getStatusByCollectionId = createSelector<RootState, Item[], Record<string, SyncStatus>, Record<string, SyncStatus>>(
+  state => getItems(state),
+  state => getStatusByItemId(state),
+  (items, itemStatusByItemId) => {
+    const statusByCollectionId: Record<string, SyncStatus> = {}
+    for (const item of items) {
+      const { collectionId } = item
+      if (collectionId) {
+        if (collectionId in statusByCollectionId) {
+          statusByCollectionId[collectionId] = getMostRelevantStauts(statusByCollectionId[collectionId], itemStatusByItemId[item.id])
+        } else {
+          statusByCollectionId[collectionId] = itemStatusByItemId[item.id]
+        }
+      }
+    }
+    return statusByCollectionId
+  }
 )

@@ -13,7 +13,10 @@ import { generateImage } from './utils'
 const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
-  const urn = getCatalystItemURN(collection, item)
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published ir order to deploy its contents')
+  }
+  const urn = getCatalystItemURN(collection.contractAddress, item.tokenId)
   const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
   const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
   const catalystItem = toCatalystItem(collection, item)
@@ -33,14 +36,17 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   return { ...item, inCatalyst: true }
 }
 
-function toCatalystItem(collection: Collection, item: Item): CatalystItem {
+export function toCatalystItem(collection: Collection, item: Item): CatalystItem {
   // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
   const representations = item.data.representations.map(representation => ({
     ...representation,
     contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
   }))
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
+  }
   return {
-    id: getCatalystItemURN(collection, item),
+    id: getCatalystItemURN(collection.contractAddress, item.tokenId),
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,

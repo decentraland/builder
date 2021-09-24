@@ -1,0 +1,23 @@
+.ItemStatus {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.ItemStatus.under_review {
+  background-color: #cccccc;
+}
+
+.ItemStatus.loading {
+  background-color: #3fff4586;
+}
+
+.ItemStatus.synced {
+  background-color: #3fff46;
+}
+
+.ItemStatus.unsynced {
+  background-color: orange;
+}

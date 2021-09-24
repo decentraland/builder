@@ -1,6 +1,7 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
 import { getURNProtocol, Network } from '@dcl/schemas'
+import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
 import future from 'fp-future'
@@ -23,7 +24,8 @@ import {
   WearableBodyShapeType,
   IMAGE_CATEGORIES,
   THUMBNAIL_PATH,
-  InitializeItem
+  InitializeItem,
+  CatalystItem
 } from './types'
 import { sortByCreatedAt } from 'lib/sort'
 
@@ -38,13 +40,8 @@ export function getMaxSupplyForRarity(rarity: ItemRarity) {
   return RARITY_MAX_SUPPLY[rarity]
 }
 
-export function getCatalystItemURN(collection: Collection, item: Item) {
-  if (!collection.contractAddress || !item.tokenId) {
-    throw new Error('You need the collection and item to be published to get the catalyst urn')
-  }
-  return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${collection.contractAddress}:${
-    item.tokenId
-  }`
+export function getCatalystItemURN(contractAddress: string, tokenId: string) {
+  return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${contractAddress}:${tokenId}`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
@@ -310,4 +307,29 @@ export function toInitializeItems(items: Item[]): InitializeItem[] {
 
 export function toInitializeItem(item: Item): InitializeItem {
   return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
+}
+
+export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
+  // check if metadata is synced
+  const catalystItem = entity.metadata! as CatalystItem
+  const hasMetadataChanged =
+    item.name !== catalystItem.name ||
+    item.description !== catalystItem.description ||
+    item.data.category !== catalystItem.data.category ||
+    item.data.hides.toString() !== catalystItem.data.hides.toString() ||
+    item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
+    item.data.tags.toString() !== catalystItem.data.tags.toString()
+  if (hasMetadataChanged) {
+    return false
+  }
+
+  // check if contents are synced
+  const contents = entity.content!.reduce((map, entry) => map.set(entry.key, entry.hash), new Map<string, string>())
+  for (const path in item.contents) {
+    const hash = item.contents[path]
+    if (contents.get(path) !== hash) {
+      return false
+    }
+  }
+  return true
 }

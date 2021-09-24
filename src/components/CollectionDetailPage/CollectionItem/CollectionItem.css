@@ -98,3 +98,7 @@
   font-weight: normal;
   line-height: 0;
 }
+
+.CollectionItem .ItemStatus {
+  margin-right: 4px;
+}

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import equal from 'fast-deep-equal'
 import { utils } from 'decentraland-commons'
-import { Popup, Loader, Dropdown, Button } from 'decentraland-ui'
+import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
 import { ChainButton } from 'decentraland-dapps/dist/containers'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -19,7 +19,6 @@ import {
   isOwner,
   resizeImage
 } from 'modules/item/utils'
-import { isEditable } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, THUMBNAIL_PATH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
@@ -217,7 +216,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     if (!item) {
       return false
     }
-    return collection ? isEditable(collection) && canManageItem(collection, item, address) : isOwner(item, address)
+    return collection ? canManageItem(collection, item, address) : isOwner(item, address)
   }
 
   isDirty(newState: Partial<State> = {}) {
@@ -255,7 +254,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="RightPanel">
         {isConnected ? (
           <ItemProvider id={selectedItemId}>
-            {(item, collection, isItemLoading) => {
+            {(item, _collection, isItemLoading) => {
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
               const actionableCategories = item ? getOverridesCategories(item.contents) : []
@@ -400,18 +399,6 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       <Tags itemId={item.id} value={data!.tags} onChange={this.handleChangeTags} isDisabled={!canEditItemMetadata} />
                     )}
                   </Collapsable>
-                  {collection && !isEditable(collection) ? (
-                    <Popup
-                      content={t('item_editor.right_panel.request_for_changes_explanation', { name: collection.name })}
-                      position="top center"
-                      trigger={
-                        <a className="forum-link" href={collection.forumLink} target="_blank" rel="noopener noreferrer">
-                          {t('item_editor.right_panel.request_for_changes')}
-                        </a>
-                      }
-                      on="hover"
-                    />
-                  ) : null}
                   {isDirty ? (
                     <div className="edit-buttons">
                       <Button secondary onClick={this.handleOnResetItem}>
