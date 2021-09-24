@@ -462,8 +462,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
     } else {
       const url = URL.createObjectURL(contents[model])
       const { image, info } = await getModelData(url, {
-        width: 256,
-        height: 256,
+        width: 512,
+        height: 512,
         extension: getExtension(model) || undefined,
         engine: EngineType.BABYLON
       })
@@ -495,6 +495,8 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       } else {
         const url = URL.createObjectURL(contents![model!])
         const { image } = await getModelData(url, {
+          width: 512,
+          height: 512,
           thumbnailType: getThumbnailType(category),
           extension: (model && getExtension(model)) || undefined,
           engine: EngineType.BABYLON

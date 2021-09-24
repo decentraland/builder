@@ -267,7 +267,9 @@ export default class AssetImporter<T extends MixedAssetPack = RawAssetPack> exte
           let mappings = rawMappingsToObjectURL(outFile.asset.contents)
           const { image, info } = await getModelData(mappings[outFile.asset.model], {
             mappings,
-            thumbnailType: outFile.asset.category === GROUND_CATEGORY ? ThumbnailType.TOP : ThumbnailType.DEFAULT
+            thumbnailType: outFile.asset.category === GROUND_CATEGORY ? ThumbnailType.TOP : ThumbnailType.DEFAULT,
+            width: 256,
+            height: 256
           })
           revokeMappingsObjectURL(mappings)
 
