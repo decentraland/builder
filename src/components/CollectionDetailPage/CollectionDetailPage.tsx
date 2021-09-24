@@ -1,14 +1,10 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
-import { env } from 'decentraland-commons'
 import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
-import { ContractName, getContract } from 'decentraland-transactions'
-import { ChainButton, ChainCheck } from 'decentraland-dapps/dist/containers'
+import { ChainCheck } from 'decentraland-dapps/dist/containers'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
-import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { locations } from 'routing/locations'
 import {
   canMintCollectionItems,
@@ -17,23 +13,23 @@ import {
   isOnSale as isCollectionOnSale,
   isOwner
 } from 'modules/collection/utils'
-import { isComplete } from 'modules/item/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
-import { AuthorizationModal } from 'components/AuthorizationModal'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionMenu from './CollectionMenu'
 import CollectionItem from './CollectionItem'
-import { Props, State } from './CollectionDetailPage.types'
+import { Props } from './CollectionDetailPage.types'
+import CollectionAction from './CollectionAction'
+
 import './CollectionDetailPage.css'
+
 
 const STORAGE_KEY = 'dcl-collection-notice'
 
-export default class CollectionDetailPage extends React.PureComponent<Props, State> {
-  state = { isAuthorizationModalOpen: false }
+export default class CollectionDetailPage extends React.PureComponent<Props> {
 
   handleMintItems = () => {
     const { collection, onOpenModal } = this.props
@@ -43,18 +39,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
   handleNewItem = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('CreateItemModal', { collectionId: collection!.id })
-  }
-
-  handlePublish = () => {
-    const { authorizations, collection, onOpenModal } = this.props
-    let isAuthorizationModalOpen = false
-
-    if (hasAuthorization(authorizations, this.getAuthorization())) {
-      onOpenModal('PublishCollectionModal', { collectionId: collection!.id })
-    } else {
-      isAuthorizationModalOpen = true
-    }
-    this.setState({ isAuthorizationModalOpen })
   }
 
   handleEditName = () => {
@@ -74,30 +58,6 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
 
   handleGoBack = () => {
     this.props.onNavigate(locations.collections())
-  }
-
-  handleCloseAuthorizationModal = () => {
-    this.setState({ isAuthorizationModalOpen: false })
-  }
-
-  getAuthorization(): Authorization {
-    const { wallet } = this.props
-    const chainId = wallet.networks.MATIC.chainId
-    const contractAddress = getContract(ContractName.MANAToken, chainId).address
-    const authorizedAddress = getContract(ContractName.CollectionManager, chainId).address
-    return {
-      type: AuthorizationType.ALLOWANCE,
-      address: wallet.address,
-      contractName: ContractName.MANAToken,
-      contractAddress,
-      authorizedAddress,
-      chainId
-    }
-  }
-
-  canPublish() {
-    const { items } = this.props
-    return env.get('REACT_APP_FF_WEARABLES_PUBLISH') && this.hasItems() && items.every(isComplete)
   }
 
   hasItems() {
@@ -127,7 +87,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 <Column className="header-column">
                   <Row className="header-row" onClick={this.handleEditName}>
                     <Header size="huge" className="name">
-                      {collection.isPublished ? <CollectionStatus collection={collection} /> : null}{collection.name}
+                      {collection.isPublished ? <CollectionStatus collection={collection} /> : null}
+                      {collection.name}
                     </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
@@ -142,13 +103,13 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                               isOnSaleLoading
                                 ? t('global.loading')
                                 : isOnSale
-                                  ? t('collection_detail_page.unset_on_sale_popup')
-                                  : t('collection_detail_page.set_on_sale_popup')
+                                ? t('collection_detail_page.unset_on_sale_popup')
+                                : t('collection_detail_page.set_on_sale_popup')
                             }
                             position="top center"
                             trigger={
-                              <ChainCheck chainId={getChainIdByNetwork(Network.MATIC)}>{
-                                isEnabled =>
+                              <ChainCheck chainId={getChainIdByNetwork(Network.MATIC)}>
+                                {isEnabled => (
                                   <Radio
                                     toggle
                                     className="on-sale"
@@ -157,7 +118,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                                     label={t('collection_detail_page.on_sale')}
                                     disabled={isOnSaleLoading || !isEnabled}
                                   />
-                              }</ChainCheck>
+                                )}
+                              </ChainCheck>
                             }
                             hideOnScroll={true}
                             on="hover"
@@ -172,41 +134,15 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                         </Button>
                       </>
                     ) : (
-                        <Button basic className="action-button" onClick={this.handleNewItem}>
-                          <Icon name="plus" />
-                          <span className="text">{t('collection_detail_page.new_item')}</span>
-                        </Button>
-                      )}
+                      <Button basic className="action-button" onClick={this.handleNewItem}>
+                        <Icon name="plus" />
+                        <span className="text">{t('collection_detail_page.new_item')}</span>
+                      </Button>
+                    )}
 
                     {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
 
-                    {collection.isPublished ? (
-                      collection.isApproved ? (
-                        <Button secondary compact disabled={true}>
-                          {t('global.published')}
-                        </Button>
-                      ) : (
-                          <Popup
-                            content={t('collection_detail_page.cant_mint')}
-                            position="top center"
-                            trigger={
-                              <div className="popup-button">
-                                <Button secondary compact disabled={true}>
-                                  {t('collection_detail_page.under_review')}
-                                </Button>
-                              </div>
-                            }
-                            hideOnScroll={true}
-                            on="hover"
-                            inverted
-                            flowing
-                          />
-                        )
-                    ) : (
-                        <ChainButton disabled={!this.canPublish()} primary compact onClick={this.handlePublish} chainId={getChainIdByNetwork(Network.MATIC)}>
-                          {t('collection_detail_page.publish')}
-                        </ChainButton>
-                      )}
+                    <CollectionAction />
                   </Row>
                 </Column>
               </Row>
@@ -230,30 +166,17 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
               ))}
             </div>
           ) : (
-              <div className="empty">
-                <div className="sparkles" />
-                <div>
-                  {t('collection_detail_page.start_adding_items')}
-                  <br />
-                  {t('collection_detail_page.cant_remove')}
-                </div>
+            <div className="empty">
+              <div className="sparkles" />
+              <div>
+                {t('collection_detail_page.start_adding_items')}
+                <br />
+                {t('collection_detail_page.cant_remove')}
               </div>
-            )}
+            </div>
+          )}
         </Narrow>
-        {this.renderAuthorizationModal()}
       </>
-    )
-  }
-  renderAuthorizationModal() {
-    const { isAuthorizationModalOpen } = this.state
-
-    return (
-      <AuthorizationModal
-        open={isAuthorizationModalOpen}
-        authorization={this.getAuthorization()}
-        onProceed={this.handlePublish}
-        onCancel={this.handleCloseAuthorizationModal}
-      />
     )
   }
 
