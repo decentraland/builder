@@ -1,5 +1,3 @@
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 import { Project, Layout } from 'modules/project/types'
 import { Coordinate, Rotation } from 'modules/deployment/types'
 import { getDimensions } from 'lib/layout'
@@ -81,9 +79,4 @@ export async function getImageAsDataUrl(url: string): Promise<string> {
   reader.readAsDataURL(blob)
 
   return out
-}
-
-export async function download(zip: JSZip, name: string) {
-  const result = await zip.generateAsync({ type: 'blob' })
-  saveAs(result, `${name}.zip`)
 }
