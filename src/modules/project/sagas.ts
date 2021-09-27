@@ -3,7 +3,6 @@ import { push } from 'connected-react-router'
 import { takeLatest, put, select, take, call, all, race, delay } from 'redux-saga/effects'
 import { ActionCreators } from 'redux-undo'
 import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 import { ModelById } from 'decentraland-dapps/dist/lib/types'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
@@ -59,7 +58,7 @@ import { LOGIN_SUCCESS, LoginSuccessAction } from 'modules/identity/actions'
 import { getName } from 'modules/profile/selectors'
 import { locations } from 'routing/locations'
 import { getDefaultGroundAsset } from 'modules/deployment/utils'
-import { didUpdateLayout, getImageAsDataUrl } from './utils'
+import { didUpdateLayout, download, getImageAsDataUrl } from './utils'
 import { createFiles } from './export'
 
 export function* projectSaga(builder: BuilderAPI) {
@@ -205,13 +204,11 @@ export function* projectSaga(builder: BuilderAPI) {
         onProgress: progress => store.dispatch(setExportProgress(progress))
       })
     )
-
     for (const filename of Object.keys(files)) {
       zip.file(filename, files[filename])
     }
 
-    const artifact = yield call(zip.generateAsync, { type: 'blob' })
-    saveAs(artifact, `${sanitizedName}.zip`)
+    yield call(download, zip, sanitizedName)
 
     yield put(closeModal('ExportModal'))
     yield put(exportProjectSuccess())
