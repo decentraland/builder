@@ -672,7 +672,7 @@ export class BuilderAPI extends BaseAPI {
     return curations.map(curation => ({
       id: curation.id,
       collectionId: curation.collection_id,
-      timestamp: new Date(curation.timestamp)
+      timestamp: +new Date(curation.timestamp)
     }))
   }
 

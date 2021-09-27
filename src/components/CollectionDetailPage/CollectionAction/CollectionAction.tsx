@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Network } from '@dcl/schemas'
 import { ChainButton } from 'decentraland-dapps/dist/containers'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -9,12 +9,16 @@ import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
+import { SyncStatus } from 'modules/item/types'
 import { isComplete } from 'modules/item/utils'
 import { Props } from './CollectionAction.types'
-import { SyncStatus } from 'modules/item/types'
 
-const CollectionAction = ({ wallet, collection, items, authorizations, status, onPublish, onPush }: Props) => {
+const CollectionAction = ({ wallet, collection, items, authorizations, status, isAwaitingCuration, onPublish, onPush, onInit }: Props) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+
+  useEffect(() => {
+    onInit()
+  }, [])
 
   const isPublishDisabled = () => {
     return !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete)
@@ -50,11 +54,15 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, o
   if (collection.isPublished) {
     if (collection.isApproved) {
       if (status === SyncStatus.UNSYNCED) {
-        button = (
-          <Button primary compact onClick={onPush}>
-            Push changes
-          </Button>
-        )
+        if (isAwaitingCuration) {
+          button = <UnderReview type="push" />
+        } else {
+          button = (
+            <Button primary compact onClick={onPush}>
+              Push Changes
+            </Button>
+          )
+        }
       } else {
         button = (
           <Button secondary compact disabled={true}>
@@ -63,23 +71,7 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, o
         )
       }
     } else {
-      button = (
-        <Popup
-          content={t('collection_detail_page.cant_mint')}
-          position="top center"
-          trigger={
-            <div className="popup-button">
-              <Button secondary compact disabled={true}>
-                {t('collection_detail_page.under_review')}
-              </Button>
-            </div>
-          }
-          hideOnScroll={true}
-          on="hover"
-          inverted
-          flowing
-        />
-      )
+      button = <UnderReview type="publish" />
     }
   } else {
     button = (
@@ -101,5 +93,27 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, o
     </>
   )
 }
+
+type UnderReviewProps = {
+  type: 'publish' | 'push'
+}
+
+const UnderReview = ({ type }: UnderReviewProps) => (
+  <Popup
+    content={t(type === 'publish' ? 'collection_detail_page.cant_mint' : 'collection_detail_page.cant_push')}
+    position="top center"
+    trigger={
+      <div className="popup-button">
+        <Button secondary compact disabled={true}>
+          {t('collection_detail_page.under_review')}
+        </Button>
+      </div>
+    }
+    hideOnScroll={true}
+    on="hover"
+    inverted
+    flowing
+  />
+)
 
 export default React.memo(CollectionAction)

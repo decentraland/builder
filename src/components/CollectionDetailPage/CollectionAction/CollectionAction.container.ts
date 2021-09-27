@@ -7,6 +7,8 @@ import { getCollection, getCollectionItems, getStatusByCollectionId } from 'modu
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './CollectionAction.types'
 import CollectionAction from './CollectionAction'
+import { fetchCurationsRequest } from 'modules/curation/actions'
+import { getIsValidCuration } from 'modules/curation/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   const collectionId = getCollectionId(state) || ''
@@ -18,13 +20,15 @@ const mapState = (state: RootState): MapStateProps => {
     collection,
     items: getCollectionItems(state, collectionId),
     authorizations: getAuthorizations(state),
-    status: statusByCollectionId[collection.id]
+    status: statusByCollectionId[collection.id],
+    isAwaitingCuration: getIsValidCuration(state, collection.id)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPublish: (collectionId: string) => dispatch(openModal('PublishCollectionModal', { collectionId })),
-  onPush: () => dispatch(openModal('PushCollectionChangesModal'))
+  onPush: () => dispatch(openModal('PushCollectionChangesModal')),
+  onInit: () => dispatch(fetchCurationsRequest())
 })
 
 const merge = (stateProps: MapStateProps, dispatchProps: MapDispatchProps) => ({
