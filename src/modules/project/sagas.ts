@@ -205,13 +205,12 @@ export function* projectSaga(builder: BuilderAPI) {
         onProgress: progress => store.dispatch(setExportProgress(progress))
       })
     )
-
     for (const filename of Object.keys(files)) {
       zip.file(filename, files[filename])
     }
 
-    const artifact = yield call(zip.generateAsync, { type: 'blob' })
-    saveAs(artifact, `${sanitizedName}.zip`)
+    const artifact: Blob = yield call([zip, 'generateAsync'], { type: 'blob' })
+    yield call(saveAs, artifact, `${sanitizedName}.zip`)
 
     yield put(closeModal('ExportModal'))
     yield put(exportProjectSuccess())
