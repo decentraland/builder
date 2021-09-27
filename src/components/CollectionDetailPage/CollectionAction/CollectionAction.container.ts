@@ -23,11 +23,13 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onPublish: (collectionId: string) => dispatch(openModal('PublishCollectionModal', { collectionId }))
+  onPublish: (collectionId: string) => dispatch(openModal('PublishCollectionModal', { collectionId })),
+  onPush: () => dispatch(openModal('PushCollectionChangesModal'))
 })
 
 const merge = (stateProps: MapStateProps, dispatchProps: MapDispatchProps) => ({
   ...stateProps,
+  ...dispatchProps,
   onPublish: () => dispatchProps.onPublish(stateProps.collection.id)
 })
 

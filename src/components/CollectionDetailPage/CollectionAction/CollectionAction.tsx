@@ -13,7 +13,7 @@ import { isComplete } from 'modules/item/utils'
 import { Props } from './CollectionAction.types'
 import { SyncStatus } from 'modules/item/types'
 
-const CollectionAction = ({ wallet, collection, items, authorizations, status, onPublish }: Props) => {
+const CollectionAction = ({ wallet, collection, items, authorizations, status, onPublish, onPush }: Props) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   const isPublishDisabled = () => {
@@ -51,7 +51,7 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, o
     if (collection.isApproved) {
       if (status === SyncStatus.UNSYNCED) {
         button = (
-          <Button primary compact>
+          <Button primary compact onClick={onPush}>
             Push changes
           </Button>
         )

@@ -12,8 +12,9 @@ export type Props = {
   authorizations: Authorization[]
   status: SyncStatus
   onPublish: () => void
+  onPush: () => void
 }
 
 export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'authorizations' | 'status'>
-export type MapDispatchProps = { onPublish: (collectionId: string) => void }
+export type MapDispatchProps = { onPublish: (collectionId: string) => void; onPush: () => void }
 export type MapDispatch = Dispatch<OpenModalAction>

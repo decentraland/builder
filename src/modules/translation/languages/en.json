@@ -1031,6 +1031,10 @@
     },
     "adding_one": "adding one!"
   },
+  "push_collection_changes_modal": {
+    "title": "Push Changes",
+    "description": "Changes have been made to the collection or the items contained by it since the last time a curator has reviewed them.{br}In order to have this changes reflected on the marketplace and in the game, they have to be reviewed and approved again by the committee.{br}Are you sure you want to push the changes for review?"
+  },
   "collection_image": {
     "no_items": "No Items"
   },
