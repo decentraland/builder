@@ -143,6 +143,12 @@ export type RemoteWeeklyStats = {
   max_concurrent_users_time: string
 }
 
+export type RemoteCuration = {
+  id: string
+  collection_id: string
+  timestamp: string
+}
+
 /**
  * Transforms a Project into a RemoteProject for saving purposes only.
  * The `thumbnail` is omitted.
@@ -396,6 +402,14 @@ function fromRemoteWeeklyStats(remoteWeeklyStats: RemoteWeeklyStats): WeeklyStat
     directSessions: direct_sessions,
     maxConcurrentUsers: max_concurrent_users,
     maxConcurrentUsersTime: max_concurrent_users_time
+  }
+}
+
+function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
+  return {
+    id: remoteCuration.id,
+    collectionId: remoteCuration.collection_id,
+    timestamp: +new Date(remoteCuration.timestamp)
   }
 }
 
@@ -667,13 +681,19 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchCurations(): Promise<Curation[]> {
-    const curations: any[] = await this.request('get', `/curations`)
+    const curations: RemoteCuration[] = await this.request('get', `/curations`)
 
-    return curations.map(curation => ({
-      id: curation.id,
-      collectionId: curation.collection_id,
-      timestamp: +new Date(curation.timestamp)
-    }))
+    return curations.map(fromRemoteCuration)
+  }
+
+  async fetchCuration(collectionId: string): Promise<Curation | undefined> {
+    const curation: RemoteCuration | undefined = await this.request('get', `/curations/${collectionId}`)
+
+    if (!curation) {
+      return
+    }
+
+    return fromRemoteCuration(curation)
   }
 
   async pushCuration(collectionId: string): Promise<void> {

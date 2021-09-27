@@ -4,7 +4,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { OpenModalAction } from 'modules/modal/actions'
 import { Collection } from 'modules/collection/types'
 import { Item, SyncStatus } from 'modules/item/types'
-import { FetchCurationsRequestAction } from 'modules/curation/actions'
+import { FetchCurationRequestAction } from 'modules/curation/actions'
 
 export type Props = {
   wallet: Wallet
@@ -19,5 +19,9 @@ export type Props = {
 }
 
 export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'authorizations' | 'status' | 'isAwaitingCuration'>
-export type MapDispatchProps = Pick<Props, 'onInit'> & { onPublish: (collectionId: string) => void; onPush: (collectionId: string) => void }
-export type MapDispatch = Dispatch<OpenModalAction | FetchCurationsRequestAction>
+export type MapDispatchProps = {
+  onPublish: (collectionId: string) => void
+  onPush: (collectionId: string) => void
+  onInit: (collectionId: string) => void
+}
+export type MapDispatch = Dispatch<OpenModalAction | FetchCurationRequestAction>

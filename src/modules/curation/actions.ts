@@ -15,6 +15,21 @@ export type FetchCurationsRequestAction = ReturnType<typeof fetchCurationsReques
 export type FetchCurationsSuccessAction = ReturnType<typeof fetchCurationsSuccess>
 export type FetchCurationsFailureAction = ReturnType<typeof fetchCurationsFailure>
 
+// Fetch Curation
+
+export const FETCH_CURATION_REQUEST = '[Request] Fetch Curation'
+export const FETCH_CURATION_SUCCESS = '[Success] Fetch Curation'
+export const FETCH_CURATION_FAILURE = '[Failure] Fetch Curation'
+
+export const fetchCurationRequest = (collectionId: string) => action(FETCH_CURATION_REQUEST, { collectionId })
+export const fetchCurationSuccess = (collectionId: string, curation?: Curation) =>
+  action(FETCH_CURATION_SUCCESS, { collectionId, curation })
+export const fetchCurationFailure = (error: string) => action(FETCH_CURATION_FAILURE, { error })
+
+export type FetchCurationRequestAction = ReturnType<typeof fetchCurationRequest>
+export type FetchCurationSuccessAction = ReturnType<typeof fetchCurationSuccess>
+export type FetchCurationFailureAction = ReturnType<typeof fetchCurationFailure>
+
 // Push Curation
 
 export const PUSH_CURATION_REQUEST = '[Request] Push Curation'
