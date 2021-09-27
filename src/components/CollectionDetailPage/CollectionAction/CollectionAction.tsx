@@ -49,30 +49,30 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, i
     setIsAuthModalOpen(false)
   }
 
+  const isPublishUnderReview = collection.isPublished && !collection.isApproved
+  const isPublishedAndApproved = collection.isPublished && collection.isApproved
+  const isCollectionUnsynced = isPublishedAndApproved && status === SyncStatus.UNSYNCED
+  const areChangesUnderReview = isCollectionUnsynced && !isAwaitingCuration
+  const canChangesBePushed = isCollectionUnsynced && isAwaitingCuration
+
   let button: ReactNode
 
-  if (collection.isPublished) {
-    if (collection.isApproved) {
-      if (status === SyncStatus.UNSYNCED) {
-        if (isAwaitingCuration) {
-          button = <UnderReview type="push" />
-        } else {
-          button = (
-            <Button primary compact onClick={onPush}>
-              Push Changes
-            </Button>
-          )
-        }
-      } else {
-        button = (
-          <Button secondary compact disabled={true}>
-            {t('global.published')}
-          </Button>
-        )
-      }
-    } else {
-      button = <UnderReview type="publish" />
-    }
+  if (areChangesUnderReview) {
+    button = <UnderReview type="push" />
+  } else if (canChangesBePushed) {
+    button = (
+      <Button primary compact onClick={onPush}>
+        {t('collection_detail_page.push_changes')}
+      </Button>
+    )
+  } else if (isPublishedAndApproved) {
+    button = (
+      <Button secondary compact disabled={true}>
+        {t('global.published')}
+      </Button>
+    )
+  } else if (isPublishUnderReview) {
+    button = <UnderReview type="publish" />
   } else {
     button = (
       <ChainButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} chainId={getChainIdByNetwork(Network.MATIC)}>
