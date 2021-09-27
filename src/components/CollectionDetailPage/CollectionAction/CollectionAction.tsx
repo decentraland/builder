@@ -11,8 +11,9 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { isComplete } from 'modules/item/utils'
 import { Props } from './CollectionAction.types'
+import { SyncStatus } from 'modules/item/types'
 
-const CollectionAction = ({ wallet, collection, items, authorizations, onPublish }: Props) => {
+const CollectionAction = ({ wallet, collection, items, authorizations, status, onPublish }: Props) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   const isPublishDisabled = () => {
@@ -48,11 +49,19 @@ const CollectionAction = ({ wallet, collection, items, authorizations, onPublish
 
   if (collection.isPublished) {
     if (collection.isApproved) {
-      button = (
-        <Button secondary compact disabled={true}>
-          {t('global.published')}
-        </Button>
-      )
+      if (status === SyncStatus.UNSYNCED) {
+        button = (
+          <Button primary compact>
+            Push changes
+          </Button>
+        )
+      } else {
+        button = (
+          <Button secondary compact disabled={true}>
+            {t('global.published')}
+          </Button>
+        )
+      }
     } else {
       button = (
         <Popup
