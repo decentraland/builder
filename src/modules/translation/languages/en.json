@@ -937,7 +937,8 @@
     "cant_remove": "You will not be able to add or remove items after publishing your collection.",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
     "cant_push": "Changes for this collection have already been pushed",
-    "under_review": "Under Review"
+    "under_review": "Under Review",
+    "push_changes": "Push Changes"
   },
   "collection_menu": {
     "add_existing_item": "Add Existing Item",
