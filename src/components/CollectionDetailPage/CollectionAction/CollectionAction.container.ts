@@ -27,14 +27,15 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onPublish: (collectionId: string) => dispatch(openModal('PublishCollectionModal', { collectionId })),
-  onPush: () => dispatch(openModal('PushCollectionChangesModal')),
+  onPush: (collectionId: string) => dispatch(openModal('PushCollectionChangesModal', { collectionId })),
   onInit: () => dispatch(fetchCurationsRequest())
 })
 
 const merge = (stateProps: MapStateProps, dispatchProps: MapDispatchProps) => ({
   ...stateProps,
   ...dispatchProps,
-  onPublish: () => dispatchProps.onPublish(stateProps.collection.id)
+  onPublish: () => dispatchProps.onPublish(stateProps.collection.id),
+  onPush: () => dispatchProps.onPush(stateProps.collection.id)
 })
 
 export default connect(mapState, mapDispatch, merge)(CollectionAction)

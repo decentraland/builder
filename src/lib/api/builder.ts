@@ -676,6 +676,10 @@ export class BuilderAPI extends BaseAPI {
     }))
   }
 
+  async pushCuration(collectionId: string): Promise<void> {
+    return this.request('post', `/curations/${collectionId}`)
+  }
+
   async fetchWeeklyStats(base: string) {
     const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
     return fromRemoteWeeklyStats(remoteStats)

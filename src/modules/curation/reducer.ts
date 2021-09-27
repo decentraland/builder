@@ -5,7 +5,13 @@ import {
   FetchCurationsSuccessAction,
   FETCH_CURATIONS_FAILURE,
   FETCH_CURATIONS_REQUEST,
-  FETCH_CURATIONS_SUCCESS
+  FETCH_CURATIONS_SUCCESS,
+  PushCurationFailureAction,
+  PushCurationRequestAction,
+  PushCurationSuccessAction,
+  PUSH_CURATION_FAILURE,
+  PUSH_CURATION_REQUEST,
+  PUSH_CURATION_SUCCESS
 } from './actions'
 import { Curation } from './types'
 
@@ -21,15 +27,23 @@ const INITIAL_STATE: CurationState = {
   error: null
 }
 
-type CurationReducerAction = FetchCurationsRequestAction | FetchCurationsSuccessAction | FetchCurationsFailureAction
+type CurationReducerAction =
+  | FetchCurationsRequestAction
+  | FetchCurationsSuccessAction
+  | FetchCurationsFailureAction
+  | PushCurationRequestAction
+  | PushCurationSuccessAction
+  | PushCurationFailureAction
 
 export function curationReducer(state: CurationState = INITIAL_STATE, action: CurationReducerAction): CurationState {
   switch (action.type) {
     case FETCH_CURATIONS_REQUEST:
+    case PUSH_CURATION_REQUEST:
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
       }
+
     case FETCH_CURATIONS_SUCCESS:
       const { curations } = action.payload
 
@@ -39,7 +53,16 @@ export function curationReducer(state: CurationState = INITIAL_STATE, action: Cu
         data: curations.reduce((acc, curation) => ({ ...acc, [curation.collectionId]: curation }), {}),
         error: null
       }
+
+    case PUSH_CURATION_SUCCESS:
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+
     case FETCH_CURATIONS_FAILURE:
+    case PUSH_CURATION_FAILURE:
       const { error } = action.payload
 
       return {

@@ -5,7 +5,7 @@ import { Props } from './PushCollectionChangesModal.types'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import './PushCollectionChangesModal.css'
 
-const PushCollectionChangesModal = ({ onClose }: Props) => {
+const PushCollectionChangesModal = ({ isLoading, onClose, onProceed }: Props) => {
   return (
     <Modal className="PushCollectionChangesModal" size="tiny" onClose={onClose}>
       <Modal.Header>{t('push_collection_changes_modal.title')}</Modal.Header>
@@ -22,47 +22,9 @@ const PushCollectionChangesModal = ({ onClose }: Props) => {
           }}
         />
       </Modal.Description>
-      <Modal.Content>
-        <div className="authorization">
-          {/* <Form.Field className={hasPendingTransaction ? 'is-pending' : ''}>
-            <Popup
-              content={t('authorization_modal.pending_tx')}
-              position="top left"
-              trigger={
-                <Link to={locations.activity()} className="loader-tooltip">
-                  <Loader active size="mini" />
-                </Link>
-              }
-            />
-            <ChainCheck chainId={authorization.chainId}>
-              {isEnabled => (
-                <Radio checked={isAuthorized} label={tokenSymbol} onClick={handleAuthorizationChange} disabled={isLoading || !isEnabled} />
-              )}
-            </ChainCheck>
-            <div className="radio-description secondary-text">
-              <T
-                id="authorization_modal.authorize"
-                values={{
-                  contract_link: (
-                    <TransactionLink address={authorizedAddress} txHash="">
-                      {tokenSymbol}
-                    </TransactionLink>
-                  ),
-                  symbol: tokenSymbol
-                }}
-              />
-            </div>
-          </Form.Field> */}
-        </div>
-      </Modal.Content>
       <Modal.Actions>
         <Button onClick={onClose}>{t('global.cancel')}</Button>
-        <Button
-          primary
-          // loading={isLoading}
-          // disabled={!isAuthorized}
-          // onClick={onProceed}
-        >
+        <Button primary onClick={onProceed} loading={isLoading} disabled={isLoading}>
           {t('global.proceed')}
         </Button>
       </Modal.Actions>

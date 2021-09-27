@@ -1,30 +1,24 @@
 import { connect } from 'react-redux'
-// import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
-// import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
-// import { RootState } from 'modules/common/types'
-// import { getCollection, getCollectionItems, getLoading } from 'modules/collection/selectors'
-// import { publishCollectionRequest, PUBLISH_COLLECTION_REQUEST } from 'modules/collection/actions'
-// import { fetchRaritiesRequest, FETCH_RARITIES_REQUEST } from 'modules/item/actions'
-// import { getRarities } from 'modules/item/selectors'
-// import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './PushCollectionChangesModal.types'
+import { pushCurationRequest, PUSH_CURATION_REQUEST } from 'modules/curation/actions'
+import { OwnProps, MapDispatchProps, MapDispatch, MapStateProps } from './PushCollectionChangesModal.types'
 import PushCollectionChangesModal from './PushCollectionChangesModal'
+import { RootState } from 'modules/common/types'
+import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
+import { getLoading } from 'modules/curation/selectors'
 
-// const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-//   const { collectionId } = ownProps.metadata
+const mapState = (store: RootState): MapStateProps => ({
+  isLoading: isLoadingType(getLoading(store), PUSH_CURATION_REQUEST)
+})
 
-//   return {
-//     wallet: getWallet(state),
-//     collection: getCollection(state, collectionId),
-//     items: getCollectionItems(state, collectionId),
-//     rarities: getRarities(state),
-//     isLoading: isLoadingType(getLoading(state), PUBLISH_COLLECTION_REQUEST),
-//     isFetchingRarities: isLoadingType(getLoading(state), FETCH_RARITIES_REQUEST)
-//   }
-// }
+const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
+  onProceed: (collectionId: string) => dispatch(pushCurationRequest(collectionId))
+})
 
-// const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-//   onPublish: (collection, items, email) => dispatch(publishCollectionRequest(collection, items, email)),
-//   onFetchRarities: () => dispatch(fetchRaritiesRequest())
-// })
+const merge = (stateProps: any, dispatchProps: MapDispatchProps, ownProps: OwnProps) => ({
+  ...stateProps,
+  ...dispatchProps,
+  ...ownProps,
+  onProceed: () => dispatchProps.onProceed(ownProps.metadata.collectionId)
+})
 
-export default connect(null, null)(PushCollectionChangesModal)
+export default connect(mapState, mapDispatch, merge)(PushCollectionChangesModal)
