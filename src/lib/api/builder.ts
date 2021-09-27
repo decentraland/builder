@@ -19,6 +19,7 @@ import { WeeklyStats } from 'modules/stats/types'
 import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
+import { Curation } from 'modules/curation/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -663,6 +664,16 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteCollection(collection: Collection) {
     await this.request('delete', `/collections/${collection.id}`, {})
+  }
+
+  async fetchCurations(): Promise<Curation[]> {
+    const curations: any[] = await this.request('get', `/curations`)
+
+    return curations.map(curation => ({
+      id: curation.id,
+      collectionId: curation.collection_id,
+      timestamp: new Date(curation.timestamp)
+    }))
   }
 
   async fetchWeeklyStats(base: string) {

@@ -35,6 +35,7 @@ import { walletSaga } from 'modules/wallet/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
 import { entitySaga } from 'modules/entity/saga'
+import { curationSaga } from 'modules/curation/sagas'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
 
@@ -70,6 +71,7 @@ export function* rootSaga(builderAPI: BuilderAPI, catalystClient: CatalystClient
     transactionSaga(),
     translationSaga(),
     uiSaga(),
-    walletSaga()
+    walletSaga(),
+    curationSaga(builderAPI)
   ])
 }
