@@ -345,21 +345,20 @@ export async function downloadFiles(args: {
   }
 
   // Download models
-  total += Object.keys(mappings).length
+  const paths = Object.keys(mappings).filter(path => (isDeploy ? !path.endsWith('.ts') : !path.endsWith('.js')))
+  total += paths.length
   onProgress({ loaded: progress, total })
 
-  const promises = Object.keys(mappings)
-    .filter(path => (isDeploy ? !path.endsWith('.ts') : !path.endsWith('.js')))
-    .map(path => {
-      const url = mappings[path]
-      return fetch(url, { headers: NO_CACHE_HEADERS })
-        .then(resp => resp.blob())
-        .then(blob => {
-          progress++
-          onProgress({ loaded: progress, total })
-          return { path, blob }
-        })
-    })
+  const promises = paths.map(path => {
+    const url = mappings[path]
+    return fetch(url, { headers: NO_CACHE_HEADERS })
+      .then(resp => resp.blob())
+      .then(blob => {
+        progress++
+        onProgress({ loaded: progress, total })
+        return { path, blob }
+      })
+  })
 
   // Reduce results into a record of blobs
   const results = await Promise.all(promises)
