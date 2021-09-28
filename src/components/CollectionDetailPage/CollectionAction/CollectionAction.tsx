@@ -112,7 +112,7 @@ const UnderReview = ({ type }: UnderReviewProps) => (
     hideOnScroll={true}
     on="hover"
     inverted
-    flowing
+    flowing={type === 'publish'}
   />
 )
 
