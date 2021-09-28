@@ -22,10 +22,20 @@ export const getValidCurations = createSelector<
   ReturnType<typeof getCollectionsById>,
   ReturnType<typeof getCurationsByCollectionId>,
   CurationState['data']
->(getCollectionsById, getCurationsByCollectionId, (collections, curations) =>
-  Object.keys(curations)
+>(getCollectionsById, getCurationsByCollectionId, (collections, curations) => {
+  console.log(curations)
+  const collectionIds = Object.keys(curations)
+  
+  const validCurations = collectionIds
+    .filter(collectionId => collections[collectionId]) // To avoid breaking when collections have not been loaded
     .filter(collectionId => collections[collectionId].reviewedAt < curations[collectionId].timestamp)
-    .reduce((acc, collectionId) => ({ ...acc, [collectionId]: curations[collectionId] }), {})
-)
+
+  const validCurationsByCollectionId = validCurations.reduce(
+    (acc, collectionId) => ({ ...acc, [collectionId]: curations[collectionId] }),
+    {}
+  )
+
+  return validCurationsByCollectionId
+})
 
 export const getIsValidCuration = (state: RootState, collectionId: string) => !!getValidCurations(state)[collectionId]
