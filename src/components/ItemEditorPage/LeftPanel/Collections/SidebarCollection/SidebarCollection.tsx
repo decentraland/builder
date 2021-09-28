@@ -13,7 +13,7 @@ import './SidebarCollection.css'
 class SidebarCollection extends React.PureComponent<Props & CollectedProps> {
   render() {
     const { collection, items, isSelected, connectDropTarget, isOver, canDrop } = this.props
-    const collectionItems = items.filter(item => item.collectionId === collection.id).sort((a, b) => a.createdAt > b.createdAt ? -1 : 1)
+    const collectionItems = items.filter(item => item.collectionId === collection.id)
     const itemId = collectionItems.length > 0 ? collectionItems[0].id : undefined
     return connectDropTarget(
       <div className={`SidebarCollection ${isSelected ? 'is-selected' : ''} ${isOver ? (canDrop ? 'is-over' : 'no-drop') : ''}`}>
