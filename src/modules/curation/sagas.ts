@@ -3,6 +3,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { put } from 'redux-saga-test-plan/matchers'
 import {
   fetchCurationFailure,
+  fetchCurationRequest,
   FetchCurationRequestAction,
   fetchCurationsFailure,
   fetchCurationsSuccess,
@@ -12,19 +13,18 @@ import {
   pushCurationFailure,
   PushCurationRequestAction,
   pushCurationSuccess,
-  PUSH_CURATION_REQUEST,
-  PUSH_CURATION_SUCCESS
+  PUSH_CURATION_REQUEST
 } from './actions'
 import { Curation } from './types'
 
 export function* curationSaga(builder: BuilderAPI) {
-  yield takeEvery([FETCH_CURATIONS_REQUEST, PUSH_CURATION_SUCCESS], handleFetchCurationsRequest)
+  yield takeEvery(FETCH_CURATIONS_REQUEST, handleFetchCurationsRequest)
   yield takeEvery(PUSH_CURATION_REQUEST, handlePushCurationRequest)
   yield takeEvery(FETCH_CURATION_REQUEST, handleFetchCurationRequest)
 
   function* handleFetchCurationsRequest() {
     try {
-      const curations: Curation[] = yield call(builder.fetchCurations)
+      const curations: Curation[] = yield call([builder, builder.fetchCurations])
       yield put(fetchCurationsSuccess(curations))
     } catch (error) {
       yield put(fetchCurationsFailure(error.message))
@@ -34,7 +34,7 @@ export function* curationSaga(builder: BuilderAPI) {
   function* handleFetchCurationRequest(action: FetchCurationRequestAction) {
     try {
       const { collectionId } = action.payload
-      const curation: Curation | undefined = yield call(builder.fetchCuration, collectionId)
+      const curation: Curation | undefined = yield call([builder, builder.fetchCuration], collectionId)
       yield put(fetchCurationSuccess(collectionId, curation))
     } catch (error) {
       yield put(fetchCurationFailure(error.message))
@@ -42,9 +42,12 @@ export function* curationSaga(builder: BuilderAPI) {
   }
 
   function* handlePushCurationRequest(action: PushCurationRequestAction) {
+    const { collectionId } = action.payload
+
     try {
-      yield call(builder.pushCuration, action.payload.collectionId)
+      yield call([builder, builder.pushCuration], collectionId)
       yield put(pushCurationSuccess())
+      yield put(fetchCurationRequest(collectionId))
     } catch (error) {
       yield put(pushCurationFailure(error.message))
     }

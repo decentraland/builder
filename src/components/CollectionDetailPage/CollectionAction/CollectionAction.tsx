@@ -52,8 +52,8 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, i
   const isPublishUnderReview = collection.isPublished && !collection.isApproved
   const isPublishedAndApproved = collection.isPublished && collection.isApproved
   const isCollectionUnsynced = isPublishedAndApproved && status === SyncStatus.UNSYNCED
-  const areChangesUnderReview = isCollectionUnsynced && !isAwaitingCuration
-  const canChangesBePushed = isCollectionUnsynced && isAwaitingCuration
+  const areChangesUnderReview = isCollectionUnsynced && isAwaitingCuration
+  const canChangesBePushed = isCollectionUnsynced && !isAwaitingCuration
 
   let button: ReactNode
 
