@@ -146,7 +146,9 @@ export type RemoteWeeklyStats = {
 export type RemoteCuration = {
   id: string
   collection_id: string
-  timestamp: string
+  status: Curation['status']
+  created_at: Date
+  updated_at: Date
 }
 
 /**
@@ -409,7 +411,9 @@ function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
   return {
     id: remoteCuration.id,
     collectionId: remoteCuration.collection_id,
-    timestamp: +new Date(remoteCuration.timestamp)
+    status: remoteCuration.status,
+    created_at: +new Date(remoteCuration.created_at),
+    updated_at: +new Date(remoteCuration.updated_at)
   }
 }
 
