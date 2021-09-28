@@ -913,6 +913,7 @@
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Owner",
     "visit": "Visit",
+    "review_request_date": "Review request date",
     "publication_date": "Publication date",
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",

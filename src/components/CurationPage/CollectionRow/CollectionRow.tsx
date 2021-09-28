@@ -55,21 +55,25 @@ export default class CollectionRow extends React.PureComponent<Props> {
               </div>
             </Grid.Column>
             <Grid.Column width={3}>
-              <div className="title">{t('collection_row.publication_date')}</div>
+              <div className="title">
+                {t(collection.curation ? 'collection_row.review_request_date' : 'collection_row.publication_date')}
+              </div>
               <div className="subtitle" title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>
-                {formatDistanceToNow(createdAtDate, { addSuffix: true })}
+                {formatDistanceToNow(collection.curation ? collection.curation.timestamp : createdAtDate, { addSuffix: true })}
               </div>
             </Grid.Column>
             <Grid.Column width={2}>
               <div className="actions">
-                {collection.isApproved ? (
-                  <div className="approved action">
-                    <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
-                  </div>
-                ) : hasReviews(collection) ? (
-                  <div className="rejected action">
-                    <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
-                  </div>
+                {!collection.curation ? (
+                  collection.isApproved ? (
+                    <div className="approved action">
+                      <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
+                    </div>
+                  ) : hasReviews(collection) ? (
+                    <div className="rejected action">
+                      <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
+                    </div>
+                  ) : null
                 ) : null}
               </div>
             </Grid.Column>
