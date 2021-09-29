@@ -1,5 +1,9 @@
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
+  ApproveCurationFailureAction,
+  ApproveCurationRequestAction,
+  ApproveCurationSuccessAction,
+  APPROVE_CURATION_FAILURE,
   FetchCurationFailureAction,
   FetchCurationRequestAction,
   FetchCurationsFailureAction,
@@ -17,7 +21,11 @@ import {
   PushCurationSuccessAction,
   PUSH_CURATION_FAILURE,
   PUSH_CURATION_REQUEST,
-  PUSH_CURATION_SUCCESS
+  PUSH_CURATION_SUCCESS,
+  RejectCurationFailureAction,
+  RejectCurationRequestAction,
+  RejectCurationSuccessAction,
+  REJECT_CURATION_FAILURE
 } from './actions'
 import { Curation } from './types'
 
@@ -43,6 +51,12 @@ type CurationReducerAction =
   | PushCurationRequestAction
   | PushCurationSuccessAction
   | PushCurationFailureAction
+  | ApproveCurationRequestAction
+  | ApproveCurationSuccessAction
+  | ApproveCurationFailureAction
+  | RejectCurationRequestAction
+  | RejectCurationSuccessAction
+  | RejectCurationFailureAction
 
 export function curationReducer(state: CurationState = INITIAL_STATE, action: CurationReducerAction): CurationState {
   switch (action.type) {
@@ -92,6 +106,8 @@ export function curationReducer(state: CurationState = INITIAL_STATE, action: Cu
     case FETCH_CURATIONS_FAILURE:
     case FETCH_CURATION_FAILURE:
     case PUSH_CURATION_FAILURE:
+    case REJECT_CURATION_FAILURE:
+    case APPROVE_CURATION_FAILURE:
       const { error } = action.payload
 
       return {

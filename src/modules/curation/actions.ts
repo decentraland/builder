@@ -43,3 +43,31 @@ export const pushCurationFailure = (error: string) => action(PUSH_CURATION_FAILU
 export type PushCurationRequestAction = ReturnType<typeof pushCurationRequest>
 export type PushCurationSuccessAction = ReturnType<typeof pushCurationSuccess>
 export type PushCurationFailureAction = ReturnType<typeof pushCurationFailure>
+
+// Approve Curation
+
+export const APPROVE_CURATION_REQUEST = '[Request] Approve Curation'
+export const APPROVE_CURATION_SUCCESS = '[Success] Approve Curation'
+export const APPROVE_CURATION_FAILURE = '[Failure] Approve Curation'
+
+export const approveCurationRequest = (collectionId: string) => action(APPROVE_CURATION_REQUEST, { collectionId })
+export const approveCurationSuccess = () => action(APPROVE_CURATION_SUCCESS)
+export const approveCurationFailure = (error: string) => action(APPROVE_CURATION_FAILURE, { error })
+
+export type ApproveCurationRequestAction = ReturnType<typeof approveCurationRequest>
+export type ApproveCurationSuccessAction = ReturnType<typeof approveCurationSuccess>
+export type ApproveCurationFailureAction = ReturnType<typeof approveCurationFailure>
+
+// Reject Curation
+
+export const REJECT_CURATION_REQUEST = '[Request] Reject Curation'
+export const REJECT_CURATION_SUCCESS = '[Success] Reject Curation'
+export const REJECT_CURATION_FAILURE = '[Failure] Reject Curation'
+
+export const rejectCurationRequest = (collectionId: string) => action(REJECT_CURATION_REQUEST, { collectionId })
+export const rejectCurationSuccess = () => action(REJECT_CURATION_SUCCESS)
+export const rejectCurationFailure = (error: string) => action(REJECT_CURATION_FAILURE, { error })
+
+export type RejectCurationRequestAction = ReturnType<typeof rejectCurationRequest>
+export type RejectCurationSuccessAction = ReturnType<typeof rejectCurationSuccess>
+export type RejectCurationFailureAction = ReturnType<typeof rejectCurationFailure>
