@@ -24,7 +24,7 @@ export const getValidCurations = createSelector<
   CurationState['data']
 >(getCollectionsById, getCurationsByCollectionId, (collections, curations) => {
   const collectionIds = Object.keys(curations)
-  
+
   const validCurations = collectionIds
     .filter(collectionId => collections[collectionId]) // To avoid breaking when collections have not been loaded
     .filter(collectionId => collections[collectionId].reviewedAt < curations[collectionId].created_at)

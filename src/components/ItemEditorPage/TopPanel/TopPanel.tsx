@@ -11,6 +11,7 @@ import ReviewModal from './ReviewModal'
 import { ReviewType } from './ReviewModal/ReviewModal.types'
 import { Props, State } from './TopPanel.types'
 import './TopPanel.css'
+import { Curation } from 'modules/curation/types'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
   state = {
@@ -31,12 +32,11 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.setState({ isRejectModalOpen })
   }
 
-  renderPage(collection: Collection, items: Item[]) {
+  renderPage(collection: Collection, items: Item[], curation: Curation | null) {
     const { isApproveModalOpen, isRejectModalOpen } = this.state
     const { chainId } = this.props
 
     const inCatalyst = this.inCatalyst(items)
-    const buttonProps = { disabled: !inCatalyst }
 
     return (
       <>
@@ -52,22 +52,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
             disabled={inCatalyst}
             content={t('item_editor.top_panel.waiting_for_upload')}
             position="bottom center"
-            trigger={
-              <span className="button-container">
-                {hasReviews(collection) ? (
-                  collection.isApproved ? (
-                    this.renderRejectButton(buttonProps)
-                  ) : (
-                    this.renderApproveButton(buttonProps)
-                  )
-                ) : (
-                  <>
-                    {this.renderRejectButton(buttonProps)}
-                    {this.renderApproveButton(buttonProps)}
-                  </>
-                )}
-              </span>
-            }
+            trigger={<span className="button-container">{this.renderButtons(collection, curation, inCatalyst)}</span>}
             inverted
           />
         </div>
@@ -92,6 +77,42 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     return items.every(item => item.inCatalyst)
   }
 
+  renderButtons(collection: Collection, curation: Curation | null, inCatalyst: boolean) {
+    const buttonProps = { disabled: !inCatalyst }
+
+    if (curation?.status === 'pending') {
+      return (
+        <>
+          {this.renderRejectButton(buttonProps)}
+          {this.renderApproveButton(buttonProps)}
+        </>
+      )
+    }
+
+    if (curation?.status === 'approved') {
+      return this.renderRejectButton(buttonProps)
+    }
+
+    if (curation?.status === 'rejected') {
+      return this.renderApproveButton(buttonProps)
+    }
+
+    if (hasReviews(collection) && collection.isApproved) {
+      return this.renderRejectButton(buttonProps)
+    }
+
+    if (hasReviews(collection) && !collection.isApproved) {
+      return this.renderApproveButton(buttonProps)
+    }
+
+    return (
+      <>
+        {this.renderRejectButton(buttonProps)}
+        {this.renderApproveButton(buttonProps)}
+      </>
+    )
+  }
+
   renderApproveButton(props: ButtonProps) {
     return (
       <Button primary onClick={() => this.handleChangeApproveModalVisibility(true)} {...props}>
@@ -114,8 +135,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
-          {(collection, items, isLoading) =>
-            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, items)
+          {(collection, items, curation, isLoading) =>
+            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, items, curation)
           }
         </CollectionProvider>
       </div>
