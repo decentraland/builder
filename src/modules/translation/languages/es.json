@@ -1193,5 +1193,11 @@
       "cant_save_without_collection": "No se puede guardar una publicación sin una colección",
       "not_found": "No se encontró"
     }
+  },
+  "status": {
+    "under_review": "En Revisión",
+    "loading": "Cargando...",
+    "synced": "Sincronizado",
+    "unsynced": "Desincronizado"
   }
 }

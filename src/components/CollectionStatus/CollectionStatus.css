@@ -1,0 +1,23 @@
+.CollectionStatus {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.CollectionStatus.under_review {
+  background-color: #cccccc;
+}
+
+.CollectionStatus.loading {
+  background-color: #3fff4586;
+}
+
+.CollectionStatus.synced {
+  background-color: #3fff46;
+}
+
+.CollectionStatus.unsynced {
+  background-color: orange;
+}

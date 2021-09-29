@@ -10,6 +10,7 @@ import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, 
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
+import ItemStatus from 'components/ItemStatus'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import NotFound from 'components/NotFound'
 import Back from 'components/Back'
@@ -66,7 +67,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Column>
                   <Row className="header-row">
                     <Header className="name" size="huge">
-                      {item.name}
+                      <ItemStatus item={item} />{item.name}
                     </Header>
                   </Row>
                 </Column>
@@ -113,7 +114,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
           </Row>
         </Section>
         <Narrow>
-          {collection ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
+          {!collection ? <Notice storageKey={STORAGE_KEY}>{t('item_detail_page.notice')}</Notice> : null}
 
           <div className="item-data">
             <ItemImage item={item} hasBadge={true} />
@@ -150,21 +151,21 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   <div className="value">{t('global.free')}</div>
                 </Section>
               ) : (
-                <>
-                  {item.price ? (
-                    <Section>
-                      <div className="subtitle">{t('item.price')}</div>
-                      <div className="value">{fromWei(item.price, 'ether')}</div>
-                    </Section>
-                  ) : null}
-                  {item.beneficiary ? (
-                    <Section>
-                      <div className="subtitle">{t('item.beneficiary')}</div>
-                      <div className="value">{item.beneficiary}</div>
-                    </Section>
-                  ) : null}
-                </>
-              )}
+                  <>
+                    {item.price ? (
+                      <Section>
+                        <div className="subtitle">{t('item.price')}</div>
+                        <div className="value">{fromWei(item.price, 'ether')}</div>
+                      </Section>
+                    ) : null}
+                    {item.beneficiary ? (
+                      <Section>
+                        <div className="subtitle">{t('item.beneficiary')}</div>
+                        <div className="value">{item.beneficiary}</div>
+                      </Section>
+                    ) : null}
+                  </>
+                )}
               {item.isPublished ? (
                 <Section>
                   <div className="subtitle">{t('item.supply')}</div>

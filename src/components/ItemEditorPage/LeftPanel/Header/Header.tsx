@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isEqual } from 'lib/address'
 import ConfirmDelete from 'components/ConfirmDelete'
-import CollectionBadge from 'components/CollectionBadge'
+import CollectionStatus from 'components/CollectionStatus'
 import { Props } from './Header.types'
 import './Header.css'
 
@@ -56,7 +56,7 @@ export default class Header extends React.PureComponent<Props> {
       <>
         <div className="block back" onClick={this.handleBack} />
         <div className="title">
-          {collection.name} <CollectionBadge collection={collection} />
+          {collection.name} <CollectionStatus collection={collection} />
         </div>
         {isOwner && !collection.isPublished ? (
           <Dropdown trigger={<div className="block actions" />} inline direction="left">
@@ -86,8 +86,8 @@ export default class Header extends React.PureComponent<Props> {
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-          <div className="block" />
-        )}
+            <div className="block" />
+          )}
       </>
     )
   }

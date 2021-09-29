@@ -18,6 +18,7 @@ import { committeeReducer as committee } from 'modules/committee/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { editorReducer as editor } from 'modules/editor/reducer'
 import { ensReducer as ens } from 'modules/ens/reducer'
+import { entityReducer as entity } from 'modules/entity/reducer'
 import { identityReducer as identity } from 'modules/identity/reducer'
 import { itemReducer as item } from 'modules/item/reducer'
 import { landReducer as land } from 'modules/land/reducer'
@@ -43,6 +44,7 @@ export function createRootReducer(history: History) {
       deployment,
       editor,
       ens,
+      entity,
       identity,
       item,
       land,

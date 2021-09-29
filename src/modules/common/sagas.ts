@@ -1,4 +1,5 @@
 import { all } from 'redux-saga/effects'
+import { CatalystClient } from 'dcl-catalyst-client'
 
 import { createProfileSaga } from 'decentraland-dapps/dist/modules/profile/sagas'
 import { transactionSaga } from 'decentraland-dapps/dist/modules/transaction/sagas'
@@ -33,10 +34,11 @@ import { uiSaga } from 'modules/ui/sagas'
 import { walletSaga } from 'modules/wallet/sagas'
 import { PEER_URL } from 'lib/api/peer'
 import { BuilderAPI } from 'lib/api/builder'
+import { entitySaga } from 'modules/entity/sagas'
 
 const profileSaga = createProfileSaga({ peerUrl: PEER_URL })
 
-export function* rootSaga(builderAPI: BuilderAPI) {
+export function* rootSaga(builderAPI: BuilderAPI, catalystClient: CatalystClient) {
   yield all([
     analyticsSaga(),
     assetPackSaga(builderAPI),
@@ -47,6 +49,7 @@ export function* rootSaga(builderAPI: BuilderAPI) {
     deploymentSaga(builderAPI),
     editorSaga(),
     ensSaga(),
+    entitySaga(catalystClient),
     forumSaga(builderAPI),
     identitySaga(),
     itemSaga(builderAPI),

@@ -4,6 +4,7 @@ import createSagasMiddleware from 'redux-saga'
 import { createLogger } from 'redux-logger'
 import { createBrowserHistory } from 'history'
 
+import { CatalystClient } from 'dcl-catalyst-client'
 import { env } from 'decentraland-commons'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
@@ -31,6 +32,7 @@ import { fetchTilesRequest } from 'modules/tile/actions'
 import { isDevelopment } from 'lib/environment'
 import { BuilderAPI, BUILDER_SERVER_URL } from 'lib/api/builder'
 import { Authorization } from 'lib/api/auth'
+import { PEER_URL } from 'lib/api/peer'
 
 const builderVersion = require('../../../package.json').version
 
@@ -138,8 +140,9 @@ const enhancer = composeEnhancers(middleware)
 const store = createStore(rootReducer, enhancer) as RootStore
 
 const builderAPI = new BuilderAPI(BUILDER_SERVER_URL, new Authorization(store))
+const catalystClient = new CatalystClient(PEER_URL, 'Builder')
 
-sagasMiddleware.run(rootSaga, builderAPI)
+sagasMiddleware.run(rootSaga, builderAPI, catalystClient)
 loadStorageMiddleware(store)
 
 if (isDevelopment) {

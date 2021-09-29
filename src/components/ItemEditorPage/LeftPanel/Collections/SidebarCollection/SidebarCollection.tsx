@@ -7,7 +7,7 @@ import { locations } from 'routing/locations'
 import { SIDEBAR_ITEM_SOURCE } from '../../Items/SidebarItem/SidebarItem.dnd'
 import { Props } from './SidebarCollection.types'
 import { collect, CollectedProps, collectionTarget } from './SidebarCollection.dnd'
-import CollectionBadge from 'components/CollectionBadge'
+import CollectionStatus from 'components/CollectionStatus'
 import './SidebarCollection.css'
 
 class SidebarCollection extends React.PureComponent<Props & CollectedProps> {
@@ -21,8 +21,8 @@ class SidebarCollection extends React.PureComponent<Props & CollectedProps> {
           <CollectionImage collection={collection} />
           <div className="wrapper">
             <div className="name">
+              <CollectionStatus collection={collection} />
               {collection.name}
-              <CollectionBadge collection={collection} />
             </div>
             <div className="count">{t('item_editor.left_panel.items_count', { count: collectionItems.length })}</div>
           </div>

@@ -49,3 +49,10 @@
   font-size: 21px;
   text-transform: capitalize;
 }
+
+.ItemDetailPage .ItemStatus {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 6px;
+  margin-right: 12px;
+}

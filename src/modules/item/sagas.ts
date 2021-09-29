@@ -1,5 +1,5 @@
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, all } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -56,21 +56,23 @@ import {
   DeployItemContentsFailureAction,
   fetchRaritiesSuccess,
   fetchRaritiesFailure,
-  FETCH_RARITIES_REQUEST
+  FETCH_RARITIES_REQUEST,
+  FETCH_ITEMS_SUCCESS
 } from './actions'
-import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { getIdentity } from 'modules/identity/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI } from 'lib/api/builder'
-import { getCollection, getCollectionItems, getCollections } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { deployContents, calculateFinalSize } from './export'
 import { Item, Rarity } from './types'
-import { getItem, getItems } from './selectors'
+import { getAuthorizedItems, getItem, getItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE } from './utils'
+import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
+import { fetchEntitiesRequest } from 'modules/entity/actions'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -88,6 +90,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
+  yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
     try {
@@ -306,6 +309,18 @@ export function* itemSaga(builder: BuilderAPI) {
       }
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  function* fetchItemEntities() {
+    while (true) {
+      yield all([take(FETCH_ITEMS_SUCCESS), take(FETCH_COLLECTIONS_SUCCESS)])
+      const items: Item[] = yield select(getAuthorizedItems)
+      const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
+      const urns = items
+        .filter(item => item.isPublished)
+        .map(item => getCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
+      yield put(fetchEntitiesRequest({ filters: { pointers: urns } }))
     }
   }
 }

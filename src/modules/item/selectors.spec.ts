@@ -1,7 +1,12 @@
+import { ChainId, WearableCategory } from '@dcl/schemas'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { getAuthorizedItems, getItem, getItems, getRarities, getWalletItems, getWalletOrphanItems } from './selectors'
-import { Item, ItemRarity } from './types'
+import { getAuthorizedItems, getItem, getItems, getRarities, getStatusByItemId, getWalletItems, getWalletOrphanItems } from './selectors'
+import { Item, ItemRarity, SyncStatus } from './types'
+
+jest.mock('decentraland-dapps/dist/lib/eth')
+const mockGetChainIdByNetwork = getChainIdByNetwork as jest.Mock
 
 describe('Item selectors', () => {
   let item: Item
@@ -109,6 +114,128 @@ describe('Item selectors', () => {
   describe('when getting the rarities', () => {
     it('should return the rarities', () => {
       expect(getRarities(state)).toEqual(state.item.rarities)
+    })
+  })
+
+  describe('when getting status by item id', () => {
+    it('should return the status for each published item', () => {
+      mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
+      const mockState = {
+        item: {
+          data: {
+            '0': {
+              id: '0',
+              collectionId: '0',
+              tokenId: 'aTokenId',
+              isPublished: true,
+              isApproved: false
+            },
+            '1': {
+              id: '1',
+              collectionId: '1',
+              tokenId: 'anotherTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmA'
+              },
+              name: 'pepito',
+              description: 'yes it is a pepito',
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
+            },
+            '2': {
+              id: '2',
+              collectionId: '2',
+              tokenId: 'yetAnotherTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmB_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
+            }
+          }
+        },
+        collection: {
+          data: {
+            '0': {
+              id: '0',
+              contractAddress: 'anAddress'
+            },
+            '1': {
+              id: '1',
+              contractAddress: 'anotherAddress'
+            },
+            '2': {
+              id: '2',
+              contractAddress: 'yetAnotherAddress'
+            }
+          }
+        },
+        entity: {
+          data: {
+            Qm1: {
+              content: [
+                {
+                  hash: 'QmA',
+                  key: 'file.ext'
+                }
+              ],
+              metadata: {
+                id: 'urn:decentraland:matic:collections-v2:anotherAddress:anotherTokenId',
+                name: 'pepito',
+                description: 'yes it is a pepito',
+                data: {
+                  category: WearableCategory.HAT,
+                  replaces: [],
+                  hides: [],
+                  representations: [],
+                  tags: []
+                }
+              }
+            },
+            Qm2: {
+              content: [
+                {
+                  hash: 'QmB',
+                  key: 'file.ext'
+                }
+              ],
+              metadata: {
+                id: 'urn:decentraland:matic:collections-v2:yetAnotherAddress:yetAnotherTokenId',
+                name: 'pepito',
+                description: 'pepito hat very nice',
+                data: {
+                  category: WearableCategory.HAT,
+                  replaces: [],
+                  hides: [],
+                  representations: [],
+                  tags: []
+                }
+              }
+            }
+          }
+        }
+      }
+      expect(getStatusByItemId((mockState as unknown) as RootState)).toEqual({
+        '0': SyncStatus.UNDER_REVIEW,
+        '1': SyncStatus.SYNCED,
+        '2': SyncStatus.UNSYNCED
+      })
     })
   })
 })

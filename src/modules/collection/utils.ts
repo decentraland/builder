@@ -3,7 +3,7 @@ import { ChainId, getURNProtocol, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { Item } from 'modules/item/types'
+import { Item, SyncStatus } from 'modules/item/types'
 import { isEqual, includes } from 'lib/address'
 import { Collection, Access, Mint } from './types'
 import { locations } from 'routing/locations'
@@ -73,10 +73,6 @@ export function isManager(collection: Collection, address?: string) {
   return !!address && collection.managers.some(manager => isEqual(manager, address))
 }
 
-export function isEditable(collection: Collection) {
-  return !collection.isApproved
-}
-
 export function canMintCollectionItems(collection: Collection, address?: string) {
   return collection.isApproved && (isOwner(collection, address) || isMinter(collection, address))
 }
@@ -91,4 +87,11 @@ export function hasReviews(collection: Collection) {
 
 export function getTotalAmountOfMintedItems(mints: Mint[]) {
   return mints.reduce((total, mint) => total + mint.amount, 0)
+}
+
+export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) {
+  const sorted = Object.values(SyncStatus)
+  const indexA = sorted.indexOf(statusA)
+  const indexB = sorted.indexOf(statusB)
+  return indexA < indexB ? statusA : statusB
 }

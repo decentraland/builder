@@ -1173,5 +1173,11 @@
       "cant_save_without_collection": "没有收藏就无法保存已发布",
       "not_found": "未找到项目"
     }
+  },
+  "status": {
+    "under_review": "审核中",
+    "loading": "加载中...",
+    "synced": "同步",
+    "unsynced": "未同步"
   }
 }

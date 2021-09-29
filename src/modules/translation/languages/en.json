@@ -1182,5 +1182,11 @@
       "cant_save_without_collection": "Can't save a published item without a collection",
       "not_found": "Not found"
     }
+  },
+  "status": {
+    "under_review": "Under Review",
+    "loading": "Loading...",
+    "synced": "Synced",
+    "unsynced": "Unsynced"
   }
 }
