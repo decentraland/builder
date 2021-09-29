@@ -666,7 +666,28 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchWeeklyStats(base: string) {
-    const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
+    const resp = await fetch('https://cdn-data.decentraland.org/scenes/scene-stats.json')
+    const json: Record<
+      string,
+      { last_7d: { users: number; sessions: number; median_session_time: number; max_concurrent_users: number | null } }
+    > = await resp.json()
+    const stats = base in json ? json[base]['last_7d'] : null
+    const remoteStats: RemoteWeeklyStats = {
+      week: '',
+      title: '',
+      base,
+      users: stats ? stats.users : 0,
+      sessions: stats ? stats.sessions : 0,
+      median_session_time: stats ? stats.median_session_time : 0,
+      min_session_time: stats ? stats.median_session_time : 0,
+      average_session_time: stats ? stats.median_session_time : 0,
+      max_session_time: stats ? stats.median_session_time : 0,
+      direct_users: stats ? stats.users : 0,
+      direct_sessions: stats ? stats.sessions : 0,
+      max_concurrent_users: stats ? stats.max_concurrent_users || 0 : 0,
+      max_concurrent_users_time: ''
+    }
+
     return fromRemoteWeeklyStats(remoteStats)
   }
 
