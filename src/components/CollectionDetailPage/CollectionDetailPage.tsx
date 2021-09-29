@@ -127,7 +127,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props, Sta
                 <Column className="header-column">
                   <Row className="header-row" onClick={this.handleEditName}>
                     <Header size="huge" className="name">
-                      {collection.isPublished ? <CollectionStatus collection={collection} /> : null}{collection.name}
+                      {collection.isPublished && <CollectionStatus collection={collection} />}{collection.name}
                     </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
