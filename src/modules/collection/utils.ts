@@ -89,7 +89,7 @@ export function getTotalAmountOfMintedItems(mints: Mint[]) {
   return mints.reduce((total, mint) => total + mint.amount, 0)
 }
 
-export function getMostRelevantStauts(statusA: SyncStatus, statusB: SyncStatus) {
+export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) {
   const sorted = Object.values(SyncStatus)
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
