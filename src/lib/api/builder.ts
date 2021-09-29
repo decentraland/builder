@@ -15,7 +15,6 @@ import { Pool } from 'modules/pool/types'
 import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
-import { WeeklyStats } from 'modules/stats/types'
 import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
@@ -25,13 +24,6 @@ export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/contents/${hash}`
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
-
-// caching the stats promise since it should not change for 24hs. Caching the promise instead of using await so simultaneous calls to the function would result in a single request.
-let statsPromise:
-  | Promise<
-      Record<string, { last_7d: { users: number; sessions: number; median_session_time: number; max_concurrent_users: number | null } }>
-    >
-  | undefined
 
 export type RemoteItem = {
   id: string // uuid
@@ -637,24 +629,6 @@ export class BuilderAPI extends BaseAPI {
 
   async deleteCollection(collection: Collection) {
     await this.request('delete', `/collections/${collection.id}`, {})
-  }
-
-  async fetchWeeklyStats(base: string) {
-    if (!statsPromise) {
-      statsPromise = fetch('https://cdn-data.decentraland.org/scenes/scene-stats.json').then(resp => resp.json())
-    }
-    const json = await statsPromise
-    const stats = base in json ? json[base]['last_7d'] : null
-
-    const weeklyStats: WeeklyStats = {
-      base,
-      users: stats?.users ?? 0,
-      sessions: stats?.sessions ?? 0,
-      medianSessionTime: stats?.median_session_time ?? 0,
-      maxConcurrentUsers: stats?.max_concurrent_users ?? 0
-    }
-
-    return weeklyStats
   }
 
   async fetchCommittee(): Promise<string[]> {
