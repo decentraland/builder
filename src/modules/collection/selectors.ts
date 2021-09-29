@@ -9,7 +9,7 @@ import { isEqual } from 'lib/address'
 import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS } from './actions'
 import { Collection } from './types'
 import { CollectionState } from './reducer'
-import { canSeeCollection, getMostRelevantStauts } from './utils'
+import { canSeeCollection, getMostRelevantStatus } from './utils'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -61,7 +61,7 @@ export const getStatusByCollectionId = createSelector<RootState, Item[], Record<
       const { collectionId } = item
       if (collectionId) {
         if (collectionId in statusByCollectionId) {
-          statusByCollectionId[collectionId] = getMostRelevantStauts(statusByCollectionId[collectionId], itemStatusByItemId[item.id])
+          statusByCollectionId[collectionId] = getMostRelevantStatus(statusByCollectionId[collectionId], itemStatusByItemId[item.id])
         } else {
           statusByCollectionId[collectionId] = itemStatusByItemId[item.id]
         }
