@@ -26,7 +26,7 @@ export const getContentsStorageUrl = (hash: string = '') => `${BUILDER_SERVER_UR
 export const getAssetPackStorageUrl = (hash: string = '') => `${BUILDER_SERVER_URL}/storage/assetPacks/${hash}`
 export const getPreviewUrl = (projectId: string) => `${BUILDER_SERVER_URL}/projects/${projectId}/media/preview.png`
 
-// caching the stats promise since it should not change for 24hs. Caching the promise instead of the awaited so simultaneous calls to the function would result in a single request.
+// caching the stats promise since it should not change for 24hs. Caching the promise instead of using await so simultaneous calls to the function would result in a single request.
 let statsPromise:
   | Promise<
       Record<string, { last_7d: { users: number; sessions: number; median_session_time: number; max_concurrent_users: number | null } }>
