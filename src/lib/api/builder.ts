@@ -648,10 +648,10 @@ export class BuilderAPI extends BaseAPI {
 
     const weeklyStats: WeeklyStats = {
       base,
-      users: stats ? stats.users : 0,
-      sessions: stats ? stats.sessions : 0,
-      medianSessionTime: stats ? stats.median_session_time : 0,
-      maxConcurrentUsers: stats ? stats.max_concurrent_users || 0 : 0
+      users: stats?.users ?? 0,
+      sessions: stats?.sessions ?? 0,
+      medianSessionTime: stats?.median_session_time ?? 0,
+      maxConcurrentUsers: stats?.max_concurrent_users ?? 0
     }
 
     return weeklyStats
