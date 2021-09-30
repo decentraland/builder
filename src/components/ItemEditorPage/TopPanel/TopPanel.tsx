@@ -14,26 +14,36 @@ import './TopPanel.css'
 import { Curation } from 'modules/curation/types'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
-  state = {
+  state: State = {
     currentVeredict: undefined,
     isApproveModalOpen: false,
-    isRejectModalOpen: false
+    isRejectModalOpen: false,
+    isApproveCurationModalOpen: false,
+    isRejectCurationModalOpen: false
   }
 
   handleBack = () => {
     this.props.onNavigate(locations.curation())
   }
 
-  handleChangeApproveModalVisibility = (isApproveModalOpen: boolean) => {
+  setApproveModalVisibility = (isApproveModalOpen: boolean) => {
     this.setState({ isApproveModalOpen })
   }
 
-  handleChangeRejectModalVisibility = (isRejectModalOpen: boolean) => {
+  setRejectModalVisibility = (isRejectModalOpen: boolean) => {
     this.setState({ isRejectModalOpen })
   }
 
-  renderPage(collection: Collection, items: Item[], curation: Curation | null) {
-    const { isApproveModalOpen, isRejectModalOpen } = this.state
+  setApproveCurationModalVisibility = (isApproveCurationModalOpen: boolean) => {
+    this.setState({ isApproveCurationModalOpen })
+  }
+
+  setRejectCurationModalVisibility = (isRejectCurationModalOpen: boolean) => {
+    this.setState({ isRejectCurationModalOpen })
+  }
+
+  renderPage = (collection: Collection, items: Item[], curation: Curation | null) => {
+    const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen } = this.state
     const { chainId } = this.props
 
     const inCatalyst = this.inCatalyst(items)
@@ -61,71 +71,102 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           type={ReviewType.APPROVE}
           open={isApproveModalOpen}
           collection={collection}
-          onClose={() => this.handleChangeApproveModalVisibility(false)}
+          curation={null}
+          onClose={() => this.setApproveModalVisibility(false)}
         />
         <ReviewModal
           type={ReviewType.REJECT}
           open={isRejectModalOpen}
           collection={collection}
-          onClose={() => this.handleChangeRejectModalVisibility(false)}
+          curation={null}
+          onClose={() => this.setRejectModalVisibility(false)}
+        />
+        <ReviewModal
+          type={ReviewType.APPROVE_CURATION}
+          open={isApproveCurationModalOpen}
+          collection={collection}
+          curation={curation}
+          onClose={() => this.setApproveCurationModalVisibility(false)}
+        />
+        <ReviewModal
+          type={ReviewType.REJECT_CURATION}
+          open={isRejectCurationModalOpen}
+          collection={collection}
+          curation={curation}
+          onClose={() => this.setRejectCurationModalVisibility(false)}
         />
       </>
     )
   }
 
-  inCatalyst(items: Item[]) {
+  inCatalyst = (items: Item[]) => {
     return items.every(item => item.inCatalyst)
   }
 
-  renderButtons(collection: Collection, curation: Curation | null, inCatalyst: boolean) {
+  renderButton = (reviewType: ReviewType, buttonProps: ButtonProps) => {
+    const onClickMap = {
+      [ReviewType.APPROVE]: this.setApproveModalVisibility,
+      [ReviewType.REJECT]: this.setRejectModalVisibility,
+      [ReviewType.APPROVE_CURATION]: this.setApproveCurationModalVisibility,
+      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
+    }
+
+    const textMap = {
+      [ReviewType.APPROVE]: 'approve',
+      [ReviewType.REJECT]: 'reject',
+      [ReviewType.APPROVE_CURATION]: 'approve_curation',
+      [ReviewType.REJECT_CURATION]: 'reject_curation'
+    }
+
+    return (
+      <Button
+        primary={![ReviewType.REJECT, ReviewType.REJECT_CURATION].includes(reviewType)}
+        onClick={() => onClickMap[reviewType](true)}
+        {...buttonProps}
+      >
+        {t(`item_editor.top_panel.${textMap[reviewType]}.action`)}
+      </Button>
+    )
+  }
+
+  renderButtons = (collection: Collection, curation: Curation | null, inCatalyst: boolean) => {
     const buttonProps = { disabled: !inCatalyst }
 
-    if (curation?.status === 'pending') {
-      return (
-        <>
-          {this.renderRejectButton(buttonProps)}
-          {this.renderApproveButton(buttonProps)}
-        </>
-      )
+    if (collection.isApproved) {
+      switch (curation?.status) {
+        case 'pending':
+          return (
+            <>
+              {this.renderButton(ReviewType.APPROVE_CURATION, buttonProps)}
+              {this.renderButton(ReviewType.REJECT_CURATION, buttonProps)}
+              {this.renderButton(ReviewType.REJECT, buttonProps)}
+            </>
+          )
+        case 'approved':
+          return this.renderButton(ReviewType.REJECT, buttonProps)
+        case 'rejected':
+          return (
+            <>
+              {this.renderButton(ReviewType.APPROVE_CURATION, buttonProps)}
+              {this.renderButton(ReviewType.REJECT, buttonProps)}
+            </>
+          )
+      }
     }
 
-    if (curation?.status === 'approved') {
-      return this.renderRejectButton(buttonProps)
-    }
-
-    if (curation?.status === 'rejected') {
-      return this.renderApproveButton(buttonProps)
-    }
-
-    if (hasReviews(collection) && collection.isApproved) {
-      return this.renderRejectButton(buttonProps)
-    }
-
-    if (hasReviews(collection) && !collection.isApproved) {
-      return this.renderApproveButton(buttonProps)
+    if (hasReviews(collection)) {
+      if (collection.isApproved) {
+        return this.renderButton(ReviewType.REJECT, buttonProps)
+      } else {
+        return this.renderButton(ReviewType.APPROVE, buttonProps)
+      }
     }
 
     return (
       <>
-        {this.renderRejectButton(buttonProps)}
-        {this.renderApproveButton(buttonProps)}
+        {this.renderButton(ReviewType.APPROVE, buttonProps)}
+        {this.renderButton(ReviewType.REJECT, buttonProps)}
       </>
-    )
-  }
-
-  renderApproveButton(props: ButtonProps) {
-    return (
-      <Button primary onClick={() => this.handleChangeApproveModalVisibility(true)} {...props}>
-        {t('item_editor.top_panel.approve.action')}
-      </Button>
-    )
-  }
-
-  renderRejectButton(props: ButtonProps) {
-    return (
-      <Button onClick={() => this.handleChangeRejectModalVisibility(true)} {...props}>
-        {t('item_editor.top_panel.reject.action')}
-      </Button>
     )
   }
 
