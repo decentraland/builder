@@ -947,7 +947,9 @@
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
-    "under_review": "No verificada"
+    "cant_push": "Esta colección aún está bajo revisión, los artículos aún se pueden acuñar pero no reflejarán nuevos cambios hasta su aprobación.",
+    "under_review": "No verificada",
+    "push_changes": "Subir Cambios"
   },
   "collection_menu": {
     "add_existing_item": "Agregar item existente",
