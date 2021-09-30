@@ -139,9 +139,9 @@ export default class ReviewModal extends React.PureComponent<Props> {
           this.renderApproved()
         ) : type === ReviewType.REJECT && !collection.isApproved ? (
           this.renderRejected()
-        ) : type === ReviewType.APPROVE_CURATION && curation!.status === 'approved' ? (
+        ) : type === ReviewType.APPROVE_CURATION && curation?.status === 'approved' ? (
           this.renderApproved()
-        ) : type === ReviewType.REJECT_CURATION && curation!.status === 'rejected' ? (
+        ) : type === ReviewType.REJECT_CURATION && curation?.status === 'rejected' ? (
           this.renderRejected()
         ) : type === ReviewType.DISABLE && !collection.isApproved ? (
           this.renderRejected()
