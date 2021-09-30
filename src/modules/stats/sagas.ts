@@ -1,4 +1,3 @@
-import { BuilderAPI } from 'lib/api/builder'
 import { call, put, takeEvery } from 'redux-saga/effects'
 import { analytics } from 'lib/api/analytics'
 import {
@@ -9,7 +8,7 @@ import {
 } from './action'
 import { WeeklyStats } from './types'
 
-export function* statsSaga(_builder: BuilderAPI) {
+export function* statsSaga() {
   yield takeEvery(FETCH_WEEKLY_SCENE_STATS_REQUEST, handleFetchSceneStatsRequest)
 
   function* handleFetchSceneStatsRequest(action: FetchWeeklySceneStatsRequestAction) {
