@@ -156,14 +156,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
             </>
           )
         case 'approved':
-          return this.renderButton(ReviewType.DISABLE, buttonProps)
         case 'rejected':
-          return (
-            <>
-              {this.renderButton(ReviewType.APPROVE_CURATION, buttonProps)}
-              {this.renderButton(ReviewType.DISABLE, buttonProps)}
-            </>
-          )
+          return this.renderButton(ReviewType.DISABLE, buttonProps)
       }
     }
 
