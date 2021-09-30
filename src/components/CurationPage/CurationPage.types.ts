@@ -19,7 +19,7 @@ export enum FilterBy {
 
 export type Props = {
   wallet: Wallet
-  collections: ExtCollection[]
+  collections: CollectionPageCollection[]
   isCommitteeMember: boolean
   isConnecting: boolean
   isLoading: boolean
@@ -35,7 +35,7 @@ export type State = {
   searchText: string
 }
 
-export type ExtCollection = Collection & {
+export type CollectionPageCollection = Collection & {
   curation?: Curation
 }
 

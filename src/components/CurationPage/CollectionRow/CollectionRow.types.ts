@@ -1,9 +1,9 @@
 import { Dispatch } from 'redux'
 import { Item } from 'modules/item/types'
-import { ExtCollection } from '../CurationPage.types'
+import { CollectionPageCollection } from '../CurationPage.types'
 
 export type Props = {
-  collection: ExtCollection
+  collection: CollectionPageCollection
   items: Item[]
 }
 

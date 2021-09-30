@@ -9,18 +9,17 @@ import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_CURATION_REQUEST } from 'modules/curation/actions'
-import { MapStateProps, ExtCollection } from './CurationPage.types'
+import { MapStateProps } from './CurationPage.types'
 import CurationPage from './CurationPage'
 
 const mapState = (state: RootState): MapStateProps => {
   const curations = getCurationsByCollectionId(state)
-  const collections = getCollections(state)
-    .filter(collection => collection.isPublished)
-    .map<ExtCollection>(collection => ({ ...collection, curation: curations[collection.id] }))
 
   return {
     wallet: getWallet(state)!,
-    collections,
+    collections: getCollections(state)
+      .filter(collection => collection.isPublished)
+      .map(collection => ({ ...collection, curation: curations[collection.id] })),
     isCommitteeMember: isWalletCommitteeMember(state),
     isConnecting: isConnecting(state),
     isLoading:
