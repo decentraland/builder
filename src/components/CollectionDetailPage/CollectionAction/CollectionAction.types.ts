@@ -12,13 +12,13 @@ export type Props = {
   items: Item[]
   authorizations: Authorization[]
   status: SyncStatus
-  isAwaitingCuration: boolean
+  hasPendingCuration: boolean
   onPublish: () => void
   onPush: () => void
   onInit: () => void
 }
 
 export type OwnProps = Pick<Props, 'collection'>
-export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'authorizations' | 'status' | 'isAwaitingCuration'>
+export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'authorizations' | 'status' | 'hasPendingCuration'>
 export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPush' | 'onInit'>
 export type MapDispatch = Dispatch<OpenModalAction | FetchCurationRequestAction>

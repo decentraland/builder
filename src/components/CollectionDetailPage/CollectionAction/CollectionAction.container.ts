@@ -18,7 +18,7 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     items: getCollectionItems(state, collectionId),
     authorizations: getAuthorizations(state),
     status: statusByCollectionId[collectionId],
-    isAwaitingCuration: getHasPendingCuration(state, collectionId)
+    hasPendingCuration: getHasPendingCuration(state, collectionId)
   }
 }
 

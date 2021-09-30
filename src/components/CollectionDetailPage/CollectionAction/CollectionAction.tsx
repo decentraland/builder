@@ -9,11 +9,11 @@ import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
-import { SyncStatus } from 'modules/item/types'
 import { isComplete } from 'modules/item/utils'
 import { Props } from './CollectionAction.types'
+import { SyncStatus } from 'modules/item/types'
 
-const CollectionAction = ({ wallet, collection, items, authorizations, status, isAwaitingCuration, onPublish, onPush, onInit }: Props) => {
+const CollectionAction = ({ wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit }: Props) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   useEffect(() => {
@@ -49,30 +49,28 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, i
     setIsAuthModalOpen(false)
   }
 
-  const isPublishUnderReview = collection.isPublished && !collection.isApproved
-  const isPublishedAndApproved = collection.isPublished && collection.isApproved
-  const isCollectionUnsynced = isPublishedAndApproved && status === SyncStatus.UNSYNCED
-  const areChangesUnderReview = isCollectionUnsynced && isAwaitingCuration
-  const canChangesBePushed = isCollectionUnsynced && !isAwaitingCuration
-
   let button: ReactNode
 
-  if (areChangesUnderReview) {
-    button = <UnderReview type="push" />
-  } else if (canChangesBePushed) {
-    button = (
-      <Button primary compact onClick={onPush}>
-        {t('collection_detail_page.push_changes')}
-      </Button>
-    )
-  } else if (isPublishedAndApproved) {
-    button = (
-      <Button secondary compact disabled={true}>
-        {t('global.published')}
-      </Button>
-    )
-  } else if (isPublishUnderReview) {
-    button = <UnderReview type="publish" />
+  if (collection.isPublished) {
+    if (collection.isApproved) {
+      if (hasPendingCuration) {
+        button = <UnderReview type="push" />
+      } else if (status === SyncStatus.UNSYNCED) {
+        button = (
+          <Button primary compact onClick={onPush}>
+            {t('collection_detail_page.push_changes')}
+          </Button>
+        )
+      } else {
+        button = (
+          <Button secondary compact disabled={true}>
+            {t('global.published')}
+          </Button>
+        )
+      }
+    } else {
+      button = <UnderReview type="publish" />
+    }
   } else {
     button = (
       <ChainButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} chainId={getChainIdByNetwork(Network.MATIC)}>
