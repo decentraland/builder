@@ -60,7 +60,7 @@ export function* rootSaga(builderAPI: BuilderAPI) {
     profileSaga(),
     projectSaga(builderAPI),
     sceneSaga(),
-    statsSaga(builderAPI),
+    statsSaga(),
     syncSaga(builderAPI),
     tileSaga(),
     toastSaga(),
