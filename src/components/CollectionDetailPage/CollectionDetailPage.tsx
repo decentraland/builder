@@ -26,11 +26,9 @@ import CollectionAction from './CollectionAction'
 
 import './CollectionDetailPage.css'
 
-
 const STORAGE_KEY = 'dcl-collection-notice'
 
 export default class CollectionDetailPage extends React.PureComponent<Props> {
-
   handleMintItems = () => {
     const { collection, onOpenModal } = this.props
     onOpenModal('MintItemsModal', { collectionId: collection!.id })
@@ -87,7 +85,8 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                 <Column className="header-column">
                   <Row className="header-row" onClick={this.handleEditName}>
                     <Header size="huge" className="name">
-                      {collection.isPublished && <CollectionStatus collection={collection} />}{collection.name}
+                      {collection.isPublished && <CollectionStatus collection={collection} />}
+                      {collection.name}
                     </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
@@ -141,7 +140,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
                     {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
 
-                    <CollectionAction />
+                    <CollectionAction collection={collection} />
                   </Row>
                 </Column>
               </Row>

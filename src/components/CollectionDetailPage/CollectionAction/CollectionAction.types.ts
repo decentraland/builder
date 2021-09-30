@@ -18,10 +18,7 @@ export type Props = {
   onInit: () => void
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'authorizations' | 'status' | 'isAwaitingCuration'>
-export type MapDispatchProps = {
-  onPublish: (collectionId: string) => void
-  onPush: (collectionId: string) => void
-  onInit: (collectionId: string) => void
-}
+export type OwnProps = Pick<Props, 'collection'>
+export type MapStateProps = Pick<Props, 'wallet' | 'items' | 'authorizations' | 'status' | 'isAwaitingCuration'>
+export type MapDispatchProps = Pick<Props, 'onPublish' | 'onPush' | 'onInit'>
 export type MapDispatch = Dispatch<OpenModalAction | FetchCurationRequestAction>

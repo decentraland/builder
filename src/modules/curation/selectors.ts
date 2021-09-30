@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect'
-import { getData as getCollectionsById } from 'modules/collection/selectors'
 import { RootState } from '../common/types'
 import { CurationState } from './reducer'
 import { Curation } from './types'
@@ -14,27 +13,5 @@ export const getCurations = createSelector<RootState, CurationState['data'], Cur
   Object.values(data)
 )
 
-/**
- * Filters from curations, all curations which collection has already been reviewed by a curator.
- */
-export const getValidCurations = createSelector<
-  RootState,
-  ReturnType<typeof getCollectionsById>,
-  ReturnType<typeof getCurationsByCollectionId>,
-  CurationState['data']
->(getCollectionsById, getCurationsByCollectionId, (collections, curations) => {
-  const collectionIds = Object.keys(curations)
-
-  const validCurations = collectionIds
-    .filter(collectionId => collections[collectionId]) // To avoid breaking when collections have not been loaded
-    .filter(collectionId => collections[collectionId].reviewedAt < curations[collectionId].created_at)
-
-  const validCurationsByCollectionId = validCurations.reduce(
-    (acc, collectionId) => ({ ...acc, [collectionId]: curations[collectionId] }),
-    {}
-  )
-
-  return validCurationsByCollectionId
-})
-
-export const getIsValidCuration = (state: RootState, collectionId: string) => !!getValidCurations(state)[collectionId]
+export const getHasPendingCuration = (state: RootState, collectionId: string) =>
+  getCurationsByCollectionId(state)[collectionId]?.status === 'pending'

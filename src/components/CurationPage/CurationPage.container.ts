@@ -4,17 +4,16 @@ import { getData as getWallet, isConnecting } from 'decentraland-dapps/dist/modu
 import { RootState } from 'modules/common/types'
 import { getCollections, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getLoading as getLoadingItem } from 'modules/item/selectors'
-import { getLoading as getLoadingCuration } from 'modules/curation/selectors'
+import { getCurationsByCollectionId, getLoading as getLoadingCuration } from 'modules/curation/selectors'
 import { isWalletCommitteeMember } from 'modules/committee/selectors'
 import { FETCH_COLLECTIONS_REQUEST } from 'modules/collection/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
 import { FETCH_CURATION_REQUEST } from 'modules/curation/actions'
-import { getValidCurations } from 'modules/curation/selectors'
 import { MapStateProps, ExtCollection } from './CurationPage.types'
 import CurationPage from './CurationPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const curations = getValidCurations(state)
+  const curations = getCurationsByCollectionId(state)
   const collections = getCollections(state)
     .filter(collection => collection.isPublished)
     .map<ExtCollection>(collection => ({ ...collection, curation: curations[collection.id] }))
