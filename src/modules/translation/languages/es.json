@@ -924,6 +924,7 @@
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
     "visit": "Visitar",
+    "review_request_date": "Fecha de solicitud de revisión",
     "publication_date": "Fecha de publicación",
     "forum_post": "Post en el foro",
     "no_forum_post": "No hay post",

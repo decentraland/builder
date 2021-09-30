@@ -903,6 +903,7 @@
     "items": "{count} 项",
     "owner": "所有者",
     "visit": "访问",
+    "review_request_date": "审核请求日期",
     "publication_date": "出版日期",
     "forum_post": "论坛帖子",
     "no_forum_post": "尚未发布到论坛",
