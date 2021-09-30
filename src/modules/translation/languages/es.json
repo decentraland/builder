@@ -1042,6 +1042,10 @@
     },
     "adding_one": "agregando uno!"
   },
+  "push_collection_changes_modal": {
+    "title": "Subir Cambios",
+    "description": "Se han realizado cambios en la colección o en los artículos contenidos en ella desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mercado y en el juego, deben ser revisados y aprobados nuevamente por el comité.{br}¿Está seguro de que desea impulsar los cambios para su revisión?"
+  },
   "collection_image": {
     "no_items": "No Items"
   },

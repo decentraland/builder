@@ -1016,6 +1016,10 @@
     },
     "adding_one": "加一个！"
   },
+  "push_collection_changes_modal": {
+    "title": "上传更改",
+    "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
+  },
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目",
