@@ -10,6 +10,8 @@ import { isEqual } from 'lib/address'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem } from './types'
 import { areSynced, canSeeItem, getCatalystItemURN } from './utils'
+import { Curation } from 'modules/curation/types'
+import { getCurationsByCollectionId } from 'modules/curation/selectors'
 
 export const getState = (state: RootState) => state.item
 export const getData = (state: RootState) => getState(state).data
@@ -86,13 +88,22 @@ export const getEntityByItemId = createSelector<
     }, {} as Record<string, DeploymentWithMetadataContentAndPointers>)
 )
 
-export const getStatusByItemId = createSelector<RootState, Item[], EntityState['data'], Record<string, SyncStatus>>(
+export const getStatusByItemId = createSelector<
+  RootState,
+  Item[],
+  EntityState['data'],
+  Record<string, Curation>,
+  Record<string, SyncStatus>
+>(
   state => getItems(state),
   state => getEntityByItemId(state),
-  (items, entitiesByItemId) => {
+  state => getCurationsByCollectionId(state),
+  (items, entitiesByItemId, curationsByCollectionId) => {
     const statusByItemId: Record<string, SyncStatus> = {}
     for (const item of items) {
-      if (!item.isPublished) {
+      if (item.collectionId && curationsByCollectionId[item.collectionId]?.status === 'pending') {
+        statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
+      } else if (!item.isPublished) {
         statusByItemId[item.id] = SyncStatus.UNPUBLISHED
       } else if (!item.isApproved) {
         statusByItemId[item.id] = SyncStatus.UNDER_REVIEW

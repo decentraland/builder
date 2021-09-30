@@ -10,6 +10,8 @@ import { SET_COLLECTION_MINTERS_SUCCESS, APPROVE_COLLECTION_SUCCESS, REJECT_COLL
 import { Collection } from './types'
 import { CollectionState } from './reducer'
 import { canSeeCollection, getMostRelevantStatus } from './utils'
+import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import { Curation } from 'modules/curation/types'
 
 export const getState = (state: RootState) => state.collection
 export const getData = (state: RootState) => getState(state).data
@@ -52,15 +54,24 @@ export const hasPendingCurationTransaction = createSelector<RootState, Transacti
   transactions.some(transaction => [APPROVE_COLLECTION_SUCCESS, REJECT_COLLECTION_SUCCESS].includes(transaction.actionType))
 )
 
-export const getStatusByCollectionId = createSelector<RootState, Item[], Record<string, SyncStatus>, Record<string, SyncStatus>>(
+export const getStatusByCollectionId = createSelector<
+  RootState,
+  Item[],
+  Record<string, SyncStatus>,
+  Record<string, Curation>,
+  Record<string, SyncStatus>
+>(
   state => getItems(state),
   state => getStatusByItemId(state),
-  (items, itemStatusByItemId) => {
+  state => getCurationsByCollectionId(state),
+  (items, itemStatusByItemId, curationsByCollectionId) => {
     const statusByCollectionId: Record<string, SyncStatus> = {}
     for (const item of items) {
       const { collectionId } = item
       if (collectionId) {
-        if (collectionId in statusByCollectionId) {
+        if (curationsByCollectionId[collectionId]?.status === 'pending') {
+          statusByCollectionId[collectionId] = SyncStatus.UNDER_REVIEW
+        } else if (collectionId in statusByCollectionId) {
           statusByCollectionId[collectionId] = getMostRelevantStatus(statusByCollectionId[collectionId], itemStatusByItemId[item.id])
         } else {
           statusByCollectionId[collectionId] = itemStatusByItemId[item.id]
