@@ -19,7 +19,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     isApproveModalOpen: false,
     isRejectModalOpen: false,
     isApproveCurationModalOpen: false,
-    isRejectCurationModalOpen: false
+    isRejectCurationModalOpen: false,
+    isDisableModalOpen: false
   }
 
   handleBack = () => {
@@ -42,8 +43,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.setState({ isRejectCurationModalOpen })
   }
 
+  setDisableModalVisibility = (isDisableModalOpen: boolean) => {
+    this.setState({ isDisableModalOpen })
+  }
+
   renderPage = (collection: Collection, items: Item[], curation: Curation | null) => {
-    const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen } = this.state
+    const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen, isDisableModalOpen } = this.state
     const { chainId } = this.props
 
     const inCatalyst = this.inCatalyst(items)
@@ -95,6 +100,13 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           curation={curation}
           onClose={() => this.setRejectCurationModalVisibility(false)}
         />
+        <ReviewModal
+          type={ReviewType.DISABLE}
+          open={isDisableModalOpen}
+          collection={collection}
+          curation={null}
+          onClose={() => this.setDisableModalVisibility(false)}
+        />
       </>
     )
   }
@@ -108,14 +120,16 @@ export default class TopPanel extends React.PureComponent<Props, State> {
       [ReviewType.APPROVE]: this.setApproveModalVisibility,
       [ReviewType.REJECT]: this.setRejectModalVisibility,
       [ReviewType.APPROVE_CURATION]: this.setApproveCurationModalVisibility,
-      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
+      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility,
+      [ReviewType.DISABLE]: this.setDisableModalVisibility
     }
 
     const textMap = {
       [ReviewType.APPROVE]: 'approve',
       [ReviewType.REJECT]: 'reject',
       [ReviewType.APPROVE_CURATION]: 'approve_curation',
-      [ReviewType.REJECT_CURATION]: 'reject_curation'
+      [ReviewType.REJECT_CURATION]: 'reject_curation',
+      [ReviewType.DISABLE]: 'disable'
     }
 
     return (
@@ -139,16 +153,15 @@ export default class TopPanel extends React.PureComponent<Props, State> {
             <>
               {this.renderButton(ReviewType.APPROVE_CURATION, buttonProps)}
               {this.renderButton(ReviewType.REJECT_CURATION, buttonProps)}
-              {this.renderButton(ReviewType.REJECT, buttonProps)}
             </>
           )
         case 'approved':
-          return this.renderButton(ReviewType.REJECT, buttonProps)
+          return this.renderButton(ReviewType.DISABLE, buttonProps)
         case 'rejected':
           return (
             <>
               {this.renderButton(ReviewType.APPROVE_CURATION, buttonProps)}
-              {this.renderButton(ReviewType.REJECT, buttonProps)}
+              {this.renderButton(ReviewType.DISABLE, buttonProps)}
             </>
           )
       }
@@ -156,7 +169,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
 
     if (hasReviews(collection)) {
       if (collection.isApproved) {
-        return this.renderButton(ReviewType.REJECT, buttonProps)
+        return this.renderButton(ReviewType.DISABLE, buttonProps)
       } else {
         return this.renderButton(ReviewType.APPROVE, buttonProps)
       }
