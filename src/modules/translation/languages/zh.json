@@ -1054,31 +1054,25 @@
         "title": "拒绝收藏",
         "subtitle": "我想还不够，是吧？",
         "tx_pending": "等待拒绝交易确认",
-        "action": "拒绝"
+        "action": "拒绝收藏"
       },
       "approve": {
         "title": "批准收藏",
         "subtitle": "如果您觉得此收藏符合Decentraland标准，请批准它！",
         "tx_pending": "等待批准交易以确认",
-        "action": "批准"
+        "action": "批准收藏"
       },
       "reject_curation": {
         "title": "拒绝更改",
         "subtitle": "我想这些变化还不够好， 嗯？",
         "tx_pending": "等待拒绝更改交易以确认",
-        "action": "拒绝"
+        "action": "拒绝更改"
       },
       "approve_curation": {
         "title": "批准更改",
         "subtitle": "如果您认为适用于此集合的更改达到体面兰标准，请批准它们！",
         "tx_pending": "等待批准更改交易以确认",
-        "action": "批准"
-      },
-      "disable": {
-        "title": "禁用集合",
-        "subtitle": "此集合在再次启用之前不可用。是否确定？",
-        "tx_pending": "等待禁用交易确认",
-        "action": "禁用"
+        "action": "批准更改"
       }
     },
     "left_panel": {

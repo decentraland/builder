@@ -4,14 +4,15 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
+import { Curation } from 'modules/curation/types'
 import { hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
 import ReviewModal from './ReviewModal'
 import { ReviewType } from './ReviewModal/ReviewModal.types'
 import { Props, State } from './TopPanel.types'
+
 import './TopPanel.css'
-import { Curation } from 'modules/curation/types'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
   state: State = {
@@ -19,8 +20,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     isApproveModalOpen: false,
     isRejectModalOpen: false,
     isApproveCurationModalOpen: false,
-    isRejectCurationModalOpen: false,
-    isDisableModalOpen: false
+    isRejectCurationModalOpen: false
   }
 
   handleBack = () => {
@@ -43,12 +43,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.setState({ isRejectCurationModalOpen })
   }
 
-  setDisableModalVisibility = (isDisableModalOpen: boolean) => {
-    this.setState({ isDisableModalOpen })
-  }
-
   renderPage = (collection: Collection, items: Item[], curation: Curation | null) => {
-    const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen, isDisableModalOpen } = this.state
+    const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen } = this.state
     const { chainId } = this.props
 
     const inCatalyst = this.inCatalyst(items)
@@ -100,13 +96,6 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           curation={curation}
           onClose={() => this.setRejectCurationModalVisibility(false)}
         />
-        <ReviewModal
-          type={ReviewType.DISABLE}
-          open={isDisableModalOpen}
-          collection={collection}
-          curation={null}
-          onClose={() => this.setDisableModalVisibility(false)}
-        />
       </>
     )
   }
@@ -120,21 +109,19 @@ export default class TopPanel extends React.PureComponent<Props, State> {
       [ReviewType.APPROVE]: this.setApproveModalVisibility,
       [ReviewType.REJECT]: this.setRejectModalVisibility,
       [ReviewType.APPROVE_CURATION]: this.setApproveCurationModalVisibility,
-      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility,
-      [ReviewType.DISABLE]: this.setDisableModalVisibility
+      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
     }
 
     const textMap = {
       [ReviewType.APPROVE]: 'approve',
       [ReviewType.REJECT]: 'reject',
       [ReviewType.APPROVE_CURATION]: 'approve_curation',
-      [ReviewType.REJECT_CURATION]: 'reject_curation',
-      [ReviewType.DISABLE]: 'disable'
+      [ReviewType.REJECT_CURATION]: 'reject_curation'
     }
 
     return (
       <Button
-        primary={![ReviewType.REJECT, ReviewType.REJECT_CURATION].includes(reviewType)}
+        primary={[ReviewType.APPROVE, ReviewType.APPROVE_CURATION].includes(reviewType)}
         onClick={() => onClickMap[reviewType](true)}
         {...buttonProps}
       >
@@ -157,13 +144,13 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           )
         case 'approved':
         case 'rejected':
-          return this.renderButton(ReviewType.DISABLE, buttonProps)
+          return this.renderButton(ReviewType.REJECT, buttonProps)
       }
     }
 
     if (hasReviews(collection)) {
       if (collection.isApproved) {
-        return this.renderButton(ReviewType.DISABLE, buttonProps)
+        return this.renderButton(ReviewType.REJECT, buttonProps)
       } else {
         return this.renderButton(ReviewType.APPROVE, buttonProps)
       }

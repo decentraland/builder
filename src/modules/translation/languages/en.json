@@ -1063,31 +1063,25 @@
         "title": "Reject Collection",
         "subtitle": "I guess it's just not good enough, huh?",
         "tx_pending": "Waiting for reject transaction to confirm",
-        "action": "Reject"
+        "action": "Reject collection"
       },
       "approve": {
         "title": "Approve Collection",
         "subtitle": "If you feel this collection its up to Decentraland standards, approve it!",
         "tx_pending": "Waiting for approve transaction to confirm",
-        "action": "Approve"
+        "action": "Approve collection"
       },
       "reject_curation": {
         "title": "Reject Changes",
         "subtitle": "I guess the changes are not good enough, huh?",
         "tx_pending": "Waiting for reject changes transaction to confirm",
-        "action": "Reject"
+        "action": "Reject changes"
       },
       "approve_curation": {
         "title": "Approve Changes",
         "subtitle": "If you feel the changes applied to this collection are up to Decentraland standards, approve them!",
         "tx_pending": "Waiting for approve changes transaction to confirm",
-        "action": "Approve"
-      },
-      "disable": {
-        "title": "Disable Collection",
-        "subtitle": "This collection will be unavailable until enabled again. Are you sure?",
-        "tx_pending": "Waiting for disable transaction to confirm",
-        "action": "Disable"
+        "action": "Approve changes"
       }
     },
     "left_panel": {
