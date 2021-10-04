@@ -23,6 +23,7 @@ import {
   DeleteCollectionSuccessAction,
   DeleteCollectionFailureAction,
   PublishCollectionRequestAction,
+  PublishCollectionSuccessAction,
   PublishCollectionFailureAction,
   ApproveCollectionRequestAction,
   ApproveCollectionFailureAction,
@@ -99,6 +100,7 @@ type CollectionReducerAction =
   | DeleteCollectionSuccessAction
   | DeleteCollectionFailureAction
   | PublishCollectionRequestAction
+  | PublishCollectionSuccessAction
   | PublishCollectionFailureAction
   | ApproveCollectionRequestAction
   | ApproveCollectionSuccessAction
@@ -184,6 +186,19 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       }
       delete newState.data[collection.id]
       return newState
+    }
+    case PUBLISH_COLLECTION_SUCCESS: {
+      const { collection } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collection.id]: {
+            ...state.data[collection.id],
+            lock: collection.lock
+          }
+        }
+      }
     }
     case CREATE_COLLECTION_FORUM_POST_SUCCESS: {
       const { collection, forumLink } = action.payload

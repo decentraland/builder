@@ -929,8 +929,10 @@
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
     "cant_push": "此集合仍在审查中，项目仍然可以铸造，但不会反映进一步的变化，直到批准。",
+    "push_changes": "上传更改",
     "under_review": "审核中",
-    "push_changes": "上传更改"
+    "cant_operate": "此合集仍处于锁定状态，一旦发布结束您将可以再次操作",
+    "locked": "锁定"
   },
   "collection_menu": {
     "add_existing_item": "添加现有项目",
@@ -1184,7 +1186,8 @@
   "sagas": {
     "collection": {
       "invalid_character": "无效字符！ 名称中不允许使用 \":\"",
-      "missing_salt": "集合没有盐"
+      "missing_salt": "集合没有盐",
+      "locked": "收藏已锁定"
     },
     "item": {
       "invalid_identity": "无效身份",

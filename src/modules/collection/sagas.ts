@@ -1,6 +1,6 @@
 import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { select, all, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -110,7 +110,7 @@ import {
 } from 'modules/entity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -163,6 +163,9 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     try {
       if (!isValidText(collection.name)) {
         throw new Error(t('sagas.collection.invalid_character'))
+      }
+      if (isLocked(collection)) {
+        throw new Error(t('sagas.collection.collection_locked'))
       }
 
       const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
@@ -246,7 +249,11 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const factory = getContract(ContractName.CollectionFactory, maticChainId)
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
-      yield retry(10, 500, builder.saveTOS, collection, email)
+      const [lock]: [string] = yield all([
+        retry(10, 500, builder.lockCollection, collection),
+        retry(10, 500, builder.saveTOS, collection, email)
+      ])
+      collection = { ...collection, lock: +new Date(lock) }
 
       const txHash: string = yield call(sendTransaction, manager, collectionManager =>
         collectionManager.createCollection(

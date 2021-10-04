@@ -24,6 +24,7 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
         isApproved: false,
         minters: [],
         managers: [],
+        lock: undefined,
         reviewedAt: now,
         createdAt: now,
         updatedAt: now

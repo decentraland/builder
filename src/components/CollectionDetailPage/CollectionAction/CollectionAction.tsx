@@ -52,7 +52,25 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
 
   let button: ReactNode
 
-  if (collection.isPublished) {
+  if (collection.isLocked) {
+    button = (
+      <Popup
+        content={t('collection_detail_page.cant_operate')}
+        position="top center"
+        trigger={
+          <div className="popup-button">
+            <Button secondary compact disabled={true}>
+              {t('collection_detail_page.locked')}
+            </Button>
+          </div>
+        }
+        hideOnScroll={true}
+        on="hover"
+        inverted
+        flowing
+      />
+    )
+  } else if (collection.isPublished) {
     if (collection.isApproved) {
       if (hasPendingCuration) {
         button = <UnderReview type="push" />

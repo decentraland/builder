@@ -11,7 +11,8 @@ export type Collection = {
   minters: string[]
   managers: string[]
   forumLink?: string
-  reviewedAt: number
+  lock?: number
+  reviewedAt?: number
   createdAt: number
   updatedAt: number
 }

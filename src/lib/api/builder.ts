@@ -61,7 +61,8 @@ export type RemoteCollection = {
   minters: string[]
   managers: string[]
   forum_link?: string
-  reviewed_at: Date
+  lock?: Date
+  reviewed_at?: Date
   created_at: Date
   updated_at: Date
 }
@@ -347,7 +348,8 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     minters: collection.minters,
     managers: collection.managers,
     forum_link: collection.forumLink,
-    reviewed_at: new Date(collection.reviewedAt),
+    lock: collection.lock ? new Date(collection.lock) : undefined,
+    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : undefined,
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
   }
@@ -365,7 +367,8 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
     forumLink: remoteCollection.forum_link,
-    reviewedAt: +new Date(remoteCollection.reviewed_at),
+    lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
+    reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
   }
@@ -646,7 +649,11 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveTOS = async (collection: Collection, email: string): Promise<void> => {
-    return this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
+    this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
+  }
+
+  lockCollection = async (collection: Collection): Promise<string> => {
+    return this.request('post', `/collections/${collection.id}/lock`, { collection_address: collection.id })
   }
 
   async deleteCollection(collection: Collection) {

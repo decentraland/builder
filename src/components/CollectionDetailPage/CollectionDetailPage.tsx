@@ -11,6 +11,7 @@ import {
   canSeeCollection,
   getCollectionEditorURL,
   isOnSale as isCollectionOnSale,
+  isLocked as isCollectionLocked,
   isOwner
 } from 'modules/collection/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -74,6 +75,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
 
     const canMint = canMintCollectionItems(collection, wallet.address)
     const isOnSale = isCollectionOnSale(collection, wallet)
+    const isLocked = isCollectionLocked(collection)
 
     return (
       <>
@@ -83,17 +85,23 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <Narrow>
               <Row>
                 <Column className="header-column">
-                  <Row className="header-row" onClick={this.handleEditName}>
+                  {isLocked ? (
                     <Header size="huge" className="name">
                       {collection.isPublished && <CollectionStatus collection={collection} />}
                       {collection.name}
                     </Header>
-                    <BuilderIcon name="edit" className="edit-collection-name" />
-                  </Row>
+                  ) : (
+                    <Row className="header-row" onClick={this.handleEditName}>
+                      <Header size="huge" className="name">
+                        {collection.name}
+                      </Header>
+                      <BuilderIcon name="edit" className="edit-collection-name" />
+                    </Row>
+                  )}
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {collection.isPublished ? (
+                    {isLocked || collection.isPublished ? (
                       <>
                         {isOwner(collection, wallet.address) ? (
                           <Popup
@@ -114,7 +122,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                                     checked={isOnSale}
                                     onChange={this.handleOnSaleChange}
                                     label={t('collection_detail_page.on_sale')}
-                                    disabled={isOnSaleLoading || !isEnabled}
+                                    disabled={isLocked || isOnSaleLoading || !isEnabled}
                                   />
                                 )}
                               </ChainCheck>
@@ -126,7 +134,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                           />
                         ) : null}
 
-                        <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
+                        <Button basic className="action-button" disabled={!canMint || isLocked} onClick={this.handleMintItems}>
                           <Icon name="paper plane" />
                           <span className="text">{t('collection_detail_page.mint_items')}</span>
                         </Button>

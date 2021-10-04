@@ -63,6 +63,7 @@ import {
   SaveItemFailureAction
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI } from 'lib/api/builder'
 import { getCollection, getCollectionItems, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
@@ -143,6 +144,15 @@ export function* itemSaga(builder: BuilderAPI) {
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
       }
+
+      const collection: Collection | undefined = item.collectionId
+        ? yield select(state => getCollection(state, item.collectionId!))
+        : undefined
+
+      if (collection && isLocked(collection)) {
+        throw new Error(t('sagas.collection.collection_locked'))
+      }
+
       const finalSize: number = yield call(calculateFinalSize, item, contents)
       if (finalSize > MAX_FILE_SIZE) {
         throw new ItemTooBigError()

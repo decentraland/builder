@@ -18,6 +18,16 @@ export function isOnSale(collection: Collection, wallet: Wallet) {
   return includes(collection.minters, address)
 }
 
+export function isLocked(collection: Collection) {
+  if (!collection.lock || collection.isPublished) {
+    return false
+  }
+  const deadline = new Date(collection.lock)
+  deadline.setDate(deadline.getDate() + 1)
+
+  return deadline.getTime() > Date.now()
+}
+
 export function getSaleAddress(chainId: ChainId) {
   return getContract(ContractName.CollectionStore, chainId).address.toLowerCase()
 }
