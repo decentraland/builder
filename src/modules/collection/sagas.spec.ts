@@ -1,8 +1,15 @@
-import { call, select, delay } from 'redux-saga/effects'
+import { retry, race, take, put, call, select, delay } from 'redux-saga/effects'
+import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
-import { ChainId, WearableRepresentation } from '@dcl/schemas'
+import { replace } from 'connected-react-router'
+import { ChainId, Network, WearableRepresentation } from '@dcl/schemas'
 import { EntityType } from 'dcl-catalyst-commons'
 import { CatalystClient, DeploymentPreparationData, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
@@ -14,7 +21,17 @@ import { approveCurationFailure, approveCurationRequest, approveCurationSuccess 
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { BuilderAPI } from 'lib/api/builder'
-import { approveCollectionFailure, approveCollectionSuccess, initiateApprovalFlow } from './actions'
+import {
+  approveCollectionFailure,
+  approveCollectionSuccess,
+  initiateApprovalFlow,
+  saveCollectionRequest,
+  saveCollectionSuccess,
+  publishCollectionRequest,
+  publishCollectionSuccess,
+  SAVE_COLLECTION_SUCCESS,
+  SAVE_COLLECTION_FAILURE
+} from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 
@@ -87,6 +104,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when a collection has not been approved yet', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
@@ -156,6 +174,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when a collection has already been approved but it has a pending curation', () => {
     const collection = getCollection({ isApproved: true })
     const syncedItem = getItem(collection)
@@ -222,6 +241,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when a collection has already the same content hashes in the DB and in the blockchain, the entities are synced with the ones in the catalyst, the collection is approved and there are no pending curations', () => {
     const collection = getCollection({ isApproved: true })
     const items = [getItem(collection), getItem(collection, { id: 'anotherItem' })]
@@ -259,6 +279,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the rescue transaction fails', () => {
     const collection = getCollection({ isApproved: true })
     const syncedItem = getItem(collection)
@@ -305,6 +326,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the deployment to the catalyst fails', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
@@ -369,6 +391,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the approve collection transaction fails', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
@@ -440,6 +463,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the approve curation fails', () => {
     const collection = getCollection({ isApproved: true })
     const syncedItem = getItem(collection)
@@ -507,6 +531,54 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when publishing a collection', () => {
+    const builderAPI = ({
+      saveCollection: jest.fn(),
+      lockCollection: jest.fn(),
+      saveTOS: jest.fn()
+    } as unknown) as BuilderAPI
+
+    const collection = {
+      salt: 'some salt'
+    } as Collection
+    const items: Item[] = []
+    const email = 'email@domain.com'
+
+    const address = '0xa'
+    const txHash = '0xdeadbeef'
+
+    describe('when the transaction is sent correctly', () => {
+      it('should disptach a success with the new collection and redirect to the activity', () => {
+        const now = Date.now()
+        const newLock = new Date(Date.now())
+        const newCollection = { ...collection, lock: now }
+
+        return expectSaga(collectionSaga, builderAPI, mockCatalyst)
+          .provide([
+            [put(saveCollectionRequest(collection)), true],
+            [
+              race({
+                success: take(SAVE_COLLECTION_SUCCESS),
+                failure: take(SAVE_COLLECTION_FAILURE)
+              }),
+              { success: saveCollectionSuccess(collection) }
+            ],
+            [call(t, 'sagas.item.missing_salt'), 'Missing salt'],
+            [select(getAddress), [address]],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [retry(10, 500, builderAPI.lockCollection, collection), newLock],
+            [retry(10, 500, builderAPI.saveTOS, collection, email), undefined],
+            [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
+          ])
+          .put(saveCollectionRequest(collection))
+          .put(publishCollectionSuccess(newCollection, items, ChainId.MATIC_MAINNET, txHash))
+          .put(replace(locations.activity()))
+          .dispatch(publishCollectionRequest(collection, items, email))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })

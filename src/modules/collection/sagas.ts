@@ -2,6 +2,7 @@ import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, all, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -239,11 +240,12 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
 
       if (!collection.salt) {
-        throw new Error(t('sagas.item.missing_salt'))
+        const errorMessage: string = yield call(t, 'sagas.item.missing_salt')
+        throw new Error(errorMessage)
       }
 
       const from: string = yield select(getAddress)
-      const maticChainId = getChainIdByNetwork(Network.MATIC)
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
       const forwarder = getContract(ContractName.Forwarder, maticChainId)
       const factory = getContract(ContractName.CollectionFactory, maticChainId)
