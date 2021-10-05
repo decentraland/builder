@@ -1010,7 +1010,8 @@
     "title": "Mint Items",
     "add_item": "Add Item",
     "limit_reached": "You can only mint {max} items per transaction",
-    "no_items": "You have no items available to mint for \"{name}\""
+    "no_items": "You have no items available to mint for \"{name}\"",
+    "unsynced_warning": "Some items have changes that have not been approved yet."
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",

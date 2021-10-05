@@ -1027,7 +1027,8 @@
     "title": "薄荷项目",
     "add_item": "新增项目",
     "limit_reached": "每笔交易只能铸造 {max} 件物品",
-    "no_items": "您没有可用于\"{name}\"的项目"
+    "no_items": "您没有可用于\"{name}\"的项目",
+    "unsynced_warning": "有些项目有尚未批准的更改。"
   },
   "collection_image": {
     "no_items": "没有项目"

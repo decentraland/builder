@@ -1028,7 +1028,8 @@
     "title": "Crear Items",
     "add_item": "Agregar Item",
     "limit_reached": "Solo puede crear {max} items por transaction",
-    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\"",
+    "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "manage_collection_role_modal": {
     "manager": {
