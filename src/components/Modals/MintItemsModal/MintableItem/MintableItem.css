@@ -10,6 +10,10 @@
   align-items: center;
 }
 
+.MintableItem .item-header .ItemStatus.orb {
+  margin-right: .5rem;
+}
+
 .MintableItem .ItemImage {
   width: 36px;
   height: 36px;
