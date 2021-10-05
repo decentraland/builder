@@ -1001,7 +1001,8 @@
     "turn_on_description": "通过打开此开关，您的收藏将可以在 Decentraland 市场上购买。",
     "turn_on": "打开",
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
-    "turn_off": "关掉"
+    "turn_off": "关掉",
+    "unsynced_warning": "有些项目有尚未批准的更改。"
   },
   "collection_managers_modal": {},
   "manage_collection_role_modal": {
