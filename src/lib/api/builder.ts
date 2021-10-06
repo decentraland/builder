@@ -15,7 +15,6 @@ import { Pool } from 'modules/pool/types'
 import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
 import { PreviewType } from 'modules/editor/types'
-import { WeeklyStats } from 'modules/stats/types'
 import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
@@ -374,39 +373,6 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   return collection
 }
 
-function fromRemoteWeeklyStats(remoteWeeklyStats: RemoteWeeklyStats): WeeklyStats {
-  const {
-    week,
-    title,
-    base,
-    users,
-    sessions,
-    median_session_time,
-    min_session_time,
-    average_session_time,
-    max_session_time,
-    direct_users,
-    direct_sessions,
-    max_concurrent_users,
-    max_concurrent_users_time
-  } = remoteWeeklyStats
-  return {
-    week,
-    title,
-    base,
-    users,
-    sessions,
-    medianSessionTime: median_session_time,
-    minSessionTime: min_session_time,
-    averageSessionTime: average_session_time,
-    maxSessionTime: max_session_time,
-    directUsers: direct_users,
-    directSessions: direct_sessions,
-    maxConcurrentUsers: max_concurrent_users,
-    maxConcurrentUsersTime: max_concurrent_users_time
-  }
-}
-
 function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
   return {
     id: remoteCuration.id,
@@ -703,12 +669,6 @@ export class BuilderAPI extends BaseAPI {
   async pushCuration(collectionId: string): Promise<void> {
     return this.request('post', `/curations/${collectionId}`)
   }
-
-  async fetchWeeklyStats(base: string) {
-    const remoteStats: RemoteWeeklyStats = await this.request('get', `/analytics/weekly?base=${base}`)
-    return fromRemoteWeeklyStats(remoteStats)
-  }
-
   async fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }
