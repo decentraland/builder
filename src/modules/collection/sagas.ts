@@ -221,22 +221,25 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
     let { collection, items, email } = action.payload
     try {
-      // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
-      // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
-      yield put(saveCollectionRequest(collection))
+      if (!isLocked(collection)) {
+        // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
+        // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
+        // We skip this step if the collection is locked to avoid an error from the server while trying to save the collection
+        yield put(saveCollectionRequest(collection))
 
-      const saveCollection: {
-        success: SaveCollectionSuccessAction
-        failure: SaveCollectionFailureAction
-      } = yield race({
-        success: take(SAVE_COLLECTION_SUCCESS),
-        failure: take(SAVE_COLLECTION_FAILURE)
-      })
+        const saveCollection: {
+          success: SaveCollectionSuccessAction
+          failure: SaveCollectionFailureAction
+        } = yield race({
+          success: take(SAVE_COLLECTION_SUCCESS),
+          failure: take(SAVE_COLLECTION_FAILURE)
+        })
 
-      if (saveCollection.success) {
-        collection = saveCollection.success.payload.collection
-      } else {
-        throw saveCollection.failure.payload.error
+        if (saveCollection.success) {
+          collection = saveCollection.success.payload.collection
+        } else {
+          throw saveCollection.failure.payload.error
+        }
       }
 
       if (!collection.salt) {

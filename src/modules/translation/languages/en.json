@@ -1197,7 +1197,7 @@
     "collection": {
       "invalid_character": "Invalid character! The \":\" is not allowed in names",
       "missing_salt": "The collection has no salt",
-      "locked": "The collection is locked"
+      "collection_locked": "The collection is locked"
     },
     "item": {
       "invalid_identity": "Invalid Identity",

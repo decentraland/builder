@@ -1187,7 +1187,7 @@
     "collection": {
       "invalid_character": "无效字符！ 名称中不允许使用 \":\"",
       "missing_salt": "集合没有盐",
-      "locked": "收藏已锁定"
+      "collection_locked": "收藏已锁定"
     },
     "item": {
       "invalid_identity": "无效身份",
