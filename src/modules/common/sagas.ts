@@ -63,7 +63,7 @@ export function* rootSaga(builderAPI: BuilderAPI, catalystClient: CatalystClient
     profileSaga(),
     projectSaga(builderAPI),
     sceneSaga(),
-    statsSaga(builderAPI),
+    statsSaga(),
     syncSaga(builderAPI),
     tileSaga(),
     toastSaga(),
