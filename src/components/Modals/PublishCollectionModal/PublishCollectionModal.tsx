@@ -52,7 +52,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderFirstStep = () => {
-    const { items, wallet, onClose, rarities, isFetchingRarities } = this.props
+    const { items, wallet, onClose, rarities, isFetchingItems, isFetchingRarities } = this.props
 
     const itemsByRarity: Record<string, { id: ItemRarity; name: ItemRarity; count: number; price: number }> = {}
     let totalPrice = 0
@@ -76,11 +76,13 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
     const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < totalPrice
 
+    console.log({ isFetchingItems, isFetchingRarities, items, itemsByRarity })
+
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
         <Modal.Content className="first-step">
-          {isFetchingRarities ? (
+          {isFetchingItems || isFetchingRarities ? (
             <div className="loader-wrapper">
               <Loader size="big" active={isFetchingRarities} />
             </div>
@@ -165,7 +167,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
   }
 
   renderThirdStep = () => {
-    const { isLoading, onClose } = this.props
+    const { isPublishLoading, onClose } = this.props
     const { email, emailFocus } = this.state
     const hasValidEmail = emailRegex.test(email ?? '')
     const showEmailError = !hasValidEmail && !emailFocus && email !== undefined && email !== ''
@@ -208,7 +210,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
           />
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
-          <Button primary fluid disabled={!hasValidEmail} loading={isLoading}>
+          <Button primary fluid disabled={!hasValidEmail} loading={isPublishLoading}>
             {t('publish_collection_modal.publish')}
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>
