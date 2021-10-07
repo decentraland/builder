@@ -19,7 +19,8 @@ export enum FilterBy {
 
 export type Props = {
   wallet: Wallet
-  collections: CollectionPageCollection[]
+  collections: Collection[]
+  curationsByCollectionId: Record<string, Curation>
   isCommitteeMember: boolean
   isConnecting: boolean
   isLoading: boolean
@@ -35,8 +36,4 @@ export type State = {
   searchText: string
 }
 
-export type CollectionPageCollection = Collection & {
-  curation?: Curation
-}
-
-export type MapStateProps = Pick<Props, 'wallet' | 'collections' | 'isCommitteeMember' | 'isConnecting' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'wallet' | 'collections' | 'curationsByCollectionId' | 'isCommitteeMember' | 'isConnecting' | 'isLoading'>
