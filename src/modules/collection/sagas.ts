@@ -613,7 +613,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         const curationsByCollectionId: Record<string, Curation> = yield select(getCurationsByCollectionId)
         const curation = curationsByCollectionId[collection.id]
         if (curation && curation.status === CurationStatus.PENDING) {
-          yield put(approveCurationRequest(curation.id))
+          yield put(approveCurationRequest(curation.collectionId))
         }
 
         // wait for actions
