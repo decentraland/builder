@@ -1,7 +1,5 @@
 import { Dispatch } from 'redux'
 import {
-  approveCollectionRequest,
-  ApproveCollectionRequestAction,
   initiateApprovalFlow,
   InitiateApprovalFlowAction,
   rejectCollectionRequest,
@@ -9,8 +7,6 @@ import {
 } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
 import {
-  approveCurationRequest,
-  ApproveCurationRequestAction,
   rejectCurationRequest,
   RejectCurationRequestAction
 } from 'modules/curation/actions'

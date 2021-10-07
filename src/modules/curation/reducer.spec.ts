@@ -13,12 +13,12 @@ import {
   approveCurationFailure
 } from './actions'
 import { INITIAL_STATE, curationReducer, CurationState } from './reducer'
-import { Curation } from './types'
+import { Curation, CurationStatus } from './types'
 
 const getMockCuration = (props: Partial<Curation> = {}): Curation => ({
   id: 'id',
   collectionId: 'collectionId',
-  status: 'pending',
+  status: CurationStatus.PENDING,
   created_at: 0,
   updated_at: 0,
   ...props
@@ -96,7 +96,7 @@ describe('when an action of type FETCH_CURATION_SUCCESS is called', () => {
         error: 'Some Error'
       }
 
-      const newCuration = getMockCuration({ updated_at: 100, created_at: 100, status: 'approved' })
+      const newCuration = getMockCuration({ updated_at: 100, created_at: 100, status: CurationStatus.APPROVED })
 
       expect(curationReducer(state, fetchCurationSuccess('collectionId', newCuration))).toStrictEqual({
         data: { collectionId: newCuration },
@@ -155,7 +155,10 @@ describe('when an action of type PUSH_CURATION_FAILURE is called', () => {
 describe('when an action of type REJECT_CURATION_FAILURE is called', () => {
   it('should remove the corresponding request action, and set the error', () => {
     expect(
-      curationReducer({ ...INITIAL_STATE, loading: [rejectCurationRequest('collectionId')] }, rejectCurationFailure('Some Error'))
+      curationReducer(
+        { ...INITIAL_STATE, loading: [rejectCurationRequest('collectionId')] },
+        rejectCurationFailure('collectionId', 'Some Error')
+      )
     ).toStrictEqual({
       ...INITIAL_STATE,
       error: 'Some Error'
@@ -166,7 +169,10 @@ describe('when an action of type REJECT_CURATION_FAILURE is called', () => {
 describe('when an action of type APPROVE_CURATION_FAILURE is called', () => {
   it('should remove the corresponding request action, and set the error', () => {
     expect(
-      curationReducer({ ...INITIAL_STATE, loading: [approveCurationRequest('collectionId')] }, approveCurationFailure('Some Error'))
+      curationReducer(
+        { ...INITIAL_STATE, loading: [approveCurationRequest('collectionId')] },
+        approveCurationFailure('collectionId', 'Some Error')
+      )
     ).toStrictEqual({
       ...INITIAL_STATE,
       error: 'Some Error'

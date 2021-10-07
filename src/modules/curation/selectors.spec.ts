@@ -1,7 +1,7 @@
 import { getCurationsByCollectionId, getState, getLoading, getError, getCuration, getCurations, getHasPendingCuration } from './selectors'
 import { INITIAL_STATE } from './reducer'
 import { FETCH_CURATION_REQUEST } from './actions'
-import { Curation } from './types'
+import { Curation, CurationStatus } from './types'
 
 const getMockCuration = (props: Partial<Curation> = {}) => ({
   id: 'id',
@@ -111,9 +111,9 @@ describe('when calling getHasPendingCuration', () => {
       curation: {
         ...INITIAL_STATE,
         data: {
-          collectionId1: getMockCuration({ collectionId: 'collectionId1', status: 'pending' }),
-          collectionId2: getMockCuration({ collectionId: 'collectionId2', status: 'rejected' }),
-          collectionId3: getMockCuration({ collectionId: 'collectionId2', status: 'approved' })
+          collectionId1: getMockCuration({ collectionId: 'collectionId1', status: CurationStatus.PENDING }),
+          collectionId2: getMockCuration({ collectionId: 'collectionId2', status: CurationStatus.REJECTED }),
+          collectionId3: getMockCuration({ collectionId: 'collectionId2', status: CurationStatus.APPROVED })
         }
       }
     } as any
