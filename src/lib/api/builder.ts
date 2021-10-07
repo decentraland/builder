@@ -685,7 +685,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
-    return this.request('patch', `/curations/${collectionId}`, { status })
+    return this.request('patch', `/curations/${collectionId}`, { curation: { status } })
   }
 
   isAxiosError(error: any): error is AxiosError {
