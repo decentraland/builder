@@ -19,7 +19,6 @@ export type State = {
   isRejectModalOpen: boolean
   isApproveCurationModalOpen: boolean
   isRejectCurationModalOpen: boolean
-  isDisableModalOpen: boolean
 }
 
 export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId' | 'isConnected'>

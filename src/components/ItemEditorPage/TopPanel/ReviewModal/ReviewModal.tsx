@@ -25,9 +25,6 @@ export default class ReviewModal extends React.PureComponent<Props> {
       case ReviewType.REJECT_CURATION:
         onRejectCuration(curation!.collectionId)
         break
-      case ReviewType.DISABLE:
-        onReject(collection)
-        break
       default:
         throw new Error(`Invalid review type: ${type}`)
     }
@@ -50,8 +47,6 @@ export default class ReviewModal extends React.PureComponent<Props> {
         return base + '.approve_curation'
       case ReviewType.REJECT_CURATION:
         return base + '.reject_curation'
-      case ReviewType.DISABLE:
-        return base + '.disable'
       default:
         throw new Error(`Invalid review type: ${type}`)
     }
@@ -143,11 +138,9 @@ export default class ReviewModal extends React.PureComponent<Props> {
           this.renderApproved()
         ) : type === ReviewType.REJECT_CURATION && curation?.status === 'rejected' ? (
           this.renderRejected()
-        ) : type === ReviewType.DISABLE && !collection.isApproved ? (
-          this.renderRejected()
         ) : (
-                      this.renderReview()
-                    )}
+          this.renderReview()
+        )}
       </Modal>
     )
   }

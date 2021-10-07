@@ -3,15 +3,16 @@ import { Network } from '@dcl/schemas'
 import { ChainButton } from 'decentraland-dapps/dist/containers'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Popup } from 'decentraland-ui'
+import { Button } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
 import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { isComplete } from 'modules/item/utils'
-import { Props } from './CollectionAction.types'
 import { SyncStatus } from 'modules/item/types'
+import { Props } from './CollectionAction.types'
+import UnderReview from './UnderReview'
 
 const CollectionAction = ({ wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit }: Props) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
@@ -91,27 +92,5 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
     </>
   )
 }
-
-type UnderReviewProps = {
-  type: 'publish' | 'push'
-}
-
-const UnderReview = ({ type }: UnderReviewProps) => (
-  <Popup
-    content={t(type === 'publish' ? 'collection_detail_page.cant_mint' : 'collection_detail_page.cant_push')}
-    position="top center"
-    trigger={
-      <div className="popup-button">
-        <Button secondary compact disabled={true}>
-          {t('collection_detail_page.under_review')}
-        </Button>
-      </div>
-    }
-    hideOnScroll={true}
-    on="hover"
-    inverted
-    flowing={type === 'publish'}
-  />
-)
 
 export default React.memo(CollectionAction)

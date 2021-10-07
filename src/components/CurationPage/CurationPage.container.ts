@@ -13,13 +13,13 @@ import { MapStateProps } from './CurationPage.types'
 import CurationPage from './CurationPage'
 
 const mapState = (state: RootState): MapStateProps => {
-  const curations = getCurationsByCollectionId(state)
+  const curationsByCollectionId = getCurationsByCollectionId(state)
+  const collections = getCollections(state).filter(collection => collection.isPublished)
 
   return {
     wallet: getWallet(state)!,
-    collections: getCollections(state)
-      .filter(collection => collection.isPublished)
-      .map(collection => ({ ...collection, curation: curations[collection.id] })),
+    collections,
+    curationsByCollectionId,
     isCommitteeMember: isWalletCommitteeMember(state),
     isConnecting: isConnecting(state),
     isLoading:

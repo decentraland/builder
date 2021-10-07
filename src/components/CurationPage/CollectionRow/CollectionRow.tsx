@@ -21,8 +21,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   renderCurationState = () => {
-    const { collection } = this.props
-    const { curation } = collection
+    const { collection, curation } = this.props
 
     if ((curation && curation.status === 'approved') || (!curation && collection.isApproved)) {
       return (
@@ -44,8 +43,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
   }
 
   render() {
-    const { collection, items } = this.props
-    const { curation } = collection
+    const { collection, items, curation } = this.props
     const createdAtDate = new Date(curation?.created_at || collection.createdAt)
 
     return (

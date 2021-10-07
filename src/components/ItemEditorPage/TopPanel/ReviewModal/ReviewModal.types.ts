@@ -20,8 +20,7 @@ export enum ReviewType {
   APPROVE = 'APPROVE',
   REJECT = 'REJECT',
   APPROVE_CURATION = 'APPROVE_CURATION',
-  REJECT_CURATION = 'REJECT_CURATION',
-  DISABLE = 'DISABLE'
+  REJECT_CURATION = 'REJECT_CURATION'
 }
 
 export type Props = {
@@ -31,21 +30,13 @@ export type Props = {
   hasPendingTransaction: boolean
   collection: Collection
   curation: Curation | null
-  onApprove: typeof approveCollectionRequest
   onReject: typeof rejectCollectionRequest
-  onApproveCuration: typeof approveCurationRequest
   onRejectCuration: typeof rejectCurationRequest
   onInitiateApprovalFlow: typeof initiateApprovalFlow
   onClose: () => void
 }
 
 export type MapStateProps = Pick<Props, 'isLoading' | 'hasPendingTransaction'>
-export type MapDispatchProps = Pick<Props, 'onApprove' | 'onReject' | 'onApproveCuration' | 'onRejectCuration' | 'onInitiateApprovalFlow'>
-export type MapDispatch = Dispatch<
-  | ApproveCollectionRequestAction
-  | RejectCollectionRequestAction
-  | ApproveCurationRequestAction
-  | RejectCurationRequestAction
-  | InitiateApprovalFlowAction
->
+export type MapDispatchProps = Pick<Props, 'onReject' | 'onRejectCuration' | 'onInitiateApprovalFlow'>
+export type MapDispatch = Dispatch<RejectCollectionRequestAction | RejectCurationRequestAction | InitiateApprovalFlowAction>
 export type OwnProps = Pick<Props, 'open' | 'type' | 'collection' | 'curation'>

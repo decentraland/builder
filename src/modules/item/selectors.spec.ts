@@ -190,7 +190,21 @@ describe('Item selectors', () => {
             '3': {
               id: '3',
               collectionId: '3',
-              tokenId: 'yetAnotherDifferentTokenId'
+              tokenId: 'yetAnotherDifferentTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
             }
           }
         },
@@ -245,6 +259,26 @@ describe('Item selectors', () => {
               ],
               metadata: {
                 id: 'urn:decentraland:matic:collections-v2:yetAnotherAddress:yetAnotherTokenId',
+                name: 'pepito',
+                description: 'pepito hat very nice',
+                data: {
+                  category: WearableCategory.HAT,
+                  replaces: [],
+                  hides: [],
+                  representations: [],
+                  tags: []
+                }
+              }
+            },
+            Qm3: {
+              content: [
+                {
+                  hash: 'QmC',
+                  key: 'file.ext'
+                }
+              ],
+              metadata: {
+                id: 'urn:decentraland:matic:collections-v2:yetAnotherDifferentAddress:yetAnotherDifferentTokenId',
                 name: 'pepito',
                 description: 'pepito hat very nice',
                 data: {

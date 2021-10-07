@@ -53,7 +53,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   paginate = () => {
-    const { collections } = this.props
+    const { collections, curationsByCollectionId } = this.props
     const { page, filterBy, sortBy, searchText } = this.state
 
     return collections
@@ -63,15 +63,17 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           collection.owner.toLowerCase().includes(searchText.toLowerCase())
       )
       .filter(collection => {
+        const curation = curationsByCollectionId[collection.id]
+
         switch (filterBy) {
           case FilterBy.APPROVED: {
-            return !collection.curation && collection.isApproved
+            return !curation && collection.isApproved
           }
           case FilterBy.REJECTED: {
             return hasReviews(collection) && !collection.isApproved
           }
           case FilterBy.NOT_REVIWED: {
-            return collection.curation || !hasReviews(collection)
+            return curation || !hasReviews(collection)
           }
           case FilterBy.ALL_STATUS:
           default: {
@@ -80,9 +82,9 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         }
       })
       .sort((collectionA, collectionB) => {
-        const { curation: curationA } = collectionA
-        const { curation: curationB } = collectionB
-        
+        const curationA = curationsByCollectionId[collectionA.id]
+        const curationB = curationsByCollectionId[collectionB.id]
+
         switch (sortBy) {
           case SortBy.NEWEST: {
             const dateA = curationA ? curationA.created_at : collectionA.createdAt
@@ -110,7 +112,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
   }
 
   renderPage() {
-    const { collections } = this.props
+    const { collections, curationsByCollectionId } = this.props
     const { page, searchText } = this.state
 
     const total = collections.length
@@ -145,7 +147,9 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         <Container>
           <Section>
             {collections.length > 0 ? (
-              paginatedCollections.map((collection, index) => <CollectionRow key={index} collection={collection} />)
+              paginatedCollections.map((collection, index) => (
+                <CollectionRow key={index} collection={collection} curation={curationsByCollectionId[collection.id] || null} />
+              ))
             ) : (
               <Empty height={200}>
                 <div>
