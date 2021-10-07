@@ -35,7 +35,7 @@ export type CurationState = {
   error: string | null
 }
 
-const INITIAL_STATE: CurationState = {
+export const INITIAL_STATE: CurationState = {
   data: {},
   loading: [],
   error: null

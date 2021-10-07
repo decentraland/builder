@@ -25,13 +25,15 @@ import {
   IMAGE_CATEGORIES,
   THUMBNAIL_PATH,
   InitializeItem,
-  CatalystItem
+  CatalystItem,
+  SyncStatus
 } from './types'
 import { sortByCreatedAt } from 'lib/sort'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
+export const UNSYNCED_STATES = new Set([SyncStatus.UNSYNCED, SyncStatus.UNDER_REVIEW])
 
 export function getMaxSupply(item: Item) {
   return getMaxSupplyForRarity(item.rarity!)

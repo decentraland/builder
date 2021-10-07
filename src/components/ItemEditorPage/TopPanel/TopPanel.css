@@ -36,11 +36,12 @@
 }
 
 .TopPanel .actions .button-container {
-  display: inline-block;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .TopPanel .actions .ui.button {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  margin-right: 8px;
+  padding: 8px 32px;
+  margin-right: 2px;
+  width: 50%;
 }

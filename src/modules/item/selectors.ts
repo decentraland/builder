@@ -113,6 +113,8 @@ export const getStatusByItemId = createSelector<
           statusByItemId[item.id] = SyncStatus.LOADING
         } else if (areSynced(item, entity)) {
           statusByItemId[item.id] = SyncStatus.SYNCED
+        } else if (item.collectionId && curationsByCollectionId[item.collectionId]?.status === 'pending') {
+          statusByItemId[item.id] = SyncStatus.UNDER_REVIEW
         } else {
           statusByItemId[item.id] = SyncStatus.UNSYNCED
         }

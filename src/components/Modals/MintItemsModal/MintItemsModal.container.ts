@@ -6,8 +6,8 @@ import { Item } from 'modules/item/types'
 import { mintCollectionItemsRequest, MINT_COLLECTION_ITEMS_REQUEST } from 'modules/collection/actions'
 import { getCollection, getCollectionItems, getLoading } from 'modules/collection/selectors'
 import { Collection } from 'modules/collection/types'
-import { canMintItem } from 'modules/item/utils'
-import { getAuthorizedItems } from 'modules/item/selectors'
+import { canMintItem, UNSYNCED_STATES } from 'modules/item/utils'
+import { getAuthorizedItems, getStatusByItemId } from 'modules/item/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './MintItemsModal.types'
 import MintItemsModal from './MintItemsModal'
 
@@ -35,12 +35,15 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
 
   collection = getCollection(state, collectionId)!
 
+  const hasUnsyncedItems = (items: Item[]) => items.some(item => UNSYNCED_STATES.has(getStatusByItemId(state)[item.id]))
+
   return {
     items: items.filter(item => canMintItem(collection, item, ethAddress)),
     isLoading: isLoadingType(getLoading(state), MINT_COLLECTION_ITEMS_REQUEST),
     ethAddress,
     collection,
-    totalCollectionItems
+    totalCollectionItems,
+    hasUnsyncedItems
   }
 }
 

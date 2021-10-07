@@ -1010,14 +1010,16 @@
     "title": "Mint Items",
     "add_item": "Add Item",
     "limit_reached": "You can only mint {max} items per transaction",
-    "no_items": "You have no items available to mint for \"{name}\""
+    "no_items": "You have no items available to mint for \"{name}\"",
+    "unsynced_warning": "Some items have changes that have not been approved yet."
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",
     "turn_on_description": "By turning this switch on your collection will be available for purchase in the Decentraland Marketplace.",
     "turn_on": "Turn On",
     "turn_off_description": "By turning this switch off your collection will not longer be available for purchase.",
-    "turn_off": "Turn Off"
+    "turn_off": "Turn Off",
+    "unsynced_warning": "Some items have changes that have not been approved yet."
   },
   "manage_collection_role_modal": {
     "manager": {
@@ -1063,31 +1065,25 @@
         "title": "Reject Collection",
         "subtitle": "I guess it's just not good enough, huh?",
         "tx_pending": "Waiting for reject transaction to confirm",
-        "action": "Reject"
+        "action": "Reject collection"
       },
       "approve": {
         "title": "Approve Collection",
         "subtitle": "If you feel this collection its up to Decentraland standards, approve it!",
         "tx_pending": "Waiting for approve transaction to confirm",
-        "action": "Approve"
+        "action": "Approve collection"
       },
       "reject_curation": {
         "title": "Reject Changes",
         "subtitle": "I guess the changes are not good enough, huh?",
         "tx_pending": "Waiting for reject changes transaction to confirm",
-        "action": "Reject"
+        "action": "Reject changes"
       },
       "approve_curation": {
         "title": "Approve Changes",
         "subtitle": "If you feel the changes applied to this collection are up to Decentraland standards, approve them!",
         "tx_pending": "Waiting for approve changes transaction to confirm",
-        "action": "Approve"
-      },
-      "disable": {
-        "title": "Disable Collection",
-        "subtitle": "This collection will be unavailable until enabled again. Are you sure?",
-        "tx_pending": "Waiting for disable transaction to confirm",
-        "action": "Disable"
+        "action": "Approve changes"
       }
     },
     "left_panel": {

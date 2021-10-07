@@ -14,11 +14,12 @@ export default class SellCollectionModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { metadata, isLoading, onClose } = this.props
+    const { metadata, isLoading, hasUnsyncedItems, onClose } = this.props
     return (
       <Modal className="SellCollectionModal" size="tiny" onClose={onClose}>
         <ModalNavigation title={t('sell_collection_modal.title')} onClose={onClose} />
         <Modal.Content>
+          {hasUnsyncedItems && <p className="unsynced-warning danger-text">{t('sell_collection_modal.unsynced_warning')}</p>}
           {metadata.isOnSale ? (
             <>
               {t('sell_collection_modal.turn_on_description')}

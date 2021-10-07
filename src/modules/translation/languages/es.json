@@ -1022,13 +1022,15 @@
     "turn_on_description": "Al activar esta opción tu colección estará en venta en el mercado de Decentraland.",
     "turn_on": "Activar",
     "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
-    "turn_off": "Desactivar"
+    "turn_off": "Desactivar",
+    "unsynced_warning":"Algunos items tienen cambios que aún no se han aprobado."
   },
   "mint_items_modal": {
     "title": "Crear Items",
     "add_item": "Agregar Item",
     "limit_reached": "Solo puede crear {max} items por transaction",
-    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\"",
+    "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "manage_collection_role_modal": {
     "manager": {
@@ -1074,31 +1076,25 @@
         "title": "Rechazar Colección",
         "subtitle": "No es lo suficientemente buena?",
         "tx_pending": "Esperando a que se confirme la transacción de rechazo",
-        "action": "Rechazar"
+        "action": "Rechazar colección"
       },
       "approve": {
         "title": "Aprobar Colección",
         "subtitle": "Si cree que esta colección está a la altura de los estándares de Decentraland, apruébela!",
         "tx_pending": "Esperando a que se confirme la transacción de aprobación",
-        "action": "Aprobar"
+        "action": "Aprobar colección"
       },
       "reject_curation": {
         "title": "Rechazar Cambios",
         "subtitle": "Los cambios no son lo suficientemenete buenos?",
         "tx_pending": "Esperando a que se confirme la transacción de rechazo",
-        "action": "Rechazar"
+        "action": "Rechazar cambios"
       },
       "approve_curation": {
         "title": "Aprobar Cambios",
         "subtitle": "Si cree que los cambios a esta colección estan a la altura de los estándares de Decentraland, apruébela!",
         "tx_pending": "Esperando a que se confirme la transacción de aprobación",
-        "action": "Aprobar"
-      },
-      "disable": {
-        "title": "Deshabilitar Colección",
-        "subtitle": "Esta colección se deshabilitara hasta que sea habilitada nuevamente.",
-        "tx_pending": "Esperando a que se confirme la transacción de deshabilitado",
-        "action": "Deshabilitar"
+        "action": "Aprobar cambios"
       }
     },
     "left_panel": {
