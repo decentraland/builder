@@ -117,21 +117,6 @@ export type SetItemsTokenIdRequestAction = ReturnType<typeof setItemsTokenIdRequ
 export type SetItemsTokenIdSuccessAction = ReturnType<typeof setItemsTokenIdSuccess>
 export type SetItemsTokenIdFailureAction = ReturnType<typeof setItemsTokenIdFailure>
 
-// Deploy item contents
-
-export const DEPLOY_ITEM_CONTENTS_REQUEST = '[Request] Deploy item contents'
-export const DEPLOY_ITEM_CONTENTS_SUCCESS = '[Success] Deploy item contents'
-export const DEPLOY_ITEM_CONTENTS_FAILURE = '[Failure] Deploy item contents'
-
-export const deployItemContentsRequest = (collection: Collection, item: Item) => action(DEPLOY_ITEM_CONTENTS_REQUEST, { collection, item })
-export const deployItemContentsSuccess = (collection: Collection, item: Item) => action(DEPLOY_ITEM_CONTENTS_SUCCESS, { collection, item })
-export const deployItemContentsFailure = (collection: Collection, item: Item, error: string) =>
-  action(DEPLOY_ITEM_CONTENTS_FAILURE, { collection, item, error })
-
-export type DeployItemContentsRequestAction = ReturnType<typeof deployItemContentsRequest>
-export type DeployItemContentsSuccessAction = ReturnType<typeof deployItemContentsSuccess>
-export type DeployItemContentsFailureAction = ReturnType<typeof deployItemContentsFailure>
-
 // Fetch rarities
 
 export const FETCH_RARITIES_REQUEST = '[Request] Fetch Rarities'
@@ -145,3 +130,24 @@ export const fetchRaritiesFailure = (error: string) => action(FETCH_RARITIES_FAI
 export type FetchRaritiesRequestAction = ReturnType<typeof fetchRaritiesRequest>
 export type FetchRaritiesSuccessAction = ReturnType<typeof fetchRaritiesSuccess>
 export type FetchRaritiesFailureAction = ReturnType<typeof fetchRaritiesFailure>
+
+// Rescue items
+
+export const RESCUE_ITEMS_REQUEST = '[Request] Rescue items'
+export const RESCUE_ITEMS_SUCCESS = '[Success] Rescue items'
+export const RESCUE_ITEMS_FAILURE = '[Failure] Rescue items'
+
+export const rescueItemsRequest = (items: Item[], contentHashes: string[]) => action(RESCUE_ITEMS_REQUEST, { items, contentHashes })
+export const rescueItemsSuccess = (items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
+  action(RESCUE_ITEMS_SUCCESS, {
+    items,
+    contentHashes,
+    txHash,
+    ...buildTransactionPayload(chainId, txHash, { count: items.length, collectionId: items[0].collectionId! })
+  })
+export const rescueItemsFailure = (items: Item[], contentHashes: string[], error: string) =>
+  action(RESCUE_ITEMS_FAILURE, { items, contentHashes, error })
+
+export type RescueItemsRequestAction = ReturnType<typeof rescueItemsRequest>
+export type RescueItemsSuccessAction = ReturnType<typeof rescueItemsSuccess>
+export type RescueItemsFailureAction = ReturnType<typeof rescueItemsFailure>

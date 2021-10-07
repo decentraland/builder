@@ -19,7 +19,7 @@ import { WeeklyStats } from 'modules/stats/types'
 import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
-import { Curation } from 'modules/curation/types'
+import { Curation, CurationStatus } from 'modules/curation/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -46,6 +46,7 @@ export type RemoteItem = {
   data: WearableData
   metrics: ModelMetrics
   contents: Record<string, string>
+  content_hash: string | null
   created_at: Date
   updated_at: Date
 }
@@ -298,6 +299,7 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
+    content_hash: item.contentHash,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -318,6 +320,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
+    contentHash: remoteItem.content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)
@@ -719,6 +722,10 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchRarities(): Promise<Rarity[]> {
     return this.request('get', '/rarities')
+  }
+
+  async updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
+    return this.request('patch', `/curations/${collectionId}`, { status })
   }
 
   isAxiosError(error: any): error is AxiosError {

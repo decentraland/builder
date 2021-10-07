@@ -42,12 +42,6 @@ import {
   SET_ITEMS_TOKEN_ID_REQUEST,
   SET_ITEMS_TOKEN_ID_SUCCESS,
   SET_ITEMS_TOKEN_ID_FAILURE,
-  DeployItemContentsRequestAction,
-  DeployItemContentsSuccessAction,
-  DeployItemContentsFailureAction,
-  DEPLOY_ITEM_CONTENTS_REQUEST,
-  DEPLOY_ITEM_CONTENTS_SUCCESS,
-  DEPLOY_ITEM_CONTENTS_FAILURE,
   FetchCollectionItemsRequestAction,
   FetchCollectionItemsSuccessAction,
   FetchCollectionItemsFailureAction,
@@ -100,9 +94,6 @@ type ItemReducerAction =
   | SetItemsTokenIdRequestAction
   | SetItemsTokenIdSuccessAction
   | SetItemsTokenIdFailureAction
-  | DeployItemContentsRequestAction
-  | DeployItemContentsSuccessAction
-  | DeployItemContentsFailureAction
   | FetchCollectionItemsRequestAction
   | FetchCollectionItemsSuccessAction
   | FetchCollectionItemsFailureAction
@@ -123,7 +114,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
-    case DEPLOY_ITEM_CONTENTS_REQUEST:
     case SAVE_PUBLISHED_ITEM_REQUEST:
     case SAVE_ITEM_REQUEST:
     case DELETE_ITEM_REQUEST: {
@@ -159,7 +149,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEM_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
-    case DEPLOY_ITEM_CONTENTS_FAILURE:
     case SAVE_PUBLISHED_ITEM_FAILURE:
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
@@ -172,8 +161,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEM_SUCCESS:
     case SAVE_PUBLISHED_ITEM_SUCCESS:
-    case SAVE_ITEM_SUCCESS:
-    case DEPLOY_ITEM_CONTENTS_SUCCESS: {
+    case SAVE_ITEM_SUCCESS: {
       const { item } = action.payload
       return {
         ...state,

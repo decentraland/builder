@@ -179,3 +179,9 @@ export const rejectCollectionFailure = (collection: Collection, error: string) =
 export type RejectCollectionRequestAction = ReturnType<typeof rejectCollectionRequest>
 export type RejectCollectionSuccessAction = ReturnType<typeof rejectCollectionSuccess>
 export type RejectCollectionFailureAction = ReturnType<typeof rejectCollectionFailure>
+
+// Initiate Approval Flow
+export const INITIATE_APPROVAL_FLOW = 'Initate Approval Flow'
+export const initiateApprovalFlow = (collection: Collection) => action(INITIATE_APPROVAL_FLOW, { collection })
+export type InitiateApprovalFlowAction = ReturnType<typeof initiateApprovalFlow>
+

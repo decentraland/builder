@@ -11,16 +11,16 @@ import './ReviewModal.css'
 
 export default class ReviewModal extends React.PureComponent<Props> {
   handleReview = () => {
-    const { type, collection, curation, onApprove, onReject, onApproveCuration, onRejectCuration } = this.props
+    const { type, collection, curation, onReject, onRejectCuration, onInitiateApprovalFlow } = this.props
     switch (type) {
       case ReviewType.APPROVE:
-        onApprove(collection)
+        onInitiateApprovalFlow(collection)
         break
       case ReviewType.REJECT:
         onReject(collection)
         break
       case ReviewType.APPROVE_CURATION:
-        onApproveCuration(curation!.collectionId)
+        onInitiateApprovalFlow(collection)
         break
       case ReviewType.REJECT_CURATION:
         onRejectCuration(curation!.collectionId)
@@ -146,8 +146,8 @@ export default class ReviewModal extends React.PureComponent<Props> {
         ) : type === ReviewType.DISABLE && !collection.isApproved ? (
           this.renderRejected()
         ) : (
-          this.renderReview()
-        )}
+                      this.renderReview()
+                    )}
       </Modal>
     )
   }

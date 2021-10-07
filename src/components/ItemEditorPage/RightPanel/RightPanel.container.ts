@@ -1,11 +1,9 @@
 import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors'
 import { RootState } from 'modules/common/types'
-import { getItem, getLoading, getError as getItemError } from 'modules/item/selectors'
+import { getItem, getError as getItemError } from 'modules/item/selectors'
 import {
   deleteItemRequest,
-  DEPLOY_ITEM_CONTENTS_REQUEST,
   saveItemRequest,
   savePublishedItemRequest,
   SAVE_PUBLISHED_ITEM_SUCCESS,
@@ -30,9 +28,7 @@ const mapState = (state: RootState): MapStateProps => {
     selectedItemId,
     error: getItemError(state),
     isConnected: isConnected(state),
-    isLoading:
-      isLoadingType(getLoading(state), DEPLOY_ITEM_CONTENTS_REQUEST) ||
-      getPendingTransactions(state).some(tx => tx.actionType === SAVE_PUBLISHED_ITEM_SUCCESS)
+    isLoading: getPendingTransactions(state).some(tx => tx.actionType === SAVE_PUBLISHED_ITEM_SUCCESS)
   }
 }
 

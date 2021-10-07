@@ -10,28 +10,14 @@ import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
 import { generateImage } from './utils'
 
-const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
+export const ITEM_DEPLOYMENT_DELTA_TIMESTAMP = -5 * 1000 // We use 5 seconds before to let the subgraph index the collection creation
 
 export async function deployContents(identity: AuthIdentity, collection: Collection, item: Item) {
-  if (!collection.contractAddress || !item.tokenId) {
-    throw new Error('You need the collection and item to be published ir order to deploy its contents')
-  }
-  const urn = getCatalystItemURN(collection.contractAddress, item.tokenId)
-  const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
-  const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const catalystItem = toCatalystItem(collection, item)
   const client = new CatalystClient(PEER_URL, 'Builder')
-  const status = await client.fetchContentStatus()
-  const { entityId, files: hashedFiles } = await client.buildEntity({
-    type: EntityType.WEARABLE,
-    pointers: [urn],
-    metadata: catalystItem,
-    files: contentFiles,
-    timestamp: status.currentTime + ITEM_DEPLOYMENT_DELTA_TIMESTAMP
-  })
-  const authChain = Authenticator.signPayload(identity, entityId)
+  const entity = await buildItemEntity(client, collection, item)
+  const authChain = Authenticator.signPayload(identity, entity.entityId)
 
-  await client.deployEntity({ entityId, files: hashedFiles, authChain })
+  await client.deployEntity({ ...entity, authChain })
 
   return { ...item, inCatalyst: true }
 }
@@ -140,4 +126,25 @@ export async function calculateFinalSize(item: Item, newContents: Record<string,
  */
 function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
+}
+
+export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item) {
+  if (!collection.contractAddress) {
+    throw new Error(`Collection with id="${collection.id}" doesn't have a "contractAddress"`)
+  }
+  if (!item.tokenId) {
+    throw new Error(`Item with id="${item.id}" doesn't have a "tokenId"`)
+  }
+  const urn = getCatalystItemURN(collection.contractAddress, item.tokenId)
+  const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
+  const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
+  const catalystItem = toCatalystItem(collection, item)
+  const status = await client.fetchContentStatus()
+  return client.buildEntity({
+    type: EntityType.WEARABLE,
+    pointers: [urn],
+    metadata: catalystItem,
+    files: contentFiles,
+    timestamp: status.currentTime + ITEM_DEPLOYMENT_DELTA_TIMESTAMP
+  })
 }

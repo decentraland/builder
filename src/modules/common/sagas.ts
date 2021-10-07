@@ -45,7 +45,7 @@ export function* rootSaga(builderAPI: BuilderAPI, catalystClient: CatalystClient
     assetPackSaga(builderAPI),
     assetSaga(),
     authorizationSaga(),
-    collectionSaga(builderAPI),
+    collectionSaga(builderAPI, catalystClient),
     committeeSaga(builderAPI),
     deploymentSaga(builderAPI),
     editorSaga(),

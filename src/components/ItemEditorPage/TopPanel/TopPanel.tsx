@@ -1,17 +1,16 @@
 import React from 'react'
-import { Popup, Button, ButtonProps, Loader } from 'decentraland-ui'
+import { Button, ButtonProps, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
-import { Item } from 'modules/item/types'
 import { hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
+import { Curation } from 'modules/curation/types'
 import JumpIn from 'components/JumpIn'
 import ReviewModal from './ReviewModal'
 import { ReviewType } from './ReviewModal/ReviewModal.types'
 import { Props, State } from './TopPanel.types'
 import './TopPanel.css'
-import { Curation } from 'modules/curation/types'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
   state: State = {
@@ -47,11 +46,9 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.setState({ isDisableModalOpen })
   }
 
-  renderPage = (collection: Collection, items: Item[], curation: Curation | null) => {
+  renderPage = (collection: Collection, curation: Curation | null) => {
     const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen, isDisableModalOpen } = this.state
     const { chainId } = this.props
-
-    const inCatalyst = this.inCatalyst(items)
 
     return (
       <>
@@ -63,13 +60,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           <JumpIn size="small" collection={collection} chainId={chainId} />
         </div>
         <div className="actions">
-          <Popup
-            disabled={inCatalyst}
-            content={t('item_editor.top_panel.waiting_for_upload')}
-            position="bottom center"
-            trigger={<span className="button-container">{this.renderButtons(collection, curation, inCatalyst)}</span>}
-            inverted
-          />
+          <span className="button-container">{this.renderButtons(collection, curation)}</span>
         </div>
 
         <ReviewModal
@@ -111,11 +102,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  inCatalyst = (items: Item[]) => {
-    return items.every(item => item.inCatalyst)
-  }
-
-  renderButton = (reviewType: ReviewType, buttonProps: ButtonProps) => {
+  renderButton = (reviewType: ReviewType, buttonProps: ButtonProps = {}) => {
     const onClickMap = {
       [ReviewType.APPROVE]: this.setApproveModalVisibility,
       [ReviewType.REJECT]: this.setRejectModalVisibility,
@@ -143,36 +130,35 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderButtons = (collection: Collection, curation: Curation | null, inCatalyst: boolean) => {
-    const buttonProps = { disabled: !inCatalyst }
+  renderButtons = (collection: Collection, curation: Curation | null) => {
 
     if (collection.isApproved) {
       switch (curation?.status) {
         case 'pending':
           return (
             <>
-              {this.renderButton(ReviewType.APPROVE_CURATION, buttonProps)}
-              {this.renderButton(ReviewType.REJECT_CURATION, buttonProps)}
+              {this.renderButton(ReviewType.APPROVE_CURATION)}
+              {this.renderButton(ReviewType.REJECT_CURATION)}
             </>
           )
         case 'approved':
         case 'rejected':
-          return this.renderButton(ReviewType.DISABLE, buttonProps)
+          return this.renderButton(ReviewType.DISABLE)
       }
     }
 
     if (hasReviews(collection)) {
       if (collection.isApproved) {
-        return this.renderButton(ReviewType.DISABLE, buttonProps)
+        return this.renderButton(ReviewType.DISABLE)
       } else {
-        return this.renderButton(ReviewType.APPROVE, buttonProps)
+        return this.renderButton(ReviewType.APPROVE)
       }
     }
 
     return (
       <>
-        {this.renderButton(ReviewType.APPROVE, buttonProps)}
-        {this.renderButton(ReviewType.REJECT, buttonProps)}
+        {this.renderButton(ReviewType.APPROVE)}
+        {this.renderButton(ReviewType.REJECT)}
       </>
     )
   }
@@ -183,8 +169,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     return isCommitteeMember && isReviewing && isConnected ? (
       <div className="TopPanel">
         <CollectionProvider id={selectedCollectionId}>
-          {(collection, items, curation, isLoading) =>
-            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, items, curation)
+          {(collection, _items, curation, isLoading) =>
+            !collection || isLoading ? <Loader size="small" active /> : this.renderPage(collection, curation)
           }
         </CollectionProvider>
       </div>

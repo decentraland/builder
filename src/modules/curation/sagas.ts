@@ -2,7 +2,9 @@ import { call, takeEvery } from '@redux-saga/core/effects'
 import { BuilderAPI } from 'lib/api/builder'
 import { put } from 'redux-saga-test-plan/matchers'
 import {
+  approveCurationFailure,
   ApproveCurationRequestAction,
+  approveCurationSuccess,
   APPROVE_CURATION_REQUEST,
   fetchCurationFailure,
   fetchCurationRequest,
@@ -16,10 +18,12 @@ import {
   PushCurationRequestAction,
   pushCurationSuccess,
   PUSH_CURATION_REQUEST,
+  rejectCurationFailure,
   RejectCurationRequestAction,
+  rejectCurationSuccess,
   REJECT_CURATION_REQUEST
 } from './actions'
-import { Curation } from './types'
+import { Curation, CurationStatus } from './types'
 
 export function* curationSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_CURATIONS_REQUEST, handleFetchCurationsRequest)
@@ -59,11 +63,23 @@ export function* curationSaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleApproveCurationRequest(_: ApproveCurationRequestAction) {
-    // TODO
+  function* handleApproveCurationRequest(action: ApproveCurationRequestAction) {
+    const { collectionId } = action.payload
+    try {
+      yield call([builder, 'updateCurationStatus'], collectionId, CurationStatus.APPROVED)
+      yield put(approveCurationSuccess(collectionId))
+    } catch (error) {
+      yield put(approveCurationFailure(collectionId, error.message))
+    }
   }
 
-  function* handleRejectCurationRequest(_: RejectCurationRequestAction) {
-    // TODO
+  function* handleRejectCurationRequest(action: RejectCurationRequestAction) {
+    const { collectionId } = action.payload
+    try {
+      yield call([builder, 'updateCurationStatus'], collectionId, CurationStatus.REJECTED)
+      yield put(rejectCurationSuccess(collectionId))
+    } catch (error) {
+      yield put(rejectCurationFailure(collectionId, error.message))
+    }
   }
 }

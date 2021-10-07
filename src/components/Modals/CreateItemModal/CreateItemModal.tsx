@@ -249,6 +249,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
           isPublished: false,
           isApproved: false,
           inCatalyst: false,
+          contentHash: null,
           rarity,
           data: {
             category,
