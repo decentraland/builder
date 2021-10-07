@@ -53,7 +53,13 @@ import {
   FETCH_RARITIES_SUCCESS,
   FetchRaritiesSuccessAction,
   FetchRaritiesFailureAction,
-  FETCH_RARITIES_FAILURE
+  FETCH_RARITIES_FAILURE,
+  RESCUE_ITEMS_REQUEST,
+  RescueItemsRequestAction,
+  RescueItemsFailureAction,
+  RescueItemsSuccessAction,
+  RESCUE_ITEMS_FAILURE,
+  RESCUE_ITEMS_SUCCESS
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -100,6 +106,9 @@ type ItemReducerAction =
   | FetchRaritiesRequestAction
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
+  | RescueItemsRequestAction
+  | RescueItemsSuccessAction
+  | RescueItemsFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -116,7 +125,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SET_ITEMS_TOKEN_ID_REQUEST:
     case SAVE_PUBLISHED_ITEM_REQUEST:
     case SAVE_ITEM_REQUEST:
-    case DELETE_ITEM_REQUEST: {
+    case DELETE_ITEM_REQUEST:
+    case RESCUE_ITEMS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -124,7 +134,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
-    case SET_ITEMS_TOKEN_ID_SUCCESS: {
+    case SET_ITEMS_TOKEN_ID_SUCCESS:
+    case RESCUE_ITEMS_SUCCESS: {
       const { items } = action.payload
       return {
         ...state,
@@ -152,7 +163,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SAVE_PUBLISHED_ITEM_FAILURE:
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
-    case DELETE_ITEM_FAILURE: {
+    case DELETE_ITEM_FAILURE:
+    case RESCUE_ITEMS_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -202,6 +214,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         }
       }
     }
+
     case FETCH_TRANSACTION_SUCCESS: {
       const transaction = action.payload.transaction
 

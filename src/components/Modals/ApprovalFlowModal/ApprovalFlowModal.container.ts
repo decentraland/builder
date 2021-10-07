@@ -25,7 +25,7 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
-  onRescueItems: (items, contentHashes) => dispatch(rescueItemsRequest(items, contentHashes)),
+  onRescueItems: (collection, items, contentHashes) => dispatch(rescueItemsRequest(collection, items, contentHashes)),
   onDeployItems: entities => dispatch(deployEntitiesRequest(entities)),
   onApproveCollection: collection => dispatch(approveCollectionRequest(collection))
 })

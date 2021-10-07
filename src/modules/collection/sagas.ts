@@ -478,38 +478,36 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {
     const { collection } = action.payload
     console.log('intitate approval flow', collection)
+
     try {
-      // 1. Get items
+      // 1. Open modal
+      const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.LOADING> = {
+        view: ApprovalFlowModalView.LOADING,
+        collection
+      }
+      yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+      // 2. Get items to review
       const allItems: Item[] = yield select(getItems)
-      const items = allItems.filter(item => item.collectionId === collection.id)
+      const statusByItemId: ReturnType<typeof getStatusByItemId> = yield select(getStatusByItemId)
+      let items = allItems.filter(item => item.collectionId === collection.id && statusByItemId[item.id] === SyncStatus.UNDER_REVIEW)
       console.log('items', items)
 
-      // 2. Generate entities for each item
+      // 3. Generate entities for each item
       const entitiesByItemId: Record<string, DeploymentPreparationData> = {}
       for (const item of items) {
         const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
         entitiesByItemId[item.id] = entity
       }
-
       console.log('entitiesByItemId', entitiesByItemId)
 
-      // 3. Get items that need to be "rescued" (set their contentHash on-chain)
-      const itemsToRescue: Item[] = []
-      for (const item of items) {
-        const entity = entitiesByItemId[item.id]
-        if (item.contentHash !== entity.entityId) {
-          itemsToRescue.push(item)
-        }
-      }
-
-      // 4. If any item needs to be rescued, open rescue modal and wait for next step
-      console.log('itemsToRescue', itemsToRescue)
-      if (itemsToRescue.length > 0) {
-        const contentHashes = itemsToRescue.map(item => entitiesByItemId[item.id].entityId)
+      // 4. Rescue content hashes
+      {
+        const contentHashes = items.map(item => entitiesByItemId[item.id].entityId)
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE> = {
           view: ApprovalFlowModalView.RESCUE,
           collection,
-          items: itemsToRescue,
+          items,
           contentHashes
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
@@ -527,6 +525,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
         // if success wait for tx to be mined
         if (success) {
+          items = success.payload.items
           let isTxMined = false
           while (!isTxMined) {
             const action: FetchTransactionSuccessAction = yield take(FETCH_TRANSACTION_SUCCESS)
@@ -549,23 +548,13 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         }
       }
 
-      // 5. Get items that need to be deployed to the catalyst
-      const itemsToDeploy: Item[] = []
-      for (const item of items) {
-        const statusByItemId = yield select(getStatusByItemId)
-        const status = statusByItemId[item.id]
-        if (status === SyncStatus.UNPUBLISHED || status === SyncStatus.UNSYNCED) {
-          itemsToDeploy.push(item)
-        }
-      }
-
-      // 6. If any item needs to be deploy, open deploy modal and wait for next step
-      console.log('itemsToDeploy', itemsToDeploy)
-      if (itemsToDeploy.length > 0) {
-        const entities = itemsToDeploy.map(item => entitiesByItemId[item.id])
+      // 5. Deploy contents to catalyst
+      {
+        const entities = items.map(item => entitiesByItemId[item.id])
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
           view: ApprovalFlowModalView.DEPLOY,
           collection,
+          items,
           entities
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
@@ -596,7 +585,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         }
       }
 
-      // 7. If the collection needs to be approved, show the approve modal
+      // 6. If the collection needs to be approved, show the approve modal
       if (!collection.isApproved) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.APPROVE> = { view: ApprovalFlowModalView.APPROVE, collection }
         yield put(openModal('ApprovalFlowModal', modalMetadata))

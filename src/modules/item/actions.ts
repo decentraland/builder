@@ -137,16 +137,18 @@ export const RESCUE_ITEMS_REQUEST = '[Request] Rescue items'
 export const RESCUE_ITEMS_SUCCESS = '[Success] Rescue items'
 export const RESCUE_ITEMS_FAILURE = '[Failure] Rescue items'
 
-export const rescueItemsRequest = (items: Item[], contentHashes: string[]) => action(RESCUE_ITEMS_REQUEST, { items, contentHashes })
-export const rescueItemsSuccess = (items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
+export const rescueItemsRequest = (collection: Collection, items: Item[], contentHashes: string[]) =>
+  action(RESCUE_ITEMS_REQUEST, { collection, items, contentHashes })
+export const rescueItemsSuccess = (collection: Collection, items: Item[], contentHashes: string[], chainId: ChainId, txHash: string) =>
   action(RESCUE_ITEMS_SUCCESS, {
+    collection,
     items,
     contentHashes,
     txHash,
     ...buildTransactionPayload(chainId, txHash, { count: items.length, collectionId: items[0].collectionId! })
   })
-export const rescueItemsFailure = (items: Item[], contentHashes: string[], error: string) =>
-  action(RESCUE_ITEMS_FAILURE, { items, contentHashes, error })
+export const rescueItemsFailure = (collection: Collection, items: Item[], contentHashes: string[], error: string) =>
+  action(RESCUE_ITEMS_FAILURE, { collection, items, contentHashes, error })
 
 export type RescueItemsRequestAction = ReturnType<typeof rescueItemsRequest>
 export type RescueItemsSuccessAction = ReturnType<typeof rescueItemsSuccess>

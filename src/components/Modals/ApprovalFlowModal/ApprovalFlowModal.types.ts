@@ -8,6 +8,7 @@ import { Item } from 'modules/item/types'
 import { deployEntitiesRequest, DeployEntitiesRequestAction } from 'modules/entity/actions'
 
 export enum ApprovalFlowModalView {
+  LOADING = 'loading',
   RESCUE = 'rescue',
   DEPLOY = 'deploy',
   APPROVE = 'approve',
@@ -21,7 +22,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
 } & (V extends ApprovalFlowModalView.RESCUE
   ? { items: Item[]; contentHashes: string[] }
   : V extends ApprovalFlowModalView.DEPLOY
-  ? { entities: DeploymentPreparationData[] }
+  ? { items: Item[]; entities: DeploymentPreparationData[] }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
   : {})

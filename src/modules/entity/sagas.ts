@@ -6,8 +6,11 @@ import {
   deployEntitiesFailure,
   DeployEntitiesRequestAction,
   deployEntitiesSuccess,
+  DeployEntitiesSuccessAction,
   DEPLOY_ENTITIES_REQUEST,
+  DEPLOY_ENTITIES_SUCCESS,
   fetchEntitiesFailure,
+  fetchEntitiesRequest,
   FetchEntitiesRequestAction,
   fetchEntitiesSuccess,
   FETCH_ENTITIES_REQUEST
@@ -17,6 +20,7 @@ export function* entitySaga(catalyst: CatalystClient) {
   // takes
   yield takeEvery(FETCH_ENTITIES_REQUEST, handleFetchEntitiesRequest)
   yield takeEvery(DEPLOY_ENTITIES_REQUEST, handleDeployEntitiesRequest)
+  yield takeEvery(DEPLOY_ENTITIES_SUCCESS, handleDeployEntitiesSuccess)
 
   // handlers
   function* handleFetchEntitiesRequest(action: FetchEntitiesRequestAction) {
@@ -47,6 +51,13 @@ export function* entitySaga(catalyst: CatalystClient) {
       yield put(deployEntitiesSuccess(entities))
     } catch (error) {
       yield put(deployEntitiesFailure(entities, error.message))
+    }
+  }
+
+  function* handleDeployEntitiesSuccess(action: DeployEntitiesSuccessAction) {
+    const entityIds = action.payload.entities.map(entity => entity.entityId)
+    if (entityIds.length > 0) {
+      yield put(fetchEntitiesRequest({ filters: { entityIds } }))
     }
   }
 }

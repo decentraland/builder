@@ -1,6 +1,12 @@
 import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
+  DeployEntitiesFailureAction,
+  DeployEntitiesRequestAction,
+  DeployEntitiesSuccessAction,
+  DEPLOY_ENTITIES_FAILURE,
+  DEPLOY_ENTITIES_REQUEST,
+  DEPLOY_ENTITIES_SUCCESS,
   FetchEntitiesFailureAction,
   FetchEntitiesRequestAction,
   FetchEntitiesSuccessAction,
@@ -21,11 +27,19 @@ const INITIAL_STATE: EntityState = {
   error: null
 }
 
-type EntityReducerAction = FetchEntitiesRequestAction | FetchEntitiesSuccessAction | FetchEntitiesFailureAction
+type EntityReducerAction =
+  | FetchEntitiesRequestAction
+  | FetchEntitiesSuccessAction
+  | FetchEntitiesFailureAction
+  | DeployEntitiesRequestAction
+  | DeployEntitiesSuccessAction
+  | DeployEntitiesFailureAction
 
 export function entityReducer(state: EntityState = INITIAL_STATE, action: EntityReducerAction): EntityState {
   switch (action.type) {
-    case FETCH_ENTITIES_REQUEST: {
+    case FETCH_ENTITIES_REQUEST:
+    case DEPLOY_ENTITIES_REQUEST:
+    case DEPLOY_ENTITIES_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -46,7 +60,8 @@ export function entityReducer(state: EntityState = INITIAL_STATE, action: Entity
         }
       }
     }
-    case FETCH_ENTITIES_FAILURE: {
+    case FETCH_ENTITIES_FAILURE:
+    case DEPLOY_ENTITIES_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

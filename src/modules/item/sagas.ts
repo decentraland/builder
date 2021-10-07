@@ -1,3 +1,4 @@
+import { Contract } from 'ethers'
 import { replace } from 'connected-react-router'
 import { takeEvery, call, put, takeLatest, select, take, delay, fork, all } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
@@ -66,6 +67,7 @@ import { getAuthorizedItems, getItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
+import { getMethodData } from 'modules/wallet/utils'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -266,18 +268,29 @@ export function* itemSaga(builder: BuilderAPI) {
   }
 
   function* handleRescueItemsRequest(action: RescueItemsRequestAction) {
-    const { items, contentHashes } = action.payload
+    const { collection, items, contentHashes } = action.payload
 
     try {
       const chainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const contract = getContract(ContractName.ERC721CollectionV2, chainId)
       const tokenIds = items.map(item => item.tokenId!)
       const metadatas = items.map(item => getMetadata(item))
-      console.log('rescueItems', tokenIds, contentHashes, metadatas)
-      const txHash: string = yield call(sendTransaction, contract, collection => collection.rescueItems(tokenIds, contentHashes, metadatas))
-      yield put(rescueItemsSuccess(items, contentHashes, chainId, txHash))
+
+      const contract = getContract(ContractName.Committee, chainId)
+      const { abi } = getContract(ContractName.ERC721CollectionV2, chainId)
+      const implementation = new Contract(collection.contractAddress!, abi)
+
+      const manager = getContract(ContractName.CollectionManager, chainId)
+      const forwarder = getContract(ContractName.Forwarder, chainId)
+      const data: string = yield call(getMethodData, implementation.populateTransaction.rescueItems(tokenIds, contentHashes, metadatas))
+
+      const txHash: string = yield call(sendTransaction, contract, committee =>
+        committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
+      )
+
+      const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
+      yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
     } catch (error) {
-      yield put(rescueItemsFailure(items, contentHashes, error.message))
+      yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
   }
 }
