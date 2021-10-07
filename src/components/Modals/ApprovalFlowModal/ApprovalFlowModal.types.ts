@@ -22,7 +22,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
 } & (V extends ApprovalFlowModalView.RESCUE
   ? { items: Item[]; contentHashes: string[] }
   : V extends ApprovalFlowModalView.DEPLOY
-  ? { items: Item[]; entities: DeploymentPreparationData[] }
+  ? { items: Item[]; entities: DeploymentPreparationData[], didRescue: boolean }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
   : {})
@@ -36,6 +36,10 @@ export type Props = ModalProps & {
   isDeployingItems: boolean
   isConfirmingApproveTx: boolean
   isAwaitingApproveTx: boolean
+}
+
+export type State = {
+  isWaitingForSubgraph: boolean
 }
 
 export type MapStateProps = Pick<

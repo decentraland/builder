@@ -560,7 +560,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           view: ApprovalFlowModalView.DEPLOY,
           collection,
           items: itemsToDeploy,
-          entities: entitiesToDeploy
+          entities: entitiesToDeploy,
+          didRescue: itemsToRescue.length > 0 // this is used to wait a bit for the subgraph to index before deploying
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 

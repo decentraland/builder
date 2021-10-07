@@ -1,13 +1,28 @@
 import * as React from 'react'
 
+import { sleep } from 'decentraland-commons/dist/utils'
 import { Modal } from 'decentraland-dapps/dist/containers'
-import { ApprovalFlowModalMetadata, ApprovalFlowModalView, Props } from './ApprovalFlowModal.types'
-
-import './ApprovalFlowModal.css'
 import { Button, Center, Loader, ModalActions, ModalContent, ModalNavigation } from 'decentraland-ui'
+
 import ItemImage from 'components/ItemImage'
+import { ApprovalFlowModalMetadata, ApprovalFlowModalView, Props, State } from './ApprovalFlowModal.types'
+import './ApprovalFlowModal.css'
 
 export default class ApprovalFlowModal extends React.PureComponent<Props> {
+
+  state: State = {
+    isWaitingForSubgraph: false
+  }
+
+  mounted = false
+
+  componentDidMount() {
+    this.mounted = true
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
+  }
 
   renderHash(hash: string) {
     return hash.slice(0, 6) + '...' + hash.slice(-6)
@@ -48,7 +63,18 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
 
   renderDeployView() {
     const { onClose, metadata, onDeployItems, isDeployingItems } = this.props
-    const { items, entities } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>
+    const { items, entities, didRescue } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY>
+    const { isWaitingForSubgraph } = this.state
+    const onConfirm = async () => {
+      if (didRescue) {
+        this.setState({ isWaitingForSubgraph: true })
+        await sleep(5000) // give some leeway to the subgraph to index after a rescue
+        if (!this.mounted) return
+      }
+      onDeployItems(entities)
+      this.setState({ isWaitingForSubgraph: false })
+    }
+    const isLoading = isDeployingItems || isWaitingForSubgraph
     return <>
       <ModalNavigation title={`Upload content`} subtitle={`Please upload the content for the following `} onClose={onClose} />
       <ModalContent className="deploy">
@@ -64,7 +90,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         )}
       </ModalContent>
       <ModalActions>
-        <Button primary disabled={isDeployingItems} loading={isDeployingItems} onClick={() => onDeployItems(entities)}>Confirm</Button>
+        <Button primary disabled={isLoading} loading={isLoading} onClick={onConfirm}>Confirm</Button>
         <Button secondary onClick={onClose}>Cancel</Button>
       </ModalActions>
     </>
