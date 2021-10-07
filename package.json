@@ -31,7 +31,7 @@
     "css-loader": "1.0.0",
     "date-fns": "^2.14.0",
     "dcl-catalyst-client": "^5.1.1",
-    "dcl-catalyst-commons": "^1.4.2",
+    "dcl-catalyst-commons": "^7.1.1",
     "dcl-crypto": "^2.1.0",
     "dcl-scene-writer": "^1.1.2",
     "decentraland-ad": "^1.4.2",

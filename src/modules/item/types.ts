@@ -116,7 +116,7 @@ type BaseItem = {
   updatedAt: number
 }
 
-export type CatalystItem = BaseItem & {
+export type CatalystItem = Omit<BaseItem, 'createdAt' | 'updatedAt'> & {
   i18n: { code: string; text: string }[]
   data: WearableData
   image: string

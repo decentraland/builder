@@ -79,18 +79,18 @@ import {
   RescueItemsSuccessAction,
   RescueItemsFailureAction
 } from 'modules/item/actions'
-import { isValidText, toInitializeItems } from 'modules/item/utils'
+import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
-import { Item, SyncStatus } from 'modules/item/types'
-import { getItems, getStatusByItemId, getWalletItems } from 'modules/item/selectors'
+import { Item } from 'modules/item/types'
+import { getEntityByItemId, getItems, getWalletItems } from 'modules/item/selectors'
 import { getWalletCollections } from 'modules/collection/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
-import { buildItemEntity } from 'modules/item/export'
+import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
 import {
   ApproveCurationFailureAction,
@@ -475,9 +475,13 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     return txHash
   }
 
+  function* getItemsFromCollection(collection: Collection) {
+    const allItems: Item[] = yield select(getItems)
+    return allItems.filter(item => item.collectionId === collection.id)
+  }
+
   function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {
     const { collection } = action.payload
-    console.log('intitate approval flow', collection)
 
     try {
       // 1. Open modal
@@ -487,32 +491,28 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       }
       yield put(openModal('ApprovalFlowModal', modalMetadata))
 
-      // 2. Get items to review
-      const allItems: Item[] = yield select(getItems)
-      const statusByItemId: ReturnType<typeof getStatusByItemId> = yield select(getStatusByItemId)
-      let items = allItems.filter(item => item.collectionId === collection.id && statusByItemId[item.id] === SyncStatus.UNDER_REVIEW)
-      console.log('items', items)
-
-      // 3. Generate entities for each item
-      const entitiesByItemId: Record<string, DeploymentPreparationData> = {}
-      for (const item of items) {
-        const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
-        entitiesByItemId[item.id] = entity
+      // 2. Find items that need to be rescued (their content hash needs to be updated)
+      const itemsToRescue: Item[] = []
+      const contentHashes: string[] = []
+      for (const item of yield getItemsFromCollection(collection)) {
+        const contentHash: string = yield call(buildItemContentHash, collection, item)
+        if (item.contentHash !== contentHash) {
+          itemsToRescue.push(item)
+          contentHashes.push(contentHash)
+        }
       }
-      console.log('entitiesByItemId', entitiesByItemId)
 
-      // 4. Rescue content hashes
-      {
-        const contentHashes = items.map(item => entitiesByItemId[item.id].entityId)
+      // 3. If any, open the modal in the rescue step and wait for actions
+      if (itemsToRescue.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE> = {
           view: ApprovalFlowModalView.RESCUE,
           collection,
-          items,
+          items: itemsToRescue,
           contentHashes
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
-        // wait for actions
+        // Wait for actions...
         const {
           success,
           failure,
@@ -523,43 +523,48 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           cancel: take(CLOSE_MODAL)
         })
 
-        // if success wait for tx to be mined
+        // If success wait for tx to be mined
         if (success) {
-          items = success.payload.items
           let isTxMined = false
           while (!isTxMined) {
             const action: FetchTransactionSuccessAction = yield take(FETCH_TRANSACTION_SUCCESS)
             isTxMined = action.payload.transaction.hash === success.payload.txHash
           }
 
-          // if failure show error and exit flow
+          // If failure show error and exit flow
         } else if (failure) {
-          const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
-            view: ApprovalFlowModalView.ERROR,
-            collection,
-            error: failure.payload.error
-          }
-          yield put(openModal('ApprovalFlowModal', modalMetadata))
-          return
+          throw new Error(failure.payload.error)
 
-          // if cancel exit flow
+          // If cancel exit flow
         } else if (cancel) {
           return
         }
       }
 
-      // 5. Deploy contents to catalyst
-      {
-        const entities = items.map(item => entitiesByItemId[item.id])
+      // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
+      const itemsToDeploy: Item[] = []
+      const entitiesToDeploy: DeploymentPreparationData[] = []
+      const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
+      for (const item of yield getItemsFromCollection(collection)) {
+        const deployedEntity = entitiesByItemId[item.id]
+        if (!deployedEntity || !areSynced(item, deployedEntity)) {
+          const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
+          itemsToDeploy.push(item)
+          entitiesToDeploy.push(entity)
+        }
+      }
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+      if (itemsToDeploy.length > 0) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
           view: ApprovalFlowModalView.DEPLOY,
           collection,
-          items,
-          entities
+          items: itemsToDeploy,
+          entities: entitiesToDeploy
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
-        // wait for actions
+        // Wait for actions...
         const {
           failure,
           cancel
@@ -569,17 +574,11 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           cancel: take(CLOSE_MODAL)
         })
 
-        // if failure show error and exit flow
+        // If failure show error and exit flow
         if (failure) {
-          const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
-            view: ApprovalFlowModalView.ERROR,
-            collection,
-            error: failure.payload.error
-          }
-          yield put(openModal('ApprovalFlowModal', modalMetadata))
-          return
+          throw new Error(failure.payload.error)
 
-          // if cancel exit flow
+          // If cancel exit flow
         } else if (cancel) {
           return
         }
@@ -590,7 +589,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.APPROVE> = { view: ApprovalFlowModalView.APPROVE, collection }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
-        // wait for actions
+        // Wait for actions...
         const {
           failure,
           cancel
@@ -600,22 +599,16 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           cancel: take(CLOSE_MODAL)
         })
 
-        // if failure show error and exit flow
+        // iI failure show error and exit flow
         if (failure) {
-          const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
-            view: ApprovalFlowModalView.ERROR,
-            collection,
-            error: failure.payload.error
-          }
-          yield put(openModal('ApprovalFlowModal', modalMetadata))
-          return
+          throw new Error(failure.payload.error)
 
           // if cancel exit flow
         } else if (cancel) {
           return
         }
       } else {
-        // if the collection was approved but it had a pending curation, approve the curation
+        // 7. If the collection was approved but it had a pending curation, approve the curation
         const curationsByCollectionId: Record<string, Curation> = yield select(getCurationsByCollectionId)
         const curation = curationsByCollectionId[collection.id]
         if (curation && curation.status === CurationStatus.PENDING) {
@@ -640,7 +633,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         }
       }
 
-      // 9. Success 🎉
+      // 8. Success 🎉
       yield put(
         openModal('ApprovalFlowModal', {
           view: ApprovalFlowModalView.SUCCESS,
@@ -648,7 +641,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         })
       )
     } catch (error) {
-      // handle error at any point in the flow
+      // Handle error at any point in the flow and show them
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
         view: ApprovalFlowModalView.ERROR,
         collection,

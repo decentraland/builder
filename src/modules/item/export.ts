@@ -1,6 +1,6 @@
 import { Authenticator, AuthIdentity } from 'dcl-crypto'
 import { CatalystClient } from 'dcl-catalyst-client'
-import { EntityType } from 'dcl-catalyst-commons'
+import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 'dcl-catalyst-commons'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
@@ -20,37 +20,6 @@ export async function deployContents(identity: AuthIdentity, collection: Collect
   await client.deployEntity({ ...entity, authChain })
 
   return { ...item, inCatalyst: true }
-}
-
-export function toCatalystItem(collection: Collection, item: Item): CatalystItem {
-  // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
-  const representations = item.data.representations.map(representation => ({
-    ...representation,
-    contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
-  }))
-  if (!collection.contractAddress || !item.tokenId) {
-    throw new Error('You need the collection and item to be published')
-  }
-  return {
-    id: getCatalystItemURN(collection.contractAddress, item.tokenId),
-    name: item.name,
-    description: item.description,
-    collectionAddress: collection.contractAddress!,
-    rarity: item.rarity,
-    i18n: [{ code: 'en', text: item.name }],
-    data: {
-      replaces: item.data.replaces,
-      hides: item.data.hides,
-      tags: item.data.tags,
-      category: item.data.category,
-      representations
-    },
-    image: IMAGE_PATH,
-    thumbnail: THUMBNAIL_PATH,
-    metrics: item.metrics,
-    createdAt: Date.now(),
-    updatedAt: Date.now()
-  }
 }
 
 /**
@@ -128,23 +97,84 @@ function calculateFilesSize(files: Array<Blob>) {
   return files.reduce((total, blob) => blob.size + total, 0)
 }
 
-export async function buildItemEntity(client: CatalystClient, collection: Collection, item: Item) {
-  if (!collection.contractAddress) {
-    throw new Error(`Collection with id="${collection.id}" doesn't have a "contractAddress"`)
+export function buildItemEntityMetadata(collection: Collection, item: Item): CatalystItem {
+  // We strip the thumbnail from the representations contents as they're not being used by the Catalyst and just occupy extra space
+  const representations = item.data.representations.map(representation => ({
+    ...representation,
+    contents: representation.contents.filter(fileName => fileName !== THUMBNAIL_PATH)
+  }))
+  if (!collection.contractAddress || !item.tokenId) {
+    throw new Error('You need the collection and item to be published')
   }
-  if (!item.tokenId) {
-    throw new Error(`Item with id="${item.id}" doesn't have a "tokenId"`)
+  return {
+    id: getCatalystItemURN(collection.contractAddress, item.tokenId),
+    name: item.name,
+    description: item.description,
+    collectionAddress: collection.contractAddress!,
+    rarity: item.rarity,
+    i18n: [{ code: 'en', text: item.name }],
+    data: {
+      replaces: item.data.replaces,
+      hides: item.data.hides,
+      tags: item.data.tags,
+      category: item.data.category,
+      representations
+    },
+    image: IMAGE_PATH,
+    thumbnail: THUMBNAIL_PATH,
+    metrics: item.metrics
   }
-  const urn = getCatalystItemURN(collection.contractAddress, item.tokenId)
+}
+
+export async function buildItemEntityBlobs(item: Item) {
   const [files, image] = await Promise.all([getFiles(item.contents), generateImage(item)])
-  const contentFiles = await makeContentFiles({ ...files, [IMAGE_PATH]: image })
-  const catalystItem = toCatalystItem(collection, item)
+  const blobs: Record<string, Blob> = { ...files, [IMAGE_PATH]: image }
+  return blobs
+}
+
+export async function buildItemEntity(
+  client: CatalystClient,
+  collection: Collection,
+  item: Item,
+  deltaTimestamp = ITEM_DEPLOYMENT_DELTA_TIMESTAMP
+) {
+  const blobs = await buildItemEntityBlobs(item)
+  const files = await makeContentFiles(blobs)
+  const metadata = await buildItemEntityMetadata(collection, item)
   const status = await client.fetchContentStatus()
   return client.buildEntity({
     type: EntityType.WEARABLE,
-    pointers: [urn],
-    metadata: catalystItem,
-    files: contentFiles,
-    timestamp: status.currentTime + ITEM_DEPLOYMENT_DELTA_TIMESTAMP
+    pointers: [metadata.id],
+    metadata,
+    files,
+    timestamp: status.currentTime + deltaTimestamp
   })
+}
+
+export async function buildItemEntityContent(item: Item) {
+  const blobs = await buildItemEntityBlobs(item)
+  return computeHashes(blobs)
+}
+
+export async function buildItemContentHash(collection: Collection, item: Item) {
+  const blobs = await buildItemEntityBlobs(item)
+  const hashes = await computeHashes(blobs)
+  const content = Object.keys(hashes).map(file => ({ file, hash: hashes[file] }))
+  const metadata = await buildItemEntityMetadata(collection, item)
+  return calculateContentHash(content, metadata)
+}
+
+export async function calculateContentHash(content: EntityContentItemReference[], metadata: EntityMetadata) {
+  const data = JSON.stringify({
+    content: content
+      .sort((a: EntityContentItemReference, b: EntityContentItemReference) => {
+        if (a.hash > b.hash) return 1
+        else if (a.hash < b.hash) return -1
+        else return a.file > b.file ? 1 : -1
+      })
+      .map(entry => ({ key: entry.file, hash: entry.hash })),
+    metadata
+  })
+  const buffer = Buffer.from(data)
+  return Hashing.calculateBufferHash(buffer)
 }

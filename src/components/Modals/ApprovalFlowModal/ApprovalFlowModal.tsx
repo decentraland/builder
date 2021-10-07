@@ -35,7 +35,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         {items.map((item, index) => (
           <div className="item" key={item.id}>
             <div className="name"><ItemImage item={item} />{item.name}</div>
-            <div className="hash">{this.renderHash(contentHashes[index])}</div>
+            <div className="hash" title={contentHashes[index]}>{this.renderHash(contentHashes[index])}</div>
           </div>
         ))}
       </ModalContent>
@@ -52,12 +52,12 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     return <>
       <ModalNavigation title={`Upload content`} subtitle={`Please upload the content for the following `} onClose={onClose} />
       <ModalContent className="deploy">
-        {items.map(item =>
+        {items.map((item, index) =>
           <div className="item" key={item.id}>
             <div className="name"><ItemImage item={item} />{item.name}</div>
             <div className="size">
               {Array.from(
-                entities.find(entity => entity.entityId === item.contentHash)!.files.values()
+                entities[index].files.values()
               ).reduce<number>((size, file) => size + file.content.length, 0)
                 .toLocaleString()} bytes</div>
           </div>
