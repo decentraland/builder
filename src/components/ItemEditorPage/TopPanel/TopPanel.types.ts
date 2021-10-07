@@ -15,6 +15,8 @@ export type State = {
   currentVeredict?: boolean
   isApproveModalOpen: boolean
   isRejectModalOpen: boolean
+  isApproveCurationModalOpen: boolean
+  isRejectCurationModalOpen: boolean
 }
 
 export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId' | 'isConnected'>

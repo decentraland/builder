@@ -18,6 +18,7 @@ import { PreviewType } from 'modules/editor/types'
 import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
+import { Curation } from 'modules/curation/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -139,6 +140,14 @@ export type RemoteWeeklyStats = {
   direct_sessions: number
   max_concurrent_users: number
   max_concurrent_users_time: string
+}
+
+export type RemoteCuration = {
+  id: string
+  collection_id: string
+  status: Curation['status']
+  created_at: Date
+  updated_at: Date
 }
 
 /**
@@ -362,6 +371,16 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
 
   return collection
+}
+
+function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
+  return {
+    id: remoteCuration.id,
+    collectionId: remoteCuration.collection_id,
+    status: remoteCuration.status,
+    created_at: +new Date(remoteCuration.created_at),
+    updated_at: +new Date(remoteCuration.updated_at)
+  }
 }
 
 export type PoolDeploymentAdditionalFields = {
@@ -631,6 +650,25 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/collections/${collection.id}`, {})
   }
 
+  async fetchCurations(): Promise<Curation[]> {
+    const curations: RemoteCuration[] = await this.request('get', `/curations`)
+
+    return curations.map(fromRemoteCuration)
+  }
+
+  async fetchCuration(collectionId: string): Promise<Curation | undefined> {
+    const curation: RemoteCuration | undefined = await this.request('get', `/curations/${collectionId}`)
+
+    if (!curation) {
+      return
+    }
+
+    return fromRemoteCuration(curation)
+  }
+
+  async pushCuration(collectionId: string): Promise<void> {
+    return this.request('post', `/curations/${collectionId}`)
+  }
   async fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }

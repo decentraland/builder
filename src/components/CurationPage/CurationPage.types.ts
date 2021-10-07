@@ -2,6 +2,7 @@ import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Collection } from 'modules/collection/types'
 import { fetchCollectionsRequest } from 'modules/collection/actions'
 import { fetchItemsRequest } from 'modules/item/actions'
+import { Curation } from 'modules/curation/types'
 
 export enum SortBy {
   NEWEST = 'NEWEST',
@@ -18,7 +19,7 @@ export enum FilterBy {
 
 export type Props = {
   wallet: Wallet
-  collections: Collection[]
+  collections: CollectionPageCollection[]
   isCommitteeMember: boolean
   isConnecting: boolean
   isLoading: boolean
@@ -32,6 +33,10 @@ export type State = {
   sortBy: SortBy
   filterBy: FilterBy
   searchText: string
+}
+
+export type CollectionPageCollection = Collection & {
+  curation?: Curation
 }
 
 export type MapStateProps = Pick<Props, 'wallet' | 'collections' | 'isCommitteeMember' | 'isConnecting' | 'isLoading'>

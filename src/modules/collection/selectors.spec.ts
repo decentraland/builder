@@ -11,6 +11,15 @@ describe('when getting status by item id', () => {
   it('should return the status for each published item', () => {
     mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
     const mockState = {
+      curation: {
+        data: {
+          '1': {
+            id: '1',
+            collectionId: '1',
+            status: 'pending'
+          }
+        }
+      },
       item: {
         data: {
           '0': {
@@ -50,6 +59,10 @@ describe('when getting status by item id', () => {
               representations: [],
               tags: []
             }
+          },
+          '2': {
+            id: '2',
+            collectionId: '1'
           }
         }
       },
@@ -58,6 +71,10 @@ describe('when getting status by item id', () => {
           '0': {
             id: '0',
             contractAddress: 'anAddress'
+          },
+          '1': {
+            id: '1',
+            contractAddress: 'anotherAddress'
           }
         }
       },
@@ -107,7 +124,8 @@ describe('when getting status by item id', () => {
       }
     }
     expect(getStatusByCollectionId((mockState as unknown) as RootState)).toEqual({
-      '0': SyncStatus.UNSYNCED
+      '0': SyncStatus.UNSYNCED,
+      '1': SyncStatus.UNDER_REVIEW
     })
   })
 })

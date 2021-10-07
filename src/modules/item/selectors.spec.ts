@@ -121,6 +121,25 @@ describe('Item selectors', () => {
     it('should return the status for each published item', () => {
       mockGetChainIdByNetwork.mockReturnValue(ChainId.MATIC_MAINNET)
       const mockState = {
+        curation: {
+          data: {
+            '0': {
+              id: '0',
+              collectionId: '0',
+              status: 'approved'
+            },
+            '1': {
+              id: '1',
+              collectionId: '1',
+              status: 'rejected'
+            },
+            '3': {
+              id: '3',
+              collectionId: '3',
+              status: 'pending'
+            }
+          }
+        },
         item: {
           data: {
             '0': {
@@ -167,6 +186,25 @@ describe('Item selectors', () => {
                 representations: [],
                 tags: []
               }
+            },
+            '3': {
+              id: '3',
+              collectionId: '3',
+              tokenId: 'yetAnotherDifferentTokenId',
+              isPublished: true,
+              isApproved: true,
+              contents: {
+                'file.ext': 'QmC_new'
+              },
+              name: 'pepito',
+              description: 'pepito hat very nice',
+              data: {
+                category: WearableCategory.HAT,
+                replaces: [],
+                hides: [],
+                representations: [],
+                tags: []
+              }
             }
           }
         },
@@ -183,6 +221,10 @@ describe('Item selectors', () => {
             '2': {
               id: '2',
               contractAddress: 'yetAnotherAddress'
+            },
+            '3': {
+              id: '3',
+              contractAddress: 'yetAnotherDifferentAddress'
             }
           }
         },
@@ -227,6 +269,26 @@ describe('Item selectors', () => {
                   tags: []
                 }
               }
+            },
+            Qm3: {
+              content: [
+                {
+                  hash: 'QmC',
+                  key: 'file.ext'
+                }
+              ],
+              metadata: {
+                id: 'urn:decentraland:matic:collections-v2:yetAnotherDifferentAddress:yetAnotherDifferentTokenId',
+                name: 'pepito',
+                description: 'pepito hat very nice',
+                data: {
+                  category: WearableCategory.HAT,
+                  replaces: [],
+                  hides: [],
+                  representations: [],
+                  tags: []
+                }
+              }
             }
           }
         }
@@ -234,7 +296,8 @@ describe('Item selectors', () => {
       expect(getStatusByItemId((mockState as unknown) as RootState)).toEqual({
         '0': SyncStatus.UNDER_REVIEW,
         '1': SyncStatus.SYNCED,
-        '2': SyncStatus.UNSYNCED
+        '2': SyncStatus.UNSYNCED,
+        '3': SyncStatus.UNDER_REVIEW
       })
     })
   })

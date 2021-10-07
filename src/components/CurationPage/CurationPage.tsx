@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row, Column, Section, Container, Dropdown, Pagination, Empty, TextFilter } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Collection } from 'modules/collection/types'
 import { hasReviews } from 'modules/collection/utils'
 import NotFound from 'components/NotFound'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
@@ -59,20 +58,20 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
     return collections
       .filter(
-        (collection: Collection) =>
+        collection =>
           collection.name.toLowerCase().includes(searchText.toLowerCase()) ||
           collection.owner.toLowerCase().includes(searchText.toLowerCase())
       )
-      .filter((collection: Collection) => {
+      .filter(collection => {
         switch (filterBy) {
           case FilterBy.APPROVED: {
-            return collection.isApproved
+            return !collection.curation && collection.isApproved
           }
           case FilterBy.REJECTED: {
             return hasReviews(collection) && !collection.isApproved
           }
           case FilterBy.NOT_REVIWED: {
-            return !hasReviews(collection)
+            return collection.curation || !hasReviews(collection)
           }
           case FilterBy.ALL_STATUS:
           default: {
@@ -80,16 +79,22 @@ export default class CurationPage extends React.PureComponent<Props, State> {
           }
         }
       })
-      .sort((a: Collection, b: Collection) => {
+      .sort((collectionA, collectionB) => {
+        const { curation: curationA } = collectionA
+        const { curation: curationB } = collectionB
+        
         switch (sortBy) {
           case SortBy.NEWEST: {
-            return a.createdAt < b.createdAt ? 1 : -1
+            const dateA = curationA ? curationA.created_at : collectionA.createdAt
+            const dateB = curationB ? curationB.created_at : collectionB.createdAt
+
+            return dateA < dateB ? 1 : -1
           }
           case SortBy.NAME_ASC: {
-            return a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1
+            return collectionA.name.toLowerCase() < collectionB.name.toLowerCase() ? 1 : -1
           }
           case SortBy.NAME_DESC: {
-            return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+            return collectionA.name.toLowerCase() > collectionB.name.toLowerCase() ? 1 : -1
           }
 
           default: {
@@ -140,7 +145,7 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         <Container>
           <Section>
             {collections.length > 0 ? (
-              paginatedCollections.map((collection: Collection, index) => <CollectionRow key={index} collection={collection} />)
+              paginatedCollections.map((collection, index) => <CollectionRow key={index} collection={collection} />)
             ) : (
               <Empty height={200}>
                 <div>

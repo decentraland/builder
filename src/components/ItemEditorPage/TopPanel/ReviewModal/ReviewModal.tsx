@@ -11,13 +11,19 @@ import './ReviewModal.css'
 
 export default class ReviewModal extends React.PureComponent<Props> {
   handleReview = () => {
-    const { type, collection, onApprove, onReject } = this.props
+    const { type, collection, curation, onApprove, onReject, onApproveCuration, onRejectCuration } = this.props
     switch (type) {
       case ReviewType.APPROVE:
         onApprove(collection)
         break
       case ReviewType.REJECT:
         onReject(collection)
+        break
+      case ReviewType.APPROVE_CURATION:
+        onApproveCuration(curation!.collectionId)
+        break
+      case ReviewType.REJECT_CURATION:
+        onRejectCuration(curation!.collectionId)
         break
       default:
         throw new Error(`Invalid review type: ${type}`)
@@ -37,6 +43,10 @@ export default class ReviewModal extends React.PureComponent<Props> {
         return base + '.approve'
       case ReviewType.REJECT:
         return base + '.reject'
+      case ReviewType.APPROVE_CURATION:
+        return base + '.approve_curation'
+      case ReviewType.REJECT_CURATION:
+        return base + '.reject_curation'
       default:
         throw new Error(`Invalid review type: ${type}`)
     }
@@ -50,12 +60,7 @@ export default class ReviewModal extends React.PureComponent<Props> {
         <Modal.Header>{t(`${i18nKey}.title`)}</Modal.Header>
         <Modal.Content>{t(`${i18nKey}.subtitle`)}</Modal.Content>
         <Modal.Actions>
-          <ChainButton
-            primary
-            onClick={this.handleReview}
-            loading={isLoading}
-            chainId={getChainIdByNetwork(Network.MATIC)}
-          >
+          <ChainButton primary onClick={this.handleReview} loading={isLoading} chainId={getChainIdByNetwork(Network.MATIC)}>
             {t(`${i18nKey}.action`)}
           </ChainButton>
           <Button onClick={this.handleClose}>{t('global.cancel')}</Button>
@@ -104,7 +109,7 @@ export default class ReviewModal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { open, type, collection, hasPendingTransaction } = this.props
+    const { open, type, collection, curation, hasPendingTransaction } = this.props
     const i18nKey = this.getI18nKey()
 
     return (
@@ -129,9 +134,13 @@ export default class ReviewModal extends React.PureComponent<Props> {
           this.renderApproved()
         ) : type === ReviewType.REJECT && !collection.isApproved ? (
           this.renderRejected()
+        ) : type === ReviewType.APPROVE_CURATION && curation?.status === 'approved' ? (
+          this.renderApproved()
+        ) : type === ReviewType.REJECT_CURATION && curation?.status === 'rejected' ? (
+          this.renderRejected()
         ) : (
-                this.renderReview()
-              )}
+          this.renderReview()
+        )}
       </Modal>
     )
   }

@@ -25,7 +25,7 @@ export default class LeftPanel extends React.PureComponent<Props> {
     return (
       <div className="LeftPanel">
         { isConnected ? <CollectionProvider id={selectedCollectionId}>
-          {(collection, collectionItems, isLoading) => {
+          {(collection, collectionItems, _, isLoading) => {
             const listItems = selectedCollectionId ? collectionItems : orphanItems
             return !collection && isLoading ? (
               <Loader size="massive" active />

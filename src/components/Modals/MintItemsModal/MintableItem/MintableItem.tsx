@@ -7,6 +7,8 @@ import ItemImage from 'components/ItemImage'
 import Icon from 'components/Icon'
 import { getMaxSupply } from 'modules/item/utils'
 import { Props } from './MintableItem.types'
+import ItemStatus from 'components/ItemStatus'
+
 import './MintableItem.css'
 
 export default class MintableItem extends React.PureComponent<Props> {
@@ -84,6 +86,7 @@ export default class MintableItem extends React.PureComponent<Props> {
           <Column grow={true}>
             <div className="item-header">
               <ItemImage item={item} />
+              <ItemStatus item={item} />
               <span>{item.name}</span>
             </div>
           </Column>

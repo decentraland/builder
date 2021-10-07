@@ -5,13 +5,13 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { ChainButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-
 import { canMintItem, MAX_NFTS_PER_MINT } from 'modules/item/utils'
 import { Item } from 'modules/item/types'
 import { Mint } from 'modules/collection/types'
 import ItemDropdown from 'components/ItemDropdown'
 import { Props, State, ItemMints } from './MintItemsModal.types'
 import MintableItem from './MintableItem'
+
 import './MintItemsModal.css'
 
 export default class MintItemsModal extends React.PureComponent<Props, State> {
@@ -102,7 +102,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { collection, totalCollectionItems, isLoading, onClose } = this.props
+    const { collection, totalCollectionItems, isLoading, hasUnsyncedItems, onClose } = this.props
     const { itemMints, error } = this.state
 
     const items = this.props.items.concat(this.state.items)
@@ -115,6 +115,7 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
       <Modal className="MintItemsModal" onClose={onClose}>
         <ModalNavigation title={t('mint_items_modal.title')} onClose={onClose} />
         <Modal.Content>
+          {hasUnsyncedItems(items) && <p className="unsynced-warning danger-text">{t('mint_items_modal.unsynced_warning')}</p>}
           <Form>
             {isEmpty ? (
               <div className="empty">{t('mint_items_modal.no_items', { name: collection.name })}</div>
