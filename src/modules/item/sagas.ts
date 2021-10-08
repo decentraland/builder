@@ -63,7 +63,7 @@ import { Collection } from 'modules/collection/types'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { calculateFinalSize } from './export'
 import { Item, Rarity } from './types'
-import { getAuthorizedItems, getItems } from './selectors'
+import { getItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
@@ -256,7 +256,7 @@ export function* itemSaga(builder: BuilderAPI) {
   function* fetchItemEntities() {
     while (true) {
       yield all([take(FETCH_ITEMS_SUCCESS), take(FETCH_COLLECTIONS_SUCCESS)])
-      const items: Item[] = yield select(getAuthorizedItems)
+      const items: Item[] = yield select(getItems)
       const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
       const urns = items
         .filter(item => item.isPublished)
