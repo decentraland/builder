@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import { sleep } from 'decentraland-commons/dist/utils'
 import { Modal } from 'decentraland-dapps/dist/containers'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Center, Loader, ModalActions, ModalContent, ModalNavigation } from 'decentraland-ui'
 
 import ItemImage from 'components/ItemImage'
@@ -31,7 +32,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
 
   renderLoadingView() {
     return <>
-      <ModalNavigation title={`Loading...`} subtitle={`Preparing collection for approval`} />
+      <ModalNavigation title={t('approval_flow.loading.title')} subtitle={t('approval_flow.loading.subtitle')} />
       <ModalContent className="loading">
         <Center>
           <Loader active size="huge" />
@@ -49,7 +50,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
       this.setState({ didResuce: true })
     }
     return <>
-      <ModalNavigation title={`Approve Items`} subtitle={`Please approve the items and their hashes`} onClose={onClose} />
+      <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
       <ModalContent className="rescue">
         {items.map((item, index) => (
           <div className="item" key={item.id}>
@@ -59,8 +60,8 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         ))}
       </ModalContent>
       <ModalActions>
-        <Button primary disabled={didRescue || isConfirmingRescueTx || isAwaitingRescueTx} loading={didRescue || isAwaitingRescueTx} onClick={onConfirm}>Approve</Button>
-        <Button secondary onClick={onClose}>Cancel</Button>
+        <Button primary disabled={didRescue || isConfirmingRescueTx || isAwaitingRescueTx} loading={didRescue || isAwaitingRescueTx} onClick={onConfirm}>{t('approval_flow.rescue.confirm')}</Button>
+        <Button secondary onClick={onClose}>{t('global.cancel')}</Button>
       </ModalActions>
     </>
   }
@@ -80,7 +81,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     }
     const isLoading = isDeployingItems || isWaitingForSubgraph
     return <>
-      <ModalNavigation title={`Upload Files`} subtitle={`Please upload the content of the items`} onClose={onClose} />
+      <ModalNavigation title={t('approval_flow.upload.title')} subtitle={t('approval_flow.upload.subtitle')} onClose={onClose} />
       <ModalContent className="deploy">
         {items.map((item, index) =>
           <div className="item" key={item.id}>
@@ -94,8 +95,8 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         )}
       </ModalContent>
       <ModalActions>
-        <Button primary disabled={isLoading} loading={isLoading} onClick={onConfirm}>Upload</Button>
-        <Button secondary onClick={onClose}>Cancel</Button>
+        <Button primary disabled={isLoading} loading={isLoading} onClick={onConfirm}>{t('approval_flow.upload.confirm')}</Button>
+        <Button secondary onClick={onClose}>{t('global.cancel')}</Button>
       </ModalActions>
     </>
   }
@@ -104,10 +105,10 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { onClose, metadata, onApproveCollection, isConfirmingApproveTx, isAwaitingApproveTx } = this.props
     const { collection } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.APPROVE>
     return <>
-      <ModalNavigation title={`Enable Collection`} subtitle={`Please enable the collection to be minted`} onClose={onClose} />
+      <ModalNavigation title={t('approval_flow.approve.title')} subtitle={t('approval_flow.approve.subtitle')} onClose={onClose} />
       <ModalActions>
-        <Button primary disabled={isConfirmingApproveTx || isAwaitingApproveTx} loading={isAwaitingApproveTx} onClick={() => onApproveCollection(collection)}>Enable</Button>
-        <Button secondary onClick={onClose}>Cancel</Button>
+        <Button primary disabled={isConfirmingApproveTx || isAwaitingApproveTx} loading={isAwaitingApproveTx} onClick={() => onApproveCollection(collection)}>{t('approval_flow.approve.confirm')}</Button>
+        <Button secondary onClick={onClose}>{t('global.cancel')}</Button>
       </ModalActions>
     </>
   }
@@ -116,12 +117,12 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { onClose, metadata } = this.props
     const { error } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR>
     return <>
-      <ModalNavigation title={`Error`} subtitle={`Something went wrong...`} onClose={onClose} />
+      <ModalNavigation title={t('approval_flow.error.title')} subtitle={t('approval_flow.error.subtitle')} onClose={onClose} />
       <ModalContent className="error">
         {error}
       </ModalContent>
       <ModalActions>
-        <Button secondary onClick={onClose}>Close</Button>
+        <Button secondary onClick={onClose}>{t('global.close')}</Button>
       </ModalActions>
     </>
   }
@@ -129,9 +130,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   renderSuccessView() {
     const { onClose } = this.props
     return <>
-      <ModalNavigation title={`Collection Approved!`} subtitle={`Thank you for revieweing this collection`} onClose={onClose} />
+      <ModalNavigation title={t('approval_flow.success.title')} subtitle={t('approval_flow.success.subtitle')} onClose={onClose} />
       <ModalActions>
-        <Button secondary onClick={onClose}>Close</Button>
+        <Button secondary onClick={onClose}>{t('global.close')}</Button>
       </ModalActions>
     </>
   }

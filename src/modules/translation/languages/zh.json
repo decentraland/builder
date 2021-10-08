@@ -1200,5 +1200,34 @@
     "loading": "加载中...",
     "synced": "同步",
     "unsynced": "未同步"
+  },
+  "approval_flow": {
+    "loading": {
+      "title": "加载中...",
+      "subtitle": "准备收集以供批准"
+    },
+    "rescue": {
+      "title": "救援物品",
+      "subtitle": "请批准项目及其哈希值",
+      "confirm": "确认"
+    },
+    "上传": {
+      "title": "上传文件",
+      "subtitle": "请上传项目内容",
+      "确认": "上传"
+    },
+    "批准": {
+      "title": "启用收藏",
+      "subtitle": "请启用要铸造的集合",
+      "确认": "启用"
+    },
+    "错误": {
+      "title": "错误",
+      "subtitle": "出了点问题......"
+    },
+    "成功": {
+      "title": "收藏已获批准！",
+      "subtitle": "感谢您查看此合集"
+    }
   }
 }

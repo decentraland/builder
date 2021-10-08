@@ -398,6 +398,7 @@
     "blog_post": "blog post",
     "amount": "Amount",
     "cancel": "Cancel",
+    "close": "Close",
     "confirm": "Confirm",
     "add": "Add",
     "continue": "Continue",
@@ -1209,5 +1210,34 @@
     "loading": "Loading...",
     "synced": "Synced",
     "unsynced": "Unsynced"
+  },
+  "approval_flow": {
+    "loading": {
+      "title": "Loading...",
+      "subtitle": "Preparing collection for approval"
+    },
+    "rescue": {
+      "title": "Approve Items",
+      "subtitle": "Please approve the items and their hashes",
+      "confirm": "Confirm"
+    },
+    "upload": {
+      "title": "Upload Files",
+      "subtitle": "Please upload the content of the items",
+      "confirm": "Upload"
+    },
+    "approve": {
+      "title": "Enable Collection",
+      "subtitle": "Please enable the collection to be minted",
+      "confirm": "Enable"
+    },
+    "error": {
+      "title": "Error",
+      "subtitle": "Something went wrong..."
+    },
+    "success": {
+      "title": "Collection Approved!",
+      "subtitle": "Thank you for revieweing this collection"
+    }
   }
 }

@@ -1023,7 +1023,7 @@
     "turn_on": "Activar",
     "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
     "turn_off": "Desactivar",
-    "unsynced_warning":"Algunos items tienen cambios que aún no se han aprobado."
+    "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "mint_items_modal": {
     "title": "Crear Items",
@@ -1220,5 +1220,34 @@
     "loading": "Cargando...",
     "synced": "Sincronizado",
     "unsynced": "Desincronizado"
+  },
+  "approval_flow": {
+    "loading": {
+      "title": "Cargando...",
+      "subtitle": "Preparando colección para revisión"
+    },
+    "rescue": {
+      "title": "Aprobar Items",
+      "subtitle": "Por favor aprueba los items y sus hashes",
+      "confirm": "Confirmar"
+    },
+    "upload": {
+      "title": "Subir Archivos",
+      "subtitle": "Por favor sube los archivos de los items",
+      "confirm": "Subir"
+    },
+    "approve": {
+      "title": "Habilitar Colección",
+      "subtitle": "Por favor habilita la colección para poder mintear items",
+      "confirm": "Enable"
+    },
+    "error": {
+      "title": "Error",
+      "subtitle": "Algo salio mal..."
+    },
+    "success": {
+      "title": "Colección Aprobada!",
+      "subtitle": "Gracias por revisar esta colleción"
+    }
   }
 }
