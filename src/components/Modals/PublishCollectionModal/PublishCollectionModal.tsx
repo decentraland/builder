@@ -76,8 +76,6 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
 
     const hasInsufficientMANA = !!wallet && wallet.networks.MATIC.mana < totalPrice
 
-    console.log({ isFetchingItems, isFetchingRarities, items, itemsByRarity })
-
     return (
       <>
         <ModalNavigation title={t('publish_collection_modal.title')} onClose={onClose} />
