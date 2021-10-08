@@ -1,28 +1,30 @@
-.ui.modal.ApprovalFlowModal {
-}
-
 .ui.modal.ApprovalFlowModal .content.loading {
   height: 100px;
 }
 
-.ui.modal.ApprovalFlowModal .content.rescue .item {
+.ui.modal.ApprovalFlowModal .content.loading .ui.loader {
+  margin-top: 32px;
+}
+
+.ui.modal.ApprovalFlowModal .content .item {
   display: flex;
   align-items: center;
 }
 
-.ui.modal.ApprovalFlowModal .content.rescue .item .name {
+.ui.modal.ApprovalFlowModal .content .item .name {
   display: flex;
   align-items: center;
   margin-right: 8px;
 }
 
-.ui.modal.ApprovalFlowModal .content.rescue .item .name .ItemImage {
+.ui.modal.ApprovalFlowModal .content .item .name .ItemImage {
   width: 48px;
   height: 48px;
-  margin-right: 8px;
+  margin-right: 12px;
 }
 
-.ui.modal.ApprovalFlowModal .hash {
+.ui.modal.ApprovalFlowModal .hash,
+.ui.modal.ApprovalFlowModal .size {
   color: var(--secondary-text);
 }
 

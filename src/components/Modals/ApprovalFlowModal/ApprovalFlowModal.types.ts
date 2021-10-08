@@ -39,6 +39,7 @@ export type Props = ModalProps & {
 }
 
 export type State = {
+  didRescue: boolean,
   isWaitingForSubgraph: boolean
 }
 
