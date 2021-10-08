@@ -66,7 +66,8 @@ import {
   MINT_COLLECTION_ITEMS_FAILURE,
   MintCollectionItemsRequestAction,
   MintCollectionItemsSuccessAction,
-  MintCollectionItemsFailureAction
+  MintCollectionItemsFailureAction,
+  ApproveCollectionSuccessAction
 } from './actions'
 import { toCollectionObject } from './utils'
 import { Collection } from './types'
@@ -100,6 +101,7 @@ type CollectionReducerAction =
   | PublishCollectionRequestAction
   | PublishCollectionFailureAction
   | ApproveCollectionRequestAction
+  | ApproveCollectionSuccessAction
   | ApproveCollectionFailureAction
   | RejectCollectionRequestAction
   | RejectCollectionFailureAction
@@ -138,7 +140,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
     case SET_COLLECTION_MANAGERS_SUCCESS:
     case MINT_COLLECTION_ITEMS_REQUEST:
     case MINT_COLLECTION_ITEMS_SUCCESS:
-    case CREATE_COLLECTION_FORUM_POST_REQUEST: {
+    case CREATE_COLLECTION_FORUM_POST_REQUEST:
+    case APPROVE_COLLECTION_SUCCESS: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)

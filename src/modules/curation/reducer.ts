@@ -4,6 +4,7 @@ import {
   ApproveCurationRequestAction,
   ApproveCurationSuccessAction,
   APPROVE_CURATION_FAILURE,
+  APPROVE_CURATION_SUCCESS,
   FetchCurationFailureAction,
   FetchCurationRequestAction,
   FetchCurationsFailureAction,
@@ -25,9 +26,10 @@ import {
   RejectCurationFailureAction,
   RejectCurationRequestAction,
   RejectCurationSuccessAction,
-  REJECT_CURATION_FAILURE
+  REJECT_CURATION_FAILURE,
+  REJECT_CURATION_SUCCESS
 } from './actions'
-import { Curation } from './types'
+import { Curation, CurationStatus } from './types'
 
 export type CurationState = {
   data: Record<string, Curation>
@@ -95,6 +97,38 @@ export function curationReducer(state: CurationState = INITIAL_STATE, action: Cu
         loading: loadingReducer(state.loading, action),
         error: null
       }
+
+    case APPROVE_CURATION_SUCCESS: {
+      const { collectionId } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collectionId]: {
+            ...state.data[collectionId],
+            status: CurationStatus.APPROVED
+          }
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+
+    case REJECT_CURATION_SUCCESS: {
+      const { collectionId } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [collectionId]: {
+            ...state.data[collectionId],
+            status: CurationStatus.REJECTED
+          }
+        },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
 
     case PUSH_CURATION_SUCCESS:
       return {

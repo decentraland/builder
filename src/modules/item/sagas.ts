@@ -60,6 +60,7 @@ import { BuilderAPI } from 'lib/api/builder'
 import { getCollection, getCollectionItems, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
+import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { calculateFinalSize } from './export'
 import { Item, Rarity } from './types'
@@ -255,14 +256,22 @@ export function* itemSaga(builder: BuilderAPI) {
 
   function* fetchItemEntities() {
     while (true) {
+      // TODO: once URN comes within Item remove all this in favor of yield take(FETCH_ITEMS_SUCCESS)
+      // wait for at least 1 fetchItemsSuccess and 1 fetchCollectionsSuccess
       yield all([take(FETCH_ITEMS_SUCCESS), take(FETCH_COLLECTIONS_SUCCESS)])
+      // wait for remaining itemItemRequests
+      let loadingItemActions: ReturnType<typeof getLoadingItemAction> = yield select(getLoadingItemAction)
+      while (loadingItemActions.some(action => action.type === FETCH_ITEMS_REQUEST)) {
+        yield take(FETCH_ITEMS_SUCCESS)
+        loadingItemActions = yield select(getLoadingItemAction)
+      }
       const items: Item[] = yield select(getItems)
       const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
       const urns = items
         .filter(item => item.isPublished)
         .map(item => getCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
       if (urns.length > 0) {
-        yield put(fetchEntitiesRequest({ filters: { pointers: urns } }))
+        yield put(fetchEntitiesRequest({ filters: { pointers: urns, onlyCurrentlyPointed: true } }))
       }
     }
   }

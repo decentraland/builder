@@ -314,6 +314,8 @@ export function toInitializeItem(item: Item): InitializeItem {
 
 export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
   // check if metadata is synced
+  console.log(item, entity)
+  debugger
   const catalystItem = entity.metadata! as CatalystItem
   const hasMetadataChanged =
     item.name !== catalystItem.name ||
