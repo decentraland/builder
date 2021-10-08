@@ -11,6 +11,7 @@ import './ApprovalFlowModal.css'
 export default class ApprovalFlowModal extends React.PureComponent<Props> {
 
   state: State = {
+    didRescue: false,
     isWaitingForSubgraph: false
   }
 
@@ -29,13 +30,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   }
 
   renderLoadingView() {
-    const { metadata } = this.props
-    const { collection } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.LOADING>
     return <>
-      <ModalNavigation title={`Loading...`} subtitle={`Preparing collection ${collection.name} for review`} />
+      <ModalNavigation title={`Loading...`} subtitle={`Preparing collection for approval`} />
       <ModalContent className="loading">
         <Center>
-          <Loader active />
+          <Loader active size="huge" />
         </Center>
       </ModalContent>
     </>
@@ -44,8 +43,13 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   renderRescueView() {
     const { onClose, metadata, onRescueItems, isConfirmingRescueTx, isAwaitingRescueTx } = this.props
     const { collection, items, contentHashes } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE>
+    const { didRescue } = this.state
+    const onConfirm = () => {
+      onRescueItems(collection, items, contentHashes)
+      this.setState({ didResuce: true })
+    }
     return <>
-      <ModalNavigation title={`Approve hashes`} subtitle={`Please confirm the following ${contentHashes.length} hashes`} onClose={onClose} />
+      <ModalNavigation title={`Approve Items`} subtitle={`Please approve the items and their hashes`} onClose={onClose} />
       <ModalContent className="rescue">
         {items.map((item, index) => (
           <div className="item" key={item.id}>
@@ -55,7 +59,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         ))}
       </ModalContent>
       <ModalActions>
-        <Button primary disabled={isConfirmingRescueTx || isAwaitingRescueTx} loading={isAwaitingRescueTx} onClick={() => onRescueItems(collection, items, contentHashes)}>Confirm</Button>
+        <Button primary disabled={didRescue || isConfirmingRescueTx || isAwaitingRescueTx} loading={didRescue || isAwaitingRescueTx} onClick={onConfirm}>Approve</Button>
         <Button secondary onClick={onClose}>Cancel</Button>
       </ModalActions>
     </>
@@ -76,7 +80,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     }
     const isLoading = isDeployingItems || isWaitingForSubgraph
     return <>
-      <ModalNavigation title={`Upload content`} subtitle={`Please upload the content for the following `} onClose={onClose} />
+      <ModalNavigation title={`Upload Files`} subtitle={`Please upload the content of the items`} onClose={onClose} />
       <ModalContent className="deploy">
         {items.map((item, index) =>
           <div className="item" key={item.id}>
@@ -90,7 +94,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         )}
       </ModalContent>
       <ModalActions>
-        <Button primary disabled={isLoading} loading={isLoading} onClick={onConfirm}>Confirm</Button>
+        <Button primary disabled={isLoading} loading={isLoading} onClick={onConfirm}>Upload</Button>
         <Button secondary onClick={onClose}>Cancel</Button>
       </ModalActions>
     </>
@@ -100,12 +104,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { onClose, metadata, onApproveCollection, isConfirmingApproveTx, isAwaitingApproveTx } = this.props
     const { collection } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.APPROVE>
     return <>
-      <ModalNavigation title={`Approve collection`} subtitle={`Please approve the collection`} onClose={onClose} />
-      <ModalContent className="approve">
-        This will enable the items in the collection <b>{collection.name}</b> to be minted
-      </ModalContent>
+      <ModalNavigation title={`Enable Collection`} subtitle={`Please enable the collection to be minted`} onClose={onClose} />
       <ModalActions>
-        <Button primary disabled={isConfirmingApproveTx || isAwaitingApproveTx} loading={isAwaitingApproveTx} onClick={() => onApproveCollection(collection)}>Confirm</Button>
+        <Button primary disabled={isConfirmingApproveTx || isAwaitingApproveTx} loading={isAwaitingApproveTx} onClick={() => onApproveCollection(collection)}>Enable</Button>
         <Button secondary onClick={onClose}>Cancel</Button>
       </ModalActions>
     </>
@@ -126,13 +127,9 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
   }
 
   renderSuccessView() {
-    const { onClose, metadata } = this.props
-    const { collection } = metadata as ApprovalFlowModalMetadata<ApprovalFlowModalView.SUCCESS>
+    const { onClose } = this.props
     return <>
-      <ModalNavigation title={`Success`} onClose={onClose} />
-      <ModalContent className="success">
-        The collection {collection.name} is approved!
-      </ModalContent>
+      <ModalNavigation title={`Collection Approved!`} subtitle={`Thank you for revieweing this collection`} onClose={onClose} />
       <ModalActions>
         <Button secondary onClick={onClose}>Close</Button>
       </ModalActions>
@@ -143,9 +140,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     const { name, onClose, metadata } = this.props
     const { view } = metadata as ApprovalFlowModalMetadata
     let content: React.ReactNode
+    let size: string = "small"
     switch (view) {
       case ApprovalFlowModalView.LOADING:
         content = this.renderLoadingView();
+        size = "tiny"
         break
       case ApprovalFlowModalView.RESCUE:
         content = this.renderRescueView();
@@ -155,14 +154,16 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
         break
       case ApprovalFlowModalView.APPROVE:
         content = this.renderApproveView();
+        size = "tiny"
         break
       case ApprovalFlowModalView.ERROR:
         content = this.renderErrorView()
         break
       case ApprovalFlowModalView.SUCCESS:
         content = this.renderSuccessView()
+        size = "tiny"
         break
     }
-    return <Modal name={name} onClose={onClose} className="ApprovalFlowModal">{content}</Modal>
+    return <Modal name={name} onClose={onClose} className="ApprovalFlowModal" size={size}>{content}</Modal>
   }
 }
