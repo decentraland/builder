@@ -66,19 +66,15 @@ export default class CurationPage extends React.PureComponent<Props, State> {
         const curation = curationsByCollectionId[collection.id]
 
         switch (filterBy) {
-          case FilterBy.APPROVED: {
-            return !curation && collection.isApproved
-          }
-          case FilterBy.REJECTED: {
-            return hasReviews(collection) && !collection.isApproved
-          }
-          case FilterBy.NOT_REVIWED: {
-            return curation || !hasReviews(collection)
-          }
+          case FilterBy.APPROVED:
+            return curation ? curation.status === 'approved' : collection.isApproved
+          case FilterBy.REJECTED:
+            return curation ? curation.status === 'rejected' : hasReviews(collection) && !collection.isApproved
+          case FilterBy.NOT_REVIWED:
+            return curation ? curation.status === 'pending' : !hasReviews(collection)
           case FilterBy.ALL_STATUS:
-          default: {
+          default:
             return true
-          }
         }
       })
       .sort((collectionA, collectionB) => {
