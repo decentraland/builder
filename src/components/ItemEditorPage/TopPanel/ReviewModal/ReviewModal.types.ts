@@ -1,15 +1,7 @@
 import { Dispatch } from 'redux'
-import {
-  initiateApprovalFlow,
-  InitiateApprovalFlowAction,
-  rejectCollectionRequest,
-  RejectCollectionRequestAction
-} from 'modules/collection/actions'
+import { InitiateApprovalFlowAction, rejectCollectionRequest, RejectCollectionRequestAction } from 'modules/collection/actions'
 import { Collection } from 'modules/collection/types'
-import {
-  rejectCurationRequest,
-  RejectCurationRequestAction
-} from 'modules/curation/actions'
+import { rejectCurationRequest, RejectCurationRequestAction } from 'modules/curation/actions'
 import { Curation } from 'modules/curation/types'
 
 export enum ReviewType {
@@ -28,11 +20,10 @@ export type Props = {
   curation: Curation | null
   onReject: typeof rejectCollectionRequest
   onRejectCuration: typeof rejectCurationRequest
-  onInitiateApprovalFlow: typeof initiateApprovalFlow
   onClose: () => void
 }
 
 export type MapStateProps = Pick<Props, 'isLoading' | 'hasPendingTransaction'>
-export type MapDispatchProps = Pick<Props, 'onReject' | 'onRejectCuration' | 'onInitiateApprovalFlow'>
+export type MapDispatchProps = Pick<Props, 'onReject' | 'onRejectCuration'>
 export type MapDispatch = Dispatch<RejectCollectionRequestAction | RejectCurationRequestAction | InitiateApprovalFlowAction>
 export type OwnProps = Pick<Props, 'open' | 'type' | 'collection' | 'curation'>

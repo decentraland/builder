@@ -1069,9 +1069,6 @@
         "action": "Reject collection"
       },
       "approve": {
-        "title": "Approve Collection",
-        "subtitle": "If you feel this collection its up to Decentraland standards, approve it!",
-        "tx_pending": "Waiting for approve transaction to confirm",
         "action": "Approve collection"
       },
       "reject_curation": {
@@ -1081,9 +1078,6 @@
         "action": "Reject changes"
       },
       "approve_curation": {
-        "title": "Approve Changes",
-        "subtitle": "If you feel the changes applied to this collection are up to Decentraland standards, approve them!",
-        "tx_pending": "Waiting for approve changes transaction to confirm",
         "action": "Approve changes"
       }
     },

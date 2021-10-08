@@ -26,16 +26,8 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.curation())
   }
 
-  setApproveModalVisibility = (isApproveModalOpen: boolean) => {
-    this.setState({ isApproveModalOpen })
-  }
-
   setRejectModalVisibility = (isRejectModalOpen: boolean) => {
     this.setState({ isRejectModalOpen })
-  }
-
-  setApproveCurationModalVisibility = (isApproveCurationModalOpen: boolean) => {
-    this.setState({ isApproveCurationModalOpen })
   }
 
   setRejectCurationModalVisibility = (isRejectCurationModalOpen: boolean) => {
@@ -43,7 +35,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
   }
 
   renderPage = (collection: Collection, curation: Curation | null) => {
-    const { isApproveModalOpen, isRejectModalOpen, isApproveCurationModalOpen, isRejectCurationModalOpen } = this.state
+    const { isRejectModalOpen, isRejectCurationModalOpen } = this.state
     const { chainId } = this.props
 
     return (
@@ -58,27 +50,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         <div className="actions">
           <span className="button-container">{this.renderButtons(collection, curation)}</span>
         </div>
-
-        <ReviewModal
-          type={ReviewType.APPROVE}
-          open={isApproveModalOpen}
-          collection={collection}
-          curation={null}
-          onClose={() => this.setApproveModalVisibility(false)}
-        />
         <ReviewModal
           type={ReviewType.REJECT}
           open={isRejectModalOpen}
           collection={collection}
           curation={null}
           onClose={() => this.setRejectModalVisibility(false)}
-        />
-        <ReviewModal
-          type={ReviewType.APPROVE_CURATION}
-          open={isApproveCurationModalOpen}
-          collection={collection}
-          curation={curation}
-          onClose={() => this.setApproveCurationModalVisibility(false)}
         />
         <ReviewModal
           type={ReviewType.REJECT_CURATION}
@@ -91,11 +68,13 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderButton = (reviewType: ReviewType) => {
+  renderButton = (reviewType: ReviewType, collection: Collection) => {
+    const { onInitiateApprovalFlow } = this.props
+
     const onClickMap = {
-      [ReviewType.APPROVE]: this.setApproveModalVisibility,
+      [ReviewType.APPROVE]: () => onInitiateApprovalFlow(collection),
       [ReviewType.REJECT]: this.setRejectModalVisibility,
-      [ReviewType.APPROVE_CURATION]: this.setApproveCurationModalVisibility,
+      [ReviewType.APPROVE_CURATION]: () => onInitiateApprovalFlow(collection),
       [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
     }
 
@@ -107,44 +86,40 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Button
-        primary={![ReviewType.REJECT, ReviewType.REJECT_CURATION].includes(reviewType)}
-        onClick={() => onClickMap[reviewType](true)}
-      >
+      <Button primary={![ReviewType.REJECT, ReviewType.REJECT_CURATION].includes(reviewType)} onClick={() => onClickMap[reviewType](true)}>
         {t(`item_editor.top_panel.${textMap[reviewType]}.action`)}
       </Button>
     )
   }
 
   renderButtons = (collection: Collection, curation: Curation | null) => {
-
     if (collection.isApproved) {
       switch (curation?.status) {
         case 'pending':
           return (
             <>
-              {this.renderButton(ReviewType.APPROVE_CURATION)}
-              {this.renderButton(ReviewType.REJECT_CURATION)}
+              {this.renderButton(ReviewType.APPROVE_CURATION, collection)}
+              {this.renderButton(ReviewType.REJECT_CURATION, collection)}
             </>
           )
         case 'approved':
         case 'rejected':
-          return this.renderButton(ReviewType.REJECT)
+          return this.renderButton(ReviewType.REJECT, collection)
       }
     }
 
     if (hasReviews(collection)) {
       if (collection.isApproved) {
-        return this.renderButton(ReviewType.REJECT)
+        return this.renderButton(ReviewType.REJECT, collection)
       } else {
-        return this.renderButton(ReviewType.APPROVE)
+        return this.renderButton(ReviewType.APPROVE, collection)
       }
     }
 
     return (
       <>
-        {this.renderButton(ReviewType.APPROVE)}
-        {this.renderButton(ReviewType.REJECT)}
+        {this.renderButton(ReviewType.APPROVE, collection)}
+        {this.renderButton(ReviewType.REJECT, collection)}
       </>
     )
   }
