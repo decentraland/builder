@@ -254,10 +254,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       const factory = getContract(ContractName.CollectionFactory, maticChainId)
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
-      const [lock]: [string] = yield all([
-        retry(10, 500, builder.lockCollection, collection),
-        retry(10, 500, builder.saveTOS, collection, email)
-      ])
+      // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
+      yield retry(10, 500, builder.saveTOS, collection, email)
+      const lock: string = yield retry(10, 500, builder.lockCollection, collection)
+
       collection = { ...collection, lock: +new Date(lock) }
 
       const txHash: string = yield call(sendTransaction, manager, collectionManager =>

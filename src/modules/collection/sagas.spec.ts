@@ -541,17 +541,20 @@ describe('when executing the approval flow', () => {
       saveTOS: jest.fn()
     } as unknown) as BuilderAPI
 
-    const collection = {
-      salt: 'some salt'
-    } as Collection
-    const items: Item[] = []
+    let collection: Collection
+    let items: Item[]
     const email = 'email@domain.com'
 
     const address = '0xa'
     const txHash = '0xdeadbeef'
 
+    beforeEach(() => {
+      collection = { salt: 'some salt' } as Collection
+      items = []
+    })
+
     describe('when the transaction is sent correctly', () => {
-      it('should disptach a success with the new collection and redirect to the activity', () => {
+      it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
         const now = Date.now()
         const newLock = new Date(Date.now())
         const newCollection = { ...collection, lock: now }

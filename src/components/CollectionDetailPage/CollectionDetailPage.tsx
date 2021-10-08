@@ -101,7 +101,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {isLocked || collection.isPublished ? (
+                    {collection.isPublished ? (
                       <>
                         {isOwner(collection, wallet.address) ? (
                           <Popup
@@ -122,7 +122,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                                     checked={isOnSale}
                                     onChange={this.handleOnSaleChange}
                                     label={t('collection_detail_page.on_sale')}
-                                    disabled={isLocked || isOnSaleLoading || !isEnabled}
+                                    disabled={isOnSaleLoading || !isEnabled}
                                   />
                                 )}
                               </ChainCheck>
@@ -134,13 +134,13 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                           />
                         ) : null}
 
-                        <Button basic className="action-button" disabled={!canMint || isLocked} onClick={this.handleMintItems}>
+                        <Button basic className="action-button" disabled={!canMint} onClick={this.handleMintItems}>
                           <Icon name="paper plane" />
                           <span className="text">{t('collection_detail_page.mint_items')}</span>
                         </Button>
                       </>
                     ) : (
-                      <Button basic className="action-button" onClick={this.handleNewItem}>
+                      <Button basic className="action-button" disabled={isLocked} onClick={this.handleNewItem}>
                         <Icon name="plus" />
                         <span className="text">{t('collection_detail_page.new_item')}</span>
                       </Button>

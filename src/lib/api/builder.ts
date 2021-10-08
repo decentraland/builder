@@ -60,9 +60,9 @@ export type RemoteCollection = {
   is_approved: boolean
   minters: string[]
   managers: string[]
-  forum_link?: string
-  lock?: Date
-  reviewed_at?: Date
+  forum_link: string | null
+  lock: Date | null
+  reviewed_at: Date | null
   created_at: Date
   updated_at: Date
 }
@@ -347,9 +347,9 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     is_approved: false,
     minters: collection.minters,
     managers: collection.managers,
-    forum_link: collection.forumLink,
-    lock: collection.lock ? new Date(collection.lock) : undefined,
-    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : undefined,
+    forum_link: collection.forumLink || null,
+    lock: collection.lock ? new Date(collection.lock) : null,
+    reviewed_at: collection.reviewedAt ? new Date(collection.reviewedAt) : null,
     created_at: new Date(collection.createdAt),
     updated_at: new Date(collection.updatedAt)
   }
@@ -366,8 +366,8 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     isApproved: remoteCollection.is_approved,
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
-    forumLink: remoteCollection.forum_link,
-    lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
+    forumLink: remoteCollection.forum_link || undefined,
+    lock: Date.now() - 1000, //remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
@@ -649,7 +649,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveTOS = async (collection: Collection, email: string): Promise<void> => {
-    this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
+    await this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
   }
 
   lockCollection = async (collection: Collection): Promise<string> => {

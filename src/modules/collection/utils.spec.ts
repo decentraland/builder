@@ -42,3 +42,21 @@ describe('when counting the amount of minted items', () => {
     })
   })
 })
+
+describe('when checking collection locks', () => {
+  describe('when the collection does not have a lock', () => {
+    it('should return false')
+  })
+
+  describe('when the collection is published', () => {
+    it('should return false')
+  })
+
+  describe('when the collection has an expired lock and is published', () => {
+    it('should return false')
+  })
+
+  describe('when the collection has a valid lock and is not published', () => {
+    it('should return true')
+  })
+})
