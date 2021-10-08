@@ -7,20 +7,15 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { Props, ReviewType } from './ReviewModal.types'
+
 import './ReviewModal.css'
 
 export default class ReviewModal extends React.PureComponent<Props> {
   handleReview = () => {
-    const { type, collection, curation, onReject, onRejectCuration, onInitiateApprovalFlow } = this.props
+    const { type, collection, curation, onReject, onRejectCuration } = this.props
     switch (type) {
-      case ReviewType.APPROVE:
-        onInitiateApprovalFlow(collection)
-        break
       case ReviewType.REJECT:
         onReject(collection)
-        break
-      case ReviewType.APPROVE_CURATION:
-        onInitiateApprovalFlow(collection)
         break
       case ReviewType.REJECT_CURATION:
         onRejectCuration(curation!.collectionId)
@@ -39,12 +34,8 @@ export default class ReviewModal extends React.PureComponent<Props> {
     const base = 'item_editor.top_panel'
 
     switch (type) {
-      case ReviewType.APPROVE:
-        return base + '.approve'
       case ReviewType.REJECT:
         return base + '.reject'
-      case ReviewType.APPROVE_CURATION:
-        return base + '.approve_curation'
       case ReviewType.REJECT_CURATION:
         return base + '.reject_curation'
       default:
@@ -130,12 +121,8 @@ export default class ReviewModal extends React.PureComponent<Props> {
               <Loader active size="large" />
             </div>
           </>
-        ) : type === ReviewType.APPROVE && collection.isApproved ? (
-          this.renderApproved()
         ) : type === ReviewType.REJECT && !collection.isApproved ? (
           this.renderRejected()
-        ) : type === ReviewType.APPROVE_CURATION && curation?.status === 'approved' ? (
-          this.renderApproved()
         ) : type === ReviewType.REJECT_CURATION && curation?.status === 'rejected' ? (
           this.renderRejected()
         ) : (

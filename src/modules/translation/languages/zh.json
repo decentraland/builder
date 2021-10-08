@@ -1059,9 +1059,6 @@
         "action": "拒绝收藏"
       },
       "approve": {
-        "title": "批准收藏",
-        "subtitle": "如果您觉得此收藏符合Decentraland标准，请批准它！",
-        "tx_pending": "等待批准交易以确认",
         "action": "批准收藏"
       },
       "reject_curation": {
@@ -1071,9 +1068,6 @@
         "action": "拒绝更改"
       },
       "approve_curation": {
-        "title": "批准更改",
-        "subtitle": "如果您认为适用于此集合的更改达到体面兰标准，请批准它们！",
-        "tx_pending": "等待批准更改交易以确认",
         "action": "批准更改"
       }
     },
