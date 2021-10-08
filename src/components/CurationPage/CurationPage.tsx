@@ -7,6 +7,8 @@ import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { NavigationTab } from 'components/Navigation/Navigation.types'
 import CollectionRow from './CollectionRow'
 import { Props, State, SortBy, FilterBy } from './CurationPage.types'
+import { CurationStatus } from 'modules/curation/types'
+
 import './CurationPage.css'
 
 const PAGE_SIZE = 12
@@ -67,11 +69,11 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
         switch (filterBy) {
           case FilterBy.APPROVED:
-            return curation ? curation.status === 'approved' : collection.isApproved
+            return curation ? curation.status === CurationStatus.APPROVED : collection.isApproved
           case FilterBy.REJECTED:
-            return curation ? curation.status === 'rejected' : hasReviews(collection) && !collection.isApproved
+            return curation ? curation.status === CurationStatus.REJECTED : hasReviews(collection) && !collection.isApproved
           case FilterBy.NOT_REVIWED:
-            return curation ? curation.status === 'pending' : !hasReviews(collection)
+            return curation ? curation.status === CurationStatus.PENDING : !hasReviews(collection)
           case FilterBy.ALL_STATUS:
           default:
             return true
