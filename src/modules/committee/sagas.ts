@@ -12,7 +12,6 @@ import {
 } from './action'
 import { Account } from './types'
 import { isWalletCommitteeMember } from './selectors'
-import { fetchCurationsRequest } from 'modules/curation/actions'
 
 export function* committeeSaga(builder: BuilderAPI) {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
@@ -35,7 +34,6 @@ function* handleFetchCommitteeMembersMembersSuccess() {
   if (isCommitteeMember) {
     yield put(fetchCollectionsRequest())
     yield put(fetchItemsRequest())
-    yield put(fetchCurationsRequest())
   }
 }
 

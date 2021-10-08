@@ -1,4 +1,5 @@
 import { call, takeEvery } from '@redux-saga/core/effects'
+import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { BuilderAPI } from 'lib/api/builder'
 import { put } from 'redux-saga-test-plan/matchers'
 import {
@@ -10,6 +11,7 @@ import {
   fetchCurationRequest,
   FetchCurationRequestAction,
   fetchCurationsFailure,
+  fetchCurationsRequest,
   fetchCurationsSuccess,
   fetchCurationSuccess,
   FETCH_CURATIONS_REQUEST,
@@ -31,6 +33,7 @@ export function* curationSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_CURATION_REQUEST, handleFetchCurationRequest)
   yield takeEvery(APPROVE_CURATION_REQUEST, handleApproveCurationRequest)
   yield takeEvery(REJECT_CURATION_REQUEST, handleRejectCurationRequest)
+  yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
 
   function* handleFetchCurationsRequest() {
     try {
@@ -81,5 +84,9 @@ export function* curationSaga(builder: BuilderAPI) {
     } catch (error) {
       yield put(rejectCurationFailure(collectionId, error.message))
     }
+  }
+
+  function* handleConnectWalletSuccess() {
+    yield put(fetchCurationsRequest())
   }
 }
