@@ -1,10 +1,9 @@
+import { Contract } from 'ethers'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, delay } from 'redux-saga/effects'
-import { Network } from '@dcl/schemas'
-import { AuthIdentity } from 'dcl-crypto'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, all } from 'redux-saga/effects'
+import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
@@ -41,36 +40,35 @@ import {
   setItemsTokenIdFailure,
   SetItemsTokenIdRequestAction,
   SetItemsTokenIdFailureAction,
-  deployItemContentsRequest,
-  DEPLOY_ITEM_CONTENTS_REQUEST,
-  deployItemContentsSuccess,
-  deployItemContentsFailure,
-  DeployItemContentsRequestAction,
   FETCH_COLLECTION_ITEMS_REQUEST,
   FetchCollectionItemsRequestAction,
   fetchCollectionItemsSuccess,
   fetchCollectionItemsFailure,
   fetchCollectionItemsRequest,
-  SAVE_PUBLISHED_ITEM_SUCCESS,
-  DEPLOY_ITEM_CONTENTS_FAILURE,
-  DeployItemContentsFailureAction,
   fetchRaritiesSuccess,
   fetchRaritiesFailure,
-  FETCH_RARITIES_REQUEST
+  FETCH_RARITIES_REQUEST,
+  FETCH_ITEMS_SUCCESS,
+  RESCUE_ITEMS_REQUEST,
+  RescueItemsRequestAction,
+  rescueItemsSuccess,
+  rescueItemsFailure
 } from './actions'
-import { FetchCollectionRequestAction, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
-import { getIdentity } from 'modules/identity/utils'
+import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { locations } from 'routing/locations'
 import { BuilderAPI } from 'lib/api/builder'
-import { getCollection, getCollectionItems } from 'modules/collection/selectors'
+import { getCollection, getCollectionItems, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
+import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
-import { deployContents, calculateFinalSize } from './export'
+import { calculateFinalSize } from './export'
 import { Item, Rarity } from './types'
-import { getItem } from './selectors'
+import { getItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { hasOnChainDataChanged, getMetadata, isValidText, isItemSizeError, MAX_FILE_SIZE } from './utils'
+import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
+import { fetchEntitiesRequest } from 'modules/entity/actions'
+import { getMethodData } from 'modules/wallet/utils'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -82,12 +80,11 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
   yield takeLatest(SET_ITEMS_TOKEN_ID_REQUEST, handleSetItemsTokenIdRequest)
-  yield takeEvery(DEPLOY_ITEM_CONTENTS_REQUEST, handleDeployItemContentsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
-  yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
-  yield takeEvery(DEPLOY_ITEM_CONTENTS_FAILURE, handleRetryDeployItemContent)
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
+  yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
+  yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
     try {
@@ -136,19 +133,14 @@ export function* itemSaga(builder: BuilderAPI) {
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
       }
-      if (item.isPublished) {
-        throw new Error(t('sagas.item.cant_save_published'))
-      }
       const finalSize: number = yield call(calculateFinalSize, item, contents)
       if (finalSize > MAX_FILE_SIZE) {
         throw new ItemTooBigError()
       }
 
-      yield call(() => builder.saveItem(item, contents))
+      yield call(builder.saveItem, item, contents)
 
       yield put(saveItemSuccess(item, contents))
-      yield put(closeModal('CreateItemModal'))
-      yield put(closeModal('EditPriceAndBeneficiaryModal'))
     } catch (error) {
       yield put(saveItemFailure(actionItem, contents, error.message))
     }
@@ -158,11 +150,16 @@ export function* itemSaga(builder: BuilderAPI) {
     const { item: actionItem, contents } = action.payload
     try {
       const item = { ...actionItem, updatedAt: Date.now() }
-      const originalItem: Item = yield select(state => getItem(state, item.id))
-      const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
+      const items: ReturnType<typeof getItems> = yield select(getItems)
+      const collections: ReturnType<typeof getCollections> = yield select(getCollections)
+      const originalItem = items.find(_item => _item.id === item.id)
+      const collection = collections.find(_collection => _collection.id === item.collectionId)
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
+      }
+      if (!originalItem || !collection) {
+        throw new Error(t('sagas.item.not_found'))
       }
       if (!originalItem.isPublished) {
         throw new Error(t('sagas.item.cant_persist_unpublished'))
@@ -177,10 +174,10 @@ export function* itemSaga(builder: BuilderAPI) {
       }
 
       let txHash: string | undefined
-      const maticChainId = getChainIdByNetwork(Network.MATIC)
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
       // Items should be uploaded to the builder server in order to be available to be added to the catalysts
-      yield call(() => builder.saveItemContents(item, contents))
+      yield call(builder.saveItemContents, item, contents)
 
       if (hasOnChainDataChanged(originalItem, item)) {
         const metadata = getMetadata(item)
@@ -189,12 +186,10 @@ export function* itemSaga(builder: BuilderAPI) {
           collection.editItemsData([item.tokenId!], [item.price!], [item.beneficiary!], [metadata])
         )
       } else {
-        yield put(deployItemContentsRequest(collection, item))
+        yield put(saveItemRequest(item, contents))
       }
 
       yield put(savePublishedItemSuccess(item, maticChainId, txHash))
-      yield put(closeModal('CreateItemModal'))
-      yield put(closeModal('EditPriceAndBeneficiaryModal'))
     } catch (error) {
       yield put(savePublishedItemFailure(actionItem, contents, error.message))
     }
@@ -254,60 +249,57 @@ export function* itemSaga(builder: BuilderAPI) {
     yield put(setItemsTokenIdRequest(newCollection, newItems))
   }
 
-  function* handleDeployItemContentsRequest(action: DeployItemContentsRequestAction) {
-    const { collection, item } = action.payload
-
-    try {
-      const identity: AuthIdentity | undefined = yield getIdentity()
-      if (!identity) {
-        throw new Error(t('sagas.item.invalid_identity'))
-      }
-
-      const deployedItem: Item = yield deployContents(identity, collection, item)
-
-      yield put(deployItemContentsSuccess(collection, deployedItem))
-    } catch (error) {
-      yield put(deployItemContentsFailure(collection, item, error.message))
-    }
-  }
-
-  function* handleRetryDeployItemContent(action: DeployItemContentsFailureAction) {
-    const { collection, item, error } = action.payload
-
-    if (isItemSizeError(error)) {
-      return
-    }
-
-    yield delay(5000) // wait five seconds
-
-    // Refresh data from state
-    const newCollection: Collection = yield select(state => getCollection(state, collection.id))
-    const newItem: Item = yield select(state => getItem(state, item.id))
-    yield put(deployItemContentsRequest(newCollection, newItem))
-  }
-
   function* handleFetchCollectionRequest(action: FetchCollectionRequestAction) {
     const { id } = action.payload
     yield put(fetchCollectionItemsRequest(id))
   }
 
-  function* handleTransactionSuccess(action: FetchTransactionSuccessAction) {
-    const transaction = action.payload.transaction
+  function* fetchItemEntities() {
+    while (true) {
+      // TODO: once URN comes within Item remove all this in favor of yield take(FETCH_ITEMS_SUCCESS)
+      // wait for at least 1 fetchItemsSuccess and 1 fetchCollectionsSuccess
+      yield all([take(FETCH_ITEMS_SUCCESS), take(FETCH_COLLECTIONS_SUCCESS)])
+      // wait for remaining itemItemRequests
+      let loadingItemActions: ReturnType<typeof getLoadingItemAction> = yield select(getLoadingItemAction)
+      while (loadingItemActions.some(action => action.type === FETCH_ITEMS_REQUEST)) {
+        yield take(FETCH_ITEMS_SUCCESS)
+        loadingItemActions = yield select(getLoadingItemAction)
+      }
+      const items: Item[] = yield select(getItems)
+      const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
+      const urns = items
+        .filter(item => item.isPublished)
+        .map(item => getCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
+      if (urns.length > 0) {
+        yield put(fetchEntitiesRequest({ filters: { pointers: urns, onlyCurrentlyPointed: true } }))
+      }
+    }
+  }
+
+  function* handleRescueItemsRequest(action: RescueItemsRequestAction) {
+    const { collection, items, contentHashes } = action.payload
 
     try {
-      switch (transaction.actionType) {
-        case SAVE_PUBLISHED_ITEM_SUCCESS: {
-          const { item } = transaction.payload
-          const collection: Collection = yield select(state => getCollection(state, item.collectionId!))
-          yield put(deployItemContentsRequest(collection, item))
-          break
-        }
-        default: {
-          break
-        }
-      }
+      const chainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const tokenIds = items.map(item => item.tokenId!)
+      const metadatas = items.map(item => getMetadata(item))
+
+      const contract = getContract(ContractName.Committee, chainId)
+      const { abi } = getContract(ContractName.ERC721CollectionV2, chainId)
+      const implementation = new Contract(collection.contractAddress!, abi)
+
+      const manager = getContract(ContractName.CollectionManager, chainId)
+      const forwarder = getContract(ContractName.Forwarder, chainId)
+      const data: string = yield call(getMethodData, implementation.populateTransaction.rescueItems(tokenIds, contentHashes, metadatas))
+
+      const txHash: string = yield call(sendTransaction, contract, committee =>
+        committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
+      )
+
+      const newItems = items.map<Item>((item, index) => ({ ...item, contentHash: contentHashes[index] }))
+      yield put(rescueItemsSuccess(collection, newItems, contentHashes, chainId, txHash))
     } catch (error) {
-      console.error(error)
+      yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
   }
 }

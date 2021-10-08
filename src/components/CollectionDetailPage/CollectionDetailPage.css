@@ -100,3 +100,10 @@
 .CollectionDetailPage .CollectionItem:first-child .grid {
   border-top: 1px solid var(--divider);
 }
+
+.CollectionDetailPage .CollectionStatus {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 6px;
+  margin-right: 12px;
+}

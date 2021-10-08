@@ -163,7 +163,7 @@
     "name_label": "给您的新商品起个名字",
     "category_label": "这个项目是什么类别？",
     "category_placeholder": "选择一个类别",
-    "rarity_label": "这件商品有多稀有？（供应）",
+    "rarity_label": "这件商品有多稀有？",
     "rarity_placeholder": "选择稀有",
     "representation_label": "选择您的项目的身体形状",
     "existing_item": "这是现有项目的一部分吗？",
@@ -903,6 +903,7 @@
     "items": "{count} 项",
     "owner": "所有者",
     "visit": "访问",
+    "review_request_date": "审核请求日期",
     "publication_date": "出版日期",
     "forum_post": "论坛帖子",
     "no_forum_post": "尚未发布到论坛",
@@ -926,7 +927,9 @@
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
-    "under_review": "审核中"
+    "cant_push": "此集合仍在审查中，项目仍然可以铸造，但不会反映进一步的变化，直到批准。",
+    "under_review": "审核中",
+    "push_changes": "上传更改"
   },
   "collection_menu": {
     "add_existing_item": "添加现有项目",
@@ -998,7 +1001,8 @@
     "turn_on_description": "通过打开此开关，您的收藏将可以在 Decentraland 市场上购买。",
     "turn_on": "打开",
     "turn_off_description": "关闭此开关后，您的收藏将不再可用。",
-    "turn_off": "关掉"
+    "turn_off": "关掉",
+    "unsynced_warning": "有些项目有尚未批准的更改。"
   },
   "collection_managers_modal": {},
   "manage_collection_role_modal": {
@@ -1016,11 +1020,16 @@
     },
     "adding_one": "加一个！"
   },
+  "push_collection_changes_modal": {
+    "title": "上传更改",
+    "description": "自上次策展人审查藏品或其中包含的文章以来，对收藏品或其中包含的文章进行了更改。{br}要使这些变化反映在市场和游戏中，必须再次得到委员会的审查和批准。{br}您确定要推动更改以供审核吗？"
+  },
   "mint_items_modal": {
     "title": "薄荷项目",
     "add_item": "新增项目",
     "limit_reached": "每笔交易只能铸造 {max} 件物品",
-    "no_items": "您没有可用于\"{name}\"的项目"
+    "no_items": "您没有可用于\"{name}\"的项目",
+    "unsynced_warning": "有些项目有尚未批准的更改。"
   },
   "collection_image": {
     "no_items": "没有项目"
@@ -1047,13 +1056,19 @@
         "title": "拒绝收藏",
         "subtitle": "我想还不够，是吧？",
         "tx_pending": "等待拒绝交易确认",
-        "action": "拒绝"
+        "action": "拒绝收藏"
       },
       "approve": {
-        "title": "批准收藏",
-        "subtitle": "如果您觉得此收藏符合Decentraland标准，请批准它！",
-        "tx_pending": "等待批准交易以确认",
-        "action": "批准"
+        "action": "批准收藏"
+      },
+      "reject_curation": {
+        "title": "拒绝更改",
+        "subtitle": "我想这些变化还不够好， 嗯？",
+        "tx_pending": "等待拒绝更改交易以确认",
+        "action": "拒绝更改"
+      },
+      "approve_curation": {
+        "action": "批准更改"
       }
     },
     "left_panel": {
@@ -1088,6 +1103,7 @@
     }
   },
   "wearable": {
+    "supply": "{formatted}件商品",
     "rarity": {
       "unique": "独特",
       "mythic": "神话",
@@ -1165,11 +1181,47 @@
       "missing_salt": "集合没有盐"
     },
     "item": {
-      "Invalid identity": "无效身份",
+      "invalid_identity": "无效身份",
       "invalid_character": "无效字符！ 名称或描述中不允许使用 \":\"",
       "cant_save_published": "不应发布项目以保存它",
       "cant_persist_unpublished": "必须发布项目才能使用事务保存",
-      "cant_save_without_collection": "没有收藏就无法保存已发布"
+      "cant_save_without_collection": "没有收藏就无法保存已发布",
+      "not_found": "未找到项目"
+    }
+  },
+  "status": {
+    "under_review": "审核中",
+    "loading": "加载中...",
+    "synced": "同步",
+    "unsynced": "未同步"
+  },
+  "approval_flow": {
+    "loading": {
+      "title": "加载中...",
+      "subtitle": "准备收集以供批准"
+    },
+    "rescue": {
+      "title": "救援物品",
+      "subtitle": "请批准项目及其哈希值",
+      "confirm": "确认"
+    },
+    "上传": {
+      "title": "上传文件",
+      "subtitle": "请上传项目内容",
+      "确认": "上传"
+    },
+    "批准": {
+      "title": "启用收藏",
+      "subtitle": "请启用要铸造的集合",
+      "确认": "启用"
+    },
+    "错误": {
+      "title": "错误",
+      "subtitle": "出了点问题......"
+    },
+    "成功": {
+      "title": "收藏已获批准！",
+      "subtitle": "感谢您查看此合集"
     }
   }
 }

@@ -10,6 +10,7 @@ import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
 import { formatDistanceToNow } from 'lib/date'
 import { Props } from './CollectionRow.types'
+
 import './CollectionRow.css'
 
 export default class CollectionRow extends React.PureComponent<Props> {
@@ -19,9 +20,31 @@ export default class CollectionRow extends React.PureComponent<Props> {
     event.preventDefault()
   }
 
+  renderCurationState = () => {
+    const { collection, curation } = this.props
+
+    if ((curation && curation.status === 'approved') || (!curation && collection.isApproved)) {
+      return (
+        <div className="approved action">
+          <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
+        </div>
+      )
+    }
+
+    if ((curation && curation.status === 'rejected') || (!curation && hasReviews(collection) && !collection.isApproved)) {
+      return (
+        <div className="rejected action">
+          <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
+        </div>
+      )
+    }
+
+    return null
+  }
+
   render() {
-    const { collection, items } = this.props
-    const createdAtDate = new Date(collection.createdAt)
+    const { collection, items, curation } = this.props
+    const createdAtDate = new Date(curation?.created_at || collection.createdAt)
 
     return (
       <Link className="CollectionRow" to={locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' })}>
@@ -55,23 +78,13 @@ export default class CollectionRow extends React.PureComponent<Props> {
               </div>
             </Grid.Column>
             <Grid.Column width={3}>
-              <div className="title">{t('collection_row.publication_date')}</div>
+              <div className="title">{t(curation ? 'collection_row.review_request_date' : 'collection_row.publication_date')}</div>
               <div className="subtitle" title={format(createdAtDate, 'd MMMM yyyy HH:mm')}>
                 {formatDistanceToNow(createdAtDate, { addSuffix: true })}
               </div>
             </Grid.Column>
             <Grid.Column width={2}>
-              <div className="actions">
-                {collection.isApproved ? (
-                  <div className="approved action">
-                    <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
-                  </div>
-                ) : hasReviews(collection) ? (
-                  <div className="rejected action">
-                    <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
-                  </div>
-                ) : null}
-              </div>
+              <div className="actions">{this.renderCurationState()}</div>
             </Grid.Column>
           </Grid.Row>
         </Grid>

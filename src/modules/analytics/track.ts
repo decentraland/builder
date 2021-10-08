@@ -38,9 +38,6 @@ import {
 import {
   DELETE_ITEM_FAILURE,
   DELETE_ITEM_SUCCESS,
-  DeployItemContentsSuccessAction,
-  DEPLOY_ITEM_CONTENTS_FAILURE,
-  DEPLOY_ITEM_CONTENTS_SUCCESS,
   SaveItemFailureAction,
   SaveItemSuccessAction,
   SAVE_ITEM_FAILURE,
@@ -251,14 +248,6 @@ addPayload(DELETE_ITEM_FAILURE, 'Delete item error')
 
 addPayload(SAVE_PUBLISHED_ITEM_SUCCESS, 'Edit item on chain')
 add(SAVE_PUBLISHED_ITEM_FAILURE, 'Edit item on chain error')
-
-add(DEPLOY_ITEM_CONTENTS_SUCCESS, 'Deploy item contents', action => {
-  const { payload } = action as DeployItemContentsSuccessAction
-  return {
-    item: payload.item
-  }
-})
-addPayload(DEPLOY_ITEM_CONTENTS_FAILURE, 'Deploy item contents error')
 
 addPayload(SAVE_COLLECTION_SUCCESS, 'Save collection')
 addPayload(SAVE_COLLECTION_FAILURE, 'Save collection error')

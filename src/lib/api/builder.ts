@@ -18,6 +18,7 @@ import { PreviewType } from 'modules/editor/types'
 import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
+import { Curation, CurationStatus } from 'modules/curation/types'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -44,6 +45,7 @@ export type RemoteItem = {
   data: WearableData
   metrics: ModelMetrics
   contents: Record<string, string>
+  content_hash: string | null
   created_at: Date
   updated_at: Date
 }
@@ -139,6 +141,14 @@ export type RemoteWeeklyStats = {
   direct_sessions: number
   max_concurrent_users: number
   max_concurrent_users_time: string
+}
+
+export type RemoteCuration = {
+  id: string
+  collection_id: string
+  status: Curation['status']
+  created_at: Date
+  updated_at: Date
 }
 
 /**
@@ -288,6 +298,7 @@ function toRemoteItem(item: Item): RemoteItem {
     data: item.data,
     metrics: item.metrics,
     contents: item.contents,
+    content_hash: item.contentHash,
     created_at: new Date(item.createdAt),
     updated_at: new Date(item.updatedAt)
   }
@@ -308,6 +319,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
     type: remoteItem.type,
     data: remoteItem.data,
     contents: remoteItem.contents,
+    contentHash: remoteItem.content_hash,
     metrics: remoteItem.metrics,
     createdAt: +new Date(remoteItem.created_at),
     updatedAt: +new Date(remoteItem.created_at)
@@ -362,6 +374,16 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
 
   return collection
+}
+
+function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
+  return {
+    id: remoteCuration.id,
+    collectionId: remoteCuration.collection_id,
+    status: remoteCuration.status,
+    created_at: +new Date(remoteCuration.created_at),
+    updated_at: +new Date(remoteCuration.updated_at)
+  }
 }
 
 export type PoolDeploymentAdditionalFields = {
@@ -571,12 +593,12 @@ export class BuilderAPI extends BaseAPI {
     return remoteItems.map(fromRemoteItem)
   }
 
-  async saveItem(item: Item, contents: Record<string, Blob>) {
+  saveItem = async (item: Item, contents: Record<string, Blob>) => {
     await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
     await this.saveItemContents(item, contents)
   }
 
-  async saveItemContents(item: Item, contents: Record<string, Blob>) {
+  saveItemContents = async (item: Item, contents: Record<string, Blob>) => {
     if (Object.keys(contents).length > 0) {
       const formData = new FormData()
       for (let path in contents) {
@@ -631,6 +653,25 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/collections/${collection.id}`, {})
   }
 
+  async fetchCurations(): Promise<Curation[]> {
+    const curations: RemoteCuration[] = await this.request('get', `/curations`)
+
+    return curations.map(fromRemoteCuration)
+  }
+
+  async fetchCuration(collectionId: string): Promise<Curation | undefined> {
+    const curation: RemoteCuration | undefined = await this.request('get', `/collections/${collectionId}/curation`)
+
+    if (!curation) {
+      return
+    }
+
+    return fromRemoteCuration(curation)
+  }
+
+  async pushCuration(collectionId: string): Promise<void> {
+    return this.request('post', `/collections/${collectionId}/curation`)
+  }
   async fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }
@@ -641,6 +682,10 @@ export class BuilderAPI extends BaseAPI {
 
   async fetchRarities(): Promise<Rarity[]> {
     return this.request('get', '/rarities')
+  }
+
+  async updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
+    return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }
 
   isAxiosError(error: any): error is AxiosError {

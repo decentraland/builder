@@ -1,4 +1,4 @@
-import { Hashing, ContentFile } from 'dcl-catalyst-commons'
+import { Hashing } from 'dcl-catalyst-commons'
 const toBuffer = require('blob-to-buffer')
 
 export const FILE_NAME_BLACKLIST = ['.dclignore', 'Dockerfile', 'builder.json', 'src/game.ts']
@@ -29,7 +29,7 @@ export async function makeContentFiles(files: Record<string, string | Blob>): Pr
   return new Map(contentFiles.map(({ name, content }) => [name, content]))
 }
 
-export function makeContentFile(path: string, content: string | Blob): Promise<ContentFile> {
+export function makeContentFile(path: string, content: string | Blob): Promise<{ name: string; content: Buffer }> {
   return new Promise((resolve, reject) => {
     if (typeof content === 'string') {
       const buffer = Buffer.from(content)

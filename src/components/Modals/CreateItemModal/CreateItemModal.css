@@ -133,3 +133,9 @@
   margin-top: 15px;
   width: 100%;
 }
+
+.CreateItemModal .ui.dropdown .menu > .item > .ui.label {
+  float: right;
+  color: var(--text-on-secondary);
+  background-color: var(--secondary-text);
+}

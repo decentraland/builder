@@ -171,7 +171,7 @@
     "name_label": "Ponle un nombre a tu item",
     "category_label": "Cuál es la categoría de este item?",
     "category_placeholder": "Selecciona una categoria",
-    "rarity_label": "Cuál es la rareza de este item? (Suministro)",
+    "rarity_label": "Cuál es la rareza de este item?",
     "rarity_placeholder": "Selecciona una rareza",
     "representation_label": "Selecciona el tipo de cuerpo para tu item",
     "existing_item": "Es parte de un item existente?",
@@ -924,6 +924,7 @@
     "items": "{count} {count, plural, one {item} other {items}}",
     "owner": "Dueño",
     "visit": "Visitar",
+    "review_request_date": "Fecha de solicitud de revisión",
     "publication_date": "Fecha de publicación",
     "forum_post": "Post en el foro",
     "no_forum_post": "No hay post",
@@ -947,7 +948,9 @@
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
-    "under_review": "No verificada"
+    "cant_push": "Esta colección aún está bajo revisión, los artículos aún se pueden acuñar pero no reflejarán nuevos cambios hasta su aprobación.",
+    "under_review": "No verificada",
+    "push_changes": "Subir Cambios"
   },
   "collection_menu": {
     "add_existing_item": "Agregar item existente",
@@ -1019,13 +1022,15 @@
     "turn_on_description": "Al activar esta opción tu colección estará en venta en el mercado de Decentraland.",
     "turn_on": "Activar",
     "turn_off_description": "Al desactivar esta opción tu colección ya no estará en venta.",
-    "turn_off": "Desactivar"
+    "turn_off": "Desactivar",
+    "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "mint_items_modal": {
     "title": "Crear Items",
     "add_item": "Agregar Item",
     "limit_reached": "Solo puede crear {max} items por transaction",
-    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\""
+    "no_items": "No tienes items disponibles para crear en la colleción \"{name}\"",
+    "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "manage_collection_role_modal": {
     "manager": {
@@ -1041,6 +1046,10 @@
       "empty": "No hay emisores aún, empieza"
     },
     "adding_one": "agregando uno!"
+  },
+  "push_collection_changes_modal": {
+    "title": "Subir Cambios",
+    "description": "Se han realizado cambios en la colección o en los artículos contenidos en ella desde la última vez que un curador los revisó.{br}Para que estos cambios se reflejen en el mercado y en el juego, deben ser revisados y aprobados nuevamente por el comité.{br}¿Está seguro de que desea impulsar los cambios para su revisión?"
   },
   "collection_image": {
     "no_items": "No Items"
@@ -1067,13 +1076,19 @@
         "title": "Rechazar Colección",
         "subtitle": "No es lo suficientemente buena?",
         "tx_pending": "Esperando a que se confirme la transacción de rechazo",
-        "action": "Rechazar"
+        "action": "Rechazar colección"
       },
       "approve": {
-        "title": "Aprobar Colección",
-        "subtitle": "Si cree que esta colección está a la altura de los estándares de Decentraland, apruébala!",
-        "tx_pending": "Esperando a que se confirme la transacción de aprobación",
-        "action": "Aprobar"
+        "action": "Aprobar colección"
+      },
+      "reject_curation": {
+        "title": "Rechazar Cambios",
+        "subtitle": "Los cambios no son lo suficientemenete buenos?",
+        "tx_pending": "Esperando a que se confirme la transacción de rechazo",
+        "action": "Rechazar cambios"
+      },
+      "approve_curation": {
+        "action": "Aprobar cambios"
       }
     },
     "left_panel": {
@@ -1108,6 +1123,7 @@
     }
   },
   "wearable": {
+    "supply": "{formatted} {count, plural, one {unidad} other {unidades}}",
     "rarity": {
       "unique": "Único",
       "mythic": "Mítico",
@@ -1185,11 +1201,47 @@
       "missing_salt": "La colección no tiene salt"
     },
     "item": {
-      "Invalid identity": "Identidad inválida",
+      "invalid_identity": "Identidad inválida",
       "invalid_character": "¡Carácter invalido! El \":\" no está permitido en nombres o descripciones",
       "cant_save_published": "El item no debe publicarse para guardarlo.",
       "cant_persist_unpublished": "El item debe estar publicado para guardar usando una transacción",
-      "cant_save_without_collection": "No se puede guardar una publicación sin una colección"
+      "cant_save_without_collection": "No se puede guardar una publicación sin una colección",
+      "not_found": "No se encontró"
+    }
+  },
+  "status": {
+    "under_review": "En Revisión",
+    "loading": "Cargando...",
+    "synced": "Sincronizado",
+    "unsynced": "Desincronizado"
+  },
+  "approval_flow": {
+    "loading": {
+      "title": "Cargando...",
+      "subtitle": "Preparando colección para revisión"
+    },
+    "rescue": {
+      "title": "Aprobar Items",
+      "subtitle": "Por favor aprueba los items y sus hashes",
+      "confirm": "Confirmar"
+    },
+    "upload": {
+      "title": "Subir Archivos",
+      "subtitle": "Por favor sube los archivos de los items",
+      "confirm": "Subir"
+    },
+    "approve": {
+      "title": "Habilitar Colección",
+      "subtitle": "Por favor habilita la colección para poder mintear items",
+      "confirm": "Enable"
+    },
+    "error": {
+      "title": "Error",
+      "subtitle": "Algo salio mal..."
+    },
+    "success": {
+      "title": "Colección Aprobada!",
+      "subtitle": "Gracias por revisar esta colleción"
     }
   }
 }

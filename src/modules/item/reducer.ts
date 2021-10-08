@@ -2,7 +2,12 @@ import { LocationChangeAction, LOCATION_CHANGE } from 'connected-react-router'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Mint } from 'modules/collection/types'
-import { PUBLISH_COLLECTION_SUCCESS, MINT_COLLECTION_ITEMS_SUCCESS } from 'modules/collection/actions'
+import {
+  PUBLISH_COLLECTION_SUCCESS,
+  MINT_COLLECTION_ITEMS_SUCCESS,
+  APPROVE_COLLECTION_SUCCESS,
+  REJECT_COLLECTION_SUCCESS
+} from 'modules/collection/actions'
 import {
   FetchItemsRequestAction,
   FetchItemsSuccessAction,
@@ -42,12 +47,6 @@ import {
   SET_ITEMS_TOKEN_ID_REQUEST,
   SET_ITEMS_TOKEN_ID_SUCCESS,
   SET_ITEMS_TOKEN_ID_FAILURE,
-  DeployItemContentsRequestAction,
-  DeployItemContentsSuccessAction,
-  DeployItemContentsFailureAction,
-  DEPLOY_ITEM_CONTENTS_REQUEST,
-  DEPLOY_ITEM_CONTENTS_SUCCESS,
-  DEPLOY_ITEM_CONTENTS_FAILURE,
   FetchCollectionItemsRequestAction,
   FetchCollectionItemsSuccessAction,
   FetchCollectionItemsFailureAction,
@@ -59,7 +58,13 @@ import {
   FETCH_RARITIES_SUCCESS,
   FetchRaritiesSuccessAction,
   FetchRaritiesFailureAction,
-  FETCH_RARITIES_FAILURE
+  FETCH_RARITIES_FAILURE,
+  RESCUE_ITEMS_REQUEST,
+  RescueItemsRequestAction,
+  RescueItemsFailureAction,
+  RescueItemsSuccessAction,
+  RESCUE_ITEMS_FAILURE,
+  RESCUE_ITEMS_SUCCESS
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -100,15 +105,15 @@ type ItemReducerAction =
   | SetItemsTokenIdRequestAction
   | SetItemsTokenIdSuccessAction
   | SetItemsTokenIdFailureAction
-  | DeployItemContentsRequestAction
-  | DeployItemContentsSuccessAction
-  | DeployItemContentsFailureAction
   | FetchCollectionItemsRequestAction
   | FetchCollectionItemsSuccessAction
   | FetchCollectionItemsFailureAction
   | FetchRaritiesRequestAction
   | FetchRaritiesSuccessAction
   | FetchRaritiesFailureAction
+  | RescueItemsRequestAction
+  | RescueItemsSuccessAction
+  | RescueItemsFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -123,10 +128,10 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
-    case DEPLOY_ITEM_CONTENTS_REQUEST:
     case SAVE_PUBLISHED_ITEM_REQUEST:
     case SAVE_ITEM_REQUEST:
-    case DELETE_ITEM_REQUEST: {
+    case DELETE_ITEM_REQUEST:
+    case RESCUE_ITEMS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
@@ -134,7 +139,8 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_COLLECTION_ITEMS_SUCCESS:
     case FETCH_ITEMS_SUCCESS:
-    case SET_ITEMS_TOKEN_ID_SUCCESS: {
+    case SET_ITEMS_TOKEN_ID_SUCCESS:
+    case RESCUE_ITEMS_SUCCESS: {
       const { items } = action.payload
       return {
         ...state,
@@ -159,11 +165,11 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEM_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
-    case DEPLOY_ITEM_CONTENTS_FAILURE:
     case SAVE_PUBLISHED_ITEM_FAILURE:
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
-    case DELETE_ITEM_FAILURE: {
+    case DELETE_ITEM_FAILURE:
+    case RESCUE_ITEMS_FAILURE: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -172,8 +178,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     }
     case FETCH_ITEM_SUCCESS:
     case SAVE_PUBLISHED_ITEM_SUCCESS:
-    case SAVE_ITEM_SUCCESS:
-    case DEPLOY_ITEM_CONTENTS_SUCCESS: {
+    case SAVE_ITEM_SUCCESS: {
       const { item } = action.payload
       return {
         ...state,
@@ -214,10 +219,45 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
         }
       }
     }
+
     case FETCH_TRANSACTION_SUCCESS: {
       const transaction = action.payload.transaction
 
       switch (transaction.actionType) {
+        case APPROVE_COLLECTION_SUCCESS: {
+          const { collection } = transaction.payload
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              ...Object.values(state.data).reduce((accum, item) => {
+                if (item.collectionId === collection.id) {
+                  accum[item.id] = { ...state.data[item.id], ...item, isApproved: true }
+                } else {
+                  accum[item.id] = item
+                }
+                return accum
+              }, {} as ItemState['data'])
+            }
+          }
+        }
+        case REJECT_COLLECTION_SUCCESS: {
+          const { collection } = transaction.payload
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              ...Object.values(state.data).reduce((accum, item) => {
+                if (item.collectionId === collection.id) {
+                  accum[item.id] = { ...state.data[item.id], ...item, isApproved: false }
+                } else {
+                  accum[item.id] = item
+                }
+                return accum
+              }, {} as ItemState['data'])
+            }
+          }
+        }
         case PUBLISH_COLLECTION_SUCCESS: {
           const items: Item[] = transaction.payload.items
           return {

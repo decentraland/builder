@@ -16,3 +16,8 @@
   margin-top: 12px;
   margin-bottom: 48px;
 }
+
+.SellCollectionModal .unsynced-warning {
+  text-align: center;
+  margin-bottom: 2rem;
+}

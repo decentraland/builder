@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button, Card, Confirm } from 'decentraland-ui'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import CollectionBadge from 'components/CollectionBadge'
+import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import { locations } from 'routing/locations'
 import { OptionsDropdown } from '../../OptionsDropdown'
@@ -37,7 +37,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
             <CollectionImage collection={collection} />
             <Card.Content>
               <div className="text" title={collection.name}>
-                {collection.name} <CollectionBadge collection={collection} />
+                {collection.name} <CollectionStatus collection={collection} />
               </div>
               <div className="subtitle">{t('collection_card.subtitle', { count: items.length })}</div>
             </Card.Content>

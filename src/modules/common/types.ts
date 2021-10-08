@@ -31,6 +31,8 @@ import { TileState } from 'modules/tile/reducer'
 import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { UIState } from 'modules/ui/reducer'
 import { UndoableSceneState } from 'modules/scene/reducer'
+import { EntityState } from 'modules/entity/reducer'
+import { CurationState } from 'modules/curation/reducer'
 
 const storageLoad = () => action(STORAGE_LOAD, {} as RootState)
 export type StorageLoadAction = ReturnType<typeof storageLoad>
@@ -44,6 +46,7 @@ export type RootState = {
   deployment: DeploymentState
   editor: EditorState
   ens: ENSState
+  entity: EntityState
   identity: IdentityState
   item: ItemState
   land: LandState
@@ -65,6 +68,7 @@ export type RootState = {
   translation: TranslationState
   ui: UIState
   wallet: WalletState
+  curation: CurationState
 }
 
 export type RootStore = Store<RootState>

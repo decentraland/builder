@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Popup } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
+import ItemStatus from 'components/ItemStatus'
 import { getMissingBodyShapeType, hasBodyShape } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { collect, CollectedProps, sidebarItemSource, SIDEBAR_ITEM_SOURCE } from './SidebarItem.dnd'
@@ -22,7 +23,7 @@ class SidebarItem extends React.PureComponent<Props & CollectedProps> {
       <div className={`SidebarItem ${isSelected ? 'is-selected' : ''} ${isDragging ? 'is-dragging' : ''}`}>
         <Link to={locations.itemEditor({ itemId: item.id, collectionId: selectedCollectionId || undefined })}>
           <ItemImage item={item} />
-          <div className="name">{item.name}</div>
+          <div className="name"><ItemStatus item={item} />{item.name}</div>
           <Popup
             content={t('item_editor.left_panel.invalid_representation_tooltip', {
               bodyShape: <b>{t(`body_shapes.${getMissingBodyShapeType(item)}`).toLowerCase()}</b>

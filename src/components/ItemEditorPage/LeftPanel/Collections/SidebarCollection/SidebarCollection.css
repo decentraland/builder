@@ -61,8 +61,8 @@
   cursor: no-drop;
 }
 
-.SidebarCollection .CollectionBadge {
-  margin-left: 6px;
+.SidebarCollection .CollectionStatus {
+  margin-right: 6px;
 }
 
 .CollectionImage .item-row.empty {

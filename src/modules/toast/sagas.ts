@@ -10,9 +10,7 @@ import {
   SET_COLLECTION_MANAGERS_FAILURE,
   SET_COLLECTION_MINTERS_FAILURE
 } from 'modules/collection/actions'
-import { DeployItemContentsFailureAction, DEPLOY_ITEM_CONTENTS_FAILURE, SAVE_PUBLISHED_ITEM_FAILURE } from 'modules/item/actions'
-import { isItemSizeError } from 'modules/item/utils'
-import { getDeployItemFailureToast, getMetaTransactionFailureToast } from './toasts'
+import { getMetaTransactionFailureToast } from './toasts'
 
 export function* toastSaga() {
   yield all([baseToastSaga(), customToastSaga()])
@@ -25,8 +23,6 @@ function* customToastSaga() {
   yield takeEvery(MINT_COLLECTION_ITEMS_FAILURE, handleMetaTransactionFailure)
   yield takeEvery(APPROVE_COLLECTION_FAILURE, handleMetaTransactionFailure)
   yield takeEvery(REJECT_COLLECTION_FAILURE, handleMetaTransactionFailure)
-  yield takeEvery(SAVE_PUBLISHED_ITEM_FAILURE, handleMetaTransactionFailure)
-  yield takeEvery(DEPLOY_ITEM_CONTENTS_FAILURE, handleDeployItemFailure)
 }
 
 function* handleMetaTransactionFailure(action: PayloadAction<any, { error: string }>) {
@@ -34,13 +30,6 @@ function* handleMetaTransactionFailure(action: PayloadAction<any, { error: strin
 
   if (!isUserDeniedSignature(error)) {
     yield put(showToast(getMetaTransactionFailureToast()))
-  }
-}
-
-function* handleDeployItemFailure(action: DeployItemContentsFailureAction) {
-  const { item, collection, error } = action.payload
-  if (isItemSizeError(error)) {
-    yield put(showToast(getDeployItemFailureToast(item, collection)))
   }
 }
 

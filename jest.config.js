@@ -7,5 +7,6 @@ module.exports = {
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
     '^!?raw-loader!.*$': 'identity-obj-proxy'
   },
-  modulePaths: ['<rootDir>/src/']
+  modulePaths: ['<rootDir>/src/'],
+  setupFiles: ['<rootDir>/src/setupTests.ts']
 }

@@ -1,6 +1,7 @@
 import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
+import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -57,33 +58,59 @@ import {
   SAVE_COLLECTION_SUCCESS,
   SAVE_COLLECTION_FAILURE,
   SaveCollectionFailureAction,
-  SaveCollectionSuccessAction
+  SaveCollectionSuccessAction,
+  INITIATE_APPROVAL_FLOW,
+  InitiateApprovalFlowAction,
+  APPROVE_COLLECTION_SUCCESS,
+  APPROVE_COLLECTION_FAILURE,
+  ApproveCollectionSuccessAction,
+  ApproveCollectionFailureAction
 } from './actions'
 import { getMethodData, getWallet } from 'modules/wallet/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
 import { createCollectionForumPostRequest } from 'modules/forum/actions'
 import {
   setItemsTokenIdRequest,
-  deployItemContentsRequest,
   FETCH_ITEMS_SUCCESS,
   SAVE_ITEM_SUCCESS,
-  SaveItemSuccessAction
+  SaveItemSuccessAction,
+  RESCUE_ITEMS_SUCCESS,
+  RESCUE_ITEMS_FAILURE,
+  RescueItemsSuccessAction,
+  RescueItemsFailureAction
 } from 'modules/item/actions'
-import { isValidText, toInitializeItems } from 'modules/item/utils'
+import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
 import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
-import { closeModal } from 'modules/modal/actions'
+import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
-import { getWalletItems } from 'modules/item/selectors'
+import { getEntityByItemId, getItems, getWalletItems } from 'modules/item/selectors'
 import { getWalletCollections } from 'modules/collection/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
+import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
+import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
+import { getCurationsByCollectionId } from 'modules/curation/selectors'
+import {
+  ApproveCurationFailureAction,
+  approveCurationRequest,
+  ApproveCurationSuccessAction,
+  APPROVE_CURATION_FAILURE,
+  APPROVE_CURATION_SUCCESS
+} from 'modules/curation/actions'
+import { Curation, CurationStatus } from 'modules/curation/types'
+import {
+  DeployEntitiesFailureAction,
+  DeployEntitiesSuccessAction,
+  DEPLOY_ENTITIES_FAILURE,
+  DEPLOY_ENTITIES_SUCCESS
+} from 'modules/entity/actions'
 import { getCollection, getCollectionItems } from './selectors'
 import { Collection } from './types'
 import { isOwner, getCollectionBaseURI, getCollectionSymbol } from './utils'
 
-export function* collectionSaga(builder: BuilderAPI) {
+export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
   yield takeEvery(FETCH_COLLECTION_REQUEST, handleFetchCollectionRequest)
   yield takeLatest(FETCH_COLLECTIONS_SUCCESS, handleRequestCollectionSuccess)
@@ -98,6 +125,7 @@ export function* collectionSaga(builder: BuilderAPI) {
   yield takeEvery(REJECT_COLLECTION_REQUEST, handleRejectCollectionRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(FETCH_TRANSACTION_SUCCESS, handleTransactionSuccess)
+  yield takeLatest(INITIATE_APPROVAL_FLOW, handleInitiateApprovalFlow)
 
   function* handleFetchCollectionsRequest(action: FetchCollectionsRequestAction) {
     const { address } = action.payload
@@ -330,10 +358,8 @@ export function* collectionSaga(builder: BuilderAPI) {
   function* handleApproveCollectionRequest(action: ApproveCollectionRequestAction) {
     const { collection } = action.payload
     try {
-      const maticChainId = getChainIdByNetwork(Network.MATIC)
-
       const txHash: string = yield changeCollectionStatus(collection, true)
-      yield put(approveCollectionSuccess(collection, maticChainId, txHash))
+      yield put(approveCollectionSuccess(collection, getChainIdByNetwork(Network.MATIC), txHash))
     } catch (error) {
       yield put(approveCollectionFailure(collection, error.message))
     }
@@ -409,7 +435,6 @@ export function* collectionSaga(builder: BuilderAPI) {
     const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
 
     yield publishCollection(collection, items)
-    yield deployItems(collection, items)
 
     if (!collection.forumLink) {
       yield put(createCollectionForumPostRequest(collection, buildCollectionForumPost(collection, items, avatarName || '')))
@@ -433,25 +458,6 @@ export function* collectionSaga(builder: BuilderAPI) {
     }
   }
 
-  /**
-   * Deploys the item entities for each collection item to the Catalyst.
-   *
-   * @param collection - The collection that owns the items to be deployed.
-   * @param items - The items to be deployed as antities to the Catalyst.
-   */
-  function* deployItems(collection: Collection, items: Item[]) {
-    const address: string | undefined = yield select(getAddress)
-    if (!isOwner(collection, address)) {
-      return
-    }
-
-    for (const item of items) {
-      if (!item.inCatalyst) {
-        yield put(deployItemContentsRequest(collection, item))
-      }
-    }
-  }
-
   function* changeCollectionStatus(collection: Collection, isApproved: boolean) {
     const maticChainId = getChainIdByNetwork(Network.MATIC)
     const contract = getContract(ContractName.Committee, maticChainId)
@@ -467,5 +473,182 @@ export function* collectionSaga(builder: BuilderAPI) {
       committee.manageCollection(manager.address, forwarder.address, collection.contractAddress!, [data])
     )
     return txHash
+  }
+
+  function* getItemsFromCollection(collection: Collection) {
+    const allItems: Item[] = yield select(getItems)
+    return allItems.filter(item => item.collectionId === collection.id)
+  }
+
+  function* handleInitiateApprovalFlow(action: InitiateApprovalFlowAction) {
+    const { collection } = action.payload
+
+    try {
+      // 1. Open modal
+      const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.LOADING> = {
+        view: ApprovalFlowModalView.LOADING,
+        collection
+      }
+      yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+      // 2. Find items that need to be rescued (their content hash needs to be updated)
+      const itemsToRescue: Item[] = []
+      const contentHashes: string[] = []
+      for (const item of yield getItemsFromCollection(collection)) {
+        const contentHash: string = yield call(buildItemContentHash, collection, item)
+        if (item.contentHash !== contentHash) {
+          itemsToRescue.push(item)
+          contentHashes.push(contentHash)
+        }
+      }
+
+      // 3. If any, open the modal in the rescue step and wait for actions
+      if (itemsToRescue.length > 0) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.RESCUE> = {
+          view: ApprovalFlowModalView.RESCUE,
+          collection,
+          items: itemsToRescue,
+          contentHashes
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const {
+          success,
+          failure,
+          cancel
+        }: { success: RescueItemsSuccessAction; failure: RescueItemsFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(RESCUE_ITEMS_SUCCESS),
+          failure: take(RESCUE_ITEMS_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // If success wait for tx to be mined
+        if (success) {
+          let isTxMined = false
+          while (!isTxMined) {
+            const action: FetchTransactionSuccessAction = yield take(FETCH_TRANSACTION_SUCCESS)
+            isTxMined = action.payload.transaction.hash === success.payload.txHash
+          }
+
+          // If failure show error and exit flow
+        } else if (failure) {
+          throw new Error(failure.payload.error)
+
+          // If cancel exit flow
+        } else if (cancel) {
+          return
+        }
+      }
+
+      // 4. Find items that need to be deployed (the content in the catalyst doesn't match their content hash in the blockchain)
+      const itemsToDeploy: Item[] = []
+      const entitiesToDeploy: DeploymentPreparationData[] = []
+      const entitiesByItemId: ReturnType<typeof getEntityByItemId> = yield select(getEntityByItemId)
+      for (const item of yield getItemsFromCollection(collection)) {
+        const deployedEntity = entitiesByItemId[item.id]
+        if (!deployedEntity || !areSynced(item, deployedEntity)) {
+          const entity: DeploymentPreparationData = yield call(buildItemEntity, catalyst, collection, item)
+          itemsToDeploy.push(item)
+          entitiesToDeploy.push(entity)
+        }
+      }
+
+      // 5. If any, open the modal in the DEPLOY step and wait for actions
+      if (itemsToDeploy.length > 0) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.DEPLOY> = {
+          view: ApprovalFlowModalView.DEPLOY,
+          collection,
+          items: itemsToDeploy,
+          entities: entitiesToDeploy,
+          didRescue: itemsToRescue.length > 0 // this is used to wait a bit for the subgraph to index before deploying
+        }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const {
+          failure,
+          cancel
+        }: { success: DeployEntitiesSuccessAction; failure: DeployEntitiesFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(DEPLOY_ENTITIES_SUCCESS),
+          failure: take(DEPLOY_ENTITIES_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // If failure show error and exit flow
+        if (failure) {
+          throw new Error(failure.payload.error)
+
+          // If cancel exit flow
+        } else if (cancel) {
+          return
+        }
+      }
+
+      // 6. If the collection needs to be approved, show the approve modal
+      if (!collection.isApproved) {
+        const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.APPROVE> = { view: ApprovalFlowModalView.APPROVE, collection }
+        yield put(openModal('ApprovalFlowModal', modalMetadata))
+
+        // Wait for actions...
+        const {
+          failure,
+          cancel
+        }: { success: ApproveCollectionSuccessAction; failure: ApproveCollectionFailureAction; cancel: CloseModalAction } = yield race({
+          success: take(APPROVE_COLLECTION_SUCCESS),
+          failure: take(APPROVE_COLLECTION_FAILURE),
+          cancel: take(CLOSE_MODAL)
+        })
+
+        // iI failure show error and exit flow
+        if (failure) {
+          throw new Error(failure.payload.error)
+
+          // if cancel exit flow
+        } else if (cancel) {
+          return
+        }
+      } else {
+        // 7. If the collection was approved but it had a pending curation, approve the curation
+        const curationsByCollectionId: Record<string, Curation> = yield select(getCurationsByCollectionId)
+        const curation = curationsByCollectionId[collection.id]
+        if (curation && curation.status === CurationStatus.PENDING) {
+          yield put(approveCurationRequest(curation.collectionId))
+        }
+
+        // wait for actions
+        const { failure }: { success: ApproveCurationSuccessAction; failure: ApproveCurationFailureAction } = yield race({
+          success: take(APPROVE_CURATION_SUCCESS),
+          failure: take(APPROVE_CURATION_FAILURE)
+        })
+
+        // if failure show error
+        if (failure) {
+          const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
+            view: ApprovalFlowModalView.ERROR,
+            collection,
+            error: failure.payload.error
+          }
+          yield put(openModal('ApprovalFlowModal', modalMetadata))
+          return
+        }
+      }
+
+      // 8. Success 🎉
+      yield put(
+        openModal('ApprovalFlowModal', {
+          view: ApprovalFlowModalView.SUCCESS,
+          collection
+        })
+      )
+    } catch (error) {
+      // Handle error at any point in the flow and show them
+      const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
+        view: ApprovalFlowModalView.ERROR,
+        collection,
+        error: error.message
+      }
+      yield put(openModal('ApprovalFlowModal', modalMetadata))
+    }
   }
 }

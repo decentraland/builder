@@ -1,0 +1,27 @@
+.ItemStatus.popup {
+  /* Required so it still shows on top of modals (which have a z index of 3000) */
+  z-index: 3001 !important;
+}
+
+.ItemStatus.orb {
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.ItemStatus.orb.under_review {
+  background-color: #cccccc;
+}
+
+.ItemStatus.orb.loading {
+  background-color: #3fff4586;
+}
+
+.ItemStatus.orb.synced {
+  background-color: #3fff46;
+}
+
+.ItemStatus.orb.unsynced {
+  background-color: orange;
+}
