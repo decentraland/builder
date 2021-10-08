@@ -145,7 +145,11 @@ export const rescueItemsSuccess = (collection: Collection, items: Item[], conten
     items,
     contentHashes,
     txHash,
-    ...buildTransactionPayload(chainId, txHash, { count: items.length, collectionId: items[0].collectionId! })
+    ...buildTransactionPayload(chainId, txHash, {
+      count: items.length,
+      collectionId: items[0].collectionId!,
+      collectionName: collection.name
+    })
   })
 export const rescueItemsFailure = (collection: Collection, items: Item[], contentHashes: string[], error: string) =>
   action(RESCUE_ITEMS_FAILURE, { collection, items, contentHashes, error })
