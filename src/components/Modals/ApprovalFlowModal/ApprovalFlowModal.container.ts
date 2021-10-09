@@ -6,7 +6,7 @@ import { getLoading as getLoadingItemActions } from 'modules/item/selectors'
 import { getLoading as getLoadingCollectionActions } from 'modules/collection/selectors'
 import { getPendingTransactions } from 'modules/transaction/selectors'
 import { approveCollectionRequest, APPROVE_COLLECTION_REQUEST, APPROVE_COLLECTION_SUCCESS } from 'modules/collection/actions'
-import { rescueItemsRequest, RESCUE_ITEMS_REQUEST, RESCUE_ITEMS_SUCCESS } from 'modules/item/actions'
+import { rescueItemsRequest, RESCUE_ITEMS_REQUEST } from 'modules/item/actions'
 import ApprovalFlowModal from './ApprovalFlowModal'
 import { deployEntitiesRequest, DEPLOY_ENTITIES_REQUEST } from 'modules/entity/actions'
 
@@ -17,7 +17,6 @@ const mapState = (state: RootState): MapStateProps => {
   const pendingTransactions = getPendingTransactions(state)
   return {
     isConfirmingRescueTx: loadingItemActions.some(action => action.type === RESCUE_ITEMS_REQUEST),
-    isAwaitingRescueTx: pendingTransactions.some(tx => tx.actionType === RESCUE_ITEMS_SUCCESS),
     isDeployingItems: loadingEntityActions.some(action => action.type === DEPLOY_ENTITIES_REQUEST),
     isConfirmingApproveTx: loadingCollectionActions.some(action => action.type === APPROVE_COLLECTION_REQUEST),
     isAwaitingApproveTx: pendingTransactions.some(tx => tx.actionType === APPROVE_COLLECTION_SUCCESS)
