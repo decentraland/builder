@@ -1,6 +1,6 @@
 import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
-import { select, take, takeEvery, call, put, takeLatest, race, retry } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
@@ -77,7 +77,9 @@ import {
   RESCUE_ITEMS_SUCCESS,
   RESCUE_ITEMS_FAILURE,
   RescueItemsSuccessAction,
-  RescueItemsFailureAction
+  RescueItemsFailureAction,
+  fetchItemsRequest,
+  FETCH_ITEMS_FAILURE
 } from 'modules/item/actions'
 import { areSynced, isValidText, toInitializeItems } from 'modules/item/utils'
 import { locations } from 'routing/locations'
@@ -85,7 +87,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
-import { getEntityByItemId, getItems, getWalletItems } from 'modules/item/selectors'
+import { getEntityByItemId, getItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getWalletCollections } from 'modules/collection/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
@@ -525,11 +527,8 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
         // If success wait for tx to be mined
         if (success) {
-          let isTxMined = false
-          while (!isTxMined) {
-            const action: FetchTransactionSuccessAction = yield take(FETCH_TRANSACTION_SUCCESS)
-            isTxMined = action.payload.transaction.hash === success.payload.txHash
-          }
+          // Wait for contentHashes to be indexed
+          yield waitForIndexer(itemsToRescue, contentHashes)
 
           // If failure show error and exit flow
         } else if (failure) {
@@ -560,8 +559,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           view: ApprovalFlowModalView.DEPLOY,
           collection,
           items: itemsToDeploy,
-          entities: entitiesToDeploy,
-          didRescue: itemsToRescue.length > 0 // this is used to wait a bit for the subgraph to index before deploying
+          entities: entitiesToDeploy
         }
         yield put(openModal('ApprovalFlowModal', modalMetadata))
 
@@ -649,6 +647,30 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         error: error.message
       }
       yield put(openModal('ApprovalFlowModal', modalMetadata))
+    }
+  }
+
+  function* waitForIndexer(items: Item[], contentHashes: string[]) {
+    const contentHashByItemId = new Map<string, string>()
+    for (let i = 0; i < items.length; i++) {
+      contentHashByItemId.set(items[i].id, contentHashes[i])
+    }
+    let isIndexed = false
+    const itemIds = items.map(item => item.id)
+    while (!isIndexed) {
+      yield delay(1000)
+      yield put(fetchItemsRequest())
+      yield race({
+        success: take(FETCH_ITEMS_SUCCESS),
+        failure: take(FETCH_ITEMS_FAILURE)
+      })
+      // use items from state (updated after the fetchItemsSuccess)
+      const itemsById: ReturnType<typeof getItemsById> = yield select(getItemsById)
+      isIndexed = itemIds.every(id => {
+        const indexedContentHash = itemsById[id].contentHash
+        const expectedContentHash = contentHashByItemId.get(id)
+        return indexedContentHash === expectedContentHash
+      })
     }
   }
 }

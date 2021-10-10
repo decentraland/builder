@@ -22,7 +22,7 @@ export type ApprovalFlowModalMetadata<V extends ApprovalFlowModalView = Approval
 } & (V extends ApprovalFlowModalView.RESCUE
   ? { items: Item[]; contentHashes: string[] }
   : V extends ApprovalFlowModalView.DEPLOY
-  ? { items: Item[]; entities: DeploymentPreparationData[], didRescue: boolean }
+  ? { items: Item[]; entities: DeploymentPreparationData[] }
   : V extends ApprovalFlowModalView.ERROR
   ? { error: string }
   : {})
@@ -32,20 +32,15 @@ export type Props = ModalProps & {
   onDeployItems: typeof deployEntitiesRequest
   onApproveCollection: typeof approveCollectionRequest
   isConfirmingRescueTx: boolean
-  isAwaitingRescueTx: boolean
   isDeployingItems: boolean
   isConfirmingApproveTx: boolean
   isAwaitingApproveTx: boolean
 }
 
 export type State = {
-  didRescue: boolean,
-  isWaitingForSubgraph: boolean
+  didRescue: boolean
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'isAwaitingRescueTx' | 'isConfirmingRescueTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'
->
+export type MapStateProps = Pick<Props, 'isConfirmingRescueTx' | 'isDeployingItems' | 'isAwaitingApproveTx' | 'isConfirmingApproveTx'>
 export type MapDispatchProps = Pick<Props, 'onRescueItems' | 'onDeployItems' | 'onApproveCollection'>
 export type MapDispatch = Dispatch<RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction>
