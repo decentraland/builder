@@ -811,7 +811,8 @@
     "unset_ens_content": "删除名称\" {name} \"的重定向内容",
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
-    "claim_name": "声明新名称：\"{name}\"。"
+    "claim_name": "声明新名称：\"{name}\"。",
+    "rescue_items": "您已批准 {count} 项目/s 的内容，用于 {collectionName} 集合"
   },
   "transfer_page": {
     "title": "转移",
