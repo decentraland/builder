@@ -124,6 +124,7 @@ export const migrations = {
     return state
   },
   '15': (state: RootState) => {
+    // update RESCUE_ITEMS_SUCCESS transaction payload to match the new one
     return {
       ...state,
       transaction: {
