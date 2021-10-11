@@ -4,7 +4,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button, Mana } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { fromWei } from 'web3x/utils'
-
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isFree, canMintItem, canManageItem, getMaxSupply } from 'modules/item/utils'
@@ -13,6 +12,7 @@ import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
 import ResetItemButton from './ResetItemButton'
+
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
@@ -142,7 +142,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                         {!item.isPublished ? (
                           <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                         ) : null}
-                        <ResetItemButton />
+                        <ResetItemButton itemId={item.id} />
                       </>
                     ) : null}
                   </Dropdown.Menu>

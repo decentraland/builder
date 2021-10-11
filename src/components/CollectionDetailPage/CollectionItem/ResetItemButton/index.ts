@@ -1,3 +1,3 @@
-import ResetItemButton from './ResetItemButton'
+import ResetItemButton from './ResetItemButton.container'
 
 export default ResetItemButton
