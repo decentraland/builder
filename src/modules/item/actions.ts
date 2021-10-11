@@ -157,3 +157,17 @@ export const rescueItemsFailure = (collection: Collection, items: Item[], conten
 export type RescueItemsRequestAction = ReturnType<typeof rescueItemsRequest>
 export type RescueItemsSuccessAction = ReturnType<typeof rescueItemsSuccess>
 export type RescueItemsFailureAction = ReturnType<typeof rescueItemsFailure>
+
+// Reset Item
+
+export const RESET_ITEM_REQUEST = '[Request] Reset item'
+export const RESET_ITEM_SUCCESS = '[Success] Reset item'
+export const RESET_ITEM_FAILURE = '[Failure] Reset item'
+
+export const resetItemRequest = (itemId: string) => action(RESET_ITEM_REQUEST, { itemId })
+export const resetItemSuccess = (itemId: string) => action(RESET_ITEM_SUCCESS, { itemId })
+export const resetItemFailure = (itemId: string, error: string) => action(RESET_ITEM_FAILURE, { itemId, error })
+
+export type ResetItemRequest = ReturnType<typeof resetItemRequest>
+export type ResetItemSuccess = ReturnType<typeof resetItemSuccess>
+export type ResetItemFailure = ReturnType<typeof resetItemFailure>
