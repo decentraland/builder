@@ -8,11 +8,12 @@ type Metadata = {
 
 export type Props = Omit<ModalProps, 'metadata'> & {
   metadata: Metadata
-  onConfirm: () => void
   error: string | null
+  isLoading: boolean
+  onConfirm: () => void
 }
 
-export type MapStateProps = Pick<Props, 'error'>
+export type MapStateProps = Pick<Props, 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onConfirm'>
 export type MapDispatch = Dispatch<ResetItemRequestAction>
 export type OwnProps = Pick<Props, 'metadata'>

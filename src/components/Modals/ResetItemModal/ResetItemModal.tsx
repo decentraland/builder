@@ -6,7 +6,7 @@ import { Props } from './ResetItemModal.types'
 
 import './ResetItemModal.css'
 
-const ResetItemModal = ({ error, onClose, onConfirm }: Props) => {
+const ResetItemModal = ({ error, isLoading, onClose, onConfirm }: Props) => {
   return (
     <Modal className="ResetItemModal" size="tiny" onClose={onClose}>
       <ModalNavigation title={t('reset_item_modal.title')} onClose={onClose} />
@@ -25,10 +25,10 @@ const ResetItemModal = ({ error, onClose, onConfirm }: Props) => {
         {error && <p className="error">{error}</p>}
       </Modal.Content>
       <Modal.Actions>
-        <Button secondary onClick={onClose}>
+        <Button secondary onClick={onClose} disabled={isLoading}>
           {t('global.cancel')}
         </Button>
-        <Button primary onClick={onConfirm}>
+        <Button primary onClick={onConfirm} disabled={isLoading} loading={isLoading}>
           {t('global.confirm')}
         </Button>
       </Modal.Actions>
