@@ -3,16 +3,22 @@ import { migrations } from './store'
 
 describe('when running migration # 15', () => {
   it('should update the rescue items success transaction payload', () => {
+    const collectionId = 'collectionId'
+    const collectionName = 'collectionName'
+    const count = 10
+
+    const randomPayload = { foo: 'foo', bar: 'bar' }
+
     const state = {
       transaction: {
         data: [
           {
             actionType: RESCUE_ITEMS_SUCCESS,
-            payload: { collectionId: 'collectionId', collectionName: 'collectionName', count: 10 }
+            payload: { collectionId, collectionName, count }
           },
           {
             actionType: 'random action type',
-            payload: { foo: 'foo', bar: 'bar' }
+            payload: randomPayload
           }
         ]
       }
@@ -22,7 +28,9 @@ describe('when running migration # 15', () => {
 
     const { data } = newState.transaction
 
-    expect(data[0].payload.collection).toStrictEqual({ id: 'collectionId', name: 'collectionName' })
-    expect(data[1].payload).toStrictEqual({ foo: 'foo', bar: 'bar' })
+    const expectedPayload = { collection: { id: collectionId, name: collectionName }, count }
+    
+    expect(data[0].payload).toStrictEqual(expectedPayload)
+    expect(data[1].payload).toStrictEqual(randomPayload)
   })
 })
