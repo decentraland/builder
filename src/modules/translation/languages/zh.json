@@ -951,7 +951,8 @@
     "mint_item": "铸币",
     "remove_from_collection": "从收藏中删除",
     "edit_price": "修改价格",
-    "open_in_editor": "在编辑器中打开"
+    "open_in_editor": "在编辑器中打开",
+    "reset_item": "重建"
   },
   "item": {
     "blockchain_id": "区块链ID",

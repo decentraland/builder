@@ -962,7 +962,8 @@
     "mint_item": "mint",
     "remove_from_collection": "Remove from collection",
     "edit_price": "Edit price",
-    "open_in_editor": "Open in editor"
+    "open_in_editor": "Open in editor",
+    "reset_item": "Restore"
   },
   "item": {
     "blockchain_id": "Blockchain ID",
