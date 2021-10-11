@@ -52,7 +52,10 @@ import {
   RESCUE_ITEMS_REQUEST,
   RescueItemsRequestAction,
   rescueItemsSuccess,
-  rescueItemsFailure
+  rescueItemsFailure,
+  ResetItemRequestAction,
+  RESET_ITEM_REQUEST,
+  resetItemSuccess
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { locations } from 'routing/locations'
@@ -84,6 +87,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(SET_ITEMS_TOKEN_ID_FAILURE, handleRetrySetItemsTokenId)
   yield takeEvery(FETCH_RARITIES_REQUEST, handleFetchRaritiesRequest)
   yield takeEvery(RESCUE_ITEMS_REQUEST, handleRescueItemsRequest)
+  yield takeEvery(RESET_ITEM_REQUEST, handleResetItemRequest)
   yield fork(fetchItemEntities)
 
   function* handleFetchRaritiesRequest() {
@@ -301,5 +305,11 @@ export function* itemSaga(builder: BuilderAPI) {
     } catch (error) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
+  }
+
+  function* handleResetItemRequest(action: ResetItemRequestAction) {
+    const { itemId } = action.payload
+    yield delay(2000)
+    yield put(resetItemSuccess(itemId))
   }
 }
