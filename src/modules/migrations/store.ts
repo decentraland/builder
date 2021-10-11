@@ -130,13 +130,9 @@ export const migrations = {
         ...state.transaction,
         data: state.transaction.data.map(tx => {
           const { collectionId, collectionName, count } = tx.payload
-
-          if (tx.actionType === RESCUE_ITEMS_SUCCESS) {
-            const collection = { id: collectionId, name: collectionName }
-            return { ...tx, payload: { collection, count } }
-          }
-
-          return tx
+          return tx.actionType === RESCUE_ITEMS_SUCCESS
+            ? { ...tx, payload: { collection: { id: collectionId, name: collectionName }, count } }
+            : tx
         })
       }
     }
