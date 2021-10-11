@@ -1,10 +1,12 @@
 import React from 'react'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { Button, ModalNavigation } from 'decentraland-ui'
-import { Props } from './ResetItemModal.types'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Props } from './ResetItemModal.types'
 
-const ResetItemModal = ({ onClose, onConfirm }: Props) => {
+import './ResetItemModal.css'
+
+const ResetItemModal = ({ error, onClose, onConfirm }: Props) => {
   return (
     <Modal className="ResetItemModal" size="tiny" onClose={onClose}>
       <ModalNavigation title={t('reset_item_modal.title')} onClose={onClose} />
@@ -20,6 +22,7 @@ const ResetItemModal = ({ onClose, onConfirm }: Props) => {
             )
           }}
         />
+        {error && <p className="error">{error}</p>}
       </Modal.Content>
       <Modal.Actions>
         <Button secondary onClick={onClose}>
