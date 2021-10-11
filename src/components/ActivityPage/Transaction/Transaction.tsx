@@ -19,7 +19,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-import { SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
+import { RESCUE_ITEMS_SUCCESS, SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
@@ -367,6 +367,21 @@ const Transaction = (props: Props) => {
           }
           tx={tx}
         />
+      )
+    }
+    case RESCUE_ITEMS_SUCCESS: {
+      const { count, collection } = tx.payload
+      return (
+        <TransactionDetail
+          tx={tx}
+          collection={collection}
+          text={
+            <T
+              id="transaction.rescue_items"
+              values={{ count, collectionName: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link> }}
+            />
+          }
+        ></TransactionDetail>
       )
     }
     default:
