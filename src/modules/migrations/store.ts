@@ -3,6 +3,7 @@ import { RootState } from 'modules/common/types'
 import { DataByKey } from 'decentraland-dapps/dist/lib/types'
 import { Project } from 'modules/project/types'
 import { INITIAL_STATE as DEPLOYMENT_INITIAL_STATE } from 'modules/deployment/reducer'
+import { RESCUE_ITEMS_SUCCESS } from 'modules/item/actions'
 import {
   toProjectCloudSchema,
   addScale,
@@ -121,5 +122,23 @@ export const migrations = {
       state.deployment = DEPLOYMENT_INITIAL_STATE
     }
     return state
+  },
+  '15': (state: RootState) => {
+    return {
+      ...state,
+      transaction: {
+        ...state.transaction,
+        data: state.transaction.data.map(tx => {
+          const { collectionId, collectionName, count } = tx.payload
+
+          if (tx.actionType === RESCUE_ITEMS_SUCCESS) {
+            const collection = { id: collectionId, name: collectionName }
+            return { ...tx, payload: { collection, count } }
+          }
+
+          return tx
+        })
+      }
+    }
   }
 }
