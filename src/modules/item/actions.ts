@@ -168,6 +168,6 @@ export const resetItemRequest = (itemId: string) => action(RESET_ITEM_REQUEST, {
 export const resetItemSuccess = (itemId: string) => action(RESET_ITEM_SUCCESS, { itemId })
 export const resetItemFailure = (itemId: string, error: string) => action(RESET_ITEM_FAILURE, { itemId, error })
 
-export type ResetItemRequest = ReturnType<typeof resetItemRequest>
-export type ResetItemSuccess = ReturnType<typeof resetItemSuccess>
-export type ResetItemFailure = ReturnType<typeof resetItemFailure>
+export type ResetItemRequestAction = ReturnType<typeof resetItemRequest>
+export type ResetItemSuccessAction = ReturnType<typeof resetItemSuccess>
+export type ResetItemFailureAction = ReturnType<typeof resetItemFailure>
