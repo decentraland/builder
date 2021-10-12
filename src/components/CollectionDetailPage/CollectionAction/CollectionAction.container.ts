@@ -2,12 +2,13 @@ import { connect } from 'react-redux'
 import { getData as getAuthorizations } from 'decentraland-dapps/dist/modules/authorization/selectors'
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
-import { getCollectionItems, getStatusByCollectionId } from 'modules/collection/selectors'
+import { fetchCurationRequest } from 'modules/curation/actions'
+import { getHasPendingCuration } from 'modules/curation/selectors'
+import { getStatusByCollectionId } from 'modules/collection/selectors'
+import { getCollectionItems } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
 import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionAction.types'
 import CollectionAction from './CollectionAction'
-import { fetchCurationRequest } from 'modules/curation/actions'
-import { getHasPendingCuration } from 'modules/curation/selectors'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { id: collectionId } = ownProps.collection
