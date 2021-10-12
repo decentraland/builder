@@ -1,10 +1,11 @@
+import uuidv4 from 'uuid/v4'
 import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
-import { getCollections } from 'modules/collection/selectors'
+import { getCollections, getCollection } from 'modules/collection/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import {
   resetItemFailure,
@@ -105,6 +106,39 @@ describe('when handling the save item request action', () => {
           [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
         ])
         .put(saveItemSuccess(item, contents))
+        .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when the collection is locked', () => {
+    let collection: Collection
+    let item: Item
+    let lock: number
+
+    beforeEach(() => {
+      lock = Date.now()
+      collection = { id: uuidv4(), name: 'valid name', lock } as Collection
+      item = {
+        name: 'valid name',
+        description: 'valid description',
+        collectionId: collection.id
+      } as Item
+
+      jest.spyOn(Date, 'now').mockReturnValueOnce(lock)
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getCollection, collection.id), collection],
+          [call(calculateFinalSize, item, contents), Promise.resolve(1)]
+        ])
+        .put(saveItemFailure(item, contents, 'The collection is locked'))
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })

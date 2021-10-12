@@ -88,8 +88,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
-import { getEntityByItemId, getItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
-import { getWalletCollections } from 'modules/collection/selectors'
+import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -109,7 +108,7 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
-import { getCollection, getCollectionItems } from './selectors'
+import { getCollection } from './selectors'
 import { Collection } from './types'
 import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked } from './utils'
 
@@ -163,10 +162,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const { collection } = action.payload
     try {
       if (!isValidText(collection.name)) {
-        throw new Error(t('sagas.collection.invalid_character'))
+        throw new Error(yield call(t, 'sagas.collection.invalid_character'))
       }
       if (isLocked(collection)) {
-        throw new Error(t('sagas.collection.collection_locked'))
+        throw new Error(yield call(t, 'sagas.collection.collection_locked'))
       }
 
       const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
@@ -238,13 +237,12 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         if (saveCollection.success) {
           collection = saveCollection.success.payload.collection
         } else {
-          throw saveCollection.failure.payload.error
+          throw new Error(saveCollection.failure.payload.error)
         }
       }
 
       if (!collection.salt) {
-        const errorMessage: string = yield call(t, 'sagas.item.missing_salt')
-        throw new Error(errorMessage)
+        throw new Error(yield call(t, 'sagas.item.missing_salt'))
       }
 
       const from: string = yield select(getAddress)

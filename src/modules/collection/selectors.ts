@@ -41,11 +41,6 @@ export const getCollection = (state: RootState, collectionId: string) => {
   return collections.find(collection => collection.id === collectionId) || null
 }
 
-export const getCollectionItems = (state: RootState, collectionId: string) => {
-  const allItems = getItems(state)
-  return allItems.filter(item => item.collectionId === collectionId)
-}
-
 export const isOnSaleLoading = createSelector<RootState, Transaction[], boolean>(getPendingTransactions, transactions =>
   transactions.some(transaction => transaction.actionType === SET_COLLECTION_MINTERS_SUCCESS)
 )
