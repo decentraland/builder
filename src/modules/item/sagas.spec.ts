@@ -354,6 +354,39 @@ describe('when reseting an item to the state found in the catalyst', () => {
     })
   })
 
+  describe('when the collection is locked', () => {
+    let collection: Collection
+    let item: Item
+    let lock: number
+
+    beforeEach(() => {
+      lock = Date.now()
+      collection = { id: uuidv4(), name: 'valid name', lock } as Collection
+      item = {
+        name: 'valid name',
+        description: 'valid description',
+        collectionId: collection.id
+      } as Item
+
+      jest.spyOn(Date, 'now').mockReturnValueOnce(lock)
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    it('should dispatch the saveItemFailure signaling that the item is locked and not save the item', () => {
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getCollection, collection.id), collection],
+          [call(calculateFinalSize, item, contents), Promise.resolve(1)]
+        ])
+        .put(saveItemFailure(item, contents, 'The collection is locked'))
+        .dispatch(saveItemRequest(item, contents))
+        .run({ silenceTimeout: true })
+    })
+  })
+
   describe('when a save item failure action happens after the save item request', () => {
     it('should put a reset item failure action with the save item failure action message', () => {
       const saveItemFailureMessage = 'save item failure message'
