@@ -812,7 +812,7 @@
     "allowed_claim_mana": "允许MANA声明新名称",
     "disallowed_claim_mana": "不允许MANA申请新名称",
     "claim_name": "声明新名称：\"{name}\"。",
-    "rescue_items": "您已批准 {count} 项目/s 的内容，用于 {collectionName} 集合"
+    "rescue_items": "您已批准 {count} 项目 的内容，用于 {collectionName} 集合"
   },
   "transfer_page": {
     "title": "转移",

@@ -820,7 +820,7 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
-    "rescue_items": "Approved content of {count} item/s for {collectionName}"
+    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
   },
   "transfer_page": {
     "title": "Transfer",
