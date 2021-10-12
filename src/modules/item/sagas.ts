@@ -1,12 +1,13 @@
 import { Contract } from 'ethers'
 import { replace } from 'connected-react-router'
-import { takeEvery, call, put, takeLatest, select, take, delay, fork, all } from 'redux-saga/effects'
+import { takeEvery, call, put, takeLatest, select, take, delay, fork, all, race } from 'redux-saga/effects'
 import { ChainId, Network } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
 import {
   FetchItemsRequestAction,
   fetchItemsRequest,
@@ -55,7 +56,11 @@ import {
   rescueItemsFailure,
   ResetItemRequestAction,
   RESET_ITEM_REQUEST,
-  resetItemSuccess
+  resetItemSuccess,
+  resetItemFailure,
+  SAVE_ITEM_FAILURE,
+  SaveItemSuccessAction,
+  SaveItemFailureAction
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { locations } from 'routing/locations'
@@ -66,12 +71,13 @@ import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { calculateFinalSize } from './export'
-import { Item, Rarity } from './types'
-import { getItems } from './selectors'
+import { Item, Rarity, CatalystItem } from './types'
+import { getData as getItemsById, getItems, getEntityByItemId } from './selectors'
 import { ItemTooBigError } from './errors'
 import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
+import { getCatalystContentUrl } from 'lib/api/peer'
 
 export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEMS_REQUEST, handleFetchItemsRequest)
@@ -309,7 +315,65 @@ export function* itemSaga(builder: BuilderAPI) {
 
   function* handleResetItemRequest(action: ResetItemRequestAction) {
     const { itemId } = action.payload
-    yield delay(2000)
-    yield put(resetItemSuccess(itemId))
+    const itemsById: Record<string, Item> = yield select(getItemsById)
+    const entitiesByItemId: Record<string, DeploymentWithMetadataContentAndPointers> = yield select(getEntityByItemId)
+
+    const item = itemsById[itemId]
+    const entity = entitiesByItemId[itemId]
+
+    try {
+      const catalystItem = entity.metadata as CatalystItem
+
+      if (!entity.content) {
+        throw new Error('Entity does not have content')
+      }
+
+      const catalystItemContentsTuple: [string, Blob][] = yield Promise.all(
+        entity.content.map(async ({ key, hash }) => {
+          const res = await fetch(getCatalystContentUrl(hash))
+          return [key, await res.blob()]
+        })
+      )
+
+      const catalystItemContents = catalystItemContentsTuple.reduce<Record<string, Blob>>((contents, [key, blob]) => {
+        contents[key] = blob
+        return contents
+      }, {})
+
+      const replaceItem: Item = {
+        ...item,
+        name: catalystItem.name,
+        description: catalystItem.description,
+        contents: entity.content.reduce<Record<string, string>>((contents, content) => {
+          contents[content.key] = content.hash
+          return contents
+        }, {}),
+        data: {
+          ...item.data,
+          category: catalystItem.data.category,
+          hides: catalystItem.data.hides,
+          replaces: catalystItem.data.replaces,
+          tags: catalystItem.data.tags
+        }
+      }
+
+      yield put(saveItemRequest(replaceItem, catalystItemContents))
+
+      const saveItemResult: {
+        success: SaveItemSuccessAction
+        failure: SaveItemFailureAction
+      } = yield race({
+        success: take(SAVE_ITEM_SUCCESS),
+        failure: take(SAVE_ITEM_FAILURE)
+      })
+
+      if (saveItemResult.success) {
+        yield put(resetItemSuccess(itemId))
+      } else if (saveItemResult.failure) {
+        yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
+      }
+    } catch (error) {
+      yield put(resetItemFailure(itemId, error.message))
+    }
   }
 }

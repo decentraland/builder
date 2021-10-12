@@ -202,7 +202,11 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case RESET_ITEM_SUCCESS: {
-      return { ...state, loading: loadingReducer(state.loading, action), error: null }
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
     }
     case DELETE_ITEM_SUCCESS: {
       const { item } = action.payload
