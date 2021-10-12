@@ -1,12 +1,11 @@
 import { Coord } from 'decentraland-ui'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
-import { Collection } from 'modules/collection/types'
 import { Item } from 'modules/item/types'
 
 export type Props = {
   selection?: Coord[]
   address?: string
-  collection?: Collection
+  collectionId?: string
   item?: Item
   text: React.ReactNode
   tx: Transaction
