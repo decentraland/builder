@@ -1,6 +1,6 @@
 import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
-import { select, all, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
+import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
 import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
@@ -108,7 +108,7 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
-import { getCollection } from './selectors'
+import { getCollection, getWalletCollections } from './selectors'
 import { Collection } from './types'
 import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked } from './utils'
 

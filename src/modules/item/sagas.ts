@@ -142,13 +142,13 @@ export function* itemSaga(builder: BuilderAPI) {
       const item = { ...actionItem, updatedAt: Date.now() }
 
       if (!isValidText(item.name) || !isValidText(item.description)) {
-        throw new Error(yield call(t, 'sagas.item.invalid_character'))
+        throw new Error(t('sagas.item.invalid_character'))
       }
 
       const collection: Collection | undefined = item.collectionId ? yield select(getCollection, item.collectionId!) : undefined
 
       if (collection && isLocked(collection)) {
-        throw new Error(yield call(t, 'sagas.collection.collection_locked'))
+        throw new Error(t('sagas.collection.collection_locked'))
       }
 
       const finalSize: number = yield call(calculateFinalSize, item, contents)
