@@ -52,7 +52,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
           <Grid.Row>
             <Grid.Column width={5}>
               <div className="image-column">
-                <CollectionImage collection={collection} />
+                <CollectionImage collectionId={collection.id} />
                 <div className="info">
                   <div className="title">{collection.name}</div>
                   <div className="subtitle name">{t('collection_row.items', { count: items.length })}</div>

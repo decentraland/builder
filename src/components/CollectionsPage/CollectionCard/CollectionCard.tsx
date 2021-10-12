@@ -34,7 +34,7 @@ const CollectionCard = (props: Props & CollectedProps) => {
             />
           )}
           <Link to={locations.collectionDetail(collection.id)}>
-            <CollectionImage collection={collection} />
+            <CollectionImage collectionId={collection.id} />
             <Card.Content>
               <div className="text" title={collection.name}>
                 {collection.name} <CollectionStatus collection={collection} />

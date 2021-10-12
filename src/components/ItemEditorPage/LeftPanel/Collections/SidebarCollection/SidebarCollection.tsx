@@ -18,7 +18,7 @@ class SidebarCollection extends React.PureComponent<Props & CollectedProps> {
     return connectDropTarget(
       <div className={`SidebarCollection ${isSelected ? 'is-selected' : ''} ${isOver ? (canDrop ? 'is-over' : 'no-drop') : ''}`}>
         <Link to={locations.itemEditor({ collectionId: collection.id, itemId })}>
-          <CollectionImage collection={collection} />
+          <CollectionImage collectionId={collection.id} />
           <div className="wrapper">
             <div className="name">
               <CollectionStatus collection={collection} />
