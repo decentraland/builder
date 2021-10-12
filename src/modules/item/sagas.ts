@@ -328,26 +328,25 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error('Entity does not have content')
       }
 
-      const catalystItemContentsTuple: [string, Blob][] = yield Promise.all(
-        entity.content.map(async ({ key, hash }) => {
-          const res = await fetch(getCatalystContentUrl(hash))
-          return [key, await res.blob()]
-        })
+      const entityContentsAsMap = entity.content.reduce<Record<string, string>>(
+        (contents, { key, hash }) => ({ ...contents, [key]: hash }),
+        {}
       )
 
-      const catalystItemContents = catalystItemContentsTuple.reduce<Record<string, Blob>>((contents, [key, blob]) => {
-        contents[key] = blob
-        return contents
-      }, {})
+      // Fetch blobs from the catalyst so they can be reuploaded to the item
+      const newContents: Record<string, Blob> = yield Promise.all(
+        entity.content.map<Promise<[string, Blob]>>(async ({ key, hash }) => [
+          key,
+          await fetch(getCatalystContentUrl(hash)).then(res => res.blob())
+        ])
+      ).then(res => res.reduce<Record<string, Blob>>((contents, [key, blob]) => ({ ...contents, [key]: blob }), {}))
 
-      const replaceItem: Item = {
+      // Replace the current item with values from the item in the catalyst
+      const newItem: Item = {
         ...item,
         name: catalystItem.name,
         description: catalystItem.description,
-        contents: entity.content.reduce<Record<string, string>>((contents, content) => {
-          contents[content.key] = content.hash
-          return contents
-        }, {}),
+        contents: entityContentsAsMap,
         data: {
           ...item.data,
           category: catalystItem.data.category,
@@ -357,7 +356,7 @@ export function* itemSaga(builder: BuilderAPI) {
         }
       }
 
-      yield put(saveItemRequest(replaceItem, catalystItemContents))
+      yield put(saveItemRequest(newItem, newContents))
 
       const saveItemResult: {
         success: SaveItemSuccessAction
