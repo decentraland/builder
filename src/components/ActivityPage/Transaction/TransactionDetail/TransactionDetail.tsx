@@ -21,7 +21,7 @@ const getHref = (tx: Transaction) => {
 }
 
 const Image = (props: Props) => {
-  const { selection, address, collection, item } = props
+  const { selection, address, collectionId, item } = props
 
   if (selection) {
     const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
@@ -32,8 +32,8 @@ const Image = (props: Props) => {
     return <Atlas x={x} y={y} layers={[selectedStrokeLayer, selectedFillLayer]} width={48} height={48} size={9} isDraggable={false} />
   } else if (address) {
     return <Profile address={address!} size="huge" imageOnly />
-  } else if (collection) {
-    return <CollectionImage collection={collection} />
+  } else if (collectionId) {
+    return <CollectionImage collectionId={collectionId} />
   } else if (item) {
     return <ItemImage item={item} />
   } else {

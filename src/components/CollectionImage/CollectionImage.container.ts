@@ -9,8 +9,8 @@ import { OwnProps, MapStateProps } from './CollectionImage.types'
 import CollectionImage from './CollectionImage'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
-  const collection = ownProps.collection
-  const items = getCollectionItems(state, collection.id)
+  const { collectionId } = ownProps
+  const items = getCollectionItems(state, collectionId)
   return {
     items,
     isLoading:

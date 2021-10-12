@@ -219,7 +219,7 @@ const Transaction = (props: Props) => {
 
       return (
         <TransactionDetail
-          collection={collection}
+          collectionId={collection.id}
           text={
             <T
               id={`transaction.${translationKey}`}
@@ -275,7 +275,7 @@ const Transaction = (props: Props) => {
       }
       return (
         <TransactionDetail
-          collection={collection}
+          collectionId={collection.id}
           text={
             <T
               id={translationId}
@@ -370,15 +370,15 @@ const Transaction = (props: Props) => {
       )
     }
     case RESCUE_ITEMS_SUCCESS: {
-      const { count, collection } = tx.payload
+      const { count, collectionId, collectionName } = tx.payload
       return (
         <TransactionDetail
           tx={tx}
-          collection={collection}
+          collectionId={collectionId}
           text={
             <T
               id="transaction.rescue_items"
-              values={{ count, collectionName: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link> }}
+              values={{ count, collectionName: <Link to={locations.collectionDetail(collectionId)}>{collectionName}</Link> }}
             />
           }
         ></TransactionDetail>
