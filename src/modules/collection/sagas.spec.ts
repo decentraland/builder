@@ -91,10 +91,6 @@ const newContentHash = 'QmNewHash'
 const updatedItem = { ...unsyncedItem, contentHash: newContentHash }
 const curation = { id: 'aCuration', collectionId: collection.id, status: CurationStatus.PENDING } as Curation
 
-afterEach(() => {
-  jest.clearAllMocks()
-})
-
 describe('Collection sagas', () => {
   describe('Approval flow', () => {
     it('should complete successfuly the approval flow of an unapproved collection', () => {
