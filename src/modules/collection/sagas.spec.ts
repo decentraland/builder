@@ -242,7 +242,7 @@ describe('Approval flow', () => {
       )
       .run({ silenceTimeout: true })
   })
-  it('should open the in an error state if the rescue transaction fails', () => {
+  it('should open the modal in an error state if the rescue transaction fails', () => {
     const rescueError = 'Rescue Transaction Error'
     return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
       .provide([
@@ -380,7 +380,7 @@ describe('Approval flow', () => {
       )
       .run({ silenceTimeout: true })
   })
-  it('should complete successfuly the approval flow of an already approved collection (via curation)', () => {
+  it('should open the modal in an error state if the curation fails', () => {
     const approvedCollection = { ...collection, isApproved: true }
     const curationError = 'Curation Error'
     return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
