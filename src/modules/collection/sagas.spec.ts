@@ -18,9 +18,6 @@ import { approveCollectionFailure, approveCollectionSuccess, initiateApprovalFlo
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 
-import util from 'util'
-util.inspect.defaultOptions.depth = 7
-
 const mockBuilder = ({} as unknown) as BuilderAPI
 const mockCatalyst = ({} as unknown) as CatalystClient
 
