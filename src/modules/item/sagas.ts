@@ -352,13 +352,7 @@ export function* itemSaga(builder: BuilderAPI) {
         name: catalystItem.name,
         description: catalystItem.description,
         contents: entityContentsAsMap,
-        data: {
-          ...item.data,
-          category: catalystItem.data.category,
-          hides: catalystItem.data.hides,
-          replaces: catalystItem.data.replaces,
-          tags: catalystItem.data.tags
-        }
+        data: catalystItem.data
       }
 
       yield put(saveItemRequest(newItem, newContents))
