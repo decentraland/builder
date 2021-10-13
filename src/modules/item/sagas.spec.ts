@@ -1,18 +1,29 @@
-import { expectSaga } from 'redux-saga-test-plan'
+import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
-import { call, select } from 'redux-saga/effects'
+import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getCollections } from 'modules/collection/selectors'
 import { BuilderAPI } from 'lib/api/builder'
-import { saveItemFailure, saveItemRequest, saveItemSuccess, savePublishedItemRequest, savePublishedItemSuccess } from './actions'
-import { itemSaga } from './sagas'
+import {
+  resetItemFailure,
+  resetItemRequest,
+  resetItemSuccess,
+  saveItemFailure,
+  saveItemRequest,
+  saveItemSuccess,
+  savePublishedItemRequest,
+  savePublishedItemSuccess,
+  SAVE_ITEM_FAILURE,
+  SAVE_ITEM_SUCCESS
+} from './actions'
+import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType } from './types'
 import { calculateFinalSize } from './export'
 import { MAX_FILE_SIZE } from './utils'
 import { Collection } from 'modules/collection/types'
-import { getItems } from './selectors'
+import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 
 describe('Item sagas', () => {
   let blob: Blob = new Blob()
@@ -193,6 +204,157 @@ describe('Item sagas', () => {
         .put(savePublishedItemSuccess(newItem, ChainId.MATIC_MAINNET, txHash))
         .dispatch(savePublishedItemRequest(newItem, contents))
         .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when reseting an item to the state found in the catalyst', () => {
+    const originalFetch = window.fetch
+
+    window.fetch = jest.fn().mockResolvedValue({
+      blob: () => Promise.resolve(blob)
+    })
+
+    const itemId = 'itemId'
+
+    let itemsById: any
+    let entitiesByItemId: any
+    let replacedItem: any
+    let replacedContents: any
+
+    beforeEach(() => {
+      itemsById = {
+        [itemId]: {
+          name: 'changed name',
+          description: 'changed description',
+          contents: { ['changed key']: 'changed hash' },
+          data: {
+            hides: [WearableCategory.MASK],
+            replaces: [WearableCategory.MASK],
+            tags: ['changed tag'],
+            category: WearableCategory.MASK,
+            representations: [
+              {
+                bodyShapes: [WearableBodyShape.FEMALE],
+                contents: ['changed content'],
+                mainFile: 'changed mainFile',
+                overrideReplaces: [WearableCategory.MASK],
+                overrideHides: [WearableCategory.MASK]
+              }
+            ]
+          }
+        }
+      }
+
+      entitiesByItemId = {
+        [itemId]: {
+          content: [{ key: 'key', hash: 'hash' }],
+          metadata: {
+            name: 'name',
+            description: 'description',
+            data: {
+              hides: [WearableCategory.HAT],
+              replaces: [WearableCategory.HAT],
+              tags: ['tag'],
+              category: WearableCategory.HAT,
+              representations: [
+                {
+                  bodyShapes: [WearableBodyShape.MALE],
+                  contents: ['content'],
+                  mainFile: 'mainFile',
+                  overrideReplaces: [WearableCategory.HAT],
+                  overrideHides: [WearableCategory.HAT]
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      replacedItem = {
+        name: 'name',
+        description: 'description',
+        contents: { key: 'hash' },
+        data: {
+          hides: [WearableCategory.HAT],
+          replaces: [WearableCategory.HAT],
+          tags: ['tag'],
+          category: WearableCategory.HAT,
+          representations: [
+            {
+              bodyShapes: [WearableBodyShape.MALE],
+              contents: ['content'],
+              mainFile: 'mainFile',
+              overrideReplaces: [WearableCategory.HAT],
+              overrideHides: [WearableCategory.HAT]
+            }
+          ]
+        }
+      }
+
+      replacedContents = { key: blob }
+    })
+
+    afterAll(() => {
+      window.fetch = originalFetch
+    })
+
+    it('should succeed when all correct conditions are met', () => {
+      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+        .provide([
+          [select(getItemsById), itemsById],
+          [select(getEntityByItemId), entitiesByItemId],
+          [
+            race({
+              success: take(SAVE_ITEM_SUCCESS),
+              failure: take(SAVE_ITEM_FAILURE)
+            }),
+            { success: {} }
+          ]
+        ])
+        .put(saveItemRequest(replacedItem as any, replacedContents))
+        .put(resetItemSuccess(itemId))
+        .silentRun()
+    })
+
+    it('should fail when save item saga fails', () => {
+      const saveItemFailureMessage = 'save item failure message'
+
+      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+        .provide([
+          [select(getItemsById), itemsById],
+          [select(getEntityByItemId), entitiesByItemId],
+          [
+            race({
+              success: take(SAVE_ITEM_SUCCESS),
+              failure: take(SAVE_ITEM_FAILURE)
+            }),
+            {
+              failure: saveItemFailure({} as any, {}, saveItemFailureMessage)
+            }
+          ]
+        ])
+        .put(saveItemRequest(replacedItem as any, replacedContents))
+        .put(resetItemFailure(itemId, saveItemFailureMessage))
+        .silentRun()
+    })
+
+    it('should fail when entity has no content', () => {
+      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+        .provide([
+          [select(getItemsById), itemsById],
+          [
+            select(getEntityByItemId),
+            {
+              ...entitiesByItemId,
+              [itemId]: {
+                ...entitiesByItemId[itemId],
+                content: undefined
+              }
+            }
+          ]
+        ])
+        .put(resetItemFailure(itemId, "Entity does not have content"))
+        .silentRun()
     })
   })
 })
