@@ -616,23 +616,23 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
         const curation = curationsByCollectionId[collection.id]
         if (curation && curation.status === CurationStatus.PENDING) {
           yield put(approveCurationRequest(curation.collectionId))
-        }
 
-        // wait for actions
-        const { failure }: { success: ApproveCurationSuccessAction; failure: ApproveCurationFailureAction } = yield race({
-          success: take(APPROVE_CURATION_SUCCESS),
-          failure: take(APPROVE_CURATION_FAILURE)
-        })
+          // wait for actions
+          const { failure }: { success: ApproveCurationSuccessAction; failure: ApproveCurationFailureAction } = yield race({
+            success: take(APPROVE_CURATION_SUCCESS),
+            failure: take(APPROVE_CURATION_FAILURE)
+          })
 
-        // if failure show error
-        if (failure) {
-          const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
-            view: ApprovalFlowModalView.ERROR,
-            collection,
-            error: failure.payload.error
+          // if failure show error
+          if (failure) {
+            const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.ERROR> = {
+              view: ApprovalFlowModalView.ERROR,
+              collection,
+              error: failure.payload.error
+            }
+            yield put(openModal('ApprovalFlowModal', modalMetadata))
+            return
           }
-          yield put(openModal('ApprovalFlowModal', modalMetadata))
-          return
         }
       }
 
