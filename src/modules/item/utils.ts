@@ -6,7 +6,6 @@ import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
-import { getCatalystContentUrl } from 'lib/api/peer'
 import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
@@ -246,7 +245,7 @@ export function hasOnChainDataChanged(originalItem: Item, item: Item) {
 }
 
 export function getThumbnailURL(item: Item) {
-  return item.inCatalyst ? getCatalystContentUrl(item.contents[item.thumbnail]) : getContentsStorageUrl(item.contents[item.thumbnail])
+  return getContentsStorageUrl(item.contents[item.thumbnail])
 }
 
 export function getRarities() {
