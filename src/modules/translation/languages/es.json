@@ -1035,7 +1035,7 @@
     "unsynced_warning": "Algunos items tienen cambios que aún no se han aprobado."
   },
   "reset_item_modal": {
-    "title": "Restablecer Item",
+    "title": "Deshacer cambios",
     "content": "El item es actualmente diferente del que ha sido aprobado previamente por el comité. {br}La versión que estás viendo ahora no se corresponde con la visible en el mercado y en el juego. {br}Puede subir los cambios para que el comité revise esta nueva versión, o puede hacer clic en el botón de confirmación para restablecer el elemento a su estado original."
   },
   "manage_collection_role_modal": {
