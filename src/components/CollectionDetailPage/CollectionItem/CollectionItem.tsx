@@ -4,7 +4,6 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Grid, Dropdown, Icon, Button, Mana } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { fromWei } from 'web3x/utils'
-
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isFree, canMintItem, canManageItem, getMaxSupply } from 'modules/item/utils'
@@ -12,6 +11,8 @@ import ItemStatus from 'components/ItemStatus'
 import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
+import ResetItemButton from './ResetItemButton'
+
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
@@ -49,13 +50,13 @@ export default class CollectionItem extends React.PureComponent<Props> {
         <div className="subtitle">{t('item.price')}</div>
       </>
     ) : (
-        <>
-          <div className="link" onClick={preventDefault(this.handleEditPriceAndBeneficiary)}>
-            {t('collection_item.set_price')}
-          </div>
-          <div className="subtitle">{t('item.price')}</div>
-        </>
-      )
+      <>
+        <div className="link" onClick={preventDefault(this.handleEditPriceAndBeneficiary)}>
+          {t('collection_item.set_price')}
+        </div>
+        <div className="subtitle">{t('item.price')}</div>
+      </>
+    )
   }
 
   render() {
@@ -71,7 +72,8 @@ export default class CollectionItem extends React.PureComponent<Props> {
               <div className="info">
                 <div className="name-wrapper">
                   <div className="name" title={item.name}>
-                    <ItemStatus item={item} />{item.name}
+                    <ItemStatus item={item} />
+                    {item.name}
                   </div>
                 </div>
                 <div className="subtitle">{item.type}</div>
@@ -115,10 +117,10 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     {t('collection_item.done')} <Icon name="check" />
                   </div>
                 ) : (
-                      <span onClick={preventDefault(this.handleNavigateToEditor)} className="link action">
-                        {t('collection_item.edit_item')}
-                      </span>
-                    )}
+                  <span onClick={preventDefault(this.handleNavigateToEditor)} className="link action">
+                    {t('collection_item.edit_item')}
+                  </span>
+                )}
                 <Dropdown
                   trigger={
                     <Button basic>
@@ -140,6 +142,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                         {!item.isPublished ? (
                           <Dropdown.Item text={t('collection_item.remove_from_collection')} onClick={this.handleRemoveFromCollection} />
                         ) : null}
+                        <ResetItemButton itemId={item.id} />
                       </>
                     ) : null}
                   </Dropdown.Menu>

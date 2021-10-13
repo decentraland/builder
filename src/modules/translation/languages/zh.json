@@ -952,7 +952,8 @@
     "mint_item": "铸币",
     "remove_from_collection": "从收藏中删除",
     "edit_price": "修改价格",
-    "open_in_editor": "在编辑器中打开"
+    "open_in_editor": "在编辑器中打开",
+    "reset_item": "撤消"
   },
   "item": {
     "blockchain_id": "区块链ID",
@@ -1031,6 +1032,10 @@
     "limit_reached": "每笔交易只能铸造 {max} 件物品",
     "no_items": "您没有可用于\"{name}\"的项目",
     "unsynced_warning": "有些项目有尚未批准的更改。"
+  },
+  "reset_item_modal": {
+    "title": "撤消",
+    "content": "该项目目前与委员会以前批准的项目不同。{br}您现在看到的版本与市场上和游戏中可见的版本不对应。{br}您可以上传更改供委员会审查此新版本，也可以单击确认按钮将项目重置为原始状态。"
   },
   "collection_image": {
     "no_items": "没有项目"

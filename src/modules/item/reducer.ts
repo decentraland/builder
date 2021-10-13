@@ -64,7 +64,13 @@ import {
   RescueItemsFailureAction,
   RescueItemsSuccessAction,
   RESCUE_ITEMS_FAILURE,
-  RESCUE_ITEMS_SUCCESS
+  RESCUE_ITEMS_SUCCESS,
+  RESET_ITEM_REQUEST,
+  RESET_ITEM_SUCCESS,
+  RESET_ITEM_FAILURE,
+  ResetItemRequestAction,
+  ResetItemSuccessAction,
+  ResetItemFailureAction
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -114,6 +120,9 @@ type ItemReducerAction =
   | RescueItemsRequestAction
   | RescueItemsSuccessAction
   | RescueItemsFailureAction
+  | ResetItemRequestAction
+  | ResetItemSuccessAction
+  | ResetItemFailureAction
 
 export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReducerAction): ItemState {
   switch (action.type) {
@@ -131,6 +140,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SAVE_PUBLISHED_ITEM_REQUEST:
     case SAVE_ITEM_REQUEST:
     case DELETE_ITEM_REQUEST:
+    case RESET_ITEM_REQUEST:
     case RESCUE_ITEMS_REQUEST: {
       return {
         ...state,
@@ -169,6 +179,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
     case DELETE_ITEM_FAILURE:
+    case RESET_ITEM_FAILURE:
     case RESCUE_ITEMS_FAILURE: {
       return {
         ...state,
@@ -186,6 +197,13 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
           ...state.data,
           ...toItemObject([item])
         },
+        loading: loadingReducer(state.loading, action),
+        error: null
+      }
+    }
+    case RESET_ITEM_SUCCESS: {
+      return {
+        ...state,
         loading: loadingReducer(state.loading, action),
         error: null
       }

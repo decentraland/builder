@@ -1,41 +1,52 @@
-import { expectSaga } from 'redux-saga-test-plan'
+import { expectSaga, SagaType } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
-import { call, select } from 'redux-saga/effects'
+import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { getCollections } from 'modules/collection/selectors'
 import { BuilderAPI } from 'lib/api/builder'
-import { saveItemFailure, saveItemRequest, saveItemSuccess, savePublishedItemRequest, savePublishedItemSuccess } from './actions'
-import { itemSaga } from './sagas'
+import {
+  resetItemFailure,
+  resetItemRequest,
+  resetItemSuccess,
+  saveItemFailure,
+  saveItemRequest,
+  saveItemSuccess,
+  savePublishedItemRequest,
+  savePublishedItemSuccess,
+  SAVE_ITEM_FAILURE,
+  SAVE_ITEM_SUCCESS
+} from './actions'
+import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType } from './types'
 import { calculateFinalSize } from './export'
 import { MAX_FILE_SIZE } from './utils'
 import { Collection } from 'modules/collection/types'
-import { getItems } from './selectors'
+import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 
-describe('Item sagas', () => {
-  let blob: Blob = new Blob()
-  const contents: Record<string, Blob> = { path: blob }
+let blob: Blob = new Blob()
+const contents: Record<string, Blob> = { path: blob }
 
-  const builderAPI = ({
-    saveItem: jest.fn(),
-    saveItemContents: jest.fn()
-  } as unknown) as BuilderAPI
+const builderAPI = ({
+  saveItem: jest.fn(),
+  saveItemContents: jest.fn()
+} as unknown) as BuilderAPI
 
-  let dateNowSpy: jest.SpyInstance
-  const updatedAt = Date.now()
+let dateNowSpy: jest.SpyInstance
+const updatedAt = Date.now()
 
-  beforeEach(() => {
-    dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
-  })
+beforeEach(() => {
+  dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => updatedAt)
+})
 
-  afterEach(() => {
-    dateNowSpy.mockRestore()
-  })
+afterEach(() => {
+  dateNowSpy.mockRestore()
+})
 
-  describe('when handling the save item request action', () => {
-    it('should throw if name contains ":"', () => {
+describe('when handling the save item request action', () => {
+  describe('when name contains ":"', () => {
+    it('should put a save item failure with invalid character message', () => {
       const item = {
         name: 'invalid:name'
       } as Item
@@ -44,8 +55,10 @@ describe('Item sagas', () => {
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
+  })
 
-    it('should throw if description contains ":"', () => {
+  describe('when description contains ":"', () => {
+    it('should put a save item failure with invalid character message', () => {
       const item = {
         name: 'valid name',
         description: 'invalid:description'
@@ -55,19 +68,10 @@ describe('Item sagas', () => {
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
+  })
 
-    it('should throw if description contains ":"', () => {
-      const item = {
-        name: 'valid name',
-        description: 'invalid:description'
-      } as Item
-      return expectSaga(itemSaga, builderAPI)
-        .put(saveItemFailure(item, contents, 'Invalid character! The ":" is not allowed in names or descriptions'))
-        .dispatch(saveItemRequest(item, contents))
-        .run({ silenceTimeout: true })
-    })
-
-    it('should throw if file size is larger than 2 MB', () => {
+  describe('when file size is larger than 2 MB', () => {
+    it('should put a save item failure with item too big message', () => {
       const item = {
         name: 'valid name',
         description: 'valid description',
@@ -85,8 +89,10 @@ describe('Item sagas', () => {
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
+  })
 
-    it('should save item and dispatch success action', () => {
+  describe('when all correct conditions are met', () => {
+    it('should put a save item success action', () => {
       const item = {
         name: 'valid name',
         description: 'valid description',
@@ -102,7 +108,9 @@ describe('Item sagas', () => {
         .dispatch(saveItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
+  })
 
+  describe('when correct conditions are met and item is already published', () => {
     it('should save item if it is already published', () => {
       const item = {
         name: 'valid name',
@@ -120,9 +128,11 @@ describe('Item sagas', () => {
         .run({ silenceTimeout: true })
     })
   })
+})
 
-  describe('when handling the save published item request action', () => {
-    it('should save item in the server', () => {
+describe('when handling the save published item request action', () => {
+  describe('when all correct conditions are met', () => {
+    it('should put a save published item success action', () => {
       const collection = {
         id: 'aCollection'
       } as Collection
@@ -148,8 +158,10 @@ describe('Item sagas', () => {
         .dispatch(savePublishedItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
+  })
 
-    it('should send a transaction if price or beneficiary changed', () => {
+  describe('when price or beneficiary are changed', () => {
+    it('should put a save published item success with the tx hash', () => {
       const collection = {
         id: 'aCollection'
       } as Collection
@@ -193,6 +205,163 @@ describe('Item sagas', () => {
         .put(savePublishedItemSuccess(newItem, ChainId.MATIC_MAINNET, txHash))
         .dispatch(savePublishedItemRequest(newItem, contents))
         .run({ silenceTimeout: true })
+    })
+  })
+})
+
+describe('when reseting an item to the state found in the catalyst', () => {
+  const originalFetch = window.fetch
+
+  window.fetch = jest.fn().mockResolvedValue({
+    blob: () => Promise.resolve(blob)
+  })
+
+  const itemId = 'itemId'
+
+  let itemsById: any
+  let entitiesByItemId: any
+  let replacedItem: any
+  let replacedContents: any
+
+  beforeEach(() => {
+    itemsById = {
+      [itemId]: {
+        name: 'changed name',
+        description: 'changed description',
+        contents: { ['changed key']: 'changed hash' },
+        data: {
+          hides: [WearableCategory.MASK],
+          replaces: [WearableCategory.MASK],
+          tags: ['changed tag'],
+          category: WearableCategory.MASK,
+          representations: [
+            {
+              bodyShapes: [WearableBodyShape.FEMALE],
+              contents: ['changed content'],
+              mainFile: 'changed mainFile',
+              overrideReplaces: [WearableCategory.MASK],
+              overrideHides: [WearableCategory.MASK]
+            }
+          ]
+        }
+      }
+    }
+
+    entitiesByItemId = {
+      [itemId]: {
+        content: [{ key: 'key', hash: 'hash' }],
+        metadata: {
+          name: 'name',
+          description: 'description',
+          data: {
+            hides: [WearableCategory.HAT],
+            replaces: [WearableCategory.HAT],
+            tags: ['tag'],
+            category: WearableCategory.HAT,
+            representations: [
+              {
+                bodyShapes: [WearableBodyShape.MALE],
+                contents: ['content'],
+                mainFile: 'mainFile',
+                overrideReplaces: [WearableCategory.HAT],
+                overrideHides: [WearableCategory.HAT]
+              }
+            ]
+          }
+        }
+      }
+    }
+
+    replacedItem = {
+      name: 'name',
+      description: 'description',
+      contents: { key: 'hash' },
+      data: {
+        hides: [WearableCategory.HAT],
+        replaces: [WearableCategory.HAT],
+        tags: ['tag'],
+        category: WearableCategory.HAT,
+        representations: [
+          {
+            bodyShapes: [WearableBodyShape.MALE],
+            contents: ['content'],
+            mainFile: 'mainFile',
+            overrideReplaces: [WearableCategory.HAT],
+            overrideHides: [WearableCategory.HAT]
+          }
+        ]
+      }
+    }
+
+    replacedContents = { key: blob }
+  })
+
+  afterAll(() => {
+    window.fetch = originalFetch
+  })
+
+  describe('when the correct conditions are met', () => {
+    it('should put a reset item success action', () => {
+      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+        .provide([
+          [select(getItemsById), itemsById],
+          [select(getEntityByItemId), entitiesByItemId],
+          [
+            race({
+              success: take(SAVE_ITEM_SUCCESS),
+              failure: take(SAVE_ITEM_FAILURE)
+            }),
+            { success: {} }
+          ]
+        ])
+        .put(saveItemRequest(replacedItem as any, replacedContents))
+        .put(resetItemSuccess(itemId))
+        .silentRun()
+    })
+  })
+
+  describe('when a save item failure action happens after the save item request', () => {
+    it('should put a reset item failure action with the save item failure action message', () => {
+      const saveItemFailureMessage = 'save item failure message'
+
+      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+        .provide([
+          [select(getItemsById), itemsById],
+          [select(getEntityByItemId), entitiesByItemId],
+          [
+            race({
+              success: take(SAVE_ITEM_SUCCESS),
+              failure: take(SAVE_ITEM_FAILURE)
+            }),
+            {
+              failure: saveItemFailure({} as any, {}, saveItemFailureMessage)
+            }
+          ]
+        ])
+        .put(saveItemRequest(replacedItem as any, replacedContents))
+        .put(resetItemFailure(itemId, saveItemFailureMessage))
+        .silentRun()
+    })
+  })
+
+  describe('when the entity has no content', () => {
+    it('should put a reset item failure action with a content missing message', () => {
+      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+        .provide([
+          [select(getItemsById), itemsById],
+          [
+            select(getEntityByItemId),
+            {
+              ...entitiesByItemId,
+              [itemId]: {
+                ...entitiesByItemId[itemId],
+                content: undefined
+              }
+            }
+          ]
+        ])
+        .put(resetItemFailure(itemId, 'Entity does not have content'))
+        .silentRun()
     })
   })
 })

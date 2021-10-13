@@ -963,7 +963,8 @@
     "mint_item": "mint",
     "remove_from_collection": "Remove from collection",
     "edit_price": "Edit price",
-    "open_in_editor": "Open in editor"
+    "open_in_editor": "Open in editor",
+    "reset_item": "Reset changes"
   },
   "item": {
     "blockchain_id": "Blockchain ID",
@@ -1014,6 +1015,10 @@
     "limit_reached": "You can only mint {max} items per transaction",
     "no_items": "You have no items available to mint for \"{name}\"",
     "unsynced_warning": "Some items have changes that have not been approved yet."
+  },
+  "reset_item_modal": {
+    "title": "Reset Changes",
+    "content": "The item is currently different from the one that has been previously approved by the committee. {br}The version you are seeing now does not correspond to the one visible in the marketplace and in the game. {br}You can push the changes for the committee to review this new version, or you can click on the confirm button to reset the item to it's original state."
   },
   "sell_collection_modal": {
     "title": "Do you want to sell your items?",
