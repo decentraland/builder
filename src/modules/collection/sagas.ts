@@ -486,6 +486,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const { collection } = action.payload
 
     try {
+      if (!collection.isPublished) {
+        throw new Error(`The collection can't be approved because it's not published`)
+      }
+
       // 1. Open modal
       const modalMetadata: ApprovalFlowModalMetadata<ApprovalFlowModalView.LOADING> = {
         view: ApprovalFlowModalView.LOADING,
