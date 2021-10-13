@@ -974,7 +974,7 @@
     "remove_from_collection": "Eliminar de la colección",
     "edit_price": "Editar precio",
     "open_in_editor": "Abrir en el editor",
-    "reset_item": "Restablecer"
+    "reset_item": "Deshacer cambios"
   },
   "item": {
     "blockchain_id": "Blockchain ID",
