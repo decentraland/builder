@@ -328,18 +328,23 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error('Entity does not have content')
       }
 
-      const entityContentsAsMap = entity.content.reduce<Record<string, string>>(
-        (contents, { key, hash }) => ({ ...contents, [key]: hash }),
-        {}
-      )
+      const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { key, hash }) => {
+        contents[key] = hash
+        return contents
+      }, {})
 
       // Fetch blobs from the catalyst so they can be reuploaded to the item
       const newContents: Record<string, Blob> = yield Promise.all(
-        entity.content.map<Promise<[string, Blob]>>(async ({ key, hash }) => [
+        Object.entries(entityContentsAsMap).map<Promise<[string, Blob]>>(async ([key, hash]) => [
           key,
           await fetch(getCatalystContentUrl(hash)).then(res => res.blob())
         ])
-      ).then(res => res.reduce<Record<string, Blob>>((contents, [key, blob]) => ({ ...contents, [key]: blob }), {}))
+      ).then(res =>
+        res.reduce<Record<string, Blob>>((contents, [key, blob]) => {
+          contents[key] = blob
+          return contents
+        }, {})
+      )
 
       // Replace the current item with values from the item in the catalyst
       const newItem: Item = {
