@@ -312,66 +312,66 @@ export function* itemSaga(builder: BuilderAPI) {
       yield put(rescueItemsFailure(collection, items, contentHashes, error.message))
     }
   }
+}
 
-  function* handleResetItemRequest(action: ResetItemRequestAction) {
-    const { itemId } = action.payload
-    const itemsById: Record<string, Item> = yield select(getItemsById)
-    const entitiesByItemId: Record<string, DeploymentWithMetadataContentAndPointers> = yield select(getEntityByItemId)
+export function* handleResetItemRequest(action: ResetItemRequestAction) {
+  const { itemId } = action.payload
+  const itemsById: Record<string, Item> = yield select(getItemsById)
+  const entitiesByItemId: Record<string, DeploymentWithMetadataContentAndPointers> = yield select(getEntityByItemId)
 
-    const item = itemsById[itemId]
-    const entity = entitiesByItemId[itemId]
+  const item = itemsById[itemId]
+  const entity = entitiesByItemId[itemId]
 
-    try {
-      const catalystItem = entity.metadata as CatalystItem
+  try {
+    const catalystItem = entity.metadata as CatalystItem
 
-      if (!entity.content) {
-        throw new Error('Entity does not have content')
-      }
+    if (!entity.content) {
+      throw new Error('Entity does not have content')
+    }
 
-      const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { key, hash }) => {
-        contents[key] = hash
+    const entityContentsAsMap = entity.content.reduce<Record<string, string>>((contents, { key, hash }) => {
+      contents[key] = hash
+      return contents
+    }, {})
+
+    // Fetch blobs from the catalyst so they can be reuploaded to the item
+    const newContents: Record<string, Blob> = yield Promise.all(
+      Object.entries(entityContentsAsMap).map<Promise<[string, Blob]>>(async ([key, hash]) => [
+        key,
+        await fetch(getCatalystContentUrl(hash)).then(res => res.blob())
+      ])
+    ).then(res =>
+      res.reduce<Record<string, Blob>>((contents, [key, blob]) => {
+        contents[key] = blob
         return contents
       }, {})
+    )
 
-      // Fetch blobs from the catalyst so they can be reuploaded to the item
-      const newContents: Record<string, Blob> = yield Promise.all(
-        Object.entries(entityContentsAsMap).map<Promise<[string, Blob]>>(async ([key, hash]) => [
-          key,
-          await fetch(getCatalystContentUrl(hash)).then(res => res.blob())
-        ])
-      ).then(res =>
-        res.reduce<Record<string, Blob>>((contents, [key, blob]) => {
-          contents[key] = blob
-          return contents
-        }, {})
-      )
-
-      // Replace the current item with values from the item in the catalyst
-      const newItem: Item = {
-        ...item,
-        name: catalystItem.name,
-        description: catalystItem.description,
-        contents: entityContentsAsMap,
-        data: catalystItem.data
-      }
-
-      yield put(saveItemRequest(newItem, newContents))
-
-      const saveItemResult: {
-        success: SaveItemSuccessAction
-        failure: SaveItemFailureAction
-      } = yield race({
-        success: take(SAVE_ITEM_SUCCESS),
-        failure: take(SAVE_ITEM_FAILURE)
-      })
-
-      if (saveItemResult.success) {
-        yield put(resetItemSuccess(itemId))
-      } else if (saveItemResult.failure) {
-        yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
-      }
-    } catch (error) {
-      yield put(resetItemFailure(itemId, error.message))
+    // Replace the current item with values from the item in the catalyst
+    const newItem: Item = {
+      ...item,
+      name: catalystItem.name,
+      description: catalystItem.description,
+      contents: entityContentsAsMap,
+      data: catalystItem.data
     }
+
+    yield put(saveItemRequest(newItem, newContents))
+
+    const saveItemResult: {
+      success: SaveItemSuccessAction
+      failure: SaveItemFailureAction
+    } = yield race({
+      success: take(SAVE_ITEM_SUCCESS),
+      failure: take(SAVE_ITEM_FAILURE)
+    })
+
+    if (saveItemResult.success) {
+      yield put(resetItemSuccess(itemId))
+    } else if (saveItemResult.failure) {
+      yield put(resetItemFailure(itemId, saveItemResult.failure.payload.error))
+    }
+  } catch (error) {
+    yield put(resetItemFailure(itemId, error.message))
   }
 }
