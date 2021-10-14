@@ -367,7 +367,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
     minters: remoteCollection.minters || [],
     managers: remoteCollection.managers || [],
     forumLink: remoteCollection.forum_link || undefined,
-    lock: Date.now() - 1000, //remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
+    lock: remoteCollection.lock ? +new Date(remoteCollection.lock) : undefined,
     reviewedAt: remoteCollection.reviewed_at ? +new Date(remoteCollection.reviewed_at) : undefined,
     createdAt: +new Date(remoteCollection.created_at),
     updatedAt: +new Date(remoteCollection.updated_at)
