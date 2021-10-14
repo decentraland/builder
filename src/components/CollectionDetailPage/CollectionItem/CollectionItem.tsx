@@ -8,6 +8,7 @@ import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
 import { isComplete, isFree, canMintItem, canManageItem, getMaxSupply } from 'modules/item/utils'
 import ItemStatus from 'components/ItemStatus'
+import { isLocked } from 'modules/collection/utils'
 import { WearableData } from 'modules/item/types'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
@@ -134,7 +135,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                 >
                   <Dropdown.Menu>
                     <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
-                    {canManageItem(collection, item, ethAddress) ? (
+                    {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
                       <>
                         {item.price ? (
                           <Dropdown.Item text={t('collection_item.edit_price')} onClick={this.handleEditPriceAndBeneficiary} />

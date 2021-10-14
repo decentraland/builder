@@ -1,8 +1,15 @@
-import { call, select, delay } from 'redux-saga/effects'
+import { retry, race, take, call, put, select, delay } from 'redux-saga/effects'
+import * as matchers from 'redux-saga-test-plan/matchers'
 import { expectSaga } from 'redux-saga-test-plan'
-import { ChainId, WearableRepresentation } from '@dcl/schemas'
+import { replace } from 'connected-react-router'
+import { ChainId, Network, WearableRepresentation } from '@dcl/schemas'
 import { EntityType } from 'dcl-catalyst-commons'
 import { CatalystClient, DeploymentPreparationData, DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
+import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { locations } from 'routing/locations'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
 import { buildItemContentHash, buildItemEntity } from 'modules/item/export'
 import { getEntityByItemId, getItems, getData as getItemsById } from 'modules/item/selectors'
@@ -14,11 +21,23 @@ import { approveCurationFailure, approveCurationRequest, approveCurationSuccess 
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { BuilderAPI } from 'lib/api/builder'
-import { approveCollectionFailure, approveCollectionSuccess, initiateApprovalFlow } from './actions'
+import {
+  approveCollectionFailure,
+  approveCollectionSuccess,
+  initiateApprovalFlow,
+  saveCollectionRequest,
+  saveCollectionSuccess,
+  saveCollectionFailure,
+  publishCollectionRequest,
+  publishCollectionSuccess,
+  publishCollectionFailure,
+  SAVE_COLLECTION_SUCCESS,
+  SAVE_COLLECTION_FAILURE
+} from './actions'
 import { collectionSaga } from './sagas'
 import { Collection } from './types'
 
-const mockBuilder = ({} as unknown) as BuilderAPI
+const mockBuilder = ({ saveCollection: jest.fn(), lockCollection: jest.fn(), saveTOS: jest.fn() } as unknown) as BuilderAPI
 const mockCatalyst = ({} as unknown) as CatalystClient
 
 const getCollection = (props: Partial<Collection> = {}): Collection =>
@@ -87,6 +106,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when a collection has not been approved yet', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
@@ -156,6 +176,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when a collection has already been approved but it has a pending curation', () => {
     const collection = getCollection({ isApproved: true })
     const syncedItem = getItem(collection)
@@ -222,6 +243,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when a collection has already the same content hashes in the DB and in the blockchain, the entities are synced with the ones in the catalyst, the collection is approved and there are no pending curations', () => {
     const collection = getCollection({ isApproved: true })
     const items = [getItem(collection), getItem(collection, { id: 'anotherItem' })]
@@ -259,6 +281,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the rescue transaction fails', () => {
     const collection = getCollection({ isApproved: true })
     const syncedItem = getItem(collection)
@@ -305,6 +328,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the deployment to the catalyst fails', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
@@ -369,6 +393,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the approve collection transaction fails', () => {
     const collection = getCollection()
     const syncedItem = getItem(collection)
@@ -440,6 +465,7 @@ describe('when executing the approval flow', () => {
         .run({ silenceTimeout: true })
     })
   })
+
   describe('when the approve curation fails', () => {
     const collection = getCollection({ isApproved: true })
     const syncedItem = getItem(collection)
@@ -507,6 +533,169 @@ describe('when executing the approval flow', () => {
           } as ApprovalFlowModalMetadata)
         )
         .run({ silenceTimeout: true })
+    })
+  })
+
+  describe('when publishing a collection', () => {
+    let collection: Collection
+    let items: Item[]
+    const email = 'email@domain.com'
+
+    const address = '0xa'
+    const txHash = '0xdeadbeef'
+
+    beforeEach(() => {
+      collection = { salt: 'some salt' } as Collection
+      items = []
+    })
+
+    describe('when the transaction is sent correctly', () => {
+      let finalCollection: Collection
+      let newLock: Date
+      beforeEach(() => {
+        const now = Date.now()
+        newLock = new Date(now)
+        finalCollection = { ...collection, lock: now }
+      })
+
+      it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([
+            [put(saveCollectionRequest(collection)), true],
+            [
+              race({ success: take(SAVE_COLLECTION_SUCCESS), failure: take(SAVE_COLLECTION_FAILURE) }),
+              { success: saveCollectionSuccess(collection) }
+            ],
+            [select(getAddress), [address]],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [retry(10, 500, mockBuilder.lockCollection, collection), newLock],
+            [retry(10, 500, mockBuilder.saveTOS, collection, email), undefined],
+            [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
+          ])
+          .put(saveCollectionRequest(collection))
+          .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MAINNET, txHash))
+          .put(replace(locations.activity()))
+          .dispatch(publishCollectionRequest(collection, items, email))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('when the collection is locked', () => {
+      let lockedCollection: Collection
+      let finalCollection: Collection
+      let newLock: Date
+
+      beforeEach(() => {
+        const now = Date.now()
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+
+        newLock = new Date(now)
+        lockedCollection = { ...collection, lock: tomorrow.getTime() }
+        finalCollection = { ...collection, lock: now }
+      })
+
+      it('should skip saving the collection', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([
+            [select(getAddress), [address]],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [retry(10, 500, mockBuilder.lockCollection, lockedCollection), newLock],
+            [retry(10, 500, mockBuilder.saveTOS, lockedCollection, email), undefined],
+            [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
+          ])
+          .not.put(saveCollectionRequest(collection))
+          .put(publishCollectionSuccess(finalCollection, items, ChainId.MATIC_MAINNET, txHash))
+          .put(replace(locations.activity()))
+          .dispatch(publishCollectionRequest(lockedCollection, items, email))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('when the collection lacks a salt', () => {
+      let saltlessCollection: Collection
+      let errorMessage: string
+      beforeEach(() => {
+        errorMessage = 'Missing salt'
+        saltlessCollection = { ...collection, salt: undefined }
+      })
+
+      it('should dispatch a failure action', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([
+            [put(saveCollectionRequest(saltlessCollection)), true],
+            [
+              race({ success: take(SAVE_COLLECTION_SUCCESS), failure: take(SAVE_COLLECTION_FAILURE) }),
+              { success: saveCollectionSuccess(saltlessCollection) }
+            ],
+            [call(t, 'sagas.item.missing_salt'), errorMessage]
+          ])
+          .put(saveCollectionRequest(saltlessCollection))
+          .put(publishCollectionFailure(saltlessCollection, items, errorMessage))
+          .dispatch(publishCollectionRequest(saltlessCollection, items, email))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('when saving the collection fails', () => {
+      let errorMessage: string
+      beforeEach(() => {
+        errorMessage = 'Error saving the collection'
+      })
+
+      it('should dispatch a failure action', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([
+            [put(saveCollectionRequest(collection)), true],
+            [
+              race({ success: take(SAVE_COLLECTION_SUCCESS), failure: take(SAVE_COLLECTION_FAILURE) }),
+              { failure: saveCollectionFailure(collection, errorMessage) }
+            ]
+          ])
+          .put(saveCollectionRequest(collection))
+          .put(publishCollectionFailure(collection, items, errorMessage))
+          .dispatch(publishCollectionRequest(collection, items, email))
+          .run({ silenceTimeout: true })
+      })
+    })
+  })
+
+  describe('when saving a collection', () => {
+    describe('when the text is invalid', () => {
+      let invalidCollection: Collection
+      let errorMessage: string
+      beforeEach(() => {
+        invalidCollection = { name: 'some|invalid:character' } as Collection
+        errorMessage = 'Invalid character'
+      })
+
+      it('should dispatch a failure action', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([[call(t, 'sagas.collection.invalid_character'), errorMessage]])
+          .put(saveCollectionFailure(invalidCollection, errorMessage))
+          .dispatch(saveCollectionRequest(invalidCollection))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('when the collection is locked', () => {
+      let lockedCollection: Collection
+      let errorMessage: string
+      beforeEach(() => {
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+
+        lockedCollection = { name: '', lock: tomorrow.getTime() } as Collection
+        errorMessage = 'Collection is locked'
+      })
+
+      it('should dispatch a failure action', () => {
+        return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
+          .provide([[call(t, 'sagas.collection.collection_locked'), errorMessage]])
+          .put(saveCollectionFailure(lockedCollection, errorMessage))
+          .dispatch(saveCollectionRequest(lockedCollection))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })

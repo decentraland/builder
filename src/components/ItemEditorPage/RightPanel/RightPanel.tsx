@@ -19,6 +19,7 @@ import {
   isOwner,
   resizeImage
 } from 'modules/item/utils'
+import { isLocked } from 'modules/collection/utils'
 import { computeHashes } from 'modules/deployment/contentUtils'
 import { Item, ItemRarity, ITEM_DESCRIPTION_MAX_LENGTH, ITEM_NAME_MAX_LENGTH, THUMBNAIL_PATH, WearableCategory } from 'modules/item/types'
 import Collapsable from './Collapsable'
@@ -216,6 +217,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
     if (!item) {
       return false
     }
+    if (collection && isLocked(collection)) {
+      return false
+    }
     return collection ? canManageItem(collection, item, address) : isOwner(item, address)
   }
 
@@ -254,7 +258,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="RightPanel">
         {isConnected ? (
           <ItemProvider id={selectedItemId}>
-            {(item, _collection, isItemLoading) => {
+            {(item, collection, isItemLoading) => {
+              const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
               const actionableCategories = item ? getOverridesCategories(item.contents) : []
@@ -278,7 +283,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 <>
                   <div className="header">
                     <div className="title">{t('item_editor.right_panel.properties')}</div>
-                    {item && isOwner(item, address) && !item.isPublished ? (
+                    {item && isOwner(item, address) && !item.isPublished && !isItemLocked ? (
                       <Dropdown trigger={<div className="actions" />} inline direction="left">
                         <Dropdown.Menu>
                           {getMissingBodyShapeType(item) !== null ? (
@@ -322,8 +327,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             </div>
                           </>
                         ) : (
-                            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                          )}
+                          <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                        )}
                         <div className="metrics">
                           <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
                           <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>

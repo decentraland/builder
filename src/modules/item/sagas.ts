@@ -63,16 +63,17 @@ import {
   SaveItemFailureAction
 } from './actions'
 import { FetchCollectionRequestAction, FETCH_COLLECTIONS_SUCCESS, FETCH_COLLECTION_REQUEST } from 'modules/collection/actions'
+import { isLocked } from 'modules/collection/utils'
 import { locations } from 'routing/locations'
 import { BuilderAPI } from 'lib/api/builder'
-import { getCollection, getCollectionItems, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
+import { getCollection, getCollections, getData as getCollectionsById } from 'modules/collection/selectors'
 import { getItemId } from 'modules/location/selectors'
 import { Collection } from 'modules/collection/types'
 import { getLoading as getLoadingItemAction } from 'modules/item/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem } from './types'
-import { getData as getItemsById, getItems, getEntityByItemId } from './selectors'
+import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
@@ -143,6 +144,13 @@ export function* itemSaga(builder: BuilderAPI) {
       if (!isValidText(item.name) || !isValidText(item.description)) {
         throw new Error(t('sagas.item.invalid_character'))
       }
+
+      const collection: Collection | undefined = item.collectionId ? yield select(getCollection, item.collectionId!) : undefined
+
+      if (collection && isLocked(collection)) {
+        throw new Error(t('sagas.collection.collection_locked'))
+      }
+
       const finalSize: number = yield call(calculateFinalSize, item, contents)
       if (finalSize > MAX_FILE_SIZE) {
         throw new ItemTooBigError()

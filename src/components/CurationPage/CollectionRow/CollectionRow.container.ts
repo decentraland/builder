@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
-import { getCollectionItems } from 'modules/collection/selectors'
+import { getCollectionItems } from 'modules/item/selectors'
 import { OwnProps, MapStateProps, MapDispatchProps } from './CollectionRow.types'
 import CollectionRow from './CollectionRow'
 

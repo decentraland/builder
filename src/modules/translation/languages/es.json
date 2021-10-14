@@ -950,8 +950,10 @@
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
     "cant_push": "Esta colección aún está bajo revisión, los artículos aún se pueden acuñar pero no reflejarán nuevos cambios hasta su aprobación.",
+    "push_changes": "Subir Cambios",
     "under_review": "No verificada",
-    "push_changes": "Subir Cambios"
+    "cant_operate": "Esta colección está bloqueada, una vez que la publicación termine serás capaz de utilizarla nuevamente",
+    "locked": "Bloqueada"
   },
   "collection_menu": {
     "add_existing_item": "Agregar item existente",
@@ -1204,7 +1206,8 @@
   "sagas": {
     "collection": {
       "invalid_character": "¡Carácter invalido! El \":\" no está permitido en los nombres",
-      "missing_salt": "La colección no tiene salt"
+      "missing_salt": "La colección no tiene salt",
+      "collection_locked": "La colección está bloqueada"
     },
     "item": {
       "invalid_identity": "Identidad inválida",

@@ -49,6 +49,11 @@ export const getWalletOrphanItems = createSelector<RootState, Item[], Item[]>(ge
   items.filter(item => item.collectionId === undefined)
 )
 
+export const getCollectionItems = (state: RootState, collectionId: string) => {
+  const allItems = getItems(state)
+  return allItems.filter(item => item.collectionId === collectionId)
+}
+
 export const getRarities = (state: RootState): Rarity[] => {
   return getState(state).rarities
 }

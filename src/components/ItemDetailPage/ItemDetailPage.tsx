@@ -7,6 +7,7 @@ import { fromWei } from 'web3x/utils'
 import { locations } from 'routing/locations'
 import { WearableData } from 'modules/item/types'
 import { getBodyShapes, toBodyShapeType, getMaxSupply, getMissingBodyShapeType, canSeeItem, isOwner, isFree } from 'modules/item/utils'
+import { isLocked as isCollectionLocked } from 'modules/collection/utils'
 import Notice from 'components/Notice'
 import ConfirmDelete from 'components/ConfirmDelete'
 import ItemImage from 'components/ItemImage'
@@ -55,7 +56,8 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     const data = item.data as WearableData
 
     const missingBodyShape = getMissingBodyShapeType(item)
-    const hasActions = missingBodyShape !== null || !item.isPublished
+    const isLocked = collection && isCollectionLocked(collection)
+    const hasActions = !isLocked && (missingBodyShape !== null || !item.isPublished)
 
     return (
       <>

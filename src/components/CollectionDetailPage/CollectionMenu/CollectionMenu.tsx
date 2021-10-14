@@ -4,7 +4,7 @@ import { Dropdown, Button, Icon, Popup, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { buildCollectionForumPost } from 'modules/forum/utils'
 import { RoleType } from 'modules/collection/types'
-import { getCollectionEditorURL, getExplorerURL, isOwner as isCollectionOwner } from 'modules/collection/utils'
+import { getCollectionEditorURL, getExplorerURL, isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionMenu.types'
 import './CollectionMenu.css'
@@ -86,24 +86,24 @@ export default class CollectionMenu extends React.PureComponent<Props> {
                 <Dropdown.Item text={t('collection_menu.minters')} onClick={this.handleUpdateMinters} />
               </>
             ) : null
-          ) : (
-              <>
-                <Dropdown.Item text={t('collection_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
-                <ConfirmDelete
-                  name={collection.name}
-                  onDelete={this.handleDeleteItem}
-                  trigger={<Dropdown.Item text={t('global.delete')} />}
-                />
-              </>
-            )}
+          ) : !isLocked(collection) ? (
+            <>
+              <Dropdown.Item text={t('collection_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
+              <ConfirmDelete
+                name={collection.name}
+                onDelete={this.handleDeleteItem}
+                trigger={<Dropdown.Item text={t('global.delete')} />}
+              />
+            </>
+          ) : null}
 
           <Popup
             content={
               !collection.isPublished
                 ? t('collection_menu.unpublished')
                 : !collection.forumLink
-                  ? t('collection_menu.not_posted')
-                  : undefined
+                ? t('collection_menu.not_posted')
+                : undefined
             }
             disabled={collection.isPublished || !!collection.forumLink}
             position="right center"
@@ -122,8 +122,8 @@ export default class CollectionMenu extends React.PureComponent<Props> {
                       <Loader size="mini" active inline />
                     </div>
                   ) : (
-                      t('collection_menu.post_to_forum')
-                    )}
+                    t('collection_menu.post_to_forum')
+                  )}
                 </Dropdown.Item>
               ) : null
             }

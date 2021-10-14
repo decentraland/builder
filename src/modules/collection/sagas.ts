@@ -2,6 +2,7 @@ import { Contract, providers, constants } from 'ethers'
 import { replace } from 'connected-react-router'
 import { select, take, takeEvery, call, put, takeLatest, race, retry, delay } from 'redux-saga/effects'
 import { CatalystClient, DeploymentPreparationData } from 'dcl-catalyst-client'
+import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { FetchTransactionSuccessAction, FETCH_TRANSACTION_SUCCESS } from 'decentraland-dapps/dist/modules/transaction/actions'
@@ -87,8 +88,7 @@ import { getCollectionId } from 'modules/location/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import { closeModal, CloseModalAction, CLOSE_MODAL, openModal } from 'modules/modal/actions'
 import { Item } from 'modules/item/types'
-import { getEntityByItemId, getItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
-import { getWalletCollections } from 'modules/collection/selectors'
+import { getEntityByItemId, getItems, getCollectionItems, getWalletItems, getData as getItemsById } from 'modules/item/selectors'
 import { getName } from 'modules/profile/selectors'
 import { LoginSuccessAction, LOGIN_SUCCESS } from 'modules/identity/actions'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView } from 'components/Modals/ApprovalFlowModal/ApprovalFlowModal.types'
@@ -108,9 +108,9 @@ import {
   DEPLOY_ENTITIES_FAILURE,
   DEPLOY_ENTITIES_SUCCESS
 } from 'modules/entity/actions'
-import { getCollection, getCollectionItems } from './selectors'
+import { getCollection, getWalletCollections } from './selectors'
 import { Collection } from './types'
-import { isOwner, getCollectionBaseURI, getCollectionSymbol } from './utils'
+import { isOwner, getCollectionBaseURI, getCollectionSymbol, isLocked } from './utils'
 
 export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   yield takeEvery(FETCH_COLLECTIONS_REQUEST, handleFetchCollectionsRequest)
@@ -162,7 +162,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
     const { collection } = action.payload
     try {
       if (!isValidText(collection.name)) {
-        throw new Error(t('sagas.collection.invalid_character'))
+        throw new Error(yield call(t, 'sagas.collection.invalid_character'))
+      }
+      if (isLocked(collection)) {
+        throw new Error(yield call(t, 'sagas.collection.collection_locked'))
       }
 
       const items: Item[] = yield select(state => getCollectionItems(state, collection.id))
@@ -217,36 +220,43 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
   function* handlePublishCollectionRequest(action: PublishCollectionRequestAction) {
     let { collection, items, email } = action.payload
     try {
-      // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
-      // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
-      yield put(saveCollectionRequest(collection))
+      if (!isLocked(collection)) {
+        // To ensure the contract address of the collection is correct, we pre-emptively save it to the server and store the response.
+        // This will re-generate the address and any other data generated on the server (like the salt) before actually publishing it.
+        // We skip this step if the collection is locked to avoid an error from the server while trying to save the collection
+        yield put(saveCollectionRequest(collection))
 
-      const saveCollection: {
-        success: SaveCollectionSuccessAction
-        failure: SaveCollectionFailureAction
-      } = yield race({
-        success: take(SAVE_COLLECTION_SUCCESS),
-        failure: take(SAVE_COLLECTION_FAILURE)
-      })
+        const saveCollection: {
+          success: SaveCollectionSuccessAction
+          failure: SaveCollectionFailureAction
+        } = yield race({
+          success: take(SAVE_COLLECTION_SUCCESS),
+          failure: take(SAVE_COLLECTION_FAILURE)
+        })
 
-      if (saveCollection.success) {
-        collection = saveCollection.success.payload.collection
-      } else {
-        throw saveCollection.failure.payload.error
+        if (saveCollection.success) {
+          collection = saveCollection.success.payload.collection
+        } else {
+          throw new Error(saveCollection.failure.payload.error)
+        }
       }
 
       if (!collection.salt) {
-        throw new Error(t('sagas.item.missing_salt'))
+        throw new Error(yield call(t, 'sagas.item.missing_salt'))
       }
 
       const from: string = yield select(getAddress)
-      const maticChainId = getChainIdByNetwork(Network.MATIC)
+      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
 
       const forwarder = getContract(ContractName.Forwarder, maticChainId)
       const factory = getContract(ContractName.CollectionFactory, maticChainId)
       const manager = getContract(ContractName.CollectionManager, maticChainId)
 
+      // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
       yield retry(10, 500, builder.saveTOS, collection, email)
+      const lock: string = yield retry(10, 500, builder.lockCollection, collection)
+
+      collection = { ...collection, lock: +new Date(lock) }
 
       const txHash: string = yield call(sendTransaction, manager, collectionManager =>
         collectionManager.createCollection(
