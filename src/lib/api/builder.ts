@@ -597,8 +597,7 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItem = async (item: Item, contents: Record<string, Blob>) => {
-    await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
-    await this.saveItemContents(item, contents)
+    await Promise.all([this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) }), this.saveItemContents(item, contents)])
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {

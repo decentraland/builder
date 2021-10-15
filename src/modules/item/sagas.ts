@@ -151,9 +151,11 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(t('sagas.collection.collection_locked'))
       }
 
-      const finalSize: number = yield call(calculateFinalSize, item, contents)
-      if (finalSize > MAX_FILE_SIZE) {
-        throw new ItemTooBigError()
+      if (Object.keys(contents).length > 0) {
+        const finalSize: number = yield call(calculateFinalSize, item, contents)
+        if (finalSize > MAX_FILE_SIZE) {
+          throw new ItemTooBigError()
+        }
       }
 
       yield call(builder.saveItem, item, contents)
@@ -173,9 +175,6 @@ export function* itemSaga(builder: BuilderAPI) {
       const originalItem = items.find(_item => _item.id === item.id)
       const collection = collections.find(_collection => _collection.id === item.collectionId)
 
-      if (!isValidText(item.name) || !isValidText(item.description)) {
-        throw new Error(t('sagas.item.invalid_character'))
-      }
       if (!originalItem || !collection) {
         throw new Error(t('sagas.item.not_found'))
       }
@@ -186,16 +185,8 @@ export function* itemSaga(builder: BuilderAPI) {
         throw new Error(t('sagas.item.cant_save_without_collection'))
       }
 
-      const finalSize: number = yield call(calculateFinalSize, item, contents)
-      if (finalSize > MAX_FILE_SIZE) {
-        throw new ItemTooBigError()
-      }
-
       let txHash: string | undefined
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-
-      // Items should be uploaded to the builder server in order to be available to be added to the catalysts
-      yield call(builder.saveItemContents, item, contents)
 
       if (hasOnChainDataChanged(originalItem, item)) {
         const metadata = getMetadata(item)
@@ -205,6 +196,13 @@ export function* itemSaga(builder: BuilderAPI) {
         )
       } else {
         yield put(saveItemRequest(item, contents))
+        const { failure }: { failure: SaveItemFailureAction } = yield race({
+          success: take(SAVE_ITEM_SUCCESS),
+          failure: take(SAVE_ITEM_FAILURE)
+        })
+        if (failure) {
+          throw new Error(failure.payload.error)
+        }
       }
 
       yield put(savePublishedItemSuccess(item, maticChainId, txHash))
