@@ -236,6 +236,8 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
       switch (transaction.actionType) {
         case PUBLISH_COLLECTION_SUCCESS: {
           const { collection } = transaction.payload
+          const now = Date.now()
+
           return {
             ...state,
             loading: loadingReducer(state.loading, action),
@@ -243,7 +245,13 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
-                isPublished: true
+                isPublished: true,
+                // These date values are set to the current date because now, as the collection is published,
+                // consolidation on the builder-server while fetching will populate these values with the ones on the blockchain
+                // which have the value set at the moment the publication occured.
+                createdAt: now,
+                updatedAt: now,
+                reviewedAt: now
               }
             }
           }
@@ -257,7 +265,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
-                reviewedAt: new Date(),
+                reviewedAt: Date.now(),
                 isApproved: true
               }
             }
@@ -272,7 +280,7 @@ export function collectionReducer(state: CollectionState = INITIAL_STATE, action
               ...state.data,
               [collection.id]: {
                 ...state.data[collection.id],
-                reviewedAt: new Date(),
+                reviewedAt: Date.now(),
                 isApproved: false
               }
             }
