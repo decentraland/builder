@@ -930,7 +930,8 @@
     "forum_post": "Post en el foro",
     "no_forum_post": "No hay post",
     "approved": "Aprobada",
-    "rejected": "Rechazada"
+    "rejected": "Rechazada",
+    "disabled": "Deshabilitada"
   },
   "item_detail_page": {
     "notice": "Debes agregar tus items a una colección antes de poder publicarlos",

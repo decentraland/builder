@@ -64,10 +64,12 @@
   color: rgb(var(--light-blue-raw));
 }
 
-.CollectionRow .actions .action.rejected {
+.CollectionRow .actions .action.rejected,
+.CollectionRow .actions .action.disabled {
   color: var(--secondary-text);
 }
 
-.CollectionRow .actions .action.rejected .Icon.close {
+.CollectionRow .actions .action.rejected .Icon.close,
+.CollectionRow .actions .action.disabled .Icon.close {
   filter: brightness(0.5);
 }

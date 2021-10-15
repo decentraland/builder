@@ -920,7 +920,8 @@
     "forum_post": "Forum Post",
     "no_forum_post": "Not posted",
     "approved": "Approved",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "disabled": "Disabled"
   },
   "item_detail_page": {
     "notice": "You need to add your items to a collection before you can publish them",

@@ -23,20 +23,34 @@ export default class CollectionRow extends React.PureComponent<Props> {
   renderCurationState = () => {
     const { collection, curation } = this.props
 
-    if ((curation && curation.status === 'approved') || (!curation && collection.isApproved)) {
-      return (
-        <div className="approved action">
-          <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
-        </div>
-      )
-    }
-
-    if ((curation && curation.status === 'rejected') || (!curation && hasReviews(collection) && !collection.isApproved)) {
-      return (
-        <div className="rejected action">
-          <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
-        </div>
-      )
+    if (collection.isApproved) {
+      if (!curation || curation.status === 'approved') {
+        return (
+          <div className="approved action">
+            <span className="action-text">{t('collection_row.approved')}</span> <UIIcon name="check" />
+          </div>
+        )
+      } else if (curation.status === 'rejected') {
+        return (
+          <div className="rejected action">
+            <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
+          </div>
+        )
+      }
+    } else {
+      if (!curation && hasReviews(collection)) {
+        return (
+          <div className="disabled action">
+            <span className="action-text">{t('collection_row.disabled')}</span> <UIIcon name="close" />
+          </div>
+        )
+      } else if (curation && curation.status === 'rejected') {
+        return (
+          <div className="rejected action">
+            <span className="action-text">{t('collection_row.rejected')}</span> <Icon name="close" />
+          </div>
+        )
+      }
     }
 
     return null
@@ -73,8 +87,8 @@ export default class CollectionRow extends React.PureComponent<Props> {
                     {t('collection_row.visit')}
                   </span>
                 ) : (
-                  t('collection_row.no_forum_post')
-                )}
+                    t('collection_row.no_forum_post')
+                  )}
               </div>
             </Grid.Column>
             <Grid.Column width={3}>
