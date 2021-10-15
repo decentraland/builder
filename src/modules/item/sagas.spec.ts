@@ -46,8 +46,8 @@ afterEach(() => {
 })
 
 describe('when handling the save item request action', () => {
-  describe('when name contains ":"', () => {
-    it('should put a save item failure with invalid character message', () => {
+  describe('and the name contains ":"', () => {
+    it('should put a saveItemFailure action with invalid character message', () => {
       const item = {
         name: 'invalid:name'
       } as Item
@@ -58,8 +58,8 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('when description contains ":"', () => {
-    it('should put a save item failure with invalid character message', () => {
+  describe('and the description contains ":"', () => {
+    it('should put a saveItemFailure action with invalid character message', () => {
       const item = {
         name: 'valid name',
         description: 'invalid:description'
@@ -71,8 +71,8 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('when file size is larger than 2 MB', () => {
-    it('should put a save item failure with item too big message', () => {
+  describe('and file size is larger than 2 MB', () => {
+    it('should put a saveItemFailure action with item too big message', () => {
       const item = {
         name: 'valid name',
         description: 'valid description',
@@ -92,26 +92,7 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('when all correct conditions are met', () => {
-    it('should put a save item success action', () => {
-      const item = {
-        name: 'valid name',
-        description: 'valid description',
-        updatedAt
-      } as Item
-
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-          [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
-        ])
-        .put(saveItemSuccess(item, contents))
-        .dispatch(saveItemRequest(item, contents))
-        .run({ silenceTimeout: true })
-    })
-  })
-
-  describe('when the collection is locked', () => {
+  describe('and the collection is locked', () => {
     let collection: Collection
     let item: Item
     let lock: number
@@ -144,28 +125,65 @@ describe('when handling the save item request action', () => {
     })
   })
 
-  describe('when correct conditions are met and item is already published', () => {
-    it('should save item if it is already published', () => {
-      const item = {
-        name: 'valid name',
-        description: 'valid description',
-        updatedAt,
-        isPublished: true
-      } as Item
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-          [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
-        ])
-        .put(saveItemSuccess(item, contents))
-        .dispatch(saveItemRequest(item, contents))
-        .run({ silenceTimeout: true })
+  describe('and the name and description don\'t contain ":", the size is below the limit, and the collection is not locked', () => {
+    describe('and the item is not published', () => {
+      it('should put a save item success action', () => {
+        const item = {
+          name: 'valid name',
+          description: 'valid description',
+          updatedAt
+        } as Item
+
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contents))
+          .dispatch(saveItemRequest(item, contents))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the item is already published', () => {
+      it('should save item if it is already published', () => {
+        const item = {
+          name: 'valid name',
+          description: 'valid description',
+          updatedAt,
+          isPublished: true
+        } as Item
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+            [call([builderAPI, 'saveItem'], item, contents), Promise.resolve()]
+          ])
+          .put(saveItemSuccess(item, contents))
+          .dispatch(saveItemRequest(item, contents))
+          .run({ silenceTimeout: true })
+      })
+    })
+
+    describe('and the item has not content', () => {
+      it('should not calculate the size of the contents', () => {
+        const item = {
+          name: 'valid name',
+          description: 'valid description',
+          updatedAt
+        } as Item
+
+        return expectSaga(itemSaga, builderAPI)
+          .provide([[call([builderAPI, 'saveItem'], item, {}), Promise.resolve()]])
+          .put(saveItemSuccess(item, {}))
+          .dispatch(saveItemRequest(item, {}))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })
 
 describe('when handling the save published item request action', () => {
-  describe('when all correct conditions are met', () => {
+  describe('and the item is published', () => {
     it('should put a save published item success action', () => {
       const collection = {
         id: 'aCollection'
@@ -184,61 +202,61 @@ describe('when handling the save published item request action', () => {
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
-          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
+          [select(getCollection, item.collectionId!), collection],
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET]
         ])
         .put(saveItemRequest(item, contents))
+        .put(saveItemSuccess(item, contents))
         .put(savePublishedItemSuccess(item, ChainId.MATIC_MAINNET))
         .dispatch(savePublishedItemRequest(item, contents))
         .run({ silenceTimeout: true })
     })
-  })
 
-  describe('when price or beneficiary are changed', () => {
-    it('should put a save published item success with the tx hash', () => {
-      const collection = {
-        id: 'aCollection'
-      } as Collection
+    describe('and price or beneficiary have changed', () => {
+      it('should put a save published item success with the tx hash', () => {
+        const collection = {
+          id: 'aCollection'
+        } as Collection
 
-      const item = ({
-        id: 'anItem',
-        name: 'valid name',
-        description: 'valid description',
-        collectionId: collection.id,
-        type: ItemType.WEARABLE,
-        updatedAt,
-        isPublished: true,
-        price: '1',
-        beneficiary: '0xA',
-        data: {
-          category: WearableCategory.HAT,
-          representations: [
-            {
-              bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE]
-            }
-          ]
-        }
-      } as any) as Item
+        const item = ({
+          id: 'anItem',
+          name: 'valid name',
+          description: 'valid description',
+          collectionId: collection.id,
+          type: ItemType.WEARABLE,
+          updatedAt,
+          isPublished: true,
+          price: '1',
+          beneficiary: '0xA',
+          data: {
+            category: WearableCategory.HAT,
+            representations: [
+              {
+                bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE]
+              }
+            ]
+          }
+        } as any) as Item
 
-      const newItem = {
-        ...item,
-        price: '2',
-        beneficiary: '0xB'
-      } as Item
+        const newItem = {
+          ...item,
+          price: '2',
+          beneficiary: '0xB'
+        } as Item
 
-      const txHash = '0xdeabeef'
+        const txHash = '0xdeabeef'
 
-      return expectSaga(itemSaga, builderAPI)
-        .provide([
-          [select(getItems), [item]],
-          [select(getCollections), [collection]],
-          [call(calculateFinalSize, item, contents), Promise.resolve(1)],
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-          [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
-        ])
-        .put(savePublishedItemSuccess(newItem, ChainId.MATIC_MAINNET, txHash))
-        .dispatch(savePublishedItemRequest(newItem, contents))
-        .run({ silenceTimeout: true })
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getItems), [item]],
+            [select(getCollections), [collection]],
+            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+            [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
+          ])
+          .put(savePublishedItemSuccess(newItem, ChainId.MATIC_MAINNET, txHash))
+          .dispatch(savePublishedItemRequest(newItem, contents))
+          .run({ silenceTimeout: true })
+      })
     })
   })
 })
@@ -334,27 +352,25 @@ describe('when reseting an item to the state found in the catalyst', () => {
     window.fetch = originalFetch
   })
 
-  describe('when the correct conditions are met', () => {
-    it('should put a reset item success action', () => {
-      return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
-        .provide([
-          [select(getItemsById), itemsById],
-          [select(getEntityByItemId), entitiesByItemId],
-          [
-            race({
-              success: take(SAVE_ITEM_SUCCESS),
-              failure: take(SAVE_ITEM_FAILURE)
-            }),
-            { success: {} }
-          ]
-        ])
-        .put(saveItemRequest(replacedItem as any, replacedContents))
-        .put(resetItemSuccess(itemId))
-        .silentRun()
-    })
+  it('should put a reset item success action', () => {
+    return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
+      .provide([
+        [select(getItemsById), itemsById],
+        [select(getEntityByItemId), entitiesByItemId],
+        [
+          race({
+            success: take(SAVE_ITEM_SUCCESS),
+            failure: take(SAVE_ITEM_FAILURE)
+          }),
+          { success: {} }
+        ]
+      ])
+      .put(saveItemRequest(replacedItem as any, replacedContents))
+      .put(resetItemSuccess(itemId))
+      .silentRun()
   })
 
-  describe('when the collection is locked', () => {
+  describe('and the collection is locked', () => {
     let collection: Collection
     let item: Item
     let lock: number
@@ -387,9 +403,9 @@ describe('when reseting an item to the state found in the catalyst', () => {
     })
   })
 
-  describe('when a save item failure action happens after the save item request', () => {
-    it('should put a reset item failure action with the save item failure action message', () => {
-      const saveItemFailureMessage = 'save item failure message'
+  describe('and a saveItemFailure action happens after the save item request', () => {
+    it('should put a resetItemFailure action with the saveItemFailure action action message', () => {
+      const saveItemFailureMessage = 'saveItemFailure action message'
 
       return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
         .provide([
@@ -411,8 +427,8 @@ describe('when reseting an item to the state found in the catalyst', () => {
     })
   })
 
-  describe('when the entity has no content', () => {
-    it('should put a reset item failure action with a content missing message', () => {
+  describe('and the entity has no content', () => {
+    it('should put a resetItemFailure action with a content missing message', () => {
       return expectSaga(handleResetItemRequest as SagaType, resetItemRequest(itemId))
         .provide([
           [select(getItemsById), itemsById],
