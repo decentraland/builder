@@ -255,10 +255,6 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
       // We wait for TOS to end first to avoid locking the collection preemptively if this endpoint fails
       yield retry(10, 500, builder.saveTOS, collection, email)
 
-      // TODO: uncomment this and add feature flag once we have support for them
-      // const lock: string = yield retry(10, 500, builder.lockCollection, collection)
-      // collection = { ...collection, lock: +new Date(lock) }
-
       const txHash: string = yield call(sendTransaction, manager, collectionManager =>
         collectionManager.createCollection(
           forwarder.address,
@@ -271,6 +267,10 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
           toInitializeItems(items)
         )
       )
+
+      // TODO: uncomment this and add feature flag once we have support for them
+      // const lock: string = yield retry(10, 500, builder.lockCollection, collection)
+      // collection = { ...collection, lock: +new Date(lock) }
 
       yield put(publishCollectionSuccess(collection, items, maticChainId, txHash))
       yield put(replace(locations.activity()))
