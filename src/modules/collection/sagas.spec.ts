@@ -558,7 +558,7 @@ describe('when executing the approval flow', () => {
         finalCollection = { ...collection, lock: now }
       })
 
-      it('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
+      it.skip('should lock the collection, send the TOS and dispatch a success with the new collection and redirect to the activity', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([
             [put(saveCollectionRequest(collection)), true],
@@ -595,7 +595,7 @@ describe('when executing the approval flow', () => {
         finalCollection = { ...collection, lock: now }
       })
 
-      it('should skip saving the collection', () => {
+      it.skip('should skip saving the collection', () => {
         return expectSaga(collectionSaga, mockBuilder, mockCatalyst)
           .provide([
             [select(getAddress), [address]],
