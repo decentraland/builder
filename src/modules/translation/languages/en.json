@@ -1071,14 +1071,20 @@
       "keep_reviewing": "Keep reviewing",
       "back_to_curation": "Back to curation",
       "waiting_for_upload": "Some items in the collection are still being uploaded to the Catalyst. Please check back soon to proceed with the curation.",
+      "approve": {
+        "action": "Approve"
+      },
       "reject": {
         "title": "Reject Collection",
         "subtitle": "I guess it's just not good enough, huh?",
         "tx_pending": "Waiting for reject transaction to confirm",
-        "action": "Reject collection"
+        "action": "Reject"
       },
-      "approve": {
-        "action": "Approve collection"
+      "enable": {
+        "action": "Enable"
+      },
+      "disable": {
+        "action": "Disable"
       },
       "reject_curation": {
         "title": "Reject Changes",
