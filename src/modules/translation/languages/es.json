@@ -1071,33 +1071,36 @@
   "item_editor": {
     "open": "Abrir editor",
     "top_panel": {
-      "veredict_received": "Veredicto recibido",
-      "veredict_received_successfully": "Recibimos tu veredicto correctamente!",
-      "veredict_explanation": "Puedes contarnos por qué?",
-      "visit_activity": "Puedes visitar tu {activity_link} para monitoriear la transacción",
-      "go_to_forum": "Por favor visita la discusión asocida y explícale al creador el por qué de tu decisión.",
-      "forum_link": "Link al foro",
-      "discussion": "Discusión",
-      "keep_reviewing": "Continua verificando",
-      "back_to_curation": "Volver a curar",
-      "waiting_for_upload": "Algunos items de la colección aún se están cargando al Catalyst. Por favor prueba nuevamente en unos momentos para proceder.",
-      "reject": {
-        "title": "Rechazar Colección",
-        "subtitle": "No es lo suficientemente buena?",
-        "tx_pending": "Esperando a que se confirme la transacción de rechazo",
-        "action": "Rechazar colección"
-      },
-      "approve": {
-        "action": "Aprobar colección"
-      },
-      "reject_curation": {
-        "title": "Rechazar Cambios",
-        "subtitle": "Los cambios no son lo suficientemenete buenos?",
-        "tx_pending": "Esperando a que se confirme la transacción de rechazo",
-        "action": "Rechazar cambios"
-      },
-      "approve_curation": {
-        "action": "Aprobar cambios"
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "enable": "Habilitar",
+      "disable": "Deshabilitar",
+      "rejection_modal": {
+        "veredict_explanation": "Puedes contarnos por qué?",
+        "visit_activity": "Puedes visitar tu {activity_link} para monitoriear la transacción",
+        "go_to_forum": "Por favor visita la discusión asocida y explícale al creador el por qué de tu decisión.",
+        "forum_link": "Link al foro",
+        "discussion": "Discusión",
+        "keep_reviewing": "Continua verificando",
+        "back_to_curation": "Volver a curar",
+        "waiting_for_upload": "Algunos items de la colección aún se están cargando al Catalyst. Por favor prueba nuevamente en unos momentos para proceder.",
+        "reject_collection": {
+          "title": "Rechazar Colección",
+          "subtitle": "No es lo suficientemente buena?",
+          "tx_pending": "Esperando a que se confirme la transacción de rechazo",
+          "action": "Rechazar"
+        },
+        "reject_curation": {
+          "title": "Rechazar Cambios",
+          "subtitle": "Los cambios no son lo suficientemenete buenos?",
+          "action": "Rechazar"
+        },
+        "disable_collection": {
+          "title": "Deshabilitar Colección",
+          "subtitle": "Esta colleccion no estara mas disponible. Puedes habilitarla nuevamente en el futuro.",
+          "tx_pending": "Esperando a que se confirme la transacción de deshabilitado",
+          "action": "Deshabilitar"
+        }
       }
     },
     "left_panel": {
