@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
 import { ChainButton } from 'decentraland-dapps/dist/containers'
@@ -13,12 +13,6 @@ import './RejectionModal.css'
 
 const i18nBase = 'item_editor.top_panel.rejection_modal'
 
-const i18nKeyByReviewType = {
-  [RejectionType.REJECT_COLLECTION]: i18nBase + '.reject_collection',
-  [RejectionType.REJECT_CURATION]: i18nBase + '.reject_curation',
-  [RejectionType.DISABLE_COLLECTION]: i18nBase + '.disable_collection'
-}
-
 const RejectionModal = ({
   open,
   type,
@@ -30,16 +24,27 @@ const RejectionModal = ({
   onRejectCuration,
   onClose
 }: Props) => {
-  const i18nKey = i18nKeyByReviewType[type]
+  const i18nKey = useMemo(() => {
+    switch (type) {
+      case RejectionType.DISABLE_COLLECTION:
+        return i18nBase + '.disable_collection'
+      case RejectionType.REJECT_CURATION:
+        return i18nBase + '.reject_curation'
+      default:
+        return ''
+    }
+  }, [type])
 
   const handleReview = () => {
-    const callbacksByType = {
-      [RejectionType.REJECT_COLLECTION]: () => onReject(collection),
-      [RejectionType.REJECT_CURATION]: () => onRejectCuration(curation!.collectionId),
-      [RejectionType.DISABLE_COLLECTION]: () => onReject(collection)
+    switch (type) {
+      case RejectionType.DISABLE_COLLECTION:
+        onReject(collection)
+        break
+      case RejectionType.REJECT_CURATION:
+        onRejectCuration(curation!.collectionId)
+        break
+      default:
     }
-
-    callbacksByType[type]()
   }
 
   let content: ReactNode = null
@@ -63,7 +68,7 @@ const RejectionModal = ({
       </>
     )
   } else if (
-    (type === RejectionType.REJECT_COLLECTION && !collection.isApproved) ||
+    type === RejectionType.REJECT_COLLECTION ||
     (type === RejectionType.REJECT_CURATION && curation?.status === CurationStatus.REJECTED) ||
     (type === RejectionType.DISABLE_COLLECTION && !collection.isApproved)
   ) {
