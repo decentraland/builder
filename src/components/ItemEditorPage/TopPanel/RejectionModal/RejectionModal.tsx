@@ -30,8 +30,6 @@ const RejectionModal = ({
   onRejectCuration,
   onClose
 }: Props) => {
-  console.log(isLoading)
-
   const i18nKey = i18nKeyByReviewType[type]
 
   const handleReview = () => {
