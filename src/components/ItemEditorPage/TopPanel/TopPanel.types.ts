@@ -21,6 +21,13 @@ export type State = {
   isRejectCurationModalOpen: boolean
 }
 
+export enum ButtonType {
+  APPROVE,
+  REJECT,
+  ENABLE,
+  DISABLE
+}
+
 export type MapStateProps = Pick<Props, 'isReviewing' | 'isCommitteeMember' | 'selectedCollectionId' | 'chainId' | 'isConnected'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onInitiateApprovalFlow'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | InitiateApprovalFlowAction>

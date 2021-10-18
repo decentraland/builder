@@ -9,7 +9,7 @@ import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
 import ReviewModal from './ReviewModal'
 import { ReviewType } from './ReviewModal/ReviewModal.types'
-import { Props, State } from './TopPanel.types'
+import { ButtonType, Props, State } from './TopPanel.types'
 
 import './TopPanel.css'
 
@@ -68,26 +68,36 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     )
   }
 
-  renderButton = (reviewType: ReviewType, collection: Collection) => {
+  renderButton = (type: ButtonType, collection: Collection) => {
     const { onInitiateApprovalFlow } = this.props
 
     const onClickMap = {
-      [ReviewType.APPROVE]: () => onInitiateApprovalFlow(collection),
-      [ReviewType.REJECT]: this.setRejectModalVisibility,
-      [ReviewType.APPROVE_CURATION]: () => onInitiateApprovalFlow(collection),
-      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
+      [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
+      [ButtonType.REJECT]: this.setRejectModalVisibility, // this.setRejectCurationModalVisibility
+      [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
+      [ButtonType.DISABLE]: this.setRejectModalVisibility
+      // [ReviewType.APPROVE]: () => onInitiateApprovalFlow(collection),
+      // [ReviewType.REJECT]: this.setRejectModalVisibility,
+      // [ReviewType.APPROVE_CURATION]: () => onInitiateApprovalFlow(collection),
+      // [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
     }
 
     const textMap = {
-      [ReviewType.APPROVE]: 'approve',
-      [ReviewType.REJECT]: 'reject',
-      [ReviewType.APPROVE_CURATION]: 'approve_curation',
-      [ReviewType.REJECT_CURATION]: 'reject_curation'
+      [ButtonType.APPROVE]: 'approve',
+      [ButtonType.REJECT]: 'reject',
+      [ButtonType.ENABLE]: 'enable',
+      [ButtonType.DISABLE]: 'disable'
+      // [ReviewType.APPROVE]: 'approve',
+      // [ReviewType.REJECT]: 'reject',
+      // [ReviewType.APPROVE_CURATION]: 'approve_curation',
+      // [ReviewType.REJECT_CURATION]: 'reject_curation'
     }
 
+    const isPrimary = type === ButtonType.APPROVE || type === ButtonType.ENABLE
+
     return (
-      <Button primary={![ReviewType.REJECT, ReviewType.REJECT_CURATION].includes(reviewType)} onClick={() => onClickMap[reviewType](true)}>
-        {t(`item_editor.top_panel.${textMap[reviewType]}.action`)}
+      <Button primary={isPrimary} onClick={() => onClickMap[type](true)}>
+        {t(`item_editor.top_panel.${textMap[type]}.action`)}
       </Button>
     )
   }
@@ -98,28 +108,28 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         case 'pending':
           return (
             <>
-              {this.renderButton(ReviewType.APPROVE_CURATION, collection)}
-              {this.renderButton(ReviewType.REJECT_CURATION, collection)}
+              {this.renderButton(ButtonType.APPROVE, collection)}
+              {this.renderButton(ButtonType.REJECT, collection)}
             </>
           )
         case 'approved':
         case 'rejected':
-          return this.renderButton(ReviewType.REJECT, collection)
+          return this.renderButton(ButtonType.DISABLE, collection)
       }
     }
 
     if (hasReviews(collection)) {
       if (collection.isApproved) {
-        return this.renderButton(ReviewType.REJECT, collection)
+        return this.renderButton(ButtonType.REJECT, collection)
       } else {
-        return this.renderButton(ReviewType.APPROVE, collection)
+        return this.renderButton(ButtonType.ENABLE, collection)
       }
     }
 
     return (
       <>
-        {this.renderButton(ReviewType.APPROVE, collection)}
-        {this.renderButton(ReviewType.REJECT, collection)}
+        {this.renderButton(ButtonType.APPROVE, collection)}
+        {this.renderButton(ButtonType.REJECT, collection)}
       </>
     )
   }
