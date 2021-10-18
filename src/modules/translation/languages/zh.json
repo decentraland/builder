@@ -1051,33 +1051,36 @@
   "item_editor": {
     "open": "打开编辑器",
     "top_panel": {
-      "veredict_received": "判决书已收到",
-      "veredict_received_successfully": "我们已成功收到您的判决！",
-      "veredict_explanation": "你能告诉我们为什么吗？",
-      "visit_activity": "您可以检查您的 {activity_link} 以监控交易",
-      "go_to_forum": "请转到相关论坛讨论，并让创建者知道您的决定。",
-      "forum_link": "论坛链接",
-      "discussion": "讨论",
-      "keep_reviewing": "继续审核",
-      "back_to_curation": "回到策展",
-      "waiting_for_upload": "收藏中的某些项目仍在上传到 Catalyst。 请尽快回来查看以继续策展。",
-      "reject": {
-        "title": "拒绝收藏",
-        "subtitle": "我想还不够，是吧？",
-        "tx_pending": "等待拒绝交易确认",
-        "action": "拒绝收藏"
-      },
-      "approve": {
-        "action": "批准收藏"
-      },
-      "reject_curation": {
-        "title": "拒绝更改",
-        "subtitle": "我想这些变化还不够好， 嗯？",
-        "tx_pending": "等待拒绝更改交易以确认",
-        "action": "拒绝更改"
-      },
-      "approve_curation": {
-        "action": "批准更改"
+      "approve": "批准",
+      "reject": "拒绝",
+      "enable": "使",
+      "disable": "禁用",
+      "rejection_modal": {
+        "veredict_explanation": "你能告诉我们为什么吗？",
+        "visit_activity": "您可以检查您的 {activity_link} 以监控交易",
+        "go_to_forum": "请转到相关论坛讨论，并让创建者知道您的决定。",
+        "forum_link": "论坛链接",
+        "discussion": "讨论",
+        "keep_reviewing": "继续审核",
+        "back_to_curation": "回到策展",
+        "waiting_for_upload": "收藏中的某些项目仍在上传到 Catalyst。 请尽快回来查看以继续策展。",
+        "reject_collection": {
+          "title": "拒绝收藏",
+          "subtitle": "我想还不够，是吧？",
+          "tx_pending": "等待拒绝交易确认",
+          "action": "拒绝收藏"
+        },
+        "reject_curation": {
+          "title": "拒绝更改",
+          "subtitle": "我想这些变化还不够好， 嗯？",
+          "action": "拒绝更改"
+        },
+        "disable_collection": {
+          "title": "禁用集合",
+          "subtitle": "此集合将不再可用。将来可以再次启用它。",
+          "tx_pending": "等待已禁用的交易得到确认。",
+          "action": "禁用"
+        }
       }
     },
     "left_panel": {
