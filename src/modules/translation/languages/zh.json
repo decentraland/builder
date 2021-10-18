@@ -909,7 +909,8 @@
     "forum_post": "论坛帖子",
     "no_forum_post": "尚未发布到论坛",
     "approved": "已批准",
-    "rejected": "拒绝了"
+    "rejected": "拒绝了",
+    "disabled": "禁用"
   },
   "item_detail_page": {
     "notice": "您需要先将项目添加到集合中，然后才能发布它们",
