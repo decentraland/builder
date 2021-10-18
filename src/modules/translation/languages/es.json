@@ -1084,12 +1084,6 @@
         "keep_reviewing": "Continua verificando",
         "back_to_curation": "Volver a curar",
         "waiting_for_upload": "Algunos items de la colección aún se están cargando al Catalyst. Por favor prueba nuevamente en unos momentos para proceder.",
-        "reject_collection": {
-          "title": "Rechazar Colección",
-          "subtitle": "No es lo suficientemente buena?",
-          "tx_pending": "Esperando a que se confirme la transacción de rechazo",
-          "action": "Rechazar"
-        },
         "reject_curation": {
           "title": "Rechazar Cambios",
           "subtitle": "Los cambios no son lo suficientemenete buenos?",

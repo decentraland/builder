@@ -1071,12 +1071,6 @@
         "go_to_forum": "Please go to related forum discussion and let the creator know your decision.",
         "veredict_explanation": "Can you tell us why?",
         "visit_activity": "You can check your {activity_link} to monitor the transaction",
-        "reject_collection": {
-          "title": "Reject Collection",
-          "subtitle": "I guess it's just not good enough, huh?",
-          "tx_pending": "Waiting for reject collection transaction to confirm",
-          "action": "Reject"
-        },
         "reject_curation": {
           "title": "Reject Changes",
           "subtitle": "I guess the changes are not good enough, huh?",

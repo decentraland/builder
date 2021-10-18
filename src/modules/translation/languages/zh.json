@@ -1064,12 +1064,6 @@
         "keep_reviewing": "继续审核",
         "back_to_curation": "回到策展",
         "waiting_for_upload": "收藏中的某些项目仍在上传到 Catalyst。 请尽快回来查看以继续策展。",
-        "reject_collection": {
-          "title": "拒绝收藏",
-          "subtitle": "我想还不够，是吧？",
-          "tx_pending": "等待拒绝交易确认",
-          "action": "拒绝收藏"
-        },
         "reject_curation": {
           "title": "拒绝更改",
           "subtitle": "我想这些变化还不够好， 嗯？",
