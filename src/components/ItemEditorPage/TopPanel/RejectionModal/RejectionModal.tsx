@@ -33,13 +33,13 @@ const RejectionModal = ({
   const i18nKey = i18nKeyByReviewType[type]
 
   const handleReview = () => {
-    const map = {
+    const callbacksByType = {
       [RejectionType.REJECT_COLLECTION]: () => onReject(collection),
       [RejectionType.REJECT_CURATION]: () => onRejectCuration(curation!.collectionId),
       [RejectionType.DISABLE_COLLECTION]: () => onReject(collection)
     }
 
-    map[type]()
+    callbacksByType[type]()
   }
 
   let content: ReactNode = null
