@@ -4,7 +4,7 @@ import { Collection } from 'modules/collection/types'
 import { rejectCurationRequest, RejectCurationRequestAction } from 'modules/curation/actions'
 import { Curation } from 'modules/curation/types'
 
-export enum ReviewType {
+export enum RejectionType {
   REJECT_COLLECTION = 'REJECT_COLLECTION',
   REJECT_CURATION = 'REJECT_CURATION',
   DISABLE_COLLECTION = 'DISABLE_COLLECTION'
@@ -12,7 +12,7 @@ export enum ReviewType {
 
 export type Props = {
   open: boolean
-  type: ReviewType
+  type: RejectionType
   isLoading: boolean
   hasPendingTransaction: boolean
   collection: Collection

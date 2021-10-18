@@ -7,8 +7,8 @@ import { Curation, CurationStatus } from 'modules/curation/types'
 import { hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
-import ReviewModal from './ReviewModal'
-import { ReviewType } from './ReviewModal/ReviewModal.types'
+import RejectionModal from './RejectionModal'
+import { RejectionType } from './RejectionModal/RejectionModal.types'
 import { ButtonType, Props, State } from './TopPanel.types'
 
 import './TopPanel.css'
@@ -22,7 +22,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     this.props.onNavigate(locations.curation())
   }
 
-  setRejectionModal = (rejectionModal?: ReviewType) => this.setState({ rejectionModal: rejectionModal })
+  setRejectionModal = (rejectionModal?: RejectionType) => this.setState({ rejectionModal: rejectionModal })
 
   renderPage = (collection: Collection, curation: Curation | null) => {
     const { rejectionModal } = this.state
@@ -41,7 +41,7 @@ export default class TopPanel extends React.PureComponent<Props, State> {
           <span className="button-container">{this.renderButtons(collection, curation)}</span>
         </div>
         {rejectionModal && (
-          <ReviewModal
+          <RejectionModal
             type={rejectionModal}
             open={true}
             collection={collection}
@@ -59,12 +59,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     const onClickMap = {
       [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
       [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
-      [ButtonType.DISABLE]: () => this.setRejectionModal(ReviewType.DISABLE_COLLECTION),
+      [ButtonType.DISABLE]: () => this.setRejectionModal(RejectionType.DISABLE_COLLECTION),
       [ButtonType.REJECT]: () => {
         if (curation?.status === CurationStatus.PENDING) {
-          this.setRejectionModal(ReviewType.REJECT_CURATION)
+          this.setRejectionModal(RejectionType.REJECT_CURATION)
         } else {
-          this.setRejectionModal(ReviewType.REJECT_COLLECTION)
+          this.setRejectionModal(RejectionType.REJECT_COLLECTION)
         }
       }
     }

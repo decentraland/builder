@@ -7,16 +7,16 @@ import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
 import { CurationStatus } from 'modules/curation/types'
-import { Props, ReviewType } from './ReviewModal.types'
+import { Props, RejectionType } from './RejectionModal.types'
 
-import './ReviewModal.css'
+import './RejectionModal.css'
 
 const i18nBase = 'item_editor.top_panel.rejection_modal'
 
 const i18nKeyByReviewType = {
-  [ReviewType.REJECT_COLLECTION]: i18nBase + '.reject_collection',
-  [ReviewType.REJECT_CURATION]: i18nBase + '.reject_curation',
-  [ReviewType.DISABLE_COLLECTION]: i18nBase + '.disable_collection'
+  [RejectionType.REJECT_COLLECTION]: i18nBase + '.reject_collection',
+  [RejectionType.REJECT_CURATION]: i18nBase + '.reject_curation',
+  [RejectionType.DISABLE_COLLECTION]: i18nBase + '.disable_collection'
 }
 
 const RejectionModal = ({
@@ -36,9 +36,9 @@ const RejectionModal = ({
 
   const handleReview = () => {
     const map = {
-      [ReviewType.REJECT_COLLECTION]: () => onReject(collection),
-      [ReviewType.REJECT_CURATION]: () => onRejectCuration(curation!.collectionId),
-      [ReviewType.DISABLE_COLLECTION]: () => onReject(collection)
+      [RejectionType.REJECT_COLLECTION]: () => onReject(collection),
+      [RejectionType.REJECT_CURATION]: () => onRejectCuration(curation!.collectionId),
+      [RejectionType.DISABLE_COLLECTION]: () => onReject(collection)
     }
 
     map[type]()
@@ -65,9 +65,9 @@ const RejectionModal = ({
       </>
     )
   } else if (
-    (type === ReviewType.REJECT_COLLECTION && !collection.isApproved) ||
-    (type === ReviewType.REJECT_CURATION && curation?.status === CurationStatus.REJECTED) ||
-    (type === ReviewType.DISABLE_COLLECTION && !collection.isApproved)
+    (type === RejectionType.REJECT_COLLECTION && !collection.isApproved) ||
+    (type === RejectionType.REJECT_CURATION && curation?.status === CurationStatus.REJECTED) ||
+    (type === RejectionType.DISABLE_COLLECTION && !collection.isApproved)
   ) {
     content = (
       <>
@@ -103,7 +103,7 @@ const RejectionModal = ({
   }
 
   return (
-    <Modal size="tiny" className="ReviewModal" open={open}>
+    <Modal size="tiny" className="RejectionModal" open={open}>
       {content}
     </Modal>
   )
