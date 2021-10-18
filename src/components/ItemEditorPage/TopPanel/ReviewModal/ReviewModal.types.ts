@@ -5,10 +5,9 @@ import { rejectCurationRequest, RejectCurationRequestAction } from 'modules/cura
 import { Curation } from 'modules/curation/types'
 
 export enum ReviewType {
-  APPROVE = 'APPROVE',
-  REJECT = 'REJECT',
-  APPROVE_CURATION = 'APPROVE_CURATION',
-  REJECT_CURATION = 'REJECT_CURATION'
+  REJECT_COLLECTION = 'REJECT_COLLECTION',
+  REJECT_CURATION = 'REJECT_CURATION',
+  DISABLE_COLLECTION = 'DISABLE_COLLECTION'
 }
 
 export type Props = {

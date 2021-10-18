@@ -2,6 +2,7 @@ import { Dispatch } from 'redux'
 import { CallHistoryMethodAction } from 'connected-react-router'
 import { ChainId } from '@dcl/schemas'
 import { initiateApprovalFlow, InitiateApprovalFlowAction } from 'modules/collection/actions'
+import { ReviewType } from './ReviewModal/ReviewModal.types'
 
 export type Props = {
   chainId?: ChainId
@@ -15,10 +16,7 @@ export type Props = {
 
 export type State = {
   currentVeredict?: boolean
-  isApproveModalOpen: boolean
-  isRejectModalOpen: boolean
-  isApproveCurationModalOpen: boolean
-  isRejectCurationModalOpen: boolean
+  rejectionModal?: ReviewType
 }
 
 export enum ButtonType {
