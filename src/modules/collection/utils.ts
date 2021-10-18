@@ -1,7 +1,6 @@
 import { env, utils } from 'decentraland-commons'
-import { ChainId, getURNProtocol, Network } from '@dcl/schemas'
+import { ChainId } from '@dcl/schemas'
 import { ContractName, getContract } from 'decentraland-transactions'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item, SyncStatus } from 'modules/item/types'
 import { isEqual, includes } from 'lib/address'
@@ -37,18 +36,9 @@ export function getCollectionEditorURL(collection: Collection, items: Item[]): s
 }
 
 export function getExplorerURL(collection: Collection) {
-  if (!collection.contractAddress) {
-    throw new Error('You need the collection and item to be published to get the catalyst urn')
-  }
-
-  let id = collection.id
-  if (collection.isPublished) {
-    id = `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${collection.contractAddress}`
-  }
-
   // We're replacing org and hardcoding zone here because it only works on that domain for now, to avoid adding new env vars. Also, we use `ropsten` for the NETWORK because it is the only working network for .zone
   const EXPLORER_URL = env.get('REACT_APP_EXPLORER_URL', '').replace('.org', '.zone')
-  return `${EXPLORER_URL}?WITH_COLLECTIONS=${id}&NETWORK=ropsten`
+  return `${EXPLORER_URL}?WITH_COLLECTIONS=${collection.id}&NETWORK=ropsten`
 }
 
 export function getCollectionBaseURI() {
