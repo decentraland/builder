@@ -2,9 +2,10 @@ import * as React from 'react'
 
 import { Modal } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Button, Center, Loader, ModalActions, ModalContent, ModalNavigation } from 'decentraland-ui'
+import { Button, Center, Loader, ModalActions, ModalContent, ModalNavigation, Table } from 'decentraland-ui'
 import ItemImage from 'components/ItemImage'
 import { formatBytes } from 'lib/number'
+import { getBodyShapes, toBodyShapeType } from 'modules/item/utils'
 import { ApprovalFlowModalMetadata, ApprovalFlowModalView, Props, State } from './ApprovalFlowModal.types'
 
 import './ApprovalFlowModal.css'
@@ -43,17 +44,31 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
       <>
         <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
         <ModalContent className="rescue">
-          {items.map((item, index) => (
-            <div className="item" key={item.id}>
-              <div className="name">
-                <ItemImage item={item} />
-                {item.name}
-              </div>
-              <div className="hash" title={contentHashes[index]}>
-                {this.renderHash(contentHashes[index])}
-              </div>
-            </div>
-          ))}
+          <Table basic="very">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{t('global.name')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('global.category')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('global.body_shape_plural')}</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {items.map(item => (
+                <Table.Row key={item.id} className="item">
+                  <Table.Cell className="name">
+                    <ItemImage item={item} />
+                    {item.name}
+                  </Table.Cell>
+                  <Table.Cell>{t('wearable.category.' + item.data.category)}</Table.Cell>
+                  <Table.Cell>
+                    {getBodyShapes(item)
+                      .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
+                      .join(', ')}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
         </ModalContent>
         <ModalActions>
           <Button primary disabled={didRescue || isConfirmingRescueTx} loading={didRescue} onClick={onConfirm}>

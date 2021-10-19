@@ -6,15 +6,9 @@
   margin-top: 32px;
 }
 
-.ui.modal.ApprovalFlowModal .content .item {
-  display: flex;
-  align-items: center;
-}
-
 .ui.modal.ApprovalFlowModal .content .item .name {
   display: flex;
   align-items: center;
-  margin-right: 8px;
 }
 
 .ui.modal.ApprovalFlowModal .content .item .name .ItemImage {
@@ -23,7 +17,11 @@
   margin-right: 12px;
 }
 
-.ui.modal.ApprovalFlowModal .hash,
+.ui.modal.ApprovalFlowModal .content .item .name .ItemImage .image {
+  width: 48px;
+  height: 48px;
+}
+
 .ui.modal.ApprovalFlowModal .size {
   color: var(--secondary-text);
 }
