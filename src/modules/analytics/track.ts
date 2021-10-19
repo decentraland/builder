@@ -38,6 +38,10 @@ import {
 import {
   DELETE_ITEM_FAILURE,
   DELETE_ITEM_SUCCESS,
+  RESCUE_ITEMS_FAILURE,
+  RESCUE_ITEMS_SUCCESS,
+  RESET_ITEM_FAILURE,
+  RESET_ITEM_SUCCESS,
   SaveItemFailureAction,
   SaveItemSuccessAction,
   SAVE_ITEM_FAILURE,
@@ -74,6 +78,15 @@ import {
   ClaimNameSuccessAction
 } from 'modules/ens/actions'
 import { CREATE_COLLECTION_FORUM_POST_FAILURE, CREATE_COLLECTION_FORUM_POST_SUCCESS } from 'modules/forum/actions'
+import {
+  APPROVE_CURATION_FAILURE,
+  APPROVE_CURATION_SUCCESS,
+  PUSH_CURATION_FAILURE,
+  PUSH_CURATION_SUCCESS,
+  REJECT_CURATION_FAILURE,
+  REJECT_CURATION_SUCCESS
+} from 'modules/curation/actions'
+import { DEPLOY_ENTITIES_FAILURE, DEPLOY_ENTITIES_SUCCESS } from 'modules/entity/actions'
 
 function addPayload(actionType: string, eventName: string, getPayload = (action: any) => action.payload) {
   add(actionType, eventName, getPayload)
@@ -246,7 +259,7 @@ add(SAVE_ITEM_FAILURE, 'Save item error', action => {
 addPayload(DELETE_ITEM_SUCCESS, 'Delete item')
 addPayload(DELETE_ITEM_FAILURE, 'Delete item error')
 
-addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary success')
+addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary')
 addPayload(SET_PRICE_AND_BENEFICIARY_FAILURE, 'Set price and beneficiary failure')
 
 addPayload(SAVE_COLLECTION_SUCCESS, 'Save collection')
@@ -286,6 +299,24 @@ addPayload(REJECT_COLLECTION_FAILURE, 'Reject collection error')
 
 addPayload(CREATE_COLLECTION_FORUM_POST_SUCCESS, 'Create forum post')
 addPayload(CREATE_COLLECTION_FORUM_POST_FAILURE, 'Create forum post error')
+
+addPayload(PUSH_CURATION_SUCCESS, 'Push curation')
+addPayload(PUSH_CURATION_FAILURE, 'Push curation error')
+
+addPayload(RESCUE_ITEMS_SUCCESS, 'Rescue items')
+addPayload(RESCUE_ITEMS_FAILURE, 'Rescue items error')
+
+addPayload(DEPLOY_ENTITIES_SUCCESS, 'Deploy entities')
+addPayload(DEPLOY_ENTITIES_FAILURE, 'Deploy entities failure')
+
+addPayload(APPROVE_CURATION_SUCCESS, 'Approve curation')
+addPayload(APPROVE_CURATION_FAILURE, 'Approve curation error')
+
+addPayload(REJECT_CURATION_SUCCESS, 'Reject curation')
+addPayload(REJECT_CURATION_FAILURE, 'Reject curation error')
+
+addPayload(RESET_ITEM_SUCCESS, 'Reset changes')
+addPayload(RESET_ITEM_FAILURE, 'Reset changes error')
 
 // ENS analytics
 add(SET_ENS_RESOLVER_SUCCESS, 'Set ENS Resolver', action => {
