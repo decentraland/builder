@@ -6,6 +6,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { hasReviews } from 'modules/collection/utils'
 import Icon from 'components/Icon'
+import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import Profile from 'components/Profile'
 import { formatDistanceToNow } from 'lib/date'
@@ -68,7 +69,10 @@ export default class CollectionRow extends React.PureComponent<Props> {
               <div className="image-column">
                 <CollectionImage collectionId={collection.id} />
                 <div className="info">
-                  <div className="title">{collection.name}</div>
+                  <div className="title">
+                    <CollectionStatus collection={collection} />
+                    {collection.name}
+                  </div>
                   <div className="subtitle name">{t('collection_row.items', { count: items.length })}</div>
                 </div>
               </div>
