@@ -15,17 +15,18 @@ import './TopPanel.css'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
   state: State = {
-    currentVeredict: undefined
+    currentVeredict: undefined,
+    showRejectionModal: null
   }
 
   handleBack = () => {
     this.props.onNavigate(locations.curation())
   }
 
-  setRejectionModal = (rejectionModal?: RejectionType) => this.setState({ rejectionModal: rejectionModal })
+  setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
   renderPage = (collection: Collection, curation: Curation | null) => {
-    const { rejectionModal } = this.state
+    const { showRejectionModal } = this.state
     const { chainId } = this.props
 
     return (
@@ -40,13 +41,13 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         <div className="actions">
           <span className="button-container">{this.renderButtons(collection, curation)}</span>
         </div>
-        {rejectionModal && (
+        {showRejectionModal && (
           <RejectionModal
-            type={rejectionModal}
+            type={showRejectionModal}
             open={true}
             collection={collection}
             curation={curation}
-            onClose={() => this.setRejectionModal(undefined)}
+            onClose={() => this.setShowRejectionModal(null)}
           />
         )}
       </>
@@ -59,12 +60,12 @@ export default class TopPanel extends React.PureComponent<Props, State> {
     const onClickMap = {
       [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
       [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
-      [ButtonType.DISABLE]: () => this.setRejectionModal(RejectionType.DISABLE_COLLECTION),
+      [ButtonType.DISABLE]: () => this.setShowRejectionModal(RejectionType.DISABLE_COLLECTION),
       [ButtonType.REJECT]: () => {
         if (curation?.status === CurationStatus.PENDING) {
-          this.setRejectionModal(RejectionType.REJECT_CURATION)
+          this.setShowRejectionModal(RejectionType.REJECT_CURATION)
         } else {
-          this.setRejectionModal(RejectionType.REJECT_COLLECTION)
+          this.setShowRejectionModal(RejectionType.REJECT_COLLECTION)
         }
       }
     }

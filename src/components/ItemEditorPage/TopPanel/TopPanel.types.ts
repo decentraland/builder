@@ -16,7 +16,7 @@ export type Props = {
 
 export type State = {
   currentVeredict?: boolean
-  rejectionModal?: RejectionType
+  showRejectionModal: RejectionType | null
 }
 
 export enum ButtonType {
