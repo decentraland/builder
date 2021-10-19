@@ -58,13 +58,14 @@ export default class EditPriceAndBeneficiaryModal extends React.PureComponent<Pr
   handleSubmit = () => {
     const { item, onSave, onSetPriceAndBeneficiary } = this.props
     const { price, beneficiary } = this.state
+    const priceInWei = toWei(price!, 'ether')
 
     if (item!.isPublished) {
-      onSetPriceAndBeneficiary(item.id, price!, beneficiary!)
+      onSetPriceAndBeneficiary(item.id, priceInWei, beneficiary!)
     } else {
       const newItem: Item = {
         ...item!,
-        price: toWei(price!, 'ether'),
+        price: priceInWei,
         beneficiary
       }
       onSave(newItem, {})
