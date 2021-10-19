@@ -153,7 +153,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   handleOnSaveItem = async () => {
-    const { selectedItem, onSaveItem, onSavePublishedItem } = this.props
+    const { selectedItem, onSaveItem } = this.props
     const { name, description, rarity, contents, data, isDirty } = this.state
 
     if (isDirty && selectedItem) {
@@ -169,8 +169,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
         data: data!,
         contents: itemContents
       }
-      const onSave = selectedItem && selectedItem.isPublished ? onSavePublishedItem : onSaveItem
-      onSave(item, contents)
+      onSaveItem(item, contents)
       this.setState({ isDirty: false })
       this.handleOnResetItem()
     }
@@ -250,7 +249,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { selectedItemId, address, isLoading, isConnected, error } = this.props
+    const { selectedItemId, address, isConnected, error } = this.props
     const { name, description, thumbnail, rarity, data, isDirty, hasItem } = this.state
     const rarities = getRarities()
 
@@ -258,7 +257,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
       <div className="RightPanel">
         {isConnected ? (
           <ItemProvider id={selectedItemId}>
-            {(item, collection, isItemLoading) => {
+            {(item, collection, isLoading) => {
               const isItemLocked = collection && isLocked(collection)
               const canEditItemMetadata = this.canEditItemMetadata(item)
 
@@ -277,7 +276,7 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                 overrideCategories = actionableCategories.filter(category => !hides.includes(category))
               }
 
-              return isLoading || isItemLoading ? (
+              return isLoading ? (
                 <Loader size="massive" active />
               ) : hasItem || !selectedItemId ? (
                 <>
@@ -327,8 +326,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             </div>
                           </>
                         ) : (
-                          <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                        )}
+                            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                          )}
                         <div className="metrics">
                           <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
                           <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>

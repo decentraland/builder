@@ -19,7 +19,7 @@ import {
   DISSOLVE_ESTATE_SUCCESS,
   SET_UPDATE_MANAGER_SUCCESS
 } from 'modules/land/actions'
-import { RESCUE_ITEMS_SUCCESS, SAVE_PUBLISHED_ITEM_SUCCESS } from 'modules/item/actions'
+import { RESCUE_ITEMS_SUCCESS, SET_PRICE_AND_BENEFICIARY_REQUEST } from 'modules/item/actions'
 import {
   MINT_COLLECTION_ITEMS_SUCCESS,
   SET_COLLECTION_MINTERS_SUCCESS,
@@ -194,12 +194,12 @@ const Transaction = (props: Props) => {
         />
       )
     }
-    case SAVE_PUBLISHED_ITEM_SUCCESS: {
+    case SET_PRICE_AND_BENEFICIARY_REQUEST: {
       const { item } = tx.payload
       return (
         <TransactionDetail
           item={item}
-          text={<T id="transaction.saved_published_item" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />}
+          text={<T id="transaction.set_price_and_beneficiary" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />}
           tx={tx}
         />
       )
@@ -322,14 +322,14 @@ const Transaction = (props: Props) => {
                 }}
               />
             ) : (
-              <T
-                id="transaction.unset_ens_content"
-                values={{
-                  address: <Profile address={address} />,
-                  name: ens.subdomain
-                }}
-              />
-            )
+                <T
+                  id="transaction.unset_ens_content"
+                  values={{
+                    address: <Profile address={address} />,
+                    name: ens.subdomain
+                  }}
+                />
+              )
           }
           tx={tx}
         />
@@ -344,8 +344,8 @@ const Transaction = (props: Props) => {
             isEnoughClaimMana(allowance) ? (
               <T id="transaction.allowed_claim_mana" values={{ address: <Profile address={address} /> }} />
             ) : (
-              <T id="transaction.disallowed_claim_mana" values={{ address: <Profile address={address} /> }} />
-            )
+                <T id="transaction.disallowed_claim_mana" values={{ address: <Profile address={address} /> }} />
+              )
           }
           tx={tx}
         />

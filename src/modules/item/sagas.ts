@@ -24,10 +24,10 @@ import {
   saveItemFailure,
   SAVE_ITEM_REQUEST,
   SAVE_ITEM_SUCCESS,
-  SavePublishedItemRequestAction,
-  savePublishedItemSuccess,
-  savePublishedItemFailure,
-  SAVE_PUBLISHED_ITEM_REQUEST,
+  SetPriceAndBeneficiaryRequestAction,
+  setPriceAndBeneficiarySuccess,
+  setPriceAndBeneficiaryFailure,
+  SET_PRICE_AND_BENEFICIARY_REQUEST,
   DeleteItemRequestAction,
   deleteItemSuccess,
   deleteItemFailure,
@@ -75,7 +75,7 @@ import { calculateFinalSize } from './export'
 import { Item, Rarity, CatalystItem } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
-import { hasOnChainDataChanged, getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
+import { getMetadata, isValidText, MAX_FILE_SIZE, getCatalystItemURN } from './utils'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
@@ -85,7 +85,7 @@ export function* itemSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_ITEM_REQUEST, handleFetchItemRequest)
   yield takeEvery(FETCH_COLLECTION_ITEMS_REQUEST, handleFetchCollectionItemsRequest)
   yield takeEvery(SAVE_ITEM_REQUEST, handleSaveItemRequest)
-  yield takeEvery(SAVE_PUBLISHED_ITEM_REQUEST, handleSavePublishedItemRequest)
+  yield takeEvery(SET_PRICE_AND_BENEFICIARY_REQUEST, handleSetPriceAndBeneficiaryRequest)
   yield takeEvery(DELETE_ITEM_REQUEST, handleDeleteItemRequest)
   yield takeLatest(LOGIN_SUCCESS, handleLoginSuccess)
   yield takeLatest(SET_COLLECTION, handleSetCollection)
@@ -166,48 +166,34 @@ export function* itemSaga(builder: BuilderAPI) {
     }
   }
 
-  function* handleSavePublishedItemRequest(action: SavePublishedItemRequestAction) {
-    const { item: actionItem, contents } = action.payload
+  function* handleSetPriceAndBeneficiaryRequest(action: SetPriceAndBeneficiaryRequestAction) {
+    const { itemId, price, beneficiary } = action.payload
     try {
-      const item = { ...actionItem, updatedAt: Date.now() }
       const items: ReturnType<typeof getItems> = yield select(getItems)
+      const item = items.find(item => item.id === itemId)
       const collections: ReturnType<typeof getCollections> = yield select(getCollections)
-      const originalItem = items.find(_item => _item.id === item.id)
-      const collection = collections.find(_collection => _collection.id === item.collectionId)
+      const collection = collections.find(_collection => item && _collection.id === item.collectionId)
 
-      if (!originalItem || !collection) {
-        throw new Error(t('sagas.item.not_found'))
-      }
-      if (!originalItem.isPublished) {
-        throw new Error(t('sagas.item.cant_persist_unpublished'))
-      }
-      if (!originalItem.collectionId) {
-        throw new Error(t('sagas.item.cant_save_without_collection'))
+      if (!item || !collection) {
+        throw new Error(yield call(t, 'sagas.item.not_found'))
       }
 
-      let txHash: string | undefined
-      const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-
-      if (hasOnChainDataChanged(originalItem, item)) {
-        const metadata = getMetadata(item)
-        const contract = { ...getContract(ContractName.ERC721CollectionV2, maticChainId), address: collection.contractAddress! }
-        txHash = yield call(sendTransaction, contract, collection =>
-          collection.editItemsData([item.tokenId!], [item.price!], [item.beneficiary!], [metadata])
-        )
-      } else {
-        yield put(saveItemRequest(item, contents))
-        const { failure }: { failure: SaveItemFailureAction } = yield race({
-          success: take(SAVE_ITEM_SUCCESS),
-          failure: take(SAVE_ITEM_FAILURE)
-        })
-        if (failure) {
-          throw new Error(failure.payload.error)
-        }
+      if (!item.isPublished) {
+        throw new Error(yield call(t, 'sagas.item.not_published'))
       }
 
-      yield put(savePublishedItemSuccess(item, maticChainId, txHash))
+      const newItem = { ...item, price, beneficiary, updatedAt: Date.now() }
+
+      const metadata = getMetadata(newItem)
+      const chainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
+      const contract = { ...getContract(ContractName.ERC721CollectionV2, chainId), address: collection.contractAddress! }
+      const txHash = yield call(sendTransaction, contract, collection =>
+        collection.editItemsData([newItem.tokenId!], [newItem.price!], [newItem.beneficiary!], [metadata])
+      )
+
+      yield put(setPriceAndBeneficiarySuccess(newItem, chainId, txHash))
     } catch (error) {
-      yield put(savePublishedItemFailure(actionItem, contents, error.message))
+      yield put(setPriceAndBeneficiaryFailure(itemId, price, beneficiary, error.message))
     }
   }
 

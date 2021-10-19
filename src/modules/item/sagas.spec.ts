@@ -5,6 +5,7 @@ import { call, select, take, race } from 'redux-saga/effects'
 import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { BuilderAPI } from 'lib/api/builder'
 import {
@@ -14,13 +15,14 @@ import {
   saveItemFailure,
   saveItemRequest,
   saveItemSuccess,
-  savePublishedItemRequest,
-  savePublishedItemSuccess,
+  setPriceAndBeneficiaryRequest,
+  setPriceAndBeneficiarySuccess,
   SAVE_ITEM_FAILURE,
-  SAVE_ITEM_SUCCESS
+  SAVE_ITEM_SUCCESS,
+  setPriceAndBeneficiaryFailure
 } from './actions'
 import { itemSaga, handleResetItemRequest } from './sagas'
-import { Item, ItemType } from './types'
+import { Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { MAX_FILE_SIZE } from './utils'
 import { Collection } from 'modules/collection/types'
@@ -182,9 +184,78 @@ describe('when handling the save item request action', () => {
   })
 })
 
-describe('when handling the save published item request action', () => {
+describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
-    it('should put a save published item success action', () => {
+    it('should put a setPriceAndBeneficiarySuccess action', () => {
+      const collection = {
+        id: 'aCollection'
+      } as Collection
+
+      const item = {
+        id: 'anItem',
+        name: 'valid name',
+        description: 'valid description',
+        collectionId: collection.id,
+        type: ItemType.WEARABLE,
+        updatedAt,
+        isPublished: true,
+        data: {
+          category: WearableCategory.HAT,
+          representations: [
+            {
+              bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE],
+              contents: ['model.glb', 'texture.png'],
+              mainFile: 'model.glb',
+              overrideHides: [],
+              overrideReplaces: []
+            }
+          ] as WearableRepresentation[]
+        }
+      } as Item
+
+      return expectSaga(itemSaga, builderAPI)
+        .provide([
+          [select(getItems), [item]],
+          [select(getCollections), [collection]],
+          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
+          [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
+        ])
+        .put(setPriceAndBeneficiarySuccess(item, ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(setPriceAndBeneficiaryRequest(item.id, '10000', '0xpepe'))
+        .run({ silenceTimeout: true })
+    })
+    describe("and the itemId doesn't match any existing item", () => {
+      it('should put a setPriceAndBeneficiaryFailure action with a sagas.item.not_found error message', () => {
+        const collection = {
+          id: 'aCollection'
+        } as Collection
+
+        const item = {
+          id: 'anItem',
+          name: 'valid name',
+          description: 'valid description',
+          collectionId: collection.id,
+          updatedAt,
+          isPublished: false
+        } as Item
+
+        const nonExistentItemId = 'non-existent-id'
+        const errorMessage = 'Error message'
+
+        return expectSaga(itemSaga, builderAPI)
+          .provide([
+            [select(getItems), [item]],
+            [select(getCollections), [collection]],
+            [call(t, 'sagas.item.not_found'), errorMessage]
+          ])
+          .put(setPriceAndBeneficiaryFailure(nonExistentItemId, '10000', '0xpepe', errorMessage))
+          .dispatch(setPriceAndBeneficiaryRequest(nonExistentItemId, '10000', '0xpepe'))
+          .run({ silenceTimeout: true })
+      })
+    })
+  })
+  describe('and the item is not published', () => {
+    it('should put a setPriceAndBeneficiaryFailure action with a sagas.item.not_published error message', () => {
       const collection = {
         id: 'aCollection'
       } as Collection
@@ -195,68 +266,20 @@ describe('when handling the save published item request action', () => {
         description: 'valid description',
         collectionId: collection.id,
         updatedAt,
-        isPublished: true
+        isPublished: false
       } as Item
+
+      const errorMessage = 'Error message'
 
       return expectSaga(itemSaga, builderAPI)
         .provide([
           [select(getItems), [item]],
           [select(getCollections), [collection]],
-          [select(getCollection, item.collectionId!), collection],
-          [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET]
+          [call(t, 'sagas.item.not_published'), errorMessage]
         ])
-        .put(saveItemRequest(item, contents))
-        .put(saveItemSuccess(item, contents))
-        .put(savePublishedItemSuccess(item, ChainId.MATIC_MAINNET))
-        .dispatch(savePublishedItemRequest(item, contents))
+        .put(setPriceAndBeneficiaryFailure(item.id, '10000', '0xpepe', errorMessage))
+        .dispatch(setPriceAndBeneficiaryRequest(item.id, '10000', '0xpepe'))
         .run({ silenceTimeout: true })
-    })
-
-    describe('and price or beneficiary have changed', () => {
-      it('should put a save published item success with the tx hash', () => {
-        const collection = {
-          id: 'aCollection'
-        } as Collection
-
-        const item = ({
-          id: 'anItem',
-          name: 'valid name',
-          description: 'valid description',
-          collectionId: collection.id,
-          type: ItemType.WEARABLE,
-          updatedAt,
-          isPublished: true,
-          price: '1',
-          beneficiary: '0xA',
-          data: {
-            category: WearableCategory.HAT,
-            representations: [
-              {
-                bodyShapes: [WearableBodyShape.MALE, WearableBodyShape.FEMALE]
-              }
-            ]
-          }
-        } as any) as Item
-
-        const newItem = {
-          ...item,
-          price: '2',
-          beneficiary: '0xB'
-        } as Item
-
-        const txHash = '0xdeabeef'
-
-        return expectSaga(itemSaga, builderAPI)
-          .provide([
-            [select(getItems), [item]],
-            [select(getCollections), [collection]],
-            [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
-            [matchers.call.fn(sendTransaction), Promise.resolve(txHash)]
-          ])
-          .put(savePublishedItemSuccess(newItem, ChainId.MATIC_MAINNET, txHash))
-          .dispatch(savePublishedItemRequest(newItem, contents))
-          .run({ silenceTimeout: true })
-      })
     })
   })
 })

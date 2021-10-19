@@ -807,7 +807,7 @@
     "collection_published": "Published the collection {name}",
     "collection_approved": "Approved the collection {name}",
     "collection_rejected": "Rejected the collection {name}",
-    "saved_published_item": "You edited the item {name}",
+    "set_price_and_beneficiary": "You edited the price and/or beneficiary of {name}",
     "collection_item_minted": "Minted {itemName} for the collection {collectionName} {count, plural, one {once} other {{count} times}}",
     "collection_items_minted": "Minted {count} items for the collection {collectionName}",
     "updated_collection_managers": "Updated the collection's {name} managers",
@@ -1204,7 +1204,7 @@
       "invalid_identity": "Invalid Identity",
       "invalid_character": "Invalid character! The \":\" is not allowed in names or descriptions",
       "cant_save_published": "Item should not be published to save it",
-      "cant_persist_unpublished": "Item must be published to save using a transaction",
+      "not_published": "Item must be published",
       "cant_save_without_collection": "Can't save a published item without a collection",
       "not_found": "Not found"
     }

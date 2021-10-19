@@ -145,7 +145,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
   }
 
   handleSubmit = async () => {
-    const { address, metadata, onSave, onSavePublished } = this.props
+    const { address, metadata, onSave } = this.props
     const { id } = this.state
 
     let changeItemFile = false
@@ -266,9 +266,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         }
       }
 
-      const baseItem = editedItem || pristineItem
-      const onSaveItem = baseItem && baseItem.isPublished ? onSavePublished : onSave
-      onSaveItem(item, sortedContents.all)
+      onSave(item, sortedContents.all)
     }
   }
 
