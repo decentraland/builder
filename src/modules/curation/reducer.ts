@@ -4,6 +4,7 @@ import {
   ApproveCurationRequestAction,
   ApproveCurationSuccessAction,
   APPROVE_CURATION_FAILURE,
+  APPROVE_CURATION_REQUEST,
   APPROVE_CURATION_SUCCESS,
   FetchCurationFailureAction,
   FetchCurationRequestAction,
@@ -27,6 +28,7 @@ import {
   RejectCurationRequestAction,
   RejectCurationSuccessAction,
   REJECT_CURATION_FAILURE,
+  REJECT_CURATION_REQUEST,
   REJECT_CURATION_SUCCESS
 } from './actions'
 import { Curation, CurationStatus } from './types'
@@ -65,6 +67,8 @@ export function curationReducer(state: CurationState = INITIAL_STATE, action: Cu
     case FETCH_CURATIONS_REQUEST:
     case FETCH_CURATION_REQUEST:
     case PUSH_CURATION_REQUEST:
+    case APPROVE_CURATION_REQUEST:
+    case REJECT_CURATION_REQUEST:
       return {
         ...state,
         loading: loadingReducer(state.loading, action)

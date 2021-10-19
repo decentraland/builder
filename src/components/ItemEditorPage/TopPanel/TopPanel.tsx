@@ -3,39 +3,30 @@ import { Button, Loader } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { Collection } from 'modules/collection/types'
-import { Curation } from 'modules/curation/types'
+import { Curation, CurationStatus } from 'modules/curation/types'
 import { hasReviews } from 'modules/collection/utils'
 import CollectionProvider from 'components/CollectionProvider'
 import JumpIn from 'components/JumpIn'
-import ReviewModal from './ReviewModal'
-import { ReviewType } from './ReviewModal/ReviewModal.types'
-import { Props, State } from './TopPanel.types'
+import RejectionModal from './RejectionModal'
+import { RejectionType } from './RejectionModal/RejectionModal.types'
+import { ButtonType, Props, State } from './TopPanel.types'
 
 import './TopPanel.css'
 
 export default class TopPanel extends React.PureComponent<Props, State> {
   state: State = {
     currentVeredict: undefined,
-    isApproveModalOpen: false,
-    isRejectModalOpen: false,
-    isApproveCurationModalOpen: false,
-    isRejectCurationModalOpen: false
+    showRejectionModal: null
   }
 
   handleBack = () => {
     this.props.onNavigate(locations.curation())
   }
 
-  setRejectModalVisibility = (isRejectModalOpen: boolean) => {
-    this.setState({ isRejectModalOpen })
-  }
-
-  setRejectCurationModalVisibility = (isRejectCurationModalOpen: boolean) => {
-    this.setState({ isRejectCurationModalOpen })
-  }
+  setShowRejectionModal = (showRejectionModal: RejectionType | null) => this.setState({ showRejectionModal })
 
   renderPage = (collection: Collection, curation: Curation | null) => {
-    const { isRejectModalOpen, isRejectCurationModalOpen } = this.state
+    const { showRejectionModal } = this.state
     const { chainId } = this.props
 
     return (
@@ -50,44 +41,47 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         <div className="actions">
           <span className="button-container">{this.renderButtons(collection, curation)}</span>
         </div>
-        <ReviewModal
-          type={ReviewType.REJECT}
-          open={isRejectModalOpen}
-          collection={collection}
-          curation={null}
-          onClose={() => this.setRejectModalVisibility(false)}
-        />
-        <ReviewModal
-          type={ReviewType.REJECT_CURATION}
-          open={isRejectCurationModalOpen}
-          collection={collection}
-          curation={curation}
-          onClose={() => this.setRejectCurationModalVisibility(false)}
-        />
+        {showRejectionModal && (
+          <RejectionModal
+            type={showRejectionModal}
+            open={true}
+            collection={collection}
+            curation={curation}
+            onClose={() => this.setShowRejectionModal(null)}
+          />
+        )}
       </>
     )
   }
 
-  renderButton = (reviewType: ReviewType, collection: Collection) => {
+  renderButton = (type: ButtonType, collection: Collection, curation: Curation | null) => {
     const { onInitiateApprovalFlow } = this.props
 
     const onClickMap = {
-      [ReviewType.APPROVE]: () => onInitiateApprovalFlow(collection),
-      [ReviewType.REJECT]: this.setRejectModalVisibility,
-      [ReviewType.APPROVE_CURATION]: () => onInitiateApprovalFlow(collection),
-      [ReviewType.REJECT_CURATION]: this.setRejectCurationModalVisibility
+      [ButtonType.APPROVE]: () => onInitiateApprovalFlow(collection),
+      [ButtonType.ENABLE]: () => onInitiateApprovalFlow(collection),
+      [ButtonType.DISABLE]: () => this.setShowRejectionModal(RejectionType.DISABLE_COLLECTION),
+      [ButtonType.REJECT]: () => {
+        if (curation?.status === CurationStatus.PENDING) {
+          this.setShowRejectionModal(RejectionType.REJECT_CURATION)
+        } else {
+          this.setShowRejectionModal(RejectionType.REJECT_COLLECTION)
+        }
+      }
     }
 
-    const textMap = {
-      [ReviewType.APPROVE]: 'approve',
-      [ReviewType.REJECT]: 'reject',
-      [ReviewType.APPROVE_CURATION]: 'approve_curation',
-      [ReviewType.REJECT_CURATION]: 'reject_curation'
+    const i18nKeyByButtonType = {
+      [ButtonType.APPROVE]: 'approve',
+      [ButtonType.ENABLE]: 'enable',
+      [ButtonType.DISABLE]: 'disable',
+      [ButtonType.REJECT]: 'reject'
     }
+
+    const isPrimary = type === ButtonType.APPROVE || type === ButtonType.ENABLE
 
     return (
-      <Button primary={![ReviewType.REJECT, ReviewType.REJECT_CURATION].includes(reviewType)} onClick={() => onClickMap[reviewType](true)}>
-        {t(`item_editor.top_panel.${textMap[reviewType]}.action`)}
+      <Button primary={isPrimary} onClick={() => onClickMap[type]()}>
+        {t(`item_editor.top_panel.${i18nKeyByButtonType[type]}`)}
       </Button>
     )
   }
@@ -98,28 +92,28 @@ export default class TopPanel extends React.PureComponent<Props, State> {
         case 'pending':
           return (
             <>
-              {this.renderButton(ReviewType.APPROVE_CURATION, collection)}
-              {this.renderButton(ReviewType.REJECT_CURATION, collection)}
+              {this.renderButton(ButtonType.APPROVE, collection, curation)}
+              {this.renderButton(ButtonType.REJECT, collection, curation)}
             </>
           )
         case 'approved':
         case 'rejected':
-          return this.renderButton(ReviewType.REJECT, collection)
+          return this.renderButton(ButtonType.DISABLE, collection, curation)
       }
     }
 
     if (hasReviews(collection)) {
       if (collection.isApproved) {
-        return this.renderButton(ReviewType.REJECT, collection)
+        return this.renderButton(ButtonType.DISABLE, collection, curation)
       } else {
-        return this.renderButton(ReviewType.APPROVE, collection)
+        return this.renderButton(ButtonType.ENABLE, collection, curation)
       }
     }
 
     return (
       <>
-        {this.renderButton(ReviewType.APPROVE, collection)}
-        {this.renderButton(ReviewType.REJECT, collection)}
+        {this.renderButton(ButtonType.APPROVE, collection, curation)}
+        {this.renderButton(ButtonType.REJECT, collection, curation)}
       </>
     )
   }
