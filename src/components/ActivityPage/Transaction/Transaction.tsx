@@ -199,7 +199,9 @@ const Transaction = (props: Props) => {
       return (
         <TransactionDetail
           item={item}
-          text={<T id="transaction.set_price_and_beneficiary" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />}
+          text={
+            <T id="transaction.set_price_and_beneficiary" values={{ name: <Link to={locations.itemDetail(item.id)}>{item.name}</Link> }} />
+          }
           tx={tx}
         />
       )
@@ -322,14 +324,14 @@ const Transaction = (props: Props) => {
                 }}
               />
             ) : (
-                <T
-                  id="transaction.unset_ens_content"
-                  values={{
-                    address: <Profile address={address} />,
-                    name: ens.subdomain
-                  }}
-                />
-              )
+              <T
+                id="transaction.unset_ens_content"
+                values={{
+                  address: <Profile address={address} />,
+                  name: ens.subdomain
+                }}
+              />
+            )
           }
           tx={tx}
         />
@@ -344,8 +346,8 @@ const Transaction = (props: Props) => {
             isEnoughClaimMana(allowance) ? (
               <T id="transaction.allowed_claim_mana" values={{ address: <Profile address={address} /> }} />
             ) : (
-                <T id="transaction.disallowed_claim_mana" values={{ address: <Profile address={address} /> }} />
-              )
+              <T id="transaction.disallowed_claim_mana" values={{ address: <Profile address={address} /> }} />
+            )
           }
           tx={tx}
         />

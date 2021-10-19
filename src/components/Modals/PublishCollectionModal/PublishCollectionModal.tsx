@@ -85,57 +85,57 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
               <Loader size="big" active={isFetchingRarities} />
             </div>
           ) : (
-              <>
-                {t('publish_collection_modal.items_breakdown_title', { count: items.length })}
-                <div className="items-breakdown">
-                  {Object.values(itemsByRarity).map(itemByRarity => (
-                    <div className="item" key={itemByRarity.name}>
-                      <div>
-                        <i className="item-rarity" style={getBackgroundStyle(itemByRarity.id)}></i>
-                        {itemByRarity.count} {itemByRarity.name}
-                      </div>
-                      <div>
-                        <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="item total">
-                    <div>{t('global.total')}</div>
+            <>
+              {t('publish_collection_modal.items_breakdown_title', { count: items.length })}
+              <div className="items-breakdown">
+                {Object.values(itemsByRarity).map(itemByRarity => (
+                  <div className="item" key={itemByRarity.name}>
                     <div>
-                      <Mana network={Network.MATIC}>{totalPrice}</Mana>
+                      <i className="item-rarity" style={getBackgroundStyle(itemByRarity.id)}></i>
+                      {itemByRarity.count} {itemByRarity.name}
+                    </div>
+                    <div>
+                      <Mana network={Network.MATIC}>{itemByRarity.price}</Mana>
                     </div>
                   </div>
+                ))}
+                <div className="item total">
+                  <div>{t('global.total')}</div>
+                  <div>
+                    <Mana network={Network.MATIC}>{totalPrice}</Mana>
+                  </div>
                 </div>
-                <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA}>
-                  {t('global.next')}
-                </Button>
-                {hasInsufficientMANA ? (
-                  <small className="not-enough-mana-notice">
-                    <T
-                      id="publish_collection_modal.not_enogh_mana"
-                      values={{
-                        symbol: (
-                          <span>
-                            <Mana network={Network.MATIC} inline /> MANA
-                          </span>
-                        )
-                      }}
-                    />
-                    <br />
-                    <T
-                      id="publish_collection_modal.get_mana"
-                      values={{
-                        link: (
-                          <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
-                            Account
-                          </a>
-                        )
-                      }}
-                    />
-                  </small>
-                ) : null}
-              </>
-            )}
+              </div>
+              <Button className="proceed" primary fluid onClick={this.handleProceed} disabled={hasInsufficientMANA}>
+                {t('global.next')}
+              </Button>
+              {hasInsufficientMANA ? (
+                <small className="not-enough-mana-notice">
+                  <T
+                    id="publish_collection_modal.not_enogh_mana"
+                    values={{
+                      symbol: (
+                        <span>
+                          <Mana network={Network.MATIC} inline /> MANA
+                        </span>
+                      )
+                    }}
+                  />
+                  <br />
+                  <T
+                    id="publish_collection_modal.get_mana"
+                    values={{
+                      link: (
+                        <a href={env.get('REACT_APP_ACCOUNT_URL', '')} rel="noopener noreferrer" target="_blank">
+                          Account
+                        </a>
+                      )
+                    }}
+                  />
+                </small>
+              ) : null}
+            </>
+          )}
         </Modal.Content>
       </>
     )
