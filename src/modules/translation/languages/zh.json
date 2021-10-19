@@ -137,6 +137,21 @@
     "placeholder": "我的大学",
     "error_name_already_in_use": "使用中的名称。 尝试其他"
   },
+  "create_third_party_collection_modal": {
+    "title": "新的第三方收藏",
+    "subtitle": "为您的新集合输入一个描述性名称",
+    "third_party": {
+      "label": "第三者"
+    },
+    "name_field": {
+      "label": "姓名",
+      "placeholder": "我的收藏"
+    },
+    "urn_suffix_field": {
+      "label": "Id",
+      "placeholder": "我的收藏"
+    }
+  },
   "model_metrics": {
     "triangles": "{count}个三角形",
     "materials": "{count}个材料",
@@ -890,6 +905,7 @@
     "no_items": "有项目",
     "new_item": "项目",
     "new_collection": "收藏",
+    "new_third_party_collection": "新的第三方收藏",
     "empty_description": "您还没有商品或收藏。 创建一个新项目或收藏集，并为metaverse装扮时尚！"
   },
   "curation_page": {

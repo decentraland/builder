@@ -142,6 +142,21 @@
     "placeholder": "My collection",
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
+  "create_third_party_collection_modal": {
+    "title": "New Third Party Collection",
+    "subtitle": "Enter a descriptive name for your new collection",
+    "third_party": {
+      "label": "Third Party"
+    },
+    "name_field": {
+      "label": "Name",
+      "placeholder": "My collection"
+    },
+    "urn_suffix_field": {
+      "label": "Id",
+      "placeholder": "my-collection"
+    }
+  },
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triangle} other {triangles}}",
     "materials": "{count} {count, plural, one {material} other {materials}}",
@@ -901,6 +916,7 @@
     "no_items": "No items",
     "new_item": "New Item",
     "new_collection": "New Collection",
+    "new_third_party_collection": "New Third Party Collection",
     "empty_description": "You have no Items or Collections yet. Create a new item or collection, and dress the metaverse in style!"
   },
   "curation_page": {

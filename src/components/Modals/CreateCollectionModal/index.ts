@@ -1,2 +1,2 @@
-import CreateItemModal from './CreateCollectionModal.container'
-export default CreateItemModal
+import CreateCollectionModal from './CreateCollectionModal.container'
+export default CreateCollectionModal

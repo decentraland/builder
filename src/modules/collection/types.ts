@@ -5,6 +5,7 @@ export type Collection = {
   name: string
   owner: string
   contractAddress?: string
+  urnSuffix?: string
   salt?: string
   isPublished: boolean
   isApproved: boolean
