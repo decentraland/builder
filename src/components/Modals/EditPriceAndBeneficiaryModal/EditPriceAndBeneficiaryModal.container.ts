@@ -5,10 +5,10 @@ import { RootState } from 'modules/common/types'
 import { getAuthorizedItems, getLoading } from 'modules/item/selectors'
 import {
   saveItemRequest,
-  savePublishedItemRequest,
+  setPriceAndBeneficiaryRequest,
   FETCH_ITEMS_REQUEST,
   SAVE_ITEM_REQUEST,
-  SAVE_PUBLISHED_ITEM_REQUEST
+  SET_PRICE_AND_BENEFICIARY_REQUEST
 } from 'modules/item/actions'
 import { OwnProps, MapStateProps, MapDispatchProps, MapDispatch } from './EditPriceAndBeneficiaryModal.types'
 import EditPriceAndBeneficiaryModal from './EditPriceAndBeneficiaryModal'
@@ -23,13 +23,13 @@ const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
     isLoading:
       isLoadingType(getLoading(state), FETCH_ITEMS_REQUEST) ||
       isLoadingType(getLoading(state), SAVE_ITEM_REQUEST) ||
-      isLoadingType(getLoading(state), SAVE_PUBLISHED_ITEM_REQUEST)
+      isLoadingType(getLoading(state), SET_PRICE_AND_BENEFICIARY_REQUEST)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSave: (item, contents) => dispatch(saveItemRequest(item, contents)),
-  onSavePublished: (item, contents) => dispatch(savePublishedItemRequest(item, contents))
+  onSetPriceAndBeneficiary: (itemId, price, beneficiary) => dispatch(setPriceAndBeneficiaryRequest(itemId, price, beneficiary))
 })
 
 export default connect(mapState, mapDispatch)(EditPriceAndBeneficiaryModal)

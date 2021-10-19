@@ -815,7 +815,7 @@
     "collection_published": "Collección {name} publicada",
     "collection_approved": "Collección {name} aprobada",
     "collection_rejected": "Collección {name} rechazada",
-    "saved_published_item": "Has editado el item {name}",
+    "set_price_and_beneficiary": "Has editado el precio y/o beneficiario de {name}",
     "collection_item_minted": "Item {itemName} creado para la colección {collectionName} {count, plural, one {una vez} other {{count} veces}}",
     "collection_items_minted": "{count} items creados para la colleción {name}",
     "updated_collection_managers": "Actualizados los colaboradores de la colección {name}",
@@ -1211,7 +1211,7 @@
       "invalid_identity": "Identidad inválida",
       "invalid_character": "¡Carácter invalido! El \":\" no está permitido en nombres o descripciones",
       "cant_save_published": "El item no debe publicarse para guardarlo.",
-      "cant_persist_unpublished": "El item debe estar publicado para guardar usando una transacción",
+      "not_published": "El item debe estar publicado",
       "cant_save_without_collection": "No se puede guardar una publicación sin una colección",
       "not_found": "No se encontró"
     }

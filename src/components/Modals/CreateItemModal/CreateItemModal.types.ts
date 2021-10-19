@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { ModelMetrics } from 'modules/models/types'
-import { saveItemRequest, SaveItemRequestAction, savePublishedItemRequest, SavePublishedItemRequestAction } from 'modules/item/actions'
+import { saveItemRequest, SaveItemRequestAction } from 'modules/item/actions'
 import { BodyShapeType, Item, ItemRarity, WearableCategory } from 'modules/item/types'
 
 export enum CreateItemView {
@@ -15,7 +15,6 @@ export type Props = ModalProps & {
   error: string | null
   isLoading: boolean
   onSave: typeof saveItemRequest
-  onSavePublished: typeof savePublishedItemRequest
 }
 
 export type StateData = {
@@ -46,5 +45,5 @@ export type CreateItemModalMetadata = {
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading'>
-export type MapDispatchProps = Pick<Props, 'onSave' | 'onSavePublished'>
-export type MapDispatch = Dispatch<SaveItemRequestAction | SavePublishedItemRequestAction>
+export type MapDispatchProps = Pick<Props, 'onSave'>
+export type MapDispatch = Dispatch<SaveItemRequestAction>

@@ -799,7 +799,7 @@
     "collection_published": "发布了收藏集{name}",
     "collection_approved": "批准了集合{name}",
     "collection_rejected": "拒绝收藏{name}",
-    "saved_published_item": "您编辑了项目{name}",
+    "set_price_and_beneficiary": "您编辑了{name}的价格和/或受益人",
     "collection_item_minted": "为集合 {collectionName} 铸造了 {itemName} {count, plural, one {一次} other {{count} 次}}",
     "collection_items_minted": "为{name}收集了{count}个项目",
     "updated_collection_managers": "更新了集合 {name} 管理器",
@@ -1191,7 +1191,7 @@
       "invalid_identity": "无效身份",
       "invalid_character": "无效字符！ 名称或描述中不允许使用 \":\"",
       "cant_save_published": "不应发布项目以保存它",
-      "cant_persist_unpublished": "必须发布项目才能使用事务保存",
+      "not_published": "必须发布项目才能使用事务保存",
       "cant_save_without_collection": "没有收藏就无法保存已发布",
       "not_found": "未找到项目"
     }

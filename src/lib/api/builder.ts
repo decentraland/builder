@@ -597,7 +597,9 @@ export class BuilderAPI extends BaseAPI {
   }
 
   saveItem = async (item: Item, contents: Record<string, Blob>) => {
-    await Promise.all([this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) }), this.saveItemContents(item, contents)])
+    await this.request('put', `/items/${item.id}`, { item: toRemoteItem(item) })
+    // This has to be done after the PUT above, otherwise it will fail when creating an item, since it wont find it in the DB and return a 404
+    await this.saveItemContents(item, contents)
   }
 
   saveItemContents = async (item: Item, contents: Record<string, Blob>) => {

@@ -2,17 +2,10 @@ import { connect } from 'react-redux'
 import { getAddress, isConnected } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getItem, getError as getItemError } from 'modules/item/selectors'
-import {
-  deleteItemRequest,
-  saveItemRequest,
-  savePublishedItemRequest,
-  SAVE_PUBLISHED_ITEM_SUCCESS,
-  setCollection
-} from 'modules/item/actions'
+import { deleteItemRequest, saveItemRequest, setCollection } from 'modules/item/actions'
 import { openModal } from 'modules/modal/actions'
 import { getSelectedItemId } from 'modules/location/selectors'
 import { getCollection } from 'modules/collection/selectors'
-import { getPendingTransactions } from 'modules/transaction/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './RightPanel.types'
 import RightPanel from './RightPanel'
 
@@ -27,14 +20,12 @@ const mapState = (state: RootState): MapStateProps => {
     selectedItem,
     selectedItemId,
     error: getItemError(state),
-    isConnected: isConnected(state),
-    isLoading: getPendingTransactions(state).some(tx => tx.actionType === SAVE_PUBLISHED_ITEM_SUCCESS)
+    isConnected: isConnected(state)
   }
 }
 
 const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onSaveItem: (item, contents) => dispatch(saveItemRequest(item, contents)),
-  onSavePublishedItem: (item, contents) => dispatch(savePublishedItemRequest(item, contents)),
   onDeleteItem: item => dispatch(deleteItemRequest(item)),
   onOpenModal: (name, metadata) => dispatch(openModal(name, metadata)),
   onSetCollection: (item, collectionId) => dispatch(setCollection(item, collectionId))

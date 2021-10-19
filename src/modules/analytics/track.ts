@@ -42,8 +42,8 @@ import {
   SaveItemSuccessAction,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
-  SAVE_PUBLISHED_ITEM_FAILURE,
-  SAVE_PUBLISHED_ITEM_SUCCESS
+  SET_PRICE_AND_BENEFICIARY_FAILURE,
+  SET_PRICE_AND_BENEFICIARY_SUCCESS
 } from 'modules/item/actions'
 import {
   APPROVE_COLLECTION_FAILURE,
@@ -246,8 +246,8 @@ add(SAVE_ITEM_FAILURE, 'Save item error', action => {
 addPayload(DELETE_ITEM_SUCCESS, 'Delete item')
 addPayload(DELETE_ITEM_FAILURE, 'Delete item error')
 
-addPayload(SAVE_PUBLISHED_ITEM_SUCCESS, 'Edit item on chain')
-add(SAVE_PUBLISHED_ITEM_FAILURE, 'Edit item on chain error')
+addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary success')
+addPayload(SET_PRICE_AND_BENEFICIARY_FAILURE, 'Set price and beneficiary failure')
 
 addPayload(SAVE_COLLECTION_SUCCESS, 'Save collection')
 addPayload(SAVE_COLLECTION_FAILURE, 'Save collection error')

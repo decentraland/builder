@@ -240,10 +240,6 @@ export function canManageItem(collection: Collection, item: Item, address?: stri
   return isOwner(item, address) || canManageCollectionItems(collection, address)
 }
 
-export function hasOnChainDataChanged(originalItem: Item, item: Item) {
-  return originalItem.price !== item.price || originalItem.beneficiary !== item.beneficiary
-}
-
 export function getThumbnailURL(item: Item) {
   return getContentsStorageUrl(item.contents[item.thumbnail])
 }

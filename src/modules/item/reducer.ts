@@ -27,12 +27,6 @@ import {
   SAVE_ITEM_REQUEST,
   SAVE_ITEM_FAILURE,
   SAVE_ITEM_SUCCESS,
-  SavePublishedItemRequestAction,
-  SavePublishedItemSuccessAction,
-  SavePublishedItemFailureAction,
-  SAVE_PUBLISHED_ITEM_REQUEST,
-  SAVE_PUBLISHED_ITEM_FAILURE,
-  SAVE_PUBLISHED_ITEM_SUCCESS,
   DeleteItemRequestAction,
   DeleteItemSuccessAction,
   DeleteItemFailureAction,
@@ -70,7 +64,13 @@ import {
   RESET_ITEM_FAILURE,
   ResetItemRequestAction,
   ResetItemSuccessAction,
-  ResetItemFailureAction
+  ResetItemFailureAction,
+  SetPriceAndBeneficiaryFailureAction,
+  SetPriceAndBeneficiaryRequestAction,
+  SetPriceAndBeneficiarySuccessAction,
+  SET_PRICE_AND_BENEFICIARY_REQUEST,
+  SET_PRICE_AND_BENEFICIARY_FAILURE,
+  SET_PRICE_AND_BENEFICIARY_SUCCESS
 } from './actions'
 import { toItemObject } from './utils'
 import { Item, Rarity } from './types'
@@ -100,9 +100,9 @@ type ItemReducerAction =
   | SaveItemRequestAction
   | SaveItemSuccessAction
   | SaveItemFailureAction
-  | SavePublishedItemRequestAction
-  | SavePublishedItemSuccessAction
-  | SavePublishedItemFailureAction
+  | SetPriceAndBeneficiaryRequestAction
+  | SetPriceAndBeneficiarySuccessAction
+  | SetPriceAndBeneficiaryFailureAction
   | DeleteItemRequestAction
   | DeleteItemSuccessAction
   | DeleteItemFailureAction
@@ -137,7 +137,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEM_REQUEST:
     case FETCH_COLLECTION_ITEMS_REQUEST:
     case SET_ITEMS_TOKEN_ID_REQUEST:
-    case SAVE_PUBLISHED_ITEM_REQUEST:
+    case SET_PRICE_AND_BENEFICIARY_REQUEST:
     case SAVE_ITEM_REQUEST:
     case DELETE_ITEM_REQUEST:
     case RESET_ITEM_REQUEST:
@@ -175,7 +175,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
     case FETCH_ITEM_FAILURE:
     case FETCH_COLLECTION_ITEMS_FAILURE:
     case SET_ITEMS_TOKEN_ID_FAILURE:
-    case SAVE_PUBLISHED_ITEM_FAILURE:
+    case SET_PRICE_AND_BENEFICIARY_FAILURE:
     case SAVE_ITEM_FAILURE:
     case FETCH_RARITIES_FAILURE:
     case DELETE_ITEM_FAILURE:
@@ -188,7 +188,7 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
       }
     }
     case FETCH_ITEM_SUCCESS:
-    case SAVE_PUBLISHED_ITEM_SUCCESS:
+    case SET_PRICE_AND_BENEFICIARY_SUCCESS:
     case SAVE_ITEM_SUCCESS: {
       const { item } = action.payload
       return {
@@ -302,19 +302,6 @@ export function itemReducer(state: ItemState = INITIAL_STATE, action: ItemReduce
                 accum[item.id] = { ...state.data[item.id], totalSupply }
                 return accum
               }, {} as ItemState['data'])
-            }
-          }
-        }
-        case SAVE_PUBLISHED_ITEM_SUCCESS: {
-          const item: Item = transaction.payload.item
-          return {
-            ...state,
-            data: {
-              ...state.data,
-              [item.id]: {
-                ...state.data[item.id],
-                ...item
-              }
             }
           }
         }

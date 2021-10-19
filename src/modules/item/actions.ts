@@ -65,22 +65,23 @@ export type SaveItemFailureAction = ReturnType<typeof saveItemFailure>
 
 // Edit On Chain Sale Data
 
-export const SAVE_PUBLISHED_ITEM_REQUEST = '[Request] Save published Item'
-export const SAVE_PUBLISHED_ITEM_SUCCESS = '[Success] Save published Item'
-export const SAVE_PUBLISHED_ITEM_FAILURE = '[Failure] Save published Item'
+export const SET_PRICE_AND_BENEFICIARY_REQUEST = '[Request] Set price and beneficiary'
+export const SET_PRICE_AND_BENEFICIARY_SUCCESS = '[Success] Set price and beneficiary'
+export const SET_PRICE_AND_BENEFICIARY_FAILURE = '[Failure] Set price and beneficiary'
 
-export const savePublishedItemRequest = (item: Item, contents: Record<string, Blob>) =>
-  action(SAVE_PUBLISHED_ITEM_REQUEST, { item, contents })
-export const savePublishedItemSuccess = (item: Item, chainId: ChainId, txHash?: string) => {
-  const payload = txHash ? buildTransactionPayload(chainId, txHash, { item }) : {}
-  return action(SAVE_PUBLISHED_ITEM_SUCCESS, { item, ...payload })
-}
-export const savePublishedItemFailure = (item: Item, contents: Record<string, Blob>, error: string) =>
-  action(SAVE_PUBLISHED_ITEM_FAILURE, { item, contents, error })
+export const setPriceAndBeneficiaryRequest = (itemId: string, price: string, beneficiary: string) =>
+  action(SET_PRICE_AND_BENEFICIARY_REQUEST, { itemId, price, beneficiary })
+export const setPriceAndBeneficiarySuccess = (item: Item, chainId: ChainId, txHash: string) =>
+  action(SET_PRICE_AND_BENEFICIARY_SUCCESS, {
+    item,
+    ...buildTransactionPayload(chainId, txHash, { item })
+  })
+export const setPriceAndBeneficiaryFailure = (itemId: string, price: string, beneficiary: string, error: string) =>
+  action(SET_PRICE_AND_BENEFICIARY_FAILURE, { itemId, price, beneficiary, error })
 
-export type SavePublishedItemRequestAction = ReturnType<typeof savePublishedItemRequest>
-export type SavePublishedItemSuccessAction = ReturnType<typeof savePublishedItemSuccess>
-export type SavePublishedItemFailureAction = ReturnType<typeof savePublishedItemFailure>
+export type SetPriceAndBeneficiaryRequestAction = ReturnType<typeof setPriceAndBeneficiaryRequest>
+export type SetPriceAndBeneficiarySuccessAction = ReturnType<typeof setPriceAndBeneficiarySuccess>
+export type SetPriceAndBeneficiaryFailureAction = ReturnType<typeof setPriceAndBeneficiaryFailure>
 
 // Delete items
 
