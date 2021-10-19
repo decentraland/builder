@@ -5,8 +5,8 @@ import { rejectCollectionRequest, REJECT_COLLECTION_REQUEST } from 'modules/coll
 import { getLoading as getLoadingCollection, hasPendingCurationTransaction } from 'modules/collection/selectors'
 import { getLoading as getLoadingCuration } from 'modules/curation/selectors'
 import { rejectCurationRequest, REJECT_CURATION_REQUEST } from 'modules/curation/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch } from './ReviewModal.types'
-import ReviewModal from './ReviewModal'
+import { MapStateProps, MapDispatchProps, MapDispatch } from './RejectionModal.types'
+import RejectionModal from './RejectionModal'
 
 const mapState = (state: RootState): MapStateProps => ({
   isLoading:
@@ -20,4 +20,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onRejectCuration: collection => dispatch(rejectCurationRequest(collection))
 })
 
-export default connect(mapState, mapDispatch)(ReviewModal)
+export default connect(mapState, mapDispatch)(RejectionModal)

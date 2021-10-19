@@ -1,0 +1,56 @@
+.RejectionModal.ui.modal {
+  text-align: center;
+}
+
+.RejectionModal .loading-transaction {
+  position: relative;
+  min-height: 80px;
+  margin-bottom: 65px;
+}
+
+.RejectionModal .loading-transaction .danger-text {
+  margin-bottom: 10px;
+}
+
+.RejectionModal .loading-transaction .ui.loader {
+  margin-top: 50px;
+}
+
+.RejectionModal .actions {
+  flex-direction: column;
+}
+
+.RejectionModal .actions a .ui.button {
+  width: 100%;
+}
+
+.RejectionModal .actions .forum-link .ui.button.secondary .icon.chevron.right {
+  font-size: 1.4em;
+}
+
+.RejectionModal .actions .forum-link .ui.button.secondary {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.RejectionModal .actions .ui.button.basic {
+  color: var(--text) !important;
+  border: 1px solid var(--secondary-text);
+  padding: 13px 0;
+}
+
+.RejectionModal .actions .forum-link .discussion {
+  margin-top: 5px;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.RejectionModal.ui.modal .actions > .ui.button:first-child,
+.RejectionModal.ui.modal .actions > a:first-child {
+  margin-bottom: 10px;
+}
+
+.RejectionModal.ui.modal .actions > .button {
+  margin-left: 0;
+}
