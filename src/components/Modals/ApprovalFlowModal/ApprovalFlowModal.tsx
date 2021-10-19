@@ -43,7 +43,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     return (
       <>
         <ModalNavigation title={t('approval_flow.rescue.title')} subtitle={t('approval_flow.rescue.subtitle')} onClose={onClose} />
-        <ModalContent className="rescue">
+        <ModalContent>
           <Table basic="very">
             <Table.Header>
               <Table.Row>
@@ -88,7 +88,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
     return (
       <>
         <ModalNavigation title={t('approval_flow.upload.title')} subtitle={t('approval_flow.upload.subtitle')} onClose={onClose} />
-        <ModalContent className="deploy">
+        <ModalContent>
           <Table basic="very">
             <Table.Header>
               <Table.Row>
