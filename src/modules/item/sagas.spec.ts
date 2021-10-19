@@ -6,8 +6,10 @@ import { ChainId, Network, WearableBodyShape, WearableCategory } from '@dcl/sche
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { Collection } from 'modules/collection/types'
 import { getCollections, getCollection } from 'modules/collection/selectors'
 import { BuilderAPI } from 'lib/api/builder'
+import util from 'util'
 import {
   resetItemFailure,
   resetItemRequest,
@@ -25,7 +27,6 @@ import { itemSaga, handleResetItemRequest } from './sagas'
 import { Item, ItemType, WearableRepresentation } from './types'
 import { calculateFinalSize } from './export'
 import { MAX_FILE_SIZE } from './utils'
-import { Collection } from 'modules/collection/types'
 import { getData as getItemsById, getEntityByItemId, getItems } from './selectors'
 
 let blob: Blob = new Blob()
@@ -186,6 +187,7 @@ describe('when handling the save item request action', () => {
 
 describe('when handling the setPriceAndBeneficiaryRequest action', () => {
   describe('and the item is published', () => {
+    util.inspect.defaultOptions.depth = 7
     it('should put a setPriceAndBeneficiarySuccess action', () => {
       const collection = {
         id: 'aCollection'
@@ -213,6 +215,9 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
         }
       } as Item
 
+      const price = '1000'
+      const beneficiary = '0xpepe'
+
       return expectSaga(itemSaga, builderAPI)
         .provide([
           [select(getItems), [item]],
@@ -220,8 +225,8 @@ describe('when handling the setPriceAndBeneficiaryRequest action', () => {
           [call(getChainIdByNetwork, Network.MATIC), ChainId.MATIC_MAINNET],
           [matchers.call.fn(sendTransaction), Promise.resolve('0xhash')]
         ])
-        .put(setPriceAndBeneficiarySuccess(item, ChainId.MATIC_MAINNET, '0xhash'))
-        .dispatch(setPriceAndBeneficiaryRequest(item.id, '10000', '0xpepe'))
+        .put(setPriceAndBeneficiarySuccess({ ...item, price, beneficiary }, ChainId.MATIC_MAINNET, '0xhash'))
+        .dispatch(setPriceAndBeneficiaryRequest(item.id, price, beneficiary))
         .run({ silenceTimeout: true })
     })
     describe("and the itemId doesn't match any existing item", () => {
