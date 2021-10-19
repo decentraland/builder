@@ -27,6 +27,15 @@
   margin-left: 20px;
 }
 
+.CollectionRow .info .title {
+  display: flex;
+  align-items: center;
+}
+
+.CollectionRow .info .title .CollectionStatus {
+  margin-right: 4px;
+}
+
 .CollectionRow .name {
   font-size: 15px;
   white-space: nowrap;
