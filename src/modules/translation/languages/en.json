@@ -1061,33 +1061,27 @@
   "item_editor": {
     "open": "Open editor",
     "top_panel": {
-      "veredict_received": "Verdict received",
-      "veredict_received_successfully": "We received your verdict successfully!",
-      "veredict_explanation": "Can you tell us why?",
-      "visit_activity": "You can check your {activity_link} to monitor the transaction",
-      "go_to_forum": "Please go to related forum discussion and let the creator know your decision.",
-      "forum_link": "Forum link",
-      "discussion": "Discussion",
-      "keep_reviewing": "Keep reviewing",
-      "back_to_curation": "Back to curation",
-      "waiting_for_upload": "Some items in the collection are still being uploaded to the Catalyst. Please check back soon to proceed with the curation.",
-      "reject": {
-        "title": "Reject Collection",
-        "subtitle": "I guess it's just not good enough, huh?",
-        "tx_pending": "Waiting for reject transaction to confirm",
-        "action": "Reject collection"
-      },
-      "approve": {
-        "action": "Approve collection"
-      },
-      "reject_curation": {
-        "title": "Reject Changes",
-        "subtitle": "I guess the changes are not good enough, huh?",
-        "tx_pending": "Waiting for reject changes transaction to confirm",
-        "action": "Reject changes"
-      },
-      "approve_curation": {
-        "action": "Approve changes"
+      "approve": "Approve",
+      "reject": "Reject",
+      "enable": "Enable",
+      "disable": "Disable",
+      "rejection_modal": {
+        "discussion": "Discussion",
+        "forum_link": "Forum link",
+        "go_to_forum": "Please go to related forum discussion and let the creator know your decision.",
+        "veredict_explanation": "Can you tell us why?",
+        "visit_activity": "You can check your {activity_link} to monitor the transaction",
+        "reject_curation": {
+          "title": "Reject Changes",
+          "subtitle": "I guess the changes are not good enough, huh?",
+          "action": "Reject"
+        },
+        "disable_collection": {
+          "title": "Disable Collection",
+          "subtitle": "The collection will not be available anymore. Don't worry, you will be able to enable it again later.",
+          "tx_pending": "Waiting for the disable collection transaction to confirm",
+          "action": "Disable"
+        }
       }
     },
     "left_panel": {
