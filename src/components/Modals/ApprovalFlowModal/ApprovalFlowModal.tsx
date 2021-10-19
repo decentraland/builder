@@ -89,17 +89,27 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
       <>
         <ModalNavigation title={t('approval_flow.upload.title')} subtitle={t('approval_flow.upload.subtitle')} onClose={onClose} />
         <ModalContent className="deploy">
-          {items.map((item, index) => (
-            <div className="item" key={item.id}>
-              <div className="name">
-                <ItemImage item={item} />
-                {item.name}
-              </div>
-              <div className="size">
-                {formatBytes(Array.from(entities[index].files.values()).reduce<number>((size, file) => size + file.content.length, 0))}
-              </div>
-            </div>
-          ))}
+          <Table basic="very">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>{t('global.name')}</Table.HeaderCell>
+                <Table.HeaderCell>{t('global.size')}</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {items.map((item, index) => (
+                <Table.Row key={item.id} className="item">
+                  <Table.Cell className="name">
+                    <ItemImage item={item} />
+                    {item.name}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {formatBytes(Array.from(entities[index].files.values()).reduce<number>((size, file) => size + file.content.length, 0))}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
         </ModalContent>
         <ModalActions>
           <Button primary disabled={isDeployingItems} loading={isDeployingItems} onClick={() => onDeployItems(entities)}>
