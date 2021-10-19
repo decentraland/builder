@@ -50,10 +50,11 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                 <Table.HeaderCell>{t('global.name')}</Table.HeaderCell>
                 <Table.HeaderCell>{t('global.category')}</Table.HeaderCell>
                 <Table.HeaderCell>{t('global.body_shape_plural')}</Table.HeaderCell>
+                <Table.HeaderCell textAlign="right">{t('global.hash')}</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {items.map(item => (
+              {items.map((item, index) => (
                 <Table.Row key={item.id} className="item">
                   <Table.Cell className="name">
                     <ItemImage item={item} />
@@ -65,6 +66,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                       .map(bodyShape => t(`body_shapes.${toBodyShapeType(bodyShape)}`))
                       .join(', ')}
                   </Table.Cell>
+                  <Table.Cell textAlign="right">{this.renderHash(contentHashes[index])}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -93,7 +95,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>{t('global.name')}</Table.HeaderCell>
-                <Table.HeaderCell>{t('global.size')}</Table.HeaderCell>
+                <Table.HeaderCell textAlign="right">{t('global.size')}</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -103,7 +105,7 @@ export default class ApprovalFlowModal extends React.PureComponent<Props> {
                     <ItemImage item={item} />
                     {item.name}
                   </Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell textAlign="right">
                     {formatBytes(Array.from(entities[index].files.values()).reduce<number>((size, file) => size + file.content.length, 0))}
                   </Table.Cell>
                 </Table.Row>

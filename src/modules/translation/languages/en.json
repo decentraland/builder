@@ -451,6 +451,7 @@
     "rarity": "Rarity",
     "body_shape_plural": "Body Shapes",
     "size": "Size",
+    "hash": "Hash",
     "published": "Published",
     "description": "Description",
     "order": {
