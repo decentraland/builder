@@ -125,10 +125,6 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
 export function getMetadata(item: Item) {
   const version = 1
   const type = item.type[0]
-  const slug = item.name
-    .trim()
-    .replace(/\s/, '-')
-    .toLowerCase()
 
   switch (item.type) {
     case ItemType.WEARABLE: {
@@ -139,7 +135,7 @@ export function getMetadata(item: Item) {
       return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapeTypes}`
     }
     default:
-      return `${version}:${type}:${slug}`
+      throw new Error(`Unknown item.type "${item.type}"`)
   }
 }
 
