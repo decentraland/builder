@@ -440,6 +440,7 @@
     "name": "名称",
     "category": "类别",
     "rarity": "稀有度",
+    "body_shape_plural": "机构",
     "published": "已发表",
     "description": "描述",
     "order": {

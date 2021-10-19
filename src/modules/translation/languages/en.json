@@ -449,6 +449,7 @@
     "name": "Name",
     "category": "Category",
     "rarity": "Rarity",
+    "body_shape_plural": "Cuerpos",
     "published": "Published",
     "description": "Description",
     "order": {
