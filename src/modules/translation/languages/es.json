@@ -449,6 +449,9 @@
     "name": "Nombre",
     "category": "Categoría",
     "rarity": "Rareza",
+    "body_shape_plural": "Cuerpos",
+    "size": "Tamaño",
+    "hash": "Hash",
     "published": "Publicado",
     "description": "Descripción",
     "order": {
