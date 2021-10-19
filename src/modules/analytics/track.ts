@@ -259,7 +259,7 @@ add(SAVE_ITEM_FAILURE, 'Save item error', action => {
 addPayload(DELETE_ITEM_SUCCESS, 'Delete item')
 addPayload(DELETE_ITEM_FAILURE, 'Delete item error')
 
-addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary success')
+addPayload(SET_PRICE_AND_BENEFICIARY_SUCCESS, 'Set price and beneficiary')
 addPayload(SET_PRICE_AND_BENEFICIARY_FAILURE, 'Set price and beneficiary failure')
 
 addPayload(SAVE_COLLECTION_SUCCESS, 'Save collection')
