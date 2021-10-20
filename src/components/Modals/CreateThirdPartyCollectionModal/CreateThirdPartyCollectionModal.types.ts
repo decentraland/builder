@@ -14,6 +14,7 @@ export type State = {
   thirdPartyId: string
   collectionName: string
   urnSuffix: string
+  isTypedUrnSuffix: boolean
 }
 
 export type MapStateProps = Pick<Props, 'address' | 'thirdParties' | 'isLoading'>

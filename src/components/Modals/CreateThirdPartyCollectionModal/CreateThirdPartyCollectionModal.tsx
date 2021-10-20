@@ -20,16 +20,19 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
   state: State = {
     thirdPartyId: '',
     collectionName: '',
-    urnSuffix: ''
+    urnSuffix: '',
+    isTypedUrnSuffix: false
   }
 
   handleSubmit = () => {
     const { address, onSubmit } = this.props
-    const { thirdPartyId, collectionName, urnSuffix } = this.state
+    const { collectionName, urnSuffix } = this.state
+
     if (collectionName && urnSuffix) {
       const now = Date.now()
+      const thirdParty = this.getSelectedThirdParty()
       const collection: Collection = {
-        id: thirdPartyId,
+        id: thirdParty.id,
         name: collectionName,
         owner: address!,
         urnSuffix: urnSuffix,
@@ -52,17 +55,20 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    this.setState({ collectionName: data.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })
+    const { urnSuffix, isTypedUrnSuffix } = this.state
+    const collectionName = data.value.slice(0, COLLECTION_NAME_MAX_LENGTH)
+    const newUrnSuffix = isTypedUrnSuffix ? urnSuffix : slug(collectionName)
+    this.setState({ collectionName, urnSuffix: newUrnSuffix })
   }
 
   handleUrnSuffixChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    this.setState({ urnSuffix: slug(data.value) })
+    this.setState({ urnSuffix: slug(data.value), isTypedUrnSuffix: !!data.value })
   }
 
   getSelectedThirdParty() {
     const { thirdParties } = this.props
     const { thirdPartyId } = this.state
-    return thirdParties.find(thirdParty => thirdParty.id === thirdPartyId)
+    return thirdParties.find(thirdParty => thirdParty.id === thirdPartyId) || thirdParties[0]
   }
 
   render() {
@@ -72,7 +78,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
 
     // Check for repeated urnSuffix error
 
-    const selectedThirdParty = this.getSelectedThirdParty() || thirdParties[0]
+    const selectedThirdParty = this.getSelectedThirdParty()
 
     return (
       <Modal name={name} onClose={onClose} size="tiny">
@@ -98,7 +104,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
             <Field
               label={t('create_third_party_collection_modal.urn_suffix_field.label')}
               placeholder={t('create_third_party_collection_modal.urn_suffix_field.placeholder')}
-              value={urnSuffix || slug(collectionName)}
+              value={urnSuffix}
               onChange={this.handleUrnSuffixChange}
             />
           </ModalContent>
