@@ -143,6 +143,7 @@
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
     "label": "Nombre",
     "placeholder": "Mi colleción",
+    "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
   },
   "create_third_party_collection": {
@@ -153,9 +154,10 @@
     },
     "name_field": {
       "label": "Nombre",
-      "placeholder": "Mi colección"
+      "placeholder": "Mi colección",
+      "message": "El nombre puede tener un máximo de {maxLength} caracteres"
     },
-    "name_field": {
+    "urn_suffix_field": {
       "label": "Id",
       "placeholder": "mi-colección"
     }

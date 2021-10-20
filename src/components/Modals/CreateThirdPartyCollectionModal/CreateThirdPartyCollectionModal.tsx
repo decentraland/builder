@@ -81,7 +81,6 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
     // Check for repeated urnSuffix error
 
     const selectedThirdParty = this.getSelectedThirdParty()
-    console.log('-------> ', selectedThirdParty.id)
 
     return (
       <Modal name={name} onClose={onClose} size="tiny">
