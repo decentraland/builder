@@ -439,7 +439,6 @@ export class BuilderAPI extends BaseAPI {
     authConfig = { ...authConfig, headers }
 
     try {
-      console.log(path, authConfig)
       const response = await super.request(method, path, params, authConfig)
       return response
     } catch (error) {
