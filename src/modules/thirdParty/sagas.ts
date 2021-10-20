@@ -22,7 +22,7 @@ export function* thirdPartySaga(builder: BuilderAPI) {
   function* handleFetchThirdPartiesRequest(action: FetchThirdPartiesRequestAction) {
     const { address } = action.payload
     try {
-      const thirdParties: ThirdParty[] = yield call(builder.fetchThirdParties, address)
+      const thirdParties: ThirdParty[] = yield call([builder, 'fetchThirdParties'], address)
       yield put(fetchThirdPartiesSuccess(thirdParties))
     } catch (error) {
       yield put(fetchThirdPartiesFailure(error.message))

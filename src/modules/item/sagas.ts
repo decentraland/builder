@@ -158,7 +158,7 @@ export function* itemSaga(builder: BuilderAPI) {
         }
       }
 
-      yield call(builder.saveItem, item, contents)
+      yield call([builder, 'saveItem'], item, contents)
 
       yield put(saveItemSuccess(item, contents))
     } catch (error) {

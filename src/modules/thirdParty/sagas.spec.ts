@@ -21,7 +21,7 @@ describe('when fetching third parties', () => {
 
     it('should put the fetch third party fail action with an error', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([[call(mockBuilder.fetchThirdParties, undefined), throwError(new Error(errorMessage))]])
+        .provide([[call([mockBuilder, 'fetchThirdParties'], undefined), throwError(new Error(errorMessage))]])
         .put(fetchThirdPartiesFailure(errorMessage))
         .dispatch(fetchThirdPartiesRequest())
         .run({ silenceTimeout: true })
@@ -47,7 +47,7 @@ describe('when fetching third parties', () => {
 
       it('should pass the address to the api and put the fetch third party success action the response', () => {
         return expectSaga(thirdPartySaga, mockBuilder)
-          .provide([[call(mockBuilder.fetchThirdParties, address), thirdParties]])
+          .provide([[call([mockBuilder, 'fetchThirdParties'], address), thirdParties]])
           .put(fetchThirdPartiesSuccess(thirdParties))
           .dispatch(fetchThirdPartiesRequest(address))
           .run({ silenceTimeout: true })
@@ -57,7 +57,7 @@ describe('when fetching third parties', () => {
     describe('when no address is supplied', () => {
       it('should put the fetch third party success action the api response', () => {
         return expectSaga(thirdPartySaga, mockBuilder)
-          .provide([[call(mockBuilder.fetchThirdParties, undefined), thirdParties]])
+          .provide([[call([mockBuilder, 'fetchThirdParties'], undefined), thirdParties]])
           .put(fetchThirdPartiesSuccess(thirdParties))
           .dispatch(fetchThirdPartiesRequest())
           .run({ silenceTimeout: true })
