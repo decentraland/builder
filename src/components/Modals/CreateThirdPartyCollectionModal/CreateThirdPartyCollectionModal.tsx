@@ -31,16 +31,18 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
     if (collectionName && urnSuffix) {
       const now = Date.now()
       const thirdParty = this.getSelectedThirdParty()
+
+      // generate urn using suffix
+
       const collection: Collection = {
         id: thirdParty.id,
         name: collectionName,
         owner: address!,
-        urnSuffix: urnSuffix,
+        urn: thirdParty.id,
         isPublished: false,
         isApproved: false,
         minters: [],
         managers: [],
-        reviewedAt: now,
         createdAt: now,
         updatedAt: now
       }
@@ -99,11 +101,13 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
               label={t('create_third_party_collection_modal.name_field.label')}
               placeholder={t('create_third_party_collection_modal.name_field.placeholder')}
               value={collectionName}
+              message={`The name can be ${COLLECTION_NAME_MAX_LENGTH} characters at most`}
               onChange={this.handleNameChange}
             />
             <Field
               label={t('create_third_party_collection_modal.urn_suffix_field.label')}
               placeholder={t('create_third_party_collection_modal.urn_suffix_field.placeholder')}
+              message="Only letters and dashes (-) are allowed"
               value={urnSuffix}
               onChange={this.handleUrnSuffixChange}
             />
