@@ -30,7 +30,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
   }
 
   renderPage() {
-    const { items, collections, isManager } = this.props
+    const { items, collections, isThirdPartyManager } = this.props
     const count = items.length + collections.length
 
     return (
@@ -57,7 +57,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                     <Dropdown.Menu>
                       <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
                       <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
-                      {isManager ? (
+                      {isThirdPartyManager ? (
                         <Dropdown.Item
                           text={t('collections_page.new_third_party_collection')}
                           onClick={this.handleNewThirdPartyCollection}

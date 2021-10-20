@@ -1,14 +1,15 @@
 import { Address } from 'web3x/address'
 import { constants } from 'ethers'
-import { getURNProtocol, Network } from '@dcl/schemas'
 import { DeploymentWithMetadataContentAndPointers } from 'dcl-catalyst-client'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { utils } from 'decentraland-commons'
 import future from 'fp-future'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
+import { sortByCreatedAt } from 'lib/sort'
+import { buildItemURN, pop } from 'lib/urn'
+import { NO_CACHE_HEADERS } from 'lib/headers'
 import {
   Item,
   ItemRarity,
@@ -27,8 +28,6 @@ import {
   CatalystItem,
   SyncStatus
 } from './types'
-import { sortByCreatedAt } from 'lib/sort'
-import { NO_CACHE_HEADERS } from 'lib/headers'
 
 export const MAX_FILE_SIZE = 2097152 // 2MB
 export const MAX_NFTS_PER_MINT = 50
@@ -40,10 +39,6 @@ export function getMaxSupply(item: Item) {
 
 export function getMaxSupplyForRarity(rarity: ItemRarity) {
   return RARITY_MAX_SUPPLY[rarity]
-}
-
-export function getCatalystItemURN(contractAddress: string, tokenId: string) {
-  return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${contractAddress}:${tokenId}`
 }
 
 export function getBodyShapeType(item: Item): BodyShapeType {
@@ -88,8 +83,8 @@ export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
 }
 
 export function toWearableBodyShapeType(wearableBodyShape: WearableBodyShape) {
-  // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" and we just want the "BaseMale" part
-  return wearableBodyShape.split(':').pop() as WearableBodyShapeType
+  // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (WearableBodyShape.MALE) and we just want the "BaseMale" part
+  return pop(wearableBodyShape) as WearableBodyShapeType
 }
 
 export function toBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {
@@ -123,16 +118,17 @@ export function getBackgroundStyle(rarity?: ItemRarity) {
 // - Common: version:item_type:representation_id
 // - Wearables: version:item_type:representation_id:category:bodyshapes
 export function getMetadata(item: Item) {
-  const version = 1
-  const type = item.type[0]
-
   switch (item.type) {
     case ItemType.WEARABLE: {
       const data = item.data as WearableData
       const bodyShapeTypes = getBodyShapes(item)
         .map(toWearableBodyShapeType)
         .join(',')
-      return `${version}:${type}:${item.name}:${item.description}:${data.category}:${bodyShapeTypes}`
+
+      if (!data.category) {
+        throw new Error(`Unknown item category "${item.data}"`)
+      }
+      return buildItemURN(item.type, item.name, item.description, data.category, bodyShapeTypes)
     }
     default:
       throw new Error(`Unknown item.type "${item.type}"`)

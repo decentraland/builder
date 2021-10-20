@@ -1,5 +1,5 @@
 import { RootState } from 'modules/common/types'
-import { isManager, getWalletThirdParties } from './selectors'
+import { isThirdPartyManager, getWalletThirdParties } from './selectors'
 import { ThirdParty } from './types'
 
 describe('Third Party selectors', () => {
@@ -33,7 +33,7 @@ describe('Third Party selectors', () => {
       })
 
       it('should return true', () => {
-        expect(isManager(state)).toBe(true)
+        expect(isThirdPartyManager(state)).toBe(true)
       })
     })
 
@@ -52,7 +52,7 @@ describe('Third Party selectors', () => {
       })
 
       it('should return false', () => {
-        expect(isManager(state)).toBe(false)
+        expect(isThirdPartyManager(state)).toBe(false)
       })
     })
 

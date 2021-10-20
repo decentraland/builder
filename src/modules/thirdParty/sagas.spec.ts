@@ -1,5 +1,8 @@
 import { call } from '@redux-saga/core/effects'
+import { AuthIdentity } from 'dcl-crypto'
+import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { BuilderAPI } from 'lib/api/builder'
+import { loginSuccess } from 'modules/identity/actions'
 import { expectSaga } from 'redux-saga-test-plan'
 import { throwError } from 'redux-saga-test-plan/providers'
 import { fetchThirdPartiesRequest, fetchThirdPartiesFailure, fetchThirdPartiesSuccess } from './actions'
@@ -8,8 +11,21 @@ import { ThirdParty } from './types'
 
 const mockBuilder = ({ fetchThirdParties: jest.fn() } as any) as BuilderAPI
 
-afterEach(() => {
-  jest.clearAllMocks()
+describe('when the login action succeeds', () => {
+  let wallet: Wallet
+  let identity: AuthIdentity
+
+  beforeEach(() => {
+    wallet = { address: '0x123' } as Wallet
+    identity = {} as AuthIdentity
+  })
+
+  it('should put the fetch third party request action', () => {
+    return expectSaga(thirdPartySaga, mockBuilder)
+      .put(fetchThirdPartiesRequest(wallet.address))
+      .dispatch(loginSuccess(wallet, identity))
+      .run({ silenceTimeout: true })
+  })
 })
 
 describe('when fetching third parties', () => {
@@ -55,7 +71,7 @@ describe('when fetching third parties', () => {
     })
 
     describe('when no address is supplied', () => {
-      it('should put the fetch third party success action the api response', () => {
+      it('should put the fetch third party success action with the api response', () => {
         return expectSaga(thirdPartySaga, mockBuilder)
           .provide([[call([mockBuilder, 'fetchThirdParties'], undefined), thirdParties]])
           .put(fetchThirdPartiesSuccess(thirdParties))

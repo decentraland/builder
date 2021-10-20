@@ -56,7 +56,7 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
               value={collectionName}
               onChange={this.handleNameChange}
               error={!!errorMessage}
-              message={errorMessage ? errorMessage : ''}
+              message={errorMessage ? errorMessage : t('create_collection_modal.placeholder', { maxLength: COLLECTION_NAME_MAX_LENGTH })}
             ></Field>
           </ModalContent>
           <ModalActions>

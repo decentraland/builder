@@ -1,4 +1,5 @@
 import * as React from 'react'
+import uuid from 'uuid'
 import slug from 'slug'
 import {
   ModalNavigation,
@@ -13,6 +14,7 @@ import {
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
+import { join } from 'lib/urn'
 import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State } from './CreateThirdPartyCollectionModal.types'
 
@@ -32,13 +34,11 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
       const now = Date.now()
       const thirdParty = this.getSelectedThirdParty()
 
-      // generate urn using suffix
-
       const collection: Collection = {
-        id: thirdParty.id,
+        id: uuid.v4(),
         name: collectionName,
         owner: address!,
-        urn: thirdParty.id,
+        urn: join(thirdParty.id, urnSuffix),
         isPublished: false,
         isApproved: false,
         minters: [],
@@ -81,6 +81,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
     // Check for repeated urnSuffix error
 
     const selectedThirdParty = this.getSelectedThirdParty()
+    console.log('-------> ', selectedThirdParty.id)
 
     return (
       <Modal name={name} onClose={onClose} size="tiny">
@@ -100,14 +101,14 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
             <Field
               label={t('create_third_party_collection_modal.name_field.label')}
               placeholder={t('create_third_party_collection_modal.name_field.placeholder')}
+              message={t('create_third_party_collection_modal.name_field.message', { maxLength: COLLECTION_NAME_MAX_LENGTH })}
               value={collectionName}
-              message={`The name can be ${COLLECTION_NAME_MAX_LENGTH} characters at most`}
               onChange={this.handleNameChange}
             />
             <Field
               label={t('create_third_party_collection_modal.urn_suffix_field.label')}
               placeholder={t('create_third_party_collection_modal.urn_suffix_field.placeholder')}
-              message="Only letters and dashes (-) are allowed"
+              message={t('create_third_party_collection_modal.urn_suffix_field.message')}
               value={urnSuffix}
               onChange={this.handleUrnSuffixChange}
             />

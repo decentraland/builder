@@ -140,6 +140,7 @@
     "subtitle": "Enter a descriptive name for your new collection",
     "label": "Name",
     "placeholder": "My collection",
+    "message": "The name can be ${maxLength} characters at most",
     "error_name_already_in_use": "Name already in use. Try a different one"
   },
   "create_third_party_collection_modal": {
@@ -150,11 +151,13 @@
     },
     "name_field": {
       "label": "Name",
-      "placeholder": "My collection"
+      "placeholder": "My collection",
+      "message": "The name can be ${maxLength} characters at most"
     },
     "urn_suffix_field": {
       "label": "Id",
-      "placeholder": "my-collection"
+      "placeholder": "my-collection",
+      "message": "Only letters and dashes (-) are allowed"
     }
   },
   "model_metrics": {

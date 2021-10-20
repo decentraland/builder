@@ -91,7 +91,16 @@ import { PARCEL_SIZE } from 'modules/project/constants'
 import { snapToBounds, getSceneByProjectId } from 'modules/scene/utils'
 import { getEditorShortcuts } from 'modules/keyboard/utils'
 import { THUMBNAIL_PATH } from 'modules/assetPack/utils'
+import { getCurrentPool } from 'modules/pool/selectors'
+import { Pool } from 'modules/pool/types'
+import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
+import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
+import { Item, WearableBodyShape } from 'modules/item/types'
+import { getItems } from 'modules/item/selectors'
+import { AssetPackState } from 'modules/assetPack/reducer'
+import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
 import { getContentsStorageUrl } from 'lib/api/builder'
+import { toLegacyURN } from 'lib/urn'
 import {
   getGizmo,
   getSelectedEntityIds,
@@ -127,14 +136,7 @@ import {
   ROTATION_GRID_RESOLUTION
 } from './utils'
 import { getEyeColors, getHairColors, getSkinColors } from './avatar'
-import { getCurrentPool } from 'modules/pool/selectors'
-import { Pool } from 'modules/pool/types'
-import { loadAssetPacksRequest, LOAD_ASSET_PACKS_SUCCESS, LOAD_ASSET_PACKS_REQUEST } from 'modules/assetPack/actions'
-import { SAVE_ITEM_SUCCESS } from 'modules/item/actions'
-import { Item, WearableBodyShape } from 'modules/item/types'
-import { getItems } from 'modules/item/selectors'
-import { AssetPackState } from 'modules/assetPack/reducer'
-import { getBodyShapes, hasBodyShape } from 'modules/item/utils'
+
 import maleAvatar from './wearables/male.json'
 import femaleAvatar from './wearables/female.json'
 
@@ -645,10 +647,10 @@ function* getDefaultWearables() {
   // @TODO: remove this when unity build accepts urn
   return wearables.map(w => ({
     ...w,
-    id: w.id.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/'),
+    id: toLegacyURN(w.id),
     representations: w.representations.map(r => ({
       ...r,
-      bodyShapes: r.bodyShapes.map(b => b.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/'))
+      bodyShapes: r.bodyShapes.map(toLegacyURN)
     }))
   }))
 }

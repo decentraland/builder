@@ -15,7 +15,7 @@ export type ThirdPartyState = {
   error: string | null
 }
 
-const INITIAL_STATE: ThirdPartyState = {
+export const INITIAL_STATE: ThirdPartyState = {
   data: {},
   loading: [],
   error: null

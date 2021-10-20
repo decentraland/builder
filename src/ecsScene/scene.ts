@@ -5,6 +5,7 @@ import { createChannel } from 'decentraland-builder-scripts/channel'
 import { createInventory } from 'decentraland-builder-scripts/inventory'
 import { DecentralandInterface } from 'decentraland-ecs/dist/decentraland/Types'
 import { EntityDefinition, AnyComponent, ComponentData, ComponentType, Scene } from 'modules/scene/types'
+import { toLegacyURN } from 'lib/urn'
 import { AssetParameterValues } from 'modules/asset/types'
 import { BODY_SHAPE_CATEGORY, WearableBodyShape } from 'modules/item/types'
 import { getEyeColors, getHairColors, getSkinColors } from 'modules/editor/avatar'
@@ -108,11 +109,8 @@ function getAvatar(): Entity {
     avatar = new Entity()
     avatar.addComponent(new Transform({ position: new Vector3(8, 0, 8), scale: new Vector3(1, 1, 1) }))
     const avatarShape = new AvatarShape()
-    // @TODO: Remove replace when unity accepts urn
-    avatarShape.bodyShape = 'urn:decentraland:off-chain:base-avatars:BaseMale'.replace(
-      'urn:decentraland:off-chain:base-avatars:',
-      'dcl://base-avatars/'
-    )
+    // @TODO: Remove toLegacyURN when unity accepts urn
+    avatarShape.bodyShape = toLegacyURN(WearableBodyShape.MALE.toString())
     avatarShape.skinColor = getSkinColors()[0]
     avatarShape.hairColor = getHairColors()[0]
     avatarShape.eyeColor = getEyeColors()[0]

@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions'
 import { ThirdParty } from './types'
 
-// Fetch collections
+// Fetch Third Party Records
 
 export const FETCH_THIRD_PARTIES_REQUEST = '[Request] Fetch Thrid Parties'
 export const FETCH_THIRD_PARTIES_SUCCESS = '[Success] Fetch Thrid Parties'
