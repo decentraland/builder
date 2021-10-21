@@ -19,8 +19,8 @@ const getMockCuration = (props: Partial<Curation> = {}): Curation => ({
   id: 'id',
   collectionId: 'collectionId',
   status: CurationStatus.PENDING,
-  created_at: 0,
-  updated_at: 0,
+  createdAt: 0,
+  updatedAt: 0,
   ...props
 })
 
@@ -96,7 +96,7 @@ describe('when an action of type FETCH_CURATION_SUCCESS is called', () => {
         error: 'Some Error'
       }
 
-      const newCuration = getMockCuration({ updated_at: 100, created_at: 100, status: CurationStatus.APPROVED })
+      const newCuration = getMockCuration({ updatedAt: 100, createdAt: 100, status: CurationStatus.APPROVED })
 
       expect(curationReducer(state, fetchCurationSuccess('collectionId', newCuration))).toStrictEqual({
         data: { collectionId: newCuration },

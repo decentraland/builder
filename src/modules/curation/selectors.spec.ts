@@ -3,12 +3,12 @@ import { INITIAL_STATE } from './reducer'
 import { FETCH_CURATION_REQUEST } from './actions'
 import { Curation, CurationStatus } from './types'
 
-const getMockCuration = (props: Partial<Curation> = {}) => ({
+const getMockCuration = (props: Partial<Curation> = {}): Curation => ({
   id: 'id',
   collectionId: 'collectionId',
-  created_at: 0,
-  status: 'pending',
-  updated_at: 0,
+  createdAt: 0,
+  status: CurationStatus.PENDING,
+  updatedAt: 0,
   ...props
 })
 

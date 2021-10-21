@@ -59,7 +59,7 @@ export default class CollectionRow extends React.PureComponent<Props> {
 
   render() {
     const { collection, items, curation } = this.props
-    const createdAtDate = new Date(curation?.created_at || collection.createdAt)
+    const createdAtDate = new Date(curation?.createdAt || collection.createdAt)
 
     return (
       <Link className="CollectionRow" to={locations.itemEditor({ collectionId: collection.id, isReviewing: 'true' })}>
