@@ -384,8 +384,8 @@ function fromRemoteCuration(remoteCuration: RemoteCuration): Curation {
     id: remoteCuration.id,
     collectionId: remoteCuration.collection_id,
     status: remoteCuration.status,
-    created_at: +new Date(remoteCuration.created_at),
-    updated_at: +new Date(remoteCuration.updated_at)
+    createdAt: +new Date(remoteCuration.created_at),
+    updatedAt: +new Date(remoteCuration.updated_at)
   }
 }
 

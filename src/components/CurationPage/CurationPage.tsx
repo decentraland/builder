@@ -85,8 +85,8 @@ export default class CurationPage extends React.PureComponent<Props, State> {
 
         switch (sortBy) {
           case SortBy.NEWEST: {
-            const dateA = curationA ? curationA.created_at : collectionA.createdAt
-            const dateB = curationB ? curationB.created_at : collectionB.createdAt
+            const dateA = curationA ? curationA.createdAt : collectionA.createdAt
+            const dateB = curationB ? curationB.createdAt : collectionB.createdAt
 
             return dateA < dateB ? 1 : -1
           }
