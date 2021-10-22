@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { ModalNavigation, ModalActions } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 
@@ -101,12 +100,12 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
                     manager ? (
                       <Manager key={index} manager={manager} onRemove={this.handleRemoveManager} />
                     ) : (
-                        <EmptyManager
-                          key={index}
-                          onAdd={(manager: string) => this.handleAddManager(index, manager)}
-                          onCancel={() => this.handleCancelNew(index)}
-                        />
-                      )
+                      <EmptyManager
+                        key={index}
+                        onAdd={(manager: string) => this.handleAddManager(index, manager)}
+                        onCancel={() => this.handleCancelNew(index)}
+                      />
+                    )
                   )}
                 </div>
                 <div className="add-managers link" onClick={this.handleAddNewManager}>
@@ -114,19 +113,19 @@ export default class CollectionManagersModal extends React.PureComponent<Props, 
                 </div>
               </>
             ) : (
-                <div className="empty-managers-list">
-                  {t('collection_managers_modal.no_managers')}&nbsp;
-                  <span className="link" onClick={this.handleAddNewManager}>
-                    {t('collection_managers_modal.adding_one')}
-                  </span>
-                </div>
-              )}
+              <div className="empty-managers-list">
+                {t('collection_managers_modal.no_managers')}&nbsp;
+                <span className="link" onClick={this.handleAddNewManager}>
+                  {t('collection_managers_modal.adding_one')}
+                </span>
+              </div>
+            )}
           </div>
           {managers.length ? (
             <ModalActions>
-              <ChainButton primary onClick={this.handleSubmit} loading={isLoading} disabled={this.isDisabled()} chainId={getChainIdByNetwork(Network.MATIC)}>
+              <NetworkButton primary onClick={this.handleSubmit} loading={isLoading} disabled={this.isDisabled()} network={Network.MATIC}>
                 {t('global.add')}
-              </ChainButton>
+              </NetworkButton>
             </ModalActions>
           ) : null}
         </Modal.Content>

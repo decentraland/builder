@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { Network } from '@dcl/schemas'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { Field, InputOnChangeData, Form, Row, Button } from 'decentraland-ui'
 import LandAction from 'components/LandAction'
 import LandProviderPage from 'components/LandProviderPage'
@@ -47,9 +49,14 @@ export default class LandEditPage extends React.PureComponent<Props, State> {
                 <Link className="cancel" to={locations.landDetail(land.id)}>
                   <Button>{t('global.cancel')}</Button>
                 </Link>
-                <Button type="submit" primary disabled={isPristine || !this.getName(land) || land.role !== RoleType.OWNER}>
+                <NetworkButton
+                  type="submit"
+                  primary
+                  disabled={isPristine || !this.getName(land) || land.role !== RoleType.OWNER}
+                  network={Network.ETHEREUM}
+                >
                   {t('global.submit')}
-                </Button>
+                </NetworkButton>
               </Row>
             </Form>
           </LandAction>

@@ -1,5 +1,7 @@
 import * as React from 'react'
+import { Network } from '@dcl/schemas'
 import { Form, Field, Row, Button, InputOnChangeData } from 'decentraland-ui'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { getUpdateOperator } from 'modules/land/utils'
@@ -85,9 +87,9 @@ export default class LandOperatorForm extends React.PureComponent<Props, State> 
           <Link className="cancel" to={locations.landDetail(land.id)}>
             <Button>{t('global.cancel')}</Button>
           </Link>
-          <Button type="submit" primary disabled={isDisabled} onClick={this.handleSetOperator}>
+          <NetworkButton type="submit" primary disabled={isDisabled} onClick={this.handleSetOperator} network={Network.ETHEREUM}>
             {t('global.submit')}
-          </Button>
+          </NetworkButton>
         </Row>
       </Form>
     )

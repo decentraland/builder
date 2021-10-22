@@ -2,8 +2,7 @@ import * as React from 'react'
 import { ModalNavigation, ModalActions } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { Network } from '@dcl/schemas'
 import equal from 'fast-deep-equal'
 
@@ -129,12 +128,12 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
                     role ? (
                       <Role key={index} address={role} onRemove={this.handleRemoveRole} />
                     ) : (
-                        <EmptyRole
-                          key={index}
-                          onAdd={(role: string) => this.handleAddRole(index, role)}
-                          onCancel={() => this.handleCancelNew(index)}
-                        />
-                      )
+                      <EmptyRole
+                        key={index}
+                        onAdd={(role: string) => this.handleAddRole(index, role)}
+                        onCancel={() => this.handleCancelNew(index)}
+                      />
+                    )
                   )}
                 </div>
                 <div className="add-roles link" onClick={this.handleAddNewRole}>
@@ -142,24 +141,24 @@ export default class ManageCollectionRoleModal extends React.PureComponent<Props
                 </div>
               </>
             ) : (
-                <div className="empty-roles-list">
-                  {t(`manage_collection_role_modal.${type}.empty`)}&nbsp;
-                  <span className="link" onClick={this.handleAddNewRole}>
-                    {t(`manage_collection_role_modal.adding_one`)}
-                  </span>
-                </div>
-              )}
+              <div className="empty-roles-list">
+                {t(`manage_collection_role_modal.${type}.empty`)}&nbsp;
+                <span className="link" onClick={this.handleAddNewRole}>
+                  {t(`manage_collection_role_modal.adding_one`)}
+                </span>
+              </div>
+            )}
           </div>
           <ModalActions>
-            <ChainButton
+            <NetworkButton
               primary
               onClick={this.handleSubmit}
               loading={isLoading}
               disabled={!this.hasRoleChanged()}
-              chainId={getChainIdByNetwork(Network.MATIC)}
+              network={Network.MATIC}
             >
               {t('global.confirm')}
-            </ChainButton>
+            </NetworkButton>
           </ModalActions>
         </Modal.Content>
       </Modal>

@@ -53,12 +53,7 @@ const AuthorizationModal = (props: Props) => {
             />
             <ChainCheck chainId={authorization.chainId}>
               {isEnabled => (
-                <Radio
-                  checked={isAuthorized}
-                  label={tokenSymbol}
-                  onClick={handleAuthorizationChange}
-                  disabled={isLoading || !isEnabled}
-                />
+                <Radio checked={isAuthorized} label={tokenSymbol} onClick={handleAuthorizationChange} disabled={isLoading || !isEnabled} />
               )}
             </ChainCheck>
             <div className="radio-description secondary-text">

@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { ModalNavigation, ModalActions, Form, Button, Row } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
 import { canMintItem, MAX_NFTS_PER_MINT } from 'modules/item/utils'
@@ -131,15 +130,15 @@ export default class MintItemsModal extends React.PureComponent<Props, State> {
                   {t('global.cancel')}
                 </Button>
               ) : (
-                <ChainButton
+                <NetworkButton
                   primary
                   onClick={this.handleMintItems}
                   loading={isLoading}
                   disabled={isDisabled || !!error}
-                  chainId={getChainIdByNetwork(Network.MATIC)}
+                  network={Network.MATIC}
                 >
                   {t('global.mint')}
-                </ChainButton>
+                </NetworkButton>
               )}
             </ModalActions>
             {error ? (

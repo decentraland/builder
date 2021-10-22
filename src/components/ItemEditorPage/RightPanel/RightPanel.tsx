@@ -3,8 +3,7 @@ import equal from 'fast-deep-equal'
 import { utils } from 'decentraland-commons'
 import { Loader, Dropdown, Button } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import ItemImage from 'components/ItemImage'
 import ItemProvider from 'components/ItemProvider'
@@ -326,8 +325,8 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                             </div>
                           </>
                         ) : (
-                            <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
-                          )}
+                          <ItemImage item={item} src={thumbnail} hasBadge={true} badgeSize="small" />
+                        )}
                         <div className="metrics">
                           <div className="metric triangles">{t('model_metrics.triangles', { count: item.metrics.triangles })}</div>
                           <div className="metric materials">{t('model_metrics.materials', { count: item.metrics.materials })}</div>
@@ -408,9 +407,9 @@ export default class RightPanel extends React.PureComponent<Props, State> {
                       <Button secondary onClick={this.handleOnResetItem}>
                         {t('global.cancel')}
                       </Button>
-                      <ChainButton primary onClick={this.handleOnSaveItem} chainId={getChainIdByNetwork(Network.MATIC)}>
+                      <NetworkButton primary onClick={this.handleOnSaveItem} network={Network.MATIC}>
                         {t('global.save')}
-                      </ChainButton>
+                      </NetworkButton>
                     </div>
                   ) : error && selectedItemId ? (
                     <p className="danger-text">
