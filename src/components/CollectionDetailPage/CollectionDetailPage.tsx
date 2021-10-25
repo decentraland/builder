@@ -2,8 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
 import { Section, Row, Narrow, Column, Header, Button, Icon, Popup, Radio, CheckboxProps } from 'decentraland-ui'
-import { ChainCheck } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkCheck } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import {
@@ -114,7 +113,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                             }
                             position="top center"
                             trigger={
-                              <ChainCheck chainId={getChainIdByNetwork(Network.MATIC)}>
+                              <NetworkCheck network={Network.MATIC}>
                                 {isEnabled => (
                                   <Radio
                                     toggle
@@ -125,7 +124,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                                     disabled={isOnSaleLoading || !isEnabled}
                                   />
                                 )}
-                              </ChainCheck>
+                              </NetworkCheck>
                             }
                             hideOnScroll={true}
                             on="hover"

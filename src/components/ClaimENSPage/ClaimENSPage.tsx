@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { Row, Column, Section, Narrow, InputOnChangeData, Header, Form, Field, Button, Mana, Radio, Popup } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getTokenAmountToApprove } from 'decentraland-dapps/dist/modules/authorization/utils'
-import { ChainButton, ChainCheck, TransactionLink } from 'decentraland-dapps/dist/containers'
+import { NetworkButton, NetworkCheck, TransactionLink } from 'decentraland-dapps/dist/containers'
 import Back from 'components/Back'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import { locations } from 'routing/locations'
@@ -145,15 +144,11 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                 </Section>
                 <Section className="field">
                   <Header sub={true}>{t('claim_ens_page.radio_label')}</Header>
-                  <ChainCheck chainId={getChainIdByNetwork(Network.ETHEREUM)}>
+                  <NetworkCheck network={Network.ETHEREUM}>
                     {isEnabled => (
-                      <Radio
-                        toggle
-                        disabled={isLoading || !isEnabled}
-                        checked={isManaAllowed}
-                        onChange={this.handleManaApprove} />
+                      <Radio toggle disabled={isLoading || !isEnabled} checked={isManaAllowed} onChange={this.handleManaApprove} />
                     )}
-                  </ChainCheck>
+                  </NetworkCheck>
                   <p className="message">
                     <T
                       id="claim_ens_page.need_mana_message"
@@ -180,9 +175,9 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       position="top center"
                       trigger={
                         <div className="popup-button">
-                          <ChainButton type="submit" primary disabled={isDisabled} loading={isLoading} chainId={getChainIdByNetwork(Network.ETHEREUM)}>
+                          <NetworkButton type="submit" primary disabled={isDisabled} loading={isLoading} network={Network.ETHEREUM}>
                             {t('claim_ens_page.claim_button')} <Mana inline>{PRICE.toLocaleString()}</Mana>
-                          </ChainButton>
+                          </NetworkButton>
                         </div>
                       }
                       hideOnScroll={true}
@@ -190,10 +185,10 @@ export default class ClaimENSPage extends React.PureComponent<Props, State> {
                       inverted
                     />
                   ) : (
-                      <ChainButton type="submit" primary disabled={isDisabled} loading={isLoading} chainId={getChainIdByNetwork(Network.ETHEREUM)}>
-                        {t('claim_ens_page.claim_button')} <Mana inline>{PRICE.toLocaleString()}</Mana>
-                      </ChainButton>
-                    )}
+                    <NetworkButton type="submit" primary disabled={isDisabled} loading={isLoading} network={Network.ETHEREUM}>
+                      {t('claim_ens_page.claim_button')} <Mana inline>{PRICE.toLocaleString()}</Mana>
+                    </NetworkButton>
+                  )}
                 </Row>
               </Form>
             </Column>

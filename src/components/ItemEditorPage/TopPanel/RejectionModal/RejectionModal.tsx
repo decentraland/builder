@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Network } from '@dcl/schemas'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button, Icon, Loader, Modal } from 'decentraland-ui'
 import { locations } from 'routing/locations'
@@ -117,9 +116,9 @@ const Confirmation = ({
     <Modal.Header>{t(`${i18nKey}.title`)}</Modal.Header>
     <Modal.Content>{t(`${i18nKey}.subtitle`)}</Modal.Content>
     <Modal.Actions>
-      <ChainButton primary onClick={onConfirm} disabled={isLoading} loading={isLoading} chainId={getChainIdByNetwork(Network.MATIC)}>
+      <NetworkButton primary onClick={onConfirm} disabled={isLoading} loading={isLoading} network={Network.MATIC}>
         {t(`${i18nKey}.action`)}
-      </ChainButton>
+      </NetworkButton>
       <Button onClick={onClose}>{t('global.cancel')}</Button>
     </Modal.Actions>
   </>

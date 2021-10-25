@@ -1,7 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 import { Network } from '@dcl/schemas'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
@@ -74,9 +73,9 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
     }
   } else {
     button = (
-      <ChainButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} chainId={getChainIdByNetwork(Network.MATIC)}>
+      <NetworkButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} network={Network.MATIC}>
         {t('collection_detail_page.publish')}
-      </ChainButton>
+      </NetworkButton>
     )
   }
 

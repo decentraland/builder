@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Form, Row, Button, Section, Header, Dropdown, DropdownProps } from 'decentraland-ui'
+import { Network } from '@dcl/schemas'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
@@ -81,9 +83,16 @@ export default class LandSelectENSForm extends React.PureComponent<Props, State>
               <Link className="cancel" to={locations.landDetail(land.id)}>
                 <Button>{t('global.cancel')}</Button>
               </Link>
-              <Button type="submit" disabled={isButtonDisabled || isLoading} primary onClick={this.handleContinue} loading={isLoading}>
+              <NetworkButton
+                type="submit"
+                disabled={isButtonDisabled || isLoading}
+                primary
+                onClick={this.handleContinue}
+                loading={isLoading}
+                network={Network.ETHEREUM}
+              >
                 {t('global.continue')}
-              </Button>
+              </NetworkButton>
             </Row>
           </>
         )}

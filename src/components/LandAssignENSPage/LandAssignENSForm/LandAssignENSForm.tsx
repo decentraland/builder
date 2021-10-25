@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { Form, Row, Button, Icon } from 'decentraland-ui'
 import { Network } from '@dcl/schemas'
-import { ChainButton } from 'decentraland-dapps/dist/containers'
-import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
+import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { isResolverEmpty, isContentEmpty, isEqualContent } from 'modules/ens/utils'
@@ -57,14 +56,14 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
             <h3>{t('land_assign_ens_page.set_resolver')}</h3>
             <div className="message-box">
               <p>{t('land_assign_ens_page.set_resolver_explanation')}</p>
-              <ChainButton
+              <NetworkButton
                 type="submit"
                 disabled={isSetResolverButtonDisabled}
                 onClick={this.handleSetResolver}
                 className={setResolverButtonClassName}
                 loading={isWaitingTxSetResolver}
                 primary
-                chainId={getChainIdByNetwork(Network.ETHEREUM)}
+                network={Network.ETHEREUM}
               >
                 {hasResolverError ? (
                   t('global.retry_tx')
@@ -74,9 +73,9 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                     {!isWaitingTxSetResolver ? <Icon name="check" /> : null}
                   </>
                 ) : (
-                      t('global.submit')
-                    )}
-              </ChainButton>
+                  t('global.submit')
+                )}
+              </NetworkButton>
             </div>
           </div>
         </Row>
@@ -85,14 +84,14 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
             <h3>{t('land_assign_ens_page.set_content')}</h3>
             <div className="message-box">
               <p>{t('land_assign_ens_page.set_content_explanation')}</p>
-              <ChainButton
+              <NetworkButton
                 type="submit"
                 disabled={isSetContentButtonDisabled}
                 onClick={this.handleSetContent}
                 className={setContentButtonClassName}
                 loading={isWaitingTxSetContent}
                 primary
-                chainId={getChainIdByNetwork(Network.ETHEREUM)}
+                network={Network.ETHEREUM}
               >
                 {hasContentError ? (
                   t('global.retry_tx')
@@ -102,9 +101,9 @@ export default class LandAssignENSForm extends React.PureComponent<Props> {
                     {!isWaitingTxSetContent ? <Icon name="check" /> : null}
                   </>
                 ) : (
-                      t('global.submit')
-                    )}
-              </ChainButton>
+                  t('global.submit')
+                )}
+              </NetworkButton>
             </div>
           </div>
         </Row>
