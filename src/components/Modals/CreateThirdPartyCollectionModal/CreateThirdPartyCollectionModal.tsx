@@ -39,6 +39,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
         name: collectionName,
         owner: address!,
         urn: join(thirdParty.id, urnSuffix),
+        thirdPartyId: thirdParty.id,
         isPublished: false,
         isApproved: false,
         minters: [],
