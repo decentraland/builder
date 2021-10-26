@@ -563,9 +563,9 @@ export class BuilderAPI extends BaseAPI {
   }
 
   async fetchAssetPacks(address?: string): Promise<FullAssetPack[]> {
-    const promisesOfRemoteAssetPacks: Array<Promise<RemoteAssetPack[]>> = [this.request('get', '/assetPacks?owner=default')]
+    const promisesOfRemoteAssetPacks: Array<Promise<RemoteAssetPack[]>> = [this.request('get', '/assetPacks', { owner: 'default' })]
     if (address) {
-      promisesOfRemoteAssetPacks.push(this.request('get', `/assetPacks?owner=${address}`))
+      promisesOfRemoteAssetPacks.push(this.request('get', '/assetPacks', { owner: address }))
     }
 
     const assetPacks: RemoteAssetPack[][] = await Promise.all(promisesOfRemoteAssetPacks)
