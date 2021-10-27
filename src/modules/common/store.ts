@@ -60,7 +60,7 @@ const rootReducer = createRootReducer(history)
 const historyMiddleware = routerMiddleware(history)
 const sagasMiddleware = createSagasMiddleware()
 const loggerMiddleware = createLogger({
-  predicate: () => false,
+  predicate: () => isDevelopment,
   collapsed: () => true
 })
 const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({

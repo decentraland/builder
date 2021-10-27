@@ -74,11 +74,11 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
   }
 
   render() {
-    const { name, thirdParties, onClose, isLoading } = this.props
+    const { name, thirdParties, onClose, isLoading, error } = this.props
     const { collectionName, urnSuffix } = this.state
     const isDisabled = !collectionName || isLoading
 
-    // Check for repeated urnSuffix error
+    // TODO: Check for repeated urnSuffix error (needs server update)
 
     const selectedThirdParty = this.getSelectedThirdParty()
 
@@ -111,6 +111,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
               value={urnSuffix}
               onChange={this.handleUrnSuffixChange}
             />
+            {error ? <small className="danger-text">{error}</small> : null}
           </ModalContent>
           <ModalActions>
             <Button primary disabled={isDisabled} loading={isLoading}>

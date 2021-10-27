@@ -7,6 +7,7 @@ export type Props = ModalProps & {
   address?: string
   thirdParties: ThirdParty[]
   isLoading: boolean
+  error: string | null
   onSubmit: typeof saveCollectionRequest
 }
 
@@ -17,6 +18,6 @@ export type State = {
   isTypedUrnSuffix: boolean
 }
 
-export type MapStateProps = Pick<Props, 'address' | 'thirdParties' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'address' | 'thirdParties' | 'error' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onSubmit'>
 export type MapDispatch = Dispatch<SaveCollectionRequestAction>
