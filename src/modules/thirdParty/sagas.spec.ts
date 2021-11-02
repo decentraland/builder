@@ -1,4 +1,5 @@
 import { call } from '@redux-saga/core/effects'
+import * as matchers from 'redux-saga-test-plan/matchers'
 import { AuthIdentity } from 'dcl-crypto'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { BuilderAPI } from 'lib/api/builder'
@@ -37,7 +38,7 @@ describe('when fetching third parties', () => {
 
     it('should put the fetch third party fail action with an error', () => {
       return expectSaga(thirdPartySaga, mockBuilder)
-        .provide([[call([mockBuilder, 'fetchThirdParties'], undefined), throwError(new Error(errorMessage))]])
+        .provide([[matchers.call.fn(mockBuilder.fetchThirdParties), throwError(new Error(errorMessage))]])
         .put(fetchThirdPartiesFailure(errorMessage))
         .dispatch(fetchThirdPartiesRequest())
         .run({ silenceTimeout: true })
@@ -73,7 +74,7 @@ describe('when fetching third parties', () => {
     describe('when no address is supplied', () => {
       it('should put the fetch third party success action with the api response', () => {
         return expectSaga(thirdPartySaga, mockBuilder)
-          .provide([[call([mockBuilder, 'fetchThirdParties'], undefined), thirdParties]])
+          .provide([[matchers.call.fn(mockBuilder.fetchThirdParties), thirdParties]])
           .put(fetchThirdPartiesSuccess(thirdParties))
           .dispatch(fetchThirdPartiesRequest())
           .run({ silenceTimeout: true })
