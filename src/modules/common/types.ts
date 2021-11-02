@@ -27,6 +27,7 @@ import { PoolState } from 'modules/pool/reducer'
 import { ProjectState } from 'modules/project/reducer'
 import { StatsState } from 'modules/stats/reducer'
 import { SyncState } from 'modules/sync/types'
+import { ThirdPartyState } from 'modules/thirdParty/reducer'
 import { TileState } from 'modules/tile/reducer'
 import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/reducer'
 import { UIState } from 'modules/ui/reducer'
@@ -62,6 +63,7 @@ export type RootState = {
   stats: StatsState
   storage: StorageState
   sync: SyncState
+  thirdParty: ThirdPartyState
   tile: TileState
   toast: ToastState
   transaction: TransactionState

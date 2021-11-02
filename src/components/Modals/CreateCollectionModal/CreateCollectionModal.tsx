@@ -24,7 +24,6 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
         isApproved: false,
         minters: [],
         managers: [],
-        reviewedAt: now,
         createdAt: now,
         updatedAt: now
       }
@@ -33,7 +32,7 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
   }
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    this.setState({ collectionName: data.value.slice(0, COLLECTION_NAME_MAX_LENGTH) })
+    this.setState({ collectionName: data.value })
   }
 
   render() {
@@ -57,7 +56,8 @@ export default class CreateCollectionModal extends React.PureComponent<Props, St
               value={collectionName}
               onChange={this.handleNameChange}
               error={!!errorMessage}
-              message={errorMessage ? errorMessage : ''}
+              message={errorMessage ? errorMessage : t('create_collection_modal.message', { maxLength: COLLECTION_NAME_MAX_LENGTH })}
+              maxLength={COLLECTION_NAME_MAX_LENGTH}
             ></Field>
           </ModalContent>
           <ModalActions>

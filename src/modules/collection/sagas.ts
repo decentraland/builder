@@ -197,6 +197,7 @@ export function* collectionSaga(builder: BuilderAPI, catalyst: CatalystClient) {
 
       yield put(saveCollectionSuccess(newCollection))
       yield put(closeModal('CreateCollectionModal'))
+      yield put(closeModal('CreateThirdPartyCollectionModal'))
       yield put(closeModal('EditCollectionNameModal'))
     } catch (error) {
       yield put(saveCollectionFailure(collection, error.message))

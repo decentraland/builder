@@ -7,11 +7,12 @@ import { Collection } from 'modules/collection/types'
 export type Props = {
   items: Item[]
   collections: Collection[]
+  isThirdPartyManager: boolean
   isLoading: boolean
   onNavigate: (path: string) => void
   onOpenModal: typeof openModal
 }
 
-export type MapStateProps = Pick<Props, 'items' | 'collections' | 'isLoading'>
+export type MapStateProps = Pick<Props, 'items' | 'collections' | 'isThirdPartyManager' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>

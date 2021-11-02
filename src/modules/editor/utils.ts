@@ -5,8 +5,9 @@ import { getSceneDefinition } from 'modules/project/export'
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { capitalize } from 'lib/text'
 import { Vector3 } from 'modules/models/types'
-import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { TRANSPARENT_PIXEL } from 'lib/getModelData'
+import { toLegacyURN } from 'lib/urn'
+import { Scene, EntityDefinition, ComponentDefinition, ComponentType } from 'modules/scene/types'
 import { getMetrics } from 'components/AssetImporter/utils'
 import { Item } from 'modules/item/types'
 import { base64ArrayBuffer } from './base64'
@@ -182,14 +183,14 @@ export function createAvatarScene(): Scene {
 }
 
 export function toWearable(item: Item) {
-  // @TODO: remove replaces when unity build accepts urn
   return {
-    id: item.id.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/') + '/' + item.updatedAt, // we add the updatedAt suffix to bust the cache
+    // @TODO: remove toLegacyURN when unity build accepts urn
+    id: toLegacyURN(item.id) + '/' + item.updatedAt, // we add the updatedAt suffix to bust the cache
     type: 'wearable',
     category: item.data.category!,
     baseUrl: getContentsStorageUrl(),
     representations: item.data.representations.map<BodyShapeRespresentation>(representation => ({
-      bodyShapes: representation.bodyShapes.map(shape => shape.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')),
+      bodyShapes: representation.bodyShapes.map(toLegacyURN),
       mainFile: representation.mainFile,
       contents: Object.values(representation.contents).map(path => ({
         file: path,

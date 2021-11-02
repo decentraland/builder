@@ -4,7 +4,7 @@ import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
-import { getCatalystItemURN } from 'modules/item/utils'
+import { getCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'

@@ -32,7 +32,7 @@ export class MarketplaceAPI {
     if (!address) {
       return []
     }
-    const owner = address.toLowerCase()
+    const owner: string = address.toLowerCase()
     let results: string[] = []
     let page: string[] = []
     let offset = 0
