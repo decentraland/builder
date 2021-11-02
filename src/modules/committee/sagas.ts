@@ -15,10 +15,10 @@ import { isWalletCommitteeMember } from './selectors'
 
 export function* committeeSaga(builder: BuilderAPI) {
   yield takeLatest(CONNECT_WALLET_SUCCESS, handleConnectWallet)
-  yield takeEvery(FETCH_COMMITTEE_MEMBERS_REQUEST, handleFetchCommitteeMembersMembersRequest)
-  yield takeEvery(FETCH_COMMITTEE_MEMBERS_SUCCESS, handleFetchCommitteeMembersMembersSuccess)
+  yield takeEvery(FETCH_COMMITTEE_MEMBERS_REQUEST, handleFetchCommitteeMembersRequest)
+  yield takeEvery(FETCH_COMMITTEE_MEMBERS_SUCCESS, handleFetchCommitteeMembersSuccess)
 
-  function* handleFetchCommitteeMembersMembersRequest() {
+  function* handleFetchCommitteeMembersRequest() {
     try {
       const committee: Account[] = yield call(() => builder.fetchCommittee())
       const members = committee.map(account => account.address)
@@ -29,7 +29,7 @@ export function* committeeSaga(builder: BuilderAPI) {
   }
 }
 
-function* handleFetchCommitteeMembersMembersSuccess() {
+function* handleFetchCommitteeMembersSuccess() {
   const isCommitteeMember: boolean = yield select(isWalletCommitteeMember)
   if (isCommitteeMember) {
     yield put(fetchCollectionsRequest())
