@@ -58,7 +58,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
 
   handleNameChange = (_event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     const { urnSuffix, isTypedUrnSuffix } = this.state
-    const collectionName = data.value.slice(0, COLLECTION_NAME_MAX_LENGTH)
+    const collectionName = data.value
     const newUrnSuffix = isTypedUrnSuffix ? urnSuffix : slug(collectionName)
     this.setState({ collectionName, urnSuffix: newUrnSuffix })
   }
@@ -102,6 +102,7 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
               placeholder={t('create_third_party_collection_modal.name_field.placeholder')}
               message={t('create_third_party_collection_modal.name_field.message', { maxLength: COLLECTION_NAME_MAX_LENGTH })}
               value={collectionName}
+              maxLength={COLLECTION_NAME_MAX_LENGTH}
               onChange={this.handleNameChange}
             />
             <Field
