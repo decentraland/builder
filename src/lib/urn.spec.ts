@@ -6,7 +6,7 @@ jest.mock('decentraland-dapps/dist/lib/eth')
 
 afterEach(() => jest.resetAllMocks())
 
-describe('buildItemURN', () => {
+describe('when building the item URN', () => {
   it('should build a valid URN with the item data', () => {
     expect(buildItemURN('wearable', 'my-name', 'my-desc', 'great-category', 'baseMale,baseFemale')).toBe(
       '1:w:my-name:my-desc:great-category:baseMale,baseFemale'
@@ -14,7 +14,7 @@ describe('buildItemURN', () => {
   })
 })
 
-describe('getCatalystItemURN', () => {
+describe('when getting the catalyst item URN', () => {
   beforeEach(() => {
     ;(getChainIdByNetwork as jest.Mock).mockReturnValueOnce(ChainId.MATIC_MAINNET)
   })
@@ -25,8 +25,8 @@ describe('getCatalystItemURN', () => {
   })
 })
 
-describe('pop', () => {
-  it('should get the last URN part', () => {
+describe('when popping the last URN section', () => {
+  it('should get the last URN section', () => {
     expect(pop('this:is:some:urn:getme')).toBe('getme')
   })
 })
