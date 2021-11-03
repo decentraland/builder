@@ -4,6 +4,7 @@ import { ContractName, getContract } from 'decentraland-transactions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Item, SyncStatus } from 'modules/item/types'
 import { isEqual, includes } from 'lib/address'
+import { decodeURN, URNType } from 'lib/urn'
 import { Collection, Access, Mint } from './types'
 import { locations } from 'routing/locations'
 
@@ -94,4 +95,12 @@ export function getMostRelevantStatus(statusA: SyncStatus, statusB: SyncStatus) 
   const indexA = sorted.indexOf(statusA)
   const indexB = sorted.indexOf(statusB)
   return indexA < indexB ? statusA : statusB
+}
+
+export function isThirdParty(collection: Collection) {
+  if (!collection.urn) {
+    return false
+  }
+  const decodedURN = decodeURN(collection.urn)
+  return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY
 }

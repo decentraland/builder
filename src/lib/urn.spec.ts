@@ -1,6 +1,6 @@
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { buildItemURN, getCatalystItemURN, pop, join } from './urn'
+import { buildItemURN, getCatalystItemURN, join } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 
@@ -22,12 +22,6 @@ describe('when getting the catalyst item URN', () => {
   it('should use the supplied data to generate a valid item URN', () => {
     expect(getCatalystItemURN('0x123123', 'token-id')).toBe('urn:decentraland:matic:collections-v2:0x123123:token-id')
     expect(getChainIdByNetwork).toHaveBeenCalledWith(Network.MATIC)
-  })
-})
-
-describe('when popping the last URN section', () => {
-  it('should get the last URN section', () => {
-    expect(pop('this:is:some:urn:getme')).toBe('getme')
   })
 })
 

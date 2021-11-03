@@ -1076,7 +1076,9 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "subtitle": "Collection · {count} {count, plural, one {item} other {items}}",
+    "third_party_collection": "Third Party Collection",
+    "collection": "Collection",
+    "item_count": "{count} {count, plural, one {item} other {items}}",
     "confirm_delete_content": "Are you sure you want to delete your collection \"{name}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{name}\""
   },

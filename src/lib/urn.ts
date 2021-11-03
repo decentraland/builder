@@ -1,25 +1,96 @@
 import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
-export const VERSION = 1
-export const DELIMITER = ':'
+const VERSION = 1
+const DELIMITER = ':'
 
-export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string) {
+/**
+ * urn:decentraland:
+ *   (?<protocol>
+ *     mainnet|
+ *     ropsten|
+ *     matic|
+ *     mumbai|
+ *     off-chain
+ *   ):
+ *   (
+ *     (?<type>
+ *       base-avatars|
+ *       collections-v2|
+ *       collections-thirdparty
+ *     ):
+ *     (?<suffix>
+ *       ((?<=base-avatars:)BaseMale|BaseFemale)|
+ *       ((?<=collections-v2)0x[a-fA-F0-9]{40})|
+ *       ((?<=collections-thirdparty:)
+ *          (?<thirdpartyCollection>[^:|\\s]+)
+ *          (:(?<thirdpartyTokenId>[^:|\\s]+))?
+ *       )
+ *     )
+ *   )
+ */
+const baseMatcher = 'urn:decentraland'
+const protocolMatcher = '(?<protocol>mainnet|ropsten|matic|mumbai|off-chain)'
+const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty)'
+
+const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
+const collectionsSuffixMatcher = '((?<=collections-v2:)0x[a-fA-F0-9]{40})'
+const thirdPartySuffixMatcher = '((?<=collections-thirdparty:)(?<thirdpartyCollection>[^:|\\s]+)(:(?<thirdpartyTokenId>[^:|\\s]+))?)'
+
+const urnRegExp = new RegExp(
+  `${baseMatcher}:${protocolMatcher}:${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher})`
+)
+
+export enum URNProtocol {
+  MAINNET = 'mainnet',
+  ROPSTEN = 'ropsten',
+  MATIC = 'matic',
+  MUMBAI = 'mumbai',
+  OFF_CHAIN = 'off-chain'
+}
+export enum URNType {
+  BASE_AVATARS = 'base-avatars',
+  COLLECTIONS_V2 = 'collections-v2',
+  COLLECTIONS_THIRDPARTY = 'collections-thirdparty'
+}
+export type URN = string
+
+type BaseDecodedURN = {
+  protocol: URNProtocol
+  suffix: string
+}
+export type DecodedURN = BaseDecodedURN &
+  (
+    | { type: URNType.BASE_AVATARS | URNType.COLLECTIONS_V2 }
+    | {
+        type: URNType.COLLECTIONS_THIRDPARTY
+        thirdPartyCollection: string
+        thirdPartyTokenId: string
+      }
+  )
+
+export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
   return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
 }
 
-export function getCatalystItemURN(contractAddress: string, tokenId: string) {
+export function getCatalystItemURN(contractAddress: string, tokenId: string): URN {
   return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${contractAddress}:${tokenId}`
 }
 
-export function toLegacyURN(urn: string) {
+export function toLegacyURN(urn: URN): URN {
   return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
+}
+
+export function decodeURN(urn: URN): DecodedURN {
+  const matches = urnRegExp.exec(urn)
+
+  if (!matches || !matches.groups) {
+    throw new Error(`Invalid URN: ${urn}`)
+  }
+
+  return matches.groups as DecodedURN
 }
 
 export function join(...args: string[]) {
   return args.join(DELIMITER)
-}
-
-export function pop(urn: string) {
-  return urn.split(DELIMITER).pop()
 }

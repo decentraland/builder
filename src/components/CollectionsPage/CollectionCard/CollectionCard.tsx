@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button, Card, Confirm } from 'decentraland-ui'
 import classNames from 'classnames'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
+import { isThirdParty } from 'modules/collection/utils'
 import CollectionStatus from 'components/CollectionStatus'
 import CollectionImage from 'components/CollectionImage'
 import { locations } from 'routing/locations'
@@ -39,7 +40,10 @@ const CollectionCard = (props: Props & CollectedProps) => {
               <div className="text" title={collection.name}>
                 {collection.name} <CollectionStatus collection={collection} />
               </div>
-              <div className="subtitle">{t('collection_card.subtitle', { count: items.length })}</div>
+              <div className="subtitle">
+                {isThirdParty(collection) ? t('collection_card.third_party_collection') : t('collection_card.collection')}&nbsp;·&nbsp;
+                {t('collection_card.item_count', { count: items.length })}
+              </div>
             </Card.Content>
           </Link>
         </div>
