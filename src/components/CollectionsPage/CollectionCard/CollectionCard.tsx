@@ -17,12 +17,15 @@ import './CollectionCard.css'
 const CollectionCard = (props: Props & CollectedProps) => {
   const { collection, onDeleteCollection, items, connectDropTarget, isOver, canDrop } = props
   const [isDeleting, setIsDeleting] = React.useState(false)
+
   const handleCancelDeleteCollection = React.useCallback(() => setIsDeleting(false), [setIsDeleting])
   const handleDeleteConfirmation = React.useCallback(() => setIsDeleting(true), [setIsDeleting])
   const handleDeleteCollection = React.useCallback(() => {
     setIsDeleting(false)
     onDeleteCollection()
   }, [setIsDeleting, onDeleteCollection])
+
+  const isThirdPartyCollection = isThirdParty(collection)
 
   return (
     <>
@@ -34,14 +37,16 @@ const CollectionCard = (props: Props & CollectedProps) => {
               options={[{ text: t('global.delete'), handler: handleDeleteConfirmation }]}
             />
           )}
-          <Link to={locations.collectionDetail(collection.id)}>
+          <Link
+            to={isThirdPartyCollection ? locations.thirdPartyCollectionDetail(collection.id) : locations.collectionDetail(collection.id)}
+          >
             <CollectionImage collectionId={collection.id} />
             <Card.Content>
               <div className="text" title={collection.name}>
                 {collection.name} <CollectionStatus collection={collection} />
               </div>
               <div className="subtitle">
-                {isThirdParty(collection) ? t('collection_card.third_party_collection') : t('collection_card.collection')}&nbsp;·&nbsp;
+                {isThirdPartyCollection ? t('collection_card.third_party_collection') : t('collection_card.collection')}&nbsp;·&nbsp;
                 {t('collection_card.item_count', { count: items.length })}
               </div>
             </Card.Content>
