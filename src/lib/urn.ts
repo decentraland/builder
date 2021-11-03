@@ -22,8 +22,9 @@ const VERSION = 1
  *       ((?<=base-avatars:)BaseMale|BaseFemale)|
  *       ((?<=collections-v2)0x[a-fA-F0-9]{40})|
  *       ((?<=collections-thirdparty:)
- *          (?<thirdpartyCollection>[^:|\\s]+)
- *          (:(?<thirdpartyTokenId>[^:|\\s]+))?
+ *          (?<thirdPartyName>[^:|\\s]+)
+ *          (:(?<thirdPartyCollectionId>[^:|\\s]+))?
+ *          (:(?<thirdPartyTokenId>[^:|\\s]+))?
  *       )
  *     )
  *   )
@@ -34,7 +35,8 @@ const typeMatcher = '(?<type>base-avatars|collections-v2|collections-thirdparty)
 
 const baseAvatarsSuffixMatcher = '((?<=base-avatars:)BaseMale|BaseFemale)'
 const collectionsSuffixMatcher = '((?<=collections-v2:)0x[a-fA-F0-9]{40})'
-const thirdPartySuffixMatcher = '((?<=collections-thirdparty:)(?<thirdpartyCollection>[^:|\\s]+)(:(?<thirdpartyTokenId>[^:|\\s]+))?)'
+const thirdPartySuffixMatcher =
+  '((?<=collections-thirdparty:)(?<thirdPartyName>[^:|\\s]+)(:(?<thirdPartyCollectionId>[^:|\\s]+))?(:(?<thirdPartyTokenId>[^:|\\s]+))?)'
 
 const urnRegExp = new RegExp(
   `${baseMatcher}:${protocolMatcher}:${typeMatcher}:(?<suffix>${baseAvatarsSuffixMatcher}|${collectionsSuffixMatcher}|${thirdPartySuffixMatcher})`
@@ -63,7 +65,8 @@ export type DecodedURN = BaseDecodedURN &
     | { type: URNType.BASE_AVATARS | URNType.COLLECTIONS_V2 }
     | {
         type: URNType.COLLECTIONS_THIRDPARTY
-        thirdPartyCollection: string
+        thirdPartyName: string
+        thirdPartyCollectionId: string
         thirdPartyTokenId: string
       }
   )
@@ -92,7 +95,7 @@ export function decodeURN(urn: URN): DecodedURN {
   const matches = urnRegExp.exec(urn)
 
   if (!matches || !matches.groups) {
-    throw new Error(`Invalid URN: ${urn}`)
+    throw new Error(`Invalid URN: "${urn}"`)
   }
 
   return matches.groups as DecodedURN
