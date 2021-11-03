@@ -4,7 +4,7 @@ import { EntityContentItemReference, EntityMetadata, EntityType, Hashing } from 
 import { getContentsStorageUrl } from 'lib/api/builder'
 import { PEER_URL } from 'lib/api/peer'
 import { NO_CACHE_HEADERS } from 'lib/headers'
-import { getCatalystItemURN } from 'lib/urn'
+import { buildCatalystItemURN } from 'lib/urn'
 import { makeContentFiles, computeHashes } from 'modules/deployment/contentUtils'
 import { Collection } from 'modules/collection/types'
 import { CatalystItem, Item, IMAGE_PATH, THUMBNAIL_PATH } from './types'
@@ -107,7 +107,7 @@ export function buildItemEntityMetadata(collection: Collection, item: Item): Cat
     throw new Error('You need the collection and item to be published')
   }
   return {
-    id: getCatalystItemURN(collection.contractAddress, item.tokenId),
+    id: buildCatalystItemURN(collection.contractAddress, item.tokenId),
     name: item.name,
     description: item.description,
     collectionAddress: collection.contractAddress!,

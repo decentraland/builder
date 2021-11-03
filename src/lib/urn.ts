@@ -66,8 +66,8 @@ export type DecodedURN = BaseDecodedURN &
     | {
         type: URNType.COLLECTIONS_THIRDPARTY
         thirdPartyName: string
-        thirdPartyCollectionId: string
-        thirdPartyTokenId: string
+        thirdPartyCollectionId?: string
+        thirdPartyTokenId?: string
       }
   )
 
@@ -83,7 +83,7 @@ export function buildThirdPartyURN(thirdPartyName: string, collectionId: string,
   return urn
 }
 
-export function getCatalystItemURN(contractAddress: string, tokenId: string): URN {
+export function buildCatalystItemURN(contractAddress: string, tokenId: string): URN {
   return `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-v2:${contractAddress}:${tokenId}`
 }
 

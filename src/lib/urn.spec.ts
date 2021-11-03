@@ -1,6 +1,6 @@
 import { ChainId, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
-import { buildItemURN, buildThirdPartyURN, getCatalystItemURN, decodeURN, URNType, URNProtocol } from './urn'
+import { buildItemURN, buildThirdPartyURN, buildCatalystItemURN, decodeURN, URNType, URNProtocol } from './urn'
 
 jest.mock('decentraland-dapps/dist/lib/eth')
 
@@ -23,11 +23,11 @@ describe('when getting the catalyst item URN', () => {
   })
 
   it('should use the supplied data to generate a valid item URN', () => {
-    expect(getCatalystItemURN(contractAddress, tokenId)).toBe('urn:decentraland:matic:collections-v2:0x123123:token-id')
+    expect(buildCatalystItemURN(contractAddress, tokenId)).toBe('urn:decentraland:matic:collections-v2:0x123123:token-id')
   })
 
   it('should get the chain id for the matic network', () => {
-    getCatalystItemURN(contractAddress, tokenId)
+    buildCatalystItemURN(contractAddress, tokenId)
     expect(getChainIdByNetwork).toHaveBeenCalledWith(Network.MATIC)
   })
 })
