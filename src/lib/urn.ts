@@ -2,7 +2,6 @@ import { getURNProtocol, Network } from '@dcl/schemas'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 
 const VERSION = 1
-const DELIMITER = ':'
 
 /**
  * urn:decentraland:
@@ -73,8 +72,16 @@ export function buildItemURN(type: string, name: string, description: string, ca
   return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
 }
 
+export function buildThirdPartyURN(thirdPartyName: string, collectionId: string, tokenId?: string) {
+  let urn = `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-thirdparty:${thirdPartyName}:${collectionId}`
+  if (tokenId) {
+    urn += `:${tokenId}`
+  }
+  return urn
+}
+
 export function getCatalystItemURN(contractAddress: string, tokenId: string): URN {
-  return `urn:decentraland:${getURNProtocol(getChainIdByNetwork(Network.MATIC))}:collections-v2:${contractAddress}:${tokenId}`
+  return `urn:decentraland:${getNetworkURNProtocol(Network.MATIC)}:collections-v2:${contractAddress}:${tokenId}`
 }
 
 export function toLegacyURN(urn: URN): URN {
@@ -91,6 +98,6 @@ export function decodeURN(urn: URN): DecodedURN {
   return matches.groups as DecodedURN
 }
 
-export function join(...args: string[]) {
-  return args.join(DELIMITER)
+function getNetworkURNProtocol(network: Network) {
+  return getURNProtocol(getChainIdByNetwork(network))
 }

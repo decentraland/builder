@@ -24,13 +24,3 @@ describe('when getting the catalyst item URN', () => {
     expect(getChainIdByNetwork).toHaveBeenCalledWith(Network.MATIC)
   })
 })
-
-describe('join', () => {
-  it('should join all parts into a URN', () => {
-    expect(join('this', 'is', 'new')).toBe('this:is:new')
-  })
-
-  it('should return an empty string if no arg is supplied', () => {
-    expect(join()).toBe('')
-  })
-})
