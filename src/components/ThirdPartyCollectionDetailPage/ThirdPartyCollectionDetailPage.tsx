@@ -3,13 +3,12 @@ import { Link } from 'react-router-dom'
 import { Section, Row, Narrow, Column, Header } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { canSeeCollection, getCollectionEditorURL, isLocked as isCollectionLocked } from 'modules/collection/utils'
+import { canSeeCollection, getCollectionEditorURL } from 'modules/collection/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
-import CollectionStatus from 'components/CollectionStatus'
 import CollectionMenu from './CollectionMenu'
 import CollectionAction from './CollectionAction'
 import { Props } from './ThirdPartyCollectionDetailPage.types'
@@ -44,8 +43,6 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const { wallet, items } = this.props
     const collection = this.props.collection!
 
-    const isLocked = isCollectionLocked(collection)
-
     return (
       <>
         <Section className={collection.isPublished ? 'is-published' : ''}>
@@ -54,24 +51,20 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
             <Narrow>
               <Row>
                 <Column className="header-column">
-                  {isLocked ? (
+                  <Row className="header-row" onClick={this.handleEditName}>
                     <Header size="huge" className="name">
-                      {collection.isPublished && <CollectionStatus collection={collection} />}
                       {collection.name}
                     </Header>
-                  ) : (
-                    <Row className="header-row" onClick={this.handleEditName}>
-                      <Header size="huge" className="name">
-                        {collection.name}
-                      </Header>
-                      <BuilderIcon name="edit" className="edit-collection-name" />
-                    </Row>
-                  )}
+                    <BuilderIcon name="edit" className="edit-collection-name" />
+                  </Row>
+                  <Row className="header-row">
+                    <small>{collection.urn}</small>
+                  </Row>
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
-                    {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
                     <CollectionAction collection={collection} />
+                    {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
                   </Row>
                 </Column>
               </Row>

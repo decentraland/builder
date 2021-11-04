@@ -132,9 +132,9 @@ export default class Routes extends React.Component<Props, State> {
               : null}
 
             {/* This env check will be replaced for https://github.com/decentraland/feature-flags */
-            env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES') ? (
-              <Route exact path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />
-            ) : null}
+            env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES')
+              ? [<Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />]
+              : null}
 
             <Redirect to={locations.root()} />
           </Switch>

@@ -7,8 +7,15 @@
   width: 100%;
 }
 
+.ThirdPartyCollectionDetailPage .header-row small {
+  font-size: 15px;
+  margin-top: 8px;
+  color: var(--secondary-text);
+}
+
 .ThirdPartyCollectionDetailPage .header-row .ui.header.name {
   max-width: calc(100% - 40px);
+  font-size: 28px;
   line-height: 29px;
   overflow: hidden;
   text-overflow: ellipsis;
