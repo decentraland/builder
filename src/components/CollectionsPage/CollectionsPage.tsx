@@ -53,6 +53,7 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                     <Dropdown.Menu>
                       <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
                       <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
+                      <Dropdown.Item text={'Open slots modal'} onClick={() => this.props.onOpenModal('BuyItemSlotsModal')} />
                     </Dropdown.Menu>
                   </Dropdown>
                   <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">

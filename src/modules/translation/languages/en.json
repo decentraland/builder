@@ -192,6 +192,14 @@
     "subtitle_one": "You can create custom layouts for your Scene.",
     "subtitle_two": "Enter values in the inputs below for the desired size."
   },
+  "buy_item_slots_modal": {
+    "title": "Slots",
+    "description": "Buy slots to publish your items! Please select how many you want to buy.",
+    "not_enogh_mana": "You don't have enough {symbol} to buy this tier.",
+    "get_mana": "You can get more using the {link} dapp.",
+    "tier_value": "{tier} slots",
+    "buy_slots": "Buy slots"
+  },
   "share_modal": {
     "title": "Share your Scene",
     "description": "Let your friends and co-creators see your work",
@@ -823,7 +831,8 @@
     "allowed_claim_mana": "Allowed MANA to claim a new name",
     "disallowed_claim_mana": "Disallowed MANA to claim a new name",
     "claim_name": "Claimed new name: \"{name}\".",
-    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}"
+    "rescue_items": "Approved content of {count} {count, plural, one {item} other {items}} for {collectionName}",
+    "buy_third_party_item_tiers": "Bought {count} {count, plural, one {slot} other {slots}} for {collectionName}"
   },
   "transfer_page": {
     "title": "Transfer",

@@ -33,6 +33,7 @@ import { syncReducer as sync } from 'modules/sync/reducer'
 import { tileReducer as tile } from 'modules/tile/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
 import { curationReducer as curation } from 'modules/curation/reducer'
+import { tiersReducer as tiers } from 'modules/tiers/reducer'
 
 export function createRootReducer(history: History) {
   return storageReducerWrapper(
@@ -67,7 +68,8 @@ export function createRootReducer(history: History) {
       translation,
       ui,
       wallet,
-      curation
+      curation,
+      tiers
     })
   )
 }

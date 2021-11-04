@@ -36,6 +36,7 @@ import { difference } from 'lib/array'
 import Profile from 'components/Profile'
 import TransactionDetail from './TransactionDetail'
 import { Props } from './Transaction.types'
+import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/action'
 
 const Transaction = (props: Props) => {
   const { tx } = props
@@ -371,6 +372,20 @@ const Transaction = (props: Props) => {
         />
       )
     }
+    case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
+      const { thirdPartyId, tier } = tx.payload
+      return (
+        <TransactionDetail
+          tx={tx}
+          text={
+            <T
+              id="transaction.buy_third_party_item_tiers"
+              values={{ count: tier.value, collection: <Link to={locations.collectionDetail(collection.id)}>{collection.name}</Link> }}
+            />
+          }
+        />
+      )
+    }
     case RESCUE_ITEMS_SUCCESS: {
       const { count, collectionId, collectionName } = tx.payload
       return (
@@ -383,7 +398,7 @@ const Transaction = (props: Props) => {
               values={{ count, collectionName: <Link to={locations.collectionDetail(collectionId)}>{collectionName}</Link> }}
             />
           }
-        ></TransactionDetail>
+        />
       )
     }
     default:

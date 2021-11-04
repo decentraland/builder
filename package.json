@@ -40,7 +40,7 @@
     "decentraland-dapps": "^12.27.0",
     "decentraland-ecs": "^6.6.1-20201020183014.commit-bdc29ef",
     "decentraland-experiments": "^1.0.2",
-    "decentraland-transactions": "^1.24.0",
+    "decentraland-transactions": "^1.24.1-20211103220926.commit-7c86e01",
     "decentraland-ui": "^3.11.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
