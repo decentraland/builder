@@ -7,8 +7,8 @@
   width: 100%;
 }
 
-.ThirdPartyCollectionDetailPage .header-row small {
-  font-size: 15px;
+.ThirdPartyCollectionDetailPage .urn {
+  font-size: 13px;
   margin-top: 8px;
   color: var(--secondary-text);
 }
@@ -28,30 +28,18 @@
   margin-bottom: 2px;
 }
 
-.ThirdPartyCollectionDetailPage .section:not(.is-published) .header-row:hover .edit-collection-name {
+.ThirdPartyCollectionDetailPage .copy {
+  display: none;
+  margin-left: 5px;
+}
+
+.ThirdPartyCollectionDetailPage .section:not(.is-published) .header-row:hover .edit-collection-name,
+.ThirdPartyCollectionDetailPage .urn:hover .copy {
   display: inline-block;
 }
 
 .ThirdPartyCollectionDetailPage .section:not(.is-published) .header-row:hover {
   cursor: pointer;
-}
-
-.ThirdPartyCollectionDetailPage .is-published .edit-collection-name {
-  display: none;
-}
-
-.ThirdPartyCollectionDetailPage .ui.toggle.on-sale {
-  text-transform: uppercase;
-}
-
-.ThirdPartyCollectionDetailPage .ui.toggle.on-sale > label {
-  white-space: nowrap;
-}
-
-.ThirdPartyCollectionDetailPage .ui.toggle.checkbox input.hidden:focus + label,
-.ThirdPartyCollectionDetailPage .ui.toggle.on-sale input.hidden + label {
-  padding-left: 40px;
-  color: var(--secondary-text) !important;
 }
 
 .ThirdPartyCollectionDetailPage .dcl.row.actions > .ui.button.action-button {
@@ -83,6 +71,17 @@
   margin-bottom: 32px;
 }
 
+.ThirdPartyCollectionDetailPage .button.slots:before {
+  content: '';
+  display: inline-block;
+  background-image: url('../../images/slots.svg');
+  width: 16px;
+  height: 16px;
+  top: 3px;
+  position: relative;
+  margin-right: 8px;
+}
+
 .ThirdPartyCollectionDetailPage .dcl.narrow > .empty {
   padding: 200px 0;
   width: 100%;
@@ -102,10 +101,6 @@
   background-repeat: no-repeat;
   margin: auto;
   margin-bottom: 20px;
-}
-
-.ThirdPartyCollectionDetailPage .CollectionItem:first-child .grid {
-  border-top: 1px solid var(--divider);
 }
 
 .ThirdPartyCollectionDetailPage .CollectionStatus {

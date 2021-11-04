@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Section, Row, Narrow, Column, Header } from 'decentraland-ui'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { Section, Row, Narrow, Column, Header, Icon, Button } from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
-import { canSeeCollection, getCollectionEditorURL } from 'modules/collection/utils'
+import { canSeeCollection } from 'modules/collection/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -23,6 +23,10 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     if (collection && !collection.isPublished) {
       onOpenModal('EditCollectionNameModal', { collection })
     }
+  }
+
+  handleBuySlot = () => {
+    // onOpenModal('BuySlotModal', {})
   }
 
   handleGoBack = () => {
@@ -57,12 +61,20 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     </Header>
                     <BuilderIcon name="edit" className="edit-collection-name" />
                   </Row>
-                  <Row className="header-row">
-                    <small>{collection.urn}</small>
+                  <Row>
+                    <small className="urn">
+                      {collection.urn}
+                      <CopyToClipboard text={collection.urn!}>
+                        <Icon aria-label="Copy address" aria-hidden="false" className="link copy" name="copy outline" />
+                      </CopyToClipboard>
+                    </small>
                   </Row>
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
+                    <Button secondary compact className="slots" onClick={this.handleBuySlot}>
+                      {t('third_party_collection_detail_page.slots', { amount: 1000 })}
+                    </Button>
                     <CollectionAction collection={collection} />
                     {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
                   </Row>
@@ -74,9 +86,13 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
         <Narrow>
           <Notice storageKey={STORAGE_KEY}>
             <T
-              id="collection_detail_page.notice"
+              id="third_party_collection_detail_page.notice"
               values={{
-                editor_link: <Link to={getCollectionEditorURL(collection, items)}>{t('collection_detail_page.click_here')}</Link>
+                buy_link: (
+                  <span className="link" onClick={this.handleBuySlot}>
+                    {t('third_party_collection_detail_page.click_here')}
+                  </span>
+                )
               }}
             />
           </Notice>
@@ -91,9 +107,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
             <div className="empty">
               <div className="sparkles" />
               <div>
-                {t('collection_detail_page.start_adding_items')}
+                {t('third_party_collection_detail_page.start_adding_items')}
                 <br />
-                {t('collection_detail_page.cant_remove')}
+                {t('third_party_collection_detail_page.cant_remove')}
               </div>
             </div>
           )}

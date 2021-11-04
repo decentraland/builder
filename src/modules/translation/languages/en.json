@@ -950,6 +950,14 @@
     "add_representation": "Add {bodyShape} representation",
     "change_item_file": "Edit representation"
   },
+  "third_party_collection_detail_page": {
+    "publish": "Publish",
+    "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
+    "click_here": "Click here",
+    "slots": "{amount} Slots",
+    "start_adding_items": "Looking good! Start adding items to your new collection",
+    "cant_remove": "You will not be able to add or remove items after publishing your collection."
+  },
   "collection_detail_page": {
     "new_item": "New Item",
     "mint_items": "Mint Items",
