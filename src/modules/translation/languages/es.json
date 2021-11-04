@@ -1085,7 +1085,9 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "subtitle": "Colección · {count} {count, plural, one {item} other {items}}",
+    "third_party_collection": "Colección Externa",
+    "collection": "Colección",
+    "subtitle": "{count} {count, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu colección \"{name}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{name}\""
   },

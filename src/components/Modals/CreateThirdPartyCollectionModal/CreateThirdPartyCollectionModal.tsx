@@ -14,7 +14,7 @@ import {
 } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import Modal from 'decentraland-dapps/dist/containers/Modal'
-import { join } from 'lib/urn'
+import { buildThirdPartyURN, decodeURN } from 'lib/urn'
 import { Collection, COLLECTION_NAME_MAX_LENGTH } from 'modules/collection/types'
 import { Props, State } from './CreateThirdPartyCollectionModal.types'
 
@@ -33,12 +33,13 @@ export default class CreateThirdPartyCollectionModal extends React.PureComponent
     if (collectionName && urnSuffix) {
       const now = Date.now()
       const thirdParty = this.getSelectedThirdParty()
+      const decodedURN = decodeURN(thirdParty.id)
 
       const collection: Collection = {
         id: uuid.v4(),
         name: collectionName,
         owner: address!,
-        urn: join(thirdParty.id, urnSuffix),
+        urn: buildThirdPartyURN(decodedURN.suffix, urnSuffix),
         isPublished: false,
         isApproved: false,
         minters: [],

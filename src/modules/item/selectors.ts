@@ -10,7 +10,7 @@ import { isEqual } from 'lib/address'
 import { ItemState } from './reducer'
 import { Item, SyncStatus, Rarity, CatalystItem } from './types'
 import { areSynced, canSeeItem } from './utils'
-import { getCatalystItemURN } from '../../lib/urn'
+import { buildCatalystItemURN } from '../../lib/urn'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { getCurationsByCollectionId } from 'modules/curation/selectors'
 
@@ -67,7 +67,7 @@ export const getItemsByURN = createSelector<RootState, Item[], Record<string, Co
     for (const item of items.filter(item => item.isPublished)) {
       const collection = collectionsById[item.collectionId!]
       if (collection) {
-        const urn = getCatalystItemURN(collection.contractAddress!, item.tokenId!)
+        const urn = buildCatalystItemURN(collection.contractAddress!, item.tokenId!)
         itemsByURN[urn] = item
       }
     }

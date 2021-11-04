@@ -1065,7 +1065,9 @@
     "no_items": "没有项目"
   },
   "collection_card": {
-    "subtitle": "采集 · {count} {count, plural, one {项目} other {项目}}",
+    "third_party_collection": "第三方收藏",
+    "collection": "采集",
+    "subtitle": "{count} {count, plural, one {项目} other {项目}}",
     "confirm_delete_content": "您确定要删除您的收藏集 \"{name}\" 吗？ 此操作不可逆！",
     "confirm_delete_header": "删除收藏"
   },

@@ -8,7 +8,7 @@ import { Collection } from 'modules/collection/types'
 import { canSeeCollection, canMintCollectionItems, canManageCollectionItems } from 'modules/collection/utils'
 import { isEqual } from 'lib/address'
 import { sortByCreatedAt } from 'lib/sort'
-import { buildItemURN, pop } from 'lib/urn'
+import { buildItemURN, decodeURN } from 'lib/urn'
 import { NO_CACHE_HEADERS } from 'lib/headers'
 import {
   Item,
@@ -84,7 +84,7 @@ export function hasBodyShape(item: Item, bodyShape: WearableBodyShape) {
 
 export function toWearableBodyShapeType(wearableBodyShape: WearableBodyShape) {
   // wearableBodyShape looks like "urn:decentraland:off-chain:base-avatars:BaseMale" (WearableBodyShape.MALE) and we just want the "BaseMale" part
-  return pop(wearableBodyShape) as WearableBodyShapeType
+  return decodeURN(wearableBodyShape).suffix as WearableBodyShapeType
 }
 
 export function toBodyShapeType(wearableBodyShape: WearableBodyShape): BodyShapeType {

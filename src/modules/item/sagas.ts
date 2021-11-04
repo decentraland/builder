@@ -76,7 +76,7 @@ import { Item, Rarity, CatalystItem } from './types'
 import { getData as getItemsById, getItems, getEntityByItemId, getCollectionItems } from './selectors'
 import { ItemTooBigError } from './errors'
 import { getMetadata, isValidText, MAX_FILE_SIZE } from './utils'
-import { getCatalystItemURN } from '../../lib/urn'
+import { buildCatalystItemURN } from '../../lib/urn'
 import { fetchEntitiesRequest } from 'modules/entity/actions'
 import { getMethodData } from 'modules/wallet/utils'
 import { getCatalystContentUrl } from 'lib/api/peer'
@@ -272,7 +272,7 @@ export function* itemSaga(builder: BuilderAPI) {
       const collectionsById: Record<string, Collection> = yield select(getCollectionsById)
       const urns = items
         .filter(item => item.isPublished)
-        .map(item => getCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
+        .map(item => buildCatalystItemURN(collectionsById[item.collectionId!].contractAddress!, item.tokenId!))
       if (urns.length > 0) {
         yield put(fetchEntitiesRequest({ filters: { pointers: urns, onlyCurrentlyPointed: true } }))
       }
