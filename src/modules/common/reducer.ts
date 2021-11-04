@@ -15,6 +15,7 @@ import { assetPackReducer as assetPack } from 'modules/assetPack/reducer'
 import { assetReducer as asset } from 'modules/asset/reducer'
 import { collectionReducer as collection } from 'modules/collection/reducer'
 import { committeeReducer as committee } from 'modules/committee/reducer'
+import { curationReducer as curation } from 'modules/curation/reducer'
 import { deploymentReducer as deployment } from 'modules/deployment/reducer'
 import { editorReducer as editor } from 'modules/editor/reducer'
 import { ensReducer as ens } from 'modules/ens/reducer'
@@ -30,9 +31,9 @@ import { projectReducer as project } from 'modules/project/reducer'
 import { sceneReducer as scene } from 'modules/scene/reducer'
 import { statsReducer as stats } from 'modules/stats/reducer'
 import { syncReducer as sync } from 'modules/sync/reducer'
+import { thirdPartyReducer as thirdParty } from 'modules/thirdParty/reducer'
 import { tileReducer as tile } from 'modules/tile/reducer'
 import { uiReducer as ui } from 'modules/ui/reducer'
-import { curationReducer as curation } from 'modules/curation/reducer'
 import { tiersReducer as tiers } from 'modules/tiers/reducer'
 
 export function createRootReducer(history: History) {
@@ -43,6 +44,7 @@ export function createRootReducer(history: History) {
       authorization,
       collection,
       committee,
+      curation,
       deployment,
       editor,
       ens,
@@ -62,6 +64,7 @@ export function createRootReducer(history: History) {
       stats,
       storage,
       sync,
+      thirdParty,
       tile,
       toast,
       transaction,

@@ -27,6 +27,7 @@ import { projectSaga } from 'modules/project/sagas'
 import { sceneSaga } from 'modules/scene/sagas'
 import { statsSaga } from 'modules/stats/sagas'
 import { syncSaga } from 'modules/sync/sagas'
+import { thirdPartySaga } from 'modules/thirdParty/sagas'
 import { tileSaga } from 'modules/tile/sagas'
 import { toastSaga } from 'modules/toast/sagas'
 import { translationSaga } from 'modules/translation/sagas'
@@ -66,6 +67,7 @@ export function* rootSaga(builderAPI: BuilderAPI, catalystClient: CatalystClient
     sceneSaga(),
     statsSaga(),
     syncSaga(builderAPI),
+    thirdPartySaga(builderAPI),
     tileSaga(),
     toastSaga(),
     transactionSaga(),

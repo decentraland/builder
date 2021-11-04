@@ -143,7 +143,24 @@
     "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
     "label": "Nombre",
     "placeholder": "Mi colleción",
+    "message": "El nombre puede tener un máximo de {maxLength} caracteres",
     "error_name_already_in_use": "Nombre en uso. Prueba uno diferente"
+  },
+  "create_third_party_collection": {
+    "title": "Nueva colleción externa",
+    "subtitle": "Ponle un nombre descriptivo a tu nueva colleción",
+    "third_party": {
+      "label": "Colección Externa"
+    },
+    "name_field": {
+      "label": "Nombre",
+      "placeholder": "Mi colección",
+      "message": "El nombre puede tener un máximo de {maxLength} caracteres"
+    },
+    "urn_suffix_field": {
+      "label": "Id",
+      "placeholder": "mi-colección"
+    }
   },
   "model_metrics": {
     "triangles": "{count} {count, plural, one {triángulo} other {triángulos}}",
@@ -815,9 +832,9 @@
     "edit_estate_remove": "Has removido {count} {count, plural, one {parcela} other {parcelas}} de {name}.",
     "set_manager_assigned": "Has asignado a {address} como operador de tus {type}.",
     "set_manager_revoked": "Has revocado a {address} como operador de tus {type}.",
-    "collection_published": "Collección {name} publicada",
-    "collection_approved": "Collección {name} aprobada",
-    "collection_rejected": "Collección {name} rechazada",
+    "collection_published": "Colección {name} publicada",
+    "collection_approved": "Colección {name} aprobada",
+    "collection_rejected": "Colección {name} rechazada",
     "set_price_and_beneficiary": "Has editado el precio y/o beneficiario de {name}",
     "collection_item_minted": "Item {itemName} creado para la colección {collectionName} {count, plural, one {una vez} other {{count} veces}}",
     "collection_items_minted": "{count} items creados para la colleción {name}",
@@ -911,6 +928,7 @@
     "no_items": "Sin items",
     "new_item": "Nuevo item",
     "new_collection": "Nueva colección",
+    "new_third_party_collection": "Nueva colección externa",
     "empty_description": "Aún no tienes items o colecciones, comienza creándo una de ellas y entra al metaverso con estilo"
   },
   "curation_page": {
@@ -1007,7 +1025,7 @@
     "content": "¿Estás seguro que quieres eliminar \"{name}\"?"
   },
   "publish_collection_modal": {
-    "title": "Publicar Collección",
+    "title": "Publicar Colección",
     "title_tos": "Política de contenido",
     "first_paragraph": "Estás por publicar tu colleción, recuerda que:",
     "second_paragraph": "No serás capaz de agregar o borrar items luego de publicar.",
@@ -1067,7 +1085,9 @@
     "no_items": "No Items"
   },
   "collection_card": {
-    "subtitle": "Colección · {count} {count, plural, one {item} other {items}}",
+    "third_party_collection": "Colección Externa",
+    "collection": "Colección",
+    "subtitle": "{count} {count, plural, one {item} other {items}}",
     "confirm_delete_content": "¿Seguro que quieres borrar tu colección \"{name}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{name}\""
   },

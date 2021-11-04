@@ -14,12 +14,13 @@ import { PoolGroup } from 'modules/poolGroup/types'
 import { Pool } from 'modules/pool/types'
 import { Item, ItemType, ItemRarity, WearableData, Rarity } from 'modules/item/types'
 import { Collection } from 'modules/collection/types'
+import { ThirdParty } from 'modules/thirdParty/types'
 import { PreviewType } from 'modules/editor/types'
-import { Authorization } from './auth'
 import { ForumPost } from 'modules/forum/types'
 import { ModelMetrics } from 'modules/models/types'
 import { Curation, CurationStatus } from 'modules/curation/types'
 import { ThirdPartyItemTier } from 'modules/tiers/types'
+import { Authorization } from './auth'
 
 export const BUILDER_SERVER_URL = env.get('REACT_APP_BUILDER_SERVER_URL', '')
 
@@ -57,6 +58,7 @@ export type RemoteCollection = {
   eth_address: string
   salt: string | null
   contract_address: string | null
+  urn: string | null
   is_published: boolean
   is_approved: boolean
   minters: string[]
@@ -344,6 +346,7 @@ function toRemoteCollection(collection: Collection): RemoteCollection {
     eth_address: collection.owner,
     salt: collection.salt || null,
     contract_address: collection.contractAddress || null,
+    urn: collection.urn || null,
     is_published: false,
     is_approved: false,
     minters: collection.minters,
@@ -375,6 +378,7 @@ function fromRemoteCollection(remoteCollection: RemoteCollection) {
   }
 
   if (remoteCollection.salt) collection.salt = remoteCollection.salt
+  if (remoteCollection.urn) collection.urn = remoteCollection.urn
   if (remoteCollection.contract_address) collection.contractAddress = remoteCollection.contract_address
 
   return collection
@@ -577,7 +581,7 @@ export class BuilderAPI extends BaseAPI {
     await this.request('delete', `/assetPacks/${assetPack.id}`)
   }
 
-  async likePool(pool: string, like: boolean = true) {
+  likePool(pool: string, like: boolean = true) {
     const method = like ? 'put' : 'delete'
     return this.request(method, `/pools/${pool}/likes`)
   }
@@ -621,7 +625,7 @@ export class BuilderAPI extends BaseAPI {
   async fetchCollections(address?: string) {
     const remoteCollections: RemoteCollection[] = address
       ? await this.request('get', `/${address}/collections`)
-      : await this.request('get', `/collections`)
+      : await this.request('get', '/collections')
 
     return remoteCollections.map(fromRemoteCollection)
   }
@@ -654,7 +658,7 @@ export class BuilderAPI extends BaseAPI {
     await this.request('post', `/collections/${collection.id}/tos`, { email, collection_address: collection.contractAddress })
   }
 
-  lockCollection = async (collection: Collection): Promise<string> => {
+  lockCollection = (collection: Collection): Promise<string> => {
     return this.request('post', `/collections/${collection.id}/lock`, { collection_address: collection.id })
   }
 
@@ -678,22 +682,27 @@ export class BuilderAPI extends BaseAPI {
     return fromRemoteCuration(curation)
   }
 
-  async pushCuration(collectionId: string): Promise<void> {
+  pushCuration(collectionId: string): Promise<void> {
     return this.request('post', `/collections/${collectionId}/curation`)
   }
-  async fetchCommittee(): Promise<string[]> {
+
+  fetchCommittee(): Promise<string[]> {
     return this.request('get', '/committee')
   }
 
-  async createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
+  createCollectionForumPost(collection: Collection, forumPost: ForumPost): Promise<string> {
     return this.request('post', `/collections/${collection.id}/post`, { forumPost })
   }
 
-  async fetchRarities(): Promise<Rarity[]> {
+  fetchRarities(): Promise<Rarity[]> {
     return this.request('get', '/rarities')
   }
 
-  async updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
+  fetchThirdParties(manager?: string): Promise<ThirdParty[]> {
+    return this.request('get', '/thirdParties', { manager })
+  }
+
+  updateCurationStatus(collectionId: string, status: CurationStatus): Promise<void> {
     return this.request('patch', `/collections/${collectionId}/curation`, { curation: { status } })
   }
 

@@ -20,13 +20,17 @@ export default class CollectionsPage extends React.PureComponent<Props> {
     this.props.onOpenModal('CreateCollectionModal')
   }
 
+  handleNewThirdPartyCollection = () => {
+    this.props.onOpenModal('CreateThirdPartyCollectionModal')
+  }
+
   handleOpenEditor = () => {
     const { onNavigate } = this.props
     onNavigate(locations.itemEditor())
   }
 
   renderPage() {
-    const { items, collections } = this.props
+    const { items, collections, isThirdPartyManager } = this.props
     const count = items.length + collections.length
 
     return (
@@ -54,6 +58,12 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                       <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
                       <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
                       <Dropdown.Item text={'Open slots modal'} onClick={() => this.props.onOpenModal('BuyItemSlotsModal')} />
+                      {isThirdPartyManager ? (
+                        <Dropdown.Item
+                          text={t('collections_page.new_third_party_collection')}
+                          onClick={this.handleNewThirdPartyCollection}
+                        />
+                      ) : null}
                     </Dropdown.Menu>
                   </Dropdown>
                   <Button className="open-editor" primary onClick={this.handleOpenEditor} size="tiny">
