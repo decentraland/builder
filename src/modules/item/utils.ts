@@ -313,7 +313,7 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
   checkDifferent(item.data.tags, catalystItem.data.tags, 'tags', differentAcc)
 
   const iContents = Object.entries(item.contents).map(([k, v]) => k + v)
-  const eContents = entity.content!.map(c => c.key + c.hash)
+  const eContents = entity.content!.filter(c => c.key !== 'image.png').map(c => c.key + c.hash)
 
   checkDifferent(iContents, eContents, 'contents', differentAcc)
 
