@@ -956,10 +956,11 @@
     "cant_operate": "此合集仍处于锁定状态，一旦发布结束您将可以再次操作",
     "locked": "锁定"
   },
-  "collection_menu": {
+  "collection_context_menu": {
     "add_existing_item": "添加现有项目",
     "forum_post": "论坛帖子",
     "copy_address": "复制地址",
+    "copy_urn": "编辑 URN",
     "see_in_world": "见世面",
     "unpublished": "此合集尚未发布",
     "managers": "合作者",

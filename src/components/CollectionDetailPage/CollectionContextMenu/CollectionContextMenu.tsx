@@ -49,7 +49,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     onOpenModal('AddExistingItemModal', { collectionId: collection.id })
   }
 
-  handleDeleteItem = () => {
+  handleDeleteCollection = () => {
     const { collection, onDelete } = this.props
     onDelete(collection)
   }
@@ -76,22 +76,22 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
         direction="left"
       >
         <Dropdown.Menu>
-          <Dropdown.Item text={t('collection_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
-          <Dropdown.Item text={t('collection_menu.open_in_editor')} onClick={this.handleNavigateToEditor} />
+          <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
+          <Dropdown.Item text={t('collection_context_menu.open_in_editor')} onClick={this.handleNavigateToEditor} />
 
           {collection.isPublished ? (
             isOwner ? (
               <>
-                <Dropdown.Item text={t('collection_menu.managers')} onClick={this.handleUpdateManagers} />
-                <Dropdown.Item text={t('collection_menu.minters')} onClick={this.handleUpdateMinters} />
+                <Dropdown.Item text={t('collection_context_menu.managers')} onClick={this.handleUpdateManagers} />
+                <Dropdown.Item text={t('collection_context_menu.minters')} onClick={this.handleUpdateMinters} />
               </>
             ) : null
           ) : !isLocked(collection) ? (
             <>
-              <Dropdown.Item text={t('collection_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
+              <Dropdown.Item text={t('collection_context_menu.add_existing_item')} onClick={this.handleAddExistingItem} />
               <ConfirmDelete
                 name={collection.name}
-                onDelete={this.handleDeleteItem}
+                onDelete={this.handleDeleteCollection}
                 trigger={<Dropdown.Item text={t('global.delete')} />}
               />
             </>
@@ -100,9 +100,9 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
           <Popup
             content={
               !collection.isPublished
-                ? t('collection_menu.unpublished')
+                ? t('collection_context_menu.unpublished')
                 : !collection.forumLink
-                ? t('collection_menu.not_posted')
+                ? t('collection_context_menu.not_posted')
                 : undefined
             }
             disabled={collection.isPublished || !!collection.forumLink}
@@ -111,18 +111,18 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
               !collection.isPublished || collection.forumLink ? (
                 <Dropdown.Item
                   disabled={!collection.isPublished}
-                  text={t('collection_menu.forum_post')}
+                  text={t('collection_context_menu.forum_post')}
                   onClick={this.handleNavigateToForum}
                 />
               ) : isOwner ? (
                 <Dropdown.Item onClick={this.handlePostToForum} disabled={isForumPostLoading}>
                   {isForumPostLoading ? (
                     <div>
-                      {t('collection_menu.posting')}&nbsp;&nbsp;
+                      {t('collection_context_menu.posting')}&nbsp;&nbsp;
                       <Loader size="mini" active inline />
                     </div>
                   ) : (
-                    t('collection_menu.post_to_forum')
+                    t('collection_context_menu.post_to_forum')
                   )}
                 </Dropdown.Item>
               ) : null
@@ -134,12 +134,12 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
           />
 
           <Popup
-            content={t('collection_menu.unpublished')}
+            content={t('collection_context_menu.unpublished')}
             position="right center"
             disabled={collection.isPublished}
             trigger={
               <CopyToClipboard text={collection.contractAddress!}>
-                <Dropdown.Item disabled={!collection.isPublished} text={t('collection_menu.copy_address')} />
+                <Dropdown.Item disabled={!collection.isPublished} text={t('collection_context_menu.copy_address')} />
               </CopyToClipboard>
             }
             hideOnScroll={true}

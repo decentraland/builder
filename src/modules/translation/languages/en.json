@@ -976,10 +976,11 @@
     "cant_operate": "This collection is still locked, once publication ends you'll be able to operate again",
     "locked": "Locked"
   },
-  "collection_menu": {
+  "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
     "forum_post": "Forum post",
     "copy_address": "Copy address",
+    "edit_urn": "Edit URN",
     "see_in_world": "See in world",
     "unpublished": "This collection not published yet",
     "managers": "Collaborators",

@@ -977,10 +977,11 @@
     "cant_operate": "Esta colección está bloqueada, una vez que la publicación termine serás capaz de utilizarla nuevamente",
     "locked": "Bloqueada"
   },
-  "collection_menu": {
+  "collection_context_menu": {
     "add_existing_item": "Agregar item existente",
     "forum_post": "Post en el foro",
     "copy_address": "Copiar dirección",
+    "edit_urn": "Editar URN",
     "see_in_world": "Ver en el mundo",
     "unpublished": "Esta colleción aún no está publicada",
     "managers": "Colaboradores",
