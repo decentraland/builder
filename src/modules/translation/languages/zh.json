@@ -985,7 +985,9 @@
     "mint_item": "铸币",
     "remove_from_collection": "从收藏中删除",
     "edit_price": "修改价格",
+    "see_details": "查看详细信息",
     "open_in_editor": "在编辑器中打开",
+    "edit_urn": "编辑 URN",
     "reset_item": "撤消"
   },
   "item": {

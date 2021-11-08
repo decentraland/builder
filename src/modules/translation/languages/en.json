@@ -995,7 +995,9 @@
     "mint_item": "mint",
     "remove_from_collection": "Remove from collection",
     "edit_price": "Edit price",
+    "see_details": "See details",
     "open_in_editor": "Open in editor",
+    "edit_urn": "Edit URN",
     "reset_item": "Reset changes"
   },
   "item": {

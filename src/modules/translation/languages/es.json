@@ -1005,7 +1005,9 @@
     "mint_item": "crear",
     "remove_from_collection": "Eliminar de la colección",
     "edit_price": "Editar precio",
+    "see_details": "Ver detalles",
     "open_in_editor": "Abrir en el editor",
+    "edit_urn": "Editar URN",
     "reset_item": "Deshacer cambios"
   },
   "item": {

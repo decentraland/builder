@@ -14,6 +14,7 @@ import CollectionPublishButton from './CollectionPublishButton'
 import { Props } from './ThirdPartyCollectionDetailPage.types'
 
 import './ThirdPartyCollectionDetailPage.css'
+import CollectionItem from './CollectionItem'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
 
@@ -108,7 +109,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
           {this.hasItems() ? (
             <div className="collection-items">
               {items.map(item => (
-                <div>Item id: {item.id}</div>
+                <CollectionItem key={item.id} collection={collection} item={item} />
               ))}
             </div>
           ) : (
