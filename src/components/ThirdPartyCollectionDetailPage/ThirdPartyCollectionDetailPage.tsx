@@ -46,6 +46,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   renderPage() {
     const { wallet, items } = this.props
     const collection = this.props.collection!
+    const slots = 0
 
     return (
       <>
@@ -72,10 +73,15 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     </small>
                   </Row>
                 </Column>
-                <Column align="right" shrink={false} grow={false}>
+                <Column align="right" shrink={false}>
                   <Row className="actions">
-                    <Button secondary compact className="slots" onClick={this.handleBuySlot}>
-                      {t('third_party_collection_detail_page.slots', { amount: 1000 })}
+                    <Button secondary compact className={`${slots <= 0 ? 'empty' : ''} slots`} onClick={this.handleBuySlot}>
+                      {t('third_party_collection_detail_page.slots', { amount: slots })}
+                      {slots <= 0 ? (
+                        <span className="buy-slots link" onClick={this.handleBuySlot}>
+                          {t('global.buy')}
+                        </span>
+                      ) : null}
                     </Button>
                     <CollectionPublishButton collection={collection} />
                     {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
@@ -92,7 +98,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
               values={{
                 buy_link: (
                   <span className="link" onClick={this.handleBuySlot}>
-                    {t('third_party_collection_detail_page.click_here')}
+                    {t('global.click_here')}
                   </span>
                 )
               }}

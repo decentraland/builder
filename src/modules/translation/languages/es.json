@@ -419,6 +419,8 @@
     "amount": "Cantidad",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
+    "add": "Agregar",
+    "buy": "Comprar",
     "continue": "Continuar",
     "create": "Crear",
     "dismiss": "Descartar",
@@ -469,6 +471,7 @@
     "body_shape_plural": "Cuerpos",
     "size": "Tamaño",
     "hash": "Hash",
+    "publish": "Publicar",
     "published": "Publicado",
     "description": "Descripción",
     "order": {
@@ -863,7 +866,6 @@
   "topbar": {
     "bounds_exceeded": "Objeto fuera de límites{br}¡Muevelo dentro de los límites!",
     "limits_exceeded": "Demasiados {metric}{br}¡Intenta borrar algunos objetos!",
-    "publish": "Publicar",
     "up_to_date": "¡Al día!{br}Todos los cambios están actualizados",
     "update_scene": "Actualizar Escena"
   },
@@ -959,13 +961,18 @@
     "add_representation": "Agregar representación de {bodyShape}",
     "change_item_file": "Editar representación"
   },
+  "third_party_collection_detail_page": {
+    "notice": "Cada item publicado toma un Slot. {buy_link} para comprar paquetes de slots y comienza a publicar tus creaciones!",
+    "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
+    "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
+    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+  },
   "collection_detail_page": {
     "new_item": "Nuevo Item",
     "mint_items": "Crear Items",
     "on_sale": "En venta",
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida en el Mercado de Decentraland.",
     "unset_on_sale_popup": "Esta colección está en venta en el Mercado de Decentraland.",
-    "publish": "Publicar",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
     "click_here": "Clickea aquí",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
@@ -1040,7 +1047,6 @@
     "terms_of_use": "Términos de uso",
     "content_policy": "Política de contenido",
     "accept_by_publishing": "Al presionar Publish estás aceptando nuestros términos y condiciones",
-    "publish": "Publicar",
     "not_enogh_mana": "No tienes suficiente {symbol} para publicar la collección.",
     "get_mana": "Puedes obtener más usando la {link} dapp."
   },

@@ -72,6 +72,10 @@
   margin-bottom: 32px;
 }
 
+.ThirdPartyCollectionDetailPage .button.slots.empty {
+  color: var(--secondary-text);
+}
+
 .ThirdPartyCollectionDetailPage .button.slots:before {
   content: '';
   display: inline-block;
@@ -81,6 +85,14 @@
   top: 3px;
   position: relative;
   margin-right: 8px;
+}
+
+.ThirdPartyCollectionDetailPage .button.slots .buy-slots {
+  margin-left: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .button.slots.empty:before {
+  background-image: url('../../images/empty-slots.svg');
 }
 
 .ThirdPartyCollectionDetailPage .dcl.narrow > .empty {

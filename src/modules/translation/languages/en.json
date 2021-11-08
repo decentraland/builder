@@ -419,6 +419,7 @@
     "close": "Close",
     "confirm": "Confirm",
     "add": "Add",
+    "buy": "buy",
     "continue": "Continue",
     "create": "Create",
     "dismiss": "Dismiss",
@@ -470,6 +471,7 @@
     "body_shape_plural": "Body Shapes",
     "size": "Size",
     "hash": "Hash",
+    "publish": "Publish",
     "published": "Published",
     "description": "Description",
     "order": {
@@ -856,7 +858,6 @@
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
     "limits_exceeded": "Too many {metric}{br}Try deleting some items!",
-    "publish": "Publish",
     "up_to_date": "Up to date!{br}All the changes are published",
     "update_scene": "Update Scene"
   },
@@ -951,10 +952,9 @@
     "change_item_file": "Edit representation"
   },
   "third_party_collection_detail_page": {
-    "publish": "Publish",
     "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
     "click_here": "Click here",
-    "slots": "{amount} Slots",
+    "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing your collection."
   },
@@ -964,7 +964,6 @@
     "on_sale": "On sale",
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
-    "publish": "Publish",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
     "start_adding_items": "Looking good! Start adding items to your new collection",
@@ -1039,7 +1038,6 @@
     "terms_of_use": "Terms of Use",
     "content_policy": "Content Policy",
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
-    "publish": "Publish",
     "not_enogh_mana": "You don't have enough {symbol} to publish this collection.",
     "get_mana": "You can get more using the {link} dapp."
   },

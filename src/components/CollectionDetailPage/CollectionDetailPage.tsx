@@ -159,7 +159,7 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
             <T
               id="collection_detail_page.notice"
               values={{
-                editor_link: <Link to={getCollectionEditorURL(collection, items)}>{t('collection_detail_page.click_here')}</Link>
+                editor_link: <Link to={getCollectionEditorURL(collection, items)}>{t('global.click_here')}</Link>
               }}
             />
           </Notice>
