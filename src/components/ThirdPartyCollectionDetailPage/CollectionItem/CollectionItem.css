@@ -16,12 +16,14 @@
 
 .CollectionItem .ui.grid.equal.width > .row > .column {
   display: flex;
+  padding-left: 0;
   flex-direction: column;
 }
 
 .CollectionItem .ui.grid.equal.width > .row > .column.avatar-column {
   flex-direction: inherit;
   align-items: center;
+  padding-left: 10px;
 }
 
 .CollectionItem .ItemImage.image-wrapper {
@@ -30,6 +32,7 @@
   height: 64px;
   padding: 5px;
   margin-right: 24px;
+  margin-left: 18px;
 }
 
 .CollectionItem .info {
@@ -55,12 +58,6 @@
 
 .CollectionItem .link,
 .CollectionItem a {
-  text-transform: uppercase;
-}
-
-.CollectionItem .subtitle {
-  margin-top: 2px;
-  color: var(--secondary-text);
   text-transform: uppercase;
 }
 
