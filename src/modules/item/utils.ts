@@ -299,27 +299,43 @@ export function toInitializeItem(item: Item): InitializeItem {
   return [item.rarity!.toLowerCase(), item.price || '0', item.beneficiary ?? constants.AddressZero, getMetadata(item)]
 }
 
+type Different = { property: string; server: any; catalyst: any }
+
 export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
-  // check if metadata is synced
   const catalystItem = entity.metadata! as CatalystItem
-  const hasMetadataChanged =
-    item.name !== catalystItem.name ||
-    item.description !== catalystItem.description ||
-    item.data.category !== catalystItem.data.category ||
-    item.data.hides.toString() !== catalystItem.data.hides.toString() ||
-    item.data.replaces.toString() !== catalystItem.data.replaces.toString() ||
-    item.data.tags.toString() !== catalystItem.data.tags.toString()
-  if (hasMetadataChanged) {
-    return false
+  const differentAcc: Different[] = []
+
+  checkDifferent(item.name, catalystItem.name, 'name', differentAcc)
+  checkDifferent(item.description, catalystItem.description, 'description', differentAcc)
+  checkDifferent(item.data.category, catalystItem.data.category, 'category', differentAcc)
+  checkDifferent(item.data.hides, catalystItem.data.hides, 'hides', differentAcc)
+  checkDifferent(item.data.replaces, catalystItem.data.replaces, 'replaces', differentAcc)
+  checkDifferent(item.data.tags, catalystItem.data.tags, 'tags', differentAcc)
+
+  const iContents = Object.entries(item.contents).map(([k, v]) => k + v)
+  const eContents = entity.content!.map(c => c.key + c.hash)
+
+  checkDifferent(iContents, eContents, 'contents', differentAcc)
+
+  if (item.id === 'b92bb94b-15cb-4308-91bf-7ef3544cb9f7') {
+    console.log(differentAcc)
   }
 
-  // check if contents are synced
-  const contents = entity.content!.reduce((map, entry) => map.set(entry.key, entry.hash), new Map<string, string>())
-  for (const path in item.contents) {
-    const hash = item.contents[path]
-    if (contents.get(path) !== hash) {
-      return false
+  return differentAcc.length === 0
+}
+
+const checkDifferent = (serverItemProp: any, catalystItemProp: any, property: string, acc: Different[]) => {
+  const stringify = (elem: any) => {
+    if (typeof elem === 'string') {
+      return elem
+    } else if (Array.isArray(elem)) {
+      return JSON.stringify([...elem].sort())
+    } else {
+      return JSON.stringify(elem)
     }
   }
-  return true
+
+  if (stringify(serverItemProp) !== stringify(catalystItemProp)) {
+    acc.push({ property, server: serverItemProp, catalyst: catalystItemProp })
+  }
 }
