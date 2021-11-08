@@ -7,8 +7,8 @@ import { getHasPendingCuration } from 'modules/curation/selectors'
 import { getStatusByCollectionId } from 'modules/collection/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
 import { openModal } from 'modules/modal/actions'
-import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionAction.types'
-import CollectionAction from './CollectionAction'
+import { MapStateProps, MapDispatchProps, MapDispatch, OwnProps } from './CollectionPublishButton.types'
+import CollectionPublishButton from './CollectionPublishButton'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => {
   const { id: collectionId } = ownProps.collection
@@ -33,4 +33,4 @@ const mapDispatch = (dispatch: MapDispatch, ownProps: OwnProps): MapDispatchProp
   }
 }
 
-export default connect(mapState, mapDispatch)(CollectionAction)
+export default connect(mapState, mapDispatch)(CollectionPublishButton)

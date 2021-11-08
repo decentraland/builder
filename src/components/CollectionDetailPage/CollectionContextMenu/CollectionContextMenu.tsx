@@ -6,10 +6,10 @@ import { buildCollectionForumPost } from 'modules/forum/utils'
 import { RoleType } from 'modules/collection/types'
 import { getCollectionEditorURL, getExplorerURL, isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
-import { Props } from './CollectionMenu.types'
-import './CollectionMenu.css'
+import { Props } from './CollectionContextMenu.types'
+import './CollectionContextMenu.css'
 
-export default class CollectionMenu extends React.PureComponent<Props> {
+export default class CollectionContextMenu extends React.PureComponent<Props> {
   handleNavigateToForum = () => {
     const { collection } = this.props
     if (collection.isPublished && collection.forumLink) {
@@ -66,7 +66,7 @@ export default class CollectionMenu extends React.PureComponent<Props> {
     const isOwner = isCollectionOwner(collection, wallet.address)
     return (
       <Dropdown
-        className="CollectionMenu"
+        className="CollectionContextMenu"
         trigger={
           <Button basic>
             <Icon name="ellipsis horizontal" />

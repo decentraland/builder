@@ -9,8 +9,8 @@ import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
-import CollectionMenu from './CollectionMenu'
-import CollectionAction from './CollectionAction'
+import CollectionContextMenu from './CollectionContextMenu'
+import CollectionPublishButton from './CollectionPublishButton'
 import { Props } from './ThirdPartyCollectionDetailPage.types'
 
 import './ThirdPartyCollectionDetailPage.css'
@@ -63,9 +63,11 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                   </Row>
                   <Row>
                     <small className="urn">
-                      {collection.urn}
                       <CopyToClipboard text={collection.urn!}>
-                        <Icon aria-label="Copy address" aria-hidden="false" className="link copy" name="copy outline" />
+                        <div>
+                          {collection.urn}
+                          <Icon aria-label="Copy urn" aria-hidden="false" className="link copy" name="copy outline" />
+                        </div>
                       </CopyToClipboard>
                     </small>
                   </Row>
@@ -75,8 +77,8 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                     <Button secondary compact className="slots" onClick={this.handleBuySlot}>
                       {t('third_party_collection_detail_page.slots', { amount: 1000 })}
                     </Button>
-                    <CollectionAction collection={collection} />
-                    {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
+                    <CollectionPublishButton collection={collection} />
+                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
                   </Row>
                 </Column>
               </Row>

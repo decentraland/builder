@@ -8,6 +8,7 @@
 }
 
 .ThirdPartyCollectionDetailPage .urn {
+  cursor: pointer;
   font-size: 13px;
   margin-top: 8px;
   color: var(--secondary-text);

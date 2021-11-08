@@ -19,10 +19,10 @@ import NotFound from 'components/NotFound'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import CollectionStatus from 'components/CollectionStatus'
-import CollectionMenu from './CollectionMenu'
+import CollectionPublishButton from './CollectionPublishButton'
+import CollectionContextMenu from './CollectionContextMenu'
 import CollectionItem from './CollectionItem'
 import { Props } from './CollectionDetailPage.types'
-import CollectionAction from './CollectionAction'
 
 import './CollectionDetailPage.css'
 
@@ -145,9 +145,9 @@ export default class CollectionDetailPage extends React.PureComponent<Props> {
                       </Button>
                     )}
 
-                    {canSeeCollection(collection, wallet.address) ? <CollectionMenu collection={collection} /> : null}
+                    {canSeeCollection(collection, wallet.address) ? <CollectionContextMenu collection={collection} /> : null}
 
-                    <CollectionAction collection={collection} />
+                    <CollectionPublishButton collection={collection} />
                   </Row>
                 </Column>
               </Row>

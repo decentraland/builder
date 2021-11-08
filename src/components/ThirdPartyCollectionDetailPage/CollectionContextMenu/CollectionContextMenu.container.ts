@@ -9,8 +9,8 @@ import { openModal } from 'modules/modal/actions'
 import { createCollectionForumPostRequest, CREATE_COLLECTION_FORUM_POST_REQUEST } from 'modules/forum/actions'
 import { getLoading } from 'modules/collection/selectors'
 import { getCollectionItems } from 'modules/item/selectors'
-import { MapDispatchProps, MapDispatch, MapStateProps, OwnProps } from './CollectionMenu.types'
-import CollectionMenu from './CollectionMenu'
+import { MapDispatchProps, MapDispatch, MapStateProps, OwnProps } from './CollectionContextMenu.types'
+import CollectionContextMenu from './CollectionContextMenu'
 
 const mapState = (state: RootState, ownProps: OwnProps): MapStateProps => ({
   wallet: getWallet(state)!,
@@ -27,4 +27,4 @@ const mapDispatch = (dispatch: MapDispatch): MapDispatchProps => ({
   onDelete: collection => dispatch(deleteCollectionRequest(collection))
 })
 
-export default connect(mapState, mapDispatch)(CollectionMenu)
+export default connect(mapState, mapDispatch)(CollectionContextMenu)
