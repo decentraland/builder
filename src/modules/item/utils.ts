@@ -317,10 +317,6 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
 
   checkDifferent(iContents, eContents, 'contents', differentAcc)
 
-  if (item.id === 'b92bb94b-15cb-4308-91bf-7ef3544cb9f7') {
-    console.log(differentAcc)
-  }
-
   return differentAcc.length === 0
 }
 
