@@ -302,6 +302,7 @@ export function toInitializeItem(item: Item): InitializeItem {
 type Different = { property: string; server: any; catalyst: any }
 
 export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPointers) {
+  const ignorableContent = 'image.png'
   const catalystItem = entity.metadata! as CatalystItem
   const differentAcc: Different[] = []
 
@@ -312,10 +313,13 @@ export function areSynced(item: Item, entity: DeploymentWithMetadataContentAndPo
   checkDifferent(item.data.replaces, catalystItem.data.replaces, 'replaces', differentAcc)
   checkDifferent(item.data.tags, catalystItem.data.tags, 'tags', differentAcc)
 
-  const iContents = Object.entries(item.contents).map(([k, v]) => k + v)
-  const eContents = entity.content!.filter(c => c.key !== 'image.png').map(c => c.key + c.hash)
+  const serverItemContents = Object.entries(item.contents)
+    .filter(([key]) => key !== ignorableContent)
+    .map(([key, hash]) => key + hash)
 
-  checkDifferent(iContents, eContents, 'contents', differentAcc)
+  const catalystItemContents = entity.content!.filter(({ key }) => key !== ignorableContent).map(({ key, hash }) => key + hash)
+
+  checkDifferent(serverItemContents, catalystItemContents, 'contents', differentAcc)
 
   return differentAcc.length === 0
 }
