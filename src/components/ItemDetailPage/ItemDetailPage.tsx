@@ -64,10 +64,6 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     const isLocked = collection && isCollectionLocked(collection)
     const hasActions = !isLocked && (missingBodyShape !== null || !item.isPublished)
 
-    if (!item.urn) {
-      item.urn = collection!.urn + ':token-id'
-    }
-
     return (
       <>
         <Section>
