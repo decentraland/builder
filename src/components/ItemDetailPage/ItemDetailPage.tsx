@@ -1,4 +1,5 @@
 import * as React from 'react'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import { Section, Row, Narrow, Column, Header, Button, Dropdown, Icon } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Link } from 'react-router-dom'
@@ -41,6 +42,10 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     onOpenModal('CreateItemModal', { item, addRepresentation: true })
   }
 
+  handleEditURN = () => {
+    // this.props.onOpenModal('EditURNModal')
+  }
+
   hasAccess() {
     const { wallet, collection, item } = this.props
     if (item === null) {
@@ -59,6 +64,10 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
     const isLocked = collection && isCollectionLocked(collection)
     const hasActions = !isLocked && (missingBodyShape !== null || !item.isPublished)
 
+    if (!item.urn) {
+      item.urn = collection!.urn + ':token-id'
+    }
+
     return (
       <>
         <Section>
@@ -69,12 +78,17 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Column>
                   <Row className="header-row">
                     <Header className="name" size="huge">
-                      <ItemStatus item={item} />{item.name}
+                      <ItemStatus item={item} />
+                      {item.name}
                     </Header>
                   </Row>
                 </Column>
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
+                    <Button primary compact onClick={this.handleEditItem}>
+                      {t('item.open_in_editor')}
+                    </Button>
+
                     {hasActions ? (
                       <Dropdown
                         trigger={
@@ -105,10 +119,6 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                         </Dropdown.Menu>
                       </Dropdown>
                     ) : null}
-
-                    <Button primary compact onClick={this.handleEditItem}>
-                      {t('global.edit')}
-                    </Button>
                   </Row>
                 </Column>
               </Row>
@@ -153,21 +163,39 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   <div className="value">{t('global.free')}</div>
                 </Section>
               ) : (
-                  <>
-                    {item.price ? (
-                      <Section>
-                        <div className="subtitle">{t('item.price')}</div>
-                        <div className="value">{fromWei(item.price, 'ether')}</div>
-                      </Section>
-                    ) : null}
-                    {item.beneficiary ? (
-                      <Section>
-                        <div className="subtitle">{t('item.beneficiary')}</div>
-                        <div className="value">{item.beneficiary}</div>
-                      </Section>
-                    ) : null}
-                  </>
-                )}
+                <>
+                  {item.price ? (
+                    <Section>
+                      <div className="subtitle">{t('item.price')}</div>
+                      <div className="value">{fromWei(item.price, 'ether')}</div>
+                    </Section>
+                  ) : null}
+                  {item.beneficiary ? (
+                    <Section>
+                      <div className="subtitle">{t('item.beneficiary')}</div>
+                      <div className="value">{item.beneficiary}</div>
+                    </Section>
+                  ) : null}
+                </>
+              )}
+              {item.urn ? (
+                <Section>
+                  <div className="subtitle">{t('item.urn')}</div>
+                  <div className="value urn">
+                    {item.urn}
+
+                    <div className="urn-actions">
+                      <span className="link" onClick={this.handleEditURN}>
+                        {t('item.edit_urn')}
+                      </span>
+
+                      <CopyToClipboard text={item.urn!}>
+                        <span className="link">{t('item.copy_urn')}</span>
+                      </CopyToClipboard>
+                    </div>
+                  </div>
+                </Section>
+              ) : null}
               {item.isPublished ? (
                 <Section>
                   <div className="subtitle">{t('item.supply')}</div>

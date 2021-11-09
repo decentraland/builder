@@ -31,6 +31,7 @@
 
 .ItemDetailPage .sections {
   margin-left: 48px;
+  flex: 1;
 }
 
 .ItemDetailPage .item-data .image-wrapper {
@@ -48,6 +49,22 @@
   margin-top: 5px;
   font-size: 21px;
   text-transform: capitalize;
+}
+
+.ItemDetailPage .item-data .value.urn {
+  text-transform: lowercase;
+}
+
+.ItemDetailPage .item-data .urn-actions {
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.ItemDetailPage .item-data .urn-actions .link {
+  margin-right: 24px;
 }
 
 .ItemDetailPage .ItemStatus {

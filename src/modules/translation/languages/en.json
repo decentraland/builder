@@ -1008,6 +1008,7 @@
     "reset_item": "Reset changes"
   },
   "item": {
+    "open_in_editor": "Open in editor",
     "blockchain_id": "Blockchain ID",
     "category": "Category",
     "rarity": "Rarity",
@@ -1016,6 +1017,9 @@
     "beneficiary": "Beneficiary",
     "supply": "Supply",
     "collection": "Collection",
+    "urn": "URN",
+    "edit_urn": "Edit URN",
+    "copy_urn": "Copy URN",
     "type": {
       "wearable": "Wearable"
     }
