@@ -422,7 +422,7 @@
     "finish": "完",
     "free": "自由",
     "here": "这里",
-    "items": "模型",
+    "item": "物品",
     "learn_more": "更多",
     "loading": "装载",
     "mint": "铸币",
@@ -691,6 +691,7 @@
     "shortcuts_help": "在此查看快捷键"
   },
   "project_card": {
+    "items": "模型",
     "confirm_delete_content": "您确认删除场景 \"{title}\"? 此操作不能回退！",
     "confirm_delete_header": "删除 \"{title}\""
   },

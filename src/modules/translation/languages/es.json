@@ -431,7 +431,7 @@
     "finish": "Finalizar",
     "free": "Gratis",
     "here": "aquí",
-    "items": "objetos",
+    "item": "Item",
     "learn_more": "Más información",
     "loading": "Cargando",
     "mint": "Crear",
@@ -706,6 +706,7 @@
     "shortcuts_help": "¡Ver atajos aquí!"
   },
   "project_card": {
+    "items": "objetos",
     "confirm_delete_content": "¿Seguro que quieres borrar tu Escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },

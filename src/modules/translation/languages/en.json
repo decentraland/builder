@@ -430,7 +430,7 @@
     "finish": "Finish",
     "free": "Free",
     "here": "here",
-    "items": "items",
+    "item": "Item",
     "learn_more": "Learn more",
     "loading": "Loading",
     "mint": "Mint",
@@ -699,6 +699,7 @@
     "shortcuts_help": "See shortcuts here!"
   },
   "project_card": {
+    "items": "items",
     "confirm_delete_content": "Are you sure you want to delete your Scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },
