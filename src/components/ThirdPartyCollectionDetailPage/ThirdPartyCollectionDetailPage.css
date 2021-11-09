@@ -34,12 +34,12 @@
   margin-left: 5px;
 }
 
-.ThirdPartyCollectionDetailPage .section:not(.is-published) .header-row:hover .edit-collection-name,
+.ThirdPartyCollectionDetailPage .section .header-row:hover .edit-collection-name,
 .ThirdPartyCollectionDetailPage .urn:hover .copy {
   display: inline-block;
 }
 
-.ThirdPartyCollectionDetailPage .section:not(.is-published) .header-row:hover {
+.ThirdPartyCollectionDetailPage .section .header-row:hover {
   cursor: pointer;
 }
 

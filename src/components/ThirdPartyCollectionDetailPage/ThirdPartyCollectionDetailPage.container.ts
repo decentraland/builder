@@ -4,7 +4,7 @@ import { isLoadingType } from 'decentraland-dapps/dist/modules/loading/selectors
 import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { getThirdPartyCollectionId } from 'modules/location/selectors'
-import { getCollection, isOnSaleLoading, getLoading as getLoadingCollection } from 'modules/collection/selectors'
+import { getCollection, getLoading as getLoadingCollection } from 'modules/collection/selectors'
 import { getCollectionItems, getLoading as getLoadingItem } from 'modules/item/selectors'
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
@@ -20,7 +20,6 @@ const mapState = (state: RootState): MapStateProps => {
     wallet: getWallet(state)!,
     collection,
     items: getCollectionItems(state, collectionId),
-    isOnSaleLoading: isOnSaleLoading(state),
     isLoading:
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||

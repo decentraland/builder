@@ -20,7 +20,7 @@ const STORAGE_KEY = 'dcl-third-party-collection-notice'
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props> {
   handleEditName = () => {
     const { collection, onOpenModal } = this.props
-    if (collection && !collection.isPublished) {
+    if (collection) {
       onOpenModal('EditCollectionNameModal', { collection })
     }
   }
@@ -50,7 +50,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
     return (
       <>
-        <Section className={collection.isPublished ? 'is-published' : ''}>
+        <Section>
           <Row>
             <Back absolute onClick={this.handleGoBack} />
             <Narrow>

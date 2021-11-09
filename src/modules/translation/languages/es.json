@@ -965,7 +965,7 @@
     "notice": "Cada item publicado toma un Slot. {buy_link} para comprar paquetes de slots y comienza a publicar tus creaciones!",
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
-    "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada."
+    "cant_remove": "No podrás agregar o remover items una vez que estén publicados."
   },
   "collection_detail_page": {
     "new_item": "Nuevo Item",

@@ -462,6 +462,7 @@
     "body_shape_plural": "机构",
     "size": "大小",
     "hash": "散 列",
+    "publish": "发布",
     "published": "已发表",
     "description": "描述",
     "order": {
@@ -944,7 +945,7 @@
     "notice": "每个发布的项目需要 1 个插槽。 {buy_link} 购买老虎机包并开始发布您的作品！",
     "slots": "{amount, plural, =0 {没有插槽} one {# 个插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
-    "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。"
+    "cant_remove": "发布项目后，您将无法添加或删除项目。"
   },
   "collection_detail_page": {
     "new_item": "新物品",
