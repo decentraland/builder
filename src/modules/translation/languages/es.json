@@ -468,6 +468,7 @@
     "name": "Nombre",
     "category": "Categoría",
     "rarity": "Rareza",
+    "body_shape": "Cuerpo",
     "body_shape_plural": "Cuerpos",
     "size": "Tamaño",
     "hash": "Hash",
@@ -963,6 +964,10 @@
   },
   "third_party_collection_detail_page": {
     "notice": "Cada item publicado toma un Slot. {buy_link} para comprar paquetes de slots y comienza a publicar tus creaciones!",
+    "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
+    "search_info": "{page}-{totalPages} de {total}",
+    "select_all": "Seleccionar todo",
+    "deselect_all": "Deseleccionar todo",
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items una vez que estén publicados."

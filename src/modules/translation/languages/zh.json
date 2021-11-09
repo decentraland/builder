@@ -459,6 +459,7 @@
     "name": "名称",
     "category": "类别",
     "rarity": "稀有度",
+    "body_shape": "身材",
     "body_shape_plural": "机构",
     "size": "大小",
     "hash": "散 列",
@@ -943,6 +944,10 @@
   },
   "third_party_collection_detail_page": {
     "notice": "每个发布的项目需要 1 个插槽。 {buy_link} 购买老虎机包并开始发布您的作品！",
+    "search_placeholder": "搜索 {count} {count, 复数, 一个 {item} 其他 {items}}...",
+    "search_info": "{page}-{totalPages} 个，共 {total} 个",
+    "select_all": "全选",
+    "deselect_all": "取消全选",
     "slots": "{amount, plural, =0 {没有插槽} one {# 个插槽} other {# 个插槽}}",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "发布项目后，您将无法添加或删除项目。"

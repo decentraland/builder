@@ -15,6 +15,12 @@ export type Props = {
   onOpenModal: typeof openModal
 }
 
+export type State = {
+  itemSelectionState: Record<string, boolean>
+  searchText: string
+  page: number
+}
+
 export type MapStateProps = Pick<Props, 'wallet' | 'collection' | 'items' | 'isLoading'>
 export type MapDispatchProps = Pick<Props, 'onNavigate' | 'onOpenModal'>
 export type MapDispatch = Dispatch<CallHistoryMethodAction | OpenModalAction>

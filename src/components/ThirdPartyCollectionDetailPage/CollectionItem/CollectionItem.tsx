@@ -1,15 +1,15 @@
 import React from 'react'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Grid, Dropdown, Icon, Button, Checkbox } from 'decentraland-ui'
+import { Grid, Dropdown, Icon, Button, Checkbox, CheckboxProps } from 'decentraland-ui'
 import { Link } from 'react-router-dom'
 import { locations } from 'routing/locations'
 import { preventDefault } from 'lib/preventDefault'
-import { getMaxSupply } from 'modules/item/utils'
+import { decodeURN, URNType } from 'lib/urn'
 import ItemStatus from 'components/ItemStatus'
 import { WearableData } from 'modules/item/types'
+import { getBodyShapeType } from 'modules/item/utils'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
-
 import './CollectionItem.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
@@ -22,8 +22,24 @@ export default class CollectionItem extends React.PureComponent<Props> {
     onNavigate(locations.itemEditor({ itemId: item.id, collectionId: item.collectionId }))
   }
 
-  render() {
+  handleCheckboxChange = (_event: React.MouseEvent<HTMLInputElement>, data: CheckboxProps) => {
+    const { item, onSelect } = this.props
+    onSelect(item, data.checked!)
+  }
+
+  getTokenId() {
     const { item } = this.props
+
+    if (!item.urn) {
+      return ''
+    }
+
+    const decodedURN = decodeURN(item.urn)
+    return decodedURN.type === URNType.COLLECTIONS_THIRDPARTY ? decodedURN.thirdPartyTokenId : ''
+  }
+
+  render() {
+    const { item, selected } = this.props
     const data = item.data as WearableData
 
     return (
@@ -31,7 +47,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
         <Grid columns="equal">
           <Grid.Row>
             <Grid.Column className="avatar-column" width={5}>
-              <Checkbox onClick={preventDefault(() => {})} />
+              <Checkbox checked={selected} onClick={preventDefault(this.handleCheckboxChange)} />
               <ItemImage item={item} hasBadge badgeSize="small" />
               <div className="info">
                 <div className="name-wrapper">
@@ -40,35 +56,15 @@ export default class CollectionItem extends React.PureComponent<Props> {
                     {item.name}
                   </div>
                 </div>
-                <div className="subtitle">{item.type}</div>
               </div>
             </Grid.Column>
+            <Grid.Column>{data.category ? <div>{t(`wearable.category.${data.category}`)}</div> : null}</Grid.Column>
             <Grid.Column>
-              {data.category ? (
-                <>
-                  <div>{t(`wearable.category.${data.category}`)}</div>
-                  <div className="subtitle">{t('item.category')}</div>
-                </>
-              ) : null}
+              <div>{t(`body_shapes.${getBodyShapeType(item)}`)}</div>
             </Grid.Column>
             <Grid.Column>
-              {item.rarity ? (
-                <>
-                  <div>{t(`wearable.rarity.${item.rarity}`)}</div>
-                  <div className="subtitle">{t('item.rarity')}</div>
-                </>
-              ) : null}
+              <div>{this.getTokenId()}</div>
             </Grid.Column>
-            {item.isPublished ? (
-              <Grid.Column>
-                <>
-                  <div>
-                    {item.totalSupply}/{getMaxSupply(item)}
-                  </div>
-                  <div className="subtitle">{t('item.supply')}</div>
-                </>
-              </Grid.Column>
-            ) : null}
             <Grid.Column>
               <div className="item-actions">
                 <Dropdown

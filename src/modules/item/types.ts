@@ -129,6 +129,7 @@ export type Item = BaseItem & {
   collectionId?: string
   tokenId?: string
   price?: string
+  urn?: string
   beneficiary?: string
   totalSupply?: number
   isPublished: boolean

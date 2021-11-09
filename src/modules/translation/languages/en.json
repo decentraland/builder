@@ -468,6 +468,7 @@
     "name": "Name",
     "category": "Category",
     "rarity": "Rarity",
+    "body_shape": "Body Shape",
     "body_shape_plural": "Body Shapes",
     "size": "Size",
     "hash": "Hash",
@@ -953,6 +954,11 @@
   },
   "third_party_collection_detail_page": {
     "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
+    "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
+    "search_info": "{page}-{totalPages} of {total}",
+    "select_all": "Select all",
+    "deselect_all": "Deselect all",
+    "click_here": "Click here",
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them."

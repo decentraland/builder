@@ -64,10 +64,6 @@
   padding: 10px;
 }
 
-.ThirdPartyCollectionDetailPage .actions .popup-button {
-  margin-left: 16px;
-}
-
 .ThirdPartyCollectionDetailPage .Notice {
   margin-bottom: 32px;
 }
@@ -95,6 +91,34 @@
   background-image: url('../../images/empty-slots.svg');
 }
 
+.ThirdPartyCollectionDetailPage .search-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ThirdPartyCollectionDetailPage .search-container .dcl.text-filter {
+  flex: 1;
+}
+
+.ThirdPartyCollectionDetailPage .search-container .search-info .select-all {
+  margin-left: 24px;
+  text-transform: uppercase;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.equal.width > .row > .column {
+  padding-left: 0;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.grid-header > .row > .column:first-child {
+  padding-left: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.grid-header {
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: 10px;
+}
+
 .ThirdPartyCollectionDetailPage .dcl.narrow > .empty {
   padding: 200px 0;
   width: 100%;
@@ -116,9 +140,6 @@
   margin-bottom: 20px;
 }
 
-.ThirdPartyCollectionDetailPage .CollectionStatus {
-  width: 16px;
-  height: 16px;
-  margin-bottom: 6px;
-  margin-right: 12px;
+.ThirdPartyCollectionDetailPage .ui.pagination.menu {
+  margin-top: 32px;
 }
