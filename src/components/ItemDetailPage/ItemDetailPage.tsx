@@ -86,7 +86,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Column align="right" shrink={false} grow={false}>
                   <Row className="actions">
                     <Button primary compact onClick={this.handleEditItem}>
-                      {t('item.open_in_editor')}
+                      {t('global.open_in_editor')}
                     </Button>
 
                     {hasActions ? (

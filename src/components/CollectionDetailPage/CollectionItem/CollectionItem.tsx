@@ -130,7 +130,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                 >
                   <Dropdown.Menu>
                     <Dropdown.Item text={t('collection_item.see_details')} as={Link} to={locations.itemDetail(item.id)} />
-                    <Dropdown.Item text={t('collection_item.open_in_editor')} onClick={this.handleNavigateToEditor} />
+                    <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
                     {canManageItem(collection, item, ethAddress) && !isLocked(collection) ? (
                       <>
                         {item.price ? (

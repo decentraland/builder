@@ -448,6 +448,7 @@
     "view_more": "查看更多",
     "click_here": "点击这里",
     "proceed": "继续",
+    "open_in_editor": "在编辑器中打开",
     "address": "地址",
     "balance": "余额",
     "balances": "天平",
@@ -721,7 +722,6 @@
   },
   "scene_detail_page": {
     "actions": {
-      "open_in_editor": "在编辑器中打开",
       "duplicate": "重复",
       "download": "下载",
       "delete": "删除",
@@ -981,8 +981,7 @@
     "minters": "铸币厂",
     "post_to_forum": "发布到论坛",
     "posting": "过帐",
-    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试",
-    "open_in_editor": "在编辑器中打开"
+    "not_posted": "该收藏集尚未发布到论坛。 您可以在这里重试"
   },
   "collection_item": {
     "set_price": "设定价格",
@@ -992,7 +991,6 @@
     "remove_from_collection": "从收藏中删除",
     "edit_price": "修改价格",
     "see_details": "查看详细信息",
-    "open_in_editor": "在编辑器中打开",
     "edit_urn": "编辑 URN",
     "reset_item": "撤消"
   },

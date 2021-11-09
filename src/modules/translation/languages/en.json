@@ -457,6 +457,7 @@
     "view_more": "View More",
     "click_here": "Click here",
     "proceed": "Proceed",
+    "open_in_editor": "Open in editor",
     "address": "Address",
     "balance": "Balance",
     "balances": "Balances",
@@ -729,7 +730,6 @@
   },
   "scene_detail_page": {
     "actions": {
-      "open_in_editor": "Open in editor",
       "duplicate": "Duplicate",
       "download": "Download",
       "delete": "Delete",
@@ -992,8 +992,7 @@
     "minters": "Minters",
     "post_to_forum": "Post to forum",
     "posting": "Posting",
-    "not_posted": "The collection wasn't posted to the forum. You can retry here",
-    "open_in_editor": "Open in editor"
+    "not_posted": "The collection wasn't posted to the forum. You can retry here"
   },
   "collection_item": {
     "set_price": "set price",
@@ -1003,12 +1002,10 @@
     "remove_from_collection": "Remove from collection",
     "edit_price": "Edit price",
     "see_details": "See details",
-    "open_in_editor": "Open in editor",
     "edit_urn": "Edit URN",
     "reset_item": "Reset changes"
   },
   "item": {
-    "open_in_editor": "Open in editor",
     "blockchain_id": "Blockchain ID",
     "category": "Category",
     "rarity": "Rarity",

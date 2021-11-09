@@ -77,7 +77,7 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
       >
         <Dropdown.Menu>
           <Dropdown.Item text={t('collection_context_menu.see_in_world')} onClick={this.handleNavigateToExplorer} />
-          <Dropdown.Item text={t('collection_context_menu.open_in_editor')} onClick={this.handleNavigateToEditor} />
+          <Dropdown.Item text={t('global.open_in_editor')} onClick={this.handleNavigateToEditor} />
 
           {collection.isPublished ? (
             isOwner ? (
