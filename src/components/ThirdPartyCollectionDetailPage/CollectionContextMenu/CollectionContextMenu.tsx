@@ -4,7 +4,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { getCollectionEditorURL, getExplorerURL, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
-import './CollectionContextMenu.css'
+import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
   handleNavigateToExplorer = () => {
@@ -37,10 +37,10 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     const { collection } = this.props
     return (
       <Dropdown
-        className="CollectionContextMenu"
+        className={styles.dropdown}
         trigger={
           <Button basic>
-            <Icon name="ellipsis horizontal" />
+            <Icon className={styles.ellipsis} name="ellipsis horizontal" />
           </Button>
         }
         inline

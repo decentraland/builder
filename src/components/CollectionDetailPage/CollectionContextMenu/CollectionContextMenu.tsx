@@ -7,7 +7,7 @@ import { RoleType } from 'modules/collection/types'
 import { getCollectionEditorURL, getExplorerURL, isOwner as isCollectionOwner, isLocked } from 'modules/collection/utils'
 import ConfirmDelete from 'components/ConfirmDelete'
 import { Props } from './CollectionContextMenu.types'
-import './CollectionContextMenu.css'
+import styles from './CollectionContextMenu.module.css'
 
 export default class CollectionContextMenu extends React.PureComponent<Props> {
   handleNavigateToForum = () => {
@@ -66,10 +66,10 @@ export default class CollectionContextMenu extends React.PureComponent<Props> {
     const isOwner = isCollectionOwner(collection, wallet.address)
     return (
       <Dropdown
-        className="CollectionContextMenu"
+        className={styles.dropdown}
         trigger={
           <Button basic>
-            <Icon name="ellipsis horizontal" />
+            <Icon className={styles.ellipsis} name="ellipsis horizontal" />
           </Button>
         }
         inline
