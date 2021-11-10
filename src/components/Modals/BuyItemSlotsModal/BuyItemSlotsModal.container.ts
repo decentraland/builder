@@ -2,27 +2,24 @@ import { connect } from 'react-redux'
 import { RootState } from 'modules/common/types'
 import { getManaBalance } from 'modules/wallet/selectors'
 import { MapStateProps, MapDispatchProps } from './BuyItemSlotsModal.types'
-// import { getLoading as getLoadingCollectionActions } from 'modules/collection/selectors'
-// import { getPendingTransactions } from 'modules/transaction/selectors'
 import BuyItemSlotsModal from './BuyItemSlotsModal'
-import { getThirdPartyItemTiers, isFetchingTiers } from 'modules/tiers/selectors'
-import { buyThirdPartyItemTiersRequest, fetchThirdPartyItemTiersRequest } from 'modules/tiers/action'
+import { getError, getThirdPartyItemTiers, isBuyingItemSlots, isFetchingTiers } from 'modules/tiers/selectors'
+import { buyThirdPartyItemTiersRequest, fetchThirdPartyItemTiersRequest } from 'modules/tiers/actions'
 import { bindActionCreators } from 'redux'
 
 const mapState = (state: RootState): MapStateProps => {
-  // const loadingEntityActions = getLoadingEntityActions(state)
-  // const pendingTransactions = getPendingTransactions(state)
-  // pendingTransactions.some(tx => tx.actionType === APPROVE_COLLECTION_SUCCESS)
   return {
     tiers: getThirdPartyItemTiers(state),
     isFetchingTiers: isFetchingTiers(state),
-    isBuyingItemSlots: false,
-    manaBalance: getManaBalance(state)
+    isBuyingItemSlots: isBuyingItemSlots(state),
+    manaBalance: getManaBalance(state),
+    error: getError(state)
   }
 }
 
+// TODO: Type the bind action creators function
 const mapDispatch = (dispatch: any): MapDispatchProps =>
-  bindActionCreators(
+  bindActionCreators<any, any>(
     {
       onFetchThirdPartyItemSlots: fetchThirdPartyItemTiersRequest,
       onBuyItemSlots: buyThirdPartyItemTiersRequest

@@ -1,4 +1,7 @@
+import BN from 'bn.js'
 import { LoadingState, loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
+import { BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS } from 'modules/tiers/actions'
+import { BuyThirdPartyItemTiersSuccessAction } from 'modules/tiers/types'
 import {
   FetchThirdPartiesRequestAction,
   FetchThirdPartiesSuccessAction,
@@ -21,9 +24,13 @@ export const INITIAL_STATE: ThirdPartyState = {
   error: null
 }
 
-type ThirdPartyReducerAction = FetchThirdPartiesRequestAction | FetchThirdPartiesSuccessAction | FetchThirdPartiesFailureAction
+type ThirdPartyReducerAction =
+  | FetchThirdPartiesRequestAction
+  | FetchThirdPartiesSuccessAction
+  | FetchThirdPartiesFailureAction
+  | BuyThirdPartyItemTiersSuccessAction
 
-export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction) {
+export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action: ThirdPartyReducerAction): ThirdPartyState {
   switch (action.type) {
     case FETCH_THIRD_PARTIES_REQUEST: {
       return {
@@ -53,6 +60,21 @@ export function thirdPartyReducer(state: ThirdPartyState = INITIAL_STATE, action
         error: action.payload.error
       }
     }
+
+    case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
+      const { thirdParty, tier } = action.payload
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [thirdParty.id]: {
+            ...state.data[thirdParty.id],
+            maxItems: new BN(state.data[thirdParty.id].maxItems).add(new BN(tier.value)).toString()
+          }
+        }
+      }
+    }
+
     default:
       return state
   }

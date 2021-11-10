@@ -1,6 +1,21 @@
 import { loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
-import { FETCH_THIRD_PARTY_ITEM_TIERS_FAILURE, FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST, FETCH_THIRD_PARTY_ITEM_TIERS_SUCCESS } from './action'
-import { TiersState } from './types'
+import {
+  BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
+  BUY_THIRD_PARTY_ITEM_TIERS_REQUEST,
+  BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS,
+  FETCH_THIRD_PARTY_ITEM_TIERS_FAILURE,
+  FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST,
+  FETCH_THIRD_PARTY_ITEM_TIERS_SUCCESS
+} from './actions'
+import {
+  TiersState,
+  BuyThirdPartyItemTiersFailureAction,
+  BuyThirdPartyItemTiersRequestAction,
+  BuyThirdPartyItemTiersSuccessAction,
+  FetchThirdPartyItemTiersFailureAction,
+  FetchThirdPartyItemTiersRequestAction,
+  FetchThirdPartyItemTiersSuccessAction
+} from './types'
 
 const INITIAL_STATE: TiersState = {
   data: {
@@ -10,12 +25,29 @@ const INITIAL_STATE: TiersState = {
   error: null
 }
 
-export function tiersReducer(state = INITIAL_STATE, action: any): TiersState {
+type ThirdPartyReducerAction =
+  | FetchThirdPartyItemTiersRequestAction
+  | FetchThirdPartyItemTiersSuccessAction
+  | FetchThirdPartyItemTiersFailureAction
+  | BuyThirdPartyItemTiersRequestAction
+  | BuyThirdPartyItemTiersSuccessAction
+  | BuyThirdPartyItemTiersFailureAction
+
+export function tiersReducer(state = INITIAL_STATE, action: ThirdPartyReducerAction): TiersState {
   switch (action.type) {
+    case BUY_THIRD_PARTY_ITEM_TIERS_REQUEST:
     case FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST: {
       return {
         ...state,
         loading: loadingReducer(state.loading, action)
+      }
+    }
+
+    case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: null
       }
     }
 
@@ -32,6 +64,7 @@ export function tiersReducer(state = INITIAL_STATE, action: any): TiersState {
       }
     }
 
+    case BUY_THIRD_PARTY_ITEM_TIERS_FAILURE:
     case FETCH_THIRD_PARTY_ITEM_TIERS_FAILURE: {
       const { error } = action.payload
       return {

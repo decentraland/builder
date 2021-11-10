@@ -57,7 +57,19 @@ export default class CollectionsPage extends React.PureComponent<Props> {
                     <Dropdown.Menu>
                       <Dropdown.Item text={t('collections_page.new_item')} onClick={this.handleNewItem} />
                       <Dropdown.Item text={t('collections_page.new_collection')} onClick={this.handleNewCollection} />
-                      <Dropdown.Item text={'Open slots modal'} onClick={() => this.props.onOpenModal('BuyItemSlotsModal')} />
+                      <Dropdown.Item
+                        text={'Open slots modal'}
+                        onClick={() =>
+                          this.props.onOpenModal('BuyItemSlotsModal', {
+                            thirdParty: {
+                              id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2',
+                              name: 'The Salamin Third Party Collection',
+                              managers: [],
+                              description: 'A description'
+                            }
+                          })
+                        }
+                      />
                       {isThirdPartyManager ? (
                         <Dropdown.Item
                           text={t('collections_page.new_third_party_collection')}

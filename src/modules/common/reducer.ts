@@ -71,7 +71,6 @@ export function createRootReducer(history: History) {
       translation,
       ui,
       wallet,
-      curation,
       tiers
     })
   )

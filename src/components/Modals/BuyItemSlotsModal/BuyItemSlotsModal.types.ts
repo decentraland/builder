@@ -1,19 +1,21 @@
+import { Dispatch } from 'react'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { ThirdPartyItemTier } from 'modules/tiers/types'
+import { buyThirdPartyItemTiersRequest, fetchThirdPartyItemTiersRequest } from 'modules/tiers/actions'
+import { ThirdPartyItemTier, BuyThirdPartyItemTiersRequestAction, FetchThirdPartyItemTiersRequestAction } from 'modules/tiers/types'
+import { ThirdParty } from 'modules/thirdParty/types'
 
 export type Props = ModalProps & {
-  onBuyItemSlots: unknown
   isBuyingItemSlots: boolean
   isFetchingTiers: boolean
-  onFetchThirdPartyItemSlots: unknown
+  thirdParty: ThirdParty
+  onBuyItemSlots: typeof buyThirdPartyItemTiersRequest
+  onFetchThirdPartyItemSlots: typeof fetchThirdPartyItemTiersRequest
   manaBalance: number
   tiers: ThirdPartyItemTier[]
+  metadata: { thirdParty: ThirdParty }
+  error: string | null
 }
 
-export type State = {
-  selectedTierId: string | undefined
-}
-
-export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingTiers' | 'manaBalance' | 'tiers'>
+export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingTiers' | 'manaBalance' | 'tiers' | 'error'>
 export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlots'>
-// export type MapDispatch = Dispatch<RescueItemsRequestAction | DeployEntitiesRequestAction | ApproveCollectionRequestAction>
+export type MapDispatch = Dispatch<FetchThirdPartyItemTiersRequestAction | BuyThirdPartyItemTiersRequestAction>

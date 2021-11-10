@@ -1,0 +1,58 @@
+.notEnoughMana {
+  padding: 10px;
+  text-align: center;
+  background-color: var(--background);
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.notEnoughMana .dcl.mana .symbol {
+  padding: 0px;
+}
+
+.tier {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tier:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.tierType span {
+  margin-left: 10px;
+}
+
+.modalActions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 56px;
+  margin-bottom: 32px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+.acceptButton {
+  margin-left: 64px !important;
+  margin-right: 64px !important;
+}
+
+.cancelButton {
+  margin-top: 8px !important;
+  margin-left: 64px !important;
+  margin-right: 64px !important;
+}
+
+.header {
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 56px !important;
+}
+
+.content {
+  margin-left: 64px !important;
+  margin-right: 64px !important;
+}

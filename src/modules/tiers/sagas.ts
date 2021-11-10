@@ -3,22 +3,23 @@ import { call, put, takeEvery } from 'redux-saga/effects'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { getChainIdByNetwork } from 'decentraland-dapps/dist/lib/eth'
 import { sendTransaction } from 'decentraland-dapps/dist/modules/wallet/utils'
+import { closeModal } from 'decentraland-dapps/dist/modules/modal/actions'
 import { ChainId, Network } from '@dcl/schemas'
 import {
   buyThirdPartyItemTiersFailure,
-  BuyThirdPartyItemTiersRequestAction,
   buyThirdPartyItemTiersSuccess,
   BUY_THIRD_PARTY_ITEM_TIERS_REQUEST,
+  BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS,
   fetchThirdPartyItemTiersFailure,
-  FetchThirdPartyItemTiersRequestAction,
   fetchThirdPartyItemTiersSuccess,
   FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST
-} from './action'
-import { ThirdPartyItemTier } from './types'
+} from './actions'
+import { ThirdPartyItemTier, FetchThirdPartyItemTiersRequestAction, BuyThirdPartyItemTiersRequestAction } from './types'
 
-export function* tiersSagas(builder: BuilderAPI) {
+export function* tiersSaga(builder: BuilderAPI) {
   yield takeEvery(FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST, handleFetchThirdPartyItemTiersRequest)
   yield takeEvery(BUY_THIRD_PARTY_ITEM_TIERS_REQUEST, handleBuyThirdPartyItemTierRequest)
+  yield takeEvery(BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, handleBuyThirdPartyItemTiersSuccess)
 
   function* handleFetchThirdPartyItemTiersRequest(_: FetchThirdPartyItemTiersRequestAction) {
     try {
@@ -30,16 +31,20 @@ export function* tiersSagas(builder: BuilderAPI) {
   }
 
   function* handleBuyThirdPartyItemTierRequest(action: BuyThirdPartyItemTiersRequestAction) {
-    const { thirdPartyId, tier } = action.payload
+    const { thirdParty, tier } = action.payload
     try {
       const maticChainId: ChainId = yield call(getChainIdByNetwork, Network.MATIC)
-      const thirdPartyContract = getContract(ContractName.ThirdPartyRegistry, maticChainId)
+      const thirdPartyContract = yield call(getContract, ContractName.ThirdPartyRegistry, maticChainId)
       const txHash: string = yield call(sendTransaction, thirdPartyContract, instantiatedThirdPartyContractContract =>
-        instantiatedThirdPartyContractContract.buyItemSlots(thirdPartyId, tier.id, tier.price)
+        instantiatedThirdPartyContractContract.buyItemSlots(thirdParty.id, tier.id, tier.price)
       )
-      yield put(buyThirdPartyItemTiersSuccess(txHash, maticChainId, thirdPartyId, tier))
+      yield put(buyThirdPartyItemTiersSuccess(txHash, maticChainId, thirdParty, tier))
     } catch (error) {
-      yield put(buyThirdPartyItemTiersFailure(error.message, thirdPartyId, tier))
+      yield put(buyThirdPartyItemTiersFailure(error.message, thirdParty.id, tier))
     }
+  }
+
+  function* handleBuyThirdPartyItemTiersSuccess() {
+    yield put(closeModal('BuyItemSlotsModal'))
   }
 }
