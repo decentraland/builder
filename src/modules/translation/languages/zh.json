@@ -410,6 +410,8 @@
     "blog_post": "博客",
     "cancel": "取消",
     "confirm": "确认",
+    "add": "添加",
+    "buy": "买",
     "continue": "继续",
     "create": "创建",
     "dismiss": "解散",
@@ -460,6 +462,7 @@
     "body_shape_plural": "机构",
     "size": "大小",
     "hash": "散 列",
+    "publish": "发布",
     "published": "已发表",
     "description": "描述",
     "order": {
@@ -938,6 +941,12 @@
     "add_representation": "添加{bodyShape}",
     "change_item_file": "编辑制图表达"
   },
+  "third_party_collection_detail_page": {
+    "notice": "每个发布的项目需要 1 个插槽。 {buy_link} 购买老虎机包并开始发布您的作品！",
+    "slots": "{amount, plural, =0 {没有插槽} one {# 个插槽} other {# 个插槽}}",
+    "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
+    "cant_remove": "发布项目后，您将无法添加或删除项目。"
+  },
   "collection_detail_page": {
     "new_item": "新物品",
     "mint_items": "薄荷项目",
@@ -946,7 +955,6 @@
     "unset_on_sale_popup": "该系列在 Decentraland 市场上有售。",
     "publish": "发布",
     "notice": "凉爽的！ 现在，您可以开始处理项目了。 {editor_link}打开编辑器，或在任何项目上单击“编辑”按钮。",
-    "click_here": "点击这里",
     "start_adding_items": "看起来不错！ 现在您可以开始将项目添加到您的收藏中了。",
     "cant_remove": "集合发布后，您将无法将其删除或添加到集合中。",
     "cant_mint": "该收藏集仍在审核中，一旦该过程结束，您将能够铸造商品",
@@ -956,10 +964,11 @@
     "cant_operate": "此合集仍处于锁定状态，一旦发布结束您将可以再次操作",
     "locked": "锁定"
   },
-  "collection_menu": {
+  "collection_context_menu": {
     "add_existing_item": "添加现有项目",
     "forum_post": "论坛帖子",
     "copy_address": "复制地址",
+    "edit_urn": "编辑 URN",
     "see_in_world": "见世面",
     "unpublished": "此合集尚未发布",
     "managers": "合作者",

@@ -29,10 +29,6 @@
   cursor: pointer;
 }
 
-.CollectionDetailPage .is-published .edit-collection-name {
-  display: none;
-}
-
 .CollectionDetailPage .ui.toggle.on-sale {
   text-transform: uppercase;
 }

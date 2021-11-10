@@ -35,6 +35,7 @@ import SceneDetailPage from 'components/SceneDetailPage'
 import CollectionsPage from 'components/CollectionsPage'
 import ItemDetailPage from 'components/ItemDetailPage'
 import CollectionDetailPage from 'components/CollectionDetailPage'
+import ThirdPartyCollectionDetailPage from 'components/ThirdPartyCollectionDetailPage'
 import ItemEditorPage from 'components/ItemEditorPage'
 import CurationPage from 'components/CurationPage'
 import { isDevelopment } from 'lib/environment'
@@ -129,6 +130,12 @@ export default class Routes extends React.Component<Props, State> {
                   <Route exact key={5} path={locations.curation()} component={CurationPage} />
                 ]
               : null}
+
+            {/* This env check will be replaced for https://github.com/decentraland/feature-flags */
+            env.get('REACT_APP_FF_THIRD_PARTY_WEARABLES')
+              ? [<Route exact key={1} path={locations.thirdPartyCollectionDetail()} component={ThirdPartyCollectionDetailPage} />]
+              : null}
+
             <Redirect to={locations.root()} />
           </Switch>
         </Responsive>

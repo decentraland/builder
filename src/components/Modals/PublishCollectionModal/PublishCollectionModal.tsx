@@ -209,7 +209,7 @@ export default class PublishCollectionModal extends React.PureComponent<Props, S
         </Modal.Content>
         <Modal.Actions className="third-step-footer">
           <Button primary fluid disabled={!hasValidEmail || isPublishLoading} loading={isPublishLoading}>
-            {t('publish_collection_modal.publish')}
+            {t('global.publish')}
           </Button>
           <p>{t('publish_collection_modal.accept_by_publishing')}</p>
         </Modal.Actions>
