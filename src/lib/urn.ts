@@ -62,7 +62,8 @@ type BaseDecodedURN = {
 }
 export type DecodedURN = BaseDecodedURN &
   (
-    | { type: URNType.BASE_AVATARS | URNType.COLLECTIONS_V2 }
+    | { type: URNType.BASE_AVATARS }
+    | { type: URNType.COLLECTIONS_V2 }
     | {
         type: URNType.COLLECTIONS_THIRDPARTY
         thirdPartyName: string

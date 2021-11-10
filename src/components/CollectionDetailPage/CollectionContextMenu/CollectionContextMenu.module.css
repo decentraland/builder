@@ -1,0 +1,19 @@
+.dropdown {
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
+
+.ellipsis {
+  margin: auto !important;
+}
+
+.dropdown .menu > .disabled.item {
+  pointer-events: all;
+}
+
+.dropdown .menu > .disabled.item a {
+  cursor: default;
+}

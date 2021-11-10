@@ -214,7 +214,7 @@
     "title": "Slots",
     "description_line_one": "Buy slots to publish your items!",
     "description_line_two": "Please select how many you want to buy.",
-    "not_enogh_mana": "You don't have enough {symbol} to buy this tier.",
+    "not_enough_mana": "You don't have enough {symbol} to buy this tier.",
     "get_mana": "You can get more using the {link} dapp.",
     "tier_value": "{value} Slots",
     "buy_slots": "Buy slots",
@@ -429,6 +429,7 @@
     "close": "Close",
     "confirm": "Confirm",
     "add": "Add",
+    "buy": "buy",
     "continue": "Continue",
     "create": "Create",
     "dismiss": "Dismiss",
@@ -480,6 +481,7 @@
     "body_shape_plural": "Body Shapes",
     "size": "Size",
     "hash": "Hash",
+    "publish": "Publish",
     "published": "Published",
     "description": "Description",
     "order": {
@@ -867,7 +869,6 @@
   "topbar": {
     "bounds_exceeded": "Item out of bounds{br}Move the item inside the boundaries!",
     "limits_exceeded": "Too many {metric}{br}Try deleting some items!",
-    "publish": "Publish",
     "up_to_date": "Up to date!{br}All the changes are published",
     "update_scene": "Update Scene"
   },
@@ -961,13 +962,18 @@
     "add_representation": "Add {bodyShape} representation",
     "change_item_file": "Edit representation"
   },
+  "third_party_collection_detail_page": {
+    "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
+    "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
+    "start_adding_items": "Looking good! Start adding items to your new collection",
+    "cant_remove": "You will not be able to add or remove items after publishing them."
+  },
   "collection_detail_page": {
     "new_item": "New Item",
     "mint_items": "Mint Items",
     "on_sale": "On sale",
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
-    "publish": "Publish",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
     "click_here": "Click here",
     "start_adding_items": "Looking good! Start adding items to your new collection",
@@ -979,10 +985,11 @@
     "cant_operate": "This collection is still locked, once publication ends you'll be able to operate again",
     "locked": "Locked"
   },
-  "collection_menu": {
+  "collection_context_menu": {
     "add_existing_item": "Add Existing Item",
     "forum_post": "Forum post",
     "copy_address": "Copy address",
+    "edit_urn": "Edit URN",
     "see_in_world": "See in world",
     "unpublished": "This collection not published yet",
     "managers": "Collaborators",

@@ -68,7 +68,7 @@ export default class DeployButton extends React.PureComponent<Props> {
           trigger={
             <span>
               <Button primary size="mini" onClick={this.handleClick} disabled={isButtonDisabled}>
-                {t('topbar.publish')}
+                {t('global.publish')}
               </Button>
             </span>
           }

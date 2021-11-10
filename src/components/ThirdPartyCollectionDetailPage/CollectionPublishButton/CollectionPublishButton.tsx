@@ -4,16 +4,19 @@ import { NetworkButton } from 'decentraland-dapps/dist/containers'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Button } from 'decentraland-ui'
 import { env } from 'decentraland-commons'
-import { Authorization, AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
+import { AuthorizationType } from 'decentraland-dapps/dist/modules/authorization/types'
 import { hasAuthorization } from 'decentraland-dapps/dist/modules/authorization/utils'
 import { ContractName, getContract } from 'decentraland-transactions'
 import { AuthorizationModal } from 'components/AuthorizationModal'
 import { isComplete } from 'modules/item/utils'
 import { SyncStatus } from 'modules/item/types'
-import { Props } from './CollectionAction.types'
+import { Props } from './CollectionPublishButton.types'
 import UnderReview from './UnderReview'
 
-const CollectionAction = ({ wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit }: Props) => {
+// TODO: Review this file, if little to no changes are required to make it work with third party collections
+// we should merge it with CollectionDetailPage/CollectionPublishButton
+const CollectionPublishButton = (props: Props) => {
+  const { wallet, collection, items, authorizations, status, hasPendingCuration, onPublish, onPush, onInit } = props
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
     return !env.get('REACT_APP_FF_WEARABLES_PUBLISH') || items.length === 0 || !items.every(isComplete)
   }
 
-  const getAuthorization = (): Authorization => {
+  const getAuthorization = () => {
     const chainId = wallet.networks.MATIC.chainId
     const contractAddress = getContract(ContractName.MANAToken, chainId).address
     const authorizedAddress = getContract(ContractName.CollectionManager, chainId).address
@@ -74,7 +77,7 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
   } else {
     button = (
       <NetworkButton disabled={isPublishDisabled()} primary compact onClick={handlePublish} network={Network.MATIC}>
-        {t('collection_detail_page.publish')}
+        {t('global.publish')}
       </NetworkButton>
     )
   }
@@ -92,4 +95,4 @@ const CollectionAction = ({ wallet, collection, items, authorizations, status, h
   )
 }
 
-export default React.memo(CollectionAction)
+export default React.memo(CollectionPublishButton)

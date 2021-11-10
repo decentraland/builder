@@ -50,6 +50,18 @@ export const getCollectionId = (state: RootState) => {
   return result ? result.params.collectionId : null
 }
 
+const thirdPartyCollectionIdMatchSelector = createMatchSelector<
+  RootState,
+  {
+    collectionId: string
+  }
+>(locations.thirdPartyCollectionDetail())
+
+export const getThirdPartyCollectionId = (state: RootState) => {
+  const result = thirdPartyCollectionIdMatchSelector(state)
+  return result ? result.params.collectionId : null
+}
+
 export const getSelectedItemId = (state: RootState) => new URLSearchParams(getSearch(state)).get('item')
 export const getSelectedCollectionId = (state: RootState) => new URLSearchParams(getSearch(state)).get('collection')
 export const isReviewing = (state: RootState) => !!new URLSearchParams(getSearch(state)).get('reviewing')
