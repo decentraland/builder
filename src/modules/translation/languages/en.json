@@ -1047,7 +1047,6 @@
     "terms_of_use": "Terms of Use",
     "content_policy": "Content Policy",
     "accept_by_publishing": "By clicking Publish you are accepting our terms",
-    "publish": "Publish",
     "not_enough_mana": "You don't have enough {symbol} to publish this collection.",
     "get_mana": "You can get more using the {link} dapp."
   },
