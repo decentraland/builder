@@ -1,5 +1,6 @@
 import * as React from 'react'
 import BN from 'bn.js'
+import { fromWei } from 'web3x/utils'
 import { Button, ModalDescription, ModalHeader, CheckboxProps, Radio, Mana, Loader, Message } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
@@ -76,7 +77,7 @@ const BuyItemSlotsModal = (props: Props) => {
                 <span>{t('buy_item_slots_modal.tier_value', { value: Number(tier.value).toLocaleString() })}</span>
               </div>
               <div className={styles.tierValue}>
-                <Mana network={Network.MATIC} inline /> {Number(tier.price).toLocaleString()}
+                <Mana network={Network.MATIC} inline /> {Number(fromWei(tier.price, 'ether')).toLocaleString()}
               </div>
             </div>
           ))}

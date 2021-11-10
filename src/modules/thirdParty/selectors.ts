@@ -3,6 +3,7 @@ import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
 import { ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
+import { isUserManagerOfThirdParty } from './utils'
 
 export const getState = (state: RootState) => state.thirdParty
 export const getData = (state: RootState) => getState(state).data
@@ -12,7 +13,7 @@ export const getError = (state: RootState) => getState(state).error
 export const isThirdPartyManager = createSelector<RootState, ThirdPartyState['data'], string | undefined, boolean>(
   getData,
   getAddress,
-  (thirdParties, address = '') => Object.values(thirdParties).some(thirdParty => thirdParty.managers.includes(address))
+  (thirdParties, address = '') => Object.values(thirdParties).some(thirdParty => isUserManagerOfThirdParty(address, thirdParty))
 )
 
 export const getWalletThirdParties = createSelector<RootState, ThirdPartyState['data'], string | undefined, ThirdParty[]>(

@@ -60,6 +60,7 @@ type BaseDecodedURN = {
   protocol: URNProtocol
   suffix: string
 }
+
 export type DecodedURN = BaseDecodedURN &
   (
     | { type: URNType.BASE_AVATARS }
@@ -71,6 +72,13 @@ export type DecodedURN = BaseDecodedURN &
         thirdPartyTokenId?: string
       }
   )
+
+export type DecodedThirdPartyURN = BaseDecodedURN & {
+  type: URNType.COLLECTIONS_THIRDPARTY
+  thirdPartyName: string
+  thirdPartyCollectionId?: string
+  thirdPartyTokenId?: string
+}
 
 export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
   return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
@@ -90,6 +98,11 @@ export function buildCatalystItemURN(contractAddress: string, tokenId: string): 
 
 export function toLegacyURN(urn: URN): URN {
   return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
+}
+
+export function getThirdPartyId(urn: URN): string {
+  const decodedURN = decodeURN(urn) as DecodedThirdPartyURN
+  return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
 }
 
 export function decodeURN(urn: URN): DecodedURN {

@@ -15,6 +15,7 @@ import CollectionPublishButton from './CollectionPublishButton'
 import { Props } from './ThirdPartyCollectionDetailPage.types'
 
 import './ThirdPartyCollectionDetailPage.css'
+import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
 
@@ -44,7 +45,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
   hasAccess() {
     const { wallet, collection, thirdParty } = this.props
-    return collection !== null && thirdParty !== null && canSeeCollection(collection, wallet.address)
+    return collection && thirdParty && isUserManagerOfThirdParty(wallet.address, thirdParty)
   }
 
   renderPage() {
