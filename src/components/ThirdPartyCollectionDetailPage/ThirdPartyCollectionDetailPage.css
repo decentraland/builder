@@ -106,6 +106,16 @@
   text-transform: uppercase;
 }
 
+.ThirdPartyCollectionDetailPage .selection-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border: 1px solid var(--secondary-text);
+  border-radius: 4px;
+}
+
 .ThirdPartyCollectionDetailPage .ui.grid.equal.width > .row > .column {
   padding-left: 0;
 }
@@ -117,6 +127,15 @@
 .ThirdPartyCollectionDetailPage .ui.grid.grid-header {
   border-bottom: 1px solid var(--divider);
   padding-bottom: 10px;
+}
+
+.ThirdPartyCollectionDetailPage .ui.grid.grid-header > .row > .column.item-column {
+  display: flex;
+  align-items: center;
+}
+
+.ThirdPartyCollectionDetailPage .column.item-column .item-checkbox {
+  margin-right: 10px;
 }
 
 .ThirdPartyCollectionDetailPage .dcl.narrow > .empty {

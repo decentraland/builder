@@ -1,6 +1,19 @@
 import * as React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Grid, Section, Row, Narrow, Column, Header, Icon, Button, TextFilter, Pagination, PaginationProps } from 'decentraland-ui'
+import {
+  Grid,
+  Section,
+  Row,
+  Narrow,
+  Column,
+  Header,
+  Icon,
+  Button,
+  TextFilter,
+  Pagination,
+  PaginationProps,
+  Checkbox
+} from 'decentraland-ui'
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { canSeeCollection } from 'modules/collection/utils'
@@ -8,6 +21,7 @@ import { Item } from 'modules/item/types'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
+import Info from 'components/Info'
 import BuilderIcon from 'components/Icon'
 import Back from 'components/Back'
 import CollectionContextMenu from './CollectionContextMenu'
@@ -18,6 +32,7 @@ import { Props, State } from './ThirdPartyCollectionDetailPage.types'
 import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
+const MAX_ITEM_COUNT = 20
 const PAGE_SIZE = 2
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
@@ -60,18 +75,23 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     })
   }
 
-  handleSelectAllChange = () => {
-    const items = this.search()
-    const itemSelectionState: Record<string, boolean> = {}
+  handleSelectPageChange = () => {
+    const { itemSelectionState } = this.state
+    const items = this.paginate(this.search())
+    const newItemSelectionState: Record<string, boolean> = { ...itemSelectionState }
 
     // Performs the opposite actoin, if everything is selected, it'll deselect and viceversa
-    const isSelected = !this.isAllSelected()
+    const isSelected = !this.areAllSelected(items)
 
     for (const item of items) {
-      itemSelectionState[item.id] = isSelected
+      newItemSelectionState[item.id] = isSelected
     }
 
-    this.setState({ itemSelectionState })
+    this.setState({ itemSelectionState: newItemSelectionState })
+  }
+
+  handleClearSelection = () => {
+    this.setState({ itemSelectionState: {} })
   }
 
   hasItems() {
@@ -84,12 +104,14 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return collection !== null && canSeeCollection(collection, wallet.address)
   }
 
-  isAllSelected() {
-    const { items } = this.props
+  areAllSelected(items: Item[]) {
     const { itemSelectionState } = this.state
+    return items.every(item => itemSelectionState[item.id])
+  }
 
-    const selectedItems = Object.values(itemSelectionState).filter(isSelected => isSelected)
-    return items.length === selectedItems.length
+  getSelectedItems() {
+    const { itemSelectionState } = this.state
+    return Object.values(itemSelectionState).filter(isSelected => isSelected)
   }
 
   isSearching() {
@@ -118,9 +140,12 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     // TODO: recover this from the collection/address
     const slots = 0
 
+    const selectedItems = this.getSelectedItems()
+
     const items = this.search()
     const paginatedItems = this.paginate(items)
     const total = items.length
+    const pageTotal = total > PAGE_SIZE ? PAGE_SIZE * page : total
 
     const totalPages = Math.ceil(total / PAGE_SIZE)
 
@@ -191,19 +216,34 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 />
 
                 <div className="search-info secondary-text">
-                  {t('third_party_collection_detail_page.search_info', { page, totalPages, total })}
-                  <span className="link select-all" onClick={this.handleSelectAllChange}>
-                    {this.isAllSelected()
-                      ? t('third_party_collection_detail_page.deselect_all')
-                      : t('third_party_collection_detail_page.select_all')}
-                  </span>
+                  {t('third_party_collection_detail_page.search_info', { page, pageTotal, total })}
                 </div>
               </div>
+
+              {selectedItems.length > 0 ? (
+                <div className="selection-info">
+                  {t('third_party_collection_detail_page.selection', { count: selectedItems.length })}
+                  &nbsp;
+                  <span className="link" onClick={this.handleClearSelection}>
+                    {t('third_party_collection_detail_page.clear_selection')}
+                  </span>
+                  &nbsp;
+                  <Info content={t('third_party_collection_detail_page.max_select_count', { count: MAX_ITEM_COUNT })} />
+                </div>
+              ) : null}
 
               <div className="collection-items">
                 <Grid columns="equal" className="grid-header secondary-text">
                   <Grid.Row>
-                    <Grid.Column width={5}>{t('global.item')}</Grid.Column>
+                    <Grid.Column width={5} className="item-column">
+                      <Checkbox
+                        className="item-checkbox"
+                        checked={this.areAllSelected(paginatedItems)}
+                        onClick={this.handleSelectPageChange}
+                      />
+                      &nbsp;
+                      {t('global.item')}
+                    </Grid.Column>
                     <Grid.Column>{t('global.category')}</Grid.Column>
                     <Grid.Column>{t('global.body_shape')}</Grid.Column>
                     <Grid.Column>URN ID</Grid.Column>

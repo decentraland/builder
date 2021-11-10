@@ -956,9 +956,10 @@
   "third_party_collection_detail_page": {
     "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
     "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
-    "search_info": "{page}-{totalPages} of {total}",
-    "select_all": "Select all",
-    "deselect_all": "Deselect all",
+    "search_info": "{page}-{pageTotal} of {total}",
+    "clear_selection": "Clear selection",
+    "selection": "{count, plural, one {# item} other {# items}} selected.",
+    "max_select_count": "You can publish up to {count} items at a time",
     "click_here": "Click here",
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
