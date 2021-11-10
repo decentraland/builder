@@ -57,7 +57,7 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
 
     const missingBodyShape = getMissingBodyShapeType(item)
     const isLocked = collection && isCollectionLocked(collection)
-    const hasActions = !isLocked && (missingBodyShape !== null || !item.isPublished)
+    const hasActions = !isLocked
 
     return (
       <>
@@ -69,7 +69,8 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                 <Column>
                   <Row className="header-row">
                     <Header className="name" size="huge">
-                      <ItemStatus item={item} />{item.name}
+                      <ItemStatus item={item} />
+                      {item.name}
                     </Header>
                   </Row>
                 </Column>
@@ -86,15 +87,16 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                         direction="left"
                       >
                         <Dropdown.Menu>
-                          <Dropdown.Item text={t('item_detail_page.change_item_file')} onClick={this.handleChangeItemFile} />
-                          {missingBodyShape !== null ? (
+                          {missingBodyShape ? (
                             <Dropdown.Item
                               text={t('item_detail_page.add_representation', {
                                 bodyShape: t(`body_shapes.${missingBodyShape}`).toLowerCase()
                               })}
                               onClick={this.handleAddRepresentationToItem}
                             />
-                          ) : null}
+                          ) : (
+                            <Dropdown.Item text={t('item_detail_page.change_item_file')} onClick={this.handleChangeItemFile} />
+                          )}
                           {!item.isPublished ? (
                             <ConfirmDelete
                               name={item.name}
@@ -153,21 +155,21 @@ export default class ItemDetailPage extends React.PureComponent<Props> {
                   <div className="value">{t('global.free')}</div>
                 </Section>
               ) : (
-                  <>
-                    {item.price ? (
-                      <Section>
-                        <div className="subtitle">{t('item.price')}</div>
-                        <div className="value">{fromWei(item.price, 'ether')}</div>
-                      </Section>
-                    ) : null}
-                    {item.beneficiary ? (
-                      <Section>
-                        <div className="subtitle">{t('item.beneficiary')}</div>
-                        <div className="value">{item.beneficiary}</div>
-                      </Section>
-                    ) : null}
-                  </>
-                )}
+                <>
+                  {item.price ? (
+                    <Section>
+                      <div className="subtitle">{t('item.price')}</div>
+                      <div className="value">{fromWei(item.price, 'ether')}</div>
+                    </Section>
+                  ) : null}
+                  {item.beneficiary ? (
+                    <Section>
+                      <div className="subtitle">{t('item.beneficiary')}</div>
+                      <div className="value">{item.beneficiary}</div>
+                    </Section>
+                  ) : null}
+                </>
+              )}
               {item.isPublished ? (
                 <Section>
                   <div className="subtitle">{t('item.supply')}</div>
