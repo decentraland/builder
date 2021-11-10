@@ -20,3 +20,5 @@ export const getWalletThirdParties = createSelector<RootState, ThirdPartyState['
   getAddress,
   (thirdParties, address = '') => Object.values(thirdParties).filter(thirdParty => thirdParty.managers.includes(address))
 )
+
+export const getThirdParty = (state: RootState, id: string) => getData(state)[id]

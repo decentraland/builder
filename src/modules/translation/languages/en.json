@@ -216,9 +216,8 @@
     "description_line_two": "Please select how many you want to buy.",
     "not_enough_mana": "You don't have enough {symbol} to buy this tier.",
     "get_mana": "You can get more using the {link} dapp.",
-    "tier_value": "{value} Slots",
-    "buy_slots": "Buy slots",
-    "loading_tiers": "Loading tiers"
+    "tier_value": "{value} {value, plural, one {Slot} other {Slots}}",
+    "buy_slots": "Buy slots"
   },
   "share_modal": {
     "title": "Share your Scene",

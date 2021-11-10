@@ -212,6 +212,15 @@
     "subtitle_one": "Puedes crear diseños personalizados para tu Escena.",
     "subtitle_two": "Ingresa los valores debajo para ajustar el tamaño."
   },
+  "buy_item_slots_modal": {
+    "title": "Slots",
+    "description_line_one": "Compra slots para publicar tus items!",
+    "description_line_two": "Por favor selecciona cuántos quieres comprar.",
+    "not_enough_mana": "No tienes suficiente {symbol} para comprar este nivel.",
+    "get_mana": "Puedes conseguir más utilizando la {link} dapp.",
+    "tier_value": "{value} {value, plural, one {Slot} other {Slots}}",
+    "buy_slots": "Comprar slots"
+  },
   "share_modal": {
     "title": "Comparte tu Escena",
     "description": "Deja que tus amigos y co-creadores vean tu trabajo",

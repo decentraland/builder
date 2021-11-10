@@ -61,7 +61,6 @@ const BuyItemSlotsModal = (props: Props) => {
         <span>{t('buy_item_slots_modal.description_line_two')}</span>
       </ModalDescription>
       <Modal.Content className={styles.content}>
-        {/* TODO: Make the loader be spaced from the other components */}
         {(isFetchingTiers || tiers === undefined) && <Loader active size="large" />}
         <div>
           {tiers.sort(sortTiers).map(tier => (
@@ -87,7 +86,7 @@ const BuyItemSlotsModal = (props: Props) => {
           <div className={styles.notEnoughMana}>
             <small>
               <T
-                id="buy_item_slots_modal.not_enogh_mana"
+                id="buy_item_slots_modal.not_enough_mana"
                 values={{
                   symbol: (
                     <span>

@@ -1,13 +1,19 @@
 import { RootState } from 'modules/common/types'
-import { isThirdPartyManager, getWalletThirdParties } from './selectors'
+import { isThirdPartyManager, getWalletThirdParties, getThirdParty } from './selectors'
 import { ThirdParty } from './types'
 
 describe('Third Party selectors', () => {
   let address: string
   let baseState: RootState
+  let thirdParty1: ThirdParty
+  let thirdParty2: ThirdParty
+  let thirdParty3: ThirdParty
 
   beforeEach(() => {
     address = '0xdeabeef'
+    thirdParty1 = { id: '1', name: 'a third party', description: 'some desc', maxItems: '0', totalItems: '0', managers: [address, '0xa'] }
+    thirdParty2 = { id: '2', name: 'a third party', description: 'some desc', maxItems: '0', totalItems: '0', managers: [address, '0xb'] }
+    thirdParty3 = { id: '3', name: 'a third party', description: 'some desc', maxItems: '0', totalItems: '0', managers: ['0xc'] }
     baseState = {
       wallet: {
         data: {
@@ -61,10 +67,6 @@ describe('Third Party selectors', () => {
       let thirdParties: ThirdParty[]
 
       beforeEach(() => {
-        const thirdParty1 = { id: '1', name: 'a third party', description: 'some desc', managers: [address, '0xa'] } as ThirdParty
-        const thirdParty2 = { id: '2', name: 'a third party', description: 'some desc', managers: [address, '0xb'] } as ThirdParty
-        const thirdParty3 = { id: '3', name: 'a third party', description: 'some desc', managers: ['0xc'] } as ThirdParty
-
         thirdParties = [thirdParty1, thirdParty2]
 
         state = {
@@ -81,6 +83,28 @@ describe('Third Party selectors', () => {
 
       it('should return all third parties where the address belongs to the manager list', () => {
         expect(getWalletThirdParties(state)).toEqual(thirdParties)
+      })
+    })
+
+    describe('when getting a single third party', () => {
+      let state: RootState
+
+      beforeEach(() => {
+        state = {
+          ...baseState,
+          thirdParty: {
+            ...baseState.thirdParty,
+            data: {
+              [thirdParty1.id]: thirdParty1,
+              [thirdParty2.id]: thirdParty2,
+              [thirdParty3.id]: thirdParty3
+            }
+          }
+        }
+      })
+
+      it('should return the third party that matches the given id', () => {
+        expect(getThirdParty(state, thirdParty1.id)).toEqual(thirdParty1)
       })
     })
   })

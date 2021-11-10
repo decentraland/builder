@@ -373,10 +373,15 @@ const Transaction = (props: Props) => {
       )
     }
 
-    // TODO: The TP transactions don't have an image, should we do something about that?
     case BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS: {
       const { thirdParty, tier } = tx.payload
-      return <TransactionDetail tx={tx} text={t('transaction.buy_third_party_item_tiers', { count: tier.value, name: thirdParty.name })} />
+      return (
+        <TransactionDetail
+          tier={tier}
+          tx={tx}
+          text={t('transaction.buy_third_party_item_tiers', { count: tier.value, name: thirdParty.name })}
+        />
+      )
     }
     case RESCUE_ITEMS_SUCCESS: {
       const { count, collectionId, collectionName } = tx.payload

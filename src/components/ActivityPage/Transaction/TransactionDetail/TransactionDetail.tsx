@@ -21,7 +21,7 @@ const getHref = (tx: Transaction) => {
 }
 
 const Image = (props: Props) => {
-  const { selection, address, collectionId, item } = props
+  const { selection, address, collectionId, item, tier } = props
 
   if (selection) {
     const set = useMemo(() => new Set((selection || []).map(coord => coordsToId(coord.x, coord.y))), [selection])
@@ -36,6 +36,8 @@ const Image = (props: Props) => {
     return <CollectionImage collectionId={collectionId} />
   } else if (item) {
     return <ItemImage item={item} />
+  } else if (tier) {
+    return <div className="tier-image" />
   } else {
     return null
   }
