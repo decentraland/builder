@@ -1,4 +1,4 @@
-import { Dispatch } from 'react'
+import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
 import { buyThirdPartyItemTiersRequest, fetchThirdPartyItemTiersRequest } from 'modules/tiers/actions'
 import { ThirdPartyItemTier, BuyThirdPartyItemTiersRequestAction, FetchThirdPartyItemTiersRequestAction } from 'modules/tiers/types'
