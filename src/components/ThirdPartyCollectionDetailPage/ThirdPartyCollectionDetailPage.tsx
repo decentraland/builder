@@ -5,6 +5,7 @@ import { Section, Row, Narrow, Column, Header, Icon, Button } from 'decentraland
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { canSeeCollection } from 'modules/collection/utils'
+import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -15,7 +16,6 @@ import CollectionPublishButton from './CollectionPublishButton'
 import { Props } from './ThirdPartyCollectionDetailPage.types'
 
 import './ThirdPartyCollectionDetailPage.css'
-import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
 
