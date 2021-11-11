@@ -5,29 +5,13 @@ import { getPendingTransactions } from 'modules/transaction/selectors'
 import { FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST, BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, BUY_THIRD_PARTY_ITEM_TIERS_REQUEST } from './actions'
 import { ThirdPartyItemTier, TiersState } from './types'
 
-function getState(state: RootState): TiersState {
-  return state.tiers
-}
+export const getState = (state: RootState) => state.tiers
+export const getData = (state: RootState) => getState(state).data
+export const getLoading = (state: RootState) => getState(state).loading
+export const getError = (state: RootState) => getState(state).error
 
-function getLoading(state: RootState): LoadingState {
-  return getState(state).loading
-}
-
-export function getThirdPartyItemTiers(state: RootState): ThirdPartyItemTier[] {
-  return getState(state).data.thirdParty
-}
-
-export function isFetchingTiers(state: RootState): boolean {
-  return isLoadingType(getLoading(state), FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST)
-}
-
-export function isBuyingItemSlots(state: RootState): boolean {
-  return (
-    isLoadingType(getLoading(state), BUY_THIRD_PARTY_ITEM_TIERS_REQUEST) ||
-    getPendingTransactions(state).some(tx => tx.actionType === BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS)
-  )
-}
-
-export function getError(state: RootState): string | null {
-  return getState(state).error
-}
+export const getThirdPartyItemTiers = (state: RootState): ThirdPartyItemTier[] => getState(state).data.thirdParty
+export const isFetchingTiers = (state: RootState): boolean => isLoadingType(getLoading(state), FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST)
+export const isBuyingItemSlots = (state: RootState): boolean =>
+  isLoadingType(getLoading(state), BUY_THIRD_PARTY_ITEM_TIERS_REQUEST) ||
+  getPendingTransactions(state).some(tx => tx.actionType === BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS)
