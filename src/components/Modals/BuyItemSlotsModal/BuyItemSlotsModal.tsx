@@ -1,13 +1,13 @@
 import * as React from 'react'
 import BN from 'bn.js'
+import { env } from 'decentraland-commons'
 import { fromWei } from 'web3x/utils'
+import { Network } from '@dcl/schemas'
 import { Button, ModalDescription, ModalHeader, CheckboxProps, Radio, Mana, Loader, Message } from 'decentraland-ui'
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
-import { env } from 'decentraland-commons'
-import { Props } from './BuyItemSlotsModal.types'
-import { Network } from '@dcl/schemas'
 import { ThirdPartyItemTier } from 'modules/tiers/types'
+import { Props } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 
 const sortTiers = (a: ThirdPartyItemTier, b: ThirdPartyItemTier) => {
