@@ -25,7 +25,7 @@ const INITIAL_STATE: TiersState = {
   error: null
 }
 
-type ThirdPartyReducerAction =
+type TiersReducerAction =
   | FetchThirdPartyItemTiersRequestAction
   | FetchThirdPartyItemTiersSuccessAction
   | FetchThirdPartyItemTiersFailureAction
@@ -33,7 +33,7 @@ type ThirdPartyReducerAction =
   | BuyThirdPartyItemTiersSuccessAction
   | BuyThirdPartyItemTiersFailureAction
 
-export function tiersReducer(state = INITIAL_STATE, action: ThirdPartyReducerAction): TiersState {
+export function tiersReducer(state = INITIAL_STATE, action: TiersReducerAction): TiersState {
   switch (action.type) {
     case BUY_THIRD_PARTY_ITEM_TIERS_REQUEST:
     case FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST: {
