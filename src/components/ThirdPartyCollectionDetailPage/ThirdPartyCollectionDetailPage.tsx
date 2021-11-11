@@ -35,7 +35,7 @@ import './ThirdPartyCollectionDetailPage.css'
 
 const STORAGE_KEY = 'dcl-third-party-collection-notice'
 const MAX_ITEM_COUNT = 20
-const PAGE_SIZE = 2
+const PAGE_SIZE = 20
 
 export default class ThirdPartyCollectionDetailPage extends React.PureComponent<Props, State> {
   state: State = {
@@ -82,7 +82,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
 
   handleSelectPageChange = () => {
     const { itemSelectionState } = this.state
-    const items = this.paginate(this.search())
+    const items = this.paginate(this.filterItemsBySearchText())
     const newItemSelectionState: Record<string, boolean> = { ...itemSelectionState }
 
     // Performs the opposite actoin, if everything is selected, it'll deselect and viceversa
@@ -114,16 +114,16 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     return items.every(item => itemSelectionState[item.id])
   }
 
-  getSelectedItems() {
+  getSelectedItemsCount() {
     const { itemSelectionState } = this.state
-    return Object.values(itemSelectionState).filter(isSelected => isSelected)
+    return Object.values(itemSelectionState).filter(isSelected => isSelected).length
   }
 
   isSearching() {
     return this.state.searchText !== ''
   }
 
-  search() {
+  filterItemsBySearchText() {
     const { items } = this.props
     const { searchText } = this.state
 
@@ -144,9 +144,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
     const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
     const areSlotsEmpty = slots.lte(new BN(0))
 
-    const selectedItems = this.getSelectedItems()
+    const selectedItemsCount = this.getSelectedItemsCount()
 
-    const items = this.search()
+    const items = this.filterItemsBySearchText()
     const paginatedItems = this.paginate(items)
     const total = items.length
     const pageTotal = total > PAGE_SIZE ? PAGE_SIZE * page : total
@@ -224,9 +224,9 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
                 </div>
               </div>
 
-              {selectedItems.length > 0 ? (
+              {selectedItemsCount > 0 ? (
                 <div className="selection-info">
-                  {t('third_party_collection_detail_page.selection', { count: selectedItems.length })}
+                  {t('third_party_collection_detail_page.selection', { count: selectedItemsCount })}
                   &nbsp;
                   <span className="link" onClick={this.handleClearSelection}>
                     {t('third_party_collection_detail_page.clear_selection')}

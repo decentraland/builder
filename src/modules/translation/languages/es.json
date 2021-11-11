@@ -991,7 +991,6 @@
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida en el Mercado de Decentraland.",
     "unset_on_sale_popup": "Esta colección está en venta en el Mercado de Decentraland.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
-    "click_here": "Clickea aquí",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
