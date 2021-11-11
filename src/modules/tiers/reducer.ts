@@ -19,7 +19,7 @@ import {
 
 const INITIAL_STATE: TiersState = {
   data: {
-    thirdParty: []
+    thirdPartyItems: []
   },
   loading: [],
   error: null
@@ -59,7 +59,7 @@ export function tiersReducer(state = INITIAL_STATE, action: ThirdPartyReducerAct
         error: null,
         data: {
           ...state.data,
-          thirdParty: tiers
+          thirdPartyItems: tiers
         }
       }
     }

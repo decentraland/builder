@@ -16,7 +16,7 @@ export type ThirdPartyItemTier = {
 
 export type TiersState = {
   data: {
-    thirdParty: ThirdPartyItemTier[]
+    thirdPartyItems: ThirdPartyItemTier[]
   }
   loading: LoadingState
   error: string | null

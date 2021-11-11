@@ -9,7 +9,7 @@ export const getData = (state: RootState) => getState(state).data
 export const getLoading = (state: RootState) => getState(state).loading
 export const getError = (state: RootState) => getState(state).error
 
-export const getThirdPartyItemTiers = (state: RootState): ThirdPartyItemTier[] => getData(state).thirdParty
+export const getThirdPartyItemTiers = (state: RootState): ThirdPartyItemTier[] => getData(state).thirdPartyItems
 export const isFetchingTiers = (state: RootState): boolean => isLoadingType(getLoading(state), FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST)
 export const isBuyingItemSlots = (state: RootState): boolean =>
   isLoadingType(getLoading(state), BUY_THIRD_PARTY_ITEM_TIERS_REQUEST) ||
