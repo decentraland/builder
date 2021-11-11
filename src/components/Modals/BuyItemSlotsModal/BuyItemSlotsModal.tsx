@@ -10,15 +10,6 @@ import { ThirdPartyItemTier } from 'modules/tiers/types'
 import { Props } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 
-const sortTiers = (a: ThirdPartyItemTier, b: ThirdPartyItemTier) => {
-  if (a.value < b.value) {
-    return -1
-  } else if (a.value > b.value) {
-    return 1
-  }
-  return 0
-}
-
 const BuyItemSlotsModal = (props: Props) => {
   const {
     onClose,

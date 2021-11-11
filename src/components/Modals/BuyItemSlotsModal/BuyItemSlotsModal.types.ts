@@ -8,12 +8,16 @@ export type Props = ModalProps & {
   isBuyingItemSlots: boolean
   isFetchingTiers: boolean
   thirdParty: ThirdParty
-  onBuyItemSlots: typeof buyThirdPartyItemTiersRequest
-  onFetchThirdPartyItemSlots: typeof fetchThirdPartyItemTiersRequest
   manaBalance: number
   tiers: ThirdPartyItemTier[]
-  metadata: { thirdParty: ThirdParty }
+  metadata: BuyItemSlotsModalMetadata
   error: string | null
+  onBuyItemSlots: typeof buyThirdPartyItemTiersRequest
+  onFetchThirdPartyItemSlots: typeof fetchThirdPartyItemTiersRequest
+}
+
+export type BuyItemSlotsModalMetadata = {
+  thirdParty: ThirdParty
 }
 
 export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingTiers' | 'manaBalance' | 'tiers' | 'error'>
