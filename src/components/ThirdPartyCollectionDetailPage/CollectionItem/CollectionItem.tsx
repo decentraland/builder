@@ -10,7 +10,7 @@ import { WearableData } from 'modules/item/types'
 import { getBodyShapeType } from 'modules/item/utils'
 import ItemImage from 'components/ItemImage'
 import { Props } from './CollectionItem.types'
-import './CollectionItem.css'
+import * as styles from './CollectionItem.module.css'
 
 export default class CollectionItem extends React.PureComponent<Props> {
   handleEditURN = () => {
@@ -44,29 +44,31 @@ export default class CollectionItem extends React.PureComponent<Props> {
 
     return (
       <Link to={locations.itemDetail(item.id)} className="CollectionItem">
-        <Grid columns="equal">
-          <Grid.Row>
-            <Grid.Column className="avatar-column" width={5}>
+        <Grid className={styles.grid} columns="equal">
+          <Grid.Row className={styles.row}>
+            <Grid.Column className={`${styles.column} ${styles.avatarColumn}`} width={5}>
               <Checkbox checked={selected} onClick={preventDefault(this.handleCheckboxChange)} />
-              <ItemImage item={item} hasBadge badgeSize="small" />
-              <div className="info">
-                <div className="name-wrapper">
-                  <div className="name" title={item.name}>
-                    <ItemStatus item={item} />
+              <ItemImage className={styles.itemImage} item={item} hasBadge badgeSize="small" />
+              <div className={styles.info}>
+                <div className={styles.nameWrapper}>
+                  <div className={styles.name} title={item.name}>
+                    <ItemStatus className={styles.itemStatus} item={item} />
                     {item.name}
                   </div>
                 </div>
               </div>
             </Grid.Column>
-            <Grid.Column>{data.category ? <div>{t(`wearable.category.${data.category}`)}</div> : null}</Grid.Column>
-            <Grid.Column>
+            <Grid.Column className={styles.column}>
+              {data.category ? <div>{t(`wearable.category.${data.category}`)}</div> : null}
+            </Grid.Column>
+            <Grid.Column className={styles.column}>
               <div>{t(`body_shapes.${getBodyShapeType(item)}`)}</div>
             </Grid.Column>
-            <Grid.Column>
+            <Grid.Column className={styles.column}>
               <div>{this.getTokenId()}</div>
             </Grid.Column>
-            <Grid.Column>
-              <div className="item-actions">
+            <Grid.Column className={styles.column}>
+              <div className={styles.itemActions}>
                 <Dropdown
                   trigger={
                     <Button basic>
@@ -75,7 +77,7 @@ export default class CollectionItem extends React.PureComponent<Props> {
                   }
                   inline
                   direction="left"
-                  className="action"
+                  className={styles.action}
                   onClick={preventDefault()}
                 >
                   <Dropdown.Menu>
