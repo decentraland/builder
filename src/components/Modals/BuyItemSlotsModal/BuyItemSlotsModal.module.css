@@ -62,3 +62,11 @@
   justify-content: center;
   height: 50px;
 }
+
+.manaLogo :global(.symbol) {
+  padding: 0px !important;
+}
+
+.manaLogo :global(.symbol .matic) {
+  background-repeat: no-repeat;
+}

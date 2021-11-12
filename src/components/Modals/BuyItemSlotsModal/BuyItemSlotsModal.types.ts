@@ -22,6 +22,10 @@ export type Props = ModalProps & {
   onTierSelected: typeof clearTiersError
 }
 
+export type State = {
+  selectedTierId: string | undefined
+}
+
 export type BuyItemSlotsModalMetadata = {
   thirdParty: ThirdParty
 }

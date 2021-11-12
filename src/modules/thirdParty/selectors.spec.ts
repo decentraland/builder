@@ -1,5 +1,6 @@
+import { Collection } from 'modules/collection/types'
 import { RootState } from 'modules/common/types'
-import { isThirdPartyManager, getWalletThirdParties, getThirdParty } from './selectors'
+import { isThirdPartyManager, getWalletThirdParties, getCollectionThirdParty } from './selectors'
 import { ThirdParty } from './types'
 
 describe('Third Party selectors', () => {
@@ -11,9 +12,30 @@ describe('Third Party selectors', () => {
 
   beforeEach(() => {
     address = '0xdeabeef'
-    thirdParty1 = { id: '1', name: 'a third party', description: 'some desc', maxItems: '0', totalItems: '0', managers: [address, '0xa'] }
-    thirdParty2 = { id: '2', name: 'a third party', description: 'some desc', maxItems: '0', totalItems: '0', managers: [address, '0xb'] }
-    thirdParty3 = { id: '3', name: 'a third party', description: 'some desc', maxItems: '0', totalItems: '0', managers: ['0xc'] }
+    thirdParty1 = {
+      id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty1',
+      name: 'a third party',
+      description: 'some desc',
+      maxItems: '0',
+      totalItems: '0',
+      managers: [address, '0xa']
+    }
+    thirdParty2 = {
+      id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2',
+      name: 'a third party',
+      description: 'some desc',
+      maxItems: '0',
+      totalItems: '0',
+      managers: [address, '0xb']
+    }
+    thirdParty3 = {
+      id: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty3',
+      name: 'a third party',
+      description: 'some desc',
+      maxItems: '0',
+      totalItems: '0',
+      managers: ['0xc']
+    }
     baseState = {
       wallet: {
         data: {
@@ -86,8 +108,9 @@ describe('Third Party selectors', () => {
       })
     })
 
-    describe('when getting a single third party', () => {
+    describe('when getting the third party of a collection', () => {
       let state: RootState
+      let collection: Collection
 
       beforeEach(() => {
         state = {
@@ -103,8 +126,38 @@ describe('Third Party selectors', () => {
         }
       })
 
-      it('should return the third party that matches the given id', () => {
-        expect(getThirdParty(state, thirdParty1.id)).toEqual(thirdParty1)
+      describe("and the collection doesn't have a URN", () => {
+        beforeEach(() => {
+          collection = {
+            urn: undefined
+          } as Collection
+        })
+
+        it('should return null', () => {})
+      })
+
+      describe("and the collection doesn't have a valid third party URN", () => {
+        beforeEach(() => {
+          collection = {
+            urn: 'urn:decentraland:ropsten:collections-v2:0xbd0847050e3b92ed0e862b8a919c5dce7ce01311'
+          } as Collection
+        })
+
+        it('should throw with an error signaling that the URN is not valid', () => {
+          expect(() => getCollectionThirdParty(state, collection)).toThrowError('URN is not a third party URN')
+        })
+      })
+
+      describe('and the collection has a valid URN', () => {
+        beforeEach(() => {
+          collection = {
+            urn: 'urn:decentraland:mumbai:collections-thirdparty:thirdparty2:one-third-party-collection'
+          } as Collection
+        })
+
+        it('should return the third party that matches the given id', () => {
+          expect(getCollectionThirdParty(state, collection)).toEqual(thirdParty2)
+        })
       })
     })
   })

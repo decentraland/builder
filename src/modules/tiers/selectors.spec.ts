@@ -13,7 +13,7 @@ beforeEach(() => {
   state = {
     tiers: {
       data: {
-        thirdParty: []
+        thirdPartyItems: []
       },
       loading: [],
       error: null
@@ -38,7 +38,7 @@ describe('when getting the third party item tiers from the state', () => {
         ...state.tiers,
         data: {
           ...state.tiers.data,
-          thirdParty: tiers
+          thirdPartyItems: tiers
         }
       }
     }
