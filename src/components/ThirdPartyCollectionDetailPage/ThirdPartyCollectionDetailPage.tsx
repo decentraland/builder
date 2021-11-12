@@ -5,7 +5,7 @@ import { Section, Row, Narrow, Column, Header, Icon, Button } from 'decentraland
 import { t, T } from 'decentraland-dapps/dist/modules/translation/utils'
 import { locations } from 'routing/locations'
 import { canSeeCollection } from 'modules/collection/utils'
-import { isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
+import { getAvailableSlots, isUserManagerOfThirdParty } from 'modules/thirdParty/utils'
 import LoggedInDetailPage from 'components/LoggedInDetailPage'
 import Notice from 'components/Notice'
 import NotFound from 'components/NotFound'
@@ -51,7 +51,7 @@ export default class ThirdPartyCollectionDetailPage extends React.PureComponent<
   renderPage() {
     const { wallet, items, thirdParty } = this.props
     const collection = this.props.collection!
-    const slots = thirdParty ? new BN(thirdParty.maxItems).sub(new BN(thirdParty.totalItems)) : new BN(0)
+    const slots = thirdParty ? getAvailableSlots(thirdParty) : new BN(0)
     const areSlotsEmpty = slots.lte(new BN(0))
 
     return (

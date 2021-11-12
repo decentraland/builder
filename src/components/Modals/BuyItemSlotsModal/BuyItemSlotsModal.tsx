@@ -7,6 +7,7 @@ import { Button, ModalDescription, ModalHeader, CheckboxProps, Radio, Mana, Load
 import { T, t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Modal, NetworkButton } from 'decentraland-dapps/dist/containers'
 import { ThirdPartyItemTier } from 'modules/tiers/types'
+import { sortTiers } from 'modules/tiers/utils'
 import { Props } from './BuyItemSlotsModal.types'
 import styles from './BuyItemSlotsModal.module.css'
 
