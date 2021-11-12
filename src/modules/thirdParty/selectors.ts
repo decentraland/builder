@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect'
+import { extractThirdPartyId } from 'lib/urn'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { RootState } from 'modules/common/types'
+import { Collection } from 'modules/collection/types'
 import { ThirdPartyState } from './reducer'
 import { ThirdParty } from './types'
 import { isUserManagerOfThirdParty } from './utils'
@@ -22,4 +24,6 @@ export const getWalletThirdParties = createSelector<RootState, ThirdPartyState['
   (thirdParties, address = '') => Object.values(thirdParties).filter(thirdParty => thirdParty.managers.includes(address))
 )
 
-export const getThirdParty = (state: RootState, id: string) => getData(state)[id]
+export const getCollectionThirdParty = (state: RootState, collection: Collection): ThirdParty | null => {
+  return collection.urn ? getData(state)[extractThirdPartyId(collection.urn)] : null
+}

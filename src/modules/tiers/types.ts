@@ -3,6 +3,7 @@ import {
   buyThirdPartyItemTiersFailure,
   buyThirdPartyItemTiersRequest,
   buyThirdPartyItemTiersSuccess,
+  clearTiersError,
   fetchThirdPartyItemTiersFailure,
   fetchThirdPartyItemTiersRequest,
   fetchThirdPartyItemTiersSuccess
@@ -29,3 +30,5 @@ export type BuyThirdPartyItemTiersFailureAction = ReturnType<typeof buyThirdPart
 export type FetchThirdPartyItemTiersRequestAction = ReturnType<typeof fetchThirdPartyItemTiersRequest>
 export type FetchThirdPartyItemTiersSuccessAction = ReturnType<typeof fetchThirdPartyItemTiersSuccess>
 export type FetchThirdPartyItemTiersFailureAction = ReturnType<typeof fetchThirdPartyItemTiersFailure>
+
+export type ClearTiersErrorAction = ReturnType<typeof clearTiersError>

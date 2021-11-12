@@ -26,3 +26,9 @@ export const buyThirdPartyItemTiersSuccess = (txHash: string, chainId: ChainId, 
   action(BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS, { thirdParty, tier, ...buildTransactionPayload(chainId, txHash, { tier, thirdParty }) })
 export const buyThirdPartyItemTiersFailure = (error: string, thirdPartyId: string, tier: ThirdPartyItemTier) =>
   action(BUY_THIRD_PARTY_ITEM_TIERS_FAILURE, { error, thirdPartyId, tier })
+
+// Clear tiers error
+
+export const CLEAR_TIERS_ERROR = 'Clear tiers error'
+
+export const clearTiersError = () => action(CLEAR_TIERS_ERROR)

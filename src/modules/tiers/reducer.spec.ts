@@ -21,7 +21,7 @@ beforeEach(() => {
   tier = { id: '2', value: '100', price: '100' }
   state = {
     data: {
-      thirdParty: []
+      thirdPartyItems: []
     },
     loading: [],
     error: null
@@ -29,9 +29,10 @@ beforeEach(() => {
 })
 
 describe('when reducing the action to request the buying of tiers', () => {
-  it('should return a state with the loading reducer set with the action', () => {
+  it('should return a state with the loading reducer set with the action and the error cleared', () => {
     expect(tiersReducer(state, buyThirdPartyItemTiersRequest(thirdParty, tier))).toEqual({
       ...state,
+      error: null,
       loading: [buyThirdPartyItemTiersRequest(thirdParty, tier)]
     })
   })
@@ -67,9 +68,10 @@ describe('when reducing the action that signals a failing purchase of tiers', ()
 })
 
 describe('when reducing the action to request the fetching of tiers', () => {
-  it('should return a state with the the loading reducer set with the action', () => {
+  it('should return a state with the the loading reducer set with the action and the error cleared', () => {
     expect(tiersReducer(state, fetchThirdPartyItemTiersRequest())).toEqual({
       ...state,
+      error: null,
       loading: [fetchThirdPartyItemTiersRequest()]
     })
   })
@@ -81,7 +83,7 @@ describe('when reducing the action that signals a successful fetch of tiers', ()
       ...state,
       loading: [],
       data: {
-        thirdParty: [tier]
+        thirdPartyItems: [tier]
       }
     })
   })

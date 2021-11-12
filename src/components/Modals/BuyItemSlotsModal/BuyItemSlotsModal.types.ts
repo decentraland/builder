@@ -1,7 +1,12 @@
 import { Dispatch } from 'redux'
 import { ModalProps } from 'decentraland-dapps/dist/providers/ModalProvider/ModalProvider.types'
-import { buyThirdPartyItemTiersRequest, fetchThirdPartyItemTiersRequest } from 'modules/tiers/actions'
-import { ThirdPartyItemTier, BuyThirdPartyItemTiersRequestAction, FetchThirdPartyItemTiersRequestAction } from 'modules/tiers/types'
+import { buyThirdPartyItemTiersRequest, clearTiersError, fetchThirdPartyItemTiersRequest } from 'modules/tiers/actions'
+import {
+  ThirdPartyItemTier,
+  BuyThirdPartyItemTiersRequestAction,
+  FetchThirdPartyItemTiersRequestAction,
+  ClearTiersErrorAction
+} from 'modules/tiers/types'
 import { ThirdParty } from 'modules/thirdParty/types'
 
 export type Props = ModalProps & {
@@ -14,6 +19,7 @@ export type Props = ModalProps & {
   error: string | null
   onBuyItemSlots: typeof buyThirdPartyItemTiersRequest
   onFetchThirdPartyItemSlots: typeof fetchThirdPartyItemTiersRequest
+  onTierSelected: typeof clearTiersError
 }
 
 export type BuyItemSlotsModalMetadata = {
@@ -21,5 +27,5 @@ export type BuyItemSlotsModalMetadata = {
 }
 
 export type MapStateProps = Pick<Props, 'isBuyingItemSlots' | 'isFetchingTiers' | 'manaBalance' | 'tiers' | 'error'>
-export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlots'>
-export type MapDispatch = Dispatch<FetchThirdPartyItemTiersRequestAction | BuyThirdPartyItemTiersRequestAction>
+export type MapDispatchProps = Pick<Props, 'onBuyItemSlots' | 'onFetchThirdPartyItemSlots' | 'onTierSelected'>
+export type MapDispatch = Dispatch<FetchThirdPartyItemTiersRequestAction | BuyThirdPartyItemTiersRequestAction | ClearTiersErrorAction>

@@ -22,13 +22,17 @@ const BuyItemSlotsModal = (props: Props) => {
     isBuyingItemSlots,
     tiers,
     error,
-    metadata
+    metadata,
+    onTierSelected
   } = props
   const { thirdParty } = metadata
   const [selectedTierId, setSelectedTierId] = React.useState<string | undefined>(undefined)
   const handleTierChange = React.useCallback(
-    (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => setSelectedTierId(data.value as string),
-    [setSelectedTierId]
+    (_: React.FormEvent<HTMLInputElement>, data: CheckboxProps) => {
+      setSelectedTierId(data.value as string)
+      onTierSelected()
+    },
+    [setSelectedTierId, onTierSelected]
   )
   const selectedTier = React.useMemo(() => (tiers ? tiers.find(tier => tier.id === selectedTierId) : undefined), [tiers, selectedTierId])
   const handleItemSlotsBuy = React.useCallback(() => onBuyItemSlots(thirdParty, selectedTier as ThirdPartyItemTier), [
@@ -54,7 +58,11 @@ const BuyItemSlotsModal = (props: Props) => {
         <span>{t('buy_item_slots_modal.description_line_two')}</span>
       </ModalDescription>
       <Modal.Content className={styles.content}>
-        {(isFetchingTiers || tiers === undefined) && <Loader active size="large" />}
+        {(isFetchingTiers || tiers === undefined) && (
+          <div className={styles.loader}>
+            <Loader active size="large" />
+          </div>
+        )}
         <div>
           {tiers.sort(sortTiers).map(tier => (
             <div className={styles.tier} key={tier.id}>

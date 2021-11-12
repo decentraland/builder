@@ -73,13 +73,6 @@ export type DecodedURN = BaseDecodedURN &
       }
   )
 
-export type DecodedThirdPartyURN = BaseDecodedURN & {
-  type: URNType.COLLECTIONS_THIRDPARTY
-  thirdPartyName: string
-  thirdPartyCollectionId?: string
-  thirdPartyTokenId?: string
-}
-
 export function buildItemURN(type: string, name: string, description: string, category: string, bodyShapeTypes: string): URN {
   return `${VERSION}:${type[0]}:${name}:${description}:${category}:${bodyShapeTypes}`
 }
@@ -100,8 +93,12 @@ export function toLegacyURN(urn: URN): URN {
   return urn.replace('urn:decentraland:off-chain:base-avatars:', 'dcl://base-avatars/')
 }
 
-export function getThirdPartyId(urn: URN): string {
-  const decodedURN = decodeURN(urn) as DecodedThirdPartyURN
+export function extractThirdPartyId(urn: URN): string {
+  const decodedURN = decodeURN(urn)
+  if (decodedURN.type !== URNType.COLLECTIONS_THIRDPARTY) {
+    throw new Error('URN is not a third party URN')
+  }
+
   return `urn:decentraland:${decodedURN.protocol}:collections-thirdparty:${decodedURN.thirdPartyName}`
 }
 

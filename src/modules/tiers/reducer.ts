@@ -3,6 +3,7 @@ import {
   BUY_THIRD_PARTY_ITEM_TIERS_FAILURE,
   BUY_THIRD_PARTY_ITEM_TIERS_REQUEST,
   BUY_THIRD_PARTY_ITEM_TIERS_SUCCESS,
+  CLEAR_TIERS_ERROR,
   FETCH_THIRD_PARTY_ITEM_TIERS_FAILURE,
   FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST,
   FETCH_THIRD_PARTY_ITEM_TIERS_SUCCESS
@@ -14,7 +15,8 @@ import {
   BuyThirdPartyItemTiersSuccessAction,
   FetchThirdPartyItemTiersFailureAction,
   FetchThirdPartyItemTiersRequestAction,
-  FetchThirdPartyItemTiersSuccessAction
+  FetchThirdPartyItemTiersSuccessAction,
+  ClearTiersErrorAction
 } from './types'
 
 const INITIAL_STATE: TiersState = {
@@ -32,6 +34,7 @@ type TiersReducerAction =
   | BuyThirdPartyItemTiersRequestAction
   | BuyThirdPartyItemTiersSuccessAction
   | BuyThirdPartyItemTiersFailureAction
+  | ClearTiersErrorAction
 
 export function tiersReducer(state = INITIAL_STATE, action: TiersReducerAction): TiersState {
   switch (action.type) {
@@ -39,6 +42,7 @@ export function tiersReducer(state = INITIAL_STATE, action: TiersReducerAction):
     case FETCH_THIRD_PARTY_ITEM_TIERS_REQUEST: {
       return {
         ...state,
+        error: null,
         loading: loadingReducer(state.loading, action)
       }
     }
@@ -71,6 +75,13 @@ export function tiersReducer(state = INITIAL_STATE, action: TiersReducerAction):
         ...state,
         loading: loadingReducer(state.loading, action),
         error
+      }
+    }
+
+    case CLEAR_TIERS_ERROR: {
+      return {
+        ...state,
+        error: null
       }
     }
 

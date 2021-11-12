@@ -1,8 +1,8 @@
+import { Network } from '@dcl/schemas'
 import { RootState } from 'modules/common/types'
-import { getData as getWallet } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getNetworks } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-export function getManaBalance(state: RootState): number {
-  const wallet = getWallet(state)
-
-  return wallet ? wallet.networks.MATIC.mana : 0
+export function getManaBalanceForNetwork(state: RootState, network: Network): number {
+  const networks = getNetworks(state)
+  return networks && networks[network] && networks[network].mana ? networks[network].mana : 0
 }

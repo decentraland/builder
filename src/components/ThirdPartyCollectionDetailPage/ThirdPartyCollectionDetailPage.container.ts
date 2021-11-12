@@ -9,8 +9,7 @@ import { getCollectionItems, getLoading as getLoadingItem } from 'modules/item/s
 import { FETCH_COLLECTIONS_REQUEST, DELETE_COLLECTION_REQUEST } from 'modules/collection/actions'
 import { openModal } from 'modules/modal/actions'
 import { FETCH_ITEMS_REQUEST } from 'modules/item/actions'
-import { getThirdParty } from 'modules/thirdParty/selectors'
-import { getThirdPartyId } from 'lib/urn'
+import { getCollectionThirdParty } from 'modules/thirdParty/selectors'
 import { MapStateProps, MapDispatchProps, MapDispatch } from './ThirdPartyCollectionDetailPage.types'
 import CollectionDetailPage from './ThirdPartyCollectionDetailPage'
 
@@ -25,7 +24,7 @@ const mapState = (state: RootState): MapStateProps => {
       isLoadingType(getLoadingCollection(state), FETCH_COLLECTIONS_REQUEST) ||
       isLoadingType(getLoadingCollection(state), DELETE_COLLECTION_REQUEST) ||
       isLoadingType(getLoadingItem(state), FETCH_ITEMS_REQUEST),
-    thirdParty: collection && collection.urn ? getThirdParty(state, getThirdPartyId(collection.urn)) : null
+    thirdParty: collection ? getCollectionThirdParty(state, collection) : null
   }
 }
 

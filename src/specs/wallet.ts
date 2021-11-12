@@ -6,7 +6,7 @@ export function addWalletToState(state: RootState, address: string): RootState {
     wallet: {
       ...(state.wallet ?? {}),
       data: {
-        address: '0x0'
+        address
       } as any
     }
   }

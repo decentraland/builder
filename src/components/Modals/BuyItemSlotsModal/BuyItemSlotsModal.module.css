@@ -56,3 +56,9 @@
   margin-left: 64px !important;
   margin-right: 64px !important;
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  height: 50px;
+}
