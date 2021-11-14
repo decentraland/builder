@@ -55,9 +55,10 @@ import {
   isImageCategory,
   getMaxSupplyForRarity
 } from 'modules/item/utils'
+import { ASSET_MANIFEST } from 'components/AssetImporter/utils'
 import { FileTooBigError, WrongExtensionError, InvalidFilesError, MissingModelFileError } from 'modules/item/errors'
 import { getThumbnailType } from './utils'
-import { Props, State, CreateItemView, CreateItemModalMetadata, StateData, SortedContent } from './CreateItemModal.types'
+import { Props, State, CreateItemView, CreateItemModalMetadata, StateData, SortedContent, ItemAssetJson } from './CreateItemModal.types'
 import './CreateItemModal.css'
 
 export default class CreateItemModal extends React.PureComponent<Props, State> {
@@ -286,6 +287,18 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
     })
 
+    // asset.json contains data to populate parts of the state
+    const assetJsonPath = fileNames.find(path => basename(path) === ASSET_MANIFEST)
+    let assetJson: ItemAssetJson | undefined
+
+    if (assetJsonPath) {
+      const assetRaw = zip.file(assetJsonPath)
+      const content = await assetRaw.async('text')
+      assetJson = JSON.parse(content)
+    }
+
+    const modelPath = fileNames.find(isModelPath)
+
     const files = await Promise.all(
       fileNames
         .map(fileName => zip.file(fileName))
@@ -309,13 +322,13 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       return contents
     }, {})
 
-    const modelPath = fileNames.find(isModelPath)
-
     if (!modelPath) {
       throw new MissingModelFileError()
     }
 
-    return this.processModel(modelPath, contents)
+    const result = await this.processModel(modelPath, contents)
+
+    return [...result, assetJson] as const
   }
 
   /**
@@ -359,7 +372,7 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
       }
 
       const handler = extension === '.zip' ? this.handleZippedModelFiles : this.handleModelFile
-      const [thumbnail, model, metrics, contents] = await handler(file)
+      const [thumbnail, model, metrics, contents, assetJson] = await handler(file)
 
       this.setState({
         id: changeItemFile ? item!.id : uuid.v4(),
@@ -371,11 +384,23 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
         contents,
         error: '',
         category: isRepresentation ? category : undefined,
-        isLoading: false
+        isLoading: false,
+        ...(await this.getAssetJsonProps(assetJson, contents))
       })
     } catch (error) {
       this.setState({ error: error.message, isLoading: false })
     }
+  }
+
+  async getAssetJsonProps(assetJson: ItemAssetJson = {}, contents: Record<string, Blob> = {}): Promise<ItemAssetJson> {
+    const { thumbnail, ...props } = assetJson
+    if (thumbnail && thumbnail in contents) {
+      return {
+        ...props,
+        thumbnail: await blobToDataURL(contents[thumbnail])
+      }
+    }
+    return props
   }
 
   handleDropRejected = async (rejectedFiles: File[]) => {
@@ -754,43 +779,43 @@ export default class CreateItemModal extends React.PureComponent<Props, State> {
                       {bodyShape === BodyShapeType.BOTH ? (
                         this.renderFields()
                       ) : (
-                          <>
-                            {isAddingRepresentation ? null : (
-                              <Section>
-                                <Header sub>{t('create_item_modal.existing_item')}</Header>
-                                <Row>
-                                  <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
-                                    {t('global.yes')}
-                                  </div>
-                                  <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
-                                    {t('global.no')}
-                                  </div>
-                                </Row>
-                              </Section>
-                            )}
-                            {isRepresentation === undefined ? null : isRepresentation ? (
-                              <Section>
-                                <Header sub>
-                                  {isAddingRepresentation
-                                    ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
-                                    : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
-                                </Header>
-                                <ItemDropdown
-                                  value={item}
-                                  filter={this.filterItemsByBodyShape}
-                                  onChange={this.handleItemChange}
-                                  isDisabled={isAddingRepresentation}
-                                />
-                              </Section>
-                            ) : (
-                                this.renderFields()
-                              )}
-                          </>
-                        )}
+                        <>
+                          {isAddingRepresentation ? null : (
+                            <Section>
+                              <Header sub>{t('create_item_modal.existing_item')}</Header>
+                              <Row>
+                                <div className={`option ${isRepresentation === true ? 'active' : ''}`} onClick={this.handleYes}>
+                                  {t('global.yes')}
+                                </div>
+                                <div className={`option ${isRepresentation === false ? 'active' : ''}`} onClick={this.handleNo}>
+                                  {t('global.no')}
+                                </div>
+                              </Row>
+                            </Section>
+                          )}
+                          {isRepresentation === undefined ? null : isRepresentation ? (
+                            <Section>
+                              <Header sub>
+                                {isAddingRepresentation
+                                  ? t('create_item_modal.adding_representation', { bodyShape: t(`body_shapes.${bodyShape}`) })
+                                  : t('create_item_modal.pick_item', { bodyShape: t(`body_shapes.${bodyShape}`) })}
+                              </Header>
+                              <ItemDropdown
+                                value={item}
+                                filter={this.filterItemsByBodyShape}
+                                onChange={this.handleItemChange}
+                                isDisabled={isAddingRepresentation}
+                              />
+                            </Section>
+                          ) : (
+                            this.renderFields()
+                          )}
+                        </>
+                      )}
                     </>
                   ) : (
-                      this.renderFields()
-                    )}
+                    this.renderFields()
+                  )}
                 </Column>
               </Row>
               <Row className="actions" align="right">

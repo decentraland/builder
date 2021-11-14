@@ -42,6 +42,16 @@ export type CreateItemModalMetadata = {
   changeItemFile?: boolean
 }
 
+export type ItemAssetJson = {
+  name?: string
+  description?: string
+  category?: WearableCategory
+  rarity?: ItemRarity
+  thumbnail?: string
+  model?: string
+  bodyShape?: BodyShapeType
+}
+
 export type SortedContent = { male: Record<string, Blob>; female: Record<string, Blob>; all: Record<string, Blob> }
 
 export type MapStateProps = Pick<Props, 'address' | 'error' | 'isLoading'>
