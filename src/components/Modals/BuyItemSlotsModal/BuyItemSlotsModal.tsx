@@ -60,7 +60,6 @@ export default class BuyItemSlotsModal extends React.PureComponent<Props, State>
   render() {
     const { onClose, isFetchingTiers, name, isBuyingItemSlots, tiers, error } = this.props
     const { selectedTierId } = this.state
-    console.log('Starting this shit')
 
     const hasInsufficientMANA = this.hasInsufficientMana()
 

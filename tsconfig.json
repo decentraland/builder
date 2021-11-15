@@ -11,7 +11,7 @@
     "skipLibCheck": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
