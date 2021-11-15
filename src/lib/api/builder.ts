@@ -37,6 +37,7 @@ export type RemoteItem = {
   collection_id: string | null
   blockchain_item_id: string | null
   price: string | null
+  urn: string | null
   beneficiary: string | null
   rarity: ItemRarity | null
   total_supply: number | null
@@ -292,6 +293,7 @@ function toRemoteItem(item: Item): RemoteItem {
     collection_id: item.collectionId || null,
     blockchain_item_id: item.tokenId || null,
     price: item.price || null,
+    urn: item.urn || null,
     beneficiary: item.beneficiary || null,
     rarity: item.rarity || null,
     total_supply: item.totalSupply === undefined ? null : item.totalSupply,
@@ -332,6 +334,7 @@ function fromRemoteItem(remoteItem: RemoteItem) {
   if (remoteItem.collection_id) item.collectionId = remoteItem.collection_id
   if (remoteItem.blockchain_item_id) item.tokenId = remoteItem.blockchain_item_id
   if (remoteItem.price) item.price = remoteItem.price
+  if (remoteItem.urn) item.urn = remoteItem.urn
   if (remoteItem.beneficiary) item.beneficiary = remoteItem.beneficiary
   if (remoteItem.rarity) item.rarity = remoteItem.rarity
   if (remoteItem.total_supply !== null) item.totalSupply = remoteItem.total_supply // 0 is false

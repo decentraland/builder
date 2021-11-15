@@ -440,7 +440,7 @@
     "finish": "Finalizar",
     "free": "Gratis",
     "here": "aquí",
-    "items": "objetos",
+    "item": "Item",
     "learn_more": "Más información",
     "loading": "Cargando",
     "mint": "Crear",
@@ -466,6 +466,7 @@
     "view_more": "Ver Más",
     "click_here": "Has click aquí",
     "proceed": "Proceder",
+    "open_in_editor": "Abrir en el editor",
     "address": "Dirección",
     "balance": "Balance",
     "balances": "Balances",
@@ -477,6 +478,7 @@
     "name": "Nombre",
     "category": "Categoría",
     "rarity": "Rareza",
+    "body_shape": "Cuerpo",
     "body_shape_plural": "Cuerpos",
     "size": "Tamaño",
     "hash": "Hash",
@@ -714,6 +716,7 @@
     "shortcuts_help": "¡Ver atajos aquí!"
   },
   "project_card": {
+    "items": "objetos",
     "confirm_delete_content": "¿Seguro que quieres borrar tu Escena \"{title}\"? Esta operación es ireversible",
     "confirm_delete_header": "Borrar \"{title}\""
   },
@@ -743,7 +746,6 @@
   },
   "scene_detail_page": {
     "actions": {
-      "open_in_editor": "Abrir en editor",
       "duplicate": "Duplicar",
       "download": "Descargar",
       "delete": "Eliminar",
@@ -973,6 +975,11 @@
   },
   "third_party_collection_detail_page": {
     "notice": "Cada item publicado toma un Slot. {buy_link} para comprar paquetes de slots y comienza a publicar tus creaciones!",
+    "search_placeholder": "Buscar {count} {count, plural, one {item} other {items}}...",
+    "search_info": "{page}-{pageTotal} de {total}",
+    "clear_selection": "Limpiar selección",
+    "selection": "{count, plural, one {# item} other {# items}} seleccionados.",
+    "max_select_count": "Puedes publicar un máximo de {count} items a la vez",
     "slots": "{amount, plural, =0 {Sin Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items una vez que estén publicados."
@@ -984,7 +991,6 @@
     "set_on_sale_popup": "Esto permitirá que tu colección sea vendida en el Mercado de Decentraland.",
     "unset_on_sale_popup": "Esta colección está en venta en el Mercado de Decentraland.",
     "notice": "Bien! Ahora puedes empezar a trabajar con tus items. {editor_link} para abrir el editor o edita cada item.",
-    "click_here": "Clickea aquí",
     "start_adding_items": "¡Se ve bien! Ahora puedes comenzar a agregar items a tu colección.",
     "cant_remove": "No podrás agregar o remover items de tu colección una vez que esté publicada.",
     "cant_mint": "Esta colección todavía no está verificada, cuando ese proceso termine, podrás crear items",
@@ -1005,8 +1011,7 @@
     "minters": "Emisores",
     "post_to_forum": "Post al foro",
     "posting": "Posteando",
-    "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí",
-    "open_in_editor": "Abrir en el editor"
+    "not_posted": "La colección no tiene un post asociado. Puedes intentar crearlo aquí"
   },
   "collection_item": {
     "set_price": "agregar precio",
@@ -1015,7 +1020,8 @@
     "mint_item": "crear",
     "remove_from_collection": "Eliminar de la colección",
     "edit_price": "Editar precio",
-    "open_in_editor": "Abrir en el editor",
+    "see_details": "Ver detalles",
+    "edit_urn": "Editar URN",
     "reset_item": "Deshacer cambios"
   },
   "item": {

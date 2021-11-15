@@ -439,7 +439,7 @@
     "finish": "Finish",
     "free": "Free",
     "here": "here",
-    "items": "items",
+    "item": "Item",
     "learn_more": "Learn more",
     "loading": "Loading",
     "mint": "Mint",
@@ -466,6 +466,7 @@
     "view_more": "View More",
     "click_here": "Click here",
     "proceed": "Proceed",
+    "open_in_editor": "Open in editor",
     "address": "Address",
     "balance": "Balance",
     "balances": "Balances",
@@ -477,6 +478,7 @@
     "name": "Name",
     "category": "Category",
     "rarity": "Rarity",
+    "body_shape": "Body Shape",
     "body_shape_plural": "Body Shapes",
     "size": "Size",
     "hash": "Hash",
@@ -707,6 +709,7 @@
     "shortcuts_help": "See shortcuts here!"
   },
   "project_card": {
+    "items": "items",
     "confirm_delete_content": "Are you sure you want to delete your Scene \"{title}\"? This operation is not reversible",
     "confirm_delete_header": "Delete \"{title}\""
   },
@@ -736,7 +739,6 @@
   },
   "scene_detail_page": {
     "actions": {
-      "open_in_editor": "Open in editor",
       "duplicate": "Duplicate",
       "download": "Download",
       "delete": "Delete",
@@ -963,6 +965,11 @@
   },
   "third_party_collection_detail_page": {
     "notice": "Each published item takes 1 Slot. {buy_link} to buy Slot Packs and start publishing your creations!",
+    "search_placeholder": "Search {count} {count, plural, one {item} other {items}}...",
+    "search_info": "{page}-{pageTotal} of {total}",
+    "clear_selection": "Clear selection",
+    "selection": "{count, plural, one {# item} other {# items}} selected.",
+    "max_select_count": "You can publish up to {count} items at a time",
     "slots": "{amount, plural, =0 {No Slots} one {# Slot} other {# Slots}}",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing them."
@@ -974,7 +981,6 @@
     "set_on_sale_popup": "This will allow your collection to be sold in the Decentraland Marketplace.",
     "unset_on_sale_popup": "This collection is on sale in the Decentraland Marketplace.",
     "notice": "Cool! Now you can start working on your items. {editor_link} to open the editor or click the edit button on any item.",
-    "click_here": "Click here",
     "start_adding_items": "Looking good! Start adding items to your new collection",
     "cant_remove": "You will not be able to add or remove items after publishing your collection.",
     "cant_mint": "This collection is still under review, once that process ends you'll be able to mint items",
@@ -995,8 +1001,7 @@
     "minters": "Minters",
     "post_to_forum": "Post to forum",
     "posting": "Posting",
-    "not_posted": "The collection wasn't posted to the forum. You can retry here",
-    "open_in_editor": "Open in editor"
+    "not_posted": "The collection wasn't posted to the forum. You can retry here"
   },
   "collection_item": {
     "set_price": "set price",
@@ -1005,7 +1010,8 @@
     "mint_item": "mint",
     "remove_from_collection": "Remove from collection",
     "edit_price": "Edit price",
-    "open_in_editor": "Open in editor",
+    "see_details": "See details",
+    "edit_urn": "Edit URN",
     "reset_item": "Reset changes"
   },
   "item": {
@@ -1017,6 +1023,9 @@
     "beneficiary": "Beneficiary",
     "supply": "Supply",
     "collection": "Collection",
+    "urn": "URN",
+    "edit_urn": "Edit URN",
+    "copy_urn": "Copy URN",
     "type": {
       "wearable": "Wearable"
     }

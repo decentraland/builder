@@ -72,6 +72,10 @@
   margin-bottom: 32px;
 }
 
+.CollectionDetailPage .ui.grid.equal.width > .row > .column {
+  padding-left: 0;
+}
+
 .CollectionDetailPage .dcl.narrow > .empty {
   padding: 200px 0;
   width: 100%;
